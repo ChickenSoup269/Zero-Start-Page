@@ -19,6 +19,7 @@
 </head>
 
 <body>
+    <canvas id="effect-canvas"></canvas>
     <!-- Settings Toggle -->
     <button id="settings-toggle" class="settings-toggle">
         <i class="fa-solid fa-gear"></i>
@@ -27,18 +28,39 @@
     <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="settings-sidebar">
         <div class="sidebar-header">
-            <h2>Settings</h2>
+            <h2 data-i18n="settings_title">Settings</h2>
             <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
         </div>
 
         <div class="setting-group">
-            <label>Background</label>
-            <input type="text" id="bg-input" placeholder="URL or Color (e.g. #333)">
+            <label data-i18n="settings_language">Language / Ngôn ngữ</label>
+            <select id="language-select">
+                <option value="en">English</option>
+                <option value="vi">Tiếng Việt</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label data-i18n="settings_bg">Background</label>
+            <input type="text" id="bg-input" class="i18n-placeholder" data-i18n-placeholder="settings_bg_placeholder"
+                placeholder="URL or Color (e.g. #333)">
             <input type="color" id="bg-color-picker" title="Pick a color">
         </div>
 
         <div class="setting-group">
-            <label>Font</label>
+            <label data-i18n="settings_accent">Accent Color</label>
+            <input type="color" id="accent-color-picker" value="#0f0c29" title="Pick an accent color">
+        </div>
+
+        <div class="setting-group">
+            <label>
+                <input type="checkbox" id="star-fall-toggle" style="width: auto; margin-right: 10px;">
+                <span data-i18n="settings_starfall">Galaxy Effect</span>
+            </label>
+        </div>
+
+        <div class="setting-group">
+            <label data-i18n="settings_font">Font</label>
             <select id="font-select">
                 <option value="'Outfit', sans-serif">Outfit (Default)</option>
                 <option value="'Arial', sans-serif">Arial</option>
@@ -48,7 +70,7 @@
         </div>
 
         <div class="setting-group">
-            <label>Date Format</label>
+            <label data-i18n="settings_date_format">Date Format</label>
             <select id="date-format-select">
                 <option value="full">Weekday, DD Month YYYY</option>
                 <option value="short">DD/MM/YYYY</option>
@@ -58,31 +80,39 @@
         </div>
 
         <div class="setting-group">
-            <label>Clock Size: <span id="clock-size-value">6rem</span></label>
+            <label><span data-i18n="settings_clock_size">Clock Size:</span> <span
+                    id="clock-size-value">6rem</span></label>
             <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
         </div>
 
-        <button id="reset-settings" class="secondary-btn full-width">Reset Defaults</button>
+        <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset Defaults</button>
     </div>
 
     <div class="main-container">
         <div id="clock">00:00:00</div>
         <div id="date">Loading date...</div>
 
-        <form id="search-form" action="https://www.google.com/search" method="get">
-            <div class="search-container">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" name="q" id="search-input" placeholder="Search Google..." autocomplete="off">
-                <button type="button" id="clear-btn" class="clear-btn">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <ul id="suggestions" class="suggestions"></ul>
-        </form>
-
-        <div id="bookmarks-container">
-            <!-- Bookmarks will be dynamically added here -->
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <form action="https://www.google.com/search" method="GET" target="_self">
+                <input type="text" id="search-input" name="q" class="i18n-placeholder"
+                    data-i18n-placeholder="search_placeholder" placeholder="Search Google..." autocomplete="off"
+                    required>
+            </form>
+            <i class="fa-solid fa-xmark clear-btn" id="clear-btn"></i>
         </div>
+
+        <div id="bookmarks-container" class="bookmarks-grid">
+            <!-- Bookmarks will be injected here -->
+        </div>
+    </div>
+
+    <!-- Custom Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="menu-item" id="menu-edit"><i class="fa-solid fa-pen"></i> <span data-i18n="menu_edit">Edit</span>
+        </div>
+        <div class="menu-item" id="menu-delete"><i class="fa-solid fa-trash"></i> <span
+                data-i18n="menu_delete">Delete</span></div>
     </div>
 
     <!-- Modal for adding/editing bookmark -->
@@ -95,32 +125,27 @@
 
             <!-- Manual Entry Form -->
             <div id="manual-entry-form">
-                <input type="text" id="bookmark-title" placeholder="Title">
-                <input type="url" id="bookmark-url" placeholder="URL (e.g., https://example.com)">
-                <input type="url" id="bookmark-icon-url" placeholder="Custom Icon URL (Optional)">
+                <input type="text" id="bookmark-title" class="i18n-placeholder"
+                    data-i18n-placeholder="modal_title_placeholder" placeholder="Title">
+                <input type="url" id="bookmark-url" class="i18n-placeholder"
+                    data-i18n-placeholder="modal_url_placeholder" placeholder="URL (e.g., https://example.com)">
+                <input type="url" id="bookmark-icon-url" class="i18n-placeholder"
+                    data-i18n-placeholder="modal_icon_placeholder" placeholder="Custom Icon URL (Optional)">
                 <div class="modal-actions">
-                    <button id="save-bookmark" class="primary-btn">Save</button>
-                    <button id="show-import-btn" class="secondary-btn">Import from Browser</button>
+                    <button id="save-bookmark" class="primary-btn" data-i18n="modal_save">Save</button>
+                    <button id="show-import-btn" class="secondary-btn" data-i18n="modal_import">Import from
+                        Browser</button>
                 </div>
             </div>
 
             <!-- Import Section (Hidden by default) -->
             <div id="import-section" style="display: none;">
-                <button id="back-to-manual" class="text-btn"><i class="fa-solid fa-arrow-left"></i> Back to
-                    Manual</button>
+                <button id="back-to-manual" class="text-btn"><i class="fa-solid fa-arrow-left"></i> <span
+                        data-i18n="modal_back">Back to Manual</span></button>
                 <div id="browser-bookmarks-list"></div>
-                <button id="confirm-import-btn" class="primary-btn full-width">Import Selected</button>
+                <button id="confirm-import-btn" class="primary-btn full-width" data-i18n="modal_import_selected">Import
+                    Selected</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Custom Context Menu -->
-    <div id="context-menu" class="context-menu">
-        <div class="menu-item" id="menu-edit">
-            <i class="fa-solid fa-pen"></i> Edit
-        </div>
-        <div class="menu-item delete" id="menu-delete">
-            <i class="fa-solid fa-trash"></i> Delete
         </div>
     </div>
 
