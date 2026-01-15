@@ -2,10 +2,9 @@
   --bg-gradient-start: #0f0c29;
   --bg-gradient-end: #302b63;
   --bg-gradient: linear-gradient(
-    135deg,
+    var(--bg-gradient-angle, 135deg),
     var(--bg-gradient-start),
-    var(--bg-gradient-end),
-    #24243e
+    var(--bg-gradient-end)
   );
   --text-color: #ffffff;
   --font-primary: "Outfit", sans-serif;
