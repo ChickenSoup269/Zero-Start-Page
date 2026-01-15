@@ -5,36 +5,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="style.css">
 </head>
 
+</head>
+
 <body>
+    <!-- Settings Toggle -->
+    <button id="settings-toggle" class="settings-toggle">
+        <i class="fa-solid fa-gear"></i>
+    </button>
+
+    <!-- Settings Sidebar -->
+    <div id="settings-sidebar" class="settings-sidebar">
+        <div class="sidebar-header">
+            <h2>Settings</h2>
+            <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+
+        <div class="setting-group">
+            <label>Background</label>
+            <input type="text" id="bg-input" placeholder="URL or Color (e.g. #333)">
+            <input type="color" id="bg-color-picker" title="Pick a color">
+        </div>
+
+        <div class="setting-group">
+            <label>Font</label>
+            <select id="font-select">
+                <option value="'Outfit', sans-serif">Outfit (Default)</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'GohuFont', monospace">GohuFont (Local)</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>Date Format</label>
+            <select id="date-format-select">
+                <option value="full">Weekday, DD Month YYYY</option>
+                <option value="short">DD/MM/YYYY</option>
+                <option value="us">MM/DD/YYYY</option>
+                <option value="iso">YYYY-MM-DD</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>Clock Size: <span id="clock-size-value">6rem</span></label>
+            <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+        </div>
+
+        <button id="reset-settings" class="secondary-btn full-width">Reset Defaults</button>
+    </div>
+
     <div class="main-container">
         <div id="clock">00:00:00</div>
-        <div id="date">Monday, 01 January 2026</div>
+        <div id="date">Loading date...</div>
+
         <form id="search-form" action="https://www.google.com/search" method="get">
             <div class="search-container">
-                <img src="search-icon.png" alt="Search" class="search-icon">
-                <!-- Replace with your search icon URL or base64 -->
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
                 <input type="text" name="q" id="search-input" placeholder="Search Google..." autocomplete="off">
-                <button type="button" id="clear-btn" class="clear-btn">X</button>
+                <button type="button" id="clear-btn" class="clear-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
             <ul id="suggestions" class="suggestions"></ul>
         </form>
+
         <div id="bookmarks-container">
             <!-- Bookmarks will be dynamically added here -->
         </div>
-        <button id="add-bookmark-btn">+</button>
     </div>
 
-    <!-- Modal for adding bookmark -->
+    <!-- Modal for adding/editing bookmark -->
     <div id="bookmark-modal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Bookmark</h2>
-            <input type="text" id="bookmark-title" placeholder="Title">
-            <input type="url" id="bookmark-url" placeholder="URL (e.g., https://example.com)">
-            <button id="save-bookmark">Save</button>
+            <div class="modal-header">
+                <h2 id="modal-title">Add Bookmark</h2>
+                <span class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+
+            <!-- Manual Entry Form -->
+            <div id="manual-entry-form">
+                <input type="text" id="bookmark-title" placeholder="Title">
+                <input type="url" id="bookmark-url" placeholder="URL (e.g., https://example.com)">
+                <input type="url" id="bookmark-icon-url" placeholder="Custom Icon URL (Optional)">
+                <div class="modal-actions">
+                    <button id="save-bookmark" class="primary-btn">Save</button>
+                    <button id="show-import-btn" class="secondary-btn">Import from Browser</button>
+                </div>
+            </div>
+
+            <!-- Import Section (Hidden by default) -->
+            <div id="import-section" style="display: none;">
+                <button id="back-to-manual" class="text-btn"><i class="fa-solid fa-arrow-left"></i> Back to
+                    Manual</button>
+                <div id="browser-bookmarks-list"></div>
+                <button id="confirm-import-btn" class="primary-btn full-width">Import Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="menu-item" id="menu-edit">
+            <i class="fa-solid fa-pen"></i> Edit
+        </div>
+        <div class="menu-item delete" id="menu-delete">
+            <i class="fa-solid fa-trash"></i> Delete
         </div>
     </div>
 
