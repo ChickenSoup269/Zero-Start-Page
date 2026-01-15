@@ -53,10 +53,21 @@
         </div>
 
         <div class="setting-group">
-            <label>
-                <input type="checkbox" id="star-fall-toggle" style="width: auto; margin-right: 10px;">
-                <span data-i18n="settings_starfall">Galaxy Effect</span>
-            </label>
+            <label>Background Gradient</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="color" id="gradient-start-picker" title="Pick a start color">
+                <input type="color" id="gradient-end-picker" title="Pick an end color">
+            </div>
+            <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
+            <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+        </div>
+
+        <div class="setting-group">
+            <label>Effect</label>
+            <select id="effect-select">
+                <option value="none">None</option>
+                <option value="galaxy">Galaxy</option>
+            </select>
         </div>
 
         <div class="setting-group">

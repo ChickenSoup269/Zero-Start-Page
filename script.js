@@ -35,8 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const accentColorPicker = document.getElementById("accent-color-picker")
   const fontSelect = document.getElementById("font-select")
     const languageSelect = document.getElementById("language-select")
-  const starFallToggle = document.getElementById("star-fall-toggle")
+  const effectSelect = document.getElementById("effect-select")
+  const gradientStartPicker = document.getElementById("gradient-start-picker")
+  const gradientEndPicker = document.getElementById("gradient-end-picker")
+  const gradientAngleInput = document.getElementById("gradient-angle-input")
+  const gradientAngleValue = document.getElementById("gradient-angle-value")
   const resetSettingsBtn = document.getElementById("reset-settings")
+  const dateFormatSelect = document.getElementById("date-format-select")
+  const clockSizeInput = document.getElementById("clock-size-input")
+  const clockSizeValue = document.getElementById("clock-size-value")
 
   // --- State ---
   let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || []
@@ -50,81 +57,84 @@ document.addEventListener("DOMContentLoaded", () => {
     clockSize: "6",
     language: "en",
     accentColor: "#0f0c29",
-    starFall: false
+    effect: "none",
+    gradientStart: "#0f0c29",
+    gradientEnd: "#302b63",
+    gradientAngle: "135"
   }
 
   // --- Star Fall Effect Class ---
   class StarFall {
-      constructor(canvasId) {
-          this.canvas = document.getElementById(canvasId);
-          if (!this.canvas) return;
-          this.ctx = this.canvas.getContext('2d');
-          this.stars = [];
-          this.active = false;
-          this.animationFrame = null;
-          this.resize();
-          window.addEventListener('resize', () => this.resize());
-      }
+    constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.stars = [];
+        this.active = false;
+        this.animationFrame = null;
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
 
-      resize() {
-          this.canvas.width = window.innerWidth;
-          this.canvas.height = window.innerHeight;
-      }
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
 
-      start() {
-          if (this.active) return;
-          this.active = true;
-          this.canvas.style.display = 'block';
-          this.createStars();
-          this.animate();
-      }
+    start() {
+        if (this.active) return;
+        this.active = true;
+        this.createStars();
+        this.animate();
+        this.canvas.style.display = 'block';
+    }
 
-      stop() {
-          this.active = false;
-          if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          this.canvas.style.display = 'none';
-          this.stars = [];
-      }
+    stop() {
+        this.active = false;
+        cancelAnimationFrame(this.animationFrame);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.canvas.style.display = 'none';
+        this.stars = [];
+    }
 
-      createStars() {
-          const count = 150; // Number of stars
-          this.stars = [];
-          for (let i = 0; i < count; i++) {
-              this.stars.push({
-                  x: Math.random() * this.canvas.width,
-                  y: Math.random() * this.canvas.height,
-                  size: Math.random() * 2, // Size dot
-                  speed: Math.random() * 1 + 0.5, // Speed
-                  opacity: Math.random()
-              });
-          }
-      }
+    createStars() {
+        const count = 100;
+        for (let i = 0; i < count; i++) {
+            this.stars.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                length: Math.random() * 20 + 10,
+                speed: Math.random() * 5 + 2,
+                opacity: Math.random()
+            });
+        }
+    }
 
-      animate() {
-          if (!this.active) return;
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          
-          this.ctx.fillStyle = this.canvas.parentElement.style.background.includes('url') ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.6)';
+    animate() {
+        if (!this.active) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        this.ctx.lineWidth = 1;
 
-          this.stars.forEach(star => {
-              this.ctx.beginPath();
-              this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-              this.ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-              this.ctx.fill();
+        this.stars.forEach(star => {
+            this.ctx.beginPath();
+            const tailX = star.x + star.length * 0.5; // Angled slightly? Let's do straight down or angled
+            // Let's do a "Star Fall" / Rain effect (falling down)
+            this.ctx.moveTo(star.x, star.y);
+            this.ctx.lineTo(star.x, star.y + star.length);
+            this.ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            this.ctx.stroke();
 
-              star.y += star.speed;
-              
-              // Reset if off bottom
-              if (star.y > this.canvas.height) {
-                  star.y = 0;
-                  star.x = Math.random() * this.canvas.width;
-              }
-          });
+            star.y += star.speed;
+            if (star.y > this.canvas.height) {
+                star.y = -star.length;
+                star.x = Math.random() * this.canvas.width;
+            }
+        });
 
-          this.animationFrame = requestAnimationFrame(() => this.animate());
-      }
-  }
+        this.animationFrame = requestAnimationFrame(() => this.animate());
+    }
+}
 
   const starFallEffect = new StarFall('effect-canvas');
 
@@ -250,6 +260,49 @@ document.addEventListener("DOMContentLoaded", () => {
     dateElement.textContent = dateString
   }
 
+  function colourNameToHex(colour)
+  {
+      var colours = {"aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
+      "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
+      "cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",
+      "darkblue":"#00008b","darkcyan":"#008b8b","darkgoldenrod":"#b8860b","darkgray":"#a9a9a9","darkgreen":"#006400","darkkhaki":"#bdb76b","darkmagenta":"#8b008b","darkolivegreen":"#556b2f",
+      "darkorange":"#ff8c00","darkorchid":"#9932cc","darkred":"#8b0000","darksalmon":"#e9967a","darkseagreen":"#8fbc8f","darkslateblue":"#483d8b","darkslategray":"#2f4f4f","darkturquoise":"#00ced1",
+      "darkviolet":"#9400d3","deeppink":"#ff1493","deepskyblue":"#00bfff","dimgray":"#696969","dodgerblue":"#1e90ff",
+      "firebrick":"#b22222","floralwhite":"#fffaf0","forestgreen":"#228b22","fuchsia":"#ff00ff",
+      "gainsboro":"#dcdcdc","ghostwhite":"#f8f8ff","gold":"#ffd700","goldenrod":"#daa520","gray":"#808080","green":"#008000","greenyellow":"#adff2f",
+      "honeydew":"#f0fff0","hotpink":"#ff69b4",
+      "indianred ":"#cd5c5c","indigo":"#4b0082","ivory":"#fffff0","khaki":"#f0e68c",
+      "lavender":"#e6e6fa","lavenderblush":"#fff0f5","lawngreen":"#7cfc00","lemonchiffon":"#fffacd","lightblue":"#add8e6","lightcoral":"#f08080","lightcyan":"#e0ffff","lightgoldenrodyellow":"#fafad2",
+      "lightgrey":"#d3d3d3","lightgreen":"#90ee90","lightpink":"#ffb6c1","lightsalmon":"#ffa07a","lightseagreen":"#20b2aa","lightskyblue":"#87cefa","lightslategray":"#778899","lightsteelblue":"#b0c4de",
+      "lightyellow":"#ffffe0","lime":"#00ff00","limegreen":"#32cd32","linen":"#faf0e6",
+      "magenta":"#ff00ff","maroon":"#800000","mediumaquamarine":"#66cdaa","mediumblue":"#0000cd","mediumorchid":"#ba55d3","mediumpurple":"#9370d8","mediumseagreen":"#3cb371","mediumslateblue":"#7b68ee",
+      "mediumspringgreen":"#00fa9a","mediumturquoise":"#48d1cc","mediumvioletred":"#c71585","midnightblue":"#191970","mintcream":"#f5fffa","mistyrose":"#ffe4e1","moccasin":"#ffe4b5",
+      "navajowhite":"#ffdead","navy":"#000080",
+      "oldlace":"#fdf5e6","olive":"#808000","olivedrab":"#6b8e23","orange":"#ffa500","orangered":"#ff4500","orchid":"#da70d6",
+      "palegoldenrod":"#eee8aa","palegreen":"#98fb98","paleturquoise":"#afeeee","palevioletred":"#d87093","papayawhip":"#ffefd5","peachpuff":"#ffdab9","peru":"#cd853f","pink":"#ffc0cb","plum":"#dda0dd","powderblue":"#b0e0e6","purple":"#800080",
+      "rebeccapurple":"#663399","red":"#ff0000","rosybrown":"#bc8f8f","royalblue":"#4169e1",
+      "saddlebrown":"#8b4513","salmon":"#fa8072","sandybrown":"#f4a460","seagreen":"#2e8b57","seashell":"#fff5ee","sienna":"#a0522d","silver":"#c0c0c0","skyblue":"#87ceeb","slateblue":"#6a5acd","slategray":"#708090","snow":"#fffafa","springgreen":"#00ff7f","steelblue":"#4682b4",
+      "tan":"#d2b48c","teal":"#008080","thistle":"#d8bfd8","tomato":"#ff6347","turquoise":"#40e0d0",
+      "violet":"#ee82ee",
+      "wheat":"#f5deb3","white":"#ffffff","whitesmoke":"#f5f5f5",
+      "yellow":"#ffff00","yellowgreen":"#9acd32"};
+
+      if (typeof colours[colour.toLowerCase()] != 'undefined')
+          return colours[colour.toLowerCase()];
+
+      return colour;
+  }
+
+  function getContrastYIQ(hexcolor){
+    hexcolor = colourNameToHex(hexcolor)
+    hexcolor = hexcolor.replace("#", "");
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? 'black' : 'white';
+  }
+
   // 2. Settings
   function applySettings() {
     // Background
@@ -265,10 +318,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.backgroundImage = `url('${settings.background}')`
         document.body.style.backgroundSize = "cover"
         document.body.style.backgroundPosition = "center"
+        document.documentElement.style.setProperty("--text-color", '#ffffff');
         // Ensure background-color doesn't override if transparent (though body usually has one)
       } else {
         // Assume it's a color (red, #333, rgb()) or complex background shorthand
         document.body.style.background = settings.background
+        document.documentElement.style.setProperty("--text-color", getContrastYIQ(settings.background));
         // Clear specific background-image if switching from image to color
         if (!settings.background.includes("url(")) {
             document.body.style.backgroundImage = ""
@@ -279,6 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.background = ""
       document.body.style.backgroundImage = ""
       document.body.classList.remove("bg-image-active")
+      document.documentElement.style.setProperty("--text-color", '#ffffff');
     }
 
     // Font
@@ -299,11 +355,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Effect
-    if (settings.starFall) {
+    if (settings.effect === 'galaxy') {
         starFallEffect.start();
     } else {
         starFallEffect.stop();
     }
+
+    // Gradient
+    document.documentElement.style.setProperty("--bg-gradient-start", settings.gradientStart);
+    document.documentElement.style.setProperty("--bg-gradient-end", settings.gradientEnd);
+    document.documentElement.style.setProperty("--bg-gradient-angle", settings.gradientAngle + 'deg');
+
 
     // Update Language UI
     updateLanguage()
@@ -320,7 +382,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const accentInput = document.getElementById("accent-color-picker")
     if (accentInput) accentInput.value = settings.accentColor || "#0f0c29"
     
-    if (starFallToggle) starFallToggle.checked = settings.starFall;
+    effectSelect.value = settings.effect;
+    gradientStartPicker.value = settings.gradientStart;
+    gradientEndPicker.value = settings.gradientEnd;
+    gradientAngleInput.value = settings.gradientAngle;
+    gradientAngleValue.textContent = settings.gradientAngle;
   }
 
   function saveSettings() {
@@ -344,10 +410,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let faviconUrl =
         bookmark.icon ||
-        `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=64`
+        `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`
 
       bookmarkEl.innerHTML = `
-                <img src="${faviconUrl}" alt="${bookmark.title} icon" onerror="this.src='https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=64'">
+                <img src="${faviconUrl}" alt="${bookmark.title} icon" onerror="this.src='https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128'">
                 <span>${bookmark.title}</span>
             `
 
@@ -468,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let iconHtml = '<i class="fa-solid fa-earth-americas"></i>'
       if (node.url) {
-        iconHtml = `<img src="https://www.google.com/s2/favicons?domain=${node.url}&sz=16" style="width:16px;height:16px;margin-right:5px;">`
+        iconHtml = `<img src="https://www.google.com/s2/favicons?domain=${node.url}&sz=128" style="width:16px;height:16px;margin-right:5px;">`
       }
 
       const label = document.createElement("span")
@@ -641,12 +707,26 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  if (starFallToggle) {
-    starFallToggle.addEventListener("change", () => {
-        settings.starFall = starFallToggle.checked;
-        saveSettings();
-    });
-  }
+  effectSelect.addEventListener("change", () => {
+    settings.effect = effectSelect.value
+    saveSettings()
+  })
+
+  gradientStartPicker.addEventListener("input", () => {
+    settings.gradientStart = gradientStartPicker.value
+    saveSettings()
+  })
+
+  gradientEndPicker.addEventListener("input", () => {
+    settings.gradientEnd = gradientEndPicker.value
+    saveSettings()
+  })
+
+  gradientAngleInput.addEventListener("input", () => {
+    settings.gradientAngle = gradientAngleInput.value
+    gradientAngleValue.textContent = gradientAngleInput.value
+    saveSettings()
+  })
 
   fontSelect.addEventListener("change", () => {
     settings.font = fontSelect.value
@@ -672,7 +752,10 @@ document.addEventListener("DOMContentLoaded", () => {
         clockSize: "6",
         language: "en",
         accentColor: "#0f0c29",
-        starFall: false
+        effect: "none",
+        gradientStart: "#0f0c29",
+        gradientEnd: "#302b63",
+        gradientAngle: "135"
       }
       saveSettings() // This will apply default settings
     }
