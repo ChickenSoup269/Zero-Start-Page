@@ -4,222 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Tab</title>
+    <title>Start Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- Background controlled by JS/CSS -->
-
-    <!-- Sidebar Toggle Button -->
-    <button id="sidebar-toggle" class="btn-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-        </svg>
-    </button>
-
-    <div class="container">
-        <div id="time"></div>
-        <div id="date"></div>
-
-        <div class="search-container">
-            <form id="search-form">
-                <!-- Search inputs kept same, just styled -->
-                <input type="text" id="search-input" placeholder="Search..." autocomplete="off">
-            </form>
-        </div>
-
-        <div id="active-group-display" class="group-display">
-            <!-- Active Group Bookmarks Rendered Here -->
-        </div>
-
-        <div id="group-tabs-container">
-            <!-- Tabs for switching groups -->
-        </div>
-
-        <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar">
-            <div class="sidebar-item" id="sidebar-close-btn"
-                style="border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom:10px;">
-                <div class="sidebar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
-                    </svg>
-                </div>
-                <span class="sidebar-text">Close Menu</span>
+    <div class="main-container">
+        <div id="clock">00:00:00</div>
+        <div id="date">Monday, 01 January 2026</div>
+        <form id="search-form" action="https://www.google.com/search" method="get">
+            <div class="search-container">
+                <img src="search-icon.png" alt="Search" class="search-icon">
+                <!-- Replace with your search icon URL or base64 -->
+                <input type="text" name="q" id="search-input" placeholder="Search Google..." autocomplete="off">
+                <button type="button" id="clear-btn" class="clear-btn">X</button>
             </div>
-
-            <div class="sidebar-item" id="settings-btn">
-                <div class="sidebar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
-                        <path
-                            d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z" />
-                    </svg>
-                </div>
-                <span class="sidebar-text">Settings</span>
-            </div>
-            <div class="sidebar-item" id="add-group-sidebar-btn">
-                <div class="sidebar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                    </svg>
-                </div>
-                <span class="sidebar-text">Add Group</span>
-            </div>
-        </nav>
-
-        <!-- Settings Modal -->
-        <div id="settings-modal" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <h2>Settings</h2>
-                <form id="settings-form">
-                    <div class="form-group">
-                        <label for="bg-url">Wallpaper URL</label>
-                        <input type="text" id="bg-url" placeholder="https://source.unsplash.com/...">
-
-                        <div style="margin-top: 10px; text-align: center; color: #555; font-size: 0.9rem;">- OR -</div>
-
-                        <label for="bg-file" style="margin-top: 10px;">Upload from PC (Max 4MB)</label>
-                        <input type="file" id="bg-file" accept="image/*" style="padding: 5px;">
-
-                        <button type="button" class="btn btn-sm" id="reset-bg-btn"
-                            style="margin-top:10px; width:auto; border-radius:4px;">Reset to Default</button>
-                    </div>
-                    <div class="form-group">
-                        <label for="font-family">Font Family</label>
-                        <select id="font-family"
-                            style="width:100%; padding: 0.75rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.05);">
-                            <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">System
-                                Default</option>
-                            <option value="'Courier New', monospace">Monospace</option>
-                            <option value="'Times New Roman', serif">Serif</option>
-                            <option value="'Arial', sans-serif">Arial</option>
-                            <option value="'Verdana', sans-serif">Verdana</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
-                        <label for="clock-size" style="margin:0;">Clock Size:</label>
-                        <input type="range" id="clock-size" min="2" max="15" step="0.5" value="8" style="flex:1;">
-                        <span id="clock-size-val">8rem</span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="date-lang">Date Language</label>
-                        <select id="date-lang"
-                            style="width:100%; padding: 0.75rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.05);">
-                            <option value="en-US">English (Default)</option>
-                            <option value="vi-VN">Tiếng Việt</option>
-                        </select>
-                    </div>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="btn btn-primary">Save Settings</button>
-                        <button type="button" class="btn" id="cancel-settings-btn">Cancel</button>
-                    </div>
-                </form>
-            </div>
+            <ul id="suggestions" class="suggestions"></ul>
+        </form>
+        <div id="bookmarks-container">
+            <!-- Bookmarks will be dynamically added here -->
         </div>
-
+        <button id="add-bookmark-btn">+</button>
     </div>
 
-    <div id="add-bookmark-modal" class="modal-overlay" style="display: none;">
+    <!-- Modal for adding bookmark -->
+    <div id="bookmark-modal" class="modal">
         <div class="modal-content">
-            <h2>Add New Bookmark</h2>
-            <form id="add-bookmark-form">
-                <input type="hidden" id="target-group-id">
-                <div class="form-group">
-                    <label for="bookmark-name">Name</label>
-                    <input type="text" id="bookmark-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="bookmark-url">URL</label>
-                    <input type="url" id="bookmark-url" required>
-                </div>
-                <div class="form-group">
-                    <label for="bookmark-icon-url">Icon URL (Optional)</label>
-                    <input type="url" id="bookmark-icon-url" placeholder="Leave empty to use website icon">
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn" id="cancel-bookmark-btn">Cancel</button>
-                </div>
-            </form>
-            <div class="import-section">
-                <hr>
-                <p>Or</p>
-                <button id="import-bookmarks-btn" class="btn">Import from Browser Bookmarks</button>
-            </div>
+            <span class="close">&times;</span>
+            <h2>Add Bookmark</h2>
+            <input type="text" id="bookmark-title" placeholder="Title">
+            <input type="url" id="bookmark-url" placeholder="URL (e.g., https://example.com)">
+            <button id="save-bookmark">Save</button>
         </div>
-    </div>
-
-    <div id="group-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h2 id="group-modal-title">Add New Group</h2>
-            <form id="group-form">
-                <input type="hidden" id="edit-group-id">
-                <div class="form-group">
-                    <label for="group-name">Group Name</label>
-                    <input type="text" id="group-name" required>
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn" id="cancel-group-btn">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="import-bookmarks-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h2>Import Bookmarks</h2>
-            <div id="bookmark-list-to-import" class="import-list">
-                <!-- Bookmarks will be loaded here by JavaScript -->
-            </div>
-            <div class="form-buttons">
-                <button type="button" class="btn btn-primary" id="import-selected-btn">Import Selected</button>
-                <button type="button" class="btn" id="cancel-import-btn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="edit-bookmark-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h2>Edit Bookmark</h2>
-            <form id="edit-bookmark-form">
-                <div class="form-group">
-                    <label for="edit-bookmark-name">Name</label>
-                    <input type="text" id="edit-bookmark-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-bookmark-url">URL</label>
-                    <input type="url" id="edit-bookmark-url" required>
-                </div>
-                <div class="form-group">
-                    <label for="edit-bookmark-icon-url">Icon URL (Optional)</label>
-                    <input type="url" id="edit-bookmark-icon-url" placeholder="Leave empty to use website icon">
-                </div>
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn" id="cancel-edit-bookmark-btn">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="bookmark-context-menu" class="context-menu" style="display: none;">
-        <ul>
-            <li data-action="edit">Edit</li>
-            <li data-action="delete">Delete</li>
-        </ul>
     </div>
 
     <script src="script.js"></script>
