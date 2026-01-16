@@ -471,8 +471,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function saveSettings() {
-    localStorage.setItem("pageSettings", JSON.stringify(settings))
+    try {
+      localStorage.setItem("pageSettings", JSON.stringify(settings))
+    } catch (e) {
+      if (e.name === "QuotaExceededError") {
+        alert(
+          "Storage quota exceeded. Please remove some uploaded backgrounds to free up space."
+        )
+      } else {
+        throw e
+      }
+    }
     applySettings()
+    renderLocalBackgrounds()
   }
 
   function saveBookmarks() {
@@ -773,10 +784,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (file) {
       const reader = new FileReader()
       reader.onload = (event) => {
-        const dataUrl = event.target.result
-        settings.userBackgrounds.push(dataUrl)
-        settings.background = dataUrl // Set newly uploaded as current background
-        saveSettings()
+        const img = new Image()
+        img.src = event.target.result
+        img.onload = () => {
+          const canvas = document.createElement("canvas")
+          const MAX_SIZE = 800
+          let width = img.width
+          let height = img.height
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height = Math.round((height * MAX_SIZE) / width)
+              width = MAX_SIZE
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width = Math.round((width * MAX_SIZE) / height)
+              height = MAX_SIZE
+            }
+          }
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext("2d")
+          ctx.drawImage(img, 0, 0, width, height)
+          const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.7)
+          if (settings.userBackgrounds.length >= 5) {
+            alert("You can only upload up to 5 custom backgrounds.")
+            return
+          }
+          settings.userBackgrounds.push(resizedDataUrl)
+          settings.background = resizedDataUrl // Set newly uploaded as current background
+          saveSettings()
+        }
       }
       reader.readAsDataURL(file)
     }
