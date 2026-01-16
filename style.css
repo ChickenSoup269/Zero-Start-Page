@@ -241,7 +241,7 @@ body.bg-image-active {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
-  border-radius: 50px;
+  border-radius: 10px;
   padding: 12px 25px;
   width: 100%;
   max-width: 600px;
@@ -311,8 +311,8 @@ body.bg-image-active {
   margin-top: 40px;
   gap: 15px;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .bookmark,

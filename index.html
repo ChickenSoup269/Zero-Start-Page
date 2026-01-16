@@ -41,41 +41,30 @@
         </div>
 
         <div class="settings-section">
-          <h3 class="section-toggle" data-i18n="settings_bg">Background</h3>
-          <div class="section-content">
-            <div class="setting-item">
-              <label for="bg-input" data-i18n="settings_bg_placeholder"
-                >URL or Color</label
-              >
-              <div class="input-group">
-                <input
-                  type="text"
-                  id="bg-input"
-                  data-i18n-placeholder="settings_bg_placeholder"
-                />
-                <input
-                  type="color"
-                  id="bg-color-picker"
-                  aria-label="Pick a color"
-                />
-              </div>
+            <h3 class="section-toggle" data-i18n="settings_bg">Background</h3>
+            <div class="section-content">
+                <div class="setting-item">
+                    <label for="bg-input" data-i18n="settings_bg_placeholder">URL or Color</label>
+                    <div class="input-group">
+                        <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
+                        <input type="color" id="bg-color-picker" aria-label="Pick a color" />
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label data-i18n="settings_local_bg">Local Themes</label>
+                    <div class="local-bg-gallery-controls">
+                        <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
+                        <button id="upload-local-image-btn" class="secondary-btn"
+                            data-i18n="settings_upload_image">Upload Image</button>
+                    </div>
+                    <div id="local-background-gallery" class="local-bg-gallery"></div>
+                </div>
             </div>
-            <div class="setting-item">
-              <label data-i18n="settings_local_bg">Local Themes</label>
-              <div class="local-bg-gallery-controls">
-                <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
-                <button id="upload-local-image-btn" class="secondary-btn" data-i18n="settings_upload_image">Upload Image</button>
-              </div>
-              <div id="local-background-gallery" class="local-bg-gallery"></div>
-            </div>
-          </div>
         </div>
 
         <div class="setting-item">
-          <label for="accent-color-picker" data-i18n="settings_accent"
-            >Accent Color</label
-          >
-          <input type="color" id="accent-color-picker" />
+            <label for="accent-color-picker" data-i18n="settings_accent">Accent Color</label>
+            <input type="color" id="accent-color-picker" />
         </div>
 
         <div class="setting-group">
@@ -93,7 +82,16 @@
             <select id="effect-select">
                 <option value="none">None</option>
                 <option value="galaxy">Galaxy</option>
+                <option value="meteor">Meteor Shower</option>
             </select>
+            <div id="meteor-color-setting" class="setting-item" style="display: none;">
+                <label for="meteor-color-picker">Meteor Color</label>
+                <input type="color" id="meteor-color-picker" />
+            </div>
+            <div id="star-color-setting" class="setting-item" style="display: none;">
+                <label for="star-color-picker">Star Color</label>
+                <input type="color" id="star-color-picker" />
+            </div>
         </div>
 
         <div class="setting-group">
@@ -185,8 +183,7 @@
             </div>
         </div>
     </div>
-
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 
 </html>

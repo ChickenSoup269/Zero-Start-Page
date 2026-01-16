@@ -1,3 +1,6 @@
+import { StarFall } from "./components/animationsEffect/rainGalaxy.js"
+import { FallingMeteor } from "./components/animationsEffect/fallingMeteor.js"
+
 document.addEventListener("DOMContentLoaded", () => {
   // --- DOM Elements ---
   const clockElement = document.getElementById("clock")
@@ -40,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const gradientEndPicker = document.getElementById("gradient-end-picker")
   const gradientAngleInput = document.getElementById("gradient-angle-input")
   const gradientAngleValue = document.getElementById("gradient-angle-value")
+  const meteorColorPicker = document.getElementById("meteor-color-picker") // New
+  const meteorColorSetting = document.getElementById("meteor-color-setting") // New
+  const starColorPicker = document.getElementById("star-color-picker") // New
+  const starColorSetting = document.getElementById("star-color-setting") // New
   const resetSettingsBtn = document.getElementById("reset-settings")
   const dateFormatSelect = document.getElementById("date-format-select")
   const clockSizeInput = document.getElementById("clock-size-input")
@@ -66,6 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     gradientEnd: "#302b63",
     gradientAngle: "135",
     userBackgrounds: [], // to store user-uploaded images
+    meteorColor: "#ffffff", // New setting for meteor effect color
+    starColor: "#ffffff", // New setting for star effect color
   }
 
   // Ensure userBackgrounds is always an array, even if loading old settings
@@ -79,74 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: "local-bg-5", name: "Deep Space" },
   ]
 
-  // --- Star Fall Effect Class ---
-  class StarFall {
-    constructor(canvasId) {
-      this.canvas = document.getElementById(canvasId)
-      this.ctx = this.canvas.getContext("2d")
-      this.stars = []
-      this.active = false
-      this.animationFrame = null
-      this.resize()
-      window.addEventListener("resize", () => this.resize())
-    }
-
-    resize() {
-      this.canvas.width = window.innerWidth
-      this.canvas.height = window.innerHeight
-    }
-
-    start() {
-      if (this.active) return
-      this.active = true
-      this.createStars()
-      this.animate()
-      this.canvas.style.display = "block"
-    }
-
-    stop() {
-      this.active = false
-      if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-      this.canvas.style.display = "none"
-      this.stars = []
-    }
-
-    createStars() {
-      const count = 100
-      for (let i = 0; i < count; i++) {
-        this.stars.push({
-          x: Math.random() * this.canvas.width,
-          y: Math.random() * this.canvas.height,
-          length: Math.random() * 20 + 10,
-          speed: Math.random() * 5 + 2,
-          opacity: Math.random(),
-        })
-      }
-    }
-
-    animate() {
-      if (!this.active) return
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-      this.ctx.strokeStyle = "rgba(255, 255, 255, 0.5)"
-      this.ctx.lineWidth = 1
-      this.stars.forEach((star) => {
-        this.ctx.beginPath()
-        this.ctx.moveTo(star.x, star.y)
-        this.ctx.lineTo(star.x, star.y + star.length)
-        this.ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity})`
-        this.ctx.stroke()
-        star.y += star.speed
-        if (star.y > this.canvas.height) {
-          star.y = -star.length
-          star.x = Math.random() * this.canvas.width
-        }
-      })
-      this.animationFrame = requestAnimationFrame(() => this.animate())
-    }
-  }
-
-  const starFallEffect = new StarFall("effect-canvas")
+  const starFallEffect = new StarFall("effect-canvas", settings.starColor)
+  const fallingMeteorEffect = new FallingMeteor("effect-canvas", settings.meteorColor)
 
   // --- Translations ---
   let i18n = {}
@@ -421,8 +364,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Effect
+    starFallEffect.stop()
+    fallingMeteorEffect.stop() // Stop other effects
     if (settings.effect === "galaxy") starFallEffect.start()
-    else starFallEffect.stop()
+    else if (settings.effect === "meteor") fallingMeteorEffect.start()
 
     // Gradient (for default view)
     document.documentElement.style.setProperty(
@@ -463,6 +408,14 @@ document.addEventListener("DOMContentLoaded", () => {
     gradientEndPicker.value = settings.gradientEnd
     gradientAngleInput.value = settings.gradientAngle
     gradientAngleValue.textContent = settings.gradientAngle
+
+    // Set values for new effect color pickers
+    if (meteorColorPicker) meteorColorPicker.value = settings.meteorColor || "#ffffff"
+    if (starColorPicker) starColorPicker.value = settings.starColor || "#ffffff"
+
+    // Show/hide effect color settings based on selected effect
+    if (meteorColorSetting) meteorColorSetting.style.display = settings.effect === "meteor" ? "block" : "none"
+    if (starColorSetting) starColorSetting.style.display = settings.effect === "galaxy" ? "block" : "none"
 
     // Update local background gallery active state
     document.querySelectorAll(".local-bg-item").forEach((item) => {
@@ -838,8 +791,30 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
+  if (meteorColorPicker) {
+    meteorColorPicker.addEventListener("input", () => {
+      settings.meteorColor = meteorColorPicker.value
+      fallingMeteorEffect.updateColor(settings.meteorColor) // Update the effect directly
+      saveSettings()
+    })
+  }
+
+  if (starColorPicker) {
+    starColorPicker.addEventListener("input", () => {
+      settings.starColor = starColorPicker.value
+      starFallEffect.updateColor(settings.starColor) // Update the effect directly
+      saveSettings()
+    })
+  }
+
   effectSelect.addEventListener("change", () => {
     settings.effect = effectSelect.value
+    // Update effect color if it's currently active
+    if (settings.effect === "galaxy") {
+      starFallEffect.updateColor(settings.starColor)
+    } else if (settings.effect === "meteor") {
+      fallingMeteorEffect.updateColor(settings.meteorColor)
+    }
     saveSettings()
   })
 
@@ -886,6 +861,8 @@ document.addEventListener("DOMContentLoaded", () => {
         gradientEnd: "#302b63",
         gradientAngle: "135",
         userBackgrounds: [], // Clear user-uploaded backgrounds on reset
+        meteorColor: "#ffffff",
+        starColor: "#ffffff",
       }
       saveSettings()
     }
