@@ -44,7 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const dateFormatSelect = document.getElementById("date-format-select")
   const clockSizeInput = document.getElementById("clock-size-input")
   const clockSizeValue = document.getElementById("clock-size-value")
-  const localBackgroundList = document.getElementById("local-background-list")
+  const localBackgroundGallery = document.getElementById(
+    "local-background-gallery"
+  )
+  const localImageUpload = document.getElementById("local-image-upload")
+  const uploadLocalImageBtn = document.getElementById("upload-local-image-btn")
 
   // --- State ---
   let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || []
@@ -61,7 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
     gradientStart: "#0f0c29",
     gradientEnd: "#302b63",
     gradientAngle: "135",
+    userBackgrounds: [], // to store user-uploaded images
   }
+
+  // Ensure userBackgrounds is always an array, even if loading old settings
+  settings.userBackgrounds = settings.userBackgrounds || []
 
   const localBackgrounds = [
     { id: "local-bg-1", name: "Sunset" },
@@ -208,36 +216,147 @@ document.addEventListener("DOMContentLoaded", () => {
   function getContrastYIQ(hexcolor) {
     if (!hexcolor) return "white"
     var colours = {
-      aliceblue: "#f0f8ff", antiquewhite: "#faebd7", aqua: "#00ffff", aquamarine: "#7fffd4", azure: "#f0ffff",
-      beige: "#f5f5dc", bisque: "#ffe4c4", black: "#000000", blanchedalmond: "#ffebcd", blue: "#0000ff",
-      blueviolet: "#8a2be2", brown: "#a52a2a", burlywood: "#deb887", cadetblue: "#5f9ea0", chartreuse: "#7fff00",
-      chocolate: "#d2691e", coral: "#ff7f50", cornflowerblue: "#6495ed", cornsilk: "#fff8dc", crimson: "#dc143c",
-      cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkgray: "#a9a9a9",
-      darkgreen: "#006400", darkkhaki: "#bdb76b", darkmagenta: "#8b008b", darkolivegreen: "#556b2f",
-      darkorange: "#ff8c00", darkorchid: "#9932cc", darkred: "#8b0000", darksalmon: "#e9967a", darkseagreen: "#8fbc8f",
-      darkslateblue: "#483d8b", darkslategray: "#2f4f4f", darkturquoise: "#00ced1", darkviolet: "#9400d3",
-      deeppink: "#ff1493", deepskyblue: "#00bfff", dimgray: "#696969", dodgerblue: "#1e90ff", firebrick: "#b22222",
-      floralwhite: "#fffaf0", forestgreen: "#228b22", fuchsia: "#ff00ff", gainsboro: "#dcdcdc", ghostwhite: "#f8f8ff",
-      gold: "#ffd700", goldenrod: "#daa520", gray: "#808080", green: "#008000", greenyellow: "#adff2f",
-      honeydew: "#f0fff0", hotpink: "#ff69b4", "indianred ": "#cd5c5c", indigo: "#4b0082", ivory: "#fffff0",
-      khaki: "#f0e68c", lavender: "#e6e6fa", lavenderblush: "#fff0f5", lawngreen: "#7cfc00", lemonchiffon: "#fffacd",
-      lightblue: "#add8e6", lightcoral: "#f08080", lightcyan: "#e0ffff", lightgoldenrodyellow: "#fafad2",
-      lightgrey: "#d3d3d3", lightgreen: "#90ee90", lightpink: "#ffb6c1", lightsalmon: "#ffa07a",
-      lightseagreen: "#20b2aa", lightskyblue: "#87cefa", lightslategray: "#778899", lightsteelblue: "#b0c4de",
-      lightyellow: "#ffffe0", lime: "#00ff00", limegreen: "#32cd32", linen: "#faf0e6", magenta: "#ff00ff",
-      maroon: "#800000", mediumaquamarine: "#66cdaa", mediumblue: "#0000cd", mediumorchid: "#ba55d3",
-      mediumpurple: "#9370d8", mediumseagreen: "#3cb371", mediumslateblue: "#7b68ee", mediumspringgreen: "#00fa9a",
-      mediumturquoise: "#48d1cc", mediumvioletred: "#c71585", midnightblue: "#191970", mintcream: "#f5fffa",
-      mistyrose: "#ffe4e1", moccasin: "#ffe4b5", navajowhite: "#ffdead", navy: "#000080", oldlace: "#fdf5e6",
-      olive: "#808000", olivedrab: "#6b8e23", orange: "#ffa500", orangered: "#ff4500", orchid: "#da70d6",
-      palegoldenrod: "#eee8aa", palegreen: "#98fb98", paleturquoise: "#afeeee", palevioletred: "#d87093",
-      papayawhip: "#ffefd5", peachpuff: "#ffdab9", peru: "#cd853f", pink: "#ffc0cb", plum: "#dda0dd",
-      powderblue: "#b0e0e6", purple: "#800080", rebeccapurple: "#663399", red: "#ff0000", rosybrown: "#bc8f8f",
-      royalblue: "#4169e1", saddlebrown: "#8b4513", salmon: "#fa8072", sandybrown: "#f4a460", seagreen: "#2e8b57",
-      seashell: "#fff5ee", sienna: "#a0522d", silver: "#c0c0c0", skyblue: "#87ceeb", slateblue: "#6a5acd",
-      slategray: "#708090", snow: "#fffafa", springgreen: "#00ff7f", steelblue: "#4682b4", tan: "#d2b48c",
-      teal: "#008080", thistle: "#d8bfd8", tomato: "#ff6347", turquoise: "#40e0d0", violet: "#ee82ee",
-      wheat: "#f5deb3", white: "#ffffff", whitesmoke: "#f5f5f5", yellow: "#ffff00", yellowgreen: "#9acd32",
+      aliceblue: "#f0f8ff",
+      antiquewhite: "#faebd7",
+      aqua: "#00ffff",
+      aquamarine: "#7fffd4",
+      azure: "#f0ffff",
+      beige: "#f5f5dc",
+      bisque: "#ffe4c4",
+      black: "#000000",
+      blanchedalmond: "#ffebcd",
+      blue: "#0000ff",
+      blueviolet: "#8a2be2",
+      brown: "#a52a2a",
+      burlywood: "#deb887",
+      cadetblue: "#5f9ea0",
+      chartreuse: "#7fff00",
+      chocolate: "#d2691e",
+      coral: "#ff7f50",
+      cornflowerblue: "#6495ed",
+      cornsilk: "#fff8dc",
+      crimson: "#dc143c",
+      cyan: "#00ffff",
+      darkblue: "#00008b",
+      darkcyan: "#008b8b",
+      darkgoldenrod: "#b8860b",
+      darkgray: "#a9a9a9",
+      darkgreen: "#006400",
+      darkkhaki: "#bdb76b",
+      darkmagenta: "#8b008b",
+      darkolivegreen: "#556b2f",
+      darkorange: "#ff8c00",
+      darkorchid: "#9932cc",
+      darkred: "#8b0000",
+      darksalmon: "#e9967a",
+      darkseagreen: "#8fbc8f",
+      darkslateblue: "#483d8b",
+      darkslategray: "#2f4f4f",
+      darkturquoise: "#00ced1",
+      darkviolet: "#9400d3",
+      deeppink: "#ff1493",
+      deepskyblue: "#00bfff",
+      dimgray: "#696969",
+      dodgerblue: "#1e90ff",
+      firebrick: "#b22222",
+      floralwhite: "#fffaf0",
+      forestgreen: "#228b22",
+      fuchsia: "#ff00ff",
+      gainsboro: "#dcdcdc",
+      ghostwhite: "#f8f8ff",
+      gold: "#ffd700",
+      goldenrod: "#daa520",
+      gray: "#808080",
+      green: "#008000",
+      greenyellow: "#adff2f",
+      honeydew: "#f0fff0",
+      hotpink: "#ff69b4",
+      "indianred ": "#cd5c5c",
+      indigo: "#4b0082",
+      ivory: "#fffff0",
+      khaki: "#f0e68c",
+      lavender: "#e6e6fa",
+      lavenderblush: "#fff0f5",
+      lawngreen: "#7cfc00",
+      lemonchiffon: "#fffacd",
+      lightblue: "#add8e6",
+      lightcoral: "#f08080",
+      lightcyan: "#e0ffff",
+      lightgoldenrodyellow: "#fafad2",
+      lightgrey: "#d3d3d3",
+      lightgreen: "#90ee90",
+      lightpink: "#ffb6c1",
+      lightsalmon: "#ffa07a",
+      lightseagreen: "#20b2aa",
+      lightskyblue: "#87cefa",
+      lightslategray: "#778899",
+      lightsteelblue: "#b0c4de",
+      lightyellow: "#ffffe0",
+      lime: "#00ff00",
+      limegreen: "#32cd32",
+      linen: "#faf0e6",
+      magenta: "#ff00ff",
+      maroon: "#800000",
+      mediumaquamarine: "#66cdaa",
+      mediumblue: "#0000cd",
+      mediumorchid: "#ba55d3",
+      mediumpurple: "#9370d8",
+      mediumseagreen: "#3cb371",
+      mediumslateblue: "#7b68ee",
+      mediumspringgreen: "#00fa9a",
+      mediumturquoise: "#48d1cc",
+      mediumvioletred: "#c71585",
+      midnightblue: "#191970",
+      mintcream: "#f5fffa",
+      mistyrose: "#ffe4e1",
+      moccasin: "#ffe4b5",
+      navajowhite: "#ffdead",
+      navy: "#000080",
+      oldlace: "#fdf5e6",
+      olive: "#808000",
+      olivedrab: "#6b8e23",
+      orange: "#ffa500",
+      orangered: "#ff4500",
+      orchid: "#da70d6",
+      palegoldenrod: "#eee8aa",
+      palegreen: "#98fb98",
+      paleturquoise: "#afeeee",
+      palevioletred: "#d87093",
+      papayawhip: "#ffefd5",
+      peachpuff: "#ffdab9",
+      peru: "#cd853f",
+      pink: "#ffc0cb",
+      plum: "#dda0dd",
+      powderblue: "#b0e0e6",
+      purple: "#800080",
+      rebeccapurple: "#663399",
+      red: "#ff0000",
+      rosybrown: "#bc8f8f",
+      royalblue: "#4169e1",
+      saddlebrown: "#8b4513",
+      salmon: "#fa8072",
+      sandybrown: "#f4a460",
+      seagreen: "#2e8b57",
+      seashell: "#fff5ee",
+      sienna: "#a0522d",
+      silver: "#c0c0c0",
+      skyblue: "#87ceeb",
+      slateblue: "#6a5acd",
+      slategray: "#708090",
+      snow: "#fffafa",
+      springgreen: "#00ff7f",
+      steelblue: "#4682b4",
+      tan: "#d2b48c",
+      teal: "#008080",
+      thistle: "#d8bfd8",
+      tomato: "#ff6347",
+      turquoise: "#40e0d0",
+      violet: "#ee82ee",
+      wheat: "#f5deb3",
+      white: "#ffffff",
+      whitesmoke: "#f5f5f5",
+      yellow: "#ffff00",
+      yellowgreen: "#9acd32",
     }
     hexcolor = (colours[hexcolor.toLowerCase()] || hexcolor).replace("#", "")
     var r = parseInt(hexcolor.substr(0, 2), 16)
@@ -256,30 +375,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Background
     const bg = settings.background
-    const isLocalBg = localBackgrounds.some((b) => b.id === bg)
+    const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
+    const isUserUploadedBg = bg && bg.startsWith("data:image") // Check if it's a data URL
 
-    if (isLocalBg) {
+    if (isPredefinedLocalBg) {
       document.body.classList.add(bg)
       document.documentElement.style.setProperty("--text-color", "#ffffff") // Assume local themes are dark
-    } else if (bg) {
+    } else if (isUserUploadedBg) {
       document.body.classList.add("bg-image-active")
-      if (bg.match(/^https?:\/\//) || bg.startsWith("data:image")) {
+      document.body.style.backgroundImage = `url('${bg}')`
+      document.body.style.backgroundSize = "cover"
+      document.body.style.backgroundPosition = "center"
+      document.documentElement.style.setProperty("--text-color", "#ffffff") // Assuming user images are often dark, or at least setting a default readable color
+    } else if (bg) {
+      // This covers URL or Solid Color input
+      document.body.classList.add("bg-image-active")
+      if (bg.match(/^https?:\/\//)) {
+        // Remote URL
         document.body.style.backgroundImage = `url('${bg}')`
         document.body.style.backgroundSize = "cover"
         document.body.style.backgroundPosition = "center"
       } else {
+        // Solid Color
         document.body.style.background = bg
-        document.documentElement.style.setProperty("--text-color", getContrastYIQ(bg))
+        document.documentElement.style.setProperty(
+          "--text-color",
+          getContrastYIQ(bg)
+        )
       }
     } else {
-      document.body.style.background = "" // Default gradient
+      document.body.style.background = "" // Default gradient, or no background set
     }
 
     // Font, Clock Size, Accent Color
     document.documentElement.style.setProperty("--font-primary", settings.font)
-    document.documentElement.style.setProperty("--clock-size", `${settings.clockSize}rem`)
+    document.documentElement.style.setProperty(
+      "--clock-size",
+      `${settings.clockSize}rem`
+    )
     if (settings.accentColor) {
-      document.documentElement.style.setProperty("--accent-color", settings.accentColor)
+      document.documentElement.style.setProperty(
+        "--accent-color",
+        settings.accentColor
+      )
     }
 
     // Effect
@@ -287,9 +425,18 @@ document.addEventListener("DOMContentLoaded", () => {
     else starFallEffect.stop()
 
     // Gradient (for default view)
-    document.documentElement.style.setProperty("--bg-gradient-start", settings.gradientStart)
-    document.documentElement.style.setProperty("--bg-gradient-end", settings.gradientEnd)
-    document.documentElement.style.setProperty("--bg-gradient-angle", settings.gradientAngle + "deg")
+    document.documentElement.style.setProperty(
+      "--bg-gradient-start",
+      settings.gradientStart
+    )
+    document.documentElement.style.setProperty(
+      "--bg-gradient-end",
+      settings.gradientEnd
+    )
+    document.documentElement.style.setProperty(
+      "--bg-gradient-angle",
+      settings.gradientAngle + "deg"
+    )
 
     // Update Language & Inputs
     applyTranslations()
@@ -297,13 +444,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateSettingsInputs() {
-    bgInput.value = localBackgrounds.some(b => b.id === settings.background) ? "" : settings.background
+    const isPredefinedLocalBg = localBackgrounds.some(
+      (b) => b.id === settings.background
+    )
+    const isUserUploadedBg =
+      settings.background && settings.background.startsWith("data:image")
+    bgInput.value =
+      isPredefinedLocalBg || isUserUploadedBg ? "" : settings.background
     fontSelect.value = settings.font
     dateFormatSelect.value = settings.dateFormat
     clockSizeInput.value = settings.clockSize
     clockSizeValue.textContent = `${settings.clockSize}rem`
     if (languageSelect) languageSelect.value = settings.language || "en"
-    if (accentColorPicker) accentColorPicker.value = settings.accentColor || "#a8c0ff"
+    if (accentColorPicker)
+      accentColorPicker.value = settings.accentColor || "#a8c0ff"
     effectSelect.value = settings.effect
     gradientStartPicker.value = settings.gradientStart
     gradientEndPicker.value = settings.gradientEnd
@@ -333,7 +487,9 @@ document.addEventListener("DOMContentLoaded", () => {
       bookmarkEl.href = bookmark.url
       bookmarkEl.classList.add("bookmark")
       bookmarkEl.target = "_blank"
-      let faviconUrl = bookmark.icon || `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`
+      let faviconUrl =
+        bookmark.icon ||
+        `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`
       bookmarkEl.innerHTML = `<img src="${faviconUrl}" alt="${bookmark.title} icon" onerror="this.src='https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128'"><span>${bookmark.title}</span>`
       bookmarkEl.addEventListener("contextmenu", (e) => {
         e.preventDefault()
@@ -352,14 +508,49 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderLocalBackgrounds() {
-    localBackgroundList.innerHTML = ""
+    localBackgroundGallery.innerHTML = "" // Changed to localBackgroundGallery
+    // Render predefined backgrounds
     localBackgrounds.forEach((bg) => {
       const item = document.createElement("div")
       item.className = `local-bg-item ${bg.id}`
       item.dataset.bgId = bg.id
       item.title = bg.name
-      localBackgroundList.appendChild(item)
+      localBackgroundGallery.appendChild(item)
     })
+
+    // Render user-uploaded backgrounds
+    if (Array.isArray(settings.userBackgrounds)) {
+      settings.userBackgrounds.forEach((bgUrl, index) => {
+        const item = document.createElement("div")
+        item.className = "local-bg-item user-uploaded"
+        item.dataset.bgId = bgUrl // Using data URL as ID
+        item.style.backgroundImage = `url('${bgUrl}')`
+        item.title = `User Image ${index + 1}`
+
+        const removeBtn = document.createElement("button")
+        removeBtn.className = "remove-bg-btn"
+        removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+        removeBtn.addEventListener("click", (e) => {
+          e.stopPropagation() // Prevent selecting the background when removing
+          if (
+            confirm(
+              i18n.alert_delete_bg_confirm ||
+                "Are you sure you want to remove this background?"
+            )
+          ) {
+            // New i18n key
+            settings.userBackgrounds.splice(index, 1)
+            // If the removed background was active, revert to default
+            if (settings.background === bgUrl) {
+              settings.background = "local-bg-5" // Default background
+            }
+            saveSettings()
+          }
+        })
+        item.appendChild(removeBtn)
+        localBackgroundGallery.appendChild(item)
+      })
+    }
   }
 
   function openModal(index = null) {
@@ -414,10 +605,14 @@ document.addEventListener("DOMContentLoaded", () => {
         folderDiv.innerHTML = `<i class="fa-solid fa-chevron-right"></i> <i class="fa-regular fa-folder"></i> <span>${node.title}</span>`
         const childrenContainer = document.createElement("div")
         childrenContainer.className = "folder-content"
-        folderDiv.addEventListener("click", () => folderDiv.parentElement.classList.toggle("collapsed"))
+        folderDiv.addEventListener("click", () =>
+          folderDiv.parentElement.classList.toggle("collapsed")
+        )
         container.appendChild(folderDiv)
         container.appendChild(childrenContainer)
-        node.children.forEach((child) => renderBookmarkTree(child, childrenContainer))
+        node.children.forEach((child) =>
+          renderBookmarkTree(child, childrenContainer)
+        )
       } else {
         node.children.forEach((child) => renderBookmarkTree(child, container))
       }
@@ -430,7 +625,9 @@ document.addEventListener("DOMContentLoaded", () => {
       itemDiv.addEventListener("click", (e) => {
         if (e.target !== checkbox) checkbox.checked = !checkbox.checked
       })
-      let iconHtml = node.url ? `<img src="https://www.google.com/s2/favicons?domain=${node.url}&sz=128" style="width:16px;height:16px;margin-right:5px;">` : '<i class="fa-solid fa-earth-americas"></i>'
+      let iconHtml = node.url
+        ? `<img src="https://www.google.com/s2/favicons?domain=${node.url}&sz=128" style="width:16px;height:16px;margin-right:5px;">`
+        : '<i class="fa-solid fa-earth-americas"></i>'
       const label = document.createElement("span")
       label.innerHTML = `${iconHtml} ${node.title}`
       label.title = node.url
@@ -480,7 +677,12 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   menuDelete.addEventListener("click", (e) => {
     e.stopPropagation()
-    if (contextMenuTargetIndex > -1 && confirm(`${i18n.alert_delete_confirm} "${bookmarks[contextMenuTargetIndex].title}"?`)) {
+    if (
+      contextMenuTargetIndex > -1 &&
+      confirm(
+        `${i18n.alert_delete_confirm} "${bookmarks[contextMenuTargetIndex].title}"?`
+      )
+    ) {
       bookmarks.splice(contextMenuTargetIndex, 1)
       saveBookmarks()
     }
@@ -505,7 +707,9 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   confirmImportBtn.addEventListener("click", () => {
-    const checkboxes = browserBookmarksList.querySelectorAll('input[type="checkbox"]:checked')
+    const checkboxes = browserBookmarksList.querySelectorAll(
+      'input[type="checkbox"]:checked'
+    )
     let addedCount = 0
     checkboxes.forEach((cb) => {
       const data = JSON.parse(cb.value)
@@ -523,15 +727,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
 
-  settingsToggle.addEventListener("click", () => settingsSidebar.classList.add("open"))
-  closeSettings.addEventListener("click", () => settingsSidebar.classList.remove("open"))
+  settingsToggle.addEventListener("click", () =>
+    settingsSidebar.classList.add("open")
+  )
+  closeSettings.addEventListener("click", () =>
+    settingsSidebar.classList.remove("open")
+  )
   document.addEventListener("click", (e) => {
-    if (!settingsSidebar.contains(e.target) && !settingsToggle.contains(e.target)) {
+    if (
+      !settingsSidebar.contains(e.target) &&
+      !settingsToggle.contains(e.target)
+    ) {
       settingsSidebar.classList.remove("open")
     }
   })
 
-  document.querySelectorAll(".section-toggle").forEach(toggle => {
+  document.querySelectorAll(".section-toggle").forEach((toggle) => {
     toggle.addEventListener("click", () => {
       toggle.parentElement.classList.toggle("collapsed")
     })
@@ -553,11 +764,33 @@ document.addEventListener("DOMContentLoaded", () => {
     saveSettings()
   })
 
-  localBackgroundList.addEventListener("click", (e) => {
+  uploadLocalImageBtn.addEventListener("click", () => {
+    localImageUpload.click() // Trigger hidden file input
+  })
+
+  localImageUpload.addEventListener("change", (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const dataUrl = event.target.result
+        settings.userBackgrounds.push(dataUrl)
+        settings.background = dataUrl // Set newly uploaded as current background
+        saveSettings()
+      }
+      reader.readAsDataURL(file)
+    }
+    e.target.value = null // Clear the input so same file can be uploaded again
+  })
+
+  localBackgroundGallery.addEventListener("click", (e) => {
+    // Changed to localBackgroundGallery
+    // Handle predefined and user-uploaded background selection
     if (e.target.classList.contains("local-bg-item")) {
       settings.background = e.target.dataset.bgId
       saveSettings()
     }
+    // Remove button handled within renderLocalBackgrounds
   })
 
   if (accentColorPicker) {
@@ -604,9 +837,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (confirm(i18n.alert_reset)) {
       localStorage.removeItem("pageSettings")
       settings = {
-        background: "local-bg-5", font: "'Outfit', sans-serif", dateFormat: "full",
-        clockSize: "6", language: "en", accentColor: "#a8c0ff", effect: "none",
-        gradientStart: "#0f0c29", gradientEnd: "#302b63", gradientAngle: "135",
+        background: "local-bg-5",
+        font: "'Outfit', sans-serif",
+        dateFormat: "full",
+        clockSize: "6",
+        language: "en",
+        accentColor: "#a8c0ff",
+        effect: "none",
+        gradientStart: "#0f0c29",
+        gradientEnd: "#302b63",
+        gradientAngle: "135",
+        userBackgrounds: [], // Clear user-uploaded backgrounds on reset
       }
       saveSettings()
     }
@@ -615,14 +856,27 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Initialization ---
   async function init() {
     await loadLanguage(settings.language)
-    renderBookmarks()
-    renderLocalBackgrounds()
-    applySettings() // This will also call updateSettingsInputs
-    
+
+    // Debug checks before function calls
+    console.log("--- Init Debug ---")
+    console.log("typeof renderBookmarks:", typeof renderBookmarks)
+    console.log("typeof renderLocalBackgrounds:", typeof renderLocalBackgrounds)
+    console.log("typeof applySettings:", typeof applySettings)
+    console.log("typeof getContrastYIQ:", typeof getContrastYIQ)
+    console.log("typeof localBackgrounds:", typeof localBackgrounds)
+    console.log("--- End Init Debug ---")
+
+    if (typeof renderBookmarks === "function") renderBookmarks()
+    else console.error("renderBookmarks is not a function!")
+    if (typeof renderLocalBackgrounds === "function") renderLocalBackgrounds()
+    else console.error("renderLocalBackgrounds is not a function!")
+    if (typeof applySettings === "function") applySettings()
+    else console.error("applySettings is not a function!")
+
     // Set initial state for collapsible sections
-    document.querySelectorAll(".settings-section").forEach(section => {
-        section.classList.add("collapsed")
-    });
+    document.querySelectorAll(".settings-section").forEach((section) => {
+      section.classList.add("collapsed")
+    })
 
     setInterval(updateTime, 1000)
   }

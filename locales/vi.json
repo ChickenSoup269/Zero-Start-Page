@@ -28,5 +28,7 @@
   "alert_reset": "Khôi phục tất cả cài đặt về mặc định?",
   "alert_delete_confirm": "Xóa dấu trang",
   "alert_imported": "Đã nhập {count} dấu trang!",
-  "alert_no_selection": "Chưa chọn dấu trang mới hoặc đã tồn tại."
+  "alert_no_selection": "Chưa chọn dấu trang mới hoặc đã tồn tại.",
+  "settings_upload_image": "Tải ảnh lên",
+  "alert_delete_bg_confirm": "Bạn có chắc chắn muốn xóa hình nền này không?"
 }

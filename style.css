@@ -773,3 +773,54 @@ body.bg-image-active {
 .local-bg-5 {
   background: #243949;
 }
+/* New styles for user image upload */
+.local-bg-gallery-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.local-bg-gallery-controls .secondary-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.local-bg-item.user-uploaded {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.remove-bg-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  cursor: pointer;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.local-bg-item.user-uploaded:hover .remove-bg-btn {
+  opacity: 1; /* Show on hover */
+}
+
+.remove-bg-btn:hover {
+  background: rgba(255, 0, 0, 0.8);
+}

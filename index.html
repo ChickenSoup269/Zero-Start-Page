@@ -62,7 +62,11 @@
             </div>
             <div class="setting-item">
               <label data-i18n="settings_local_bg">Local Themes</label>
-              <div id="local-background-list" class="local-bg-gallery"></div>
+              <div class="local-bg-gallery-controls">
+                <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
+                <button id="upload-local-image-btn" class="secondary-btn" data-i18n="settings_upload_image">Upload Image</button>
+              </div>
+              <div id="local-background-gallery" class="local-bg-gallery"></div>
             </div>
           </div>
         </div>

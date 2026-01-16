@@ -28,5 +28,7 @@
   "alert_reset": "Reset all settings to default?",
   "alert_delete_confirm": "Delete bookmark",
   "alert_imported": "Imported {count} bookmarks!",
-  "alert_no_selection": "No new bookmarks selected or they already exist."
+  "alert_no_selection": "No new bookmarks selected or they already exist.",
+  "settings_upload_image": "Upload Image",
+  "alert_delete_bg_confirm": "Are you sure you want to remove this background?"
 }
