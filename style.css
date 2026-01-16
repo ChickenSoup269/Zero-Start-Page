@@ -309,7 +309,7 @@ body.bg-image-active {
   justify-content: center;
   align-items: flex-start; /* Align to top for text below */
   margin-top: 40px;
-  gap: 20px; /* Slightly increased gap for text space */
+  gap: 15px;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -363,17 +363,19 @@ body.bg-image-active {
 
 /* Styled Add Bookmark Card (replaces fixed button) */
 .add-bookmark-card {
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-  color: rgb(0, 0, 0);
-  background: rgba(255, 255, 255, 0.935);
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  color: var(--text-color);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.15s ease;
-  border: none;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: var(--glass-shadow);
+  font-size: 1.5rem; /* For the '+' icon */
 }
 
 .add-bookmark-card .bookmark-icon-wrapper {
@@ -687,4 +689,87 @@ body.bg-image-active {
 .bookmark-tree-item span {
   font-size: 0.9rem;
   color: #495057; /* Dark gray */
+}
+
+/* Settings Section */
+.settings-section {
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.settings-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-toggle {
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-toggle::after {
+  content: "\f077"; /* Font Awesome up arrow */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  transition: transform 0.2s ease-in-out;
+  font-size: 0.9rem;
+}
+
+.settings-section.collapsed .section-toggle::after {
+  transform: rotate(180deg);
+}
+
+.settings-section.collapsed .section-content {
+  display: none;
+}
+
+/* Local Background Gallery */
+.local-bg-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 10px;
+  margin-top: 0.5rem;
+}
+
+.local-bg-item {
+  width: 100%;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.local-bg-item.active {
+  border-color: var(--accent-color);
+}
+
+.local-bg-item:hover {
+  opacity: 0.8;
+}
+
+/* Predefined Local Backgrounds */
+.local-bg-1 {
+  background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+}
+.local-bg-2 {
+  background: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+}
+.local-bg-3 {
+  background: linear-gradient(to right, #868f96 0%, #596164 100%);
+}
+.local-bg-4 {
+  background: linear-gradient(to top, #fddb92 0%, #d1fdff 100%);
+}
+.local-bg-5 {
+  background: #243949;
 }

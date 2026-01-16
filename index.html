@@ -40,16 +40,38 @@
             </select>
         </div>
 
-        <div class="setting-group">
-            <label data-i18n="settings_bg">Background</label>
-            <input type="text" id="bg-input" class="i18n-placeholder" data-i18n-placeholder="settings_bg_placeholder"
-                placeholder="URL or Color (e.g. #333)">
-            <input type="color" id="bg-color-picker" title="Pick a color">
+        <div class="settings-section">
+          <h3 class="section-toggle" data-i18n="settings_bg">Background</h3>
+          <div class="section-content">
+            <div class="setting-item">
+              <label for="bg-input" data-i18n="settings_bg_placeholder"
+                >URL or Color</label
+              >
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="bg-input"
+                  data-i18n-placeholder="settings_bg_placeholder"
+                />
+                <input
+                  type="color"
+                  id="bg-color-picker"
+                  aria-label="Pick a color"
+                />
+              </div>
+            </div>
+            <div class="setting-item">
+              <label data-i18n="settings_local_bg">Local Themes</label>
+              <div id="local-background-list" class="local-bg-gallery"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="setting-group">
-            <label data-i18n="settings_accent">Accent Color</label>
-            <input type="color" id="accent-color-picker" value="#0f0c29" title="Pick an accent color">
+        <div class="setting-item">
+          <label for="accent-color-picker" data-i18n="settings_accent"
+            >Accent Color</label
+          >
+          <input type="color" id="accent-color-picker" />
         </div>
 
         <div class="setting-group">
