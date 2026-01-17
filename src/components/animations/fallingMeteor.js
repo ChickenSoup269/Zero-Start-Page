@@ -1,103 +1,185 @@
 export class FallingMeteor {
-  constructor(canvasId, color = "#ffffff") {
-    this.canvas = document.getElementById(canvasId);
-    this.ctx = this.canvas.getContext("2d");
-    this.meteors = [];
-    this.active = false;
-    this.animationFrame = null;
-    this.meteorColor = color; // Store the custom color
-    this.resize();
-    window.addEventListener("resize", () => this.resize());
+  constructor(canvasId, color = "#ffcc00") {
+    this.canvas = document.getElementById(canvasId)
+    this.ctx = this.canvas.getContext("2d")
+    this.meteors = []
+    this.active = false
+    this.animationFrame = null
+    this.meteorColor = color
+    this.resize()
+    window.addEventListener("resize", () => this.resize())
   }
 
   resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.width = window.innerWidth
+    this.canvas.height = window.innerHeight
   }
 
   start() {
-    if (this.active) return;
-    this.active = true;
-    this.createMeteors();
-    this.animate();
-    this.canvas.style.display = "block";
+    if (this.active) return
+    this.active = true
+    this.createMeteors()
+    this.animate()
+    this.canvas.style.display = "block"
   }
 
   stop() {
-    this.active = false;
-    if (this.animationFrame) cancelAnimationFrame(this.animationFrame);
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvas.style.display = "none";
-    this.meteors = [];
+    this.active = false
+    if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.canvas.style.display = "none"
+    this.meteors = []
   }
 
   createMeteors() {
-    const count = 20; // Fewer meteors than stars for a different feel
+    const count = 30
     for (let i = 0; i < count; i++) {
       this.meteors.push({
-        x: Math.random() * this.canvas.width * 0.8, // Start within the top-left 80% width
-        y: Math.random() * this.canvas.height * 0.2 - 200, // Start above the screen, concentrated at top-left
-        length: Math.random() * 80 + 40, // Longer meteors
-        speed: Math.random() * 5 + 2, // Slower speed
-        angle: Math.PI / 4, // 45 degrees for top-left to bottom-right
-      });
+        // THAY ĐỔI Ở ĐÂY:
+        // Math.random() * this.canvas.width: Rải đều theo chiều ngang màn hình
+        // - (this.canvas.height * 0.5): Lùi về bên trái một chút để khi bay chéo xuống nó vẫn phủ được góc trái dưới
+        x:
+          Math.random() * (this.canvas.width + this.canvas.height * 0.5) -
+          this.canvas.height * 0.5,
+
+        y: Math.random() * this.canvas.height * 0.1 - 300, // Vẫn bắt đầu từ phía trên
+        length: Math.random() * 60 + 20,
+        speed: Math.random() * 2 + 1,
+        angle: Math.PI / 4 + Math.random() * (Math.PI / 12),
+        particles: [],
+      })
+    }
+  }
+
+  parseColor(hex) {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return { r, g, b }
+  }
+
+  brightenColor(rgb, factor = 0.5) {
+    return {
+      r: Math.min(255, rgb.r + (255 - rgb.r) * factor),
+      g: Math.min(255, rgb.g + (255 - rgb.g) * factor),
+      b: Math.min(255, rgb.b + (255 - rgb.b) * factor),
+    }
+  }
+
+  darkenColor(rgb, factor = 0.5) {
+    return {
+      r: Math.max(0, rgb.r * factor),
+      g: Math.max(0, rgb.g * factor),
+      b: Math.max(0, rgb.b * factor),
     }
   }
 
   animate() {
-    if (!this.active) return;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (!this.active) return
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+    const colorRgb = this.parseColor(this.meteorColor)
+    const brightColor = this.brightenColor(colorRgb, 0.8)
+    const midColor = colorRgb
+    const darkColor = this.darkenColor(colorRgb, 0.6)
 
     this.meteors.forEach((meteor) => {
-      // Calculate the head and tail positions of the meteor
-      // The meteor's 'x' and 'y' define the tail end, and the head is further along its path.
-      const headX = meteor.x + Math.cos(meteor.angle) * meteor.length;
-      const headY = meteor.y + Math.sin(meteor.angle) * meteor.length;
+      const headX = meteor.x + Math.cos(meteor.angle) * meteor.length
+      const headY = meteor.y + Math.sin(meteor.angle) * meteor.length
+      const tailX = meteor.x
+      const tailY = meteor.y
 
-      const tailX = meteor.x;
-      const tailY = meteor.y;
+      this.ctx.shadowColor = `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, 0.8)`
+      this.ctx.shadowBlur = 20
 
-      // Create a linear gradient for the tail, fading from bright to transparent
-      const gradient = this.ctx.createLinearGradient(headX, headY, tailX, tailY);
-      // Convert hex color to rgba for gradient
-      const r = parseInt(this.meteorColor.slice(1, 3), 16);
-      const g = parseInt(this.meteorColor.slice(3, 5), 16);
-      const b = parseInt(this.meteorColor.slice(5, 7), 16);
-      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 1)`); // Bright head
-      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`); // Fading tail
+      const gradient = this.ctx.createLinearGradient(headX, headY, tailX, tailY)
+      gradient.addColorStop(
+        0,
+        `rgba(${brightColor.r}, ${brightColor.g}, ${brightColor.b}, 1)`,
+      )
+      gradient.addColorStop(
+        0.3,
+        `rgba(${midColor.r}, ${midColor.g}, ${midColor.b}, 1)`,
+      )
+      gradient.addColorStop(
+        0.6,
+        `rgba(${darkColor.r}, ${darkColor.g}, ${darkColor.b}, 0.7)`,
+      )
+      gradient.addColorStop(
+        1,
+        `rgba(${darkColor.r}, ${darkColor.g}, ${darkColor.b}, 0)`,
+      )
 
-      // Draw the meteor's tail
-      this.ctx.beginPath();
-      this.ctx.moveTo(tailX, tailY); // Start drawing from the tail end
-      this.ctx.lineTo(headX, headY); // Draw to the head end
-      this.ctx.strokeStyle = gradient;
-      this.ctx.lineWidth = 3; // Thicker line for the tail
-      this.ctx.stroke();
+      this.ctx.beginPath()
+      this.ctx.moveTo(tailX, tailY)
+      this.ctx.lineTo(headX, headY)
+      this.ctx.strokeStyle = gradient
+      this.ctx.lineWidth = Math.random() * 2 + 3
+      this.ctx.stroke()
 
-      // Draw a very small, very bright circle at the head for a distinct bright spot
-      this.ctx.beginPath();
-      this.ctx.arc(headX, headY, 1.5, 0, Math.PI * 2); // Small, pure white head dot
-      this.ctx.fillStyle = this.meteorColor; // Use the custom color for the head
-      this.ctx.fill();
+      this.ctx.beginPath()
+      this.ctx.arc(headX, headY, 2, 0, Math.PI * 2)
+      this.ctx.fillStyle = `rgb(${brightColor.r}, ${brightColor.g}, ${brightColor.b})`
+      this.ctx.fill()
 
-      // Update meteor position for the next frame
-      meteor.x += meteor.speed * Math.cos(meteor.angle);
-      meteor.y += meteor.speed * Math.sin(meteor.angle);
+      this.ctx.shadowBlur = 0
+      this.ctx.shadowColor = "transparent"
 
-      // Reset meteor if it goes off screen to loop the effect
+      meteor.particles.forEach((part, index) => {
+        part.life -= 1
+        if (part.life <= 0) {
+          meteor.particles.splice(index, 1)
+          return
+        }
+        const partColor = this.darkenColor(colorRgb, part.life / part.maxLife)
+        this.ctx.beginPath()
+        this.ctx.arc(part.x, part.y, part.size, 0, Math.PI * 2)
+        this.ctx.fillStyle = `rgba(${partColor.r}, ${partColor.g}, ${partColor.b}, ${part.life / part.maxLife})`
+        this.ctx.fill()
+
+        part.x += (Math.random() - 0.5) * 2 - Math.cos(meteor.angle) * 0.5
+        part.y += (Math.random() - 0.5) * 2 - Math.sin(meteor.angle) * 0.5
+      })
+
+      for (let i = 0; i < 2; i++) {
+        if (Math.random() < 0.6) {
+          meteor.particles.push({
+            x: headX + (Math.random() - 0.5) * 4,
+            y: headY + (Math.random() - 0.5) * 4,
+            size: Math.random() * 2 + 1,
+            life: Math.random() * 25 + 15,
+            maxLife: 40,
+          })
+        }
+      }
+
+      if (meteor.particles.length > 50) {
+        meteor.particles.splice(0, meteor.particles.length - 50)
+      }
+
+      meteor.x += meteor.speed * Math.cos(meteor.angle)
+      meteor.y += meteor.speed * Math.sin(meteor.angle)
+
+      // Reset logic (Khi bay ra khỏi màn hình)
       if (
         meteor.y > this.canvas.height + meteor.length ||
         meteor.x > this.canvas.width + meteor.length
       ) {
-        meteor.x = Math.random() * this.canvas.width * 0.5 - 100; // Reset to top-left area
-        meteor.y = Math.random() * this.canvas.height * 0.1 - 200; // Reset above screen
-      }
-    });
+        // THAY ĐỔI Ở ĐÂY:
+        // Reset ngẫu nhiên trên toàn bộ chiều rộng + một phần bù trừ bên trái
+        meteor.x =
+          Math.random() * (this.canvas.width + this.canvas.height * 0.5) -
+          this.canvas.height * 0.5
 
-    this.animationFrame = requestAnimationFrame(() => this.animate());
-  } // Added missing closing brace for animate method
+        meteor.y = -meteor.length - Math.random() * 300
+        meteor.particles = []
+      }
+    })
+
+    this.animationFrame = requestAnimationFrame(() => this.animate())
+  }
 
   updateColor(newColor) {
-    this.meteorColor = newColor;
+    this.meteorColor = newColor
   }
 }

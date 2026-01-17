@@ -18,6 +18,10 @@ import {
   starColorSetting,
   shootingStarColorPicker,
   shootingStarColorSetting,
+  shootingStarBackgroundColorPicker,
+  shootingStarBackgroundColorSetting,
+  shootingStarStarColorPicker,
+  shootingStarStarColorSetting,
   resetSettingsBtn,
   dateFormatSelect,
   clockSizeInput,
@@ -27,6 +31,11 @@ import {
   uploadLocalImageBtn,
   searchInput,
   clearBtn,
+  unsplashRandomBtn,
+  networkColorPicker,
+  networkColorSetting,
+  matrixColorPicker,
+  matrixColorSetting,
 } from "../utils/dom.js"
 import {
   getSettings,
@@ -37,28 +46,60 @@ import {
 } from "../services/state.js"
 import { geti18n, loadLanguage, applyTranslations } from "../services/i18n.js"
 import { getContrastYIQ } from "../utils/colors.js"
+
+// Import các hiệu ứng
 import { StarFall } from "./animations/rainGalaxy.js"
 import { FallingMeteor } from "./animations/fallingMeteor.js"
 import { ShootingStarEffect } from "./animations/shootingStar.js"
+import { FirefliesEffect } from "./animations/fireflies.js"
+import { NetworkEffect } from "./animations/network.js"
+import { MatrixRain } from "./animations/matrixRain.js"
 
-let starFallEffect, fallingMeteorEffect, shootingStarEffect
+// Khai báo biến global cho các hiệu ứng
+let starFallEffect,
+  fallingMeteorEffect,
+  shootingStarEffect,
+  firefliesEffect,
+  networkEffect,
+  matrixRainEffect
 
 function handleSettingUpdate(key, value) {
   updateSetting(key, value)
   saveSettings()
   applySettings()
-  renderLocalBackgrounds() // Re-render gallery to show active state
+  renderLocalBackgrounds()
+}
+
+const unsplashUsers = [
+  "aleskrivec",
+  "eberhardgross",
+  "guillaumedegermain",
+  "robertlukeman",
+  "nate_dumlao",
+  "jeremybishop",
+  "anniespratt",
+  "nasa",
+]
+
+function setUnsplashRandomBackground() {
+  const randomUser =
+    unsplashUsers[Math.floor(Math.random() * unsplashUsers.length)]
+  const width = window.innerWidth
+  const height = window.innerHeight
+  const imageUrl = `https://source.unsplash.com/user/${randomUser}/${width}x${height}`
+  handleSettingUpdate("background", imageUrl)
 }
 
 export function applySettings() {
   const settings = getSettings()
-  // Reset body classes and inline styles
+
+  // 1. Reset Styles
   document.body.className = ""
   document.body.style.background = ""
   document.body.style.backgroundImage = ""
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
-  // Background
+  // 2. Background Logic
   const bg = settings.background
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
   const isUserUploadedBg = bg && bg.startsWith("data:image")
@@ -82,47 +123,82 @@ export function applySettings() {
       document.body.style.background = bg
       document.documentElement.style.setProperty(
         "--text-color",
-        getContrastYIQ(bg)
+        getContrastYIQ(bg),
       )
     }
   } else {
     document.body.style.background = ""
   }
 
-  // Font, Clock Size, Accent Color
+  // 3. UI Props
   document.documentElement.style.setProperty("--font-primary", settings.font)
   document.documentElement.style.setProperty(
     "--clock-size",
-    `${settings.clockSize}rem`
+    `${settings.clockSize}rem`,
   )
   if (settings.accentColor) {
     document.documentElement.style.setProperty(
       "--accent-color",
-      settings.accentColor
+      settings.accentColor,
     )
   }
 
-  // Effect
+  // 4. Effects Management (STOP ALL FIRST)
   if (starFallEffect) starFallEffect.stop()
   if (fallingMeteorEffect) fallingMeteorEffect.stop()
   if (shootingStarEffect) shootingStarEffect.stop()
+  if (firefliesEffect) firefliesEffect.stop()
+  if (networkEffect) networkEffect.stop()
+  if (matrixRainEffect) matrixRainEffect.stop()
 
-  if (settings.effect === "galaxy") starFallEffect.start()
-  else if (settings.effect === "meteor") fallingMeteorEffect.start()
-  else if (settings.effect === "shootingStar") shootingStarEffect.start()
+  // 5. Start Selected Effect
+  switch (settings.effect) {
+    case "galaxy":
+      starFallEffect.start()
+      break
+    case "meteor":
+      fallingMeteorEffect.start()
+      break
+    case "shootingStar":
+      if (shootingStarEffect) {
+        shootingStarEffect.updateParticleColor(settings.shootingStarColor)
+        shootingStarEffect.updateBackgroundColor(
+          settings.shootingStarBackgroundColor,
+        )
+        shootingStarEffect.updateStarColor(settings.shootingStarStarColor)
+      }
+      shootingStarEffect.start()
+      break
+    case "fireflies":
+      firefliesEffect.start()
+      break
+    case "network":
+      // Cập nhật màu mới nhất trước khi start (nếu có logic đổi màu)
+      if (networkEffect)
+        networkEffect.color =
+          settings.networkColor || settings.accentColor || "#00bcd4"
+      networkEffect.start()
+      break
+    case "matrix":
+      // Cập nhật màu
+      if (matrixRainEffect)
+        matrixRainEffect.color = settings.matrixColor || "#0F0"
+      matrixRainEffect.start()
+      break
+  }
 
-  // Gradient
+  // 6. Gradients
   document.documentElement.style.setProperty(
     "--bg-gradient-start",
-    settings.gradientStart
+    settings.gradientStart,
   )
   document.documentElement.style.setProperty(
     "--bg-gradient-end",
-    settings.gradientEnd
+    settings.gradientEnd,
   )
   document.documentElement.style.setProperty(
     "--bg-gradient-angle",
-    settings.gradientAngle + "deg"
+    settings.gradientAngle + "deg",
   )
 
   updateSettingsInputs()
@@ -130,13 +206,17 @@ export function applySettings() {
 
 function updateSettingsInputs() {
   const settings = getSettings()
+
+  // Background Inputs
   const isPredefinedLocalBg = localBackgrounds.some(
-    (b) => b.id === settings.background
+    (b) => b.id === settings.background,
   )
   const isUserUploadedBg =
     settings.background && settings.background.startsWith("data:image")
   bgInput.value =
     isPredefinedLocalBg || isUserUploadedBg ? "" : settings.background
+
+  // General Inputs
   fontSelect.value = settings.font
   dateFormatSelect.value = settings.dateFormat
   clockSizeInput.value = settings.clockSize
@@ -145,27 +225,59 @@ function updateSettingsInputs() {
   if (accentColorPicker)
     accentColorPicker.value = settings.accentColor || "#a8c0ff"
   effectSelect.value = settings.effect
+
+  // Gradient Inputs
   gradientStartPicker.value = settings.gradientStart
   gradientEndPicker.value = settings.gradientEnd
   gradientAngleInput.value = settings.gradientAngle
   gradientAngleValue.textContent = settings.gradientAngle
 
+  // Effect Color Inputs
   if (meteorColorPicker)
     meteorColorPicker.value = settings.meteorColor || "#ffffff"
   if (starColorPicker) starColorPicker.value = settings.starColor || "#ffffff"
   if (shootingStarColorPicker)
     shootingStarColorPicker.value = settings.shootingStarColor || "#ffcc66"
+  if (shootingStarBackgroundColorPicker)
+    shootingStarBackgroundColorPicker.value =
+      settings.shootingStarBackgroundColor || "#000000"
+  if (shootingStarStarColorPicker)
+    shootingStarStarColorPicker.value =
+      settings.shootingStarStarColor || "#ffffff"
 
+  // Visibility of Effect Settings
   if (meteorColorSetting)
     meteorColorSetting.style.display =
       settings.effect === "meteor" ? "block" : "none"
   if (starColorSetting)
     starColorSetting.style.display =
       settings.effect === "galaxy" ? "block" : "none"
-  if (shootingStarColorSetting)
-    shootingStarColorSetting.style.display =
-      settings.effect === "shootingStar" ? "block" : "none"
 
+  const isShootingStarEffect = settings.effect === "shootingStar"
+  if (shootingStarColorSetting)
+    shootingStarColorSetting.style.display = isShootingStarEffect
+      ? "block"
+      : "none"
+  if (shootingStarBackgroundColorSetting)
+    shootingStarBackgroundColorSetting.style.display = isShootingStarEffect
+      ? "block"
+      : "none"
+  if (shootingStarStarColorSetting)
+    shootingStarStarColorSetting.style.display = isShootingStarEffect
+      ? "block"
+      : "none"
+
+  // Logic ẩn/hiện cài đặt cho các hiệu ứng mới (Network, Matrix)
+  // Nếu bạn đã thêm HTML cho chúng, hãy uncomment và sửa ID tương ứng:
+  /*
+  const networkColorSetting = document.getElementById('network-color-setting');
+  if (networkColorSetting) networkColorSetting.style.display = settings.effect === "network" ? "block" : "none";
+  
+  const matrixColorSetting = document.getElementById('matrix-color-setting');
+  if (matrixColorSetting) matrixColorSetting.style.display = settings.effect === "matrix" ? "block" : "none";
+  */
+
+  // Highlight active background
   document.querySelectorAll(".local-bg-item").forEach((item) => {
     item.classList.toggle("active", item.dataset.bgId === settings.background)
   })
@@ -175,6 +287,8 @@ export function renderLocalBackgrounds() {
   const i18n = geti18n()
   const settings = getSettings()
   localBackgroundGallery.innerHTML = ""
+
+  // Default Backgrounds
   localBackgrounds.forEach((bg) => {
     const item = document.createElement("div")
     item.className = `local-bg-item ${bg.id}`
@@ -183,6 +297,7 @@ export function renderLocalBackgrounds() {
     localBackgroundGallery.appendChild(item)
   })
 
+  // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgUrl, index) => {
       const item = document.createElement("div")
@@ -199,7 +314,7 @@ export function renderLocalBackgrounds() {
         if (
           confirm(
             i18n.alert_delete_bg_confirm ||
-              "Are you sure you want to remove this background?"
+              "Are you sure you want to remove this background?",
           )
         ) {
           settings.userBackgrounds.splice(index, 1)
@@ -207,7 +322,7 @@ export function renderLocalBackgrounds() {
             handleSettingUpdate("background", "local-bg-5")
           } else {
             saveSettings()
-            renderLocalBackgrounds() // Just re-render the gallery
+            renderLocalBackgrounds()
           }
         }
       })
@@ -220,18 +335,35 @@ export function renderLocalBackgrounds() {
 export function initSettings() {
   const i18n = geti18n()
   const settings = getSettings()
+
+  // --- INSTANTIATE EFFECTS ---
   starFallEffect = new StarFall("effect-canvas", settings.starColor)
   fallingMeteorEffect = new FallingMeteor("effect-canvas", settings.meteorColor)
   shootingStarEffect = new ShootingStarEffect(
     "effect-canvas",
-    settings.shootingStarColor
+    settings.shootingStarColor, // Particle Color
+    settings.shootingStarBackgroundColor, // Background Color
+    settings.shootingStarStarColor, // Static Star Color
   )
 
+  // New Effects
+  firefliesEffect = new FirefliesEffect("effect-canvas")
+  // Sử dụng accentColor làm mặc định nếu chưa có networkColor
+  networkEffect = new NetworkEffect(
+    "effect-canvas",
+    settings.networkColor || settings.accentColor || "#00bcd4",
+  )
+  matrixRainEffect = new MatrixRain(
+    "effect-canvas",
+    settings.matrixColor || "#0F0",
+  )
+
+  // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
-    settingsSidebar.classList.add("open")
+    settingsSidebar.classList.add("open"),
   )
   closeSettings.addEventListener("click", () =>
-    settingsSidebar.classList.remove("open")
+    settingsSidebar.classList.remove("open"),
   )
   document.addEventListener("click", (e) => {
     if (
@@ -256,12 +388,16 @@ export function initSettings() {
   })
 
   bgInput.addEventListener("change", () =>
-    handleSettingUpdate("background", bgInput.value.trim())
+    handleSettingUpdate("background", bgInput.value.trim()),
   )
   bgColorPicker.addEventListener("input", () => {
     bgInput.value = bgColorPicker.value
     handleSettingUpdate("background", bgColorPicker.value)
   })
+
+  unsplashRandomBtn.addEventListener("click", () =>
+    setUnsplashRandomBackground(),
+  )
 
   uploadLocalImageBtn.addEventListener("click", () => localImageUpload.click())
 
@@ -311,10 +447,19 @@ export function initSettings() {
   })
 
   if (accentColorPicker) {
-    accentColorPicker.addEventListener("input", () =>
+    accentColorPicker.addEventListener("input", () => {
       handleSettingUpdate("accentColor", accentColorPicker.value)
-    )
+      // Nếu đang dùng Network effect và chưa có cài đặt màu riêng, update luôn theo accent color
+      if (getSettings().effect === "network" && !getSettings().networkColor) {
+        if (networkEffect) {
+          networkEffect.color = accentColorPicker.value
+          // NetworkEffect có thể cần restart hoặc gán lại color tuỳ logic class của bạn
+        }
+      }
+    })
   }
+
+  // --- Effect Color Pickers Listeners ---
   if (meteorColorPicker) {
     meteorColorPicker.addEventListener("input", () => {
       updateSetting("meteorColor", meteorColorPicker.value)
@@ -335,28 +480,88 @@ export function initSettings() {
     shootingStarColorPicker.addEventListener("input", () => {
       updateSetting("shootingStarColor", shootingStarColorPicker.value)
       saveSettings()
-      shootingStarEffect.updateColor(shootingStarColorPicker.value)
+      shootingStarEffect.setColor(shootingStarColorPicker.value) // Assuming setColor is the method to update particle color
       applySettings()
     })
   }
 
+  if (shootingStarBackgroundColorPicker) {
+    shootingStarBackgroundColorPicker.addEventListener("input", () => {
+      updateSetting(
+        "shootingStarBackgroundColor",
+        shootingStarBackgroundColorPicker.value,
+      )
+      saveSettings()
+      if (shootingStarEffect) {
+        shootingStarEffect.updateBackgroundColor(
+          shootingStarBackgroundColorPicker.value,
+        )
+      }
+    })
+  }
+
+  if (shootingStarStarColorPicker) {
+    shootingStarStarColorPicker.addEventListener("input", () => {
+      updateSetting("shootingStarStarColor", shootingStarStarColorPicker.value)
+      saveSettings()
+      if (shootingStarEffect) {
+        shootingStarEffect.updateStarColor(shootingStarStarColorPicker.value)
+      }
+    })
+  }
+
+  // --- New Effect Color Pickers Listeners ---
+  if (networkColorPicker) {
+    networkColorPicker.addEventListener("input", () => {
+      updateSetting("networkColor", networkColorPicker.value)
+      saveSettings()
+      if (networkEffect) {
+        networkEffect.color = networkColorPicker.value
+        // If the effect is already active, we might need to restart it or manually update its color property
+        if (getSettings().effect === "network") {
+          networkEffect.stop()
+          networkEffect.start()
+        }
+      }
+    })
+  }
+
+  if (matrixColorPicker) {
+    matrixColorPicker.addEventListener("input", () => {
+      updateSetting("matrixColor", matrixColorPicker.value)
+      saveSettings()
+      if (matrixRainEffect) {
+        matrixRainEffect.color = matrixColorPicker.value
+        // If the effect is already active, restart it to apply new color
+        if (getSettings().effect === "matrix") {
+          matrixRainEffect.stop()
+          matrixRainEffect.start()
+        }
+      }
+    })
+  }
+
+  // Effect Selection Change
   effectSelect.addEventListener("change", () => {
     handleSettingUpdate("effect", effectSelect.value)
+
+    // Đảm bảo cập nhật màu ngay khi chuyển đổi
     const currentSettings = getSettings()
-    if (currentSettings.effect === "galaxy") {
+    if (currentSettings.effect === "galaxy")
       starFallEffect.updateColor(currentSettings.starColor)
-    } else if (currentSettings.effect === "meteor") {
+    else if (currentSettings.effect === "meteor")
       fallingMeteorEffect.updateColor(currentSettings.meteorColor)
-    } else if (currentSettings.effect === "shootingStar") {
+    else if (currentSettings.effect === "shootingStar")
       shootingStarEffect.updateColor(currentSettings.shootingStarColor)
-    }
+    // Fireflies không cần updateColor
+    // Network và Matrix được xử lý trong applySettings()
   })
 
   gradientStartPicker.addEventListener("input", () =>
-    handleSettingUpdate("gradientStart", gradientStartPicker.value)
+    handleSettingUpdate("gradientStart", gradientStartPicker.value),
   )
   gradientEndPicker.addEventListener("input", () =>
-    handleSettingUpdate("gradientEnd", gradientEndPicker.value)
+    handleSettingUpdate("gradientEnd", gradientEndPicker.value),
   )
   gradientAngleInput.addEventListener("input", () => {
     gradientAngleValue.textContent = gradientAngleInput.value
@@ -364,10 +569,10 @@ export function initSettings() {
   })
 
   fontSelect.addEventListener("change", () =>
-    handleSettingUpdate("font", fontSelect.value)
+    handleSettingUpdate("font", fontSelect.value),
   )
   dateFormatSelect.addEventListener("change", () =>
-    handleSettingUpdate("dateFormat", dateFormatSelect.value)
+    handleSettingUpdate("dateFormat", dateFormatSelect.value),
   )
   clockSizeInput.addEventListener("input", () => {
     clockSizeValue.textContent = `${clockSizeInput.value}rem`
@@ -382,7 +587,6 @@ export function initSettings() {
     }
   })
 
-  // Also initialize search bar logic here as it's simple
   searchInput.addEventListener("input", () => {
     clearBtn.style.display = searchInput.value.length > 0 ? "block" : "none"
   })

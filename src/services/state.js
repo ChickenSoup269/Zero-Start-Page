@@ -15,7 +15,9 @@ let settingsState = JSON.parse(localStorage.getItem("pageSettings")) || {
   userBackgrounds: [],
   meteorColor: "#ffffff",
   starColor: "#ffffff",
-  shootingStarColor: "#ffcc66",
+  shootingStarColor: "#ffcc66", // Particle color
+  shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
+  shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
 }
 
 // Ensure userBackgrounds is always an array
@@ -60,7 +62,9 @@ export function resetSettingsState() {
     userBackgrounds: [],
     meteorColor: "#ffffff",
     starColor: "#ffffff",
-    shootingStarColor: "#ffcc66",
+    shootingStarColor: "#ffcc66", // Particle color
+    shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
+    shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
   }
   settingsState = defaultSettings
   saveSettings()

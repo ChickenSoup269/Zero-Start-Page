@@ -31,101 +31,143 @@
             <h2 data-i18n="settings_title">Settings</h2>
             <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
         </div>
+        <div class="sidebar-content">
+            <div class="setting-group">
+                <label data-i18n="settings_language">Language / Ngôn ngữ</label>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="vi">Tiếng Việt</option>
+                </select>
+            </div>
 
-        <div class="setting-group">
-            <label data-i18n="settings_language">Language / Ngôn ngữ</label>
-            <select id="language-select">
-                <option value="en">English</option>
-                <option value="vi">Tiếng Việt</option>
-            </select>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="section-toggle" data-i18n="settings_bg">Background</h3>
-            <div class="section-content">
-                <div class="setting-item">
-                    <label for="bg-input" data-i18n="settings_bg_placeholder">URL or Color</label>
-                    <div class="input-group">
-                        <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
-                        <input type="color" id="bg-color-picker" aria-label="Pick a color" />
+            <div class="settings-section">
+                <h3 class="section-toggle" data-i18n="settings_bg">Background</h3>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <label for="bg-input" data-i18n="settings_bg_placeholder">URL or Color</label>
+                        <div class="input-group">
+                            <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
+                            <input type="color" id="bg-color-picker" aria-label="Pick a color" />
+                            <button id="unsplash-random-btn" class="secondary-btn"
+                                data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings_local_bg">Local Themes</label>
+                        <div class="local-bg-gallery-controls">
+                            <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
+                            <button id="upload-local-image-btn" class="secondary-btn"
+                                data-i18n="settings_upload_image">Upload Image</button>
+                        </div>
+                        <div id="local-background-gallery" class="local-bg-gallery"></div>
                     </div>
                 </div>
-                <div class="setting-item">
-                    <label data-i18n="settings_local_bg">Local Themes</label>
-                    <div class="local-bg-gallery-controls">
-                        <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
-                        <button id="upload-local-image-btn" class="secondary-btn"
-                            data-i18n="settings_upload_image">Upload Image</button>
-                    </div>
-                    <div id="local-background-gallery" class="local-bg-gallery"></div>
+            </div>
+
+            <div class="setting-item">
+                <label for="accent-color-picker" data-i18n="settings_accent">Accent Color</label>
+                <input type="color" id="accent-color-picker" />
+            </div>
+
+            <div class="setting-group">
+                <label>Background Gradient</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="color" id="gradient-start-picker" title="Pick a start color">
+                    <input type="color" id="gradient-end-picker" title="Pick an end color">
+                </div>
+                <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
+                <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+            </div>
+
+            <div class="setting-group">
+                <label data-i18n="setting_effect">Effect</label>
+                <select id="effect-select">
+                    <option value="none" data-i18n="effect_none">None</option>
+                    <option value="galaxy" data-i18n="effect_galaxy">Rain</option>
+                    <option value="meteor" data-i18n="effect_meteor">Meteor Shower</option>
+                    <option value="shootingStar" data-i18n="effect_shooting_star">Shooting Star</option>
+
+                    <!-- Các hiệu ứng mới -->
+                    <option value="fireflies" data-i18n="effect_fireflies">Fireflies</option>
+                    <option value="network" data-i18n="effect_network">Network</option>
+                    <option value="matrix" data-i18n="effect_matrix">Matrix Rain</option>
+                </select>
+
+                <!-- Shooting Star Color -->
+                <div id="shooting-star-color-setting" class="setting-item" style="display: none;">
+                    <label for="shooting-star-color-picker" data-i18n="setting_shooting_star_color">Shooting Star
+                        Particle Color</label>
+                    <input type="color" id="shooting-star-color-picker" />
+                </div>
+                <!-- Shooting Star Background Color -->
+                <div id="shooting-star-background-color-setting" class="setting-item" style="display: none;">
+                    <label for="shooting-star-background-color-picker"
+                        data-i18n="setting_shooting_star_background_color">Shooting Star Background Overlay
+                        Color</label>
+                    <input type="color" id="shooting-star-background-color-picker" />
+                </div>
+                <!-- Shooting Star Star Color -->
+                <div id="shooting-star-star-color-setting" class="setting-item" style="display: none;">
+                    <label for="shooting-star-star-color-picker" data-i18n="setting_shooting_star_star_color">Shooting
+                        Star Static Star Color</label>
+                    <input type="color" id="shooting-star-star-color-picker" />
+                </div>
+
+                <!-- Meteor Color -->
+                <div id="meteor-color-setting" class="setting-item" style="display: none;">
+                    <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor Color</label>
+                    <input type="color" id="meteor-color-picker" />
+                </div>
+
+                <!-- Star Color (Galaxy) -->
+                <div id="star-color-setting" class="setting-item" style="display: none;">
+                    <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
+                    <input type="color" id="star-color-picker" />
+                </div>
+
+                <!-- Network Color (Mới) -->
+                <div id="network-color-setting" class="setting-item" style="display: none;">
+                    <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
+                    <input type="color" id="network-color-picker" value="#00bcd4" />
+                </div>
+
+                <!-- Matrix Color (Mới) -->
+                <div id="matrix-color-setting" class="setting-item" style="display: none;">
+                    <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
+                    <input type="color" id="matrix-color-picker" value="#00FF00" />
                 </div>
             </div>
-        </div>
 
-        <div class="setting-item">
-            <label for="accent-color-picker" data-i18n="settings_accent">Accent Color</label>
-            <input type="color" id="accent-color-picker" />
-        </div>
+            <div class="setting-group">
+                <label data-i18n="settings_font">Font</label>
+                <select id="font-select">
+                    <option value="'Outfit', sans-serif">Outfit (Default)</option>
+                    <option value="'Arial', sans-serif">Arial</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                    <option value="'GohuFont', monospace">GohuFont (Local)</option>
+                </select>
+            </div>
 
-        <div class="setting-group">
-            <label>Background Gradient</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="color" id="gradient-start-picker" title="Pick a start color">
-                <input type="color" id="gradient-end-picker" title="Pick an end color">
+            <div class="setting-group">
+                <label data-i18n="settings_date_format">Date Format</label>
+                <select id="date-format-select">
+                    <option value="full">Weekday, DD Month YYYY</option>
+                    <option value="short">DD/MM/YYYY</option>
+                    <option value="us">MM/DD/YYYY</option>
+                    <option value="iso">YYYY-MM-DD</option>
+                </select>
             </div>
-            <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
-            <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
-        </div>
 
-        <div class="setting-group">
-            <label>Effect</label>
-            <select id="effect-select">
-                <option value="none">None</option>
-                <option value="galaxy">Galaxy</option>
-                <option value="meteor">Meteor Shower</option>
-                <option value="shootingStar" data-i18n="effect_shooting_star">Shooting Star</option>
-            </select>
-            <div id="shooting-star-color-setting" class="setting-item" style="display: none;">
-                <label for="shooting-star-color-picker" data-i18n="setting_shooting_star_color">Shooting Star Color</label>
-                <input type="color" id="shooting-star-color-picker" />
-            </div>
-            <div id="meteor-color-setting" class="setting-item" style="display: none;">
-                <label for="meteor-color-picker">Meteor Color</label>
-                <input type="color" id="meteor-color-picker" />
-            </div>
-            <div id="star-color-setting" class="setting-item" style="display: none;">
-                <label for="star-color-picker">Star Color</label>
-                <input type="color" id="star-color-picker" />
+            <div class="setting-group">
+                <label><span data-i18n="settings_clock_size">Clock Size:</span> <span
+                        id="clock-size-value">6rem</span></label>
+                <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
             </div>
         </div>
-
-        <div class="setting-group">
-            <label data-i18n="settings_font">Font</label>
-            <select id="font-select">
-                <option value="'Outfit', sans-serif">Outfit (Default)</option>
-                <option value="'Arial', sans-serif">Arial</option>
-                <option value="'Courier New', monospace">Courier New</option>
-                <option value="'GohuFont', monospace">GohuFont (Local)</option>
-            </select>
+        <div class="sidebar-footer">
+            <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset
+                Defaults</button>
         </div>
-
-        <div class="setting-group">
-            <label data-i18n="settings_date_format">Date Format</label>
-            <select id="date-format-select">
-                <option value="full">Weekday, DD Month YYYY</option>
-                <option value="short">DD/MM/YYYY</option>
-                <option value="us">MM/DD/YYYY</option>
-                <option value="iso">YYYY-MM-DD</option>
-            </select>
-        </div>
-
-        <div class="setting-group">
-            <label><span data-i18n="settings_clock_size">Clock Size:</span> <span
-                    id="clock-size-value">6rem</span></label>
-            <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
-        </div>
-
-        <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset Defaults</button>
     </div>
 
     <div class="main-container">
@@ -160,7 +202,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-title">Add Bookmark</h2>
-                <span class="close"><i class="fa-solid fa-xmark"></i></span>
+                <span id="close-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
 
             <!-- Manual Entry Form -->
