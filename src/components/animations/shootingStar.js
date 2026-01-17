@@ -134,14 +134,17 @@ class Particle {
 }
 
 export class ShootingStarEffect {
-  constructor(canvasId, color) {
+  constructor(canvasId, particleColor, bgColor, starColor) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.width = this.canvas.width = window.innerWidth
     this.height = this.canvas.height = window.innerHeight
     this.particles = []
     this.stars = [] // Array for tiny twinkling stars
-    this.color = color || "#ffcc66" // Fiery orange/yellow default
+    this.particleColor = particleColor || "#ffcc66" // Fiery orange/yellow default
+    this.backgroundColor = bgColor || "rgba(0, 0, 0, 0.1)"
+    this.starColor = starColor || "#ffffff"
+    this.starRgbColor = hexToRgb(this.starColor)
     this.animationFrameId = null
     this.maxParticles = 20 // Increased for meteor shower effect
     this.maxStars = 200 // Number of tiny stars across the screen
@@ -176,7 +179,7 @@ export class ShootingStarEffect {
       star.twinklePhase += star.twinkleSpeed
       if (star.twinklePhase > Math.PI * 2) star.twinklePhase -= Math.PI * 2
 
-      this.ctx.fillStyle = `rgba(255, 255, 255, ${twinkle})` // White for stars, with varying alpha
+      this.ctx.fillStyle = `rgba(${this.starRgbColor}, ${twinkle})`
       this.ctx.beginPath()
       this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2)
       this.ctx.fill()
@@ -196,12 +199,12 @@ export class ShootingStarEffect {
     // Start from top-right area
     x = this.width - Math.random() * this.width * 0.3 - 50 // Concentrate right (high x)
     y = Math.random() * this.height * 0.1 - 100 // Start from top (low y)
-    this.particles.push(new Particle(x, y, size, this.color, vx, vy))
+    this.particles.push(new Particle(x, y, size, this.particleColor, vx, vy))
   }
 
   animate() {
     // Enhanced clearing for subtle trail persistence (hơi tàn)
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+    this.ctx.fillStyle = this.backgroundColor
     this.ctx.fillRect(0, 0, this.width, this.height)
 
     // Draw tiny stars first as background
@@ -244,9 +247,26 @@ export class ShootingStarEffect {
   }
 
   updateColor(newColor) {
-    this.color = newColor
+    if (!newColor) return
+    this.particleColor = newColor
     this.particles.forEach((p) => {
       p.setColor(newColor)
     })
+  }
+  updateParticleColor(newColor) {
+    this.updateColor(newColor)
+  }
+
+  updateBackgroundColor(newColor) {
+    if (newColor) {
+      this.backgroundColor = newColor
+    }
+  }
+
+  updateStarColor(newColor) {
+    if (newColor) {
+      this.starColor = newColor
+      this.starRgbColor = hexToRgb(this.starColor)
+    }
   }
 }

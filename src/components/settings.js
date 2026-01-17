@@ -465,7 +465,6 @@ export function initSettings() {
       updateSetting("meteorColor", meteorColorPicker.value)
       saveSettings()
       fallingMeteorEffect.updateColor(meteorColorPicker.value)
-      applySettings()
     })
   }
   if (starColorPicker) {
@@ -473,15 +472,13 @@ export function initSettings() {
       updateSetting("starColor", starColorPicker.value)
       saveSettings()
       starFallEffect.updateColor(starColorPicker.value)
-      applySettings()
     })
   }
   if (shootingStarColorPicker) {
     shootingStarColorPicker.addEventListener("input", () => {
       updateSetting("shootingStarColor", shootingStarColorPicker.value)
       saveSettings()
-      shootingStarEffect.setColor(shootingStarColorPicker.value) // Assuming setColor is the method to update particle color
-      applySettings()
+      shootingStarEffect.updateParticleColor(shootingStarColorPicker.value)
     })
   }
 
@@ -552,7 +549,7 @@ export function initSettings() {
     else if (currentSettings.effect === "meteor")
       fallingMeteorEffect.updateColor(currentSettings.meteorColor)
     else if (currentSettings.effect === "shootingStar")
-      shootingStarEffect.updateColor(currentSettings.shootingStarColor)
+      shootingStarEffect.updateParticleColor(currentSettings.shootingStarColor)
     // Fireflies không cần updateColor
     // Network và Matrix được xử lý trong applySettings()
   })

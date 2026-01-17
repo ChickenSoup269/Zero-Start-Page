@@ -1,7 +1,5 @@
 // --- State Management ---
-
-let bookmarksState = JSON.parse(localStorage.getItem("bookmarks")) || []
-let settingsState = JSON.parse(localStorage.getItem("pageSettings")) || {
+const defaultSettings = {
   background: "local-bg-5",
   font: "'Outfit', sans-serif",
   dateFormat: "full",
@@ -18,6 +16,12 @@ let settingsState = JSON.parse(localStorage.getItem("pageSettings")) || {
   shootingStarColor: "#ffcc66", // Particle color
   shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
   shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
+}
+
+let bookmarksState = JSON.parse(localStorage.getItem("bookmarks")) || []
+let settingsState = {
+  ...defaultSettings,
+  ...(JSON.parse(localStorage.getItem("pageSettings")) || {}),
 }
 
 // Ensure userBackgrounds is always an array
