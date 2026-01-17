@@ -30,5 +30,11 @@
   "alert_imported": "Imported {count} bookmarks!",
   "alert_no_selection": "No new bookmarks selected or they already exist.",
   "settings_upload_image": "Upload Image",
-  "alert_delete_bg_confirm": "Are you sure you want to remove this background?"
+  "alert_delete_bg_confirm": "Are you sure you want to remove this background?",
+  "effect_galaxy": "Galaxy",
+  "effect_meteor": "Meteor Shower",
+  "effect_shooting_star": "Shooting Star",
+  "setting_star_color": "Star Color",
+  "setting_meteor_color": "Meteor Color",
+  "setting_shooting_star_color": "Shooting Star Color"
 }

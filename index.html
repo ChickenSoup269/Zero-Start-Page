@@ -83,7 +83,12 @@
                 <option value="none">None</option>
                 <option value="galaxy">Galaxy</option>
                 <option value="meteor">Meteor Shower</option>
+                <option value="shootingStar" data-i18n="effect_shooting_star">Shooting Star</option>
             </select>
+            <div id="shooting-star-color-setting" class="setting-item" style="display: none;">
+                <label for="shooting-star-color-picker" data-i18n="setting_shooting_star_color">Shooting Star Color</label>
+                <input type="color" id="shooting-star-color-picker" />
+            </div>
             <div id="meteor-color-setting" class="setting-item" style="display: none;">
                 <label for="meteor-color-picker">Meteor Color</label>
                 <input type="color" id="meteor-color-picker" />
@@ -183,7 +188,7 @@
             </div>
         </div>
     </div>
-    <script src="script.js" type="module"></script>
+    <script type="module" src="src/main.js"></script>
 </body>
 
 </html>

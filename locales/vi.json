@@ -30,5 +30,11 @@
   "alert_imported": "Đã nhập {count} dấu trang!",
   "alert_no_selection": "Chưa chọn dấu trang mới hoặc đã tồn tại.",
   "settings_upload_image": "Tải ảnh lên",
-  "alert_delete_bg_confirm": "Bạn có chắc chắn muốn xóa hình nền này không?"
+  "alert_delete_bg_confirm": "Bạn có chắc chắn muốn xóa hình nền này không?",
+  "effect_galaxy": "Dải ngân hà",
+  "effect_meteor": "Mưa sao băng",
+  "effect_shooting_star": "Sao băng",
+  "setting_star_color": "Màu ngôi sao",
+  "setting_meteor_color": "Màu sao băng (Mưa)",
+  "setting_shooting_star_color": "Màu sao băng"
 }
