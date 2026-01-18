@@ -16,8 +16,11 @@
   --accent-color: #a8c0ff;
   --hover-bg: rgba(255, 255, 255, 0.15);
   /* Sidebar Variables */
-  --sidebar-bg: rgba(30, 30, 30, 0.95);
-  --sidebar-width: 300px;
+  --sidebar-bg: rgba(20, 20, 25, 0.85);
+  --sidebar-width: 320px;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
 }
 
 @font-face {
@@ -91,123 +94,228 @@ body {
 
 /* Settings Sidebar */
 .settings-sidebar {
-    position: fixed;
-    left: -320px;
-    /* Hidden by default */
-    top: 0;
-    width: var(--sidebar-width);
-    height: 100%;
-    background: var(--sidebar-bg);
-    backdrop-filter: blur(15px);
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
-    transition: left 0.3s ease;
-    z-index: 2000;
-    color: #eee;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: space-between; */
+  position: fixed;
+  left: -350px;
+  top: 0;
+  width: var(--sidebar-width);
+  height: 100%;
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--sidebar-border);
 }
 
 .settings-sidebar.open {
-    left: 0;
+  left: 0;
 }
 
 .sidebar-header {
-    padding: 20px 20px 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 25px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.sidebar-header h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  background: linear-gradient(to right, #fff, var(--accent-color));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .sidebar-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 25px 20px;
+}
+
+/* Custom Scrollbar */
+.sidebar-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .sidebar-footer {
-    padding: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-top: 1px solid var(--sidebar-border);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .close-sidebar {
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #aaa;
-    transition: color 0.2s;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #aaa;
+  transition: color 0.2s;
 }
 
 .close-sidebar:hover {
-    color: #fff;
+  color: #fff;
 }
 
 .setting-group {
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .setting-group:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .setting-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    color: #ccc;
-    font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: #aaa;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.setting-group label i {
+  color: var(--accent-color);
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
 }
 
 .setting-group input[type="text"],
 .setting-group select {
-    width: 100%;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: #fff;
-    font-family: inherit;
-    box-sizing: border-box;
-    transition: all 0.2s;
+  width: 100%;
+  padding: 12px 15px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .setting-group select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ccc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 1em;
-    padding-right: 2.5em;
-    /* space for the arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ccc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
+  padding-right: 2.5em;
+  /* space for the arrow */
 }
 
 .setting-group input[type="text"]:focus,
 .setting-group select:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    background: rgba(0, 0, 0, 0.5);
+  outline: none;
+  border-color: var(--accent-color);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .setting-group input[type="color"] {
-    width: 100%;
-    height: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 5px;
+  width: 100%;
+  height: 45px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+
+.setting-group input[type="color"]:hover {
+  transform: scale(1.02);
+}
+
+.setting-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.setting-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
 }
 
 .setting-group input[type="range"] {
-    width: 100%;
-    margin-top: 5px;
-    accent-color: var(--accent-color);
+  width: 100%;
+  height: 6px;
+  background: var(--input-bg);
+  border-radius: 5px;
+  outline: none;
+  accent-color: var(--accent-color);
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: 10px;
 }
 
+.setting-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
 
-/* Hide animation if background image is set via settings */
+.setting-group input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.setting-item {
+  margin-bottom: 20px;
+}
+
+/* Micro-animations */
+.setting-group, .settings-section {
+  animation: slideIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.setting-group:nth-child(1) { animation-delay: 0.1s; }
+.setting-group:nth-child(2) { animation-delay: 0.2s; }
+.setting-group:nth-child(3) { animation-delay: 0.3s; }
+.setting-group:nth-child(4) { animation-delay: 0.4s; }
+.setting-group:nth-child(5) { animation-delay: 0.5s; }
+
+/* Background Animation Styles */
 body.bg-image-active {
-  animation: none;
+  animation: none !important;
 }
 
 @keyframes gradientBG {
@@ -342,7 +450,7 @@ body.bg-image-active {
   justify-content: center;
   align-items: flex-start; /* Align to top for text below */
   margin-top: 40px;
-  gap: 15px;
+  gap: 5px;
   max-width: 800px;
   margin-left: 2px;
   margin-right: 2px;
@@ -491,7 +599,6 @@ body.bg-image-active {
   margin-right: 10px;
 }
 
-
 .close {
   position: absolute;
   top: 15px;
@@ -569,8 +676,6 @@ body.bg-image-active {
   font-size: 1.5rem;
 }
 
-
-
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -610,25 +715,28 @@ body.bg-image-active {
   transition: all 0.2s;
 }
 
-
-
 .secondary-btn {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
   flex: 1;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .secondary-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #fff;
   border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .text-btn {
@@ -742,19 +850,27 @@ body.bg-image-active {
 .section-toggle {
   cursor: pointer;
   font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.section-toggle i {
+  color: var(--accent-color);
+  margin-right: 10px;
 }
 
 .section-toggle::after {
   content: "\f077"; /* Font Awesome up arrow */
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
-  transition: transform 0.2s ease-in-out;
-  font-size: 0.9rem;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.8rem;
+  opacity: 0.5;
 }
 
 .settings-section.collapsed .section-toggle::after {
@@ -768,28 +884,34 @@ body.bg-image-active {
 /* Local Background Gallery */
 .local-bg-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 10px;
-  margin-top: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 12px;
+  margin-top: 1rem;
 }
 
 .local-bg-item {
   width: 100%;
-  height: 40px;
-  border-radius: 6px;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background-size: cover;
+  background-position: center;
 }
 
 .local-bg-item.active {
   border-color: var(--accent-color);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px var(--accent-color);
 }
 
 .local-bg-item:hover {
-  opacity: 0.8;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 /* Predefined Local Backgrounds */
