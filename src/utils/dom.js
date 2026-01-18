@@ -5,6 +5,9 @@ export const closeSettings = document.getElementById("close-settings")
 export const bgInput = document.getElementById("bg-input")
 export const bgColorPicker = document.getElementById("bg-color-picker")
 export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
+export const saveColorBtn = document.getElementById("save-color-btn")
+export const removeBgBtn = document.getElementById("remove-bg-btn")
+export const userColorsGallery = document.getElementById("user-colors-gallery")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
 export const fontSelect = document.getElementById("font-select")
@@ -20,6 +23,10 @@ export const gradientAngleInput = document.getElementById(
 )
 export const gradientAngleValue = document.getElementById(
   "gradient-angle-value",
+)
+export const saveGradientBtn = document.getElementById("save-gradient-btn")
+export const userGradientsGallery = document.getElementById(
+  "user-gradients-gallery",
 )
 
 export const meteorColorPicker = document.getElementById("meteor-color-picker")

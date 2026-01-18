@@ -48,9 +48,14 @@
                         <div class="input-group">
                             <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
                             <input type="color" id="bg-color-picker" aria-label="Pick a color" />
-                            <button id="unsplash-random-btn" class="secondary-btn"
-                                data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
+                            <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color_btn">Save Color</button>
+                            <button id="unsplash-random-btn" class="secondary-btn" data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
+                            <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn">Remove</button>
                         </div>
+                    </div>
+                    <div class="setting-item">
+                        <label data-i18n="settings_saved_colors">Saved Colors</label>
+                        <div id="user-colors-gallery" class="local-bg-gallery"></div>
                     </div>
                     <div class="setting-item">
                         <label data-i18n="settings_local_bg">Local Themes</label>
@@ -78,6 +83,12 @@
                 </div>
                 <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
                 <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+                <button id="save-gradient-btn" class="secondary-btn full-width" data-i18n="settings_save_gradient_btn">Save Gradient</button>
+            </div>
+
+            <div class="setting-group">
+                <label data-i18n="settings_saved_gradients">Saved Gradients</label>
+                <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
 
             <div class="setting-group">

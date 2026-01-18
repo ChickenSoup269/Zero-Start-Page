@@ -11,6 +11,8 @@ const defaultSettings = {
   gradientEnd: "#302b63",
   gradientAngle: "135",
   userBackgrounds: [],
+  userColors: [],
+  userGradients: [], // Add userGradients
   meteorColor: "#ffffff",
   starColor: "#ffffff",
   shootingStarColor: "#ffcc66", // Particle color
@@ -26,6 +28,8 @@ let settingsState = {
 
 // Ensure userBackgrounds is always an array
 settingsState.userBackgrounds = settingsState.userBackgrounds || []
+settingsState.userColors = settingsState.userColors || []
+settingsState.userGradients = settingsState.userGradients || []
 
 export const localBackgrounds = [
   { id: "local-bg-1", name: "Sunset" },
@@ -64,6 +68,8 @@ export function resetSettingsState() {
     gradientEnd: "#302b63",
     gradientAngle: "135",
     userBackgrounds: [],
+    userColors: [],
+    userGradients: [],
     meteorColor: "#ffffff",
     starColor: "#ffffff",
     shootingStarColor: "#ffcc66", // Particle color
