@@ -474,6 +474,7 @@ body.bg-image-active {
   margin-top: -1px;
 }
 
+
 .suggestion-item {
   padding: 12px 25px;
   color: var(--text-color);
@@ -481,11 +482,21 @@ body.bg-image-active {
   transition: background 0.2s;
   text-align: left;
   font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.suggestion-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 15px;
+    border-radius: 4px;
 }
 
 .suggestion-item:hover {
   background: var(--hover-bg);
 }
+
 
 
 /* Bookmarks */
