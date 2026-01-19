@@ -4,6 +4,7 @@ import { initBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
 import { initContextMenu } from "./components/contextMenu.js"
 import { initSettings } from "./components/settings.js"
+import { initSearch } from "./components/search.js"
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
@@ -16,4 +17,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   initModal()
   initContextMenu()
   initSettings()
+  initSearch()
 })
