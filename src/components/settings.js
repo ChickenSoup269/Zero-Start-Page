@@ -445,6 +445,7 @@ export function initSettings() {
 
   unsplashRandomBtn.addEventListener("click", setUnsplashRandomBackground)
   saveColorBtn.addEventListener("click", () => {
+    const settings = getSettings();
     const color = bgInput.value.trim()
     if (color.match(/^#([0-9a-f]{3}){1,2}$/i)) {
       if (!settings.userColors.includes(color)) {
@@ -493,11 +494,11 @@ export function initSettings() {
           canvas.height = height
           canvas.getContext("2d").drawImage(img, 0, 0, width, height)
           const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.9)
-          if (settings.userBackgrounds.length >= 5) {
+          if (getSettings().userBackgrounds.length >= 5) {
             alert("You can only upload up to 5 custom backgrounds.")
             return
           }
-          settings.userBackgrounds.push(resizedDataUrl)
+          getSettings().userBackgrounds.push(resizedDataUrl)
           handleSettingUpdate("background", resizedDataUrl)
         }
       }
@@ -542,18 +543,27 @@ export function initSettings() {
   )
 
   // Gradient Listeners
-  gradientStartPicker.addEventListener("input", () =>
-    handleSettingUpdate(null, { ...getSettings(), gradientStart: gradientStartPicker.value }, true)
-  )
-  gradientEndPicker.addEventListener("input", () =>
-    handleSettingUpdate(null, { ...getSettings(), gradientEnd: gradientEndPicker.value }, true)
-  )
+  const updateCurrentGradient = () => {
+    handleSettingUpdate(
+      null,
+      {
+        start: gradientStartPicker.value,
+        end: gradientEndPicker.value,
+        angle: gradientAngleInput.value,
+      },
+      true,
+    )
+  }
+
+  gradientStartPicker.addEventListener("input", updateCurrentGradient)
+  gradientEndPicker.addEventListener("input", updateCurrentGradient)
   gradientAngleInput.addEventListener("input", () => {
     gradientAngleValue.textContent = gradientAngleInput.value
-    handleSettingUpdate(null, { ...getSettings(), gradientAngle: gradientAngleInput.value }, true)
+    updateCurrentGradient()
   })
 
   saveGradientBtn.addEventListener("click", () => {
+    const settings = getSettings();
     const newGradient = {
       start: gradientStartPicker.value,
       end: gradientEndPicker.value,

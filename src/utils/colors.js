@@ -150,3 +150,28 @@ export function getContrastYIQ(hexcolor) {
   var yiq = (r * 299 + g * 587 + b * 114) / 1000
   return yiq >= 128 ? "black" : "white"
 }
+
+export function hexToRgb(hex) {
+  if (!hex || typeof hex !== "string" || hex.charAt(0) !== "#") {
+    return { r: 0, g: 0, b: 0 } // Return black for invalid input
+  }
+  hex = hex.slice(1)
+
+  if (hex.length === 3) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+  }
+
+  if (hex.length !== 6) {
+    return { r: 0, g: 0, b: 0 } // Return black for invalid input
+  }
+
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    return { r: 0, g: 0, b: 0 }
+  }
+
+  return { r, g, b }
+}
