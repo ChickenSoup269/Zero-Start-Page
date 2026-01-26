@@ -28,6 +28,8 @@ import {
   dateFormatSelect,
   clockSizeInput,
   clockSizeValue,
+  clockColorPicker,
+  resetClockColorBtn,
   localBackgroundGallery,
   localImageUpload,
   uploadLocalImageBtn,
@@ -37,10 +39,20 @@ import {
   saveColorBtn,
   removeBgBtn,
   userColorsGallery,
+  bgPositionSetting,
+  bgPosXInput,
+  bgPosXValue,
+  bgPosYInput,
+  bgPosYValue,
   networkColorPicker,
   networkColorSetting,
   matrixColorPicker,
   matrixColorSetting,
+  auraColorPicker,
+  auraColorSetting,
+  hackerColorPicker,
+  hackerColorSetting,
+  bgVideo, // Added bgVideo
 } from "../utils/dom.js"
 import {
   getSettings,
@@ -59,6 +71,9 @@ import { ShootingStarEffect } from "./animations/shootingStar.js"
 import { FirefliesEffect } from "./animations/fireflies.js"
 import { NetworkEffect } from "./animations/network.js"
 import { MatrixRain } from "./animations/matrixRain.js"
+import { AuraEffect } from "./animations/aura.js"
+import { WindEffect } from "./animations/wind.js"
+import { HackerEffect } from "./animations/hacker.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -66,7 +81,10 @@ let starFallEffect,
   shootingStarEffect,
   firefliesEffect,
   networkEffect,
-  matrixRainEffect
+  matrixRainEffect,
+  auraEffect,
+  windEffect,
+  hackerEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
   if (isGradient) {
@@ -84,24 +102,28 @@ function handleSettingUpdate(key, value, isGradient = false) {
   renderUserGradients()
 }
 
-const unsplashUsers = [
-  "aleskrivec",
-  "eberhardgross",
-  "guillaumedegermain",
-  "robertlukeman",
-  "nate_dumlao",
-  "jeremybishop",
-  "anniespratt",
-  "nasa",
-]
+const unsplashPhotoIds = [
+  "1470071459604-3b5ec3a7fe05", // Nature Forest
+  "1464822759023-fed622ff2c3b", // Mountains
+  "1501785888041-af3ef285b470", // Coastal
+  "1506744038136-46273834b3fb", // Landscape
+  "1519681393784-d120267933ba", // Night Mountains
+  "1439405326854-01517487439e", // Ocean
+  "1500382017468-9049fed747ef", // Green Field
+  "1475924156736-4d2274e62a93", // Beach
+  "1502082553048-f009c37129b9", // Forest Sun
+  "1532274354234-5f59a78992c2", // Scenic
+  "1419242902214-272b3f66ee7a", // Galaxy Night
+  "1518709268805-4e9042af9f23", // Aurora
+];
 
 function setUnsplashRandomBackground() {
-  const randomUser =
-    unsplashUsers[Math.floor(Math.random() * unsplashUsers.length)]
-  const width = window.innerWidth
-  const height = window.innerHeight
-  const imageUrl = `https://source.unsplash.com/user/${randomUser}/${width}x${height}`
-  handleSettingUpdate("background", imageUrl)
+  const randomId = unsplashPhotoIds[Math.floor(Math.random() * unsplashPhotoIds.length)];
+  const width = window.innerWidth > 0 ? window.innerWidth : 1920;
+  const height = window.innerHeight > 0 ? window.innerHeight : 1080;
+  // Use 'photo-' prefix properly and add necessary ixlib for stability
+  const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&q=80`;
+  handleSettingUpdate("background", imageUrl);
 }
 
 export function applySettings() {
@@ -116,21 +138,39 @@ export function applySettings() {
   // 2. Background Logic
   const bg = settings.background
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
-  const isUserUploadedBg = bg && bg.startsWith("data:image")
+  const isUserUploadedBg = bg && (bg.startsWith("data:image") || bg.startsWith("data:video"))
+  const bgVideoElement = document.getElementById("bg-video")
+
+  // Hide video by default
+  if (bgVideoElement) bgVideoElement.style.display = "none"
 
   if (isPredefinedLocalBg) {
     document.body.classList.add(bg)
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (isUserUploadedBg) {
     document.body.classList.add("bg-image-active")
-    document.body.style.backgroundImage = `url('${bg}')`
+    if (bg.startsWith("data:video")) {
+      if (bgVideoElement) {
+        bgVideoElement.src = bg
+        bgVideoElement.style.display = "block"
+      }
+    } else {
+      document.body.style.backgroundImage = `url('${bg}')`
+    }
     document.body.style.backgroundSize = "cover"
-    document.body.style.backgroundPosition = "center"
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (bg) {
     document.body.classList.add("bg-image-active")
-    if (bg.match(/^https?:\/\//)) {
+    const isVideoUrl = bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo") // simplistic check
+    if (isVideoUrl) {
+      if (bgVideoElement) {
+        bgVideoElement.src = bg
+        bgVideoElement.style.display = "block"
+      }
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
+    } else if (bg.match(/^https?:\/\//)) {
       document.body.style.backgroundImage = `url('${bg}')`
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else {
       document.body.style.background = bg
       document.documentElement.style.setProperty(
@@ -138,16 +178,46 @@ export function applySettings() {
         getContrastYIQ(bg),
       )
     }
-  } else {
+  }
+ else {
     // If no background image/color, apply the gradient
     document.body.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
   }
+
+  // 2.1 Background Position
+  document.documentElement.style.setProperty(
+    "--bg-pos-x",
+    `${settings.bgPositionX || 50}%`,
+  )
+  document.documentElement.style.setProperty(
+    "--bg-pos-y",
+    `${settings.bgPositionY || 50}%`,
+  )
 
   // 3. UI Props
   document.documentElement.style.setProperty("--font-primary", settings.font)
   document.documentElement.style.setProperty(
     "--clock-size",
     `${settings.clockSize}rem`,
+  )
+
+  // 3.1 Clock Color Contrast Logic
+  let finalClockColor = settings.clockColor
+  if (!finalClockColor) {
+    // If null, detect from background
+    if (isPredefinedLocalBg || isUserUploadedBg || (bg && bg.match(/^https?:\/\//))) {
+      finalClockColor = "#ffffff" // Images usually look better with white
+    } else if (bg) {
+      finalClockColor = getContrastYIQ(bg)
+    } else {
+      // Gradient
+      finalClockColor = getContrastYIQ(settings.gradientStart)
+    }
+  }
+
+  document.documentElement.style.setProperty(
+    "--clock-color",
+    finalClockColor,
   )
   if (settings.accentColor) {
     document.documentElement.style.setProperty(
@@ -163,6 +233,9 @@ export function applySettings() {
   if (firefliesEffect) firefliesEffect.stop()
   if (networkEffect) networkEffect.stop()
   if (matrixRainEffect) matrixRainEffect.stop()
+  if (auraEffect) auraEffect.stop()
+  if (windEffect) windEffect.stop()
+  if (hackerEffect) hackerEffect.stop()
 
   // 5. Start Selected Effect
   switch (settings.effect) {
@@ -183,6 +256,15 @@ export function applySettings() {
       break
     case "matrix":
       matrixRainEffect.start()
+      break
+    case "aura":
+      auraEffect.start()
+      break
+    case "wind":
+      windEffect.start()
+      break
+    case "hacker":
+      hackerEffect.start()
       break
   }
 
@@ -224,6 +306,25 @@ function updateSettingsInputs() {
   clockSizeValue.textContent = `${settings.clockSize}rem`
   languageSelect.value = settings.language || "en"
   accentColorPicker.value = settings.accentColor || "#a8c0ff"
+  clockColorPicker.value = settings.clockColor || "#ffffff"
+  
+  bgPosXInput.value = settings.bgPositionX || 50
+  bgPosXValue.textContent = `${bgPosXInput.value}%`
+  bgPosYInput.value = settings.bgPositionY || 50
+  bgPosYValue.textContent = `${bgPosYInput.value}%`
+
+  // Show/Hide Bg Position setting (only for image backgrounds)
+  const isImageBg = 
+    settings.background && 
+    (settings.background.startsWith("photo-") || 
+     settings.background.startsWith("local-bg-") || 
+     settings.background.startsWith("data:image/") ||
+     settings.background.startsWith("http"))
+
+  bgPositionSetting.style.display = isImageBg ? "block" : "none"
+
+  // If clockColor is null, maybe fade the picker or show it's default
+  clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
   effectSelect.value = settings.effect
 
   // Gradient Inputs
@@ -242,6 +343,8 @@ function updateSettingsInputs() {
     settings.shootingStarStarColor || "#ffffff"
   networkColorPicker.value = settings.networkColor || "#00bcd4"
   matrixColorPicker.value = settings.matrixColor || "#00FF00"
+  auraColorPicker.value = settings.auraColor || "#a8c0ff"
+  hackerColorPicker.value = settings.hackerColor || "#00FF00"
 
   // Visibility of Effect Settings
   meteorColorSetting.style.display =
@@ -258,6 +361,10 @@ function updateSettingsInputs() {
     settings.effect === "network" ? "block" : "none"
   matrixColorSetting.style.display =
     settings.effect === "matrix" ? "block" : "none"
+  auraColorSetting.style.display =
+    settings.effect === "aura" ? "block" : "none"
+  hackerColorSetting.style.display =
+    settings.effect === "hacker" ? "block" : "none"
 
   // Highlight active background
   document.querySelectorAll(".local-bg-item").forEach((item) => {
@@ -406,6 +513,15 @@ export function initSettings() {
     "effect-canvas",
     settings.matrixColor,
   )
+  auraEffect = new AuraEffect(
+    "effect-canvas",
+    settings.auraColor,
+  )
+  windEffect = new WindEffect("effect-canvas")
+  hackerEffect = new HackerEffect(
+    "effect-canvas",
+    settings.hackerColor,
+  )
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
@@ -473,8 +589,21 @@ export function initSettings() {
     if (file) {
       const reader = new FileReader()
       reader.onload = (event) => {
+        const dataUrl = event.target.result
+        
+        // Preserve GIF or handle Video
+        if (file.type === "image/gif" || file.type.startsWith("video/")) {
+            if (getSettings().userBackgrounds.length >= 5) {
+                alert("You can only upload up to 5 custom backgrounds.")
+                return
+            }
+            getSettings().userBackgrounds.push(dataUrl)
+            handleSettingUpdate("background", dataUrl)
+            return
+        }
+
         const img = new Image()
-        img.src = event.target.result
+        img.src = dataUrl
         img.onload = () => {
           const canvas = document.createElement("canvas")
           const MAX_SIZE = 1920
@@ -541,6 +670,16 @@ export function initSettings() {
   accentColorPicker.addEventListener("input", () =>
     handleSettingUpdate("accentColor", accentColorPicker.value),
   )
+
+  bgPosXInput.addEventListener("input", () => {
+    bgPosXValue.textContent = `${bgPosXInput.value}%`
+    handleSettingUpdate("bgPositionX", bgPosXInput.value)
+  })
+
+  bgPosYInput.addEventListener("input", () => {
+    bgPosYValue.textContent = `${bgPosYInput.value}%`
+    handleSettingUpdate("bgPositionY", bgPosYInput.value)
+  })
 
   // Gradient Listeners
   const updateCurrentGradient = () => {
@@ -628,6 +767,17 @@ export function initSettings() {
     saveSettings()
     matrixRainEffect.updateColor(matrixColorPicker.value)
   })
+  auraColorPicker.addEventListener("input", () => {
+    updateSetting("auraColor", auraColorPicker.value)
+    saveSettings()
+    auraEffect.updateColor(auraColorPicker.value)
+  })
+
+  hackerColorPicker.addEventListener("input", () => {
+    updateSetting("hackerColor", hackerColorPicker.value)
+    saveSettings()
+    hackerEffect.updateColor(hackerColorPicker.value)
+  })
 
   effectSelect.addEventListener("change", () =>
     handleSettingUpdate("effect", effectSelect.value),
@@ -641,6 +791,12 @@ export function initSettings() {
   clockSizeInput.addEventListener("input", () => {
     clockSizeValue.textContent = `${clockSizeInput.value}rem`
     handleSettingUpdate("clockSize", clockSizeInput.value)
+  })
+  clockColorPicker.addEventListener("input", () => {
+    handleSettingUpdate("clockColor", clockColorPicker.value)
+  })
+  resetClockColorBtn.addEventListener("click", () => {
+    handleSettingUpdate("clockColor", null)
   })
 
   resetSettingsBtn.addEventListener("click", () => {

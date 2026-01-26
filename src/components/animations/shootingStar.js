@@ -1,272 +1,247 @@
 // shootingStar.js
 
+/**
+ * Utility to convert hex color to RGB string
+ */
 function hexToRgb(hex) {
-  if (!hex || typeof hex !== "string" || hex.charAt(0) !== "#") {
-    return "0,0,0" // Return black for invalid input
-  }
-  hex = hex.slice(1)
-
-  if (hex.length === 3) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
-  }
-
-  if (hex.length !== 6) {
-    return "0,0,0" // Return black for invalid input
-  }
-
-  const r = parseInt(hex.substring(0, 2), 16)
-  const g = parseInt(hex.substring(2, 4), 16)
-  const b = parseInt(hex.substring(4, 6), 16)
-
-  if (isNaN(r) || isNaN(g) || isNaN(b)) {
-    return "0,0,0"
-  }
-
-  return `${r},${g},${b}`
+  if (!hex || typeof hex !== "string" || hex.charAt(0) !== "#") return "0,0,0";
+  hex = hex.slice(1);
+  if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  if (hex.length !== 6) return "0,0,0";
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return isNaN(r) || isNaN(g) || isNaN(b) ? "0,0,0" : `${r},${g},${b}`;
 }
 
-class Particle {
-  constructor(x, y, size, color, vx, vy) {
-    this.x = x
-    this.y = y
-    this.size = size
-    this.vx = vx
-    this.vy = vy
-    this.trail = []
-    this.trailLength = 60 // Increased for longer comet-like trails
-    this.sparks = [] // Array for burning sparks
-    this.setColor(color)
+class ShootingStar {
+  constructor(width, height, color) {
+    this.reset(width, height, color);
   }
 
-  setColor(hex) {
-    this.color = hex
-    this.rgbColor = hexToRgb(hex)
+  reset(width, height, color) {
+    this.x = Math.random() * width * 1.5; 
+    this.y = -Math.random() * height * 0.5;
+    
+    // Variance in speed: some very fast (30+), some very slow (5-10)
+    const speedType = Math.random();
+    if (speedType < 0.2) {
+      this.speed = Math.random() * 5 + 5; // Slow: 5-10
+      this.length = Math.random() * 50 + 50;
+    } else if (speedType > 0.8) {
+      this.speed = Math.random() * 10 + 30; // Very fast: 30-40
+      this.length = Math.random() * 100 + 200;
+    } else {
+      this.speed = Math.random() * 10 + 15; // Normal: 15-25
+      this.length = Math.random() * 80 + 100;
+    }
+
+    this.size = Math.random() * 1.5 + 1;
+    this.angle = (135 * Math.PI) / 180 + (Math.random() - 0.5) * 0.2;
+    this.color = color;
+    this.opacity = 1;
+    this.active = true;
   }
 
-  update() {
-    this.trail.push({ x: this.x, y: this.y })
-    if (this.trail.length > this.trailLength) {
-      this.trail.shift()
-    }
-    this.x += this.vx
-    this.y += this.vy
+  update(width, height) {
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
 
-    // Update sparks
-    this.sparks.forEach((spark, index) => {
-      spark.life -= 1
-      if (spark.life <= 0) {
-        this.sparks.splice(index, 1)
-        return
-      }
-      spark.x += spark.vx
-      spark.y += spark.vy
-    })
-
-    // Add new sparks randomly
-    if (Math.random() < 0.3) {
-      for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
-        this.sparks.push({
-          x: this.x + (Math.random() - 0.5) * this.size,
-          y: this.y + (Math.random() - 0.5) * this.size,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          size: Math.random() * 1 + 0.5,
-          life: Math.random() * 20 + 10,
-          maxLife: 30,
-        })
-      }
+    if (this.y > height * 0.8) {
+      this.opacity -= 0.015;
     }
 
-    // Limit sparks to prevent performance issues
-    if (this.sparks.length > 50) {
-      this.sparks.splice(0, this.sparks.length - 50)
+    if (this.x < -this.length || this.y > height + this.length || this.opacity <= 0) {
+      this.active = false;
     }
   }
 
   draw(ctx) {
-    // Add glow effect for dazzling light
-    ctx.shadowColor = `rgba(${this.rgbColor}, 0.8)`
-    ctx.shadowBlur = 15 // Glow blur
+    if (!this.active) return;
 
-    // Draw trail with enhanced fading and longer comet effect
-    for (let i = 0; i < this.trail.length; i++) {
-      const trailPos = this.trail[i]
-      const alpha = (i / this.trail.length) * 0.6 // Stronger fading effect
-      const trailSize = this.size * (i / this.trail.length) * 1.2 // Slightly larger trail
-      ctx.fillStyle = `rgba(${this.rgbColor}, ${alpha})`
-      ctx.beginPath()
-      ctx.arc(trailPos.x, trailPos.y, trailSize, 0, Math.PI * 2)
-      ctx.fill()
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+
+    const gradient = ctx.createLinearGradient(0, 0, -this.length, 0);
+    const rgb = hexToRgb(this.color);
+    gradient.addColorStop(0, `rgba(${rgb}, ${this.opacity})`);
+    gradient.addColorStop(1, `rgba(${rgb}, 0)`);
+
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = this.size;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-this.length, 0);
+    ctx.stroke();
+
+    // Enhanced head glow
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = `rgba(${rgb}, ${this.opacity})`;
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.size * 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+class BackgroundStar {
+  constructor(width, height, color) {
+    this.x = Math.random() * width;
+    this.y = Math.random() * height;
+    this.size = Math.random() * 1.2 + 0.2;
+    this.baseAlpha = Math.random() * 0.5 + 0.2;
+    this.alpha = this.baseAlpha;
+    this.twinkleFactor = Math.random() * 0.03 + 0.005;
+    this.color = color;
+    this.phase = Math.random() * Math.PI * 2;
+    this.isSparkle = Math.random() < 0.05; // 5% chance to be a specialized sparkle star
+  }
+
+  update() {
+    this.phase += this.twinkleFactor;
+    // Sharper twinkle for sparkle stars
+    const sine = Math.sin(this.phase);
+    if (this.isSparkle) {
+      this.alpha = this.baseAlpha + Math.pow(Math.abs(sine), 10) * 0.8;
+    } else {
+      this.alpha = this.baseAlpha + sine * 0.2;
+    }
+  }
+
+  draw(ctx) {
+    const rgb = hexToRgb(this.color);
+    ctx.fillStyle = `rgba(${rgb}, ${this.alpha})`;
+    
+    if (this.isSparkle && this.alpha > 0.8) {
+      // Draw a small cross sparkle for highlighting
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.beginPath();
+      ctx.moveTo(-this.size * 3, 0);
+      ctx.lineTo(this.size * 3, 0);
+      ctx.moveTo(0, -this.size * 3);
+      ctx.lineTo(0, this.size * 3);
+      ctx.strokeStyle = `rgba(${rgb}, ${this.alpha})`;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      ctx.restore();
     }
 
-    // Draw head with fiery gradient for burning effect
-    const gradient = ctx.createRadialGradient(
-      this.x,
-      this.y,
-      0,
-      this.x,
-      this.y,
-      this.size * 1.5, // Larger radius for more dazzle
-    )
-    gradient.addColorStop(0, `rgba(255, 255, 255, 1)`) // White-hot center
-    gradient.addColorStop(0.3, `rgba(${this.rgbColor}, 1)`) // Main color
-    gradient.addColorStop(0.7, `rgba(${this.rgbColor}, 0.7)`) // Fading
-    gradient.addColorStop(1, `rgba(255, 0, 0, 0)`) // Reddish burn-out
-
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2) // Larger head for chói lọi
-    ctx.fill()
-
-    // Reset shadow
-    ctx.shadowBlur = 0
-    ctx.shadowColor = "transparent"
-
-    // Draw sparks for burning embers
-    this.sparks.forEach((spark) => {
-      const sparkAlpha = spark.life / spark.maxLife
-      ctx.fillStyle = `rgba(255, ${200 - spark.life * 5}, 0, ${sparkAlpha})` // Fiery orange-red fade
-      ctx.beginPath()
-      ctx.arc(spark.x, spark.y, spark.size, 0, Math.PI * 2)
-      ctx.fill()
-    })
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
 export class ShootingStarEffect {
   constructor(canvasId, particleColor, bgColor, starColor) {
-    this.canvas = document.getElementById(canvasId)
-    this.ctx = this.canvas.getContext("2d")
-    this.width = this.canvas.width = window.innerWidth
-    this.height = this.canvas.height = window.innerHeight
-    this.particles = []
-    this.stars = [] // Array for tiny twinkling stars
-    this.particleColor = particleColor || "#ffcc66" // Fiery orange/yellow default
-    this.backgroundColor = bgColor || "rgba(0, 0, 0, 0.1)"
-    this.starColor = starColor || "#ffffff"
-    this.starRgbColor = hexToRgb(this.starColor)
-    this.animationFrameId = null
-    this.maxParticles = 20 // Increased for meteor shower effect
-    this.maxStars = 200 // Number of tiny stars across the screen
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext("2d");
+    
+    this.particleColor = particleColor || "#ffffff";
+    this.backgroundColor = bgColor || "#000000";
+    this.starColor = starColor || "#ffffff";
+    
+    this.stars = [];
+    this.shootingStars = [];
+    this.maxStars = 200;
+    this.animationFrameId = null;
 
-    window.addEventListener("resize", () => {
-      this.width = this.canvas.width = window.innerWidth
-      this.height = this.canvas.height = window.innerHeight
-      this.createStars() // Recreate stars on resize
-    })
-
-    this.createStars() // Initial creation of stars
+    this.init();
+    window.addEventListener("resize", () => this.handleResize());
   }
 
-  createStars() {
-    this.stars = []
+  init() {
+    this.handleResize();
+    this.createBackgroundStars();
+  }
+
+  handleResize() {
+    const dpr = window.devicePixelRatio || 1;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
+    this.ctx.scale(dpr, dpr);
+    this.createBackgroundStars();
+  }
+
+  createBackgroundStars() {
+    this.stars = [];
     for (let i = 0; i < this.maxStars; i++) {
-      this.stars.push({
-        x: Math.random() * this.width,
-        y: Math.random() * this.height,
-        size: Math.random() * 1 + 0.5, // Tiny size
-        alpha: Math.random() * 0.5 + 0.5, // Base alpha
-        twinkleSpeed: Math.random() * 0.02 + 0.01, // Speed of twinkling
-        twinklePhase: Math.random() * Math.PI * 2, // Random phase for variety
-      })
+      this.stars.push(new BackgroundStar(this.width, this.height, this.starColor));
     }
   }
 
-  drawStars() {
-    this.stars.forEach((star) => {
-      // Twinkling effect by varying alpha
-      const twinkle = Math.sin(star.twinklePhase) * 0.3 + star.alpha
-      star.twinklePhase += star.twinkleSpeed
-      if (star.twinklePhase > Math.PI * 2) star.twinklePhase -= Math.PI * 2
-
-      this.ctx.fillStyle = `rgba(${this.starRgbColor}, ${twinkle})`
-      this.ctx.beginPath()
-      this.ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2)
-      this.ctx.fill()
-    })
-  }
-
-  createParticle() {
-    const size = Math.random() * 3 + 2 // Larger size variance for dazzle
-    const isFast = Math.random() < 0.5 // 50% chance for fast or slow
-    const speed = isFast ? Math.random() * 6 + 4 : Math.random() * 2 + 1 // Fast: 4-10, Slow: 1-3
-    // Angle for top-right to bottom-left: around 135° (3π/4) with variance (120°-150° or 2π/3 to 5π/6)
-    const angle = (2 * Math.PI) / 3 + Math.random() * (Math.PI / 6)
-    const vx = Math.cos(angle) * speed // Will be negative for leftward motion
-    const vy = Math.sin(angle) * speed // Positive downward
-
-    let x, y
-    // Start from top-right area
-    x = this.width - Math.random() * this.width * 0.3 - 50 // Concentrate right (high x)
-    y = Math.random() * this.height * 0.1 - 100 // Start from top (low y)
-    this.particles.push(new Particle(x, y, size, this.particleColor, vx, vy))
+  createShootingStar() {
+    if (this.shootingStars.length < 3 && Math.random() < 0.005) {
+      this.shootingStars.push(new ShootingStar(this.width, this.height, this.particleColor));
+    }
   }
 
   animate() {
-    // Enhanced clearing for subtle trail persistence (hơi tàn)
-    this.ctx.fillStyle = this.backgroundColor
-    this.ctx.fillRect(0, 0, this.width, this.height)
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    
+    // Draw background color if needed (depending on how it's integrated)
+    // Here we assume the canvas might be transparent or have a color
+    this.ctx.fillStyle = this.backgroundColor;
+    this.ctx.fillRect(0, 0, this.width, this.height);
 
-    // Draw tiny stars first as background
-    this.drawStars()
+    // Draw static stars
+    this.stars.forEach(star => {
+      star.update();
+      star.draw(this.ctx);
+    });
 
-    if (this.particles.length < this.maxParticles && Math.random() < 0.1) {
-      // Higher chance for shower
-      this.createParticle()
-    }
-
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-      const p = this.particles[i]
-      p.update()
-      p.draw(this.ctx)
-
-      // Remove particle if it's off screen (now checking left and top as well since direction is left-down)
-      if (p.x < -p.size * 2 || p.y > this.height + p.size * 2) {
-        this.particles.splice(i, 1)
+    // Draw shooting stars
+    this.createShootingStar();
+    for (let i = this.shootingStars.length - 1; i >= 0; i--) {
+      const s = this.shootingStars[i];
+      s.update(this.width, this.height);
+      s.draw(this.ctx);
+      if (!s.active) {
+        this.shootingStars.splice(i, 1);
       }
     }
 
-    this.animationFrameId = requestAnimationFrame(() => this.animate())
+    this.animationFrameId = requestAnimationFrame(() => this.animate());
   }
 
   start() {
     if (!this.animationFrameId) {
-      this.canvas.style.display = "block"
-      this.animate()
+      this.canvas.style.display = "block";
+      this.animate();
     }
   }
 
   stop() {
     if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId)
-      this.animationFrameId = null
-      this.ctx.clearRect(0, 0, this.width, this.height)
-      this.canvas.style.display = "none"
-      this.particles = [] // Clear particles when stopped
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.canvas.style.display = "none";
+      this.shootingStars = [];
     }
   }
 
-  updateColor(newColor) {
-    if (!newColor) return
-    this.particleColor = newColor
-    this.particles.forEach((p) => {
-      p.setColor(newColor)
-    })
-  }
-  updateParticleColor(newColor) {
-    this.updateColor(newColor)
+  updateParticleColor(color) {
+    this.particleColor = color;
   }
 
-  updateBackgroundColor(newColor) {
-    if (newColor) {
-      this.backgroundColor = newColor
-    }
+  updateBackgroundColor(color) {
+    this.backgroundColor = color;
   }
 
-  updateStarColor(newColor) {
-    if (newColor) {
-      this.starColor = newColor
-      this.starRgbColor = hexToRgb(this.starColor)
-    }
+  updateStarColor(color) {
+    this.starColor = color;
+    this.createBackgroundStars();
   }
 }

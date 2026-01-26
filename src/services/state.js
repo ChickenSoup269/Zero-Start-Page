@@ -18,6 +18,11 @@ const defaultSettings = {
   shootingStarColor: "#ffcc66", // Particle color
   shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
   shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
+  clockColor: null,
+  auraColor: "#a8c0ff",
+  hackerColor: "#00FF00",
+  bgPositionX: 50,
+  bgPositionY: 50,
 }
 
 let bookmarksState = JSON.parse(localStorage.getItem("bookmarks")) || []
@@ -75,6 +80,11 @@ export function resetSettingsState() {
     shootingStarColor: "#ffcc66", // Particle color
     shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
     shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
+    clockColor: null,
+    auraColor: "#a8c0ff",
+    hackerColor: "#00FF00",
+    bgPositionX: 50,
+    bgPositionY: 50,
   }
   settingsState = defaultSettings
   saveSettings()

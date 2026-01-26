@@ -1,6 +1,7 @@
 export const settingsToggle = document.getElementById("settings-toggle")
 export const settingsSidebar = document.getElementById("settings-sidebar")
 export const closeSettings = document.getElementById("close-settings")
+export const bgVideo = document.getElementById("bg-video")
 
 export const bgInput = document.getElementById("bg-input")
 export const bgColorPicker = document.getElementById("bg-color-picker")
@@ -8,6 +9,12 @@ export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
 export const userColorsGallery = document.getElementById("user-colors-gallery")
+
+export const bgPositionSetting = document.getElementById("bg-position-setting")
+export const bgPosXInput = document.getElementById("bg-pos-x-input")
+export const bgPosXValue = document.getElementById("bg-pos-x-value")
+export const bgPosYInput = document.getElementById("bg-pos-y-input")
+export const bgPosYValue = document.getElementById("bg-pos-y-value")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
 export const fontSelect = document.getElementById("font-select")
@@ -70,10 +77,18 @@ export const matrixColorSetting = document.getElementById(
   "matrix-color-setting",
 )
 
+export const auraColorPicker = document.getElementById("aura-color-picker")
+export const auraColorSetting = document.getElementById("aura-color-setting")
+
+export const hackerColorPicker = document.getElementById("hacker-color-picker")
+export const hackerColorSetting = document.getElementById("hacker-color-setting")
+
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const dateFormatSelect = document.getElementById("date-format-select")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
+export const clockColorPicker = document.getElementById("clock-color-picker")
+export const resetClockColorBtn = document.getElementById("reset-clock-color-btn")
 
 export const localBackgroundGallery = document.getElementById(
   "local-background-gallery",

@@ -19,6 +19,8 @@
 </head>
 
 <body>
+    <video id="bg-video" autoplay muted loop playsinline
+        style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; display: none; pointer-events: none;"></video>
     <canvas id="effect-canvas"></canvas>
     <!-- Settings Toggle -->
     <button id="settings-toggle" class="settings-toggle">
@@ -48,11 +50,30 @@
                         <div class="input-group">
                             <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
                             <input type="color" id="bg-color-picker" aria-label="Pick a color" />
-                            <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color_btn">Save Color</button>
-                            <button id="unsplash-random-btn" class="secondary-btn" data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
-                            <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn">Remove</button>
+                            <button id="save-color-btn" class="primary-btn full-width"
+                                data-i18n="settings_save_color">Save
+                                Solid Color</button>
+                            <button id="unsplash-random-btn" class="secondary-btn"
+                                data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
+                            <button id="remove-bg-btn" class="secondary-btn"
+                                data-i18n="settings_remove_bg_btn">Remove</button>
                         </div>
                     </div>
+
+                    <!-- Background Position -->
+                    <div id="bg-position-setting" class="setting-group" style="display: none;">
+                        <label><i class="fa-solid fa-arrows-up-down-left-right"></i> <span
+                                data-i18n="settings_bg_position">Background Position</span></label>
+                        <div class="setting-item">
+                            <label>Horizontal: <span id="bg-pos-x-value">50%</span></label>
+                            <input type="range" id="bg-pos-x-input" min="0" max="100" value="50">
+                        </div>
+                        <div class="setting-item">
+                            <label>Vertical: <span id="bg-pos-y-value">50%</span></label>
+                            <input type="range" id="bg-pos-y-input" min="0" max="100" value="50">
+                        </div>
+                    </div>
+
                     <div class="setting-item">
                         <label data-i18n="settings_saved_colors">Saved Colors</label>
                         <div id="user-colors-gallery" class="local-bg-gallery"></div>
@@ -83,7 +104,8 @@
                 </div>
                 <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
                 <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
-                <button id="save-gradient-btn" class="secondary-btn full-width" data-i18n="settings_save_gradient_btn">Save Gradient</button>
+                <button id="save-gradient-btn" class="secondary-btn full-width"
+                    data-i18n="settings_save_gradient_btn">Save Gradient</button>
             </div>
 
             <div class="setting-group">
@@ -103,7 +125,22 @@
                     <option value="fireflies" data-i18n="effect_fireflies">Fireflies</option>
                     <option value="network" data-i18n="effect_network">Network</option>
                     <option value="matrix" data-i18n="effect_matrix">Matrix Rain</option>
+                    <option value="aura" data-i18n="effect_aura">Gradients Aura</option>
+                    <option value="wind" data-i18n="effect_wind">Anime Wind (Speed Lines)</option>
+                    <option value="hacker" data-i18n="effect_hacker">Hacker (Binary)</option>
                 </select>
+
+                <!-- Aura Color -->
+                <div id="aura-color-setting" class="setting-item" style="display: none;">
+                    <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
+                    <input type="color" id="aura-color-picker" value="#a8c0ff" />
+                </div>
+
+                <!-- Hacker Color -->
+                <div id="hacker-color-setting" class="setting-item" style="display: none;">
+                    <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
+                    <input type="color" id="hacker-color-picker" value="#00FF00" />
+                </div>
 
                 <!-- Shooting Star Color -->
                 <div id="shooting-star-color-setting" class="setting-item" style="display: none;">
@@ -174,6 +211,16 @@
                 <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size:</span> <span
                         id="clock-size-value">6rem</span></label>
                 <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+            </div>
+
+            <div class="setting-group">
+                <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock & Date
+                        Color</span></label>
+                <div class="input-group">
+                    <input type="color" id="clock-color-picker" value="#ffffff">
+                    <button id="reset-clock-color-btn" class="secondary-btn" data-i18n="settings_reset_color">Reset to
+                        Default</button>
+                </div>
             </div>
         </div>
         <div class="sidebar-footer">
