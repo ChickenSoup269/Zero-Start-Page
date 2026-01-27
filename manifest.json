@@ -3,7 +3,7 @@
   "name": "Startpage",
   "version": "1.0",
   "description": "A beautiful and simple startpage replacement.",
-  "permissions": ["bookmarks"],
+  "permissions": ["bookmarks", "scripting", "tabs"],
   "icons": {
     "128": "icon/logo.png"
   },
@@ -13,5 +13,10 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["https://suggestqueries.google.com/*"]
+  "host_permissions": [
+    "https://suggestqueries.google.com/*",
+    "*://*.youtube.com/*",
+    "*://*.spotify.com/*",
+    "*://music.youtube.com/*"
+  ]
 }

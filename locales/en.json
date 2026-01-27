@@ -42,5 +42,22 @@
   "effect_shooting_star": "Shooting Star",
   "setting_star_color": "Star Color",
   "setting_meteor_color": "Meteor Color",
-  "setting_shooting_star_color": "Shooting Star Color"
+  "setting_shooting_star_color": "Shooting Star Color",
+  "settings_layout": "Layout & Features",
+  "settings_show_todo": "Show Todo List",
+  "settings_show_timer": "Show Timer",
+  "settings_show_gregorian": "Show Gregorian Calendar",
+  "settings_show_music": "Show Music Player",
+  "settings_show_clock": "Show Clock",
+  "settings_show_full_calendar": "Show Full Calendar",
+  "settings_reset_layout": "Reset Layout Positions",
+  "quick_access_todo": "Toggle Todo List",
+  "quick_access_timer": "Toggle Timer",
+  "quick_access_calendar": "Toggle Calendar",
+  "quick_access_music": "Toggle Music Player",
+  "settings_music_style": "Music Bar Style",
+  "style_vinyl": "Vinyl",
+  "style_pixel": "Pixel",
+  "style_spotify": "Spotify",
+  "settings_show_quick_access": "Show Quick Access bar"
 }

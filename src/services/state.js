@@ -23,6 +23,22 @@ const defaultSettings = {
   hackerColor: "#00FF00",
   bgPositionX: 50,
   bgPositionY: 50,
+  unsplashCategory: "nature",
+  showTodoList: true,
+  showTimer: false,
+  showGregorian: true,
+  musicPlayerEnabled: false,
+  showClock: true,
+  showFullCalendar: false,
+  componentPositions: {},
+  musicBarStyle: "vinyl",
+  timerInitialTime: 0,
+  timerCurrentTime: 0,
+  timerEndTime: 0,
+  timerIsRunning: false,
+  musicPlayerExpanded: false,
+  showQuickAccess: true,
+  quickAccessCollapsed: false
 }
 
 let bookmarksState = JSON.parse(localStorage.getItem("bookmarks")) || []
@@ -85,6 +101,22 @@ export function resetSettingsState() {
     hackerColor: "#00FF00",
     bgPositionX: 50,
     bgPositionY: 50,
+    unsplashCategory: "nature",
+    showTodoList: true,
+    showTimer: false,
+    showGregorian: true,
+    musicPlayerEnabled: false,
+    showClock: true,
+    showFullCalendar: false,
+    componentPositions: {},
+    musicBarStyle: "vinyl",
+    timerInitialTime: 0,
+    timerCurrentTime: 0,
+    timerEndTime: 0,
+    timerIsRunning: false,
+    musicPlayerExpanded: false,
+    showQuickAccess: true,
+    quickAccessCollapsed: false
   }
   settingsState = defaultSettings
   saveSettings()
@@ -93,6 +125,19 @@ export function resetSettingsState() {
 
 export function saveBookmarks() {
   localStorage.setItem("bookmarks", JSON.stringify(bookmarksState))
+}
+
+export const saveComponentPosition = (componentId, position) => {
+  const settings = getSettings()
+  settings.componentPositions[componentId] = position
+  saveSettings()
+}
+
+export const resetComponentPositions = () => {
+  const settings = getSettings()
+  settings.componentPositions = {}
+  saveSettings()
+  window.location.reload()
 }
 
 export function saveSettings() {

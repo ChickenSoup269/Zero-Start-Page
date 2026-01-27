@@ -16,16 +16,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-</head>
-
 <body>
+    <canvas id="effect-canvas"></canvas>
+
+    <!-- Side Controls (Settings + Quick Access) -->
+    <div class="side-controls">
+        <button id="settings-toggle" class="icon-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <div id="quick-access-bar" class="quick-access-bar">
+            <button class="quick-btn" data-toggle="todo" data-i18n-title="quick_access_todo" title="Toggle Todo"><i
+                    class="fa-solid fa-list-check"></i></button>
+            <button class="quick-btn" data-toggle="timer" data-i18n-title="quick_access_timer" title="Toggle Timer"><i
+                    class="fa-solid fa-stopwatch"></i></button>
+            <button class="quick-btn" data-toggle="calendar" data-i18n-title="quick_access_calendar"
+                title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
+            <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
+                title="Toggle Music"><i class="fa-solid fa-music"></i></button>
+            <button id="reset-layout-quick" class="quick-btn" data-i18n-title="settings_reset_layout"
+                title="Reset Layout"><i class="fa-solid fa-arrows-rotate"></i></button>
+            <div class="quick-access-divider"></div>
+            <button id="quick-access-collapse" class="quick-btn" title="Collapse"><i
+                    class="fa-solid fa-chevron-left"></i></button>
+        </div>
+    </div>
+
     <video id="bg-video" autoplay muted loop playsinline
         style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; display: none; pointer-events: none;"></video>
-    <canvas id="effect-canvas"></canvas>
-    <!-- Settings Toggle -->
-    <button id="settings-toggle" class="settings-toggle">
-        <i class="fa-solid fa-gear"></i>
-    </button>
 
     <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="settings-sidebar">
@@ -53,10 +68,20 @@
                             <button id="save-color-btn" class="primary-btn full-width"
                                 data-i18n="settings_save_color">Save
                                 Solid Color</button>
+                            <select id="unsplash-category-select" class="full-width" style="margin-bottom: 8px;">
+                                <option value="nature" data-i18n="category_nature">Nature & Landscapes</option>
+                                <option value="sea" data-i18n="category_sea">Sea & Beaches</option>
+                                <option value="universe" data-i18n="category_universe">Universe & Space</option>
+                                <option value="city" data-i18n="category_city">Urban & City</option>
+                                <option value="anime" data-i18n="category_anime">Anime Art</option>
+                            </select>
                             <button id="unsplash-random-btn" class="secondary-btn"
                                 data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
                             <button id="remove-bg-btn" class="secondary-btn"
                                 data-i18n="settings_remove_bg_btn">Remove</button>
+                            <button id="save-current-bg-btn" class="secondary-btn" title="Save to Local Themes">
+                                <i class="fa-solid fa-bookmark"></i> Save Background
+                            </button>
                         </div>
                     </div>
 
@@ -81,7 +106,7 @@
                     <div class="setting-item">
                         <label data-i18n="settings_local_bg">Local Themes</label>
                         <div class="local-bg-gallery-controls">
-                            <input type="file" id="local-image-upload" accept="image/*" style="display: none;" />
+                            <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
                             <button id="upload-local-image-btn" class="secondary-btn"
                                 data-i18n="settings_upload_image">Upload Image</button>
                         </div>
@@ -222,16 +247,66 @@
                         Default</button>
                 </div>
             </div>
+
+            <div class="settings-section">
+                <h3 class="section-toggle" data-i18n="settings_layout"><i class="fa-solid fa-layer-group"></i> Layout &
+                    Features</h3>
+                <div class="section-content">
+                    <div class="setting-item-row">
+                        <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
+                        <input type="checkbox" id="show-todo-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
+                        <input type="checkbox" id="show-timer-checkbox">
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
+                            Calendar</label>
+                        <input type="checkbox" id="show-gregorian-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
+                        <input type="checkbox" id="show-music-checkbox">
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-quick-access-checkbox" data-i18n="settings_show_quick_access">Show Quick Access
+                            Bar</label>
+                        <input type="checkbox" id="show-quick-access-checkbox" checked>
+                    </div>
+                    <div class="setting-item" style="margin-top: 10px;">
+                        <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
+                        <select id="music-style-select">
+                            <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                            <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                            <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                        </select>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-clock-checkbox" data-i18n="settings_show_clock">Show Clock</label>
+                        <input type="checkbox" id="show-clock-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full
+                            Calendar</label>
+                        <input type="checkbox" id="show-full-calendar-checkbox">
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="sidebar-footer">
             <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset
                 Defaults</button>
+            <button id="reset-layout" class="secondary-btn full-width" style="margin-top: 10px;"
+                data-i18n="settings_reset_layout">Reset
+                Layout Positions</button>
         </div>
     </div>
 
     <div class="main-container">
         <div id="clock">00:00:00</div>
         <div id="date">Loading date...</div>
+        <div id="full-calendar-container" style="display: none;"></div>
 
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>

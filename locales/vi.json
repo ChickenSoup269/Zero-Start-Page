@@ -42,5 +42,22 @@
   "effect_shooting_star": "Sao băng",
   "setting_star_color": "Màu ngôi sao",
   "setting_meteor_color": "Màu sao băng (Mưa)",
-  "setting_shooting_star_color": "Màu sao băng"
+  "setting_shooting_star_color": "Màu sao băng",
+  "settings_layout": "Bố cục & Tính năng",
+  "settings_show_todo": "Hiện Danh sách việc cần làm",
+  "settings_show_timer": "Hiện Đồng hồ bấm giờ",
+  "settings_show_gregorian": "Hiện Lịch dương",
+  "settings_show_music": "Hiện Trình phát nhạc",
+  "settings_show_clock": "Hiện Đồng hồ",
+  "settings_show_full_calendar": "Hiện Toàn bộ lịch",
+  "settings_reset_layout": "Xác lập lại vị trí",
+  "quick_access_todo": "Bật/Tắt Danh sách việc cần làm",
+  "quick_access_timer": "Bật/Tắt Đồng hồ bấm giờ",
+  "quick_access_calendar": "Bật/Tắt Lịch",
+  "quick_access_music": "Bật/Tắt Trình phát nhạc",
+  "settings_music_style": "Kiểu trình phát nhạc",
+  "style_vinyl": "Vinyl (Đĩa than)",
+  "style_pixel": "Pixel",
+  "style_spotify": "Spotify",
+  "settings_show_quick_access": "Hiện thanh truy cập nhanh"
 }

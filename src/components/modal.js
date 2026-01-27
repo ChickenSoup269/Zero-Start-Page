@@ -82,16 +82,24 @@ function loadBrowserBookmarks() {
 function renderBookmarkTree(node, container) {
   if (node.children) {
     if (node.id !== "0") {
+      const wrapper = document.createElement("div")
+      wrapper.className = "folder-wrapper collapsed"
+      
       const folderDiv = document.createElement("div")
-      folderDiv.className = "bookmark-tree-folder expanded"
-      folderDiv.innerHTML = `<i class="fa-solid fa-chevron-right"></i> <i class="fa-regular fa-folder"></i> <span>${node.title}</span>`
+      folderDiv.className = "bookmark-tree-folder"
+      folderDiv.innerHTML = `<i class="fa-solid fa-chevron-right"></i> <i class="fa-solid fa-folder"></i> <span>${node.title}</span>`
+      
       const childrenContainer = document.createElement("div")
       childrenContainer.className = "folder-content"
-      folderDiv.addEventListener("click", () =>
-        folderDiv.parentElement.classList.toggle("collapsed")
-      )
-      container.appendChild(folderDiv)
-      container.appendChild(childrenContainer)
+      
+      folderDiv.addEventListener("click", () => {
+        wrapper.classList.toggle("collapsed")
+      })
+      
+      wrapper.appendChild(folderDiv)
+      wrapper.appendChild(childrenContainer)
+      container.appendChild(wrapper)
+      
       node.children.forEach((child) =>
         renderBookmarkTree(child, childrenContainer)
       )

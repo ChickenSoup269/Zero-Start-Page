@@ -36,7 +36,9 @@ import {
   searchInput,
   clearBtn,
   unsplashRandomBtn,
+  unsplashCategorySelect,
   saveColorBtn,
+  saveCurrentBgBtn,
   removeBgBtn,
   userColorsGallery,
   bgPositionSetting,
@@ -53,6 +55,14 @@ import {
   hackerColorPicker,
   hackerColorSetting,
   bgVideo, // Added bgVideo
+  showTodoCheckbox,
+  showTimerCheckbox,
+  showGregorianCheckbox,
+  showMusicCheckbox,
+  showClockCheckbox,
+  showFullCalendarCheckbox,
+  showQuickAccessCheckbox,
+  musicStyleSelect,
 } from "../utils/dom.js"
 import {
   getSettings,
@@ -102,28 +112,72 @@ function handleSettingUpdate(key, value, isGradient = false) {
   renderUserGradients()
 }
 
-const unsplashPhotoIds = [
-  "1470071459604-3b5ec3a7fe05", // Nature Forest
-  "1464822759023-fed622ff2c3b", // Mountains
-  "1501785888041-af3ef285b470", // Coastal
-  "1506744038136-46273834b3fb", // Landscape
-  "1519681393784-d120267933ba", // Night Mountains
-  "1439405326854-01517487439e", // Ocean
-  "1500382017468-9049fed747ef", // Green Field
-  "1475924156736-4d2274e62a93", // Beach
-  "1502082553048-f009c37129b9", // Forest Sun
-  "1532274354234-5f59a78992c2", // Scenic
-  "1419242902214-272b3f66ee7a", // Galaxy Night
-  "1518709268805-4e9042af9f23", // Aurora
-];
+const unsplashCategories = {
+  nature: [
+    "1501785882641-5b6281c78209", // Mountains
+    "1470770841072-f978cf4d019e", // Landscape
+    "1464822759023-fed622ff2c3b", // Peak
+    "1441974231531-c6227db76b6e", // Forest
+    "1500382017468-9049fed747ef", // Field
+  ],
+  sea: [
+    "1439405326854-01517487439e", // Ocean
+    "1475924156736-4d2274e62a93", // Beach
+    "1507525428034-b723cf961d3e", // Tropical
+    "1519046904884-53103b34b206", // Coastal
+  ],
+  universe: [
+    "1419242902214-272b3f66ee7a", // Galaxy
+    "1464802686167-b939ba36e6fe", // Stars
+    "1518709268805-4e9042af9f23", // Aurora
+    "1446776811953-b23d57bd21aa", // Space
+  ],
+  city: [
+    "1477959858617-67f85cf4f1df", // Urban
+    "1486406146926-c627a92ad1ab", // Skyscrapers
+    "1449156003716-168f237f3733", // Street
+    "1496568811576-477ff1706b80", // Architecture
+  ],
+  anime: [
+    "1541562232579-512a21360020", // Art
+    "1578632292335-df3abbb0d586", // Character
+    "1528319717648-5183307613c7", // Drawing
+  ],
+}
 
-function setUnsplashRandomBackground() {
-  const randomId = unsplashPhotoIds[Math.floor(Math.random() * unsplashPhotoIds.length)];
-  const width = window.innerWidth > 0 ? window.innerWidth : 1920;
-  const height = window.innerHeight > 0 ? window.innerHeight : 1080;
-  // Use 'photo-' prefix properly and add necessary ixlib for stability
-  const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&q=80`;
-  handleSettingUpdate("background", imageUrl);
+function setUnsplashRandomBackground(retries = 3) {
+  if (retries <= 0) {
+    console.error("Failed to fetch Unsplash background after multiple attempts.")
+    return
+  }
+
+  const settings = getSettings()
+  const category = settings.unsplashCategory || "nature"
+  const ids = unsplashCategories[category] || unsplashCategories.nature
+  const randomId = ids[Math.floor(Math.random() * ids.length)]
+  const dpr = window.devicePixelRatio || 1
+  const width = Math.round(
+    (window.innerWidth > 0 ? window.innerWidth : 1920) * dpr,
+  )
+  const height = Math.round(
+    (window.innerHeight > 0 ? window.innerHeight : 1080) * dpr,
+  )
+  const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&h=${height}&q=85`
+
+  // Preload to check for 404
+  const img = new Image()
+  img.onload = () => {
+    document.body.classList.add("bg-loading")
+    handleSettingUpdate("background", imageUrl)
+    setTimeout(() => {
+      document.body.classList.remove("bg-loading")
+    }, 500)
+  }
+  img.onerror = () => {
+    console.warn(`Unsplash ID ${randomId} failed. Retrying...`)
+    setUnsplashRandomBackground(retries - 1)
+  }
+  img.src = imageUrl
 }
 
 export function applySettings() {
@@ -187,11 +241,11 @@ export function applySettings() {
   // 2.1 Background Position
   document.documentElement.style.setProperty(
     "--bg-pos-x",
-    `${settings.bgPositionX || 50}%`,
+    `${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%`,
   )
   document.documentElement.style.setProperty(
     "--bg-pos-y",
-    `${settings.bgPositionY || 50}%`,
+    `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
   )
 
   // 3. UI Props
@@ -313,6 +367,8 @@ function updateSettingsInputs() {
   bgPosYInput.value = settings.bgPositionY || 50
   bgPosYValue.textContent = `${bgPosYInput.value}%`
 
+  unsplashCategorySelect.value = settings.unsplashCategory || "nature"
+
   // Show/Hide Bg Position setting (only for image backgrounds)
   const isImageBg = 
     settings.background && 
@@ -365,6 +421,16 @@ function updateSettingsInputs() {
     settings.effect === "aura" ? "block" : "none"
   hackerColorSetting.style.display =
     settings.effect === "hacker" ? "block" : "none"
+
+  // Layout Checkboxes
+  showTodoCheckbox.checked = settings.showTodoList !== false
+  showTimerCheckbox.checked = settings.showTimer === true
+  showGregorianCheckbox.checked = settings.showGregorian !== false
+  showMusicCheckbox.checked = settings.musicPlayerEnabled === true
+  showClockCheckbox.checked = settings.showClock !== false
+  showFullCalendarCheckbox.checked = settings.showFullCalendar === true
+  showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+  musicStyleSelect.value = settings.musicBarStyle || "vinyl"
 
   // Highlight active background
   document.querySelectorAll(".local-bg-item").forEach((item) => {
@@ -559,7 +625,12 @@ export function initSettings() {
     handleSettingUpdate("background", bgColorPicker.value)
   })
 
-  unsplashRandomBtn.addEventListener("click", setUnsplashRandomBackground)
+  unsplashRandomBtn.addEventListener("click", () => setUnsplashRandomBackground())
+
+  unsplashCategorySelect.addEventListener("change", () => {
+    handleSettingUpdate("unsplashCategory", unsplashCategorySelect.value)
+  })
+
   saveColorBtn.addEventListener("click", () => {
     const settings = getSettings();
     const color = bgInput.value.trim()
@@ -583,6 +654,26 @@ export function initSettings() {
     handleSettingUpdate("background", null) // Set to null to trigger gradient
   })
 
+  saveCurrentBgBtn.addEventListener("click", () => {
+    const bg = getSettings().background
+    if (!bg) return
+
+    if (getSettings().userBackgrounds.includes(bg)) {
+      alert("This background is already saved.")
+      return
+    }
+
+    if (getSettings().userBackgrounds.length >= 10) {
+      alert("Gallery full! Please remove some backgrounds before saving more.")
+      return
+    }
+
+    getSettings().userBackgrounds.push(bg)
+    saveSettings()
+    renderLocalBackgrounds()
+    alert("Background saved to Local Themes!")
+  })
+
   uploadLocalImageBtn.addEventListener("click", () => localImageUpload.click())
   localImageUpload.addEventListener("change", (e) => {
     const file = e.target.files[0]
@@ -590,23 +681,23 @@ export function initSettings() {
       const reader = new FileReader()
       reader.onload = (event) => {
         const dataUrl = event.target.result
-        
-        // Preserve GIF or handle Video
-        if (file.type === "image/gif" || file.type.startsWith("video/")) {
-            if (getSettings().userBackgrounds.length >= 5) {
-                alert("You can only upload up to 5 custom backgrounds.")
-                return
-            }
-            getSettings().userBackgrounds.push(dataUrl)
-            handleSettingUpdate("background", dataUrl)
+
+        // Preserve GIF
+        if (file.type === "image/gif") {
+          if (getSettings().userBackgrounds.length >= 5) {
+            alert("You can only upload up to 5 custom backgrounds.")
             return
+          }
+          getSettings().userBackgrounds.push(dataUrl)
+          handleSettingUpdate("background", dataUrl)
+          return
         }
 
         const img = new Image()
         img.src = dataUrl
         img.onload = () => {
           const canvas = document.createElement("canvas")
-          const MAX_SIZE = 1920
+          const MAX_SIZE = 3840 // Increase to 4K support
           let { width, height } = img
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -622,7 +713,7 @@ export function initSettings() {
           canvas.width = width
           canvas.height = height
           canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-          const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.9)
+          const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.95) // Increase quality
           if (getSettings().userBackgrounds.length >= 5) {
             alert("You can only upload up to 5 custom backgrounds.")
             return
@@ -825,5 +916,42 @@ export function initSettings() {
   applySettings()
   document.querySelectorAll(".settings-section").forEach((section) => {
     section.classList.add("collapsed")
+  })
+
+  // Layout Listeners
+  showTodoCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showTodoList", showTodoCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showTodoList", value: showTodoCheckbox.checked } }))
+  })
+  showTimerCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showTimer", showTimerCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showTimer", value: showTimerCheckbox.checked } }))
+  })
+  showGregorianCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showGregorian", showGregorianCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showGregorian", value: showGregorianCheckbox.checked } }))
+  })
+  showMusicCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("musicPlayerEnabled", showMusicCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "music_player_enabled", value: showMusicCheckbox.checked } }))
+  })
+  showClockCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showClock", showClockCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showClock", value: showClockCheckbox.checked } }))
+  })
+  showFullCalendarCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showFullCalendar", showFullCalendarCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showFullCalendar", value: showFullCalendarCheckbox.checked } }))
+  })
+  showQuickAccessCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showQuickAccess", showQuickAccessCheckbox.checked)
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showQuickAccess", value: showQuickAccessCheckbox.checked } }))
+  })
+
+  // Music style listener
+  musicStyleSelect.value = settings.musicBarStyle || "vinyl"
+  musicStyleSelect.addEventListener("change", () => {
+    handleSettingUpdate("musicBarStyle", musicStyleSelect.value)
+    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "music_bar_style", value: musicStyleSelect.value } }))
   })
 }

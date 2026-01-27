@@ -5,9 +5,11 @@ export const bgVideo = document.getElementById("bg-video")
 
 export const bgInput = document.getElementById("bg-input")
 export const bgColorPicker = document.getElementById("bg-color-picker")
+export const unsplashCategorySelect = document.getElementById("unsplash-category-select")
 export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
+export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
 export const userColorsGallery = document.getElementById("user-colors-gallery")
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
@@ -123,5 +125,15 @@ export const menuEdit = document.getElementById("menu-edit")
 export const menuDelete = document.getElementById("menu-delete")
 
 export const bookmarksContainer = document.getElementById("bookmarks-container")
+
+// Layout Toggles
+export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
+export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
+export const showGregorianCheckbox = document.getElementById("show-gregorian-checkbox")
+export const showMusicCheckbox = document.getElementById("show-music-checkbox")
+export const showClockCheckbox = document.getElementById("show-clock-checkbox")
+export const showFullCalendarCheckbox = document.getElementById("show-full-calendar-checkbox")
+export const showQuickAccessCheckbox = document.getElementById("show-quick-access-checkbox")
+export const musicStyleSelect = document.getElementById("music-style-select")
 
 
