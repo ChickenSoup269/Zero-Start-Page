@@ -68,7 +68,7 @@ function renderGroupTabs() {
       }
     })
 
-    // Rename (Double Click)
+    // Rename (Double Click) - Keeping as valid shortcut
     tab.addEventListener("dblclick", () => {
       const newName = prompt("Enter new group name:", group.name)
       if (newName && newName.trim() !== "") {
@@ -78,24 +78,12 @@ function renderGroupTabs() {
       }
     })
 
-    // Delete (Right Click) - Prevent deleting the last group
-    if (groups.length > 1) {
-        tab.addEventListener("contextmenu", (e) => {
-            e.preventDefault()
-            if (confirm(`Delete group "${group.name}" and all its bookmarks?`)) {
-                const newGroups = groups.filter(g => g.id !== group.id)
-                setBookmarkGroups(newGroups)
-                
-                // If we deleted the active group, switch to the first one available
-                if (group.id === activeId) {
-                    setActiveGroupId(newGroups[0].id)
-                } else {
-                    saveBookmarks() // Just save the list update
-                }
-                renderBookmarks()
-            }
-        })
-    }
+    // Context Menu (Right Click)
+    tab.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        const index = groups.indexOf(group)
+        showContextMenu(e.clientX, e.clientY, index, 'group', group.id)
+    })
 
     bookmarkGroupsContainer.appendChild(tab)
   })

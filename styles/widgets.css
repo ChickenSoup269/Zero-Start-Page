@@ -354,6 +354,7 @@
     color: white;
     font-size: 0.9rem;
     outline: none;
+    box-sizing: border-box;
 }
 
 .todo-list {

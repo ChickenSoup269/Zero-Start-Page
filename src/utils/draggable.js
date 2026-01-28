@@ -1,6 +1,6 @@
 import { saveComponentPosition, getSettings } from "../services/state.js";
 
-export function makeDraggable(element, componentId) {
+export function makeDraggable(element, componentId, onDragEndCallback = null, handleSelector = '.drag-handle') {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     const settings = getSettings();
     const savedPos = settings.componentPositions?.[componentId];
@@ -13,17 +13,30 @@ export function makeDraggable(element, componentId) {
         if (savedPos.transform) element.style.transform = savedPos.transform;
     }
 
-    // Header or the element itself can be the handle
-    const handle = element.querySelector('.drag-handle') || element;
+    // Use the provided handleSelector or default to the entire element
+    const handle = element.querySelector(handleSelector) || element;
     handle.style.cursor = 'move';
+
+    // Attach mousedown listener to the handle
     handle.onmousedown = dragMouseDown;
 
     function dragMouseDown(e) {
         e = e || window.event;
-        // Check if clicking on an input or button
-        if (['INPUT', 'BUTTON', 'I', 'A', 'SELECT', 'OPTION'].includes(e.target.tagName)) return;
         
-        e.preventDefault();
+        // If the click target is an interactive element (button, input, etc.)
+        // and it's not explicitly the 'drag-handle' icon itself, prevent dragging.
+        // This is to allow interaction with buttons/inputs within the header/handle.
+        const targetTagName = e.target.tagName;
+        const isInteractiveElement = ['INPUT', 'BUTTON', 'A', 'SELECT', 'OPTION', 'TEXTAREA'].includes(targetTagName);
+        const isCloseButton = e.target.classList.contains('close') || e.target.closest('.close');
+        
+        // Allow dragging on the specific .drag-handle icon always
+        // If the element clicked is interactive and not the specific drag-handle or close button, prevent drag
+        if (isInteractiveElement && !e.target.classList.contains('drag-handle') && !isCloseButton) {
+            return;
+        }
+
+        e.preventDefault(); // Prevent default text selection, etc.
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
@@ -74,5 +87,9 @@ export function makeDraggable(element, componentId) {
             left: element.style.left,
             transform: element.style.transform
         });
+
+        if (onDragEndCallback) {
+            onDragEndCallback(element);
+        }
     }
 }

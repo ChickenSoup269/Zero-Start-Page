@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="styles/widgets.css">
     <link rel="stylesheet" href="styles/settings.css">
     <link rel="stylesheet" href="styles/music-player.css">
+    <link rel="stylesheet" href="styles/note-manager.css">
 </head>
 
 <body>
@@ -36,6 +37,8 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
+            <button id="note-manager-btn" class="quick-btn" data-action="open-note-manager" data-i18n-title="quick_access_note_manager"
+                title="Note Manager"><i class="fa-solid fa-note-sticky"></i></button>
             <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
                     class="fa-solid fa-clock"></i></button>
 
@@ -294,6 +297,13 @@
         <div id="date">Loading date...</div>
         <div id="full-calendar-container" style="display: none;"></div>
 
+        <!-- Container for desktop notes -->
+        <div id="sticky-notes-container"></div>
+
+
+
+
+
         <div class="search-container">
             <div class="search-engine-selector" id="search-engine-selector">
                 <div class="selected-engine" id="selected-engine"><i class="fa-brands fa-google"></i></div>
@@ -371,6 +381,57 @@
                 <div id="browser-bookmarks-list"></div>
                 <button id="confirm-import-btn" class="primary-btn full-width" data-i18n="modal_import_selected">Import
                     Selected</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="src/main.js"></script>
+</body>
+
+</html>
+    
+    <!-- Note Manager Modal -->
+    <div id="note-manager-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 data-i18n="note_manager_title">Note Manager</h2>
+                <span id="close-note-manager-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            
+            <div id="note-manager-main-view">
+                <div class="note-manager-toolbar">
+                    <input type="search" id="note-search-input" placeholder="Search notes...">
+                    <button id="note-manager-new-btn" class="primary-btn">New Note</button>
+                </div>
+                <div id="note-manager-list" class="note-list">
+                    <!-- Note items will be rendered here -->
+                </div>
+            </div>
+
+            <div id="note-editor-view" style="display: none;">
+                <button id="note-editor-back-btn" class="text-btn"><i class="fa-solid fa-arrow-left"></i> Back to list</button>
+                <input type="hidden" id="note-editor-id">
+                
+                <div class="note-editor-toolbar">
+                    <div class="note-color-picker">
+                        <span class="color-dot selected" data-color="#ffc" style="background-color: #ffc;"></span>
+                        <span class="color-dot" data-color="#cfc" style="background-color: #cfc;"></span>
+                        <span class="color-dot" data-color="#ccf" style="background-color: #ccf;"></span>
+                        <span class="color-dot" data-color="#fcc" style="background-color: #fcc;"></span>
+                        <span class="color-dot" data-color="#cff" style="background-color: #cff;"></span>
+                        <span class="color-dot" data-color="#fcf" style="background-color: #fcf;"></span>
+                    </div>
+                    <div class="note-format-buttons">
+                        <button id="note-editor-bold-btn" class="format-btn"><i class="fa-solid fa-bold"></i></button>
+                        <button id="note-editor-italic-btn" class="format-btn"><i class="fa-solid fa-italic"></i></button>
+                        <button id="note-editor-underline-btn" class="format-btn"><i class="fa-solid fa-underline"></i></button>
+                        <button id="note-editor-strikethrough-btn" class="format-btn"><i class="fa-solid fa-strikethrough"></i></button>
+                        <button id="note-editor-bullet-btn" class="format-btn"><i class="fa-solid fa-list-ul"></i></button>
+                    </div>
+                </div>
+
+                <input type="text" id="note-editor-title" placeholder="Note Title">
+                <textarea id="note-editor-content" placeholder="Write something..."></textarea>
+                <button id="note-editor-save-btn" class="primary-btn">Save Note</button>
             </div>
         </div>
     </div>

@@ -37,9 +37,9 @@ const defaultSettings = {
   timerIsRunning: false,
   musicPlayerExpanded: false,
   showQuickAccess: true,
-  quickAccessCollapsed: false
+  quickAccessCollapsed: false,
+  stickyNotes: [],
 }
-
 
 // Bookmarks State Migration
 let storedBookmarks = JSON.parse(localStorage.getItem("bookmarks"))
@@ -51,10 +51,10 @@ if (Array.isArray(storedBookmarks)) {
       {
         id: "group-1",
         name: "Main",
-        items: storedBookmarks
-      }
+        items: storedBookmarks,
+      },
     ],
-    activeGroupId: "group-1"
+    activeGroupId: "group-1",
   }
   localStorage.setItem("bookmarks", JSON.stringify(storedBookmarks))
 }
@@ -64,12 +64,11 @@ let bookmarksState = storedBookmarks || {
     {
       id: "group-1",
       name: "Main",
-      items: []
-    }
+      items: [],
+    },
   ],
-  activeGroupId: "group-1"
+  activeGroupId: "group-1",
 }
-
 
 let settingsState = {
   ...defaultSettings,
@@ -80,10 +79,32 @@ let settingsState = {
 settingsState.userBackgrounds = settingsState.userBackgrounds || []
 settingsState.userColors = settingsState.userColors || []
 settingsState.userGradients = settingsState.userGradients || []
+settingsState.stickyNotes = settingsState.stickyNotes || []
+
+// --- Data Migration for Sticky Notes ---
+if (
+  settingsState.stickyNoteContent &&
+  (!settingsState.stickyNotes || settingsState.stickyNotes.length === 0)
+) {
+  if (settingsState.showStickyNote) {
+    settingsState.stickyNotes.push({
+      id: `note-${Date.now()}`,
+      content: settingsState.stickyNoteContent,
+      color: "#ffc", // Default old color
+      position: { top: "50%", left: "50%" },
+      size: { width: "200px", height: "300px" },
+      isBold: false,
+      isItalic: false,
+    })
+  }
+  // Clean up old properties
+  delete settingsState.stickyNoteContent
+  delete settingsState.showStickyNote
+  saveSettings() // Save the migrated state
+}
 
 // --- Exports ---
 export const localBackgrounds = []
-
 
 // Returns the *entire state* (groups + activeId)
 export function getBookmarkState() {
@@ -92,13 +113,17 @@ export function getBookmarkState() {
 
 // Returns just the items of the active group (for compatibility/rendering current view)
 export function getBookmarks() {
-  const activeGroup = bookmarksState.groups.find(g => g.id === bookmarksState.activeGroupId)
+  const activeGroup = bookmarksState.groups.find(
+    (g) => g.id === bookmarksState.activeGroupId,
+  )
   return activeGroup ? activeGroup.items : []
 }
 
 export function setBookmarks(newItems) {
   // Sets items for the ACTIVE group
-  const activeGroup = bookmarksState.groups.find(g => g.id === bookmarksState.activeGroupId)
+  const activeGroup = bookmarksState.groups.find(
+    (g) => g.id === bookmarksState.activeGroupId,
+  )
   if (activeGroup) {
     activeGroup.items = newItems
   }
@@ -167,7 +192,8 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
-    quickAccessCollapsed: false
+    quickAccessCollapsed: false,
+    stickyNotes: [],
   }
   settingsState = defaultSettings
   saveSettings()
@@ -197,7 +223,7 @@ export function saveSettings() {
   } catch (e) {
     if (e.name === "QuotaExceededError") {
       alert(
-        "Storage quota exceeded. Please remove some uploaded backgrounds to free up space."
+        "Storage quota exceeded. Please remove some uploaded backgrounds to free up space.",
       )
     } else {
       throw e

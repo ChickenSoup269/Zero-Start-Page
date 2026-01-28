@@ -9,6 +9,7 @@ import { TodoList } from "./components/todo.js"
 import { Timer } from "./components/timer.js"
 import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
+import { NoteManager } from "./components/NoteManager.js"
 import { makeDraggable } from "./utils/draggable.js"
 import { resetComponentPositions, updateSetting, getSettings } from "./services/state.js"
 import { showTodoCheckbox, showTimerCheckbox, showFullCalendarCheckbox, showMusicCheckbox, showClockCheckbox, showDateCheckbox, showGregorianCheckbox } from "./utils/dom.js"
@@ -31,6 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const timer = new Timer()
   const music = new MusicPlayer()
   const calendar = new FullCalendar()
+  const noteManager = new NoteManager();
+  await noteManager.init()
 
   makeDraggable(todo.container, "todo")
   makeDraggable(timer.container, "timer")

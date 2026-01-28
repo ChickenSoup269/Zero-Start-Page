@@ -12,6 +12,12 @@
   "settings_local_bg": "Local Themes",
   "settings_saved_colors": "Saved Colors",
   "search_placeholder": "Search Google...",
+  "prompt_rename_todo": "Update task:",
+  "alert_delete_todo_confirm": "Delete this task?",
+  "menu_rename": "Rename",
+  "prompt_rename_group": "Enter new group name:",
+  "alert_delete_group_confirm": "Delete group",
+  "alert_cannot_delete_last_group": "Cannot delete the last group.",
   "menu_edit": "Edit",
   "menu_delete": "Delete",
   "modal_add_title": "Add Bookmark",
@@ -59,5 +65,8 @@
   "style_vinyl": "Vinyl",
   "style_pixel": "Pixel",
   "style_spotify": "Spotify",
-  "settings_show_quick_access": "Show Quick Access bar"
+  "settings_show_quick_access": "Show Quick Access bar",
+  "quick_access_add_note": "Add Sticky Note",
+  "sticky_note_title": "Sticky Note",
+  "sticky_note_placeholder": "Write your notes here..."
 }

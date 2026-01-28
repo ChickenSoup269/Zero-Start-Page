@@ -12,6 +12,12 @@
   "settings_local_bg": "Giao diện cục bộ",
   "settings_saved_colors": "Màu đã lưu",
   "search_placeholder": "Tìm kiếm Google...",
+  "prompt_rename_todo": "Cập nhật công việc:",
+  "alert_delete_todo_confirm": "Xóa công việc này?",
+  "menu_rename": "Đổi tên",
+  "prompt_rename_group": "Nhập tên nhóm mới:",
+  "alert_delete_group_confirm": "Xóa nhóm",
+  "alert_cannot_delete_last_group": "Không thể xóa nhóm cuối cùng.",
   "menu_edit": "Sửa",
   "menu_delete": "Xóa",
   "modal_add_title": "Thêm dấu trang",
@@ -59,5 +65,8 @@
   "style_vinyl": "Vinyl (Đĩa than)",
   "style_pixel": "Pixel",
   "style_spotify": "Spotify",
-  "settings_show_quick_access": "Hiện thanh truy cập nhanh"
+  "settings_show_quick_access": "Hiện thanh truy cập nhanh",
+  "quick_access_add_note": "Thêm ghi chú",
+  "sticky_note_title": "Ghi chú nhanh",
+  "sticky_note_placeholder": "Viết ghi chú của bạn tại đây..."
 }

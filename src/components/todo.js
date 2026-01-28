@@ -1,4 +1,6 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js";
+import { showContextMenu } from "./contextMenu.js";
+import { geti18n } from "../services/i18n.js";
 
 export class TodoList {
     constructor() {
@@ -105,8 +107,36 @@ export class TodoList {
             `;
             
             li.querySelector(".toggle-btn").addEventListener("click", () => this.toggleTodo(todo.id));
-            li.querySelector(".delete-btn").addEventListener("click", () => this.deleteTodo(todo.id));
-            li.querySelector(".todo-text").addEventListener("click", () => this.toggleTodo(todo.id));
+            li.querySelector(".delete-btn").addEventListener("click", () => {
+                 // Direct delete button also needs confirmation if we want consistency, but user only asked about context menu options.
+                 // However, context menu delete MUST confirm as per request.
+                 if (confirm(geti18n().alert_delete_todo_confirm || "Delete this task?")) {
+                    this.deleteTodo(todo.id); 
+                 }
+            });
+            
+            const textSpan = li.querySelector(".todo-text");
+            textSpan.addEventListener("click", () => this.toggleTodo(todo.id));
+
+            // Context Menu
+            li.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                showContextMenu(e.clientX, e.clientY, this.todos.indexOf(todo), 'todo', todo.id, {
+                    onEdit: () => {
+                        const newText = prompt(geti18n().prompt_rename_todo || "Update task:", todo.text);
+                        if (newText && newText.trim()) {
+                            todo.text = newText.trim();
+                            this.saveTodos();
+                            this.render();
+                        }
+                    },
+                    onDelete: () => {
+                         if (confirm(geti18n().alert_delete_todo_confirm || "Delete this task?")) {
+                            this.deleteTodo(todo.id);
+                         }
+                    }
+                });
+            });
             
             list.appendChild(li);
         });
