@@ -18,12 +18,6 @@ import {
   meteorColorSetting,
   starColorPicker,
   starColorSetting,
-  shootingStarColorPicker,
-  shootingStarColorSetting,
-  shootingStarBackgroundColorPicker,
-  shootingStarBackgroundColorSetting,
-  shootingStarStarColorPicker,
-  shootingStarStarColorSetting,
   resetSettingsBtn,
   dateFormatSelect,
   clockSizeInput,
@@ -36,11 +30,9 @@ import {
   searchInput,
   clearBtn,
   unsplashRandomBtn,
-  unsplashCategorySelect,
   saveColorBtn,
   saveCurrentBgBtn,
   removeBgBtn,
-  userColorsGallery,
   bgPositionSetting,
   bgPosXInput,
   bgPosXValue,
@@ -63,6 +55,8 @@ import {
   showFullCalendarCheckbox,
   showQuickAccessCheckbox,
   musicStyleSelect,
+  unsplashCategorySelect,
+  showDateCheckbox,
 } from "../utils/dom.js"
 import {
   getSettings,
@@ -72,12 +66,11 @@ import {
   resetSettingsState,
 } from "../services/state.js"
 import { geti18n, loadLanguage, applyTranslations } from "../services/i18n.js"
-import { getContrastYIQ } from "../utils/colors.js"
+
 
 // Import các hiệu ứng
 import { StarFall } from "./animations/rainGalaxy.js"
 import { FallingMeteor } from "./animations/fallingMeteor.js"
-import { ShootingStarEffect } from "./animations/shootingStar.js"
 import { FirefliesEffect } from "./animations/fireflies.js"
 import { NetworkEffect } from "./animations/network.js"
 import { MatrixRain } from "./animations/matrixRain.js"
@@ -88,7 +81,6 @@ import { HackerEffect } from "./animations/hacker.js"
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
   fallingMeteorEffect,
-  shootingStarEffect,
   firefliesEffect,
   networkEffect,
   matrixRainEffect,
@@ -108,7 +100,6 @@ function handleSettingUpdate(key, value, isGradient = false) {
   saveSettings()
   applySettings()
   renderLocalBackgrounds()
-  renderUserColors()
   renderUserGradients()
 }
 
@@ -119,31 +110,57 @@ const unsplashCategories = {
     "1464822759023-fed622ff2c3b", // Peak
     "1441974231531-c6227db76b6e", // Forest
     "1500382017468-9049fed747ef", // Field
+    "1472214103451-9374bd1c7dd1", // Nature generic
+    "1447752875204-b2650380e6d0", // Nature dark
   ],
   sea: [
     "1439405326854-01517487439e", // Ocean
     "1475924156736-4d2274e62a93", // Beach
     "1507525428034-b723cf961d3e", // Tropical
     "1519046904884-53103b34b206", // Coastal
+    "1505118380757-91f5f5632de0", // Sea blue
   ],
   universe: [
     "1419242902214-272b3f66ee7a", // Galaxy
     "1464802686167-b939ba36e6fe", // Stars
     "1518709268805-4e9042af9f23", // Aurora
     "1446776811953-b23d57bd21aa", // Space
+    "1536647915526-a979116e0f9b", // Galaxy variant
   ],
   city: [
     "1477959858617-67f85cf4f1df", // Urban
     "1486406146926-c627a92ad1ab", // Skyscrapers
     "1449156003716-168f237f3733", // Street
     "1496568811576-477ff1706b80", // Architecture
+    "1480714378408-67cf0d13bc1b", // City night
   ],
   anime: [
     "1541562232579-512a21360020", // Art
     "1578632292335-df3abbb0d586", // Character
     "1528319717648-5183307613c7", // Drawing
+    "1569700977233-a3b04c0003cb", // Anime style landscape
+  ],
+  cyberpunk: [
+    "1480714378408-67cf0d13bc1b", // City night (reused)
+    "1518709268805-4e9042af9f23", // Aurora (reused)
+    "1536647915526-a979116e0f9b", // Galaxy (reused)
+    "1496568811576-477ff1706b80", // Architecture (reused)
+    // Needs more specific Cyberpunk IDs from user
+  ],
+  minimalist: [
+    "1494438639946-1ebd1d20bf85", // White
+    "1458682625221-3a45f8a844c7", // Minimal
+    "1439405326854-01517487439e", // Ocean (reused)
+    "1464822759023-fed622ff2c3b", // Peak (reused)
+  ],
+  animals: [
+    "1474511320723-9aeb2c2ac808", // Cat/Animal generic (placeholder)
+    "1425136736373-c4dbe46f6a7d", // Animal
+    "1501785882641-5b6281c78209", // Nature (reused)
+    "1441974231531-c6227db76b6e", // Forest (reused)
   ],
 }
+
 
 function setUnsplashRandomBackground(retries = 3) {
   if (retries <= 0) {
@@ -156,12 +173,8 @@ function setUnsplashRandomBackground(retries = 3) {
   const ids = unsplashCategories[category] || unsplashCategories.nature
   const randomId = ids[Math.floor(Math.random() * ids.length)]
   const dpr = window.devicePixelRatio || 1
-  const width = Math.round(
-    (window.innerWidth > 0 ? window.innerWidth : 1920) * dpr,
-  )
-  const height = Math.round(
-    (window.innerHeight > 0 ? window.innerHeight : 1080) * dpr,
-  )
+  const width = Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr)
+  const height = Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr)
   const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
   // Preload to check for 404
@@ -283,7 +296,7 @@ export function applySettings() {
   // 4. Effects Management (STOP ALL FIRST)
   if (starFallEffect) starFallEffect.stop()
   if (fallingMeteorEffect) fallingMeteorEffect.stop()
-  if (shootingStarEffect) shootingStarEffect.stop()
+
   if (firefliesEffect) firefliesEffect.stop()
   if (networkEffect) networkEffect.stop()
   if (matrixRainEffect) matrixRainEffect.stop()
@@ -299,9 +312,7 @@ export function applySettings() {
     case "meteor":
       fallingMeteorEffect.start()
       break
-    case "shootingStar":
-      shootingStarEffect.start()
-      break
+
     case "fireflies":
       firefliesEffect.start()
       break
@@ -369,6 +380,7 @@ function updateSettingsInputs() {
 
   unsplashCategorySelect.value = settings.unsplashCategory || "nature"
 
+
   // Show/Hide Bg Position setting (only for image backgrounds)
   const isImageBg = 
     settings.background && 
@@ -392,11 +404,7 @@ function updateSettingsInputs() {
   // Effect Color Inputs
   meteorColorPicker.value = settings.meteorColor || "#ffffff"
   starColorPicker.value = settings.starColor || "#ffffff"
-  shootingStarColorPicker.value = settings.shootingStarColor || "#ffcc66"
-  shootingStarBackgroundColorPicker.value =
-    settings.shootingStarBackgroundColor || "#000000"
-  shootingStarStarColorPicker.value =
-    settings.shootingStarStarColor || "#ffffff"
+
   networkColorPicker.value = settings.networkColor || "#00bcd4"
   matrixColorPicker.value = settings.matrixColor || "#00FF00"
   auraColorPicker.value = settings.auraColor || "#a8c0ff"
@@ -407,12 +415,7 @@ function updateSettingsInputs() {
     settings.effect === "meteor" ? "block" : "none"
   starColorSetting.style.display =
     settings.effect === "galaxy" ? "block" : "none"
-  const isShootingStar = settings.effect === "shootingStar"
-  shootingStarColorSetting.style.display = isShootingStar ? "block" : "none"
-  shootingStarBackgroundColorSetting.style.display = isShootingStar
-    ? "block"
-    : "none"
-  shootingStarStarColorSetting.style.display = isShootingStar ? "block" : "none"
+
   networkColorSetting.style.display =
     settings.effect === "network" ? "block" : "none"
   matrixColorSetting.style.display =
@@ -462,14 +465,7 @@ export function renderLocalBackgrounds() {
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
   localBackgroundGallery.appendChild(randomItem)
 
-  // Default Backgrounds
-  localBackgrounds.forEach((bg) => {
-    const item = document.createElement("div")
-    item.className = `local-bg-item ${bg.id}`
-    item.dataset.bgId = bg.id
-    item.title = bg.name
-    localBackgroundGallery.appendChild(item)
-  })
+
 
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
@@ -496,35 +492,6 @@ export function renderLocalBackgrounds() {
       })
       item.appendChild(removeBtn)
       localBackgroundGallery.appendChild(item)
-    })
-  }
-}
-
-export function renderUserColors() {
-  const settings = getSettings()
-  userColorsGallery.innerHTML = ""
-  if (Array.isArray(settings.userColors)) {
-    settings.userColors.forEach((color, index) => {
-      const item = document.createElement("div")
-      item.className = "user-color-item"
-      item.dataset.bgId = color
-      item.style.backgroundColor = color
-      item.title = color
-      const removeBtn = document.createElement("button")
-      removeBtn.className = "remove-bg-btn"
-      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", (e) => {
-        e.stopPropagation()
-        settings.userColors.splice(index, 1)
-        if (settings.background === color) {
-          handleSettingUpdate("background", null)
-        } else {
-          saveSettings()
-          renderUserColors()
-        }
-      })
-      item.appendChild(removeBtn)
-      userColorsGallery.appendChild(item)
     })
   }
 }
@@ -564,12 +531,6 @@ export function initSettings() {
   // --- INSTANTIATE EFFECTS ---
   starFallEffect = new StarFall("effect-canvas", settings.starColor)
   fallingMeteorEffect = new FallingMeteor("effect-canvas", settings.meteorColor)
-  shootingStarEffect = new ShootingStarEffect(
-    "effect-canvas",
-    settings.shootingStarColor,
-    settings.shootingStarBackgroundColor,
-    settings.shootingStarStarColor,
-  )
   firefliesEffect = new FirefliesEffect("effect-canvas")
   networkEffect = new NetworkEffect(
     "effect-canvas",
@@ -739,13 +700,6 @@ export function initSettings() {
     }
   })
 
-  userColorsGallery.addEventListener("click", (e) => {
-    const item = e.target.closest(".user-color-item")
-    if (item && !e.target.closest(".remove-bg-btn")) {
-      handleSettingUpdate("background", item.dataset.bgId)
-    }
-  })
-
   userGradientsGallery.addEventListener("click", (e) => {
     const item = e.target.closest(".user-gradient-item")
     if (item && !e.target.closest(".remove-bg-btn")) {
@@ -828,26 +782,6 @@ export function initSettings() {
     saveSettings()
     starFallEffect.updateColor(starColorPicker.value)
   })
-  shootingStarColorPicker.addEventListener("input", () => {
-    updateSetting("shootingStarColor", shootingStarColorPicker.value)
-    saveSettings()
-    shootingStarEffect.updateParticleColor(shootingStarColorPicker.value)
-  })
-  shootingStarBackgroundColorPicker.addEventListener("input", () => {
-    updateSetting(
-      "shootingStarBackgroundColor",
-      shootingStarBackgroundColorPicker.value,
-    )
-    saveSettings()
-    shootingStarEffect.updateBackgroundColor(
-      shootingStarBackgroundColorPicker.value,
-    )
-  })
-  shootingStarStarColorPicker.addEventListener("input", () => {
-    updateSetting("shootingStarStarColor", shootingStarStarColorPicker.value)
-    saveSettings()
-    shootingStarEffect.updateStarColor(shootingStarStarColorPicker.value)
-  })
   networkColorPicker.addEventListener("input", () => {
     updateSetting("networkColor", networkColorPicker.value)
     saveSettings()
@@ -911,7 +845,6 @@ export function initSettings() {
 
   // Final setup
   renderLocalBackgrounds()
-  renderUserColors()
   renderUserGradients()
   applySettings()
   document.querySelectorAll(".settings-section").forEach((section) => {
@@ -933,7 +866,7 @@ export function initSettings() {
   })
   showMusicCheckbox.addEventListener("change", () => {
     handleSettingUpdate("musicPlayerEnabled", showMusicCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "music_player_enabled", value: showMusicCheckbox.checked } }))
+    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerEnabled", value: showMusicCheckbox.checked } }))
   })
   showClockCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showClock", showClockCheckbox.checked)

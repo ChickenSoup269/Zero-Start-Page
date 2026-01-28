@@ -11,7 +11,7 @@ import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
 import { makeDraggable } from "./utils/draggable.js"
 import { resetComponentPositions, updateSetting, getSettings } from "./services/state.js"
-import { showTodoCheckbox, showTimerCheckbox, showFullCalendarCheckbox, showMusicCheckbox } from "./utils/dom.js"
+import { showTodoCheckbox, showTimerCheckbox, showFullCalendarCheckbox, showMusicCheckbox, showClockCheckbox, showDateCheckbox, showGregorianCheckbox } from "./utils/dom.js"
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
@@ -87,18 +87,19 @@ document.addEventListener("DOMContentLoaded", async () => {
           key = "musicPlayerEnabled"
           checkbox = showMusicCheckbox
           break
+        case 'clock':
+          key = "showClock"
+          checkbox = showClockCheckbox
+          break
+
+        case 'gregorian':
+          key = "showGregorian"
+          checkbox = showGregorianCheckbox
+          break
       }
 
       if (key && checkbox) {
-        // For music: if already enabled, toggle expansion, but don't turn off yet 
-        // unless they click it while it's in a state that implies "off"
-        // Actually, let's stick to the user's "stay active" request but ensure it can be turned off
-        if (type === 'music' && checkbox.checked) {
-          window.dispatchEvent(new CustomEvent("settingsUpdated", {
-            detail: { key: "music_player_enabled", value: true }
-          }))
-          return
-        }
+
         
         value = !checkbox.checked
         checkbox.checked = value
@@ -119,6 +120,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         case 'timer': isActive = settings.showTimer === true; break
         case 'calendar': isActive = settings.showFullCalendar === true; break
         case 'music': isActive = settings.musicPlayerEnabled === true; break
+        case 'clock': isActive = settings.showClock !== false; break
+        case 'date': isActive = settings.showDate !== false; break
+        case 'gregorian': isActive = settings.showGregorian !== false; break
       }
       btn.classList.toggle('active', isActive)
     })

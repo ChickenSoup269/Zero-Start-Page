@@ -52,11 +52,7 @@ export class Timer {
                 <button id="timer-settings" class="icon-btn"><i class="fa-solid fa-ellipsis"></i></button>
             </div>
             <div id="timer-modal" class="timer-input-modal" style="display: none;">
-                <input type="number" id="timer-hours" placeholder="HH" min="0" max="23">
-                <span>:</span>
-                <input type="number" id="timer-minutes" placeholder="MM" min="0" max="59">
-                <span>:</span>
-                <input type="number" id="timer-seconds" placeholder="SS" min="0" max="59">
+                <input type="text" id="timer-smart-input" placeholder="Enter time" maxlength="6" inputmode="numeric">
                 <button id="timer-set-confirm" class="icon-btn"><i class="fa-solid fa-check"></i></button>
             </div>
             <button id="stop-alarm-btn" class="primary-btn" style="display: none; margin-top: 10px; width: 100%;">Stop Alarm</button>
@@ -77,6 +73,21 @@ export class Timer {
             if (e.detail.key === 'showTimer') {
                 this.isVisible = e.detail.value;
                 this.updateVisibility();
+            }
+        });
+        
+        // Smart input handler
+        const smartInput = this.container.querySelector('#timer-smart-input');
+        smartInput.addEventListener('input', (e) => {
+            // Only allow numbers
+            e.target.value = e.target.value.replace(/\D/g, '');
+            // Update display preview as user types
+            this.updateSmartInputPreview(e.target.value);
+        });
+        
+        smartInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.setTimer();
             }
         });
     }
@@ -141,28 +152,110 @@ export class Timer {
 
     toggleModal() {
         const modal = this.container.querySelector('#timer-modal');
+        const smartInput = this.container.querySelector('#timer-smart-input');
         modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
         if (modal.style.display === 'flex') {
+            // Convert current time to smart format
             const h = Math.floor(this.timeLeft / 3600);
             const m = Math.floor((this.timeLeft % 3600) / 60);
             const s = this.timeLeft % 60;
-            this.container.querySelector('#timer-hours').value = h || '';
-            this.container.querySelector('#timer-minutes').value = m || '';
-            this.container.querySelector('#timer-seconds').value = s || '';
+            
+            let smartValue = '';
+            if (h > 0) {
+                smartValue = h.toString().padStart(2, '0') + m.toString().padStart(2, '0') + s.toString().padStart(2, '0');
+            } else if (m > 0) {
+                smartValue = m.toString().padStart(2, '0') + s.toString().padStart(2, '0');
+            } else {
+                smartValue = s.toString();
+            }
+            smartInput.value = smartValue;
+            smartInput.focus();
+            smartInput.select();
         }
+    }
+    
+    updateSmartInputPreview(value) {
+        // Update the timer display to show preview
+        if (!value) {
+            this.render();
+            return;
+        }
+        const parsed = this.parseSmartTimerInput(value);
+        const h = Math.floor(parsed / 3600);
+        const m = Math.floor((parsed % 3600) / 60);
+        const s = parsed % 60;
+        
+        let displayStr = '';
+        if (h > 0) {
+            displayStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        } else if (m > 0) {
+            displayStr = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        } else {
+            displayStr = `${s.toString().padStart(2, '0')}`;
+        }
+        this.display.textContent = displayStr;
+    }
+    
+    parseSmartTimerInput(value) {
+        // Remove any non-digits
+        const digits = value.replace(/\D/g, '');
+        const len = digits.length;
+        
+        if (len === 0) return 0;
+        
+        let hours = 0, minutes = 0, seconds = 0;
+        
+        if (len <= 2) {
+            // 1-2 digits: seconds only
+            seconds = parseInt(digits);
+        } else if (len <= 4) {
+            // 3-4 digits: MMSS
+            minutes = parseInt(digits.slice(0, -2));
+            seconds = parseInt(digits.slice(-2));
+        } else {
+            // 5-6 digits: HHMMSS
+            hours = parseInt(digits.slice(0, -4));
+            minutes = parseInt(digits.slice(-4, -2));
+            seconds = parseInt(digits.slice(-2));
+        }
+        
+        // Validate and cap values
+        hours = Math.min(hours, 23);
+        minutes = Math.min(minutes, 59);
+        seconds = Math.min(seconds, 59);
+        
+        return (hours * 3600) + (minutes * 60) + seconds;
     }
 
     setTimer() {
-        const h = parseInt(this.container.querySelector('#timer-hours').value) || 0;
-        const m = parseInt(this.container.querySelector('#timer-minutes').value) || 0;
-        const s = parseInt(this.container.querySelector('#timer-seconds').value) || 0;
+        const smartInput = this.container.querySelector('#timer-smart-input');
+        const totalSeconds = this.parseSmartTimerInput(smartInput.value);
         
-        this.initialTime = (h * 3600) + (m * 60) + s;
+        if (totalSeconds === 0) {
+            this.toggleModal();
+            return;
+        }
+        
+        // Remember if timer was running
+        const wasRunning = this.isRunning;
+        
+        // Stop current timer if running
+        if (this.isRunning) {
+            this.pauseTimer();
+        }
+        
+        // Set new time
+        this.initialTime = totalSeconds;
         this.timeLeft = this.initialTime;
         this.isRunning = false;
         this.saveState();
         this.render();
         this.toggleModal();
+        
+        // Auto-start if it was running before
+        if (wasRunning) {
+            setTimeout(() => this.startTimer(), 100);
+        }
     }
 
     saveState() {

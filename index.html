@@ -5,15 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
-    <!-- Google Fonts: Outfit -->
+    <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Modular Styles -->
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/widgets.css">
+    <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/music-player.css">
 </head>
 
 <body>
@@ -31,6 +36,11 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
+            <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
+                    class="fa-solid fa-clock"></i></button>
+
+            <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
+                title="Toggle Gregorian Calendar"><i class="fa-solid fa-calendar-check"></i></button>
             <button id="reset-layout-quick" class="quick-btn" data-i18n-title="settings_reset_layout"
                 title="Reset Layout"><i class="fa-solid fa-arrows-rotate"></i></button>
             <div class="quick-access-divider"></div>
@@ -73,7 +83,8 @@
                                 <option value="sea" data-i18n="category_sea">Sea & Beaches</option>
                                 <option value="universe" data-i18n="category_universe">Universe & Space</option>
                                 <option value="city" data-i18n="category_city">Urban & City</option>
-                                <option value="anime" data-i18n="category_anime">Anime Art</option>
+                                <option value="minimalist" data-i18n="category_minimalist">Minimalist</option>
+                                <option value="animals" data-i18n="category_animals">Animals</option>
                             </select>
                             <button id="unsplash-random-btn" class="secondary-btn"
                                 data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
@@ -99,10 +110,6 @@
                         </div>
                     </div>
 
-                    <div class="setting-item">
-                        <label data-i18n="settings_saved_colors">Saved Colors</label>
-                        <div id="user-colors-gallery" class="local-bg-gallery"></div>
-                    </div>
                     <div class="setting-item">
                         <label data-i18n="settings_local_bg">Local Themes</label>
                         <div class="local-bg-gallery-controls">
@@ -144,7 +151,6 @@
                     <option value="none" data-i18n="effect_none">None</option>
                     <option value="galaxy" data-i18n="effect_galaxy">Rain</option>
                     <option value="meteor" data-i18n="effect_meteor">Meteor Shower</option>
-                    <option value="shootingStar" data-i18n="effect_shooting_star">Shooting Star</option>
 
                     <!-- Các hiệu ứng mới -->
                     <option value="fireflies" data-i18n="effect_fireflies">Fireflies</option>
@@ -165,26 +171,6 @@
                 <div id="hacker-color-setting" class="setting-item" style="display: none;">
                     <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
                     <input type="color" id="hacker-color-picker" value="#00FF00" />
-                </div>
-
-                <!-- Shooting Star Color -->
-                <div id="shooting-star-color-setting" class="setting-item" style="display: none;">
-                    <label for="shooting-star-color-picker" data-i18n="setting_shooting_star_color">Shooting Star
-                        Particle Color</label>
-                    <input type="color" id="shooting-star-color-picker" />
-                </div>
-                <!-- Shooting Star Background Color -->
-                <div id="shooting-star-background-color-setting" class="setting-item" style="display: none;">
-                    <label for="shooting-star-background-color-picker"
-                        data-i18n="setting_shooting_star_background_color">Shooting Star Background Overlay
-                        Color</label>
-                    <input type="color" id="shooting-star-background-color-picker" />
-                </div>
-                <!-- Shooting Star Star Color -->
-                <div id="shooting-star-star-color-setting" class="setting-item" style="display: none;">
-                    <label for="shooting-star-star-color-picker" data-i18n="setting_shooting_star_star_color">Shooting
-                        Star Static Star Color</label>
-                    <input type="color" id="shooting-star-star-color-picker" />
                 </div>
 
                 <!-- Meteor Color -->
@@ -309,17 +295,41 @@
         <div id="full-calendar-container" style="display: none;"></div>
 
         <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <div class="search-engine-selector" id="search-engine-selector">
+                <div class="selected-engine" id="selected-engine"><i class="fa-brands fa-google"></i></div>
+                <div class="engine-dropdown" id="engine-dropdown">
+                    <div class="engine-option active" data-value="google"><i class="fa-brands fa-google"></i>
+                        <span>Google</span>
+                    </div>
+                    <div class="engine-option" data-value="google-image"><i class="fa-regular fa-image"></i>
+                        <span>Images</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="image-preview-container" class="image-preview-container" style="display: none;">
+                <div class="preview-wrapper">
+                    <img id="image-preview-thumb" src="" alt="Preview">
+                    <div id="remove-preview-btn" class="preview-remove-btn"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+            </div>
+
             <form action="https://www.google.com/search" method="GET" target="_self">
                 <input type="text" id="search-input" name="q" class="i18n-placeholder"
                     data-i18n-placeholder="search_placeholder" placeholder="Search Google..." autocomplete="off"
                     required>
             </form>
+            <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>
+            <input type="file" id="image-search-upload" accept="image/*" style="display: none;">
             <i class="fa-solid fa-xmark clear-btn" id="clear-btn"></i>
         </div>
 
         <div id="bookmarks-container" class="bookmarks-grid">
             <!-- Bookmarks will be injected here -->
+        </div>
+
+        <div id="bookmark-groups-container" class="bookmark-groups-container">
+            <!-- Group Tabs will be injected here -->
         </div>
     </div>
 
@@ -349,7 +359,7 @@
                     data-i18n-placeholder="modal_icon_placeholder" placeholder="Custom Icon URL (Optional)">
                 <div class="modal-actions">
                     <button id="save-bookmark" class="primary-btn" data-i18n="modal_save">Save</button>
-                    <button id="show-import-btn" class="secondary-btn" data-i18n="modal_import">Import from
+                    <button id="show-import-btn" class="primary-btn" data-i18n="modal_import">Import from
                         Browser</button>
                 </div>
             </div>

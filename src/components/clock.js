@@ -8,6 +8,8 @@ export function updateTime() {
     settings.language === "vi" ? "vi-VN" : "en-US",
     { hour12: false }
   )
+  
+  // Handle clock visibility
   clockElement.style.display = settings.showClock !== false ? "block" : "none"
   clockElement.textContent = timeString
 
@@ -30,8 +32,9 @@ export function updateTime() {
     dateString = now.toISOString().split("T")[0]
   }
 
-  // Handle Gregorian visibility
-  dateElement.style.display = settings.showGregorian !== false ? "block" : "none"
+  // Handle date visibility - check both showDate AND showGregorian
+  const shouldShowDate = (settings.showDate !== false) && (settings.showGregorian !== false)
+  dateElement.style.display = shouldShowDate ? "block" : "none"
   dateElement.textContent = dateString
 }
 
@@ -40,7 +43,7 @@ export function initClock() {
   setInterval(updateTime, 1000)
 
   window.addEventListener("layoutUpdated", (e) => {
-    if (e.detail.key === "showGregorian" || e.detail.key === "showClock") {
+    if (e.detail.key === "showGregorian" || e.detail.key === "showClock" || e.detail.key === "showDate") {
       updateTime()
     }
   })

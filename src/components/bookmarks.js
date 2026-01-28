@@ -1,13 +1,26 @@
-import { bookmarksContainer } from "../utils/dom.js"
-import { getBookmarks } from "../services/state.js"
+import { bookmarksContainer, bookmarkGroupsContainer } from "../utils/dom.js"
+import { 
+  getBookmarks, 
+  getBookmarkGroups, 
+  setBookmarkGroups, 
+  getActiveGroupId, 
+  setActiveGroupId, 
+  saveBookmarks 
+} from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
 export function renderBookmarks() {
   const i18n = geti18n()
-  const bookmarks = getBookmarks()
+  
+  // 1. Render Group Tabs
+  renderGroupTabs()
+
+  // 2. Render Bookmarks for Active Group
+  const bookmarks = getBookmarks() // This now returns items of active group
   bookmarksContainer.innerHTML = ""
+  
   bookmarks.forEach((bookmark, index) => {
     const bookmarkEl = document.createElement("a")
     bookmarkEl.href = bookmark.url
@@ -24,6 +37,7 @@ export function renderBookmarks() {
     bookmarksContainer.appendChild(bookmarkEl)
   })
 
+  // Add Button (Always at end of list)
   const addBtn = document.createElement("button")
   addBtn.className = "add-bookmark-card"
   addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
@@ -32,7 +46,82 @@ export function renderBookmarks() {
   bookmarksContainer.appendChild(addBtn)
 }
 
+function renderGroupTabs() {
+  const groups = getBookmarkGroups()
+  const activeId = getActiveGroupId()
+  bookmarkGroupsContainer.innerHTML = ""
+
+  groups.forEach(group => {
+    const tab = document.createElement("div")
+    tab.className = `bookmark-group-tab ${group.id === activeId ? 'active' : ''}`
+    
+    // Name Span (for double-click edit)
+    const nameSpan = document.createElement("span")
+    nameSpan.textContent = group.name
+    tab.appendChild(nameSpan)
+
+    // Events
+    tab.addEventListener("click", () => {
+      if (group.id !== activeId) {
+        setActiveGroupId(group.id)
+        renderBookmarks()
+      }
+    })
+
+    // Rename (Double Click)
+    tab.addEventListener("dblclick", () => {
+      const newName = prompt("Enter new group name:", group.name)
+      if (newName && newName.trim() !== "") {
+        group.name = newName.trim()
+        saveBookmarks()
+        renderBookmarks() // Re-render tabs
+      }
+    })
+
+    // Delete (Right Click) - Prevent deleting the last group
+    if (groups.length > 1) {
+        tab.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+            if (confirm(`Delete group "${group.name}" and all its bookmarks?`)) {
+                const newGroups = groups.filter(g => g.id !== group.id)
+                setBookmarkGroups(newGroups)
+                
+                // If we deleted the active group, switch to the first one available
+                if (group.id === activeId) {
+                    setActiveGroupId(newGroups[0].id)
+                } else {
+                    saveBookmarks() // Just save the list update
+                }
+                renderBookmarks()
+            }
+        })
+    }
+
+    bookmarkGroupsContainer.appendChild(tab)
+  })
+
+  // "Add Group" Tab
+  const addTab = document.createElement("div")
+  addTab.className = "bookmark-group-tab add-group-tab"
+  addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
+  addTab.title = "Add Group"
+  addTab.addEventListener("click", () => {
+    const name = prompt("Enter group name:", `Group ${groups.length + 1}`)
+    if (name) {
+        const newGroup = {
+            id: `group-${Date.now()}`,
+            name: name.trim() || `Group ${groups.length + 1}`,
+            items: []
+        }
+        groups.push(newGroup)
+        setBookmarkGroups(groups)
+        setActiveGroupId(newGroup.id) // Switch to new group
+        renderBookmarks()
+    }
+  })
+  bookmarkGroupsContainer.appendChild(addTab)
+}
+
 export function initBookmarks() {
   renderBookmarks()
-  // Event delegation could be used here for context menu, but direct binding is simpler for now.
 }

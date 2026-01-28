@@ -1,11 +1,29 @@
 import { searchInput, clearBtn } from "../utils/dom.js"
 
 const searchContainer = document.querySelector(".search-container")
+const searchForm = document.querySelector(".search-container form")
 const suggestionsContainer = document.createElement("div")
 suggestionsContainer.id = "suggestions-container"
 searchContainer.appendChild(suggestionsContainer)
 
+// Search Engine Selector Elements
+const searchEngineSelector = document.getElementById("search-engine-selector")
+const selectedEngine = document.getElementById("selected-engine")
+const engineDropdown = document.getElementById("engine-dropdown")
+const engineOptions = document.querySelectorAll(".engine-option")
+
+// Image Search Elements
+const cameraBtn = document.getElementById("search-camera-btn")
+const imageUploadInput = document.getElementById("image-search-upload")
+
+// Preview Elements
+const previewContainer = document.getElementById("image-preview-container")
+const previewThumb = document.getElementById("image-preview-thumb")
+const removePreviewBtn = document.getElementById("remove-preview-btn")
+
 let suggestionTimeout
+let currentEngine = "google" // Default
+let pendingImageFile = null // Store the image file waiting to be uploaded
 
 async function fetchSuggestions(query) {
   if (!query) {
@@ -39,8 +57,6 @@ async function fetchSuggestions(query) {
 }
 
 function getFaviconUrl(suggestion) {
-  // A simple heuristic to extract a domain from the suggestion.
-  // This might not always be accurate.
   try {
     const url = new URL(
       suggestion.startsWith("http")
@@ -49,7 +65,6 @@ function getFaviconUrl(suggestion) {
     )
     return `https://www.google.com/s2/favicons?domain=${url.hostname}`
   } catch (e) {
-    // If it's not a URL, use a generic search icon
     return "https://www.google.com/s2/favicons?domain=google.com"
   }
 }
@@ -81,51 +96,214 @@ function displaySuggestions(suggestions) {
 
 function handleSuggestionClick(e) {
   let target = e.target
-  // Traverse up the DOM tree to find the suggestion-item container
   while (target && !target.classList.contains("suggestion-item")) {
     target = target.parentElement
   }
 
   if (target) {
-    // Find the span within the suggestion-item to get the text
     const textSpan = target.querySelector("span")
     if (textSpan) {
       searchInput.value = textSpan.textContent
       suggestionsContainer.style.display = "none"
       searchInput.focus()
-      // Optionally, submit the form
-      searchInput.form.submit()
+      submitSearch()
     }
   }
 }
 
+function submitSearch() {
+    // Priority: Pending Image -> Text Search
+    if (pendingImageFile) {
+        uploadImageToGoogle(pendingImageFile)
+        clearImagePreview()
+        return
+    }
+
+    const query = searchInput.value.trim()
+    if (!query) return
+
+    let searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(query)
+
+    if (currentEngine === "google-image") {
+        searchUrl += "&tbm=isch"
+    }
+
+    window.location.href = searchUrl
+}
+
+function uploadImageToGoogle(file) {
+    const form = document.createElement("form")
+    form.method = "POST"
+    form.action = "https://www.google.com/searchbyimage/upload"
+    form.enctype = "multipart/form-data"
+    form.target = "_blank" 
+    form.style.display = "none"
+
+    const fileInput = document.createElement("input")
+    fileInput.type = "file"
+    fileInput.name = "encoded_image"
+    
+    const dataTransfer = new DataTransfer()
+    dataTransfer.items.add(file)
+    fileInput.files = dataTransfer.files
+
+    form.appendChild(fileInput)
+    document.body.appendChild(form)
+    
+    form.submit()
+    
+    setTimeout(() => {
+        document.body.removeChild(form)
+    }, 1000)
+}
+
+function handleImageSelection(file) {
+    pendingImageFile = file
+    
+    // Show Preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+        previewThumb.src = e.target.result
+        previewContainer.style.display = "flex"
+        // Hide camera btn temporarily or keep it? Keep it.
+        // Update placeholder to indicate readiness
+        searchInput.placeholder = "Press Enter to Search Image..."
+        searchInput.value = "" // Clear text if any? Or keep it? Clearing is safer to avoid ambiguity
+        searchInput.focus()
+    }
+    reader.readAsDataURL(file)
+}
+
+function clearImagePreview() {
+    pendingImageFile = null
+    previewContainer.style.display = "none"
+    previewThumb.src = ""
+    imageUploadInput.value = "" // Reset file input
+    updateSearchUI()
+}
+
+function updateSearchUI() {
+    // If pending image exists, don't override placeholder
+    if (pendingImageFile) return
+
+    if (currentEngine === "google-image") {
+        cameraBtn.style.display = "block"
+        searchInput.placeholder = "Search Google Images (or Paste Image)..."
+    } else {
+        cameraBtn.style.display = "none"
+        searchInput.placeholder = "Search Google..."
+    }
+}
+
 function initSearch() {
+    // Dropdown Toggle
+    searchEngineSelector.addEventListener("click", (e) => {
+        e.stopPropagation()
+        engineDropdown.classList.toggle("show")
+    })
+
+    // Option Selection
+    engineOptions.forEach(option => {
+        option.addEventListener("click", (e) => {
+            e.stopPropagation()
+            const value = option.dataset.value
+            currentEngine = value
+            
+            // Update Active State
+            engineOptions.forEach(opt => opt.classList.remove("active"))
+            option.classList.add("active")
+
+            // Update Icon
+            const iconClass = value === "google" ? "fa-brands fa-google" : "fa-regular fa-image"
+            selectedEngine.innerHTML = `<i class="${iconClass}"></i>`
+            
+            // Close Dropdown
+            engineDropdown.classList.remove("show")
+            
+            // Focus Input
+            searchInput.focus()
+            
+            updateSearchUI()
+        })
+    })
+
+    // Camera Button Click
+    cameraBtn.addEventListener("click", () => {
+        imageUploadInput.click()
+    })
+
+    // File Input Change
+    imageUploadInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleImageSelection(e.target.files[0])
+        }
+    })
+
+    // Remove Preview
+    removePreviewBtn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        clearImagePreview()
+    })
+
+    // Paste Event
+    document.addEventListener("paste", (e) => {
+        if (currentEngine !== "google-image") return
+
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items
+        for (let index in items) {
+            const item = items[index]
+            if (item.kind === "file" && item.type.startsWith("image/")) {
+                const blob = item.getAsFile()
+                handleImageSelection(blob)
+                e.preventDefault() 
+                return
+            }
+        }
+    })
+
+    // Close Dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+        if (!searchEngineSelector.contains(e.target)) {
+            engineDropdown.classList.remove("show")
+        }
+        if (!searchContainer.contains(e.target)) {
+            suggestionsContainer.style.display = "none"
+        }
+    })
+
   searchInput.addEventListener("input", () => {
+    // If we have an image pending, maybe we shouldn't show text suggestions?
+    // Or maybe we treat text as metadata? Google Images direct upload doesn't support extra query easily.
+    // For now, let's allow typing but if they submit, the image takes precedence as per logic.
+    
     clearTimeout(suggestionTimeout)
     suggestionTimeout = setTimeout(() => {
       fetchSuggestions(searchInput.value)
-    }, 250) // Debounce API calls
+    }, 250) 
   })
 
   suggestionsContainer.addEventListener("click", handleSuggestionClick)
-
-  // Hide suggestions when clicking outside
-  document.addEventListener("click", (e) => {
-    if (!searchContainer.contains(e.target)) {
-      suggestionsContainer.style.display = "none"
-    }
-  })
 
   // Handle clearing the search input
   searchInput.addEventListener("input", () => {
     clearBtn.style.display = searchInput.value ? "block" : "none"
   })
+  
   clearBtn.addEventListener("click", () => {
     searchInput.value = ""
     clearBtn.style.display = "none"
     suggestionsContainer.style.display = "none"
     searchInput.focus()
   })
+
+  // Intercept Form Submission
+  searchForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+      submitSearch()
+  })
+
+  // Initial UI check
+  updateSearchUI()
 }
 
 export { initSearch }

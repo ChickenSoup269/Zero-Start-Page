@@ -10,7 +10,6 @@ export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
 export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
-export const userColorsGallery = document.getElementById("user-colors-gallery")
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
 export const bgPosXInput = document.getElementById("bg-pos-x-input")
@@ -45,27 +44,6 @@ export const meteorColorSetting = document.getElementById(
 
 export const starColorPicker = document.getElementById("star-color-picker")
 export const starColorSetting = document.getElementById("star-color-setting")
-
-export const shootingStarColorPicker = document.getElementById(
-  "shooting-star-color-picker",
-)
-export const shootingStarColorSetting = document.getElementById(
-  "shooting-star-color-setting",
-)
-
-export const shootingStarBackgroundColorPicker = document.getElementById(
-  "shooting-star-background-color-picker",
-)
-export const shootingStarBackgroundColorSetting = document.getElementById(
-  "shooting-star-background-color-setting",
-)
-
-export const shootingStarStarColorPicker = document.getElementById(
-  "shooting-star-star-color-picker",
-)
-export const shootingStarStarColorSetting = document.getElementById(
-  "shooting-star-star-color-setting",
-)
 
 export const networkColorPicker = document.getElementById(
   "network-color-picker",
@@ -125,6 +103,7 @@ export const menuEdit = document.getElementById("menu-edit")
 export const menuDelete = document.getElementById("menu-delete")
 
 export const bookmarksContainer = document.getElementById("bookmarks-container")
+export const bookmarkGroupsContainer = document.getElementById("bookmark-groups-container")
 
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
@@ -132,6 +111,7 @@ export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export const showGregorianCheckbox = document.getElementById("show-gregorian-checkbox")
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const showClockCheckbox = document.getElementById("show-clock-checkbox")
+export const showDateCheckbox = document.getElementById("show-date-checkbox")
 export const showFullCalendarCheckbox = document.getElementById("show-full-calendar-checkbox")
 export const showQuickAccessCheckbox = document.getElementById("show-quick-access-checkbox")
 export const musicStyleSelect = document.getElementById("music-style-select")

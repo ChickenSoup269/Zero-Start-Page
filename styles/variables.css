@@ -1,0 +1,29 @@
+:root {
+  --bg-gradient-start: #0f0c29;
+  --bg-gradient-end: #302b63;
+  --bg-gradient: linear-gradient(
+    var(--bg-gradient-angle, 135deg),
+    var(--bg-gradient-start),
+    var(--bg-gradient-end)
+  );
+  --text-color: #ffffff;
+  --font-primary: "Outfit", sans-serif;
+  --clock-size: 6rem;
+  --date-size: 1.5rem;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --accent-color: #a8c0ff;
+  --bg-color: #1a1a2e;
+  --panel-bg: rgba(26, 26, 46, 0.7);
+  --hover-bg: rgba(255, 255, 255, 0.15);
+  /* Sidebar Variables */
+  --sidebar-bg: rgba(20, 20, 25, 0.85);
+  --sidebar-width: 320px;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --clock-color: #ffffff;
+  --bg-pos-x: 50%;
+  --bg-pos-y: 50%;
+}

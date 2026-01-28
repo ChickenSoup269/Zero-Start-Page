@@ -1,4 +1,5 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js";
+import MusicVisualizer from "./visualizer.js";
 
 export class MusicPlayer {
     constructor() {
@@ -10,6 +11,7 @@ export class MusicPlayer {
         this.currentStyle = settings.musicBarStyle || "vinyl";
         this.pollInterval = null;
         this.currentThumbnail = "";
+        this.visualizer = new MusicVisualizer();
         
         this.init();
     }
@@ -37,7 +39,10 @@ export class MusicPlayer {
                 <div class="player-main">
                     <div class="player-info">
                         <h3 id="music-title">No Media Playing</h3>
-                        <p id="music-artist"></p>
+                        <p id="music-artist">
+                            <i id="platform-icon" class="platform-icon" style="display: none;"></i>
+                            <span id="artist-text"></span>
+                        </p>
                     </div>
                     <div class="controls-row">
                         <button id="prev-track" class="player-btn"><i class="fa-solid fa-backward-step"></i></button>
@@ -53,6 +58,11 @@ export class MusicPlayer {
         this.sourceIcon = this.container.querySelector('#source-icon-overlay');
         this.titleElement = this.container.querySelector('#music-title');
         this.artistElement = this.container.querySelector('#music-artist');
+        this.platformIcon = this.container.querySelector('#platform-icon');
+        this.artistText = this.container.querySelector('#artist-text');
+        
+        // Initialize visualizer
+        this.visualizer.init(this.container);
     }
 
     setupEventListeners() {
@@ -71,7 +81,7 @@ export class MusicPlayer {
         });
 
         window.addEventListener('settingsUpdated', (e) => {
-            if (e.detail.key === 'music_player_enabled') {
+            if (e.detail.key === 'musicPlayerEnabled') {
                 if (this.showPlayer && e.detail.value === true) {
                     // If already enabled, toggle between minimized and expanded
                     this.togglePlayer();
@@ -122,7 +132,24 @@ export class MusicPlayer {
 
     updateUI(data) {
         this.titleElement.textContent = data.title || "Unknown Title";
-        this.artistElement.textContent = data.artist || "Unknown Artist";
+        
+        // Update artist text and platform icon
+        const artist = data.artist || "Unknown Artist";
+        this.artistText.textContent = artist;
+        
+        // Show platform icon based on source
+        if (data.source === 'youtube') {
+            this.platformIcon.className = 'platform-icon fa-brands fa-youtube';
+            this.platformIcon.style.display = 'inline';
+            this.platformIcon.style.color = '#FF0000';
+        } else if (data.source === 'spotify') {
+            this.platformIcon.className = 'platform-icon fa-brands fa-spotify';
+            this.platformIcon.style.display = 'inline';
+            this.platformIcon.style.color = '#1DB954';
+        } else {
+            this.platformIcon.style.display = 'none';
+        }
+        
         this.isPlaying = !data.paused;
         
         const btn = document.getElementById('play-pause-btn');
@@ -130,8 +157,10 @@ export class MusicPlayer {
         
         if (this.isPlaying) {
             this.disc.classList.add('playing');
+            this.visualizer.start();
         } else {
             this.disc.classList.remove('playing');
+            this.visualizer.stop();
         }
 
         // Update thumbnail

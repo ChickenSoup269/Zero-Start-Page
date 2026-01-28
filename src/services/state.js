@@ -1,6 +1,6 @@
 // --- State Management ---
 const defaultSettings = {
-  background: "local-bg-5",
+  background: "#0f0c29",
   font: "'Outfit', sans-serif",
   dateFormat: "full",
   clockSize: "6",
@@ -15,9 +15,7 @@ const defaultSettings = {
   userGradients: [], // Add userGradients
   meteorColor: "#ffffff",
   starColor: "#ffffff",
-  shootingStarColor: "#ffcc66", // Particle color
-  shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
-  shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
+
   clockColor: null,
   auraColor: "#a8c0ff",
   hackerColor: "#00FF00",
@@ -27,9 +25,10 @@ const defaultSettings = {
   showTodoList: true,
   showTimer: false,
   showGregorian: true,
-  musicPlayerEnabled: false,
-  showClock: true,
   showFullCalendar: false,
+  showClock: true,
+  showDate: true,
+  musicPlayerEnabled: false,
   componentPositions: {},
   musicBarStyle: "vinyl",
   timerInitialTime: 0,
@@ -41,7 +40,37 @@ const defaultSettings = {
   quickAccessCollapsed: false
 }
 
-let bookmarksState = JSON.parse(localStorage.getItem("bookmarks")) || []
+
+// Bookmarks State Migration
+let storedBookmarks = JSON.parse(localStorage.getItem("bookmarks"))
+
+// Migration: Array -> Object with Groups
+if (Array.isArray(storedBookmarks)) {
+  storedBookmarks = {
+    groups: [
+      {
+        id: "group-1",
+        name: "Main",
+        items: storedBookmarks
+      }
+    ],
+    activeGroupId: "group-1"
+  }
+  localStorage.setItem("bookmarks", JSON.stringify(storedBookmarks))
+}
+
+let bookmarksState = storedBookmarks || {
+  groups: [
+    {
+      id: "group-1",
+      name: "Main",
+      items: []
+    }
+  ],
+  activeGroupId: "group-1"
+}
+
+
 let settingsState = {
   ...defaultSettings,
   ...(JSON.parse(localStorage.getItem("pageSettings")) || {}),
@@ -52,20 +81,44 @@ settingsState.userBackgrounds = settingsState.userBackgrounds || []
 settingsState.userColors = settingsState.userColors || []
 settingsState.userGradients = settingsState.userGradients || []
 
-export const localBackgrounds = [
-  { id: "local-bg-1", name: "Sunset" },
-  { id: "local-bg-2", name: "Lavender" },
-  { id: "local-bg-3", name: "Charcoal" },
-  { id: "local-bg-4", name: "Morning" },
-  { id: "local-bg-5", name: "Deep Space" },
-]
+// --- Exports ---
+export const localBackgrounds = []
 
-export function getBookmarks() {
+
+// Returns the *entire state* (groups + activeId)
+export function getBookmarkState() {
   return bookmarksState
 }
 
-export function setBookmarks(newBookmarks) {
-  bookmarksState = newBookmarks
+// Returns just the items of the active group (for compatibility/rendering current view)
+export function getBookmarks() {
+  const activeGroup = bookmarksState.groups.find(g => g.id === bookmarksState.activeGroupId)
+  return activeGroup ? activeGroup.items : []
+}
+
+export function setBookmarks(newItems) {
+  // Sets items for the ACTIVE group
+  const activeGroup = bookmarksState.groups.find(g => g.id === bookmarksState.activeGroupId)
+  if (activeGroup) {
+    activeGroup.items = newItems
+  }
+}
+
+export function getBookmarkGroups() {
+  return bookmarksState.groups
+}
+
+export function setBookmarkGroups(groups) {
+  bookmarksState.groups = groups
+}
+
+export function getActiveGroupId() {
+  return bookmarksState.activeGroupId
+}
+
+export function setActiveGroupId(id) {
+  bookmarksState.activeGroupId = id
+  saveBookmarks()
 }
 
 export function getSettings() {
@@ -78,7 +131,7 @@ export function updateSetting(key, value) {
 
 export function resetSettingsState() {
   const defaultSettings = {
-    background: "local-bg-5",
+    background: "#0f0c29",
     font: "'Outfit', sans-serif",
     dateFormat: "full",
     clockSize: "6",
@@ -93,9 +146,7 @@ export function resetSettingsState() {
     userGradients: [],
     meteorColor: "#ffffff",
     starColor: "#ffffff",
-    shootingStarColor: "#ffcc66", // Particle color
-    shootingStarBackgroundColor: "#000000", // Background overlay for shooting star effect
-    shootingStarStarColor: "#ffffff", // Static stars color for shooting star effect
+
     clockColor: null,
     auraColor: "#a8c0ff",
     hackerColor: "#00FF00",

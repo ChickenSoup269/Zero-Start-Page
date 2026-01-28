@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Environment/Secrets
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea/
+.vscode/
