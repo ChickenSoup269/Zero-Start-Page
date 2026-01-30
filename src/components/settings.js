@@ -66,6 +66,8 @@ import {
   resetSettingsState,
 } from "../services/state.js"
 import { geti18n, loadLanguage, applyTranslations } from "../services/i18n.js"
+import { getContrastYIQ } from "../utils/colors.js"
+
 
 
 // Import các hiệu ứng

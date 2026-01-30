@@ -36,9 +36,7 @@ const defaultSettings = {
   timerEndTime: 0,
   timerIsRunning: false,
   musicPlayerExpanded: false,
-  showQuickAccess: true,
-  quickAccessCollapsed: false,
-  stickyNotes: [],
+
 }
 
 // Bookmarks State Migration
@@ -77,31 +75,9 @@ let settingsState = {
 
 // Ensure userBackgrounds is always an array
 settingsState.userBackgrounds = settingsState.userBackgrounds || []
-settingsState.userColors = settingsState.userColors || []
-settingsState.userGradients = settingsState.userGradients || []
-settingsState.stickyNotes = settingsState.stickyNotes || []
 
-// --- Data Migration for Sticky Notes ---
-if (
-  settingsState.stickyNoteContent &&
-  (!settingsState.stickyNotes || settingsState.stickyNotes.length === 0)
-) {
-  if (settingsState.showStickyNote) {
-    settingsState.stickyNotes.push({
-      id: `note-${Date.now()}`,
-      content: settingsState.stickyNoteContent,
-      color: "#ffc", // Default old color
-      position: { top: "50%", left: "50%" },
-      size: { width: "200px", height: "300px" },
-      isBold: false,
-      isItalic: false,
-    })
-  }
-  // Clean up old properties
-  delete settingsState.stickyNoteContent
-  delete settingsState.showStickyNote
-  saveSettings() // Save the migrated state
-}
+
+
 
 // --- Exports ---
 export const localBackgrounds = []
@@ -192,8 +168,7 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
-    quickAccessCollapsed: false,
-    stickyNotes: [],
+
   }
   settingsState = defaultSettings
   saveSettings()

@@ -112,49 +112,50 @@ function handleSuggestionClick(e) {
 }
 
 function submitSearch() {
-    // Priority: Pending Image -> Text Search
+    const query = searchInput.value.trim()
+    
+    // Check if the query is a direct image URL
+    // A simple check for now: starts with http(s) and ends with common image extensions, or contains image in path
+    const isImageUrl = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|tiff|svg|ico)(\?.+)?$/i.test(query) ||
+                       /^https?:\/\/.+\/images\/.+$/i.test(query) ||
+                       /^https?:\/\/.+\/img\/.+$/i.test(query) ||
+                       /^https?:\/\/.+unsplash\.com\/photos\/.+$/i.test(query); // Specific for Unsplash links
+
     if (pendingImageFile) {
-        uploadImageToGoogle(pendingImageFile)
-        clearImagePreview()
-        return
+        // Handle pasted/uploaded image files (manual upload to Lens)
+        console.warn("Image file detected. Redirecting to lens.google.com/upload for manual action.");
+        window.open("https://lens.google.com/upload", "_blank");
+        alert("Đã mở Google Lens. Vui lòng kéo thả ảnh vào khu vực tải lên hoặc nhấp để chọn tệp trên trang đó để tiếp tục tìm kiếm.");
+        clearImagePreview();
+        return;
+    } else if (isImageUrl) {
+        // Handle image URLs (direct search via Lens)
+        console.log("Image URL detected. Redirecting to Google Lens search by URL.");
+        window.open(`https://lens.google.com/search?url=${encodeURIComponent(query)}`, "_blank");
+        searchInput.value = ""; // Clear input after search
+        return;
     }
 
-    const query = searchInput.value.trim()
-    if (!query) return
+    // Default to text search
+    if (!query) return;
 
-    let searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(query)
+    let searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(query);
 
     if (currentEngine === "google-image") {
-        searchUrl += "&tbm=isch"
+        searchUrl += "&tbm=isch";
     }
 
-    window.location.href = searchUrl
+    window.location.href = searchUrl;
 }
 
 function uploadImageToGoogle(file) {
-    const form = document.createElement("form")
-    form.method = "POST"
-    form.action = "https://www.google.com/searchbyimage/upload"
-    form.enctype = "multipart/form-data"
-    form.target = "_blank" 
-    form.style.display = "none"
-
-    const fileInput = document.createElement("input")
-    fileInput.type = "file"
-    fileInput.name = "encoded_image"
-    
-    const dataTransfer = new DataTransfer()
-    dataTransfer.items.add(file)
-    fileInput.files = dataTransfer.files
-
-    form.appendChild(fileInput)
-    document.body.appendChild(form)
-    
-    form.submit()
-    
-    setTimeout(() => {
-        document.body.removeChild(form)
-    }, 1000)
+    // Due to Google's server-side rejection of direct programmatic image uploads
+    // from extensions, we will now redirect the user to Google Lens for manual upload.
+    console.warn("Direct image upload to Google is currently unavailable. Redirecting to lens.google.com/upload for manual upload.")
+    window.open("https://lens.google.com/upload", "_blank")
+    alert("Đã mở Google Lens. Vui lòng kéo thả ảnh vào khu vực tải lên hoặc nhấp để chọn tệp trên trang đó để tiếp tục tìm kiếm.")
+    // Optionally, clear the pending image preview as the user is now redirected
+    clearImagePreview()
 }
 
 function handleImageSelection(file) {
@@ -184,7 +185,9 @@ function clearImagePreview() {
 
 function updateSearchUI() {
     // If pending image exists, don't override placeholder
-    if (pendingImageFile) return
+    if (pendingImageFile) {
+        return
+    }
 
     if (currentEngine === "google-image") {
         cameraBtn.style.display = "block"
@@ -247,7 +250,9 @@ function initSearch() {
 
     // Paste Event
     document.addEventListener("paste", (e) => {
-        if (currentEngine !== "google-image") return
+        if (currentEngine !== "google-image") {
+            return
+        }
 
         const items = (e.clipboardData || e.originalEvent.clipboardData).items
         for (let index in items) {

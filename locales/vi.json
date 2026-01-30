@@ -65,8 +65,6 @@
   "style_vinyl": "Vinyl (Đĩa than)",
   "style_pixel": "Pixel",
   "style_spotify": "Spotify",
-  "settings_show_quick_access": "Hiện thanh truy cập nhanh",
-  "quick_access_add_note": "Thêm ghi chú",
-  "sticky_note_title": "Ghi chú nhanh",
-  "sticky_note_placeholder": "Viết ghi chú của bạn tại đây..."
+  "settings_show_quick_access": "Hiện thanh truy cập nhanh"
+
 }

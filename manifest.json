@@ -17,6 +17,7 @@
     "https://suggestqueries.google.com/*",
     "*://*.youtube.com/*",
     "*://*.spotify.com/*",
-    "*://music.youtube.com/*"
+    "*://music.youtube.com/*",
+    "*://images.google.com/*"
   ]
 }
