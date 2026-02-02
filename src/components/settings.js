@@ -1,3 +1,4 @@
+import { showAlert, showConfirm } from "../utils/dialog.js"
 import {
   settingsToggle,
   settingsSidebar,
@@ -170,7 +171,7 @@ function setUnsplashRandomBackground(retries = 3) {
     const btn = unsplashRandomBtn
     btn.disabled = false
     btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash Random'
-    alert("Failed to load random Unsplash image. Please try again.")
+    showAlert("Failed to load random Unsplash image. Please try again.")
     return
   }
 
@@ -502,9 +503,9 @@ export function renderLocalBackgrounds() {
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", (e) => {
+      removeBtn.addEventListener("click", async (e) => {
         e.stopPropagation()
-        if (confirm(i18n.alert_delete_bg_confirm)) {
+        if (await showConfirm(i18n.alert_delete_bg_confirm)) {
           settings.userBackgrounds.splice(index, 1)
           if (settings.background === bgUrl) {
             handleSettingUpdate("background", null)
@@ -623,7 +624,7 @@ export function initSettings() {
     if (color.match(/^#([0-9a-f]{3}){1,2}$/i)) {
       if (!settings.userColors.includes(color)) {
         if (settings.userColors.length >= 10) {
-          alert("You can only save up to 10 custom colors.")
+          showAlert("You can only save up to 10 custom colors.")
           return
         }
         settings.userColors.push(color)
@@ -632,7 +633,7 @@ export function initSettings() {
         updateSettingsInputs()
       }
     } else {
-      alert("Please enter a valid hex color code (e.g., #ff0000).")
+      showAlert("Please enter a valid hex color code (e.g., #ff0000).")
     }
   })
 
@@ -645,19 +646,21 @@ export function initSettings() {
     if (!bg) return
 
     if (getSettings().userBackgrounds.includes(bg)) {
-      alert("This background is already saved.")
+      showAlert("This background is already saved.")
       return
     }
 
     if (getSettings().userBackgrounds.length >= 10) {
-      alert("Gallery full! Please remove some backgrounds before saving more.")
+      showAlert(
+        "Gallery full! Please remove some backgrounds before saving more.",
+      )
       return
     }
 
     getSettings().userBackgrounds.push(bg)
     saveSettings()
     renderLocalBackgrounds()
-    alert("Background saved to Local Themes!")
+    showAlert("Background saved to Local Themes!")
   })
 
   uploadLocalImageBtn.addEventListener("click", () => localImageUpload.click())
@@ -671,7 +674,7 @@ export function initSettings() {
         // Preserve GIF
         if (file.type === "image/gif") {
           if (getSettings().userBackgrounds.length >= 5) {
-            alert("You can only upload up to 5 custom backgrounds.")
+            showAlert("You can only upload up to 5 custom backgrounds.")
             return
           }
           getSettings().userBackgrounds.push(dataUrl)
@@ -701,7 +704,7 @@ export function initSettings() {
           canvas.getContext("2d").drawImage(img, 0, 0, width, height)
           const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.95) // Increase quality
           if (getSettings().userBackgrounds.length >= 5) {
-            alert("You can only upload up to 5 custom backgrounds.")
+            showAlert("You can only upload up to 5 custom backgrounds.")
             return
           }
           getSettings().userBackgrounds.push(resizedDataUrl)
@@ -802,7 +805,7 @@ export function initSettings() {
     )
     if (!alreadyExists) {
       if (settings.userGradients.length >= 10) {
-        alert("You can only save up to 10 custom gradients.")
+        showAlert("You can only save up to 10 custom gradients.")
         return
       }
       settings.userGradients.push(newGradient)
@@ -865,8 +868,8 @@ export function initSettings() {
     handleSettingUpdate("clockColor", null)
   })
 
-  resetSettingsBtn.addEventListener("click", () => {
-    if (confirm(i18n.alert_reset)) {
+  resetSettingsBtn.addEventListener("click", async () => {
+    if (await showConfirm(i18n.alert_reset)) {
       resetSettingsState()
       applySettings()
       renderLocalBackgrounds()

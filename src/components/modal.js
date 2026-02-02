@@ -1,3 +1,4 @@
+import { showAlert } from "../utils/dialog.js"
 import {
   modal,
   closeModalBtn,
@@ -67,7 +68,7 @@ function saveBookmark() {
     renderBookmarks() // Re-render after saving
     closeModal()
   } else {
-    alert(i18n.alert_missing_fields)
+    showAlert(i18n.alert_missing_fields)
   }
 }
 
@@ -84,24 +85,24 @@ function renderBookmarkTree(node, container) {
     if (node.id !== "0") {
       const wrapper = document.createElement("div")
       wrapper.className = "folder-wrapper collapsed"
-      
+
       const folderDiv = document.createElement("div")
       folderDiv.className = "bookmark-tree-folder"
       folderDiv.innerHTML = `<i class="fa-solid fa-chevron-right"></i> <i class="fa-solid fa-folder"></i> <span>${node.title}</span>`
-      
+
       const childrenContainer = document.createElement("div")
       childrenContainer.className = "folder-content"
-      
+
       folderDiv.addEventListener("click", () => {
         wrapper.classList.toggle("collapsed")
       })
-      
+
       wrapper.appendChild(folderDiv)
       wrapper.appendChild(childrenContainer)
       container.appendChild(wrapper)
-      
+
       node.children.forEach((child) =>
-        renderBookmarkTree(child, childrenContainer)
+        renderBookmarkTree(child, childrenContainer),
       )
     } else {
       node.children.forEach((child) => renderBookmarkTree(child, container))
@@ -131,7 +132,7 @@ function confirmImport() {
   const i18n = geti18n()
   const bookmarks = getBookmarks()
   const checkboxes = browserBookmarksList.querySelectorAll(
-    'input[type="checkbox"]:checked'
+    'input[type="checkbox"]:checked',
   )
   let addedCount = 0
   checkboxes.forEach((cb) => {
@@ -146,10 +147,10 @@ function confirmImport() {
     setBookmarks(bookmarks)
     saveBookmarks()
     renderBookmarks() // Re-render after importing
-    alert(i18n.alert_imported.replace("{count}", addedCount))
+    showAlert(i18n.alert_imported.replace("{count}", addedCount))
     closeModal()
   } else {
-    alert(i18n.alert_no_selection)
+    showAlert(i18n.alert_no_selection)
   }
 }
 
@@ -168,7 +169,7 @@ export function initModal() {
       modalTitle.textContent = i18n.modal_import_title
       loadBrowserBookmarks()
     } else {
-      alert(i18n.alert_api_unavailable)
+      showAlert(i18n.alert_api_unavailable)
     }
   })
 

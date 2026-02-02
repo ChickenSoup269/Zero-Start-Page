@@ -1,4 +1,5 @@
 import { initI18n } from "./services/i18n.js"
+import { showConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
@@ -64,9 +65,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const resetLayoutBtn = document.getElementById("reset-layout")
   const resetLayoutQuick = document.getElementById("reset-layout-quick")
-  const handleReset = () => {
+  const handleReset = async () => {
     if (
-      confirm(
+      await showConfirm(
         getSettings().language === "vi"
           ? "Bạn có chắc chắn muốn đặt lại vị trí của tất cả các thành phần?"
           : "Are you sure you want to reset all component positions?",

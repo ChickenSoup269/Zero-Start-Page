@@ -1,4 +1,6 @@
 // --- State Management ---
+import { showAlert } from "../utils/dialog.js"
+
 const defaultSettings = {
   background: "#0f0c29",
   font: "'Outfit', sans-serif",
@@ -196,7 +198,7 @@ export function saveSettings() {
     localStorage.setItem("pageSettings", JSON.stringify(settingsState))
   } catch (e) {
     if (e.name === "QuotaExceededError") {
-      alert(
+      showAlert(
         "Storage quota exceeded. Please remove some uploaded backgrounds to free up space.",
       )
     } else {

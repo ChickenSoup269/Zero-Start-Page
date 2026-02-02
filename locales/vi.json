@@ -1,4 +1,7 @@
 {
+  "ok": "Đồng ý",
+  "cancel": "Hủy",
+  "confirm": "Xác nhận",
   "settings_title": "Cài đặt",
   "settings_language": "Ngôn ngữ",
   "settings_bg": "Hình nền",

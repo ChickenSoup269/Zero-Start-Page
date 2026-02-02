@@ -1,6 +1,7 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
+import { showPrompt } from "../utils/dialog.js"
 
 export class Notepad {
   // 8 Default colors for notes
@@ -427,10 +428,14 @@ export class Notepad {
         if (command) {
           document.execCommand(command, false, null)
         } else if (action === "insert-image") {
-          const url = prompt("Enter image URL:")
-          if (url) {
-            document.execCommand("insertImage", false, url)
-          }
+          showPrompt("Enter image URL:").then((url) => {
+            if (url) {
+              document.execCommand("insertImage", false, url)
+              contentDiv.focus()
+              this.updateNote(noteId, { content: contentDiv.innerHTML })
+            }
+          })
+          return
         }
 
         contentDiv.focus()

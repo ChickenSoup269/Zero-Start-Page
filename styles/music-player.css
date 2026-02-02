@@ -485,6 +485,7 @@
 .music-style-pixel .music-visualizer {
   height: 40px;
   gap: 6px;
+  position: relative;
 }
 
 .music-style-pixel .visualizer-bar {
@@ -492,19 +493,96 @@
   border-radius: 0;
   background: var(--accent-color);
   border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
 }
 
-@keyframes visualizerPulsePixel {
+/* Pixel drop blocks */
+.music-style-pixel .visualizer-bar.playing::before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--accent-color);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  top: -40px;
+  left: -1px;
+  animation: pixelDrop 1.2s steps(6) infinite;
+}
+
+/* Stagger drop animation - Random timing */
+.music-style-pixel .visualizer-bar:nth-child(1).playing::before {
+  animation-delay: 0.5s;
+}
+.music-style-pixel .visualizer-bar:nth-child(2).playing::before {
+  animation-delay: 0.1s;
+}
+.music-style-pixel .visualizer-bar:nth-child(3).playing::before {
+  animation-delay: 0.7s;
+}
+.music-style-pixel .visualizer-bar:nth-child(4).playing::before {
+  animation-delay: 0.3s;
+}
+.music-style-pixel .visualizer-bar:nth-child(5).playing::before {
+  animation-delay: 0s;
+}
+
+@keyframes pixelDrop {
   0% {
-    height: 8px;
+    top: -40px;
+    opacity: 1;
+  }
+  80% {
+    top: 0;
+    opacity: 1;
+  }
+  81% {
+    opacity: 0;
   }
   100% {
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes pixelBounce {
+  0%,
+  79% {
+    height: 8px;
+  }
+  81% {
     height: 32px;
+  }
+  84% {
+    height: 24px;
+  }
+  87% {
+    height: 28px;
+  }
+  90%,
+  100% {
+    height: 8px;
   }
 }
 
 .music-style-pixel .visualizer-bar.playing {
-  animation: visualizerHeartbeatPixel 1.8s steps(8) infinite;
+  animation: pixelBounce 1.2s steps(2) infinite;
+}
+
+/* Sync delays for both pixel drop and bar bounce - Random timing */
+.music-style-pixel .visualizer-bar:nth-child(1).playing {
+  animation-delay: 0.5s;
+}
+.music-style-pixel .visualizer-bar:nth-child(2).playing {
+  animation-delay: 0.1s;
+}
+.music-style-pixel .visualizer-bar:nth-child(3).playing {
+  animation-delay: 0.7s;
+}
+.music-style-pixel .visualizer-bar:nth-child(4).playing {
+  animation-delay: 0.3s;
+}
+.music-style-pixel .visualizer-bar:nth-child(5).playing {
+  animation-delay: 0s;
 }
 
 /* Visualizer for Spotify Style */

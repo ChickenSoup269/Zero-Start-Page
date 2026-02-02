@@ -1,4 +1,7 @@
 {
+  "ok": "OK",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
   "settings_title": "Settings",
   "settings_language": "Language",
   "settings_bg": "Background",

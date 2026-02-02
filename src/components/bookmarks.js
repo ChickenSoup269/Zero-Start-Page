@@ -1,4 +1,5 @@
 import { bookmarksContainer, bookmarkGroupsContainer } from "../utils/dom.js"
+import { showPrompt } from "../utils/dialog.js"
 import { 
   getBookmarks, 
   getBookmarkGroups, 
@@ -69,8 +70,8 @@ function renderGroupTabs() {
     })
 
     // Rename (Double Click) - Keeping as valid shortcut
-    tab.addEventListener("dblclick", () => {
-      const newName = prompt("Enter new group name:", group.name)
+    tab.addEventListener("dblclick", async () => {
+      const newName = await showPrompt("Enter new group name:", group.name)
       if (newName && newName.trim() !== "") {
         group.name = newName.trim()
         saveBookmarks()
@@ -93,8 +94,8 @@ function renderGroupTabs() {
   addTab.className = "bookmark-group-tab add-group-tab"
   addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addTab.title = "Add Group"
-  addTab.addEventListener("click", () => {
-    const name = prompt("Enter group name:", `Group ${groups.length + 1}`)
+  addTab.addEventListener("click", async () => {
+    const name = await showPrompt("Enter group name:", `Group ${groups.length + 1}`)
     if (name) {
         const newGroup = {
             id: `group-${Date.now()}`,
