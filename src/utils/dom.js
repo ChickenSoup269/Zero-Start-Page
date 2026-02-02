@@ -134,3 +134,6 @@ export const showNotepadCheckbox = document.getElementById(
   "show-notepad-checkbox",
 )
 export const musicStyleSelect = document.getElementById("music-style-select")
+export const musicVisualizerStyleSelect = document.getElementById(
+  "music-visualizer-style-select",
+)

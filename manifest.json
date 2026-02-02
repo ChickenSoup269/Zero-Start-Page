@@ -18,6 +18,7 @@
     "*://*.youtube.com/*",
     "*://*.spotify.com/*",
     "*://music.youtube.com/*",
-    "*://images.google.com/*"
+    "*://images.google.com/*",
+    "<all_urls>"
   ]
 }

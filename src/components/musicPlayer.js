@@ -1,36 +1,38 @@
-import { getSettings, updateSetting, saveSettings } from "../services/state.js";
-import MusicVisualizer from "./visualizer.js";
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
+import MusicVisualizer from "./visualizer.js"
 
 export class MusicPlayer {
-    constructor() {
-        const settings = getSettings();
-        this.container = null;
-        this.isVisible = settings.musicPlayerExpanded === true;
-        this.isPlaying = false;
-        this.showPlayer = settings.musicPlayerEnabled || false;
-        this.currentStyle = settings.musicBarStyle || "vinyl";
-        this.pollInterval = null;
-        this.currentThumbnail = "";
-        this.visualizer = new MusicVisualizer();
-        
-        this.init();
-    }
+  constructor() {
+    const settings = getSettings()
+    this.container = null
+    this.isVisible = settings.musicPlayerExpanded === true
+    this.isPlaying = false
+    this.showPlayer = settings.musicPlayerEnabled || false
+    this.currentStyle = settings.musicBarStyle || "vinyl"
+    this.visualizerStyle = settings.musicVisualizerStyle || "bars"
+    this.pollInterval = null
+    this.currentThumbnail = ""
+    this.visualizer = new MusicVisualizer()
 
-    init() {
-        this.createElements();
-        this.setupEventListeners();
-        this.updateVisibility();
-        // Strictly apply the saved expansion state
-        this.container.classList.toggle('minimized', !this.isVisible);
-        this.startPolling();
-    }
+    this.init()
+  }
 
-    createElements() {
-        this.container = document.createElement('div');
-        this.container.id = 'music-player-container';
-        this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`; 
-        
-        this.container.innerHTML = `
+  init() {
+    this.createElements()
+    this.setupEventListeners()
+    this.updateVisibility()
+    // Strictly apply the saved expansion state
+    this.container.classList.toggle("minimized", !this.isVisible)
+    this.startPolling()
+    this.applyVisualizerStyle()
+  }
+
+  createElements() {
+    this.container = document.createElement("div")
+    this.container.id = "music-player-container"
+    this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`
+
+    this.container.innerHTML = `
             <div class="music-player-wrapper">
                 <div class="disc-container">
                     <div id="vinyl-disc" class="vinyl-disc"></div>
@@ -51,173 +53,197 @@ export class MusicPlayer {
                     </div>
                 </div>
             </div>
-        `;
+        `
 
-        document.body.appendChild(this.container);
-        this.disc = this.container.querySelector('#vinyl-disc');
-        this.sourceIcon = this.container.querySelector('#source-icon-overlay');
-        this.titleElement = this.container.querySelector('#music-title');
-        this.artistElement = this.container.querySelector('#music-artist');
-        this.platformIcon = this.container.querySelector('#platform-icon');
-        this.artistText = this.container.querySelector('#artist-text');
-        
-        // Initialize visualizer
-        this.visualizer.init(this.container);
-    }
+    document.body.appendChild(this.container)
+    this.disc = this.container.querySelector("#vinyl-disc")
+    this.sourceIcon = this.container.querySelector("#source-icon-overlay")
+    this.titleElement = this.container.querySelector("#music-title")
+    this.artistElement = this.container.querySelector("#music-artist")
+    this.platformIcon = this.container.querySelector("#platform-icon")
+    this.artistText = this.container.querySelector("#artist-text")
 
-    setupEventListeners() {
-        // Toggle is now external via Quick Access/Settings
+    // Initialize visualizer
+    this.visualizer.init(this.container)
+  }
 
-        document.getElementById('play-pause-btn').addEventListener('click', () => {
-            this.sendControl('playPause');
-        });
+  setupEventListeners() {
+    // Toggle is now external via Quick Access/Settings
 
-        document.getElementById('next-track').addEventListener('click', () => {
-            this.sendControl('next');
-        });
+    document.getElementById("play-pause-btn").addEventListener("click", () => {
+      this.sendControl("playPause")
+    })
 
-        document.getElementById('prev-track').addEventListener('click', () => {
-            this.sendControl('prev');
-        });
+    document.getElementById("next-track").addEventListener("click", () => {
+      this.sendControl("next")
+    })
 
-        window.addEventListener('settingsUpdated', (e) => {
-            if (e.detail.key === 'musicPlayerEnabled') {
-                if (this.showPlayer && e.detail.value === true) {
-                    // If already enabled, toggle between minimized and expanded
-                    this.togglePlayer();
-                } else {
-                    this.showPlayer = e.detail.value;
-                    this.updateVisibility();
-                    if (this.showPlayer) {
-                        this.startPolling();
-                        this.isVisible = true;
-                        this.container.classList.remove('minimized');
-                    } else {
-                        this.stopPolling();
-                    }
-                }
-            }
-            if (e.detail.key === 'music_bar_style') {
-                // Remove old style class
-                this.container.classList.remove(`music-style-${this.currentStyle}`);
-                this.currentStyle = e.detail.value;
-                // Add new style class
-                this.container.classList.add(`music-style-${this.currentStyle}`);
-            }
-        });
-    }
+    document.getElementById("prev-track").addEventListener("click", () => {
+      this.sendControl("prev")
+    })
 
-    startPolling() {
-        if (this.pollInterval) return;
-        this.pollInterval = setInterval(() => {
-            if (this.showPlayer) {
-                chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
-                    if (chrome.runtime.lastError) return;
-                    if (response && response.audible) {
-                        this.updateUI(response);
-                    } else {
-                        this.setInactive();
-                    }
-                });
-            }
-        }, 1000);
-    }
-
-    stopPolling() {
-        if (this.pollInterval) {
-            clearInterval(this.pollInterval);
-            this.pollInterval = null;
-        }
-    }
-
-    updateUI(data) {
-        this.titleElement.textContent = data.title || "Unknown Title";
-        
-        // Update artist text and platform icon
-        const artist = data.artist || "Unknown Artist";
-        this.artistText.textContent = artist;
-        
-        // Show platform icon based on source
-        if (data.source === 'youtube') {
-            this.platformIcon.className = 'platform-icon fa-brands fa-youtube';
-            this.platformIcon.style.display = 'inline';
-            this.platformIcon.style.color = '#FF0000';
-        } else if (data.source === 'spotify') {
-            this.platformIcon.className = 'platform-icon fa-brands fa-spotify';
-            this.platformIcon.style.display = 'inline';
-            this.platformIcon.style.color = '#1DB954';
+    window.addEventListener("settingsUpdated", (e) => {
+      if (e.detail.key === "musicPlayerEnabled") {
+        if (this.showPlayer && e.detail.value === true) {
+          // If already enabled, toggle between minimized and expanded
+          this.togglePlayer()
         } else {
-            this.platformIcon.style.display = 'none';
+          this.showPlayer = e.detail.value
+          this.updateVisibility()
+          if (this.showPlayer) {
+            this.startPolling()
+            this.isVisible = true
+            this.container.classList.remove("minimized")
+          } else {
+            this.stopPolling()
+          }
         }
-        
-        this.isPlaying = !data.paused;
-        
-        const btn = document.getElementById('play-pause-btn');
-        btn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
-        
-        if (this.isPlaying) {
-            this.disc.classList.add('playing');
-            this.visualizer.start();
-        } else {
-            this.disc.classList.remove('playing');
-            this.visualizer.stop();
-        }
+      }
+      if (e.detail.key === "music_bar_style") {
+        // Remove old style class
+        this.container.classList.remove(`music-style-${this.currentStyle}`)
+        this.currentStyle = e.detail.value
+        // Add new style class
+        this.container.classList.add(`music-style-${this.currentStyle}`)
+        this.visualizer.setStyle(this.currentStyle)
+      }
+      if (e.detail.key === "music_visualizer_style") {
+        this.visualizerStyle = e.detail.value
+        this.applyVisualizerStyle()
+      }
+    })
+  }
 
-        // Update thumbnail
-        if (data.thumbnail && data.thumbnail !== this.currentThumbnail) {
-            this.currentThumbnail = data.thumbnail;
-            this.disc.style.backgroundImage = `url(${data.thumbnail})`;
-            this.disc.style.backgroundSize = 'cover';
-            this.disc.style.backgroundPosition = 'center';
-            this.disc.classList.add('has-thumb');
-        } else if (!data.thumbnail) {
-            this.currentThumbnail = "";
-            this.disc.style.backgroundImage = "none";
-            this.disc.classList.remove('has-thumb');
-        }
+  applyVisualizerStyle() {
+    this.container.classList.remove(
+      "music-visualizer-bars",
+      "music-visualizer-pulse",
+    )
+    const visualizerClass =
+      this.visualizerStyle === "pulse"
+        ? "music-visualizer-pulse"
+        : "music-visualizer-bars"
+    this.container.classList.add(visualizerClass)
+    this.visualizer.setVisualizerStyle(this.visualizerStyle)
+    this.visualizer.refresh()
+  }
 
-        this.updateSourceIcon(data.url);
+  startPolling() {
+    if (this.pollInterval) return
+    this.pollInterval = setInterval(() => {
+      if (this.showPlayer) {
+        chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
+          if (chrome.runtime.lastError) return
+          if (response && response.audible) {
+            this.updateUI(response)
+          } else {
+            this.setInactive()
+          }
+        })
+      }
+    }, 1000)
+  }
+
+  stopPolling() {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval)
+      this.pollInterval = null
+    }
+  }
+
+  updateUI(data) {
+    this.titleElement.textContent = data.title || "Unknown Title"
+
+    // Update artist text and platform icon
+    const artist = data.artist || "Unknown Artist"
+    this.artistText.textContent = artist
+
+    // Show platform icon based on source
+    if (data.source === "youtube") {
+      this.platformIcon.className = "platform-icon fa-brands fa-youtube"
+      this.platformIcon.style.display = "inline"
+      this.platformIcon.style.color = "#FF0000"
+    } else if (data.source === "spotify") {
+      this.platformIcon.className = "platform-icon fa-brands fa-spotify"
+      this.platformIcon.style.display = "inline"
+      this.platformIcon.style.color = "#1DB954"
+    } else {
+      this.platformIcon.style.display = "none"
     }
 
-    updateSourceIcon(url) {
-        if (!url) return;
-        let iconClass = 'fa-solid fa-music';
-        if (url.includes('youtube.com') || url.includes('youtu.be')) iconClass = 'fa-brands fa-youtube';
-        else if (url.includes('spotify.com')) iconClass = 'fa-brands fa-spotify';
-        else if (url.includes('soundcloud.com')) iconClass = 'fa-brands fa-soundcloud';
-        
-        this.sourceIcon.innerHTML = `<i class="${iconClass}"></i>`;
-        this.sourceIcon.style.display = 'flex';
+    this.isPlaying = !data.paused
+
+    const btn = document.getElementById("play-pause-btn")
+    btn.innerHTML = this.isPlaying
+      ? '<i class="fa-solid fa-pause"></i>'
+      : '<i class="fa-solid fa-play"></i>'
+
+    if (this.isPlaying) {
+      this.disc.classList.add("playing")
+      this.visualizer.start()
+    } else {
+      this.disc.classList.remove("playing")
+      this.visualizer.stop()
     }
 
-    setInactive() {
-        this.titleElement.textContent = "No Media Playing";
-        this.artistElement.textContent = "";
-        this.isPlaying = false;
-        this.disc.classList.remove('playing');
-        this.sourceIcon.style.display = 'none';
-        this.disc.style.backgroundImage = "none";
-        this.currentThumbnail = "";
-        document.getElementById('play-pause-btn').innerHTML = '<i class="fa-solid fa-play"></i>';
+    // Update thumbnail
+    if (data.thumbnail && data.thumbnail !== this.currentThumbnail) {
+      this.currentThumbnail = data.thumbnail
+      this.disc.style.backgroundImage = `url(${data.thumbnail})`
+      this.disc.style.backgroundSize = "cover"
+      this.disc.style.backgroundPosition = "center"
+      this.disc.classList.add("has-thumb")
+    } else if (!data.thumbnail) {
+      this.currentThumbnail = ""
+      this.disc.style.backgroundImage = "none"
+      this.disc.classList.remove("has-thumb")
     }
 
-    sendControl(command) {
-        chrome.runtime.sendMessage({ action: "mediaControl", command: command });
-    }
+    this.updateSourceIcon(data.url)
+  }
 
-    togglePlayer() {
-        this.isVisible = !this.isVisible;
-        this.container.classList.toggle('minimized', !this.isVisible);
-        updateSetting('musicPlayerExpanded', this.isVisible);
-        saveSettings();
-    }
+  updateSourceIcon(url) {
+    if (!url) return
+    let iconClass = "fa-solid fa-music"
+    if (url.includes("youtube.com") || url.includes("youtu.be"))
+      iconClass = "fa-brands fa-youtube"
+    else if (url.includes("spotify.com")) iconClass = "fa-brands fa-spotify"
+    else if (url.includes("soundcloud.com"))
+      iconClass = "fa-brands fa-soundcloud"
 
-    updateVisibility() {
-        // This handles whether the feature is enabled at all
-        if (!this.showPlayer) {
-            this.container.style.display = 'none';
-        } else {
-            this.container.style.display = 'block';
-        }
+    this.sourceIcon.innerHTML = `<i class="${iconClass}"></i>`
+    this.sourceIcon.style.display = "flex"
+  }
+
+  setInactive() {
+    this.titleElement.textContent = "No Media Playing"
+    this.artistElement.textContent = ""
+    this.isPlaying = false
+    this.disc.classList.remove("playing")
+    this.sourceIcon.style.display = "none"
+    this.disc.style.backgroundImage = "none"
+    this.currentThumbnail = ""
+    document.getElementById("play-pause-btn").innerHTML =
+      '<i class="fa-solid fa-play"></i>'
+  }
+
+  sendControl(command) {
+    chrome.runtime.sendMessage({ action: "mediaControl", command: command })
+  }
+
+  togglePlayer() {
+    this.isVisible = !this.isVisible
+    this.container.classList.toggle("minimized", !this.isVisible)
+    updateSetting("musicPlayerExpanded", this.isVisible)
+    saveSettings()
+  }
+
+  updateVisibility() {
+    // This handles whether the feature is enabled at all
+    if (!this.showPlayer) {
+      this.container.style.display = "none"
+    } else {
+      this.container.style.display = "block"
     }
+  }
 }
