@@ -79,6 +79,10 @@ import { MatrixRain } from "./animations/matrixRain.js"
 import { AuraEffect } from "./animations/aura.js"
 import { WindEffect } from "./animations/wind.js"
 import { HackerEffect } from "./animations/hacker.js"
+import { ParticlesStormEffect } from "./animations/particlesStorm.js"
+import { DNAHelixEffect } from "./animations/dnaHelix.js"
+import { AuroraWaveEffect } from "./animations/auroraWave.js"
+import { ConstellationEffect } from "./animations/constellation.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -88,7 +92,11 @@ let starFallEffect,
   matrixRainEffect,
   auraEffect,
   windEffect,
-  hackerEffect
+  hackerEffect,
+  particlesStormEffect,
+  dnaHelixEffect,
+  auroraWaveEffect,
+  constellationEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
   if (isGradient) {
@@ -321,7 +329,7 @@ export function applySettings() {
     )
   }
 
-  // 4. Effects Management (STOP ALL FIRST)
+  // 4. Effects Management (STOP ALL FIRST and CLEAR CANVAS)
   if (starFallEffect) starFallEffect.stop()
   if (fallingMeteorEffect) fallingMeteorEffect.stop()
 
@@ -332,34 +340,62 @@ export function applySettings() {
   if (windEffect) windEffect.stop()
   if (hackerEffect) hackerEffect.stop()
 
-  // 5. Start Selected Effect
-  switch (settings.effect) {
-    case "galaxy":
-      starFallEffect.start()
-      break
-    case "meteor":
-      fallingMeteorEffect.start()
-      break
+  if (particlesStormEffect) particlesStormEffect.stop()
+  if (dnaHelixEffect) dnaHelixEffect.stop()
+  if (auroraWaveEffect) auroraWaveEffect.stop()
+  if (constellationEffect) constellationEffect.stop()
 
-    case "fireflies":
-      firefliesEffect.start()
-      break
-    case "network":
-      networkEffect.start()
-      break
-    case "matrix":
-      matrixRainEffect.start()
-      break
-    case "aura":
-      auraEffect.start()
-      break
-    case "wind":
-      windEffect.start()
-      break
-    case "hacker":
-      hackerEffect.start()
-      break
+  // Clear canvas completely before starting new effect
+  const effectCanvas = document.getElementById("effect-canvas")
+  if (effectCanvas) {
+    const ctx = effectCanvas.getContext("2d")
+    ctx.clearRect(0, 0, effectCanvas.width, effectCanvas.height)
+    effectCanvas.style.display = "none"
   }
+
+  // Small delay to ensure cleanup is complete
+  setTimeout(() => {
+    // 5. Start Selected Effect
+    switch (settings.effect) {
+      case "galaxy":
+        starFallEffect.start()
+        break
+      case "meteor":
+        fallingMeteorEffect.start()
+        break
+
+      case "fireflies":
+        firefliesEffect.start()
+        break
+      case "network":
+        networkEffect.start()
+        break
+      case "matrix":
+        matrixRainEffect.start()
+        break
+      case "aura":
+        auraEffect.start()
+        break
+      case "wind":
+        windEffect.start()
+        break
+      case "hacker":
+        hackerEffect.start()
+        break
+      case "particlesStorm":
+        particlesStormEffect.start()
+        break
+      case "dnaHelix":
+        dnaHelixEffect.start()
+        break
+      case "auroraWave":
+        auroraWaveEffect.start()
+        break
+      case "constellation":
+        constellationEffect.start()
+        break
+    }
+  }, 50)
 
   // 6. Gradients (CSS variables are now set by the gradient pickers/savers directly)
   document.documentElement.style.setProperty(
@@ -565,6 +601,17 @@ export function initSettings() {
   auraEffect = new AuraEffect("effect-canvas", settings.auraColor)
   windEffect = new WindEffect("effect-canvas")
   hackerEffect = new HackerEffect("effect-canvas", settings.hackerColor)
+
+  particlesStormEffect = new ParticlesStormEffect(
+    "effect-canvas",
+    settings.accentColor,
+  )
+  dnaHelixEffect = new DNAHelixEffect("effect-canvas", settings.accentColor)
+  auroraWaveEffect = new AuroraWaveEffect("effect-canvas", settings.accentColor)
+  constellationEffect = new ConstellationEffect(
+    "effect-canvas",
+    settings.accentColor,
+  )
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
