@@ -21,6 +21,8 @@ export const bgPosYValue = document.getElementById("bg-pos-y-value")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
 export const fontSelect = document.getElementById("font-select")
+export const customFontInput = document.getElementById("custom-font-input")
+export const loadCustomFontBtn = document.getElementById("load-custom-font-btn")
 export const languageSelect = document.getElementById("language-select")
 export const effectSelect = document.getElementById("effect-select")
 

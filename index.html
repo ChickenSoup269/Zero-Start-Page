@@ -8,7 +8,8 @@
     <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link id="custom-google-font" rel="stylesheet" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Modular Styles -->
@@ -275,10 +276,24 @@
                 <label data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</label>
                 <select id="font-select">
                     <option value="'Outfit', sans-serif">Outfit (Default)</option>
+                    <option value="'Inter', sans-serif">Inter</option>
+                    <option value="'Poppins', sans-serif">Poppins</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                    <option value="'Nunito', sans-serif">Nunito</option>
                     <option value="'Arial', sans-serif">Arial</option>
                     <option value="'Courier New', monospace">Courier New</option>
                     <option value="'GohuFont', monospace">GohuFont (Local)</option>
                 </select>
+            </div>
+
+            <div class="setting-group">
+                <label data-i18n="settings_custom_font"><i class="fa-solid fa-font"></i> Custom Google Font</label>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="text" id="custom-font-input" data-i18n-placeholder="settings_custom_font_placeholder" placeholder="Enter font name (e.g., Pacifico)" style="flex: 1; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                    <button id="load-custom-font-btn" data-i18n="settings_load_font" style="padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: 500;">Load</button>
+                </div>
+                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;" data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
             </div>
 
             <div class="setting-group">
@@ -372,12 +387,6 @@
         <div id="clock">00:00:00</div>
         <div id="date">Loading date...</div>
         <div id="full-calendar-container" style="display: none;"></div>
-
-
-
-
-
-
 
         <div class="search-container">
             <div class="search-engine-selector" id="search-engine-selector">

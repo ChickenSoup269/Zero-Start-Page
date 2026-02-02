@@ -7,6 +7,8 @@ import {
   bgColorPicker,
   accentColorPicker,
   fontSelect,
+  customFontInput,
+  loadCustomFontBtn,
   languageSelect,
   effectSelect,
   gradientStartPicker,
@@ -901,6 +903,53 @@ export function initSettings() {
   fontSelect.addEventListener("change", () =>
     handleSettingUpdate("font", fontSelect.value),
   )
+  
+  // Custom Google Font Loader
+  loadCustomFontBtn.addEventListener("click", () => {
+    const fontName = customFontInput.value.trim()
+    if (!fontName) {
+      showAlert(i18n.alert_font_error || "Please enter a font name.")
+      return
+    }
+
+    // Format font name for Google Fonts API (replace spaces with +)
+    const formattedFontName = fontName.replace(/\s+/g, "+")
+    const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
+
+    // Load the font dynamically
+    const customFontLink = document.getElementById("custom-google-font")
+    customFontLink.href = googleFontUrl
+
+    // Wait a bit for the font to load, then update settings
+    setTimeout(() => {
+      const fontValue = `'${fontName}', sans-serif`
+      
+      // Check if font option already exists in select
+      let optionExists = false
+      for (let option of fontSelect.options) {
+        if (option.value === fontValue) {
+          optionExists = true
+          break
+        }
+      }
+
+      // Add to select if not exists
+      if (!optionExists) {
+        const newOption = document.createElement("option")
+        newOption.value = fontValue
+        newOption.textContent = `${fontName} (Custom)`
+        fontSelect.appendChild(newOption)
+      }
+
+      // Select the new font
+      fontSelect.value = fontValue
+      handleSettingUpdate("font", fontValue)
+      
+      showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
+      customFontInput.value = "" // Clear input
+    }, 500)
+  })
+
   dateFormatSelect.addEventListener("change", () =>
     handleSettingUpdate("dateFormat", dateFormatSelect.value),
   )
