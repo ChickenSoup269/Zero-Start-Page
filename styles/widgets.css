@@ -653,7 +653,6 @@
   margin-left: auto;
   margin-right: auto;
   border-radius: 5px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .bookmark-group-tab {
@@ -698,4 +697,643 @@
 .bookmark-group-tab.add-group-tab:hover {
   background: rgba(255, 255, 255, 0.25);
   border-color: #fff;
+}
+
+/* Notepad Widget */
+.notepad-container {
+  position: fixed;
+  top: 100px;
+  left: 20px;
+  width: 800px;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notepad-container:hover {
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transform: translateY(-2px);
+}
+
+.notepad-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: move;
+}
+
+.notepad-header .drag-handle-icon {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  cursor: grab;
+}
+
+.notepad-header .drag-handle-icon:active {
+  cursor: grabbing;
+}
+
+.notepad-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  flex: 1;
+  background: linear-gradient(135deg, #ffffff, var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.3px;
+}
+
+.notepad-header #add-note-btn {
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+}
+
+.notepad-header #add-note-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+}
+
+.notepad-body {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 8px;
+  margin-right: -4px;
+}
+
+.notepad-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.notepad-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.notepad-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.notepad-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2)
+  );
+  background-clip: padding-box;
+}
+
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notes-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+.note-item {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.note-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.note-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.note-header i {
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.note-header .icon-btn:hover i {
+  opacity: 1;
+}
+
+.note-collapse-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+}
+
+.note-collapse-btn:hover {
+  color: var(--accent-color);
+}
+
+.note-spacer {
+  display: inline-block;
+  width: 20px;
+}
+
+.note-title-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 6px 10px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.note-title-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+}
+
+.note-actions {
+  display: flex;
+  gap: 5px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  align-items: center;
+}
+
+/* Note Color Dropdown */
+.note-color-dropdown {
+  position: relative;
+}
+
+.note-color-trigger {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.note-color-trigger:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.note-color-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px;
+  display: none;
+  gap: 6px;
+  flex-wrap: wrap;
+  width: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.note-color-menu.show {
+  display: flex;
+}
+
+.note-color-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.note-color-btn:hover {
+  transform: scale(1.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.note-color-btn.active {
+  border-color: white;
+  border-width: 3px;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.note-item:hover .note-actions {
+  opacity: 1;
+}
+
+.note-action-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+  border-radius: 4px;
+}
+
+.note-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.note-action-btn[data-action="delete"]:hover {
+  color: #ff5555;
+}
+
+.note-action-btn[data-action="toggle-content"]:hover {
+  color: var(--accent-color);
+}
+
+.note-content-wrapper {
+  margin-top: 8px;
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+/* Note with hidden content - compact style */
+.note-content {
+  min-height: 80px;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  outline: none;
+  margin-top: 8px;
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.note-content:focus {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.note-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px 6px 0 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+}
+
+.toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.toolbar-btn:active {
+  background: var(--accent-color);
+  color: #1a1a2e;
+  transform: scale(0.95);
+}
+
+.toolbar-divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 4px;
+}
+
+.note-editor {
+  min-height: 80px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.15);
+  border: none;
+  padding: 12px;
+  color: white;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.note-editor:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+}
+
+.note-editor::-webkit-scrollbar {
+  width: 6px;
+}
+
+.note-editor::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.note-editor::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.note-editor ul,
+.note-editor ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.note-editor li {
+  margin: 0.3rem 0;
+}
+
+.note-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 8px 0;
+  display: block;
+}
+
+.note-editor:empty:before {
+  content: "Start typing...";
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Note Color Picker */
+.note-color-input,
+.note-color-picker {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px;
+  transition: all 0.2s;
+}
+
+.note-color-input:hover,
+.note-color-picker:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.note-color-input::-webkit-color-swatch-wrapper,
+.note-color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.note-color-input::-webkit-color-swatch,
+.note-color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+/* Floating Note Windows */
+.floating-note-window {
+  position: fixed;
+  width: 420px;
+  min-width: 400px;
+  max-height: 550px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  top: 150px;
+  right: 30px;
+  overflow: hidden;
+  background: transparent;
+  resize: both;
+}
+
+.floating-note-window:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+}
+
+.floating-note-window.dragging {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+  z-index: 2000 !important;
+}
+
+.floating-note-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: move;
+  user-select: none;
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+}
+
+.floating-note-header .note-color-dropdown {
+  margin-left: auto;
+}
+
+.floating-note-header .note-color-trigger {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 4px 8px;
+}
+
+.floating-note-header .drag-handle-icon {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  cursor: grab;
+  transition: color 0.2s;
+}
+
+.floating-note-header .drag-handle-icon:active {
+  cursor: grabbing;
+  color: var(--accent-color);
+}
+
+.floating-note-title {
+  flex: 1 1 auto;
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 80px;
+}
+
+.floating-note-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.floating-note-close {
+  padding: 4px !important;
+  font-size: 0.9rem !important;
+  min-width: auto !important;
+  width: 24px;
+  height: 24px;
+}
+
+.floating-note-close:hover {
+  color: #ff5555 !important;
+}
+
+.floating-note-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  flex-wrap: wrap;
+  background-color: black;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.floating-note-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  border-radius: 8px;
+  margin: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.floating-note-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.floating-note-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.floating-note-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.floating-note-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.floating-note-content ul,
+.floating-note-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.floating-note-content li {
+  margin: 0.3rem 0;
+}
+
+.floating-note-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 8px 0;
+  display: block;
+}
+
+.floating-note-content:empty:before {
+  content: "Start typing...";
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Responsive floating notes */
+@media (max-width: 768px) {
+  .floating-note-window {
+    width: 90vw;
+    max-width: 400px;
+    max-height: 60vh;
+    right: 5vw !important;
+    top: 50vh !important;
+  }
 }

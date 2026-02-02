@@ -66,5 +66,8 @@
   "style_pixel": "Pixel",
   "style_spotify": "Spotify",
   "settings_show_quick_access": "Show Quick Access bar",
-
+  "notepad_title": "Notepad",
+  "notepad_empty": "No notes yet. Click + to add one.",
+  "settings_show_notepad": "Show Notepad",
+  "quick_access_notepad": "Toggle Notepad"
 }

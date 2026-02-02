@@ -31,6 +31,8 @@
         <div id="quick-access-bar" class="quick-access-bar">
             <button class="quick-btn" data-toggle="todo" data-i18n-title="quick_access_todo" title="Toggle Todo"><i
                     class="fa-solid fa-list-check"></i></button>
+            <button class="quick-btn" data-toggle="notepad" data-i18n-title="quick_access_notepad"
+                title="Toggle Notepad"><i class="fa-solid fa-note-sticky"></i></button>
             <button class="quick-btn" data-toggle="timer" data-i18n-title="quick_access_timer" title="Toggle Timer"><i
                     class="fa-solid fa-stopwatch"></i></button>
             <button class="quick-btn" data-toggle="calendar" data-i18n-title="quick_access_calendar"
@@ -89,11 +91,14 @@
                                 <option value="animals" data-i18n="category_animals">Animals</option>
                             </select>
                             <button id="unsplash-random-btn" class="secondary-btn"
-                                data-i18n="settings_unsplash_random_btn">Unsplash Random</button>
-                            <button id="remove-bg-btn" class="secondary-btn"
-                                data-i18n="settings_remove_bg_btn">Remove</button>
-                            <button id="save-current-bg-btn" class="secondary-btn" title="Save to Local Themes">
-                                <i class="fa-solid fa-bookmark"></i> Save Background
+                                data-i18n="settings_unsplash_random_btn"
+                                title="Load random Unsplash image (or press Space)"><i
+                                    class="fa-solid fa-sync-alt"></i></button>
+                            <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn"
+                                title="Remove background and show gradient"><i class="fa-solid fa-trash"></i></button>
+                            <button id="save-current-bg-btn" class="secondary-btn"
+                                title="Save current background to Local Themes">
+                                <i class="fa-solid fa-bookmark"></i>
                             </button>
                         </div>
                     </div>
@@ -127,7 +132,27 @@
             <div class="setting-item">
                 <label for="accent-color-picker" data-i18n="settings_accent"><i class="fa-solid fa-palette"></i> Accent
                     Color</label>
-                <input type="color" id="accent-color-picker" />
+                <div class="accent-color-selector">
+                    <div class="accent-color-presets">
+                        <button class="accent-color-preset" data-color="#FF6B6B" style="background-color: #FF6B6B"
+                            title="Red"></button>
+                        <button class="accent-color-preset" data-color="#4ECDC4" style="background-color: #4ECDC4"
+                            title="Teal"></button>
+                        <button class="accent-color-preset" data-color="#45B7D1" style="background-color: #45B7D1"
+                            title="Blue"></button>
+                        <button class="accent-color-preset" data-color="#FFA07A" style="background-color: #FFA07A"
+                            title="Salmon"></button>
+                        <button class="accent-color-preset" data-color="#98D8C8" style="background-color: #98D8C8"
+                            title="Mint"></button>
+                        <button class="accent-color-preset" data-color="#F7DC6F" style="background-color: #F7DC6F"
+                            title="Yellow"></button>
+                        <button class="accent-color-preset" data-color="#BB8FCE" style="background-color: #BB8FCE"
+                            title="Purple"></button>
+                        <button class="accent-color-preset" data-color="#85C1E2" style="background-color: #85C1E2"
+                            title="Light Blue"></button>
+                    </div>
+                    <input type="color" id="accent-color-picker" title="Custom Color" />
+                </div>
             </div>
 
             <div class="setting-group">
@@ -243,6 +268,10 @@
                     <div class="setting-item-row">
                         <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
                         <input type="checkbox" id="show-todo-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show Notepad</label>
+                        <input type="checkbox" id="show-notepad-checkbox" checked>
                     </div>
                     <div class="setting-item-row">
                         <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
@@ -385,9 +414,9 @@
 </body>
 
 </html>
-    
 
-    <script type="module" src="src/main.js"></script>
+
+<script type="module" src="src/main.js"></script>
 </body>
 
 </html>

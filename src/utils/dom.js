@@ -5,7 +5,9 @@ export const bgVideo = document.getElementById("bg-video")
 
 export const bgInput = document.getElementById("bg-input")
 export const bgColorPicker = document.getElementById("bg-color-picker")
-export const unsplashCategorySelect = document.getElementById("unsplash-category-select")
+export const unsplashCategorySelect = document.getElementById(
+  "unsplash-category-select",
+)
 export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
@@ -61,14 +63,18 @@ export const auraColorPicker = document.getElementById("aura-color-picker")
 export const auraColorSetting = document.getElementById("aura-color-setting")
 
 export const hackerColorPicker = document.getElementById("hacker-color-picker")
-export const hackerColorSetting = document.getElementById("hacker-color-setting")
+export const hackerColorSetting = document.getElementById(
+  "hacker-color-setting",
+)
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const dateFormatSelect = document.getElementById("date-format-select")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const clockColorPicker = document.getElementById("clock-color-picker")
-export const resetClockColorBtn = document.getElementById("reset-clock-color-btn")
+export const resetClockColorBtn = document.getElementById(
+  "reset-clock-color-btn",
+)
 
 export const localBackgroundGallery = document.getElementById(
   "local-background-gallery",
@@ -96,24 +102,35 @@ export const importSection = document.getElementById("import-section")
 export const showImportBtn = document.getElementById("show-import-btn")
 export const backToManualBtn = document.getElementById("back-to-manual")
 export const confirmImportBtn = document.getElementById("confirm-import-btn")
-export const browserBookmarksList = document.getElementById("browser-bookmarks-list")
+export const browserBookmarksList = document.getElementById(
+  "browser-bookmarks-list",
+)
 
 export const contextMenu = document.getElementById("context-menu")
 export const menuEdit = document.getElementById("menu-edit")
 export const menuDelete = document.getElementById("menu-delete")
 
 export const bookmarksContainer = document.getElementById("bookmarks-container")
-export const bookmarkGroupsContainer = document.getElementById("bookmark-groups-container")
+export const bookmarkGroupsContainer = document.getElementById(
+  "bookmark-groups-container",
+)
 
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
 export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
-export const showGregorianCheckbox = document.getElementById("show-gregorian-checkbox")
+export const showGregorianCheckbox = document.getElementById(
+  "show-gregorian-checkbox",
+)
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const showClockCheckbox = document.getElementById("show-clock-checkbox")
 export const showDateCheckbox = document.getElementById("show-date-checkbox")
-export const showFullCalendarCheckbox = document.getElementById("show-full-calendar-checkbox")
-export const showQuickAccessCheckbox = document.getElementById("show-quick-access-checkbox")
+export const showFullCalendarCheckbox = document.getElementById(
+  "show-full-calendar-checkbox",
+)
+export const showQuickAccessCheckbox = document.getElementById(
+  "show-quick-access-checkbox",
+)
+export const showNotepadCheckbox = document.getElementById(
+  "show-notepad-checkbox",
+)
 export const musicStyleSelect = document.getElementById("music-style-select")
-
-

@@ -48,6 +48,7 @@ import {
   hackerColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
+  showNotepadCheckbox,
   showTimerCheckbox,
   showGregorianCheckbox,
   showMusicCheckbox,
@@ -67,8 +68,6 @@ import {
 } from "../services/state.js"
 import { geti18n, loadLanguage, applyTranslations } from "../services/i18n.js"
 import { getContrastYIQ } from "../utils/colors.js"
-
-
 
 // Import các hiệu ứng
 import { StarFall } from "./animations/rainGalaxy.js"
@@ -163,34 +162,58 @@ const unsplashCategories = {
   ],
 }
 
-
 function setUnsplashRandomBackground(retries = 3) {
   if (retries <= 0) {
-    console.error("Failed to fetch Unsplash background after multiple attempts.")
+    console.error(
+      "Failed to fetch Unsplash background after multiple attempts.",
+    )
+    const btn = unsplashRandomBtn
+    btn.disabled = false
+    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash Random'
+    alert("Failed to load random Unsplash image. Please try again.")
     return
   }
+
+  // Show loading state
+  const btn = unsplashRandomBtn
+  btn.disabled = true
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
 
   const settings = getSettings()
   const category = settings.unsplashCategory || "nature"
   const ids = unsplashCategories[category] || unsplashCategories.nature
   const randomId = ids[Math.floor(Math.random() * ids.length)]
   const dpr = window.devicePixelRatio || 1
-  const width = Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr)
-  const height = Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr)
+  const width = Math.round(
+    (window.innerWidth > 0 ? window.innerWidth : 1920) * dpr,
+  )
+  const height = Math.round(
+    (window.innerHeight > 0 ? window.innerHeight : 1080) * dpr,
+  )
   const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
   // Preload to check for 404
   const img = new Image()
   img.onload = () => {
+    // Add transition effect
     document.body.classList.add("bg-loading")
     handleSettingUpdate("background", imageUrl)
+
+    // Reset button state
+    btn.disabled = false
+    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash Random'
+
+    // Remove loading state
     setTimeout(() => {
       document.body.classList.remove("bg-loading")
-    }, 500)
+    }, 800)
   }
   img.onerror = () => {
     console.warn(`Unsplash ID ${randomId} failed. Retrying...`)
-    setUnsplashRandomBackground(retries - 1)
+    // Try again
+    setTimeout(() => {
+      setUnsplashRandomBackground(retries - 1)
+    }, 300)
   }
   img.src = imageUrl
 }
@@ -207,7 +230,8 @@ export function applySettings() {
   // 2. Background Logic
   const bg = settings.background
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
-  const isUserUploadedBg = bg && (bg.startsWith("data:image") || bg.startsWith("data:video"))
+  const isUserUploadedBg =
+    bg && (bg.startsWith("data:image") || bg.startsWith("data:video"))
   const bgVideoElement = document.getElementById("bg-video")
 
   // Hide video by default
@@ -230,7 +254,8 @@ export function applySettings() {
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (bg) {
     document.body.classList.add("bg-image-active")
-    const isVideoUrl = bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo") // simplistic check
+    const isVideoUrl =
+      bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo") // simplistic check
     if (isVideoUrl) {
       if (bgVideoElement) {
         bgVideoElement.src = bg
@@ -247,8 +272,7 @@ export function applySettings() {
         getContrastYIQ(bg),
       )
     }
-  }
- else {
+  } else {
     // If no background image/color, apply the gradient
     document.body.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
   }
@@ -274,7 +298,11 @@ export function applySettings() {
   let finalClockColor = settings.clockColor
   if (!finalClockColor) {
     // If null, detect from background
-    if (isPredefinedLocalBg || isUserUploadedBg || (bg && bg.match(/^https?:\/\//))) {
+    if (
+      isPredefinedLocalBg ||
+      isUserUploadedBg ||
+      (bg && bg.match(/^https?:\/\//))
+    ) {
       finalClockColor = "#ffffff" // Images usually look better with white
     } else if (bg) {
       finalClockColor = getContrastYIQ(bg)
@@ -284,10 +312,7 @@ export function applySettings() {
     }
   }
 
-  document.documentElement.style.setProperty(
-    "--clock-color",
-    finalClockColor,
-  )
+  document.documentElement.style.setProperty("--clock-color", finalClockColor)
   if (settings.accentColor) {
     document.documentElement.style.setProperty(
       "--accent-color",
@@ -374,7 +399,7 @@ function updateSettingsInputs() {
   languageSelect.value = settings.language || "en"
   accentColorPicker.value = settings.accentColor || "#a8c0ff"
   clockColorPicker.value = settings.clockColor || "#ffffff"
-  
+
   bgPosXInput.value = settings.bgPositionX || 50
   bgPosXValue.textContent = `${bgPosXInput.value}%`
   bgPosYInput.value = settings.bgPositionY || 50
@@ -382,14 +407,13 @@ function updateSettingsInputs() {
 
   unsplashCategorySelect.value = settings.unsplashCategory || "nature"
 
-
   // Show/Hide Bg Position setting (only for image backgrounds)
-  const isImageBg = 
-    settings.background && 
-    (settings.background.startsWith("photo-") || 
-     settings.background.startsWith("local-bg-") || 
-     settings.background.startsWith("data:image/") ||
-     settings.background.startsWith("http"))
+  const isImageBg =
+    settings.background &&
+    (settings.background.startsWith("photo-") ||
+      settings.background.startsWith("local-bg-") ||
+      settings.background.startsWith("data:image/") ||
+      settings.background.startsWith("http"))
 
   bgPositionSetting.style.display = isImageBg ? "block" : "none"
 
@@ -422,13 +446,13 @@ function updateSettingsInputs() {
     settings.effect === "network" ? "block" : "none"
   matrixColorSetting.style.display =
     settings.effect === "matrix" ? "block" : "none"
-  auraColorSetting.style.display =
-    settings.effect === "aura" ? "block" : "none"
+  auraColorSetting.style.display = settings.effect === "aura" ? "block" : "none"
   hackerColorSetting.style.display =
     settings.effect === "hacker" ? "block" : "none"
 
   // Layout Checkboxes
   showTodoCheckbox.checked = settings.showTodoList !== false
+  showNotepadCheckbox.checked = settings.showNotepad !== false
   showTimerCheckbox.checked = settings.showTimer === true
   showGregorianCheckbox.checked = settings.showGregorian !== false
   showMusicCheckbox.checked = settings.musicPlayerEnabled === true
@@ -466,8 +490,6 @@ export function renderLocalBackgrounds() {
   randomItem.title = "Random Color"
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
   localBackgroundGallery.appendChild(randomItem)
-
-
 
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
@@ -538,19 +560,10 @@ export function initSettings() {
     "effect-canvas",
     settings.networkColor || settings.accentColor,
   )
-  matrixRainEffect = new MatrixRain(
-    "effect-canvas",
-    settings.matrixColor,
-  )
-  auraEffect = new AuraEffect(
-    "effect-canvas",
-    settings.auraColor,
-  )
+  matrixRainEffect = new MatrixRain("effect-canvas", settings.matrixColor)
+  auraEffect = new AuraEffect("effect-canvas", settings.auraColor)
   windEffect = new WindEffect("effect-canvas")
-  hackerEffect = new HackerEffect(
-    "effect-canvas",
-    settings.hackerColor,
-  )
+  hackerEffect = new HackerEffect("effect-canvas", settings.hackerColor)
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
@@ -588,14 +601,24 @@ export function initSettings() {
     handleSettingUpdate("background", bgColorPicker.value)
   })
 
-  unsplashRandomBtn.addEventListener("click", () => setUnsplashRandomBackground())
+  unsplashRandomBtn.addEventListener("click", () =>
+    setUnsplashRandomBackground(),
+  )
+
+  // Keyboard shortcut for random background (Space when focused on Unsplash button)
+  unsplashRandomBtn.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault()
+      setUnsplashRandomBackground()
+    }
+  })
 
   unsplashCategorySelect.addEventListener("change", () => {
     handleSettingUpdate("unsplashCategory", unsplashCategorySelect.value)
   })
 
   saveColorBtn.addEventListener("click", () => {
-    const settings = getSettings();
+    const settings = getSettings()
     const color = bgInput.value.trim()
     if (color.match(/^#([0-9a-f]{3}){1,2}$/i)) {
       if (!settings.userColors.includes(color)) {
@@ -694,7 +717,9 @@ export function initSettings() {
     const item = e.target.closest(".local-bg-item")
     if (item) {
       if (item.dataset.bgId === "random-color") {
-        const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`
+        const randomColor = `#${Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")}`
         handleSettingUpdate("background", randomColor)
       } else {
         handleSettingUpdate("background", item.dataset.bgId)
@@ -717,6 +742,20 @@ export function initSettings() {
   accentColorPicker.addEventListener("input", () =>
     handleSettingUpdate("accentColor", accentColorPicker.value),
   )
+
+  // Accent color presets
+  document.querySelectorAll(".accent-color-preset").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const color = btn.dataset.color
+      accentColorPicker.value = color
+      handleSettingUpdate("accentColor", color)
+      // Update active state
+      document
+        .querySelectorAll(".accent-color-preset")
+        .forEach((b) => b.classList.remove("active"))
+      btn.classList.add("active")
+    })
+  })
 
   bgPosXInput.addEventListener("input", () => {
     bgPosXValue.textContent = `${bgPosXInput.value}%`
@@ -749,7 +788,7 @@ export function initSettings() {
   })
 
   saveGradientBtn.addEventListener("click", () => {
-    const settings = getSettings();
+    const settings = getSettings()
     const newGradient = {
       start: gradientStartPicker.value,
       end: gradientEndPicker.value,
@@ -856,37 +895,83 @@ export function initSettings() {
   // Layout Listeners
   showTodoCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showTodoList", showTodoCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showTodoList", value: showTodoCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showTodoList", value: showTodoCheckbox.checked },
+      }),
+    )
+  })
+  showNotepadCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showNotepad", showNotepadCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showNotepad", value: showNotepadCheckbox.checked },
+      }),
+    )
   })
   showTimerCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showTimer", showTimerCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showTimer", value: showTimerCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showTimer", value: showTimerCheckbox.checked },
+      }),
+    )
   })
   showGregorianCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showGregorian", showGregorianCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showGregorian", value: showGregorianCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showGregorian", value: showGregorianCheckbox.checked },
+      }),
+    )
   })
   showMusicCheckbox.addEventListener("change", () => {
     handleSettingUpdate("musicPlayerEnabled", showMusicCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerEnabled", value: showMusicCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: { key: "musicPlayerEnabled", value: showMusicCheckbox.checked },
+      }),
+    )
   })
   showClockCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showClock", showClockCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showClock", value: showClockCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showClock", value: showClockCheckbox.checked },
+      }),
+    )
   })
   showFullCalendarCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showFullCalendar", showFullCalendarCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showFullCalendar", value: showFullCalendarCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "showFullCalendar",
+          value: showFullCalendarCheckbox.checked,
+        },
+      }),
+    )
   })
   showQuickAccessCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showQuickAccess", showQuickAccessCheckbox.checked)
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "showQuickAccess", value: showQuickAccessCheckbox.checked } }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "showQuickAccess",
+          value: showQuickAccessCheckbox.checked,
+        },
+      }),
+    )
   })
 
   // Music style listener
   musicStyleSelect.value = settings.musicBarStyle || "vinyl"
   musicStyleSelect.addEventListener("change", () => {
     handleSettingUpdate("musicBarStyle", musicStyleSelect.value)
-    window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "music_bar_style", value: musicStyleSelect.value } }))
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: { key: "music_bar_style", value: musicStyleSelect.value },
+      }),
+    )
   })
 }

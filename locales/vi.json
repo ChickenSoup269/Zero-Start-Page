@@ -65,6 +65,9 @@
   "style_vinyl": "Vinyl (Đĩa than)",
   "style_pixel": "Pixel",
   "style_spotify": "Spotify",
-  "settings_show_quick_access": "Hiện thanh truy cập nhanh"
-
+  "settings_show_quick_access": "Hiện thanh truy cập nhanh",
+  "notepad_title": "Sổ ghi chú",
+  "notepad_empty": "Chưa có ghi chú. Nhấn + để thêm.",
+  "settings_show_notepad": "Hiện Sổ ghi chú",
+  "quick_access_notepad": "Bật/Tắt Sổ ghi chú"
 }

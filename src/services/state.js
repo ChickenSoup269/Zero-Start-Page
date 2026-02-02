@@ -28,6 +28,7 @@ const defaultSettings = {
   showFullCalendar: false,
   showClock: true,
   showDate: true,
+  showNotepad: true,
   musicPlayerEnabled: false,
   componentPositions: {},
   musicBarStyle: "vinyl",
@@ -36,7 +37,6 @@ const defaultSettings = {
   timerEndTime: 0,
   timerIsRunning: false,
   musicPlayerExpanded: false,
-
 }
 
 // Bookmarks State Migration
@@ -75,9 +75,6 @@ let settingsState = {
 
 // Ensure userBackgrounds is always an array
 settingsState.userBackgrounds = settingsState.userBackgrounds || []
-
-
-
 
 // --- Exports ---
 export const localBackgrounds = []
@@ -160,6 +157,7 @@ export function resetSettingsState() {
     musicPlayerEnabled: false,
     showClock: true,
     showFullCalendar: false,
+    showNotepad: true,
     componentPositions: {},
     musicBarStyle: "vinyl",
     timerInitialTime: 0,
@@ -168,7 +166,6 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
-
   }
   settingsState = defaultSettings
   saveSettings()
