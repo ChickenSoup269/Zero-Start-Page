@@ -56,7 +56,6 @@ import {
   showFullCalendarCheckbox,
   showQuickAccessCheckbox,
   musicStyleSelect,
-  musicVisualizerStyleSelect,
   unsplashCategorySelect,
   showDateCheckbox,
 } from "../utils/dom.js"
@@ -461,7 +460,6 @@ function updateSettingsInputs() {
   showFullCalendarCheckbox.checked = settings.showFullCalendar === true
   showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
   musicStyleSelect.value = settings.musicBarStyle || "vinyl"
-  musicVisualizerStyleSelect.value = settings.musicVisualizerStyle || "bars"
 
   // Highlight active background
   document.querySelectorAll(".local-bg-item").forEach((item) => {
@@ -973,23 +971,6 @@ export function initSettings() {
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
         detail: { key: "music_bar_style", value: musicStyleSelect.value },
-      }),
-    )
-  })
-
-  // Music visualizer style listener
-  musicVisualizerStyleSelect.value = settings.musicVisualizerStyle || "bars"
-  musicVisualizerStyleSelect.addEventListener("change", () => {
-    handleSettingUpdate(
-      "musicVisualizerStyle",
-      musicVisualizerStyleSelect.value,
-    )
-    window.dispatchEvent(
-      new CustomEvent("settingsUpdated", {
-        detail: {
-          key: "music_visualizer_style",
-          value: musicVisualizerStyleSelect.value,
-        },
       }),
     )
   })

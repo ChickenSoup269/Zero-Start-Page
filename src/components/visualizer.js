@@ -9,7 +9,6 @@ class MusicVisualizer {
     this.animationId = null
     this.barCount = 5
     this.currentStyle = "vinyl"
-    this.currentVisualizerStyle = "bars"
   }
 
   init(musicPlayerContainer) {
@@ -21,7 +20,6 @@ class MusicVisualizer {
     for (let i = 0; i < this.barCount; i++) {
       const bar = document.createElement("div")
       bar.className = "visualizer-bar"
-      bar.style.animationDelay = `${i * 0.1}s`
       this.bars.push(bar)
       this.container.appendChild(bar)
     }
@@ -35,15 +33,10 @@ class MusicVisualizer {
     }
 
     this.setStyle(getSettings().musicBarStyle || "vinyl")
-    this.setVisualizerStyle(getSettings().musicVisualizerStyle || "bars")
   }
 
   setStyle(style) {
     this.currentStyle = style
-  }
-
-  setVisualizerStyle(style) {
-    this.currentVisualizerStyle = style
   }
 
   refresh() {

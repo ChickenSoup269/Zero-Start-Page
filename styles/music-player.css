@@ -17,13 +17,19 @@
 }
 
 .music-player-wrapper {
-  background: rgba(15, 15, 15, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 26, 0.9),
+    rgba(12, 12, 12, 0.95)
+  );
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid rgba(30, 215, 96, 0.25);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(30, 215, 96, 0.08) inset;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -438,16 +444,16 @@
   animation-delay: 0s;
 }
 .visualizer-bar:nth-child(2) {
-  animation-delay: 0.1s;
+  animation-delay: 0.15s;
 }
 .visualizer-bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.visualizer-bar:nth-child(4) {
   animation-delay: 0.3s;
 }
+.visualizer-bar:nth-child(4) {
+  animation-delay: 0.45s;
+}
 .visualizer-bar:nth-child(5) {
-  animation-delay: 0.4s;
+  animation-delay: 0.6s;
 }
 
 @keyframes visualizerPulse {
@@ -498,7 +504,7 @@
 }
 
 .music-style-pixel .visualizer-bar.playing {
-  animation: visualizerPulsePixel 0.5s steps(4) infinite alternate;
+  animation: visualizerHeartbeatPixel 1.8s steps(8) infinite;
 }
 
 /* Visualizer for Spotify Style */
@@ -521,6 +527,27 @@
   box-shadow: none;
 }
 
+.music-style-spotify .visualizer-bar.playing {
+  animation: visualizerPulseGlow 0.75s ease-in-out infinite alternate;
+}
+
+/* Spotify center-out animation pattern */
+.music-style-spotify .visualizer-bar:nth-child(1) {
+  animation-delay: 0.6s;
+}
+.music-style-spotify .visualizer-bar:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.music-style-spotify .visualizer-bar:nth-child(3) {
+  animation-delay: 0s;
+}
+.music-style-spotify .visualizer-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.music-style-spotify .visualizer-bar:nth-child(5) {
+  animation-delay: 0.6s;
+}
+
 @keyframes visualizerPulseGlow {
   0% {
     height: 8px;
@@ -534,8 +561,131 @@
   }
 }
 
-.music-visualizer-pulse .visualizer-bar.playing {
-  animation: visualizerPulseGlow 0.75s ease-in-out infinite alternate;
+/* Heartbeat Animation */
+@keyframes visualizerHeartbeat {
+  0% {
+    height: 8px;
+    opacity: 0.6;
+  }
+  15% {
+    height: 26px;
+    opacity: 1;
+  }
+  25% {
+    height: 7px;
+    opacity: 0.6;
+  }
+  40% {
+    height: 32px;
+    opacity: 1;
+  }
+  50% {
+    height: 8px;
+    opacity: 0.6;
+  }
+  65% {
+    height: 24px;
+    opacity: 1;
+  }
+  75% {
+    height: 7px;
+    opacity: 0.6;
+  }
+  90% {
+    height: 30px;
+    opacity: 1;
+  }
+  100% {
+    height: 8px;
+    opacity: 0.6;
+  }
+}
+
+@keyframes visualizerHeartbeatPixel {
+  0% {
+    height: 7px;
+    opacity: 0.6;
+  }
+  15% {
+    height: 24px;
+    opacity: 1;
+  }
+  25% {
+    height: 6px;
+    opacity: 0.6;
+  }
+  40% {
+    height: 28px;
+    opacity: 1;
+  }
+  50% {
+    height: 7px;
+    opacity: 0.6;
+  }
+  65% {
+    height: 22px;
+    opacity: 1;
+  }
+  75% {
+    height: 6px;
+    opacity: 0.6;
+  }
+  90% {
+    height: 26px;
+    opacity: 1;
+  }
+  100% {
+    height: 7px;
+    opacity: 0.6;
+  }
+}
+
+@keyframes visualizerHeartbeatGlow {
+  0% {
+    height: 7px;
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  15% {
+    height: 26px;
+    opacity: 1;
+    filter: blur(1px);
+  }
+  25% {
+    height: 6px;
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  40% {
+    height: 30px;
+    opacity: 1;
+    filter: blur(1.2px);
+  }
+  50% {
+    height: 7px;
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  65% {
+    height: 24px;
+    opacity: 1;
+    filter: blur(1px);
+  }
+  75% {
+    height: 6px;
+    opacity: 0.6;
+    filter: blur(0px);
+  }
+  90% {
+    height: 28px;
+    opacity: 1;
+    filter: blur(1.2px);
+  }
+  100% {
+    height: 7px;
+    opacity: 0.6;
+    filter: blur(0px);
+  }
 }
 
 /* Neon Style */
@@ -563,6 +713,27 @@
 .music-style-neon .visualizer-bar {
   background: linear-gradient(180deg, #00f0ff, #5b5bff);
   box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.music-style-neon .visualizer-bar.playing {
+  animation: visualizerHeartbeatGlow 2.2s ease-in-out infinite;
+}
+
+/* Neon right-to-left animation pattern */
+.music-style-neon .visualizer-bar:nth-child(1) {
+  animation-delay: 0.6s;
+}
+.music-style-neon .visualizer-bar:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.music-style-neon .visualizer-bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.music-style-neon .visualizer-bar:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.music-style-neon .visualizer-bar:nth-child(5) {
+  animation-delay: 0s;
 }
 
 /* Minimal Style */

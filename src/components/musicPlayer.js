@@ -9,7 +9,6 @@ export class MusicPlayer {
     this.isPlaying = false
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
-    this.visualizerStyle = settings.musicVisualizerStyle || "bars"
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
@@ -24,7 +23,6 @@ export class MusicPlayer {
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
     this.startPolling()
-    this.applyVisualizerStyle()
   }
 
   createElements() {
@@ -107,25 +105,7 @@ export class MusicPlayer {
         this.container.classList.add(`music-style-${this.currentStyle}`)
         this.visualizer.setStyle(this.currentStyle)
       }
-      if (e.detail.key === "music_visualizer_style") {
-        this.visualizerStyle = e.detail.value
-        this.applyVisualizerStyle()
-      }
     })
-  }
-
-  applyVisualizerStyle() {
-    this.container.classList.remove(
-      "music-visualizer-bars",
-      "music-visualizer-pulse",
-    )
-    const visualizerClass =
-      this.visualizerStyle === "pulse"
-        ? "music-visualizer-pulse"
-        : "music-visualizer-bars"
-    this.container.classList.add(visualizerClass)
-    this.visualizer.setVisualizerStyle(this.visualizerStyle)
-    this.visualizer.refresh()
   }
 
   startPolling() {
