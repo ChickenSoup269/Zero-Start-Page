@@ -1,12 +1,12 @@
 import { bookmarksContainer, bookmarkGroupsContainer } from "../utils/dom.js"
 import { showPrompt } from "../utils/dialog.js"
-import { 
-  getBookmarks, 
-  getBookmarkGroups, 
-  setBookmarkGroups, 
-  getActiveGroupId, 
-  setActiveGroupId, 
-  saveBookmarks 
+import {
+  getBookmarks,
+  getBookmarkGroups,
+  setBookmarkGroups,
+  getActiveGroupId,
+  setActiveGroupId,
+  saveBookmarks,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
@@ -14,14 +14,14 @@ import { showContextMenu } from "./contextMenu.js"
 
 export function renderBookmarks() {
   const i18n = geti18n()
-  
+
   // 1. Render Group Tabs
   renderGroupTabs()
 
   // 2. Render Bookmarks for Active Group
   const bookmarks = getBookmarks() // This now returns items of active group
   bookmarksContainer.innerHTML = ""
-  
+
   bookmarks.forEach((bookmark, index) => {
     const bookmarkEl = document.createElement("a")
     bookmarkEl.href = bookmark.url
@@ -52,10 +52,10 @@ function renderGroupTabs() {
   const activeId = getActiveGroupId()
   bookmarkGroupsContainer.innerHTML = ""
 
-  groups.forEach(group => {
+  groups.forEach((group) => {
     const tab = document.createElement("div")
-    tab.className = `bookmark-group-tab ${group.id === activeId ? 'active' : ''}`
-    
+    tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
+
     // Name Span (for double-click edit)
     const nameSpan = document.createElement("span")
     nameSpan.textContent = group.name
@@ -81,9 +81,9 @@ function renderGroupTabs() {
 
     // Context Menu (Right Click)
     tab.addEventListener("contextmenu", (e) => {
-        e.preventDefault()
-        const index = groups.indexOf(group)
-        showContextMenu(e.clientX, e.clientY, index, 'group', group.id)
+      e.preventDefault()
+      const index = groups.indexOf(group)
+      showContextMenu(e.clientX, e.clientY, index, "group", group.id)
     })
 
     bookmarkGroupsContainer.appendChild(tab)
@@ -95,17 +95,20 @@ function renderGroupTabs() {
   addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addTab.title = "Add Group"
   addTab.addEventListener("click", async () => {
-    const name = await showPrompt("Enter group name:", `Group ${groups.length + 1}`)
+    const name = await showPrompt(
+      "Enter group name:",
+      `Group ${groups.length + 1}`,
+    )
     if (name) {
-        const newGroup = {
-            id: `group-${Date.now()}`,
-            name: name.trim() || `Group ${groups.length + 1}`,
-            items: []
-        }
-        groups.push(newGroup)
-        setBookmarkGroups(groups)
-        setActiveGroupId(newGroup.id) // Switch to new group
-        renderBookmarks()
+      const newGroup = {
+        id: `group-${Date.now()}`,
+        name: name.trim() || `Group ${groups.length + 1}`,
+        items: [],
+      }
+      groups.push(newGroup)
+      setBookmarkGroups(groups)
+      setActiveGroupId(newGroup.id) // Switch to new group
+      renderBookmarks()
     }
   })
   bookmarkGroupsContainer.appendChild(addTab)

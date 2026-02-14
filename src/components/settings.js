@@ -903,7 +903,7 @@ export function initSettings() {
   fontSelect.addEventListener("change", () =>
     handleSettingUpdate("font", fontSelect.value),
   )
-  
+
   // Custom Google Font Loader
   loadCustomFontBtn.addEventListener("click", () => {
     const fontName = customFontInput.value.trim()
@@ -923,7 +923,7 @@ export function initSettings() {
     // Wait a bit for the font to load, then update settings
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
-      
+
       // Check if font option already exists in select
       let optionExists = false
       for (let option of fontSelect.options) {
@@ -944,7 +944,7 @@ export function initSettings() {
       // Select the new font
       fontSelect.value = fontValue
       handleSettingUpdate("font", fontValue)
-      
+
       showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
       customFontInput.value = "" // Clear input
     }, 500)
