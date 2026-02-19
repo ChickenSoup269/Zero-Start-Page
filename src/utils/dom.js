@@ -69,6 +69,11 @@ export const hackerColorSetting = document.getElementById(
   "hacker-color-setting",
 )
 
+export const sakuraColorPicker = document.getElementById("sakura-color-picker")
+export const sakuraColorSetting = document.getElementById(
+  "sakura-color-setting",
+)
+
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const dateFormatSelect = document.getElementById("date-format-select")
 export const clockSizeInput = document.getElementById("clock-size-input")

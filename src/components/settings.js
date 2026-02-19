@@ -49,6 +49,8 @@ import {
   auraColorSetting,
   hackerColorPicker,
   hackerColorSetting,
+  sakuraColorPicker,
+  sakuraColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -70,7 +72,7 @@ import {
   resetSettingsState,
 } from "../services/state.js"
 import { geti18n, loadLanguage, applyTranslations } from "../services/i18n.js"
-import { getContrastYIQ } from "../utils/colors.js"
+import { getContrastYIQ, hexToRgb } from "../utils/colors.js"
 
 // Import các hiệu ứng
 import { StarFall } from "./animations/rainGalaxy.js"
@@ -82,7 +84,7 @@ import { AuraEffect } from "./animations/aura.js"
 import { WindEffect } from "./animations/wind.js"
 import { HackerEffect } from "./animations/hacker.js"
 import { ParticlesStormEffect } from "./animations/particlesStorm.js"
-import { DNAHelixEffect } from "./animations/dnaHelix.js"
+import { SakuraEffect } from "./animations/sakura.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
 import { ConstellationEffect } from "./animations/constellation.js"
 
@@ -96,7 +98,7 @@ let starFallEffect,
   windEffect,
   hackerEffect,
   particlesStormEffect,
-  dnaHelixEffect,
+  sakuraEffect,
   auroraWaveEffect,
   constellationEffect
 
@@ -329,6 +331,14 @@ export function applySettings() {
       "--accent-color",
       settings.accentColor,
     )
+    // Also set RGB values for gradient usage
+    const rgb = hexToRgb(settings.accentColor)
+    if (rgb) {
+      document.documentElement.style.setProperty(
+        "--accent-color-rgb",
+        `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+      )
+    }
   }
 
   // 4. Effects Management (STOP ALL FIRST and CLEAR CANVAS)
@@ -343,7 +353,7 @@ export function applySettings() {
   if (hackerEffect) hackerEffect.stop()
 
   if (particlesStormEffect) particlesStormEffect.stop()
-  if (dnaHelixEffect) dnaHelixEffect.stop()
+  if (sakuraEffect) sakuraEffect.stop()
   if (auroraWaveEffect) auroraWaveEffect.stop()
   if (constellationEffect) constellationEffect.stop()
 
@@ -387,8 +397,8 @@ export function applySettings() {
       case "particlesStorm":
         particlesStormEffect.start()
         break
-      case "dnaHelix":
-        dnaHelixEffect.start()
+      case "sakura":
+        sakuraEffect.start()
         break
       case "auroraWave":
         auroraWaveEffect.start()
@@ -474,6 +484,7 @@ function updateSettingsInputs() {
   matrixColorPicker.value = settings.matrixColor || "#00FF00"
   auraColorPicker.value = settings.auraColor || "#a8c0ff"
   hackerColorPicker.value = settings.hackerColor || "#00FF00"
+  sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
 
   // Visibility of Effect Settings
   meteorColorSetting.style.display =
@@ -488,6 +499,8 @@ function updateSettingsInputs() {
   auraColorSetting.style.display = settings.effect === "aura" ? "block" : "none"
   hackerColorSetting.style.display =
     settings.effect === "hacker" ? "block" : "none"
+  sakuraColorSetting.style.display =
+    settings.effect === "sakura" ? "block" : "none"
 
   // Layout Checkboxes
   showTodoCheckbox.checked = settings.showTodoList !== false
@@ -608,7 +621,10 @@ export function initSettings() {
     "effect-canvas",
     settings.accentColor,
   )
-  dnaHelixEffect = new DNAHelixEffect("effect-canvas", settings.accentColor)
+  sakuraEffect = new SakuraEffect(
+    "effect-canvas",
+    settings.sakuraColor || "#ffb7c5",
+  )
   auroraWaveEffect = new AuroraWaveEffect("effect-canvas", settings.accentColor)
   constellationEffect = new ConstellationEffect(
     "effect-canvas",
@@ -895,6 +911,12 @@ export function initSettings() {
     updateSetting("hackerColor", hackerColorPicker.value)
     saveSettings()
     hackerEffect.updateColor(hackerColorPicker.value)
+  })
+
+  sakuraColorPicker.addEventListener("input", () => {
+    updateSetting("sakuraColor", sakuraColorPicker.value)
+    saveSettings()
+    sakuraEffect.color = sakuraColorPicker.value
   })
 
   effectSelect.addEventListener("change", () =>

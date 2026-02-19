@@ -641,62 +641,91 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: 0.6rem;
   margin-top: 1.5rem;
   margin-bottom: 2rem;
-  padding: 0.8rem 1.5rem;
+  padding: 0.8rem 1.2rem;
   justify-content: center;
   align-items: center;
-
   width: fit-content;
   max-width: 90%;
   margin-left: auto;
   margin-right: auto;
-  border-radius: 5px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .bookmark-group-tab {
   color: rgba(255, 255, 255, 0.8);
-  padding: 0.5rem 1.2rem;
-  border-radius: 5px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
   font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   user-select: none;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
-  /* Tab blur */
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .bookmark-group-tab:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .bookmark-group-tab.active {
   color: white;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--accent-color);
-  transform: scale(1.05);
+  font-weight: 600;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+}
+
+.bookmark-group-tab.active:hover {
+  box-shadow: 0 6px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  transform: translateY(-2px);
 }
 
 .bookmark-group-tab.add-group-tab {
-  padding: 0.5rem 0.8rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px dashed rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  min-width: 42px;
+  justify-content: center;
 }
 
 .bookmark-group-tab.add-group-tab:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  border-style: dashed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bookmark-groups-container {
+    padding: 0.6rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .bookmark-group-tab {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .bookmark-group-tab.add-group-tab {
+    padding: 0.45rem 0.7rem;
+    min-width: 38px;
+  }
 }
 
 /* Notepad Widget */

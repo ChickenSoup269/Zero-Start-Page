@@ -14,6 +14,7 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --accent-color: #a8c0ff;
+  --accent-color-rgb: 168, 192, 255; /* RGB values for rgba() usage */
   --bg-color: #1a1a2e;
   --panel-bg: rgba(26, 26, 46, 0.7);
   --hover-bg: rgba(255, 255, 255, 0.15);

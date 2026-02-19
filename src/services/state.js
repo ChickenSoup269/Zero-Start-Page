@@ -21,6 +21,7 @@ const defaultSettings = {
   clockColor: null,
   auraColor: "#a8c0ff",
   hackerColor: "#00FF00",
+  sakuraColor: "#ffb7c5",
   bgPositionX: 50,
   bgPositionY: 50,
   unsplashCategory: "nature",
