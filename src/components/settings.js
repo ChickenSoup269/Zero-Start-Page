@@ -59,6 +59,7 @@ import {
   showMusicCheckbox,
   showClockCheckbox,
   showFullCalendarCheckbox,
+  showLunarCalendarCheckbox,
   showQuickAccessCheckbox,
   musicStyleSelect,
   unsplashCategorySelect,
@@ -510,6 +511,7 @@ function updateSettingsInputs() {
   showMusicCheckbox.checked = settings.musicPlayerEnabled === true
   showClockCheckbox.checked = settings.showClock !== false
   showFullCalendarCheckbox.checked = settings.showFullCalendar === true
+  showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
   showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
   musicStyleSelect.value = settings.musicBarStyle || "vinyl"
 
@@ -1069,6 +1071,17 @@ export function initSettings() {
         detail: {
           key: "showFullCalendar",
           value: showFullCalendarCheckbox.checked,
+        },
+      }),
+    )
+  })
+  showLunarCalendarCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showLunarCalendar", showLunarCalendarCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "showLunarCalendar",
+          value: showLunarCalendarCheckbox.checked,
         },
       }),
     )

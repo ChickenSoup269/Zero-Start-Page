@@ -29,6 +29,7 @@ const defaultSettings = {
   showTimer: false,
   showGregorian: true,
   showFullCalendar: false,
+  showLunarCalendar: true,
   showClock: true,
   showDate: true,
   showNotepad: true,
@@ -79,6 +80,10 @@ let settingsState = {
 
 // Ensure userBackgrounds is always an array
 settingsState.userBackgrounds = settingsState.userBackgrounds || []
+
+// --- Calendar Events State ---
+let calendarEventsState =
+  JSON.parse(localStorage.getItem("calendarEvents")) || []
 
 // --- Exports ---
 export const localBackgrounds = []
@@ -206,4 +211,37 @@ export function saveSettings() {
       throw e
     }
   }
+}
+
+// --- Calendar Events Functions ---
+export function getCalendarEvents() {
+  return calendarEventsState
+}
+
+export function addCalendarEvent(event) {
+  calendarEventsState.push({
+    id: Date.now().toString(),
+    ...event,
+  })
+  saveCalendarEvents()
+}
+
+export function updateCalendarEvent(id, updatedEvent) {
+  const index = calendarEventsState.findIndex((e) => e.id === id)
+  if (index !== -1) {
+    calendarEventsState[index] = {
+      ...calendarEventsState[index],
+      ...updatedEvent,
+    }
+    saveCalendarEvents()
+  }
+}
+
+export function deleteCalendarEvent(id) {
+  calendarEventsState = calendarEventsState.filter((e) => e.id !== id)
+  saveCalendarEvents()
+}
+
+export function saveCalendarEvents() {
+  localStorage.setItem("calendarEvents", JSON.stringify(calendarEventsState))
 }

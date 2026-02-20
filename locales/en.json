@@ -76,6 +76,7 @@
   "settings_show_music": "Show Music Player",
   "settings_show_clock": "Show Clock",
   "settings_show_full_calendar": "Show Full Calendar",
+  "settings_show_lunar_calendar": "Show Lunar Calendar (Vietnamese)",
   "settings_reset_layout": "Reset Layout Positions",
   "quick_access_todo": "Toggle Todo List",
   "quick_access_timer": "Toggle Timer",
@@ -95,5 +96,14 @@
   "notepad_title": "Notepad",
   "notepad_empty": "No notes yet. Click + to add one.",
   "settings_show_notepad": "Show Notepad",
-  "quick_access_notepad": "Toggle Notepad"
+  "quick_access_notepad": "Toggle Notepad",
+  "calendar_prev_month": "Previous Month",
+  "calendar_next_month": "Next Month",
+  "calendar_add_event": "Add Event",
+  "calendar_new_event": "New Event Title:",
+  "calendar_edit_event": "Edit Event Title:",
+  "calendar_event_time": "Time (HH:MM, optional):",
+  "calendar_event_desc": "Description (optional):",
+  "calendar_event_action": "Update event or Delete?\n(OK = Update, Cancel = Delete)",
+  "calendar_delete_confirm": "Delete this event?"
 }

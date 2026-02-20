@@ -76,6 +76,7 @@
   "settings_show_music": "Hiện Trình phát nhạc",
   "settings_show_clock": "Hiện Đồng hồ",
   "settings_show_full_calendar": "Hiện Toàn bộ lịch",
+  "settings_show_lunar_calendar": "Hiện Lịch âm Việt Nam",
   "settings_reset_layout": "Xác lập lại vị trí",
   "quick_access_todo": "Bật/Tắt Danh sách việc cần làm",
   "quick_access_timer": "Bật/Tắt Đồng hồ bấm giờ",
@@ -95,5 +96,14 @@
   "notepad_title": "Sổ ghi chú",
   "notepad_empty": "Chưa có ghi chú. Nhấn + để thêm.",
   "settings_show_notepad": "Hiện Sổ ghi chú",
-  "quick_access_notepad": "Bật/Tắt Sổ ghi chú"
+  "quick_access_notepad": "Bật/Tắt Sổ ghi chú",
+  "calendar_prev_month": "Tháng trước",
+  "calendar_next_month": "Tháng sau",
+  "calendar_add_event": "Thêm sự kiện",
+  "calendar_new_event": "Tiêu đề sự kiện mới:",
+  "calendar_edit_event": "Sửa tiêu đề sự kiện:",
+  "calendar_event_time": "Thời gian (HH:MM, tùy chọn):",
+  "calendar_event_desc": "Mô tả (tùy chọn):",
+  "calendar_event_action": "Cập nhật hoặc Xóa sự kiện?\n(OK = Cập nhật, Cancel = Xóa)",
+  "calendar_delete_confirm": "Xóa sự kiện này?"
 }

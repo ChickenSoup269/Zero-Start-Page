@@ -134,6 +134,9 @@ export const showDateCheckbox = document.getElementById("show-date-checkbox")
 export const showFullCalendarCheckbox = document.getElementById(
   "show-full-calendar-checkbox",
 )
+export const showLunarCalendarCheckbox = document.getElementById(
+  "show-lunar-calendar-checkbox",
+)
 export const showQuickAccessCheckbox = document.getElementById(
   "show-quick-access-checkbox",
 )
