@@ -23,6 +23,7 @@ import {
   starColorSetting,
   resetSettingsBtn,
   dateFormatSelect,
+  pageTitleInput,
   clockSizeInput,
   clockSizeValue,
   clockColorPicker,
@@ -51,6 +52,8 @@ import {
   hackerColorSetting,
   sakuraColorPicker,
   sakuraColorSetting,
+  snowfallColorPicker,
+  snowfallColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -86,6 +89,7 @@ import { WindEffect } from "./animations/wind.js"
 import { HackerEffect } from "./animations/hacker.js"
 import { ParticlesStormEffect } from "./animations/particlesStorm.js"
 import { SakuraEffect } from "./animations/sakura.js"
+import { SnowfallEffect } from "./animations/snowfall.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
 import { ConstellationEffect } from "./animations/constellation.js"
 
@@ -100,6 +104,7 @@ let starFallEffect,
   hackerEffect,
   particlesStormEffect,
   sakuraEffect,
+  snowfallEffect,
   auroraWaveEffect,
   constellationEffect
 
@@ -235,13 +240,16 @@ function setUnsplashRandomBackground(retries = 3) {
 export function applySettings() {
   const settings = getSettings()
 
-  // 1. Reset Styles
+  // 1. Page Title
+  document.title = settings.pageTitle || "Start Page"
+
+  // 2. Reset Styles
   document.body.className = ""
   document.body.style.background = ""
   document.body.style.backgroundImage = ""
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
-  // 2. Background Logic
+  // 3. Background Logic
   const bg = settings.background
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
   const isUserUploadedBg =
@@ -355,6 +363,7 @@ export function applySettings() {
 
   if (particlesStormEffect) particlesStormEffect.stop()
   if (sakuraEffect) sakuraEffect.stop()
+  if (snowfallEffect) snowfallEffect.stop()
   if (auroraWaveEffect) auroraWaveEffect.stop()
   if (constellationEffect) constellationEffect.stop()
 
@@ -401,6 +410,9 @@ export function applySettings() {
       case "sakura":
         sakuraEffect.start()
         break
+      case "snowfall":
+        snowfallEffect.start()
+        break
       case "auroraWave":
         auroraWaveEffect.start()
         break
@@ -444,6 +456,7 @@ function updateSettingsInputs() {
   // General Inputs
   fontSelect.value = settings.font
   dateFormatSelect.value = settings.dateFormat
+  pageTitleInput.value = settings.pageTitle || "Start Page"
   clockSizeInput.value = settings.clockSize
   clockSizeValue.textContent = `${settings.clockSize}rem`
   languageSelect.value = settings.language || "en"
@@ -486,6 +499,7 @@ function updateSettingsInputs() {
   auraColorPicker.value = settings.auraColor || "#a8c0ff"
   hackerColorPicker.value = settings.hackerColor || "#00FF00"
   sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
+  snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
 
   // Visibility of Effect Settings
   meteorColorSetting.style.display =
@@ -502,6 +516,8 @@ function updateSettingsInputs() {
     settings.effect === "hacker" ? "block" : "none"
   sakuraColorSetting.style.display =
     settings.effect === "sakura" ? "block" : "none"
+  snowfallColorSetting.style.display =
+    settings.effect === "snowfall" ? "block" : "none"
 
   // Layout Checkboxes
   showTodoCheckbox.checked = settings.showTodoList !== false
@@ -626,6 +642,10 @@ export function initSettings() {
   sakuraEffect = new SakuraEffect(
     "effect-canvas",
     settings.sakuraColor || "#ffb7c5",
+  )
+  snowfallEffect = new SnowfallEffect(
+    "effect-canvas",
+    settings.snowfallColor || "#ffffff",
   )
   auroraWaveEffect = new AuroraWaveEffect("effect-canvas", settings.accentColor)
   constellationEffect = new ConstellationEffect(
@@ -921,6 +941,12 @@ export function initSettings() {
     sakuraEffect.color = sakuraColorPicker.value
   })
 
+  snowfallColorPicker.addEventListener("input", () => {
+    updateSetting("snowfallColor", snowfallColorPicker.value)
+    saveSettings()
+    snowfallEffect.color = snowfallColorPicker.value
+  })
+
   effectSelect.addEventListener("change", () =>
     handleSettingUpdate("effect", effectSelect.value),
   )
@@ -977,6 +1003,14 @@ export function initSettings() {
   dateFormatSelect.addEventListener("change", () =>
     handleSettingUpdate("dateFormat", dateFormatSelect.value),
   )
+
+  pageTitleInput.addEventListener("input", () => {
+    const newTitle = pageTitleInput.value.trim() || "Start Page"
+    updateSetting("pageTitle", newTitle)
+    saveSettings()
+    document.title = newTitle
+  })
+
   clockSizeInput.addEventListener("input", () => {
     clockSizeValue.textContent = `${clockSizeInput.value}rem`
     handleSettingUpdate("clockSize", clockSizeInput.value)

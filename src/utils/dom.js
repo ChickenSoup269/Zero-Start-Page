@@ -74,8 +74,16 @@ export const sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
 )
 
+export const snowfallColorPicker = document.getElementById(
+  "snowfall-color-picker",
+)
+export const snowfallColorSetting = document.getElementById(
+  "snowfall-color-setting",
+)
+
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const dateFormatSelect = document.getElementById("date-format-select")
+export const pageTitleInput = document.getElementById("page-title-input")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const clockColorPicker = document.getElementById("clock-color-picker")
