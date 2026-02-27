@@ -15,7 +15,10 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: var(--bg-pos-x) var(--bg-pos-y) !important;
-  transition: background-position 0.2s ease-out, background-image 0.5s ease-in-out, opacity 0.5s ease;
+  transition:
+    background-position 0.2s ease-out,
+    background-image 0.5s ease-in-out,
+    opacity 0.5s ease;
   animation: gradientBG 15s ease infinite;
   color: var(--text-color);
   font-family: var(--font-primary);
@@ -53,6 +56,8 @@ i {
   z-index: -1;
   pointer-events: none;
   display: none;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .main-container {

@@ -148,6 +148,9 @@ export const showLunarCalendarCheckbox = document.getElementById(
 export const showQuickAccessCheckbox = document.getElementById(
   "show-quick-access-checkbox",
 )
+export const ghostControlsCheckbox = document.getElementById(
+  "ghost-controls-checkbox",
+)
 export const showNotepadCheckbox = document.getElementById(
   "show-notepad-checkbox",
 )

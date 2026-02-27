@@ -184,6 +184,16 @@
   flex-direction: column;
   align-items: center;
   z-index: 1000;
+  transition: opacity 0.4s ease;
+}
+
+/* Ghost mode: fade out when not hovered */
+body.ghost-controls .side-controls {
+  opacity: 0;
+}
+
+body.ghost-controls .side-controls:hover {
+  opacity: 1;
 }
 
 #settings-toggle {
@@ -891,14 +901,14 @@
 .bookmark-group-tab.active {
   color: white;
   font-weight: 600;
-  background: var(--accent-color);
+  background: transparent;
   border-color: var(--accent-color);
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  box-shadow: 0 0 0 1px var(--accent-color) inset;
 }
 
 .bookmark-group-tab.active:hover {
-  box-shadow: 0 6px 16px rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
-  transform: translateY(-2px);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
+  border-color: var(--accent-color);
 }
 
 .bookmark-group-tab.add-group-tab {

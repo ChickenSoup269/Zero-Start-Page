@@ -6,6 +6,9 @@ export class FallingMeteor {
     this.active = false
     this.animationFrame = null
     this.meteorColor = color
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -18,8 +21,9 @@ export class FallingMeteor {
   start() {
     if (this.active) return
     this.active = true
+    this.lastDrawTime = 0
     this.createMeteors()
-    this.animate()
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -74,8 +78,15 @@ export class FallingMeteor {
     }
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    this.animationFrame = requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     const colorRgb = this.parseColor(this.meteorColor)
@@ -88,9 +99,6 @@ export class FallingMeteor {
       const headY = meteor.y + Math.sin(meteor.angle) * meteor.length
       const tailX = meteor.x
       const tailY = meteor.y
-
-      this.ctx.shadowColor = `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, 0.8)`
-      this.ctx.shadowBlur = 20
 
       const gradient = this.ctx.createLinearGradient(headX, headY, tailX, tailY)
       gradient.addColorStop(
@@ -121,9 +129,6 @@ export class FallingMeteor {
       this.ctx.arc(headX, headY, 2, 0, Math.PI * 2)
       this.ctx.fillStyle = `rgb(${brightColor.r}, ${brightColor.g}, ${brightColor.b})`
       this.ctx.fill()
-
-      this.ctx.shadowBlur = 0
-      this.ctx.shadowColor = "transparent"
 
       meteor.particles.forEach((part, index) => {
         part.life -= 1
@@ -175,8 +180,6 @@ export class FallingMeteor {
         meteor.particles = []
       }
     })
-
-    this.animationFrame = requestAnimationFrame(() => this.animate())
   }
 
   updateColor(newColor) {

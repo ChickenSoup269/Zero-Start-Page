@@ -64,6 +64,7 @@ import {
   showFullCalendarCheckbox,
   showLunarCalendarCheckbox,
   showQuickAccessCheckbox,
+  ghostControlsCheckbox,
   musicStyleSelect,
   unsplashCategorySelect,
   showDateCheckbox,
@@ -529,6 +530,11 @@ function updateSettingsInputs() {
   showFullCalendarCheckbox.checked = settings.showFullCalendar === true
   showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
   showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+  ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+  document.body.classList.toggle(
+    "ghost-controls",
+    settings.sideControlsGhostMode === true,
+  )
   musicStyleSelect.value = settings.musicBarStyle || "vinyl"
 
   // Highlight active background
@@ -1130,6 +1136,12 @@ export function initSettings() {
         },
       }),
     )
+  })
+
+  ghostControlsCheckbox.addEventListener("change", () => {
+    const isGhost = ghostControlsCheckbox.checked
+    handleSettingUpdate("sideControlsGhostMode", isGhost)
+    document.body.classList.toggle("ghost-controls", isGhost)
   })
 
   // Music style listener

@@ -7,6 +7,10 @@ export class SakuraEffect {
     this.petals = []
     this.petalCount = 50
 
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
+
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -43,8 +47,9 @@ export class SakuraEffect {
   start() {
     if (this.active) return
     this.active = true
+    this.lastDrawTime = 0
     this.initPetals()
-    this.animate()
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -64,10 +69,6 @@ export class SakuraEffect {
     // Draw petal shape (ellipse)
     this.ctx.globalAlpha = petal.opacity
 
-    // Outer glow
-    this.ctx.shadowBlur = 10
-    this.ctx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`
-
     // Main petal body
     this.ctx.beginPath()
     this.ctx.ellipse(0, 0, petal.size, petal.size * 1.5, 0, 0, Math.PI * 2)
@@ -75,7 +76,6 @@ export class SakuraEffect {
     this.ctx.fill()
 
     // Add lighter center line for detail
-    this.ctx.shadowBlur = 0
     this.ctx.beginPath()
     this.ctx.moveTo(0, -petal.size * 1.5)
     this.ctx.lineTo(0, petal.size * 1.5)
@@ -103,8 +103,14 @@ export class SakuraEffect {
     this.ctx.restore()
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -137,8 +143,6 @@ export class SakuraEffect {
         petal.x = this.canvas.width + 50
       }
     })
-
-    requestAnimationFrame(() => this.animate())
   }
 
   hexToRgb(hex) {

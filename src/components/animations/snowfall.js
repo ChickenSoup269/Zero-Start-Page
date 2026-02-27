@@ -7,6 +7,10 @@ export class SnowfallEffect {
     this.snowflakes = []
     this.snowflakeCount = 100
 
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
+
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -43,8 +47,9 @@ export class SnowfallEffect {
   start() {
     if (this.active) return
     this.active = true
+    this.lastDrawTime = 0
     this.initSnowflakes()
-    this.animate()
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -61,10 +66,6 @@ export class SnowfallEffect {
 
     const rgb = this.hexToRgb(this.color)
     this.ctx.globalAlpha = snowflake.opacity
-
-    // Outer glow
-    this.ctx.shadowBlur = 8
-    this.ctx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`
 
     // Draw snowflake shape - 6 pointed star
     const armCount = 6
@@ -115,8 +116,14 @@ export class SnowfallEffect {
     this.ctx.restore()
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -149,8 +156,6 @@ export class SnowfallEffect {
         snowflake.x = this.canvas.width + 50
       }
     })
-
-    requestAnimationFrame(() => this.animate())
   }
 
   hexToRgb(hex) {

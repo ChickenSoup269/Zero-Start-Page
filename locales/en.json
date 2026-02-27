@@ -98,6 +98,7 @@
   "visualizer_pulse": "Pulse",
   "visualizer_heartbeat": "Heartbeat",
   "settings_show_quick_access": "Show Quick Access bar",
+  "settings_ghost_controls": "Auto-hide when not in use",
   "notepad_title": "Notepad",
   "notepad_empty": "No notes yet. Click + to add one.",
   "settings_show_notepad": "Show Notepad",

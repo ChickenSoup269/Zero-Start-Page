@@ -14,6 +14,11 @@ export class ParticlesStormEffect {
     this.vortexStrength = 0.3
     this.turbulence = 0.05
 
+    // FPS throttling
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
+
     this.resize()
     window.addEventListener("resize", () => this.resize())
 
@@ -46,8 +51,9 @@ export class ParticlesStormEffect {
   start() {
     if (this.active) return
     this.active = true
+    this.lastDrawTime = 0
     this.createParticles()
-    this.animate()
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -79,8 +85,14 @@ export class ParticlesStormEffect {
     }
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
 
     // Fade effect instead of clear
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
@@ -144,36 +156,17 @@ export class ParticlesStormEffect {
         p.life = 0
       }
 
-      // Draw particle with trail effect
-      this.ctx.save()
-      this.ctx.translate(p.x, p.y)
-      this.ctx.rotate(p.rotation)
-
-      // Glow
-      const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 3)
-      const hue = (p.hue + this.time * 50) % 360
-      gradient.addColorStop(
-        0,
-        `hsla(${hue + rgb.r}, ${rgb.g}%, ${rgb.b}%, ${p.life * 0.8})`,
-      )
-      gradient.addColorStop(
-        0.5,
-        `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${p.life * 0.4})`,
-      )
-      gradient.addColorStop(1, "rgba(0, 0, 0, 0)")
-
-      this.ctx.fillStyle = gradient
+      // Draw particle - simplified (no radialGradient per particle)
       this.ctx.beginPath()
-      this.ctx.arc(0, 0, p.size * 3, 0, Math.PI * 2)
+      this.ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2)
+      this.ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${p.life * 0.3})`
       this.ctx.fill()
 
       // Core
-      this.ctx.fillStyle = `rgba(${rgb.r + 50}, ${rgb.g + 50}, ${rgb.b + 50}, ${p.life})`
       this.ctx.beginPath()
-      this.ctx.arc(0, 0, p.size, 0, Math.PI * 2)
+      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+      this.ctx.fillStyle = `rgba(${Math.min(255, rgb.r + 50)}, ${Math.min(255, rgb.g + 50)}, ${Math.min(255, rgb.b + 50)}, ${p.life})`
       this.ctx.fill()
-
-      this.ctx.restore()
 
       // Draw connections to nearby particles
       for (let j = index + 1; j < this.particles.length; j++) {
@@ -192,8 +185,6 @@ export class ParticlesStormEffect {
         }
       }
     })
-
-    requestAnimationFrame(() => this.animate())
   }
 
   hexToRgb(hex) {

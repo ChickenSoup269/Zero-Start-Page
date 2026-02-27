@@ -12,6 +12,11 @@ export class AuroraWaveEffect {
     this.waveAmplitude = 100
     this.waveFrequency = 0.01
 
+    // FPS throttling
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
+
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -24,7 +29,8 @@ export class AuroraWaveEffect {
   start() {
     if (this.active) return
     this.active = true
-    this.animate()
+    this.lastDrawTime = 0
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -34,8 +40,14 @@ export class AuroraWaveEffect {
     this.canvas.style.display = "none"
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
 
     // Fade effect for aurora trails
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.03)"
@@ -114,8 +126,6 @@ export class AuroraWaveEffect {
       this.ctx.lineWidth = 30 + w * 10
       this.ctx.lineCap = "round"
       this.ctx.lineJoin = "round"
-      this.ctx.shadowBlur = 20
-      this.ctx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`
       this.ctx.stroke()
 
       // Add shimmer particles along the wave
@@ -141,62 +151,33 @@ export class AuroraWaveEffect {
         const intensity = Math.abs(Math.sin(progress * Math.PI)) * 0.7 + 0.3
         const size = 3 * intensity
 
-        // Draw particle glow
-        const particleGradient = this.ctx.createRadialGradient(
-          x,
-          y,
-          0,
-          x,
-          y,
-          size * 4,
-        )
-        particleGradient.addColorStop(
-          0,
-          `rgba(${rgb.r + 80}, ${rgb.g + 80}, ${rgb.b + 80}, ${intensity * 0.8})`,
-        )
-        particleGradient.addColorStop(
-          0.5,
-          `rgba(${rgb.r + 40}, ${rgb.g + 40}, ${rgb.b + 40}, ${intensity * 0.4})`,
-        )
-        particleGradient.addColorStop(1, "rgba(255, 255, 255, 0)")
-
+        // Draw shimmer particle - simple solid circles (no radialGradient)
         this.ctx.beginPath()
-        this.ctx.fillStyle = particleGradient
-        this.ctx.arc(x, y, size * 4, 0, Math.PI * 2)
+        this.ctx.arc(x, y, size * 2, 0, Math.PI * 2)
+        this.ctx.fillStyle = `rgba(${Math.min(255, rgb.r + 80)}, ${Math.min(255, rgb.g + 80)}, ${Math.min(255, rgb.b + 80)}, ${intensity * 0.3})`
         this.ctx.fill()
 
         // Core
         this.ctx.beginPath()
-        this.ctx.fillStyle = `rgba(255, 255, 255, ${intensity * 0.9})`
+        this.ctx.fillStyle = `rgba(255, 255, 255, ${intensity * 0.8})`
         this.ctx.arc(x, y, size, 0, Math.PI * 2)
         this.ctx.fill()
       }
-
-      // Reset shadow
-      this.ctx.shadowBlur = 0
     }
 
-    // Add floating particles
+    // Add floating particles - simple solid fill (no radialGradient)
+    const rgbBright = `${Math.min(255, rgb.r + 50)}, ${Math.min(255, rgb.g + 50)}, ${Math.min(255, rgb.b + 50)}`
     for (let i = 0; i < 30; i++) {
       const x = (i * 37 + this.time * 20) % this.canvas.width
       const y = centerY + Math.sin(x * 0.02 + this.time + i) * 200
       const size = Math.random() * 2 + 1
       const opacity = Math.sin(this.time * 2 + i) * 0.3 + 0.4
 
-      const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, size * 3)
-      gradient.addColorStop(
-        0,
-        `rgba(${rgb.r + 50}, ${rgb.g + 50}, ${rgb.b + 50}, ${opacity})`,
-      )
-      gradient.addColorStop(1, "rgba(255, 255, 255, 0)")
-
       this.ctx.beginPath()
-      this.ctx.fillStyle = gradient
-      this.ctx.arc(x, y, size * 3, 0, Math.PI * 2)
+      this.ctx.arc(x, y, size, 0, Math.PI * 2)
+      this.ctx.fillStyle = `rgba(${rgbBright}, ${opacity})`
       this.ctx.fill()
     }
-
-    requestAnimationFrame(() => this.animate())
   }
 
   hexToRgb(hex) {

@@ -4,6 +4,9 @@ export class FirefliesEffect {
     this.ctx = this.canvas.getContext("2d")
     this.flies = []
     this.active = false
+    this.fps = 30
+    this.fpsInterval = 1000 / this.fps
+    this.lastDrawTime = 0
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -16,8 +19,9 @@ export class FirefliesEffect {
   start() {
     if (this.active) return
     this.active = true
+    this.lastDrawTime = 0
     this.createFlies()
-    this.animate()
+    this.animate(0)
     this.canvas.style.display = "block"
   }
 
@@ -42,8 +46,15 @@ export class FirefliesEffect {
     }
   }
 
-  animate() {
+  animate(currentTime = 0) {
     if (!this.active) return
+
+    requestAnimationFrame((t) => this.animate(t))
+
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < this.fpsInterval) return
+    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     // Chế độ hòa trộn để tạo hiệu ứng phát sáng đẹp hơn khi chồng lên nhau
@@ -81,7 +92,6 @@ export class FirefliesEffect {
       this.ctx.fill()
     })
 
-    this.ctx.globalCompositeOperation = "source-over" // Reset lại
-    requestAnimationFrame(() => this.animate())
+    this.ctx.globalCompositeOperation = "source-over" // Reset
   }
 }

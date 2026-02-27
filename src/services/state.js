@@ -44,6 +44,7 @@ const defaultSettings = {
   timerEndTime: 0,
   timerIsRunning: false,
   musicPlayerExpanded: false,
+  sideControlsGhostMode: false,
 }
 
 // Bookmarks State Migration

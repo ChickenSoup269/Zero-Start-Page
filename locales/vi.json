@@ -98,6 +98,7 @@
   "visualizer_pulse": "Nhịp sáng",
   "visualizer_heartbeat": "Nhịp tim",
   "settings_show_quick_access": "Hiện thanh truy cập nhanh",
+  "settings_ghost_controls": "Tự ẩn khi không dùng",
   "notepad_title": "Sổ ghi chú",
   "notepad_empty": "Chưa có ghi chú. Nhấn + để thêm.",
   "settings_show_notepad": "Hiện Sổ ghi chú",
