@@ -11,6 +11,7 @@ import { Timer } from "./components/timer.js"
 import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
 import { Notepad } from "./components/notepad.js"
+import { preloadImages, migrateDataUrls } from "./services/imageStore.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -34,6 +35,16 @@ import {
 document.addEventListener("DOMContentLoaded", async () => {
   // Load language first as other components might depend on it
   await initI18n()
+
+  // Migrate old base64 data URLs → IndexedDB, then preload blob URLs
+  const { migrated, changed } = await migrateDataUrls(
+    getSettings().userBackgrounds,
+  )
+  if (changed) {
+    updateSetting("userBackgrounds", migrated)
+    saveSettings()
+  }
+  await preloadImages(getSettings().userBackgrounds)
 
   // Initialize all other components
   initClock()

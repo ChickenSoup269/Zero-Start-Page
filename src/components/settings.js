@@ -1,5 +1,11 @@
 import { showAlert, showConfirm } from "../utils/dialog.js"
 import {
+  saveImage,
+  deleteImage,
+  getBlobUrlSync,
+  isIdbImage,
+} from "../services/imageStore.js"
+import {
   settingsToggle,
   settingsSidebar,
   closeSettings,
@@ -251,10 +257,17 @@ export function applySettings() {
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
   // 3. Background Logic
-  const bg = settings.background
+  let bg = settings.background
+  // Resolve IndexedDB image ID to blob URL
+  if (isIdbImage(bg)) {
+    bg = getBlobUrlSync(bg) || bg
+  }
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
   const isUserUploadedBg =
-    bg && (bg.startsWith("data:image") || bg.startsWith("data:video"))
+    bg &&
+    (bg.startsWith("data:image") ||
+      bg.startsWith("data:video") ||
+      bg.startsWith("blob:"))
   const bgVideoElement = document.getElementById("bg-video")
 
   // Hide video by default
@@ -569,12 +582,16 @@ export function renderLocalBackgrounds() {
 
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
-    settings.userBackgrounds.forEach((bgUrl, index) => {
+    settings.userBackgrounds.forEach((bgId, index) => {
+      // Resolve blob URL for thumbnail (IDB ID → cached blob URL)
+      const thumbUrl = isIdbImage(bgId) ? getBlobUrlSync(bgId) || "" : bgId
+
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
-      item.dataset.bgId = bgUrl
-      item.style.backgroundImage = `url('${bgUrl}')`
+      item.dataset.bgId = bgId
+      if (thumbUrl) item.style.backgroundImage = `url('${thumbUrl}')`
       item.title = `User Image ${index + 1}`
+
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
@@ -582,7 +599,11 @@ export function renderLocalBackgrounds() {
         e.stopPropagation()
         if (await showConfirm(i18n.alert_delete_bg_confirm)) {
           settings.userBackgrounds.splice(index, 1)
-          if (settings.background === bgUrl) {
+          // Xoá khỏi IndexedDB nếu là IDB ID
+          if (isIdbImage(bgId)) {
+            deleteImage(bgId).catch(() => {})
+          }
+          if (settings.background === bgId) {
             handleSettingUpdate("background", null)
           } else {
             saveSettings()
@@ -738,12 +759,18 @@ export function initSettings() {
     const bg = getSettings().background
     if (!bg) return
 
+    // IDB images are already stored — no need to re-save
+    if (isIdbImage(bg)) {
+      showAlert("This background is already saved.")
+      return
+    }
+
     if (getSettings().userBackgrounds.includes(bg)) {
       showAlert("This background is already saved.")
       return
     }
 
-    if (getSettings().userBackgrounds.length >= 10) {
+    if (getSettings().userBackgrounds.length >= 20) {
       showAlert(
         "Gallery full! Please remove some backgrounds before saving more.",
       )
@@ -761,25 +788,32 @@ export function initSettings() {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
+      // Lưu thẳng Blob vào IndexedDB — không convert sang base64
+      const MAX_UPLOADS = 20
+      if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
+        showAlert(
+          `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,
+        )
+        return
+      }
+
+      // GIF: lưu trực tiếp không resize
+      if (file.type === "image/gif") {
+        saveImage(file).then((id) => {
+          getSettings().userBackgrounds.push(id)
+          handleSettingUpdate("background", id)
+        })
+        return
+      }
+
+      // Ảnh thường: resize xuống tối đa 1920px rồi lưu Blob
       reader.onload = (event) => {
         const dataUrl = event.target.result
-
-        // Preserve GIF
-        if (file.type === "image/gif") {
-          if (getSettings().userBackgrounds.length >= 5) {
-            showAlert("You can only upload up to 5 custom backgrounds.")
-            return
-          }
-          getSettings().userBackgrounds.push(dataUrl)
-          handleSettingUpdate("background", dataUrl)
-          return
-        }
-
         const img = new Image()
         img.src = dataUrl
         img.onload = () => {
           const canvas = document.createElement("canvas")
-          const MAX_SIZE = 3840 // Increase to 4K support
+          const MAX_SIZE = 1920
           let { width, height } = img
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -795,13 +829,16 @@ export function initSettings() {
           canvas.width = width
           canvas.height = height
           canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-          const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.95) // Increase quality
-          if (getSettings().userBackgrounds.length >= 5) {
-            showAlert("You can only upload up to 5 custom backgrounds.")
-            return
-          }
-          getSettings().userBackgrounds.push(resizedDataUrl)
-          handleSettingUpdate("background", resizedDataUrl)
+          canvas.toBlob(
+            (blob) => {
+              saveImage(blob).then((id) => {
+                getSettings().userBackgrounds.push(id)
+                handleSettingUpdate("background", id)
+              })
+            },
+            "image/jpeg",
+            0.85,
+          )
         }
       }
       reader.readAsDataURL(file)
