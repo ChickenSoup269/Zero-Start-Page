@@ -8,7 +8,7 @@ export class AuroraWaveEffect {
 
     // Config
     this.waveCount = 5
-    this.wavePoints = 100
+    this.wavePoints = 50
     this.waveAmplitude = 100
     this.waveFrequency = 0.01
 

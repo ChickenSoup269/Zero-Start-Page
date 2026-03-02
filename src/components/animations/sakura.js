@@ -59,12 +59,10 @@ export class SakuraEffect {
     this.canvas.style.display = "none"
   }
 
-  drawPetal(petal) {
+  drawPetal(petal, rgb) {
     this.ctx.save()
     this.ctx.translate(petal.x, petal.y)
     this.ctx.rotate((petal.rotation * Math.PI) / 180)
-
-    const rgb = this.hexToRgb(this.color)
 
     // Draw petal shape (ellipse)
     this.ctx.globalAlpha = petal.opacity
@@ -114,6 +112,8 @@ export class SakuraEffect {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
+    const rgb = this.hexToRgb(this.color)
+
     this.petals.forEach((petal) => {
       // Update position
       petal.y += petal.speedY
@@ -127,7 +127,7 @@ export class SakuraEffect {
       petal.x += petal.speedX
 
       // Draw petal
-      this.drawPetal(petal)
+      this.drawPetal(petal, rgb)
 
       // Reset petal when it goes off screen
       if (petal.y > this.canvas.height + 50) {

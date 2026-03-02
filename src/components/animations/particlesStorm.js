@@ -8,7 +8,7 @@ export class ParticlesStormEffect {
     this.time = 0
 
     // Config
-    this.particleCount = 150
+    this.particleCount = 80
     this.centerX = 0
     this.centerY = 0
     this.vortexStrength = 0.3
@@ -168,16 +168,18 @@ export class ParticlesStormEffect {
       this.ctx.fillStyle = `rgba(${Math.min(255, rgb.r + 50)}, ${Math.min(255, rgb.g + 50)}, ${Math.min(255, rgb.b + 50)}, ${p.life})`
       this.ctx.fill()
 
-      // Draw connections to nearby particles
+      // Draw connections to nearby particles (use squared distance to skip sqrt)
+      const connectDistSq = 80 * 80
       for (let j = index + 1; j < this.particles.length; j++) {
         const p2 = this.particles[j]
         const dx = p.x - p2.x
         const dy = p.y - p2.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
+        const distSq = dx * dx + dy * dy
 
-        if (dist < 100) {
+        if (distSq < connectDistSq) {
+          const dist = Math.sqrt(distSq)
           this.ctx.beginPath()
-          this.ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(1 - dist / 100) * 0.3})`
+          this.ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${(1 - dist / 80) * 0.3})`
           this.ctx.lineWidth = 1
           this.ctx.moveTo(p.x, p.y)
           this.ctx.lineTo(p2.x, p2.y)

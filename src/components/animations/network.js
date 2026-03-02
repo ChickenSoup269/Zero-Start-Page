@@ -7,8 +7,8 @@ export class NetworkEffect {
     this.color = color
 
     // Cấu hình nâng cao
-    this.particleCount = 100
-    this.connectionDistance = 150
+    this.particleCount = 80
+    this.connectionDistance = 120
     this.mouseDistance = 250
     this.mouseRepelForce = 0.5
     this.hoverNodes = []

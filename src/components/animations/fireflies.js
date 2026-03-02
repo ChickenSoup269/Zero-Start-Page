@@ -72,23 +72,22 @@ export class FirefliesEffect {
       if (fly.y < -50) fly.y = this.canvas.height + 50
       if (fly.y > this.canvas.height + 50) fly.y = -50
 
-      // Vẽ đom đóm với gradient (tâm sáng, viền mờ)
-      const gradient = this.ctx.createRadialGradient(
-        fly.x,
-        fly.y,
-        0,
-        fly.x,
-        fly.y,
-        fly.size * 2,
-      )
-      // Màu vàng cam đom đóm
-      gradient.addColorStop(0, "rgba(255, 220, 100, 1)")
-      gradient.addColorStop(0.4, "rgba(255, 200, 50, 0.3)")
-      gradient.addColorStop(1, "rgba(255, 200, 50, 0)")
+      // Glow halo (no radialGradient - use simple semi-transparent circle)
+      this.ctx.beginPath()
+      this.ctx.arc(fly.x, fly.y, fly.size * 4, 0, Math.PI * 2)
+      this.ctx.fillStyle = "rgba(255, 200, 50, 0.08)"
+      this.ctx.fill()
 
-      this.ctx.fillStyle = gradient
+      // Mid glow
       this.ctx.beginPath()
       this.ctx.arc(fly.x, fly.y, fly.size * 2, 0, Math.PI * 2)
+      this.ctx.fillStyle = "rgba(255, 210, 80, 0.25)"
+      this.ctx.fill()
+
+      // Core bright dot
+      this.ctx.beginPath()
+      this.ctx.arc(fly.x, fly.y, fly.size * 0.6, 0, Math.PI * 2)
+      this.ctx.fillStyle = "rgba(255, 240, 150, 0.95)"
       this.ctx.fill()
     })
 

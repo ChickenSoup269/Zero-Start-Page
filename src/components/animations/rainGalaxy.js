@@ -6,9 +6,10 @@ export class StarFall {
     this.active = false
     this.animationFrame = null
     this.starColor = color
-    this.fps = 30
+    this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
+    this._parseColor(color)
     this.resize()
     window.addEventListener("resize", () => this.resize())
   }
@@ -36,14 +37,14 @@ export class StarFall {
   }
 
   createStars() {
-    const count = 100
+    const count = 120
     for (let i = 0; i < count; i++) {
       this.stars.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
         length: Math.random() * 20 + 10,
-        speed: Math.random() * 5 + 2,
-        opacity: Math.random(),
+        speed: Math.random() * 8 + 4,
+        opacity: Math.random() * 0.5 + 0.3,
       })
     }
   }
@@ -59,28 +60,57 @@ export class StarFall {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-    // Convert hex color to rgba for stroke style
-    const r = parseInt(this.starColor.slice(1, 3), 16)
-    const g = parseInt(this.starColor.slice(3, 5), 16)
-    const b = parseInt(this.starColor.slice(5, 7), 16)
+    const r = this._r
+    const g = this._g
+    const b = this._b
 
-    this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.5)`
+    // Batch all stars into two passes by opacity bucket (bright / dim)
+    // to minimize state changes and stroke() calls
     this.ctx.lineWidth = 1
-    this.stars.forEach((star) => {
-      this.ctx.beginPath()
-      this.ctx.moveTo(star.x, star.y)
-      this.ctx.lineTo(star.x, star.y + star.length)
-      this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${star.opacity})` // Use custom color
-      this.ctx.stroke()
+
+    // Pass 1: dim stars (opacity 0.3-0.5)
+    this.ctx.beginPath()
+    this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`
+    for (let i = 0; i < this.stars.length; i++) {
+      const star = this.stars[i]
+      if (star.opacity < 0.55) {
+        this.ctx.moveTo(star.x, star.y)
+        this.ctx.lineTo(star.x, star.y + star.length)
+      }
+    }
+    this.ctx.stroke()
+
+    // Pass 2: bright stars (opacity 0.55-0.8)
+    this.ctx.beginPath()
+    this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.75)`
+    for (let i = 0; i < this.stars.length; i++) {
+      const star = this.stars[i]
+      if (star.opacity >= 0.55) {
+        this.ctx.moveTo(star.x, star.y)
+        this.ctx.lineTo(star.x, star.y + star.length)
+      }
+    }
+    this.ctx.stroke()
+
+    // Update positions
+    for (let i = 0; i < this.stars.length; i++) {
+      const star = this.stars[i]
       star.y += star.speed
       if (star.y > this.canvas.height) {
         star.y = -star.length
         star.x = Math.random() * this.canvas.width
       }
-    })
-  } // Added missing closing brace for animate method
+    }
+  }
+
+  _parseColor(hex) {
+    this._r = parseInt(hex.slice(1, 3), 16) || 255
+    this._g = parseInt(hex.slice(3, 5), 16) || 255
+    this._b = parseInt(hex.slice(5, 7), 16) || 255
+  }
 
   updateColor(newColor) {
     this.starColor = newColor
+    this._parseColor(newColor)
   }
 }

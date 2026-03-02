@@ -59,12 +59,11 @@ export class SnowfallEffect {
     this.canvas.style.display = "none"
   }
 
-  drawSnowflake(snowflake) {
+  drawSnowflake(snowflake, rgb) {
     this.ctx.save()
     this.ctx.translate(snowflake.x, snowflake.y)
     this.ctx.rotate((snowflake.rotation * Math.PI) / 180)
 
-    const rgb = this.hexToRgb(this.color)
     this.ctx.globalAlpha = snowflake.opacity
 
     // Draw snowflake shape - 6 pointed star
@@ -127,6 +126,8 @@ export class SnowfallEffect {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
+    const rgb = this.hexToRgb(this.color)
+
     this.snowflakes.forEach((snowflake) => {
       // Update position
       snowflake.y += snowflake.speedY
@@ -140,7 +141,7 @@ export class SnowfallEffect {
       snowflake.x += snowflake.speedX
 
       // Draw snowflake
-      this.drawSnowflake(snowflake)
+      this.drawSnowflake(snowflake, rgb)
 
       // Reset snowflake when it goes off screen
       if (snowflake.y > this.canvas.height + 50) {
