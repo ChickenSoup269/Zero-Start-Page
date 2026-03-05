@@ -60,6 +60,8 @@ import {
   sakuraColorSetting,
   snowfallColorPicker,
   snowfallColorSetting,
+  bubblesColorPicker,
+  bubblesColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -99,6 +101,7 @@ import { SakuraEffect } from "./animations/sakura.js"
 import { SnowfallEffect } from "./animations/snowfall.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
 import { ConstellationEffect } from "./animations/constellation.js"
+import { BubblesEffect } from "./animations/bubbles.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -113,7 +116,8 @@ let starFallEffect,
   sakuraEffect,
   snowfallEffect,
   auroraWaveEffect,
-  constellationEffect
+  constellationEffect,
+  bubblesEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
   if (isGradient) {
@@ -380,6 +384,7 @@ export function applySettings() {
   if (snowfallEffect) snowfallEffect.stop()
   if (auroraWaveEffect) auroraWaveEffect.stop()
   if (constellationEffect) constellationEffect.stop()
+  if (bubblesEffect) bubblesEffect.stop()
 
   // Clear canvas completely before starting new effect
   const effectCanvas = document.getElementById("effect-canvas")
@@ -432,6 +437,9 @@ export function applySettings() {
         break
       case "constellation":
         constellationEffect.start()
+        break
+      case "bubbles":
+        bubblesEffect.start()
         break
     }
   }, 50)
@@ -514,6 +522,7 @@ function updateSettingsInputs() {
   hackerColorPicker.value = settings.hackerColor || "#00FF00"
   sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
   snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
+  bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
 
   // Visibility of Effect Settings
   meteorColorSetting.style.display =
@@ -532,6 +541,8 @@ function updateSettingsInputs() {
     settings.effect === "sakura" ? "block" : "none"
   snowfallColorSetting.style.display =
     settings.effect === "snowfall" ? "block" : "none"
+  bubblesColorSetting.style.display =
+    settings.effect === "bubbles" ? "block" : "none"
 
   // Layout Checkboxes
   showTodoCheckbox.checked = settings.showTodoList !== false
@@ -678,6 +689,10 @@ export function initSettings() {
   constellationEffect = new ConstellationEffect(
     "effect-canvas",
     settings.accentColor,
+  )
+  bubblesEffect = new BubblesEffect(
+    "effect-canvas",
+    settings.bubbleColor || "#60c8ff",
   )
 
   // --- EVENT LISTENERS ---
@@ -988,6 +1003,12 @@ export function initSettings() {
     updateSetting("snowfallColor", snowfallColorPicker.value)
     saveSettings()
     snowfallEffect.color = snowfallColorPicker.value
+  })
+
+  bubblesColorPicker.addEventListener("input", () => {
+    updateSetting("bubbleColor", bubblesColorPicker.value)
+    saveSettings()
+    bubblesEffect.color = bubblesColorPicker.value
   })
 
   effectSelect.addEventListener("change", () =>

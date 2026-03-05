@@ -81,6 +81,13 @@ export const snowfallColorSetting = document.getElementById(
   "snowfall-color-setting",
 )
 
+export const bubblesColorPicker = document.getElementById(
+  "bubbles-color-picker",
+)
+export const bubblesColorSetting = document.getElementById(
+  "bubbles-color-setting",
+)
+
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const dateFormatSelect = document.getElementById("date-format-select")
 export const pageTitleInput = document.getElementById("page-title-input")
