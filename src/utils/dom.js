@@ -8,6 +8,9 @@ export const bgColorPicker = document.getElementById("bg-color-picker")
 export const unsplashCategorySelect = document.getElementById(
   "unsplash-category-select",
 )
+export const unsplashAccessKeyInput = document.getElementById(
+  "unsplash-access-key-input",
+)
 export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
@@ -89,6 +92,11 @@ export const bubblesColorSetting = document.getElementById(
 )
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
+export const exportSettingsBtn = document.getElementById("export-settings-btn")
+export const importSettingsBtn = document.getElementById("import-settings-btn")
+export const importSettingsInput = document.getElementById(
+  "import-settings-input",
+)
 export const dateFormatSelect = document.getElementById("date-format-select")
 export const pageTitleInput = document.getElementById("page-title-input")
 export const clockSizeInput = document.getElementById("clock-size-input")
@@ -160,6 +168,15 @@ export const ghostControlsCheckbox = document.getElementById(
 )
 export const showNotepadCheckbox = document.getElementById(
   "show-notepad-checkbox",
+)
+export const showSearchBarCheckbox = document.getElementById(
+  "show-search-bar-checkbox",
+)
+export const showBookmarksCheckbox = document.getElementById(
+  "show-bookmarks-checkbox",
+)
+export const showBookmarkGroupsCheckbox = document.getElementById(
+  "show-bookmark-groups-checkbox",
 )
 export const musicStyleSelect = document.getElementById("music-style-select")
 export const musicVisualizerStyleSelect = document.getElementById(

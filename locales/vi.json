@@ -100,6 +100,9 @@
   "visualizer_pulse": "Nhịp sáng",
   "visualizer_heartbeat": "Nhịp tim",
   "settings_show_quick_access": "Hiện thanh truy cập nhanh",
+  "settings_show_search_bar": "Hiện thanh tìm kiếm",
+  "settings_show_bookmarks": "Hiện Bookmarks",
+  "settings_show_bookmark_groups": "Hiện thư mục Bookmark",
   "settings_ghost_controls": "Tự ẩn khi không dùng",
   "notepad_title": "Sổ ghi chú",
   "notepad_empty": "Chưa có ghi chú. Nhấn + để thêm.",
@@ -113,5 +116,14 @@
   "calendar_event_time": "Thời gian (HH:MM, tùy chọn):",
   "calendar_event_desc": "Mô tả (tùy chọn):",
   "calendar_event_action": "Cập nhật hoặc Xóa sự kiện?\n(OK = Cập nhật, Cancel = Xóa)",
-  "calendar_delete_confirm": "Xóa sự kiện này?"
+  "calendar_delete_confirm": "Xóa sự kiện này?",
+  "settings_export": "Xuất cài đặt",
+  "settings_import": "Nhập cài đặt",
+  "alert_export_success": "Xuất cài đặt thành công!",
+  "alert_import_success": "Nhập cài đặt thành công!",
+  "alert_import_error": "File cài đặt không hợp lệ hoặc bị lỗi.",
+  "alert_importing": "Đang nhập cài đặt và ảnh...",
+  "settings_unsplash_access_key": "Access Key Unsplash",
+  "settings_unsplash_access_key_placeholder": "Nhập Access Key Unsplash của bạn",
+  "settings_unsplash_api_info": "Lấy key miễn phí tại unsplash.com/developers"
 }

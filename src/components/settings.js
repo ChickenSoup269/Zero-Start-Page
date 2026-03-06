@@ -4,6 +4,7 @@ import {
   deleteImage,
   getBlobUrlSync,
   isIdbImage,
+  getImageBlob,
 } from "../services/imageStore.js"
 import {
   settingsToggle,
@@ -28,6 +29,9 @@ import {
   starColorPicker,
   starColorSetting,
   resetSettingsBtn,
+  exportSettingsBtn,
+  importSettingsBtn,
+  importSettingsInput,
   dateFormatSelect,
   pageTitleInput,
   clockSizeInput,
@@ -73,8 +77,12 @@ import {
   showLunarCalendarCheckbox,
   showQuickAccessCheckbox,
   ghostControlsCheckbox,
+  showSearchBarCheckbox,
+  showBookmarksCheckbox,
+  showBookmarkGroupsCheckbox,
   musicStyleSelect,
   unsplashCategorySelect,
+  unsplashAccessKeyInput,
   showDateCheckbox,
 } from "../utils/dom.js"
 import {
@@ -134,85 +142,82 @@ function handleSettingUpdate(key, value, isGradient = false) {
   renderUserGradients()
 }
 
-const unsplashCategories = {
-  nature: [
-    "1501785882641-5b6281c78209", // Mountains
-    "1470770841072-f978cf4d019e", // Landscape
-    "1464822759023-fed622ff2c3b", // Peak
-    "1441974231531-c6227db76b6e", // Forest
-    "1500382017468-9049fed747ef", // Field
-    "1472214103451-9374bd1c7dd1", // Nature generic
-    "1447752875204-b2650380e6d0", // Nature dark
-  ],
-  sea: [
-    "1439405326854-01517487439e", // Ocean
-    "1475924156736-4d2274e62a93", // Beach
-    "1507525428034-b723cf961d3e", // Tropical
-    "1519046904884-53103b34b206", // Coastal
-    "1505118380757-91f5f5632de0", // Sea blue
-  ],
-  universe: [
-    "1419242902214-272b3f66ee7a", // Galaxy
-    "1464802686167-b939ba36e6fe", // Stars
-    "1518709268805-4e9042af9f23", // Aurora
-    "1446776811953-b23d57bd21aa", // Space
-    "1536647915526-a979116e0f9b", // Galaxy variant
-  ],
-  city: [
-    "1477959858617-67f85cf4f1df", // Urban
-    "1486406146926-c627a92ad1ab", // Skyscrapers
-    "1449156003716-168f237f3733", // Street
-    "1496568811576-477ff1706b80", // Architecture
-    "1480714378408-67cf0d13bc1b", // City night
-  ],
-  anime: [
-    "1541562232579-512a21360020", // Art
-    "1578632292335-df3abbb0d586", // Character
-    "1528319717648-5183307613c7", // Drawing
-    "1569700977233-a3b04c0003cb", // Anime style landscape
-  ],
-  cyberpunk: [
-    "1480714378408-67cf0d13bc1b", // City night (reused)
-    "1518709268805-4e9042af9f23", // Aurora (reused)
-    "1536647915526-a979116e0f9b", // Galaxy (reused)
-    "1496568811576-477ff1706b80", // Architecture (reused)
-    // Needs more specific Cyberpunk IDs from user
-  ],
-  minimalist: [
-    "1494438639946-1ebd1d20bf85", // White
-    "1458682625221-3a45f8a844c7", // Minimal
-    "1439405326854-01517487439e", // Ocean (reused)
-    "1464822759023-fed622ff2c3b", // Peak (reused)
-  ],
-  animals: [
-    "1474511320723-9aeb2c2ac808", // Cat/Animal generic (placeholder)
-    "1425136736373-c4dbe46f6a7d", // Animal
-    "1501785882641-5b6281c78209", // Nature (reused)
-    "1441974231531-c6227db76b6e", // Forest (reused)
-  ],
+// Unsplash topics: slug is used directly in the Topics API.
+// Topic slugs can be found at https://unsplash.com/t/{slug}
+const unsplashCollections = [
+  {
+    key: "spring-wallpapers",
+    id: "spring-wallpapers",
+    labelEn: "Spring Wallpapers",
+    labelVi: "Hình nền mùa xuân",
+  },
+  {
+    key: "3d-renders",
+    id: "3d-renders",
+    labelEn: "3D Renders",
+    labelVi: "Đồ họa 3D",
+  },
+  { key: "nature", id: "nature", labelEn: "Nature", labelVi: "Thiên nhiên" },
+  {
+    key: "textures-patterns",
+    id: "textures-patterns",
+    labelEn: "Textures",
+    labelVi: "Kết cấu & Họa tiết",
+  },
+  { key: "film", id: "film", labelEn: "Film", labelVi: "Điện ảnh" },
+  {
+    key: "architecture-interior",
+    id: "architecture-interior",
+    labelEn: "Architecture",
+    labelVi: "Kiến trúc",
+  },
+  {
+    key: "street-photography",
+    id: "street-photography",
+    labelEn: "Street Photography",
+    labelVi: "Nhiếp ảnh đường phố",
+  },
+  {
+    key: "experimental",
+    id: "experimental",
+    labelEn: "Experimental",
+    labelVi: "Thực nghiệm",
+  },
+  { key: "travel", id: "travel", labelEn: "Travel", labelVi: "Du lịch" },
+  { key: "people", id: "people", labelEn: "People", labelVi: "Con người" },
+]
+
+function populateUnsplashCollections() {
+  const lang = getSettings().language || "en"
+  unsplashCategorySelect.innerHTML = ""
+  unsplashCollections.forEach((col) => {
+    const opt = document.createElement("option")
+    opt.value = col.key
+    opt.textContent = lang === "vi" ? col.labelVi : col.labelEn
+    unsplashCategorySelect.appendChild(opt)
+  })
+  unsplashCategorySelect.value =
+    getSettings().unsplashCategory || "spring-wallpapers"
 }
 
-function setUnsplashRandomBackground(retries = 3) {
-  if (retries <= 0) {
-    console.error(
-      "Failed to fetch Unsplash background after multiple attempts.",
+async function setUnsplashRandomBackground() {
+  const settings = getSettings()
+  const accessKey = settings.unsplashAccessKey || ""
+  if (!accessKey) {
+    showAlert(
+      "Please enter your Unsplash Access Key in Settings.\nGet a free key at: https://unsplash.com/developers",
     )
-    const btn = unsplashRandomBtn
-    btn.disabled = false
-    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash Random'
-    showAlert("Failed to load random Unsplash image. Please try again.")
     return
   }
 
-  // Show loading state
   const btn = unsplashRandomBtn
   btn.disabled = true
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
 
-  const settings = getSettings()
-  const category = settings.unsplashCategory || "nature"
-  const ids = unsplashCategories[category] || unsplashCategories.nature
-  const randomId = ids[Math.floor(Math.random() * ids.length)]
+  const category = settings.unsplashCategory || "spring-wallpapers"
+  const collection =
+    unsplashCollections.find((c) => c.key === category) ||
+    unsplashCollections[0]
   const dpr = window.devicePixelRatio || 1
   const width = Math.round(
     (window.innerWidth > 0 ? window.innerWidth : 1920) * dpr,
@@ -220,32 +225,28 @@ function setUnsplashRandomBackground(retries = 3) {
   const height = Math.round(
     (window.innerHeight > 0 ? window.innerHeight : 1080) * dpr,
   )
-  const imageUrl = `https://images.unsplash.com/photo-${randomId}?auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
-  // Preload to check for 404
-  const img = new Image()
-  img.onload = () => {
-    // Add transition effect
+  try {
+    const res = await fetch(
+      `https://api.unsplash.com/photos/random?topics=${collection.id}&orientation=landscape&client_id=${encodeURIComponent(accessKey)}`,
+    )
+    if (!res.ok) throw new Error(`Unsplash API error: ${res.status}`)
+    const photo = await res.json()
+    const imageUrl = `${photo.urls.raw}&auto=format&fit=crop&w=${width}&h=${height}&q=85`
+
     document.body.classList.add("bg-loading")
     handleSettingUpdate("background", imageUrl)
-
-    // Reset button state
     btn.disabled = false
-    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash Random'
-
-    // Remove loading state
-    setTimeout(() => {
-      document.body.classList.remove("bg-loading")
-    }, 800)
+    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
+    setTimeout(() => document.body.classList.remove("bg-loading"), 800)
+  } catch (err) {
+    console.error("Unsplash fetch failed:", err)
+    btn.disabled = false
+    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
+    showAlert(
+      "Failed to load Unsplash image. Please check your Access Key and try again.",
+    )
   }
-  img.onerror = () => {
-    console.warn(`Unsplash ID ${randomId} failed. Retrying...`)
-    // Try again
-    setTimeout(() => {
-      setUnsplashRandomBackground(retries - 1)
-    }, 300)
-  }
-  img.src = imageUrl
 }
 
 export function applySettings() {
@@ -491,13 +492,15 @@ function updateSettingsInputs() {
   bgPosYValue.textContent = `${bgPosYInput.value}%`
 
   unsplashCategorySelect.value = settings.unsplashCategory || "nature"
+  if (unsplashAccessKeyInput)
+    unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
 
   // Show/Hide Bg Position setting (only for image backgrounds)
   const isImageBg =
     settings.background &&
-    (settings.background.startsWith("photo-") ||
-      settings.background.startsWith("local-bg-") ||
+    (isIdbImage(settings.background) ||
       settings.background.startsWith("data:image/") ||
+      settings.background.startsWith("blob:") ||
       settings.background.startsWith("http"))
 
   bgPositionSetting.style.display = isImageBg ? "block" : "none"
@@ -554,6 +557,9 @@ function updateSettingsInputs() {
   showFullCalendarCheckbox.checked = settings.showFullCalendar === true
   showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
   showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+  showSearchBarCheckbox.checked = settings.showSearchBar !== false
+  showBookmarksCheckbox.checked = settings.showBookmarks !== false
+  showBookmarkGroupsCheckbox.checked = settings.showBookmarkGroups !== false
   ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
   document.body.classList.toggle(
     "ghost-controls",
@@ -695,6 +701,8 @@ export function initSettings() {
     settings.bubbleColor || "#60c8ff",
   )
 
+  populateUnsplashCollections()
+
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
     settingsSidebar.classList.add("open"),
@@ -711,16 +719,56 @@ export function initSettings() {
     }
   })
 
+  // Sidebar scroll-to-top & position preservation
+  const sidebarContent = settingsSidebar.querySelector(".sidebar-content")
+  const sidebarScrollTopBtn = document.getElementById("sidebar-scroll-top")
+  const SIDEBAR_SCROLL_KEY = "settingsSidebarScroll"
+
+  const navEntry = performance.getEntriesByType("navigation")[0]
+  if (navEntry && navEntry.type === "reload") {
+    sessionStorage.removeItem(SIDEBAR_SCROLL_KEY)
+  } else {
+    const savedScroll = sessionStorage.getItem(SIDEBAR_SCROLL_KEY)
+    if (savedScroll) sidebarContent.scrollTop = parseInt(savedScroll, 10)
+  }
+
+  sidebarContent.addEventListener("scroll", () => {
+    const top = sidebarContent.scrollTop
+    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
+    sidebarScrollTopBtn.classList.toggle("visible", top > 200)
+  })
+
+  sidebarScrollTopBtn.addEventListener("click", () => {
+    sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
+  })
+
+  const SECTION_STATE_KEY = "settingsSectionStates"
+  const sectionStates = JSON.parse(
+    localStorage.getItem(SECTION_STATE_KEY) || "{}",
+  )
   document.querySelectorAll(".section-toggle").forEach((toggle) => {
-    toggle.addEventListener("click", () =>
-      toggle.parentElement.classList.toggle("collapsed"),
-    )
+    const section = toggle.parentElement
+    const sectionId = section.dataset.sectionId
+    // Restore saved state; default = collapsed if no saved state
+    if (sectionId && sectionStates[sectionId] !== undefined) {
+      section.classList.toggle("collapsed", sectionStates[sectionId])
+    } else {
+      section.classList.add("collapsed")
+    }
+    toggle.addEventListener("click", () => {
+      const isCollapsed = section.classList.toggle("collapsed")
+      if (sectionId) {
+        sectionStates[sectionId] = isCollapsed
+        localStorage.setItem(SECTION_STATE_KEY, JSON.stringify(sectionStates))
+      }
+    })
   })
 
   languageSelect.addEventListener("change", async () => {
     handleSettingUpdate("language", languageSelect.value)
     await loadLanguage(getSettings().language)
     applyTranslations()
+    populateUnsplashCollections()
   })
 
   bgInput.addEventListener("change", () =>
@@ -746,6 +794,15 @@ export function initSettings() {
   unsplashCategorySelect.addEventListener("change", () => {
     handleSettingUpdate("unsplashCategory", unsplashCategorySelect.value)
   })
+
+  if (unsplashAccessKeyInput) {
+    unsplashAccessKeyInput.addEventListener("input", () => {
+      handleSettingUpdate(
+        "unsplashAccessKey",
+        unsplashAccessKeyInput.value.trim(),
+      )
+    })
+  }
 
   saveColorBtn.addEventListener("click", () => {
     const settings = getSettings()
@@ -1109,9 +1166,6 @@ export function initSettings() {
   renderLocalBackgrounds()
   renderUserGradients()
   applySettings()
-  document.querySelectorAll(".settings-section").forEach((section) => {
-    section.classList.add("collapsed")
-  })
 
   // Layout Listeners
   showTodoCheckbox.addEventListener("change", () => {
@@ -1196,6 +1250,37 @@ export function initSettings() {
     )
   })
 
+  showSearchBarCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showSearchBar", showSearchBarCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showSearchBar", value: showSearchBarCheckbox.checked },
+      }),
+    )
+  })
+  showBookmarksCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showBookmarks", showBookmarksCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "showBookmarks", value: showBookmarksCheckbox.checked },
+      }),
+    )
+  })
+  showBookmarkGroupsCheckbox.addEventListener("change", () => {
+    handleSettingUpdate(
+      "showBookmarkGroups",
+      showBookmarkGroupsCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "showBookmarkGroups",
+          value: showBookmarkGroupsCheckbox.checked,
+        },
+      }),
+    )
+  })
+
   ghostControlsCheckbox.addEventListener("change", () => {
     const isGhost = ghostControlsCheckbox.checked
     handleSettingUpdate("sideControlsGhostMode", isGhost)
@@ -1211,5 +1296,125 @@ export function initSettings() {
         detail: { key: "music_bar_style", value: musicStyleSelect.value },
       }),
     )
+  })
+
+  // --- Sidebar footer collapse toggle ---
+  const sidebarFooter = document.querySelector(".sidebar-footer")
+  const footerToggleBtn = document.getElementById("sidebar-footer-toggle")
+  if (sidebarFooter && footerToggleBtn) {
+    const FOOTER_KEY = "sidebarFooterCollapsed"
+    if (localStorage.getItem(FOOTER_KEY) === "1") {
+      sidebarFooter.classList.add("collapsed")
+    }
+    footerToggleBtn.addEventListener("click", () => {
+      const isNowCollapsed = sidebarFooter.classList.toggle("collapsed")
+      localStorage.setItem(FOOTER_KEY, isNowCollapsed ? "1" : "0")
+    })
+  }
+
+  // --- Export / Import Settings ---
+  exportSettingsBtn.addEventListener("click", async () => {
+    const i18n = geti18n()
+    try {
+      const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
+      const images = {}
+
+      // Collect all IDB IDs (userBackgrounds + current background)
+      const ids = new Set([
+        ...(settingsSnapshot.userBackgrounds || []).filter(isIdbImage),
+      ])
+      if (isIdbImage(settingsSnapshot.background))
+        ids.add(settingsSnapshot.background)
+
+      // Convert each Blob → base64 data URL
+      for (const id of ids) {
+        const blob = await getImageBlob(id)
+        if (blob) {
+          images[id] = await new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.onload = (e) => resolve(e.target.result)
+            reader.readAsDataURL(blob)
+          })
+        }
+      }
+
+      const payload = JSON.stringify(
+        { version: 1, settings: settingsSnapshot, images },
+        null,
+        2,
+      )
+      const blob = new Blob([payload], { type: "application/json" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `startpage-${new Date().toISOString().slice(0, 10)}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+      showAlert(i18n.alert_export_success || "Settings exported!")
+    } catch (err) {
+      console.error("Export error:", err)
+      showAlert("Export failed.")
+    }
+  })
+
+  importSettingsBtn.addEventListener("click", () => importSettingsInput.click())
+
+  importSettingsInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    e.target.value = null
+    const i18n = geti18n()
+
+    try {
+      const text = await file.text()
+      const data = JSON.parse(text)
+
+      if (!data.settings || typeof data.settings !== "object") {
+        showAlert(i18n.alert_import_error || "Invalid settings file.")
+        return
+      }
+
+      showAlert(i18n.alert_importing || "Importing...")
+
+      const importedSettings = data.settings
+      const imageMap = data.images || {}
+      const idRemap = {}
+
+      // Re-save each bundled image into local IndexedDB
+      for (const [oldId, dataUrl] of Object.entries(imageMap)) {
+        try {
+          const res = await fetch(dataUrl)
+          const blob = await res.blob()
+          const newId = await saveImage(blob)
+          idRemap[oldId] = newId
+        } catch {}
+      }
+
+      // Replace old IDB IDs with new ones in userBackgrounds
+      if (Array.isArray(importedSettings.userBackgrounds)) {
+        importedSettings.userBackgrounds = importedSettings.userBackgrounds.map(
+          (id) => idRemap[id] || id,
+        )
+      }
+      // Replace old IDB ID in background
+      if (importedSettings.background && idRemap[importedSettings.background]) {
+        importedSettings.background = idRemap[importedSettings.background]
+      }
+
+      // Apply all imported keys to state
+      Object.entries(importedSettings).forEach(([key, value]) => {
+        updateSetting(key, value)
+      })
+      saveSettings()
+      applySettings()
+      renderLocalBackgrounds()
+      renderUserGradients()
+      showAlert(i18n.alert_import_success || "Settings imported successfully!")
+    } catch (err) {
+      console.error("Import error:", err)
+      showAlert(
+        i18n.alert_import_error || "Invalid or corrupted settings file.",
+      )
+    }
   })
 }

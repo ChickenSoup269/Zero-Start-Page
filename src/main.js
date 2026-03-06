@@ -74,6 +74,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       getSettings().showQuickAccess !== false ? "flex" : "none"
   }
 
+  // Initial Visibility: Search Bar, Bookmarks, Bookmark Groups
+  const searchContainer = document.getElementById("search-container")
+  const bookmarksContainer = document.getElementById("bookmarks-container")
+  const bookmarkGroupsContainer = document.getElementById(
+    "bookmark-groups-container",
+  )
+  const settings0 = getSettings()
+  if (searchContainer)
+    searchContainer.style.display =
+      settings0.showSearchBar !== false ? "" : "none"
+  if (bookmarksContainer)
+    bookmarksContainer.style.display =
+      settings0.showBookmarks !== false ? "" : "none"
+  if (bookmarkGroupsContainer)
+    bookmarkGroupsContainer.style.display =
+      settings0.showBookmarkGroups !== false ? "" : "none"
+
   const resetLayoutBtn = document.getElementById("reset-layout")
   const resetLayoutQuick = document.getElementById("reset-layout-quick")
   const handleReset = async () => {
@@ -195,6 +212,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (quickAccessBar) {
         quickAccessBar.style.display = e.detail.value ? "flex" : "none"
       }
+    }
+    if (e.detail.key === "showSearchBar") {
+      const el = document.getElementById("search-container")
+      if (el) el.style.display = e.detail.value ? "" : "none"
+    }
+    if (e.detail.key === "showBookmarks") {
+      const el = document.getElementById("bookmarks-container")
+      if (el) el.style.display = e.detail.value ? "" : "none"
+    }
+    if (e.detail.key === "showBookmarkGroups") {
+      const el = document.getElementById("bookmark-groups-container")
+      if (el) el.style.display = e.detail.value ? "" : "none"
     }
   })
 

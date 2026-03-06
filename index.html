@@ -75,7 +75,7 @@
                 </select>
             </div>
 
-            <div class="settings-section">
+            <div class="settings-section" data-section-id="background">
                 <h3 class="section-toggle" data-i18n="settings_bg"><i class="fa-solid fa-image"></i> Background</h3>
                 <div class="section-content">
                     <div class="setting-item">
@@ -86,14 +86,20 @@
                             <button id="save-color-btn" class="primary-btn full-width"
                                 data-i18n="settings_save_color">Save
                                 Solid Color</button>
-                            <select id="unsplash-category-select" class="full-width" style="margin-bottom: 8px;">
-                                <option value="nature" data-i18n="category_nature">Nature & Landscapes</option>
-                                <option value="sea" data-i18n="category_sea">Sea & Beaches</option>
-                                <option value="universe" data-i18n="category_universe">Universe & Space</option>
-                                <option value="city" data-i18n="category_city">Urban & City</option>
-                                <option value="minimalist" data-i18n="category_minimalist">Minimalist</option>
-                                <option value="animals" data-i18n="category_animals">Animals</option>
-                            </select>
+                            <label for="unsplash-access-key-input" data-i18n="settings_unsplash_access_key"
+                                style="font-size:0.8rem;opacity:0.75;margin-bottom:4px;display:block;">Unsplash Access
+                                Key</label>
+                            <input type="text" id="unsplash-access-key-input" class="full-width"
+                                data-i18n-placeholder="settings_unsplash_access_key_placeholder"
+                                placeholder="Enter your Unsplash Access Key" autocomplete="off"
+                                style="margin-bottom:4px;" />
+                            <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
+                                <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
+                                    style="color: white;" data-i18n="settings_unsplash_api_info">Get a free key at
+                                    unsplash.com/developers</a>
+                            </small>
+                            <select id="unsplash-category-select" class="full-width"
+                                style="margin-bottom: 8px;"></select>
                             <button id="unsplash-random-btn" class="secondary-btn"
                                 data-i18n="settings_unsplash_random_btn"
                                 title="Load random Unsplash image (or press Space)"><i
@@ -355,7 +361,7 @@
                 </div>
             </div>
 
-            <div class="settings-section">
+            <div class="settings-section" data-section-id="layout">
                 <h3 class="section-toggle" data-i18n="settings_layout"><i class="fa-solid fa-layer-group"></i> Layout &
                     Features</h3>
                 <div class="section-content">
@@ -384,6 +390,20 @@
                         <label for="show-quick-access-checkbox" data-i18n="settings_show_quick_access">Show Quick Access
                             Bar</label>
                         <input type="checkbox" id="show-quick-access-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
+                            Bar</label>
+                        <input type="checkbox" id="show-search-bar-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show Bookmarks</label>
+                        <input type="checkbox" id="show-bookmarks-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show
+                            Bookmark Folders</label>
+                        <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
                     </div>
                     <div class="setting-item-row">
                         <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
@@ -418,12 +438,29 @@
             </div>
         </div>
         <div class="sidebar-footer">
-            <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset
-                Defaults</button>
-            <button id="reset-layout" class="secondary-btn full-width" style="margin-top: 10px;"
-                data-i18n="settings_reset_layout">Reset
-                Layout Positions</button>
+            <button id="sidebar-footer-toggle" class="sidebar-footer-toggle" title="Toggle panel">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div id="sidebar-footer-content" class="sidebar-footer-content">
+                <div class="sidebar-footer-export-row">
+                    <button id="export-settings-btn" class="secondary-btn" data-i18n="settings_export">
+                        <i class="fa-solid fa-file-export"></i> Export Settings
+                    </button>
+                    <button id="import-settings-btn" class="secondary-btn" data-i18n="settings_import">
+                        <i class="fa-solid fa-file-import"></i> Import Settings
+                    </button>
+                    <input type="file" id="import-settings-input" accept=".json" style="display:none">
+                </div>
+                <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset
+                    Defaults</button>
+                <button id="reset-layout" class="secondary-btn full-width" style="margin-top: 10px;"
+                    data-i18n="settings_reset_layout">Reset
+                    Layout Positions</button>
+            </div>
         </div>
+        <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
     </div>
 
     <div class="main-container">
@@ -431,7 +468,7 @@
         <div id="date">Loading date...</div>
         <div id="full-calendar-container" style="display: none;"></div>
 
-        <div class="search-container">
+        <div id="search-container" class="search-container">
             <div class="search-engine-selector" id="search-engine-selector">
                 <div class="selected-engine" id="selected-engine"><i class="fa-brands fa-google"></i></div>
                 <div class="engine-dropdown" id="engine-dropdown">

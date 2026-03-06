@@ -27,7 +27,8 @@ const defaultSettings = {
   bubbleColor: "#60c8ff",
   bgPositionX: 50,
   bgPositionY: 50,
-  unsplashCategory: "nature",
+  unsplashCategory: "spring-wallpapers",
+  unsplashAccessKey: "",
   showTodoList: true,
   showTimer: false,
   showGregorian: true,
@@ -46,6 +47,9 @@ const defaultSettings = {
   timerIsRunning: false,
   musicPlayerExpanded: false,
   sideControlsGhostMode: false,
+  showBookmarks: true,
+  showBookmarkGroups: true,
+  showSearchBar: true,
 }
 
 // Bookmarks State Migration
@@ -166,7 +170,7 @@ export function resetSettingsState() {
     bubbleColor: "#60c8ff",
     bgPositionX: 50,
     bgPositionY: 50,
-    unsplashCategory: "nature",
+    unsplashCategory: "spring-wallpapers",
     showTodoList: true,
     showTimer: false,
     showGregorian: true,

@@ -87,6 +87,17 @@ export function isIdbImage(id) {
   return typeof id === "string" && id.startsWith("idb-img-")
 }
 
+/** Lấy raw Blob từ IndexedDB (dùng cho export) */
+export async function getImageBlob(id) {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readonly")
+    const req = tx.objectStore(STORE_NAME).get(id)
+    req.onsuccess = (e) => resolve(e.target.result || null)
+    req.onerror = (e) => reject(e.target.error)
+  })
+}
+
 /**
  * Migrate ảnh cũ từ base64 data URL sang IndexedDB.
  * Trả về { migrated: string[], changed: boolean }

@@ -100,6 +100,9 @@
   "visualizer_pulse": "Pulse",
   "visualizer_heartbeat": "Heartbeat",
   "settings_show_quick_access": "Show Quick Access bar",
+  "settings_show_search_bar": "Show Search Bar",
+  "settings_show_bookmarks": "Show Bookmarks",
+  "settings_show_bookmark_groups": "Show Bookmark Folders",
   "settings_ghost_controls": "Auto-hide when not in use",
   "notepad_title": "Notepad",
   "notepad_empty": "No notes yet. Click + to add one.",
@@ -113,5 +116,14 @@
   "calendar_event_time": "Time (HH:MM, optional):",
   "calendar_event_desc": "Description (optional):",
   "calendar_event_action": "Update event or Delete?\n(OK = Update, Cancel = Delete)",
-  "calendar_delete_confirm": "Delete this event?"
+  "calendar_delete_confirm": "Delete this event?",
+  "settings_export": "Export Settings",
+  "settings_import": "Import Settings",
+  "alert_export_success": "Settings exported successfully!",
+  "alert_import_success": "Settings imported successfully!",
+  "alert_import_error": "Invalid or corrupted settings file.",
+  "alert_importing": "Importing settings and images...",
+  "settings_unsplash_access_key": "Unsplash Access Key",
+  "settings_unsplash_access_key_placeholder": "Enter your Unsplash Access Key",
+  "settings_unsplash_api_info": "Get a free key at unsplash.com/developers"
 }
