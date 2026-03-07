@@ -99,6 +99,18 @@ export const wavyLinesColorPicker = document.getElementById(
 export const wavyLinesColorSetting = document.getElementById(
   "wavy-lines-color-setting",
 )
+export const oceanWaveColorPicker = document.getElementById(
+  "ocean-wave-color-picker",
+)
+export const oceanWaveColorSetting = document.getElementById(
+  "ocean-wave-color-setting",
+)
+export const cloudDriftColorPicker = document.getElementById(
+  "cloud-drift-color-picker",
+)
+export const cloudDriftColorSetting = document.getElementById(
+  "cloud-drift-color-setting",
+)
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const exportSettingsBtn = document.getElementById("export-settings-btn")

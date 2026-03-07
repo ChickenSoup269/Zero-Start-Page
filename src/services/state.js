@@ -26,6 +26,8 @@ const defaultSettings = {
   bubbleColor: "#60c8ff",
   rainOnGlassColor: "#a8d8ff",
   wavyLinesColor: "#00bcd4",
+  oceanWaveColor: "#0077b6",
+  cloudDriftColor: "#ffffff",
   bgPositionX: 50,
   bgPositionY: 50,
   bgSize: "cover",

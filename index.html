@@ -267,7 +267,7 @@
                     <div class="setting-item">
                         <label data-i18n="settings_svg_wave_angle">Angle: <span
                                 id="svg-wave-angle-value">0</span>°</label>
-                        <input type="range" id="svg-wave-angle" min="-90" max="90" value="0">
+                        <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
                     <!-- Smoothness -->
                     <div class="setting-item">
@@ -369,6 +369,8 @@
                     <option value="rainbow" data-i18n="effect_rainbow">Rainbow Background</option>
                     <option value="wavyLines" data-i18n="effect_wavy_lines">Wavy Lines</option>
                     <option value="firefliesHD" data-i18n="effect_fireflies_hd">Fireflies HD</option>
+                    <option value="oceanWave" data-i18n="effect_ocean_wave">Ocean Wave</option>
+                    <option value="cloudDrift" data-i18n="effect_cloud_drift">Cloud Drift</option>
                 </select>
 
                 <!-- Aura Color -->
@@ -425,6 +427,16 @@
                 <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
                     <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
                     <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                </div>
+                <!-- Ocean Wave Color -->
+                <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
+                    <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
+                    <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+                </div>
+                <!-- Cloud Drift Color -->
+                <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
+                    <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
+                    <input type="color" id="cloud-drift-color-picker" value="#ffffff" />
                 </div>
             </div>
 

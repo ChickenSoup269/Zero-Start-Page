@@ -2,11 +2,25 @@ export class SvgWaveGenerator {
   constructor() {
     this.active = false
     this._waveOffsets = this._makeOffsets(20)
+    this._activeLayer = 0
+    this._layers = [0, 1].map((i) => this._createLayer(`svg-wave-layer-${i}`))
     this._resizeHandler = () => {
       if (this.active && this._lastParams)
         this._applyBackground(this._lastParams)
     }
     window.addEventListener("resize", this._resizeHandler)
+  }
+
+  _createLayer(id) {
+    let el = document.getElementById(id)
+    if (!el) {
+      el = document.createElement("div")
+      el.id = id
+      el.style.cssText =
+        "position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:0;pointer-events:none;"
+      document.body.appendChild(el)
+    }
+    return el
   }
 
   _makeOffsets(n) {
@@ -164,13 +178,40 @@ export class SvgWaveGenerator {
     return `data:image/svg+xml,${encodeURIComponent(svg)}`
   }
 
-  _applyBackground(params) {
+  _applyBackground(params, fade = false) {
     this._lastParams = params
     const svgStr = this.generateSVG(params)
     const encoded = encodeURIComponent(svgStr)
-    document.body.style.backgroundImage = `url("data:image/svg+xml,${encoded}")`
-    document.body.style.backgroundSize = "cover"
+    const url = `url("data:image/svg+xml,${encoded}")`
+
+    // Let our fixed div layers act as the background
+    document.body.style.removeProperty("background")
+    document.body.style.removeProperty("background-image")
     document.body.classList.add("bg-image-active")
+
+    const currEl = this._layers[this._activeLayer]
+    const nextEl = this._layers[1 - this._activeLayer]
+
+    if (fade) {
+      // A/B crossfade: prepare next layer off-screen, then animate
+      nextEl.style.transition = "none"
+      nextEl.style.backgroundImage = url
+      nextEl.style.opacity = "0"
+      void nextEl.offsetHeight // force reflow
+      nextEl.style.transition = "opacity 0.5s ease"
+      nextEl.style.opacity = "1"
+      currEl.style.transition = "opacity 0.5s ease"
+      currEl.style.opacity = "0"
+      this._activeLayer = 1 - this._activeLayer
+    } else {
+      // Instant apply — no transition
+      currEl.style.transition = "none"
+      currEl.style.backgroundImage = url
+      currEl.style.opacity = "1"
+      nextEl.style.transition = "none"
+      nextEl.style.opacity = "0"
+      nextEl.style.backgroundImage = ""
+    }
   }
 
   start(params) {
@@ -178,13 +219,19 @@ export class SvgWaveGenerator {
     this._applyBackground(params)
   }
 
-  update(params) {
-    if (this.active) this._applyBackground(params)
+  update(params, fade = false) {
+    if (this.active) this._applyBackground(params, fade)
   }
 
   stop() {
     this.active = false
     this._lastParams = null
+    this._layers.forEach((el) => {
+      el.style.transition = "none"
+      el.style.opacity = "0"
+      el.style.backgroundImage = ""
+    })
+    this._activeLayer = 0
     // Background will be reset by applySettings
   }
 

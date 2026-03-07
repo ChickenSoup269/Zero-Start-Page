@@ -69,6 +69,10 @@ import {
   rainOnGlassColorSetting,
   wavyLinesColorPicker,
   wavyLinesColorSetting,
+  oceanWaveColorPicker,
+  oceanWaveColorSetting,
+  cloudDriftColorPicker,
+  cloudDriftColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -149,6 +153,8 @@ import { BubblesEffect } from "./animations/bubbles.js"
 import { RainOnGlassEffect } from "./animations/rainOnGlass.js"
 import { RainbowBackground } from "./animations/rainbowBackground.js"
 import { WavyLinesEffect } from "./animations/wavyLines.js"
+import { OceanWaveEffect } from "./animations/oceanWave.js"
+import { CloudDriftEffect } from "./animations/cloudDrift.js"
 import { FirefliesHD } from "./animations/firefliesHD.js"
 import { SvgWaveGenerator } from "./animations/svgWaveGenerator.js"
 
@@ -167,6 +173,8 @@ let starFallEffect,
   rainOnGlassEffect,
   rainbowEffect,
   wavyLinesEffect,
+  oceanWaveEffect,
+  cloudDriftEffect,
   firefliesHDEffect,
   svgWaveEffect
 
@@ -336,6 +344,9 @@ export function applySettings() {
   document.body.style.backgroundImage = ""
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
+  // 2a. Stop SVG wave first (before background logic re-applies it)
+  if (svgWaveEffect) svgWaveEffect.stop()
+
   // 3. Background Logic
   let bg = settings.background
   // Resolve IndexedDB image ID to blob URL
@@ -464,8 +475,10 @@ export function applySettings() {
   if (rainOnGlassEffect) rainOnGlassEffect.stop()
   if (rainbowEffect) rainbowEffect.stop()
   if (wavyLinesEffect) wavyLinesEffect.stop()
+  if (oceanWaveEffect) oceanWaveEffect.stop()
+  if (cloudDriftEffect) cloudDriftEffect.stop()
   if (firefliesHDEffect) firefliesHDEffect.stop()
-  if (svgWaveEffect) svgWaveEffect.stop()
+  // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
   const effectCanvas = document.getElementById("effect-canvas")
@@ -520,6 +533,12 @@ export function applySettings() {
         break
       case "wavyLines":
         wavyLinesEffect.start()
+        break
+      case "oceanWave":
+        oceanWaveEffect.start()
+        break
+      case "cloudDrift":
+        cloudDriftEffect.start()
         break
       case "firefliesHD":
         firefliesHDEffect.start()
@@ -610,6 +629,8 @@ function updateSettingsInputs() {
   bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
   rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
   wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
+  oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
+  cloudDriftColorPicker.value = settings.cloudDriftColor || "#ffffff"
 
   // Visibility of Effect Settings
   starColorSetting.style.display =
@@ -632,6 +653,10 @@ function updateSettingsInputs() {
     settings.effect === "rainOnGlass" ? "block" : "none"
   wavyLinesColorSetting.style.display =
     settings.effect === "wavyLines" ? "block" : "none"
+  oceanWaveColorSetting.style.display =
+    settings.effect === "oceanWave" ? "block" : "none"
+  cloudDriftColorSetting.style.display =
+    settings.effect === "cloudDrift" ? "block" : "none"
 
   // SVG Wave Generator — sync all sliders/checkboxes to current state
   const waveActive = settings.svgWaveActive === true
@@ -883,6 +908,14 @@ export function initSettings() {
   wavyLinesEffect = new WavyLinesEffect(
     "effect-canvas",
     settings.wavyLinesColor || "#00bcd4",
+  )
+  oceanWaveEffect = new OceanWaveEffect(
+    "effect-canvas",
+    settings.oceanWaveColor || "#0077b6",
+  )
+  cloudDriftEffect = new CloudDriftEffect(
+    "effect-canvas",
+    settings.cloudDriftColor || "#ffffff",
   )
   firefliesHDEffect = new FirefliesHD("effect-canvas")
   svgWaveEffect = new SvgWaveGenerator()
@@ -1267,8 +1300,20 @@ export function initSettings() {
     wavyLinesEffect.color = wavyLinesColorPicker.value
   })
 
+  oceanWaveColorPicker.addEventListener("input", () => {
+    updateSetting("oceanWaveColor", oceanWaveColorPicker.value)
+    saveSettings()
+    oceanWaveEffect.color = oceanWaveColorPicker.value
+  })
+
+  cloudDriftColorPicker.addEventListener("input", () => {
+    updateSetting("cloudDriftColor", cloudDriftColorPicker.value)
+    saveSettings()
+    cloudDriftEffect.color = cloudDriftColorPicker.value
+  })
+
   // --- SVG Wave Generator Listeners ---
-  function _applyWaveFromInputs() {
+  function _applyWaveFromInputs(fade = false) {
     // Auto-activate wave if controls are open
     if (!getSettings().svgWaveActive) {
       updateSetting("svgWaveActive", true)
@@ -1290,7 +1335,7 @@ export function initSettings() {
     updateSetting("svgWaveEndLightness", +svgWaveEndLight.value)
     saveSettings()
     _updateWaveColorPreviews(getSettings())
-    svgWaveEffect.update(_getSvgWaveParams(getSettings()))
+    svgWaveEffect.update(_getSvgWaveParams(getSettings()), fade)
     if (!svgWaveEffect.active)
       svgWaveEffect.start(_getSvgWaveParams(getSettings()))
   }
@@ -1372,13 +1417,18 @@ export function initSettings() {
     [svgWaveEndSat, svgWaveEndSatValue],
     [svgWaveEndLight, svgWaveEndLightValue],
   ]
+  let _waveApplyTimer = null
   waveSliders.forEach(([input, label]) => {
     input.addEventListener("input", () => {
       label.textContent = input.value
-      _applyWaveFromInputs()
+      clearTimeout(_waveApplyTimer)
+      _waveApplyTimer = setTimeout(() => _applyWaveFromInputs(true), 350)
     })
   })
-  svgWaveFill.addEventListener("change", _applyWaveFromInputs)
+  svgWaveFill.addEventListener("change", () => {
+    clearTimeout(_waveApplyTimer)
+    _waveApplyTimer = setTimeout(() => _applyWaveFromInputs(true), 350)
+  })
 
   effectSelect.addEventListener("change", () =>
     handleSettingUpdate("effect", effectSelect.value),
