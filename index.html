@@ -451,7 +451,7 @@
                     <option value="'Nunito', sans-serif">Nunito</option>
                     <option value="'Arial', sans-serif">Arial</option>
                     <option value="'Courier New', monospace">Courier New</option>
-                    <option value="'GohuFont', monospace">GohuFont (Local)</option>
+
                 </select>
             </div>
 
@@ -660,32 +660,65 @@
     <div id="bookmark-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">Add Bookmark</h2>
+                <div class="modal-header-left">
+                    <button id="back-to-manual" class="modal-back-btn" style="display:none;" aria-label="Back">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h2 id="modal-title">Add Bookmark</h2>
+                </div>
                 <span id="close-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
 
             <!-- Manual Entry Form -->
             <div id="manual-entry-form">
-                <input type="text" id="bookmark-title" class="i18n-placeholder"
-                    data-i18n-placeholder="modal_title_placeholder" placeholder="Title">
-                <input type="url" id="bookmark-url" class="i18n-placeholder"
-                    data-i18n-placeholder="modal_url_placeholder" placeholder="URL (e.g., https://example.com)">
-                <input type="url" id="bookmark-icon-url" class="i18n-placeholder"
-                    data-i18n-placeholder="modal_icon_placeholder" placeholder="Custom Icon URL (Optional)">
+                <div class="modal-input-group">
+                    <i class="fa-solid fa-tag modal-input-icon"></i>
+                    <input type="text" id="bookmark-title" class="i18n-placeholder"
+                        data-i18n-placeholder="modal_title_placeholder" placeholder="Title">
+                </div>
+                <div class="modal-input-group">
+                    <i class="fa-solid fa-link modal-input-icon"></i>
+                    <input type="url" id="bookmark-url" class="i18n-placeholder"
+                        data-i18n-placeholder="modal_url_placeholder" placeholder="URL (e.g., https://example.com)">
+                </div>
+                <div class="modal-input-group">
+                    <i class="fa-solid fa-image modal-input-icon"></i>
+                    <input type="url" id="bookmark-icon-url" class="i18n-placeholder"
+                        data-i18n-placeholder="modal_icon_placeholder" placeholder="Custom Icon URL (Optional)">
+                </div>
                 <div class="modal-actions">
-                    <button id="save-bookmark" class="primary-btn" data-i18n="modal_save">Save</button>
-                    <button id="show-import-btn" class="primary-btn" data-i18n="modal_import">Import from
-                        Browser</button>
+                    <button id="save-bookmark" class="primary-btn">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span data-i18n="modal_save">Save</span>
+                    </button>
+                    <button id="show-import-btn" class="secondary-btn modal-import-trigger-btn">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="modal_import">Import from Browser</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Import Section (Hidden by default) -->
             <div id="import-section" style="display: none;">
-                <button id="back-to-manual" class="text-btn"><i class="fa-solid fa-arrow-left"></i> <span
-                        data-i18n="modal_back">Back to Manual</span></button>
-                <div id="browser-bookmarks-list"></div>
-                <button id="confirm-import-btn" class="primary-btn full-width" data-i18n="modal_import_selected">Import
-                    Selected</button>
+                <div class="import-toolbar">
+                    <div class="import-search-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="import-search" class="import-search-input"
+                            data-i18n-placeholder="modal_import_search" placeholder="Search bookmarks...">
+                    </div>
+                    <label class="import-select-all-label">
+                        <input type="checkbox" id="import-select-all">
+                        <span data-i18n="modal_select_all">Select all</span>
+                    </label>
+                </div>
+                <div id="browser-bookmarks-list" class="bookmark-tree-container"></div>
+                <div class="import-footer">
+                    <span id="import-count-label" class="import-count-label">0 selected</span>
+                    <button id="confirm-import-btn" class="primary-btn">
+                        <i class="fa-solid fa-file-import"></i>
+                        <span data-i18n="modal_import_selected">Import Selected</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

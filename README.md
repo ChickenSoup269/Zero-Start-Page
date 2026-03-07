@@ -4,6 +4,23 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 ---
 
+<div align="center">
+ <table width="100%" >
+  <tr>
+    <td align="left">
+    English | <a href="https://github.com/ChickenSoup269/Zero-Start-Page/blob/main/README_VN.MD">Tiếng Việt</a>
+    </td>
+      <td align="right">
+        <a href="">CHANGELOG.md</a>
+      </td>
+      <td align="right">
+        <a href=""> 
+        Link Extension 🌐 
+        </a>
+      </td>
+    </tr>
+  </table>
+
 ## Features
 
 ### Clock & Date
@@ -84,28 +101,28 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
 
-### Visual Effects (22 Animations)
+### Visual Effects (19 Animations)
 
-Select from 22 canvas-based animated effects with individual color pickers:
+Select from 19 canvas-based animated effects with individual color pickers:
 
-| Effect             | Effect          | Effect             |
-| ------------------ | --------------- | ------------------ |
-| Aura               | Aurora Wave     | Bubbles            |
-| Cloud Drift        | Constellation   | Falling Meteor     |
-| Fireflies          | Fireflies HD    | Hacker             |
-| Light Sweep        | Matrix Rain     | Network            |
-| Ocean Wave         | Particles Storm | Rainbow Background |
-| Rain Galaxy        | Rain on Glass   | Sakura             |
-| Snowfall           | Wavy Lines      | Wind               |
-| SVG Wave Generator |                 |                    |
+| Effect                 | Effect              | Effect                 |
+| ---------------------- | ------------------- | ---------------------- |
+| 1. Aura                | 8. Aurora Wave      | 16.Network             |
+| 2. Cloud Drift         | 9. Hacker           | 17. Rainbow Background |
+| 3. Fireflies           | 10. Fireflies HD    | 18.Sakura              |
+| 4. Light Sweep         | 11. Matrix Rain     | 19. Wind               |
+| 5. Ocean Wave          | 12. Particles Storm |                        |
+| 6. Rain Galaxy         | 13. Rain on Glass   |                        |
+| 7. Snowfall            | 14. Wavy Lines      |                        |
+| **SVG Wave Generator** | 15. Bubbles         |                        |
 
-### 🌊 SVG Wave Generator
+### SVG Wave Generator
 
 - Fully configurable wave backgrounds: line count, amplitude X/Y, offset, angle, smoothness, fill toggle
 - HSL color gradient (start → end)
 - Save custom waves to a personal gallery
 
-### ⚙️ Settings & Personalization
+### Settings & Personalization
 
 - **Font selector** with support for loading custom fonts
 - **Accent color** applied across the entire UI

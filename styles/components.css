@@ -135,70 +135,240 @@
 }
 
 .modal-content {
-  background: #fff;
-  color: #333;
-  padding: 30px;
+  background: var(--sidebar-bg, rgba(20, 20, 25, 0.95));
+  color: var(--text-color, #fff);
+  padding: 28px;
   border-radius: 20px;
-  width: 400px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  width: 440px;
+  max-width: 95vw;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   position: relative;
-  transform: scale(0.8);
-  transition: transform 0.3s ease;
+  transform: scale(0.92) translateY(10px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: left;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .modal.show .modal-content {
-  transform: scale(1);
+  transform: scale(1) translateY(0);
+}
+
+/* Import mode: wider modal */
+.modal-content.import-mode {
+  width: 520px;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-back-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-color, #fff);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal-back-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent-color);
+  transform: translateX(-2px);
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-color, #fff);
 }
 
 .close {
   cursor: pointer;
-  font-size: 1.2rem;
-  color: #999;
-  transition: color 0.3s;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.4);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .close:hover {
-  color: #333;
+  color: var(--text-color, #fff);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Input groups with icons */
+.modal-input-group {
+  position: relative;
+  margin: 12px 0;
+}
+
+.modal-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.modal-input-group:focus-within .modal-input-icon {
+  color: var(--accent-color);
 }
 
 .modal-content input {
   display: block;
-  margin: 15px 0;
-  padding: 12px 15px;
+  padding: 11px 14px 11px 38px;
   width: 100%;
   box-sizing: border-box;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  color: #333;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--text-color, #fff);
   font-family: var(--font-primary);
+  font-size: 0.9rem;
   outline: none;
-  transition: border-color 0.3s;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s;
+}
+
+.modal-content input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .modal-content input:focus {
   border-color: var(--accent-color);
-  background: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
 }
 
 .modal-actions {
   display: flex;
-  justify-content: space-between;
   gap: 10px;
   margin-top: 20px;
+}
+
+.modal-import-trigger-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Import toolbar (search + select-all) */
+.import-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.import-search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.import-search-wrap i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.78rem;
+  pointer-events: none;
+}
+
+.import-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px 9px 34px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  color: var(--text-color, #fff) !important;
+  font-size: 0.85rem !important;
+  margin: 0 !important;
+}
+
+.import-search-input:focus {
+  border-color: var(--accent-color) !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
+}
+
+.import-select-all-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.import-select-all-label:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.import-select-all-label input[type="checkbox"] {
+  accent-color: var(--accent-color);
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Import footer */
+.import-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.import-count-label {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+}
+
+.import-footer .primary-btn {
+  flex: 0 0 auto;
+  padding: 10px 20px;
+  font-size: 0.88rem;
+  gap: 8px;
 }
 
 /* Context Menu */
@@ -236,59 +406,66 @@
 
 /* Bookmark Tree View Selection */
 .bookmark-tree-container {
-  max-height: 380px;
+  max-height: 340px;
   overflow-y: auto;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .bookmark-tree-container::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .bookmark-tree-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 10px;
 }
+.bookmark-tree-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
 
+/* Folder row */
 .bookmark-tree-folder {
   display: flex;
   align-items: center;
-  padding: 10px 14px;
+  padding: 8px 10px;
   cursor: pointer;
-  border-radius: 10px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  gap: 12px;
-  color: black;
+  border-radius: 8px;
+  transition: background 0.18s;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 600;
+  font-size: 0.88rem;
 }
 
 .bookmark-tree-folder:hover {
-  background: black;
-  color: white;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .bookmark-tree-folder i.fa-chevron-right {
-  font-size: 0.7rem;
-  width: 14px;
-  transition: transform 0.3s ease;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.65rem;
+  width: 12px;
+  transition: transform 0.25s ease;
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
 }
 
 .bookmark-tree-folder i.fa-folder {
-  color: #ffd700;
-  width: 20px;
+  color: #fbbf24;
+  width: 16px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .folder-content {
-  margin-left: 20px;
-  border-left: 1.5px solid rgba(255, 255, 255, 0.1);
-  padding-left: 12px;
+  margin-left: 18px;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.07);
+  padding-left: 10px;
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .folder-wrapper.collapsed .folder-content {
@@ -297,38 +474,63 @@
   pointer-events: none;
 }
 
+.folder-wrapper:not(.collapsed) .folder-content {
+  max-height: 2000px;
+  opacity: 1;
+}
+
 .folder-wrapper:not(.collapsed) .fa-chevron-right {
   transform: rotate(90deg);
 }
 
+/* Bookmark item row */
 .bookmark-tree-item {
   display: flex;
   align-items: center;
-  padding: 8px 14px;
+  padding: 7px 10px;
   cursor: pointer;
   border-radius: 8px;
-  gap: 12px;
-  color: black;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  transition: background 0.15s;
 }
 
 .bookmark-tree-item:hover {
-  background: black;
-  color: white;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.bookmark-tree-item.selected {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .bookmark-tree-item input[type="checkbox"] {
   accent-color: var(--accent-color);
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
-/* Legacy / Fallback Tree View Styles */
-#browser-bookmarks-list {
-  max-height: 300px;
-  overflow-y: auto;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 10px;
-  color: #333;
+/* Hide items when filtered out */
+.bookmark-tree-item.hidden,
+.folder-wrapper.hidden {
+  display: none;
+}
+
+/* Empty state for import */
+.import-empty-state {
+  text-align: center;
+  padding: 30px 16px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.85rem;
+}
+
+.import-empty-state i {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 10px;
+  opacity: 0.4;
 }
