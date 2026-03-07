@@ -104,6 +104,7 @@ import {
   svgWaveOffsetXValue,
   svgWaveAngle,
   svgWaveAngleValue,
+  svgWaveAngleCenterBtn,
   svgWaveSmoothness,
   svgWaveSmoothnessValue,
   svgWaveCraziness,
@@ -157,6 +158,7 @@ import { OceanWaveEffect } from "./animations/oceanWave.js"
 import { CloudDriftEffect } from "./animations/cloudDrift.js"
 import { FirefliesHD } from "./animations/firefliesHD.js"
 import { SvgWaveGenerator } from "./animations/svgWaveGenerator.js"
+import { AutumnLeavesEffect } from "./animations/autumnLeaves.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -176,6 +178,7 @@ let starFallEffect,
   oceanWaveEffect,
   cloudDriftEffect,
   firefliesHDEffect,
+  autumnLeavesEffect,
   svgWaveEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
@@ -478,6 +481,7 @@ export function applySettings() {
   if (oceanWaveEffect) oceanWaveEffect.stop()
   if (cloudDriftEffect) cloudDriftEffect.stop()
   if (firefliesHDEffect) firefliesHDEffect.stop()
+  if (autumnLeavesEffect) autumnLeavesEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
@@ -542,6 +546,9 @@ export function applySettings() {
         break
       case "firefliesHD":
         firefliesHDEffect.start()
+        break
+      case "autumnLeaves":
+        autumnLeavesEffect.start()
         break
     }
   }, 50)
@@ -918,6 +925,7 @@ export function initSettings() {
     settings.cloudDriftColor || "#ffffff",
   )
   firefliesHDEffect = new FirefliesHD("effect-canvas")
+  autumnLeavesEffect = new AutumnLeavesEffect("effect-canvas")
   svgWaveEffect = new SvgWaveGenerator()
 
   populateUnsplashCollections()
@@ -1349,6 +1357,12 @@ export function initSettings() {
     saveSettings()
     applySettings()
     updateSettingsInputs()
+  })
+
+  svgWaveAngleCenterBtn.addEventListener("click", () => {
+    svgWaveAngle.value = 0
+    svgWaveAngleValue.textContent = 0
+    _applyWaveFromInputs()
   })
 
   svgWaveCloseBtn.addEventListener("click", () => {

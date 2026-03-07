@@ -222,6 +222,9 @@ export const svgWaveOffsetXValue = document.getElementById(
 )
 export const svgWaveAngle = document.getElementById("svg-wave-angle")
 export const svgWaveAngleValue = document.getElementById("svg-wave-angle-value")
+export const svgWaveAngleCenterBtn = document.getElementById(
+  "svg-wave-angle-center",
+)
 export const svgWaveSmoothness = document.getElementById("svg-wave-smoothness")
 export const svgWaveSmoothnessValue = document.getElementById(
   "svg-wave-smoothness-value",

@@ -101,20 +101,20 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
 
-### Visual Effects (19 Animations)
+### Visual Effects (18 Animations)
 
-Select from 19 canvas-based animated effects with individual color pickers:
+Select from 18 canvas-based animated effects with individual color pickers:
 
-| Effect                 | Effect              | Effect                 |
-| ---------------------- | ------------------- | ---------------------- |
-| 1. Aura                | 8. Aurora Wave      | 16.Network             |
-| 2. Cloud Drift         | 9. Hacker           | 17. Rainbow Background |
-| 3. Fireflies           | 10. Fireflies HD    | 18.Sakura              |
-| 4. Light Sweep         | 11. Matrix Rain     | 19. Wind               |
-| 5. Ocean Wave          | 12. Particles Storm |                        |
-| 6. Rain Galaxy         | 13. Rain on Glass   |                        |
-| 7. Snowfall            | 14. Wavy Lines      |                        |
-| **SVG Wave Generator** | 15. Bubbles         |                        |
+| Effect                 | Effect                 | Effect            |
+| ---------------------- | ---------------------- | ----------------- |
+| 1. Rain                | 8.Sakura               | 15. Fireflies HD  |
+| 2. Fireflies           | 9. Snowfall            | 16. Ocean Wave    |
+| 3.Network              | 10. Aurora Wave        | 17. Cloud Drift   |
+| 4. Matrix Rain         | 11. Bubbles            | 18. Autumn Leaves |
+| 5. Gradients Aura      | 12. Rain on Glass      |                   |
+| 6. Anime Wind          | 13. Rainbow Background |                   |
+| 7. Hacker              | 14. Wavy Lines         |                   |
+| **SVG Wave Generator** |                        |                   |
 
 ### SVG Wave Generator
 

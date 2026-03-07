@@ -258,6 +258,36 @@
   font-weight: 400;
 }
 
+.wave-angle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.wave-angle-header label {
+  margin-bottom: 0;
+}
+
+.wave-center-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 0.85rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+  line-height: 1;
+}
+
+.wave-center-btn:hover {
+  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .setting-item-row {
   display: flex;
   justify-content: space-between;

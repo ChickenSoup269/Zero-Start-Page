@@ -265,8 +265,12 @@
                     </div>
                     <!-- Angle -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_angle">Angle: <span
-                                id="svg-wave-angle-value">0</span>°</label>
+                        <div class="wave-angle-header">
+                            <label data-i18n="settings_svg_wave_angle">Angle: <span
+                                    id="svg-wave-angle-value">0</span>°</label>
+                            <button id="svg-wave-angle-center" class="wave-center-btn" title="Reset to center (0°)"><i
+                                    class="fa-solid fa-crosshairs"></i></button>
+                        </div>
                         <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
                     <!-- Smoothness -->
@@ -371,6 +375,7 @@
                     <option value="firefliesHD" data-i18n="effect_fireflies_hd">Fireflies HD</option>
                     <option value="oceanWave" data-i18n="effect_ocean_wave">Ocean Wave</option>
                     <option value="cloudDrift" data-i18n="effect_cloud_drift">Cloud Drift</option>
+                    <option value="autumnLeaves" data-i18n="effect_autumn_leaves">Autumn Leaves</option>
                 </select>
 
                 <!-- Aura Color -->
