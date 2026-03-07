@@ -70,6 +70,7 @@ const defaultSettings = {
   svgWaveEndSaturation: 70,
   svgWaveEndLightness: 30,
   userSvgWaves: [],
+  userSavedFonts: [],
 }
 
 // Bookmarks State Migration

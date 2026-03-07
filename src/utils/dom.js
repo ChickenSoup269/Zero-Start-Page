@@ -27,6 +27,11 @@ export const accentColorPicker = document.getElementById("accent-color-picker")
 export const fontSelect = document.getElementById("font-select")
 export const customFontInput = document.getElementById("custom-font-input")
 export const loadCustomFontBtn = document.getElementById("load-custom-font-btn")
+export const saveFontBtn = document.getElementById("save-font-btn")
+export const savedFontsContainer = document.getElementById(
+  "saved-fonts-container",
+)
+export const savedFontsList = document.getElementById("saved-fonts-list")
 export const languageSelect = document.getElementById("language-select")
 export const effectSelect = document.getElementById("effect-select")
 

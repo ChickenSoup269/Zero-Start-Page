@@ -8,9 +8,7 @@
     <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&family=Silkscreen&display=swap" rel="stylesheet">
     <link id="custom-google-font" rel="stylesheet" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -456,21 +454,38 @@
                     <option value="'Nunito', sans-serif">Nunito</option>
                     <option value="'Arial', sans-serif">Arial</option>
                     <option value="'Courier New', monospace">Courier New</option>
-
+                    <option value="'Silkscreen', cursive">Silkscreen (Pixel)</option>
+                    <option value="'Pixelify Sans', sans-serif">Pixelify Sans (Pixel)</option>
                 </select>
             </div>
 
             <div class="setting-group">
                 <label data-i18n="settings_custom_font"><i class="fa-solid fa-font"></i> Custom Google Font</label>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <input type="text" id="custom-font-input" data-i18n-placeholder="settings_custom_font_placeholder"
                         placeholder="Enter font name (e.g., Pacifico)"
-                        style="flex: 1; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                    <button id="load-custom-font-btn" data-i18n="settings_load_font"
-                        style="padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: 500;">Load</button>
+                        style="padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="load-custom-font-btn" data-i18n="settings_load_font"
+                            style="flex: 1; padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: 500;">Load</button>
+                        <button id="save-font-btn" data-i18n="settings_save_font"
+                            style="flex: 1; padding: 0.5rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.15)); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); cursor: pointer; font-weight: 500;">Save</button>
+                    </div>
                 </div>
                 <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
                     data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
+
+                <div id="saved-fonts-container" style="margin-top: 0.75rem; display: none;">
+                    <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.4rem; display: block;"
+                        data-i18n="settings_saved_fonts">Saved Fonts</label>
+                    <div id="saved-fonts-list" style="display: flex; flex-wrap: wrap; gap: 0.4rem;"></div>
+                </div>
+
+                <small style="display:block;margin-top:12px;opacity:0.6;font-size:0.75rem;">
+                    <a href="https://fonts.google.com/" target="_blank" rel="noopener" style="color: white;"
+                        data-i18n="settings_google_fonts_info">Get any google font here
+                    </a>
+                </small>
             </div>
 
             <div class="setting-group">

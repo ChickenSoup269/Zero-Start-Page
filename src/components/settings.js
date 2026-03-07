@@ -16,6 +16,9 @@ import {
   fontSelect,
   customFontInput,
   loadCustomFontBtn,
+  saveFontBtn,
+  savedFontsContainer,
+  savedFontsList,
   languageSelect,
   effectSelect,
   gradientStartPicker,
@@ -194,6 +197,80 @@ function handleSettingUpdate(key, value, isGradient = false) {
   applySettings()
   renderLocalBackgrounds()
   renderUserGradients()
+}
+
+function loadGoogleFont(fontName) {
+  const formattedFontName = fontName.replace(/\s+/g, "+")
+  const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
+  const customFontLink = document.getElementById("custom-google-font")
+  customFontLink.href = googleFontUrl
+}
+
+function renderSavedFonts() {
+  const settings = getSettings()
+  const savedFonts = settings.userSavedFonts || []
+  const i18n = geti18n()
+
+  if (savedFonts.length === 0) {
+    savedFontsContainer.style.display = "none"
+    return
+  }
+  savedFontsContainer.style.display = "block"
+  savedFontsList.innerHTML = ""
+
+  savedFonts.forEach((fontName) => {
+    const chip = document.createElement("div")
+    chip.style.cssText =
+      "display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.6rem;background:var(--glass-bg,rgba(255,255,255,0.12));border:1px solid var(--input-border);border-radius:20px;cursor:pointer;font-size:0.8rem;transition:background 0.2s;"
+    chip.title = i18n.settings_font_chip_apply || "Click to apply"
+
+    const nameSpan = document.createElement("span")
+    nameSpan.textContent = fontName
+    nameSpan.style.fontFamily = `'${fontName}', sans-serif`
+
+    const deleteBtn = document.createElement("button")
+    deleteBtn.innerHTML = "&times;"
+    deleteBtn.style.cssText =
+      "background:none;border:none;color:var(--text-color);opacity:0.6;cursor:pointer;padding:0;font-size:1rem;line-height:1;margin-left:2px;"
+    deleteBtn.title = i18n.settings_font_chip_delete || "Remove saved font"
+
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const settings = getSettings()
+      const updated = (settings.userSavedFonts || []).filter(
+        (f) => f !== fontName,
+      )
+      updateSetting("userSavedFonts", updated)
+      saveSettings()
+      renderSavedFonts()
+    })
+
+    chip.addEventListener("click", () => {
+      loadGoogleFont(fontName)
+      setTimeout(() => {
+        const fontValue = `'${fontName}', sans-serif`
+        let optionExists = false
+        for (let option of fontSelect.options) {
+          if (option.value === fontValue) {
+            optionExists = true
+            break
+          }
+        }
+        if (!optionExists) {
+          const newOption = document.createElement("option")
+          newOption.value = fontValue
+          newOption.textContent = `${fontName} (Custom)`
+          fontSelect.appendChild(newOption)
+        }
+        fontSelect.value = fontValue
+        handleSettingUpdate("font", fontValue)
+      }, 400)
+    })
+
+    chip.appendChild(nameSpan)
+    chip.appendChild(deleteBtn)
+    savedFontsList.appendChild(chip)
+  })
 }
 
 function _getSvgWaveParams(settings) {
@@ -703,6 +780,7 @@ function updateSettingsInputs() {
   svgWaveEndLightValue.textContent = svgWaveEndLight.value
   _updateWaveColorPreviews(settings)
   renderUserSvgWaves()
+  renderSavedFonts()
   showTodoCheckbox.checked = settings.showTodoList !== false
   showNotepadCheckbox.checked = settings.showNotepad !== false
   showTimerCheckbox.checked = settings.showTimer === true
@@ -930,6 +1008,40 @@ export function initSettings() {
 
   populateUnsplashCollections()
   renderUserSvgWaves()
+
+  // Restore saved custom fonts so they are loaded from Google Fonts on startup
+  const savedFonts = settings.userSavedFonts || []
+  if (savedFonts.length > 0) {
+    // If current font is a saved custom font, load it via the primary link
+    const currentFontName = (settings.font || "")
+      .replace(/['"]/g, "")
+      .replace(/,.*$/, "")
+      .trim()
+    if (savedFonts.includes(currentFontName)) {
+      const customFontLink = document.getElementById("custom-google-font")
+      if (customFontLink) {
+        customFontLink.href = `https://fonts.googleapis.com/css2?family=${currentFontName.replace(/\s+/g, "+")}:wght@300;400;500;600;700&display=swap`
+      }
+    }
+    // Add all saved fonts to the select dropdown
+    savedFonts.forEach((fontName) => {
+      const fontValue = `'${fontName}', sans-serif`
+      let optionExists = false
+      for (let option of fontSelect.options) {
+        if (option.value === fontValue) {
+          optionExists = true
+          break
+        }
+      }
+      if (!optionExists) {
+        const newOption = document.createElement("option")
+        newOption.value = fontValue
+        newOption.textContent = `${fontName} (Custom)`
+        fontSelect.appendChild(newOption)
+      }
+    })
+  }
+  renderSavedFonts()
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
@@ -1459,13 +1571,7 @@ export function initSettings() {
       return
     }
 
-    // Format font name for Google Fonts API (replace spaces with +)
-    const formattedFontName = fontName.replace(/\s+/g, "+")
-    const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
-
-    // Load the font dynamically
-    const customFontLink = document.getElementById("custom-google-font")
-    customFontLink.href = googleFontUrl
+    loadGoogleFont(fontName)
 
     // Wait a bit for the font to load, then update settings
     setTimeout(() => {
@@ -1494,6 +1600,56 @@ export function initSettings() {
 
       showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
       customFontInput.value = "" // Clear input
+    }, 500)
+  })
+
+  saveFontBtn.addEventListener("click", () => {
+    const i18n = geti18n()
+    const fontName = customFontInput.value.trim()
+    if (!fontName) {
+      showAlert(i18n.alert_font_error || "Please enter a font name.")
+      return
+    }
+
+    const settings = getSettings()
+    const savedFonts = settings.userSavedFonts || []
+
+    if (savedFonts.includes(fontName)) {
+      showAlert(i18n.alert_font_already_saved || "Font already saved.")
+      return
+    }
+
+    loadGoogleFont(fontName)
+
+    setTimeout(() => {
+      const fontValue = `'${fontName}', sans-serif`
+
+      // Add to select dropdown
+      let optionExists = false
+      for (let option of fontSelect.options) {
+        if (option.value === fontValue) {
+          optionExists = true
+          break
+        }
+      }
+      if (!optionExists) {
+        const newOption = document.createElement("option")
+        newOption.value = fontValue
+        newOption.textContent = `${fontName} (Custom)`
+        fontSelect.appendChild(newOption)
+      }
+
+      // Apply the font
+      fontSelect.value = fontValue
+      handleSettingUpdate("font", fontValue)
+
+      // Persist to saved fonts
+      updateSetting("userSavedFonts", [...savedFonts, fontName])
+      saveSettings()
+      renderSavedFonts()
+
+      showAlert(i18n.alert_font_saved || "Font saved!")
+      customFontInput.value = ""
     }, 500)
   })
 
