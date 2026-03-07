@@ -4,7 +4,6 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 ---
 
-<div align="center">
  <table width="100%" >
   <tr>
     <td align="left">
