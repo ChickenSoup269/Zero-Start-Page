@@ -1,27 +1,144 @@
 # <img src="./icon/logo.png" width="50px" /> Startpage - Your Personalized Browser Startpage
 
-Startpage is a highly customizable browser startpage designed to enhance your browsing experience with a clean, functional, and aesthetically pleasing interface. Tailor your new tab page to your preferences with a variety of features, including:
+Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
+
+---
 
 ## Features
 
-- **Customizable Clock & Date**: Display real-time clock and date with multiple formatting options and adjustable sizes.
-- **Integrated Search**: Quickly search Google directly from your startpage.
-- **Bookmark Management**: Easily add, edit, delete, and organize your favorite websites. Import bookmarks directly from your browser for a seamless setup.
-- **Dynamic Backgrounds**: Choose your background from:
-  - A custom image URL.
-  - A solid color.
-  - A selection of beautiful predefined local themes/gradients.
-- **Personalized Aesthetics**:
-  - Select your preferred font.
-  - Set an accent color.
-  - Apply subtle visual effects (e.g., a "Rain Effect").
-  - Fine-tune gradient backgrounds with custom start/end colors and angles.
-- **Multilingual Support**: Available in English and Vietnamese.
-- **Responsive Design**: Optimized for various screen sizes.
+### Clock & Date
 
-Startpage aims to provide a fast, elegant, and efficient gateway to your online world.
+- Real-time clock with second-level updates
+- Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
+- Adjustable clock size and custom color picker
+- Separate visibility toggles for clock, date, and Gregorian calendar
+- Vietnamese lunar calendar display (optional)
 
+### Smart Search
 
+- Google text search with real-time suggestions (up to 6, with favicons)
+- **Google Images** and **Google Lens** search support
+- Image search via file upload, clipboard paste, or image URL
+- Switchable search engine selector with persistent preference
+- 250 ms debounced suggestion fetching
 
-<!-- sound -->
-https://pixabay.com/sound-effects/household-bedside-clock-alarm-95792/
+### Bookmark Manager
+
+- Add, edit, delete, and reorder bookmarks
+- **Bookmark Groups** — create multiple tabs, rename, reorder, and delete groups
+- Auto favicon fetching via Google Favicon API with fallback
+- Import bookmarks directly from Chrome's browser bookmarks
+- Right-click context menu for quick actions
+
+### Full Calendar
+
+- Full month-view calendar with navigation
+- **Add, edit, and delete events** with title, time, and description
+- Supports multiple events per day ("+X more" indicator)
+- Vietnamese lunar calendar dates and **Vietnamese public holiday** detection
+- Right-click context menu on days and events
+
+### Todo List
+
+- Add, complete, and delete tasks
+- Inline editing via right-click context menu
+- Auto-saved to localStorage
+
+### Notepad
+
+- Create multiple notes with custom colors (8 presets)
+- **Rich text editor**: bold, italic, underline, strikethrough, bullet & numbered lists, image insertion
+- **Floating/detachable windows** — pop notes out into draggable, resizable windows and reattach them
+- Light/dark content background toggle
+- Full persistence of content, color, and window state
+
+### Timer
+
+- Countdown timer with Start / Pause / Reset controls
+- **Smart input parser**: type `30` → 30 s · `130` → 1:30 · `13000` → 1:30:00
+- Audio alarm on completion with stop button
+- Persists running state across page reloads (auto-resumes)
+
+### Music Player
+
+- Detects media playing in **any Chrome tab** via the Media Session API
+- Displays track title, artist, album art, and platform (YouTube / Spotify / SoundCloud)
+- Play / Pause / Previous / Next controls
+- Draggable, collapsible mini-player with vinyl disc animation
+
+### Music Visualizer
+
+- Multiple visualizer styles: **Vinyl**, **Pixel (EQ bars)**, **Bars**
+- Canvas-based pixel mode with peak-hold animation
+- Syncs automatically with the music player state
+
+### Dynamic Backgrounds
+
+- Local preset themes / gradients
+- Custom solid color picker
+- Custom image via URL
+- **Image upload** stored locally (no cloud)
+- **Unsplash integration** — browse 10+ category feeds with your own API key
+- **Background video** support (MP4, WebM, MOV)
+- Gradient builder with start color, end color, and angle controls
+- Save custom gradients to a personal gallery
+- Background position (X/Y offset) and size controls
+
+### Visual Effects (22 Animations)
+
+Select from 22 canvas-based animated effects with individual color pickers:
+
+| Effect             | Effect          | Effect             |
+| ------------------ | --------------- | ------------------ |
+| Aura               | Aurora Wave     | Bubbles            |
+| Cloud Drift        | Constellation   | Falling Meteor     |
+| Fireflies          | Fireflies HD    | Hacker             |
+| Light Sweep        | Matrix Rain     | Network            |
+| Ocean Wave         | Particles Storm | Rainbow Background |
+| Rain Galaxy        | Rain on Glass   | Sakura             |
+| Snowfall           | Wavy Lines      | Wind               |
+| SVG Wave Generator |                 |                    |
+
+### 🌊 SVG Wave Generator
+
+- Fully configurable wave backgrounds: line count, amplitude X/Y, offset, angle, smoothness, fill toggle
+- HSL color gradient (start → end)
+- Save custom waves to a personal gallery
+
+### ⚙️ Settings & Personalization
+
+- **Font selector** with support for loading custom fonts
+- **Accent color** applied across the entire UI
+- **Page title** customization
+- **Language**: English and Vietnamese (i18n)
+- Per-component **visibility toggles**: Clock, Search, Bookmarks, Bookmark Groups, Todo, Timer, Notepad, Calendar, Lunar Calendar, Music Player, Quick Access
+- **Ghost mode** for side controls
+- **Export / Import** settings as a JSON file
+- Reset all settings to defaults
+- Draggable component position persistence with reset option
+
+---
+
+## Installation
+
+1. Download or clone this repository.
+2. Open `chrome://extensions/` in Chrome.
+3. Enable **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the project folder.
+5. Open a new tab — enjoy your Startpage!
+
+---
+
+## Tech Stack
+
+- **Vanilla JavaScript** — no frameworks, no build step
+- Chrome Extension **Manifest V3**
+- Canvas API for animations and visualizer
+- LocalStorage for all persistence
+- Chrome Bookmarks API for browser import
+- Chrome Media Session API for music detection
+
+---
+
+<!-- sound credit -->
+<!-- https://pixabay.com/sound-effects/household-bedside-clock-alarm-95792/ -->
