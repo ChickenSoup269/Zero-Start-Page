@@ -17,6 +17,7 @@ export const removeBgBtn = document.getElementById("remove-bg-btn")
 export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
+export const bgSizeSelect = document.getElementById("bg-size-select")
 export const bgPosXInput = document.getElementById("bg-pos-x-input")
 export const bgPosXValue = document.getElementById("bg-pos-x-value")
 export const bgPosYInput = document.getElementById("bg-pos-y-input")
@@ -42,11 +43,6 @@ export const gradientAngleValue = document.getElementById(
 export const saveGradientBtn = document.getElementById("save-gradient-btn")
 export const userGradientsGallery = document.getElementById(
   "user-gradients-gallery",
-)
-
-export const meteorColorPicker = document.getElementById("meteor-color-picker")
-export const meteorColorSetting = document.getElementById(
-  "meteor-color-setting",
 )
 
 export const starColorPicker = document.getElementById("star-color-picker")
@@ -89,6 +85,19 @@ export const bubblesColorPicker = document.getElementById(
 )
 export const bubblesColorSetting = document.getElementById(
   "bubbles-color-setting",
+)
+
+export const rainOnGlassColorPicker = document.getElementById(
+  "rain-on-glass-color-picker",
+)
+export const rainOnGlassColorSetting = document.getElementById(
+  "rain-on-glass-color-setting",
+)
+export const wavyLinesColorPicker = document.getElementById(
+  "wavy-lines-color-picker",
+)
+export const wavyLinesColorSetting = document.getElementById(
+  "wavy-lines-color-setting",
 )
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
@@ -181,4 +190,68 @@ export const showBookmarkGroupsCheckbox = document.getElementById(
 export const musicStyleSelect = document.getElementById("music-style-select")
 export const musicVisualizerStyleSelect = document.getElementById(
   "music-visualizer-style-select",
+)
+
+// SVG Wave Generator Controls
+export const svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
+export const svgWaveToggleLabel = document.getElementById(
+  "svg-wave-toggle-label",
+)
+export const svgWaveSettings = document.getElementById("svg-wave-settings")
+export const svgWaveLines = document.getElementById("svg-wave-lines")
+export const svgWaveLinesValue = document.getElementById("svg-wave-lines-value")
+export const svgWaveAmpX = document.getElementById("svg-wave-amp-x")
+export const svgWaveAmpXValue = document.getElementById("svg-wave-amp-x-value")
+export const svgWaveAmpY = document.getElementById("svg-wave-amp-y")
+export const svgWaveAmpYValue = document.getElementById("svg-wave-amp-y-value")
+export const svgWaveOffsetX = document.getElementById("svg-wave-offset-x")
+export const svgWaveOffsetXValue = document.getElementById(
+  "svg-wave-offset-x-value",
+)
+export const svgWaveAngle = document.getElementById("svg-wave-angle")
+export const svgWaveAngleValue = document.getElementById("svg-wave-angle-value")
+export const svgWaveSmoothness = document.getElementById("svg-wave-smoothness")
+export const svgWaveSmoothnessValue = document.getElementById(
+  "svg-wave-smoothness-value",
+)
+export const svgWaveCraziness = document.getElementById("svg-wave-craziness")
+export const svgWaveCrazinessValue = document.getElementById(
+  "svg-wave-craziness-value",
+)
+export const svgWaveFill = document.getElementById("svg-wave-fill")
+export const svgWaveStartHue = document.getElementById("svg-wave-start-hue")
+export const svgWaveStartHueValue = document.getElementById(
+  "svg-wave-start-hue-value",
+)
+export const svgWaveStartSat = document.getElementById("svg-wave-start-sat")
+export const svgWaveStartSatValue = document.getElementById(
+  "svg-wave-start-sat-value",
+)
+export const svgWaveStartLight = document.getElementById("svg-wave-start-light")
+export const svgWaveStartLightValue = document.getElementById(
+  "svg-wave-start-light-value",
+)
+export const svgWaveStartPreview = document.getElementById(
+  "svg-wave-start-preview",
+)
+export const svgWaveEndHue = document.getElementById("svg-wave-end-hue")
+export const svgWaveEndHueValue = document.getElementById(
+  "svg-wave-end-hue-value",
+)
+export const svgWaveEndSat = document.getElementById("svg-wave-end-sat")
+export const svgWaveEndSatValue = document.getElementById(
+  "svg-wave-end-sat-value",
+)
+export const svgWaveEndLight = document.getElementById("svg-wave-end-light")
+export const svgWaveEndLightValue = document.getElementById(
+  "svg-wave-end-light-value",
+)
+export const svgWaveEndPreview = document.getElementById("svg-wave-end-preview")
+export const svgWaveRandomizeBtn = document.getElementById(
+  "svg-wave-randomize-btn",
+)
+export const svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
+export const svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
+export const userSvgWavesGallery = document.getElementById(
+  "user-svg-waves-gallery",
 )

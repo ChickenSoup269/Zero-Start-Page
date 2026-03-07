@@ -24,8 +24,6 @@ import {
   gradientAngleValue,
   saveGradientBtn,
   userGradientsGallery,
-  meteorColorPicker,
-  meteorColorSetting,
   starColorPicker,
   starColorSetting,
   resetSettingsBtn,
@@ -48,6 +46,7 @@ import {
   saveCurrentBgBtn,
   removeBgBtn,
   bgPositionSetting,
+  bgSizeSelect,
   bgPosXInput,
   bgPosXValue,
   bgPosYInput,
@@ -66,6 +65,10 @@ import {
   snowfallColorSetting,
   bubblesColorPicker,
   bubblesColorSetting,
+  rainOnGlassColorPicker,
+  rainOnGlassColorSetting,
+  wavyLinesColorPicker,
+  wavyLinesColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -84,6 +87,42 @@ import {
   unsplashCategorySelect,
   unsplashAccessKeyInput,
   showDateCheckbox,
+  svgWaveToggleBtn,
+  svgWaveToggleLabel,
+  svgWaveSettings,
+  svgWaveLines,
+  svgWaveLinesValue,
+  svgWaveAmpX,
+  svgWaveAmpXValue,
+  svgWaveAmpY,
+  svgWaveAmpYValue,
+  svgWaveOffsetX,
+  svgWaveOffsetXValue,
+  svgWaveAngle,
+  svgWaveAngleValue,
+  svgWaveSmoothness,
+  svgWaveSmoothnessValue,
+  svgWaveCraziness,
+  svgWaveCrazinessValue,
+  svgWaveFill,
+  svgWaveStartHue,
+  svgWaveStartHueValue,
+  svgWaveStartSat,
+  svgWaveStartSatValue,
+  svgWaveStartLight,
+  svgWaveStartLightValue,
+  svgWaveStartPreview,
+  svgWaveEndHue,
+  svgWaveEndHueValue,
+  svgWaveEndSat,
+  svgWaveEndSatValue,
+  svgWaveEndLight,
+  svgWaveEndLightValue,
+  svgWaveEndPreview,
+  svgWaveRandomizeBtn,
+  svgWaveCloseBtn,
+  svgWaveSaveBtn,
+  userSvgWavesGallery,
 } from "../utils/dom.js"
 import {
   getSettings,
@@ -97,35 +136,39 @@ import { getContrastYIQ, hexToRgb } from "../utils/colors.js"
 
 // Import các hiệu ứng
 import { StarFall } from "./animations/rainGalaxy.js"
-import { FallingMeteor } from "./animations/fallingMeteor.js"
 import { FirefliesEffect } from "./animations/fireflies.js"
 import { NetworkEffect } from "./animations/network.js"
 import { MatrixRain } from "./animations/matrixRain.js"
 import { AuraEffect } from "./animations/aura.js"
 import { WindEffect } from "./animations/wind.js"
 import { HackerEffect } from "./animations/hacker.js"
-import { ParticlesStormEffect } from "./animations/particlesStorm.js"
 import { SakuraEffect } from "./animations/sakura.js"
 import { SnowfallEffect } from "./animations/snowfall.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
-import { ConstellationEffect } from "./animations/constellation.js"
 import { BubblesEffect } from "./animations/bubbles.js"
+import { RainOnGlassEffect } from "./animations/rainOnGlass.js"
+import { RainbowBackground } from "./animations/rainbowBackground.js"
+import { WavyLinesEffect } from "./animations/wavyLines.js"
+import { FirefliesHD } from "./animations/firefliesHD.js"
+import { SvgWaveGenerator } from "./animations/svgWaveGenerator.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
-  fallingMeteorEffect,
   firefliesEffect,
   networkEffect,
   matrixRainEffect,
   auraEffect,
   windEffect,
   hackerEffect,
-  particlesStormEffect,
   sakuraEffect,
   snowfallEffect,
   auroraWaveEffect,
-  constellationEffect,
-  bubblesEffect
+  bubblesEffect,
+  rainOnGlassEffect,
+  rainbowEffect,
+  wavyLinesEffect,
+  firefliesHDEffect,
+  svgWaveEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
   if (isGradient) {
@@ -140,6 +183,38 @@ function handleSettingUpdate(key, value, isGradient = false) {
   applySettings()
   renderLocalBackgrounds()
   renderUserGradients()
+}
+
+function _getSvgWaveParams(settings) {
+  return {
+    lines: settings.svgWaveLines ?? 5,
+    amplitudeX: settings.svgWaveAmplitudeX ?? 200,
+    amplitudeY: settings.svgWaveAmplitudeY ?? 80,
+    offsetX: settings.svgWaveOffsetX ?? 0,
+    smoothness: settings.svgWaveSmoothness ?? 0.5,
+    fill: settings.svgWaveFill !== false,
+    craziness: settings.svgWaveCraziness ?? 30,
+    angle: settings.svgWaveAngle ?? 0,
+    startHue: settings.svgWaveStartHue ?? 200,
+    startSaturation: settings.svgWaveStartSaturation ?? 70,
+    startLightness: settings.svgWaveStartLightness ?? 40,
+    endHue: settings.svgWaveEndHue ?? 280,
+    endSaturation: settings.svgWaveEndSaturation ?? 70,
+    endLightness: settings.svgWaveEndLightness ?? 30,
+  }
+}
+
+function _updateWaveColorPreviews(s) {
+  const sh = s.svgWaveStartHue ?? 200
+  const ss = s.svgWaveStartSaturation ?? 70
+  const sl = s.svgWaveStartLightness ?? 40
+  const eh = s.svgWaveEndHue ?? 280
+  const es = s.svgWaveEndSaturation ?? 70
+  const el = s.svgWaveEndLightness ?? 30
+  if (svgWaveStartPreview)
+    svgWaveStartPreview.style.background = `hsl(${sh},${ss}%,${sl}%)`
+  if (svgWaveEndPreview)
+    svgWaveEndPreview.style.background = `hsl(${eh},${es}%,${el}%)`
 }
 
 // Unsplash topics: slug is used directly in the Topics API.
@@ -291,7 +366,7 @@ export function applySettings() {
     } else {
       document.body.style.backgroundImage = `url('${bg}')`
     }
-    document.body.style.backgroundSize = "cover"
+    document.body.style.backgroundSize = settings.bgSize || "cover"
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (bg) {
     document.body.classList.add("bg-image-active")
@@ -305,6 +380,7 @@ export function applySettings() {
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else if (bg.match(/^https?:\/\//)) {
       document.body.style.backgroundImage = `url('${bg}')`
+      document.body.style.backgroundSize = settings.bgSize || "cover"
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else {
       document.body.style.background = bg
@@ -314,8 +390,12 @@ export function applySettings() {
       )
     }
   } else {
-    // If no background image/color, apply the gradient
-    document.body.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+    // If no background image/color, apply SVG wave or fallback gradient
+    if (settings.svgWaveActive && svgWaveEffect) {
+      svgWaveEffect.start(_getSvgWaveParams(settings))
+    } else {
+      document.body.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+    }
   }
 
   // 2.1 Background Position
@@ -371,21 +451,21 @@ export function applySettings() {
 
   // 4. Effects Management (STOP ALL FIRST and CLEAR CANVAS)
   if (starFallEffect) starFallEffect.stop()
-  if (fallingMeteorEffect) fallingMeteorEffect.stop()
-
   if (firefliesEffect) firefliesEffect.stop()
   if (networkEffect) networkEffect.stop()
   if (matrixRainEffect) matrixRainEffect.stop()
   if (auraEffect) auraEffect.stop()
   if (windEffect) windEffect.stop()
   if (hackerEffect) hackerEffect.stop()
-
-  if (particlesStormEffect) particlesStormEffect.stop()
   if (sakuraEffect) sakuraEffect.stop()
   if (snowfallEffect) snowfallEffect.stop()
   if (auroraWaveEffect) auroraWaveEffect.stop()
-  if (constellationEffect) constellationEffect.stop()
   if (bubblesEffect) bubblesEffect.stop()
+  if (rainOnGlassEffect) rainOnGlassEffect.stop()
+  if (rainbowEffect) rainbowEffect.stop()
+  if (wavyLinesEffect) wavyLinesEffect.stop()
+  if (firefliesHDEffect) firefliesHDEffect.stop()
+  if (svgWaveEffect) svgWaveEffect.stop()
 
   // Clear canvas completely before starting new effect
   const effectCanvas = document.getElementById("effect-canvas")
@@ -402,10 +482,6 @@ export function applySettings() {
       case "galaxy":
         starFallEffect.start()
         break
-      case "meteor":
-        fallingMeteorEffect.start()
-        break
-
       case "fireflies":
         firefliesEffect.start()
         break
@@ -424,9 +500,6 @@ export function applySettings() {
       case "hacker":
         hackerEffect.start()
         break
-      case "particlesStorm":
-        particlesStormEffect.start()
-        break
       case "sakura":
         sakuraEffect.start()
         break
@@ -436,11 +509,20 @@ export function applySettings() {
       case "auroraWave":
         auroraWaveEffect.start()
         break
-      case "constellation":
-        constellationEffect.start()
-        break
       case "bubbles":
         bubblesEffect.start()
+        break
+      case "rainOnGlass":
+        rainOnGlassEffect.start()
+        break
+      case "rainbow":
+        rainbowEffect.start()
+        break
+      case "wavyLines":
+        wavyLinesEffect.start()
+        break
+      case "firefliesHD":
+        firefliesHDEffect.start()
         break
     }
   }, 50)
@@ -486,6 +568,7 @@ function updateSettingsInputs() {
   accentColorPicker.value = settings.accentColor || "#a8c0ff"
   clockColorPicker.value = settings.clockColor || "#ffffff"
 
+  bgSizeSelect.value = settings.bgSize || "cover"
   bgPosXInput.value = settings.bgPositionX || 50
   bgPosXValue.textContent = `${bgPosXInput.value}%`
   bgPosYInput.value = settings.bgPositionY || 50
@@ -516,7 +599,6 @@ function updateSettingsInputs() {
   gradientAngleValue.textContent = settings.gradientAngle
 
   // Effect Color Inputs
-  meteorColorPicker.value = settings.meteorColor || "#ffffff"
   starColorPicker.value = settings.starColor || "#ffffff"
 
   networkColorPicker.value = settings.networkColor || "#00bcd4"
@@ -526,10 +608,10 @@ function updateSettingsInputs() {
   sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
   snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
   bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
+  rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
+  wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
 
   // Visibility of Effect Settings
-  meteorColorSetting.style.display =
-    settings.effect === "meteor" ? "block" : "none"
   starColorSetting.style.display =
     settings.effect === "galaxy" ? "block" : "none"
 
@@ -546,8 +628,49 @@ function updateSettingsInputs() {
     settings.effect === "snowfall" ? "block" : "none"
   bubblesColorSetting.style.display =
     settings.effect === "bubbles" ? "block" : "none"
+  rainOnGlassColorSetting.style.display =
+    settings.effect === "rainOnGlass" ? "block" : "none"
+  wavyLinesColorSetting.style.display =
+    settings.effect === "wavyLines" ? "block" : "none"
 
-  // Layout Checkboxes
+  // SVG Wave Generator — sync all sliders/checkboxes to current state
+  const waveActive = settings.svgWaveActive === true
+  svgWaveSettings.style.display = waveActive ? "block" : "none"
+  if (svgWaveToggleLabel) {
+    const i18n = geti18n()
+    svgWaveToggleLabel.textContent = waveActive
+      ? i18n.settings_svg_wave_close || "Close Controls"
+      : i18n.settings_svg_wave_open || "Open Wave Generator"
+  }
+  svgWaveLines.value = settings.svgWaveLines ?? 5
+  svgWaveLinesValue.textContent = svgWaveLines.value
+  svgWaveAmpX.value = settings.svgWaveAmplitudeX ?? 200
+  svgWaveAmpXValue.textContent = svgWaveAmpX.value
+  svgWaveAmpY.value = settings.svgWaveAmplitudeY ?? 80
+  svgWaveAmpYValue.textContent = svgWaveAmpY.value
+  svgWaveOffsetX.value = settings.svgWaveOffsetX ?? 0
+  svgWaveOffsetXValue.textContent = svgWaveOffsetX.value
+  svgWaveAngle.value = settings.svgWaveAngle ?? 0
+  svgWaveAngleValue.textContent = svgWaveAngle.value
+  svgWaveSmoothness.value = settings.svgWaveSmoothness ?? 0.5
+  svgWaveSmoothnessValue.textContent = svgWaveSmoothness.value
+  svgWaveCraziness.value = settings.svgWaveCraziness ?? 30
+  svgWaveCrazinessValue.textContent = svgWaveCraziness.value
+  svgWaveFill.checked = settings.svgWaveFill !== false
+  svgWaveStartHue.value = settings.svgWaveStartHue ?? 200
+  svgWaveStartHueValue.textContent = svgWaveStartHue.value
+  svgWaveStartSat.value = settings.svgWaveStartSaturation ?? 70
+  svgWaveStartSatValue.textContent = svgWaveStartSat.value
+  svgWaveStartLight.value = settings.svgWaveStartLightness ?? 40
+  svgWaveStartLightValue.textContent = svgWaveStartLight.value
+  svgWaveEndHue.value = settings.svgWaveEndHue ?? 280
+  svgWaveEndHueValue.textContent = svgWaveEndHue.value
+  svgWaveEndSat.value = settings.svgWaveEndSaturation ?? 70
+  svgWaveEndSatValue.textContent = svgWaveEndSat.value
+  svgWaveEndLight.value = settings.svgWaveEndLightness ?? 30
+  svgWaveEndLightValue.textContent = svgWaveEndLight.value
+  _updateWaveColorPreviews(settings)
+  renderUserSvgWaves()
   showTodoCheckbox.checked = settings.showTodoList !== false
   showNotepadCheckbox.checked = settings.showNotepad !== false
   showTimerCheckbox.checked = settings.showTimer === true
@@ -662,13 +785,74 @@ export function renderUserGradients() {
   }
 }
 
+export function renderUserSvgWaves() {
+  const settings = getSettings()
+  if (!userSvgWavesGallery) return
+  userSvgWavesGallery.innerHTML = ""
+  if (
+    !Array.isArray(settings.userSvgWaves) ||
+    settings.userSvgWaves.length === 0
+  ) {
+    userSvgWavesGallery.parentElement.style.display = "none"
+    return
+  }
+  userSvgWavesGallery.parentElement.style.display = ""
+  settings.userSvgWaves.forEach((wave, index) => {
+    const item = document.createElement("div")
+    item.className = "user-gradient-item"
+    item.title = `Wave ${index + 1}`
+    item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
+    item.style.backgroundSize = "cover"
+
+    const removeBtn = document.createElement("button")
+    removeBtn.className = "remove-bg-btn"
+    removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      settings.userSvgWaves.splice(index, 1)
+      saveSettings()
+      renderUserSvgWaves()
+    })
+
+    item.appendChild(removeBtn)
+    item.addEventListener("click", () => {
+      // Restore wave params
+      updateSetting("svgWaveLines", wave.lines)
+      updateSetting("svgWaveAmplitudeX", wave.amplitudeX)
+      updateSetting("svgWaveAmplitudeY", wave.amplitudeY)
+      updateSetting("svgWaveOffsetX", wave.offsetX)
+      updateSetting("svgWaveAngle", wave.angle ?? 0)
+      updateSetting("svgWaveSmoothness", wave.smoothness)
+      updateSetting("svgWaveFill", wave.fill)
+      updateSetting("svgWaveCraziness", wave.craziness)
+      updateSetting("svgWaveStartHue", wave.startHue)
+      updateSetting("svgWaveStartSaturation", wave.startSaturation)
+      updateSetting("svgWaveStartLightness", wave.startLightness)
+      updateSetting("svgWaveEndHue", wave.endHue)
+      updateSetting("svgWaveEndSaturation", wave.endSaturation)
+      updateSetting("svgWaveEndLightness", wave.endLightness)
+      updateSetting("svgWaveActive", true)
+      updateSetting("background", null)
+      saveSettings()
+      updateSettingsInputs()
+      const gParams = _getSvgWaveParams(getSettings())
+      if (svgWaveEffect.active) {
+        svgWaveEffect.update(gParams)
+      } else {
+        svgWaveEffect.start(gParams)
+      }
+    })
+
+    userSvgWavesGallery.appendChild(item)
+  })
+}
+
 export function initSettings() {
   const i18n = geti18n()
   const settings = getSettings()
 
   // --- INSTANTIATE EFFECTS ---
   starFallEffect = new StarFall("effect-canvas", settings.starColor)
-  fallingMeteorEffect = new FallingMeteor("effect-canvas", settings.meteorColor)
   firefliesEffect = new FirefliesEffect("effect-canvas")
   networkEffect = new NetworkEffect(
     "effect-canvas",
@@ -678,11 +862,6 @@ export function initSettings() {
   auraEffect = new AuraEffect("effect-canvas", settings.auraColor)
   windEffect = new WindEffect("effect-canvas")
   hackerEffect = new HackerEffect("effect-canvas", settings.hackerColor)
-
-  particlesStormEffect = new ParticlesStormEffect(
-    "effect-canvas",
-    settings.accentColor,
-  )
   sakuraEffect = new SakuraEffect(
     "effect-canvas",
     settings.sakuraColor || "#ffb7c5",
@@ -692,16 +871,24 @@ export function initSettings() {
     settings.snowfallColor || "#ffffff",
   )
   auroraWaveEffect = new AuroraWaveEffect("effect-canvas", settings.accentColor)
-  constellationEffect = new ConstellationEffect(
-    "effect-canvas",
-    settings.accentColor,
-  )
   bubblesEffect = new BubblesEffect(
     "effect-canvas",
     settings.bubbleColor || "#60c8ff",
   )
+  rainOnGlassEffect = new RainOnGlassEffect(
+    "effect-canvas",
+    settings.rainOnGlassColor || "#a8d8ff",
+  )
+  rainbowEffect = new RainbowBackground("effect-canvas")
+  wavyLinesEffect = new WavyLinesEffect(
+    "effect-canvas",
+    settings.wavyLinesColor || "#00bcd4",
+  )
+  firefliesHDEffect = new FirefliesHD("effect-canvas")
+  svgWaveEffect = new SvgWaveGenerator()
 
   populateUnsplashCollections()
+  renderUserSvgWaves()
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
@@ -962,6 +1149,10 @@ export function initSettings() {
     })
   })
 
+  bgSizeSelect.addEventListener("change", () => {
+    handleSettingUpdate("bgSize", bgSizeSelect.value)
+  })
+
   bgPosXInput.addEventListener("input", () => {
     bgPosXValue.textContent = `${bgPosXInput.value}%`
     handleSettingUpdate("bgPositionX", bgPosXInput.value)
@@ -1018,11 +1209,6 @@ export function initSettings() {
   })
 
   // --- Effect Color Pickers Listeners ---
-  meteorColorPicker.addEventListener("input", () => {
-    updateSetting("meteorColor", meteorColorPicker.value)
-    saveSettings()
-    fallingMeteorEffect.updateColor(meteorColorPicker.value)
-  })
   starColorPicker.addEventListener("input", () => {
     updateSetting("starColor", starColorPicker.value)
     saveSettings()
@@ -1067,6 +1253,132 @@ export function initSettings() {
     saveSettings()
     bubblesEffect.color = bubblesColorPicker.value
   })
+
+  rainOnGlassColorPicker.addEventListener("input", () => {
+    updateSetting("rainOnGlassColor", rainOnGlassColorPicker.value)
+    saveSettings()
+    rainOnGlassEffect.color = rainOnGlassColorPicker.value
+    rainOnGlassEffect._parseColor(rainOnGlassColorPicker.value)
+  })
+
+  wavyLinesColorPicker.addEventListener("input", () => {
+    updateSetting("wavyLinesColor", wavyLinesColorPicker.value)
+    saveSettings()
+    wavyLinesEffect.color = wavyLinesColorPicker.value
+  })
+
+  // --- SVG Wave Generator Listeners ---
+  function _applyWaveFromInputs() {
+    // Auto-activate wave if controls are open
+    if (!getSettings().svgWaveActive) {
+      updateSetting("svgWaveActive", true)
+      updateSetting("background", null)
+    }
+    updateSetting("svgWaveLines", +svgWaveLines.value)
+    updateSetting("svgWaveAmplitudeX", +svgWaveAmpX.value)
+    updateSetting("svgWaveAmplitudeY", +svgWaveAmpY.value)
+    updateSetting("svgWaveOffsetX", +svgWaveOffsetX.value)
+    updateSetting("svgWaveAngle", +svgWaveAngle.value)
+    updateSetting("svgWaveSmoothness", +svgWaveSmoothness.value)
+    updateSetting("svgWaveFill", svgWaveFill.checked)
+    updateSetting("svgWaveCraziness", +svgWaveCraziness.value)
+    updateSetting("svgWaveStartHue", +svgWaveStartHue.value)
+    updateSetting("svgWaveStartSaturation", +svgWaveStartSat.value)
+    updateSetting("svgWaveStartLightness", +svgWaveStartLight.value)
+    updateSetting("svgWaveEndHue", +svgWaveEndHue.value)
+    updateSetting("svgWaveEndSaturation", +svgWaveEndSat.value)
+    updateSetting("svgWaveEndLightness", +svgWaveEndLight.value)
+    saveSettings()
+    _updateWaveColorPreviews(getSettings())
+    svgWaveEffect.update(_getSvgWaveParams(getSettings()))
+    if (!svgWaveEffect.active)
+      svgWaveEffect.start(_getSvgWaveParams(getSettings()))
+  }
+
+  svgWaveToggleBtn.addEventListener("click", () => {
+    const settings = getSettings()
+    const nowActive = !settings.svgWaveActive
+    updateSetting("svgWaveActive", nowActive)
+    // When turning wave on, clear any explicit background so the else branch fires
+    if (nowActive) updateSetting("background", null)
+    saveSettings()
+    applySettings()
+    updateSettingsInputs()
+  })
+
+  svgWaveCloseBtn.addEventListener("click", () => {
+    updateSetting("svgWaveActive", false)
+    saveSettings()
+    applySettings()
+    updateSettingsInputs()
+  })
+
+  svgWaveRandomizeBtn.addEventListener("click", () => {
+    const randomParams = svgWaveEffect.randomize()
+    updateSetting("svgWaveLines", randomParams.lines)
+    updateSetting("svgWaveAmplitudeX", randomParams.amplitudeX)
+    updateSetting("svgWaveAmplitudeY", randomParams.amplitudeY)
+    updateSetting("svgWaveOffsetX", randomParams.offsetX)
+    updateSetting("svgWaveSmoothness", randomParams.smoothness)
+    updateSetting("svgWaveFill", randomParams.fill)
+    updateSetting("svgWaveCraziness", randomParams.craziness)
+    updateSetting("svgWaveAngle", randomParams.angle)
+    updateSetting("svgWaveStartHue", randomParams.startHue)
+    updateSetting("svgWaveStartSaturation", randomParams.startSaturation)
+    updateSetting("svgWaveStartLightness", randomParams.startLightness)
+    updateSetting("svgWaveEndHue", randomParams.endHue)
+    updateSetting("svgWaveEndSaturation", randomParams.endSaturation)
+    updateSetting("svgWaveEndLightness", randomParams.endLightness)
+    // Always activate wave when randomizing
+    updateSetting("svgWaveActive", true)
+    updateSetting("background", null)
+    saveSettings()
+    updateSettingsInputs()
+    // Apply immediately — same pattern as _applyWaveFromInputs
+    const rParams = _getSvgWaveParams(getSettings())
+    if (svgWaveEffect.active) {
+      svgWaveEffect.update(rParams)
+    } else {
+      svgWaveEffect.start(rParams)
+    }
+  })
+
+  svgWaveSaveBtn.addEventListener("click", () => {
+    const settings = getSettings()
+    const wave = _getSvgWaveParams(settings)
+    if (!Array.isArray(settings.userSvgWaves)) settings.userSvgWaves = []
+    if (settings.userSvgWaves.length >= 12) {
+      showAlert("You can only save up to 12 wave presets.")
+      return
+    }
+    settings.userSvgWaves.push(wave)
+    saveSettings()
+    renderUserSvgWaves()
+  })
+
+  // Wire up all wave sliders/checkbox
+  const waveSliders = [
+    [svgWaveLines, svgWaveLinesValue],
+    [svgWaveAmpX, svgWaveAmpXValue],
+    [svgWaveAmpY, svgWaveAmpYValue],
+    [svgWaveOffsetX, svgWaveOffsetXValue],
+    [svgWaveAngle, svgWaveAngleValue],
+    [svgWaveSmoothness, svgWaveSmoothnessValue],
+    [svgWaveCraziness, svgWaveCrazinessValue],
+    [svgWaveStartHue, svgWaveStartHueValue],
+    [svgWaveStartSat, svgWaveStartSatValue],
+    [svgWaveStartLight, svgWaveStartLightValue],
+    [svgWaveEndHue, svgWaveEndHueValue],
+    [svgWaveEndSat, svgWaveEndSatValue],
+    [svgWaveEndLight, svgWaveEndLightValue],
+  ]
+  waveSliders.forEach(([input, label]) => {
+    input.addEventListener("input", () => {
+      label.textContent = input.value
+      _applyWaveFromInputs()
+    })
+  })
+  svgWaveFill.addEventListener("change", _applyWaveFromInputs)
 
   effectSelect.addEventListener("change", () =>
     handleSettingUpdate("effect", effectSelect.value),

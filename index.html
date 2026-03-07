@@ -118,6 +118,14 @@
                         <label><i class="fa-solid fa-arrows-up-down-left-right"></i> <span
                                 data-i18n="settings_bg_position">Background Position</span></label>
                         <div class="setting-item">
+                            <label data-i18n="settings_bg_fit">Image Fit</label>
+                            <select id="bg-size-select">
+                                <option value="cover" data-i18n="settings_bg_fit_cover">Cover (crop)</option>
+                                <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)
+                                </option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
                             <label>Horizontal: <span id="bg-pos-x-value">50%</span></label>
                             <input type="range" id="bg-pos-x-input" min="0" max="100" value="50">
                         </div>
@@ -221,12 +229,128 @@
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
 
+            <!-- SVG Gradient Wave Generator -->
+            <div class="setting-group" id="svg-wave-group">
+                <label><i class="fa-solid fa-water"></i> <span data-i18n="settings_svg_wave_title">SVG Gradient
+                        Wave</span></label>
+                <button id="svg-wave-toggle-btn" class="secondary-btn full-width">
+                    <i class="fa-solid fa-wave-square"></i>
+                    <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave Generator</span>
+                </button>
+                <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
+
+                    <!-- Lines -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_lines">Lines: <span
+                                id="svg-wave-lines-value">5</span></label>
+                        <input type="range" id="svg-wave-lines" min="1" max="15" value="5">
+                    </div>
+                    <!-- Amplitude X -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_amp_x">Amplitude X: <span
+                                id="svg-wave-amp-x-value">200</span></label>
+                        <input type="range" id="svg-wave-amp-x" min="30" max="600" value="200">
+                    </div>
+                    <!-- Amplitude Y -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_amp_y">Amplitude Y: <span
+                                id="svg-wave-amp-y-value">80</span></label>
+                        <input type="range" id="svg-wave-amp-y" min="5" max="300" value="80">
+                    </div>
+                    <!-- Offset X -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_offset_x">Offset X: <span
+                                id="svg-wave-offset-x-value">0</span></label>
+                        <input type="range" id="svg-wave-offset-x" min="0" max="500" value="0">
+                    </div>
+                    <!-- Angle -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_angle">Angle: <span
+                                id="svg-wave-angle-value">0</span>°</label>
+                        <input type="range" id="svg-wave-angle" min="-90" max="90" value="0">
+                    </div>
+                    <!-- Smoothness -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_smoothness">Smoothness: <span
+                                id="svg-wave-smoothness-value">0.5</span></label>
+                        <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5">
+                    </div>
+                    <!-- Craziness -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_craziness">Craziness: <span
+                                id="svg-wave-craziness-value">30</span></label>
+                        <input type="range" id="svg-wave-craziness" min="0" max="200" value="30">
+                    </div>
+                    <!-- Fill toggle -->
+                    <div class="setting-item-row" style="margin-bottom: 10px;">
+                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill">Fill</label>
+                        <input type="checkbox" id="svg-wave-fill" checked>
+                    </div>
+
+                    <!-- Start Color -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_start_color"><strong>Start Color</strong></label>
+                        <div id="svg-wave-start-preview"
+                            style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(200,70%,40%);transition:background 0.2s;">
+                        </div>
+                        <label data-i18n="settings_svg_wave_hue">Hue: <span
+                                id="svg-wave-start-hue-value">200</span></label>
+                        <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200">
+                        <label data-i18n="settings_svg_wave_sat">Saturation: <span
+                                id="svg-wave-start-sat-value">70</span>%</label>
+                        <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70">
+                        <label data-i18n="settings_svg_wave_light">Lightness: <span
+                                id="svg-wave-start-light-value">40</span>%</label>
+                        <input type="range" id="svg-wave-start-light" min="0" max="100" value="40">
+                    </div>
+
+                    <!-- End Color -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_svg_wave_end_color"><strong>End Color</strong></label>
+                        <div id="svg-wave-end-preview"
+                            style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(280,70%,30%);transition:background 0.2s;">
+                        </div>
+                        <label data-i18n="settings_svg_wave_hue">Hue: <span
+                                id="svg-wave-end-hue-value">280</span></label>
+                        <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280">
+                        <label data-i18n="settings_svg_wave_sat">Saturation: <span
+                                id="svg-wave-end-sat-value">70</span>%</label>
+                        <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70">
+                        <label data-i18n="settings_svg_wave_light">Lightness: <span
+                                id="svg-wave-end-light-value">30</span>%</label>
+                        <input type="range" id="svg-wave-end-light" min="0" max="100" value="30">
+                    </div>
+
+                    <!-- Randomize -->
+                    <button id="svg-wave-randomize-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
+                        <i class="fa-solid fa-dice"></i>
+                        <span data-i18n="settings_svg_wave_randomize">Randomize</span>
+                    </button>
+                    <!-- Save Wave -->
+                    <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span data-i18n="settings_svg_wave_save">Save Wave</span>
+                    </button>
+                    <!-- Close Controls -->
+                    <button id="svg-wave-close-btn" class="secondary-btn full-width">
+                        <i class="fa-solid fa-xmark"></i>
+                        <span data-i18n="settings_svg_wave_close">Close Controls</span>
+                    </button>
+                </div>
+
+                <!-- Saved Waves Gallery (always visible) -->
+                <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
+                    <label data-i18n="settings_svg_wave_saved_label" style="font-size:0.8rem;opacity:0.7;">Saved
+                        Waves</label>
+                    <div id="user-svg-waves-gallery" class="local-bg-gallery" style="margin-top:6px;"></div>
+                </div>
+            </div>
+
             <div class="setting-group">
                 <label data-i18n="setting_effect"><i class="fa-solid fa-wand-magic-sparkles"></i> Effect</label>
                 <select id="effect-select">
                     <option value="none" data-i18n="effect_none">None</option>
                     <option value="galaxy" data-i18n="effect_galaxy">Rain</option>
-                    <option value="meteor" data-i18n="effect_meteor">Meteor Shower</option>
 
                     <!-- Các hiệu ứng cơ bản -->
                     <option value="fireflies" data-i18n="effect_fireflies">Fireflies</option>
@@ -237,12 +361,14 @@
                     <option value="hacker" data-i18n="effect_hacker">Hacker (Binary)</option>
 
                     <!-- Hiệu ứng nâng cao -->
-                    <option value="particlesStorm" data-i18n="effect_particles_storm">Particles Storm</option>
                     <option value="sakura" data-i18n="effect_sakura">Sakura (Cherry Blossoms)</option>
                     <option value="snowfall" data-i18n="effect_snowfall">Snowfall</option>
                     <option value="auroraWave" data-i18n="effect_aurora_wave">Aurora Wave</option>
-                    <option value="constellation" data-i18n="effect_constellation">Constellation</option>
                     <option value="bubbles" data-i18n="effect_bubbles">Bubbles (Underwater)</option>
+                    <option value="rainOnGlass" data-i18n="effect_rain_on_glass">Rain on Glass</option>
+                    <option value="rainbow" data-i18n="effect_rainbow">Rainbow Background</option>
+                    <option value="wavyLines" data-i18n="effect_wavy_lines">Wavy Lines</option>
+                    <option value="firefliesHD" data-i18n="effect_fireflies_hd">Fireflies HD</option>
                 </select>
 
                 <!-- Aura Color -->
@@ -255,12 +381,6 @@
                 <div id="hacker-color-setting" class="setting-item" style="display: none;">
                     <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
                     <input type="color" id="hacker-color-picker" value="#00FF00" />
-                </div>
-
-                <!-- Meteor Color -->
-                <div id="meteor-color-setting" class="setting-item" style="display: none;">
-                    <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor Color</label>
-                    <input type="color" id="meteor-color-picker" />
                 </div>
 
                 <!-- Star Color (Galaxy) -->
@@ -295,6 +415,16 @@
                 <div id="bubbles-color-setting" class="setting-item" style="display: none;">
                     <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
                     <input type="color" id="bubbles-color-picker" value="#60c8ff" />
+                </div>
+                <!-- Rain on Glass Color -->
+                <div id="rain-on-glass-color-setting" class="setting-item" style="display: none;">
+                    <label for="rain-on-glass-color-picker" data-i18n="setting_rain_on_glass_color">Drop Color</label>
+                    <input type="color" id="rain-on-glass-color-picker" value="#a8d8ff" />
+                </div>
+                <!-- Wavy Lines Color -->
+                <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
+                    <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
+                    <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
                 </div>
             </div>
 

@@ -339,7 +339,7 @@
 
 /* Spotify Style (Modern Horizontal) */
 .music-style-spotify .music-player-wrapper {
-  width: 520px;
+  width: 600px;
   max-width: 94vw;
   border-radius: 12px;
   background: rgba(18, 18, 18, 0.95);
@@ -347,7 +347,7 @@
   gap: 10px;
   display: flex;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .music-style-spotify .disc-container {
@@ -423,7 +423,7 @@
   align-items: flex-end;
   gap: 4px;
   height: 40px;
-  padding: 0 10px;
+  padding: 0 20px;
   position: relative;
 }
 
@@ -485,7 +485,7 @@
 .music-style-pixel .music-visualizer {
   display: block;
   flex: 1;
-  min-width: 0;
+  width: auto;
   height: 40px;
   position: relative;
 }

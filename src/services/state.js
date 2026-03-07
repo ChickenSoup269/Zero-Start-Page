@@ -16,7 +16,6 @@ const defaultSettings = {
   userBackgrounds: [],
   userColors: [],
   userGradients: [], // Add userGradients
-  meteorColor: "#ffffff",
   starColor: "#ffffff",
 
   clockColor: null,
@@ -25,8 +24,11 @@ const defaultSettings = {
   sakuraColor: "#ffb7c5",
   snowfallColor: "#ffffff",
   bubbleColor: "#60c8ff",
+  rainOnGlassColor: "#a8d8ff",
+  wavyLinesColor: "#00bcd4",
   bgPositionX: 50,
   bgPositionY: 50,
+  bgSize: "cover",
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
   showTodoList: true,
@@ -50,6 +52,22 @@ const defaultSettings = {
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,
+  svgWaveActive: false,
+  svgWaveLines: 5,
+  svgWaveAmplitudeX: 200,
+  svgWaveAmplitudeY: 80,
+  svgWaveOffsetX: 0,
+  svgWaveAngle: 0,
+  svgWaveSmoothness: 0.5,
+  svgWaveFill: true,
+  svgWaveCraziness: 30,
+  svgWaveStartHue: 200,
+  svgWaveStartSaturation: 70,
+  svgWaveStartLightness: 40,
+  svgWaveEndHue: 280,
+  svgWaveEndSaturation: 70,
+  svgWaveEndLightness: 30,
+  userSvgWaves: [],
 }
 
 // Bookmarks State Migration
@@ -159,7 +177,6 @@ export function resetSettingsState() {
     userBackgrounds: [],
     userColors: [],
     userGradients: [],
-    meteorColor: "#ffffff",
     starColor: "#ffffff",
 
     clockColor: null,
@@ -170,6 +187,7 @@ export function resetSettingsState() {
     bubbleColor: "#60c8ff",
     bgPositionX: 50,
     bgPositionY: 50,
+    bgSize: "cover",
     unsplashCategory: "spring-wallpapers",
     showTodoList: true,
     showTimer: false,
