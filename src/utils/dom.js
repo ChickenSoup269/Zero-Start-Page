@@ -110,6 +110,13 @@ export const oceanWaveColorPicker = document.getElementById(
 export const oceanWaveColorSetting = document.getElementById(
   "ocean-wave-color-setting",
 )
+export const oceanWavePositionSetting = document.getElementById(
+  "ocean-wave-position-setting",
+)
+export const oceanWavePosBottomBtn = document.getElementById(
+  "ocean-wave-pos-bottom",
+)
+export const oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
 export const cloudDriftColorPicker = document.getElementById(
   "cloud-drift-color-picker",
 )
@@ -138,6 +145,10 @@ export const localBackgroundGallery = document.getElementById(
 export const localImageUpload = document.getElementById("local-image-upload")
 export const uploadLocalImageBtn = document.getElementById(
   "upload-local-image-btn",
+)
+export const localVideoUpload = document.getElementById("local-video-upload")
+export const uploadLocalVideoBtn = document.getElementById(
+  "upload-local-video-btn",
 )
 
 export const searchInput = document.getElementById("search-input")

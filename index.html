@@ -137,8 +137,12 @@
                         <label data-i18n="settings_local_bg">Local Themes</label>
                         <div class="local-bg-gallery-controls">
                             <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
+                            <input type="file" id="local-video-upload"
+                                accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />
                             <button id="upload-local-image-btn" class="secondary-btn"
                                 data-i18n="settings_upload_image">Upload Image</button>
+                            <button id="upload-local-video-btn" class="secondary-btn"
+                                data-i18n="settings_upload_video">Upload Video</button>
                         </div>
                         <div id="local-background-gallery" class="local-bg-gallery"></div>
                     </div>
@@ -216,8 +220,10 @@
                     <input type="color" id="gradient-start-picker" title="Pick a start color">
                     <input type="color" id="gradient-end-picker" title="Pick an end color">
                 </div>
-                <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
-                <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+                <div style="margin-top: 12px;">
+                    <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
+                    <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+                </div>
                 <button id="save-gradient-btn" class="secondary-btn full-width"
                     data-i18n="settings_save_gradient_btn">Save Gradient</button>
             </div>
@@ -435,6 +441,15 @@
                 <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
                     <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
                     <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+                </div>
+                <!-- Ocean Wave Position -->
+                <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
+                    <label data-i18n="setting_ocean_wave_position">Wave Position</label>
+                    <div class="btn-group">
+                        <button id="ocean-wave-pos-bottom" class="btn-group-item active"
+                            data-i18n="position_bottom">Bottom</button>
+                        <button id="ocean-wave-pos-top" class="btn-group-item" data-i18n="position_top">Top</button>
+                    </div>
                 </div>
                 <!-- Cloud Drift Color -->
                 <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">

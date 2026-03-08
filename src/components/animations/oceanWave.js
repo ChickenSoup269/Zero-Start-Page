@@ -1,9 +1,10 @@
 export class OceanWaveEffect {
-  constructor(canvasId, color = "#0077b6") {
+  constructor(canvasId, color = "#0077b6", position = "bottom") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.color = color
+    this.position = position // "bottom" | "top"
     this.time = 0
 
     // Wave layers — each stacked slightly higher with less opacity
@@ -73,13 +74,16 @@ export class OceanWaveEffect {
     this.time += 0.012
 
     const rgb = this._hexToRgb(this.color)
+    const isTop = this.position === "top"
 
     // Draw from back layer to front layer
     for (let i = 0; i < this.layerCount; i++) {
       const t = i / (this.layerCount - 1) // 0 = back, 1 = front
 
-      // Back layers start higher on screen, front layers sit closer to bottom
-      const baseY = H * (0.45 + t * 0.35)
+      // Back layers start higher on screen, front layers sit closer to edge
+      const baseY = isTop
+        ? H * (0.05 + t * 0.2) // top: waves near top, filling downward
+        : H * (0.45 + t * 0.35) // bottom: original behavior
 
       // Amplitude decreases for back layers (perspective)
       const amplitude = 30 + t * 45
@@ -116,9 +120,14 @@ export class OceanWaveEffect {
         }
       }
 
-      // Close the path to the bottom of the canvas to create a filled wave
-      this.ctx.lineTo(W, H)
-      this.ctx.lineTo(0, H)
+      // Close path to the edge (bottom or top)
+      if (isTop) {
+        this.ctx.lineTo(W, 0)
+        this.ctx.lineTo(0, 0)
+      } else {
+        this.ctx.lineTo(W, H)
+        this.ctx.lineTo(0, H)
+      }
       this.ctx.closePath()
 
       this.ctx.fillStyle = `rgba(${Math.round(rgb.r * lumFactor)},${Math.round(rgb.g * lumFactor)},${Math.round(rgb.b * lumFactor)},${alpha})`

@@ -243,6 +243,7 @@
 }
 
 .setting-item {
+  margin-top: 12px;
   margin-bottom: 15px;
 }
 
@@ -293,6 +294,41 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-group-item {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: #bbb;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.btn-group-item:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-group-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.btn-group-item.active {
+  background: var(--accent-color, #7b68ee);
+  color: #fff;
 }
 
 .setting-item-row label {
@@ -647,6 +683,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.local-bg-item.video-bg-item {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.4rem;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.local-bg-item.video-bg-item::after {
+  content: "VIDEO";
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
 }
 
 .remove-bg-btn {

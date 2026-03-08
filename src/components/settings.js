@@ -1,9 +1,12 @@
 import { showAlert, showConfirm } from "../utils/dialog.js"
 import {
   saveImage,
+  saveVideo,
   deleteImage,
   getBlobUrlSync,
   isIdbImage,
+  isIdbVideo,
+  isIdbMedia,
   getImageBlob,
 } from "../services/imageStore.js"
 import {
@@ -42,6 +45,8 @@ import {
   localBackgroundGallery,
   localImageUpload,
   uploadLocalImageBtn,
+  localVideoUpload,
+  uploadLocalVideoBtn,
   searchInput,
   clearBtn,
   unsplashRandomBtn,
@@ -74,6 +79,9 @@ import {
   wavyLinesColorSetting,
   oceanWaveColorPicker,
   oceanWaveColorSetting,
+  oceanWavePositionSetting,
+  oceanWavePosBottomBtn,
+  oceanWavePosTopBtn,
   cloudDriftColorPicker,
   cloudDriftColorSetting,
   bgVideo, // Added bgVideo
@@ -429,8 +437,9 @@ export function applySettings() {
 
   // 3. Background Logic
   let bg = settings.background
-  // Resolve IndexedDB image ID to blob URL
-  if (isIdbImage(bg)) {
+  // Resolve IndexedDB image/video ID to blob URL
+  const isVideoId = isIdbVideo(bg)
+  if (isIdbMedia(bg)) {
     bg = getBlobUrlSync(bg) || bg
   }
   const isPredefinedLocalBg = localBackgrounds.some((b) => b.id === bg)
@@ -449,7 +458,7 @@ export function applySettings() {
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (isUserUploadedBg) {
     document.body.classList.add("bg-image-active")
-    if (bg.startsWith("data:video")) {
+    if (bg.startsWith("data:video") || isVideoId) {
       if (bgVideoElement) {
         bgVideoElement.src = bg
         bgVideoElement.style.display = "block"
@@ -684,6 +693,7 @@ function updateSettingsInputs() {
   // Show/Hide Bg Position setting (only for image backgrounds)
   const isImageBg =
     settings.background &&
+    !isIdbVideo(settings.background) &&
     (isIdbImage(settings.background) ||
       settings.background.startsWith("data:image/") ||
       settings.background.startsWith("blob:") ||
@@ -714,6 +724,9 @@ function updateSettingsInputs() {
   rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
   wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
   oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
+  const oceanWavePos = settings.oceanWavePosition || "bottom"
+  oceanWavePosBottomBtn.classList.toggle("active", oceanWavePos === "bottom")
+  oceanWavePosTopBtn.classList.toggle("active", oceanWavePos === "top")
   cloudDriftColorPicker.value = settings.cloudDriftColor || "#ffffff"
 
   // Visibility of Effect Settings
@@ -738,6 +751,8 @@ function updateSettingsInputs() {
   wavyLinesColorSetting.style.display =
     settings.effect === "wavyLines" ? "block" : "none"
   oceanWaveColorSetting.style.display =
+    settings.effect === "oceanWave" ? "block" : "none"
+  oceanWavePositionSetting.style.display =
     settings.effect === "oceanWave" ? "block" : "none"
   cloudDriftColorSetting.style.display =
     settings.effect === "cloudDrift" ? "block" : "none"
@@ -834,13 +849,19 @@ export function renderLocalBackgrounds() {
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgId, index) => {
       // Resolve blob URL for thumbnail (IDB ID → cached blob URL)
-      const thumbUrl = isIdbImage(bgId) ? getBlobUrlSync(bgId) || "" : bgId
+      const thumbUrl = isIdbMedia(bgId) ? getBlobUrlSync(bgId) || "" : bgId
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
-      if (thumbUrl) item.style.backgroundImage = `url('${thumbUrl}')`
-      item.title = `User Image ${index + 1}`
+
+      if (isIdbVideo(bgId)) {
+        item.classList.add("video-bg-item")
+        item.innerHTML = '<i class="fa-solid fa-film"></i>'
+      } else if (thumbUrl) {
+        item.style.backgroundImage = `url('${thumbUrl}')`
+      }
+      item.title = `User ${isIdbVideo(bgId) ? "Video" : "Image"} ${index + 1}`
 
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
@@ -850,7 +871,7 @@ export function renderLocalBackgrounds() {
         if (await showConfirm(i18n.alert_delete_bg_confirm)) {
           settings.userBackgrounds.splice(index, 1)
           // Xoá khỏi IndexedDB nếu là IDB ID
-          if (isIdbImage(bgId)) {
+          if (isIdbMedia(bgId)) {
             deleteImage(bgId).catch(() => {})
           }
           if (settings.background === bgId) {
@@ -882,12 +903,15 @@ export function renderUserGradients() {
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", (e) => {
+      removeBtn.addEventListener("click", async (e) => {
         e.stopPropagation()
-        settings.userGradients.splice(index, 1)
-        saveSettings()
-        renderUserGradients()
-        applySettings() // Re-apply to check if the active one was deleted
+        const i18n = geti18n()
+        if (await showConfirm(i18n.alert_delete_bg_confirm)) {
+          settings.userGradients.splice(index, 1)
+          saveSettings()
+          renderUserGradients()
+          applySettings() // Re-apply to check if the active one was deleted
+        }
       })
       item.appendChild(removeBtn)
       userGradientsGallery.appendChild(item)
@@ -917,11 +941,14 @@ export function renderUserSvgWaves() {
     const removeBtn = document.createElement("button")
     removeBtn.className = "remove-bg-btn"
     removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-    removeBtn.addEventListener("click", (e) => {
+    removeBtn.addEventListener("click", async (e) => {
       e.stopPropagation()
-      settings.userSvgWaves.splice(index, 1)
-      saveSettings()
-      renderUserSvgWaves()
+      const i18n = geti18n()
+      if (await showConfirm(i18n.alert_delete_bg_confirm)) {
+        settings.userSvgWaves.splice(index, 1)
+        saveSettings()
+        renderUserSvgWaves()
+      }
     })
 
     item.appendChild(removeBtn)
@@ -997,6 +1024,7 @@ export function initSettings() {
   oceanWaveEffect = new OceanWaveEffect(
     "effect-canvas",
     settings.oceanWaveColor || "#0077b6",
+    settings.oceanWavePosition || "bottom",
   )
   cloudDriftEffect = new CloudDriftEffect(
     "effect-canvas",
@@ -1171,8 +1199,8 @@ export function initSettings() {
     const bg = getSettings().background
     if (!bg) return
 
-    // IDB images are already stored — no need to re-save
-    if (isIdbImage(bg)) {
+    // IDB images/videos are already stored — no need to re-save
+    if (isIdbMedia(bg)) {
       showAlert("This background is already saved.")
       return
     }
@@ -1196,6 +1224,26 @@ export function initSettings() {
   })
 
   uploadLocalImageBtn.addEventListener("click", () => localImageUpload.click())
+
+  uploadLocalVideoBtn.addEventListener("click", () => localVideoUpload.click())
+
+  localVideoUpload.addEventListener("change", async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    const MAX_UPLOADS = 20
+    if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
+      showAlert(
+        geti18n().alert_upload_limit ||
+          `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,
+      )
+      e.target.value = null
+      return
+    }
+    const id = await saveVideo(file)
+    getSettings().userBackgrounds.push(id)
+    handleSettingUpdate("background", id)
+    e.target.value = null
+  })
   localImageUpload.addEventListener("change", (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -1424,6 +1472,22 @@ export function initSettings() {
     updateSetting("oceanWaveColor", oceanWaveColorPicker.value)
     saveSettings()
     oceanWaveEffect.color = oceanWaveColorPicker.value
+  })
+
+  oceanWavePosBottomBtn.addEventListener("click", () => {
+    updateSetting("oceanWavePosition", "bottom")
+    saveSettings()
+    oceanWaveEffect.position = "bottom"
+    oceanWavePosBottomBtn.classList.add("active")
+    oceanWavePosTopBtn.classList.remove("active")
+  })
+
+  oceanWavePosTopBtn.addEventListener("click", () => {
+    updateSetting("oceanWavePosition", "top")
+    saveSettings()
+    oceanWaveEffect.position = "top"
+    oceanWavePosTopBtn.classList.add("active")
+    oceanWavePosBottomBtn.classList.remove("active")
   })
 
   cloudDriftColorPicker.addEventListener("input", () => {
@@ -1853,9 +1917,9 @@ export function initSettings() {
 
       // Collect all IDB IDs (userBackgrounds + current background)
       const ids = new Set([
-        ...(settingsSnapshot.userBackgrounds || []).filter(isIdbImage),
+        ...(settingsSnapshot.userBackgrounds || []).filter(isIdbMedia),
       ])
-      if (isIdbImage(settingsSnapshot.background))
+      if (isIdbMedia(settingsSnapshot.background))
         ids.add(settingsSnapshot.background)
 
       // Convert each Blob → base64 data URL

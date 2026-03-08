@@ -76,7 +76,7 @@ export async function deleteImage(id) {
 /** Preload blob URLs cho tất cả IDB IDs (gọi khi khởi động) */
 export async function preloadImages(ids) {
   for (const id of ids) {
-    if (isIdbImage(id) && !_urlCache.has(id)) {
+    if (isIdbMedia(id) && !_urlCache.has(id)) {
       await getImageUrl(id).catch(() => {})
     }
   }
@@ -85,6 +85,30 @@ export async function preloadImages(ids) {
 /** Kiểm tra xem có phải IDB ID không */
 export function isIdbImage(id) {
   return typeof id === "string" && id.startsWith("idb-img-")
+}
+
+/** Kiểm tra xem có phải IDB video ID không */
+export function isIdbVideo(id) {
+  return typeof id === "string" && id.startsWith("idb-video-")
+}
+
+/** Kiểm tra IDB image hoặc video */
+export function isIdbMedia(id) {
+  return isIdbImage(id) || isIdbVideo(id)
+}
+
+/** Lưu Video Blob vào IndexedDB, trả về ID */
+export async function saveVideo(blob) {
+  const id = `idb-video-${Date.now()}`
+  const db = await openDb()
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite")
+    tx.objectStore(STORE_NAME).put(blob, id)
+    tx.oncomplete = resolve
+    tx.onerror = (e) => reject(e.target.error)
+  })
+  _urlCache.set(id, URL.createObjectURL(blob))
+  return id
 }
 
 /** Lấy raw Blob từ IndexedDB (dùng cho export) */

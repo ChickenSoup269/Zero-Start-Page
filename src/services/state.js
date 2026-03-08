@@ -27,6 +27,7 @@ const defaultSettings = {
   rainOnGlassColor: "#a8d8ff",
   wavyLinesColor: "#00bcd4",
   oceanWaveColor: "#0077b6",
+  oceanWavePosition: "bottom",
   cloudDriftColor: "#ffffff",
   bgPositionX: 50,
   bgPositionY: 50,
