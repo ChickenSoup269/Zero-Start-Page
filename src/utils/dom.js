@@ -98,6 +98,10 @@ export const rainOnGlassColorPicker = document.getElementById(
 export const rainOnGlassColorSetting = document.getElementById(
   "rain-on-glass-color-setting",
 )
+export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
+export const rainHDColorSetting = document.getElementById(
+  "rain-hd-color-setting",
+)
 export const wavyLinesColorPicker = document.getElementById(
   "wavy-lines-color-picker",
 )
@@ -122,6 +126,14 @@ export const cloudDriftColorPicker = document.getElementById(
 )
 export const cloudDriftColorSetting = document.getElementById(
   "cloud-drift-color-setting",
+)
+export const shinyColorPicker = document.getElementById("shiny-color-picker")
+export const shinyColorSetting = document.getElementById("shiny-color-setting")
+export const lineShinyColorPicker = document.getElementById(
+  "line-shiny-color-picker",
+)
+export const lineShinyColorSetting = document.getElementById(
+  "line-shiny-color-setting",
 )
 
 export const resetSettingsBtn = document.getElementById("reset-settings")

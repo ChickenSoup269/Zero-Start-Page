@@ -55,8 +55,7 @@
         </div>
     </div>
 
-    <video id="bg-video" autoplay muted loop playsinline
-        style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; display: none; pointer-events: none;"></video>
+    <video id="bg-video" autoplay muted loop playsinline></video>
 
     <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="settings-sidebar">
@@ -374,12 +373,15 @@
                     <option value="auroraWave" data-i18n="effect_aurora_wave">Aurora Wave</option>
                     <option value="bubbles" data-i18n="effect_bubbles">Bubbles (Underwater)</option>
                     <option value="rainOnGlass" data-i18n="effect_rain_on_glass">Rain on Glass</option>
+                    <option value="rainHD" data-i18n="effect_rain_hd">Rain HD (Splash)</option>
                     <option value="rainbow" data-i18n="effect_rainbow">Rainbow Background</option>
                     <option value="wavyLines" data-i18n="effect_wavy_lines">Wavy Lines</option>
                     <option value="firefliesHD" data-i18n="effect_fireflies_hd">Fireflies HD</option>
                     <option value="oceanWave" data-i18n="effect_ocean_wave">Ocean Wave</option>
                     <option value="cloudDrift" data-i18n="effect_cloud_drift">Cloud Drift</option>
                     <option value="autumnLeaves" data-i18n="effect_autumn_leaves">Autumn Leaves</option>
+                    <option value="shiny" data-i18n="effect_shiny">Shiny (Prismatic Light)</option>
+                    <option value="lineShiny" data-i18n="effect_line_shiny">Line Shiny (Glass Rays)</option>
                 </select>
 
                 <!-- Aura Color -->
@@ -432,6 +434,11 @@
                     <label for="rain-on-glass-color-picker" data-i18n="setting_rain_on_glass_color">Drop Color</label>
                     <input type="color" id="rain-on-glass-color-picker" value="#a8d8ff" />
                 </div>
+                <!-- Rain HD Color -->
+                <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
+                    <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
+                    <input type="color" id="rain-hd-color-picker" value="#99ccff" />
+                </div>
                 <!-- Wavy Lines Color -->
                 <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
                     <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
@@ -455,6 +462,16 @@
                 <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
                     <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
                     <input type="color" id="cloud-drift-color-picker" value="#ffffff" />
+                </div>
+                <!-- Shiny Tint Color -->
+                <div id="shiny-color-setting" class="setting-item" style="display: none;">
+                    <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic Tint</label>
+                    <input type="color" id="shiny-color-picker" value="#ff0000" />
+                </div>
+                <!-- Line Shiny Tint Color -->
+                <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
+                    <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray Color</label>
+                    <input type="color" id="line-shiny-color-picker" value="#ffffff" />
                 </div>
             </div>
 

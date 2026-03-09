@@ -1,8 +1,3 @@
-@font-face {
-  font-family: "GohuFont";
-  src: url("../fonts/GohuFont11NerdFontPropo-Regular.ttf") format("truetype");
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -45,6 +40,9 @@ i {
   z-index: -2;
   display: none;
   pointer-events: none;
+  image-rendering: high-quality;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 #effect-canvas {

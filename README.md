@@ -110,7 +110,7 @@ Select from 18 canvas-based animated effects with individual color pickers:
 | 2. Fireflies           | 9. Snowfall            | 16. Ocean Wave    |
 | 3.Network              | 10. Aurora Wave        | 17. Cloud Drift   |
 | 4. Matrix Rain         | 11. Bubbles            | 18. Autumn Leaves |
-| 5. Gradients Aura      | 12. Rain on Glass      |                   |
+| 5. Gradients Aura      | 12. Rain on Glass      | 19. Rain HD       |
 | 6. Anime Wind          | 13. Rainbow Background |                   |
 | 7. Hacker              | 14. Wavy Lines         |                   |
 | **SVG Wave Generator** |                        |                   |

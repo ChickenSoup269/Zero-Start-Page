@@ -23,7 +23,7 @@ function closeDialog() {
   }
 }
 
-// Custom Alert
+// Custom Alertnature
 export function showAlert(message, title = null) {
   return new Promise((resolve) => {
     const container = createDialogContainer()

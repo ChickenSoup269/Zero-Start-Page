@@ -9,8 +9,8 @@
  * All values are kept as close as possible to the original CSS:
  *   - Firefly size    : 0.4vw
  *   - Orbit radius    : 10vw  (transform-origin: -10vw in CSS)
- *   - Total move time : 200 s  (animation: ease 200s alternate infinite)
- *   - Drift speed     : 8–18 s per revolution
+ *   - Total move time : 350 s  (slowed down for realism)
+ *   - Drift speed     : 15–30 s per revolution
  *   - Flash period    : 5 000–11 000 ms, delay 500–8 500 ms
  */
 export class FirefliesHD {
@@ -48,14 +48,14 @@ export class FirefliesHD {
       const waypoints = []
       for (let s = 0; s <= steps; s++) {
         waypoints.push({
-          x: (Math.random() - 0.5) * W + W * 0.5,
-          y: (Math.random() - 0.5) * H + H * 0.5,
+          x: (Math.random() - 0.5) * W * 0.8 + W * 0.5,
+          y: (Math.random() - 0.5) * H * 0.75 + H * 0.55, // favor lower half like real fireflies
           scale: Math.random() * 0.75 + 0.25, // 0.25–1.0
         })
       }
 
-      // drift rotation speed: 8–18 s
-      const driftPeriod = (Math.random() * 10 + 8) * 1000
+      // drift rotation speed: 15–30 s (slower orbit)
+      const driftPeriod = (Math.random() * 15 + 15) * 1000
 
       // flash: period 5 000–11 000 ms, delay 500–8 500 ms
       const flashPeriod = Math.random() * 6000 + 5000
@@ -68,8 +68,8 @@ export class FirefliesHD {
         x: waypoints[0].x,
         y: waypoints[0].y,
         scale: waypoints[0].scale,
-        // Per-segment travel time: total 200 s / steps + ease back (alternate)
-        segDuration: (200000 / steps) * (0.8 + Math.random() * 0.4),
+        // Per-segment travel time: total 350 s / steps (slower, more realistic)
+        segDuration: (350000 / steps) * (0.8 + Math.random() * 0.4),
         segElapsed: Math.random() * 5000, // stagger start
         // Drift (orbit)
         driftAngle: Math.random() * Math.PI * 2,
@@ -80,6 +80,15 @@ export class FirefliesHD {
         flashClock: -(Math.random() * flashDelay), // negative = pre-delay
         flashOpacity: 0,
         glowRadius: 0,
+        // Idle ambient glow color (warm green-yellow, bioluminescent)
+        idleGlow: Math.random() * 0.08 + 0.04, // 0.04–0.12 base ambient opacity
+        // Micro-wander: tiny random drift each frame
+        wanderVx: (Math.random() - 0.5) * 0.3,
+        wanderVy: (Math.random() - 0.5) * 0.3,
+        wanderX: 0,
+        wanderY: 0,
+        // Trail history
+        trail: [],
       })
     }
   }
@@ -122,6 +131,19 @@ export class FirefliesHD {
 
     // ── Drift angle (continuous rotation) ───────────────────────────────
     fly.driftAngle += (Math.PI * 2 * dt) / fly.driftPeriod
+
+    // ── Micro-wander: subtle jitter so they don't glide perfectly ────────
+    fly.wanderVx += (Math.random() - 0.5) * 0.04
+    fly.wanderVy += (Math.random() - 0.5) * 0.04
+    // Dampen wander velocity so it stays subtle
+    fly.wanderVx *= 0.97
+    fly.wanderVy *= 0.97
+    fly.wanderX = Math.max(-4, Math.min(4, fly.wanderX + fly.wanderVx))
+    fly.wanderY = Math.max(-4, Math.min(4, fly.wanderY + fly.wanderVy))
+
+    // ── Trail history ────────────────────────────────────────────────────
+    fly.trail.push({ x: fly.x + fly.wanderX, y: fly.y + fly.wanderY })
+    if (fly.trail.length > 8) fly.trail.shift()
 
     // ── Flash (mirrors @keyframes flash) ────────────────────────────────
     fly.flashClock += dt
@@ -167,10 +189,25 @@ export class FirefliesHD {
     const glowMax = 2 * vw * fly.scale // 2vw box-shadow blur
     const spreadMax = 0.4 * vw * fly.scale // 0.4vw spread
 
-    ctx.save()
-    ctx.translate(fly.x, fly.y)
+    const drawX = fly.x + fly.wanderX
+    const drawY = fly.y + fly.wanderY
 
-    // ── ::before — orbiting dark satellite ───────────────────────────────
+    // ── Trail — faint dotted light trail behind the firefly ──────────────
+    if (fly.trail.length > 1) {
+      for (let i = 0; i < fly.trail.length - 1; i++) {
+        const alpha = (i / fly.trail.length) * 0.18
+        const radius = Math.max(coreSize * 0.35 * (i / fly.trail.length), 0.5)
+        ctx.beginPath()
+        ctx.arc(fly.trail[i].x, fly.trail[i].y, radius, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(180, 255, 120, ${alpha})`
+        ctx.fill()
+      }
+    }
+
+    ctx.save()
+    ctx.translate(drawX, drawY)
+
+    // ── ::before — orbiting dark satellite (body segment) ────────────────
     const satX = Math.cos(fly.driftAngle) * orbitR
     const satY = Math.sin(fly.driftAngle) * orbitR
 
@@ -179,33 +216,76 @@ export class FirefliesHD {
     ctx.fillStyle = "rgba(0, 0, 0, 0.4)"
     ctx.fill()
 
-    // ── ::after — white core + yellow glow flash ──────────────────────
+    // ── Idle ambient bioluminescent glow (always on, green-yellow) ───────
+    const ambientR = (glowMax * 0.6 + coreSize) * (1 + fly.idleGlow * 2)
+    const ambGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, ambientR)
+    ambGrad.addColorStop(0, `rgba(180, 255, 80, ${fly.idleGlow * 1.5})`)
+    ambGrad.addColorStop(0.5, `rgba(140, 220, 60, ${fly.idleGlow * 0.6})`)
+    ambGrad.addColorStop(1, "rgba(100, 180, 40, 0)")
+    ctx.beginPath()
+    ctx.arc(0, 0, ambientR, 0, Math.PI * 2)
+    ctx.fillStyle = ambGrad
+    ctx.fill()
+
+    // ── ::after — white core + warm yellow flash ──────────────────────
     if (fly.flashOpacity > 0) {
-      // Yellow box-shadow recreation via radial gradient
+      // Layered glow: outer warm yellow → inner bright white-yellow
       const glowCurrent = glowMax * fly.glowRadius + spreadMax * fly.glowRadius
-      const grad = ctx.createRadialGradient(
+      const glowRadius = glowCurrent + coreSize * 3
+
+      // Outer halo
+      const outerGrad = ctx.createRadialGradient(
         0,
         0,
         0,
         0,
         0,
-        glowCurrent + coreSize,
+        glowRadius * 2.5,
       )
-      grad.addColorStop(0, `rgba(255, 255, 150, ${fly.flashOpacity})`)
-      grad.addColorStop(0.3, `rgba(255, 220, 0,   ${fly.flashOpacity * 0.7})`)
-      grad.addColorStop(0.7, `rgba(255, 200, 0,   ${fly.flashOpacity * 0.25})`)
-      grad.addColorStop(1, "rgba(255, 180, 0, 0)")
+      outerGrad.addColorStop(
+        0,
+        `rgba(255, 255, 180, ${fly.flashOpacity * 0.6})`,
+      )
+      outerGrad.addColorStop(
+        0.4,
+        `rgba(255, 230, 50, ${fly.flashOpacity * 0.3})`,
+      )
+      outerGrad.addColorStop(
+        0.8,
+        `rgba(200, 180, 0, ${fly.flashOpacity * 0.1})`,
+      )
+      outerGrad.addColorStop(1, "rgba(150, 140, 0, 0)")
       ctx.beginPath()
-      ctx.arc(0, 0, glowCurrent + coreSize, 0, Math.PI * 2)
-      ctx.fillStyle = grad
+      ctx.arc(0, 0, glowRadius * 2.5, 0, Math.PI * 2)
+      ctx.fillStyle = outerGrad
+      ctx.fill()
+
+      // Inner bright core glow
+      const innerGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, glowRadius)
+      innerGrad.addColorStop(0, `rgba(255, 255, 220, ${fly.flashOpacity})`)
+      innerGrad.addColorStop(
+        0.3,
+        `rgba(255, 245, 80, ${fly.flashOpacity * 0.85})`,
+      )
+      innerGrad.addColorStop(
+        0.7,
+        `rgba(255, 220, 0, ${fly.flashOpacity * 0.4})`,
+      )
+      innerGrad.addColorStop(1, "rgba(255, 180, 0, 0)")
+      ctx.beginPath()
+      ctx.arc(0, 0, glowRadius, 0, Math.PI * 2)
+      ctx.fillStyle = innerGrad
       ctx.fill()
     }
 
-    // White core dot (always slightly visible, brightens on flash)
-    const coreAlpha = 0.15 + fly.flashOpacity * 0.85
+    // Core dot: dim green-white idle, bright warm-white on flash
+    const coreAlpha = 0.25 + fly.flashOpacity * 0.75
+    const coreR = Math.floor(200 + fly.flashOpacity * 55)
+    const coreG = Math.floor(255)
+    const coreB = Math.floor(160 - fly.flashOpacity * 110)
     ctx.beginPath()
     ctx.arc(0, 0, Math.max(coreSize, 1), 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(255, 255, 255, ${coreAlpha})`
+    ctx.fillStyle = `rgba(${coreR}, ${coreG}, ${coreB}, ${coreAlpha})`
     ctx.fill()
 
     ctx.restore()

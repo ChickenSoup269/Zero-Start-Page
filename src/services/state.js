@@ -29,6 +29,8 @@ const defaultSettings = {
   oceanWaveColor: "#0077b6",
   oceanWavePosition: "bottom",
   cloudDriftColor: "#ffffff",
+  shinyColor: "#ff0000",
+  lineShinyColor: "#ffffff",
   bgPositionX: 50,
   bgPositionY: 50,
   bgSize: "cover",

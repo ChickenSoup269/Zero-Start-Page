@@ -75,6 +75,8 @@ import {
   bubblesColorSetting,
   rainOnGlassColorPicker,
   rainOnGlassColorSetting,
+  rainHDColorPicker,
+  rainHDColorSetting,
   wavyLinesColorPicker,
   wavyLinesColorSetting,
   oceanWaveColorPicker,
@@ -84,6 +86,10 @@ import {
   oceanWavePosTopBtn,
   cloudDriftColorPicker,
   cloudDriftColorSetting,
+  shinyColorPicker,
+  shinyColorSetting,
+  lineShinyColorPicker,
+  lineShinyColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -163,6 +169,7 @@ import { SnowfallEffect } from "./animations/snowfall.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
 import { BubblesEffect } from "./animations/bubbles.js"
 import { RainOnGlassEffect } from "./animations/rainOnGlass.js"
+import { RainHDEffect } from "./animations/rainHD.js"
 import { RainbowBackground } from "./animations/rainbowBackground.js"
 import { WavyLinesEffect } from "./animations/wavyLines.js"
 import { OceanWaveEffect } from "./animations/oceanWave.js"
@@ -170,6 +177,8 @@ import { CloudDriftEffect } from "./animations/cloudDrift.js"
 import { FirefliesHD } from "./animations/firefliesHD.js"
 import { SvgWaveGenerator } from "./animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "./animations/autumnLeaves.js"
+import { ShinyEffect } from "./animations/shiny.js"
+import { LineShinyEffect } from "./animations/lineShiny.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -184,12 +193,15 @@ let starFallEffect,
   auroraWaveEffect,
   bubblesEffect,
   rainOnGlassEffect,
+  rainHDEffect,
   rainbowEffect,
   wavyLinesEffect,
   oceanWaveEffect,
   cloudDriftEffect,
   firefliesHDEffect,
   autumnLeavesEffect,
+  shinyEffect,
+  lineShinyEffect,
   svgWaveEffect
 
 function handleSettingUpdate(key, value, isGradient = false) {
@@ -562,12 +574,15 @@ export function applySettings() {
   if (auroraWaveEffect) auroraWaveEffect.stop()
   if (bubblesEffect) bubblesEffect.stop()
   if (rainOnGlassEffect) rainOnGlassEffect.stop()
+  if (rainHDEffect) rainHDEffect.stop()
   if (rainbowEffect) rainbowEffect.stop()
   if (wavyLinesEffect) wavyLinesEffect.stop()
   if (oceanWaveEffect) oceanWaveEffect.stop()
   if (cloudDriftEffect) cloudDriftEffect.stop()
   if (firefliesHDEffect) firefliesHDEffect.stop()
   if (autumnLeavesEffect) autumnLeavesEffect.stop()
+  if (shinyEffect) shinyEffect.stop()
+  if (lineShinyEffect) lineShinyEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
@@ -618,6 +633,9 @@ export function applySettings() {
       case "rainOnGlass":
         rainOnGlassEffect.start()
         break
+      case "rainHD":
+        rainHDEffect.start()
+        break
       case "rainbow":
         rainbowEffect.start()
         break
@@ -635,6 +653,12 @@ export function applySettings() {
         break
       case "autumnLeaves":
         autumnLeavesEffect.start()
+        break
+      case "shiny":
+        shinyEffect.start()
+        break
+      case "lineShiny":
+        lineShinyEffect.start()
         break
     }
   }, 50)
@@ -722,6 +746,7 @@ function updateSettingsInputs() {
   snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
   bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
   rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
+  rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
   wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
   oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
   const oceanWavePos = settings.oceanWavePosition || "bottom"
@@ -748,6 +773,8 @@ function updateSettingsInputs() {
     settings.effect === "bubbles" ? "block" : "none"
   rainOnGlassColorSetting.style.display =
     settings.effect === "rainOnGlass" ? "block" : "none"
+  rainHDColorSetting.style.display =
+    settings.effect === "rainHD" ? "block" : "none"
   wavyLinesColorSetting.style.display =
     settings.effect === "wavyLines" ? "block" : "none"
   oceanWaveColorSetting.style.display =
@@ -756,6 +783,12 @@ function updateSettingsInputs() {
     settings.effect === "oceanWave" ? "block" : "none"
   cloudDriftColorSetting.style.display =
     settings.effect === "cloudDrift" ? "block" : "none"
+  shinyColorSetting.style.display =
+    settings.effect === "shiny" ? "block" : "none"
+  shinyColorPicker.value = settings.shinyColor || "#ff0000"
+  lineShinyColorSetting.style.display =
+    settings.effect === "lineShiny" ? "block" : "none"
+  lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
 
   // SVG Wave Generator — sync all sliders/checkboxes to current state
   const waveActive = settings.svgWaveActive === true
@@ -858,6 +891,40 @@ export function renderLocalBackgrounds() {
       if (isIdbVideo(bgId)) {
         item.classList.add("video-bg-item")
         item.innerHTML = '<i class="fa-solid fa-film"></i>'
+        // Capture thumbnail from first frame of video
+        if (thumbUrl) {
+          const vid = document.createElement("video")
+          vid.src = thumbUrl
+          vid.muted = true
+          vid.preload = "metadata"
+          vid.addEventListener(
+            "loadeddata",
+            () => {
+              vid.currentTime = 0
+            },
+            { once: true },
+          )
+          vid.addEventListener(
+            "seeked",
+            () => {
+              const canvas = document.createElement("canvas")
+              canvas.width = vid.videoWidth || 160
+              canvas.height = vid.videoHeight || 90
+              canvas
+                .getContext("2d")
+                .drawImage(vid, 0, 0, canvas.width, canvas.height)
+              item.style.backgroundImage = `url('${canvas.toDataURL()}')`
+              // Remove only the placeholder film icon, keep removeBtn
+              const placeholder = item.querySelector("i.fa-film")
+              if (placeholder) placeholder.remove()
+              const badge = document.createElement("div")
+              badge.className = "video-thumb-badge"
+              badge.innerHTML = '<i class="fa-solid fa-film"></i>'
+              item.appendChild(badge)
+            },
+            { once: true },
+          )
+        }
       } else if (thumbUrl) {
         item.style.backgroundImage = `url('${thumbUrl}')`
       }
@@ -1016,6 +1083,10 @@ export function initSettings() {
     "effect-canvas",
     settings.rainOnGlassColor || "#a8d8ff",
   )
+  rainHDEffect = new RainHDEffect(
+    "effect-canvas",
+    settings.rainHDColor || "#99ccff",
+  )
   rainbowEffect = new RainbowBackground("effect-canvas")
   wavyLinesEffect = new WavyLinesEffect(
     "effect-canvas",
@@ -1032,6 +1103,14 @@ export function initSettings() {
   )
   firefliesHDEffect = new FirefliesHD("effect-canvas")
   autumnLeavesEffect = new AutumnLeavesEffect("effect-canvas")
+  shinyEffect = new ShinyEffect(
+    "effect-canvas",
+    settings.shinyColor || "#ff0000",
+  )
+  lineShinyEffect = new LineShinyEffect(
+    "effect-canvas",
+    settings.lineShinyColor || "#ffffff",
+  )
   svgWaveEffect = new SvgWaveGenerator()
 
   populateUnsplashCollections()
@@ -1462,6 +1541,13 @@ export function initSettings() {
     rainOnGlassEffect._parseColor(rainOnGlassColorPicker.value)
   })
 
+  rainHDColorPicker.addEventListener("input", () => {
+    updateSetting("rainHDColor", rainHDColorPicker.value)
+    saveSettings()
+    rainHDEffect.color = rainHDColorPicker.value
+    rainHDEffect._parseColor(rainHDColorPicker.value)
+  })
+
   wavyLinesColorPicker.addEventListener("input", () => {
     updateSetting("wavyLinesColor", wavyLinesColorPicker.value)
     saveSettings()
@@ -1494,6 +1580,18 @@ export function initSettings() {
     updateSetting("cloudDriftColor", cloudDriftColorPicker.value)
     saveSettings()
     cloudDriftEffect.color = cloudDriftColorPicker.value
+  })
+
+  shinyColorPicker.addEventListener("input", () => {
+    updateSetting("shinyColor", shinyColorPicker.value)
+    saveSettings()
+    shinyEffect.updateColor(shinyColorPicker.value)
+  })
+
+  lineShinyColorPicker.addEventListener("input", () => {
+    updateSetting("lineShinyColor", lineShinyColorPicker.value)
+    saveSettings()
+    lineShinyEffect.updateColor(lineShinyColorPicker.value)
   })
 
   // --- SVG Wave Generator Listeners ---

@@ -692,6 +692,8 @@
   font-size: 1.4rem;
   flex-direction: column;
   gap: 4px;
+  background-size: cover;
+  background-position: center;
 }
 
 .local-bg-item.video-bg-item::after {
@@ -699,6 +701,21 @@
   font-size: 0.5rem;
   letter-spacing: 0.05em;
   opacity: 0.6;
+}
+
+.video-thumb-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .remove-bg-btn {

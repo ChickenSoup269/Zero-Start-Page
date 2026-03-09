@@ -5,7 +5,8 @@ export class RainOnGlassEffect {
     this.active = false
     this.color = color
     this.drops = []
-    this.streaks = [] // dried/faint background water marks
+    this.microDrops = [] // tiny condensation specks on glass
+    this.trails = [] // persistent dried streaks on glass
     this.animationFrame = null
     this._r = 168
     this._g = 216
@@ -14,7 +15,9 @@ export class RainOnGlassEffect {
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
-    this.glareOffset = 0 // animated glass reflection sweep
+    this.glareOffset = 0
+    this.time = 0
+    this.windX = (Math.random() - 0.5) * 0.4 // subtle horizontal wind
 
     this._parseColor(color)
     this.resize()
@@ -32,70 +35,94 @@ export class RainOnGlassEffect {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
     this.drops = []
-    this.streaks = []
-    this._seedDrops()
-    this._seedStreaks()
+    this.microDrops = []
+    this.trails = []
+    this._seed()
   }
 
-  _seedDrops() {
-    const density = Math.floor((this.canvas.width * this.canvas.height) / 12000)
-    const count = Math.min(Math.max(density, 40), 120)
+  _seed() {
+    // Tiny condensation specks covering the glass surface
+    const microCount = Math.floor(
+      (this.canvas.width * this.canvas.height) / 3800,
+    )
+    for (let i = 0; i < Math.min(microCount, 320); i++) {
+      this.microDrops.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        r: Math.random() * 2.2 + 0.4,
+        opacity: Math.random() * 0.32 + 0.12,
+      })
+    }
+    // Seed main drops
+    const density = Math.floor((this.canvas.width * this.canvas.height) / 14000)
+    const count = Math.min(Math.max(density, 35), 100)
     for (let i = 0; i < count; i++) {
-      this.drops.push(this._createDrop(true))
+      this.drops.push(this._newDrop(true))
+    }
+    // Pre-populate faint dried streaks on glass
+    const trailCount = Math.floor(this.canvas.width / 65)
+    for (let i = 0; i < trailCount; i++) {
+      this.trails.push(this._newStaticTrail())
     }
   }
 
-  // Pre-populate faint dried water marks on the glass surface
-  _seedStreaks() {
-    const count = Math.floor(this.canvas.width / 70)
-    for (let i = 0; i < count; i++) {
-      this.streaks.push(this._createStreak())
-    }
-  }
-
-  _createStreak() {
+  _newStaticTrail() {
     const x = Math.random() * this.canvas.width
-    const y = Math.random() * this.canvas.height * 0.5
-    const length = Math.random() * 220 + 60
-    const points = [{ x, y }]
-    let cx = x
-    let cy = y
-    for (let i = 1; i < 22; i++) {
-      cx += (Math.random() - 0.5) * 10
-      cy += length / 22
-      points.push({ x: cx, y: cy })
+    const y = Math.random() * this.canvas.height * 0.55
+    const len = Math.random() * 190 + 50
+    const pts = [{ x, y }]
+    let cx = x,
+      cy = y
+    const steps = Math.floor(len / 9)
+    for (let i = 1; i <= steps; i++) {
+      cx += (Math.random() - 0.5) * 8
+      cy += len / steps
+      pts.push({ x: cx, y: cy })
     }
     return {
-      points,
-      opacity: Math.random() * 0.055 + 0.015,
-      width: Math.random() * 1.4 + 0.4,
+      pts,
+      opacity: Math.random() * 0.052 + 0.012,
+      width: Math.random() * 1.3 + 0.3,
+      age: Math.floor(Math.random() * 350),
+      maxAge: Math.random() * 900 + 400,
     }
   }
 
-  _createDrop(randomY = false) {
-    const maxR = Math.random() * 22 + 5
+  _newDrop(rndY = false) {
+    // Occasionally spawn a large drop (5% chance)
+    const r =
+      Math.random() < 0.05 ? Math.random() * 12 + 18 : Math.random() * 14 + 4
     const x = Math.random() * this.canvas.width
-    const y = randomY ? Math.random() * this.canvas.height : -maxR - 10
-
+    const y = rndY ? Math.random() * this.canvas.height : -r - 5
     return {
       x,
       y,
-      maxR,
-      currentR: randomY ? maxR * (Math.random() * 0.7 + 0.3) : 1.5,
-      growRate: Math.random() * 0.1 + 0.03,
-      sliding: randomY ? Math.random() < 0.4 : false,
-      slideSpeed: 0,
-      maxSlideSpeed: Math.random() * 2.2 + 0.5,
-      slideDelay: Math.floor(Math.random() * 200 + 50),
-      slideTimer: 0,
-      trail: [],
-      opacity: Math.random() * 0.3 + 0.5,
-      tilt: (Math.random() - 0.5) * 0.45,
+      r,
+      cr: rndY ? r * (Math.random() * 0.8 + 0.2) : 2.5,
+      growRate: Math.random() * 0.08 + 0.025,
+      vy: 0,
+      vx: 0,
+      sliding: rndY && Math.random() < 0.32,
+      gravity: 0.009 + r * 0.0009, // bigger drops are heavier
       wobble: Math.random() * Math.PI * 2,
-      wobbleSpeed: Math.random() * 0.035 + 0.006,
-      ripple: 0, // expanding ring on formation
-      rippleOpacity: 0.35,
+      wobbleSpeed: Math.random() * 0.04 + 0.01,
+      wobbleAmp: (Math.random() - 0.5) * 0.35,
+      opacity: Math.random() * 0.18 + 0.68,
+      trail: [],
       absorbed: false,
+      age: 0,
+      splashR: rndY ? 0 : 2,
+      splashOp: rndY ? 0 : 0.52,
+    }
+  }
+
+  _trailFromDrop(d) {
+    return {
+      pts: d.trail.map((p) => ({ x: p.x, y: p.y })),
+      opacity: Math.random() * 0.055 + 0.02,
+      width: d.cr * 0.36 + 0.4,
+      age: 0,
+      maxAge: Math.random() * 520 + 200,
     }
   }
 
@@ -104,10 +131,8 @@ export class RainOnGlassEffect {
     this.active = true
     this.lastDrawTime = 0
     this.glareOffset = 0
-    if (this.drops.length === 0) {
-      this._seedDrops()
-      this._seedStreaks()
-    }
+    this.time = 0
+    if (!this.drops.length) this._seed()
     this._parseColor(this.color)
     this.animate(0)
     this.canvas.style.display = "block"
@@ -120,94 +145,112 @@ export class RainOnGlassEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
     this.drops = []
-    this.streaks = []
+    this.microDrops = []
+    this.trails = []
   }
 
-  animate(currentTime = 0) {
+  animate(t = 0) {
     if (!this.active) return
-    this.animationFrame = requestAnimationFrame((t) => this.animate(t))
-
-    const elapsed = currentTime - this.lastDrawTime
+    this.animationFrame = requestAnimationFrame((t2) => this.animate(t2))
+    const elapsed = t - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-
+    this.lastDrawTime = t - (elapsed % this.fpsInterval)
+    this.time++
     this._update()
     this._draw()
   }
 
   _update() {
     // Spawn new drops at a natural rate
-    if (Math.random() < 0.1) {
-      this.drops.push(this._createDrop(false))
-    }
+    if (Math.random() < 0.11) this.drops.push(this._newDrop(false))
 
-    // Animate the glass glare sweep
-    this.glareOffset = (this.glareOffset + 0.2) % (this.canvas.width + 500)
+    // Slowly shift wind direction
+    this.windX += (Math.random() - 0.5) * 0.002
+    this.windX = Math.max(-0.5, Math.min(0.5, this.windX))
+
+    this.glareOffset = (this.glareOffset + 0.15) % (this.canvas.width + 600)
+
+    // Age out old trails
+    for (let i = this.trails.length - 1; i >= 0; i--) {
+      this.trails[i].age++
+      if (this.trails[i].age > this.trails[i].maxAge) this.trails.splice(i, 1)
+    }
 
     for (let i = this.drops.length - 1; i >= 0; i--) {
       const d = this.drops[i]
-
       if (d.absorbed) {
         this.drops.splice(i, 1)
         continue
       }
+      d.age++
 
-      // Expand ripple ring on formation
-      if (d.ripple < d.maxR * 2.8) {
-        d.ripple += 0.9
-        d.rippleOpacity = Math.max(0, 0.35 * (1 - d.ripple / (d.maxR * 2.8)))
+      // Fade splash ring
+      if (d.splashOp > 0) {
+        d.splashR += 1.8
+        d.splashOp = Math.max(0, d.splashOp - 0.017)
       }
 
       if (!d.sliding) {
-        // Growing / condensation phase
-        if (d.currentR < d.maxR) {
-          d.currentR = Math.min(d.currentR + d.growRate, d.maxR)
-        }
-        d.slideTimer++
-        if (d.slideTimer >= d.slideDelay && d.currentR >= d.maxR * 0.85) {
-          d.sliding = true
-          d.slideSpeed = 0.1
-        }
+        // Condensation growth phase
+        if (d.cr < d.r) d.cr = Math.min(d.cr + d.growRate, d.r)
 
-        // Absorb nearby smaller drops (realistic coalescence)
+        // Coalescence: absorb smaller nearby drops
         for (let j = this.drops.length - 1; j >= 0; j--) {
           if (j === i) continue
-          const other = this.drops[j]
-          if (other.absorbed || other.currentR >= d.currentR) continue
-          const dx = d.x - other.x
-          const dy = d.y - other.y
-          if (dx * dx + dy * dy < (d.currentR + other.currentR * 0.65) ** 2) {
-            // Grow the absorbing drop slightly
-            d.currentR = Math.min(d.currentR * 1.07, d.maxR * 1.25)
-            d.maxR = Math.max(d.maxR, d.currentR)
-            d.opacity = Math.min(d.opacity * 1.04, 0.88)
-            other.absorbed = true
+          const o = this.drops[j]
+          if (o.absorbed || o.cr > d.cr * 0.88) continue
+          const dx = d.x - o.x,
+            dy = d.y - o.y
+          if (dx * dx + dy * dy < (d.cr + o.cr * 0.65) ** 2) {
+            const newArea = Math.PI * (d.cr ** 2 + o.cr ** 2)
+            d.cr = Math.min(Math.sqrt(newArea / Math.PI), d.r * 1.6)
+            d.r = Math.max(d.r, d.cr)
+            o.absorbed = true
           }
         }
-      } else {
-        // Sliding phase — gravity + natural wobble path
-        d.slideSpeed = Math.min(d.slideSpeed * 1.022 + 0.01, d.maxSlideSpeed)
-        d.wobble += d.wobbleSpeed
-        d.x += Math.sin(d.wobble) * d.tilt * d.slideSpeed * 1.3
-        d.y += d.slideSpeed
 
-        // Record trail waypoints
-        const lastPt = d.trail[d.trail.length - 1]
-        if (!lastPt || d.y - lastPt.y > 3) {
-          d.trail.push({ x: d.x, y: d.y - d.currentR * 0.55 })
-          if (d.trail.length > 50) d.trail.shift()
+        // Begin sliding when drop mass overcomes surface tension
+        if (d.cr >= d.r * 0.88 && d.age > 55 + Math.random() * 90) {
+          d.sliding = true
+          d.vy = 0.08 + Math.random() * 0.12
+        }
+      } else {
+        // Physics-based sliding: gravity acceleration + wind drift
+        d.vy = Math.min(d.vy + d.gravity, 4.0)
+        d.vx += (this.windX - d.vx) * 0.04
+        d.wobble += d.wobbleSpeed
+        d.x += d.vx + Math.sin(d.wobble) * d.wobbleAmp
+        d.y += d.vy
+
+        // Record trail waypoints for smooth path rendering
+        const last = d.trail[d.trail.length - 1]
+        if (!last || d.y - last.y > 3.5) {
+          d.trail.push({ x: d.x, y: d.y - d.cr * 0.55 })
+          if (d.trail.length > 65) d.trail.shift()
+        }
+
+        // Absorb drops along the sliding path
+        for (let j = this.drops.length - 1; j >= 0; j--) {
+          if (j === i) continue
+          const o = this.drops[j]
+          if (o.absorbed) continue
+          const dx = d.x - o.x,
+            dy = d.y - o.y
+          if (dx * dx + dy * dy < (d.cr + o.cr * 0.68) ** 2) {
+            const newArea = Math.PI * (d.cr ** 2 + o.cr ** 2)
+            d.cr = Math.min(Math.sqrt(newArea / Math.PI), 32)
+            d.r = Math.max(d.r, d.cr)
+            d.vy = Math.min(d.vy * 1.08, 4.0)
+            o.absorbed = true
+          }
         }
       }
 
-      if (d.y - d.currentR > this.canvas.height) {
-        // Leave a semi-permanent dried streak where the drop slid
-        if (d.trail.length > 6) {
-          this.streaks.push({
-            points: [...d.trail],
-            opacity: Math.random() * 0.045 + 0.02,
-            width: d.currentR * 0.38 + 0.5,
-          })
-          if (this.streaks.length > 70) this.streaks.shift()
+      // Drop exited screen — leave a persistent dried streak
+      if (d.y - d.cr > this.canvas.height) {
+        if (d.trail.length > 5) {
+          this.trails.push(this._trailFromDrop(d))
+          if (this.trails.length > 90) this.trails.shift()
         }
         this.drops.splice(i, 1)
       }
@@ -216,188 +259,211 @@ export class RainOnGlassEffect {
 
   _draw() {
     const ctx = this.ctx
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    const W = this.canvas.width,
+      H = this.canvas.height
+    ctx.clearRect(0, 0, W, H)
+    const r = this._r,
+      g = this._g,
+      b = this._b
 
-    const r = this._r
-    const g = this._g
-    const b = this._b
-
-    // ── 1. Subtle glass condensation/fog layer ──────────────────────────────
-    const fogGrad = ctx.createRadialGradient(
-      this.canvas.width * 0.5,
-      this.canvas.height * 0.45,
+    // ── 1. Condensation fog layer ─────────────────────────────────────────────
+    const fog = ctx.createRadialGradient(
+      W * 0.5,
+      H * 0.42,
       0,
-      this.canvas.width * 0.5,
-      this.canvas.height * 0.45,
-      this.canvas.width * 0.72,
+      W * 0.5,
+      H * 0.42,
+      W * 0.75,
     )
-    fogGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.045)`)
-    fogGrad.addColorStop(0.55, `rgba(${r}, ${g}, ${b}, 0.02)`)
-    fogGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.0)`)
-    ctx.fillStyle = fogGrad
-    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    fog.addColorStop(0, `rgba(${r},${g},${b},0.042)`)
+    fog.addColorStop(0.55, `rgba(${r},${g},${b},0.016)`)
+    fog.addColorStop(1, `rgba(${r},${g},${b},0)`)
+    ctx.fillStyle = fog
+    ctx.fillRect(0, 0, W, H)
 
-    // ── 2. Dried water streak marks on the glass surface ───────────────────
-    for (const streak of this.streaks) {
-      if (streak.points.length < 2) continue
+    // ── 2. Micro condensation dots (tiny droplets on glass surface) ───────────
+    for (const m of this.microDrops) {
       ctx.beginPath()
-      ctx.moveTo(streak.points[0].x, streak.points[0].y)
-      for (let i = 1; i < streak.points.length; i++) {
-        const prev = streak.points[i - 1]
-        const curr = streak.points[i]
-        ctx.quadraticCurveTo(
-          prev.x,
-          prev.y,
-          (prev.x + curr.x) / 2,
-          (prev.y + curr.y) / 2,
-        )
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(${r},${g},${b},${m.opacity})`
+      ctx.fill()
+    }
+
+    // ── 3. Dried water streak marks on the glass ──────────────────────────────
+    for (const t of this.trails) {
+      if (t.pts.length < 2) continue
+      const ageFade = 1 - t.age / t.maxAge
+      const op = t.opacity * ageFade
+      if (op < 0.003) continue
+      ctx.beginPath()
+      ctx.moveTo(t.pts[0].x, t.pts[0].y)
+      for (let i = 1; i < t.pts.length; i++) {
+        const p = t.pts[i - 1],
+          c = t.pts[i]
+        ctx.quadraticCurveTo(p.x, p.y, (p.x + c.x) / 2, (p.y + c.y) / 2)
       }
-      ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${streak.opacity})`
-      ctx.lineWidth = streak.width
+      ctx.strokeStyle = `rgba(${r},${g},${b},${op})`
+      ctx.lineWidth = t.width
       ctx.lineCap = "round"
       ctx.lineJoin = "round"
       ctx.stroke()
     }
 
-    // ── 3. Drops ────────────────────────────────────────────────────────────
+    // ── 4. Drops ──────────────────────────────────────────────────────────────
     for (const d of this.drops) {
       if (d.absorbed) continue
-      const op = d.opacity
-      const cr = d.currentR
+      const cr = d.cr,
+        op = d.opacity
 
-      // Ripple ring emitted when a drop first condenses
-      if (d.ripple > 0 && d.rippleOpacity > 0.005) {
+      // Splash ring on impact
+      if (d.splashOp > 0.01) {
         ctx.beginPath()
-        ctx.arc(d.x, d.y, d.ripple, 0, Math.PI * 2)
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${d.rippleOpacity})`
-        ctx.lineWidth = 1.0
+        ctx.arc(d.x, d.y, d.splashR, 0, Math.PI * 2)
+        ctx.strokeStyle = `rgba(${r},${g},${b},${d.splashOp})`
+        ctx.lineWidth = 1.3
         ctx.stroke()
+        if (d.splashR > cr * 0.5) {
+          ctx.beginPath()
+          ctx.arc(d.x, d.y, d.splashR * 0.55, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(${r},${g},${b},${d.splashOp * 0.45})`
+          ctx.lineWidth = 0.7
+          ctx.stroke()
+        }
       }
 
-      // Trail — gradient fades from transparent at top to opaque near the drop
-      if (d.sliding && d.trail.length > 2) {
-        const first = d.trail[0]
-        const last = d.trail[d.trail.length - 1]
-        const trailGrad = ctx.createLinearGradient(
-          first.x,
-          first.y,
-          last.x,
-          last.y,
-        )
-        trailGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.0)`)
-        trailGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${op * 0.18})`)
-        trailGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${op * 0.32})`)
-
+      // Sliding trail — tapered, fades to transparent at the top
+      if (d.sliding && d.trail.length > 3) {
+        const tf = d.trail[0],
+          tl = d.trail[d.trail.length - 1]
+        const tg = ctx.createLinearGradient(tf.x, tf.y, tl.x, tl.y)
+        tg.addColorStop(0, `rgba(${r},${g},${b},0)`)
+        tg.addColorStop(0.45, `rgba(${r},${g},${b},${op * 0.14})`)
+        tg.addColorStop(1, `rgba(${r},${g},${b},${op * 0.27})`)
         ctx.beginPath()
-        ctx.moveTo(first.x, first.y)
+        ctx.moveTo(tf.x, tf.y)
         for (let i = 1; i < d.trail.length; i++) {
-          const prev = d.trail[i - 1]
-          const curr = d.trail[i]
-          ctx.quadraticCurveTo(
-            prev.x,
-            prev.y,
-            (prev.x + curr.x) / 2,
-            (prev.y + curr.y) / 2,
-          )
+          const p = d.trail[i - 1],
+            c = d.trail[i]
+          ctx.quadraticCurveTo(p.x, p.y, (p.x + c.x) / 2, (p.y + c.y) / 2)
         }
-        ctx.strokeStyle = trailGrad
-        ctx.lineWidth = cr * 0.52
+        ctx.strokeStyle = tg
+        ctx.lineWidth = cr * 0.42
         ctx.lineCap = "round"
         ctx.lineJoin = "round"
         ctx.stroke()
       }
 
-      // Teardrop distortion — taller and narrower when sliding
-      const scaleY = d.sliding ? 1.2 : 1.0
-      const scaleX = d.sliding ? 0.86 : 1.0
-
-      // Drop body — multi-stop radial gradient simulating glass-lens refraction
-      const hx = d.x - cr * 0.3
-      const hy = d.y - cr * 0.36
-      const grad = ctx.createRadialGradient(
-        hx,
-        hy,
-        cr * 0.04,
-        d.x,
-        d.y,
-        cr * 1.1,
-      )
-      grad.addColorStop(0.0, `rgba(255, 255, 255, ${op * 0.92})`)
-      grad.addColorStop(0.18, `rgba(255, 255, 255, ${op * 0.55})`)
-      grad.addColorStop(0.38, `rgba(${r}, ${g}, ${b}, ${op * 0.72})`)
-      grad.addColorStop(0.65, `rgba(${r}, ${g}, ${b}, ${op * 0.5})`)
-      grad.addColorStop(
-        0.85,
-        `rgba(${(r * 0.75) | 0}, ${(g * 0.75) | 0}, ${(b * 0.75) | 0}, ${op * 0.3})`,
-      )
-      grad.addColorStop(1.0, `rgba(${r}, ${g}, ${b}, 0.0)`)
-
+      // ── Drop body ─────────────────────────────────────────────────────────
       ctx.save()
       ctx.translate(d.x, d.y)
-      ctx.scale(scaleX, scaleY)
+
+      // Teardrop elongation when sliding fast
+      const speed = d.sliding ? Math.min(d.vy / 2.8, 1) : 0
+      ctx.scale(1 - speed * 0.1, 1 + speed * 0.28)
+
+      // Drop shadow for glass-depth realism
+      ctx.shadowColor = "rgba(0,0,0,0.22)"
+      ctx.shadowBlur = cr * 0.7
+      ctx.shadowOffsetX = cr * 0.08
+      ctx.shadowOffsetY = cr * 0.12
+
+      // Body: radial gradient — bright core transitioning to tinted, transparent edge
+      const hx = -cr * 0.28,
+        hy = -cr * 0.32
+      const bg = ctx.createRadialGradient(hx, hy, cr * 0.02, 0, 0, cr * 1.08)
+      bg.addColorStop(0.0, `rgba(255,255,255,${op * 0.95})`)
+      bg.addColorStop(0.14, `rgba(255,255,255,${op * 0.58})`)
+      bg.addColorStop(0.3, `rgba(${r},${g},${b},${op * 0.78})`)
+      bg.addColorStop(0.52, `rgba(${r},${g},${b},${op * 0.58})`)
+      bg.addColorStop(
+        0.75,
+        `rgba(${(r * 0.68) | 0},${(g * 0.68) | 0},${(b * 0.68) | 0},${op * 0.34})`,
+      )
+      bg.addColorStop(0.9, `rgba(${r},${g},${b},${op * 0.1})`)
+      bg.addColorStop(1.0, `rgba(${r},${g},${b},0)`)
+
       ctx.beginPath()
-      ctx.arc(0, 0, cr, 0, Math.PI * 2)
-      ctx.fillStyle = grad
+      if (d.sliding && speed > 0.12) {
+        this._teardrop(ctx, cr)
+      } else {
+        ctx.arc(0, 0, cr, 0, Math.PI * 2)
+      }
+      ctx.fillStyle = bg
+      ctx.fill()
+      ctx.shadowColor = "transparent"
+
+      // Lens refraction: darker inverted ellipse in lower half (simulates background inversion)
+      ctx.beginPath()
+      ctx.ellipse(cr * 0.06, cr * 0.3, cr * 0.6, cr * 0.4, 0, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(${(r * 0.32) | 0},${(g * 0.32) | 0},${(b * 0.32) | 0},${op * 0.22})`
       ctx.fill()
 
-      // Bright rim on the drop edge
+      // Bright rim — thin ring around drop edge
       ctx.beginPath()
-      ctx.arc(0, 0, cr, 0, Math.PI * 2)
-      ctx.strokeStyle = `rgba(255, 255, 255, ${op * 0.38})`
-      ctx.lineWidth = 0.7
+      if (d.sliding && speed > 0.12) {
+        this._teardrop(ctx, cr)
+      } else {
+        ctx.arc(0, 0, cr, 0, Math.PI * 2)
+      }
+      ctx.strokeStyle = `rgba(255,255,255,${op * 0.32})`
+      ctx.lineWidth = 0.8
       ctx.stroke()
       ctx.restore()
 
-      // Primary specular — top-left crescent (dominant light source)
+      // Primary specular — large bright crescent (top-left, dominant light source)
       ctx.save()
       ctx.beginPath()
       ctx.ellipse(
-        d.x - cr * 0.3,
-        d.y - cr * 0.36,
-        cr * 0.28,
-        cr * 0.16,
-        -Math.PI / 5,
+        d.x - cr * 0.27,
+        d.y - cr * 0.33,
+        cr * 0.27,
+        cr * 0.14,
+        -Math.PI / 5.5,
         0,
         Math.PI * 2,
       )
-      ctx.fillStyle = `rgba(255, 255, 255, ${op * 0.82})`
+      ctx.fillStyle = `rgba(255,255,255,${op * 0.88})`
       ctx.fill()
       ctx.restore()
 
-      // Secondary specular — bottom-right micro-highlight (lens refraction)
+      // Secondary specular — tiny catch-light (bottom-right, Fresnel reflection)
       ctx.save()
       ctx.beginPath()
       ctx.ellipse(
-        d.x + cr * 0.33,
-        d.y + cr * 0.3,
-        cr * 0.11,
-        cr * 0.07,
+        d.x + cr * 0.3,
+        d.y + cr * 0.28,
+        cr * 0.1,
+        cr * 0.06,
         Math.PI / 4,
         0,
         Math.PI * 2,
       )
-      ctx.fillStyle = `rgba(255, 255, 255, ${op * 0.32})`
+      ctx.fillStyle = `rgba(255,255,255,${op * 0.4})`
       ctx.fill()
       ctx.restore()
     }
 
-    // ── 4. Diagonal glass glare sweep (slowly drifts across screen) ─────────
-    const gx = this.glareOffset - 250
-    const glareGrad = ctx.createLinearGradient(
-      gx,
-      0,
-      gx + 250,
-      this.canvas.height * 0.55,
-    )
-    glareGrad.addColorStop(0, `rgba(255, 255, 255, 0.0)`)
-    glareGrad.addColorStop(0.35, `rgba(255, 255, 255, 0.018)`)
-    glareGrad.addColorStop(0.5, `rgba(255, 255, 255, 0.038)`)
-    glareGrad.addColorStop(0.65, `rgba(255, 255, 255, 0.018)`)
-    glareGrad.addColorStop(1, `rgba(255, 255, 255, 0.0)`)
+    // ── 5. Diagonal glass glare sweep (slowly drifts across screen) ───────────
+    const gx = this.glareOffset - 300
+    const gg = ctx.createLinearGradient(gx, 0, gx + 300, H * 0.5)
+    gg.addColorStop(0, "rgba(255,255,255,0)")
+    gg.addColorStop(0.3, "rgba(255,255,255,0.013)")
+    gg.addColorStop(0.5, "rgba(255,255,255,0.030)")
+    gg.addColorStop(0.7, "rgba(255,255,255,0.013)")
+    gg.addColorStop(1, "rgba(255,255,255,0)")
     ctx.save()
-    ctx.transform(1, 0, -0.45, 1, 0, 0) // diagonal shear
-    ctx.fillStyle = glareGrad
-    ctx.fillRect(gx, 0, 250, this.canvas.height)
+    ctx.transform(1, 0, -0.38, 1, 0, 0)
+    ctx.fillStyle = gg
+    ctx.fillRect(gx, 0, 300, H)
     ctx.restore()
+  }
+
+  // Smooth bezier teardrop path: narrow pointed top, rounded bottom
+  _teardrop(ctx, r) {
+    const top = -r * 1.12,
+      bot = r
+    ctx.moveTo(0, top)
+    ctx.bezierCurveTo(r * 0.88, top * 0.22, r * 1.06, bot * 0.52, 0, bot)
+    ctx.bezierCurveTo(-r * 1.06, bot * 0.52, -r * 0.88, top * 0.22, 0, top)
   }
 }
