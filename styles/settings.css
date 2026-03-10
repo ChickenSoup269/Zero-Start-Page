@@ -270,6 +270,33 @@
   margin-bottom: 0;
 }
 
+.wave-angle-presets {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.wave-angle-preset-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  cursor: pointer;
+  color: #888;
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  line-height: 1.4;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.wave-angle-preset-btn:hover {
+  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color);
+}
+
 .wave-center-btn {
   background: none;
   border: none;

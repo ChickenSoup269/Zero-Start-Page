@@ -80,6 +80,9 @@
                         <div class="input-group">
                             <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
                             <input type="color" id="bg-color-picker" aria-label="Pick a color" />
+                            <div id="unsplash-credit"
+                                style="display:none;margin-top:6px;font-size:0.72rem;opacity:0.7;line-height:1.5;">
+                            </div>
                             <button id="save-color-btn" class="primary-btn full-width"
                                 data-i18n="settings_save_color">Save
                                 Solid Color</button>
@@ -95,6 +98,12 @@
                                     style="color: white;" data-i18n="settings_unsplash_api_info">Get a free key at
                                     unsplash.com/developers</a>
                             </small>
+                            <!-- <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
+                                <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
+                                    style="color: white;" data-i18n="settings_unsplash_api_info">Video how to get api
+                                    key</a>
+                            </small> -->
+
                             <select id="unsplash-category-select" class="full-width"
                                 style="margin-bottom: 8px;"></select>
                             <button id="unsplash-random-btn" class="secondary-btn"
@@ -107,6 +116,7 @@
                                 title="Save current background to Local Themes">
                                 <i class="fa-solid fa-bookmark"></i>
                             </button>
+
                         </div>
                     </div>
 
@@ -271,8 +281,18 @@
                         <div class="wave-angle-header">
                             <label data-i18n="settings_svg_wave_angle">Angle: <span
                                     id="svg-wave-angle-value">0</span>°</label>
-                            <button id="svg-wave-angle-center" class="wave-center-btn" title="Reset to center (0°)"><i
-                                    class="fa-solid fa-crosshairs"></i></button>
+                            <div class="wave-angle-presets">
+                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
+                                        class="fa-solid fa-arrow-left"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90°)"><i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0°)"><i
+                                        class="fa-solid fa-arrow-up"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
+                                        class="fa-solid fa-arrow-down"></i></button>
+                                <button id="svg-wave-angle-center" class="wave-center-btn"
+                                    title="Reset to center (0°)"><i class="fa-solid fa-crosshairs"></i></button>
+                            </div>
                         </div>
                         <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
@@ -380,6 +400,8 @@
                     <option value="oceanWave" data-i18n="effect_ocean_wave">Ocean Wave</option>
                     <option value="cloudDrift" data-i18n="effect_cloud_drift">Cloud Drift</option>
                     <option value="autumnLeaves" data-i18n="effect_autumn_leaves">Autumn Leaves</option>
+                    <option value="greenLeaves" data-i18n="effect_green_leaves">Green Leaves (Wind)</option>
+                    <option value="sunbeam" data-i18n="effect_sunbeam">Sunbeam (God Rays)</option>
                     <option value="shiny" data-i18n="effect_shiny">Shiny (Prismatic Light)</option>
                     <option value="lineShiny" data-i18n="effect_line_shiny">Line Shiny (Glass Rays)</option>
                 </select>

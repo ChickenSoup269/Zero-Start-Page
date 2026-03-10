@@ -36,6 +36,7 @@ const defaultSettings = {
   bgSize: "cover",
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
+  unsplashLastCredit: null,
   showTodoList: true,
   showTimer: false,
   showGregorian: true,

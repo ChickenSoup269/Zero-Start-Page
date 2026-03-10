@@ -12,6 +12,7 @@ export const unsplashAccessKeyInput = document.getElementById(
   "unsplash-access-key-input",
 )
 export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
+export const unsplashCredit = document.getElementById("unsplash-credit")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
 export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
@@ -252,6 +253,9 @@ export const svgWaveAngle = document.getElementById("svg-wave-angle")
 export const svgWaveAngleValue = document.getElementById("svg-wave-angle-value")
 export const svgWaveAngleCenterBtn = document.getElementById(
   "svg-wave-angle-center",
+)
+export const svgWaveAnglePresetBtns = document.querySelectorAll(
+  ".wave-angle-preset-btn",
 )
 export const svgWaveSmoothness = document.getElementById("svg-wave-smoothness")
 export const svgWaveSmoothnessValue = document.getElementById(
