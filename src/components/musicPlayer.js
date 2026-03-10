@@ -12,6 +12,8 @@ export class MusicPlayer {
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
+    this._audioSyncListener = null
+    this._isSyncing = false
 
     this.init()
   }
@@ -161,9 +163,11 @@ export class MusicPlayer {
     if (this.isPlaying) {
       this.disc.classList.add("playing")
       this.visualizer.start()
+      this.startAudioSync()
     } else {
       this.disc.classList.remove("playing")
       this.visualizer.stop()
+      this.stopAudioSync()
     }
 
     // Update thumbnail
@@ -205,10 +209,43 @@ export class MusicPlayer {
     this.currentThumbnail = ""
     document.getElementById("play-pause-btn").innerHTML =
       '<i class="fa-solid fa-play"></i>'
+    this.visualizer.stop()
+    this.stopAudioSync()
   }
 
   sendControl(command) {
     chrome.runtime.sendMessage({ action: "mediaControl", command: command })
+  }
+
+  startAudioSync() {
+    if (this._isSyncing) return
+    this._isSyncing = true
+    chrome.runtime.sendMessage({ action: "startAudioSync" }, (response) => {
+      if (chrome.runtime.lastError || !response?.ok) {
+        this._isSyncing = false
+        return
+      }
+      this._audioSyncListener = (message) => {
+        if (message.action === "audioSyncData" && message._relay === true) {
+          this.visualizer.feedFrequencyData(message.samples)
+        }
+      }
+      chrome.runtime.onMessage.addListener(this._audioSyncListener)
+    })
+  }
+
+  stopAudioSync() {
+    if (!this._isSyncing) return
+    this._isSyncing = false
+    if (this._audioSyncListener) {
+      chrome.runtime.onMessage.removeListener(this._audioSyncListener)
+      this._audioSyncListener = null
+    }
+    chrome.runtime.sendMessage({ action: "stopAudioSync" }, () => {
+      if (chrome.runtime.lastError) {
+      }
+    })
+    this.visualizer.feedFrequencyData(null)
   }
 
   togglePlayer() {

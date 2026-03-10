@@ -1,8 +1,26 @@
 // --- State Management ---
 import { showAlert } from "../utils/dialog.js"
 
+// Gradient presets for random first-load background
+const _GRADIENT_PRESETS = [
+  { gradientStart: "#0f0c29", gradientEnd: "#302b63", gradientAngle: "135" },
+  { gradientStart: "#141e30", gradientEnd: "#243b55", gradientAngle: "160" },
+  { gradientStart: "#0a0a1a", gradientEnd: "#1a0a3e", gradientAngle: "150" },
+  { gradientStart: "#1a1a2e", gradientEnd: "#16213e", gradientAngle: "135" },
+  { gradientStart: "#0d1b2a", gradientEnd: "#1b4332", gradientAngle: "145" },
+  { gradientStart: "#0b0c10", gradientEnd: "#1f2833", gradientAngle: "160" },
+  { gradientStart: "#0f2027", gradientEnd: "#203a43", gradientAngle: "135" },
+  { gradientStart: "#1a0533", gradientEnd: "#0d324d", gradientAngle: "145" },
+  { gradientStart: "#12002e", gradientEnd: "#2d004f", gradientAngle: "150" },
+  { gradientStart: "#0a1628", gradientEnd: "#1c3f6e", gradientAngle: "140" },
+  { gradientStart: "#0d0221", gradientEnd: "#3a015c", gradientAngle: "135" },
+  { gradientStart: "#001219", gradientEnd: "#005f73", gradientAngle: "145" },
+]
+const _initialGradient =
+  _GRADIENT_PRESETS[Math.floor(Math.random() * _GRADIENT_PRESETS.length)]
+
 const defaultSettings = {
-  background: "#0f0c29",
+  background: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",
   clockSize: "6",
@@ -10,9 +28,9 @@ const defaultSettings = {
   pageTitle: "Start Page",
   accentColor: "#a8c0ff",
   effect: "none",
-  gradientStart: "#0f0c29",
-  gradientEnd: "#302b63",
-  gradientAngle: "135",
+  gradientStart: _initialGradient.gradientStart,
+  gradientEnd: _initialGradient.gradientEnd,
+  gradientAngle: _initialGradient.gradientAngle,
   userBackgrounds: [],
   userColors: [],
   userGradients: [], // Add userGradients
@@ -36,6 +54,7 @@ const defaultSettings = {
   bgSize: "cover",
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
+  unsplashLastCredit: null,
   showTodoList: true,
   showTimer: false,
   showGregorian: true,
@@ -54,6 +73,7 @@ const defaultSettings = {
   timerIsRunning: false,
   musicPlayerExpanded: false,
   sideControlsGhostMode: false,
+  showQuickAccess: true,
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,

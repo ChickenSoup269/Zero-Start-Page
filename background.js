@@ -127,23 +127,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               return { ok: false, error: "SOURCE_ERROR" }
             }
             const analyser = audioCtx.createAnalyser()
-            analyser.fftSize = 512
+            analyser.fftSize = 256
+            analyser.smoothingTimeConstant = 0.6
             source.connect(analyser)
             analyser.connect(audioCtx.destination)
 
-            const bufferLength = analyser.fftSize
-            const dataArray = new Uint8Array(bufferLength)
+            const freqBins = analyser.frequencyBinCount // 128
+            const dataArray = new Uint8Array(freqBins)
             let rafId = null
 
+            // Average a slice of frequency bins and normalize to 0..1
+            const avgBand = (from, to) => {
+              let sum = 0
+              for (let i = from; i < to; i++) sum += dataArray[i]
+              return sum / (to - from) / 255
+            }
+
             const sendFrame = () => {
-              analyser.getByteTimeDomainData(dataArray)
-              const samples = []
-              const targetSize = 64
-              const step = Math.floor(bufferLength / targetSize)
-              for (let i = 0; i < targetSize; i++) {
-                const v = dataArray[i * step] / 128 - 1
-                samples.push(v)
-              }
+              analyser.getByteFrequencyData(dataArray)
+              // 4 perceptually-spaced bands (fftSize=256 → binWidth≈172Hz at 44.1kHz)
+              // Band 0 Bass     : bins  0–4  → 0–688 Hz
+              // Band 1 Low-mid  : bins  4–18 → 688–3101 Hz
+              // Band 2 High-mid : bins 18–55 → 3101–9476 Hz
+              // Band 3 High     : bins 55–100→ 9476–17230 Hz
+              const samples = [
+                avgBand(0, 4),
+                avgBand(4, 18),
+                avgBand(18, 55),
+                avgBand(55, 100),
+              ]
               chrome.runtime.sendMessage(
                 { action: "audioSyncData", samples },
                 () => {},

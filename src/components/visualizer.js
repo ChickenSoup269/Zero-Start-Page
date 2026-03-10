@@ -17,6 +17,14 @@ class MusicVisualizer {
     this.peakIdx = [] // segment index (integer) for each bar's peak
     this.peakTimer = 0 // accumulator for step-based drop
     this._lastTs = 0
+    // Real frequency data from Web Audio API
+    this._realBands = null
+    this._cssAnimId = null
+    this._lastCssTs = 0
+    this._currentHeights = [4, 4, 4, 4]
+    this._targetHeights = [4, 4, 4, 4]
+    this._simPhase = [0, 1.1, 2.2, 3.3]
+    this._simSpeeds = [1.9, 2.4, 1.6, 2.8]
   }
 
   init(musicPlayerContainer) {
@@ -45,9 +53,15 @@ class MusicVisualizer {
     this.currentStyle = style
     if (prev === "pixel" && style !== "pixel") {
       this._stopPixel()
+      if (this.isPlaying) this._startCSSLoop()
     }
     if (style === "pixel" && !this.pixelCanvas) {
+      this._stopCSSLoop()
       this._startPixel()
+    }
+    if (prev !== "pixel" && style !== "pixel" && this.isPlaying) {
+      this._stopCSSLoop()
+      this._startCSSLoop()
     }
   }
 
@@ -138,12 +152,19 @@ class MusicVisualizer {
     }
 
     for (let i = 0; i < this.barCount; i++) {
-      // Advance oscillation while playing
-      if (this.isPlaying) {
-        this.pixelPhase[i] += this.pixelSpeeds[i] * dt * Math.PI
+      let norm
+      if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
+        // Use real frequency data with sqrt perceptual curve
+        const bandIdx = Math.min(i, this._realBands.length - 1)
+        norm = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx])))
+      } else {
+        // Fallback: sine wave simulation
+        if (this.isPlaying) {
+          this.pixelPhase[i] += this.pixelSpeeds[i] * dt * Math.PI
+        }
+        norm = (Math.sin(this.pixelPhase[i]) + 1) / 2 // 0..1
       }
 
-      const norm = (Math.sin(this.pixelPhase[i]) + 1) / 2 // 0..1
       const numSegs = Math.max(1, Math.round(norm * maxSegs))
 
       // Bar rising → push peak up
@@ -172,20 +193,90 @@ class MusicVisualizer {
 
   // ── Public API ────────────────────────────────────────────────────────────
 
+  /**
+   * Feed real frequency band data from Web Audio API.
+   * @param {number[]|null} bands - Array of 4 normalized values (0..1), or null to clear.
+   */
+  feedFrequencyData(bands) {
+    this._realBands = bands && Array.isArray(bands) ? bands : null
+  }
+
+  _startCSSLoop() {
+    if (this._cssAnimId) return
+    // Override CSS keyframe animations; JS drives the bar heights
+    this.bars.forEach((bar) => {
+      bar.style.animation = "none"
+      bar.style.transition = "none"
+    })
+    this._lastCssTs = performance.now()
+    this._currentHeights = new Array(this.barCount).fill(4)
+    this._targetHeights = new Array(this.barCount).fill(4)
+
+    const loop = (ts) => {
+      const dt = Math.min((ts - this._lastCssTs) / 1000, 0.05)
+      this._lastCssTs = ts
+
+      const containerH = this.container.offsetHeight || 40
+      const minH = 4
+      const maxH = containerH - 4
+
+      if (this._realBands && this._realBands.length > 0) {
+        for (let i = 0; i < this.barCount; i++) {
+          const bandIdx = Math.min(i, this._realBands.length - 1)
+          const t = Math.sqrt(
+            Math.max(0, Math.min(1, this._realBands[bandIdx])),
+          )
+          this._targetHeights[i] = minH + t * (maxH - minH)
+        }
+      } else {
+        // Simulate with sine waves as fallback
+        for (let i = 0; i < this.barCount; i++) {
+          this._simPhase[i] += this._simSpeeds[i] * dt * Math.PI
+          const t = (Math.sin(this._simPhase[i]) + 1) / 2
+          this._targetHeights[i] = minH + t * (maxH - minH)
+        }
+      }
+
+      // Smooth lerp toward target
+      for (let i = 0; i < this.barCount; i++) {
+        this._currentHeights[i] +=
+          (this._targetHeights[i] - this._currentHeights[i]) * 0.2
+        this.bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
+      }
+
+      this._cssAnimId = requestAnimationFrame(loop)
+    }
+    this._cssAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopCSSLoop() {
+    if (this._cssAnimId) {
+      cancelAnimationFrame(this._cssAnimId)
+      this._cssAnimId = null
+    }
+    this.bars.forEach((bar) => {
+      bar.style.height = ""
+      bar.style.animation = ""
+      bar.style.transition = ""
+      bar.classList.remove("playing")
+    })
+  }
+
   refresh() {}
 
   start() {
     if (this.isPlaying) return
     this.isPlaying = true
     if (this.currentStyle !== "pixel") {
-      this.bars.forEach((bar) => bar.classList.add("playing"))
+      this._startCSSLoop()
     }
   }
 
   stop() {
     this.isPlaying = false
+    this._realBands = null
     if (this.currentStyle !== "pixel") {
-      this.bars.forEach((bar) => bar.classList.remove("playing"))
+      this._stopCSSLoop()
     }
   }
 

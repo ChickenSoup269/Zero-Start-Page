@@ -80,6 +80,9 @@
                         <div class="input-group">
                             <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
                             <input type="color" id="bg-color-picker" aria-label="Pick a color" />
+                            <div id="unsplash-credit"
+                                style="display:none;margin-top:6px;font-size:0.72rem;opacity:0.7;line-height:1.5;">
+                            </div>
                             <button id="save-color-btn" class="primary-btn full-width"
                                 data-i18n="settings_save_color">Save
                                 Solid Color</button>
@@ -95,6 +98,12 @@
                                     style="color: white;" data-i18n="settings_unsplash_api_info">Get a free key at
                                     unsplash.com/developers</a>
                             </small>
+                            <!-- <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
+                                <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
+                                    style="color: white;" data-i18n="settings_unsplash_api_info">Video how to get api
+                                    key</a>
+                            </small> -->
+
                             <select id="unsplash-category-select" class="full-width"
                                 style="margin-bottom: 8px;"></select>
                             <button id="unsplash-random-btn" class="secondary-btn"
@@ -107,6 +116,7 @@
                                 title="Save current background to Local Themes">
                                 <i class="fa-solid fa-bookmark"></i>
                             </button>
+
                         </div>
                     </div>
 
@@ -271,8 +281,18 @@
                         <div class="wave-angle-header">
                             <label data-i18n="settings_svg_wave_angle">Angle: <span
                                     id="svg-wave-angle-value">0</span>°</label>
-                            <button id="svg-wave-angle-center" class="wave-center-btn" title="Reset to center (0°)"><i
-                                    class="fa-solid fa-crosshairs"></i></button>
+                            <div class="wave-angle-presets">
+                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
+                                        class="fa-solid fa-arrow-left"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90°)"><i
+                                        class="fa-solid fa-arrow-right"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0°)"><i
+                                        class="fa-solid fa-arrow-up"></i></button>
+                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
+                                        class="fa-solid fa-arrow-down"></i></button>
+                                <button id="svg-wave-angle-center" class="wave-center-btn"
+                                    title="Reset to center (0°)"><i class="fa-solid fa-crosshairs"></i></button>
+                            </div>
                         </div>
                         <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
@@ -355,34 +375,111 @@
 
             <div class="setting-group">
                 <label data-i18n="setting_effect"><i class="fa-solid fa-wand-magic-sparkles"></i> Effect</label>
-                <select id="effect-select">
-                    <option value="none" data-i18n="effect_none">None</option>
-                    <option value="galaxy" data-i18n="effect_galaxy">Rain</option>
-
-                    <!-- Các hiệu ứng cơ bản -->
-                    <option value="fireflies" data-i18n="effect_fireflies">Fireflies</option>
-                    <option value="network" data-i18n="effect_network">Network</option>
-                    <option value="matrix" data-i18n="effect_matrix">Matrix Rain</option>
-                    <option value="aura" data-i18n="effect_aura">Gradients Aura</option>
-                    <option value="wind" data-i18n="effect_wind">Anime Wind (Speed Lines)</option>
-                    <option value="hacker" data-i18n="effect_hacker">Hacker (Binary)</option>
-
-                    <!-- Hiệu ứng nâng cao -->
-                    <option value="sakura" data-i18n="effect_sakura">Sakura (Cherry Blossoms)</option>
-                    <option value="snowfall" data-i18n="effect_snowfall">Snowfall</option>
-                    <option value="auroraWave" data-i18n="effect_aurora_wave">Aurora Wave</option>
-                    <option value="bubbles" data-i18n="effect_bubbles">Bubbles (Underwater)</option>
-                    <option value="rainOnGlass" data-i18n="effect_rain_on_glass">Rain on Glass</option>
-                    <option value="rainHD" data-i18n="effect_rain_hd">Rain HD (Splash)</option>
-                    <option value="rainbow" data-i18n="effect_rainbow">Rainbow Background</option>
-                    <option value="wavyLines" data-i18n="effect_wavy_lines">Wavy Lines</option>
-                    <option value="firefliesHD" data-i18n="effect_fireflies_hd">Fireflies HD</option>
-                    <option value="oceanWave" data-i18n="effect_ocean_wave">Ocean Wave</option>
-                    <option value="cloudDrift" data-i18n="effect_cloud_drift">Cloud Drift</option>
-                    <option value="autumnLeaves" data-i18n="effect_autumn_leaves">Autumn Leaves</option>
-                    <option value="shiny" data-i18n="effect_shiny">Shiny (Prismatic Light)</option>
-                    <option value="lineShiny" data-i18n="effect_line_shiny">Line Shiny (Glass Rays)</option>
-                </select>
+                <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
+                    autocomplete="off">
+                <div id="effect-grid" class="effect-grid">
+                    <button class="effect-item" data-value="none" data-search="none off disable">
+                        <span class="effect-icon"><i class="fa-solid fa-ban"></i></span>
+                        <span class="effect-name" data-i18n="effect_none">None</span>
+                    </button>
+                    <button class="effect-item" data-value="galaxy" data-search="rain galaxy star">
+                        <span class="effect-icon"><i class="fa-solid fa-cloud-rain"></i></span>
+                        <span class="effect-name" data-i18n="effect_galaxy">Rain</span>
+                    </button>
+                    <button class="effect-item" data-value="fireflies" data-search="fireflies glow">
+                        <span class="effect-icon"><i class="fa-solid fa-star"></i></span>
+                        <span class="effect-name" data-i18n="effect_fireflies">Fireflies</span>
+                    </button>
+                    <button class="effect-item" data-value="network" data-search="network connect">
+                        <span class="effect-icon"><i class="fa-solid fa-circle-nodes"></i></span>
+                        <span class="effect-name" data-i18n="effect_network">Network</span>
+                    </button>
+                    <button class="effect-item" data-value="matrix" data-search="matrix rain code">
+                        <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
+                        <span class="effect-name" data-i18n="effect_matrix">Matrix</span>
+                    </button>
+                    <button class="effect-item" data-value="aura" data-search="aura gradient glow">
+                        <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                        <span class="effect-name" data-i18n="effect_aura">Aura</span>
+                    </button>
+                    <button class="effect-item" data-value="wind" data-search="wind anime speed lines">
+                        <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                        <span class="effect-name" data-i18n="effect_wind">Wind</span>
+                    </button>
+                    <button class="effect-item" data-value="hacker" data-search="hacker binary code">
+                        <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
+                        <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
+                    </button>
+                    <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
+                        <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
+                        <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
+                    </button>
+                    <button class="effect-item" data-value="snowfall" data-search="snow snowfall winter">
+                        <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                        <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
+                    </button>
+                    <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
+                        <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
+                        <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
+                    </button>
+                    <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
+                        <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
+                        <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
+                    </button>
+                    <button class="effect-item" data-value="rainOnGlass" data-search="rain glass drop">
+                        <span class="effect-icon"><i class="fa-solid fa-droplet"></i></span>
+                        <span class="effect-name" data-i18n="effect_rain_on_glass">Rain Glass</span>
+                    </button>
+                    <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
+                        <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
+                        <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
+                    </button>
+                    <button class="effect-item" data-value="rainbow" data-search="rainbow color">
+                        <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
+                        <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
+                    </button>
+                    <button class="effect-item" data-value="wavyLines" data-search="wavy lines wave">
+                        <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
+                        <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
+                    </button>
+                    <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high">
+                        <span class="effect-icon"><i class="fa-solid fa-wand-sparkles"></i></span>
+                        <span class="effect-name" data-i18n="effect_fireflies_hd">Fireflies HD</span>
+                    </button>
+                    <button class="effect-item" data-value="oceanWave" data-search="ocean wave sea">
+                        <span class="effect-icon"><i class="fa-solid fa-sailboat"></i></span>
+                        <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
+                    </button>
+                    <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
+                        <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
+                        <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
+                    </button>
+                    <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
+                        <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
+                        <span class="effect-name" data-i18n="effect_autumn_leaves">Autumn Leaves</span>
+                    </button>
+                    <button class="effect-item" data-value="greenLeaves" data-search="green leaves wind">
+                        <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
+                        <span class="effect-name" data-i18n="effect_green_leaves">Green Leaves</span>
+                    </button>
+                    <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
+                        <span class="effect-icon"><i class="fa-solid fa-sun"></i></span>
+                        <span class="effect-name" data-i18n="effect_sunbeam">Sunbeam</span>
+                    </button>
+                    <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
+                        <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
+                        <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
+                    </button>
+                    <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
+                        <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
+                        <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
+                    </button>
+                    <button class="effect-item" data-value="tetFireworks"
+                        data-search="tet fireworks hoa mai chuc mung nam moi">
+                        <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
+                        <span class="effect-name" data-i18n="effect_tet_fireworks">Tết Fireworks</span>
+                    </button>
+                </div>
 
                 <!-- Aura Color -->
                 <div id="aura-color-setting" class="setting-item" style="display: none;">

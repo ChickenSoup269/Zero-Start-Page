@@ -106,14 +106,14 @@ Select from 21 canvas-based animated effects with individual color pickers:
 
 | Effect                 | Effect                 | Effect            |
 | ---------------------- | ---------------------- | ----------------- |
-| 1. Rain                | 8.Sakura               | 15. Fireflies HD  |
-| 2. Fireflies           | 9. Snowfall            | 16. Ocean Wave    |
-| 3.Network              | 10. Aurora Wave        | 17. Cloud Drift   |
-| 4. Matrix Rain         | 11. Bubbles            | 18. Autumn Leaves |
-| 5. Gradients Aura      | 12. Rain on Glass      | 19. Rain HD       |
-| 6. Anime Wind          | 13. Rainbow Background | 20. Shiny         |
-| 7. Hacker              | 14. Wavy Lines         | 21. Line Shiny    |
-| **SVG Wave Generator** |                        |                   |
+| 1. Rain                | 8.Sakura               | 16. Ocean Wave    |
+| 2. Fireflies           | 9. Snowfall            | 17. Cloud Drift   |
+| 3.Network              | 10. Aurora Wave        | 18. Autumn Leaves |
+| 4. Matrix Rain         | 11. Bubbles            | 19. Rain HD       |
+| 5. Gradients Aura      | 12. Rain on Glass      | 20. Shiny         |
+| 6. Anime Wind          | 13. Rainbow Background | 21. Line Shiny    |
+| 7. Hacker              | 14. Wavy Lines         |                   |
+| **SVG Wave Generator** | 15. Fireflies HD       |                   |
 
 ### SVG Wave Generator
 

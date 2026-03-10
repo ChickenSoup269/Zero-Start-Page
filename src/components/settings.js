@@ -23,7 +23,8 @@ import {
   savedFontsContainer,
   savedFontsList,
   languageSelect,
-  effectSelect,
+  effectGrid,
+  effectSearch,
   gradientStartPicker,
   gradientEndPicker,
   gradientAngleInput,
@@ -50,6 +51,7 @@ import {
   searchInput,
   clearBtn,
   unsplashRandomBtn,
+  unsplashCredit,
   saveColorBtn,
   saveCurrentBgBtn,
   removeBgBtn,
@@ -122,6 +124,7 @@ import {
   svgWaveAngle,
   svgWaveAngleValue,
   svgWaveAngleCenterBtn,
+  svgWaveAnglePresetBtns,
   svgWaveSmoothness,
   svgWaveSmoothnessValue,
   svgWaveCraziness,
@@ -177,8 +180,11 @@ import { CloudDriftEffect } from "./animations/cloudDrift.js"
 import { FirefliesHD } from "./animations/firefliesHD.js"
 import { SvgWaveGenerator } from "./animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "./animations/autumnLeaves.js"
+import { GreenLeavesEffect } from "./animations/greenLeaves.js"
+import { SunbeamEffect } from "./animations/sunbeam.js"
 import { ShinyEffect } from "./animations/shiny.js"
 import { LineShinyEffect } from "./animations/lineShiny.js"
+import { TetFireworksEffect } from "./animations/tetFireworks.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -200,9 +206,18 @@ let starFallEffect,
   cloudDriftEffect,
   firefliesHDEffect,
   autumnLeavesEffect,
+  greenLeavesEffect,
+  sunbeamEffect,
   shinyEffect,
   lineShinyEffect,
+  tetFireworksEffect,
   svgWaveEffect
+
+function setEffectActive(value) {
+  effectGrid.querySelectorAll(".effect-item").forEach((el) => {
+    el.classList.toggle("active", el.dataset.value === value)
+  })
+}
 
 function handleSettingUpdate(key, value, isGradient = false) {
   if (isGradient) {
@@ -210,8 +225,13 @@ function handleSettingUpdate(key, value, isGradient = false) {
     updateSetting("gradientEnd", value.end)
     updateSetting("gradientAngle", value.angle)
     updateSetting("background", null) // Unset background image/color
+    updateSetting("svgWaveActive", false) // Gradient takes over — deactivate wave
   } else {
     updateSetting(key, value)
+    // Setting a real background deactivates both the wave
+    if (key === "background" && value != null) {
+      updateSetting("svgWaveActive", false)
+    }
   }
   saveSettings()
   applySettings()
@@ -417,6 +437,26 @@ async function setUnsplashRandomBackground() {
     const photo = await res.json()
     const imageUrl = `${photo.urls.raw}&auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
+    // Show photo credit
+    if (unsplashCredit) {
+      const photoLink = photo.links?.html
+        ? `<a href="${photo.links.html}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">View on Unsplash</a>`
+        : ""
+      const authorName = photo.user?.name || ""
+      const authorLink = photo.user?.links?.html
+        ? `<a href="${photo.user.links.html}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">${authorName}</a>`
+        : authorName
+      unsplashCredit.innerHTML = `📷 ${photoLink}${photoLink && authorName ? " &bull; " : ""}${authorLink}`
+      unsplashCredit.style.display = "block"
+    }
+    // Persist credit so it survives page refresh
+    updateSetting("unsplashLastCredit", {
+      photoUrl: photo.links?.html || "",
+      authorName: photo.user?.name || "",
+      authorUrl: photo.user?.links?.html || "",
+    })
+    saveSettings()
+
     document.body.classList.add("bg-loading")
     handleSettingUpdate("background", imageUrl)
     btn.disabled = false
@@ -424,6 +464,7 @@ async function setUnsplashRandomBackground() {
     setTimeout(() => document.body.classList.remove("bg-loading"), 800)
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
+    if (unsplashCredit) unsplashCredit.style.display = "none"
     btn.disabled = false
     btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
     showAlert(
@@ -581,8 +622,11 @@ export function applySettings() {
   if (cloudDriftEffect) cloudDriftEffect.stop()
   if (firefliesHDEffect) firefliesHDEffect.stop()
   if (autumnLeavesEffect) autumnLeavesEffect.stop()
+  if (greenLeavesEffect) greenLeavesEffect.stop()
+  if (sunbeamEffect) sunbeamEffect.stop()
   if (shinyEffect) shinyEffect.stop()
   if (lineShinyEffect) lineShinyEffect.stop()
+  if (tetFireworksEffect) tetFireworksEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
@@ -654,11 +698,20 @@ export function applySettings() {
       case "autumnLeaves":
         autumnLeavesEffect.start()
         break
+      case "greenLeaves":
+        greenLeavesEffect.start()
+        break
+      case "sunbeam":
+        sunbeamEffect.start()
+        break
       case "shiny":
         shinyEffect.start()
         break
       case "lineShiny":
         lineShinyEffect.start()
+        break
+      case "tetFireworks":
+        tetFireworksEffect.start()
         break
     }
   }, 50)
@@ -727,7 +780,7 @@ function updateSettingsInputs() {
 
   // If clockColor is null, maybe fade the picker or show it's default
   clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
-  effectSelect.value = settings.effect
+  setEffectActive(settings.effect)
 
   // Gradient Inputs
   gradientStartPicker.value = settings.gradientStart
@@ -1103,6 +1156,8 @@ export function initSettings() {
   )
   firefliesHDEffect = new FirefliesHD("effect-canvas")
   autumnLeavesEffect = new AutumnLeavesEffect("effect-canvas")
+  greenLeavesEffect = new GreenLeavesEffect("effect-canvas")
+  sunbeamEffect = new SunbeamEffect("effect-canvas")
   shinyEffect = new ShinyEffect(
     "effect-canvas",
     settings.shinyColor || "#ff0000",
@@ -1111,10 +1166,24 @@ export function initSettings() {
     "effect-canvas",
     settings.lineShinyColor || "#ffffff",
   )
+  tetFireworksEffect = new TetFireworksEffect("effect-canvas")
   svgWaveEffect = new SvgWaveGenerator()
 
   populateUnsplashCollections()
   renderUserSvgWaves()
+
+  // Restore Unsplash photo credit from last fetch
+  const lastCredit = settings.unsplashLastCredit
+  if (lastCredit && unsplashCredit) {
+    const photoLink = lastCredit.photoUrl
+      ? `<a href="${lastCredit.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">View on Unsplash</a>`
+      : ""
+    const authorLink = lastCredit.authorUrl
+      ? `<a href="${lastCredit.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">${lastCredit.authorName}</a>`
+      : lastCredit.authorName
+    unsplashCredit.innerHTML = `📷 ${photoLink}${photoLink && lastCredit.authorName ? " &bull; " : ""}${authorLink}`
+    unsplashCredit.style.display = "block"
+  }
 
   // Restore saved custom fonts so they are loaded from Google Fonts on startup
   const savedFonts = settings.userSavedFonts || []
@@ -1272,6 +1341,9 @@ export function initSettings() {
 
   removeBgBtn.addEventListener("click", () => {
     handleSettingUpdate("background", null) // Set to null to trigger gradient
+    updateSetting("unsplashLastCredit", null)
+    saveSettings()
+    if (unsplashCredit) unsplashCredit.style.display = "none"
   })
 
   saveCurrentBgBtn.addEventListener("click", () => {
@@ -1639,6 +1711,24 @@ export function initSettings() {
     _applyWaveFromInputs()
   })
 
+  svgWaveAnglePresetBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const angle = +btn.dataset.angle
+      svgWaveAngle.value = angle
+      svgWaveAngleValue.textContent = angle
+      _applyWaveFromInputs()
+    })
+  })
+
+  svgWaveAnglePresetBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const angle = +btn.dataset.angle
+      svgWaveAngle.value = angle
+      svgWaveAngleValue.textContent = angle
+      _applyWaveFromInputs()
+    })
+  })
+
   svgWaveCloseBtn.addEventListener("click", () => {
     updateSetting("svgWaveActive", false)
     saveSettings()
@@ -1718,9 +1808,21 @@ export function initSettings() {
     _waveApplyTimer = setTimeout(() => _applyWaveFromInputs(true), 350)
   })
 
-  effectSelect.addEventListener("change", () =>
-    handleSettingUpdate("effect", effectSelect.value),
-  )
+  effectGrid.addEventListener("click", (e) => {
+    const item = e.target.closest(".effect-item")
+    if (!item) return
+    handleSettingUpdate("effect", item.dataset.value)
+  })
+  effectSearch.addEventListener("input", () => {
+    const q = effectSearch.value.toLowerCase()
+    effectGrid.querySelectorAll(".effect-item").forEach((el) => {
+      el.style.display =
+        el.dataset.search.includes(q) ||
+        el.querySelector(".effect-name").textContent.toLowerCase().includes(q)
+          ? ""
+          : "none"
+    })
+  })
   fontSelect.addEventListener("change", () =>
     handleSettingUpdate("font", fontSelect.value),
   )

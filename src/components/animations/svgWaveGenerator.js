@@ -72,7 +72,10 @@ export class SvgWaveGenerator {
     }
 
     // Cubic Bézier smooth path
-    let d = `M ${-segW * 2},${H + 20}`
+    // Use H*3 so the closing tail extends far enough to stay filled even
+    // when the whole group is rotated 90° / 270° (left / right presets).
+    const tailY = H * 3
+    let d = `M ${-segW * 2},${tailY}`
     d += ` L ${pts[0].x},${pts[0].y}`
 
     for (let i = 0; i < pts.length - 1; i++) {
@@ -82,7 +85,7 @@ export class SvgWaveGenerator {
       d += ` C ${p0.x + cpOffset},${p0.y} ${p1.x - cpOffset},${p1.y} ${p1.x},${p1.y}`
     }
 
-    d += ` L ${W + segW * 2},${H + 20} Z`
+    d += ` L ${W + segW * 2},${tailY} Z`
     return d
   }
 
