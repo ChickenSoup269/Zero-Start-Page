@@ -113,9 +113,8 @@
                             <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn"
                                 title="Remove background and show gradient"><i class="fa-solid fa-trash"></i></button>
                             <button id="save-current-bg-btn" class="secondary-btn"
-                                title="Save current background to Local Themes">
-                                <i class="fa-solid fa-bookmark"></i>
-                            </button>
+                                title="Save current background to Local Themes"
+                                data-i18n="settings_save_bg_btn">Save</button>
 
                         </div>
                     </div>
@@ -152,6 +151,19 @@
                                 data-i18n="settings_upload_image">Upload Image</button>
                             <button id="upload-local-video-btn" class="secondary-btn"
                                 data-i18n="settings_upload_video">Upload Video</button>
+                            <button id="bg-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                                data-i18n="bg_select_mode">Select</button>
+                        </div>
+                        <div id="bg-select-toolbar" class="bg-select-toolbar" style="display:none;">
+                            <span id="bg-select-count" class="bg-select-count">0 selected</span>
+                            <button id="bg-select-all-btn" class="secondary-btn"><i
+                                    class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
+                                    All</span></button>
+                            <button id="bg-delete-selected-btn" class="secondary-btn danger-btn"><i
+                                    class="fa-solid fa-trash"></i> <span
+                                    data-i18n="bg_delete_selected">Delete</span></button>
+                            <button id="bg-select-cancel-btn" class="secondary-btn"><i
+                                    class="fa-solid fa-xmark"></i></button>
                         </div>
                         <div id="local-background-gallery" class="local-bg-gallery"></div>
                     </div>
@@ -373,248 +385,251 @@
                 </div>
             </div>
 
-            <div class="setting-group">
-                <label data-i18n="setting_effect"><i class="fa-solid fa-wand-magic-sparkles"></i> Effect</label>
-                <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
-                    autocomplete="off">
-                <div id="effect-grid" class="effect-grid">
-                    <button class="effect-item" data-value="none" data-search="none off disable">
-                        <span class="effect-icon"><i class="fa-solid fa-ban"></i></span>
-                        <span class="effect-name" data-i18n="effect_none">None</span>
-                    </button>
-                    <button class="effect-item" data-value="galaxy" data-search="rain galaxy star">
-                        <span class="effect-icon"><i class="fa-solid fa-cloud-rain"></i></span>
-                        <span class="effect-name" data-i18n="effect_galaxy">Rain</span>
-                    </button>
-                    <button class="effect-item" data-value="fireflies" data-search="fireflies glow">
-                        <span class="effect-icon"><i class="fa-solid fa-star"></i></span>
-                        <span class="effect-name" data-i18n="effect_fireflies">Fireflies</span>
-                    </button>
-                    <button class="effect-item" data-value="network" data-search="network connect">
-                        <span class="effect-icon"><i class="fa-solid fa-circle-nodes"></i></span>
-                        <span class="effect-name" data-i18n="effect_network">Network</span>
-                    </button>
-                    <button class="effect-item" data-value="matrix" data-search="matrix rain code">
-                        <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
-                        <span class="effect-name" data-i18n="effect_matrix">Matrix</span>
-                    </button>
-                    <button class="effect-item" data-value="aura" data-search="aura gradient glow">
-                        <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
-                        <span class="effect-name" data-i18n="effect_aura">Aura</span>
-                    </button>
-                    <button class="effect-item" data-value="wind" data-search="wind anime speed lines">
-                        <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
-                        <span class="effect-name" data-i18n="effect_wind">Wind</span>
-                    </button>
-                    <button class="effect-item" data-value="hacker" data-search="hacker binary code">
-                        <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
-                        <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
-                    </button>
-                    <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
-                        <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
-                        <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
-                    </button>
-                    <button class="effect-item" data-value="snowfall" data-search="snow snowfall winter">
-                        <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
-                        <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
-                    </button>
-                    <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
-                        <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
-                        <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
-                    </button>
-                    <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
-                        <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
-                        <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
-                    </button>
-                    <button class="effect-item" data-value="rainOnGlass" data-search="rain glass drop">
-                        <span class="effect-icon"><i class="fa-solid fa-droplet"></i></span>
-                        <span class="effect-name" data-i18n="effect_rain_on_glass">Rain Glass</span>
-                    </button>
-                    <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
-                        <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
-                        <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
-                    </button>
-                    <button class="effect-item" data-value="rainbow" data-search="rainbow color">
-                        <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
-                        <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
-                    </button>
-                    <button class="effect-item" data-value="wavyLines" data-search="wavy lines wave">
-                        <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
-                        <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
-                    </button>
-                    <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high">
-                        <span class="effect-icon"><i class="fa-solid fa-wand-sparkles"></i></span>
-                        <span class="effect-name" data-i18n="effect_fireflies_hd">Fireflies HD</span>
-                    </button>
-                    <button class="effect-item" data-value="oceanWave" data-search="ocean wave sea">
-                        <span class="effect-icon"><i class="fa-solid fa-sailboat"></i></span>
-                        <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
-                    </button>
-                    <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
-                        <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
-                        <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
-                    </button>
-                    <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
-                        <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
-                        <span class="effect-name" data-i18n="effect_autumn_leaves">Autumn Leaves</span>
-                    </button>
-                    <button class="effect-item" data-value="greenLeaves" data-search="green leaves wind">
-                        <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
-                        <span class="effect-name" data-i18n="effect_green_leaves">Green Leaves</span>
-                    </button>
-                    <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
-                        <span class="effect-icon"><i class="fa-solid fa-sun"></i></span>
-                        <span class="effect-name" data-i18n="effect_sunbeam">Sunbeam</span>
-                    </button>
-                    <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
-                        <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
-                        <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
-                    </button>
-                    <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
-                        <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
-                        <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
-                    </button>
-                    <button class="effect-item" data-value="tetFireworks"
-                        data-search="tet fireworks hoa mai chuc mung nam moi">
-                        <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
-                        <span class="effect-name" data-i18n="effect_tet_fireworks">Tết Fireworks</span>
-                    </button>
+            <div class="setting-group collapsible-group" id="effect-setting-group">
+                <div class="group-header">
+                    <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
+                    <span data-i18n="setting_effect">Effect</span>
+                    <i class="fa-solid fa-chevron-down group-chevron"></i>
                 </div>
-
-                <!-- Aura Color -->
-                <div id="aura-color-setting" class="setting-item" style="display: none;">
-                    <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
-                    <input type="color" id="aura-color-picker" value="#a8c0ff" />
-                </div>
-
-                <!-- Hacker Color -->
-                <div id="hacker-color-setting" class="setting-item" style="display: none;">
-                    <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
-                    <input type="color" id="hacker-color-picker" value="#00FF00" />
-                </div>
-
-                <!-- Star Color (Galaxy) -->
-                <div id="star-color-setting" class="setting-item" style="display: none;">
-                    <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
-                    <input type="color" id="star-color-picker" />
-                </div>
-
-                <!-- Network Color (Mới) -->
-                <div id="network-color-setting" class="setting-item" style="display: none;">
-                    <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
-                    <input type="color" id="network-color-picker" value="#00bcd4" />
-                </div>
-
-                <!-- Matrix Color (Mới) -->
-                <div id="matrix-color-setting" class="setting-item" style="display: none;">
-                    <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
-                    <input type="color" id="matrix-color-picker" value="#00FF00" />
-                </div>
-
-                <!-- Sakura Color (Mới) -->
-                <div id="sakura-color-setting" class="setting-item" style="display: none;">
-                    <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
-                    <input type="color" id="sakura-color-picker" value="#ffb7c5" />
-                </div>
-                <!-- Snowfall Color -->
-                <div id="snowfall-color-setting" class="setting-item" style="display: none;">
-                    <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall Color</label>
-                    <input type="color" id="snowfall-color-picker" value="#ffffff" />
-                </div>
-                <!-- Bubbles Color -->
-                <div id="bubbles-color-setting" class="setting-item" style="display: none;">
-                    <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
-                    <input type="color" id="bubbles-color-picker" value="#60c8ff" />
-                </div>
-                <!-- Rain on Glass Color -->
-                <div id="rain-on-glass-color-setting" class="setting-item" style="display: none;">
-                    <label for="rain-on-glass-color-picker" data-i18n="setting_rain_on_glass_color">Drop Color</label>
-                    <input type="color" id="rain-on-glass-color-picker" value="#a8d8ff" />
-                </div>
-                <!-- Rain HD Color -->
-                <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
-                    <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
-                    <input type="color" id="rain-hd-color-picker" value="#99ccff" />
-                </div>
-                <!-- Wavy Lines Color -->
-                <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
-                    <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
-                    <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
-                </div>
-                <!-- Ocean Wave Color -->
-                <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
-                    <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
-                    <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
-                </div>
-                <!-- Ocean Wave Position -->
-                <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
-                    <label data-i18n="setting_ocean_wave_position">Wave Position</label>
-                    <div class="btn-group">
-                        <button id="ocean-wave-pos-bottom" class="btn-group-item active"
-                            data-i18n="position_bottom">Bottom</button>
-                        <button id="ocean-wave-pos-top" class="btn-group-item" data-i18n="position_top">Top</button>
+                <div class="group-body">
+                    <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
+                        autocomplete="off">
+                    <div id="effect-grid" class="effect-grid">
+                        <button class="effect-item" data-value="none" data-search="none off disable">
+                            <span class="effect-icon"><i class="fa-solid fa-ban"></i></span>
+                            <span class="effect-name" data-i18n="effect_none">None</span>
+                        </button>
+                        <button class="effect-item" data-value="galaxy" data-search="rain galaxy star">
+                            <span class="effect-icon"><i class="fa-solid fa-cloud-rain"></i></span>
+                            <span class="effect-name" data-i18n="effect_galaxy">Rain</span>
+                        </button>
+                        <button class="effect-item" data-value="fireflies" data-search="fireflies glow">
+                            <span class="effect-icon"><i class="fa-solid fa-star"></i></span>
+                            <span class="effect-name" data-i18n="effect_fireflies">Fireflies</span>
+                        </button>
+                        <button class="effect-item" data-value="network" data-search="network connect">
+                            <span class="effect-icon"><i class="fa-solid fa-circle-nodes"></i></span>
+                            <span class="effect-name" data-i18n="effect_network">Network</span>
+                        </button>
+                        <button class="effect-item" data-value="matrix" data-search="matrix rain code">
+                            <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
+                            <span class="effect-name" data-i18n="effect_matrix">Matrix</span>
+                        </button>
+                        <button class="effect-item" data-value="aura" data-search="aura gradient glow">
+                            <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                            <span class="effect-name" data-i18n="effect_aura">Aura</span>
+                        </button>
+                        <button class="effect-item" data-value="wind" data-search="wind anime speed lines">
+                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                            <span class="effect-name" data-i18n="effect_wind">Wind</span>
+                        </button>
+                        <button class="effect-item" data-value="hacker" data-search="hacker binary code">
+                            <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
+                            <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
+                        </button>
+                        <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
+                            <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
+                            <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
+                        </button>
+                        <button class="effect-item" data-value="snowfall" data-search="snow snowfall winter">
+                            <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                            <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
+                        </button>
+                        <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
+                            <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
+                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
+                        </button>
+                        <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
+                            <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
+                            <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
+                        </button>
+                        <button class="effect-item" data-value="rainOnGlass" data-search="rain glass drop">
+                            <span class="effect-icon"><i class="fa-solid fa-droplet"></i></span>
+                            <span class="effect-name" data-i18n="effect_rain_on_glass">Rain Glass</span>
+                        </button>
+                        <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
+                            <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
+                            <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
+                        </button>
+                        <button class="effect-item" data-value="rainbow" data-search="rainbow color">
+                            <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
+                            <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
+                        </button>
+                        <button class="effect-item" data-value="wavyLines" data-search="wavy lines wave">
+                            <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
+                            <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
+                        </button>
+                        <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high">
+                            <span class="effect-icon"><i class="fa-solid fa-wand-sparkles"></i></span>
+                            <span class="effect-name" data-i18n="effect_fireflies_hd">Fireflies HD</span>
+                        </button>
+                        <button class="effect-item" data-value="oceanWave" data-search="ocean wave sea">
+                            <span class="effect-icon"><i class="fa-solid fa-sailboat"></i></span>
+                            <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
+                        </button>
+                        <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
+                            <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
+                            <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
+                        </button>
+                        <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
+                            <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
+                            <span class="effect-name" data-i18n="effect_autumn_leaves">Autumn Leaves</span>
+                        </button>
+                        <button class="effect-item" data-value="greenLeaves" data-search="green leaves wind">
+                            <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
+                            <span class="effect-name" data-i18n="effect_green_leaves">Green Leaves</span>
+                        </button>
+                        <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
+                            <span class="effect-icon"><i class="fa-solid fa-sun"></i></span>
+                            <span class="effect-name" data-i18n="effect_sunbeam">Sunbeam</span>
+                        </button>
+                        <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
+                            <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
+                            <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
+                        </button>
+                        <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
+                            <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
+                            <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
+                        </button>
+                        <button class="effect-item" data-value="tetFireworks"
+                            data-search="tet fireworks hoa mai chuc mung nam moi">
+                            <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
+                            <span class="effect-name" data-i18n="effect_tet_fireworks">Tết Fireworks</span>
+                        </button>
                     </div>
-                </div>
-                <!-- Cloud Drift Color -->
-                <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
-                    <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
-                    <input type="color" id="cloud-drift-color-picker" value="#ffffff" />
-                </div>
-                <!-- Shiny Tint Color -->
-                <div id="shiny-color-setting" class="setting-item" style="display: none;">
-                    <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic Tint</label>
-                    <input type="color" id="shiny-color-picker" value="#ff0000" />
-                </div>
-                <!-- Line Shiny Tint Color -->
-                <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
-                    <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray Color</label>
-                    <input type="color" id="line-shiny-color-picker" value="#ffffff" />
-                </div>
+
+                    <!-- Aura Color -->
+                    <div id="aura-color-setting" class="setting-item" style="display: none;">
+                        <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
+                        <input type="color" id="aura-color-picker" value="#a8c0ff" />
+                    </div>
+
+                    <!-- Hacker Color -->
+                    <div id="hacker-color-setting" class="setting-item" style="display: none;">
+                        <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
+                        <input type="color" id="hacker-color-picker" value="#00FF00" />
+                    </div>
+
+                    <!-- Star Color (Galaxy) -->
+                    <div id="star-color-setting" class="setting-item" style="display: none;">
+                        <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
+                        <input type="color" id="star-color-picker" />
+                    </div>
+
+                    <!-- Network Color (Mới) -->
+                    <div id="network-color-setting" class="setting-item" style="display: none;">
+                        <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
+                        <input type="color" id="network-color-picker" value="#00bcd4" />
+                    </div>
+
+                    <!-- Matrix Color (Mới) -->
+                    <div id="matrix-color-setting" class="setting-item" style="display: none;">
+                        <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
+                        <input type="color" id="matrix-color-picker" value="#00FF00" />
+                    </div>
+
+                    <!-- Sakura Color (Mới) -->
+                    <div id="sakura-color-setting" class="setting-item" style="display: none;">
+                        <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
+                        <input type="color" id="sakura-color-picker" value="#ffb7c5" />
+                    </div>
+                    <!-- Snowfall Color -->
+                    <div id="snowfall-color-setting" class="setting-item" style="display: none;">
+                        <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall Color</label>
+                        <input type="color" id="snowfall-color-picker" value="#ffffff" />
+                    </div>
+                    <!-- Bubbles Color -->
+                    <div id="bubbles-color-setting" class="setting-item" style="display: none;">
+                        <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
+                        <input type="color" id="bubbles-color-picker" value="#60c8ff" />
+                    </div>
+                    <!-- Rain on Glass Color -->
+                    <div id="rain-on-glass-color-setting" class="setting-item" style="display: none;">
+                        <label for="rain-on-glass-color-picker" data-i18n="setting_rain_on_glass_color">Drop
+                            Color</label>
+                        <input type="color" id="rain-on-glass-color-picker" value="#a8d8ff" />
+                    </div>
+                    <!-- Rain HD Color -->
+                    <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
+                        <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
+                        <input type="color" id="rain-hd-color-picker" value="#99ccff" />
+                    </div>
+                    <!-- Wavy Lines Color -->
+                    <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
+                        <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
+                        <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                    </div>
+                    <!-- Ocean Wave Color -->
+                    <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
+                        <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
+                        <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+                    </div>
+                    <!-- Ocean Wave Position -->
+                    <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
+                        <label data-i18n="setting_ocean_wave_position">Wave Position</label>
+                        <div class="btn-group">
+                            <button id="ocean-wave-pos-bottom" class="btn-group-item active"
+                                data-i18n="position_bottom">Bottom</button>
+                            <button id="ocean-wave-pos-top" class="btn-group-item" data-i18n="position_top">Top</button>
+                        </div>
+                    </div>
+                    <!-- Cloud Drift Color -->
+                    <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
+                        <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
+                        <input type="color" id="cloud-drift-color-picker" value="#ffffff" />
+                    </div>
+                    <!-- Shiny Tint Color -->
+                    <div id="shiny-color-setting" class="setting-item" style="display: none;">
+                        <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic Tint</label>
+                        <input type="color" id="shiny-color-picker" value="#ff0000" />
+                    </div>
+                    <!-- Line Shiny Tint Color -->
+                    <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
+                        <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray
+                            Color</label>
+                        <input type="color" id="line-shiny-color-picker" value="#ffffff" />
+                    </div>
+                </div><!-- /.group-body -->
             </div>
 
-            <div class="setting-group">
-                <label data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</label>
-                <select id="font-select">
-                    <option value="'Outfit', sans-serif">Outfit (Default)</option>
-                    <option value="'Inter', sans-serif">Inter</option>
-                    <option value="'Poppins', sans-serif">Poppins</option>
-                    <option value="'Roboto', sans-serif">Roboto</option>
-                    <option value="'Montserrat', sans-serif">Montserrat</option>
-                    <option value="'Nunito', sans-serif">Nunito</option>
-                    <option value="'Arial', sans-serif">Arial</option>
-                    <option value="'Courier New', monospace">Courier New</option>
-                    <option value="'Silkscreen', cursive">Silkscreen (Pixel)</option>
-                    <option value="'Pixelify Sans', sans-serif">Pixelify Sans (Pixel)</option>
-                </select>
-            </div>
+            <div class="settings-section" data-section-id="font">
+                <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
+                <div class="section-content">
+                    <div class="setting-group">
+                        <div id="font-grid" class="font-grid"></div>
+                    </div>
 
-            <div class="setting-group">
-                <label data-i18n="settings_custom_font"><i class="fa-solid fa-font"></i> Custom Google Font</label>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <input type="text" id="custom-font-input" data-i18n-placeholder="settings_custom_font_placeholder"
-                        placeholder="Enter font name (e.g., Pacifico)"
-                        style="padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                    <div style="display: flex; gap: 0.5rem;">
-                        <button id="load-custom-font-btn" data-i18n="settings_load_font"
-                            style="flex: 1; padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: 500;">Load</button>
-                        <button id="save-font-btn" data-i18n="settings_save_font"
-                            style="flex: 1; padding: 0.5rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.15)); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); cursor: pointer; font-weight: 500;">Save</button>
+                    <div class="setting-group">
+                        <label data-i18n="settings_custom_font"><i class="fa-solid fa-font"></i> Custom Google
+                            Font</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <input type="text" id="custom-font-input"
+                                data-i18n-placeholder="settings_custom_font_placeholder"
+                                placeholder="Enter font name (e.g., Pacifico)"
+                                style="padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button id="load-custom-font-btn" data-i18n="settings_load_font"
+                                    style="flex: 1; padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: #000; cursor: pointer; font-weight: 500;">Load</button>
+                                <button id="save-font-btn" data-i18n="settings_save_font"
+                                    style="flex: 1; padding: 0.5rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.15)); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); cursor: pointer; font-weight: 500;">Save</button>
+                            </div>
+                        </div>
+                        <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
+                            data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
+
+                        <div id="saved-fonts-container" style="margin-top: 0.75rem; display: none;">
+                            <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.4rem; display: block;"
+                                data-i18n="settings_saved_fonts">Saved Fonts</label>
+                            <div id="saved-fonts-list" style="display: flex; flex-wrap: wrap; gap: 0.4rem;"></div>
+                        </div>
+
+                        <small style="display:block;margin-top:12px;opacity:0.6;font-size:0.75rem;">
+                            <a href="https://fonts.google.com/" target="_blank" rel="noopener" style="color: white;"
+                                data-i18n="settings_google_fonts_info">Get any google font here
+                            </a>
+                        </small>
                     </div>
                 </div>
-                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
-                    data-i18n="settings_custom_font_hint">Enter exact font name from Google Fonts</small>
-
-                <div id="saved-fonts-container" style="margin-top: 0.75rem; display: none;">
-                    <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.4rem; display: block;"
-                        data-i18n="settings_saved_fonts">Saved Fonts</label>
-                    <div id="saved-fonts-list" style="display: flex; flex-wrap: wrap; gap: 0.4rem;"></div>
-                </div>
-
-                <small style="display:block;margin-top:12px;opacity:0.6;font-size:0.75rem;">
-                    <a href="https://fonts.google.com/" target="_blank" rel="noopener" style="color: white;"
-                        data-i18n="settings_google_fonts_info">Get any google font here
-                    </a>
-                </small>
             </div>
 
             <div class="setting-group">

@@ -8,7 +8,7 @@ export class MatrixRain {
     this.active = false
 
     // THAY ĐỔI 1: Cấu hình tốc độ
-    this.fps = 20 // Số khung hình trên giây (Càng nhỏ càng chậm. Mặc định 60, giờ để 20)
+    this.fps = 25 // Số khung hình trên giây (Càng nhỏ càng chậm. Mặc định 60, giờ để 20)
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
@@ -69,7 +69,7 @@ export class MatrixRain {
       // 1. Làm mờ (Trail)
       this.ctx.globalCompositeOperation = "destination-out"
       // Tăng độ trong suốt lên một chút vì vẽ chậm hơn thì cần xóa ít hơn để giữ trail
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.10)"
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
 
       // 2. Vẽ chữ mới

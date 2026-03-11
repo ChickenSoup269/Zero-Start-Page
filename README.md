@@ -100,20 +100,22 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
 
-### Visual Effects (21 Animations)
+### Visual Effects (24 Animations)
 
-Select from 21 canvas-based animated effects with individual color pickers:
+Select from 24 canvas-based animated effects with individual color pickers:
 
-| Effect                 | Effect                 | Effect            |
-| ---------------------- | ---------------------- | ----------------- |
-| 1. Rain                | 8.Sakura               | 16. Ocean Wave    |
-| 2. Fireflies           | 9. Snowfall            | 17. Cloud Drift   |
-| 3.Network              | 10. Aurora Wave        | 18. Autumn Leaves |
-| 4. Matrix Rain         | 11. Bubbles            | 19. Rain HD       |
-| 5. Gradients Aura      | 12. Rain on Glass      | 20. Shiny         |
-| 6. Anime Wind          | 13. Rainbow Background | 21. Line Shiny    |
-| 7. Hacker              | 14. Wavy Lines         |                   |
-| **SVG Wave Generator** | 15. Fireflies HD       |                   |
+| Effect                 | Effect                 | Effect              |
+| ---------------------- | ---------------------- | ------------------- |
+| 1. Rain                | 10. Aurora Wave        | 20. Shiny           |
+| 2. Fireflies           | 11. Bubbles            | 21. Line Shiny      |
+| 3.Network              | 12. Rain on Glass      | 22. Green Leaves    |
+| 4. Matrix Rain         | 13. Rainbow Background | 23. Sunbeam         |
+| 5. Gradients Aura      | 14. Wavy Lines         | 24. Fireworks (Tết) |
+| 6. Anime Wind          | 15. Fireflies HD       |                     |
+| 7. Hacker              | 16. Ocean Wave         |                     |
+| 8.Sakura               | 17. Cloud Drift        |                     |
+| 9. Snowfall            | 18. Autumn Leaves      |                     |
+| **SVG Wave Generator** | 19. Rain HD            |                     |
 
 ### SVG Wave Generator
 

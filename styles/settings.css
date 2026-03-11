@@ -19,9 +19,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 5px;
-  max-height: 230px;
-  overflow-y: auto;
-  padding-right: 2px;
 }
 
 .effect-item {
@@ -60,6 +57,78 @@
   font-size: 1.3rem;
   line-height: 1;
   user-select: none;
+}
+
+/* Font picker grid */
+.font-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.font-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
+  cursor: pointer;
+  color: var(--text-color);
+  gap: 4px;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  position: relative;
+}
+
+.font-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-color);
+}
+
+.font-item.active {
+  border-color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color) 25%, transparent);
+}
+
+.font-item-preview {
+  font-size: 1.5rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.font-item-name {
+  font-size: 0.65rem;
+  text-align: center;
+  opacity: 0.85;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.font-item.active .font-item-name {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+.font-item-delete {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  opacity: 0.5;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.font-item-delete:hover {
+  opacity: 1;
 }
 
 .settings-sidebar {
@@ -273,6 +342,27 @@
   text-align: center;
 }
 
+.section-toggle::after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition:
+    transform 0.25s ease,
+    color 0.2s;
+  transform: rotate(180deg);
+}
+
+.settings-section.collapsed .section-toggle::after {
+  transform: rotate(0deg);
+}
+
+.section-toggle:hover::after {
+  color: var(--accent-color);
+}
+
 .section-content {
   padding: 20px;
 }
@@ -304,6 +394,59 @@
 .setting-group label i {
   color: var(--accent-color);
   font-size: 1.1rem;
+}
+
+/* ── Collapsible setting group ─────────────────────────────────────────────── */
+.setting-group.collapsible-group > .group-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+}
+
+.setting-group.collapsible-group > .group-header i.group-icon {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.setting-group.collapsible-group > .group-header .group-chevron {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s ease;
+}
+
+.setting-group.collapsible-group.expanded > .group-header .group-chevron {
+  transform: rotate(180deg);
+}
+
+.setting-group.collapsible-group > .group-header:hover .group-chevron {
+  color: var(--accent-color);
+}
+
+.setting-group.collapsible-group > .group-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    margin-top 0.25s ease;
+  margin-top: 0;
+}
+
+.setting-group.collapsible-group.expanded > .group-body {
+  max-height: 2000px;
+  opacity: 1;
+  margin-top: 15px;
 }
 
 .setting-item {
@@ -755,9 +898,10 @@
 
 .local-bg-gallery-controls {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 10px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .local-bg-gallery-controls .secondary-btn {
@@ -765,6 +909,87 @@
   font-size: 0.85rem;
   flex-grow: 1;
   text-align: center;
+}
+
+/* Select mode toolbar */
+.bg-select-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.bg-select-count {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.danger-btn {
+  background: rgba(220, 53, 69, 0.25) !important;
+  border-color: rgba(220, 53, 69, 0.5) !important;
+  color: #ff6b6b !important;
+}
+.danger-btn:hover {
+  background: rgba(220, 53, 69, 0.5) !important;
+}
+
+/* Selected state in multi-select mode */
+.local-bg-item.bg-selected {
+  border-color: var(--accent-color) !important;
+  box-shadow:
+    0 0 0 3px var(--accent-color),
+    0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  transform: scale(1.03);
+}
+
+.local-bg-item.bg-selected::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  pointer-events: none;
+}
+
+/* Checkmark badge for selected items */
+.bg-select-check {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #000;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+
+.local-bg-item.bg-selected .bg-select-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* In select mode, hide individual remove buttons */
+.local-bg-gallery.select-mode .remove-bg-btn {
+  display: none !important;
+}
+
+/* In select mode, non-user-uploaded items (presets) are dimmed */
+.local-bg-gallery.select-mode .local-bg-item:not(.user-uploaded) {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .local-bg-item.user-uploaded {

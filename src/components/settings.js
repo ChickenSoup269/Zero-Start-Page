@@ -16,12 +16,10 @@ import {
   bgInput,
   bgColorPicker,
   accentColorPicker,
-  fontSelect,
+  fontGrid,
   customFontInput,
   loadCustomFontBtn,
   saveFontBtn,
-  savedFontsContainer,
-  savedFontsList,
   languageSelect,
   effectGrid,
   effectSearch,
@@ -246,71 +244,86 @@ function loadGoogleFont(fontName) {
   customFontLink.href = googleFontUrl
 }
 
-function renderSavedFonts() {
+const PREDEFINED_FONTS = [
+  { label: "Outfit", value: "'Outfit', sans-serif" },
+  { label: "Inter", value: "'Inter', sans-serif" },
+  { label: "Poppins", value: "'Poppins', sans-serif" },
+  { label: "Roboto", value: "'Roboto', sans-serif" },
+  { label: "Montserrat", value: "'Montserrat', sans-serif" },
+  { label: "Nunito", value: "'Nunito', sans-serif" },
+  { label: "Arial", value: "'Arial', sans-serif" },
+  { label: "Courier New", value: "'Courier New', monospace" },
+  { label: "Silkscreen", value: "'Silkscreen', cursive", tag: "Pixel" },
+  {
+    label: "Pixelify Sans",
+    value: "'Pixelify Sans', sans-serif",
+    tag: "Pixel",
+  },
+]
+
+function renderFontGrid() {
   const settings = getSettings()
+  const currentFont = settings.font
   const savedFonts = settings.userSavedFonts || []
-  const i18n = geti18n()
 
-  if (savedFonts.length === 0) {
-    savedFontsContainer.style.display = "none"
-    return
-  }
-  savedFontsContainer.style.display = "block"
-  savedFontsList.innerHTML = ""
+  fontGrid.innerHTML = ""
 
-  savedFonts.forEach((fontName) => {
-    const chip = document.createElement("div")
-    chip.style.cssText =
-      "display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.6rem;background:var(--glass-bg,rgba(255,255,255,0.12));border:1px solid var(--input-border);border-radius:20px;cursor:pointer;font-size:0.8rem;transition:background 0.2s;"
-    chip.title = i18n.settings_font_chip_apply || "Click to apply"
+  const allFonts = [
+    ...PREDEFINED_FONTS,
+    ...savedFonts.map((name) => ({
+      label: name,
+      value: `'${name}', sans-serif`,
+      custom: true,
+    })),
+  ]
 
-    const nameSpan = document.createElement("span")
-    nameSpan.textContent = fontName
-    nameSpan.style.fontFamily = `'${fontName}', sans-serif`
+  allFonts.forEach(({ label, value, tag, custom }) => {
+    const card = document.createElement("div")
+    card.className = "font-item" + (value === currentFont ? " active" : "")
+    card.dataset.fontValue = value
 
-    const deleteBtn = document.createElement("button")
-    deleteBtn.innerHTML = "&times;"
-    deleteBtn.style.cssText =
-      "background:none;border:none;color:var(--text-color);opacity:0.6;cursor:pointer;padding:0;font-size:1rem;line-height:1;margin-left:2px;"
-    deleteBtn.title = i18n.settings_font_chip_delete || "Remove saved font"
+    const preview = document.createElement("span")
+    preview.className = "font-item-preview"
+    preview.textContent = "Aa"
+    preview.style.fontFamily = value
 
-    deleteBtn.addEventListener("click", (e) => {
-      e.stopPropagation()
-      const settings = getSettings()
-      const updated = (settings.userSavedFonts || []).filter(
-        (f) => f !== fontName,
-      )
-      updateSetting("userSavedFonts", updated)
-      saveSettings()
-      renderSavedFonts()
+    const name = document.createElement("span")
+    name.className = "font-item-name"
+    name.textContent = label + (tag ? ` (${tag})` : "")
+
+    card.appendChild(preview)
+    card.appendChild(name)
+
+    if (custom) {
+      const delBtn = document.createElement("button")
+      delBtn.className = "font-item-delete"
+      delBtn.innerHTML = "&times;"
+      delBtn.title = "Remove font"
+      delBtn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const s = getSettings()
+        updateSetting(
+          "userSavedFonts",
+          (s.userSavedFonts || []).filter((f) => f !== label),
+        )
+        saveSettings()
+        renderFontGrid()
+      })
+      card.appendChild(delBtn)
+    }
+
+    card.addEventListener("click", () => {
+      if (custom) loadGoogleFont(label)
+      handleSettingUpdate("font", value)
+      renderFontGrid()
     })
 
-    chip.addEventListener("click", () => {
-      loadGoogleFont(fontName)
-      setTimeout(() => {
-        const fontValue = `'${fontName}', sans-serif`
-        let optionExists = false
-        for (let option of fontSelect.options) {
-          if (option.value === fontValue) {
-            optionExists = true
-            break
-          }
-        }
-        if (!optionExists) {
-          const newOption = document.createElement("option")
-          newOption.value = fontValue
-          newOption.textContent = `${fontName} (Custom)`
-          fontSelect.appendChild(newOption)
-        }
-        fontSelect.value = fontValue
-        handleSettingUpdate("font", fontValue)
-      }, 400)
-    })
-
-    chip.appendChild(nameSpan)
-    chip.appendChild(deleteBtn)
-    savedFontsList.appendChild(chip)
+    fontGrid.appendChild(card)
   })
+}
+
+function renderSavedFonts() {
+  // Saved fonts are now shown directly in the font grid; this is a no-op.
 }
 
 function _getSvgWaveParams(settings) {
@@ -748,7 +761,7 @@ function updateSettingsInputs() {
       : settings.background
 
   // General Inputs
-  fontSelect.value = settings.font
+  renderFontGrid()
   dateFormatSelect.value = settings.dateFormat
   pageTitleInput.value = settings.pageTitle || "Start Page"
   clockSizeInput.value = settings.clockSize
@@ -781,6 +794,13 @@ function updateSettingsInputs() {
   // If clockColor is null, maybe fade the picker or show it's default
   clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
   setEffectActive(settings.effect)
+  // Auto-expand effect group if an effect is active
+  const effectGroup = document.getElementById("effect-setting-group")
+  if (effectGroup) {
+    if (settings.effect && settings.effect !== "none") {
+      effectGroup.classList.add("expanded")
+    }
+  }
 
   // Gradient Inputs
   gradientStartPicker.value = settings.gradientStart
@@ -983,6 +1003,11 @@ export function renderLocalBackgrounds() {
       }
       item.title = `User ${isIdbVideo(bgId) ? "Video" : "Image"} ${index + 1}`
 
+      const checkBadge = document.createElement("span")
+      checkBadge.className = "bg-select-check"
+      checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(checkBadge)
+
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
@@ -1108,6 +1133,17 @@ export function initSettings() {
   const i18n = geti18n()
   const settings = getSettings()
 
+  // ── Collapsible setting groups ──────────────────────────────────────────
+  document
+    .querySelectorAll(".setting-group.collapsible-group")
+    .forEach((group) => {
+      const header = group.querySelector(".group-header")
+      if (!header) return
+      header.addEventListener("click", () => {
+        group.classList.toggle("expanded")
+      })
+    })
+
   // --- INSTANTIATE EFFECTS ---
   starFallEffect = new StarFall("effect-canvas", settings.starColor)
   firefliesEffect = new FirefliesEffect("effect-canvas")
@@ -1199,25 +1235,10 @@ export function initSettings() {
         customFontLink.href = `https://fonts.googleapis.com/css2?family=${currentFontName.replace(/\s+/g, "+")}:wght@300;400;500;600;700&display=swap`
       }
     }
-    // Add all saved fonts to the select dropdown
-    savedFonts.forEach((fontName) => {
-      const fontValue = `'${fontName}', sans-serif`
-      let optionExists = false
-      for (let option of fontSelect.options) {
-        if (option.value === fontValue) {
-          optionExists = true
-          break
-        }
-      }
-      if (!optionExists) {
-        const newOption = document.createElement("option")
-        newOption.value = fontValue
-        newOption.textContent = `${fontName} (Custom)`
-        fontSelect.appendChild(newOption)
-      }
-    })
+    // Pre-load all saved fonts so previews render correctly
+    savedFonts.forEach((fontName) => loadGoogleFont(fontName))
   }
-  renderSavedFonts()
+  renderFontGrid()
 
   // --- EVENT LISTENERS ---
   settingsToggle.addEventListener("click", () =>
@@ -1457,17 +1478,123 @@ export function initSettings() {
     e.target.value = null
   })
 
+  // ── Multi-select for user-uploaded backgrounds ────────────────────────────
+  let bgSelectMode = false
+  const bgSelectedIds = new Set()
+  const bgSelectModeBtn = document.getElementById("bg-select-mode-btn")
+  const bgSelectToolbar = document.getElementById("bg-select-toolbar")
+  const bgSelectCount = document.getElementById("bg-select-count")
+  const bgSelectAllBtn = document.getElementById("bg-select-all-btn")
+  const bgDeleteSelectedBtn = document.getElementById("bg-delete-selected-btn")
+  const bgSelectCancelBtn = document.getElementById("bg-select-cancel-btn")
+
+  function enterBgSelectMode() {
+    bgSelectMode = true
+    bgSelectedIds.clear()
+    localBackgroundGallery.classList.add("select-mode")
+    bgSelectToolbar.style.display = "flex"
+    bgSelectModeBtn.style.opacity = "0.4"
+    updateBgSelectCount()
+  }
+
+  function exitBgSelectMode() {
+    bgSelectMode = false
+    bgSelectedIds.clear()
+    localBackgroundGallery.classList.remove("select-mode")
+    bgSelectToolbar.style.display = "none"
+    bgSelectModeBtn.style.opacity = ""
+    // Clear visual selection
+    localBackgroundGallery
+      .querySelectorAll(".bg-selected")
+      .forEach((el) => el.classList.remove("bg-selected"))
+  }
+
+  function updateBgSelectCount() {
+    bgSelectCount.textContent = `${bgSelectedIds.size} selected`
+    bgDeleteSelectedBtn.disabled = bgSelectedIds.size === 0
+  }
+
+  bgSelectModeBtn.addEventListener("click", () => {
+    if (bgSelectMode) exitBgSelectMode()
+    else enterBgSelectMode()
+  })
+
+  bgSelectCancelBtn.addEventListener("click", exitBgSelectMode)
+
+  bgSelectAllBtn.addEventListener("click", () => {
+    const settings = getSettings()
+    const allUserIds = settings.userBackgrounds || []
+    if (bgSelectedIds.size === allUserIds.length) {
+      // Deselect all
+      bgSelectedIds.clear()
+      localBackgroundGallery
+        .querySelectorAll(".local-bg-item.user-uploaded")
+        .forEach((el) => el.classList.remove("bg-selected"))
+    } else {
+      // Select all
+      allUserIds.forEach((id) => bgSelectedIds.add(id))
+      localBackgroundGallery
+        .querySelectorAll(".local-bg-item.user-uploaded")
+        .forEach((el) => el.classList.add("bg-selected"))
+    }
+    updateBgSelectCount()
+  })
+
+  bgDeleteSelectedBtn.addEventListener("click", async () => {
+    if (bgSelectedIds.size === 0) return
+    const i18n = geti18n()
+    const confirmed = await showConfirm(
+      `${i18n.alert_delete_bg_confirm || "Delete selected backgrounds?"} (${bgSelectedIds.size})`,
+    )
+    if (!confirmed) return
+
+    const settings = getSettings()
+    const toDelete = Array.from(bgSelectedIds)
+    // Remove from state
+    settings.userBackgrounds = (settings.userBackgrounds || []).filter(
+      (id) => !bgSelectedIds.has(id),
+    )
+    // Delete from IDB
+    for (const id of toDelete) {
+      if (isIdbMedia(id)) deleteImage(id).catch(() => {})
+    }
+    // If current background was one of deleted ones, reset it
+    if (bgSelectedIds.has(settings.background)) {
+      handleSettingUpdate("background", null)
+    } else {
+      saveSettings()
+    }
+    exitBgSelectMode()
+    renderLocalBackgrounds()
+  })
+
   localBackgroundGallery.addEventListener("click", (e) => {
     const item = e.target.closest(".local-bg-item")
-    if (item) {
-      if (item.dataset.bgId === "random-color") {
-        const randomColor = `#${Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, "0")}`
-        handleSettingUpdate("background", randomColor)
+    if (!item) return
+
+    // In select mode: toggle selection for user-uploaded items only
+    if (bgSelectMode) {
+      if (!item.classList.contains("user-uploaded")) return
+      const id = item.dataset.bgId
+      if (bgSelectedIds.has(id)) {
+        bgSelectedIds.delete(id)
+        item.classList.remove("bg-selected")
       } else {
-        handleSettingUpdate("background", item.dataset.bgId)
+        bgSelectedIds.add(id)
+        item.classList.add("bg-selected")
       }
+      updateBgSelectCount()
+      return
+    }
+
+    // Normal mode: apply background
+    if (item.dataset.bgId === "random-color") {
+      const randomColor = `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0")}`
+      handleSettingUpdate("background", randomColor)
+    } else {
+      handleSettingUpdate("background", item.dataset.bgId)
     }
   })
 
@@ -1823,9 +1950,6 @@ export function initSettings() {
           : "none"
     })
   })
-  fontSelect.addEventListener("change", () =>
-    handleSettingUpdate("font", fontSelect.value),
-  )
 
   // Custom Google Font Loader
   loadCustomFontBtn.addEventListener("click", () => {
@@ -1840,27 +1964,8 @@ export function initSettings() {
     // Wait a bit for the font to load, then update settings
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
-
-      // Check if font option already exists in select
-      let optionExists = false
-      for (let option of fontSelect.options) {
-        if (option.value === fontValue) {
-          optionExists = true
-          break
-        }
-      }
-
-      // Add to select if not exists
-      if (!optionExists) {
-        const newOption = document.createElement("option")
-        newOption.value = fontValue
-        newOption.textContent = `${fontName} (Custom)`
-        fontSelect.appendChild(newOption)
-      }
-
-      // Select the new font
-      fontSelect.value = fontValue
       handleSettingUpdate("font", fontValue)
+      renderFontGrid()
 
       showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
       customFontInput.value = "" // Clear input
@@ -1888,29 +1993,13 @@ export function initSettings() {
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
 
-      // Add to select dropdown
-      let optionExists = false
-      for (let option of fontSelect.options) {
-        if (option.value === fontValue) {
-          optionExists = true
-          break
-        }
-      }
-      if (!optionExists) {
-        const newOption = document.createElement("option")
-        newOption.value = fontValue
-        newOption.textContent = `${fontName} (Custom)`
-        fontSelect.appendChild(newOption)
-      }
-
       // Apply the font
-      fontSelect.value = fontValue
       handleSettingUpdate("font", fontValue)
 
       // Persist to saved fonts
       updateSetting("userSavedFonts", [...savedFonts, fontName])
       saveSettings()
-      renderSavedFonts()
+      renderFontGrid()
 
       showAlert(i18n.alert_font_saved || "Font saved!")
       customFontInput.value = ""

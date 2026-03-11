@@ -59,7 +59,7 @@ const defaultSettings = {
   showTimer: false,
   showGregorian: true,
   showFullCalendar: false,
-  showLunarCalendar: true,
+  showLunarCalendar: false,
   showClock: true,
   showDate: true,
   showNotepad: true,
