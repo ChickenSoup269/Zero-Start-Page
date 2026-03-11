@@ -234,6 +234,18 @@ export const musicVisualizerStyleSelect = document.getElementById(
   "music-visualizer-style-select",
 )
 
+// Layout Controls Popup
+export const layoutControlsBtn = document.getElementById("layout-controls-btn")
+export const layoutControlsPopup = document.getElementById(
+  "layout-controls-popup",
+)
+export const lcpSearchBar = document.getElementById("lcp-search-bar")
+export const lcpBookmarks = document.getElementById("lcp-bookmarks")
+export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
+export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
+export const lcpQuickAccess = document.getElementById("lcp-quick-access")
+export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
+
 // SVG Wave Generator Controls
 export const svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
 export const svgWaveToggleLabel = document.getElementById(

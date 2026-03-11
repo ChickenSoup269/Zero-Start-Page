@@ -41,17 +41,72 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
-
             <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
                     class="fa-solid fa-clock"></i></button>
-
             <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
                 title="Toggle Gregorian Calendar"><i class="fa-solid fa-calendar-check"></i></button>
+            <button id="layout-controls-btn" class="quick-btn" title="Layout Controls"><i
+                    class="fa-solid fa-sliders"></i></button>
             <button id="reset-layout-quick" class="quick-btn" data-i18n-title="settings_reset_layout"
                 title="Reset Layout"><i class="fa-solid fa-arrows-rotate"></i></button>
+
             <div class="quick-access-divider"></div>
             <button id="quick-access-collapse" class="quick-btn" title="Collapse"><i
                     class="fa-solid fa-chevron-left"></i></button>
+        </div>
+
+        <!-- Layout Controls Popup -->
+        <div id="layout-controls-popup" class="layout-controls-popup" style="display:none;">
+            <div class="lcp-title"><i class="fa-solid fa-sliders"></i> <span data-i18n="quick_layout_title">Layout
+                    Controls</span></div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-magnifying-glass lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_search_bar">Search Bar</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-search-bar">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-bookmark lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_bookmarks">Bookmarks</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-bookmarks">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-folder lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_bookmark_groups">Bookmark Folders</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-bookmark-groups">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-moon lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-lunar-calendar">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fas fa-bars lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_quick_access">Quick Access Bar</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-quick-access">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-eye-slash lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-ghost-controls">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
         </div>
     </div>
 
@@ -98,11 +153,12 @@
                                     style="color: white;" data-i18n="settings_unsplash_api_info">Get a free key at
                                     unsplash.com/developers</a>
                             </small>
-                            <!-- <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
-                                <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
-                                    style="color: white;" data-i18n="settings_unsplash_api_info">Video how to get api
+                            <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
+                                <a href="https://www.youtube.com/watch?v=zQR_sWfoRTY" target="_blank" rel="noopener"
+                                    style="color: white;" data-i18n="settings_unsplash_api_info_video">Video how to get
+                                    api
                                     key</a>
-                            </small> -->
+                            </small>
 
                             <select id="unsplash-category-select" class="full-width"
                                 style="margin-bottom: 8px;"></select>

@@ -171,6 +171,7 @@
   "settings_unsplash_access_key": "Unsplash Access Key",
   "settings_unsplash_access_key_placeholder": "Enter your Unsplash Access Key",
   "settings_unsplash_api_info": "Get a free key at unsplash.com/developers",
+  "settings_unsplash_api_info_video": "Video how to get api key",
   "settings_google_fonts_info": "Get a free google font  at fonts.google.com",
   "settings_svg_wave_title": "SVG Gradient Wave",
   "settings_svg_wave_open": "Open Wave Generator",

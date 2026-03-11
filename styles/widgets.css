@@ -311,6 +311,119 @@ body.ghost-controls .side-controls:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
+/* Layout Controls Popup */
+.layout-controls-popup {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 0;
+  width: 220px;
+  background: rgba(20, 20, 30, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 3000;
+  color: #fff;
+  animation: lcpFadeIn 0.15s ease;
+}
+
+@keyframes lcpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.lcp-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lcp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.lcp-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lcp-icon {
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.lcp-label {
+  font-size: 0.82rem;
+  flex: 1;
+  opacity: 0.9;
+}
+
+/* Toggle switch */
+.lcp-switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.lcp-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.lcp-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lcp-slider::before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.lcp-switch input:checked + .lcp-slider {
+  background: var(--accent-color);
+}
+
+.lcp-switch input:checked + .lcp-slider::before {
+  transform: translateX(16px);
+}
+
 /* Glass Panels */
 .glass-panel {
   background: rgba(0, 0, 0, 0.3);

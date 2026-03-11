@@ -108,6 +108,14 @@ import {
   unsplashCategorySelect,
   unsplashAccessKeyInput,
   showDateCheckbox,
+  layoutControlsBtn,
+  layoutControlsPopup,
+  lcpSearchBar,
+  lcpBookmarks,
+  lcpBookmarkGroups,
+  lcpLunarCalendar,
+  lcpQuickAccess,
+  lcpGhostControls,
   svgWaveToggleBtn,
   svgWaveToggleLabel,
   svgWaveSettings,
@@ -919,6 +927,13 @@ function updateSettingsInputs() {
     "ghost-controls",
     settings.sideControlsGhostMode === true,
   )
+  // Sync Layout Controls Popup toggles
+  lcpSearchBar.checked = settings.showSearchBar !== false
+  lcpBookmarks.checked = settings.showBookmarks !== false
+  lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
+  lcpLunarCalendar.checked = settings.showLunarCalendar !== false
+  lcpQuickAccess.checked = settings.showQuickAccess !== false
+  lcpGhostControls.checked = settings.sideControlsGhostMode === true
   musicStyleSelect.value = settings.musicBarStyle || "vinyl"
 
   // Highlight active background
@@ -2170,6 +2185,107 @@ export function initSettings() {
     const isGhost = ghostControlsCheckbox.checked
     handleSettingUpdate("sideControlsGhostMode", isGhost)
     document.body.classList.toggle("ghost-controls", isGhost)
+    lcpGhostControls.checked = isGhost
+  })
+
+  // --- Layout Controls Popup ---
+  function closeLcp() {
+    layoutControlsPopup.style.display = "none"
+    layoutControlsBtn.classList.remove("active")
+  }
+
+  layoutControlsBtn.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const isVisible = layoutControlsPopup.style.display !== "none"
+    if (isVisible) {
+      closeLcp()
+    } else {
+      layoutControlsPopup.style.display = "block"
+      layoutControlsBtn.classList.add("active")
+    }
+  })
+
+  document.addEventListener("click", (e) => {
+    if (
+      !layoutControlsPopup.contains(e.target) &&
+      !layoutControlsBtn.contains(e.target)
+    ) {
+      closeLcp()
+    }
+  })
+
+  // Helper: fire a toggle for a setting key, syncing sidebar checkbox + popup toggle
+  function lcpToggle(key, value, sidebarCheckbox, popupCheckbox) {
+    sidebarCheckbox.checked = value
+    popupCheckbox.checked = value
+    handleSettingUpdate(key, value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", { detail: { key, value } }),
+    )
+  }
+
+  lcpSearchBar.addEventListener("change", () =>
+    lcpToggle(
+      "showSearchBar",
+      lcpSearchBar.checked,
+      showSearchBarCheckbox,
+      lcpSearchBar,
+    ),
+  )
+  lcpBookmarks.addEventListener("change", () =>
+    lcpToggle(
+      "showBookmarks",
+      lcpBookmarks.checked,
+      showBookmarksCheckbox,
+      lcpBookmarks,
+    ),
+  )
+  lcpBookmarkGroups.addEventListener("change", () =>
+    lcpToggle(
+      "showBookmarkGroups",
+      lcpBookmarkGroups.checked,
+      showBookmarkGroupsCheckbox,
+      lcpBookmarkGroups,
+    ),
+  )
+  lcpLunarCalendar.addEventListener("change", () =>
+    lcpToggle(
+      "showLunarCalendar",
+      lcpLunarCalendar.checked,
+      showLunarCalendarCheckbox,
+      lcpLunarCalendar,
+    ),
+  )
+  lcpQuickAccess.addEventListener("change", () =>
+    lcpToggle(
+      "showQuickAccess",
+      lcpQuickAccess.checked,
+      showQuickAccessCheckbox,
+      lcpQuickAccess,
+    ),
+  )
+  lcpGhostControls.addEventListener("change", () => {
+    const isGhost = lcpGhostControls.checked
+    ghostControlsCheckbox.checked = isGhost
+    handleSettingUpdate("sideControlsGhostMode", isGhost)
+    document.body.classList.toggle("ghost-controls", isGhost)
+  })
+
+  // Also keep popup in sync when sidebar checkboxes are toggled
+  showSearchBarCheckbox.addEventListener("change", () => {
+    lcpSearchBar.checked = showSearchBarCheckbox.checked
+  })
+  showBookmarksCheckbox.addEventListener("change", () => {
+    lcpBookmarks.checked = showBookmarksCheckbox.checked
+  })
+  showBookmarkGroupsCheckbox.addEventListener("change", () => {
+    lcpBookmarkGroups.checked = showBookmarkGroupsCheckbox.checked
+  })
+  showLunarCalendarCheckbox.addEventListener("change", () => {
+    lcpLunarCalendar.checked = showLunarCalendarCheckbox.checked
+  })
+  showQuickAccessCheckbox.addEventListener("change", () => {
+    lcpQuickAccess.checked = showQuickAccessCheckbox.checked
   })
 
   // Music style listener
