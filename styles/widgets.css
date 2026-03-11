@@ -72,38 +72,89 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 0 0 10px 10px;
+  background: rgba(24, 24, 32, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0 0 16px 16px;
   border-top: none;
   z-index: -1;
   display: none;
-  box-shadow: var(--glass-shadow);
-  margin-top: -1px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  margin-top: -2px;
+  overflow: hidden;
+  padding: 6px 0 8px;
 }
 
 .suggestion-item {
-  padding: 12px 25px;
-  color: var(--text-color);
+  padding: 9px 16px 9px 18px;
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.12s;
   text-align: left;
-  font-size: 1rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
+  gap: 14px;
 }
 
-.suggestion-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 15px;
-  border-radius: 4px;
+.suggestion-search-icon {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
 }
 
-.suggestion-item:hover {
-  background: var(--hover-bg);
+.suggestion-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.suggestion-text strong {
+  font-weight: 600;
+  color: #fff;
+}
+
+.suggestion-fill-btn {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  transition:
+    opacity 0.15s,
+    color 0.15s,
+    background 0.15s;
+  line-height: 1;
+}
+
+.suggestion-item:hover .suggestion-fill-btn,
+.suggestion-item.active .suggestion-fill-btn {
+  opacity: 1;
+}
+
+.suggestion-fill-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.suggestion-item.active .suggestion-search-icon {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Bookmark Cards */
@@ -1028,7 +1079,7 @@ body.ghost-controls .side-controls:hover {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 140px;
+  width: 170px;
   background: rgba(30, 30, 30, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);

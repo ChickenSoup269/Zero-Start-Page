@@ -78,6 +78,7 @@ const defaultSettings = {
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,
+  searchEngine: "google",
   svgWaveActive: false,
   svgWaveLines: 5,
   svgWaveAmplitudeX: 200,

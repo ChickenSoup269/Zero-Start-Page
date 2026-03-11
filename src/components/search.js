@@ -1,4 +1,45 @@
 import { searchInput, clearBtn } from "../utils/dom.js"
+import { getSettings, updateSetting, saveSettings } from "../services/state.js"
+
+const SEARCH_ENGINES = {
+  google: {
+    name: "Google",
+    url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+    placeholder: "Search Google...",
+    icon: "fa-brands fa-google",
+  },
+  bing: {
+    name: "Bing",
+    url: (q) => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
+    placeholder: "Search Bing...",
+    icon: "fa-brands fa-microsoft",
+  },
+  yahoo: {
+    name: "Yahoo",
+    url: (q) => `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`,
+    placeholder: "Search Yahoo...",
+    icon: "fa-brands fa-yahoo",
+  },
+  duckduckgo: {
+    name: "DuckDuckGo",
+    url: (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
+    placeholder: "Search DuckDuckGo...",
+    icon: "fa-solid fa-shield-halved",
+  },
+  ecosia: {
+    name: "Ecosia",
+    url: (q) => `https://www.ecosia.org/search?q=${encodeURIComponent(q)}`,
+    placeholder: "Search Ecosia...",
+    icon: "fa-solid fa-leaf",
+  },
+  "google-image": {
+    name: "Images",
+    url: (q) =>
+      `https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=isch`,
+    placeholder: "Search Google Images (or Paste Image)...",
+    icon: "fa-regular fa-image",
+  },
+}
 
 const searchContainer = document.querySelector(".search-container")
 const searchForm = document.querySelector(".search-container form")
@@ -22,8 +63,11 @@ const previewThumb = document.getElementById("image-preview-thumb")
 const removePreviewBtn = document.getElementById("remove-preview-btn")
 
 let suggestionTimeout
-let currentEngine = "google" // Default
+let currentEngine = "google" // Will be overridden from settings in initSearch()
 let pendingImageFile = null // Store the image file waiting to be uploaded
+let activeSuggestionIndex = -1
+let originalQuery = ""
+let currentSuggestions = []
 
 async function fetchSuggestions(query) {
   if (!query) {
@@ -56,58 +100,83 @@ async function fetchSuggestions(query) {
   }
 }
 
-function getFaviconUrl(suggestion) {
-  try {
-    const url = new URL(
-      suggestion.startsWith("http")
-        ? suggestion
-        : `https://${suggestion.split(" ")[0]}`,
-    )
-    return `https://www.google.com/s2/favicons?domain=${url.hostname}`
-  } catch (e) {
-    return "https://www.google.com/s2/favicons?domain=google.com"
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+}
+
+function highlightQuery(suggestion, query) {
+  if (!query) return `<strong>${escapeHtml(suggestion)}</strong>`
+  const qTrimmed = query.trim()
+  if (suggestion.toLowerCase().startsWith(qTrimmed.toLowerCase())) {
+    const typed = suggestion.slice(0, qTrimmed.length)
+    const rest = suggestion.slice(qTrimmed.length)
+    return `${escapeHtml(typed)}<strong>${escapeHtml(rest)}</strong>`
   }
+  return `<strong>${escapeHtml(suggestion)}</strong>`
 }
 
 function displaySuggestions(suggestions) {
   if (!suggestions || suggestions.length === 0) {
     suggestionsContainer.style.display = "none"
+    currentSuggestions = []
     return
   }
 
-  const filteredSuggestions = suggestions.slice(0, 6)
+  currentSuggestions = suggestions.slice(0, 8)
+  activeSuggestionIndex = -1
 
-  suggestionsContainer.innerHTML = filteredSuggestions
+  suggestionsContainer.innerHTML = currentSuggestions
     .map(
       (suggestion) =>
-        `<div class="suggestion-item">
-                    <img src="${getFaviconUrl(suggestion)}" class="suggestion-icon" />
-                    <span>${suggestion}</span>
-                </div>`,
+        `<div class="suggestion-item" data-query="${escapeHtml(suggestion)}">
+          <i class="fa-solid fa-magnifying-glass suggestion-search-icon"></i>
+          <span class="suggestion-text">${highlightQuery(suggestion, searchInput.value)}</span>
+          <button class="suggestion-fill-btn" title="Fill search box" data-query="${escapeHtml(suggestion)}">
+            <i class="fa-solid fa-arrow-up-left"></i>
+          </button>
+        </div>`,
     )
     .join("")
 
-  if (filteredSuggestions.length > 0) {
-    suggestionsContainer.style.display = "block"
-  } else {
-    suggestionsContainer.style.display = "none"
-  }
+  suggestionsContainer.style.display = "block"
+}
+
+function updateActiveSuggestion(items) {
+  items.forEach((item, idx) => {
+    if (idx === activeSuggestionIndex) {
+      item.classList.add("active")
+      searchInput.value = item.dataset.query
+    } else {
+      item.classList.remove("active")
+    }
+  })
 }
 
 function handleSuggestionClick(e) {
-  let target = e.target
-  while (target && !target.classList.contains("suggestion-item")) {
-    target = target.parentElement
+  // Fill button: put text into input without submitting
+  const fillBtn = e.target.closest(".suggestion-fill-btn")
+  if (fillBtn) {
+    e.stopPropagation()
+    const query = fillBtn.dataset.query
+    searchInput.value = query
+    searchInput.focus()
+    clearTimeout(suggestionTimeout)
+    fetchSuggestions(query)
+    return
   }
 
-  if (target) {
-    const textSpan = target.querySelector("span")
-    if (textSpan) {
-      searchInput.value = textSpan.textContent
-      suggestionsContainer.style.display = "none"
-      searchInput.focus()
-      submitSearch()
-    }
+  // Row click: submit
+  const item = e.target.closest(".suggestion-item")
+  if (item) {
+    searchInput.value = item.dataset.query
+    suggestionsContainer.style.display = "none"
+    currentSuggestions = []
+    activeSuggestionIndex = -1
+    submitSearch()
   }
 }
 
@@ -141,13 +210,8 @@ function submitSearch() {
   // Default to text search
   if (!query) return
 
-  let searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(query)
-
-  if (currentEngine === "google-image") {
-    searchUrl += "&tbm=isch"
-  }
-
-  window.location.href = searchUrl
+  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
+  window.location.href = engine.url(query)
 }
 
 async function uploadImageToGoogle(file) {
@@ -189,16 +253,27 @@ function updateSearchUI() {
     return
   }
 
-  if (currentEngine === "google-image") {
-    cameraBtn.style.display = "block"
-    searchInput.placeholder = "Search Google Images (or Paste Image)..."
-  } else {
-    cameraBtn.style.display = "none"
-    searchInput.placeholder = "Search Google..."
-  }
+  const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
+  cameraBtn.style.display = currentEngine === "google-image" ? "block" : "none"
+  searchInput.placeholder = engine.placeholder
 }
 
 function initSearch() {
+  // Restore saved engine
+  const savedEngine = getSettings().searchEngine
+  if (savedEngine && SEARCH_ENGINES[savedEngine]) {
+    currentEngine = savedEngine
+    const savedOption = [...engineOptions].find(
+      (o) => o.dataset.value === savedEngine,
+    )
+    if (savedOption) {
+      engineOptions.forEach((o) => o.classList.remove("active"))
+      savedOption.classList.add("active")
+      const engine = SEARCH_ENGINES[savedEngine]
+      selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
+    }
+  }
+
   // Dropdown Toggle
   searchEngineSelector.addEventListener("click", (e) => {
     e.stopPropagation()
@@ -212,14 +287,17 @@ function initSearch() {
       const value = option.dataset.value
       currentEngine = value
 
+      // Persist selection
+      updateSetting("searchEngine", value)
+      saveSettings()
+
       // Update Active State
       engineOptions.forEach((opt) => opt.classList.remove("active"))
       option.classList.add("active")
 
       // Update Icon
-      const iconClass =
-        value === "google" ? "fa-brands fa-google" : "fa-regular fa-image"
-      selectedEngine.innerHTML = `<i class="${iconClass}"></i>`
+      const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
+      selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
 
       // Close Dropdown
       engineDropdown.classList.remove("show")
@@ -278,27 +356,55 @@ function initSearch() {
   })
 
   searchInput.addEventListener("input", () => {
-    // If we have an image pending, maybe we shouldn't show text suggestions?
-    // Or maybe we treat text as metadata? Google Images direct upload doesn't support extra query easily.
-    // For now, let's allow typing but if they submit, the image takes precedence as per logic.
-
+    activeSuggestionIndex = -1
+    clearBtn.style.display = searchInput.value ? "block" : "none"
     clearTimeout(suggestionTimeout)
     suggestionTimeout = setTimeout(() => {
       fetchSuggestions(searchInput.value)
-    }, 250)
+    }, 200)
+  })
+
+  searchInput.addEventListener("keydown", (e) => {
+    if (
+      suggestionsContainer.style.display === "none" ||
+      currentSuggestions.length === 0
+    )
+      return
+    const items = suggestionsContainer.querySelectorAll(".suggestion-item")
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      if (activeSuggestionIndex === -1) originalQuery = searchInput.value
+      activeSuggestionIndex = Math.min(
+        activeSuggestionIndex + 1,
+        items.length - 1,
+      )
+      updateActiveSuggestion(items)
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      activeSuggestionIndex = Math.max(activeSuggestionIndex - 1, -1)
+      if (activeSuggestionIndex === -1) {
+        searchInput.value = originalQuery
+        items.forEach((i) => i.classList.remove("active"))
+      } else {
+        updateActiveSuggestion(items)
+      }
+    } else if (e.key === "Escape") {
+      if (activeSuggestionIndex !== -1) searchInput.value = originalQuery
+      suggestionsContainer.style.display = "none"
+      currentSuggestions = []
+      activeSuggestionIndex = -1
+    }
   })
 
   suggestionsContainer.addEventListener("click", handleSuggestionClick)
-
-  // Handle clearing the search input
-  searchInput.addEventListener("input", () => {
-    clearBtn.style.display = searchInput.value ? "block" : "none"
-  })
 
   clearBtn.addEventListener("click", () => {
     searchInput.value = ""
     clearBtn.style.display = "none"
     suggestionsContainer.style.display = "none"
+    currentSuggestions = []
+    activeSuggestionIndex = -1
     searchInput.focus()
   })
 

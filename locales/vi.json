@@ -32,7 +32,7 @@
   "settings_reset": "Khôi phục mặc định",
   "settings_local_bg": "Giao diện cục bộ",
   "settings_saved_colors": "Màu đã lưu",
-  "search_placeholder": "Tìm kiếm Google...",
+  "search_placeholder": "Tìm kiếm...",
   "prompt_rename_todo": "Cập nhật công việc:",
   "alert_delete_todo_confirm": "Xóa công việc này?",
   "alert_delete_selected_todos": "Xóa {count} công việc đã chọn?",

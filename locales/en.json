@@ -32,7 +32,7 @@
   "settings_reset": "Reset Defaults",
   "settings_local_bg": "Local Themes",
   "settings_saved_colors": "Saved Colors",
-  "search_placeholder": "Search Google...",
+  "search_placeholder": "Search...",
   "prompt_rename_todo": "Update task:",
   "alert_delete_todo_confirm": "Delete this task?",
   "alert_delete_selected_todos": "Delete {count} selected task(s)?",
