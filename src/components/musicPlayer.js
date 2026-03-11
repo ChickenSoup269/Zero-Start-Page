@@ -12,8 +12,11 @@ export class MusicPlayer {
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
-    this._audioSyncListener = null
-    this._isSyncing = false
+    this._duration = 0
+    this._isSeeking = false
+    this._lastKnownTime = 0
+    this._lastUpdateTimestamp = 0
+    this._progressInterval = null
 
     this.init()
   }
@@ -46,6 +49,14 @@ export class MusicPlayer {
                             <span id="artist-text"></span>
                         </p>
                     </div>
+                    <div class="progress-row">
+                        <span id="music-current-time" class="progress-time">0:00</span>
+                        <div class="progress-bar-track" id="progress-bar-track">
+                            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            <div class="progress-bar-thumb" id="progress-bar-thumb"></div>
+                        </div>
+                        <span id="music-duration" class="progress-time">0:00</span>
+                    </div>
                     <div class="controls-row">
                         <button id="prev-track" class="player-btn"><i class="fa-solid fa-backward-step"></i></button>
                         <button id="play-pause-btn" class="player-btn play-pause-btn"><i class="fa-solid fa-play"></i></button>
@@ -62,6 +73,29 @@ export class MusicPlayer {
     this.artistElement = this.container.querySelector("#music-artist")
     this.platformIcon = this.container.querySelector("#platform-icon")
     this.artistText = this.container.querySelector("#artist-text")
+    this.currentTimeEl = this.container.querySelector("#music-current-time")
+    this.durationEl = this.container.querySelector("#music-duration")
+    this.progressTrack = this.container.querySelector("#progress-bar-track")
+    this.progressFill = this.container.querySelector("#progress-bar-fill")
+    this.progressThumb = this.container.querySelector("#progress-bar-thumb")
+
+    // Progress bar click to seek
+    this.progressTrack.addEventListener("click", (e) => {
+      if (!this._duration) return
+      const rect = this.progressTrack.getBoundingClientRect()
+      const ratio = Math.max(
+        0,
+        Math.min(1, (e.clientX - rect.left) / rect.width),
+      )
+      const seekTime = ratio * this._duration
+      this._lastKnownTime = seekTime
+      this._lastUpdateTimestamp = Date.now()
+      this._updateProgressUI(seekTime, this._duration)
+      chrome.runtime.sendMessage({
+        action: "mediaControl",
+        command: { name: "seekTo", time: seekTime },
+      })
+    })
 
     // Initialize visualizer
     this.visualizer.init(this.container)
@@ -113,15 +147,21 @@ export class MusicPlayer {
   startPolling() {
     if (this.pollInterval) return
     this.pollInterval = setInterval(() => {
-      if (this.showPlayer) {
+      if (!this.showPlayer) return
+      try {
         chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
-          if (chrome.runtime.lastError) return
+          if (chrome.runtime.lastError) {
+            this.setInactive()
+            return
+          }
           if (response && response.audible) {
             this.updateUI(response)
           } else {
             this.setInactive()
           }
         })
+      } catch (e) {
+        this.setInactive()
       }
     }, 1000)
   }
@@ -140,12 +180,13 @@ export class MusicPlayer {
     const artist = data.artist || "Unknown Artist"
     this.artistText.textContent = artist
 
-    // Show platform icon based on source
-    if (data.source === "youtube") {
+    // Show platform icon based on URL
+    const url = data.url || ""
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
       this.platformIcon.className = "platform-icon fa-brands fa-youtube"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#FF0000"
-    } else if (data.source === "spotify") {
+    } else if (url.includes("spotify.com")) {
       this.platformIcon.className = "platform-icon fa-brands fa-spotify"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#1DB954"
@@ -163,11 +204,9 @@ export class MusicPlayer {
     if (this.isPlaying) {
       this.disc.classList.add("playing")
       this.visualizer.start()
-      this.startAudioSync()
     } else {
       this.disc.classList.remove("playing")
       this.visualizer.stop()
-      this.stopAudioSync()
     }
 
     // Update thumbnail
@@ -184,6 +223,53 @@ export class MusicPlayer {
     }
 
     this.updateSourceIcon(data.url)
+    this._duration =
+      typeof data.duration === "number" && data.duration > 0 ? data.duration : 0
+    this._lastKnownTime = data.currentTime || 0
+    this._lastUpdateTimestamp = Date.now()
+    this._updateProgressUI(this._lastKnownTime, this._duration)
+    if (this.isPlaying && this._duration > 0) {
+      this._startProgressAnimation()
+    } else {
+      this._stopProgressAnimation()
+    }
+  }
+
+  _updateProgressUI(currentTime, duration) {
+    const fmt = (s) => {
+      const m = Math.floor(s / 60)
+      const sec = Math.floor(s % 60)
+      return `${m}:${sec.toString().padStart(2, "0")}`
+    }
+    const hasData = duration > 0
+    const pct = hasData ? Math.min(100, (currentTime / duration) * 100) : 0
+    if (this.currentTimeEl)
+      this.currentTimeEl.textContent = hasData ? fmt(currentTime) : "--:--"
+    if (this.durationEl)
+      this.durationEl.textContent = hasData ? fmt(duration) : "--:--"
+    if (this.progressFill) this.progressFill.style.width = `${pct}%`
+    if (this.progressThumb) this.progressThumb.style.left = `${pct}%`
+    // Show/hide row based on whether live stream (no duration)
+    if (this.progressTrack) {
+      this.progressTrack.parentElement.style.opacity = hasData ? "1" : "0.35"
+    }
+  }
+
+  _startProgressAnimation() {
+    if (this._progressInterval) return
+    this._progressInterval = setInterval(() => {
+      if (!this._duration || !this.isPlaying) return
+      const elapsed = (Date.now() - this._lastUpdateTimestamp) / 1000
+      const estimated = Math.min(this._lastKnownTime + elapsed, this._duration)
+      this._updateProgressUI(estimated, this._duration)
+    }, 250)
+  }
+
+  _stopProgressAnimation() {
+    if (this._progressInterval) {
+      clearInterval(this._progressInterval)
+      this._progressInterval = null
+    }
   }
 
   updateSourceIcon(url) {
@@ -201,7 +287,8 @@ export class MusicPlayer {
 
   setInactive() {
     this.titleElement.textContent = "No Media Playing"
-    this.artistElement.textContent = ""
+    this.artistText.textContent = ""
+    this.platformIcon.style.display = "none"
     this.isPlaying = false
     this.disc.classList.remove("playing")
     this.sourceIcon.style.display = "none"
@@ -210,42 +297,14 @@ export class MusicPlayer {
     document.getElementById("play-pause-btn").innerHTML =
       '<i class="fa-solid fa-play"></i>'
     this.visualizer.stop()
-    this.stopAudioSync()
+    this._stopProgressAnimation()
+    this._duration = 0
+    this._lastKnownTime = 0
+    this._updateProgressUI(0, 0)
   }
 
   sendControl(command) {
     chrome.runtime.sendMessage({ action: "mediaControl", command: command })
-  }
-
-  startAudioSync() {
-    if (this._isSyncing) return
-    this._isSyncing = true
-    chrome.runtime.sendMessage({ action: "startAudioSync" }, (response) => {
-      if (chrome.runtime.lastError || !response?.ok) {
-        this._isSyncing = false
-        return
-      }
-      this._audioSyncListener = (message) => {
-        if (message.action === "audioSyncData" && message._relay === true) {
-          this.visualizer.feedFrequencyData(message.samples)
-        }
-      }
-      chrome.runtime.onMessage.addListener(this._audioSyncListener)
-    })
-  }
-
-  stopAudioSync() {
-    if (!this._isSyncing) return
-    this._isSyncing = false
-    if (this._audioSyncListener) {
-      chrome.runtime.onMessage.removeListener(this._audioSyncListener)
-      this._audioSyncListener = null
-    }
-    chrome.runtime.sendMessage({ action: "stopAudioSync" }, () => {
-      if (chrome.runtime.lastError) {
-      }
-    })
-    this.visualizer.feedFrequencyData(null)
   }
 
   togglePlayer() {

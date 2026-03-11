@@ -123,6 +123,66 @@
   max-width: 200px;
 }
 
+/* Progress Bar */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 220px;
+}
+
+.progress-time {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  min-width: 28px;
+}
+
+.progress-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  transition: height 0.15s;
+  overflow: hidden;
+}
+
+.progress-bar-track:hover {
+  height: 6px;
+  overflow: visible;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent-color);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.progress-bar-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  transition: transform 0.15s;
+}
+
+.progress-bar-track:hover .progress-bar-thumb {
+  transform: translate(-50%, -50%) scale(1);
+}
+
 .controls-row {
   display: flex;
   align-items: center;
@@ -373,17 +433,17 @@
 
 .music-style-spotify .player-main {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
   flex: 1;
   overflow: visible;
 }
 
 .music-style-spotify .player-info {
   min-width: 80px;
-  max-width: 150px;
+  max-width: none;
   flex-shrink: 1;
   overflow: hidden;
   order: 1;
@@ -396,11 +456,16 @@
   white-space: nowrap;
 }
 
+.music-style-spotify .progress-row {
+  order: 2;
+}
+
 .music-style-spotify .controls-row {
   display: flex !important;
   gap: 12px;
   flex-shrink: 0;
-  order: 2;
+  order: 3;
+  justify-content: center;
 }
 
 .music-style-spotify .play-pause-btn {

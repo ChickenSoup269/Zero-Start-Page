@@ -24,9 +24,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.tabs.query({}, (allTabs) => {
           const tab = allTabs.find(
             (t) =>
-              t.url.includes("youtube.com") ||
-              t.url.includes("spotify.com") ||
-              t.url.includes("music.youtube.com"),
+              t.url?.includes("youtube.com") ||
+              t.url?.includes("spotify.com") ||
+              t.url?.includes("music.youtube.com"),
           )
           if (tab) {
             getMediaFromTab(tab.id, sendResponse)
@@ -49,9 +49,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           tabs[0] ||
           allTabs.find(
             (t) =>
-              t.url.includes("youtube.com") ||
-              t.url.includes("spotify.com") ||
-              t.url.includes("music.youtube.com"),
+              t.url?.includes("youtube.com") ||
+              t.url?.includes("spotify.com") ||
+              t.url?.includes("music.youtube.com"),
           )
         if (targetTab) {
           chrome.scripting.executeScript(
@@ -62,7 +62,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                   document.querySelector("video") ||
                   document.querySelector("audio")
                 if (!video) return
-                switch (command) {
+                const cmdName =
+                  typeof command === "string" ? command : command.name
+                switch (cmdName) {
                   case "playPause":
                     if (video.paused) video.play()
                     else video.pause()
@@ -82,6 +84,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         '[data-testid="control-button-skip-back"]',
                       )
                     )?.click()
+                    break
+                  case "seekTo":
+                    if (typeof command.time === "number") {
+                      video.currentTime = command.time
+                    }
                     break
                 }
               },
@@ -246,9 +253,9 @@ function findAudioTab(callback) {
     chrome.tabs.query({}, (allTabs) => {
       const tab = allTabs.find(
         (t) =>
-          t.url.includes("youtube.com") ||
-          t.url.includes("spotify.com") ||
-          t.url.includes("music.youtube.com"),
+          t.url?.includes("youtube.com") ||
+          t.url?.includes("spotify.com") ||
+          t.url?.includes("music.youtube.com"),
       )
       callback(tab || null)
     })
@@ -292,6 +299,8 @@ function getMediaFromTab(tabId, sendResponse) {
             document.title.replace(/^\(\d+\)\s/, ""),
           artist: metadata?.artist || ytArtist || spotifyArtist || "",
           paused: video ? video.paused : true,
+          currentTime: video ? video.currentTime : 0,
+          duration: video ? (isFinite(video.duration) ? video.duration : 0) : 0,
           url: window.location.href,
           thumbnail: (() => {
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
