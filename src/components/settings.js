@@ -96,6 +96,8 @@ import {
   shinyColorSetting,
   lineShinyColorPicker,
   lineShinyColorSetting,
+  pixelRunColorPicker,
+  pixelRunColorSetting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -181,6 +183,7 @@ import { WindEffect } from "./animations/wind.js"
 import { HackerEffect } from "./animations/hacker.js"
 import { SakuraEffect } from "./animations/sakura.js"
 import { SnowfallEffect } from "./animations/snowfall.js"
+import { SnowfallHDEffect } from "./animations/snowfallHD.js"
 import { AuroraWaveEffect } from "./animations/auroraWave.js"
 import { BubblesEffect } from "./animations/bubbles.js"
 import { RainOnGlassEffect } from "./animations/rainOnGlass.js"
@@ -197,6 +200,8 @@ import { SunbeamEffect } from "./animations/sunbeam.js"
 import { ShinyEffect } from "./animations/shiny.js"
 import { LineShinyEffect } from "./animations/lineShiny.js"
 import { TetFireworksEffect } from "./animations/tetFireworks.js"
+import { SkyLanternsEffect } from "./animations/skyLanterns.js"
+import { PixelRunEffect } from "./animations/pixelRun.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -208,6 +213,7 @@ let starFallEffect,
   hackerEffect,
   sakuraEffect,
   snowfallEffect,
+  snowfallHDEffect,
   auroraWaveEffect,
   bubblesEffect,
   rainOnGlassEffect,
@@ -223,6 +229,8 @@ let starFallEffect,
   shinyEffect,
   lineShinyEffect,
   tetFireworksEffect,
+  skyLanternsEffect,
+  pixelRunEffect,
   svgWaveEffect
 
 let _prevBg = null // Track last applied background for fade-in trigger
@@ -685,6 +693,7 @@ export function applySettings() {
   if (hackerEffect) hackerEffect.stop()
   if (sakuraEffect) sakuraEffect.stop()
   if (snowfallEffect) snowfallEffect.stop()
+  if (snowfallHDEffect) snowfallHDEffect.stop()
   if (auroraWaveEffect) auroraWaveEffect.stop()
   if (bubblesEffect) bubblesEffect.stop()
   if (rainOnGlassEffect) rainOnGlassEffect.stop()
@@ -700,6 +709,8 @@ export function applySettings() {
   if (shinyEffect) shinyEffect.stop()
   if (lineShinyEffect) lineShinyEffect.stop()
   if (tetFireworksEffect) tetFireworksEffect.stop()
+  if (skyLanternsEffect) skyLanternsEffect.stop()
+  if (pixelRunEffect) pixelRunEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
@@ -740,6 +751,9 @@ export function applySettings() {
         break
       case "snowfall":
         snowfallEffect.start()
+        break
+      case "snowfallHD":
+        snowfallHDEffect.start()
         break
       case "auroraWave":
         auroraWaveEffect.start()
@@ -785,6 +799,12 @@ export function applySettings() {
         break
       case "tetFireworks":
         tetFireworksEffect.start()
+        break
+      case "skyLanterns":
+        skyLanternsEffect.start()
+        break
+      case "pixelRun":
+        pixelRunEffect.start()
         break
     }
   }, 50)
@@ -928,6 +948,9 @@ function updateSettingsInputs() {
   lineShinyColorSetting.style.display =
     settings.effect === "lineShiny" ? "block" : "none"
   lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
+  pixelRunColorSetting.style.display =
+    settings.effect === "pixelRun" ? "block" : "none"
+  pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
 
   // SVG Wave Generator — sync all sliders/checkboxes to current state
   const waveActive = settings.svgWaveActive === true
@@ -1236,6 +1259,7 @@ export function initSettings() {
     "effect-canvas",
     settings.snowfallColor || "#ffffff",
   )
+  snowfallHDEffect = new SnowfallHDEffect("effect-canvas")
   auroraWaveEffect = new AuroraWaveEffect("effect-canvas", settings.accentColor)
   bubblesEffect = new BubblesEffect(
     "effect-canvas",
@@ -1276,6 +1300,11 @@ export function initSettings() {
     settings.lineShinyColor || "#ffffff",
   )
   tetFireworksEffect = new TetFireworksEffect("effect-canvas")
+  skyLanternsEffect = new SkyLanternsEffect("effect-canvas")
+  pixelRunEffect = new PixelRunEffect(
+    "effect-canvas",
+    settings.pixelRunColor || "#00e5ff",
+  )
   svgWaveEffect = new SvgWaveGenerator()
 
   populateUnsplashCollections()
@@ -1879,6 +1908,12 @@ export function initSettings() {
     updateSetting("lineShinyColor", lineShinyColorPicker.value)
     saveSettings()
     lineShinyEffect.updateColor(lineShinyColorPicker.value)
+  })
+
+  pixelRunColorPicker.addEventListener("input", () => {
+    updateSetting("pixelRunColor", pixelRunColorPicker.value)
+    saveSettings()
+    if (pixelRunEffect) pixelRunEffect.color = pixelRunColorPicker.value
   })
 
   // --- SVG Wave Generator Listeners ---

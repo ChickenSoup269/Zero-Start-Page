@@ -144,6 +144,13 @@ export const lineShinyColorSetting = document.getElementById(
   "line-shiny-color-setting",
 )
 
+export const pixelRunColorPicker = document.getElementById(
+  "pixel-run-color-picker",
+)
+export const pixelRunColorSetting = document.getElementById(
+  "pixel-run-color-setting",
+)
+
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const exportSettingsBtn = document.getElementById("export-settings-btn")
 export const importSettingsBtn = document.getElementById("import-settings-btn")
