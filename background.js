@@ -134,7 +134,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             const freqBins = analyser.frequencyBinCount // 128
             const dataArray = new Uint8Array(freqBins)
-            let rafId = null
 
             // Average a slice of frequency bins and normalize to 0..1
             const avgBand = (from, to) => {
@@ -160,16 +159,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 { action: "audioSyncData", samples },
                 () => {},
               )
-              rafId = requestAnimationFrame(sendFrame)
             }
 
-            sendFrame()
+            // Use setInterval (~30fps) instead of requestAnimationFrame to
+            // avoid triggering the browser's tab loading indicator on the media page
+            const intervalId = setInterval(sendFrame, 33)
             window.__startpageAudioSync = {
               active: true,
               audioCtx,
               source,
               analyser,
-              rafId,
+              rafId: intervalId,
+              _isInterval: true,
             }
             return { ok: true }
           },
@@ -198,7 +199,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           func: () => {
             const sync = window.__startpageAudioSync
             if (!sync) return { ok: true }
-            if (sync.rafId) cancelAnimationFrame(sync.rafId)
+            if (sync.rafId) {
+              if (sync._isInterval) clearInterval(sync.rafId)
+              else cancelAnimationFrame(sync.rafId)
+            }
             try {
               sync.source?.disconnect()
               sync.analyser?.disconnect()

@@ -55,6 +55,8 @@ import {
   removeBgBtn,
   bgPositionSetting,
   bgSizeSelect,
+  bgBlurInput,
+  bgBlurValue,
   bgPosXInput,
   bgPosXValue,
   bgPosYInput,
@@ -504,6 +506,11 @@ export function applySettings() {
   document.body.className = ""
   document.body.style.background = ""
   document.body.style.backgroundImage = ""
+  const bgLayer = document.getElementById("bg-layer")
+  if (bgLayer) {
+    bgLayer.style.backgroundImage = ""
+    bgLayer.style.backgroundSize = ""
+  }
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
   // 2a. Stop SVG wave first (before background logic re-applies it)
@@ -538,7 +545,10 @@ export function applySettings() {
         bgVideoElement.style.display = "block"
       }
     } else {
-      document.body.style.backgroundImage = `url('${bg}')`
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = `url('${bg}')`
+        bgLayer.style.backgroundSize = settings.bgSize || "cover"
+      }
     }
     document.body.style.backgroundSize = settings.bgSize || "cover"
     document.documentElement.style.setProperty("--text-color", "#ffffff")
@@ -553,8 +563,10 @@ export function applySettings() {
       }
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else if (bg.match(/^https?:\/\//)) {
-      document.body.style.backgroundImage = `url('${bg}')`
-      document.body.style.backgroundSize = settings.bgSize || "cover"
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = `url('${bg}')`
+        bgLayer.style.backgroundSize = settings.bgSize || "cover"
+      }
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else {
       document.body.style.background = bg
@@ -580,6 +592,10 @@ export function applySettings() {
   document.documentElement.style.setProperty(
     "--bg-pos-y",
     `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
+  )
+  document.documentElement.style.setProperty(
+    "--bg-blur",
+    `${settings.bgBlur ?? 0}px`,
   )
 
   // 3. UI Props
@@ -779,6 +795,8 @@ function updateSettingsInputs() {
   clockColorPicker.value = settings.clockColor || "#ffffff"
 
   bgSizeSelect.value = settings.bgSize || "cover"
+  bgBlurInput.value = settings.bgBlur ?? 0
+  bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
   bgPosXInput.value = settings.bgPositionX || 50
   bgPosXValue.textContent = `${bgPosXInput.value}%`
   bgPosYInput.value = settings.bgPositionY || 50
@@ -1655,6 +1673,11 @@ export function initSettings() {
   bgPosYInput.addEventListener("input", () => {
     bgPosYValue.textContent = `${bgPosYInput.value}%`
     handleSettingUpdate("bgPositionY", bgPosYInput.value)
+  })
+
+  bgBlurInput.addEventListener("input", () => {
+    bgBlurValue.textContent = `${bgBlurInput.value}px`
+    handleSettingUpdate("bgBlur", Number(bgBlurInput.value))
   })
 
   // Gradient Listeners

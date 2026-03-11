@@ -375,9 +375,9 @@
 .context-menu {
   display: none;
   position: absolute;
-  background: #ffffff;
+  background: rgba(0, 0, 0, 0.942);
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.798);
   width: 150px;
   z-index: 2000;
   overflow: hidden;
@@ -388,7 +388,7 @@
   padding: 12px 15px;
   cursor: pointer;
   font-size: 0.9rem;
-  color: #333;
+  color: white;
   display: flex;
   align-items: center;
   gap: 10px;

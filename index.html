@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    <div id="bg-layer"></div>
     <canvas id="effect-canvas"></canvas>
 
     <!-- Side Controls (Settings + Quick Access) -->
@@ -173,6 +174,13 @@
                                 data-i18n="settings_save_bg_btn">Save</button>
 
                         </div>
+                    </div>
+
+                    <!-- Background Blur -->
+                    <div class="setting-group">
+                        <label><i class="fa-solid fa-droplet"></i> <span data-i18n="settings_bg_blur">Background
+                                Blur</span>: <span id="bg-blur-value">0px</span></label>
+                        <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
                     </div>
 
                     <!-- Background Position -->

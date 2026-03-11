@@ -30,6 +30,17 @@ i {
   height: auto;
 }
 
+#bg-layer {
+  position: fixed;
+  inset: -60px;
+  z-index: -3;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: var(--bg-pos-x) var(--bg-pos-y);
+  filter: blur(var(--bg-blur, 0px));
+  pointer-events: none;
+}
+
 #bg-video {
   position: fixed;
   inset: 0;
@@ -38,6 +49,7 @@ i {
   object-fit: cover;
   object-position: var(--bg-pos-x) var(--bg-pos-y);
   z-index: -2;
+  filter: blur(var(--bg-blur, 0px));
   display: none;
   pointer-events: none;
   image-rendering: high-quality;

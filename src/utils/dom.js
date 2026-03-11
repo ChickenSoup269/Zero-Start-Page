@@ -18,6 +18,8 @@ export const removeBgBtn = document.getElementById("remove-bg-btn")
 export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
+export const bgBlurInput = document.getElementById("bg-blur-input")
+export const bgBlurValue = document.getElementById("bg-blur-value")
 export const bgSizeSelect = document.getElementById("bg-size-select")
 export const bgPosXInput = document.getElementById("bg-pos-x-input")
 export const bgPosXValue = document.getElementById("bg-pos-x-value")
