@@ -28,4 +28,6 @@
   --bg-pos-x: 50%;
   --bg-pos-y: 50%;
   --bg-blur: 0px;
+  --bg-brightness: 100%;
+  --bg-fade-in: 0.5s;
 }

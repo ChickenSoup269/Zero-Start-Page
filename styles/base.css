@@ -37,7 +37,8 @@ i {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: var(--bg-pos-x) var(--bg-pos-y);
-  filter: blur(var(--bg-blur, 0px));
+  filter: blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));
+  transition: opacity var(--bg-fade-in, 0.5s) ease;
   pointer-events: none;
 }
 
@@ -49,7 +50,8 @@ i {
   object-fit: cover;
   object-position: var(--bg-pos-x) var(--bg-pos-y);
   z-index: -2;
-  filter: blur(var(--bg-blur, 0px));
+  filter: blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));
+  transition: opacity var(--bg-fade-in, 0.5s) ease;
   display: none;
   pointer-events: none;
   image-rendering: high-quality;
@@ -99,4 +101,9 @@ i {
 .bg-image-active {
   animation: none !important;
   background-image: none;
+}
+
+body.bg-layer-active {
+  background: transparent !important;
+  animation: none !important;
 }

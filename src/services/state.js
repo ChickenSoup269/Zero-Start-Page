@@ -53,6 +53,8 @@ const defaultSettings = {
   bgPositionY: 50,
   bgSize: "cover",
   bgBlur: 0,
+  bgBrightness: 100,
+  bgFadeIn: 0.5,
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
   unsplashLastCredit: null,

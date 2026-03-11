@@ -57,6 +57,10 @@ import {
   bgSizeSelect,
   bgBlurInput,
   bgBlurValue,
+  bgBrightnessInput,
+  bgBrightnessValue,
+  bgFadeInInput,
+  bgFadeInValue,
   bgPosXInput,
   bgPosXValue,
   bgPosYInput,
@@ -220,6 +224,8 @@ let starFallEffect,
   lineShinyEffect,
   tetFireworksEffect,
   svgWaveEffect
+
+let _prevBg = null // Track last applied background for fade-in trigger
 
 function setEffectActive(value) {
   effectGrid.querySelectorAll(".effect-item").forEach((el) => {
@@ -498,6 +504,8 @@ async function setUnsplashRandomBackground() {
 
 export function applySettings() {
   const settings = getSettings()
+  const bgChanged = settings.background !== _prevBg
+  _prevBg = settings.background
 
   // 1. Page Title
   document.title = settings.pageTitle || "Start Page"
@@ -510,6 +518,9 @@ export function applySettings() {
   if (bgLayer) {
     bgLayer.style.backgroundImage = ""
     bgLayer.style.backgroundSize = ""
+    bgLayer.style.background = ""
+    bgLayer.className = ""
+    if (bgChanged) bgLayer.style.opacity = "0"
   }
   document.documentElement.style.setProperty("--text-color", "#ffffff")
 
@@ -535,7 +546,8 @@ export function applySettings() {
   if (bgVideoElement) bgVideoElement.style.display = "none"
 
   if (isPredefinedLocalBg) {
-    document.body.classList.add(bg)
+    if (bgLayer) bgLayer.classList.add(bg)
+    document.body.classList.add("bg-layer-active")
     document.documentElement.style.setProperty("--text-color", "#ffffff")
   } else if (isUserUploadedBg) {
     document.body.classList.add("bg-image-active")
@@ -569,7 +581,8 @@ export function applySettings() {
       }
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else {
-      document.body.style.background = bg
+      if (bgLayer) bgLayer.style.background = bg
+      document.body.classList.add("bg-layer-active")
       document.documentElement.style.setProperty(
         "--text-color",
         getContrastYIQ(bg),
@@ -580,7 +593,9 @@ export function applySettings() {
     if (settings.svgWaveActive && svgWaveEffect) {
       svgWaveEffect.start(_getSvgWaveParams(settings))
     } else {
-      document.body.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+      if (bgLayer)
+        bgLayer.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+      document.body.classList.add("bg-layer-active")
     }
   }
 
@@ -597,6 +612,27 @@ export function applySettings() {
     "--bg-blur",
     `${settings.bgBlur ?? 0}px`,
   )
+  document.documentElement.style.setProperty(
+    "--bg-brightness",
+    `${settings.bgBrightness ?? 100}%`,
+  )
+  document.documentElement.style.setProperty(
+    "--bg-fade-in",
+    `${settings.bgFadeIn ?? 0.5}s`,
+  )
+
+  // Trigger fade-in only when background changed
+  if (bgChanged) {
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const _bgLayer = document.getElementById("bg-layer")
+        if (_bgLayer) _bgLayer.style.opacity = "1"
+        const _bgVideo = document.getElementById("bg-video")
+        if (_bgVideo && _bgVideo.style.display === "block")
+          _bgVideo.style.opacity = "1"
+      }),
+    )
+  }
 
   // 3. UI Props
   document.documentElement.style.setProperty("--font-primary", settings.font)
@@ -797,6 +833,10 @@ function updateSettingsInputs() {
   bgSizeSelect.value = settings.bgSize || "cover"
   bgBlurInput.value = settings.bgBlur ?? 0
   bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
+  bgBrightnessInput.value = settings.bgBrightness ?? 100
+  bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
+  bgFadeInInput.value = settings.bgFadeIn ?? 0.5
+  bgFadeInValue.textContent = `${settings.bgFadeIn ?? 0.5}s`
   bgPosXInput.value = settings.bgPositionX || 50
   bgPosXValue.textContent = `${bgPosXInput.value}%`
   bgPosYInput.value = settings.bgPositionY || 50
@@ -1678,6 +1718,16 @@ export function initSettings() {
   bgBlurInput.addEventListener("input", () => {
     bgBlurValue.textContent = `${bgBlurInput.value}px`
     handleSettingUpdate("bgBlur", Number(bgBlurInput.value))
+  })
+
+  bgBrightnessInput.addEventListener("input", () => {
+    bgBrightnessValue.textContent = `${bgBrightnessInput.value}%`
+    handleSettingUpdate("bgBrightness", Number(bgBrightnessInput.value))
+  })
+
+  bgFadeInInput.addEventListener("input", () => {
+    bgFadeInValue.textContent = `${bgFadeInInput.value}s`
+    handleSettingUpdate("bgFadeIn", Number(bgFadeInInput.value))
   })
 
   // Gradient Listeners
