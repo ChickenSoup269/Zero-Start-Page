@@ -57,6 +57,10 @@ const engineOptions = document.querySelectorAll(".engine-option")
 const cameraBtn = document.getElementById("search-camera-btn")
 const imageUploadInput = document.getElementById("image-search-upload")
 
+// Search Submit Button & Divider
+const searchSubmitBtn = document.getElementById("search-submit-btn")
+const searchDivider = document.getElementById("search-divider")
+
 // Preview Elements
 const previewContainer = document.getElementById("image-preview-container")
 const previewThumb = document.getElementById("image-preview-thumb")
@@ -357,7 +361,9 @@ function initSearch() {
 
   searchInput.addEventListener("input", () => {
     activeSuggestionIndex = -1
-    clearBtn.style.display = searchInput.value ? "block" : "none"
+    const hasValue = !!searchInput.value
+    clearBtn.style.display = hasValue ? "block" : "none"
+    searchDivider.style.display = hasValue ? "block" : "none"
     clearTimeout(suggestionTimeout)
     suggestionTimeout = setTimeout(() => {
       fetchSuggestions(searchInput.value)
@@ -399,9 +405,14 @@ function initSearch() {
 
   suggestionsContainer.addEventListener("click", handleSuggestionClick)
 
+  searchSubmitBtn.addEventListener("click", () => {
+    submitSearch()
+  })
+
   clearBtn.addEventListener("click", () => {
     searchInput.value = ""
     clearBtn.style.display = "none"
+    searchDivider.style.display = "none"
     suggestionsContainer.style.display = "none"
     currentSuggestions = []
     activeSuggestionIndex = -1

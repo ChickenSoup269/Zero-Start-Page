@@ -68,6 +68,37 @@
   color: #fff;
 }
 
+.search-divider {
+  display: none;
+  width: 1px;
+  height: 16px;
+  background: var(--text-color);
+  opacity: 0.3;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.search-submit-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  opacity: 0.65;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 5px 6px;
+  display: flex;
+  align-items: center;
+  transition:
+    opacity 0.2s,
+    color 0.2s;
+  flex-shrink: 0;
+}
+
+.search-submit-btn:hover {
+  opacity: 1;
+  color: #fff;
+}
+
 #suggestions-container {
   position: absolute;
   top: 100%;
