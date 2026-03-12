@@ -36,6 +36,9 @@ import {
   importSettingsBtn,
   importSettingsInput,
   dateFormatSelect,
+  tabIconInput,
+  tabIconPreview,
+  hideSecondsCheckbox,
   pageTitleInput,
   clockSizeInput,
   clockSizeValue,
@@ -98,6 +101,14 @@ import {
   lineShinyColorSetting,
   pixelRunColorPicker,
   pixelRunColorSetting,
+  wavyPatternColor1Picker,
+  wavyPatternColor1Setting,
+  wavyPatternColor2Picker,
+  wavyPatternColor2Setting,
+  angledPatternColor1Picker,
+  angledPatternColor1Setting,
+  angledPatternColor2Picker,
+  angledPatternColor2Setting,
   bgVideo, // Added bgVideo
   showTodoCheckbox,
   showNotepadCheckbox,
@@ -137,7 +148,6 @@ import {
   svgWaveOffsetXValue,
   svgWaveAngle,
   svgWaveAngleValue,
-  svgWaveAngleCenterBtn,
   svgWaveAnglePresetBtns,
   svgWaveSmoothness,
   svgWaveSmoothnessValue,
@@ -161,6 +171,7 @@ import {
   svgWaveRandomizeBtn,
   svgWaveCloseBtn,
   svgWaveSaveBtn,
+  svgWaveCrazyBtn,
   userSvgWavesGallery,
 } from "../utils/dom.js"
 import {
@@ -202,6 +213,8 @@ import { LineShinyEffect } from "./animations/lineShiny.js"
 import { TetFireworksEffect } from "./animations/tetFireworks.js"
 import { SkyLanternsEffect } from "./animations/skyLanterns.js"
 import { PixelRunEffect } from "./animations/pixelRun.js"
+import { WavyPatternEffect } from "./animations/wavyPattern.js"
+import { AngledPatternEffect } from "./animations/angledPattern.js"
 
 // Khai báo biến global cho các hiệu ứng
 let starFallEffect,
@@ -231,9 +244,70 @@ let starFallEffect,
   tetFireworksEffect,
   skyLanternsEffect,
   pixelRunEffect,
+  wavyPatternEffect,
+  angledPatternEffect,
   svgWaveEffect
 
 let _prevBg = null // Track last applied background for fade-in trigger
+
+// --- Tab Icon Helpers ---
+function getTabIconChars(raw) {
+  if (!raw) return ""
+  const segs = Intl.Segmenter
+    ? [...new Intl.Segmenter().segment(raw)].map((s) => s.segment)
+    : [...raw]
+  return segs.slice(0, 2).join("")
+}
+
+function applyTabIcon(text) {
+  const link = document.getElementById("tab-favicon")
+  if (!link) return
+  if (!text) {
+    link.removeAttribute("href")
+    return
+  }
+  const size = 64
+  const canvas = document.createElement("canvas")
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext("2d")
+  ctx.fillStyle = "rgba(30,30,50,0.85)"
+  ctx.beginPath()
+  if (ctx.roundRect) {
+    ctx.roundRect(0, 0, size, size, 14)
+  } else {
+    ctx.rect(0, 0, size, size)
+  }
+  ctx.fill()
+  const segs = Intl.Segmenter
+    ? [...new Intl.Segmenter().segment(text)].map((s) => s.segment)
+    : [...text]
+  const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
+  ctx.fillStyle = "#ffffff"
+  ctx.font = isSingleEmoji
+    ? `${size * 0.65}px sans-serif`
+    : `bold ${segs.length === 1 ? size * 0.55 : size * 0.42}px sans-serif`
+  ctx.fillText(segs.slice(0, 2).join(""), size / 2, size / 2 + 1)
+  link.href = canvas.toDataURL("image/png")
+}
+
+function _renderTabIconPreview(text) {
+  if (!tabIconPreview) return
+  if (!text) {
+    tabIconPreview.textContent = ""
+    tabIconPreview.style.fontSize = ""
+    return
+  }
+  const segs = Intl.Segmenter
+    ? [...new Intl.Segmenter().segment(text)].map((s) => s.segment)
+    : [...text]
+  const display = segs.slice(0, 2).join("")
+  tabIconPreview.textContent = display
+  const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
+  tabIconPreview.style.fontSize = isSingleEmoji ? "18px" : segs.length === 1 ? "17px" : "12px"
+}
 
 function setEffectActive(value) {
   effectGrid.querySelectorAll(".effect-item").forEach((el) => {
@@ -517,6 +591,7 @@ export function applySettings() {
 
   // 1. Page Title
   document.title = settings.pageTitle || "Start Page"
+  applyTabIcon(settings.tabIcon || "")
 
   // 2. Reset Styles
   document.body.className = ""
@@ -597,7 +672,7 @@ export function applySettings() {
       )
     }
   } else {
-    // If no background image/color, apply SVG wave or fallback gradient
+    // If no background image/color, apply SVG wave → fallback
     if (settings.svgWaveActive && svgWaveEffect) {
       svgWaveEffect.start(_getSvgWaveParams(settings))
     } else {
@@ -711,6 +786,8 @@ export function applySettings() {
   if (tetFireworksEffect) tetFireworksEffect.stop()
   if (skyLanternsEffect) skyLanternsEffect.stop()
   if (pixelRunEffect) pixelRunEffect.stop()
+  if (wavyPatternEffect) wavyPatternEffect.stop()
+  if (angledPatternEffect) angledPatternEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
 
   // Clear canvas completely before starting new effect
@@ -806,6 +883,12 @@ export function applySettings() {
       case "pixelRun":
         pixelRunEffect.start()
         break
+      case "wavyPattern":
+        wavyPatternEffect.start()
+        break
+      case "angledPattern":
+        angledPatternEffect.start()
+        break
     }
   }, 50)
 
@@ -843,7 +926,10 @@ function updateSettingsInputs() {
   // General Inputs
   renderFontGrid()
   dateFormatSelect.value = settings.dateFormat
+  hideSecondsCheckbox.checked = settings.hideSeconds === true
   pageTitleInput.value = settings.pageTitle || "Start Page"
+  tabIconInput.value = settings.tabIcon || ""
+  _renderTabIconPreview(settings.tabIcon || "")
   clockSizeInput.value = settings.clockSize
   clockSizeValue.textContent = `${settings.clockSize}rem`
   languageSelect.value = settings.language || "en"
@@ -951,6 +1037,18 @@ function updateSettingsInputs() {
   pixelRunColorSetting.style.display =
     settings.effect === "pixelRun" ? "block" : "none"
   pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
+  wavyPatternColor1Setting.style.display =
+    settings.effect === "wavyPattern" ? "block" : "none"
+  wavyPatternColor2Setting.style.display =
+    settings.effect === "wavyPattern" ? "block" : "none"
+  wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B"
+  wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40"
+  angledPatternColor1Setting.style.display =
+    settings.effect === "angledPattern" ? "block" : "none"
+  angledPatternColor2Setting.style.display =
+    settings.effect === "angledPattern" ? "block" : "none"
+  angledPatternColor1Picker.value = settings.angledPatternColor1 || "#ECD078"
+  angledPatternColor2Picker.value = settings.angledPatternColor2 || "#0B486B"
 
   // SVG Wave Generator — sync all sliders/checkboxes to current state
   const waveActive = settings.svgWaveActive === true
@@ -961,8 +1059,8 @@ function updateSettingsInputs() {
       ? i18n.settings_svg_wave_close || "Close Controls"
       : i18n.settings_svg_wave_open || "Open Wave Generator"
   }
-  svgWaveLines.value = settings.svgWaveLines ?? 5
-  svgWaveLinesValue.textContent = svgWaveLines.value
+
+  // SVG Wave Generator — sync all sliders/checkboxes to current state
   svgWaveAmpX.value = settings.svgWaveAmplitudeX ?? 200
   svgWaveAmpXValue.textContent = svgWaveAmpX.value
   svgWaveAmpY.value = settings.svgWaveAmplitudeY ?? 80
@@ -1304,6 +1402,14 @@ export function initSettings() {
   pixelRunEffect = new PixelRunEffect(
     "effect-canvas",
     settings.pixelRunColor || "#00e5ff",
+  )
+  wavyPatternEffect = new WavyPatternEffect(
+    settings.wavyPatternColor1 || "#AB3E5B",
+    settings.wavyPatternColor2 || "#FFBE40",
+  )
+  angledPatternEffect = new AngledPatternEffect(
+    settings.angledPatternColor1 || "#ECD078",
+    settings.angledPatternColor2 || "#0B486B",
   )
   svgWaveEffect = new SvgWaveGenerator()
 
@@ -1916,6 +2022,34 @@ export function initSettings() {
     if (pixelRunEffect) pixelRunEffect.color = pixelRunColorPicker.value
   })
 
+  wavyPatternColor1Picker.addEventListener("input", () => {
+    updateSetting("wavyPatternColor1", wavyPatternColor1Picker.value)
+    saveSettings()
+    if (wavyPatternEffect)
+      wavyPatternEffect.setColors(wavyPatternColor1Picker.value, null)
+  })
+
+  wavyPatternColor2Picker.addEventListener("input", () => {
+    updateSetting("wavyPatternColor2", wavyPatternColor2Picker.value)
+    saveSettings()
+    if (wavyPatternEffect)
+      wavyPatternEffect.setColors(null, wavyPatternColor2Picker.value)
+  })
+
+  angledPatternColor1Picker.addEventListener("input", () => {
+    updateSetting("angledPatternColor1", angledPatternColor1Picker.value)
+    saveSettings()
+    if (angledPatternEffect)
+      angledPatternEffect.setColors(angledPatternColor1Picker.value, null)
+  })
+
+  angledPatternColor2Picker.addEventListener("input", () => {
+    updateSetting("angledPatternColor2", angledPatternColor2Picker.value)
+    saveSettings()
+    if (angledPatternEffect)
+      angledPatternEffect.setColors(null, angledPatternColor2Picker.value)
+  })
+
   // --- SVG Wave Generator Listeners ---
   function _applyWaveFromInputs(fade = false) {
     // Auto-activate wave if controls are open
@@ -1949,16 +2083,39 @@ export function initSettings() {
     const nowActive = !settings.svgWaveActive
     updateSetting("svgWaveActive", nowActive)
     // When turning wave on, clear any explicit background so the else branch fires
-    if (nowActive) updateSetting("background", null)
+    if (nowActive) {
+      updateSetting("background", null)
+    }
     saveSettings()
     applySettings()
     updateSettingsInputs()
   })
 
-  svgWaveAngleCenterBtn.addEventListener("click", () => {
-    svgWaveAngle.value = 0
-    svgWaveAngleValue.textContent = 0
-    _applyWaveFromInputs()
+  svgWaveCrazyBtn.addEventListener("click", () => {
+    const crazyParams = svgWaveEffect.randomize()
+    // Force an ultra-chaotic configuration
+    crazyParams.craziness = 150 + Math.floor(Math.random() * 100)
+    crazyParams.amplitudeY = 40 + Math.floor(Math.random() * 160)
+    crazyParams.lines = 6 + Math.floor(Math.random() * 10)
+    updateSetting("svgWaveLines", crazyParams.lines)
+    updateSetting("svgWaveAmplitudeX", crazyParams.amplitudeX)
+    updateSetting("svgWaveAmplitudeY", crazyParams.amplitudeY)
+    updateSetting("svgWaveOffsetX", crazyParams.offsetX)
+    updateSetting("svgWaveSmoothness", crazyParams.smoothness)
+    updateSetting("svgWaveFill", crazyParams.fill)
+    updateSetting("svgWaveCraziness", crazyParams.craziness)
+    updateSetting("svgWaveAngle", crazyParams.angle)
+    updateSetting("svgWaveStartHue", crazyParams.startHue)
+    updateSetting("svgWaveStartSaturation", crazyParams.startSaturation)
+    updateSetting("svgWaveStartLightness", crazyParams.startLightness)
+    updateSetting("svgWaveEndHue", crazyParams.endHue)
+    updateSetting("svgWaveEndSaturation", crazyParams.endSaturation)
+    updateSetting("svgWaveEndLightness", crazyParams.endLightness)
+    updateSetting("svgWaveActive", true)
+    updateSetting("background", null)
+    saveSettings()
+    updateSettingsInputs()
+    svgWaveEffect.start(_getSvgWaveParams(getSettings()))
   })
 
   svgWaveAnglePresetBtns.forEach((btn) => {
@@ -2133,11 +2290,29 @@ export function initSettings() {
     handleSettingUpdate("dateFormat", dateFormatSelect.value),
   )
 
+  hideSecondsCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("hideSeconds", hideSecondsCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "hideSeconds", value: hideSecondsCheckbox.checked },
+      }),
+    )
+  })
+
   pageTitleInput.addEventListener("input", () => {
     const newTitle = pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)
     saveSettings()
     document.title = newTitle
+  })
+
+  tabIconInput.addEventListener("input", () => {
+    const raw = tabIconInput.value
+    const chars = getTabIconChars(raw)
+    updateSetting("tabIcon", chars)
+    saveSettings()
+    applyTabIcon(chars)
+    _renderTabIconPreview(chars)
   })
 
   clockSizeInput.addEventListener("input", () => {

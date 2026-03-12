@@ -150,6 +150,30 @@ export const pixelRunColorPicker = document.getElementById(
 export const pixelRunColorSetting = document.getElementById(
   "pixel-run-color-setting",
 )
+export const wavyPatternColor1Picker = document.getElementById(
+  "wavy-pattern-color1-picker",
+)
+export const wavyPatternColor1Setting = document.getElementById(
+  "wavy-pattern-color1-setting",
+)
+export const wavyPatternColor2Picker = document.getElementById(
+  "wavy-pattern-color2-picker",
+)
+export const wavyPatternColor2Setting = document.getElementById(
+  "wavy-pattern-color2-setting",
+)
+export const angledPatternColor1Picker = document.getElementById(
+  "angled-pattern-color1-picker",
+)
+export const angledPatternColor1Setting = document.getElementById(
+  "angled-pattern-color1-setting",
+)
+export const angledPatternColor2Picker = document.getElementById(
+  "angled-pattern-color2-picker",
+)
+export const angledPatternColor2Setting = document.getElementById(
+  "angled-pattern-color2-setting",
+)
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const exportSettingsBtn = document.getElementById("export-settings-btn")
@@ -158,7 +182,12 @@ export const importSettingsInput = document.getElementById(
   "import-settings-input",
 )
 export const dateFormatSelect = document.getElementById("date-format-select")
+export const hideSecondsCheckbox = document.getElementById(
+  "hide-seconds-checkbox",
+)
 export const pageTitleInput = document.getElementById("page-title-input")
+export const tabIconInput = document.getElementById("tab-icon-input")
+export const tabIconPreview = document.getElementById("tab-icon-preview")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const clockColorPicker = document.getElementById("clock-color-picker")
@@ -277,9 +306,6 @@ export const svgWaveOffsetXValue = document.getElementById(
 )
 export const svgWaveAngle = document.getElementById("svg-wave-angle")
 export const svgWaveAngleValue = document.getElementById("svg-wave-angle-value")
-export const svgWaveAngleCenterBtn = document.getElementById(
-  "svg-wave-angle-center",
-)
 export const svgWaveAnglePresetBtns = document.querySelectorAll(
   ".wave-angle-preset-btn",
 )
@@ -325,6 +351,7 @@ export const svgWaveRandomizeBtn = document.getElementById(
 )
 export const svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
 export const svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
+export const svgWaveCrazyBtn = document.getElementById("svg-wave-crazy-btn")
 export const userSvgWavesGallery = document.getElementById(
   "user-svg-waves-gallery",
 )

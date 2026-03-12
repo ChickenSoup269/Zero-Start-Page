@@ -4,11 +4,14 @@ import { getSettings } from "../services/state.js"
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
+  const timeOptions = settings.hideSeconds
+    ? { hour12: false, hour: "2-digit", minute: "2-digit" }
+    : { hour12: false }
   const timeString = now.toLocaleTimeString(
     settings.language === "vi" ? "vi-VN" : "en-US",
-    { hour12: false }
+    timeOptions,
   )
-  
+
   // Handle clock visibility
   clockElement.style.display = settings.showClock !== false ? "block" : "none"
   clockElement.textContent = timeString
@@ -33,7 +36,8 @@ export function updateTime() {
   }
 
   // Handle date visibility - check both showDate AND showGregorian
-  const shouldShowDate = (settings.showDate !== false) && (settings.showGregorian !== false)
+  const shouldShowDate =
+    settings.showDate !== false && settings.showGregorian !== false
   dateElement.style.display = shouldShowDate ? "block" : "none"
   dateElement.textContent = dateString
 }
@@ -43,7 +47,12 @@ export function initClock() {
   setInterval(updateTime, 1000)
 
   window.addEventListener("layoutUpdated", (e) => {
-    if (e.detail.key === "showGregorian" || e.detail.key === "showClock" || e.detail.key === "showDate") {
+    if (
+      e.detail.key === "showGregorian" ||
+      e.detail.key === "showClock" ||
+      e.detail.key === "showDate" ||
+      e.detail.key === "hideSeconds"
+    ) {
       updateTime()
     }
   })

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
+    <link id="tab-favicon" rel="icon" type="image/png">
     <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -345,32 +346,32 @@
 
                     <!-- Lines -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_lines">Lines: <span
+                        <label><span data-i18n="settings_svg_wave_lines">Lines</span>: <span
                                 id="svg-wave-lines-value">5</span></label>
                         <input type="range" id="svg-wave-lines" min="1" max="15" value="5">
                     </div>
                     <!-- Amplitude X -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_amp_x">Amplitude X: <span
+                        <label><span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>: <span
                                 id="svg-wave-amp-x-value">200</span></label>
                         <input type="range" id="svg-wave-amp-x" min="30" max="600" value="200">
                     </div>
                     <!-- Amplitude Y -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_amp_y">Amplitude Y: <span
+                        <label><span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>: <span
                                 id="svg-wave-amp-y-value">80</span></label>
                         <input type="range" id="svg-wave-amp-y" min="5" max="300" value="80">
                     </div>
                     <!-- Offset X -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_offset_x">Offset X: <span
+                        <label><span data-i18n="settings_svg_wave_offset_x">Offset X</span>: <span
                                 id="svg-wave-offset-x-value">0</span></label>
                         <input type="range" id="svg-wave-offset-x" min="0" max="500" value="0">
                     </div>
                     <!-- Angle -->
                     <div class="setting-item">
                         <div class="wave-angle-header">
-                            <label data-i18n="settings_svg_wave_angle">Angle: <span
+                            <label><span data-i18n="settings_svg_wave_angle">Angle</span>: <span
                                     id="svg-wave-angle-value">0</span>°</label>
                             <div class="wave-angle-presets">
                                 <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
@@ -381,21 +382,19 @@
                                         class="fa-solid fa-arrow-up"></i></button>
                                 <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
                                         class="fa-solid fa-arrow-down"></i></button>
-                                <button id="svg-wave-angle-center" class="wave-center-btn"
-                                    title="Reset to center (0°)"><i class="fa-solid fa-crosshairs"></i></button>
                             </div>
                         </div>
                         <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
                     <!-- Smoothness -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_smoothness">Smoothness: <span
+                        <label><span data-i18n="settings_svg_wave_smoothness">Smoothness</span>: <span
                                 id="svg-wave-smoothness-value">0.5</span></label>
                         <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5">
                     </div>
                     <!-- Craziness -->
                     <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_craziness">Craziness: <span
+                        <label><span data-i18n="settings_svg_wave_craziness">Craziness</span>: <span
                                 id="svg-wave-craziness-value">30</span></label>
                         <input type="range" id="svg-wave-craziness" min="0" max="200" value="30">
                     </div>
@@ -411,13 +410,13 @@
                         <div id="svg-wave-start-preview"
                             style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(200,70%,40%);transition:background 0.2s;">
                         </div>
-                        <label data-i18n="settings_svg_wave_hue">Hue: <span
+                        <label><span data-i18n="settings_svg_wave_hue">Hue</span>: <span
                                 id="svg-wave-start-hue-value">200</span></label>
                         <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200">
-                        <label data-i18n="settings_svg_wave_sat">Saturation: <span
+                        <label><span data-i18n="settings_svg_wave_sat">Saturation</span>: <span
                                 id="svg-wave-start-sat-value">70</span>%</label>
                         <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70">
-                        <label data-i18n="settings_svg_wave_light">Lightness: <span
+                        <label><span data-i18n="settings_svg_wave_light">Lightness</span>: <span
                                 id="svg-wave-start-light-value">40</span>%</label>
                         <input type="range" id="svg-wave-start-light" min="0" max="100" value="40">
                     </div>
@@ -428,13 +427,13 @@
                         <div id="svg-wave-end-preview"
                             style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(280,70%,30%);transition:background 0.2s;">
                         </div>
-                        <label data-i18n="settings_svg_wave_hue">Hue: <span
+                        <label><span data-i18n="settings_svg_wave_hue">Hue</span>: <span
                                 id="svg-wave-end-hue-value">280</span></label>
                         <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280">
-                        <label data-i18n="settings_svg_wave_sat">Saturation: <span
+                        <label><span data-i18n="settings_svg_wave_sat">Saturation</span>: <span
                                 id="svg-wave-end-sat-value">70</span>%</label>
                         <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70">
-                        <label data-i18n="settings_svg_wave_light">Lightness: <span
+                        <label><span data-i18n="settings_svg_wave_light">Lightness</span>: <span
                                 id="svg-wave-end-light-value">30</span>%</label>
                         <input type="range" id="svg-wave-end-light" min="0" max="100" value="30">
                     </div>
@@ -443,6 +442,11 @@
                     <button id="svg-wave-randomize-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
                         <i class="fa-solid fa-dice"></i>
                         <span data-i18n="settings_svg_wave_randomize">Randomize</span>
+                    </button>
+                    <!-- Crazy Mode -->
+                    <button id="svg-wave-crazy-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span data-i18n="settings_svg_wave_crazy">Crazy Mode!</span>
                     </button>
                     <!-- Save Wave -->
                     <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
@@ -590,6 +594,16 @@
                             <span class="effect-icon"><i class="fa-solid fa-grip"></i></span>
                             <span class="effect-name" data-i18n="effect_pixel_run">Pixel Run</span>
                         </button>
+                        <button class="effect-item" data-value="wavyPattern"
+                            data-search="wavy pattern scallop fish scale ripple animated css">
+                            <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
+                            <span class="effect-name" data-i18n="effect_wavy_pattern">Wavy Pattern</span>
+                        </button>
+                        <button class="effect-item" data-value="angledPattern"
+                            data-search="angled pattern diamond tile stripe animated css">
+                            <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                            <span class="effect-name" data-i18n="effect_angled_pattern">Angled Pattern</span>
+                        </button>
                     </div>
 
                     <!-- Aura Color -->
@@ -636,6 +650,28 @@
                     <div id="pixel-run-color-setting" class="setting-item" style="display: none;">
                         <label for="pixel-run-color-picker" data-i18n="setting_pixel_run_color">Pixel Color</label>
                         <input type="color" id="pixel-run-color-picker" value="#00e5ff" />
+                    </div>
+                    <!-- Wavy Pattern Colors -->
+                    <div id="wavy-pattern-color1-setting" class="setting-item" style="display: none;">
+                        <label for="wavy-pattern-color1-picker" data-i18n="setting_wavy_pattern_color1">Pattern Color
+                            1</label>
+                        <input type="color" id="wavy-pattern-color1-picker" value="#AB3E5B" />
+                    </div>
+                    <div id="wavy-pattern-color2-setting" class="setting-item" style="display: none;">
+                        <label for="wavy-pattern-color2-picker" data-i18n="setting_wavy_pattern_color2">Pattern Color
+                            2</label>
+                        <input type="color" id="wavy-pattern-color2-picker" value="#FFBE40" />
+                    </div>
+                    <!-- Angled Pattern Colors -->
+                    <div id="angled-pattern-color1-setting" class="setting-item" style="display: none;">
+                        <label for="angled-pattern-color1-picker" data-i18n="setting_angled_pattern_color1">Pattern
+                            Color</label>
+                        <input type="color" id="angled-pattern-color1-picker" value="#ECD078" />
+                    </div>
+                    <div id="angled-pattern-color2-setting" class="setting-item" style="display: none;">
+                        <label for="angled-pattern-color2-picker" data-i18n="setting_angled_pattern_color2">Background
+                            Color</label>
+                        <input type="color" id="angled-pattern-color2-picker" value="#0B486B" />
                     </div>
                     <!-- Bubbles Color -->
                     <div id="bubbles-color-setting" class="setting-item" style="display: none;">
@@ -741,13 +777,31 @@
             </div>
 
             <div class="setting-group">
-                <label data-i18n="settings_date_format"><i class="fa-solid fa-calendar-day"></i> Date Format</label>
+                <label data-i18n="settings_tab_icon"><i class="fa-solid fa-icons"></i> Tab Icon</label>
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
+                        placeholder="SP or 🌟"
+                        maxlength="4"
+                        style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                    <div id="tab-icon-preview" style="width:32px;height:32px;flex-shrink:0;border-radius:6px;background:rgba(255,255,255,0.08);border:1px solid var(--input-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden;"></div>
+                </div>
+                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
+                    data-i18n="settings_tab_icon_hint">2 letters or 1 emoji (leave blank for default)</small>
+            </div>
+
+            <div class="setting-group">
+                <label data-i18n="settings_date_format"><i class="fa-solid fa-calendar-day"></i> Date &amp; Clock
+                    Format</label>
                 <select id="date-format-select">
                     <option value="full">Weekday, DD Month YYYY</option>
                     <option value="short">DD/MM/YYYY</option>
                     <option value="us">MM/DD/YYYY</option>
                     <option value="iso">YYYY-MM-DD</option>
                 </select>
+                <div class="setting-item-row" style="margin-top: 0.6rem;">
+                    <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
+                    <input type="checkbox" id="hide-seconds-checkbox">
+                </div>
             </div>
 
             <div class="setting-group">
