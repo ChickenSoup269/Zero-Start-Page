@@ -306,7 +306,11 @@ function _renderTabIconPreview(text) {
   const display = segs.slice(0, 2).join("")
   tabIconPreview.textContent = display
   const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
-  tabIconPreview.style.fontSize = isSingleEmoji ? "18px" : segs.length === 1 ? "17px" : "12px"
+  tabIconPreview.style.fontSize = isSingleEmoji
+    ? "18px"
+    : segs.length === 1
+      ? "17px"
+      : "12px"
 }
 
 function setEffectActive(value) {

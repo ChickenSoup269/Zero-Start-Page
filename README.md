@@ -26,6 +26,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 - Real-time clock with second-level updates
 - Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
+- **Option to hide seconds display**
 - Adjustable clock size and custom color picker
 - Separate visibility toggles for clock, date, and Gregorian calendar
 - Vietnamese lunar calendar display (optional)
@@ -100,22 +101,23 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
 
-### Visual Effects (24 Animations)
+### Visual Effects (30 Animations)
 
-Select from 24 canvas-based animated effects with individual color pickers:
+Select from 30 canvas-based animated effects with individual color pickers:
 
 | Effect                 | Effect                 | Effect              |
 | ---------------------- | ---------------------- | ------------------- |
-| 1. Rain                | 10. Aurora Wave        | 20. Shiny           |
-| 2. Fireflies           | 11. Bubbles            | 21. Line Shiny      |
-| 3.Network              | 12. Rain on Glass      | 22. Green Leaves    |
-| 4. Matrix Rain         | 13. Rainbow Background | 23. Sunbeam         |
-| 5. Gradients Aura      | 14. Wavy Lines         | 24. Fireworks (Tết) |
-| 6. Anime Wind          | 15. Fireflies HD       |                     |
-| 7. Hacker              | 16. Ocean Wave         |                     |
-| 8.Sakura               | 17. Cloud Drift        |                     |
-| 9. Snowfall            | 18. Autumn Leaves      |                     |
-| **SVG Wave Generator** | 19. Rain HD            |                     |
+| 1. Rain                | 11. Bubbles            | 21. Line Shiny      |
+| 2. Fireflies           | 12. Rain on Glass      | 22. Green Leaves    |
+| 3. Network             | 13. Rainbow Background | 23. Sunbeam         |
+| 4. Matrix Rain         | 14. Wavy Lines         | 24. Fireworks (Tết) |
+| 5. Gradients Aura      | 15. Fireflies HD       | 25. Snowfall HD     |
+| 6. Anime Wind          | 16. Ocean Wave         | 26. Wavy Pattern    |
+| 7. Hacker              | 17. Cloud Drift        | 27. Angled Pattern  |
+| 8. Sakura              | 18. Autumn Leaves      | 28. Pixel Run       |
+| 9. Snowfall            | 19. Rain HD            | 29. Rain Galaxy     |
+| 10. Aurora Wave        | 20. Shiny              | 30. Sky Lanterns    |
+| **SVG Wave Generator** |                        |                     |
 
 ### SVG Wave Generator
 
@@ -128,6 +130,7 @@ Select from 24 canvas-based animated effects with individual color pickers:
 - **Font selector** with support for loading custom fonts
 - **Accent color** applied across the entire UI
 - **Page title** customization
+- **Tab icon** customization — set 2 letters or 1 emoji as the browser tab favicon
 - **Language**: English and Vietnamese (i18n)
 - Per-component **visibility toggles**: Clock, Search, Bookmarks, Bookmark Groups, Todo, Timer, Notepad, Calendar, Lunar Calendar, Music Player, Quick Access
 - **Ghost mode** for side controls
