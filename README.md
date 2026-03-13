@@ -22,24 +22,47 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 ## Features
 
-### Clock & Date
+<table align="center">
+<tr>
+<th> Clock & Date</th>
+<th> Smart Search</th>
+</tr>
+
+<tr>
+
+<td>
 
 - Real-time clock with second-level updates
 - Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
-- **Option to hide seconds display**
+- Option to hide seconds display
 - Adjustable clock size and custom color picker
 - Separate visibility toggles for clock, date, and Gregorian calendar
 - Vietnamese lunar calendar display (optional)
 
-### Smart Search
+</td>
+
+<td>
 
 - Google text search with real-time suggestions (up to 6, with favicons)
-- **Google Images** and **Google Lens** search support
+- Google Images and Google Lens search support
 - Image search via file upload, clipboard paste, or image URL
 - Switchable search engine selector with persistent preference
 - 250 ms debounced suggestion fetching
 
-### Bookmark Manager
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th> Bookmark Manager</th>
+<th> Full Calendar</th>
+</tr>
+
+<tr>
+
+<td>
 
 - Add, edit, delete, and reorder bookmarks
 - **Bookmark Groups** — create multiple tabs, rename, reorder, and delete groups
@@ -47,7 +70,9 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Import bookmarks directly from Chrome's browser bookmarks
 - Right-click context menu for quick actions
 
-### Full Calendar
+</td>
+
+<td>
 
 - Full month-view calendar with navigation
 - **Add, edit, and delete events** with title, time, and description
@@ -55,13 +80,28 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Vietnamese lunar calendar dates and **Vietnamese public holiday** detection
 - Right-click context menu on days and events
 
-### Todo List
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th> Todo List</th>
+<th> Notepad</th>
+</tr>
+
+<tr>
+
+<td>
 
 - Add, complete, and delete tasks
 - Inline editing via right-click context menu
 - Auto-saved to localStorage
 
-### Notepad
+</td>
+
+<td>
 
 - Create multiple notes with custom colors (8 presets)
 - **Rich text editor**: bold, italic, underline, strikethrough, bullet & numbered lists, image insertion
@@ -69,27 +109,57 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Light/dark content background toggle
 - Full persistence of content, color, and window state
 
-### Timer
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th> Clock Timer</th>
+<th> Music Player</th>
+</tr>
+
+<tr>
+
+<td>
 
 - Countdown timer with Start / Pause / Reset controls
 - **Smart input parser**: type `30` → 30 s · `130` → 1:30 · `13000` → 1:30:00
 - Audio alarm on completion with stop button
 - Persists running state across page reloads (auto-resumes)
 
-### Music Player
+</td>
+
+<td>
 
 - Detects media playing in **any Chrome tab** via the Media Session API
 - Displays track title, artist, album art, and platform (YouTube / Spotify / SoundCloud)
 - Play / Pause / Previous / Next controls
 - Draggable, collapsible mini-player with vinyl disc animation
 
-### Music Visualizer
+</td>
+
+</tr>
+</table>
+
+<table align="center">
+<tr>
+<th> Music Visualizer</th>
+<th> Dynamic Backgrounds</th>
+</tr>
+
+<tr>
+
+<td>
 
 - Multiple visualizer styles: **Vinyl**, **Pixel (EQ bars)**, **Bars**
 - Canvas-based pixel mode with peak-hold animation
 - Syncs automatically with the music player state
 
-### Dynamic Backgrounds
+</td>
+
+<td>
 
 - Local preset themes / gradients
 - Custom solid color picker
@@ -100,6 +170,11 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Gradient builder with start color, end color, and angle controls
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
+
+</td>
+
+</tr>
+</table>
 
 ### Visual Effects (30 Animations)
 
