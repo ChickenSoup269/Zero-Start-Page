@@ -156,6 +156,12 @@ export const nintendoPixelColorPicker = document.getElementById(
 export const nintendoPixelColorSetting = document.getElementById(
   "nintendo-pixel-color-setting",
 )
+export const retroGameColorPicker = document.getElementById(
+  "retro-game-color-picker",
+)
+export const retroGameColorSetting = document.getElementById(
+  "retro-game-color-setting",
+)
 export const wavyPatternColor1Picker = document.getElementById(
   "wavy-pattern-color1-picker",
 )

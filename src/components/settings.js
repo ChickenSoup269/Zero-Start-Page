@@ -103,6 +103,8 @@ import {
   pixelRunColorSetting,
   nintendoPixelColorPicker,
   nintendoPixelColorSetting,
+  retroGameColorPicker,
+  retroGameColorSetting,
   wavyPatternColor1Picker,
   wavyPatternColor1Setting,
   wavyPatternColor2Picker,
@@ -216,6 +218,8 @@ import { TetFireworksEffect } from "./animations/tetFireworks.js"
 import { SkyLanternsEffect } from "./animations/skyLanterns.js"
 import { PixelRunEffect } from "./animations/pixelRun.js"
 import { NintendoPixelEffect } from "./animations/nintendoPixel.js"
+import { RetroGameEffect } from "./animations/retroGame.js"
+import { MeteorEffect } from "./animations/meteor.js"
 import { WavyPatternEffect } from "./animations/wavyPattern.js"
 import { AngledPatternEffect } from "./animations/angledPattern.js"
 
@@ -248,6 +252,8 @@ let starFallEffect,
   skyLanternsEffect,
   pixelRunEffect,
   nintendoPixelEffect,
+  retroGameEffect,
+  meteorEffect,
   wavyPatternEffect,
   angledPatternEffect,
   svgWaveEffect
@@ -795,6 +801,8 @@ export function applySettings() {
   if (skyLanternsEffect) skyLanternsEffect.stop()
   if (pixelRunEffect) pixelRunEffect.stop()
   if (nintendoPixelEffect) nintendoPixelEffect.stop()
+  if (retroGameEffect) retroGameEffect.stop()
+  if (meteorEffect) meteorEffect.stop()
   if (wavyPatternEffect) wavyPatternEffect.stop()
   if (angledPatternEffect) angledPatternEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
@@ -894,6 +902,12 @@ export function applySettings() {
         break
       case "nintendoPixel":
         nintendoPixelEffect.start()
+        break
+      case "retroGame":
+        retroGameEffect.start()
+        break
+      case "meteor":
+        meteorEffect.start()
         break
       case "wavyPattern":
         wavyPatternEffect.start()
@@ -1052,6 +1066,9 @@ function updateSettingsInputs() {
   nintendoPixelColorSetting.style.display =
     settings.effect === "nintendoPixel" ? "block" : "none"
   nintendoPixelColorPicker.value = settings.nintendoPixelColor || "#63f5ff"
+  retroGameColorSetting.style.display =
+    settings.effect === "retroGame" ? "block" : "none"
+  retroGameColorPicker.value = settings.retroGameColor || "#00ff00"
   wavyPatternColor1Setting.style.display =
     settings.effect === "wavyPattern" ? "block" : "none"
   wavyPatternColor2Setting.style.display =
@@ -1421,6 +1438,14 @@ export function initSettings() {
   nintendoPixelEffect = new NintendoPixelEffect(
     "effect-canvas",
     settings.nintendoPixelColor || "#63f5ff",
+  )
+  retroGameEffect = new RetroGameEffect(
+    "effect-canvas",
+    settings.retroGameColor || "#00ff00",
+  )
+  meteorEffect = new MeteorEffect(
+    "effect-canvas",
+    settings.starColor || "#ffffff",
   )
   wavyPatternEffect = new WavyPatternEffect(
     settings.wavyPatternColor1 || "#AB3E5B",
@@ -2046,6 +2071,13 @@ export function initSettings() {
     saveSettings()
     if (nintendoPixelEffect)
       nintendoPixelEffect.updateAccentColor(nintendoPixelColorPicker.value)
+  })
+
+  retroGameColorPicker.addEventListener("input", () => {
+    updateSetting("retroGameColor", retroGameColorPicker.value)
+    saveSettings()
+    if (retroGameEffect)
+      retroGameEffect.updateAccentColor(retroGameColorPicker.value)
   })
 
   wavyPatternColor1Picker.addEventListener("input", () => {

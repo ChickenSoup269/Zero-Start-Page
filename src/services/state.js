@@ -52,6 +52,7 @@ const defaultSettings = {
   shinyColor: "#ff0000",
   lineShinyColor: "#ffffff",
   nintendoPixelColor: "#63f5ff",
+  retroGameColor: "#00ff00",
   wavyPatternColor1: "#AB3E5B",
   wavyPatternColor2: "#FFBE40",
   angledPatternColor1: "#ECD078",
