@@ -150,6 +150,12 @@ export const pixelRunColorPicker = document.getElementById(
 export const pixelRunColorSetting = document.getElementById(
   "pixel-run-color-setting",
 )
+export const nintendoPixelColorPicker = document.getElementById(
+  "nintendo-pixel-color-picker",
+)
+export const nintendoPixelColorSetting = document.getElementById(
+  "nintendo-pixel-color-setting",
+)
 export const wavyPatternColor1Picker = document.getElementById(
   "wavy-pattern-color1-picker",
 )

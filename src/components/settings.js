@@ -101,6 +101,8 @@ import {
   lineShinyColorSetting,
   pixelRunColorPicker,
   pixelRunColorSetting,
+  nintendoPixelColorPicker,
+  nintendoPixelColorSetting,
   wavyPatternColor1Picker,
   wavyPatternColor1Setting,
   wavyPatternColor2Picker,
@@ -213,6 +215,7 @@ import { LineShinyEffect } from "./animations/lineShiny.js"
 import { TetFireworksEffect } from "./animations/tetFireworks.js"
 import { SkyLanternsEffect } from "./animations/skyLanterns.js"
 import { PixelRunEffect } from "./animations/pixelRun.js"
+import { NintendoPixelEffect } from "./animations/nintendoPixel.js"
 import { WavyPatternEffect } from "./animations/wavyPattern.js"
 import { AngledPatternEffect } from "./animations/angledPattern.js"
 
@@ -244,6 +247,7 @@ let starFallEffect,
   tetFireworksEffect,
   skyLanternsEffect,
   pixelRunEffect,
+  nintendoPixelEffect,
   wavyPatternEffect,
   angledPatternEffect,
   svgWaveEffect
@@ -790,6 +794,7 @@ export function applySettings() {
   if (tetFireworksEffect) tetFireworksEffect.stop()
   if (skyLanternsEffect) skyLanternsEffect.stop()
   if (pixelRunEffect) pixelRunEffect.stop()
+  if (nintendoPixelEffect) nintendoPixelEffect.stop()
   if (wavyPatternEffect) wavyPatternEffect.stop()
   if (angledPatternEffect) angledPatternEffect.stop()
   // Note: svgWaveEffect is stopped before background logic above, not here
@@ -886,6 +891,9 @@ export function applySettings() {
         break
       case "pixelRun":
         pixelRunEffect.start()
+        break
+      case "nintendoPixel":
+        nintendoPixelEffect.start()
         break
       case "wavyPattern":
         wavyPatternEffect.start()
@@ -1041,6 +1049,9 @@ function updateSettingsInputs() {
   pixelRunColorSetting.style.display =
     settings.effect === "pixelRun" ? "block" : "none"
   pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
+  nintendoPixelColorSetting.style.display =
+    settings.effect === "nintendoPixel" ? "block" : "none"
+  nintendoPixelColorPicker.value = settings.nintendoPixelColor || "#63f5ff"
   wavyPatternColor1Setting.style.display =
     settings.effect === "wavyPattern" ? "block" : "none"
   wavyPatternColor2Setting.style.display =
@@ -1406,6 +1417,10 @@ export function initSettings() {
   pixelRunEffect = new PixelRunEffect(
     "effect-canvas",
     settings.pixelRunColor || "#00e5ff",
+  )
+  nintendoPixelEffect = new NintendoPixelEffect(
+    "effect-canvas",
+    settings.nintendoPixelColor || "#63f5ff",
   )
   wavyPatternEffect = new WavyPatternEffect(
     settings.wavyPatternColor1 || "#AB3E5B",
@@ -2024,6 +2039,13 @@ export function initSettings() {
     updateSetting("pixelRunColor", pixelRunColorPicker.value)
     saveSettings()
     if (pixelRunEffect) pixelRunEffect.color = pixelRunColorPicker.value
+  })
+
+  nintendoPixelColorPicker.addEventListener("input", () => {
+    updateSetting("nintendoPixelColor", nintendoPixelColorPicker.value)
+    saveSettings()
+    if (nintendoPixelEffect)
+      nintendoPixelEffect.updateAccentColor(nintendoPixelColorPicker.value)
   })
 
   wavyPatternColor1Picker.addEventListener("input", () => {
