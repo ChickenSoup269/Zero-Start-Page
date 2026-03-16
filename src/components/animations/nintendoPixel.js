@@ -32,6 +32,7 @@ export class NintendoPixelEffect {
     this.finalAttempt = 3
     this.successLockedCount = 0
     this.successShots = []
+    this.errorPopups = []
 
     this.resize()
     this._resizeHandler = () => this.resize()
@@ -109,6 +110,7 @@ export class NintendoPixelEffect {
     if (nextPhase === "error") {
       this.errorProgress = 0
       this.initErrorStreams()
+      this.initErrorPopups()
     }
     if (nextPhase === "success") {
       this.successProgress = 0
@@ -139,6 +141,41 @@ export class NintendoPixelEffect {
       blinkOffset: Math.random() * Math.PI * 2,
       size: Math.random() > 0.8 ? 13 : 11,
     }))
+  }
+
+  initErrorPopups() {
+    const popupCount = 26
+    const baseW = Math.min(320, this.canvas.width * 0.32)
+    const baseH = 70
+    this.errorPopups = Array.from({ length: popupCount }, () => {
+      const x = 22 + Math.random() * (this.canvas.width - baseW - 44)
+      const y = 86 + Math.random() * (this.canvas.height - baseH - 128)
+      return {
+        x,
+        y,
+        nextRespawnTick: this.tick + 10 + Math.floor(Math.random() * 36),
+      }
+    })
+  }
+
+  updateErrorPopups() {
+    if (!this.errorPopups.length) return
+
+    const baseW = Math.min(320, this.canvas.width * 0.32)
+    const baseH = 70
+    const minX = 22
+    const maxX = Math.max(minX + 1, this.canvas.width - baseW - 44)
+    const minY = 86
+    const maxY = Math.max(minY + 1, this.canvas.height - baseH - 128)
+
+    this.errorPopups.forEach((popup) => {
+      // Stationary popups: only respawn at a new random spot, no sliding.
+      if (this.tick >= popup.nextRespawnTick) {
+        popup.x = minX + Math.random() * (maxX - minX)
+        popup.y = minY + Math.random() * (maxY - minY)
+        popup.nextRespawnTick = this.tick + 18 + Math.floor(Math.random() * 55)
+      }
+    })
   }
 
   initWorldNodes() {
@@ -458,9 +495,11 @@ export class NintendoPixelEffect {
         index < desiredLocked;
         index += 1
       ) {
+        const life = 30
         this.successShots.push({
           nodeIndex: index,
-          life: 24,
+          life,
+          maxLife: life,
           triggerTick: this.tick,
         })
       }
@@ -475,9 +514,11 @@ export class NintendoPixelEffect {
     if (this.successProgress > 0.8) {
       const extraShots = Math.floor((this.successProgress - 0.8) * 25)
       for (let i = 0; i < extraShots; i += 1) {
+        const life = 18
         this.successShots.push({
           nodeIndex: Math.floor(Math.random() * this.worldNodes.length),
-          life: 14,
+          life,
+          maxLife: life,
           triggerTick: this.tick,
         })
       }
@@ -608,44 +649,54 @@ export class NintendoPixelEffect {
       "PAYLOAD_CORRUPTED",
       "SECURITY_LOCKDOWN",
       "INVALID_ROOT_TOKEN",
+      "MEMORY_CORE_DAMAGED",
+      "PROCESS_TREE_BROKEN",
+      "REACTOR_SIGNAL_LOST",
     ]
-    const popupCount = 4
-    const panelW = Math.min(420, this.canvas.width * 0.45)
-    const panelH = 72
-    const startY = this.canvas.height * 0.28
-    const gap = 16
-    const centerX = this.canvas.width / 2
+
+    const popupCount = Math.min(6, this.errorPopups.length)
+    const baseW = Math.min(320, this.canvas.width * 0.32)
+    const baseH = 70
 
     for (let i = 0; i < popupCount; i += 1) {
-      const wave = Math.sin(this.tick * 0.28 + i * 0.7)
-      const jitter = wave * 2.5
-      const alphaBoost = 0.2 + (wave + 1) * 0.5 * 0.25
-      const x = centerX - panelW / 2 + jitter
-      const y = startY + i * (panelH + gap)
+      const popup = this.errorPopups[i]
+      if (!popup) continue
+      const anchorX = popup.x
+      const anchorY = popup.y
 
-      this.roundRect(x, y, panelW, panelH, 10)
-      this.ctx.fillStyle = `rgba(28, 6, 8, ${0.74 + alphaBoost})`
+      const phase = this.tick * 0.22 + i * 1.4
+      const pulse = (Math.sin(phase) + 1) * 0.5
+      const jitterX = Math.sin(this.tick * 0.1 + i) * 1.2
+      const jitterY = Math.cos(this.tick * 0.08 + i * 0.6) * 1
+      const x = anchorX + jitterX
+      const y = anchorY + jitterY
+      const w = baseW
+      const h = baseH
+      const alpha = 0.52 + pulse * 0.24
+
+      this.roundRect(x, y, w, h, 8)
+      this.ctx.fillStyle = `rgba(30, 7, 10, ${Math.max(0.2, alpha)})`
       this.ctx.fill()
-      this.ctx.strokeStyle = `rgba(255, 92, 92, ${0.58 + alphaBoost})`
-      this.ctx.lineWidth = 1.4
+      this.ctx.strokeStyle = `rgba(255, 96, 96, ${0.46 + pulse * 0.28})`
+      this.ctx.lineWidth = 1.2
       this.ctx.stroke()
 
-      this.ctx.font = "600 12px Silkscreen, monospace"
-      this.ctx.fillStyle = "rgba(255,180,180,0.94)"
-      this.ctx.fillText("POPUP ALERT", x + 14, y + 22)
+      this.ctx.font = "600 11px Silkscreen, monospace"
+      this.ctx.fillStyle = "rgba(255,185,185,0.92)"
+      this.ctx.fillText("POPUP ALERT", x + 10, y + 18)
 
-      this.ctx.font = "11px Silkscreen, monospace"
-      this.ctx.fillStyle = "rgba(255,130,130,0.9)"
       const code =
-        popupTemplates[(i + Math.floor(this.tick / 18)) % popupTemplates.length]
-      this.ctx.fillText(`ERROR::${code}`, x + 14, y + 42)
+        popupTemplates[(Math.floor(this.tick / 12) + i) % popupTemplates.length]
+      this.ctx.font = "10px Silkscreen, monospace"
+      this.ctx.fillStyle = "rgba(255,128,128,0.9)"
+      this.ctx.fillText(`ERROR::${code}`, x + 10, y + 35)
 
-      const meterW = panelW - 28
-      const meterProgress = ((this.tick * 2 + i * 37) % 100) / 100
-      this.ctx.fillStyle = "rgba(64, 14, 18, 0.85)"
-      this.ctx.fillRect(x + 14, y + 52, meterW, 10)
-      this.ctx.fillStyle = `rgba(255,95,95,${0.7 + alphaBoost * 0.6})`
-      this.ctx.fillRect(x + 14, y + 52, meterW * meterProgress, 10)
+      const meterW = w - 20
+      const meterProgress = ((this.tick * 1.1 + i * 13) % 100) / 100
+      this.ctx.fillStyle = "rgba(70, 16, 18, 0.78)"
+      this.ctx.fillRect(x + 10, y + 44, meterW, 9)
+      this.ctx.fillStyle = `rgba(255,85,85,${0.6 + pulse * 0.28})`
+      this.ctx.fillRect(x + 10, y + 44, meterW * meterProgress, 9)
     }
   }
 
@@ -1164,20 +1215,40 @@ export class NintendoPixelEffect {
         if (!node) return
         const nx = mapX + node.x * mapW
         const ny = mapY + node.y * mapH
-        const lifeRatio = shot.life / 24
-        const flash = Math.max(0, Math.min(1, lifeRatio))
+        const maxLife = Math.max(1, shot.maxLife || 24)
+        const elapsed = 1 - shot.life / maxLife
+        const travelT = Math.min(1, elapsed * 1.45)
+        const missileX = cx + (nx - cx) * travelT
+        const missileY = cy + (ny - cy) * travelT
 
-        this.ctx.strokeStyle = this.rgba(this.color, 0.35 + flash * 0.5)
-        this.ctx.lineWidth = 1.2
+        // Missile trail
+        this.ctx.strokeStyle = this.rgba(this.color, 0.18 + travelT * 0.45)
+        this.ctx.lineWidth = 1.15
         this.ctx.beginPath()
         this.ctx.moveTo(cx, cy)
-        this.ctx.lineTo(nx, ny)
+        this.ctx.lineTo(missileX, missileY)
         this.ctx.stroke()
 
-        this.ctx.strokeStyle = this.rgba(this.color, 0.7 * flash)
-        this.ctx.beginPath()
-        this.ctx.arc(nx, ny, 4 + (1 - flash) * 14, 0, Math.PI * 2)
-        this.ctx.stroke()
+        // Missile head
+        const angle = Math.atan2(ny - cy, nx - cx)
+        this.ctx.save()
+        this.ctx.translate(missileX, missileY)
+        this.ctx.rotate(angle)
+        this.ctx.fillStyle = "rgba(255, 120, 120, 0.95)"
+        this.ctx.fillRect(-1, -1.5, 6, 3)
+        this.ctx.fillStyle = this.rgba(this.color, 0.88)
+        this.ctx.fillRect(-3, -1, 2, 2)
+        this.ctx.restore()
+
+        // Impact burst when missile reaches target
+        if (travelT >= 0.98) {
+          const burst = Math.max(0, Math.min(1, (elapsed - 0.68) / 0.32))
+          this.ctx.strokeStyle = `rgba(255, 95, 95, ${0.9 - burst * 0.5})`
+          this.ctx.lineWidth = 1.6
+          this.ctx.beginPath()
+          this.ctx.arc(nx, ny, 5 + burst * 14, 0, Math.PI * 2)
+          this.ctx.stroke()
+        }
       })
     }
 
@@ -1372,6 +1443,7 @@ export class NintendoPixelEffect {
       this.drawBurstOverlay()
     } else if (this.phase === "error") {
       this.updateErrorStreams()
+      this.updateErrorPopups()
       this.drawErrorOverlay()
     } else if (this.phase === "success") {
       this.updateWindows()
