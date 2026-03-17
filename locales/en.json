@@ -186,6 +186,8 @@
   "settings_export": "Export Settings",
   "settings_import": "Import Settings",
   "alert_export_success": "Settings exported successfully!",
+  "confirm_export_include_unsplash_key_title": "Export Settings",
+  "confirm_export_include_unsplash_key": "Include Unsplash Access Key in exported JSON?",
   "alert_import_success": "Settings imported successfully!",
   "alert_import_error": "Invalid or corrupted settings file.",
   "alert_importing": "Importing settings and images...",

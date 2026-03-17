@@ -2659,6 +2659,23 @@ export function initSettings() {
     const i18n = geti18n()
     try {
       const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
+      const hasUnsplashKey = Boolean(
+        settingsSnapshot.unsplashAccessKey &&
+        settingsSnapshot.unsplashAccessKey.trim(),
+      )
+
+      if (hasUnsplashKey) {
+        const includeUnsplashKey = await showConfirm(
+          i18n.confirm_export_include_unsplash_key ||
+            "Include Unsplash Access Key in exported JSON?",
+          i18n.confirm_export_include_unsplash_key_title || "Export Settings",
+        )
+
+        if (!includeUnsplashKey) {
+          delete settingsSnapshot.unsplashAccessKey
+        }
+      }
+
       const images = {}
 
       // Collect all IDB IDs (userBackgrounds + current background)
