@@ -14,7 +14,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
       </td>
       <td align="right">
         <a href=""> 
-        Link Extension 🌐 
+        Link Extension 🌐   
         </a>
       </td>
     </tr>

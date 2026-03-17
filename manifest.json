@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Startpage",
+  "name": "Zero Startpage - Newtab Replacement",
   "version": "1.0.0",
   "description": "A beautiful and simple startpage replacement.",
   "permissions": ["bookmarks", "scripting", "tabs"],
