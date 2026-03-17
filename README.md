@@ -176,23 +176,21 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 </tr>
 </table>
 
-### Visual Effects (30 Animations)
+### Visual Effects (32 Animations + SVG Wave Generator)
 
-Select from 30 canvas-based animated effects with individual color pickers:
+Select from 32 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Effect                 | Effect                 | Effect              |
-| ---------------------- | ---------------------- | ------------------- |
-| 1. Rain                | 11. Bubbles            | 21. Line Shiny      |
-| 2. Fireflies           | 12. Rain on Glass      | 22. Green Leaves    |
-| 3. Network             | 13. Rainbow Background | 23. Sunbeam         |
-| 4. Matrix Rain         | 14. Wavy Lines         | 24. Fireworks (Tết) |
-| 5. Gradients Aura      | 15. Fireflies HD       | 25. Snowfall HD     |
-| 6. Anime Wind          | 16. Ocean Wave         | 26. Wavy Pattern    |
-| 7. Hacker              | 17. Cloud Drift        | 27. Angled Pattern  |
-| 8. Sakura              | 18. Autumn Leaves      | 28. Pixel Run       |
-| 9. Snowfall            | 19. Rain HD            | 29. Rain Galaxy     |
-| 10. Aurora Wave        | 20. Shiny              | 30. Sky Lanterns    |
-| **SVG Wave Generator** |                        |                     |
+| Effect                 | Effect                 | Effect            | Effect             |
+| ---------------------- | ---------------------- | ----------------- | ------------------ |
+| 1. Rain                | 9. Snowfall            | 17. Cloud Drift   | 25. Sky Lanterns   |
+| 2. Fireflies           | 10. Snowfall HD        | 18. Autumn Leaves | 26. Pixel Run      |
+| 3. Network             | 11. Aurora Wave        | 19. Green Leaves  | 27. Retro Terminal |
+| 4. Matrix Rain         | 12. Bubbles            | 20. Sunbeam       | 28. Retro Game     |
+| 5. Gradients Aura      | 13. Rain on Glass      | 21. Shiny         | 29. Meteor Shower  |
+| 6. Anime Wind          | 14. Rain HD            | 22. Line Shiny    | 30. Wavy Pattern   |
+| 7. Hacker              | 15. Rainbow Background | 23. Tết Fireworks | 31. Angled Pattern |
+| 8. Sakura              | 16. Wavy Lines         | 24. Rain Galaxy   | 32. Fireflies HD   |
+| **SVG Wave Generator** |                        |                   |                    |
 
 ### SVG Wave Generator
 
