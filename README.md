@@ -13,7 +13,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
         <a href="">CHANGELOG.md</a>
       </td>
       <td align="right">
-        <a href=""> 
+        <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=en"> 
         Link Extension 🌐   
         </a>
       </td>

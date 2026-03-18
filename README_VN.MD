@@ -7,7 +7,7 @@ Startpage là một tiện ích mở rộng Chrome thay thế trang tab mới b�
 <table width="100%">
   <tr>
     <td align="left">
-      <a href="https://github.com/ChickenSoup269/Zero-Start-Page/blob/main/README.md">English</a> | Tiếng Việt
+      <a href="https://github.com/ChickenSoup269/Zero-Start-Page">English</a> | Tiếng Việt
     </td>
     <td align="right">
       <a href="">CHANGELOG.md</a>
