@@ -539,6 +539,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
                             <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
                         </button>
+                        <button class="effect-item" data-value="stormRain"
+                            data-search="rain storm cloud thunder lightning">
+                            <span class="effect-icon"><i class="fa-solid fa-cloud-bolt"></i></span>
+                            <span class="effect-name" data-i18n="effect_storm_rain">Storm Rain</span>
+                        </button>
                         <button class="effect-item" data-value="rainbow" data-search="rainbow color">
                             <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
                             <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
@@ -714,6 +719,11 @@
                         <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
                         <input type="color" id="rain-hd-color-picker" value="#99ccff" />
                     </div>
+
+                    <div id="storm-rain-color-setting" class="setting-item" style="display: none;">
+                        <label for="storm-rain-color-picker" data-i18n="setting_storm_rain_color">Rain Color</label>
+                        <input type="color" id="storm-rain-color-picker" value="#7dd3fc" />
+                    </div>
                     <!-- Wavy Lines Color -->
                     <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
                         <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
@@ -736,7 +746,7 @@
                     <!-- Cloud Drift Color -->
                     <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
                         <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
-                        <input type="color" id="cloud-drift-color-picker" value="#ffffff" />
+                        <input type="color" id="cloud-drift-color-picker" value="#0a0a0a" />
                     </div>
                     <!-- Shiny Tint Color -->
                     <div id="shiny-color-setting" class="setting-item" style="display: none;">
