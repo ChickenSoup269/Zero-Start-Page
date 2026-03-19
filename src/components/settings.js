@@ -470,50 +470,373 @@ function _updateWaveColorPreviews(s) {
     svgWaveEndPreview.style.background = `hsl(${eh},${es}%,${el}%)`
 }
 
-// Unsplash topics: slug is used directly in the Topics API.
-// Topic slugs can be found at https://unsplash.com/t/{slug}
+// Unsplash curated sources per category.
+// `topic` uses /topics/{topic}/photos and `collections` supports Unsplash collection IDs.
 const unsplashCollections = [
   {
+    key: "featured",
+    topic: "wallpapers",
+    // Add collection IDs here, e.g. ["317099"] from /collections/{id}/... URL.
+    collections: [],
+    keywords: [
+      "featured wallpaper",
+      "editorial wallpaper",
+      "trending wallpaper",
+      "best wallpaper",
+    ],
+    labelEn: "Featured",
+    labelVi: "Nổi bật",
+  },
+  {
+    key: "new-spring",
+    topic: "spring-wallpapers",
+    collections: [],
+    keywords: [
+      "new spring wallpaper",
+      "spring aesthetic wallpaper",
+      "blossom spring landscape",
+      "fresh spring nature wallpaper",
+    ],
+    labelEn: "New Spring",
+    labelVi: "Mùa xuân mới",
+  },
+  {
     key: "spring-wallpapers",
-    id: "spring-wallpapers",
+    topic: "spring-wallpapers",
+    collections: [],
+    keywords: [
+      "spring wallpaper",
+      "spring flowers wallpaper",
+      "pastel spring landscape",
+      "cherry blossom wallpaper",
+    ],
     labelEn: "Spring Wallpapers",
     labelVi: "Hình nền mùa xuân",
   },
   {
+    key: "wallpapers",
+    topic: "wallpapers",
+    collections: [],
+    keywords: [
+      "wallpaper hd",
+      "desktop wallpaper 4k",
+      "minimal wallpaper",
+      "aesthetic wallpaper",
+    ],
+    labelEn: "Wallpapers",
+    labelVi: "Hình nền",
+  },
+  {
     key: "3d-renders",
-    id: "3d-renders",
+    topic: "3d-renders",
+    collections: [],
+    keywords: [
+      "3d render abstract wallpaper",
+      "cgi art wallpaper",
+      "3d gradient wallpaper",
+      "surreal 3d scene",
+    ],
     labelEn: "3D Renders",
     labelVi: "Đồ họa 3D",
   },
-  { key: "nature", id: "nature", labelEn: "Nature", labelVi: "Thiên nhiên" },
+  {
+    key: "nature",
+    topic: "nature",
+    collections: [],
+    keywords: [
+      "nature landscape wallpaper",
+      "mountain forest wallpaper",
+      "river valley landscape",
+      "wild nature wallpaper",
+    ],
+    labelEn: "Nature",
+    labelVi: "Thiên nhiên",
+  },
   {
     key: "textures-patterns",
-    id: "textures-patterns",
+    topic: "textures-patterns",
+    collections: [],
+    keywords: [
+      "texture pattern background",
+      "grain texture wallpaper",
+      "abstract pattern wallpaper",
+      "minimal texture backdrop",
+    ],
     labelEn: "Textures",
     labelVi: "Kết cấu & Họa tiết",
   },
-  { key: "film", id: "film", labelEn: "Film", labelVi: "Điện ảnh" },
+  {
+    key: "film",
+    topic: "film",
+    collections: [],
+    keywords: [
+      "cinematic film still wallpaper",
+      "analog film photography",
+      "moody cinema frame",
+      "35mm film scene",
+    ],
+    labelEn: "Film",
+    labelVi: "Điện ảnh",
+  },
   {
     key: "architecture-interior",
-    id: "architecture-interior",
+    topic: "architecture-interiors",
+    collections: [],
+    keywords: [
+      "architecture interior design wallpaper",
+      "modern architecture facade",
+      "interior design minimal",
+      "urban architecture lines",
+    ],
     labelEn: "Architecture",
     labelVi: "Kiến trúc",
   },
   {
     key: "street-photography",
-    id: "street-photography",
+    topic: "street-photography",
+    collections: [],
+    keywords: [
+      "street photography city wallpaper",
+      "night street neon",
+      "urban candid street",
+      "city life photography",
+    ],
     labelEn: "Street Photography",
     labelVi: "Nhiếp ảnh đường phố",
   },
   {
     key: "experimental",
-    id: "experimental",
+    topic: "experimental",
+    collections: [],
+    keywords: [
+      "experimental abstract wallpaper",
+      "creative abstract art",
+      "avant garde photography",
+      "conceptual visual art",
+    ],
     labelEn: "Experimental",
     labelVi: "Thực nghiệm",
   },
-  { key: "travel", id: "travel", labelEn: "Travel", labelVi: "Du lịch" },
-  { key: "people", id: "people", labelEn: "People", labelVi: "Con người" },
+  {
+    key: "travel",
+    topic: "travel",
+    collections: [],
+    keywords: [
+      "travel destination landscape wallpaper",
+      "scenic road trip view",
+      "coastal travel photography",
+      "adventure destination",
+    ],
+    labelEn: "Travel",
+    labelVi: "Du lịch",
+  },
+  {
+    key: "people",
+    topic: "people",
+    collections: [],
+    keywords: [
+      "portrait people wallpaper",
+      "lifestyle portrait",
+      "human expression photography",
+      "street portrait",
+    ],
+    labelEn: "People",
+    labelVi: "Con người",
+  },
 ]
+
+function _pickKeyword(collection) {
+  const list = collection?.keywords || []
+  if (!list.length) return "wallpaper"
+  return list[Math.floor(Math.random() * list.length)]
+}
+
+const randomSearchCategories = [
+  "nature",
+  "technology",
+  "food",
+  "travel",
+  "architecture",
+  "fashion",
+]
+
+const randomSearchCategoryKeywords = {
+  nature: ["nature landscape", "mountain forest", "river valley"],
+  technology: ["technology neon", "future tech", "digital interface"],
+  food: ["food photography", "culinary aesthetic", "minimal food"],
+  travel: ["travel destination", "adventure landscape", "coastal trip"],
+  architecture: [
+    "modern architecture",
+    "architectural lines",
+    "interior design",
+  ],
+  fashion: ["fashion editorial", "street style", "minimal fashion"],
+}
+
+function _pickRandomSearchCategory() {
+  return randomSearchCategories[
+    Math.floor(Math.random() * randomSearchCategories.length)
+  ]
+}
+
+function _buildUnsplashQuery(collection) {
+  const baseKeyword = _pickKeyword(collection)
+
+  // For Featured, broaden discovery by mixing a random search category.
+  if (collection?.key === "featured") {
+    const randomCategory = _pickRandomSearchCategory()
+    const categoryKeywords = randomSearchCategoryKeywords[randomCategory] || [
+      randomCategory,
+    ]
+    const categoryKeyword =
+      categoryKeywords[Math.floor(Math.random() * categoryKeywords.length)]
+    return `${categoryKeyword} ${baseKeyword}`.trim()
+  }
+
+  return baseKeyword
+}
+
+function _firstPhoto(payload) {
+  return Array.isArray(payload) ? payload[0] : payload
+}
+
+async function _fetchUnsplashPhotoByParams(accessKey, params) {
+  const search = new URLSearchParams({
+    ...params,
+    orientation: "landscape",
+    content_filter: "high",
+    client_id: accessKey,
+  })
+  const res = await fetch(
+    `https://api.unsplash.com/photos/random?${search.toString()}`,
+  )
+  if (!res.ok) throw new Error(`Unsplash API error: ${res.status}`)
+  const payload = await res.json()
+  const photo = _firstPhoto(payload)
+  if (!photo?.urls?.raw && !photo?.urls?.full && !photo?.urls?.regular) {
+    throw new Error("Unsplash photo payload missing image URL")
+  }
+  return photo
+}
+
+async function _fetchUnsplashPhotoFromCollections(accessKey, collectionIds) {
+  const ids = (collectionIds || []).filter(Boolean)
+  if (!ids.length) {
+    throw new Error("No Unsplash collection IDs configured")
+  }
+
+  return _fetchUnsplashPhotoByParams(accessKey, {
+    collections: ids.join(","),
+  })
+}
+
+async function _fetchUnsplashPhotoFromTopic(accessKey, topicId) {
+  if (!topicId) throw new Error("Missing Unsplash topic id")
+
+  const page = String(Math.floor(Math.random() * 3) + 1)
+  const search = new URLSearchParams({
+    page,
+    per_page: "30",
+    order_by: "popular",
+    client_id: accessKey,
+  })
+  const endpoint = `https://api.unsplash.com/topics/${encodeURIComponent(topicId)}/photos?${search.toString()}`
+  const res = await fetch(endpoint)
+  if (!res.ok) {
+    throw new Error(`Unsplash topic photos error: ${res.status}`)
+  }
+
+  const payload = await res.json()
+  const results = Array.isArray(payload) ? payload : []
+  if (!results.length) {
+    throw new Error("No photos in selected Unsplash topic")
+  }
+
+  const photo = results[Math.floor(Math.random() * results.length)]
+  if (!photo?.urls?.raw && !photo?.urls?.full && !photo?.urls?.regular) {
+    throw new Error("Unsplash topic payload missing image URL")
+  }
+
+  return photo
+}
+
+async function _fetchUnsplashPhotoFromSearch(accessKey, query) {
+  const search = new URLSearchParams({
+    query,
+    orientation: "landscape",
+    content_filter: "high",
+    per_page: "30",
+    client_id: accessKey,
+  })
+  const res = await fetch(
+    `https://api.unsplash.com/search/photos?${search.toString()}`,
+  )
+  if (!res.ok) throw new Error(`Unsplash search error: ${res.status}`)
+  const payload = await res.json()
+  const results = payload?.results || []
+  if (!results.length) {
+    throw new Error("No results for selected Unsplash category")
+  }
+  return results[Math.floor(Math.random() * results.length)]
+}
+
+async function _fetchBestUnsplashPhoto(accessKey, collection) {
+  const keyword = _buildUnsplashQuery(collection)
+
+  // 1) Prefer curated collections if configured for this category.
+  if (collection.collections?.length) {
+    try {
+      return await _fetchUnsplashPhotoFromCollections(
+        accessKey,
+        collection.collections,
+      )
+    } catch (err) {
+      console.warn(
+        "Unsplash collection fetch failed, trying topic/photos:",
+        err,
+      )
+    }
+  }
+
+  // 2) Prefer curated topic photos endpoint.
+  if (collection.topic) {
+    try {
+      return await _fetchUnsplashPhotoFromTopic(accessKey, collection.topic)
+    } catch (err) {
+      console.warn(
+        "Unsplash topic/photos fetch failed, trying random topic:",
+        err,
+      )
+    }
+  }
+
+  // 3) Fallback to random endpoint with topics/query/search.
+  if (collection.topic) {
+    try {
+      return await _fetchUnsplashPhotoByParams(accessKey, {
+        topics: collection.topic,
+      })
+    } catch (err) {
+      console.warn("Unsplash topic fetch failed, trying query fallback:", err)
+    }
+  }
+
+  if (keyword) {
+    try {
+      return await _fetchUnsplashPhotoByParams(accessKey, {
+        query: keyword,
+      })
+    } catch (err) {
+      console.warn(
+        "Unsplash random-query fetch failed, trying search fallback:",
+        err,
+      )
+      return _fetchUnsplashPhotoFromSearch(accessKey, keyword)
+    }
+  }
+
+  throw new Error("Invalid Unsplash collection configuration")
+}
 
 function populateUnsplashCollections() {
   const lang = getSettings().language || "en"
@@ -542,7 +865,10 @@ async function setUnsplashRandomBackground() {
   btn.disabled = true
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
 
-  const category = settings.unsplashCategory || "spring-wallpapers"
+  const category =
+    unsplashCategorySelect?.value ||
+    settings.unsplashCategory ||
+    "spring-wallpapers"
   const collection =
     unsplashCollections.find((c) => c.key === category) ||
     unsplashCollections[0]
@@ -555,12 +881,10 @@ async function setUnsplashRandomBackground() {
   )
 
   try {
-    const res = await fetch(
-      `https://api.unsplash.com/photos/random?topics=${collection.id}&orientation=landscape&client_id=${encodeURIComponent(accessKey)}`,
-    )
-    if (!res.ok) throw new Error(`Unsplash API error: ${res.status}`)
-    const photo = await res.json()
-    const imageUrl = `${photo.urls.raw}&auto=format&fit=crop&w=${width}&h=${height}&q=85`
+    const photo = await _fetchBestUnsplashPhoto(accessKey, collection)
+    const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
+    const separator = baseUrl.includes("?") ? "&" : "?"
+    const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
     // Show photo credit
     if (unsplashCredit) {
@@ -974,7 +1298,8 @@ function updateSettingsInputs() {
   bgPosYInput.value = settings.bgPositionY || 50
   bgPosYValue.textContent = `${bgPosYInput.value}%`
 
-  unsplashCategorySelect.value = settings.unsplashCategory || "nature"
+  unsplashCategorySelect.value =
+    settings.unsplashCategory || "spring-wallpapers"
   if (unsplashAccessKeyInput)
     unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
 
