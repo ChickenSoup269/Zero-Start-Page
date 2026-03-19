@@ -110,6 +110,12 @@ export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export const rainHDColorSetting = document.getElementById(
   "rain-hd-color-setting",
 )
+export const stormRainColorPicker = document.getElementById(
+  "storm-rain-color-picker",
+)
+export const stormRainColorSetting = document.getElementById(
+  "storm-rain-color-setting",
+)
 export const wavyLinesColorPicker = document.getElementById(
   "wavy-lines-color-picker",
 )
