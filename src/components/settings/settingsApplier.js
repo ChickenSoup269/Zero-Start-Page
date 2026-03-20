@@ -73,6 +73,7 @@ function createApplySettings(effectInstances) {
     const settings = getSettings()
     const bgChanged = settings.background !== _prevBg
     _prevBg = settings.background
+    let shouldUseSvgWave = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -160,6 +161,7 @@ function createApplySettings(effectInstances) {
     } else {
       // If no background image/color, apply SVG wave → fallback
       if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
+        shouldUseSvgWave = true
         effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
       } else {
         if (bgLayer)
@@ -243,6 +245,7 @@ function createApplySettings(effectInstances) {
 
     // 4. Effects Management (STOP ALL FIRST and CLEAR CANVAS)
     Object.values(effectInstances).forEach((effect) => {
+      if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
       if (effect && typeof effect.stop === "function") {
         effect.stop()
       }
@@ -454,6 +457,8 @@ function createUpdateSettingsInputs(effectInstances) {
 
     DOM.svgWaveAmpX.value = settings.svgWaveAmplitudeX ?? 200
     DOM.svgWaveAmpXValue.textContent = DOM.svgWaveAmpX.value
+    DOM.svgWaveLines.value = settings.svgWaveLines ?? 5
+    DOM.svgWaveLinesValue.textContent = DOM.svgWaveLines.value
     DOM.svgWaveAmpY.value = settings.svgWaveAmplitudeY ?? 80
     DOM.svgWaveAmpYValue.textContent = DOM.svgWaveAmpY.value
     DOM.svgWaveOffsetX.value = settings.svgWaveOffsetX ?? 0
