@@ -23,7 +23,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 ## Features
 
 <table align="center">
-<tr>
+<tr>I
 <th> Clock & Date</th>
 <th> Smart Search</th>
 </tr>
