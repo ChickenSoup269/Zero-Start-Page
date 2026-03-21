@@ -1,5 +1,6 @@
 ### [1.0.1] 2026-03-19
 
+
 #### Unsplash Integration Improvements
 
 - **Enhanced category accuracy**: Refactored Unsplash photo fetch with multi-tier priority system:
