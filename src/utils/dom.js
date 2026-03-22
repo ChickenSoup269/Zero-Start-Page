@@ -93,6 +93,13 @@ export const snowfallColorSetting = document.getElementById(
   "snowfall-color-setting",
 )
 
+export const fallingLeavesSettledSkinSelect = document.getElementById(
+  "falling-leaves-settled-skin",
+)
+export const fallingLeavesSettledSkinSetting = document.getElementById(
+  "falling-leaves-settled-skin-setting",
+)
+
 export const bubblesColorPicker = document.getElementById(
   "bubbles-color-picker",
 )

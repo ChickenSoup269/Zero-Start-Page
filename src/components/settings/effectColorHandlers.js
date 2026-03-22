@@ -212,6 +212,21 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.angledPatternColor2Picker.value,
       )
   })
+
+  // Falling Leaves Settled Skin selector
+  const fallingLeavesSelect = document.getElementById(
+    "falling-leaves-settled-skin",
+  )
+  if (fallingLeavesSelect) {
+    fallingLeavesSelect.addEventListener("change", () => {
+      const skinType = fallingLeavesSelect.value
+      updateSetting("fallingLeavesSkin", skinType)
+      saveSettings()
+      if (effectInstances.fallingLeavesSettledEffect) {
+        effectInstances.fallingLeavesSettledEffect.setLeafType(skinType)
+      }
+    })
+  }
 }
 
 export { setupEffectColorHandlers }

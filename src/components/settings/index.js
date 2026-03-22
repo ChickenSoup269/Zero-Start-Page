@@ -74,6 +74,7 @@ import { FirefliesHD } from "../animations/firefliesHD.js"
 import { SvgWaveGenerator } from "../animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "../animations/autumnLeaves.js"
 import { GreenLeavesEffect } from "../animations/greenLeaves.js"
+import { FallingLeavesSettledEffect } from "../animations/fallingLeavesSettled.js"
 import { SunbeamEffect } from "../animations/sunbeam.js"
 import { ShinyEffect } from "../animations/shiny.js"
 import { LineShinyEffect } from "../animations/lineShiny.js"
@@ -147,6 +148,10 @@ export function initSettings() {
     firefliesHDEffect: new FirefliesHD("effect-canvas"),
     autumnLeavesEffect: new AutumnLeavesEffect("effect-canvas"),
     greenLeavesEffect: new GreenLeavesEffect("effect-canvas"),
+    fallingLeavesSettledEffect: new FallingLeavesSettledEffect(
+      "effect-canvas",
+      settings.fallingLeavesSkin || "maple",
+    ),
     sunbeamEffect: new SunbeamEffect("effect-canvas"),
     shinyEffect: new ShinyEffect(
       "effect-canvas",
