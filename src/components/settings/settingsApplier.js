@@ -49,6 +49,7 @@ const EFFECT_KEY_MAP = {
   firefliesHD: "firefliesHDEffect",
   autumnLeaves: "autumnLeavesEffect",
   greenLeaves: "greenLeavesEffect",
+  fallingLeavesSettled: "fallingLeavesSettledEffect",
   sunbeam: "sunbeamEffect",
   shiny: "shinyEffect",
   lineShiny: "lineShinyEffect",
@@ -265,6 +266,13 @@ function createApplySettings(effectInstances) {
       const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
       const selectedEffect = effectInstances[mappedKey]
       if (effectToStart && effectToStart !== "none" && selectedEffect) {
+        // Apply saved leaf type for falling leaves settled effect
+        if (
+          effectToStart === "fallingLeavesSettled" &&
+          selectedEffect.setLeafType
+        ) {
+          selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
+        }
         selectedEffect.start?.()
       }
     }, 50)
@@ -398,6 +406,12 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "sakura" ? "block" : "none"
     DOM.snowfallColorSetting.style.display =
       settings.effect === "snowfall" ? "block" : "none"
+    DOM.fallingLeavesSettledSkinSetting.style.display =
+      settings.effect === "fallingLeavesSettled" ? "block" : "none"
+    if (DOM.fallingLeavesSettledSkinSelect) {
+      DOM.fallingLeavesSettledSkinSelect.value =
+        settings.fallingLeavesSkin || "maple"
+    }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
     DOM.rainOnGlassColorSetting.style.display =

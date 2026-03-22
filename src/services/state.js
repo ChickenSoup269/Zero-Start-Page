@@ -43,6 +43,7 @@ const defaultSettings = {
   hackerColor: "#00FF00",
   sakuraColor: "#ffb7c5",
   snowfallColor: "#ffffff",
+  fallingLeavesSkin: "maple",
   bubbleColor: "#60c8ff",
   rainOnGlassColor: "#a8d8ff",
   rainHDColor: "#99ccff",
