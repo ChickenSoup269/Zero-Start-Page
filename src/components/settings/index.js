@@ -213,8 +213,14 @@ export function initSettings() {
     }
     saveSettings()
     applySettings()
-    renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
-    renderUserGradients(DOM_EXPORTS)
+
+    // Avoid expensive gallery rerenders for unrelated toggles (e.g. clock/date).
+    const shouldRefreshBackgroundGalleries =
+      isGradient || key === "background" || key === "svgWaveActive"
+    if (shouldRefreshBackgroundGalleries) {
+      renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
+      renderUserGradients(DOM_EXPORTS)
+    }
   }
 
   ctx.handleSettingUpdate = handleSettingUpdate

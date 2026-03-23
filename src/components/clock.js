@@ -12,8 +12,8 @@ export function updateTime() {
     timeOptions,
   )
 
-  // Handle clock visibility
-  clockElement.style.display = settings.showClock !== false ? "block" : "none"
+  // Keep layout stable by toggling visibility class instead of display.
+  clockElement.classList.toggle("is-hidden", settings.showClock === false)
   clockElement.textContent = timeString
 
   let dateString = ""
@@ -38,7 +38,7 @@ export function updateTime() {
   // Handle date visibility - check both showDate AND showGregorian
   const shouldShowDate =
     settings.showDate !== false && settings.showGregorian !== false
-  dateElement.style.display = shouldShowDate ? "block" : "none"
+  dateElement.classList.toggle("is-hidden", !shouldShowDate)
   dateElement.textContent = dateString
 }
 

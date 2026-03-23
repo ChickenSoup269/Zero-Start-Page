@@ -14,8 +14,18 @@ import {
   loadLanguage,
   applyTranslations,
 } from "../../services/i18n.js"
-import { showAlert, showConfirm } from "../../utils/dialog.js"
-import { getImageBlob } from "../../services/imageStore.js"
+import {
+  showAlert,
+  showConfirm,
+  showChecklistConfirm,
+} from "../../utils/dialog.js"
+import {
+  getImageBlob,
+  isIdbMedia,
+  isIdbVideo,
+  saveImage,
+  saveVideo,
+} from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   setUnsplashRandomBackground,
@@ -43,6 +53,32 @@ export function setupGeneralEventHandlers(
   const DOM = ctx.DOM
   const i18n = ctx.i18n
   const effects = ctx.effects
+
+  const blobToDataUrl = (blob) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = () => reject(reader.error)
+      reader.readAsDataURL(blob)
+    })
+
+  const dataUrlToBlob = async (dataUrl) => {
+    const res = await fetch(dataUrl)
+    return res.blob()
+  }
+
+  const collectLocalMediaIds = (settingsSnapshot) => {
+    const ids = new Set()
+    if (isIdbMedia(settingsSnapshot.background)) {
+      ids.add(settingsSnapshot.background)
+    }
+    if (Array.isArray(settingsSnapshot.userBackgrounds)) {
+      settingsSnapshot.userBackgrounds.forEach((id) => {
+        if (isIdbMedia(id)) ids.add(id)
+      })
+    }
+    return [...ids]
+  }
 
   // Sidebar toggle and close
   DOM.settingsToggle.addEventListener("click", () =>
@@ -738,24 +774,151 @@ export function setupGeneralEventHandlers(
         settingsSnapshot.unsplashAccessKey &&
         settingsSnapshot.unsplashAccessKey.trim(),
       )
+      const localMediaIds = collectLocalMediaIds(settingsSnapshot)
+      const hasLocalMedia = localMediaIds.length > 0
 
-      if (hasUnsplashKey) {
-        const includeUnsplashKey = await showConfirm(
-          i18n.confirm_export_include_unsplash_key ||
-            "Include Unsplash Access Key in exported JSON?",
-          i18n.confirm_export_include_unsplash_key_title || "Export Settings",
+      const selected = await showChecklistConfirm(
+        [
+          {
+            key: "settings",
+            label: i18n.export_option_settings || "Settings",
+            checked: true,
+          },
+          {
+            key: "bookmarks",
+            label: i18n.export_option_bookmarks || "Bookmarks",
+            checked: true,
+          },
+          {
+            key: "todos",
+            label: i18n.export_option_todos || "Todo Items",
+            checked: true,
+          },
+          {
+            key: "notepad",
+            label: i18n.export_option_notepad || "Notepad Notes",
+            checked: true,
+          },
+          {
+            key: "calendarEvents",
+            label: i18n.export_option_calendar || "Calendar Events",
+            checked: true,
+          },
+          {
+            key: "unsplashAccessKey",
+            label:
+              i18n.export_option_unsplash_key ||
+              "Unsplash Access Key (in Settings)",
+            checked: false,
+            disabled: !hasUnsplashKey,
+          },
+          {
+            key: "localMedia",
+            label:
+              i18n.export_option_local_media ||
+              "Local Images/Videos (for transfer to another machine)",
+            checked: hasLocalMedia,
+            disabled: !hasLocalMedia,
+          },
+        ],
+        i18n.confirm_export_include_unsplash_key_title || "Export Settings",
+        i18n.export_select_sections || "Select data to include in JSON export.",
+      )
+
+      if (!selected) return
+
+      const hasMainSection =
+        selected.settings ||
+        selected.bookmarks ||
+        selected.todos ||
+        selected.notepad ||
+        selected.calendarEvents ||
+        selected.localMedia
+
+      if (!hasMainSection) {
+        showAlert(
+          i18n.export_select_at_least_one ||
+            "Please select at least one section to export.",
         )
+        return
+      }
 
-        if (!includeUnsplashKey) {
+      const exportData = {
+        version: 2,
+        exportedAt: new Date().toISOString(),
+      }
+
+      if (selected.settings) {
+        if (!selected.unsplashAccessKey) {
           delete settingsSnapshot.unsplashAccessKey
+        }
+        exportData.settings = settingsSnapshot
+      }
+
+      if (selected.bookmarks) {
+        try {
+          exportData.bookmarks = JSON.parse(
+            localStorage.getItem("bookmarks") || "null",
+          )
+        } catch {
+          exportData.bookmarks = null
         }
       }
 
-      const payload = JSON.stringify(
-        { version: 1, settings: settingsSnapshot, images: {} },
-        null,
-        2,
-      )
+      if (selected.todos) {
+        try {
+          exportData.todos = JSON.parse(
+            localStorage.getItem("todoItems") || "[]",
+          )
+        } catch {
+          exportData.todos = []
+        }
+      }
+
+      if (selected.notepad) {
+        try {
+          exportData.notepad = {
+            notes: JSON.parse(localStorage.getItem("notepadNotes") || "[]"),
+            detached: JSON.parse(localStorage.getItem("detachedNotes") || "{}"),
+            hidden: JSON.parse(localStorage.getItem("hiddenNotes") || "{}"),
+          }
+        } catch {
+          exportData.notepad = { notes: [], detached: {}, hidden: {} }
+        }
+      }
+
+      if (selected.calendarEvents) {
+        try {
+          exportData.calendarEvents = JSON.parse(
+            localStorage.getItem("calendarEvents") || "[]",
+          )
+        } catch {
+          exportData.calendarEvents = []
+        }
+      }
+
+      if (selected.localMedia) {
+        const media = {}
+        for (const id of localMediaIds) {
+          try {
+            const blob = await getImageBlob(id)
+            if (!blob) continue
+            media[id] = {
+              kind:
+                isIdbVideo(id) || blob.type.startsWith("video/")
+                  ? "video"
+                  : "image",
+              mimeType: blob.type || "",
+              dataUrl: await blobToDataUrl(blob),
+            }
+          } catch (err) {
+            console.warn("Skip media export for", id, err)
+          }
+        }
+        exportData.media = media
+      }
+
+      const payload = JSON.stringify(exportData, null, 2)
       const blob = new Blob([payload], { type: "application/json" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
@@ -783,18 +946,115 @@ export function setupGeneralEventHandlers(
       const text = await file.text()
       const data = JSON.parse(text)
 
-      if (!data.settings || typeof data.settings !== "object") {
+      const hasSettings = data.settings && typeof data.settings === "object"
+      const hasBookmarks = data.bookmarks && typeof data.bookmarks === "object"
+      const hasTodos = Array.isArray(data.todos)
+      const hasNotepad = data.notepad && typeof data.notepad === "object"
+      const hasCalendarEvents = Array.isArray(data.calendarEvents)
+      const hasMedia =
+        data.media &&
+        typeof data.media === "object" &&
+        Object.keys(data.media).length > 0
+
+      if (
+        !hasSettings &&
+        !hasBookmarks &&
+        !hasTodos &&
+        !hasNotepad &&
+        !hasCalendarEvents &&
+        !hasMedia
+      ) {
         showAlert(i18n.alert_import_error || "Invalid settings file.")
         return
       }
 
       showAlert(i18n.alert_importing || "Importing...")
 
-      Object.assign(getSettings(), data.settings)
-      saveSettings()
-      applySettings()
-      updateSettingsInputs()
-      showAlert("Settings imported successfully!")
+      const mediaIdMap = {}
+      if (hasMedia) {
+        for (const [oldId, payload] of Object.entries(data.media)) {
+          try {
+            if (!payload || typeof payload.dataUrl !== "string") continue
+            const blob = await dataUrlToBlob(payload.dataUrl)
+            const isVideo =
+              payload.kind === "video" ||
+              oldId.startsWith("idb-video-") ||
+              blob.type.startsWith("video/")
+            const newId = isVideo
+              ? await saveVideo(blob)
+              : await saveImage(blob)
+            mediaIdMap[oldId] = newId
+          } catch (err) {
+            console.warn("Skip media import for", oldId, err)
+          }
+        }
+      }
+
+      if (hasSettings) {
+        const importedSettings = JSON.parse(JSON.stringify(data.settings))
+
+        if (Object.keys(mediaIdMap).length > 0) {
+          if (
+            typeof importedSettings.background === "string" &&
+            mediaIdMap[importedSettings.background]
+          ) {
+            importedSettings.background =
+              mediaIdMap[importedSettings.background]
+          }
+          if (Array.isArray(importedSettings.userBackgrounds)) {
+            importedSettings.userBackgrounds =
+              importedSettings.userBackgrounds.map((id) => mediaIdMap[id] || id)
+          }
+        }
+
+        Object.assign(getSettings(), importedSettings)
+        saveSettings()
+        applySettings()
+        updateSettingsInputs()
+      }
+
+      let requiresReload = false
+
+      if (hasBookmarks) {
+        localStorage.setItem("bookmarks", JSON.stringify(data.bookmarks))
+        requiresReload = true
+      }
+
+      if (hasTodos) {
+        localStorage.setItem("todoItems", JSON.stringify(data.todos))
+        requiresReload = true
+      }
+
+      if (hasNotepad) {
+        localStorage.setItem(
+          "notepadNotes",
+          JSON.stringify(data.notepad.notes || []),
+        )
+        localStorage.setItem(
+          "detachedNotes",
+          JSON.stringify(data.notepad.detached || {}),
+        )
+        localStorage.setItem(
+          "hiddenNotes",
+          JSON.stringify(data.notepad.hidden || {}),
+        )
+        requiresReload = true
+      }
+
+      if (hasCalendarEvents) {
+        localStorage.setItem(
+          "calendarEvents",
+          JSON.stringify(data.calendarEvents),
+        )
+        requiresReload = true
+      }
+
+      await showAlert(
+        i18n.alert_import_success || "Settings imported successfully!",
+      )
+      if (requiresReload) {
+        window.location.reload()
+      }
     } catch (err) {
       console.error("Import error:", err)
       showAlert("Import failed.")

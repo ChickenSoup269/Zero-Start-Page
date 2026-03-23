@@ -25,6 +25,7 @@ import { renderUserGradients } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
+let _prevEffect = null // Track last selected effect to avoid unnecessary restart
 
 const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
@@ -244,27 +245,28 @@ function createApplySettings(effectInstances) {
       }
     }
 
-    // 4. Effects Management (STOP ALL FIRST and CLEAR CANVAS)
-    Object.values(effectInstances).forEach((effect) => {
-      if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
-      if (effect && typeof effect.stop === "function") {
-        effect.stop()
-      }
-    })
-
+    // 4. Effects Management
+    const effectToStart = settings.effect
+    const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
+    const selectedEffect = effectInstances[mappedKey]
+    const effectChanged = effectToStart !== _prevEffect
     const effectCanvas = document.getElementById("effect-canvas")
-    if (effectCanvas) {
-      const ctx = effectCanvas.getContext("2d")
-      ctx.clearRect(0, 0, effectCanvas.width, effectCanvas.height)
-      effectCanvas.style.display = "none"
-    }
+    if (effectChanged) {
+      // Stop previous effects only when effect selection actually changes.
+      Object.values(effectInstances).forEach((effect) => {
+        if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
+        if (effect && typeof effect.stop === "function") {
+          effect.stop()
+        }
+      })
 
-    // Small delay to ensure cleanup is complete
-    setTimeout(() => {
-      // 5. Start Selected Effect
-      const effectToStart = settings.effect
-      const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
-      const selectedEffect = effectInstances[mappedKey]
+      if (effectCanvas) {
+        const ctx = effectCanvas.getContext("2d")
+        ctx.clearRect(0, 0, effectCanvas.width, effectCanvas.height)
+        effectCanvas.style.display = "none"
+      }
+
+      // 5. Start selected effect immediately (no artificial delay/flicker).
       if (effectToStart && effectToStart !== "none" && selectedEffect) {
         // Apply saved leaf type for falling leaves settled effect
         if (
@@ -275,7 +277,8 @@ function createApplySettings(effectInstances) {
         }
         selectedEffect.start?.()
       }
-    }, 50)
+    }
+    _prevEffect = effectToStart
 
     // 6. Gradients
     document.documentElement.style.setProperty(

@@ -76,6 +76,44 @@
   color: #a78bfa;
 }
 
+.custom-checklist .dialog-icon {
+  color: #4ade80;
+}
+
+.custom-checklist .dialog-body {
+  align-items: stretch;
+}
+
+.dialog-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialog-check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dialog-check-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dialog-check-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-color);
+}
+
+.dialog-check-item input[type="checkbox"][disabled] + span {
+  opacity: 0.55;
+}
+
 .dialog-message {
   text-align: center;
   color: rgba(255, 255, 255, 0.9);
