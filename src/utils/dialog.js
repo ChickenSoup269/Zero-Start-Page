@@ -205,3 +205,87 @@ export function showPrompt(message, defaultValue = "", title = null) {
     document.addEventListener("keydown", escHandler)
   })
 }
+
+// Checklist Confirm Dialog
+export function showChecklistConfirm(options, title = null, message = null) {
+  return new Promise((resolve) => {
+    const container = createDialogContainer()
+    const i18n = geti18n()
+
+    const checklistHtml = (options || [])
+      .map(
+        (opt, idx) => `
+          <label class="dialog-check-item" for="dialog-check-${idx}">
+            <input
+              type="checkbox"
+              id="dialog-check-${idx}"
+              data-key="${opt.key}"
+              ${opt.checked ? "checked" : ""}
+              ${opt.disabled ? "disabled" : ""}
+            />
+            <span>${opt.label}</span>
+          </label>
+        `,
+      )
+      .join("")
+
+    container.innerHTML = `
+      <div class="custom-dialog custom-checklist">
+        ${title ? `<div class="dialog-header">${title}</div>` : ""}
+        <div class="dialog-body">
+          <i class="fa-solid fa-list-check dialog-icon"></i>
+          ${message ? `<p class="dialog-message">${message}</p>` : ""}
+          <div class="dialog-checklist">${checklistHtml}</div>
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-secondary" id="checklist-cancel">
+            ${i18n.cancel || "Cancel"}
+          </button>
+          <button class="dialog-btn dialog-btn-primary" id="checklist-ok">
+            ${i18n.confirm || "Confirm"}
+          </button>
+        </div>
+      </div>
+    `
+
+    container.classList.add("active")
+
+    const okBtn = container.querySelector("#checklist-ok")
+    const cancelBtn = container.querySelector("#checklist-cancel")
+
+    okBtn.addEventListener("click", () => {
+      const result = {}
+      container
+        .querySelectorAll(".dialog-checklist input[type='checkbox'][data-key]")
+        .forEach((input) => {
+          result[input.dataset.key] = input.checked
+        })
+
+      closeDialog()
+      resolve(result)
+    })
+
+    cancelBtn.addEventListener("click", () => {
+      closeDialog()
+      resolve(null)
+    })
+
+    // Close on overlay click
+    container.addEventListener("click", (e) => {
+      if (e.target === container) {
+        closeDialog()
+        resolve(null)
+      }
+    })
+
+    // Close on ESC
+    const escHandler = (e) => {
+      if (e.key === "Escape") {
+        closeDialog()
+        resolve(null)
+        document.removeEventListener("keydown", escHandler)
+      }
+    }
+    document.addEventListener("keydown", escHandler)
+  })
+}

@@ -88,6 +88,11 @@ i {
   margin-bottom: 5px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   color: var(--clock-color);
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
 }
 
 #date {
@@ -96,6 +101,17 @@ i {
   margin-bottom: 40px;
   opacity: 0.9;
   color: var(--clock-color);
+  visibility: visible;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+#clock.is-hidden,
+#date.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .bg-image-active {

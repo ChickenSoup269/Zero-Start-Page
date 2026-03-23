@@ -1,3 +1,12 @@
+### [1.0.2] - 2026-03-23
+
+#### Effects Update (Settling Leaves)
+
+- Added new skin options: Cherry Blossoms, Plum Blossoms, and Sakura Petals.
+- Improved settling animation to look smoother and more natural (less jitter when leaves reach bottom).
+- Increased Sakura Petal size for better visibility.
+- Updated UI/i18n labels for new leaf skins (EN + VI).
+
 ### [1.0.1] 2026-03-19
 
 
