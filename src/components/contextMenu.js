@@ -32,8 +32,18 @@ export function showContextMenu(
   contextMenuCallbacks = callbacks
 
   contextMenu.style.display = "block"
-  contextMenu.style.left = `${x}px`
-  contextMenu.style.top = `${y}px`
+
+  // Keep the popup fully visible in viewport when user clicks near edges.
+  const margin = 8
+  const menuWidth = contextMenu.offsetWidth || 180
+  const menuHeight = contextMenu.offsetHeight || 100
+  const maxX = Math.max(margin, window.innerWidth - menuWidth - margin)
+  const maxY = Math.max(margin, window.innerHeight - menuHeight - margin)
+  const safeX = Math.min(Math.max(x, margin), maxX)
+  const safeY = Math.min(Math.max(y, margin), maxY)
+
+  contextMenu.style.left = `${safeX}px`
+  contextMenu.style.top = `${safeY}px`
 
   // Update text if needed (optional)
   const i18n = geti18n()

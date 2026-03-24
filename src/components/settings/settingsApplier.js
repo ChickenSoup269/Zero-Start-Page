@@ -374,6 +374,8 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // Effect Color Inputs
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
+    DOM.meteorColorPicker.value =
+      settings.meteorColor || settings.starColor || "#ffffff"
     DOM.networkColorPicker.value = settings.networkColor || "#00bcd4"
     DOM.matrixColorPicker.value = settings.matrixColor || "#00FF00"
     DOM.auraColorPicker.value = settings.auraColor || "#a8c0ff"
@@ -397,6 +399,8 @@ function createUpdateSettingsInputs(effectInstances) {
     // Visibility of Effect Settings
     DOM.starColorSetting.style.display =
       settings.effect === "galaxy" ? "block" : "none"
+    DOM.meteorColorSetting.style.display =
+      settings.effect === "meteor" ? "block" : "none"
     DOM.networkColorSetting.style.display =
       settings.effect === "network" ? "block" : "none"
     DOM.matrixColorSetting.style.display =

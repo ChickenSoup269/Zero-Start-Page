@@ -48,11 +48,25 @@ export class FullCalendar {
         this.navigateMonth(1)
       } else if (e.target.closest("#calendar-add-event")) {
         this.openEventModal()
+      } else if (e.target.closest(".calendar-event")) {
+        const eventId = e.target.closest(".calendar-event").dataset.eventId
+        this.showEventContextMenu(e.clientX, e.clientY, eventId)
+        e.stopPropagation()
       } else if (e.target.closest(".day-item")) {
         // Just select the day with left click
         const dayItem = e.target.closest(".day-item")
-        if (dayItem.querySelector(".day-number")) {
+        const dayNumber = dayItem.querySelector(".day-number")
+        if (dayNumber) {
           this.selectDay(dayItem)
+
+          // Show day menu on left click as a floating menu outside the card.
+          const day = parseInt(dayNumber.textContent)
+          const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+          const events = getCalendarEvents().filter(
+            (evt) => evt.date === dateStr,
+          )
+          this.showDayContextMenu(e.clientX, e.clientY, day, events)
+          e.stopPropagation()
         }
       }
     })
@@ -80,8 +94,13 @@ export class FullCalendar {
     })
 
     // Close context menu on click outside
-    document.addEventListener("click", () => {
-      this.hideContextMenu()
+    document.addEventListener("click", (e) => {
+      if (
+        this.currentContextMenu &&
+        !this.currentContextMenu.contains(e.target)
+      ) {
+        this.hideContextMenu()
+      }
     })
   }
 
