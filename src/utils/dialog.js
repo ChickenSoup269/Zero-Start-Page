@@ -2,9 +2,16 @@
 import { geti18n } from "../services/i18n.js"
 
 let dialogContainer = null
+let clearDialogTimer = null
 
 function createDialogContainer() {
-  if (dialogContainer) return dialogContainer
+  if (dialogContainer) {
+    if (clearDialogTimer) {
+      clearTimeout(clearDialogTimer)
+      clearDialogTimer = null
+    }
+    return dialogContainer
+  }
 
   dialogContainer = document.createElement("div")
   dialogContainer.id = "custom-dialog-overlay"
@@ -17,8 +24,12 @@ function createDialogContainer() {
 function closeDialog() {
   if (dialogContainer) {
     dialogContainer.classList.remove("active")
-    setTimeout(() => {
+    if (clearDialogTimer) {
+      clearTimeout(clearDialogTimer)
+    }
+    clearDialogTimer = setTimeout(() => {
       dialogContainer.innerHTML = ""
+      clearDialogTimer = null
     }, 300)
   }
 }

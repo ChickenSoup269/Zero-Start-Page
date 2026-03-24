@@ -194,6 +194,8 @@
   "calendar_event_desc": "Description (optional):",
   "calendar_event_action": "Update event or Delete?\n(OK = Update, Cancel = Delete)",
   "calendar_delete_confirm": "Delete this event?",
+  "calendar_add_success": "Event added successfully.",
+  "calendar_update_success": "Event updated successfully.",
   "settings_export": "Export Settings",
   "settings_import": "Import Settings",
   "alert_export_success": "Settings exported successfully!",

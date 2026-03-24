@@ -194,6 +194,8 @@
   "calendar_event_desc": "Mô tả (tùy chọn):",
   "calendar_event_action": "Cập nhật hoặc Xóa sự kiện?\n(OK = Cập nhật, Cancel = Xóa)",
   "calendar_delete_confirm": "Xóa sự kiện này?",
+  "calendar_add_success": "Thêm sự kiện thành công.",
+  "calendar_update_success": "Cập nhật sự kiện thành công.",
   "settings_export": "Xuất cài đặt",
   "settings_import": "Nhập cài đặt",
   "alert_export_success": "Xuất cài đặt thành công!",
