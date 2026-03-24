@@ -374,34 +374,65 @@
 /* Context Menu */
 .context-menu {
   display: none;
-  position: absolute;
-  background: rgba(0, 0, 0, 0.942);
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.798);
-  width: 150px;
+  position: fixed;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 20, 28, 0.96) 0%,
+    rgba(10, 12, 18, 0.94) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.45),
+    0 2px 10px rgba(0, 0, 0, 0.22);
+  width: 180px;
+  padding: 6px;
   z-index: 2000;
-  overflow: hidden;
-  animation: fadeInMenu 0.1s ease-out;
+  overflow: clip;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  animation: fadeInMenu 0.14s ease-out;
 }
 
 .menu-item {
-  padding: 12px 15px;
+  padding: 10px 12px;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: white;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.95);
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: background 0.2s;
+  border-radius: 8px;
+  line-height: 1.2;
+  transition:
+    background 0.18s,
+    transform 0.12s,
+    color 0.18s;
+}
+
+.menu-item i {
+  width: 14px;
+  text-align: center;
+  opacity: 0.85;
 }
 
 .menu-item:hover {
-  background: var(--accent-color);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  transform: translateX(1px);
   color: #fff;
 }
 
+.menu-item:active {
+  transform: translateX(0);
+}
+
 .menu-item.delete {
-  color: #e74c3c;
+  color: #ff8a8a;
+}
+
+.menu-item.delete:hover {
+  background: rgba(255, 107, 107, 0.18);
+  color: #ffd8d8;
 }
 
 /* Bookmark Tree View Selection */

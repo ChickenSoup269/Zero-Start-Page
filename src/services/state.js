@@ -37,6 +37,7 @@ const defaultSettings = {
   userColors: [],
   userGradients: [], // Add userGradients
   starColor: "#ffffff",
+  meteorColor: "#ffffff",
 
   clockColor: null,
   auraColor: "#a8c0ff",
@@ -220,6 +221,7 @@ export function resetSettingsState() {
     userColors: [],
     userGradients: [],
     starColor: "#ffffff",
+    meteorColor: "#ffffff",
 
     clockColor: null,
     auraColor: "#a8c0ff",

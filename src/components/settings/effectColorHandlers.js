@@ -13,6 +13,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.starFallEffect.updateColor(DOM.starColorPicker.value)
   })
 
+  DOM.meteorColorPicker.addEventListener("input", () => {
+    updateSetting("meteorColor", DOM.meteorColorPicker.value)
+    saveSettings()
+    if (effectInstances.meteorEffect)
+      effectInstances.meteorEffect.updateAccentColor(
+        DOM.meteorColorPicker.value,
+      )
+  })
+
   DOM.networkColorPicker.addEventListener("input", () => {
     updateSetting("networkColor", DOM.networkColorPicker.value)
     saveSettings()

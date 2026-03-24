@@ -5,13 +5,15 @@ export class MeteorEffect {
     this.active = false
     this.color = color
 
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
+    this.fps = 60
+    this.frameDuration = 1000 / this.fps
     this.lastDrawTime = 0
+    this.lastTickTime = 0
 
     this.meteors = []
     this.stars = []
-    this.spawnChance = 0.16
+    this.spawnRate = 4.2
+    this.spawnAccumulator = 0
 
     this.resize()
     this._resizeHandler = () => this.resize()
@@ -40,35 +42,44 @@ export class MeteorEffect {
   }
 
   _spawnMeteor() {
-    const maxX = this.canvas.width * 0.75
+    const maxX = this.canvas.width * 0.8
     const x = Math.random() * maxX
     const y = Math.random() * (this.canvas.height * 0.4)
 
-    const speed = Math.random() * 12 + 14
-    const length = Math.random() * 110 + 70
-    const size = Math.random() * 1.8 + 1
+    const speed = Math.random() * 7 + 15
+    const length = Math.random() * 140 + 90
+    const size = Math.random() * 1.6 + 0.9
 
     this.meteors.push({
       x,
       y,
       vx: speed,
-      vy: speed * 0.55,
+      vy: speed * (0.48 + Math.random() * 0.14),
+      ax: Math.random() * 0.015,
+      ay: Math.random() * 0.015,
       life: 1,
-      fadeSpeed: Math.random() * 0.012 + 0.007,
+      fadeSpeed: Math.random() * 0.007 + 0.004,
       length,
       size,
     })
   }
 
-  update() {
-    if (Math.random() < this.spawnChance) {
+  update(deltaMs) {
+    const dt = Math.max(0.5, Math.min(2.5, deltaMs / this.frameDuration))
+    const seconds = deltaMs / 1000
+
+    this.spawnAccumulator += this.spawnRate * seconds
+    while (this.spawnAccumulator >= 1) {
       this._spawnMeteor()
+      this.spawnAccumulator -= 1
     }
 
     this.meteors = this.meteors.filter((m) => {
-      m.x += m.vx
-      m.y += m.vy
-      m.life -= m.fadeSpeed
+      m.vx += m.ax * dt
+      m.vy += m.ay * dt
+      m.x += m.vx * dt
+      m.y += m.vy * dt
+      m.life -= m.fadeSpeed * dt
       return (
         m.life > 0 &&
         m.x < this.canvas.width + m.length &&
@@ -77,16 +88,18 @@ export class MeteorEffect {
     })
   }
 
-  draw() {
+  draw(currentTime) {
     const w = this.canvas.width
     const h = this.canvas.height
 
     this.ctx.clearRect(0, 0, w, h)
 
     this.stars.forEach((s) => {
-      const twinkle =
-        0.4 + Math.sin(performance.now() * 0.0015 + s.twinkle) * 0.25
-      this.ctx.fillStyle = `rgba(255,255,255,${Math.max(0.05, s.alpha * twinkle)})`
+      const twinkle = 0.4 + Math.sin(currentTime * 0.0015 + s.twinkle) * 0.25
+      this.ctx.fillStyle = this._hexToRgba(
+        this.color,
+        Math.max(0.05, s.alpha * twinkle),
+      )
       this.ctx.beginPath()
       this.ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2)
       this.ctx.fill()
@@ -97,17 +110,20 @@ export class MeteorEffect {
       const dy = m.length * 0.55
 
       const grad = this.ctx.createLinearGradient(m.x - dx, m.y - dy, m.x, m.y)
-      grad.addColorStop(0, "rgba(255,255,255,0)")
-      grad.addColorStop(0.6, `rgba(255,255,255,${0.45 * m.life})`)
+      grad.addColorStop(0, this._hexToRgba(this.color, 0))
+      grad.addColorStop(0.6, this._hexToRgba(this.color, 0.5 * m.life))
       grad.addColorStop(1, this._hexToRgba(this.color, 0.95 * m.life))
 
       this.ctx.strokeStyle = grad
       this.ctx.lineWidth = m.size
       this.ctx.lineCap = "round"
+      this.ctx.shadowColor = this._hexToRgba(this.color, 0.45 * m.life)
+      this.ctx.shadowBlur = 8 * m.life
       this.ctx.beginPath()
       this.ctx.moveTo(m.x - dx, m.y - dy)
       this.ctx.lineTo(m.x, m.y)
       this.ctx.stroke()
+      this.ctx.shadowBlur = 0
 
       this.ctx.fillStyle = this._hexToRgba(this.color, 0.95 * m.life)
       this.ctx.beginPath()
@@ -120,18 +136,28 @@ export class MeteorEffect {
     if (!this.active) return
     requestAnimationFrame((time) => this.animate(time))
 
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
+    if (!this.lastTickTime) {
+      this.lastTickTime = currentTime
+      this.lastDrawTime = currentTime
+    }
 
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-    this.update()
-    this.draw()
+    const delta = currentTime - this.lastTickTime
+    this.lastTickTime = currentTime
+
+    this.update(delta)
+
+    if (currentTime - this.lastDrawTime >= this.frameDuration) {
+      this.lastDrawTime = currentTime
+      this.draw(currentTime)
+    }
   }
 
   start() {
     if (this.active) return
     this.active = true
     this.lastDrawTime = 0
+    this.lastTickTime = 0
+    this.spawnAccumulator = 0
     this.canvas.hidden = false
     this.canvas.style.display = "block"
     this.animate(0)

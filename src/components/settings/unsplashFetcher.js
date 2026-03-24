@@ -15,6 +15,15 @@ function firstPhoto(payload) {
   return Array.isArray(payload) ? payload[0] : payload
 }
 
+function preloadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(url)
+    img.onerror = () => reject(new Error("Failed to preload Unsplash image"))
+    img.src = url
+  })
+}
+
 async function fetchUnsplashPhotoByParams(accessKey, params) {
   const search = new URLSearchParams({
     ...params,
@@ -171,6 +180,7 @@ async function setUnsplashRandomBackground(
   handleSettingUpdateCallback,
 ) {
   const settings = getSettings()
+  const previousBackground = settings.background
   const accessKey = settings.unsplashAccessKey || ""
   if (!accessKey) {
     showAlert(
@@ -204,6 +214,23 @@ async function setUnsplashRandomBackground(
     const separator = baseUrl.includes("?") ? "&" : "?"
     const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
+    // Keep screen black while waiting for the final image bytes.
+    const bgLayer = document.getElementById("bg-layer")
+    const bgVideo = document.getElementById("bg-video")
+    if (bgVideo) {
+      bgVideo.style.opacity = "0"
+      bgVideo.style.display = "none"
+    }
+    if (bgLayer) {
+      bgLayer.style.transition = "none"
+      bgLayer.style.backgroundImage = "none"
+      bgLayer.style.background = "#000000"
+      bgLayer.style.opacity = "1"
+    }
+
+    await preloadImage(imageUrl)
+    if (bgLayer) bgLayer.style.transition = ""
+
     // Show photo credit
     if (unsplashCredit) {
       const photoLink = photo.links?.html
@@ -224,14 +251,16 @@ async function setUnsplashRandomBackground(
     })
     saveSettings()
 
-    document.body.classList.add("bg-loading")
     handleSettingUpdateCallback("background", imageUrl)
     btn.disabled = false
     btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
-    setTimeout(() => document.body.classList.remove("bg-loading"), 800)
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
     if (unsplashCredit) unsplashCredit.style.display = "none"
+
+    // Restore previous background if loading fails after black-screen state.
+    handleSettingUpdateCallback("background", previousBackground)
+
     btn.disabled = false
     btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
     showAlert(

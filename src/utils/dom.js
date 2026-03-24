@@ -61,6 +61,11 @@ export const userGradientsGallery = document.getElementById(
 export const starColorPicker = document.getElementById("star-color-picker")
 export const starColorSetting = document.getElementById("star-color-setting")
 
+export const meteorColorPicker = document.getElementById("meteor-color-picker")
+export const meteorColorSetting = document.getElementById(
+  "meteor-color-setting",
+)
+
 export const networkColorPicker = document.getElementById(
   "network-color-picker",
 )

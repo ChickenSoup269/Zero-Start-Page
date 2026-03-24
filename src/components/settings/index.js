@@ -177,7 +177,7 @@ export function initSettings() {
     ),
     meteorEffect: new MeteorEffect(
       "effect-canvas",
-      settings.starColor || "#ffffff",
+      settings.meteorColor || settings.starColor || "#ffffff",
     ),
     wavyPatternEffect: new WavyPatternEffect(
       settings.wavyPatternColor1 || "#AB3E5B",
