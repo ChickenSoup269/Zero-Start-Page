@@ -5,7 +5,7 @@ import {
   updateCalendarEvent,
   deleteCalendarEvent,
 } from "../services/state.js"
-import { showPrompt, showConfirm } from "../utils/dialog.js"
+import { showPrompt, showConfirm, showAlert } from "../utils/dialog.js"
 import { geti18n } from "../services/i18n.js"
 import {
   getLunarDateString,
@@ -311,6 +311,9 @@ export class FullCalendar {
           time: time?.trim() || "",
           description: description?.trim() || "",
         })
+        await showAlert(
+          i18n.calendar_update_success || "Event updated successfully.",
+        )
       } else {
         deleteCalendarEvent(eventId)
       }
@@ -321,6 +324,7 @@ export class FullCalendar {
         time: time?.trim() || "",
         description: description?.trim() || "",
       })
+      await showAlert(i18n.calendar_add_success || "Event added successfully.")
     }
 
     this.render()
