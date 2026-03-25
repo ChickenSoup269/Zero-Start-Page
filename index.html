@@ -379,27 +379,22 @@
                         </label>
                     </div>
                 </div>
-                <div id="divider-controls" style="display: none; margin-bottom: 12px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                    <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer;">
-                        <input type="checkbox" id="enable-divider-lines" checked>
-                        <span data-i18n="settings_multi_color_dividers">Show Divider Lines</span>
-                    </label>
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <label style="font-size: 0.9rem; flex: 0 0 80px;" data-i18n="settings_multi_color_line_color">Line Color:</label>
-                        <input type="color" id="divider-line-color" value="#FFFFFF" style="flex: 1;">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_line_width">Line Width: <span id="divider-line-width-value">2</span>px</label>
-                        <input type="range" id="divider-line-width-input" min="1" max="8" value="2" style="width: 100%;">
-                    </div>
-                </div>
                 <div style="margin-bottom: 12px;">
                     <label><span data-i18n="settings_multi_color_angle">Angle:</span> <span id="multi-gradient-angle-value">135</span>deg</label>
                     <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135" style="width: 100%;">
                 </div>
                 <div id="multi-gradient-preview" style="width: 100%; height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);"></div>
-                <button id="apply-multi-color-btn" class="secondary-btn full-width" data-i18n="settings_multi_color_apply">Apply Split Background</button>
-                <button id="save-multi-color-btn" class="secondary-btn full-width" style="margin-top: 6px;" data-i18n="settings_multi_color_save">Save Preset</button>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+                    <button id="random-multi-color-btn" class="secondary-btn" style="flex: 1;" data-i18n="settings_multi_color_random"><i class="fa-solid fa-shuffle"></i> Random</button>
+                    <button id="apply-multi-color-btn" class="secondary-btn" style="flex: 1;" data-i18n="settings_multi_color_apply">Apply</button>
+                </div>
+                <button id="save-multi-color-btn" class="secondary-btn full-width" data-i18n="settings_multi_color_save">Save Preset</button>
+                
+                <!-- Saved Multi-Color Presets -->
+                <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
+                    <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_saved_presets">Saved Presets</label>
+                    <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
+                </div>
             </div>
 
 

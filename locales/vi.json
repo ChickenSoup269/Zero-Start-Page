@@ -270,7 +270,9 @@
   "settings_multi_color_line_color": "Màu đường:",
   "settings_multi_color_line_width": "Độ rộng đường:",
   "settings_multi_color_angle": "Góc:",
-  "settings_multi_color_apply": "Áp dụng hình nền tách",
+  "settings_multi_color_apply": "Áp dụng",
+  "settings_multi_color_random": "Màu ngẫu nhiên",
   "settings_multi_color_save": "Lưu cài đặt",
+  "settings_multi_color_saved_presets": "Cài đặt đã lưu",
   "settings_multi_color_color_label": "Màu"
 }

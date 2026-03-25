@@ -270,7 +270,9 @@
   "settings_multi_color_line_color": "Line Color:",
   "settings_multi_color_line_width": "Line Width:",
   "settings_multi_color_angle": "Angle:",
-  "settings_multi_color_apply": "Apply Split Background",
+  "settings_multi_color_apply": "Apply",
+  "settings_multi_color_random": "Random Colors",
   "settings_multi_color_save": "Save Preset",
+  "settings_multi_color_saved_presets": "Saved Presets",
   "settings_multi_color_color_label": "Color"
 }

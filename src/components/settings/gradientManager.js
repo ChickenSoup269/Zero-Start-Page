@@ -16,6 +16,9 @@ function renderUserGradients(DOM) {
   DOM.userGradientsGallery.innerHTML = ""
   if (Array.isArray(settings.userGradients)) {
     settings.userGradients.forEach((gradient, index) => {
+      // Skip multi-color presets (they have their own section)
+      if (gradient.type === "multi-color") return
+
       const item = document.createElement("div")
       item.className = "user-gradient-item"
       item.dataset.start = gradient.start

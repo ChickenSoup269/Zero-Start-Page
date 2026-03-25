@@ -78,22 +78,17 @@ export const multiGradientPreview = document.getElementById(
 export const applyMultiColorBtn = document.getElementById(
   "apply-multi-color-btn",
 )
+export const randomMultiColorBtn = document.getElementById(
+  "random-multi-color-btn",
+)
 export const saveMultiColorBtn = document.getElementById("save-multi-color-btn")
+export const savedMultiColorPresets = document.getElementById(
+  "saved-multi-color-presets",
+)
 
-// Multi-Color Mode and Divider Controls
+// Multi-Color Mode
 export const multiColorModeRadios = document.querySelectorAll(
   'input[name="multi-color-mode"]',
-)
-export const dividerControls = document.getElementById("divider-controls")
-export const enableDividerLines = document.getElementById(
-  "enable-divider-lines",
-)
-export const dividerLineColor = document.getElementById("divider-line-color")
-export const dividerLineWidthInput = document.getElementById(
-  "divider-line-width-input",
-)
-export const dividerLineWidthValue = document.getElementById(
-  "divider-line-width-value",
 )
 
 export const starColorPicker = document.getElementById("star-color-picker")
