@@ -561,15 +561,32 @@ export function setupGeneralEventHandlers(
   })
 
   // Date/time settings
-  DOM.dateFormatSelect.addEventListener("change", () =>
-    handleSettingUpdate("dateFormat", DOM.dateFormatSelect.value),
-  )
+  DOM.dateFormatSelect.addEventListener("change", () => {
+    handleSettingUpdate("dateFormat", DOM.dateFormatSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "dateFormat", value: DOM.dateFormatSelect.value },
+      }),
+    )
+  })
 
   DOM.hideSecondsCheckbox.addEventListener("change", () => {
     handleSettingUpdate("hideSeconds", DOM.hideSecondsCheckbox.checked)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: { key: "hideSeconds", value: DOM.hideSecondsCheckbox.checked },
+      }),
+    )
+  })
+
+  DOM.clockDatePrioritySelect.addEventListener("change", () => {
+    handleSettingUpdate("clockDatePriority", DOM.clockDatePrioritySelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockDatePriority",
+          value: DOM.clockDatePrioritySelect.value,
+        },
       }),
     )
   })
@@ -593,6 +610,11 @@ export function setupGeneralEventHandlers(
   DOM.clockSizeInput.addEventListener("input", () => {
     DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
     handleSettingUpdate("clockSize", DOM.clockSizeInput.value)
+  })
+
+  DOM.dateSizeInput.addEventListener("input", () => {
+    DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
+    handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
 
   DOM.clockColorPicker.addEventListener("input", () =>
@@ -743,14 +765,28 @@ export function setupGeneralEventHandlers(
   })
 
   // Music style
-  DOM.musicStyleSelect.addEventListener("change", () => {
-    handleSettingUpdate("musicBarStyle", DOM.musicStyleSelect.value)
+  const applyMusicStyle = (style) => {
+    DOM.musicStyleSelect.value = style
+    if (DOM.lcpMusicStyleSelect) {
+      DOM.lcpMusicStyleSelect.value = style
+    }
+    handleSettingUpdate("musicBarStyle", style)
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
-        detail: { key: "music_bar_style", value: DOM.musicStyleSelect.value },
+        detail: { key: "music_bar_style", value: style },
       }),
     )
+  }
+
+  DOM.musicStyleSelect.addEventListener("change", () => {
+    applyMusicStyle(DOM.musicStyleSelect.value)
   })
+
+  if (DOM.lcpMusicStyleSelect) {
+    DOM.lcpMusicStyleSelect.addEventListener("change", () => {
+      applyMusicStyle(DOM.lcpMusicStyleSelect.value)
+    })
+  }
 
   // Sidebar footer collapse
   const sidebarFooter = document.querySelector(".sidebar-footer")

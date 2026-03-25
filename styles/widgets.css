@@ -463,6 +463,38 @@ body.ghost-controls .side-controls:hover {
   opacity: 0.9;
 }
 
+.lcp-row-select {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.lcp-row-select .lcp-label {
+  width: 100%;
+}
+
+.lcp-select {
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.78rem;
+  font-family: var(--font-primary);
+  outline: none;
+}
+
+.lcp-select:focus {
+  border-color: var(--accent-color);
+}
+
+.lcp-select option {
+  background: #111;
+  color: #fff;
+}
+
 /* Toggle switch */
 .lcp-switch {
   position: relative;
@@ -1175,6 +1207,7 @@ body.ghost-controls .side-controls:hover {
   margin-left: auto;
   margin-right: auto;
   border-radius: 12px;
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   /* background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(8px);

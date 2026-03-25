@@ -109,6 +109,17 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
+            <div class="lcp-row lcp-row-select">
+                <i class="fa-solid fa-compact-disc lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
+                <select id="lcp-music-style-select" class="lcp-select">
+                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                    <option value="neon" data-i18n="style_neon">Neon</option>
+                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -860,14 +871,24 @@
                 <label data-i18n="settings_date_format"><i class="fa-solid fa-calendar-day"></i> Date &amp; Clock
                     Format</label>
                 <select id="date-format-select">
-                    <option value="full">Weekday, DD Month YYYY</option>
-                    <option value="short">DD/MM/YYYY</option>
-                    <option value="us">MM/DD/YYYY</option>
-                    <option value="iso">YYYY-MM-DD</option>
+                    <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
+                    <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
+                    <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
+                    <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
+                    <option value="year" data-i18n="settings_date_format_year">Year only</option>
+                    <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
                 </select>
                 <div class="setting-item-row" style="margin-top: 0.6rem;">
                     <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
                     <input type="checkbox" id="hide-seconds-checkbox">
+                </div>
+                <div class="setting-item" style="margin-top: 0.6rem;">
+                    <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
+                        priority</label>
+                    <select id="clock-date-priority-select">
+                        <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
+                        <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday</option>
+                    </select>
                 </div>
             </div>
 
@@ -875,6 +896,11 @@
                 <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size:</span> <span
                         id="clock-size-value">6rem</span></label>
                 <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+
+                <label style="margin-top: 0.7rem; display: block;"><i class="fa-solid fa-calendar-day"></i> <span
+                        data-i18n="settings_date_size">Date Size:</span> <span
+                        id="date-size-value">1.5rem</span></label>
+                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
             </div>
 
             <div class="setting-group">

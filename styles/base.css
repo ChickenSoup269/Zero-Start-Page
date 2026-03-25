@@ -114,6 +114,24 @@ i {
   pointer-events: none;
 }
 
+body.time-priority-date #date {
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+body.time-priority-date #clock {
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+
+body.time-priority-none #clock {
+  margin-bottom: 5px;
+}
+
+body.time-priority-none #date {
+  margin-bottom: 40px;
+}
+
 .bg-image-active {
   animation: none !important;
   background-image: none;

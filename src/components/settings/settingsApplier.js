@@ -210,9 +210,26 @@ function createApplySettings(effectInstances) {
 
     // 3. UI Props
     document.documentElement.style.setProperty("--font-primary", settings.font)
+    const baseClockSize = Number(settings.clockSize) || 6
+    const rawDateSize = Number(settings.dateSize)
+    const baseDateSize = Number.isFinite(rawDateSize)
+      ? Math.min(10, Math.max(0.8, rawDateSize))
+      : 1.5
+    const priority = settings.clockDatePriority === "date" ? "date" : "none"
+    let computedClockSize = baseClockSize
+    let computedDateSize = baseDateSize
+    if (priority === "date") {
+      computedClockSize = 2
+      computedDateSize = baseDateSize
+    }
+
     document.documentElement.style.setProperty(
       "--clock-size",
-      `${settings.clockSize}rem`,
+      `${computedClockSize}rem`,
+    )
+    document.documentElement.style.setProperty(
+      "--date-size",
+      `${computedDateSize}rem`,
     )
 
     // 3.1 Clock Color Contrast Logic
@@ -313,6 +330,10 @@ function createUpdateSettingsInputs(effectInstances) {
     )
     const isUserUploadedBg =
       settings.background && settings.background.startsWith("data:image")
+    const rawDateSize = Number(settings.dateSize)
+    const baseDateSize = Number.isFinite(rawDateSize)
+      ? Math.min(10, Math.max(0.8, rawDateSize))
+      : 1.5
     DOM.bgInput.value =
       isPredefinedLocalBg || isUserUploadedBg || !settings.background
         ? ""
@@ -322,11 +343,15 @@ function createUpdateSettingsInputs(effectInstances) {
     effectInstances.renderFontGrid()
     DOM.dateFormatSelect.value = settings.dateFormat
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
+    DOM.clockDatePrioritySelect.value =
+      settings.clockDatePriority === "date" ? "date" : "none"
     DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
     DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")
     DOM.clockSizeInput.value = settings.clockSize
     DOM.clockSizeValue.textContent = `${settings.clockSize}rem`
+    DOM.dateSizeInput.value = String(baseDateSize)
+    DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
     DOM.languageSelect.value = settings.language || "en"
     DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
@@ -360,12 +385,6 @@ function createUpdateSettingsInputs(effectInstances) {
 
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
     setEffectActive(DOM.effectGrid, settings.effect)
-    const effectGroup = document.getElementById("effect-setting-group")
-    if (effectGroup) {
-      if (settings.effect && settings.effect !== "none") {
-        effectGroup.classList.add("expanded")
-      }
-    }
 
     // Gradient Inputs
     DOM.gradientStartPicker.value = settings.gradientStart
@@ -536,6 +555,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.lcpQuickAccess.checked = settings.showQuickAccess !== false
     DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
+    if (DOM.lcpMusicStyleSelect) {
+      DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
+    }
 
     // Highlight active background
     document.querySelectorAll(".local-bg-item").forEach((item) => {
