@@ -63,6 +63,7 @@ import { SakuraEffect } from "../animations/sakura.js"
 import { SnowfallEffect } from "../animations/snowfall.js"
 import { SnowfallHDEffect } from "../animations/snowfallHD.js"
 import { AuroraWaveEffect } from "../animations/auroraWave.js"
+import { NorthernLightsEffect } from "../animations/northernLights.js"
 import { BubblesEffect } from "../animations/bubbles.js"
 import { RainOnGlassEffect } from "../animations/rainOnGlass.js"
 import { RainHDEffect } from "../animations/rainHD.js"
@@ -132,6 +133,10 @@ export function initSettings() {
     auroraWaveEffect: new AuroraWaveEffect(
       "effect-canvas",
       settings.accentColor,
+    ),
+    northernLightsEffect: new NorthernLightsEffect(
+      "effect-canvas",
+      settings.northernLightsColor || "#00ff88",
     ),
     bubblesEffect: new BubblesEffect(
       "effect-canvas",

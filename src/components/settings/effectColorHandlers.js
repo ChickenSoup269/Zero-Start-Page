@@ -43,6 +43,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.auraEffect.updateColor(DOM.auraColorPicker.value)
   })
 
+  DOM.northernLightsColorPicker.addEventListener("input", () => {
+    updateSetting("northernLightsColor", DOM.northernLightsColorPicker.value)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setColor(
+        DOM.northernLightsColorPicker.value,
+      )
+  })
+
   DOM.hackerColorPicker.addEventListener("input", () => {
     updateSetting("hackerColor", DOM.hackerColorPicker.value)
     saveSettings()
