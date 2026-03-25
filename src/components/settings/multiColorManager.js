@@ -58,11 +58,7 @@ export function setupMultiColorManager(applySettings) {
 
     if (mode === "blocks") {
       // Solid color blocks mode
-      backgroundCSS = generateSolidBlocksCSS(
-        colors,
-        parseInt(angle),
-        DOM.enableDividerLines.checked,
-      )
+      backgroundCSS = generateSolidBlocksCSS(colors, parseInt(angle))
     } else {
       // Smooth gradient mode
       const gradientStops = colors
@@ -78,17 +74,12 @@ export function setupMultiColorManager(applySettings) {
     DOM.multiGradientPreview.style.background = backgroundCSS
   }
 
-  // Generate solid blocks CSS with optional divider lines
-  function generateSolidBlocksCSS(colors, angle, showDividers) {
+  // Generate solid blocks CSS (equal color blocks with sharp transitions)
+  function generateSolidBlocksCSS(colors, angle) {
     const blockCount = colors.length
     let gradientItems = []
 
-    // Calculate angle for direction (convert degree to x,y offset)
-    const angleRad = (angle * Math.PI) / 180
-    const dirX = Math.cos(angleRad)
-    const dirY = Math.sin(angleRad)
-
-    // Use repeating-linear-gradient with equal color blocks
+    // Create equal-width color blocks
     for (let i = 0; i < blockCount; i++) {
       const percent = (100 / blockCount) * i
       const nextPercent = (100 / blockCount) * (i + 1)
@@ -96,25 +87,29 @@ export function setupMultiColorManager(applySettings) {
       // Add solid color block
       gradientItems.push(`${colors[i]} ${percent}%`)
       gradientItems.push(`${colors[i]} ${nextPercent}%`)
-
-      // Add divider line between colors (if not the last one and dividers enabled)
-      if (i < blockCount - 1 && showDividers) {
-        const dividerColor = DOM.dividerLineColor.value || "#FFFFFF"
-        const dividerWidth = parseFloat(DOM.dividerLineWidthInput.value) || 2
-        // Calculate divider position (tiny gap between blocks)
-        const dividerPercent = nextPercent
-        gradientItems[gradientItems.length - 1] =
-          `${colors[i]} ${dividerPercent - dividerWidth * 0.1}%`
-        gradientItems.push(
-          `${dividerColor} ${dividerPercent - dividerWidth * 0.1}%`,
-        )
-        gradientItems.push(
-          `${dividerColor} ${dividerPercent + dividerWidth * 0.1}%`,
-        )
-      }
     }
 
     return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+  }
+
+  // Generate random colors
+  function generateRandomColors() {
+    const count = parseInt(DOM.multiColorCountSelect.value)
+    const colors = []
+    for (let i = 0; i < count; i++) {
+      const randomColor = `#${Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0")
+        .toUpperCase()}`
+      colors.push(randomColor)
+    }
+    // Update the color pickers with random colors
+    generateColorPickers(count)
+    const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+    pickers.forEach((picker, index) => {
+      picker.value = colors[index]
+    })
+    updateMultiColorPreview()
   }
 
   // Mode radio button change listener
@@ -123,38 +118,89 @@ export function setupMultiColorManager(applySettings) {
       updateSetting("multiColorMode", getMode())
       saveSettings()
       updateMultiColorPreview()
-      // Show/hide divider controls based on mode
-      const mode = getMode()
-      if (DOM.dividerControls) {
-        DOM.dividerControls.style.display = mode === "blocks" ? "block" : "none"
-      }
     })
   })
 
-  // Divider controls change listeners
-  if (DOM.enableDividerLines) {
-    DOM.enableDividerLines.addEventListener("change", () => {
-      updateSetting("enableDividerLines", DOM.enableDividerLines.checked)
-      saveSettings()
-      updateMultiColorPreview()
-    })
-  }
+  // Random colors button
+  DOM.randomMultiColorBtn.addEventListener("click", () => {
+    generateRandomColors()
+  })
 
-  if (DOM.dividerLineColor) {
-    DOM.dividerLineColor.addEventListener("input", () => {
-      updateSetting("dividerLineColor", DOM.dividerLineColor.value)
-      saveSettings()
-      updateMultiColorPreview()
-    })
-  }
+  // Render saved multi-color presets
+  function renderSavedPresets() {
+    DOM.savedMultiColorPresets.innerHTML = ""
+    const settings = getSettings()
+    if (Array.isArray(settings.userGradients)) {
+      settings.userGradients.forEach((preset, index) => {
+        // Only render multi-color presets
+        if (preset.type !== "multi-color") return
 
-  if (DOM.dividerLineWidthInput) {
-    DOM.dividerLineWidthInput.addEventListener("input", (e) => {
-      DOM.dividerLineWidthValue.textContent = e.target.value
-      updateSetting("dividerLineWidth", parseFloat(e.target.value))
-      saveSettings()
-      updateMultiColorPreview()
-    })
+        const item = document.createElement("div")
+        item.className = "user-gradient-item"
+        item.style.cursor = "pointer"
+        item.title = `${preset.mode === "blocks" ? "Blocks" : "Gradient"} - ${preset.gradientStops.length} colors`
+
+        // Generate preview CSS
+        if (preset.mode === "blocks") {
+          const blockCount = preset.gradientStops.length
+          let gradientStops = []
+          for (let i = 0; i < blockCount; i++) {
+            const percent = (100 / blockCount) * i
+            const nextPercent = (100 / blockCount) * (i + 1)
+            gradientStops.push(`${preset.gradientStops[i]} ${percent}%`)
+            gradientStops.push(`${preset.gradientStops[i]} ${nextPercent}%`)
+          }
+          item.style.background = `linear-gradient(${preset.angle}deg, ${gradientStops.join(", ")})`
+        } else {
+          const gradientStops = preset.gradientStops
+            .map((color, idx) => {
+              const percent = (idx / (preset.gradientStops.length - 1)) * 100
+              return `${color} ${percent}%`
+            })
+            .join(", ")
+          item.style.background = `linear-gradient(${preset.angle}deg, ${gradientStops})`
+        }
+
+        // Click to apply
+        item.addEventListener("click", () => {
+          // Update color pickers
+          generateColorPickers(preset.gradientStops.length)
+          const pickers = Array.from(
+            document.querySelectorAll(".multi-color-picker"),
+          )
+          pickers.forEach((picker, idx) => {
+            picker.value = preset.gradientStops[idx]
+          })
+
+          // Update mode
+          DOM.multiGradientAngleInput.value = preset.angle
+          DOM.multiGradientAngleValue.textContent = preset.angle
+          Array.from(DOM.multiColorModeRadios).forEach((radio) => {
+            radio.checked = radio.value === preset.mode
+          })
+          DOM.multiColorCountSelect.value = preset.gradientStops.length
+          updateSetting("multiColorCount", preset.gradientStops.length)
+
+          updateMultiColorPreview()
+          saveSettings()
+        })
+
+        // Delete button
+        const removeBtn = document.createElement("button")
+        removeBtn.className = "remove-bg-btn"
+        removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+        removeBtn.addEventListener("click", (e) => {
+          e.stopPropagation()
+          settings.userGradients.splice(index, 1)
+          updateSetting("userGradients", settings.userGradients)
+          saveSettings()
+          renderSavedPresets()
+        })
+
+        item.appendChild(removeBtn)
+        DOM.savedMultiColorPresets.appendChild(item)
+      })
+    }
   }
 
   // Handle count selector change
@@ -189,11 +235,7 @@ export function setupMultiColorManager(applySettings) {
     let backgroundCSS
 
     if (mode === "blocks") {
-      backgroundCSS = generateSolidBlocksCSS(
-        colors,
-        parseInt(angle),
-        DOM.enableDividerLines.checked,
-      )
+      backgroundCSS = generateSolidBlocksCSS(colors, parseInt(angle))
     } else {
       const gradientStops = colors
         .map((color, index) => {
@@ -235,9 +277,6 @@ export function setupMultiColorManager(applySettings) {
       gradientStops: colors,
       angle: parseInt(angle),
       mode: mode,
-      dividersEnabled: DOM.enableDividerLines.checked,
-      dividerColor: DOM.dividerLineColor.value,
-      dividerWidth: parseFloat(DOM.dividerLineWidthInput.value),
       type: "multi-color",
     }
 
@@ -248,6 +287,9 @@ export function setupMultiColorManager(applySettings) {
     settings.userGradients.push(newPreset)
     updateSetting("userGradients", settings.userGradients)
     saveSettings()
+
+    // Render the saved presets gallery
+    renderSavedPresets()
 
     // Brief visual feedback on button
     const originalText = DOM.saveMultiColorBtn.textContent
@@ -269,25 +311,6 @@ export function setupMultiColorManager(applySettings) {
     radio.checked = radio.value === modeValue
   })
 
-  // Initialize divider controls
-  if (DOM.enableDividerLines) {
-    DOM.enableDividerLines.checked = settings.enableDividerLines || false
-  }
-  if (DOM.dividerLineColor) {
-    DOM.dividerLineColor.value = settings.dividerLineColor || "#FFFFFF"
-  }
-  if (DOM.dividerLineWidthInput) {
-    DOM.dividerLineWidthInput.value = settings.dividerLineWidth || 2
-    if (DOM.dividerLineWidthValue) {
-      DOM.dividerLineWidthValue.textContent = settings.dividerLineWidth || 2
-    }
-  }
-
-  // Show/hide divider controls based on saved mode
-  if (DOM.dividerControls) {
-    DOM.dividerControls.style.display =
-      modeValue === "blocks" ? "block" : "none"
-  }
-
   updateMultiColorPreview()
+  renderSavedPresets()
 }

@@ -2,6 +2,18 @@
 
 #### Thêm mới (Added)
 
+- New **Multi-Color Split Background** feature:
+  - Create split backgrounds with 2-6 custom colors
+  - Two rendering modes:
+    - **Smooth Gradient**: Colors blend smoothly with adjustable angle
+    - **Solid Blocks**: Equal-width color blocks with sharp transitions
+  - **Random Colors** button to generate random color combinations instantly
+  - Adjustable gradient angle (0-360°)
+  - Live preview of gradient/blocks before applying
+  - Selected color count persists across sessions
+  - Instant apply without page refresh
+  - Save presets for later use
+  - Full i18n support (English & Vietnamese)
 - New visual effect: **CRT Scanlines** (terminal/80s-90s arcade style)
   - Full-frame barrel distortion simulating old CRT monitor curvature
   - Horizontal scanlines and pixel-noise phosphor glow

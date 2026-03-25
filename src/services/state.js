@@ -41,9 +41,6 @@ const defaultSettings = {
   multiColors: ["#FF6B6B", "#4ECDC4"],
   multiGradientAngle: 135,
   multiColorMode: "smooth",
-  enableDividerLines: false,
-  dividerLineColor: "#FFFFFF",
-  dividerLineWidth: 2,
   userBackgrounds: [],
   userColors: [],
   userGradients: [], // Add userGradients
