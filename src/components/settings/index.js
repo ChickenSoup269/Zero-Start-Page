@@ -86,9 +86,26 @@ import { RetroGameEffect } from "../animations/retroGame.js"
 import { MeteorEffect } from "../animations/meteor.js"
 import { WavyPatternEffect } from "../animations/wavyPattern.js"
 import { AngledPatternEffect } from "../animations/angledPattern.js"
+import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
+
+function getExtensionVersion() {
+  try {
+    if (typeof chrome !== "undefined" && chrome.runtime?.getManifest) {
+      return chrome.runtime.getManifest().version || ""
+    }
+  } catch {
+    // Keep version empty outside extension context.
+  }
+  return ""
+}
 
 export function initSettings() {
   const settings = getSettings()
+
+  if (DOM_EXPORTS.settingsVersion) {
+    const version = getExtensionVersion()
+    DOM_EXPORTS.settingsVersion.textContent = version ? `v${version}` : ""
+  }
 
   // Create effect instances
   const effects = {
@@ -175,6 +192,7 @@ export function initSettings() {
       "effect-canvas",
       settings.retroGameColor || "#00ff00",
     ),
+    crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas"),
     meteorEffect: new MeteorEffect(
       "effect-canvas",
       settings.meteorColor || settings.starColor || "#ffffff",

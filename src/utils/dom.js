@@ -1,5 +1,6 @@
 export const settingsToggle = document.getElementById("settings-toggle")
 export const settingsSidebar = document.getElementById("settings-sidebar")
+export const settingsVersion = document.getElementById("settings-version")
 export const closeSettings = document.getElementById("close-settings")
 export const bgVideo = document.getElementById("bg-video")
 

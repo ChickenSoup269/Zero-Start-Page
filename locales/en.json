@@ -117,6 +117,7 @@
   "effect_sky_lanterns": "Sky Lanterns (Đèn Hoa Đăng)",
   "effect_pixel_run": "Pixel Run (Glowing Squares)",
   "effect_nintendo_pixel": "Retro Terminal (CRT Monitor)",
+  "effect_crt_scanlines": "CRT Scanlines (80s/90s)",
   "effect_retro_game": "Retro Game (Space Invaders)",
   "effect_wavy_pattern": "Wavy Pattern (Scallop Tiles)",
   "setting_wavy_pattern_color1": "Pattern Color 1",

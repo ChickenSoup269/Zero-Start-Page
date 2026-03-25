@@ -117,7 +117,10 @@
     <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="settings-sidebar">
         <div class="sidebar-header">
-            <h2 data-i18n="settings_title">Settings</h2>
+            <div class="sidebar-title-wrap">
+                <h2 data-i18n="settings_title">Settings</h2>
+                <span id="settings-version" class="settings-version" aria-label="Extension version"></span>
+            </div>
             <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <div class="sidebar-content">
@@ -608,6 +611,11 @@
                             data-search="retro terminal crt monitor phosphor command line pixel scanline">
                             <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
                             <span class="effect-name" data-i18n="effect_nintendo_pixel">Retro Terminal</span>
+                        </button>
+                        <button class="effect-item" data-value="crtScanlines"
+                            data-search="crt scanline terminal 80s 90s monitor refresh sweep phosphor">
+                            <span class="effect-icon"><i class="fa-solid fa-tv"></i></span>
+                            <span class="effect-name" data-i18n="effect_crt_scanlines">CRT Scanlines</span>
                         </button>
                         <button class="effect-item" data-value="retroGame"
                             data-search="retro game space invaders pixel arcade shooting">
