@@ -59,6 +59,7 @@ const EFFECT_KEY_MAP = {
   pixelRun: "pixelRunEffect",
   nintendoPixel: "nintendoPixelEffect",
   retroGame: "retroGameEffect",
+  crtScanlines: "crtScanlinesEffect",
   meteor: "meteorEffect",
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
