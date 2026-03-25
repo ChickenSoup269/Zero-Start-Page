@@ -1207,9 +1207,9 @@ body.ghost-controls .side-controls:hover {
   margin-left: auto;
   margin-right: auto;
   border-radius: 12px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  /* background: rgba(255, 255, 255, 0.04);
+  /* backdrop-filter: blur(8px); */
+  /* -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.08); */
 }
@@ -1229,7 +1229,7 @@ body.ghost-controls .side-controls:hover {
   gap: 0.5rem;
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  /* -webkit-backdrop-filter: blur(4px); */
 }
 
 .bookmark-group-tab:hover {

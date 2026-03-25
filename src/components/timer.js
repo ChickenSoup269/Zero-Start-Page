@@ -280,17 +280,40 @@ export class Timer {
     updateSetting("timerEndTime", this.endTime)
     updateSetting("timerIsRunning", this.isRunning)
     saveSettings()
+
+    // Notify layout listeners so hidden-running indicator updates immediately.
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "timerIsRunning", value: this.isRunning },
+      }),
+    )
   }
 
   playAlarm() {
     this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
     this.container.querySelector("#stop-alarm-btn").style.display = "block"
+
+    // Blink the timer toggle button when expired
+    const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
+    if (timerToggleBtn) {
+      timerToggleBtn.classList.add("timer-expired-blink")
+      // Remove blink class after animation completes
+      setTimeout(() => {
+        timerToggleBtn.classList.remove("timer-expired-blink")
+      }, 2100) // 0.5s * 4 cycles + buffer
+    }
   }
 
   stopAlarm() {
     this.alarm.pause()
     this.alarm.currentTime = 0
     this.container.querySelector("#stop-alarm-btn").style.display = "none"
+
+    // Clear blink animation if user stops alarm manually
+    const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
+    if (timerToggleBtn) {
+      timerToggleBtn.classList.remove("timer-expired-blink")
+    }
   }
 
   render() {

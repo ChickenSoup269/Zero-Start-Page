@@ -591,6 +591,30 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.clockDateStyleSelect.addEventListener("change", () => {
+    handleSettingUpdate("dateClockStyle", DOM.clockDateStyleSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "dateClockStyle",
+          value: DOM.clockDateStyleSelect.value,
+        },
+      }),
+    )
+  })
+
+  DOM.analogMarkerModeSelect.addEventListener("change", () => {
+    handleSettingUpdate("analogMarkerMode", DOM.analogMarkerModeSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "analogMarkerMode",
+          value: DOM.analogMarkerModeSelect.value,
+        },
+      }),
+    )
+  })
+
   DOM.pageTitleInput.addEventListener("input", () => {
     const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)
