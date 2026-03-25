@@ -4,21 +4,23 @@ import { getSettings } from "../services/state.js"
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
+  const langCode = settings.language === "vi" ? "vi-VN" : "en-US"
   const timeOptions = settings.hideSeconds
     ? { hour12: false, hour: "2-digit", minute: "2-digit" }
     : { hour12: false }
-  const timeString = now.toLocaleTimeString(
-    settings.language === "vi" ? "vi-VN" : "en-US",
-    timeOptions,
-  )
+  const timeString = now.toLocaleTimeString(langCode, timeOptions)
 
   // Keep layout stable by toggling visibility class instead of display.
   clockElement.classList.toggle("is-hidden", settings.showClock === false)
   clockElement.textContent = timeString
 
   let dateString = ""
-  const format = settings.dateFormat || "full"
-  const langCode = settings.language === "vi" ? "vi-VN" : "en-US"
+  const priority = settings.clockDatePriority === "date" ? "date" : "none"
+  const selectedFormat = settings.dateFormat || "full"
+  const format =
+    priority === "date" && selectedFormat === "full"
+      ? "weekday"
+      : selectedFormat
 
   if (format === "full") {
     dateString = now.toLocaleDateString(langCode, {
@@ -33,6 +35,10 @@ export function updateTime() {
     dateString = now.toLocaleDateString("en-US")
   } else if (format === "iso") {
     dateString = now.toISOString().split("T")[0]
+  } else if (format === "year") {
+    dateString = String(now.getFullYear())
+  } else if (format === "weekday") {
+    dateString = now.toLocaleDateString(langCode, { weekday: "long" })
   }
 
   // Handle date visibility - check both showDate AND showGregorian
@@ -40,6 +46,18 @@ export function updateTime() {
     settings.showDate !== false && settings.showGregorian !== false
   dateElement.classList.toggle("is-hidden", !shouldShowDate)
   dateElement.textContent = dateString
+
+  const mainContainer = clockElement.parentElement
+  document.body.classList.remove("time-priority-none", "time-priority-date")
+  document.body.classList.add(`time-priority-${priority}`)
+
+  if (mainContainer) {
+    if (priority === "date") {
+      mainContainer.insertBefore(dateElement, clockElement)
+    } else {
+      mainContainer.insertBefore(clockElement, dateElement)
+    }
+  }
 }
 
 export function initClock() {
@@ -51,7 +69,9 @@ export function initClock() {
       e.detail.key === "showGregorian" ||
       e.detail.key === "showClock" ||
       e.detail.key === "showDate" ||
-      e.detail.key === "hideSeconds"
+      e.detail.key === "hideSeconds" ||
+      e.detail.key === "clockDatePriority" ||
+      e.detail.key === "dateFormat"
     ) {
       updateTime()
     }

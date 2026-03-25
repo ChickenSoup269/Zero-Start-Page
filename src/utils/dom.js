@@ -216,11 +216,16 @@ export const dateFormatSelect = document.getElementById("date-format-select")
 export const hideSecondsCheckbox = document.getElementById(
   "hide-seconds-checkbox",
 )
+export const clockDatePrioritySelect = document.getElementById(
+  "clock-date-priority-select",
+)
 export const pageTitleInput = document.getElementById("page-title-input")
 export const tabIconInput = document.getElementById("tab-icon-input")
 export const tabIconPreview = document.getElementById("tab-icon-preview")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
+export const dateSizeInput = document.getElementById("date-size-input")
+export const dateSizeValue = document.getElementById("date-size-value")
 export const clockColorPicker = document.getElementById("clock-color-picker")
 export const resetClockColorBtn = document.getElementById(
   "reset-clock-color-btn",
@@ -318,6 +323,9 @@ export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
 export const lcpQuickAccess = document.getElementById("lcp-quick-access")
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
+export const lcpMusicStyleSelect = document.getElementById(
+  "lcp-music-style-select",
+)
 
 // SVG Wave Generator Controls
 export const svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")

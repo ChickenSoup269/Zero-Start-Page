@@ -12,19 +12,31 @@ import { geti18n } from "../../services/i18n.js"
 import { showAlert } from "../../utils/dialog.js"
 
 const PREDEFINED_FONTS = [
-  { label: "Outfit", value: "'Outfit', sans-serif" },
-  { label: "Inter", value: "'Inter', sans-serif" },
-  { label: "Poppins", value: "'Poppins', sans-serif" },
-  { label: "Roboto", value: "'Roboto', sans-serif" },
-  { label: "Montserrat", value: "'Montserrat', sans-serif" },
-  { label: "Nunito", value: "'Nunito', sans-serif" },
+  { label: "Outfit", value: "'Outfit', sans-serif", google: true },
+  { label: "Inter", value: "'Inter', sans-serif", google: true },
+  { label: "Poppins", value: "'Poppins', sans-serif", google: true },
+  { label: "Roboto", value: "'Roboto', sans-serif", google: true },
+  { label: "Montserrat", value: "'Montserrat', sans-serif", google: true },
+  { label: "Nunito", value: "'Nunito', sans-serif", google: true },
+  { label: "Orbitron", value: "'Orbitron', sans-serif", google: true },
+  {
+    label: "Chakra Petch",
+    value: "'Chakra Petch', sans-serif",
+    google: true,
+  },
   { label: "Arial", value: "'Arial', sans-serif" },
   { label: "Courier New", value: "'Courier New', monospace" },
-  { label: "Silkscreen", value: "'Silkscreen', cursive", tag: "Pixel" },
+  {
+    label: "Silkscreen",
+    value: "'Silkscreen', cursive",
+    tag: "Pixel",
+    google: true,
+  },
   {
     label: "Pixelify Sans",
     value: "'Pixelify Sans', sans-serif",
     tag: "Pixel",
+    google: true,
   },
 ]
 
@@ -53,7 +65,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
     })),
   ]
 
-  allFonts.forEach(({ label, value, tag, custom }) => {
+  allFonts.forEach(({ label, value, tag, custom, google }) => {
     const card = document.createElement("div")
     card.className = "font-item" + (value === currentFont ? " active" : "")
     card.dataset.fontValue = value
@@ -89,7 +101,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
     }
 
     card.addEventListener("click", () => {
-      if (custom) loadGoogleFont(label)
+      if (custom || google) loadGoogleFont(label)
       updateSettingCallback("font", value)
       renderFontGrid(fontGrid, updateSettingCallback)
     })

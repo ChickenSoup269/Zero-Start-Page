@@ -266,14 +266,34 @@ export function initSettings() {
   ctx.updateSettingsInputs = updateSettingsInputs
 
   // Collapsible groups
+  const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
   document
     .querySelectorAll(".setting-group.collapsible-group")
     .forEach((group) => {
       const header = group.querySelector(".group-header")
-      if (header) {
-        header.addEventListener("click", () =>
-          group.classList.toggle("expanded"),
+      const groupId = group.id || group.dataset.groupId
+
+      if (groupId) {
+        const saved = localStorage.getItem(
+          `${GROUP_EXPANDED_KEY_PREFIX}${groupId}`,
         )
+        if (saved === "1") {
+          group.classList.add("expanded")
+        } else if (saved === "0") {
+          group.classList.remove("expanded")
+        }
+      }
+
+      if (header) {
+        header.addEventListener("click", () => {
+          const isExpanded = group.classList.toggle("expanded")
+          if (groupId) {
+            localStorage.setItem(
+              `${GROUP_EXPANDED_KEY_PREFIX}${groupId}`,
+              isExpanded ? "1" : "0",
+            )
+          }
+        })
       }
     })
 
