@@ -2,6 +2,16 @@
 
 #### Thêm mới (Added)
 
+- New visual effect: **Northern Lights (Cực Quang Bắc)**:
+  - Realistic aurora borealis waves with flowing light patterns
+  - Particle-based rendering with wave physics simulation
+  - Customizable aurora light color with HSL gradient variations
+  - Multi-layer wave ribbons with phase-shifted motion
+  - Smooth FPS-controlled animation (45 FPS) for performance
+  - Auto-scaling to screen size with responsive particle system
+  - Floating light particles with opacity fade effects
+- New visual effect: **CRT Scanlines**
+
 - New **Multi-Color Split Background** feature:
   - Create split backgrounds with 2-6 custom colors
   - Two rendering modes:
@@ -55,6 +65,15 @@
 
 #### Cập nhật (Updated)
 
+- Enhanced **Multi-Color Split Background** workflow:
+  - Added show/hide toggle for Split Background controls (state is persisted).
+  - Improved **Random Colors** action to also randomize gradient angle.
+  - Added divider lines between **Solid Blocks** with configurable:
+    - enable/disable switch
+    - divider color
+    - divider width
+  - Divider settings are now persisted and saved with multi-color presets.
+  - Added EN/VI i18n labels for Split Background control visibility toggles.
 - Optimized CRT Scanlines rendering pipeline:
   - Reduced from 30 FPS to 24 FPS for better stability
   - Changed warp from 2-pass (horizontal+vertical) to 1-pass (horizontal only)

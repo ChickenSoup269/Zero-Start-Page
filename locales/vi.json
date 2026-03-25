@@ -118,6 +118,7 @@
   "effect_snowfall": "Tuyết rơi",
   "effect_snowfall_hd": "Tuyết HD (Tích tụ phía dưới)",
   "effect_aurora_wave": "Sóng cực quang",
+  "effect_northern_lights": "Cực Quang Bắc",
   "effect_constellation": "Chòm sao",
   "effect_bubbles": "Bong bóng (Dưới nước)",
   "effect_rain_on_glass": "Giọt nước trên kính",
@@ -270,9 +271,12 @@
   "settings_multi_color_line_color": "Màu đường:",
   "settings_multi_color_line_width": "Độ rộng đường:",
   "settings_multi_color_angle": "Góc:",
+  "settings_multi_color_open": "Hiện Điều Khiển",
+  "settings_multi_color_close": "Ẩn Điều Khiển",
   "settings_multi_color_apply": "Áp dụng",
   "settings_multi_color_random": "Màu ngẫu nhiên",
   "settings_multi_color_save": "Lưu cài đặt",
   "settings_multi_color_saved_presets": "Cài đặt đã lưu",
-  "settings_multi_color_color_label": "Màu"
+  "settings_multi_color_color_label": "Màu",
+  "setting_northern_lights_color": "Màu ánh sáng cực quang"
 }

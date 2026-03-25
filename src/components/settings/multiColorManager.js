@@ -3,9 +3,15 @@ import {
   updateSetting,
   saveSettings,
 } from "../../services/state.js"
+import { geti18n } from "../../services/i18n.js"
 import * as DOM from "../../utils/dom.js"
 
 export function setupMultiColorManager(applySettings) {
+  function t(key, fallback) {
+    const i18n = geti18n()
+    return i18n?.[key] || fallback
+  }
+
   // Generate color pickers based on selected count
   function generateColorPickers(count) {
     const container = DOM.multiColorPickersContainer
@@ -18,7 +24,7 @@ export function setupMultiColorManager(applySettings) {
       wrapper.style.gap = "8px"
 
       const label = document.createElement("label")
-      label.textContent = `Color ${i + 1}:`
+      label.textContent = `${t("settings_multi_color_color_label", "Color")} ${i + 1}:`
       label.style.flex = "0 0 70px"
       label.style.fontSize = "0.9rem"
 
@@ -53,12 +59,17 @@ export function setupMultiColorManager(applySettings) {
     const colors = pickers.map((p) => p.value)
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
+    const dividerConfig = getDividerConfig()
 
     let backgroundCSS
 
     if (mode === "blocks") {
       // Solid color blocks mode
-      backgroundCSS = generateSolidBlocksCSS(colors, parseInt(angle))
+      backgroundCSS = generateSolidBlocksCSS(
+        colors,
+        parseInt(angle),
+        dividerConfig,
+      )
     } else {
       // Smooth gradient mode
       const gradientStops = colors
@@ -74,19 +85,85 @@ export function setupMultiColorManager(applySettings) {
     DOM.multiGradientPreview.style.background = backgroundCSS
   }
 
+  function updateDividerControlsVisibility() {
+    const mode = getMode()
+    DOM.multiColorDividerSettings.style.display =
+      mode === "blocks" ? "block" : "none"
+  }
+
+  function setMultiControlsExpanded(isOpen) {
+    DOM.multiColorSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.multiColorToggleBtn.setAttribute("aria-expanded", String(isOpen))
+    DOM.multiColorToggleLabel.textContent = t(
+      isOpen ? "settings_multi_color_close" : "settings_multi_color_open",
+      isOpen ? "Hide Controls" : "Show Controls",
+    )
+  }
+
+  function hexToRgba(hex, alpha) {
+    const normalized = hex.replace("#", "")
+    const safeHex =
+      normalized.length === 3
+        ? normalized
+            .split("")
+            .map((ch) => ch + ch)
+            .join("")
+        : normalized
+    const value = parseInt(safeHex, 16)
+    const r = (value >> 16) & 255
+    const g = (value >> 8) & 255
+    const b = value & 255
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+
+  function getDividerConfig() {
+    return {
+      enabled: Boolean(DOM.multiColorDividersToggle.checked),
+      color: DOM.multiColorLineColor.value,
+      width: parseFloat(DOM.multiColorLineWidth.value),
+    }
+  }
+
   // Generate solid blocks CSS (equal color blocks with sharp transitions)
-  function generateSolidBlocksCSS(colors, angle) {
+  function generateSolidBlocksCSS(colors, angle, dividerConfig) {
     const blockCount = colors.length
-    let gradientItems = []
+    const gradientItems = []
+    const showDividers = dividerConfig?.enabled && blockCount > 1
 
-    // Create equal-width color blocks
+    if (!showDividers) {
+      // Create equal-width color blocks
+      for (let i = 0; i < blockCount; i++) {
+        const percent = (100 / blockCount) * i
+        const nextPercent = (100 / blockCount) * (i + 1)
+
+        gradientItems.push(`${colors[i]} ${percent}%`)
+        gradientItems.push(`${colors[i]} ${nextPercent}%`)
+      }
+
+      return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+    }
+
+    const segmentSize = 100 / blockCount
+    const rawLineWidth = dividerConfig.width
+    const lineWidth = Math.min(Math.max(rawLineWidth, 0.1), segmentSize * 0.6)
+    const halfLine = lineWidth / 2
+    const dividerColor = hexToRgba(dividerConfig.color, 0.6)
+
     for (let i = 0; i < blockCount; i++) {
-      const percent = (100 / blockCount) * i
-      const nextPercent = (100 / blockCount) * (i + 1)
+      const segmentStart = segmentSize * i
+      const segmentEnd = segmentSize * (i + 1)
+      const colorStart = i === 0 ? segmentStart : segmentStart + halfLine
+      const colorEnd = i === blockCount - 1 ? segmentEnd : segmentEnd - halfLine
 
-      // Add solid color block
-      gradientItems.push(`${colors[i]} ${percent}%`)
-      gradientItems.push(`${colors[i]} ${nextPercent}%`)
+      gradientItems.push(`${colors[i]} ${colorStart}%`)
+      gradientItems.push(`${colors[i]} ${colorEnd}%`)
+
+      if (i < blockCount - 1) {
+        const dividerStart = segmentEnd - halfLine
+        const dividerEnd = segmentEnd + halfLine
+        gradientItems.push(`${dividerColor} ${dividerStart}%`)
+        gradientItems.push(`${dividerColor} ${dividerEnd}%`)
+      }
     }
 
     return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
@@ -96,6 +173,8 @@ export function setupMultiColorManager(applySettings) {
   function generateRandomColors() {
     const count = parseInt(DOM.multiColorCountSelect.value)
     const colors = []
+    const randomAngle = Math.floor(Math.random() * 361)
+
     for (let i = 0; i < count; i++) {
       const randomColor = `#${Math.floor(Math.random() * 16777215)
         .toString(16)
@@ -103,12 +182,19 @@ export function setupMultiColorManager(applySettings) {
         .toUpperCase()}`
       colors.push(randomColor)
     }
+
+    DOM.multiGradientAngleInput.value = randomAngle
+    DOM.multiGradientAngleValue.textContent = randomAngle
+    updateSetting("multiGradientAngle", randomAngle)
+
     // Update the color pickers with random colors
     generateColorPickers(count)
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     pickers.forEach((picker, index) => {
       picker.value = colors[index]
     })
+
+    saveSettings()
     updateMultiColorPreview()
   }
 
@@ -116,9 +202,37 @@ export function setupMultiColorManager(applySettings) {
   DOM.multiColorModeRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       updateSetting("multiColorMode", getMode())
+      updateDividerControlsVisibility()
       saveSettings()
       updateMultiColorPreview()
     })
+  })
+
+  DOM.multiColorToggleBtn.addEventListener("click", () => {
+    const nextIsOpen = DOM.multiColorSettingsBody.style.display === "none"
+    setMultiControlsExpanded(nextIsOpen)
+    updateSetting("multiColorControlsOpen", nextIsOpen)
+    saveSettings()
+  })
+
+  DOM.multiColorDividersToggle.addEventListener("change", () => {
+    updateSetting("multiColorDividers", DOM.multiColorDividersToggle.checked)
+    saveSettings()
+    updateMultiColorPreview()
+  })
+
+  DOM.multiColorLineColor.addEventListener("input", () => {
+    updateSetting("multiColorDividerColor", DOM.multiColorLineColor.value)
+    saveSettings()
+    updateMultiColorPreview()
+  })
+
+  DOM.multiColorLineWidth.addEventListener("input", () => {
+    const width = parseFloat(DOM.multiColorLineWidth.value)
+    DOM.multiColorLineWidthValue.textContent = width.toFixed(1)
+    updateSetting("multiColorDividerWidth", width)
+    saveSettings()
+    updateMultiColorPreview()
   })
 
   // Random colors button
@@ -142,15 +256,16 @@ export function setupMultiColorManager(applySettings) {
 
         // Generate preview CSS
         if (preset.mode === "blocks") {
-          const blockCount = preset.gradientStops.length
-          let gradientStops = []
-          for (let i = 0; i < blockCount; i++) {
-            const percent = (100 / blockCount) * i
-            const nextPercent = (100 / blockCount) * (i + 1)
-            gradientStops.push(`${preset.gradientStops[i]} ${percent}%`)
-            gradientStops.push(`${preset.gradientStops[i]} ${nextPercent}%`)
-          }
-          item.style.background = `linear-gradient(${preset.angle}deg, ${gradientStops.join(", ")})`
+          item.style.background = generateSolidBlocksCSS(
+            preset.gradientStops,
+            preset.angle,
+            {
+              enabled:
+                preset.showDividers === undefined ? true : preset.showDividers,
+              color: preset.dividerColor || "#FFFFFF",
+              width: preset.dividerWidth || 1.2,
+            },
+          )
         } else {
           const gradientStops = preset.gradientStops
             .map((color, idx) => {
@@ -179,8 +294,25 @@ export function setupMultiColorManager(applySettings) {
             radio.checked = radio.value === preset.mode
           })
           DOM.multiColorCountSelect.value = preset.gradientStops.length
+          DOM.multiColorDividersToggle.checked =
+            preset.showDividers === undefined ? true : preset.showDividers
+          DOM.multiColorLineColor.value = preset.dividerColor || "#FFFFFF"
+          DOM.multiColorLineWidth.value = preset.dividerWidth || 1.2
+          DOM.multiColorLineWidthValue.textContent = Number(
+            DOM.multiColorLineWidth.value,
+          ).toFixed(1)
           updateSetting("multiColorCount", preset.gradientStops.length)
+          updateSetting(
+            "multiColorDividers",
+            DOM.multiColorDividersToggle.checked,
+          )
+          updateSetting("multiColorDividerColor", DOM.multiColorLineColor.value)
+          updateSetting(
+            "multiColorDividerWidth",
+            parseFloat(DOM.multiColorLineWidth.value),
+          )
 
+          updateDividerControlsVisibility()
           updateMultiColorPreview()
           saveSettings()
         })
@@ -227,15 +359,23 @@ export function setupMultiColorManager(applySettings) {
     const colors = pickers.map((p) => p.value)
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
+    const dividerConfig = getDividerConfig()
 
     updateSetting("multiColors", colors)
     updateSetting("multiGradientAngle", parseInt(angle))
     updateSetting("multiColorMode", mode)
+    updateSetting("multiColorDividers", dividerConfig.enabled)
+    updateSetting("multiColorDividerColor", dividerConfig.color)
+    updateSetting("multiColorDividerWidth", dividerConfig.width)
 
     let backgroundCSS
 
     if (mode === "blocks") {
-      backgroundCSS = generateSolidBlocksCSS(colors, parseInt(angle))
+      backgroundCSS = generateSolidBlocksCSS(
+        colors,
+        parseInt(angle),
+        dividerConfig,
+      )
     } else {
       const gradientStops = colors
         .map((color, index) => {
@@ -270,6 +410,7 @@ export function setupMultiColorManager(applySettings) {
     const colors = pickers.map((p) => p.value)
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
+    const dividerConfig = getDividerConfig()
 
     const settings = getSettings()
     const newPreset = {
@@ -277,6 +418,9 @@ export function setupMultiColorManager(applySettings) {
       gradientStops: colors,
       angle: parseInt(angle),
       mode: mode,
+      showDividers: dividerConfig.enabled,
+      dividerColor: dividerConfig.color,
+      dividerWidth: dividerConfig.width,
       type: "multi-color",
     }
 
@@ -304,6 +448,15 @@ export function setupMultiColorManager(applySettings) {
   generateColorPickers(settings.multiColorCount || 2)
   DOM.multiGradientAngleInput.value = settings.multiGradientAngle || 135
   DOM.multiGradientAngleValue.textContent = settings.multiGradientAngle || 135
+  DOM.multiColorDividersToggle.checked =
+    settings.multiColorDividers === undefined
+      ? true
+      : settings.multiColorDividers
+  DOM.multiColorLineColor.value = settings.multiColorDividerColor || "#FFFFFF"
+  DOM.multiColorLineWidth.value = settings.multiColorDividerWidth || 1.2
+  DOM.multiColorLineWidthValue.textContent = Number(
+    DOM.multiColorLineWidth.value,
+  ).toFixed(1)
 
   // Set mode radio buttons
   const modeValue = settings.multiColorMode || "smooth"
@@ -311,6 +464,8 @@ export function setupMultiColorManager(applySettings) {
     radio.checked = radio.value === modeValue
   })
 
+  setMultiControlsExpanded(settings.multiColorControlsOpen !== false)
+  updateDividerControlsVisibility()
   updateMultiColorPreview()
   renderSavedPresets()
 }

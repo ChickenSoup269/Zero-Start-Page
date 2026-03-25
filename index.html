@@ -355,6 +355,11 @@
             <!-- Multi-Color Split Background -->
             <div class="setting-group">
                 <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_multi_color_title">Split Background (Multi-Color)</span></label>
+                <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide Controls</span>
+                </button>
+                <div id="multi-color-settings-body">
                 <div style="margin-bottom: 12px;">
                     <label for="multi-color-count-select" style="font-size: 0.9rem;" data-i18n="settings_multi_color_count">Number of Colors:</label>
                     <select id="multi-color-count-select" style="width: 100%; padding: 0.4rem; margin-top: 4px;">
@@ -379,6 +384,20 @@
                         </label>
                     </div>
                 </div>
+                <div id="multi-color-divider-settings" style="margin-bottom: 12px; display: none;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
+                        <input type="checkbox" id="multi-color-dividers-toggle" checked>
+                        <span data-i18n="settings_multi_color_dividers">Show Divider Lines</span>
+                    </label>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                        <label for="multi-color-line-color" style="font-size: 0.85rem;" data-i18n="settings_multi_color_line_color">Line Color:</label>
+                        <input type="color" id="multi-color-line-color" value="#ffffff" style="flex: 1;">
+                    </div>
+                    <div>
+                        <label for="multi-color-line-width"><span data-i18n="settings_multi_color_line_width">Line Width:</span> <span id="multi-color-line-width-value">1.2</span>%</label>
+                        <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2" style="width: 100%;">
+                    </div>
+                </div>
                 <div style="margin-bottom: 12px;">
                     <label><span data-i18n="settings_multi_color_angle">Angle:</span> <span id="multi-gradient-angle-value">135</span>deg</label>
                     <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135" style="width: 100%;">
@@ -394,6 +413,7 @@
                 <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
                     <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_saved_presets">Saved Presets</label>
                     <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
+                </div>
                 </div>
             </div>
 
@@ -591,6 +611,10 @@
                             <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
                             <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
                         </button>
+                        <button class="effect-item" data-value="northernLights" data-search="northern lights aurora borealis waves">
+                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                            <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
+                        </button>
                         <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
                             <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
                             <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
@@ -704,6 +728,12 @@
                     <div id="aura-color-setting" class="setting-item" style="display: none;">
                         <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
                         <input type="color" id="aura-color-picker" value="#a8c0ff" />
+                    </div>
+
+                    <!-- Northern Lights Color -->
+                    <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
+                        <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora Light Color</label>
+                        <input type="color" id="northern-lights-color-picker" value="#00ff88" />
                     </div>
 
                     <!-- Hacker Color -->

@@ -82,6 +82,30 @@ export const randomMultiColorBtn = document.getElementById(
   "random-multi-color-btn",
 )
 export const saveMultiColorBtn = document.getElementById("save-multi-color-btn")
+export const multiColorToggleBtn = document.getElementById(
+  "multi-color-toggle-btn",
+)
+export const multiColorToggleLabel = document.getElementById(
+  "multi-color-toggle-label",
+)
+export const multiColorSettingsBody = document.getElementById(
+  "multi-color-settings-body",
+)
+export const multiColorDividersToggle = document.getElementById(
+  "multi-color-dividers-toggle",
+)
+export const multiColorDividerSettings = document.getElementById(
+  "multi-color-divider-settings",
+)
+export const multiColorLineColor = document.getElementById(
+  "multi-color-line-color",
+)
+export const multiColorLineWidth = document.getElementById(
+  "multi-color-line-width",
+)
+export const multiColorLineWidthValue = document.getElementById(
+  "multi-color-line-width-value",
+)
 export const savedMultiColorPresets = document.getElementById(
   "saved-multi-color-presets",
 )
@@ -113,6 +137,13 @@ export const matrixColorSetting = document.getElementById(
 
 export const auraColorPicker = document.getElementById("aura-color-picker")
 export const auraColorSetting = document.getElementById("aura-color-setting")
+
+export const northernLightsColorPicker = document.getElementById(
+  "northern-lights-color-picker",
+)
+export const northernLightsColorSetting = document.getElementById(
+  "northern-lights-color-setting",
+)
 
 export const hackerColorPicker = document.getElementById("hacker-color-picker")
 export const hackerColorSetting = document.getElementById(

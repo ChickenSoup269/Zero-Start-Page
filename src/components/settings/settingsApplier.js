@@ -39,6 +39,7 @@ const EFFECT_KEY_MAP = {
   snowfall: "snowfallEffect",
   snowfallHD: "snowfallHDEffect",
   auroraWave: "auroraWaveEffect",
+  northernLights: "northernLightsEffect",
   bubbles: "bubblesEffect",
   rainOnGlass: "rainOnGlassEffect",
   rainHD: "rainHDEffect",
@@ -442,6 +443,8 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "matrix" ? "block" : "none"
     DOM.auraColorSetting.style.display =
       settings.effect === "aura" ? "block" : "none"
+    DOM.northernLightsColorSetting.style.display =
+      settings.effect === "northernLights" ? "block" : "none"
     DOM.hackerColorSetting.style.display =
       settings.effect === "hacker" ? "block" : "none"
     DOM.sakuraColorSetting.style.display =
