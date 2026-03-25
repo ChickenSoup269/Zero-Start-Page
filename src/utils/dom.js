@@ -59,6 +59,43 @@ export const userGradientsGallery = document.getElementById(
   "user-gradients-gallery",
 )
 
+// Multi-Color Split Background
+export const multiColorCountSelect = document.getElementById(
+  "multi-color-count-select",
+)
+export const multiColorPickersContainer = document.getElementById(
+  "multi-color-pickers-container",
+)
+export const multiGradientAngleInput = document.getElementById(
+  "multi-gradient-angle-input",
+)
+export const multiGradientAngleValue = document.getElementById(
+  "multi-gradient-angle-value",
+)
+export const multiGradientPreview = document.getElementById(
+  "multi-gradient-preview",
+)
+export const applyMultiColorBtn = document.getElementById(
+  "apply-multi-color-btn",
+)
+export const saveMultiColorBtn = document.getElementById("save-multi-color-btn")
+
+// Multi-Color Mode and Divider Controls
+export const multiColorModeRadios = document.querySelectorAll(
+  'input[name="multi-color-mode"]',
+)
+export const dividerControls = document.getElementById("divider-controls")
+export const enableDividerLines = document.getElementById(
+  "enable-divider-lines",
+)
+export const dividerLineColor = document.getElementById("divider-line-color")
+export const dividerLineWidthInput = document.getElementById(
+  "divider-line-width-input",
+)
+export const dividerLineWidthValue = document.getElementById(
+  "divider-line-width-value",
+)
+
 export const starColorPicker = document.getElementById("star-color-picker")
 export const starColorSetting = document.getElementById("star-color-setting")
 
@@ -218,6 +255,15 @@ export const hideSecondsCheckbox = document.getElementById(
 )
 export const clockDatePrioritySelect = document.getElementById(
   "clock-date-priority-select",
+)
+export const clockDateStyleSelect = document.getElementById(
+  "clock-date-style-select",
+)
+export const analogMarkerModeSetting = document.getElementById(
+  "analog-marker-mode-setting",
+)
+export const analogMarkerModeSelect = document.getElementById(
+  "analog-marker-mode-select",
 )
 export const pageTitleInput = document.getElementById("page-title-input")
 export const tabIconInput = document.getElementById("tab-icon-input")

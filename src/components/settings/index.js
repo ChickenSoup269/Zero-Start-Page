@@ -48,6 +48,7 @@ import {
 import { renderUserGradients } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { setupEffectColorHandlers } from "./effectColorHandlers.js"
+import { setupMultiColorManager } from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
 
 // Import animation effects
@@ -342,6 +343,7 @@ export function initSettings() {
   setupEffectColorHandlers(DOM_EXPORTS, effects)
   setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
   setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
+  setupMultiColorManager(applySettings)
 
   // Final setup
   renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)

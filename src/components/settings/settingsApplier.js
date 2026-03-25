@@ -232,6 +232,17 @@ function createApplySettings(effectInstances) {
       `${computedDateSize}rem`,
     )
 
+    const dateClockStyle = settings.dateClockStyle || "default"
+    document.body.classList.remove(
+      "date-clock-style-default",
+      "date-clock-style-glow",
+      "date-clock-style-minimal",
+      "date-clock-style-glass",
+      "date-clock-style-round",
+      "date-clock-style-analog",
+    )
+    document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+
     // 3.1 Clock Color Contrast Logic
     let finalClockColor = settings.clockColor
     if (!finalClockColor) {
@@ -345,6 +356,10 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     DOM.clockDatePrioritySelect.value =
       settings.clockDatePriority === "date" ? "date" : "none"
+    DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+    DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
+    DOM.analogMarkerModeSetting.style.display =
+      (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
     DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
     DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")
