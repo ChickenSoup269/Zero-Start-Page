@@ -17,7 +17,7 @@ export class SvgWaveGenerator {
       el = document.createElement("div")
       el.id = id
       el.style.cssText =
-        "position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;opacity:0;pointer-events:none;"
+        "position:fixed;inset:0;z-index:-2;background-size:cover;background-position:var(--bg-pos-x, 50%) var(--bg-pos-y, 50%);filter:blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));opacity:0;pointer-events:none;"
       document.body.appendChild(el)
     }
     return el

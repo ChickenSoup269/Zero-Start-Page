@@ -78,8 +78,14 @@ export const multiGradientPreview = document.getElementById(
 export const applyMultiColorBtn = document.getElementById(
   "apply-multi-color-btn",
 )
+export const randomMultiColorHueBtn = document.getElementById(
+  "random-multi-color-hue-btn",
+)
+export const randomMultiColorCrazyBtn = document.getElementById(
+  "random-multi-color-crazy-btn",
+)
 export const randomMultiColorBtn = document.getElementById(
-  "random-multi-color-btn",
+  "random-multi-color-hue-btn",
 )
 export const saveMultiColorBtn = document.getElementById("save-multi-color-btn")
 export const multiColorToggleBtn = document.getElementById(
