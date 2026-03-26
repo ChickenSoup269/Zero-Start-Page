@@ -275,6 +275,8 @@
   "settings_multi_color_close": "Hide Controls",
   "settings_multi_color_apply": "Apply",
   "settings_multi_color_random": "Random Colors",
+  "settings_multi_color_random_hue": "Random HUE",
+  "settings_multi_color_random_crazy": "Crazy Random",
   "settings_multi_color_save": "Save Preset",
   "settings_multi_color_saved_presets": "Saved Presets",
   "settings_multi_color_color_label": "Color",

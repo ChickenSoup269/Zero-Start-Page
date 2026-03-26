@@ -124,6 +124,52 @@ export function setupMultiColorManager(applySettings) {
     }
   }
 
+  function clampCount(value) {
+    return Math.min(6, Math.max(2, Number(value) || 2))
+  }
+
+  function hslToHex(h, s, l) {
+    const hue = ((h % 360) + 360) % 360
+    const sat = Math.min(100, Math.max(0, s)) / 100
+    const light = Math.min(100, Math.max(0, l)) / 100
+
+    const c = (1 - Math.abs(2 * light - 1)) * sat
+    const x = c * (1 - Math.abs(((hue / 60) % 2) - 1))
+    const m = light - c / 2
+
+    let r = 0
+    let g = 0
+    let b = 0
+
+    if (hue < 60) {
+      r = c
+      g = x
+    } else if (hue < 120) {
+      r = x
+      g = c
+    } else if (hue < 180) {
+      g = c
+      b = x
+    } else if (hue < 240) {
+      g = x
+      b = c
+    } else if (hue < 300) {
+      r = x
+      b = c
+    } else {
+      r = c
+      b = x
+    }
+
+    const toHex = (channel) =>
+      Math.round((channel + m) * 255)
+        .toString(16)
+        .padStart(2, "0")
+        .toUpperCase()
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+  }
+
   // Generate solid blocks CSS (equal color blocks with sharp transitions)
   function generateSolidBlocksCSS(colors, angle, dividerConfig) {
     const blockCount = colors.length
@@ -169,30 +215,52 @@ export function setupMultiColorManager(applySettings) {
     return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
   }
 
-  // Generate random colors
-  function generateRandomColors() {
-    const count = parseInt(DOM.multiColorCountSelect.value)
-    const colors = []
+  function getRandomHexColor() {
+    return `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, "0")
+      .toUpperCase()}`
+  }
+
+  function generateHueColors(count) {
+    const safeCount = clampCount(count)
+    const baseHue = Math.floor(Math.random() * 360)
+    const saturation = 68 + Math.floor(Math.random() * 22)
+    const lightnessBase = 45 + Math.floor(Math.random() * 16)
+    const hueStep = 360 / safeCount
+
+    return Array.from({ length: safeCount }, (_, index) => {
+      const jitter = Math.floor(Math.random() * 12) - 6
+      const hue = baseHue + hueStep * index + jitter
+      const lightness = Math.min(
+        72,
+        Math.max(34, lightnessBase + (Math.floor(Math.random() * 10) - 5)),
+      )
+      return hslToHex(hue, saturation, lightness)
+    })
+  }
+
+  function generateCrazyColors(count) {
+    const safeCount = clampCount(count)
+    return Array.from({ length: safeCount }, () => getRandomHexColor())
+  }
+
+  function applyRandomizedColors(colors) {
+    const count = clampCount(colors.length)
     const randomAngle = Math.floor(Math.random() * 361)
 
-    for (let i = 0; i < count; i++) {
-      const randomColor = `#${Math.floor(Math.random() * 16777215)
-        .toString(16)
-        .padStart(6, "0")
-        .toUpperCase()}`
-      colors.push(randomColor)
-    }
+    updateSetting("multiColorCount", count)
+    DOM.multiColorCountSelect.value = String(count)
 
-    DOM.multiGradientAngleInput.value = randomAngle
-    DOM.multiGradientAngleValue.textContent = randomAngle
-    updateSetting("multiGradientAngle", randomAngle)
-
-    // Update the color pickers with random colors
     generateColorPickers(count)
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     pickers.forEach((picker, index) => {
       picker.value = colors[index]
     })
+
+    DOM.multiGradientAngleInput.value = randomAngle
+    DOM.multiGradientAngleValue.textContent = randomAngle
+    updateSetting("multiGradientAngle", randomAngle)
 
     saveSettings()
     updateMultiColorPreview()
@@ -235,9 +303,14 @@ export function setupMultiColorManager(applySettings) {
     updateMultiColorPreview()
   })
 
-  // Random colors button
-  DOM.randomMultiColorBtn.addEventListener("click", () => {
-    generateRandomColors()
+  DOM.randomMultiColorHueBtn?.addEventListener("click", () => {
+    const count = clampCount(DOM.multiColorCountSelect.value)
+    applyRandomizedColors(generateHueColors(count))
+  })
+
+  DOM.randomMultiColorCrazyBtn?.addEventListener("click", () => {
+    const count = clampCount(DOM.multiColorCountSelect.value)
+    applyRandomizedColors(generateCrazyColors(count))
   })
 
   // Render saved multi-color presets
@@ -293,7 +366,9 @@ export function setupMultiColorManager(applySettings) {
           Array.from(DOM.multiColorModeRadios).forEach((radio) => {
             radio.checked = radio.value === preset.mode
           })
-          DOM.multiColorCountSelect.value = preset.gradientStops.length
+          DOM.multiColorCountSelect.value = String(
+            clampCount(preset.gradientStops.length),
+          )
           DOM.multiColorDividersToggle.checked =
             preset.showDividers === undefined ? true : preset.showDividers
           DOM.multiColorLineColor.value = preset.dividerColor || "#FFFFFF"
@@ -337,7 +412,8 @@ export function setupMultiColorManager(applySettings) {
 
   // Handle count selector change
   DOM.multiColorCountSelect.addEventListener("change", (e) => {
-    const count = parseInt(e.target.value)
+    const count = clampCount(e.target.value)
+    DOM.multiColorCountSelect.value = String(count)
     updateSetting("multiColorCount", count)
     generateColorPickers(count)
     updateMultiColorPreview()
@@ -443,29 +519,45 @@ export function setupMultiColorManager(applySettings) {
     }, 1500)
   })
 
+  function syncFromSettings() {
+    const settings = getSettings()
+    const initialCount = clampCount(settings.multiColorCount)
+    DOM.multiColorCountSelect.value = String(initialCount)
+    generateColorPickers(initialCount)
+
+    const persistedColors = Array.isArray(settings.multiColors)
+      ? settings.multiColors
+      : []
+    const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+    pickers.forEach((picker, index) => {
+      picker.value = persistedColors[index] || picker.value
+    })
+
+    DOM.multiGradientAngleInput.value = settings.multiGradientAngle || 135
+    DOM.multiGradientAngleValue.textContent = settings.multiGradientAngle || 135
+    DOM.multiColorDividersToggle.checked =
+      settings.multiColorDividers === undefined
+        ? true
+        : settings.multiColorDividers
+    DOM.multiColorLineColor.value = settings.multiColorDividerColor || "#FFFFFF"
+    DOM.multiColorLineWidth.value = settings.multiColorDividerWidth || 1.2
+    DOM.multiColorLineWidthValue.textContent = Number(
+      DOM.multiColorLineWidth.value,
+    ).toFixed(1)
+
+    const modeValue = settings.multiColorMode || "smooth"
+    Array.from(DOM.multiColorModeRadios).forEach((radio) => {
+      radio.checked = radio.value === modeValue
+    })
+
+    setMultiControlsExpanded(settings.multiColorControlsOpen !== false)
+    updateDividerControlsVisibility()
+    updateMultiColorPreview()
+    renderSavedPresets()
+  }
+
+  window.addEventListener("multiColor:sync", syncFromSettings)
+
   // Initialize on load
-  const settings = getSettings()
-  generateColorPickers(settings.multiColorCount || 2)
-  DOM.multiGradientAngleInput.value = settings.multiGradientAngle || 135
-  DOM.multiGradientAngleValue.textContent = settings.multiGradientAngle || 135
-  DOM.multiColorDividersToggle.checked =
-    settings.multiColorDividers === undefined
-      ? true
-      : settings.multiColorDividers
-  DOM.multiColorLineColor.value = settings.multiColorDividerColor || "#FFFFFF"
-  DOM.multiColorLineWidth.value = settings.multiColorDividerWidth || 1.2
-  DOM.multiColorLineWidthValue.textContent = Number(
-    DOM.multiColorLineWidth.value,
-  ).toFixed(1)
-
-  // Set mode radio buttons
-  const modeValue = settings.multiColorMode || "smooth"
-  Array.from(DOM.multiColorModeRadios).forEach((radio) => {
-    radio.checked = radio.value === modeValue
-  })
-
-  setMultiControlsExpanded(settings.multiColorControlsOpen !== false)
-  updateDividerControlsVisibility()
-  updateMultiColorPreview()
-  renderSavedPresets()
+  syncFromSettings()
 }

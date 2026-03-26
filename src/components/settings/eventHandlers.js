@@ -656,6 +656,7 @@ export function setupGeneralEventHandlers(
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       renderUserColors(DOM)
       renderUserGradients(DOM)
+      window.dispatchEvent(new CustomEvent("multiColor:sync"))
     }
   })
 
