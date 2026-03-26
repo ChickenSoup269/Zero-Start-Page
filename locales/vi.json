@@ -50,6 +50,7 @@
   "settings_analog_marker_mode_quarter_ticks": "Hiện gạch 12,3,6,9",
   "settings_analog_marker_mode_full": "Hiện số giờ 1-12",
   "settings_analog_marker_mode_quarters": "Hiện 12,3,6,9",
+  "settings_analog_blur_bg": "Làm mờ nền (Đồng hồ kim)",
   "settings_page_title": "Tiêu đề trang",
   "settings_page_title_placeholder": "Nhập tiêu đề tùy chỉnh",
   "settings_page_title_hint": "Hiển thị trên tab trình duyệt",
