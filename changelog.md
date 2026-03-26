@@ -48,6 +48,10 @@
   - New date format: **Weekday only** and **Year only**
   - New **Date Size** slider (up to 10rem)
   - New **Zoom priority** option for weekday-focused layout
+- Added new Analog Clock option in **Date & Clock Format**:
+  - **Blur Background (Analog)** toggle (on/off)
+  - Option only appears when **Analog Clock** style is selected
+  - Setting is persisted and reset-safe
 - Added quick music style selector in **Layout Controls** popup for faster style switching.
 - Added new preset fonts: **Orbitron** and **Chakra Petch**.
 
@@ -62,12 +66,20 @@
 - Ensured `content_filter=high` is applied consistently across random/search endpoints.
 - Reduced settling-leaf jitter when leaves reach the bottom.
 - Fixed collapsible Effect panel state so it persists after reopening settings.
+- Fixed **Split Background (Multi-Color)** color-count dropdown sync:
+  - Selecting 5 colors no longer visually resets back to 2 after reset/reload
+  - Multi-color controls now re-sync correctly from stored settings state
+- Fixed **SVG Wave** background compatibility with background filters:
+  - `Blur` and `Brightness` sliders now apply correctly to SVG Wave layers
 
 #### Cập nhật (Updated)
 
 - Enhanced **Multi-Color Split Background** workflow:
   - Added show/hide toggle for Split Background controls (state is persisted).
   - Improved **Random Colors** action to also randomize gradient angle.
+  - Added separate random modes:
+    - **Random HUE** (harmonized palette based on HSL hue distribution)
+    - **Crazy Random** (fully random mixed colors)
   - Added divider lines between **Solid Blocks** with configurable:
     - enable/disable switch
     - divider color
