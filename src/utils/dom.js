@@ -297,6 +297,12 @@ export const analogMarkerModeSetting = document.getElementById(
 export const analogMarkerModeSelect = document.getElementById(
   "analog-marker-mode-select",
 )
+export const analogBlurBgSetting = document.getElementById(
+  "analog-blur-bg-setting",
+)
+export const analogBlurBgCheckbox = document.getElementById(
+  "analog-blur-bg-checkbox",
+)
 export const pageTitleInput = document.getElementById("page-title-input")
 export const tabIconInput = document.getElementById("tab-icon-input")
 export const tabIconPreview = document.getElementById("tab-icon-preview")

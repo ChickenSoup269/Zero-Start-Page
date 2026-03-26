@@ -316,6 +316,11 @@ body.date-clock-style-analog #date {
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
+body.analog-bg-blur-enabled .analog-clock {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
 .analog-clock::before {
   content: "";
   position: absolute;

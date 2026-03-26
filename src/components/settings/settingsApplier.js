@@ -243,6 +243,10 @@ function createApplySettings(effectInstances) {
       "date-clock-style-analog",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+    document.body.classList.toggle(
+      "analog-bg-blur-enabled",
+      dateClockStyle === "analog" && settings.analogBlurBackground === true,
+    )
 
     // 3.1 Clock Color Contrast Logic
     let finalClockColor = settings.clockColor
@@ -361,6 +365,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     DOM.analogMarkerModeSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
+    DOM.analogBlurBgSetting.style.display =
+      (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"
+    DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
     DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
     DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")

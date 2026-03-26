@@ -50,6 +50,7 @@
   "settings_analog_marker_mode_quarter_ticks": "Show Tick 12,3,6,9",
   "settings_analog_marker_mode_full": "Show 1-12",
   "settings_analog_marker_mode_quarters": "Show 12,3,6,9",
+  "settings_analog_blur_bg": "Blur Background (Analog)",
   "settings_page_title": "Page Title",
   "settings_page_title_placeholder": "Enter custom page title",
   "settings_page_title_hint": "Appears in browser tab",

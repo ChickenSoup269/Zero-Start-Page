@@ -615,6 +615,13 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.analogBlurBgCheckbox.addEventListener("change", () => {
+    handleSettingUpdate(
+      "analogBlurBackground",
+      DOM.analogBlurBgCheckbox.checked,
+    )
+  })
+
   DOM.pageTitleInput.addEventListener("input", () => {
     const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)
