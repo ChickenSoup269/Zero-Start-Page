@@ -894,6 +894,18 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.hueTextModeSelect.addEventListener("change", () => {
+    handleSettingUpdate("hueTextMode", DOM.hueTextModeSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "hueTextMode",
+          value: DOM.hueTextModeSelect.value,
+        },
+      }),
+    )
+  })
+
   DOM.analogMarkerModeSelect.addEventListener("change", () => {
     handleSettingUpdate("analogMarkerMode", DOM.analogMarkerModeSelect.value)
     window.dispatchEvent(

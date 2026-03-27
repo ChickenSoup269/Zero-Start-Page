@@ -1,11 +1,77 @@
 import { clockElement, dateElement } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
 
+function applyHuePerCharacter(target, seed = 0) {
+  if (!target) return
+
+  const textNodes = []
+  const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement
+      if (!node.nodeValue || node.nodeValue.length === 0 || !parent) {
+        return NodeFilter.FILTER_REJECT
+      }
+
+      if (!node.nodeValue.trim()) {
+        return NodeFilter.FILTER_REJECT
+      }
+
+      if (parent.classList.contains("clock-hue-char")) {
+        return NodeFilter.FILTER_REJECT
+      }
+
+      return NodeFilter.FILTER_ACCEPT
+    },
+  })
+
+  let currentNode = walker.nextNode()
+  while (currentNode) {
+    textNodes.push(currentNode)
+    currentNode = walker.nextNode()
+  }
+
+  textNodes.forEach((node) => {
+    const text = node.nodeValue || ""
+    const fragment = document.createDocumentFragment()
+    let hueIndex = 0
+
+    Array.from(text).forEach((char) => {
+      if (!char.trim()) {
+        fragment.appendChild(document.createTextNode(char))
+        return
+      }
+
+      const span = document.createElement("span")
+      const hue = (seed + hueIndex * 43) % 360
+      span.className = "clock-hue-char"
+      span.style.setProperty("--char-hue", String(hue))
+      span.textContent = char
+      fragment.appendChild(span)
+      hueIndex += 1
+    })
+
+    node.parentNode?.replaceChild(fragment, node)
+  })
+}
+
+function applyHueMode(settings) {
+  const mode = settings.hueTextMode || "off"
+  if (mode === "clock" || mode === "both") {
+    applyHuePerCharacter(clockElement, 18)
+  }
+
+  if (mode === "date" || mode === "both") {
+    applyHuePerCharacter(dateElement, 198)
+  }
+}
+
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
   const langCode = settings.language === "vi" ? "vi-VN" : "en-US"
   const dateClockStyle = settings.dateClockStyle || "default"
+  const isFramedClockStyle =
+    dateClockStyle === "round" || dateClockStyle === "square"
   const shouldShowDate =
     settings.showDate !== false && settings.showGregorian !== false
   const timeOptions = settings.hideSeconds
@@ -61,7 +127,7 @@ export function updateTime() {
         <div class="analog-center-dot"></div>
       </div>
     `
-  } else if (dateClockStyle === "round") {
+  } else if (isFramedClockStyle) {
     const roundTimeOptions = settings.hideSeconds
       ? { hour: "2-digit", minute: "2-digit", hour12: true }
       : { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }
@@ -92,7 +158,7 @@ export function updateTime() {
       ? "weekday"
       : selectedFormat
 
-  if (dateClockStyle === "round") {
+  if (isFramedClockStyle) {
     const dayMonth = now.toLocaleDateString(langCode, {
       day: "2-digit",
       month: "long",
@@ -119,11 +185,13 @@ export function updateTime() {
 
   // Handle date visibility - check both showDate AND showGregorian
   dateElement.classList.toggle("is-hidden", !shouldShowDate)
-  if (dateClockStyle === "round") {
+  if (isFramedClockStyle) {
     dateElement.innerHTML = `<span class="clock-date-primary">${dateString || ""}</span>`
   } else {
     dateElement.textContent = dateString
   }
+
+  applyHueMode(settings)
 
   const mainContainer = clockElement.parentElement
   document.body.classList.remove("time-priority-none", "time-priority-date")
@@ -134,7 +202,7 @@ export function updateTime() {
       settings.timerIsRunning === true && settings.showTimer !== true
     mainContainer.classList.toggle("timer-running-hidden", isHiddenTimerRunning)
 
-    if (dateClockStyle === "round") {
+    if (isFramedClockStyle) {
       mainContainer.insertBefore(dateElement, clockElement)
     } else if (priority === "date") {
       mainContainer.insertBefore(dateElement, clockElement)
@@ -159,7 +227,8 @@ export function initClock() {
       e.detail.key === "clockDatePriority" ||
       e.detail.key === "dateFormat" ||
       e.detail.key === "dateClockStyle" ||
-      e.detail.key === "analogMarkerMode"
+      e.detail.key === "analogMarkerMode" ||
+      e.detail.key === "hueTextMode"
     ) {
       updateTime()
     }
