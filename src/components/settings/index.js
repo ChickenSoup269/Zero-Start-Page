@@ -198,7 +198,11 @@ export function initSettings() {
       "effect-canvas",
       settings.retroGameColor || "#00ff00",
     ),
-    crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas"),
+    crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas", {
+      scanColor: settings.crtScanColor || "#7cffad",
+      scanFrequency: settings.crtScanFrequency ?? 0.11,
+      backgroundColor: settings.crtBackgroundColor || "#0a140f",
+    }),
     meteorEffect: new MeteorEffect(
       "effect-canvas",
       settings.meteorColor || settings.starColor || "#ffffff",
@@ -229,6 +233,14 @@ export function initSettings() {
       updateSetting("gradientAngle", value.angle)
       updateSetting("gradientType", value.type || "linear")
       updateSetting("gradientRepeating", value.repeating === true)
+      updateSetting(
+        "gradientExtraColorCount",
+        Math.min(5, Math.max(1, Number(value.extraColorCount) || 2)),
+      )
+      updateSetting(
+        "gradientCustomColors",
+        typeof value.customColors === "string" ? value.customColors : "",
+      )
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
     } else {

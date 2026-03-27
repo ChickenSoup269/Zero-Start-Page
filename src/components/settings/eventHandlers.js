@@ -292,26 +292,291 @@ export function setupGeneralEventHandlers(
   })
 
   // Gradient listeners
-  const updateCurrentGradient = () => {
-    handleSettingUpdate(
-      null,
-      {
-        start: DOM.gradientStartPicker.value,
-        end: DOM.gradientEndPicker.value,
-        angle: DOM.gradientAngleInput.value,
-        type: DOM.gradientTypeSelect?.value || "linear",
-        repeating: DOM.gradientRepeatingToggle?.checked === true,
-      },
-      true,
+  const MODERN_GRADIENT_PRESETS = [
+    {
+      start: "#4F46E5",
+      end: "#06B6D4",
+      angle: "132",
+      type: "radial",
+      repeating: false,
+      extraColorCount: 3,
+      customColors: "",
+    },
+    {
+      start: "#0EA5E9",
+      end: "#8B5CF6",
+      angle: "210",
+      type: "conic",
+      repeating: false,
+      extraColorCount: 3,
+      customColors: "",
+    },
+    {
+      start: "#14B8A6",
+      end: "#0F172A",
+      angle: "145",
+      type: "linear",
+      repeating: true,
+      extraColorCount: 4,
+      customColors: "#22d3ee, #60a5fa, #a78bfa",
+    },
+    {
+      start: "#F43F5E",
+      end: "#7C3AED",
+      angle: "300",
+      type: "conic",
+      repeating: true,
+      extraColorCount: 5,
+      customColors: "#f43f5e, #f59e0b, #22d3ee, #8b5cf6",
+    },
+    {
+      start: "#22D3EE",
+      end: "#1E293B",
+      angle: "120",
+      type: "radial",
+      repeating: true,
+      extraColorCount: 4,
+      customColors: "#22d3ee, #38bdf8, #818cf8",
+    },
+  ]
+
+  const parseCustomColors = (text) => {
+    if (!text) return []
+    const matches = text.match(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g) || []
+    return matches.map((c) =>
+      c.length === 4
+        ? `#${c[1]}${c[1]}${c[2]}${c[2]}${c[3]}${c[3]}`
+        : c.toLowerCase(),
     )
+  }
+
+  const hexToRgb = (hex) => {
+    const normalized = String(hex || "").replace("#", "")
+    const full =
+      normalized.length === 3
+        ? normalized
+            .split("")
+            .map((c) => c + c)
+            .join("")
+        : normalized
+
+    const value = Number.parseInt(full, 16)
+    if (!Number.isFinite(value) || full.length !== 6) {
+      return { r: 128, g: 128, b: 128 }
+    }
+    return {
+      r: (value >> 16) & 255,
+      g: (value >> 8) & 255,
+      b: value & 255,
+    }
+  }
+
+  const mixHex = (a, b, t) => {
+    const c1 = hexToRgb(a)
+    const c2 = hexToRgb(b)
+    const ratio = Math.min(1, Math.max(0, Number(t) || 0))
+    const toHex = (n) => Math.round(n).toString(16).padStart(2, "0")
+    return `#${toHex(c1.r + (c2.r - c1.r) * ratio)}${toHex(c1.g + (c2.g - c1.g) * ratio)}${toHex(c1.b + (c2.b - c1.b) * ratio)}`
+  }
+
+  const setGradientControlsExpanded = (isOpen) => {
+    if (!DOM.gradientSettingsBody || !DOM.gradientToggleLabel) return
+    DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))
+    DOM.gradientToggleLabel.textContent =
+      geti18n()?.[
+        isOpen ? "settings_gradient_close" : "settings_gradient_open"
+      ] || (isOpen ? "Hide Controls" : "Show Controls")
+  }
+
+  const renderGradientExtraColorPickers = () => {
+    if (!DOM.gradientExtraColorPickers) return
+
+    const count = Math.min(
+      5,
+      Math.max(1, Number(DOM.gradientExtraColorCount?.value || 2)),
+    )
+    const fromInput = parseCustomColors(DOM.gradientCustomColors?.value || "")
+    const existing = fromInput.slice(0, count)
+
+    while (existing.length < count) {
+      const ratio = (existing.length + 1) / (count + 1)
+      const fallback = mixHex(
+        DOM.gradientStartPicker.value,
+        DOM.gradientEndPicker.value,
+        ratio,
+      )
+      existing.push(fallback)
+    }
+
+    DOM.gradientExtraColorPickers.innerHTML = ""
+    existing.forEach((color, index) => {
+      const picker = document.createElement("input")
+      picker.type = "color"
+      picker.value = color
+      picker.title = `Extra ${index + 1}`
+      picker.style.width = "42px"
+      picker.style.height = "34px"
+      picker.style.padding = "0"
+      picker.style.border = "1px solid var(--input-border)"
+      picker.style.borderRadius = "8px"
+      picker.addEventListener("input", () => {
+        const pickers = Array.from(
+          DOM.gradientExtraColorPickers.querySelectorAll('input[type="color"]'),
+        )
+        if (DOM.gradientCustomColors) {
+          DOM.gradientCustomColors.value = pickers
+            .map((p) => p.value)
+            .join(", ")
+        }
+        updateCurrentGradient()
+      })
+      DOM.gradientExtraColorPickers.appendChild(picker)
+    })
+
+    if (DOM.gradientCustomColors) {
+      DOM.gradientCustomColors.value = existing.join(", ")
+    }
+  }
+
+  const hslToHex = (h, s, l) => {
+    const hue = ((h % 360) + 360) % 360
+    const sat = Math.min(100, Math.max(0, s)) / 100
+    const light = Math.min(100, Math.max(0, l)) / 100
+    const c = (1 - Math.abs(2 * light - 1)) * sat
+    const x = c * (1 - Math.abs(((hue / 60) % 2) - 1))
+    const m = light - c / 2
+
+    let r = 0
+    let g = 0
+    let b = 0
+
+    if (hue < 60) {
+      r = c
+      g = x
+    } else if (hue < 120) {
+      r = x
+      g = c
+    } else if (hue < 180) {
+      g = c
+      b = x
+    } else if (hue < 240) {
+      g = x
+      b = c
+    } else if (hue < 300) {
+      r = x
+      b = c
+    } else {
+      r = c
+      b = x
+    }
+
+    const toHex = (channel) =>
+      Math.round((channel + m) * 255)
+        .toString(16)
+        .padStart(2, "0")
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+  }
+
+  const generateHarmonizedPalette = (size) => {
+    const total = Math.max(3, Number(size) || 3)
+    const baseHue = Math.floor(Math.random() * 360)
+    const step = 360 / total
+    const saturation = 72 + Math.floor(Math.random() * 16)
+    const baseLight = 46 + Math.floor(Math.random() * 14)
+
+    return Array.from({ length: total }, (_, index) => {
+      const jitter = Math.floor(Math.random() * 14) - 7
+      const hue = baseHue + step * index + jitter
+      const lightness = Math.min(
+        72,
+        Math.max(30, baseLight + (Math.floor(Math.random() * 12) - 6)),
+      )
+      return hslToHex(hue, saturation, lightness)
+    })
+  }
+
+  const updateCurrentGradient = () => {
+    const gradientConfig = {
+      start: DOM.gradientStartPicker.value,
+      end: DOM.gradientEndPicker.value,
+      angle: DOM.gradientAngleInput.value,
+      type: DOM.gradientTypeSelect?.value || "linear",
+      repeating: DOM.gradientRepeatingToggle?.checked === true,
+      extraColorCount: Number(DOM.gradientExtraColorCount?.value || 2),
+      customColors: DOM.gradientCustomColors?.value || "",
+    }
+
+    handleSettingUpdate(null, gradientConfig, true)
   }
 
   DOM.gradientStartPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientEndPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientTypeSelect?.addEventListener("change", updateCurrentGradient)
   DOM.gradientRepeatingToggle?.addEventListener("change", updateCurrentGradient)
+  DOM.gradientExtraColorCount?.addEventListener("change", () => {
+    renderGradientExtraColorPickers()
+    updateCurrentGradient()
+  })
+  DOM.gradientCustomColors?.addEventListener("input", () => {
+    renderGradientExtraColorPickers()
+    updateCurrentGradient()
+  })
   DOM.gradientAngleInput.addEventListener("input", () => {
     DOM.gradientAngleValue.textContent = DOM.gradientAngleInput.value
+    updateCurrentGradient()
+  })
+
+  DOM.gradientToggleBtn?.addEventListener("click", () => {
+    const nextIsOpen = DOM.gradientSettingsBody?.style.display === "none"
+    setGradientControlsExpanded(nextIsOpen)
+    updateSetting("gradientControlsOpen", nextIsOpen)
+    saveSettings()
+  })
+
+  DOM.randomGradientColorsBtn?.addEventListener("click", () => {
+    const extraCount = Math.min(
+      5,
+      Math.max(1, Number(DOM.gradientExtraColorCount?.value || 2)),
+    )
+    const palette = generateHarmonizedPalette(extraCount + 2)
+    const [start, ...rest] = palette
+    const end = rest[rest.length - 1]
+    const middle = rest.slice(0, -1)
+    const randomAngle = Math.floor(Math.random() * 361)
+
+    DOM.gradientStartPicker.value = start
+    DOM.gradientEndPicker.value = end
+    DOM.gradientAngleInput.value = randomAngle
+    DOM.gradientAngleValue.textContent = randomAngle
+    if (DOM.gradientCustomColors) {
+      DOM.gradientCustomColors.value = middle.join(", ")
+    }
+
+    renderGradientExtraColorPickers()
+    updateCurrentGradient()
+  })
+
+  DOM.generateModernGradientBtn?.addEventListener("click", () => {
+    const selected =
+      MODERN_GRADIENT_PRESETS[
+        Math.floor(Math.random() * MODERN_GRADIENT_PRESETS.length)
+      ]
+
+    DOM.gradientStartPicker.value = selected.start
+    DOM.gradientEndPicker.value = selected.end
+    DOM.gradientAngleInput.value = selected.angle
+    DOM.gradientAngleValue.textContent = selected.angle
+    if (DOM.gradientTypeSelect) DOM.gradientTypeSelect.value = selected.type
+    if (DOM.gradientRepeatingToggle)
+      DOM.gradientRepeatingToggle.checked = selected.repeating
+    if (DOM.gradientExtraColorCount)
+      DOM.gradientExtraColorCount.value = String(selected.extraColorCount || 2)
+    if (DOM.gradientCustomColors)
+      DOM.gradientCustomColors.value = selected.customColors || ""
+
+    renderGradientExtraColorPickers()
     updateCurrentGradient()
   })
 
@@ -323,6 +588,8 @@ export function setupGeneralEventHandlers(
       angle: DOM.gradientAngleInput.value,
       type: DOM.gradientTypeSelect?.value || "linear",
       repeating: DOM.gradientRepeatingToggle?.checked === true,
+      extraColorCount: Number(DOM.gradientExtraColorCount?.value || 2),
+      customColors: DOM.gradientCustomColors?.value || "",
     }
     const alreadyExists = settings.userGradients.some(
       (g) =>
@@ -330,7 +597,9 @@ export function setupGeneralEventHandlers(
         g.end === newGradient.end &&
         g.angle === newGradient.angle &&
         (g.type || "linear") === newGradient.type &&
-        (g.repeating === true) === newGradient.repeating,
+        (g.repeating === true) === newGradient.repeating &&
+        Number(g.extraColorCount || 2) === newGradient.extraColorCount &&
+        (g.customColors || "") === newGradient.customColors,
     )
     if (!alreadyExists) {
       if (settings.userGradients.length >= 10) {
@@ -354,10 +623,22 @@ export function setupGeneralEventHandlers(
         angle: item.dataset.angle,
         type: item.dataset.type || "linear",
         repeating: item.dataset.repeating === "true",
+        extraColorCount: Number(item.dataset.extraColorCount || 2),
+        customColors: item.dataset.customColors || "",
       }
+      if (DOM.gradientExtraColorCount) {
+        DOM.gradientExtraColorCount.value = String(gradient.extraColorCount)
+      }
+      if (DOM.gradientCustomColors) {
+        DOM.gradientCustomColors.value = gradient.customColors
+      }
+      renderGradientExtraColorPickers()
       handleSettingUpdate(null, gradient, true)
     }
   })
+
+  setGradientControlsExpanded(getSettings().gradientControlsOpen !== false)
+  renderGradientExtraColorPickers()
 
   // SVG Wave listeners
   function _applyWaveFromInputs(fade = false) {

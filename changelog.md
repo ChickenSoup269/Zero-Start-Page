@@ -54,6 +54,24 @@
   - Setting is persisted and reset-safe
 - Added quick music style selector in **Layout Controls** popup for faster style switching.
 - Added new preset fonts: **Orbitron** and **Chakra Petch**.
+- Added advanced **Background Gradient** options:
+  - Gradient type selector: **Linear / Radial / Conic**
+  - **Repeating Gradient** toggle for repeated stripe/ring/conic patterns
+  - Saved gradient presets now preserve gradient type + repeating mode
+- Added modern **Gradient Generator** workflow for landing-page style backgrounds:
+  - Semantic generation behavior by type:
+    - **Linear**: flowing directional blends
+    - **Radial**: glow-focused center weighting
+    - **Conic**: angular segmented color flow
+    - **Repeating**: denser repeated texture with richer color stops
+  - Extra color controls (1-5 additional colors)
+  - Manual custom color input for advanced palettes
+  - Random palette generation button for quick exploration
+  - Visual color-picker sections for easier per-color customization
+- Added advanced **CRT Scanlines** tuning controls in settings:
+  - Scanline color picker
+  - Scan frequency slider
+  - Background tint color picker
 
 #### Sửa lỗi (Fixed)
 
@@ -71,6 +89,7 @@
   - Multi-color controls now re-sync correctly from stored settings state
 - Fixed **SVG Wave** background compatibility with background filters:
   - `Blur` and `Brightness` sliders now apply correctly to SVG Wave layers
+- Fixed visible cut/seam artifact in **Conic Gradient** rendering by closing color stop loop correctly.
 
 #### Cập nhật (Updated)
 
@@ -85,6 +104,10 @@
     - divider color
     - divider width
   - Divider settings are now persisted and saved with multi-color presets.
+  - Added **Free Divider Angles (per line)** option in Solid Blocks mode:
+    - Each divider line can now be rotated independently with its own angle slider
+    - Per-line angle values are persisted and included in saved presets
+  - Divider line rendering updated to **full solid color** (no opacity)
   - Added EN/VI i18n labels for Split Background control visibility toggles.
 - Optimized CRT Scanlines rendering pipeline:
   - Reduced from 30 FPS to 24 FPS for better stability
@@ -100,15 +123,25 @@
 - Increased Sakura Petal size for better visibility.
 - Updated UI/i18n labels for new leaf skins (EN + VI).
 - Updated clock/date behavior when weekday priority is active:
-  - Clock is minimized and date is emphasized
+  - Priority mode now swaps emphasis between date and clock more naturally
+  - No forced hard-minimize behavior; size relationship is preserved and swapped
   - Date format now respects user selection except full format (auto-fallback to weekday)
   - Weekday text shown in bold for better readability
 - Synced music style changes across Settings, Layout Controls, and player rendering in real time.
+- Updated glass clock/date styling so both widgets appear as one connected visual block.
+- Updated **Background Gradient** panel UX:
+  - Added show/hide toggle for gradient controls (state is persisted)
+  - Simplified workflow around visual controls and live preview
+- Updated **StormRain** effect to a calmer, cleaner style with a lighter render pipeline.
+- Optimized **StormRain** for performance:
+  - Reduced heavy per-frame effects and expensive draw operations
+  - Lowered rendering workload for smoother behavior on lower-end devices
 
 #### Xóa (Removed)
 
 - Removed in-player music style dropdown to avoid duplicated controls (style is now controlled from Settings/Layout Controls).
 - Removed "prioritize clock" option from date/clock priority settings.
+- Removed **Full CSS Code** output section from Background Gradient to keep the UI focused on direct visual editing.
 
 ### [1.0.0] - 2026-03-16
 
