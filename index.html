@@ -339,6 +339,20 @@
                     <input type="color" id="gradient-start-picker" title="Pick a start color">
                     <input type="color" id="gradient-end-picker" title="Pick an end color">
                 </div>
+                <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+                    <label for="gradient-type-select" data-i18n="settings_gradient_type"
+                        style="font-size: 0.9rem;">Gradient Type:</label>
+                    <select id="gradient-type-select" style="flex: 1; padding: 0.35rem;">
+                        <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                        <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                        <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                    </select>
+                </div>
+                <label
+                    style="margin-top: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                    <input type="checkbox" id="gradient-repeating-toggle">
+                    <span data-i18n="settings_gradient_repeating">Repeating Gradient</span>
+                </label>
                 <div style="margin-top: 12px;">
                     <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
                     <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
@@ -405,6 +419,16 @@
                                     Width:</span> <span id="multi-color-line-width-value">1.2</span>%</label>
                             <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2"
                                 style="width: 100%;">
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <label
+                                style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
+                                <input type="checkbox" id="multi-color-free-line-angles">
+                                <span data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
+                                    line)</span>
+                            </label>
+                            <div id="multi-color-line-angles-container"
+                                style="display: none; flex-direction: column; gap: 8px;"></div>
                         </div>
                     </div>
                     <div style="margin-bottom: 12px;">

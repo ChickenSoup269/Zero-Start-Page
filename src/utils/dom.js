@@ -54,6 +54,12 @@ export const gradientAngleInput = document.getElementById(
 export const gradientAngleValue = document.getElementById(
   "gradient-angle-value",
 )
+export const gradientTypeSelect = document.getElementById(
+  "gradient-type-select",
+)
+export const gradientRepeatingToggle = document.getElementById(
+  "gradient-repeating-toggle",
+)
 export const saveGradientBtn = document.getElementById("save-gradient-btn")
 export const userGradientsGallery = document.getElementById(
   "user-gradients-gallery",
@@ -111,6 +117,12 @@ export const multiColorLineWidth = document.getElementById(
 )
 export const multiColorLineWidthValue = document.getElementById(
   "multi-color-line-width-value",
+)
+export const multiColorFreeLineAngles = document.getElementById(
+  "multi-color-free-line-angles",
+)
+export const multiColorLineAnglesContainer = document.getElementById(
+  "multi-color-line-angles-container",
 )
 export const savedMultiColorPresets = document.getElementById(
   "saved-multi-color-presets",

@@ -60,6 +60,7 @@ export function setupMultiColorManager(applySettings) {
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
     const dividerConfig = getDividerConfig()
+    const lineAngleConfig = getLineAngleConfig()
 
     let backgroundCSS
 
@@ -69,6 +70,7 @@ export function setupMultiColorManager(applySettings) {
         colors,
         parseInt(angle),
         dividerConfig,
+        lineAngleConfig,
       )
     } else {
       // Smooth gradient mode
@@ -89,6 +91,20 @@ export function setupMultiColorManager(applySettings) {
     const mode = getMode()
     DOM.multiColorDividerSettings.style.display =
       mode === "blocks" ? "block" : "none"
+    updateLineAngleControlsVisibility()
+  }
+
+  function updateLineAngleControlsVisibility() {
+    if (!DOM.multiColorLineAnglesContainer) return
+
+    const showLineAngles =
+      getMode() === "blocks" &&
+      DOM.multiColorDividersToggle.checked &&
+      DOM.multiColorFreeLineAngles?.checked
+
+    DOM.multiColorLineAnglesContainer.style.display = showLineAngles
+      ? "flex"
+      : "none"
   }
 
   function setMultiControlsExpanded(isOpen) {
@@ -126,6 +142,102 @@ export function setupMultiColorManager(applySettings) {
 
   function clampCount(value) {
     return Math.min(6, Math.max(2, Number(value) || 2))
+  }
+
+  function ensureDividerAngles(count, currentAngles, fallbackAngle) {
+    const dividerCount = Math.max(0, clampCount(count) - 1)
+    const fallback = Number.isFinite(Number(fallbackAngle))
+      ? Number(fallbackAngle)
+      : 135
+    const source = Array.isArray(currentAngles) ? currentAngles : []
+
+    return Array.from({ length: dividerCount }, (_, index) => {
+      const raw = Number(source[index])
+      const safe = Number.isFinite(raw) ? raw : fallback
+      return Math.round(((safe % 360) + 360) % 360)
+    })
+  }
+
+  function getLineAngleConfig() {
+    const freeAnglesEnabled = Boolean(DOM.multiColorFreeLineAngles?.checked)
+    if (!freeAnglesEnabled) {
+      return {
+        enabled: false,
+        lineAngles: [],
+      }
+    }
+
+    const angleInputs = Array.from(
+      DOM.multiColorLineAnglesContainer?.querySelectorAll(
+        ".multi-color-line-angle-input",
+      ) || [],
+    )
+
+    return {
+      enabled: true,
+      lineAngles: ensureDividerAngles(
+        DOM.multiColorCountSelect.value,
+        angleInputs.map((input) => Number(input.value)),
+        DOM.multiGradientAngleInput.value,
+      ),
+    }
+  }
+
+  function generateLineAngleControls(count, sourceAngles) {
+    const container = DOM.multiColorLineAnglesContainer
+    if (!container) return
+
+    const dividerCount = Math.max(0, clampCount(count) - 1)
+    const fallbackAngle = Number(DOM.multiGradientAngleInput.value || 135)
+    const safeAngles = ensureDividerAngles(
+      dividerCount + 1,
+      sourceAngles,
+      fallbackAngle,
+    )
+
+    container.innerHTML = ""
+
+    if (dividerCount === 0) {
+      updateSetting("multiColorLineAngles", [])
+      saveSettings()
+      return
+    }
+
+    safeAngles.forEach((angleValue, index) => {
+      const wrapper = document.createElement("div")
+      wrapper.style.display = "flex"
+      wrapper.style.flexDirection = "column"
+      wrapper.style.gap = "4px"
+
+      const label = document.createElement("label")
+      label.style.fontSize = "0.85rem"
+      label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${angleValue}deg`
+
+      const slider = document.createElement("input")
+      slider.type = "range"
+      slider.className = "multi-color-line-angle-input"
+      slider.dataset.index = String(index)
+      slider.min = "0"
+      slider.max = "360"
+      slider.step = "1"
+      slider.value = String(angleValue)
+      slider.style.width = "100%"
+
+      slider.addEventListener("input", () => {
+        const value = Number(slider.value)
+        label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${value}deg`
+        updateSetting("multiColorLineAngles", getLineAngleConfig().lineAngles)
+        saveSettings()
+        updateMultiColorPreview()
+      })
+
+      wrapper.appendChild(label)
+      wrapper.appendChild(slider)
+      container.appendChild(wrapper)
+    })
+
+    updateSetting("multiColorLineAngles", safeAngles)
+    saveSettings()
   }
 
   function hslToHex(h, s, l) {
@@ -170,8 +282,42 @@ export function setupMultiColorManager(applySettings) {
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`
   }
 
+  function generateDividerLayersCSS(
+    dividerCount,
+    segmentSize,
+    dividerConfig,
+    lineAngleConfig,
+    fallbackAngle,
+  ) {
+    const rawLineWidth = dividerConfig.width
+    const lineWidth = Math.min(Math.max(rawLineWidth, 0.1), segmentSize * 0.6)
+    const halfLine = lineWidth / 2
+    const dividerColor = hexToRgba(dividerConfig.color, 1)
+    const safeAngles = ensureDividerAngles(
+      dividerCount + 1,
+      lineAngleConfig?.lineAngles,
+      fallbackAngle,
+    )
+
+    return Array.from({ length: dividerCount }, (_, index) => {
+      const pivot = segmentSize * (index + 1)
+      const start = Math.max(0, pivot - halfLine)
+      const end = Math.min(100, pivot + halfLine)
+      const dividerAngle = lineAngleConfig?.enabled
+        ? safeAngles[index]
+        : Number(fallbackAngle)
+
+      return `linear-gradient(${dividerAngle}deg, transparent ${start}%, ${dividerColor} ${start}%, ${dividerColor} ${end}%, transparent ${end}%)`
+    })
+  }
+
   // Generate solid blocks CSS (equal color blocks with sharp transitions)
-  function generateSolidBlocksCSS(colors, angle, dividerConfig) {
+  function generateSolidBlocksCSS(
+    colors,
+    angle,
+    dividerConfig,
+    lineAngleConfig,
+  ) {
     const blockCount = colors.length
     const gradientItems = []
     const showDividers = dividerConfig?.enabled && blockCount > 1
@@ -190,29 +336,24 @@ export function setupMultiColorManager(applySettings) {
     }
 
     const segmentSize = 100 / blockCount
-    const rawLineWidth = dividerConfig.width
-    const lineWidth = Math.min(Math.max(rawLineWidth, 0.1), segmentSize * 0.6)
-    const halfLine = lineWidth / 2
-    const dividerColor = hexToRgba(dividerConfig.color, 0.6)
 
     for (let i = 0; i < blockCount; i++) {
       const segmentStart = segmentSize * i
       const segmentEnd = segmentSize * (i + 1)
-      const colorStart = i === 0 ? segmentStart : segmentStart + halfLine
-      const colorEnd = i === blockCount - 1 ? segmentEnd : segmentEnd - halfLine
-
-      gradientItems.push(`${colors[i]} ${colorStart}%`)
-      gradientItems.push(`${colors[i]} ${colorEnd}%`)
-
-      if (i < blockCount - 1) {
-        const dividerStart = segmentEnd - halfLine
-        const dividerEnd = segmentEnd + halfLine
-        gradientItems.push(`${dividerColor} ${dividerStart}%`)
-        gradientItems.push(`${dividerColor} ${dividerEnd}%`)
-      }
+      gradientItems.push(`${colors[i]} ${segmentStart}%`)
+      gradientItems.push(`${colors[i]} ${segmentEnd}%`)
     }
 
-    return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+    const baseLayer = `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+    const dividerLayers = generateDividerLayersCSS(
+      blockCount - 1,
+      segmentSize,
+      dividerConfig,
+      lineAngleConfig,
+      angle,
+    )
+
+    return [...dividerLayers, baseLayer].join(", ")
   }
 
   function getRandomHexColor() {
@@ -253,6 +394,7 @@ export function setupMultiColorManager(applySettings) {
     DOM.multiColorCountSelect.value = String(count)
 
     generateColorPickers(count)
+    generateLineAngleControls(count, getSettings().multiColorLineAngles)
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     pickers.forEach((picker, index) => {
       picker.value = colors[index]
@@ -285,6 +427,23 @@ export function setupMultiColorManager(applySettings) {
 
   DOM.multiColorDividersToggle.addEventListener("change", () => {
     updateSetting("multiColorDividers", DOM.multiColorDividersToggle.checked)
+    saveSettings()
+    updateLineAngleControlsVisibility()
+    updateMultiColorPreview()
+  })
+
+  DOM.multiColorFreeLineAngles?.addEventListener("change", () => {
+    const isEnabled = DOM.multiColorFreeLineAngles.checked
+    updateSetting("multiColorFreeLineAngles", isEnabled)
+
+    if (isEnabled) {
+      generateLineAngleControls(
+        DOM.multiColorCountSelect.value,
+        getSettings().multiColorLineAngles,
+      )
+    }
+
+    updateLineAngleControlsVisibility()
     saveSettings()
     updateMultiColorPreview()
   })
@@ -338,6 +497,12 @@ export function setupMultiColorManager(applySettings) {
               color: preset.dividerColor || "#FFFFFF",
               width: preset.dividerWidth || 1.2,
             },
+            {
+              enabled: Boolean(preset.freeLineAngles),
+              lineAngles: Array.isArray(preset.lineAngles)
+                ? preset.lineAngles
+                : [],
+            },
           )
         } else {
           const gradientStops = preset.gradientStops
@@ -376,6 +541,11 @@ export function setupMultiColorManager(applySettings) {
           DOM.multiColorLineWidthValue.textContent = Number(
             DOM.multiColorLineWidth.value,
           ).toFixed(1)
+          DOM.multiColorFreeLineAngles.checked = Boolean(preset.freeLineAngles)
+          generateLineAngleControls(
+            preset.gradientStops.length,
+            Array.isArray(preset.lineAngles) ? preset.lineAngles : [],
+          )
           updateSetting("multiColorCount", preset.gradientStops.length)
           updateSetting(
             "multiColorDividers",
@@ -385,6 +555,18 @@ export function setupMultiColorManager(applySettings) {
           updateSetting(
             "multiColorDividerWidth",
             parseFloat(DOM.multiColorLineWidth.value),
+          )
+          updateSetting(
+            "multiColorFreeLineAngles",
+            DOM.multiColorFreeLineAngles.checked,
+          )
+          updateSetting(
+            "multiColorLineAngles",
+            ensureDividerAngles(
+              preset.gradientStops.length,
+              preset.lineAngles,
+              preset.angle,
+            ),
           )
 
           updateDividerControlsVisibility()
@@ -416,6 +598,7 @@ export function setupMultiColorManager(applySettings) {
     DOM.multiColorCountSelect.value = String(count)
     updateSetting("multiColorCount", count)
     generateColorPickers(count)
+    generateLineAngleControls(count, getSettings().multiColorLineAngles)
     updateMultiColorPreview()
     saveSettings()
   })
@@ -436,6 +619,7 @@ export function setupMultiColorManager(applySettings) {
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
     const dividerConfig = getDividerConfig()
+    const lineAngleConfig = getLineAngleConfig()
 
     updateSetting("multiColors", colors)
     updateSetting("multiGradientAngle", parseInt(angle))
@@ -443,6 +627,8 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("multiColorDividers", dividerConfig.enabled)
     updateSetting("multiColorDividerColor", dividerConfig.color)
     updateSetting("multiColorDividerWidth", dividerConfig.width)
+    updateSetting("multiColorFreeLineAngles", lineAngleConfig.enabled)
+    updateSetting("multiColorLineAngles", lineAngleConfig.lineAngles)
 
     let backgroundCSS
 
@@ -451,6 +637,7 @@ export function setupMultiColorManager(applySettings) {
         colors,
         parseInt(angle),
         dividerConfig,
+        lineAngleConfig,
       )
     } else {
       const gradientStops = colors
@@ -487,6 +674,7 @@ export function setupMultiColorManager(applySettings) {
     const angle = DOM.multiGradientAngleInput.value
     const mode = getMode()
     const dividerConfig = getDividerConfig()
+    const lineAngleConfig = getLineAngleConfig()
 
     const settings = getSettings()
     const newPreset = {
@@ -497,6 +685,8 @@ export function setupMultiColorManager(applySettings) {
       showDividers: dividerConfig.enabled,
       dividerColor: dividerConfig.color,
       dividerWidth: dividerConfig.width,
+      freeLineAngles: lineAngleConfig.enabled,
+      lineAngles: lineAngleConfig.lineAngles,
       type: "multi-color",
     }
 
@@ -544,6 +734,10 @@ export function setupMultiColorManager(applySettings) {
     DOM.multiColorLineWidthValue.textContent = Number(
       DOM.multiColorLineWidth.value,
     ).toFixed(1)
+    DOM.multiColorFreeLineAngles.checked = Boolean(
+      settings.multiColorFreeLineAngles,
+    )
+    generateLineAngleControls(initialCount, settings.multiColorLineAngles)
 
     const modeValue = settings.multiColorMode || "smooth"
     Array.from(DOM.multiColorModeRadios).forEach((radio) => {

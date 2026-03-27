@@ -227,6 +227,8 @@ export function initSettings() {
       updateSetting("gradientStart", value.start)
       updateSetting("gradientEnd", value.end)
       updateSetting("gradientAngle", value.angle)
+      updateSetting("gradientType", value.type || "linear")
+      updateSetting("gradientRepeating", value.repeating === true)
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
     } else {
