@@ -21,7 +21,7 @@ import {
   renderLocalBackgrounds,
   renderUserColors,
 } from "./backgroundManager.js"
-import { renderUserGradients } from "./gradientManager.js"
+import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
@@ -168,8 +168,15 @@ function createApplySettings(effectInstances) {
         shouldUseSvgWave = true
         effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
       } else {
-        if (bgLayer)
-          bgLayer.style.background = `linear-gradient(${settings.gradientAngle}deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+        if (bgLayer) {
+          bgLayer.style.background = buildGradientCss({
+            start: settings.gradientStart,
+            end: settings.gradientEnd,
+            angle: settings.gradientAngle,
+            type: settings.gradientType,
+            repeating: settings.gradientRepeating,
+          })
+        }
         document.body.classList.add("bg-layer-active")
       }
     }
@@ -414,6 +421,12 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.gradientEndPicker.value = settings.gradientEnd
     DOM.gradientAngleInput.value = settings.gradientAngle
     DOM.gradientAngleValue.textContent = settings.gradientAngle
+    if (DOM.gradientTypeSelect) {
+      DOM.gradientTypeSelect.value = settings.gradientType || "linear"
+    }
+    if (DOM.gradientRepeatingToggle) {
+      DOM.gradientRepeatingToggle.checked = settings.gradientRepeating === true
+    }
 
     // Effect Color Inputs
     DOM.starColorPicker.value = settings.starColor || "#ffffff"

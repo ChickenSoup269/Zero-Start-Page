@@ -299,6 +299,8 @@ export function setupGeneralEventHandlers(
         start: DOM.gradientStartPicker.value,
         end: DOM.gradientEndPicker.value,
         angle: DOM.gradientAngleInput.value,
+        type: DOM.gradientTypeSelect?.value || "linear",
+        repeating: DOM.gradientRepeatingToggle?.checked === true,
       },
       true,
     )
@@ -306,6 +308,8 @@ export function setupGeneralEventHandlers(
 
   DOM.gradientStartPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientEndPicker.addEventListener("input", updateCurrentGradient)
+  DOM.gradientTypeSelect?.addEventListener("change", updateCurrentGradient)
+  DOM.gradientRepeatingToggle?.addEventListener("change", updateCurrentGradient)
   DOM.gradientAngleInput.addEventListener("input", () => {
     DOM.gradientAngleValue.textContent = DOM.gradientAngleInput.value
     updateCurrentGradient()
@@ -317,12 +321,16 @@ export function setupGeneralEventHandlers(
       start: DOM.gradientStartPicker.value,
       end: DOM.gradientEndPicker.value,
       angle: DOM.gradientAngleInput.value,
+      type: DOM.gradientTypeSelect?.value || "linear",
+      repeating: DOM.gradientRepeatingToggle?.checked === true,
     }
     const alreadyExists = settings.userGradients.some(
       (g) =>
         g.start === newGradient.start &&
         g.end === newGradient.end &&
-        g.angle === newGradient.angle,
+        g.angle === newGradient.angle &&
+        (g.type || "linear") === newGradient.type &&
+        (g.repeating === true) === newGradient.repeating,
     )
     if (!alreadyExists) {
       if (settings.userGradients.length >= 10) {
@@ -344,6 +352,8 @@ export function setupGeneralEventHandlers(
         start: item.dataset.start,
         end: item.dataset.end,
         angle: item.dataset.angle,
+        type: item.dataset.type || "linear",
+        repeating: item.dataset.repeating === "true",
       }
       handleSettingUpdate(null, gradient, true)
     }

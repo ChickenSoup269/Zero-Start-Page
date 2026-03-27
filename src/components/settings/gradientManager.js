@@ -11,6 +11,45 @@ import {
 import { geti18n } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
 
+function normalizeGradient(gradient) {
+  const type = ["linear", "radial", "conic"].includes(gradient?.type)
+    ? gradient.type
+    : "linear"
+  const repeating = gradient?.repeating === true
+
+  return {
+    start: gradient?.start || "#0f0c29",
+    end: gradient?.end || "#302b63",
+    angle: Number(gradient?.angle ?? 135),
+    type,
+    repeating,
+  }
+}
+
+function buildGradientCss(gradient) {
+  const normalized = normalizeGradient(gradient)
+  const { start, end, angle, type, repeating } = normalized
+
+  if (repeating) {
+    if (type === "radial") {
+      return `repeating-radial-gradient(circle at center, ${start} 0%, ${end} 12%, ${start} 24%)`
+    }
+    if (type === "conic") {
+      return `repeating-conic-gradient(from ${angle}deg, ${start} 0deg, ${end} 18deg, ${start} 36deg)`
+    }
+    return `repeating-linear-gradient(${angle}deg, ${start} 0%, ${end} 25%, ${start} 50%)`
+  }
+
+  if (type === "radial") {
+    return `radial-gradient(circle at center, ${start}, ${end})`
+  }
+  if (type === "conic") {
+    return `conic-gradient(from ${angle}deg, ${start}, ${end})`
+  }
+
+  return `linear-gradient(${angle}deg, ${start}, ${end})`
+}
+
 function renderUserGradients(DOM) {
   const settings = getSettings()
   DOM.userGradientsGallery.innerHTML = ""
@@ -24,7 +63,9 @@ function renderUserGradients(DOM) {
       item.dataset.start = gradient.start
       item.dataset.end = gradient.end
       item.dataset.angle = gradient.angle
-      item.style.background = `linear-gradient(${gradient.angle}deg, ${gradient.start}, ${gradient.end})`
+      item.dataset.type = gradient.type || "linear"
+      item.dataset.repeating = String(gradient.repeating === true)
+      item.style.background = buildGradientCss(gradient)
       item.title = `Gradient ${index + 1}`
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
@@ -45,3 +86,4 @@ function renderUserGradients(DOM) {
 }
 
 export { renderUserGradients }
+export { buildGradientCss }
