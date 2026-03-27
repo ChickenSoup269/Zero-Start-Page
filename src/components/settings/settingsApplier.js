@@ -175,6 +175,8 @@ function createApplySettings(effectInstances) {
             angle: settings.gradientAngle,
             type: settings.gradientType,
             repeating: settings.gradientRepeating,
+            extraColorCount: settings.gradientExtraColorCount,
+            customColors: settings.gradientCustomColors,
           })
         }
         document.body.classList.add("bg-layer-active")
@@ -227,8 +229,9 @@ function createApplySettings(effectInstances) {
     let computedClockSize = baseClockSize
     let computedDateSize = baseDateSize
     if (priority === "date") {
-      computedClockSize = 2
-      computedDateSize = baseDateSize
+      // Date-priority mode swaps the visual emphasis between clock and date.
+      computedClockSize = baseDateSize
+      computedDateSize = baseClockSize
     }
 
     document.documentElement.style.setProperty(
@@ -427,6 +430,25 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.gradientRepeatingToggle) {
       DOM.gradientRepeatingToggle.checked = settings.gradientRepeating === true
     }
+    if (DOM.gradientSettingsBody) {
+      const isOpen = settings.gradientControlsOpen !== false
+      DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"
+      DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))
+      if (DOM.gradientToggleLabel) {
+        const i18n = geti18n()
+        DOM.gradientToggleLabel.textContent =
+          i18n[isOpen ? "settings_gradient_close" : "settings_gradient_open"] ||
+          (isOpen ? "Hide Controls" : "Show Controls")
+      }
+    }
+    if (DOM.gradientExtraColorCount) {
+      DOM.gradientExtraColorCount.value = String(
+        Math.min(5, Math.max(1, Number(settings.gradientExtraColorCount) || 2)),
+      )
+    }
+    if (DOM.gradientCustomColors) {
+      DOM.gradientCustomColors.value = settings.gradientCustomColors || ""
+    }
 
     // Effect Color Inputs
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
@@ -506,6 +528,19 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "nintendoPixel" ? "block" : "none"
     DOM.nintendoPixelColorPicker.value =
       settings.nintendoPixelColor || "#63f5ff"
+    DOM.crtScanColorSetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtScanFrequencySetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtBackgroundColorSetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtScanColorPicker.value = settings.crtScanColor || "#7cffad"
+    DOM.crtScanFrequencyInput.value = String(settings.crtScanFrequency ?? 0.11)
+    DOM.crtScanFrequencyValue.textContent = Number(
+      DOM.crtScanFrequencyInput.value,
+    ).toFixed(2)
+    DOM.crtBackgroundColorPicker.value =
+      settings.crtBackgroundColor || "#0a140f"
     DOM.retroGameColorSetting.style.display =
       settings.effect === "retroGame" ? "block" : "none"
     DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"

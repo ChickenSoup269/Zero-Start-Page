@@ -335,30 +335,59 @@
 
             <div class="setting-group">
                 <label><i class="fa-solid fa-fill-drip"></i> Background Gradient</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="color" id="gradient-start-picker" title="Pick a start color">
-                    <input type="color" id="gradient-end-picker" title="Pick an end color">
+                <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
+                </button>
+                <div id="gradient-settings-body">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="color" id="gradient-start-picker" title="Pick a start color">
+                        <input type="color" id="gradient-end-picker" title="Pick an end color">
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+                        <label for="gradient-type-select" data-i18n="settings_gradient_type"
+                            style="font-size: 0.9rem;">Gradient Type:</label>
+                        <select id="gradient-type-select" style="flex: 1; padding: 0.35rem;">
+                            <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                            <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                            <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                        </select>
+                    </div>
+                    <label
+                        style="margin-top: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="gradient-repeating-toggle">
+                        <span data-i18n="settings_gradient_repeating">Repeating Gradient</span>
+                    </label>
+                    <div style="margin-top: 10px; display: flex; gap: 8px; align-items: center;">
+                        <label for="gradient-extra-color-count" data-i18n="settings_gradient_extra_color_count"
+                            style="font-size: 0.9rem;">Extra Colors:</label>
+                        <select id="gradient-extra-color-count" style="flex: 1; padding: 0.35rem;">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 8px;">
+                        <label for="gradient-custom-colors" data-i18n="settings_gradient_custom_colors"
+                            style="font-size: 0.9rem;">Custom Colors (comma separated):</label>
+                        <input type="text" id="gradient-custom-colors" placeholder="#ff6b6b, #feca57, #48dbfb"
+                            style="width: 100%; margin-top: 6px; padding: 0.45rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                    </div>
+                    <div id="gradient-extra-color-pickers"
+                        style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
+                    <button id="random-gradient-colors-btn" class="secondary-btn full-width" style="margin-top: 8px;"
+                        data-i18n="settings_gradient_random_colors">Random Gradient Colors</button>
+                    <div style="margin-top: 12px;">
+                        <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
+                        <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
+                    </div>
+                    <button id="generate-modern-gradient-btn" class="secondary-btn full-width" style="margin-top: 10px;"
+                        data-i18n="settings_gradient_generate_modern">Generate Modern Landing Gradient</button>
+                    <button id="save-gradient-btn" class="secondary-btn full-width"
+                        data-i18n="settings_save_gradient_btn">Save Gradient</button>
                 </div>
-                <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
-                    <label for="gradient-type-select" data-i18n="settings_gradient_type"
-                        style="font-size: 0.9rem;">Gradient Type:</label>
-                    <select id="gradient-type-select" style="flex: 1; padding: 0.35rem;">
-                        <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
-                        <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
-                        <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
-                    </select>
-                </div>
-                <label
-                    style="margin-top: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
-                    <input type="checkbox" id="gradient-repeating-toggle">
-                    <span data-i18n="settings_gradient_repeating">Repeating Gradient</span>
-                </label>
-                <div style="margin-top: 12px;">
-                    <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
-                    <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
-                </div>
-                <button id="save-gradient-btn" class="secondary-btn full-width"
-                    data-i18n="settings_save_gradient_btn">Save Gradient</button>
             </div>
 
             <div class="setting-group">
@@ -846,6 +875,23 @@
                         <label for="nintendo-pixel-color-picker" data-i18n="setting_nintendo_pixel_color">Phosphor
                             Glow</label>
                         <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
+                    </div>
+                    <div id="crt-scan-color-setting" class="setting-item" style="display: none;">
+                        <label for="crt-scan-color-picker" data-i18n="setting_crt_scan_color">Scan Beam Color</label>
+                        <input type="color" id="crt-scan-color-picker" value="#7cffad" />
+                    </div>
+                    <div id="crt-scan-frequency-setting" class="setting-item" style="display: none;">
+                        <label for="crt-scan-frequency-input">
+                            <span data-i18n="setting_crt_scan_frequency">Scan Frequency</span>:
+                            <span id="crt-scan-frequency-value">0.11</span>
+                        </label>
+                        <input type="range" id="crt-scan-frequency-input" min="0.03" max="0.40" step="0.01"
+                            value="0.11" />
+                    </div>
+                    <div id="crt-background-color-setting" class="setting-item" style="display: none;">
+                        <label for="crt-background-color-picker" data-i18n="setting_crt_background_color">CRT Background
+                            Color</label>
+                        <input type="color" id="crt-background-color-picker" value="#0a140f" />
                     </div>
                     <!-- Retro Game Color -->
                     <div id="retro-game-color-setting" class="setting-item" style="display: none;">

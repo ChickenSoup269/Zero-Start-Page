@@ -57,8 +57,30 @@ export const gradientAngleValue = document.getElementById(
 export const gradientTypeSelect = document.getElementById(
   "gradient-type-select",
 )
+export const gradientToggleBtn = document.getElementById("gradient-toggle-btn")
+export const gradientToggleLabel = document.getElementById(
+  "gradient-toggle-label",
+)
+export const gradientSettingsBody = document.getElementById(
+  "gradient-settings-body",
+)
 export const gradientRepeatingToggle = document.getElementById(
   "gradient-repeating-toggle",
+)
+export const gradientExtraColorCount = document.getElementById(
+  "gradient-extra-color-count",
+)
+export const gradientCustomColors = document.getElementById(
+  "gradient-custom-colors",
+)
+export const gradientExtraColorPickers = document.getElementById(
+  "gradient-extra-color-pickers",
+)
+export const randomGradientColorsBtn = document.getElementById(
+  "random-gradient-colors-btn",
+)
+export const generateModernGradientBtn = document.getElementById(
+  "generate-modern-gradient-btn",
 )
 export const saveGradientBtn = document.getElementById("save-gradient-btn")
 export const userGradientsGallery = document.getElementById(
@@ -255,6 +277,27 @@ export const nintendoPixelColorPicker = document.getElementById(
 )
 export const nintendoPixelColorSetting = document.getElementById(
   "nintendo-pixel-color-setting",
+)
+export const crtScanColorPicker = document.getElementById(
+  "crt-scan-color-picker",
+)
+export const crtScanColorSetting = document.getElementById(
+  "crt-scan-color-setting",
+)
+export const crtScanFrequencyInput = document.getElementById(
+  "crt-scan-frequency-input",
+)
+export const crtScanFrequencyValue = document.getElementById(
+  "crt-scan-frequency-value",
+)
+export const crtScanFrequencySetting = document.getElementById(
+  "crt-scan-frequency-setting",
+)
+export const crtBackgroundColorPicker = document.getElementById(
+  "crt-background-color-picker",
+)
+export const crtBackgroundColorSetting = document.getElementById(
+  "crt-background-color-setting",
 )
 export const retroGameColorPicker = document.getElementById(
   "retro-game-color-picker",

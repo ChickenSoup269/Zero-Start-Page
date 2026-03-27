@@ -182,6 +182,33 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
+  DOM.crtScanColorPicker?.addEventListener("input", () => {
+    updateSetting("crtScanColor", DOM.crtScanColorPicker.value)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateScanColor(
+        DOM.crtScanColorPicker.value,
+      )
+  })
+
+  DOM.crtScanFrequencyInput?.addEventListener("input", () => {
+    const frequency = Number(DOM.crtScanFrequencyInput.value)
+    DOM.crtScanFrequencyValue.textContent = frequency.toFixed(2)
+    updateSetting("crtScanFrequency", frequency)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateScanFrequency(frequency)
+  })
+
+  DOM.crtBackgroundColorPicker?.addEventListener("input", () => {
+    updateSetting("crtBackgroundColor", DOM.crtBackgroundColorPicker.value)
+    saveSettings()
+    if (effectInstances.crtScanlinesEffect)
+      effectInstances.crtScanlinesEffect.updateBackgroundColor(
+        DOM.crtBackgroundColorPicker.value,
+      )
+  })
+
   DOM.retroGameColorPicker.addEventListener("input", () => {
     updateSetting("retroGameColor", DOM.retroGameColorPicker.value)
     saveSettings()

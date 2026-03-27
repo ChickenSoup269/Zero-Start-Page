@@ -1,5 +1,5 @@
 export class CrtScanlinesEffect {
-  constructor(canvasId) {
+  constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.frameCanvas = document.createElement("canvas")
@@ -14,7 +14,9 @@ export class CrtScanlinesEffect {
     this.noiseCanvas = document.createElement("canvas")
     this.noiseCtx = this.noiseCanvas.getContext("2d")
     this.noiseTick = 0
-    this.scanColor = this._hexToRgb("#7cffad")
+    this.scanColor = this._hexToRgb(options.scanColor || "#7cffad")
+    this.backgroundColor = this._hexToRgb(options.backgroundColor || "#0a140f")
+    this.scanFrequency = this._normalizeScanFrequency(options.scanFrequency)
 
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
@@ -62,6 +64,20 @@ export class CrtScanlinesEffect {
   updateScanColor(hex) {
     this.scanColor = this._hexToRgb(hex)
     this._rebuildNoise()
+  }
+
+  updateBackgroundColor(hex) {
+    this.backgroundColor = this._hexToRgb(hex)
+  }
+
+  _normalizeScanFrequency(value) {
+    const parsed = Number(value)
+    if (!Number.isFinite(parsed)) return 0.11
+    return Math.min(0.4, Math.max(0.03, parsed))
+  }
+
+  updateScanFrequency(value) {
+    this.scanFrequency = this._normalizeScanFrequency(value)
   }
 
   _rebuildNoise() {
@@ -136,11 +152,12 @@ export class CrtScanlinesEffect {
     const w = this.canvas.width
     const h = this.canvas.height
     const { r, g, b } = this.scanColor
+    const { r: br, g: bg, b: bb } = this.backgroundColor
 
     ctx.clearRect(0, 0, w, h)
 
     // Dark phosphor tint overlay so any background turns into CRT-like terminal tone.
-    ctx.fillStyle = `rgba(${Math.max(0, r - 120)}, ${Math.max(0, g - 130)}, ${Math.max(0, b - 120)}, 0.28)`
+    ctx.fillStyle = `rgba(${br}, ${bg}, ${bb}, 0.3)`
     ctx.fillRect(0, 0, w, h)
 
     // Light noise updates every few frames to keep cost low.
@@ -157,7 +174,7 @@ export class CrtScanlinesEffect {
     this._drawRetroGridLines(ctx, w, h)
 
     // Traveling scan beam (classic CRT refresh sweep).
-    const beamY = ((currentTime * 0.11) % (h + 220)) - 110
+    const beamY = ((currentTime * this.scanFrequency) % (h + 220)) - 110
     const beam = ctx.createLinearGradient(0, beamY - 60, 0, beamY + 60)
     beam.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`)
     beam.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.22)`)
