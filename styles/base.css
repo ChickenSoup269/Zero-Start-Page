@@ -102,6 +102,11 @@ body.date-clock-style-round .clock-date-wrap.timer-running-hidden {
   padding: 0;
 }
 
+body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
+  border-radius: 22px;
+  padding: 0;
+}
+
 #clock {
   font-size: var(--clock-size);
   font-weight: 600;
@@ -195,20 +200,18 @@ body.date-clock-style-glass #date {
   width: auto;
 }
 
-body.date-clock-style-round .clock-date-wrap {
+body.date-clock-style-round .clock-date-wrap,
+body.date-clock-style-square .clock-date-wrap {
+  --frame-size: min(82vw, 320px);
   width: 320px;
   height: 320px;
   max-width: 82vw;
   max-height: 82vw;
   margin: 0 auto 36px;
-  border-radius: 50%;
   border: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.65);
-  background: radial-gradient(
-    circle at 30% 25%,
-    rgba(255, 255, 255, 0.13),
-    rgba(255, 255, 255, 0.04) 52%,
-    rgba(0, 0, 0, 0.2)
-  );
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
@@ -222,15 +225,127 @@ body.date-clock-style-round .clock-date-wrap {
   padding: 26px;
   box-sizing: border-box;
   text-shadow: none;
+  animation: framedClockFloat 8s ease-in-out infinite;
+}
+
+body.date-clock-style-round .clock-date-wrap::before,
+body.date-clock-style-square .clock-date-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body.date-clock-style-round .clock-date-wrap::after,
+body.date-clock-style-square .clock-date-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0) 36%
+    ),
+    radial-gradient(
+      circle at 86% 84%,
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
+    );
+  pointer-events: none;
+  z-index: -2;
+  animation: framedClockShimmer 12s linear infinite;
+}
+
+body.date-clock-style-round .clock-date-wrap {
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 25%,
+    rgba(255, 255, 255, 0.13),
+    rgba(255, 255, 255, 0.04) 52%,
+    rgba(0, 0, 0, 0.2)
+  );
+}
+
+body.date-clock-style-round .clock-date-wrap::before {
+  border-radius: 50%;
+}
+
+body.date-clock-style-round .clock-date-wrap::after {
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(255, 255, 255, 0.18),
+      rgba(255, 255, 255, 0) 36%
+    ),
+    radial-gradient(
+      circle at 86% 84%,
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
+    ),
+    repeating-conic-gradient(
+      from -90deg,
+      rgba(255, 255, 255, 0.11) 0deg 0.9deg,
+      transparent 0.9deg 12deg
+    );
+  -webkit-mask: radial-gradient(
+    circle,
+    transparent 0 68%,
+    #000 68% 71%,
+    transparent 71%
+  );
+  mask: radial-gradient(
+    circle,
+    transparent 0 68%,
+    #000 68% 71%,
+    transparent 71%
+  );
+}
+
+body.date-clock-style-square .clock-date-wrap {
+  border-radius: 22px;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.13),
+    rgba(255, 255, 255, 0.04) 52%,
+    rgba(0, 0, 0, 0.2)
+  );
+}
+
+body.date-clock-style-square .clock-date-wrap::before {
+  border-radius: 16px;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.date-clock-style-square .clock-date-wrap::after {
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      125deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.04) 18%,
+      rgba(255, 255, 255, 0) 46%
+    ),
+    radial-gradient(
+      circle at 88% 86%,
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
+      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
+    );
 }
 
 body.date-clock-style-round #clock,
-body.date-clock-style-round #date {
+body.date-clock-style-round #date,
+body.date-clock-style-square #clock,
+body.date-clock-style-square #date {
   margin: 0;
   text-shadow: none;
 }
 
-body.date-clock-style-round #clock {
+body.date-clock-style-round #clock,
+body.date-clock-style-square #clock {
   position: relative;
   width: 100%;
   display: flex;
@@ -241,7 +356,23 @@ body.date-clock-style-round #clock {
   font-weight: 600;
 }
 
-body.date-clock-style-round #date {
+body.date-clock-style-round #clock::after,
+body.date-clock-style-square #clock::after {
+  content: "";
+  width: min(72%, 220px);
+  height: 1px;
+  margin-top: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.42),
+    rgba(255, 255, 255, 0)
+  );
+  opacity: 0.8;
+}
+
+body.date-clock-style-round #date,
+body.date-clock-style-square #date {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -256,6 +387,15 @@ body.date-clock-style-round #date {
   margin-top: 4px;
 }
 
+body.date-clock-style-round .clock-time-main,
+body.date-clock-style-square .clock-time-main {
+  font-size: clamp(2.2rem, 7vw, 3.05rem);
+  letter-spacing: 0.09em;
+  text-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+}
+
 .clock-time-seconds {
   display: inline;
   margin-top: 0;
@@ -266,7 +406,8 @@ body.date-clock-style-round #date {
   vertical-align: 0.2em;
 }
 
-body.date-clock-style-round .clock-time-ampm {
+body.date-clock-style-round .clock-time-ampm,
+body.date-clock-style-square .clock-time-ampm {
   display: block;
   position: static;
   margin: 4px 0px 4px 0;
@@ -274,6 +415,53 @@ body.date-clock-style-round .clock-time-ampm {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   opacity: 0.78;
+}
+
+body.date-clock-style-square #date {
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  body.date-clock-style-round .clock-date-wrap,
+  body.date-clock-style-square .clock-date-wrap {
+    width: min(86vw, 300px);
+    height: min(86vw, 300px);
+    padding: 20px;
+    margin-bottom: 26px;
+  }
+
+  body.date-clock-style-round #clock::after,
+  body.date-clock-style-square #clock::after {
+    margin-top: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.date-clock-style-round .clock-date-wrap,
+  body.date-clock-style-square .clock-date-wrap,
+  body.date-clock-style-round .clock-date-wrap::after,
+  body.date-clock-style-square .clock-date-wrap::after {
+    animation: none;
+  }
+}
+
+@keyframes framedClockFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes framedClockShimmer {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .clock-time-ampm {
@@ -300,6 +488,14 @@ body.date-clock-style-round .clock-time-ampm {
   letter-spacing: 0.04em;
   text-transform: capitalize;
   margin-top: 2px;
+}
+
+.clock-hue-char {
+  display: inline-block;
+  color: hsl(var(--char-hue, 0), 92%, 66%);
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.35),
+    0 0 10px hsla(var(--char-hue, 0), 92%, 60%, 0.35);
 }
 
 body.date-clock-style-analog #clock {

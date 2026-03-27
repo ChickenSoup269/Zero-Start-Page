@@ -250,6 +250,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-minimal",
       "date-clock-style-glass",
       "date-clock-style-round",
+      "date-clock-style-square",
       "date-clock-style-analog",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
@@ -372,6 +373,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.clockDatePrioritySelect.value =
       settings.clockDatePriority === "date" ? "date" : "none"
     DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+    DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
     DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     DOM.analogMarkerModeSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
