@@ -12,6 +12,12 @@
   - Floating light particles with opacity fade effects
 - New visual effect: **CRT Scanlines**
 
+- Tuỳ chọn **Đồng hồ hình vuông (Square Clock)** trong phần kiểu đồng hồ/ngày tháng.
+- Hiệu ứng chi tiết mới cho đồng hồ **tròn** và **vuông** (bóng, viền, hiệu ứng nền nhiều lớp).
+- Tuỳ chọn **Random HUE Letters**: mỗi ký tự của đồng hồ hoặc ngày tháng có thể được tô màu HUE khác nhau (giống bảng tên FamilyMart).
+  - Có thể chọn áp dụng cho đồng hồ, ngày tháng, cả hai, hoặc tắt.
+  - Màu HUE cố định theo vị trí ký tự, không đổi màu liên tục.
+
 - New **Multi-Color Split Background** feature:
   - Create split backgrounds with 2-6 custom colors
   - Two rendering modes:
@@ -118,6 +124,9 @@
 - Refactored Unsplash fetch flow with 4-tier priority:
   - Tier 1: Per-category collections.
   - Tier 2: Curated Topics endpoint (`/topics/{id}/photos`).
+
+- Nâng cấp CSS cho đồng hồ tròn/vuông với hiệu ứng đẹp hơn, responsive tốt hơn.
+- Đồng bộ UI, i18n, state cho các tuỳ chọn mới về màu sắc ký tự.
   - Tier 3: Random photos with per-category keywords.
   - Tier 4: Search fallback with dynamic keyword pools.
 - Increased Sakura Petal size for better visibility.
