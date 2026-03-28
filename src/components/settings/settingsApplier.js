@@ -281,6 +281,14 @@ function createApplySettings(effectInstances) {
         "--accent-color",
         settings.accentColor,
       )
+      // Dynamic contrast color for accent background
+      const contrastColor =
+        getContrastYIQ(settings.accentColor) === "black" ? "#1a1a2e" : "#ffffff"
+      document.documentElement.style.setProperty(
+        "--accent-contrast-color",
+        contrastColor,
+      )
+
       const rgb = hexToRgb(settings.accentColor)
       if (rgb) {
         document.documentElement.style.setProperty(

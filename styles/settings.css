@@ -238,7 +238,7 @@
   height: 34px;
   border-radius: 50%;
   background: var(--accent-color);
-  color: #1a1a2e;
+  color: var(--accent-contrast-color, #1a1a2e);
   border: none;
   cursor: pointer;
   display: flex;
