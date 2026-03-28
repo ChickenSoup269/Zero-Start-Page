@@ -1182,7 +1182,7 @@ body.ghost-controls .side-controls:hover {
 
 .engine-option.active {
   background: var(--accent-color);
-  color: #1a1a2e; /* Dark text for contrast against accent color */
+  color: var(--accent-contrast-color, #1a1a2e);
   font-weight: 600;
 }
 

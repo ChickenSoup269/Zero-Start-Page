@@ -161,7 +161,7 @@
 
 .dialog-btn-primary {
   background: var(--accent-color);
-  color: #fff;
+  color: var(--accent-contrast-color, #fff);
 }
 
 .dialog-btn-primary:hover {
