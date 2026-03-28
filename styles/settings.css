@@ -1102,6 +1102,31 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
+.user-colors-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 5px 2px;
+}
+
+.accent-preset-item {
+  width: 28px !important;
+  height: 28px !important;
+  aspect-ratio: 1/1 !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+  overflow: visible !important; /* Allow delete button to overflow if needed */
+}
+
+.accent-preset-item .remove-bg-btn {
+  width: 16px;
+  height: 16px;
+  top: -5px;
+  right: -5px;
+  font-size: 0.6rem;
+}
+
 .user-color-item.active,
 .user-gradient-item.active {
   border-color: var(--accent-color);

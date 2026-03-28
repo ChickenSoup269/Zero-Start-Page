@@ -51,6 +51,45 @@ function renderUserColors(DOM) {
   }
 }
 
+function renderUserAccentColors(DOM) {
+  const settings = getSettings()
+  const userAccentColorsGallery = document.getElementById(
+    "user-accent-colors-gallery",
+  )
+  if (!userAccentColorsGallery) return
+
+  userAccentColorsGallery.innerHTML = ""
+  if (Array.isArray(settings.userAccentColors)) {
+    settings.userAccentColors.forEach((color, index) => {
+      const item = document.createElement("div")
+      item.className = "user-color-item accent-preset-item"
+      item.dataset.bgId = color
+      item.style.background = color
+      item.title = `Accent Color: ${color}`
+
+      item.addEventListener("click", () => {
+        DOM.accentColorPicker.value = color
+        DOM.accentColorPicker.dispatchEvent(new Event("input"))
+      })
+
+      const removeBtn = document.createElement("button")
+      removeBtn.className = "remove-bg-btn"
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+      removeBtn.addEventListener("click", async (e) => {
+        e.stopPropagation()
+        const i18n = geti18n()
+        if (await showConfirm(i18n.alert_delete_bg_confirm)) {
+          settings.userAccentColors.splice(index, 1)
+          saveSettings()
+          renderUserAccentColors(DOM)
+        }
+      })
+      item.appendChild(removeBtn)
+      userAccentColorsGallery.appendChild(item)
+    })
+  }
+}
+
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
@@ -346,6 +385,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
 export {
   renderLocalBackgrounds,
   renderUserColors,
+  renderUserAccentColors,
   setupMultiSelectMode,
   setupFileUploads,
 }

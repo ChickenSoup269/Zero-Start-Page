@@ -27,6 +27,7 @@ import {
   saveVideo,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
+import { getRandomHexColor } from "../../utils/colors.js"
 import {
   setUnsplashRandomBackground,
   populateUnsplashCollections,
@@ -34,6 +35,7 @@ import {
 import {
   renderUserColors,
   renderLocalBackgrounds,
+  renderUserAccentColors,
 } from "./backgroundManager.js"
 import { renderUserGradients } from "./gradientManager.js"
 import {
@@ -260,6 +262,48 @@ export function setupGeneralEventHandlers(
       btn.classList.add("active")
     })
   })
+
+  DOM.randomAccentColorBtn.addEventListener("click", () => {
+    const color = getRandomHexColor()
+    DOM.accentColorPicker.value = color
+    handleSettingUpdate("accentColor", color)
+    document
+      .querySelectorAll(".accent-color-preset")
+      .forEach((b) => b.classList.remove("active"))
+  })
+
+  DOM.saveAccentColorBtn.addEventListener("click", () => {
+    const settings = getSettings()
+    const color = DOM.accentColorPicker.value
+    if (!settings.userAccentColors) settings.userAccentColors = []
+
+    if (!settings.userAccentColors.includes(color)) {
+      if (settings.userAccentColors.length >= 10) {
+        showAlert("You can only save up to 10 custom accent colors.")
+        return
+      }
+      settings.userAccentColors.push(color)
+      saveSettings()
+      renderUserAccentColors(DOM)
+      showAlert("Accent color saved!")
+    } else {
+      showAlert("This color is already saved.")
+    }
+  })
+
+  DOM.userAccentColorsGallery.addEventListener("click", (e) => {
+    const item = e.target.closest(".user-color-item")
+    if (item && !e.target.closest(".remove-bg-btn")) {
+      const color = item.dataset.bgId
+      DOM.accentColorPicker.value = color
+      handleSettingUpdate("accentColor", color)
+      document
+        .querySelectorAll(".accent-color-preset")
+        .forEach((b) => b.classList.remove("active"))
+    }
+  })
+
+  renderUserAccentColors(DOM)
 
   // Background effects
   DOM.bgSizeSelect.addEventListener("change", () =>
@@ -966,6 +1010,7 @@ export function setupGeneralEventHandlers(
       applySettings()
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       renderUserColors(DOM)
+      renderUserAccentColors(DOM)
       renderUserGradients(DOM)
       window.dispatchEvent(new CustomEvent("multiColor:sync"))
     }

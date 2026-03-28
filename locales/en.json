@@ -13,6 +13,7 @@
   "settings_bg_fit_cover": "Cover (crop to fill)",
   "settings_bg_fit_contain": "Contain (show full image)",
   "settings_accent": "Accent Color",
+  "settings_accent_random": "Random Color",
   "settings_starfall": "Rain Effect",
   "settings_font": "Font",
   "settings_custom_font": "Custom Google Font",

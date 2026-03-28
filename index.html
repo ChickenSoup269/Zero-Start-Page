@@ -329,7 +329,16 @@
                         <button class="accent-color-preset" data-color="#FFFFFF"
                             style="background-color: #FFFFFF; border: 1px solid #999;" title="White"></button>
                     </div>
-                    <input type="color" id="accent-color-picker" title="Custom Color" />
+                    <div class="accent-color-picker-wrapper" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <input type="color" id="accent-color-picker" title="Custom Color" />
+                        <button id="random-accent-color-btn" class="secondary-btn" title="Random Color" data-i18n-title="settings_accent_random" style="padding: 4px 8px; height: 32px;">
+                            <i class="fa-solid fa-dice"></i>
+                        </button>
+                        <button id="save-accent-color-btn" class="secondary-btn" title="Save Accent Color" data-i18n-title="settings_save_color_btn" style="padding: 4px 8px; height: 32px;">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                        </button>
+                    </div>
+                    <div id="user-accent-colors-gallery" class="user-colors-gallery" style="margin-top: 10px;"></div>
                 </div>
             </div>
 

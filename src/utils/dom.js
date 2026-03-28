@@ -32,6 +32,13 @@ export const bgPosYInput = document.getElementById("bg-pos-y-input")
 export const bgPosYValue = document.getElementById("bg-pos-y-value")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
+export const randomAccentColorBtn = document.getElementById(
+  "random-accent-color-btn",
+)
+export const saveAccentColorBtn = document.getElementById("save-accent-color-btn")
+export const userAccentColorsGallery = document.getElementById(
+  "user-accent-colors-gallery",
+)
 export const fontGrid = document.getElementById("font-grid")
 export const customFontInput = document.getElementById("custom-font-input")
 export const loadCustomFontBtn = document.getElementById("load-custom-font-btn")
