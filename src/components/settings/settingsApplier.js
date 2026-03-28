@@ -259,23 +259,30 @@ function createApplySettings(effectInstances) {
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
     )
 
-    // 3.1 Clock Color Contrast Logic
+    // 3.1 Clock & Date Color Contrast Logic
     let finalClockColor = settings.clockColor
-    if (!finalClockColor) {
+    let finalDateColor = settings.dateColor
+
+    if (!finalClockColor || !finalDateColor) {
+      let fallbackColor = "#ffffff"
       if (
         isPredefinedLocalBg ||
         isUserUploadedBg ||
         (bg && bg.match(/^https?:\/\//))
       ) {
-        finalClockColor = "#ffffff"
+        fallbackColor = "#ffffff"
       } else if (bg) {
-        finalClockColor = getContrastYIQ(bg)
+        fallbackColor = getContrastYIQ(bg)
       } else {
-        finalClockColor = getContrastYIQ(settings.gradientStart)
+        fallbackColor = getContrastYIQ(settings.gradientStart)
       }
+
+      if (!finalClockColor) finalClockColor = fallbackColor
+      if (!finalDateColor) finalDateColor = fallbackColor
     }
 
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
+    document.documentElement.style.setProperty("--date-color", finalDateColor)
     if (settings.accentColor) {
       document.documentElement.style.setProperty(
         "--accent-color",
@@ -398,6 +405,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.languageSelect.value = settings.language || "en"
     DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
+    DOM.dateColorPicker.value = settings.dateColor || "#ffffff"
 
     DOM.bgSizeSelect.value = settings.bgSize || "cover"
     DOM.bgBlurInput.value = settings.bgBlur ?? 0
@@ -427,6 +435,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bgPositionSetting.style.display = isImageBg ? "block" : "none"
 
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
+    DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"
     setEffectActive(DOM.effectGrid, settings.effect)
 
     // Gradient Inputs
