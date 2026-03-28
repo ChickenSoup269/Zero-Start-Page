@@ -821,6 +821,7 @@ export function setupGeneralEventHandlers(
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
       handleSettingUpdate("font", fontValue)
+      saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
       DOM.customFontInput.value = ""

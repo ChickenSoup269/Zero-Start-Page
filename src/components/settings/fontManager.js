@@ -49,6 +49,31 @@ function loadGoogleFont(fontName) {
   }
 }
 
+/**
+ * Initializes the font on page load.
+ * Checks if the currently saved font is a Google font and loads it.
+ */
+function initFont() {
+  const settings = getSettings()
+  const currentFontValue = settings.font || "'Outfit', sans-serif"
+
+  // Extract font name from value like "'Outfit', sans-serif" -> "Outfit"
+  const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
+
+  // Check if it's a predefined Google font or a user-saved font
+  const isPredefinedGoogle = PREDEFINED_FONTS.some(
+    (f) => f.google && f.label === fontName,
+  )
+  const isUserSaved = (settings.userSavedFonts || []).includes(fontName)
+
+  // Pre-loaded fonts in index.html don't need to be reloaded
+  const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
+
+  if ((isPredefinedGoogle || isUserSaved) && !isPreloaded) {
+    loadGoogleFont(fontName)
+  }
+}
+
 function renderFontGrid(fontGrid, updateSettingCallback) {
   const settings = getSettings()
   const currentFont = settings.font
@@ -114,4 +139,10 @@ function renderSavedFonts() {
   // Saved fonts are now shown directly in the font grid; this is a no-op.
 }
 
-export { PREDEFINED_FONTS, loadGoogleFont, renderFontGrid, renderSavedFonts }
+export {
+  PREDEFINED_FONTS,
+  loadGoogleFont,
+  initFont,
+  renderFontGrid,
+  renderSavedFonts,
+}
