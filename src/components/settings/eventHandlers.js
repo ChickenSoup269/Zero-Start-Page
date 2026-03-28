@@ -1003,6 +1003,13 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockColor", null),
   )
 
+  DOM.dateColorPicker.addEventListener("input", () =>
+    handleSettingUpdate("dateColor", DOM.dateColorPicker.value),
+  )
+  DOM.resetDateColorBtn.addEventListener("click", () =>
+    handleSettingUpdate("dateColor", null),
+  )
+
   // Reset all settings
   DOM.resetSettingsBtn.addEventListener("click", async () => {
     if (await showConfirm(i18n.alert_reset)) {

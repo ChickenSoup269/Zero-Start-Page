@@ -45,6 +45,8 @@ function applyHuePerCharacter(target, seed = 0) {
       const hue = (seed + hueIndex * 43) % 360
       span.className = "clock-hue-char"
       span.style.setProperty("--char-hue", String(hue))
+      // Staggered delay for wave effect (e.g., 0.1s per character)
+      span.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
       span.textContent = char
       fragment.appendChild(span)
       hueIndex += 1

@@ -62,6 +62,7 @@ const defaultSettings = {
   meteorColor: "#ffffff",
 
   clockColor: null,
+  dateColor: null,
   auraColor: "#a8c0ff",
   northernLightsColor: "#00ff88",
   hackerColor: "#00FF00",

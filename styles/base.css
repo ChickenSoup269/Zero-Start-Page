@@ -126,7 +126,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   font-weight: 300;
   margin-bottom: 40px;
   opacity: 0.9;
-  color: var(--clock-color);
+  color: var(--date-color);
   visibility: visible;
   transition:
     opacity 0.18s ease,
@@ -496,6 +496,19 @@ body.date-clock-style-square #date {
   text-shadow:
     0 1px 6px rgba(0, 0, 0, 0.35),
     0 0 10px hsla(var(--char-hue, 0), 92%, 60%, 0.35);
+  animation: hue-wave 8s infinite linear;
+  animation-delay: var(--char-delay, 0s);
+}
+
+@keyframes hue-wave {
+  0% {
+    color: hsl(var(--char-hue, 0), 92%, 66%);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    color: hsl(var(--char-hue, 0), 92%, 66%);
+    filter: hue-rotate(360deg);
+  }
 }
 
 body.date-clock-style-analog #clock {

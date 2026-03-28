@@ -377,6 +377,10 @@ export const clockColorPicker = document.getElementById("clock-color-picker")
 export const resetClockColorBtn = document.getElementById(
   "reset-clock-color-btn",
 )
+export const dateColorPicker = document.getElementById("date-color-picker")
+export const resetDateColorBtn = document.getElementById(
+  "reset-date-color-btn",
+)
 
 export const localBackgroundGallery = document.getElementById(
   "local-background-gallery",
