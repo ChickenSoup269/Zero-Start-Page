@@ -29,7 +29,7 @@ import {
   applyTabIcon,
   renderTabIconPreview,
 } from "./tabIcon.js"
-import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
+import { loadGoogleFont, renderFontGrid, initFont } from "./fontManager.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   populateUnsplashCollections,
@@ -335,21 +335,8 @@ export function initSettings() {
     DOM_EXPORTS.unsplashCredit.style.display = "block"
   }
 
-  // Restore saved fonts
-  const savedFonts = settings.userSavedFonts || []
-  if (savedFonts.length > 0) {
-    const currentFontName = (settings.font || "")
-      .replace(/['"]/g, "")
-      .replace(/,.*$/, "")
-      .trim()
-    if (savedFonts.includes(currentFontName)) {
-      const customFontLink = document.getElementById("custom-google-font")
-      if (customFontLink) {
-        customFontLink.href = `https://fonts.googleapis.com/css2?family=${currentFontName.replace(/\s+/g, "+")}:wght@300;400;500;600;700&display=swap`
-      }
-    }
-    savedFonts.forEach((fontName) => loadGoogleFont(fontName))
-  }
+  // Restore font
+  initFont()
   renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
 
   // Setup all event handlers
