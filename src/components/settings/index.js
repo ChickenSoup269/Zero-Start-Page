@@ -42,6 +42,7 @@ import {
 import {
   renderLocalBackgrounds,
   renderUserColors,
+  renderUserAccentColors,
   setupMultiSelectMode,
   setupFileUploads,
 } from "./backgroundManager.js"
@@ -321,6 +322,7 @@ export function initSettings() {
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)
   renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect)
   renderUserColors(DOM_EXPORTS)
+  renderUserAccentColors(DOM_EXPORTS)
 
   // Restore Unsplash credit
   const lastCredit = settings.unsplashLastCredit

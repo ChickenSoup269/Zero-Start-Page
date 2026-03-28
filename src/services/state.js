@@ -56,6 +56,7 @@ const defaultSettings = {
   multiColorLineAngles: [],
   userBackgrounds: [],
   userColors: [],
+  userAccentColors: [],
   userGradients: [], // Add userGradients
   starColor: "#ffffff",
   meteorColor: "#ffffff",
@@ -265,6 +266,7 @@ export function resetSettingsState() {
     multiColorLineAngles: [],
     userBackgrounds: [],
     userColors: [],
+    userAccentColors: [],
     userGradients: [],
     starColor: "#ffffff",
     meteorColor: "#ffffff",
