@@ -493,20 +493,17 @@
   margin-left: 18px;
   border-left: 1.5px solid rgba(255, 255, 255, 0.07);
   padding-left: 10px;
-  overflow: hidden;
-  transition:
-    max-height 0.3s ease,
-    opacity 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 .folder-wrapper.collapsed .folder-content {
-  max-height: 0;
+  display: none;
   opacity: 0;
   pointer-events: none;
 }
 
 .folder-wrapper:not(.collapsed) .folder-content {
-  max-height: 2000px;
+  display: block;
   opacity: 1;
 }
 

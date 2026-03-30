@@ -1055,6 +1055,7 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
   setupLayoutCheckbox(DOM.showQuickAccessCheckbox, "showQuickAccess", {})
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
+  setupLayoutCheckbox(DOM.showBackgroundCheckbox, "showBackground", {})
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
@@ -1114,6 +1115,13 @@ export function setupGeneralEventHandlers(
       "showSearchBar",
       DOM.lcpSearchBar.checked,
       DOM.showSearchBarCheckbox,
+    ),
+  )
+  DOM.lcpShowBackground.addEventListener("change", () =>
+    lcpToggle(
+      "showBackground",
+      DOM.lcpShowBackground.checked,
+      DOM.showBackgroundCheckbox,
     ),
   )
   DOM.lcpBookmarks.addEventListener("change", () =>

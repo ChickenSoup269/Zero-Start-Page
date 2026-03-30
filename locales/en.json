@@ -233,6 +233,7 @@
   "visualizer_heartbeat": "Heartbeat",
   "settings_show_quick_access": "Show Quick Access bar",
   "settings_show_search_bar": "Show Search Bar",
+  "settings_show_background": "Show Background",
   "settings_show_bookmarks": "Show Bookmarks",
   "settings_show_bookmark_groups": "Show Bookmark Folders",
   "settings_ghost_controls": "Auto-hide when not in use",

@@ -220,7 +220,8 @@
   transform: translateY(-3px);
 }
 
-.bookmark img {
+.bookmark img,
+.bookmark .bookmark-icon-fallback {
   width: 42px;
   height: 42px;
   padding: 4px;
@@ -230,6 +231,24 @@
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   transition: all 0.3s ease;
   image-rendering: high-quality;
+}
+
+.bookmark .bookmark-icon-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c2c2c;
+  background: linear-gradient(135deg, #f8f9fa, #d7dbe3);
+}
+
+body.hide-background .bookmark img,
+body.hide-background .bookmark .bookmark-icon-fallback {
+  background: transparent !important;
+  box-shadow: none;
+  border: none;
+  padding: 0;
 }
 
 .bookmark span {
