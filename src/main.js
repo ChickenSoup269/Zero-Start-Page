@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (bookmarkGroupsContainer)
     bookmarkGroupsContainer.style.display =
       settings0.showBookmarkGroups !== false ? "" : "none"
+  document.body.classList.toggle("hide-background", settings0.showBackground === false)
 
   const resetLayoutBtn = document.getElementById("reset-layout")
   const resetLayoutQuick = document.getElementById("reset-layout-quick")
@@ -224,6 +225,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.detail.key === "showBookmarkGroups") {
       const el = document.getElementById("bookmark-groups-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
+    }
+    if (e.detail.key === "showBackground") {
+      document.body.classList.toggle("hide-background", e.detail.value === false)
     }
   })
 

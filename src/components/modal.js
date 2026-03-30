@@ -101,9 +101,18 @@ function loadBrowserBookmarks() {
 
 function renderBookmarkTree(node, container) {
   if (node.children) {
+    const sortedChildren = [...node.children].sort((a, b) => {
+      const aIsFolder = Array.isArray(a.children)
+      const bIsFolder = Array.isArray(b.children)
+      if (aIsFolder !== bIsFolder) return aIsFolder ? -1 : 1
+      return (a.title || "").localeCompare(b.title || "", undefined, {
+        sensitivity: "base",
+      })
+    })
+
     if (node.id !== "0") {
       const wrapper = document.createElement("div")
-      wrapper.className = "folder-wrapper collapsed"
+      wrapper.className = "folder-wrapper"
 
       const folderDiv = document.createElement("div")
       folderDiv.className = "bookmark-tree-folder"
@@ -120,11 +129,9 @@ function renderBookmarkTree(node, container) {
       wrapper.appendChild(childrenContainer)
       container.appendChild(wrapper)
 
-      node.children.forEach((child) =>
-        renderBookmarkTree(child, childrenContainer),
-      )
+      sortedChildren.forEach((child) => renderBookmarkTree(child, childrenContainer))
     } else {
-      node.children.forEach((child) => renderBookmarkTree(child, container))
+      sortedChildren.forEach((child) => renderBookmarkTree(child, container))
     }
   } else {
     const itemDiv = document.createElement("div")
@@ -150,7 +157,7 @@ function renderBookmarkTree(node, container) {
     })
 
     let iconHtml = node.url
-      ? `<img src="https://www.google.com/s2/favicons?domain=${node.url}&sz=32" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;" onerror="this.style.display='none'">`
+      ? `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(node.url)}&sz=32" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;" onerror="this.style.display='none'">`
       : '<i class="fa-solid fa-globe" style="font-size:0.8rem;opacity:0.5;flex-shrink:0;"></i>'
     const label = document.createElement("span")
     label.style.overflow = "hidden"
@@ -210,7 +217,7 @@ function _filterBookmarkTree(query) {
     folder.classList.toggle("hidden", visibleItems.length === 0)
     // Auto-expand folders when searching
     if (q && visibleItems.length > 0) folder.classList.remove("collapsed")
-    else if (!q) folder.classList.add("collapsed")
+    else if (!q) folder.classList.remove("collapsed")
   })
 
   _updateSelectAllState()

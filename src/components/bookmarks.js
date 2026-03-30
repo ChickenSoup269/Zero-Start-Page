@@ -12,6 +12,125 @@ import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
+function getHostname(url) {
+  try {
+    return new URL(url).hostname
+  } catch {
+    return ""
+  }
+}
+
+const iconCache = new Map()
+
+function loadImage(src, timeout = 2500) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    let done = false
+
+    const finish = (result) => {
+      if (!done) {
+        done = true
+        resolve(result)
+      }
+    }
+
+    img.onload = () => {
+      finish({
+        src,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      })
+    }
+
+    img.onerror = () => finish(null)
+
+    setTimeout(() => finish(null), timeout)
+
+    img.src = src
+  })
+}
+
+function getIconCandidates(bookmark) {
+  const hostname = getHostname(bookmark.url)
+  const list = []
+
+  if (bookmark.icon) list.push(bookmark.icon)
+
+  if (hostname) {
+    list.push(`https://logo.clearbit.com/${hostname}`) // đẹp nhất
+    list.push(`https://icon.horse/icon/${hostname}`)
+    list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
+  }
+
+  // Google fallback (luôn có nhưng dễ mờ)
+  list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`)
+
+  return list
+}
+
+async function getBestIcon(bookmark) {
+  const key = bookmark.url
+  if (iconCache.has(key)) return iconCache.get(key)
+
+  const candidates = getIconCandidates(bookmark)
+
+  // load song song
+  const results = await Promise.all(candidates.map((src) => loadImage(src)))
+
+  let best = null
+  let bestScore = 0
+
+  for (const img of results) {
+    if (!img) continue
+
+    const size = Math.min(img.width, img.height)
+
+    // ❌ loại icon rác
+    if (size < 24) continue
+
+    const isSquare = Math.abs(img.width - img.height) < 5
+    const score = size + (isSquare ? 20 : 0)
+
+    if (score > bestScore) {
+      bestScore = score
+      best = img.src
+    }
+  }
+
+  iconCache.set(key, best)
+  return best
+}
+
+function createBookmarkIcon(bookmark) {
+  const img = document.createElement("img")
+
+  img.alt = `${bookmark.title} icon`
+  img.loading = "lazy"
+  img.decoding = "async"
+  img.referrerPolicy = "no-referrer"
+  img.className = "bookmark-icon"
+
+  // load icon đẹp nhất async
+  getBestIcon(bookmark).then((bestIcon) => {
+    if (bestIcon) {
+      img.src = bestIcon
+    } else {
+      img.style.display = "none"
+
+      const fallback = document.createElement("div")
+      fallback.className = "bookmark-icon-fallback"
+      fallback.textContent = (bookmark.title || "?")
+        .trim()
+        .charAt(0)
+        .toUpperCase()
+
+      img.parentElement?.insertBefore(fallback, img)
+    }
+  })
+
+  return img
+}
+
 export function renderBookmarks() {
   const i18n = geti18n()
 
@@ -27,10 +146,10 @@ export function renderBookmarks() {
     bookmarkEl.href = bookmark.url
     bookmarkEl.classList.add("bookmark")
     bookmarkEl.target = "_blank"
-    let faviconUrl =
-      bookmark.icon ||
-      `https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128`
-    bookmarkEl.innerHTML = `<img src="${faviconUrl}" alt="${bookmark.title} icon" onerror="this.src='https://www.google.com/s2/favicons?domain=${bookmark.url}&sz=128'"><span>${bookmark.title}</span>`
+    const titleEl = document.createElement("span")
+    titleEl.textContent = bookmark.title
+    bookmarkEl.appendChild(createBookmarkIcon(bookmark))
+    bookmarkEl.appendChild(titleEl)
     bookmarkEl.addEventListener("contextmenu", (e) => {
       e.preventDefault()
       showContextMenu(e.clientX, e.clientY, index)

@@ -182,6 +182,7 @@ function createApplySettings(effectInstances) {
         document.body.classList.add("bg-layer-active")
       }
     }
+    document.body.classList.toggle("hide-background", settings.showBackground === false)
 
     // 2.1 Background Position
     document.documentElement.style.setProperty(
@@ -632,6 +633,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
     DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
+    DOM.showBackgroundCheckbox.checked = settings.showBackground !== false
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
@@ -641,6 +643,7 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.sideControlsGhostMode === true,
     )
     DOM.lcpSearchBar.checked = settings.showSearchBar !== false
+    DOM.lcpShowBackground.checked = settings.showBackground !== false
     DOM.lcpBookmarks.checked = settings.showBookmarks !== false
     DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
     DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false

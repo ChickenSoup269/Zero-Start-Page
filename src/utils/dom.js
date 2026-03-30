@@ -452,6 +452,9 @@ export const showNotepadCheckbox = document.getElementById(
 export const showSearchBarCheckbox = document.getElementById(
   "show-search-bar-checkbox",
 )
+export const showBackgroundCheckbox = document.getElementById(
+  "show-background-checkbox",
+)
 export const showBookmarksCheckbox = document.getElementById(
   "show-bookmarks-checkbox",
 )
@@ -469,6 +472,7 @@ export const layoutControlsPopup = document.getElementById(
   "layout-controls-popup",
 )
 export const lcpSearchBar = document.getElementById("lcp-search-bar")
+export const lcpShowBackground = document.getElementById("lcp-show-background")
 export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")

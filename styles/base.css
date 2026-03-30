@@ -59,6 +59,12 @@ i {
   transform: translateZ(0);
 }
 
+body.hide-background #bg-layer,
+body.hide-background #bg-video {
+  display: none !important;
+  opacity: 0 !important;
+}
+
 #effect-canvas {
   position: fixed;
   top: 0;

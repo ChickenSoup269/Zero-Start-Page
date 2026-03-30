@@ -119,6 +119,7 @@ const defaultSettings = {
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,
+  showBackground: true,
   searchEngine: "google",
   svgWaveActive: false,
   svgWaveLines: 5,
@@ -303,6 +304,7 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
+    showBackground: true,
   }
   settingsState = defaultSettings
   saveSettings()
