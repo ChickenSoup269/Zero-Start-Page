@@ -1144,6 +1144,61 @@
                 </div>
             </div>
 
+            <div class="settings-section" data-section-id="bookmark-custom">
+                <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i> Custom Bookmark</h3>
+                <div class="section-content">
+                    <div class="setting-group">
+                        <label><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_bookmark_font_size">Font Size:</span> <span id="bookmark-font-size-value">10px</span></label>
+                        <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10">
+                        
+                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon Size:</span> <span id="bookmark-icon-size-value">42px</span></label>
+                        <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42">
+                        
+                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks:</span> <span id="bookmark-gap-value">8px</span></label>
+                        <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8">
+                    </div>
+                    <div class="setting-group">
+                        <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
+                        <div class="input-group">
+                            <input type="color" id="bookmark-text-color-picker" value="#ffffff">
+                            <button id="reset-bookmark-text-color-btn" class="secondary-btn" data-i18n="settings_reset_color_date">Reset Default</button>
+                        </div>
+                        
+                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_bg_color">Background Color</span></label>
+                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="bookmark-bg-color-picker" value="#ffffff">
+                            <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100" style="flex: 1;" title="Opacity">
+                        </div>
+                        <button id="reset-bookmark-bg-btn" class="secondary-btn full-width" style="margin-top: 10px;" data-i18n="settings_reset_color">Reset Background to Default</button>
+                        
+                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
+                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
+                            <input type="color" id="bookmark-shadow-color-picker" value="#000000">
+                            <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="flex: 1;" title="Opacity">
+                        </div>
+                        <div class="input-group" style="margin-top: 5px; display: flex; gap: 10px; align-items: center;">
+                            <span style="font-size: 0.9em; opacity: 0.8;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                            <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
+                            <span id="bookmark-shadow-blur-value" style="font-size: 0.9em; min-width: 30px;">8px</span>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <div class="setting-item-row">
+                            <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title Text</label>
+                            <input type="checkbox" id="hide-bookmark-text">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Bookmark Background</label>
+                            <input type="checkbox" id="hide-bookmark-bg">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag & drop to reorder</label>
+                            <input type="checkbox" id="enable-bookmark-drag">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="settings-section" data-section-id="layout">
                 <h3 class="section-toggle" data-i18n="settings_layout"><i class="fa-solid fa-layer-group"></i> Layout &
                     Features</h3>

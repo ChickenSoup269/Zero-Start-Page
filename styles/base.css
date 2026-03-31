@@ -59,6 +59,11 @@ i {
   transform: translateZ(0);
 }
 
+body.hide-background {
+  background-color: #121212 !important;
+  background-image: none !important;
+}
+
 body.hide-background #bg-layer,
 body.hide-background #bg-video {
   display: none !important;

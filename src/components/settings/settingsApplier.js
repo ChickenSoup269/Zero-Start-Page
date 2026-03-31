@@ -243,6 +243,59 @@ function createApplySettings(effectInstances) {
       "--date-size",
       `${computedDateSize}rem`,
     )
+    
+    // Bookmark Custom Styling
+    document.documentElement.style.setProperty(
+      "--bookmark-font-size",
+      `${settings.bookmarkFontSize ?? 10}px`
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-icon-size",
+      `${settings.bookmarkIconSize ?? 42}px`
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-gap",
+      `${settings.bookmarkGap ?? 8}px`
+    )
+
+    let bookmarkHex = settings.bookmarkBgColor || "#ffffff";
+    let bookmarkOpacity = settings.bookmarkBgOpacity ?? 100;
+    let bookmarkRgb = hexToRgb(bookmarkHex);
+    if(bookmarkRgb && bookmarkOpacity < 100) {
+      document.documentElement.style.setProperty(
+        "--bookmark-bg-color",
+         `rgba(${bookmarkRgb.r}, ${bookmarkRgb.g}, ${bookmarkRgb.b}, ${bookmarkOpacity/100})`
+      )
+    } else {
+      document.documentElement.style.setProperty("--bookmark-bg-color", bookmarkHex)
+    }
+
+    if (settings.bookmarkTextColor) {
+      document.documentElement.style.setProperty("--bookmark-text-color", settings.bookmarkTextColor);
+    } else {
+      document.documentElement.style.removeProperty("--bookmark-text-color");
+    }
+
+    if (settings.bookmarkHideText) {
+      document.body.classList.add("hide-bookmark-text");
+    } else {
+      document.body.classList.remove("hide-bookmark-text");
+    }
+
+    if (settings.bookmarkHideBg) {
+      document.body.classList.add("hide-bookmark-bg");
+    } else {
+      document.body.classList.remove("hide-bookmark-bg");
+    }
+
+    let shadowHex = settings.bookmarkShadowColor || "#000000";
+    let shadowOpacity = settings.bookmarkShadowOpacity ?? 24;
+    let shadowBlur = settings.bookmarkShadowBlur ?? 8;
+    let shadowRgb = hexToRgb(shadowHex) || { r: 0, g: 0, b: 0 };
+    document.documentElement.style.setProperty(
+      "--bookmark-box-shadow",
+      `rgba(${shadowRgb.r}, ${shadowRgb.g}, ${shadowRgb.b}, ${shadowOpacity / 100}) 0px 3px ${shadowBlur}px`
+    );
 
     const dateClockStyle = settings.dateClockStyle || "default"
     document.body.classList.remove(
@@ -407,6 +460,48 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
     DOM.dateColorPicker.value = settings.dateColor || "#ffffff"
+    
+    // Custom Bookmark Inputs
+    if (DOM.bookmarkFontSizeInput) {
+      DOM.bookmarkFontSizeInput.value = settings.bookmarkFontSize ?? 10;
+      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`;
+      
+      DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42;
+      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`;
+
+      DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8;
+      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`;
+      
+      DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff";
+      DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100;
+      
+      if (DOM.bookmarkTextColorPicker) {
+        DOM.bookmarkTextColorPicker.value = settings.bookmarkTextColor || "#ffffff";
+      }
+      if (DOM.hideBookmarkText) {
+        DOM.hideBookmarkText.checked = settings.bookmarkHideText === true;
+      }
+      if (DOM.hideBookmarkBg) {
+        DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true;
+      }
+      
+      if (DOM.bookmarkShadowColorPicker) {
+        DOM.bookmarkShadowColorPicker.value = settings.bookmarkShadowColor || "#000000";
+      }
+      if (DOM.bookmarkShadowOpacityInput) {
+        DOM.bookmarkShadowOpacityInput.value = settings.bookmarkShadowOpacity ?? 24;
+      }
+      if (DOM.bookmarkShadowBlurInput) {
+        DOM.bookmarkShadowBlurInput.value = settings.bookmarkShadowBlur ?? 8;
+        if (DOM.bookmarkShadowBlurValue) {
+          DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}px`;
+        }
+      }
+
+      if (DOM.enableBookmarkDrag) {
+        DOM.enableBookmarkDrag.checked = settings.bookmarkEnableDrag === true;
+      }
+    }
 
     DOM.bgSizeSelect.value = settings.bgSize || "cover"
     DOM.bgBlurInput.value = settings.bgBlur ?? 0

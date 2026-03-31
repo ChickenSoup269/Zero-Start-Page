@@ -102,6 +102,7 @@
   "alert_missing_fields": "Please enter both a title and a URL.",
   "alert_reset": "Reset all settings to default?",
   "alert_delete_confirm": "Delete bookmark",
+  "alert_import_duplicates": "Found {count} duplicate bookmark(s). Do you still want to import them?",
   "alert_imported": "Imported {count} bookmarks!",
   "alert_no_selection": "No new bookmarks selected or they already exist.",
   "settings_upload_image": "Upload Image",
@@ -314,5 +315,16 @@
   "settings_multi_color_save": "Save Preset",
   "settings_multi_color_saved_presets": "Saved Presets",
   "settings_multi_color_color_label": "Color",
-  "setting_northern_lights_color": "Aurora Light Color"
+  "setting_northern_lights_color": "Aurora Light Color",
+  "settings_custom_bookmark": "Custom Bookmark",
+  "settings_bookmark_font_size": "Font Size:",
+  "settings_bookmark_icon_size": "Icon Size:",
+  "settings_bookmark_gap": "Gap Between Bookmarks:",
+  "settings_bookmark_bg_color": "Background Color",
+  "settings_bookmark_text_color": "Text Color",
+  "settings_bookmark_hide_text": "Hide Title Text",
+  "settings_bookmark_hide_bg": "Hide Bookmark Background",
+  "settings_bookmark_shadow": "Drop Shadow",
+  "settings_bookmark_shadow_blur": "Blur:",
+  "settings_bookmark_enable_drag": "Enable drag & drop to reorder"
 }

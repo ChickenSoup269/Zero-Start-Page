@@ -196,7 +196,7 @@
   justify-content: center;
   align-items: flex-start;
   margin-top: 40px;
-  gap: 8px;
+  gap: var(--bookmark-gap, 8px);
   max-width: 800px;
   margin-left: 2px;
   margin-right: 2px;
@@ -211,8 +211,19 @@
   color: var(--text-color);
   transition: all 0.3s ease;
   cursor: pointer;
-  width: 60px;
+  width: calc(var(--bookmark-icon-size, 42px) + 18px); /* slightly larger than icon to account for spacing */
   text-align: center;
+}
+
+.bookmark.dragging {
+  opacity: 0.5;
+}
+
+.bookmark.drag-over {
+  border: 2px dashed var(--accent-color, #a8c0ff);
+  border-radius: 10px;
+  transform: translateY(-3px) scale(1.02);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .bookmark:hover,
@@ -222,13 +233,13 @@
 
 .bookmark img,
 .bookmark .bookmark-icon-fallback {
-  width: 42px;
-  height: 42px;
+  width: var(--bookmark-icon-size, 42px);
+  height: var(--bookmark-icon-size, 42px);
   padding: 4px;
-  background-color: white;
+  background-color: var(--bookmark-bg-color, white);
   margin-bottom: 5px;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: var(--bookmark-box-shadow, rgba(0, 0, 0, 0.24) 0px 3px 8px);
   transition: all 0.3s ease;
   image-rendering: high-quality;
 }
@@ -243,8 +254,8 @@
   background: linear-gradient(135deg, #f8f9fa, #d7dbe3);
 }
 
-body.hide-background .bookmark img,
-body.hide-background .bookmark .bookmark-icon-fallback {
+body.hide-bookmark-bg .bookmark img,
+body.hide-bookmark-bg .bookmark .bookmark-icon-fallback {
   background: transparent !important;
   box-shadow: none;
   border: none;
@@ -252,7 +263,8 @@ body.hide-background .bookmark .bookmark-icon-fallback {
 }
 
 .bookmark span {
-  font-size: 10px;
+  font-size: var(--bookmark-font-size, 10px);
+  color: var(--bookmark-text-color, var(--text-color));
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -261,9 +273,13 @@ body.hide-background .bookmark .bookmark-icon-fallback {
   text-align: center;
 }
 
+body.hide-bookmark-text .bookmark span {
+  display: none;
+}
+
 .add-bookmark-card {
-  width: 60px;
-  height: 60px;
+  width: calc(var(--bookmark-icon-size, 42px) + 18px);
+  height: calc(var(--bookmark-icon-size, 42px) + 18px);
   border-radius: 15px;
   color: var(--text-color);
   background: var(--glass-bg);

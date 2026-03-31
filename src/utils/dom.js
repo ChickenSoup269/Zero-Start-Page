@@ -425,6 +425,25 @@ export const bookmarkGroupsContainer = document.getElementById(
   "bookmark-groups-container",
 )
 
+export const bookmarkFontSizeInput = document.getElementById("bookmark-font-size-input")
+export const bookmarkFontSizeValue = document.getElementById("bookmark-font-size-value")
+export const bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
+export const bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")
+export const bookmarkGapInput = document.getElementById("bookmark-gap-input")
+export const bookmarkGapValue = document.getElementById("bookmark-gap-value")
+export const bookmarkTextColorPicker = document.getElementById("bookmark-text-color-picker")
+export const resetBookmarkTextColorBtn = document.getElementById("reset-bookmark-text-color-btn")
+export const bookmarkBgColorPicker = document.getElementById("bookmark-bg-color-picker")
+export const bookmarkBgOpacityInput = document.getElementById("bookmark-bg-opacity-input")
+export const resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
+export const bookmarkShadowColorPicker = document.getElementById("bookmark-shadow-color-picker")
+export const bookmarkShadowOpacityInput = document.getElementById("bookmark-shadow-opacity-input")
+export const bookmarkShadowBlurInput = document.getElementById("bookmark-shadow-blur-input")
+export const bookmarkShadowBlurValue = document.getElementById("bookmark-shadow-blur-value")
+export const enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
+export const hideBookmarkText = document.getElementById("hide-bookmark-text")
+export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
+
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
 export const showTimerCheckbox = document.getElementById("show-timer-checkbox")

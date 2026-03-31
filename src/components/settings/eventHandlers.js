@@ -45,6 +45,7 @@ import {
 } from "./tabIcon.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
+import { renderBookmarks } from "../bookmarks.js"
 
 export function setupGeneralEventHandlers(
   ctx,
@@ -334,6 +335,84 @@ export function setupGeneralEventHandlers(
     DOM.bgFadeInValue.textContent = `${DOM.bgFadeInInput.value}s`
     handleSettingUpdate("bgFadeIn", Number(DOM.bgFadeInInput.value))
   })
+
+  // Custom Bookmark listeners
+  if (DOM.bookmarkFontSizeInput) {
+    DOM.bookmarkFontSizeInput.addEventListener("input", () => {
+      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
+      handleSettingUpdate("bookmarkFontSize", Number(DOM.bookmarkFontSizeInput.value))
+    })
+
+    DOM.bookmarkIconSizeInput.addEventListener("input", () => {
+      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
+      handleSettingUpdate("bookmarkIconSize", Number(DOM.bookmarkIconSizeInput.value))
+    })
+
+    DOM.bookmarkGapInput.addEventListener("input", () => {
+      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
+      handleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
+    })
+
+    DOM.bookmarkBgColorPicker.addEventListener("input", () => {
+      handleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
+    })
+
+    DOM.bookmarkBgOpacityInput.addEventListener("input", () => {
+      handleSettingUpdate("bookmarkBgOpacity", Number(DOM.bookmarkBgOpacityInput.value))
+    })
+
+    DOM.resetBookmarkBgBtn.addEventListener("click", () => {
+      DOM.bookmarkBgColorPicker.value = "#ffffff"
+      DOM.bookmarkBgOpacityInput.value = 100
+      handleSettingUpdate("bookmarkBgColor", "#ffffff")
+      handleSettingUpdate("bookmarkBgOpacity", 100)
+    })
+
+    DOM.enableBookmarkDrag.addEventListener("change", () => {
+      handleSettingUpdate("bookmarkEnableDrag", DOM.enableBookmarkDrag.checked)
+      renderBookmarks()
+    })
+
+    if (DOM.bookmarkTextColorPicker) {
+      DOM.bookmarkTextColorPicker.addEventListener("input", () => {
+        handleSettingUpdate("bookmarkTextColor", DOM.bookmarkTextColorPicker.value)
+      })
+    }
+
+    if (DOM.resetBookmarkTextColorBtn) {
+      DOM.resetBookmarkTextColorBtn.addEventListener("click", () => {
+        DOM.bookmarkTextColorPicker.value = "#ffffff"
+        handleSettingUpdate("bookmarkTextColor", null)
+      })
+    }
+
+    if (DOM.hideBookmarkText) {
+      DOM.hideBookmarkText.addEventListener("change", () => {
+        handleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
+      })
+    }
+    
+    if (DOM.hideBookmarkBg) {
+      DOM.hideBookmarkBg.addEventListener("change", () => {
+        handleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
+      })
+    }
+
+    if (DOM.bookmarkShadowColorPicker) {
+      DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
+        handleSettingUpdate("bookmarkShadowColor", DOM.bookmarkShadowColorPicker.value)
+      })
+      DOM.bookmarkShadowOpacityInput.addEventListener("input", () => {
+        handleSettingUpdate("bookmarkShadowOpacity", Number(DOM.bookmarkShadowOpacityInput.value))
+      })
+      DOM.bookmarkShadowBlurInput.addEventListener("input", () => {
+        if (DOM.bookmarkShadowBlurValue) {
+          DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}px`
+        }
+        handleSettingUpdate("bookmarkShadowBlur", Number(DOM.bookmarkShadowBlurInput.value))
+      })
+    }
+  }
 
   // Gradient listeners
   const MODERN_GRADIENT_PRESETS = [
