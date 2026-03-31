@@ -1334,6 +1334,9 @@
                     <div class="engine-option" data-value="google-image"><i class="fa-regular fa-image"></i>
                         <span>Images</span>
                     </div>
+                    <div class="engine-option" data-value="google-lens"><i class="fa-solid fa-camera-viewfinder"></i>
+                        <span>Google Lens</span>
+                    </div>
                 </div>
             </div>
 
@@ -1349,7 +1352,9 @@
                     data-i18n-placeholder="search_placeholder" placeholder="Search Google..." autocomplete="off">
             </form>
             <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>
+            <i class="fa-solid fa-camera-viewfinder lens-btn" id="search-lens-btn" title="Search any image with Google Lens"></i>
             <input type="file" id="image-search-upload" accept="image/*" style="display: none;">
+            <input type="file" id="image-lens-upload" accept="image/*" style="display: none;">
             <i class="fa-solid fa-xmark clear-btn" id="clear-btn"></i>
             <span class="search-divider" id="search-divider"></span>
             <button type="button" class="search-submit-btn" id="search-submit-btn" title="Search">

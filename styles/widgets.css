@@ -68,6 +68,27 @@
   color: #fff;
 }
 
+.camera-btn,
+.lens-btn {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  opacity: 0.6;
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: none;
+  padding: 4px 6px;
+  margin-left: 2px;
+  transition: opacity 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.camera-btn:hover,
+.lens-btn:hover {
+  opacity: 1;
+  color: #fff;
+}
+
 .search-divider {
   display: none;
   width: 1px;
@@ -242,6 +263,10 @@
   box-shadow: var(--bookmark-box-shadow, rgba(0, 0, 0, 0.24) 0px 3px 8px);
   transition: all 0.3s ease;
   image-rendering: high-quality;
+}
+
+.bookmark img {
+  filter: drop-shadow(var(--bookmark-icon-drop-shadow, 0px 2px 4px rgba(0, 0, 0, 0.3)));
 }
 
 .bookmark .bookmark-icon-fallback {

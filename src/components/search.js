@@ -39,6 +39,12 @@ const SEARCH_ENGINES = {
     placeholder: "Search Google Images (or Paste Image)...",
     icon: "fa-regular fa-image",
   },
+  "google-lens": {
+    name: "Google Lens",
+    url: (q) => `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
+    placeholder: "Search any image with Lens...",
+    icon: "fa-solid fa-camera-viewfinder",
+  },
 }
 
 const searchContainer = document.querySelector(".search-container")
@@ -55,7 +61,9 @@ const engineOptions = document.querySelectorAll(".engine-option")
 
 // Image Search Elements
 const cameraBtn = document.getElementById("search-camera-btn")
+const lensBtn = document.getElementById("search-lens-btn")
 const imageUploadInput = document.getElementById("image-search-upload")
+const imageLensUpload = document.getElementById("image-lens-upload")
 
 // Search Submit Button & Divider
 const searchSubmitBtn = document.getElementById("search-submit-btn")
@@ -259,6 +267,9 @@ function updateSearchUI() {
 
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
   cameraBtn.style.display = currentEngine === "google-image" ? "block" : "none"
+  if (lensBtn) {
+    lensBtn.style.display = currentEngine === "google-lens" ? "block" : "none"
+  }
   searchInput.placeholder = engine.placeholder
 }
 
@@ -317,6 +328,41 @@ function initSearch() {
   cameraBtn.addEventListener("click", () => {
     imageUploadInput.click()
   })
+
+  // Lens Button Click
+  if (lensBtn && imageLensUpload) {
+    lensBtn.addEventListener("click", () => {
+      imageLensUpload.click()
+    })
+
+    imageLensUpload.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        // Upload image bytes to Google Lens via multipart form POST
+        const form = document.createElement("form")
+        form.method = "POST"
+        form.action = "https://lens.google.com/v3/upload"
+        form.enctype = "multipart/form-data"
+        form.target = "_blank"
+        form.style.display = "none"
+
+        const fileInput = document.createElement("input")
+        fileInput.type = "file"
+        fileInput.name = "encoded_image"
+
+        document.body.appendChild(form)
+
+        // Because we can't reuse a file via form directly after reading,
+        // open Lens upload page instead (most reliable cross-browser approach)
+        window.open("https://lens.google.com/", "_blank")
+        document.body.removeChild(form)
+        imageLensUpload.value = ""
+      }
+      reader.readAsDataURL(file)
+    })
+  }
 
   // File Input Change
   imageUploadInput.addEventListener("change", (e) => {
