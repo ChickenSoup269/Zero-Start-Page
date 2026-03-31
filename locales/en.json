@@ -326,5 +326,14 @@
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
   "settings_bookmark_shadow": "Drop Shadow",
   "settings_bookmark_shadow_blur": "Blur:",
-  "settings_bookmark_enable_drag": "Enable drag & drop to reorder"
+  "settings_bookmark_enable_drag": "Enable drag & drop to reorder",
+  "sidebar_toc": "Table of Contents",
+  "settings_show_top_right": "Show Google Apps & Avatar",
+  "g_apps_favorites": "Your favorites",
+  "g_apps_media": "Media & Communication",
+  "g_apps_workspace": "Workspace",
+  "g_apps_services": "Services",
+  "g_apps_advanced": "System / Advanced",
+  "g_apps_account_tools": "Account Tools",
+  "g_apps_more": "More from Google"
 }

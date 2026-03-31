@@ -82,6 +82,12 @@ function createApplySettings(effectInstances) {
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
 
+    // 1b. Top Right Controls
+    const topRightControls = document.getElementById("top-right-controls")
+    if (topRightControls) {
+      topRightControls.classList.toggle("hidden", !settings.showTopRightControls)
+    }
+
     // 2. Reset Styles
     document.body.className = ""
     document.body.style.background = ""
@@ -738,6 +744,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
     DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+    DOM.showTopRightControlsCheckbox.checked = settings.showTopRightControls !== false
     document.body.classList.toggle(
       "ghost-controls",
       settings.sideControlsGhostMode === true,

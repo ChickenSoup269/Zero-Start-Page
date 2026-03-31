@@ -9,7 +9,9 @@
     <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Pixelify+Sans&family=Silkscreen&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Pixelify+Sans&family=Silkscreen&display=swap"
+        rel="stylesheet">
     <link id="custom-google-font" rel="stylesheet" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -28,6 +30,211 @@
 <body>
     <div id="bg-layer"></div>
     <canvas id="effect-canvas"></canvas>
+
+    <!-- Top Right Controls (Google Apps + Avatar) -->
+    <div id="top-right-controls" class="top-right-controls">
+        <a href="https://about.google/products/" target="_blank" class="top-control-btn google-apps-btn"
+            title="Google Apps">
+            <i class="fa-solid fa-grip"></i>
+        </a>
+        <div id="user-avatar" class="top-control-btn user-avatar-btn" title="Google Account">
+            <i class="fa-solid fa-circle-user"></i>
+        </div>
+
+        <div id="g-apps-dropdown" class="g-apps-dropdown">
+            <div class="g-apps-scroll-area">
+                <!-- Favorites Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_favorites">Your favorites</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://www.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.google.com&size=128" alt="Search"></div>
+                            <span>Search</span>
+                        </a>
+                        <a href="https://myaccount.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://myaccount.google.com&size=128" alt="Account"></div>
+                            <span>Account</span>
+                        </a>
+                        <a href="https://mail.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://mail.google.com&size=128" alt="Gmail"></div>
+                            <span>Gmail</span>
+                        </a>
+                        <a href="https://drive.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://drive.google.com&size=128" alt="Drive"></div>
+                            <span>Drive</span>
+                        </a>
+                        <a href="https://www.youtube.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.youtube.com&size=128" alt="YouTube"></div>
+                            <span>YouTube</span>
+                        </a>
+                        <a href="https://gemini.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://gemini.google.com&size=128" alt="Gemini"></div>
+                            <span>Gemini</span>
+                        </a>
+                        <a href="https://maps.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://maps.google.com&size=128" alt="Maps"></div>
+                            <span>Maps</span>
+                        </a>
+                        <a href="https://calendar.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://calendar.google.com&size=128" alt="Calendar"></div>
+                            <span>Calendar</span>
+                        </a>
+                        <a href="https://news.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://news.google.com&size=128" alt="News"></div>
+                            <span>News</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="g-apps-divider"></div>
+
+                <!-- Media & Comm Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_media">Media & Communication</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://photos.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://photos.google.com&size=128" alt="Photos"></div>
+                            <span>Photos</span>
+                        </a>
+                        <a href="https://meet.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://meet.google.com&size=128" alt="Meet"></div>
+                            <span>Meet</span>
+                        </a>
+                        <a href="https://chat.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://chat.google.com&size=128" alt="Chat"></div>
+                            <span>Chat</span>
+                        </a>
+                        <a href="https://translate.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://translate.google.com&size=128" alt="Translate"></div>
+                            <span>Translate</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="g-apps-divider"></div>
+
+                <!-- Workspace Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_workspace">Workspace</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://docs.google.com/document/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://docs.google.com&size=128" alt="Docs"></div>
+                            <span>Docs</span>
+                        </a>
+                        <a href="https://docs.google.com/spreadsheets/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://sheets.google.com&size=128" alt="Sheets"></div>
+                            <span>Sheets</span>
+                        </a>
+                        <a href="https://docs.google.com/presentation/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://slides.google.com&size=128" alt="Slides"></div>
+                            <span>Slides</span>
+                        </a>
+                        <a href="https://docs.google.com/forms/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://docs.google.com/forms&size=128" alt="Forms"></div>
+                            <span>Forms</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="g-apps-divider"></div>
+
+                <!-- Services Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_services">Services</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://shopping.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://shopping.google.com&size=128" alt="Shopping"></div>
+                            <span>Shopping</span>
+                        </a>
+                        <a href="https://www.google.com/finance/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.google.com/finance&size=128" alt="Finance"></div>
+                            <span>Finance</span>
+                        </a>
+                        <a href="https://keep.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://keep.google.com&size=128" alt="Keep"></div>
+                            <span>Keep</span>
+                        </a>
+                        <a href="https://classroom.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://classroom.google.com&size=128" alt="Classroom"></div>
+                            <span>Classroom</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="g-apps-divider"></div>
+
+                <!-- System / Advanced Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_advanced">System / Advanced</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://ads.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://ads.google.com&size=128" alt="Ads"></div>
+                            <span>Ads</span>
+                        </a>
+                        <a href="https://merchants.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://merchants.google.com&size=128" alt="Merchant Center"></div>
+                            <span>Merchant Center</span>
+                        </a>
+                        <a href="https://contacts.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://contacts.google.com&size=128" alt="Contacts"></div>
+                            <span>Contacts</span>
+                        </a>
+                        <a href="https://www.google.com/travel/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.google.com/travel&size=128" alt="Travel"></div>
+                            <span>Travel</span>
+                        </a>
+                        <a href="https://books.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://books.google.com&size=128" alt="Books"></div>
+                            <span>Books</span>
+                        </a>
+                        <a href="https://earth.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://earth.google.com&size=128" alt="Earth"></div>
+                            <span>Earth</span>
+                        </a>
+                        <a href="https://www.google.com/collections" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.google.com/collections&size=128" alt="Saved"></div>
+                            <span>Saved</span>
+                        </a>
+                        <a href="https://artsandculture.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://artsandculture.google.com&size=128" alt="Arts & Culture"></div>
+                            <span>Arts & Culture</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="g-apps-divider"></div>
+
+                <!-- Account Management Group -->
+                <div class="g-apps-section">
+                    <h4 data-i18n="g_apps_account_tools">Account Tools</h4>
+                    <div class="g-apps-grid">
+                        <a href="https://passwords.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://passwords.google.com&size=128" alt="Password Manager"></div>
+                            <span>Passwords</span>
+                        </a>
+                        <a href="https://analytics.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://analytics.google.com&size=128" alt="Analytics"></div>
+                            <span>Analytics</span>
+                        </a>
+                        <a href="https://wallet.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://wallet.google.com&size=128" alt="Wallet"></div>
+                            <span>Wallet</span>
+                        </a>
+                        <a href="https://tasks.google.com" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://tasks.google.com&size=128" alt="Tasks"></div>
+                            <span>Tasks</span>
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank" class="g-app-item">
+                            <div class="g-app-icon"><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://notebooklm.google.com&size=128" alt="NotebookLM"></div>
+                            <span>NotebookLM</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="https://about.google/products/" target="_blank" class="g-apps-more-btn"
+                data-i18n="g_apps_more">More from Google</a>
+        </div>
+    </div>
 
     <!-- Side Controls (Settings + Quick Access) -->
     <div class="side-controls">
@@ -137,10 +344,17 @@
     <div id="settings-sidebar" class="settings-sidebar">
         <div class="sidebar-header">
             <div class="sidebar-title-wrap">
+                <button id="sidebar-toc-toggle" class="sidebar-toc-btn" data-i18n-title="sidebar_toc"
+                    title="Table of Contents">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
                 <h2 data-i18n="settings_title">Settings</h2>
                 <span id="settings-version" class="settings-version" aria-label="Extension version"></span>
             </div>
             <span id="close-settings" class="close-sidebar"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div id="sidebar-toc-menu" class="sidebar-toc-menu">
+            <!-- Dynamically populated ToC items -->
         </div>
         <div class="sidebar-content">
             <div class="setting-group">
@@ -337,12 +551,15 @@
                         <button class="accent-color-preset" data-color="#FFFFFF"
                             style="background-color: #FFFFFF; border: 1px solid #999;" title="White"></button>
                     </div>
-                    <div class="accent-color-picker-wrapper" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <div class="accent-color-picker-wrapper"
+                        style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                         <input type="color" id="accent-color-picker" title="Custom Color" />
-                        <button id="random-accent-color-btn" class="secondary-btn" title="Random Color" data-i18n-title="settings_accent_random" style="padding: 4px 8px; height: 32px;">
+                        <button id="random-accent-color-btn" class="secondary-btn" title="Random Color"
+                            data-i18n-title="settings_accent_random" style="padding: 4px 8px; height: 32px;">
                             <i class="fa-solid fa-dice"></i>
                         </button>
-                        <button id="save-accent-color-btn" class="secondary-btn" title="Save Accent Color" data-i18n-title="settings_save_color_btn" style="padding: 4px 8px; height: 32px;">
+                        <button id="save-accent-color-btn" class="secondary-btn" title="Save Accent Color"
+                            data-i18n-title="settings_save_color_btn" style="padding: 4px 8px; height: 32px;">
                             <i class="fa-solid fa-floppy-disk"></i>
                         </button>
                     </div>
@@ -1131,68 +1348,92 @@
             </div>
 
             <div class="setting-group">
-                <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock Color</span></label>
+                <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock
+                        Color</span></label>
                 <div class="input-group">
                     <input type="color" id="clock-color-picker" value="#ffffff">
-                    <button id="reset-clock-color-btn" class="secondary-btn" data-i18n="settings_reset_color">Reset to Default</button>
+                    <button id="reset-clock-color-btn" class="secondary-btn" data-i18n="settings_reset_color">Reset to
+                        Default</button>
                 </div>
-                
-                <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_date_color">Date Color</span></label>
+
+                <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-palette"></i> <span
+                        data-i18n="settings_date_color">Date Color</span></label>
                 <div class="input-group">
                     <input type="color" id="date-color-picker" value="#ffffff">
-                    <button id="reset-date-color-btn" class="secondary-btn" data-i18n="settings_reset_color_date">Reset Date to Default</button>
+                    <button id="reset-date-color-btn" class="secondary-btn" data-i18n="settings_reset_color_date">Reset
+                        Date to Default</button>
                 </div>
             </div>
 
             <div class="settings-section" data-section-id="bookmark-custom">
-                <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i> Custom Bookmark</h3>
+                <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
+                    Custom Bookmark</h3>
                 <div class="section-content">
                     <div class="setting-group">
-                        <label><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_bookmark_font_size">Font Size:</span> <span id="bookmark-font-size-value">10px</span></label>
+                        <label><i class="fa-solid fa-text-height"></i> <span
+                                data-i18n="settings_bookmark_font_size">Font Size:</span> <span
+                                id="bookmark-font-size-value">10px</span></label>
                         <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10">
-                        
-                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon Size:</span> <span id="bookmark-icon-size-value">42px</span></label>
+
+                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-image"></i> <span
+                                data-i18n="settings_bookmark_icon_size">Icon Size:</span> <span
+                                id="bookmark-icon-size-value">42px</span></label>
                         <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42">
-                        
-                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks:</span> <span id="bookmark-gap-value">8px</span></label>
+
+                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-arrows-left-right"></i>
+                            <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks:</span> <span
+                                id="bookmark-gap-value">8px</span></label>
                         <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8">
                     </div>
                     <div class="setting-group">
-                        <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
+                        <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_text_color">Text
+                                Color</span></label>
                         <div class="input-group">
                             <input type="color" id="bookmark-text-color-picker" value="#ffffff">
-                            <button id="reset-bookmark-text-color-btn" class="secondary-btn" data-i18n="settings_reset_color_date">Reset Default</button>
+                            <button id="reset-bookmark-text-color-btn" class="secondary-btn"
+                                data-i18n="settings_reset_color_date">Reset Default</button>
                         </div>
-                        
-                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_bg_color">Background Color</span></label>
+
+                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-palette"></i> <span
+                                data-i18n="settings_bookmark_bg_color">Background Color</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
                             <input type="color" id="bookmark-bg-color-picker" value="#ffffff">
-                            <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100" style="flex: 1;" title="Opacity">
+                            <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100"
+                                style="flex: 1;" title="Opacity">
                         </div>
-                        <button id="reset-bookmark-bg-btn" class="secondary-btn full-width" style="margin-top: 10px;" data-i18n="settings_reset_color">Reset Background to Default</button>
-                        
-                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
+                        <button id="reset-bookmark-bg-btn" class="secondary-btn full-width" style="margin-top: 10px;"
+                            data-i18n="settings_reset_color">Reset Background to Default</button>
+
+                        <label style="margin-top: 15px; display: block;"><i class="fa-solid fa-moon"></i> <span
+                                data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
                             <input type="color" id="bookmark-shadow-color-picker" value="#000000">
-                            <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="flex: 1;" title="Opacity">
+                            <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24"
+                                style="flex: 1;" title="Opacity">
                         </div>
-                        <div class="input-group" style="margin-top: 5px; display: flex; gap: 10px; align-items: center;">
-                            <span style="font-size: 0.9em; opacity: 0.8;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
-                            <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
+                        <div class="input-group"
+                            style="margin-top: 5px; display: flex; gap: 10px; align-items: center;">
+                            <span style="font-size: 0.9em; opacity: 0.8;"
+                                data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                            <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8"
+                                style="flex: 1;">
                             <span id="bookmark-shadow-blur-value" style="font-size: 0.9em; min-width: 30px;">8px</span>
                         </div>
                     </div>
                     <div class="setting-group">
                         <div class="setting-item-row">
-                            <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title Text</label>
+                            <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title
+                                Text</label>
                             <input type="checkbox" id="hide-bookmark-text">
                         </div>
                         <div class="setting-item-row">
-                            <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Bookmark Background</label>
+                            <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Bookmark
+                                Background</label>
                             <input type="checkbox" id="hide-bookmark-bg">
                         </div>
                         <div class="setting-item-row">
-                            <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag & drop to reorder</label>
+                            <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag &
+                                drop to reorder</label>
                             <input type="checkbox" id="enable-bookmark-drag">
                         </div>
                     </div>
@@ -1235,7 +1476,8 @@
                         <input type="checkbox" id="show-search-bar-checkbox" checked>
                     </div>
                     <div class="setting-item-row">
-                        <label for="show-background-checkbox" data-i18n="settings_show_background">Show Background</label>
+                        <label for="show-background-checkbox" data-i18n="settings_show_background">Show
+                            Background</label>
                         <input type="checkbox" id="show-background-checkbox" checked>
                     </div>
                     <div class="setting-item-row">
@@ -1275,6 +1517,11 @@
                         <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show Lunar
                             Calendar</label>
                         <input type="checkbox" id="show-lunar-calendar-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show Google
+                            Apps & Avatar</label>
+                        <input type="checkbox" id="show-top-right-controls-checkbox" checked>
                     </div>
                 </div>
             </div>
@@ -1352,7 +1599,12 @@
                     data-i18n-placeholder="search_placeholder" placeholder="Search Google..." autocomplete="off">
             </form>
             <i class="fa-solid fa-camera camera-btn" id="search-camera-btn" title="Search by Image"></i>
-            <i class="fa-solid fa-camera-viewfinder lens-btn" id="search-lens-btn" title="Search any image with Google Lens"></i>
+            <i class="fa-solid fa-camera-viewfinder lens-btn" id="search-lens-btn"
+                title="Search any image with Google Lens"></i>
+            <a href="https://www.google.com/search?sourceid=chrome&udm=50&aep=42&source=chrome.crn.rb" target="_blank"
+                class="ai-btn" id="search-ai-btn" title="AI Mode (Gemini)">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </a>
             <input type="file" id="image-search-upload" accept="image/*" style="display: none;">
             <input type="file" id="image-lens-upload" accept="image/*" style="display: none;">
             <i class="fa-solid fa-xmark clear-btn" id="clear-btn"></i>

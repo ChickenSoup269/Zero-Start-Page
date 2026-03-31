@@ -325,5 +325,14 @@
   "settings_bookmark_hide_bg": "Ẩn nền dấu trang",
   "settings_bookmark_shadow": "Bóng đổ",
   "settings_bookmark_shadow_blur": "Độ mờ:",
-  "settings_bookmark_enable_drag": "Cho phép kéo thả đổi vị trí"
+  "settings_bookmark_enable_drag": "Cho phép kéo thả đổi vị trí",
+  "sidebar_toc": "Mục lục",
+  "settings_show_top_right": "Hiện Google Apps & Avatar",
+  "g_apps_favorites": "Ứng dụng yêu thích",
+  "g_apps_media": "Media & Communication",
+  "g_apps_workspace": "Workspace",
+  "g_apps_services": "🛒 Dịch vụ",
+  "g_apps_advanced": "System / Advanced",
+  "g_apps_account_tools": "Quản lý tài khoản",
+  "g_apps_more": "Thêm từ Google"
 }

@@ -28,6 +28,7 @@ import {
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import { getRandomHexColor } from "../../utils/colors.js"
+import { getGoogleProfile } from "../../services/googleIdentity.js"
 import {
   setUnsplashRandomBackground,
   populateUnsplashCollections,
@@ -99,6 +100,34 @@ export function setupGeneralEventHandlers(
     }
   })
 
+  // Google Profile & Apps Dropdown Logic
+  const initGoogleUI = async () => {
+    const profile = await getGoogleProfile()
+    if (profile && DOM.userAvatarBtn) {
+      if (profile.photoUrl) {
+        DOM.userAvatarBtn.innerHTML = `<img src="${profile.photoUrl}" alt="Google Account">`
+      } else {
+        DOM.userAvatarBtn.innerHTML = `<div class="letter-avatar" style="background: ${profile.avatarColor}">${profile.firstLetter}</div>`
+      }
+    }
+
+    if (DOM.googleAppsBtn && DOM.googleAppsDropdown) {
+      DOM.googleAppsBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        DOM.googleAppsDropdown.classList.toggle("show")
+      })
+
+      document.addEventListener("click", (e) => {
+        if (!DOM.googleAppsDropdown.contains(e.target) && !DOM.googleAppsBtn.contains(e.target)) {
+          DOM.googleAppsDropdown.classList.remove("show")
+        }
+      })
+    }
+  }
+
+  initGoogleUI()
+
   // Sidebar scroll management
   const sidebarContent = DOM.settingsSidebar.querySelector(".sidebar-content")
   const sidebarScrollTopBtn = document.getElementById("sidebar-scroll-top")
@@ -121,6 +150,75 @@ export function setupGeneralEventHandlers(
   sidebarScrollTopBtn.addEventListener("click", () => {
     sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
   })
+
+  // Table of Contents (ToC) Logic
+  const initSidebarToC = () => {
+    const tocToggle = DOM.sidebarTocToggle
+    const tocMenu = DOM.sidebarTocMenu
+    if (!tocToggle || !tocMenu) return
+
+    const populateToC = () => {
+      tocMenu.innerHTML = ""
+      const sections = sidebarContent.querySelectorAll(".settings-section, .setting-group")
+      const addedTitles = new Set()
+
+      sections.forEach((section) => {
+        let title = ""
+        let iconClass = ""
+
+        // Try to find a title from various possible header/label elements
+        const toggle = section.querySelector(".section-toggle")
+        const header = section.querySelector(".group-header")
+        const label = section.querySelector(":scope > label")
+
+        if (toggle) {
+          title = toggle.textContent.trim()
+          const icon = toggle.querySelector("i")
+          if (icon) iconClass = icon.className
+        } else if (header) {
+          const span = header.querySelector("span[data-i18n]")
+          title = span ? span.textContent.trim() : header.textContent.trim()
+          const icon = header.querySelector("i.group-icon")
+          if (icon) iconClass = icon.className
+        } else if (label) {
+          const span = label.querySelector("span[data-i18n]")
+          title = span ? span.textContent.trim() : label.textContent.trim()
+          const icon = label.querySelector("i")
+          if (icon) iconClass = icon.className
+        }
+
+        if (title && !addedTitles.has(title)) {
+          addedTitles.add(title)
+          const item = document.createElement("div")
+          item.className = "toc-item"
+          item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
+          item.addEventListener("click", () => {
+            const sectionTop = section.offsetTop
+            sidebarContent.scrollTo({ top: sectionTop - 10, behavior: "smooth" })
+            tocMenu.classList.remove("open")
+            tocToggle.classList.remove("active")
+          })
+          tocMenu.appendChild(item)
+        }
+      })
+    }
+
+    tocToggle.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const isOpen = tocMenu.classList.toggle("open")
+      tocToggle.classList.toggle("active", isOpen)
+      if (isOpen) populateToC()
+    })
+
+    document.addEventListener("click", (e) => {
+      if (!tocMenu.contains(e.target) && !tocToggle.contains(e.target)) {
+        tocMenu.classList.remove("open")
+        tocToggle.classList.remove("active")
+      }
+    })
+  }
+
+  initSidebarToC()
 
   // Section collapse/expand state
   const SECTION_STATE_KEY = "settingsSectionStates"
@@ -1231,6 +1329,15 @@ export function setupGeneralEventHandlers(
       DOM.showQuickAccessCheckbox,
     ),
   )
+
+  DOM.showTopRightControlsCheckbox.addEventListener("change", () => {
+    const isVisible = DOM.showTopRightControlsCheckbox.checked
+    handleSettingUpdate("showTopRightControls", isVisible)
+    const topRightControls = document.getElementById("top-right-controls")
+    if (topRightControls) {
+      topRightControls.classList.toggle("hidden", !isVisible)
+    }
+  })
 
   DOM.lcpGhostControls.addEventListener("change", () => {
     const isGhost = DOM.lcpGhostControls.checked
