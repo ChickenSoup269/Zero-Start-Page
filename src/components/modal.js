@@ -1,4 +1,4 @@
-import { showAlert } from "../utils/dialog.js"
+import { showAlert, showConfirm } from "../utils/dialog.js"
 import {
   modal,
   closeModalBtn,
@@ -242,26 +242,42 @@ function _filterBookmarkTree(query) {
   }
 }
 
-function confirmImport() {
+async function confirmImport() {
   const i18n = geti18n()
   const bookmarks = getBookmarks()
   const checkboxes = browserBookmarksList.querySelectorAll(
     'input[type="checkbox"]:checked',
   )
-  let addedCount = 0
+  
+  let newItems = []
+  let duplicateItems = []
+  
   checkboxes.forEach((cb) => {
     const data = JSON.parse(cb.value)
     if (!bookmarks.some((b) => b.url === data.url)) {
-      bookmarks.push({ title: data.title, url: data.url, icon: "" })
-      addedCount++
+      newItems.push({ title: data.title, url: data.url, icon: "" })
+    } else {
+      duplicateItems.push({ title: data.title, url: data.url, icon: "" })
     }
   })
 
-  if (addedCount > 0) {
+  if (duplicateItems.length > 0) {
+    const msg = i18n.alert_import_duplicates
+      ? i18n.alert_import_duplicates.replace("{count}", duplicateItems.length)
+      : `Found ${duplicateItems.length} duplicate bookmark(s). Do you want to import them anyway?`
+    
+    const takeDuplicates = await showConfirm(msg)
+    if (takeDuplicates) {
+      newItems.push(...duplicateItems)
+    }
+  }
+
+  if (newItems.length > 0) {
+    bookmarks.push(...newItems)
     setBookmarks(bookmarks)
     saveBookmarks()
     renderBookmarks()
-    showAlert(i18n.alert_imported.replace("{count}", addedCount))
+    showAlert(i18n.alert_imported.replace("{count}", newItems.length))
     closeModal()
   } else {
     showAlert(i18n.alert_no_selection)

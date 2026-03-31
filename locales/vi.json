@@ -14,7 +14,6 @@
   "settings_bg_fit_contain": "Contain (hiện toàn bộ ảnh)",
   "settings_accent": "Màu chủ đạo",
   "settings_accent_random": "Màu ngẫu nhiên",
-  "settings_save_color_btn": "Lưu màu",
   "settings_starfall": "Hiệu ứng mưa",
   "settings_font": "Phông chữ",
   "settings_custom_font": "Font Google tùy chỉnh",
@@ -103,6 +102,7 @@
   "alert_missing_fields": "Vui lòng nhập cả tiêu đề và đường dẫn.",
   "alert_reset": "Khôi phục tất cả cài đặt về mặc định?",
   "alert_delete_confirm": "Xóa dấu trang",
+  "alert_import_duplicates": "Phát hiện {count} dấu trang trùng lặp. Bạn có muốn lấy luôn không?",
   "alert_imported": "Đã nhập {count} dấu trang!",
   "alert_no_selection": "Chưa chọn dấu trang mới hoặc đã tồn tại.",
   "settings_upload_image": "Tải ảnh lên",
@@ -314,5 +314,16 @@
   "settings_multi_color_save": "Lưu cài đặt",
   "settings_multi_color_saved_presets": "Cài đặt đã lưu",
   "settings_multi_color_color_label": "Màu",
-  "setting_northern_lights_color": "Màu ánh sáng cực quang"
+  "setting_northern_lights_color": "Màu ánh sáng cực quang",
+  "settings_custom_bookmark": "Tùy chỉnh Dấu trang",
+  "settings_bookmark_font_size": "Cỡ chữ:",
+  "settings_bookmark_icon_size": "Cỡ biểu tượng:",
+  "settings_bookmark_gap": "Khoảng cách giữa các ô:",
+  "settings_bookmark_bg_color": "Màu nền",
+  "settings_bookmark_text_color": "Màu chữ",
+  "settings_bookmark_hide_text": "Ẩn tên dấu trang",
+  "settings_bookmark_hide_bg": "Ẩn nền dấu trang",
+  "settings_bookmark_shadow": "Bóng đổ",
+  "settings_bookmark_shadow_blur": "Độ mờ:",
+  "settings_bookmark_enable_drag": "Cho phép kéo thả đổi vị trí"
 }
