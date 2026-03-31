@@ -102,15 +102,7 @@ export function setupGeneralEventHandlers(
 
   // Google Profile & Apps Dropdown Logic
   const initGoogleUI = async () => {
-    const profile = await getGoogleProfile()
-    if (profile && DOM.userAvatarBtn) {
-      if (profile.photoUrl) {
-        DOM.userAvatarBtn.innerHTML = `<img src="${profile.photoUrl}" alt="Google Account">`
-      } else {
-        DOM.userAvatarBtn.innerHTML = `<div class="letter-avatar" style="background: ${profile.avatarColor}">${profile.firstLetter}</div>`
-      }
-    }
-
+    // Attach listeners first to prevent link following
     if (DOM.googleAppsBtn && DOM.googleAppsDropdown) {
       DOM.googleAppsBtn.addEventListener("click", (e) => {
         e.preventDefault()
@@ -119,10 +111,20 @@ export function setupGeneralEventHandlers(
       })
 
       document.addEventListener("click", (e) => {
-        if (!DOM.googleAppsDropdown.contains(e.target) && !DOM.googleAppsBtn.contains(e.target)) {
-          DOM.googleAppsDropdown.classList.remove("show")
+        if (!DOM.googleAppsDropdown?.contains(e.target) && !DOM.googleAppsBtn?.contains(e.target)) {
+          DOM.googleAppsDropdown?.classList.remove("show")
         }
       })
+    }
+
+    // Now fetch profile (async)
+    const profile = await getGoogleProfile()
+    if (profile && DOM.userAvatarBtn) {
+      if (profile.photoUrl) {
+        DOM.userAvatarBtn.innerHTML = `<img src="${profile.photoUrl}" alt="Google Account">`
+      } else {
+        DOM.userAvatarBtn.innerHTML = `<div class="letter-avatar" style="background: ${profile.avatarColor}">${profile.firstLetter}</div>`
+      }
     }
   }
 

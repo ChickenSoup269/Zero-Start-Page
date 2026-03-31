@@ -194,7 +194,11 @@
   display: none;
   flex-direction: column;
   z-index: 1001;
-  animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInMenu 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.g-apps-dropdown.show {
+  display: flex;
 }
 
 .g-apps-scroll-area {
