@@ -2,6 +2,11 @@ export const settingsToggle = document.getElementById("settings-toggle")
 export const settingsSidebar = document.getElementById("settings-sidebar")
 export const settingsVersion = document.getElementById("settings-version")
 export const closeSettings = document.getElementById("close-settings")
+export const sidebarTocToggle = document.getElementById("sidebar-toc-toggle")
+export const sidebarTocMenu = document.getElementById("sidebar-toc-menu")
+export const googleAppsBtn = document.querySelector(".google-apps-btn")
+export const googleAppsDropdown = document.getElementById("g-apps-dropdown")
+export const userAvatarBtn = document.getElementById("user-avatar")
 export const bgVideo = document.getElementById("bg-video")
 
 export const bgInput = document.getElementById("bg-input")
@@ -458,6 +463,9 @@ export const showFullCalendarCheckbox = document.getElementById(
 )
 export const showLunarCalendarCheckbox = document.getElementById(
   "show-lunar-calendar-checkbox",
+)
+export const showTopRightControlsCheckbox = document.getElementById(
+  "show-top-right-controls-checkbox",
 )
 export const showQuickAccessCheckbox = document.getElementById(
   "show-quick-access-checkbox",

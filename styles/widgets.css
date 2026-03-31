@@ -69,7 +69,8 @@
 }
 
 .camera-btn,
-.lens-btn {
+.lens-btn,
+.ai-btn {
   background: none;
   border: none;
   color: var(--text-color);
@@ -79,14 +80,29 @@
   display: none;
   padding: 4px 6px;
   margin-left: 2px;
-  transition: opacity 0.2s, color 0.2s;
+  transition:
+    opacity 0.2s,
+    color 0.2s,
+    transform 0.2s;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .camera-btn:hover,
-.lens-btn:hover {
+.lens-btn:hover,
+.ai-btn:hover {
   opacity: 1;
   color: #fff;
+  transform: scale(1.1);
+}
+
+.ai-btn {
+  /* color: #464646; */
+  opacity: 0.8;
+}
+
+.ai-btn:hover {
+  color: #c2adff;
 }
 
 .search-divider {
@@ -97,6 +113,209 @@
   opacity: 0.3;
   margin: 0 4px;
   flex-shrink: 0;
+}
+
+/* Top Right Controls */
+.top-right-controls {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.top-right-controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.top-control-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.top-control-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.user-avatar-btn {
+  font-size: 1.6rem;
+}
+
+.top-control-btn img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.letter-avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Google Apps Dropdown */
+.g-apps-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 320px;
+  max-height: 480px;
+  background: rgba(30, 31, 38, 0.98);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 8px 4px 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: none;
+  flex-direction: column;
+  z-index: 1001;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.g-apps-scroll-area {
+  overflow-y: auto;
+  padding: 16px 16px 8px;
+  flex: 1;
+}
+
+.g-apps-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.g-apps-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.g-apps-dropdown.show {
+  display: flex;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.g-apps-section h4 {
+  margin: 12px 0 10px 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-weight: 800;
+}
+
+.g-apps-section:first-child h4 {
+  margin-top: 0;
+}
+
+.g-apps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+.g-app-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 4px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 6px;
+}
+
+.g-app-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.g-app-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.g-app-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+
+.g-app-item:hover .g-app-icon img {
+  transform: scale(1.1);
+}
+
+.g-app-item span {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.g-apps-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 16px 12px;
+}
+
+.g-apps-more-btn {
+  margin: 12px 16px 0;
+  padding: 10px;
+  text-align: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s;
+}
+
+.g-apps-more-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .search-submit-btn {

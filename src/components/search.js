@@ -62,6 +62,7 @@ const engineOptions = document.querySelectorAll(".engine-option")
 // Image Search Elements
 const cameraBtn = document.getElementById("search-camera-btn")
 const lensBtn = document.getElementById("search-lens-btn")
+const aiBtn = document.getElementById("search-ai-btn")
 const imageUploadInput = document.getElementById("image-search-upload")
 const imageLensUpload = document.getElementById("image-lens-upload")
 
@@ -269,6 +270,9 @@ function updateSearchUI() {
   cameraBtn.style.display = currentEngine === "google-image" ? "block" : "none"
   if (lensBtn) {
     lensBtn.style.display = currentEngine === "google-lens" ? "block" : "none"
+  }
+  if (aiBtn) {
+    aiBtn.style.display = (currentEngine === "google" || currentEngine === "google-image") ? "block" : "none"
   }
   searchInput.placeholder = engine.placeholder
 }
