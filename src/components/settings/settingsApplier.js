@@ -292,9 +292,14 @@ function createApplySettings(effectInstances) {
     let shadowOpacity = settings.bookmarkShadowOpacity ?? 24;
     let shadowBlur = settings.bookmarkShadowBlur ?? 8;
     let shadowRgb = hexToRgb(shadowHex) || { r: 0, g: 0, b: 0 };
+    const shadowRgba = `rgba(${shadowRgb.r}, ${shadowRgb.g}, ${shadowRgb.b}, ${shadowOpacity / 100})`;
     document.documentElement.style.setProperty(
       "--bookmark-box-shadow",
-      `rgba(${shadowRgb.r}, ${shadowRgb.g}, ${shadowRgb.b}, ${shadowOpacity / 100}) 0px 3px ${shadowBlur}px`
+      `${shadowRgba} 0px 3px ${shadowBlur}px`
+    );
+    document.documentElement.style.setProperty(
+      "--bookmark-icon-drop-shadow",
+      `0px 2px ${Math.max(2, Math.round(shadowBlur / 2))}px ${shadowRgba}`
     );
 
     const dateClockStyle = settings.dateClockStyle || "default"
