@@ -112,7 +112,7 @@
                     <div class="g-apps-grid">
                         <a href="https://photos.google.com" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Google_Photos_icon_%282020%29.svg"
+                                    src="https://www.gstatic.com/images/branding/product/1x/photos_64dp.png"
                                     alt="Photos"></div>
                             <span>Photos</span>
                         </a>
@@ -124,8 +124,8 @@
                         </a>
                         <a href="https://chat.google.com" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://ssl.gstatic.com/images/branding/product/1x/chat_64dp.png"
-                                    alt="Chat"></div>
+                                    src="https://ssl.gstatic.com/images/branding/product/1x/chat_64dp.png" alt="Chat">
+                            </div>
                             <span>Chat</span>
                         </a>
                         <a href="https://translate.google.com" target="_blank" class="g-app-item">
@@ -163,8 +163,8 @@
                         </a>
                         <a href="https://docs.google.com/forms/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=128"
-                                    alt="Forms"></div>
+                                    src="https://www.google.com/s2/favicons?domain=docs.google.com&sz=128" alt="Forms">
+                            </div>
                             <span>Forms</span>
                         </a>
                     </div>
@@ -190,8 +190,8 @@
                         </a>
                         <a href="https://keep.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://ssl.gstatic.com/images/branding/product/1x/keep_64dp.png"
-                                    alt="Keep"></div>
+                                    src="https://ssl.gstatic.com/images/branding/product/1x/keep_64dp.png" alt="Keep">
+                            </div>
                             <span>Keep</span>
                         </a>
                         <a href="https://classroom.google.com/" target="_blank" class="g-app-item">
@@ -235,14 +235,14 @@
                         </a>
                         <a href="https://books.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://www.google.com/s2/favicons?domain=play.google.com&sz=128"
-                                    alt="Books"></div>
+                                    src="https://www.google.com/s2/favicons?domain=play.google.com&sz=128" alt="Books">
+                            </div>
                             <span>Books</span>
                         </a>
                         <a href="https://earth.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://www.google.com/s2/favicons?domain=earth.google.com&sz=128"
-                                    alt="Earth"></div>
+                                    src="https://www.google.com/s2/favicons?domain=earth.google.com&sz=128" alt="Earth">
+                            </div>
                             <span>Earth</span>
                         </a>
                         <a href="https://www.google.com/collections" target="_blank" class="g-app-item">
@@ -1395,6 +1395,7 @@
                         Mode</label>
                     <select id="analog-marker-mode-select">
                         <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
+                        <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
                         <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick
                             12,3,6,9</option>
                         <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
@@ -1406,34 +1407,48 @@
                         (Analog)</label>
                     <input type="checkbox" id="analog-blur-bg-checkbox">
                 </div>
-            </div>
 
-            <div class="setting-group" id="clock-date-stroke-setting" style="margin-top: 1rem;">
-                <label><i class="fa-solid fa-border-style"></i>
-                    <span data-i18n="settings_clock_date_stroke_width">Text Border Width:</span>
-                    <span id="clock-date-stroke-width-value">0px</span>
-                </label>
-                <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0">
+                <div class="setting-item" id="clock-date-stroke-setting"
+                    style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <div class="setting-item" style="margin-bottom: 0.6rem;">
+                        <label for="clock-date-stroke-target-select" data-i18n="settings_clock_date_stroke_target">Text
+                            Border Target</label>
+                        <select id="clock-date-stroke-target-select">
+                            <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and Date
+                            </option>
+                            <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only
+                            </option>
+                            <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only</option>
+                        </select>
+                    </div>
+                    <label><i class="fa-solid fa-border-style"></i>
+                        <span data-i18n="settings_clock_date_stroke_width">Text Border Width:</span>
+                        <span id="clock-date-stroke-width-value">0px</span>
+                    </label>
+                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0">
+
+                    <div class="setting-item"
+                        style="margin-top: 0.6rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                        <label style="margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i
+                                class="fa-solid fa-palette"></i> <span
+                                data-i18n="settings_clock_date_stroke_color">Border
+                                Color</span></label>
+                        <input type="color" id="clock-date-stroke-color-picker" value="#000000"
+                            style="width: 40px; border: none; padding: 0; background: none; cursor: pointer; height: 30px; border-radius: 4px;">
+                    </div>
+                </div>
 
                 <div class="setting-item"
-                    style="margin-top: 0.6rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-                    <label style="margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i
-                            class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_date_stroke_color">Border
-                            Color</span></label>
-                    <input type="color" id="clock-date-stroke-color-picker" value="#000000"
-                        style="width: 40px; border: none; padding: 0; background: none; cursor: pointer; height: 30px; border-radius: 4px;">
+                    style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size:</span>
+                        <span id="clock-size-value">6rem</span></label>
+                    <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+
+                    <label style="margin-top: 0.7rem; display: block;"><i class="fa-solid fa-calendar-day"></i> <span
+                            data-i18n="settings_date_size">Date Size:</span> <span
+                            id="date-size-value">1.5rem</span></label>
+                    <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
                 </div>
-            </div>
-
-            <div class="setting-group">
-                <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size:</span> <span
-                        id="clock-size-value">6rem</span></label>
-                <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
-
-                <label style="margin-top: 0.7rem; display: block;"><i class="fa-solid fa-calendar-day"></i> <span
-                        data-i18n="settings_date_size">Date Size:</span> <span
-                        id="date-size-value">1.5rem</span></label>
-                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
             </div>
 
             <div class="setting-group">
@@ -1798,3 +1813,4 @@
 </body>
 
 </html>
+

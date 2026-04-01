@@ -21,7 +21,7 @@ import {
   renderLocalBackgrounds,
   renderUserColors,
 } from "./backgroundManager.js"
-import { renderUserGradients, buildGradientCss } from "./gradientManager.js"    
+import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
@@ -83,7 +83,7 @@ function createApplySettings(effectInstances) {
     document.title = settings.pageTitle || "Start Page"
 
     // 1b. Top Right Controls
-    const topRightControls = document.getElementById("top-right-controls")      
+    const topRightControls = document.getElementById("top-right-controls")
     if (topRightControls) {
       topRightControls.classList.toggle(
         "hidden",
@@ -103,10 +103,10 @@ function createApplySettings(effectInstances) {
       bgLayer.className = ""
       if (bgChanged) bgLayer.style.opacity = "0"
     }
-    document.documentElement.style.setProperty("--text-color", "#ffffff")       
+    document.documentElement.style.setProperty("--text-color", "#ffffff")
 
     // 2a. Stop SVG wave first (before background logic re-applies it)
-    if (effectInstances.svgWaveEffect) effectInstances.svgWaveEffect.stop()     
+    if (effectInstances.svgWaveEffect) effectInstances.svgWaveEffect.stop()
 
     // 3. Background Logic
     let bg = settings.background
@@ -131,7 +131,7 @@ function createApplySettings(effectInstances) {
     if (isPredefinedLocalBg) {
       if (bgLayer) bgLayer.classList.add(bg)
       document.body.classList.add("bg-layer-active")
-      document.documentElement.style.setProperty("--text-color", "#ffffff")     
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else if (isUserUploadedBg) {
       document.body.classList.add("bg-image-active")
       if (bg.startsWith("data:video") || isVideoId) {
@@ -146,7 +146,7 @@ function createApplySettings(effectInstances) {
         }
       }
       document.body.style.backgroundSize = settings.bgSize || "cover"
-      document.documentElement.style.setProperty("--text-color", "#ffffff")     
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
     } else if (bg) {
       document.body.classList.add("bg-image-active")
       const isVideoUrl =
@@ -156,13 +156,13 @@ function createApplySettings(effectInstances) {
           bgVideoElement.src = bg
           bgVideoElement.style.display = "block"
         }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")   
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else if (bg.match(/^https?:\/\//)) {
         if (bgLayer) {
           bgLayer.style.backgroundImage = `url('${bg}')`
           bgLayer.style.backgroundSize = settings.bgSize || "cover"
         }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")   
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
         if (bgLayer) bgLayer.style.background = bg
         document.body.classList.add("bg-layer-active")
@@ -194,11 +194,11 @@ function createApplySettings(effectInstances) {
     // 2.1 Background Position
     document.documentElement.style.setProperty(
       "--bg-pos-x",
-      `${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%`,     
+      `${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%`,
     )
     document.documentElement.style.setProperty(
       "--bg-pos-y",
-      `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,     
+      `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
     )
     document.documentElement.style.setProperty(
       "--bg-blur",
@@ -227,17 +227,17 @@ function createApplySettings(effectInstances) {
     }
 
     // 3. UI Props
-    document.documentElement.style.setProperty("--font-primary", settings.font) 
+    document.documentElement.style.setProperty("--font-primary", settings.font)
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
     const baseDateSize = Number.isFinite(rawDateSize)
       ? Math.min(10, Math.max(0.8, rawDateSize))
       : 1.5
-    const priority = settings.clockDatePriority === "date" ? "date" : "none"    
+    const priority = settings.clockDatePriority === "date" ? "date" : "none"
     let computedClockSize = baseClockSize
     let computedDateSize = baseDateSize
     if (priority === "date") {
-      // Date-priority mode swaps the visual emphasis between clock and date.   
+      // Date-priority mode swaps the visual emphasis between clock and date.
       computedClockSize = baseDateSize
       computedDateSize = baseClockSize
     }
@@ -286,7 +286,7 @@ function createApplySettings(effectInstances) {
         settings.bookmarkTextColor,
       )
     } else {
-      document.documentElement.style.removeProperty("--bookmark-text-color")    
+      document.documentElement.style.removeProperty("--bookmark-text-color")
     }
 
     if (settings.bookmarkHideText) {
@@ -328,7 +328,7 @@ function createApplySettings(effectInstances) {
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
-      dateClockStyle === "analog" && settings.analogBlurBackground === true,    
+      dateClockStyle === "analog" && settings.analogBlurBackground === true,
     )
 
     // 3.1 Clock & Date Color Contrast Logic
@@ -354,7 +354,7 @@ function createApplySettings(effectInstances) {
     }
 
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
-    document.documentElement.style.setProperty("--date-color", finalDateColor)  
+    document.documentElement.style.setProperty("--date-color", finalDateColor)
     if (settings.accentColor) {
       document.documentElement.style.setProperty(
         "--accent-color",
@@ -379,16 +379,32 @@ function createApplySettings(effectInstances) {
 
     const strokeWidth = settings.clockDateStrokeWidth || 0
     const strokeColor = settings.clockDateStrokeColor || "#000000"
+    const strokeTarget = settings.clockDateStrokeTarget || "both"
+
+    // Reset both to clear existing stroke
+    document.documentElement.style.setProperty(
+      "--clock-text-stroke",
+      "0px transparent",
+    )
+    document.documentElement.style.setProperty(
+      "--date-text-stroke",
+      "0px transparent",
+    )
+
     if (strokeWidth > 0) {
-      document.documentElement.style.setProperty(
-        "--clock-date-text-stroke",
-        `${strokeWidth}px ${strokeColor}`,
-      )
-    } else {
-      document.documentElement.style.setProperty(
-        "--clock-date-text-stroke",
-        "none",
-      )
+      const strokeRule = `${strokeWidth}px ${strokeColor}`
+      if (strokeTarget === "both" || strokeTarget === "clock") {
+        document.documentElement.style.setProperty(
+          "--clock-text-stroke",
+          strokeRule,
+        )
+      }
+      if (strokeTarget === "both" || strokeTarget === "date") {
+        document.documentElement.style.setProperty(
+          "--date-text-stroke",
+          strokeRule,
+        )
+      }
     }
 
     // 4. Effects Management
@@ -398,7 +414,7 @@ function createApplySettings(effectInstances) {
     const effectChanged = effectToStart !== _prevEffect
     const effectCanvas = document.getElementById("effect-canvas")
     if (effectChanged) {
-      // Stop previous effects only when effect selection actually changes.     
+      // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
         if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
         if (effect && typeof effect.stop === "function") {
@@ -412,14 +428,14 @@ function createApplySettings(effectInstances) {
         effectCanvas.style.display = "none"
       }
 
-      // 5. Start selected effect immediately (no artificial delay/flicker).    
-      if (effectToStart && effectToStart !== "none" && selectedEffect) {        
+      // 5. Start selected effect immediately (no artificial delay/flicker).
+      if (effectToStart && effectToStart !== "none" && selectedEffect) {
         // Apply saved leaf type for falling leaves settled effect
         if (
           effectToStart === "fallingLeavesSettled" &&
           selectedEffect.setLeafType
         ) {
-          selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")     
+          selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
         }
         selectedEffect.start?.()
       }
@@ -457,7 +473,7 @@ function createUpdateSettingsInputs(effectInstances) {
       (b) => b.id === settings.background,
     )
     const isUserUploadedBg =
-      settings.background && settings.background.startsWith("data:image")       
+      settings.background && settings.background.startsWith("data:image")
     const rawDateSize = Number(settings.dateSize)
     const baseDateSize = Number.isFinite(rawDateSize)
       ? Math.min(10, Math.max(0.8, rawDateSize))
@@ -473,14 +489,14 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     DOM.clockDatePrioritySelect.value =
       settings.clockDatePriority === "date" ? "date" : "none"
-    DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"       
+    DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
-    DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"  
+    DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     DOM.analogMarkerModeSetting.style.display =
-      (settings.dateClockStyle || "default") === "analog" ? "block" : "none"    
+      (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
     DOM.analogBlurBgSetting.style.display =
-      (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"     
-    DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true   
+      (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"
+    DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
     DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
     DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")
@@ -492,7 +508,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
     if (DOM.clockDateStrokeWidthInput) {
-      DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0  
+      DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0
       if (DOM.clockDateStrokeWidthValue) {
         DOM.clockDateStrokeWidthValue.textContent = `${settings.clockDateStrokeWidth || 0}px`
       }
@@ -500,6 +516,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockDateStrokeColorPicker) {
       DOM.clockDateStrokeColorPicker.value =
         settings.clockDateStrokeColor || "#000000"
+    }
+    if (DOM.clockDateStrokeTargetSelect) {
+      DOM.clockDateStrokeTargetSelect.value =
+        settings.clockDateStrokeTarget || "both"
     }
     DOM.dateColorPicker.value = settings.dateColor || "#ffffff"
 
@@ -512,17 +532,17 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
 
       DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
-      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`      
+      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
 
-      DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"   
-      DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100      
+      DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
+      DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
 
       if (DOM.bookmarkTextColorPicker) {
         DOM.bookmarkTextColorPicker.value =
           settings.bookmarkTextColor || "#ffffff"
       }
       if (DOM.hideBookmarkText) {
-        DOM.hideBookmarkText.checked = settings.bookmarkHideText === true       
+        DOM.hideBookmarkText.checked = settings.bookmarkHideText === true
       }
       if (DOM.hideBookmarkBg) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true
@@ -544,7 +564,7 @@ function createUpdateSettingsInputs(effectInstances) {
       }
 
       if (DOM.enableBookmarkDrag) {
-        DOM.enableBookmarkDrag.checked = settings.bookmarkEnableDrag === true   
+        DOM.enableBookmarkDrag.checked = settings.bookmarkEnableDrag === true
       }
     }
 
@@ -552,7 +572,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bgBlurInput.value = settings.bgBlur ?? 0
     DOM.bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100
-    DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`      
+    DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
     DOM.bgFadeInInput.value = settings.bgFadeIn ?? 0.5
     DOM.bgFadeInValue.textContent = `${settings.bgFadeIn ?? 0.5}s`
     DOM.bgPosXInput.value = settings.bgPositionX || 50
@@ -563,7 +583,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.unsplashCategorySelect.value =
       settings.unsplashCategory || "spring-wallpapers"
     if (DOM.unsplashAccessKeyInput)
-      DOM.unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""       
+      DOM.unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
 
     const isImageBg =
       settings.background &&
@@ -575,8 +595,8 @@ function createUpdateSettingsInputs(effectInstances) {
 
     DOM.bgPositionSetting.style.display = isImageBg ? "block" : "none"
 
-    DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"      
-    DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"        
+    DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
+    DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"
     setEffectActive(DOM.effectGrid, settings.effect)
 
     // Gradient Inputs
@@ -588,12 +608,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.gradientTypeSelect.value = settings.gradientType || "linear"
     }
     if (DOM.gradientRepeatingToggle) {
-      DOM.gradientRepeatingToggle.checked = settings.gradientRepeating === true 
+      DOM.gradientRepeatingToggle.checked = settings.gradientRepeating === true
     }
     if (DOM.gradientSettingsBody) {
       const isOpen = settings.gradientControlsOpen !== false
-      DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"        
-      DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))      
+      DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"
+      DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))
       if (DOM.gradientToggleLabel) {
         const i18n = geti18n()
         DOM.gradientToggleLabel.textContent =
@@ -607,7 +627,7 @@ function createUpdateSettingsInputs(effectInstances) {
       )
     }
     if (DOM.gradientCustomColors) {
-      DOM.gradientCustomColors.value = settings.gradientCustomColors || ""      
+      DOM.gradientCustomColors.value = settings.gradientCustomColors || ""
     }
 
     // Effect Color Inputs
@@ -621,18 +641,18 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
-    DOM.rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"   
+    DOM.rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
-    DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"       
-    DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"       
-    DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"       
+    DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"
+    DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
+    DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
     const oceanWavePos = settings.oceanWavePosition || "bottom"
     DOM.oceanWavePosBottomBtn.classList.toggle(
       "active",
       oceanWavePos === "bottom",
     )
-    DOM.oceanWavePosTopBtn.classList.toggle("active", oceanWavePos === "top")   
-    DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"     
+    DOM.oceanWavePosTopBtn.classList.toggle("active", oceanWavePos === "top")
+    DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
 
     // Visibility of Effect Settings
     DOM.starColorSetting.style.display =
@@ -680,7 +700,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.shinyColorPicker.value = settings.shinyColor || "#ff0000"
     DOM.lineShinyColorSetting.style.display =
       settings.effect === "lineShiny" ? "block" : "none"
-    DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"       
+    DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
     DOM.pixelRunColorSetting.style.display =
       settings.effect === "pixelRun" ? "block" : "none"
     DOM.pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
@@ -695,7 +715,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.crtBackgroundColorSetting.style.display =
       settings.effect === "crtScanlines" ? "block" : "none"
     DOM.crtScanColorPicker.value = settings.crtScanColor || "#7cffad"
-    DOM.crtScanFrequencyInput.value = String(settings.crtScanFrequency ?? 0.11) 
+    DOM.crtScanFrequencyInput.value = String(settings.crtScanFrequency ?? 0.11)
     DOM.crtScanFrequencyValue.textContent = Number(
       DOM.crtScanFrequencyInput.value,
     ).toFixed(2)
@@ -703,13 +723,13 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.crtBackgroundColor || "#0a140f"
     DOM.retroGameColorSetting.style.display =
       settings.effect === "retroGame" ? "block" : "none"
-    DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"       
+    DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"
     DOM.wavyPatternColor1Setting.style.display =
       settings.effect === "wavyPattern" ? "block" : "none"
     DOM.wavyPatternColor2Setting.style.display =
       settings.effect === "wavyPattern" ? "block" : "none"
-    DOM.wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B" 
-    DOM.wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40" 
+    DOM.wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B"
+    DOM.wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40"
     DOM.angledPatternColor1Setting.style.display =
       settings.effect === "angledPattern" ? "block" : "none"
     DOM.angledPatternColor2Setting.style.display =
@@ -740,7 +760,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.svgWaveAngle.value = settings.svgWaveAngle ?? 0
     DOM.svgWaveAngleValue.textContent = DOM.svgWaveAngle.value
     DOM.svgWaveSmoothness.value = settings.svgWaveSmoothness ?? 0.5
-    DOM.svgWaveSmoothnessValue.textContent = DOM.svgWaveSmoothness.value        
+    DOM.svgWaveSmoothnessValue.textContent = DOM.svgWaveSmoothness.value
     DOM.svgWaveCraziness.value = settings.svgWaveCraziness ?? 30
     DOM.svgWaveCrazinessValue.textContent = DOM.svgWaveCraziness.value
     DOM.svgWaveFill.checked = settings.svgWaveFill !== false
@@ -749,7 +769,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.svgWaveStartSat.value = settings.svgWaveStartSaturation ?? 70
     DOM.svgWaveStartSatValue.textContent = DOM.svgWaveStartSat.value
     DOM.svgWaveStartLight.value = settings.svgWaveStartLightness ?? 40
-    DOM.svgWaveStartLightValue.textContent = DOM.svgWaveStartLight.value        
+    DOM.svgWaveStartLightValue.textContent = DOM.svgWaveStartLight.value
     DOM.svgWaveEndHue.value = settings.svgWaveEndHue ?? 280
     DOM.svgWaveEndHueValue.textContent = DOM.svgWaveEndHue.value
     DOM.svgWaveEndSat.value = settings.svgWaveEndSaturation ?? 70
@@ -757,7 +777,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.svgWaveEndLight.value = settings.svgWaveEndLightness ?? 30
     DOM.svgWaveEndLightValue.textContent = DOM.svgWaveEndLight.value
     effectInstances.updateWaveColorPreviews(settings)
-    renderUserSvgWaves(effectInstances.DOM, effectInstances.svgWaveEffect)      
+    renderUserSvgWaves(effectInstances.DOM, effectInstances.svgWaveEffect)
     renderLocalBackgrounds(
       effectInstances.DOM,
       effectInstances.handleSettingUpdate,
@@ -766,13 +786,13 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showTodoCheckbox.checked = settings.showTodoList !== false
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
-    DOM.showGregorianCheckbox.checked = settings.showGregorian !== false        
+    DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
     DOM.showClockCheckbox.checked = settings.showClock !== false
-    DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true   
+    DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
-    DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false    
-    DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false        
+    DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+    DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.showSearchAiIconCheckbox) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
     }
@@ -788,10 +808,10 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
       }
     }
-    DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false        
+    DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
-    DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true 
+    DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
     DOM.showTopRightControlsCheckbox.checked =
       settings.showTopRightControls !== false
     document.body.classList.toggle(
@@ -802,10 +822,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpBookmarks) {
       DOM.lcpBookmarks.checked = settings.showBookmarks !== false
     }
-    DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false       
+    DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
     DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
     DOM.lcpQuickAccess.checked = settings.showQuickAccess !== false
-    DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true      
+    DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
@@ -818,7 +838,7 @@ function createUpdateSettingsInputs(effectInstances) {
     document.querySelectorAll(".user-color-item").forEach((item) => {
       item.classList.toggle("active", item.dataset.bgId === settings.background)
     })
-    document.querySelectorAll(".user-gradient-item").forEach((item) => {        
+    document.querySelectorAll(".user-gradient-item").forEach((item) => {
       const isActive =
         !settings.background &&
         item.dataset.start === settings.gradientStart &&

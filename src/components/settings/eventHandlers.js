@@ -1218,6 +1218,12 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  if (DOM.clockDateStrokeTargetSelect) {
+    DOM.clockDateStrokeTargetSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("clockDateStrokeTarget", e.target.value)
+    })
+  }
+
   DOM.clockColorPicker.addEventListener("input", () =>
     handleSettingUpdate("clockColor", DOM.clockColorPicker.value),
   )
