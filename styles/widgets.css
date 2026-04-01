@@ -11,7 +11,7 @@
   border-radius: 10px;
   padding: 12px 25px;
   width: 100%;
-  max-width: 600px;
+  max-width: var(--search-bar-width, 600px);
   box-shadow: var(--glass-shadow);
   transition: all 0.3s ease;
   z-index: 50;
@@ -455,7 +455,9 @@
   color: var(--text-color);
   transition: all 0.3s ease;
   cursor: pointer;
-  width: calc(var(--bookmark-icon-size, 42px) + 18px); /* slightly larger than icon to account for spacing */
+  width: calc(
+    var(--bookmark-icon-size, 42px) + 18px
+  ); /* slightly larger than icon to account for spacing */
   text-align: center;
 }
 
@@ -489,7 +491,9 @@
 }
 
 .bookmark img {
-  filter: drop-shadow(var(--bookmark-icon-drop-shadow, 0px 2px 4px rgba(0, 0, 0, 0.3)));
+  filter: drop-shadow(
+    var(--bookmark-icon-drop-shadow, 0px 2px 4px rgba(0, 0, 0, 0.3))
+  );
 }
 
 .bookmark .bookmark-icon-fallback {

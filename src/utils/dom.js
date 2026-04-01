@@ -40,7 +40,9 @@ export const accentColorPicker = document.getElementById("accent-color-picker")
 export const randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )
-export const saveAccentColorBtn = document.getElementById("save-accent-color-btn")
+export const saveAccentColorBtn = document.getElementById(
+  "save-accent-color-btn",
+)
 export const userAccentColorsGallery = document.getElementById(
   "user-accent-colors-gallery",
 )
@@ -378,14 +380,21 @@ export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const dateSizeInput = document.getElementById("date-size-input")
 export const dateSizeValue = document.getElementById("date-size-value")
+export const clockDateStrokeWidthInput = document.getElementById(
+  "clock-date-stroke-width-input",
+)
+export const clockDateStrokeWidthValue = document.getElementById(
+  "clock-date-stroke-width-value",
+)
+export const clockDateStrokeColorPicker = document.getElementById(
+  "clock-date-stroke-color-picker",
+)
 export const clockColorPicker = document.getElementById("clock-color-picker")
 export const resetClockColorBtn = document.getElementById(
   "reset-clock-color-btn",
 )
 export const dateColorPicker = document.getElementById("date-color-picker")
-export const resetDateColorBtn = document.getElementById(
-  "reset-date-color-btn",
-)
+export const resetDateColorBtn = document.getElementById("reset-date-color-btn")
 
 export const localBackgroundGallery = document.getElementById(
   "local-background-gallery",
@@ -430,22 +439,50 @@ export const bookmarkGroupsContainer = document.getElementById(
   "bookmark-groups-container",
 )
 
-export const bookmarkFontSizeInput = document.getElementById("bookmark-font-size-input")
-export const bookmarkFontSizeValue = document.getElementById("bookmark-font-size-value")
-export const bookmarkIconSizeInput = document.getElementById("bookmark-icon-size-input")
-export const bookmarkIconSizeValue = document.getElementById("bookmark-icon-size-value")
+export const bookmarkFontSizeInput = document.getElementById(
+  "bookmark-font-size-input",
+)
+export const bookmarkFontSizeValue = document.getElementById(
+  "bookmark-font-size-value",
+)
+export const bookmarkIconSizeInput = document.getElementById(
+  "bookmark-icon-size-input",
+)
+export const bookmarkIconSizeValue = document.getElementById(
+  "bookmark-icon-size-value",
+)
 export const bookmarkGapInput = document.getElementById("bookmark-gap-input")
 export const bookmarkGapValue = document.getElementById("bookmark-gap-value")
-export const bookmarkTextColorPicker = document.getElementById("bookmark-text-color-picker")
-export const resetBookmarkTextColorBtn = document.getElementById("reset-bookmark-text-color-btn")
-export const bookmarkBgColorPicker = document.getElementById("bookmark-bg-color-picker")
-export const bookmarkBgOpacityInput = document.getElementById("bookmark-bg-opacity-input")
-export const resetBookmarkBgBtn = document.getElementById("reset-bookmark-bg-btn")
-export const bookmarkShadowColorPicker = document.getElementById("bookmark-shadow-color-picker")
-export const bookmarkShadowOpacityInput = document.getElementById("bookmark-shadow-opacity-input")
-export const bookmarkShadowBlurInput = document.getElementById("bookmark-shadow-blur-input")
-export const bookmarkShadowBlurValue = document.getElementById("bookmark-shadow-blur-value")
-export const enableBookmarkDrag = document.getElementById("enable-bookmark-drag")
+export const bookmarkTextColorPicker = document.getElementById(
+  "bookmark-text-color-picker",
+)
+export const resetBookmarkTextColorBtn = document.getElementById(
+  "reset-bookmark-text-color-btn",
+)
+export const bookmarkBgColorPicker = document.getElementById(
+  "bookmark-bg-color-picker",
+)
+export const bookmarkBgOpacityInput = document.getElementById(
+  "bookmark-bg-opacity-input",
+)
+export const resetBookmarkBgBtn = document.getElementById(
+  "reset-bookmark-bg-btn",
+)
+export const bookmarkShadowColorPicker = document.getElementById(
+  "bookmark-shadow-color-picker",
+)
+export const bookmarkShadowOpacityInput = document.getElementById(
+  "bookmark-shadow-opacity-input",
+)
+export const bookmarkShadowBlurInput = document.getElementById(
+  "bookmark-shadow-blur-input",
+)
+export const bookmarkShadowBlurValue = document.getElementById(
+  "bookmark-shadow-blur-value",
+)
+export const enableBookmarkDrag = document.getElementById(
+  "enable-bookmark-drag",
+)
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 
@@ -479,9 +516,15 @@ export const showNotepadCheckbox = document.getElementById(
 export const showSearchBarCheckbox = document.getElementById(
   "show-search-bar-checkbox",
 )
-export const showBackgroundCheckbox = document.getElementById(
-  "show-background-checkbox",
+export const showSearchAiIconCheckbox = document.getElementById(
+  "show-search-ai-icon-checkbox",
 )
+export const searchBarWidthSlider = document.getElementById(
+  "search-bar-width-slider",
+)
+export const searchBarWidthVal = document.getElementById("search-bar-width-val")
+export const searchAiBtn = document.getElementById("search-ai-btn")
+export const searchContainer = document.getElementById("search-container")
 export const showBookmarksCheckbox = document.getElementById(
   "show-bookmarks-checkbox",
 )
@@ -499,7 +542,10 @@ export const layoutControlsPopup = document.getElementById(
   "layout-controls-popup",
 )
 export const lcpSearchBar = document.getElementById("lcp-search-bar")
-export const lcpShowBackground = document.getElementById("lcp-show-background")
+export const lcpSearchBarWidth = document.getElementById("lcp-search-bar-width")
+export const lcpSearchBarWidthVal = document.getElementById(
+  "lcp-search-bar-width-val",
+)
 export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")

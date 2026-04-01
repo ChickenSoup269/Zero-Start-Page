@@ -59,17 +59,6 @@ i {
   transform: translateZ(0);
 }
 
-body.hide-background {
-  background-color: #121212 !important;
-  background-image: none !important;
-}
-
-body.hide-background #bg-layer,
-body.hide-background #bg-video {
-  display: none !important;
-  opacity: 0 !important;
-}
-
 #effect-canvas {
   position: fixed;
   top: 0;
@@ -396,6 +385,7 @@ body.date-clock-style-square #date {
   letter-spacing: 0.08em;
   font-weight: 700;
   margin-top: 4px;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-round .clock-time-main,
@@ -415,6 +405,7 @@ body.date-clock-style-square .clock-time-main {
   line-height: 1;
   letter-spacing: 0.02em;
   vertical-align: 0.2em;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-round .clock-time-ampm,
@@ -426,6 +417,7 @@ body.date-clock-style-square .clock-time-ampm {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   opacity: 0.78;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-square #date {
@@ -484,6 +476,7 @@ body.date-clock-style-square #date {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   opacity: 0.78;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-date-primary {
@@ -491,6 +484,7 @@ body.date-clock-style-square #date {
   font-weight: 600;
   text-transform: capitalize;
   letter-spacing: 0.06em;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-date-secondary {
@@ -499,6 +493,7 @@ body.date-clock-style-square #date {
   letter-spacing: 0.04em;
   text-transform: capitalize;
   margin-top: 2px;
+  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-hue-char {
@@ -508,7 +503,7 @@ body.date-clock-style-square #date {
     0 1px 6px rgba(0, 0, 0, 0.35),
     0 0 10px hsla(var(--char-hue, 0), 92%, 60%, 0.35);
   animation: hue-wave 8s infinite linear;
-  animation-delay: var(--char-delay, 0s);
+  animation-delay: calc(var(--char-delay, 0s) - var(--time-offset, 0s));
 }
 
 @keyframes hue-wave {

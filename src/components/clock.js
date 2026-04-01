@@ -47,6 +47,8 @@ function applyHuePerCharacter(target, seed = 0) {
       span.style.setProperty("--char-hue", String(hue))
       // Staggered delay for wave effect (e.g., 0.1s per character)
       span.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
+      // Add time offset to sync the 8s CSS animation perfectly across 1-second DOM overwrites
+      span.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
       span.textContent = char
       fragment.appendChild(span)
       hueIndex += 1
