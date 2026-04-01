@@ -6,13 +6,21 @@ export async function getGoogleProfile() {
     }
 
     // Try to get profile info (works if synced)
-    chrome.identity.getProfileUserInfo({ prevStatus: "signin" }, (userInfo) => {
+    chrome.identity.getProfileUserInfo({ accountStatus: "ANY" }, (userInfo) => {
       const email = userInfo?.email || ""
       const displayName = email.split("@")[0] || "User"
       const firstLetter = displayName.charAt(0).toUpperCase()
 
       // Generate a consistent color based on email
-      const colors = ["#4285f4", "#ea4335", "#fbbc05", "#34a853", "#673ab7", "#3f51b5", "#009688"]
+      const colors = [
+        "#4285f4",
+        "#ea4335",
+        "#fbbc05",
+        "#34a853",
+        "#673ab7",
+        "#3f51b5",
+        "#009688",
+      ]
       let colorIndex = 0
       if (email) {
         for (let i = 0; i < email.length; i++) {
@@ -29,7 +37,7 @@ export async function getGoogleProfile() {
           displayName: displayName,
           firstLetter: firstLetter,
           avatarColor: avatarColor,
-          photoUrl: null // Signal to UI to use letter avatar
+          photoUrl: null, // Signal to UI to use letter avatar
         })
       } else {
         resolve({
@@ -39,7 +47,7 @@ export async function getGoogleProfile() {
           firstLetter: firstLetter,
           avatarColor: avatarColor,
           // High quality photo URL if ID is available
-          photoUrl: `https://profiles.google.com/s2/photos/profile/${userInfo.id}?sz=128`
+          photoUrl: `https://profiles.google.com/s2/photos/profile/${userInfo.id}?sz=128`,
         })
       }
     })

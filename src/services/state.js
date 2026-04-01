@@ -60,7 +60,7 @@ const defaultSettings = {
   userGradients: [], // Add userGradients
   starColor: "#ffffff",
   meteorColor: "#ffffff",
-  
+
   bookmarkFontSize: 10,
   bookmarkIconSize: 42,
   bookmarkGap: 8,
@@ -74,6 +74,9 @@ const defaultSettings = {
   bookmarkShadowColor: "#000000",
   bookmarkShadowOpacity: 24,
   bookmarkShadowBlur: 8,
+
+  clockDateStrokeWidth: 0,
+  clockDateStrokeColor: "#000000",
 
   clockColor: null,
   dateColor: null,
@@ -133,7 +136,8 @@ const defaultSettings = {
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,
-  showBackground: true,
+  searchBarWidth: 600,
+  showSearchAIIcon: true,
   searchEngine: "google",
   svgWaveActive: false,
   svgWaveLines: 5,
@@ -286,7 +290,7 @@ export function resetSettingsState() {
     userGradients: [],
     starColor: "#ffffff",
     meteorColor: "#ffffff",
-    
+
     bookmarkFontSize: 10,
     bookmarkIconSize: 42,
     bookmarkGap: 8,
@@ -300,6 +304,9 @@ export function resetSettingsState() {
     bookmarkShadowColor: "#000000",
     bookmarkShadowOpacity: 24,
     bookmarkShadowBlur: 8,
+
+    clockDateStrokeWidth: 0,
+    clockDateStrokeColor: "#000000",
 
     clockColor: null,
     auraColor: "#a8c0ff",
@@ -332,7 +339,6 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
-    showBackground: true,
   }
   settingsState = defaultSettings
   saveSettings()

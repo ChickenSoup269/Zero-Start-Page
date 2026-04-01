@@ -111,7 +111,10 @@ export function setupGeneralEventHandlers(
       })
 
       document.addEventListener("click", (e) => {
-        if (!DOM.googleAppsDropdown?.contains(e.target) && !DOM.googleAppsBtn?.contains(e.target)) {
+        if (
+          !DOM.googleAppsDropdown?.contains(e.target) &&
+          !DOM.googleAppsBtn?.contains(e.target)
+        ) {
           DOM.googleAppsDropdown?.classList.remove("show")
         }
       })
@@ -161,7 +164,9 @@ export function setupGeneralEventHandlers(
 
     const populateToC = () => {
       tocMenu.innerHTML = ""
-      const sections = sidebarContent.querySelectorAll(".settings-section, .setting-group")
+      const sections = sidebarContent.querySelectorAll(
+        ".settings-section, .setting-group",
+      )
       const addedTitles = new Set()
 
       sections.forEach((section) => {
@@ -196,7 +201,10 @@ export function setupGeneralEventHandlers(
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {
             const sectionTop = section.offsetTop
-            sidebarContent.scrollTo({ top: sectionTop - 10, behavior: "smooth" })
+            sidebarContent.scrollTo({
+              top: sectionTop - 10,
+              behavior: "smooth",
+            })
             tocMenu.classList.remove("open")
             tocToggle.classList.remove("active")
           })
@@ -440,12 +448,18 @@ export function setupGeneralEventHandlers(
   if (DOM.bookmarkFontSizeInput) {
     DOM.bookmarkFontSizeInput.addEventListener("input", () => {
       DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
-      handleSettingUpdate("bookmarkFontSize", Number(DOM.bookmarkFontSizeInput.value))
+      handleSettingUpdate(
+        "bookmarkFontSize",
+        Number(DOM.bookmarkFontSizeInput.value),
+      )
     })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
       DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
-      handleSettingUpdate("bookmarkIconSize", Number(DOM.bookmarkIconSizeInput.value))
+      handleSettingUpdate(
+        "bookmarkIconSize",
+        Number(DOM.bookmarkIconSizeInput.value),
+      )
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
@@ -458,7 +472,10 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkBgOpacityInput.addEventListener("input", () => {
-      handleSettingUpdate("bookmarkBgOpacity", Number(DOM.bookmarkBgOpacityInput.value))
+      handleSettingUpdate(
+        "bookmarkBgOpacity",
+        Number(DOM.bookmarkBgOpacityInput.value),
+      )
     })
 
     DOM.resetBookmarkBgBtn.addEventListener("click", () => {
@@ -475,7 +492,10 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {
-        handleSettingUpdate("bookmarkTextColor", DOM.bookmarkTextColorPicker.value)
+        handleSettingUpdate(
+          "bookmarkTextColor",
+          DOM.bookmarkTextColorPicker.value,
+        )
       })
     }
 
@@ -491,7 +511,7 @@ export function setupGeneralEventHandlers(
         handleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
       })
     }
-    
+
     if (DOM.hideBookmarkBg) {
       DOM.hideBookmarkBg.addEventListener("change", () => {
         handleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
@@ -500,16 +520,25 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkShadowColorPicker) {
       DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
-        handleSettingUpdate("bookmarkShadowColor", DOM.bookmarkShadowColorPicker.value)
+        handleSettingUpdate(
+          "bookmarkShadowColor",
+          DOM.bookmarkShadowColorPicker.value,
+        )
       })
       DOM.bookmarkShadowOpacityInput.addEventListener("input", () => {
-        handleSettingUpdate("bookmarkShadowOpacity", Number(DOM.bookmarkShadowOpacityInput.value))
+        handleSettingUpdate(
+          "bookmarkShadowOpacity",
+          Number(DOM.bookmarkShadowOpacityInput.value),
+        )
       })
       DOM.bookmarkShadowBlurInput.addEventListener("input", () => {
         if (DOM.bookmarkShadowBlurValue) {
           DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}px`
         }
-        handleSettingUpdate("bookmarkShadowBlur", Number(DOM.bookmarkShadowBlurInput.value))
+        handleSettingUpdate(
+          "bookmarkShadowBlur",
+          Number(DOM.bookmarkShadowBlurInput.value),
+        )
       })
     }
   }
@@ -1175,6 +1204,20 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
 
+  if (DOM.clockDateStrokeWidthInput) {
+    DOM.clockDateStrokeWidthInput.addEventListener("input", (e) => {
+      if (DOM.clockDateStrokeWidthValue)
+        DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}px`
+      handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
+    })
+  }
+
+  if (DOM.clockDateStrokeColorPicker) {
+    DOM.clockDateStrokeColorPicker.addEventListener("input", (e) => {
+      handleSettingUpdate("clockDateStrokeColor", e.target.value)
+    })
+  }
+
   DOM.clockColorPicker.addEventListener("input", () =>
     handleSettingUpdate("clockColor", DOM.clockColorPicker.value),
   )
@@ -1234,7 +1277,25 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
   setupLayoutCheckbox(DOM.showQuickAccessCheckbox, "showQuickAccess", {})
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
-  setupLayoutCheckbox(DOM.showBackgroundCheckbox, "showBackground", {})
+  if (DOM.showSearchAiIconCheckbox) {
+    setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})
+  }
+  if (DOM.searchBarWidthSlider) {
+    DOM.searchBarWidthSlider.addEventListener("input", (e) => {
+      const width = e.target.value
+      if (DOM.searchBarWidthVal)
+        DOM.searchBarWidthVal.textContent = `${width}px`
+      if (DOM.lcpSearchBarWidthVal)
+        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+      if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
+      handleSettingUpdate("searchBarWidth", parseInt(width))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarWidth", value: width },
+        }),
+      )
+    })
+  }
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
@@ -1296,20 +1357,33 @@ export function setupGeneralEventHandlers(
       DOM.showSearchBarCheckbox,
     ),
   )
-  DOM.lcpShowBackground.addEventListener("change", () =>
-    lcpToggle(
-      "showBackground",
-      DOM.lcpShowBackground.checked,
-      DOM.showBackgroundCheckbox,
-    ),
-  )
-  DOM.lcpBookmarks.addEventListener("change", () =>
-    lcpToggle(
-      "showBookmarks",
-      DOM.lcpBookmarks.checked,
-      DOM.showBookmarksCheckbox,
-    ),
-  )
+
+  if (DOM.lcpSearchBarWidth) {
+    DOM.lcpSearchBarWidth.addEventListener("input", (e) => {
+      const width = e.target.value
+      if (DOM.lcpSearchBarWidthVal)
+        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+      if (DOM.searchBarWidthVal)
+        DOM.searchBarWidthVal.textContent = `${width}px`
+      if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
+      handleSettingUpdate("searchBarWidth", parseInt(width))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarWidth", value: width },
+        }),
+      )
+    })
+  }
+
+  if (DOM.lcpBookmarks) {
+    DOM.lcpBookmarks.addEventListener("change", () =>
+      lcpToggle(
+        "showBookmarks",
+        DOM.lcpBookmarks.checked,
+        DOM.showBookmarksCheckbox,
+      ),
+    )
+  }
   DOM.lcpBookmarkGroups.addEventListener("change", () =>
     lcpToggle(
       "showBookmarkGroups",

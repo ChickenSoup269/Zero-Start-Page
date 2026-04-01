@@ -84,13 +84,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (searchContainer)
     searchContainer.style.display =
       settings0.showSearchBar !== false ? "" : "none"
+  const searchAiBtn = document.getElementById("search-ai-btn")
+  if (searchAiBtn)
+    searchAiBtn.style.display =
+      settings0.showSearchAIIcon !== false ? "" : "none"
+  document.documentElement.style.setProperty(
+    "--search-bar-width",
+    `${settings0.searchBarWidth || 600}px`,
+  )
   if (bookmarksContainer)
     bookmarksContainer.style.display =
       settings0.showBookmarks !== false ? "" : "none"
   if (bookmarkGroupsContainer)
     bookmarkGroupsContainer.style.display =
       settings0.showBookmarkGroups !== false ? "" : "none"
-  document.body.classList.toggle("hide-background", settings0.showBackground === false)
 
   const resetLayoutBtn = document.getElementById("reset-layout")
   const resetLayoutQuick = document.getElementById("reset-layout-quick")
@@ -218,6 +225,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const el = document.getElementById("search-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
     }
+    if (e.detail.key === "showSearchAIIcon") {
+      const el = document.getElementById("search-ai-btn")
+      if (el) el.style.display = e.detail.value ? "" : "none"
+    }
+    if (e.detail.key === "searchBarWidth") {
+      document.documentElement.style.setProperty(
+        "--search-bar-width",
+        `${e.detail.value}px`,
+      )
+    }
     if (e.detail.key === "showBookmarks") {
       const el = document.getElementById("bookmarks-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
@@ -225,9 +242,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.detail.key === "showBookmarkGroups") {
       const el = document.getElementById("bookmark-groups-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
-    }
-    if (e.detail.key === "showBackground") {
-      document.body.classList.toggle("hide-background", e.detail.value === false)
     }
   })
 
