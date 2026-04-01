@@ -77,6 +77,7 @@ const defaultSettings = {
 
   clockDateStrokeWidth: 0,
   clockDateStrokeColor: "#000000",
+  clockDateStrokeTarget: "both",
 
   clockColor: null,
   dateColor: null,
@@ -307,6 +308,7 @@ export function resetSettingsState() {
 
     clockDateStrokeWidth: 0,
     clockDateStrokeColor: "#000000",
+    clockDateStrokeTarget: "both",
 
     clockColor: null,
     auraColor: "#a8c0ff",

@@ -119,6 +119,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   transition:
     opacity 0.18s ease,
     visibility 0.18s ease;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
 #date {
@@ -131,6 +132,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   transition:
     opacity 0.18s ease,
     visibility 0.18s ease;
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
 }
 
 #clock.is-hidden,
@@ -385,7 +387,6 @@ body.date-clock-style-square #date {
   letter-spacing: 0.08em;
   font-weight: 700;
   margin-top: 4px;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-round .clock-time-main,
@@ -405,7 +406,6 @@ body.date-clock-style-square .clock-time-main {
   line-height: 1;
   letter-spacing: 0.02em;
   vertical-align: 0.2em;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-round .clock-time-ampm,
@@ -417,7 +417,6 @@ body.date-clock-style-square .clock-time-ampm {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   opacity: 0.78;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 body.date-clock-style-square #date {
@@ -476,7 +475,6 @@ body.date-clock-style-square #date {
   text-transform: uppercase;
   letter-spacing: 0.25em;
   opacity: 0.78;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-date-primary {
@@ -484,7 +482,6 @@ body.date-clock-style-square #date {
   font-weight: 600;
   text-transform: capitalize;
   letter-spacing: 0.06em;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-date-secondary {
@@ -493,7 +490,6 @@ body.date-clock-style-square #date {
   letter-spacing: 0.04em;
   text-transform: capitalize;
   margin-top: 2px;
-  -webkit-text-stroke: var(--clock-date-text-stroke, 0px transparent);
 }
 
 .clock-hue-char {
@@ -583,7 +579,8 @@ body.analog-bg-blur-enabled .analog-clock {
 
 .analog-clock.marker-mode-full::after,
 .analog-clock.marker-mode-quarters::after,
-.analog-clock.marker-mode-quarterTicks::after {
+.analog-clock.marker-mode-quarterTicks::after,
+.analog-clock.marker-mode-ticks12::after {
   display: none;
 }
 

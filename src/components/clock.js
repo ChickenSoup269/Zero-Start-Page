@@ -113,6 +113,18 @@ export function updateTime() {
         <span class="analog-quarter-tick tick-6"></span>
         <span class="analog-quarter-tick tick-9"></span>
       `
+    } else if (markerMode === "ticks12") {
+      markerHtml = Array.from({ length: 12 }, (_, index) => {
+        const radius = 45 // percentage distance from center
+        const angle = index * 30 // 0, 30, 60...
+        const rad = (angle * Math.PI) / 180
+        const x = 50 + radius * Math.sin(rad)
+        const y = 50 - radius * Math.cos(rad)
+        const isQuarter = index % 3 === 0
+        const w = isQuarter ? 2 : 1
+        const h = isQuarter ? 14 : 8
+        return `<span class="analog-quarter-tick" style="position: absolute; left: ${x}%; top: ${y}%; transform: translate(-50%, -50%) rotate(${angle}deg); width: ${w}px; height: ${h}px; z-index: 1;"></span>`
+      }).join("")
     } else if (markerMode === "quarters") {
       markerHtml = `
         <span class="analog-marker marker-12">12</span>

@@ -386,6 +386,9 @@ export const clockDateStrokeWidthInput = document.getElementById(
 export const clockDateStrokeWidthValue = document.getElementById(
   "clock-date-stroke-width-value",
 )
+export const clockDateStrokeTargetSelect = document.getElementById(
+  "clock-date-stroke-target-select",
+)
 export const clockDateStrokeColorPicker = document.getElementById(
   "clock-date-stroke-color-picker",
 )
