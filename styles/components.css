@@ -496,18 +496,18 @@
   transition: opacity 0.2s ease;
 }
 
-.folder-wrapper.collapsed .folder-content {
+.folder-wrapper.collapsed > .folder-content {
   display: none;
   opacity: 0;
   pointer-events: none;
 }
 
-.folder-wrapper:not(.collapsed) .folder-content {
+.folder-wrapper:not(.collapsed) > .folder-content {
   display: block;
   opacity: 1;
 }
 
-.folder-wrapper:not(.collapsed) .fa-chevron-right {
+.folder-wrapper:not(.collapsed) > .bookmark-tree-folder .fa-chevron-right {
   transform: rotate(90deg);
 }
 

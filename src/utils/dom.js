@@ -553,6 +553,9 @@ export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
 export const lcpQuickAccess = document.getElementById("lcp-quick-access")
+export const lcpTopRightControls = document.getElementById(
+  "lcp-top-right-controls",
+)
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
 export const lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",

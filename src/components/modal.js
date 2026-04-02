@@ -112,7 +112,8 @@ function renderBookmarkTree(node, container) {
 
     if (node.id !== "0") {
       const wrapper = document.createElement("div")
-      wrapper.className = "folder-wrapper"
+      // By default, make them collapsed
+      wrapper.className = "folder-wrapper collapsed"
 
       const folderDiv = document.createElement("div")
       folderDiv.className = "bookmark-tree-folder"
@@ -129,7 +130,9 @@ function renderBookmarkTree(node, container) {
       wrapper.appendChild(childrenContainer)
       container.appendChild(wrapper)
 
-      sortedChildren.forEach((child) => renderBookmarkTree(child, childrenContainer))
+      sortedChildren.forEach((child) =>
+        renderBookmarkTree(child, childrenContainer),
+      )
     } else {
       sortedChildren.forEach((child) => renderBookmarkTree(child, container))
     }
@@ -248,10 +251,10 @@ async function confirmImport() {
   const checkboxes = browserBookmarksList.querySelectorAll(
     'input[type="checkbox"]:checked',
   )
-  
+
   let newItems = []
   let duplicateItems = []
-  
+
   checkboxes.forEach((cb) => {
     const data = JSON.parse(cb.value)
     if (!bookmarks.some((b) => b.url === data.url)) {
@@ -265,7 +268,7 @@ async function confirmImport() {
     const msg = i18n.alert_import_duplicates
       ? i18n.alert_import_duplicates.replace("{count}", duplicateItems.length)
       : `Found ${duplicateItems.length} duplicate bookmark(s). Do you want to import them anyway?`
-    
+
     const takeDuplicates = await showConfirm(msg)
     if (takeDuplicates) {
       newItems.push(...duplicateItems)
@@ -286,8 +289,38 @@ async function confirmImport() {
 
 export function initModal() {
   const i18n = geti18n()
+
+  // Allow pressing Enter to save bookmark details
+  const handleEnterSave = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      saveBookmark()
+    }
+  }
+  bookmarkTitleInput.addEventListener("keydown", handleEnterSave)
+  bookmarkUrlInput.addEventListener("keydown", handleEnterSave)
+  bookmarkIconInput.addEventListener("keydown", handleEnterSave)
+
+  // Expand/Collapse Folders Toggle in Import Browser
+  const toggleFoldersBtn = document.getElementById("import-toggle-folders-btn")
+  if (toggleFoldersBtn) {
+    let isAllExpanded = false
+    toggleFoldersBtn.addEventListener("click", () => {
+      isAllExpanded = !isAllExpanded
+      const folders = browserBookmarksList.querySelectorAll(".folder-wrapper")
+      folders.forEach((f) => {
+        if (isAllExpanded) {
+          f.classList.remove("collapsed")
+        } else {
+          f.classList.add("collapsed")
+        }
+      })
+    })
+  }
+
   saveBookmarkBtn.addEventListener("click", saveBookmark)
   closeModalBtn.addEventListener("click", closeModal)
+
   window.addEventListener("click", (e) => {
     if (e.target === modal) closeModal()
   })

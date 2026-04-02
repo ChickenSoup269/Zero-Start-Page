@@ -1485,7 +1485,22 @@ export function setupGeneralEventHandlers(
     if (topRightControls) {
       topRightControls.classList.toggle("hidden", !isVisible)
     }
+    if (DOM.lcpTopRightControls) {
+      DOM.lcpTopRightControls.checked = isVisible
+    }
   })
+
+  if (DOM.lcpTopRightControls) {
+    DOM.lcpTopRightControls.addEventListener("change", () => {
+      const isVisible = DOM.lcpTopRightControls.checked
+      DOM.showTopRightControlsCheckbox.checked = isVisible
+      handleSettingUpdate("showTopRightControls", isVisible)
+      const topRightControls = document.getElementById("top-right-controls")
+      if (topRightControls) {
+        topRightControls.classList.toggle("hidden", !isVisible)
+      }
+    })
+  }
 
   DOM.lcpGhostControls.addEventListener("change", () => {
     const isGhost = DOM.lcpGhostControls.checked
