@@ -484,6 +484,30 @@ export const bookmarkShadowBlurInput = document.getElementById(
 export const bookmarkShadowBlurValue = document.getElementById(
   "bookmark-shadow-blur-value",
 )
+
+// Bookmark Group Customization
+export const bookmarkGroupBgColorPicker = document.getElementById(
+  "bookmark-group-bg-color-picker",
+)
+export const bookmarkGroupBgOpacityInput = document.getElementById(
+  "bookmark-group-bg-opacity-input",
+)
+export const resetBookmarkGroupBgBtn = document.getElementById(
+  "reset-bookmark-group-bg-btn",
+)
+export const bookmarkGroupTextColorPicker = document.getElementById(
+  "bookmark-group-text-color-picker",
+)
+export const resetBookmarkGroupTextColorBtn = document.getElementById(
+  "reset-bookmark-group-text-color-btn",
+)
+export const bookmarkGroupFontSizeInput = document.getElementById(
+  "bookmark-group-font-size-input",
+)
+export const bookmarkGroupFontSizeValue = document.getElementById(
+  "bookmark-group-font-size-value",
+)
+
 export const enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",
 )

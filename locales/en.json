@@ -325,6 +325,10 @@
   "settings_bookmark_gap": "Gap Between Bookmarks:",
   "settings_bookmark_bg_color": "Background Color",
   "settings_bookmark_text_color": "Text Color",
+  "settings_bookmark_group_header": "Group Tabs Interface",
+  "settings_bookmark_group_bg_color": "Container Background Color",
+  "settings_bookmark_group_text_color": "Tab Text Color",
+  "settings_bookmark_group_font_size": "Tab Font Size",
   "settings_bookmark_hide_text": "Hide Title Text",
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
   "settings_bookmark_shadow": "Drop Shadow",
@@ -343,5 +347,9 @@
   "settings_clock_date_stroke_target": "Text Border Target:",
   "settings_clock_date_stroke_target_both": "Clock and Date",
   "settings_clock_date_stroke_target_clock": "Clock only",
-  "settings_clock_date_stroke_target_date": "Date only"
+  "settings_clock_date_stroke_target_date": "Date only",
+  "settings_bookmark_item_hint": "💡 Customize colors, size, and shadow for individual bookmark tiles.",
+  "settings_bookmark_group_hint": "💡 Customize the appearance (background, text color) of the folder Tabs navigation at the top.",
+  "settings_date_clock_section": "Date & Clock",
+  "settings_date_format_style": "Date Format Style"
 }

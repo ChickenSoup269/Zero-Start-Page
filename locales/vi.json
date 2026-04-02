@@ -324,6 +324,10 @@
   "settings_bookmark_gap": "Khoảng cách giữa các ô:",
   "settings_bookmark_bg_color": "Màu nền",
   "settings_bookmark_text_color": "Màu chữ",
+  "settings_bookmark_group_header": "Giao diện tab nhóm",
+  "settings_bookmark_group_bg_color": "Màu nền container",
+  "settings_bookmark_group_text_color": "Màu chữ tab",
+  "settings_bookmark_group_font_size": "Kích thước chữ tab",
   "settings_bookmark_hide_text": "Ẩn tên dấu trang",
   "settings_bookmark_hide_bg": "Ẩn nền dấu trang",
   "settings_bookmark_shadow": "Bóng đổ",
@@ -342,5 +346,9 @@
   "settings_clock_date_stroke_target": "Áp dụng viền cho:",
   "settings_clock_date_stroke_target_both": "Đồng hồ và Ngày",
   "settings_clock_date_stroke_target_clock": "Chỉ Đồng hồ",
-  "settings_clock_date_stroke_target_date": "Chỉ Ngày"
+  "settings_clock_date_stroke_target_date": "Chỉ Ngày",
+  "settings_bookmark_item_hint": "💡 Tùy chỉnh màu sắc, kích thước và bóng đổ cho từng ô Dấu trang riêng lẻ.",
+  "settings_bookmark_group_hint": "💡 Tùy chỉnh giao diện (màu nền, màu chữ) cho thanh Tabs chia thư mục ở phía trên.",
+  "settings_date_clock_section": "Đồng hồ & Ngày tháng",
+  "settings_date_format_style": "Định dạng Tiêu chuẩn"
 }
