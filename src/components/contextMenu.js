@@ -1,4 +1,4 @@
-import { contextMenu, menuEdit, menuDelete } from "../utils/dom.js"
+import { contextMenu, menuEdit, menuDelete, menuLock } from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
 import {
   getBookmarks,
@@ -8,14 +8,17 @@ import {
   setBookmarkGroups,
   getActiveGroupId,
   setActiveGroupId,
+  getSettings,
+  updateSetting,
+  saveSettings,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
 import { renderBookmarks } from "./bookmarks.js"
 
 let contextMenuTargetIndex = -1
-let contextMenuTargetType = "bookmark" // 'bookmark' or 'group'
-let contextMenuTargetId = null // For groups
+let contextMenuTargetType = "bookmark" // 'bookmark', 'group', or 'widget'
+let contextMenuTargetId = null // For groups or widget ids
 let contextMenuCallbacks = null
 
 export function showContextMenu(
@@ -31,9 +34,44 @@ export function showContextMenu(
   contextMenuTargetId = id
   contextMenuCallbacks = callbacks
 
+  // Reset display
+  menuEdit.style.display = "flex"
+  menuDelete.style.display = "flex"
+  menuLock.style.display = "none"
+
+  const i18n = geti18n()
+
+  if (type === "widget") {
+    menuEdit.style.display = "none"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "flex"
+
+    const settings = getSettings()
+    const isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
+    const lockText = menuLock.querySelector("span")
+    const lockIcon = menuLock.querySelector("i")
+
+    if (isLocked) {
+      lockIcon.className = "fa-solid fa-unlock"
+      lockText.textContent = i18n.menu_unlock || "Unlock Position"
+    } else {
+      lockIcon.className = "fa-solid fa-lock"
+      lockText.textContent = i18n.menu_lock || "Lock Position"
+    }
+  } else {
+    // Regular bookmarks/groups
+    const editText = menuEdit.querySelector("span")
+    if (editText) {
+      if (type === "group" || type === "todo") {
+        editText.textContent = i18n.menu_rename || "Rename"
+      } else {
+        editText.textContent = i18n.menu_edit || "Edit"
+      }
+    }
+  }
+
   contextMenu.style.display = "block"
 
-  // Keep the popup fully visible in viewport when user clicks near edges.
   const margin = 8
   const menuWidth = contextMenu.offsetWidth || 180
   const menuHeight = contextMenu.offsetHeight || 100
@@ -44,19 +82,6 @@ export function showContextMenu(
 
   contextMenu.style.left = `${safeX}px`
   contextMenu.style.top = `${safeY}px`
-
-  // Update text if needed (optional)
-  const i18n = geti18n()
-  const editText = contextMenu.querySelector("#menu-edit span")
-  if (editText) {
-    if (type === "group") {
-      editText.textContent = i18n.menu_rename || "Rename"
-    } else if (type === "todo") {
-      editText.textContent = i18n.menu_rename || "Rename" // Todo uses "Rename" too
-    } else {
-      editText.textContent = i18n.menu_edit || "Edit"
-    }
-  }
 }
 
 export function hideContextMenu() {
@@ -158,6 +183,31 @@ async function handleDelete() {
   hideContextMenu()
 }
 
+function handleLock() {
+  if (contextMenuTargetType === "widget" && contextMenuTargetId) {
+    const settings = getSettings()
+    const lockedWidgets = settings.lockedWidgets || {}
+    const isLocked = lockedWidgets[contextMenuTargetId]
+
+    lockedWidgets[contextMenuTargetId] = !isLocked
+
+    updateSetting("lockedWidgets", lockedWidgets)
+    saveSettings()
+
+    // Optionally update UI for visual feedback (e.g., adding a lock icon or class to the widget)
+    const widget = document.getElementById(contextMenuTargetId)
+    if (widget) {
+      if (!isLocked) {
+        widget.classList.add("is-locked")
+      } else {
+        widget.classList.remove("is-locked")
+      }
+    }
+  }
+
+  hideContextMenu()
+}
+
 export function initContextMenu() {
   menuEdit.addEventListener("click", (e) => {
     e.stopPropagation()
@@ -167,6 +217,11 @@ export function initContextMenu() {
   menuDelete.addEventListener("click", (e) => {
     e.stopPropagation()
     handleDelete()
+  })
+
+  menuLock.addEventListener("click", (e) => {
+    e.stopPropagation()
+    handleLock()
   })
 
   window.addEventListener("click", (e) => {
