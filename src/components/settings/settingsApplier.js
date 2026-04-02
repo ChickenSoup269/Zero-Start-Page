@@ -826,6 +826,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
     DOM.lcpQuickAccess.checked = settings.showQuickAccess !== false
     DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
+    if (DOM.lcpTopRightControls) {
+      DOM.lcpTopRightControls.checked = settings.showTopRightControls !== false
+    }
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"

@@ -37,9 +37,6 @@
             title="Google Apps">
             <i class="fa-solid fa-grip"></i>
         </a>
-        <div id="user-avatar" class="top-control-btn user-avatar-btn" title="Google Account">
-            <i class="fa-solid fa-circle-user"></i>
-        </div>
 
         <div id="g-apps-dropdown" class="g-apps-dropdown">
             <div class="g-apps-scroll-area">
@@ -393,6 +390,14 @@
                 <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
                 <label class="lcp-switch">
                     <input type="checkbox" id="lcp-ghost-controls">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-grip lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_top_right">Google Apps</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-top-right-controls">
                     <span class="lcp-slider"></span>
                 </label>
             </div>
@@ -1793,10 +1798,17 @@
                         <input type="text" id="import-search" class="import-search-input"
                             data-i18n-placeholder="modal_import_search" placeholder="Search bookmarks...">
                     </div>
-                    <label class="import-select-all-label">
-                        <input type="checkbox" id="import-select-all">
-                        <span data-i18n="modal_select_all">Select all</span>
-                    </label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="import-toggle-folders-btn" class="secondary-btn"
+                            style="padding: 4px 8px; font-size: 0.85rem;" data-i18n-title="modal_toggle_folders"
+                            title="Toggle Folders">
+                            <i class="fa-solid fa-folder-tree"></i>
+                        </button>
+                        <label class="import-select-all-label">
+                            <input type="checkbox" id="import-select-all">
+                            <span data-i18n="modal_select_all">Select all</span>
+                        </label>
+                    </div>
                 </div>
                 <div id="browser-bookmarks-list" class="bookmark-tree-container"></div>
                 <div class="import-footer">
@@ -1813,4 +1825,3 @@
 </body>
 
 </html>
-
