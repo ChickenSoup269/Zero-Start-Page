@@ -164,47 +164,113 @@ export function setupGeneralEventHandlers(
 
     const populateToC = () => {
       tocMenu.innerHTML = ""
-      const sections = sidebarContent.querySelectorAll(
-        ".settings-section, .setting-group",
+
+      const queryStr = [
+        ".settings-section",
+        "#effect-setting-group",
+        "#page-title-input",
+        "#date-format-select",
+      ].join(", ")
+
+      const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
+        (el) => {
+          if (el.tagName === "INPUT" || el.tagName === "SELECT") {
+            return el.closest(".setting-group")
+          }
+          return el
+        },
       )
+
+      // Remove duplicates
+      const sections = [...new Set(elList)].filter(Boolean)
       const addedTitles = new Set()
 
       sections.forEach((section) => {
         let title = ""
         let iconClass = ""
+        let isSubItem = false
 
-        // Try to find a title from various possible header/label elements
-        const toggle = section.querySelector(".section-toggle")
-        const header = section.querySelector(".group-header")
-        const label = section.querySelector(":scope > label")
+        if (section.classList.contains("settings-section")) {
+          // Main Section Title
+          const toggle = section.querySelector(".section-toggle")
+          if (toggle) {
+            title = toggle.textContent.trim()
+            const icon = toggle.querySelector("i")
+            if (icon) iconClass = icon.className
+          }
+        } else {
+          // Sub Items (Effect, Page Title, etc)
+          isSubItem = true
+          const header = section.querySelector(".group-header")
+          const label = section.querySelector(":scope > label")
 
-        if (toggle) {
-          title = toggle.textContent.trim()
-          const icon = toggle.querySelector("i")
-          if (icon) iconClass = icon.className
-        } else if (header) {
-          const span = header.querySelector("span[data-i18n]")
-          title = span ? span.textContent.trim() : header.textContent.trim()
-          const icon = header.querySelector("i.group-icon")
-          if (icon) iconClass = icon.className
-        } else if (label) {
-          const span = label.querySelector("span[data-i18n]")
-          title = span ? span.textContent.trim() : label.textContent.trim()
-          const icon = label.querySelector("i")
-          if (icon) iconClass = icon.className
+          if (header) {
+            const span = header.querySelector("span[data-i18n]")
+            title = span ? span.textContent.trim() : header.textContent.trim()
+            const icon = header.querySelector("i.group-icon")
+            if (icon) iconClass = icon.className
+          } else if (label) {
+            const span = label.querySelector("span[data-i18n]")
+            title = span ? span.textContent.trim() : label.textContent.trim()
+            const icon = label.querySelector("i")
+            if (icon) iconClass = icon.className
+          }
         }
 
         if (title && !addedTitles.has(title)) {
           addedTitles.add(title)
           const item = document.createElement("div")
           item.className = "toc-item"
+          if (isSubItem) {
+            item.style.paddingLeft = "1.5rem"
+            item.style.fontSize = "0.9rem"
+            item.style.opacity = "0.9"
+          }
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {
-            const sectionTop = section.offsetTop
+            // 1) Expand parent section if collapsed
+            const parentSection = section.closest(".settings-section")
+            if (
+              parentSection &&
+              parentSection.classList.contains("collapsed")
+            ) {
+              parentSection.classList.remove("collapsed")
+              const sectionId = parentSection.dataset.sectionId
+              if (sectionId) {
+                const sectionStates = JSON.parse(
+                  localStorage.getItem("settingsSectionStates") || "{}",
+                )
+                sectionStates[sectionId] = false
+                localStorage.setItem(
+                  "settingsSectionStates",
+                  JSON.stringify(sectionStates),
+                )
+              }
+            }
+
+            // 2) Expand the item itself if it's a collapsible group (e.g. Effect)
+            if (
+              section.classList.contains("collapsible-group") &&
+              !section.classList.contains("expanded")
+            ) {
+              section.classList.add("expanded")
+              const groupId = section.id || section.dataset.groupId
+              if (groupId) {
+                localStorage.setItem(`settingsGroupExpanded:${groupId}`, "1")
+              }
+            }
+
+            // 3) Calculate precise scroll pixel
+            const sidebarRect = sidebarContent.getBoundingClientRect()
+            const sectionRect = section.getBoundingClientRect()
+            const targetPixel =
+              sectionRect.top - sidebarRect.top + sidebarContent.scrollTop - 10
+
             sidebarContent.scrollTo({
-              top: sectionTop - 10,
+              top: targetPixel,
               behavior: "smooth",
             })
+
             tocMenu.classList.remove("open")
             tocToggle.classList.remove("active")
           })
