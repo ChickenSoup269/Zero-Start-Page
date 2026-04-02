@@ -496,7 +496,7 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.bgBlurInput.addEventListener("input", () => {
-    DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}px`
+    DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
     handleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
   })
 
@@ -513,7 +513,7 @@ export function setupGeneralEventHandlers(
   // Custom Bookmark listeners
   if (DOM.bookmarkFontSizeInput) {
     DOM.bookmarkFontSizeInput.addEventListener("input", () => {
-      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
+      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
       handleSettingUpdate(
         "bookmarkFontSize",
         Number(DOM.bookmarkFontSizeInput.value),
@@ -521,7 +521,7 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
-      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
+      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
       handleSettingUpdate(
         "bookmarkIconSize",
         Number(DOM.bookmarkIconSizeInput.value),
@@ -529,7 +529,7 @@ export function setupGeneralEventHandlers(
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
-      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
+      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
       handleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
     })
 
@@ -550,6 +550,55 @@ export function setupGeneralEventHandlers(
       handleSettingUpdate("bookmarkBgColor", "#ffffff")
       handleSettingUpdate("bookmarkBgOpacity", 100)
     })
+
+    if (DOM.bookmarkGroupBgColorPicker) {
+      DOM.bookmarkGroupBgColorPicker.addEventListener("input", () => {
+        handleSettingUpdate(
+          "bookmarkGroupBgColor",
+          DOM.bookmarkGroupBgColorPicker.value,
+        )
+      })
+    }
+    if (DOM.bookmarkGroupBgOpacityInput) {
+      DOM.bookmarkGroupBgOpacityInput.addEventListener("input", () => {
+        handleSettingUpdate(
+          "bookmarkGroupBgOpacity",
+          Number(DOM.bookmarkGroupBgOpacityInput.value),
+        )
+      })
+    }
+    if (DOM.resetBookmarkGroupBgBtn) {
+      DOM.resetBookmarkGroupBgBtn.addEventListener("click", () => {
+        DOM.bookmarkGroupBgColorPicker.value = "#ffffff"
+        DOM.bookmarkGroupBgOpacityInput.value = 0
+        handleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
+        handleSettingUpdate("bookmarkGroupBgOpacity", 0)
+      })
+    }
+    if (DOM.bookmarkGroupTextColorPicker) {
+      DOM.bookmarkGroupTextColorPicker.addEventListener("input", () => {
+        handleSettingUpdate(
+          "bookmarkGroupTextColor",
+          DOM.bookmarkGroupTextColorPicker.value,
+        )
+      })
+    }
+    if (DOM.resetBookmarkGroupTextColorBtn) {
+      DOM.resetBookmarkGroupTextColorBtn.addEventListener("click", () => {
+        DOM.bookmarkGroupTextColorPicker.value = "#ffffff"
+        handleSettingUpdate("bookmarkGroupTextColor", null)
+      })
+    }
+    if (DOM.bookmarkGroupFontSizeInput) {
+      DOM.bookmarkGroupFontSizeInput.addEventListener("input", () => {
+        if (DOM.bookmarkGroupFontSizeValue)
+          DOM.bookmarkGroupFontSizeValue.textContent = `${DOM.bookmarkGroupFontSizeInput.value}px`
+        handleSettingUpdate(
+          "bookmarkGroupFontSize",
+          Number(DOM.bookmarkGroupFontSizeInput.value),
+        )
+      })
+    }
 
     DOM.enableBookmarkDrag.addEventListener("change", () => {
       handleSettingUpdate("bookmarkEnableDrag", DOM.enableBookmarkDrag.checked)
@@ -599,7 +648,7 @@ export function setupGeneralEventHandlers(
       })
       DOM.bookmarkShadowBlurInput.addEventListener("input", () => {
         if (DOM.bookmarkShadowBlurValue) {
-          DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}px`
+          DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
         }
         handleSettingUpdate(
           "bookmarkShadowBlur",
@@ -733,11 +782,12 @@ export function setupGeneralEventHandlers(
       picker.type = "color"
       picker.value = color
       picker.title = `Extra ${index + 1}`
-      picker.style.width = "42px"
-      picker.style.height = "34px"
+      picker.style.width = "42${DOM.bookmarkGroupFontSizeInput.value}px"
+      picker.style.height = "34${DOM.bookmarkGroupFontSizeInput.value}px"
       picker.style.padding = "0"
-      picker.style.border = "1px solid var(--input-border)"
-      picker.style.borderRadius = "8px"
+      picker.style.border =
+        "1${DOM.bookmarkGroupFontSizeInput.value}px solid var(--input-border)"
+      picker.style.borderRadius = "8${DOM.bookmarkGroupFontSizeInput.value}px"
       picker.addEventListener("input", () => {
         const pickers = Array.from(
           DOM.gradientExtraColorPickers.querySelectorAll('input[type="color"]'),
@@ -1273,7 +1323,7 @@ export function setupGeneralEventHandlers(
   if (DOM.clockDateStrokeWidthInput) {
     DOM.clockDateStrokeWidthInput.addEventListener("input", (e) => {
       if (DOM.clockDateStrokeWidthValue)
-        DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}px`
+        DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}${DOM.bookmarkGroupFontSizeInput.value}px`
       handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
     })
   }
@@ -1356,9 +1406,9 @@ export function setupGeneralEventHandlers(
     DOM.searchBarWidthSlider.addEventListener("input", (e) => {
       const width = e.target.value
       if (DOM.searchBarWidthVal)
-        DOM.searchBarWidthVal.textContent = `${width}px`
+        DOM.searchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
       if (DOM.lcpSearchBarWidthVal)
-        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+        DOM.lcpSearchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
       if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(
@@ -1434,9 +1484,9 @@ export function setupGeneralEventHandlers(
     DOM.lcpSearchBarWidth.addEventListener("input", (e) => {
       const width = e.target.value
       if (DOM.lcpSearchBarWidthVal)
-        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
+        DOM.lcpSearchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
       if (DOM.searchBarWidthVal)
-        DOM.searchBarWidthVal.textContent = `${width}px`
+        DOM.searchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
       if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(

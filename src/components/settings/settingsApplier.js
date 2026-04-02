@@ -265,6 +265,47 @@ function createApplySettings(effectInstances) {
       `${settings.bookmarkGap ?? 8}px`,
     )
 
+    let groupBgHex = settings.bookmarkGroupBgColor || "transparent"
+    if (groupBgHex !== "transparent") {
+      let groupBgOpacity = settings.bookmarkGroupBgOpacity ?? 0
+      let groupBgRgb = window.hexToRgb ? window.hexToRgb(groupBgHex) : null
+      if (!groupBgRgb && typeof hexToRgb === "function")
+        groupBgRgb = hexToRgb(groupBgHex)
+      if (groupBgRgb && groupBgOpacity < 100) {
+        document.documentElement.style.setProperty(
+          "--bookmark-group-bg",
+          `rgba(${groupBgRgb.r}, ${groupBgRgb.g}, ${groupBgRgb.b}, ${groupBgOpacity / 100})`,
+        )
+      } else {
+        document.documentElement.style.setProperty(
+          "--bookmark-group-bg",
+          groupBgHex,
+        )
+      }
+    } else {
+      // default or transparent
+      document.documentElement.style.setProperty(
+        "--bookmark-group-bg",
+        "transparent",
+      )
+    }
+
+    if (settings.bookmarkGroupTextColor) {
+      document.documentElement.style.setProperty(
+        "--bookmark-group-text-color",
+        settings.bookmarkGroupTextColor,
+      )
+    } else {
+      document.documentElement.style.removeProperty(
+        "--bookmark-group-text-color",
+      )
+    }
+
+    document.documentElement.style.setProperty(
+      "--bookmark-group-font-size",
+      `${settings.bookmarkGroupFontSize ?? 14}px`,
+    )
+
     let bookmarkHex = settings.bookmarkBgColor || "#ffffff"
     let bookmarkOpacity = settings.bookmarkBgOpacity ?? 100
     let bookmarkRgb = hexToRgb(bookmarkHex)
@@ -536,6 +577,23 @@ function createUpdateSettingsInputs(effectInstances) {
 
       DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
       DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
+
+      if (DOM.bookmarkGroupBgColorPicker) {
+        DOM.bookmarkGroupBgColorPicker.value =
+          settings.bookmarkGroupBgColor || "#ffffff"
+        DOM.bookmarkGroupBgOpacityInput.value =
+          settings.bookmarkGroupBgOpacity ?? 0
+      }
+      if (DOM.bookmarkGroupTextColorPicker) {
+        DOM.bookmarkGroupTextColorPicker.value =
+          settings.bookmarkGroupTextColor || "#ffffff"
+      }
+      if (DOM.bookmarkGroupFontSizeInput) {
+        DOM.bookmarkGroupFontSizeInput.value =
+          settings.bookmarkGroupFontSize ?? 14
+        if (DOM.bookmarkGroupFontSizeValue)
+          DOM.bookmarkGroupFontSizeValue.textContent = `${DOM.bookmarkGroupFontSizeInput.value}px`
+      }
 
       if (DOM.bookmarkTextColorPicker) {
         DOM.bookmarkTextColorPicker.value =
