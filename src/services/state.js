@@ -112,6 +112,8 @@ const defaultSettings = {
   cursorTrailColor: "#60c8ff",
   cursorTrailClickExplosion: true,
   cursorTrailRandomColor: false,
+  plantGrowthColor: "#4caf50",
+  oceanFishColor: "#ff7f50",
   bgPositionX: 50,
   bgPositionY: 50,
   bgSize: "cover",

@@ -109,6 +109,22 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.cursorTrailRandomCheckbox.checked
   })
 
+  DOM.plantGrowthColorPicker.addEventListener("input", () => {
+    updateSetting("plantGrowthColor", DOM.plantGrowthColorPicker.value)
+    saveSettings()
+    if (effectInstances.plantGrowthEffect) {
+      effectInstances.plantGrowthEffect.color = DOM.plantGrowthColorPicker.value
+    }
+  })
+
+  DOM.oceanFishColorPicker.addEventListener("input", () => {
+    updateSetting("oceanFishColor", DOM.oceanFishColorPicker.value)
+    saveSettings()
+    if (effectInstances.oceanFishEffect) {
+      effectInstances.oceanFishEffect.color = DOM.oceanFishColorPicker.value
+    }
+  })
+
   DOM.rainHDColorPicker.addEventListener("input", () => {
     updateSetting("rainHDColor", DOM.rainHDColorPicker.value)
     saveSettings()

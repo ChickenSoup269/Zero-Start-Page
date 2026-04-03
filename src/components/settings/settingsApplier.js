@@ -64,6 +64,8 @@ const EFFECT_KEY_MAP = {
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
   cursorTrail: "cursorTrailEffect",
+  plantGrowth: "plantGrowthEffect",
+  oceanFish: "oceanFishEffect",
 }
 
 function setEffectActive(effectGrid, value) {
@@ -751,6 +753,10 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "cursorTrail" ? "flex" : "none"
     DOM.cursorTrailRandomSetting.style.display =
       settings.effect === "cursorTrail" ? "flex" : "none"
+    DOM.plantGrowthColorSetting.style.display =
+      settings.effect === "plantGrowth" ? "block" : "none"
+    DOM.oceanFishColorSetting.style.display =
+      settings.effect === "oceanFish" ? "block" : "none"
     DOM.rainHDColorSetting.style.display =
       settings.effect === "rainHD" ? "block" : "none"
     DOM.stormRainColorSetting.style.display =
