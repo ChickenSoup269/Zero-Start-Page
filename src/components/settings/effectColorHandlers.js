@@ -80,6 +80,35 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.bubblesEffect.color = DOM.bubblesColorPicker.value
   })
 
+  DOM.cursorTrailColorPicker.addEventListener("input", () => {
+    updateSetting("cursorTrailColor", DOM.cursorTrailColorPicker.value)
+    saveSettings()
+    if (effectInstances.cursorTrailEffect)
+      effectInstances.cursorTrailEffect.color = DOM.cursorTrailColorPicker.value
+  })
+
+  DOM.cursorTrailClickCheckbox.addEventListener("change", () => {
+    updateSetting(
+      "cursorTrailClickExplosion",
+      DOM.cursorTrailClickCheckbox.checked,
+    )
+    saveSettings()
+    if (effectInstances.cursorTrailEffect)
+      effectInstances.cursorTrailEffect.clickExplosion =
+        DOM.cursorTrailClickCheckbox.checked
+  })
+
+  DOM.cursorTrailRandomCheckbox.addEventListener("change", () => {
+    updateSetting(
+      "cursorTrailRandomColor",
+      DOM.cursorTrailRandomCheckbox.checked,
+    )
+    saveSettings()
+    if (effectInstances.cursorTrailEffect)
+      effectInstances.cursorTrailEffect.randomColor =
+        DOM.cursorTrailRandomCheckbox.checked
+  })
+
   DOM.rainHDColorPicker.addEventListener("input", () => {
     updateSetting("rainHDColor", DOM.rainHDColorPicker.value)
     saveSettings()
