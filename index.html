@@ -405,12 +405,16 @@
                 <i class="fa-solid fa-compact-disc lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
                 <select id="lcp-music-style-select" class="lcp-select">
-                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
-                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
-                    <option value="neon" data-i18n="style_neon">Neon</option>
-                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
-                </select>
+<option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+<option value="pixel" data-i18n="style_pixel">Pixel</option>
+<option value="spotify" data-i18n="style_spotify">Spotify</option>
+<option value="apple" data-i18n="style_apple">Apple Music</option>
+<option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+<option value="cassette" data-i18n="style_cassette">Cassette</option>
+<option value="pill" data-i18n="style_pill">Pill Widget</option>
+<option value="neon" data-i18n="style_neon">Neon</option>
+<option value="minimal" data-i18n="style_minimal">Minimal</option>
+</select>
             </div>
         </div>
     </div>
@@ -440,6 +444,27 @@
                     <option value="en">English</option>
                     <option value="vi">Tiếng Việt</option>
                 </select>
+            </div>
+
+            <div class="setting-group">
+                <label data-i18n="settings_page_title"><i class="fa-solid fa-heading"></i> Page Title</label>
+                <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
+                    placeholder="Enter custom page title"
+                    style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
+                    data-i18n="settings_page_title_hint">Appears in browser tab</small>
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem;">
+                    <label style="white-space:nowrap;font-size:0.8rem;opacity:0.85;" data-i18n="settings_tab_icon"><i
+                            class="fa-solid fa-icons"></i> Tab Icon:</label>
+                    <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
+                        placeholder="SP" maxlength="2"
+                        style="flex:1;padding: 0.4rem 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
+                    <div id="tab-icon-preview"
+                        style="width:32px;height:32px;flex-shrink:0;border-radius:6px;background:rgba(255,255,255,0.08);border:1px solid var(--input-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden;">
+                    </div>
+                </div>
+                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;" data-i18n="settings_tab_icon_hint">Max
+                    2 letters or 1 emoji (leave blank for default)</small>
             </div>
 
             <div class="settings-section" data-section-id="background">
@@ -1320,26 +1345,6 @@
                 </div>
             </div>
 
-            <div class="setting-group">
-                <label data-i18n="settings_page_title"><i class="fa-solid fa-heading"></i> Page Title</label>
-                <input type="text" id="page-title-input" data-i18n-placeholder="settings_page_title_placeholder"
-                    placeholder="Enter custom page title"
-                    style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;"
-                    data-i18n="settings_page_title_hint">Appears in browser tab</small>
-                <div style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.6rem;">
-                    <label style="white-space:nowrap;font-size:0.8rem;opacity:0.85;" data-i18n="settings_tab_icon"><i
-                            class="fa-solid fa-icons"></i> Tab Icon:</label>
-                    <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
-                        placeholder="SP" maxlength="2"
-                        style="flex:1;padding: 0.4rem 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                    <div id="tab-icon-preview"
-                        style="width:32px;height:32px;flex-shrink:0;border-radius:6px;background:rgba(255,255,255,0.08);border:1px solid var(--input-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden;">
-                    </div>
-                </div>
-                <small style="opacity: 0.7; margin-top: 0.25rem; display: block;" data-i18n="settings_tab_icon_hint">Max
-                    2 letters or 1 emoji (leave blank for default)</small>
-            </div>
 
             <div class="settings-section" data-section-id="date-clock">
                 <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
@@ -1670,12 +1675,16 @@
                     <div class="setting-item" style="margin-top: 10px;">
                         <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
                         <select id="music-style-select">
-                            <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-                            <option value="pixel" data-i18n="style_pixel">Pixel</option>
-                            <option value="spotify" data-i18n="style_spotify">Spotify</option>
-                            <option value="neon" data-i18n="style_neon">Neon</option>
-                            <option value="minimal" data-i18n="style_minimal">Minimal</option>
-                        </select>
+<option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+<option value="pixel" data-i18n="style_pixel">Pixel</option>
+<option value="spotify" data-i18n="style_spotify">Spotify</option>
+<option value="apple" data-i18n="style_apple">Apple Music</option>
+<option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+<option value="cassette" data-i18n="style_cassette">Cassette</option>
+<option value="pill" data-i18n="style_pill">Pill Widget</option>
+<option value="neon" data-i18n="style_neon">Neon</option>
+<option value="minimal" data-i18n="style_minimal">Minimal</option>
+</select>
                     </div>
                     <div class="setting-item-row">
                         <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full

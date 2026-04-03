@@ -399,21 +399,29 @@
 
 /* Spotify Style (Modern Horizontal) */
 .music-style-spotify .music-player-wrapper {
-  width: 600px;
-  max-width: 94vw;
-  border-radius: 12px;
-  background: rgba(18, 18, 18, 0.95);
+  width: 680px;
+  max-width: 96vw;
+  border-radius: 8px;
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 12px 16px;
-  gap: 10px;
+  gap: 16px;
   display: flex;
+  align-items: center;
   flex-wrap: nowrap;
   overflow: visible;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .music-style-spotify .disc-container {
   width: 56px;
   height: 56px;
   flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .music-style-spotify .vinyl-disc {
@@ -432,40 +440,77 @@
 }
 
 .music-style-spotify .player-main {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: center;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: minmax(130px, 1.8fr) 3fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "info controls"
+    "info progress";
+  align-items: center;
+  gap: 4px 16px;
   flex: 1;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .music-style-spotify .player-info {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   min-width: 80px;
-  max-width: none;
-  flex-shrink: 1;
+  max-width: 100%;
   overflow: hidden;
-  order: 1;
+  margin: 0;
 }
 
-.music-style-spotify .player-info h3,
-.music-style-spotify .player-info p {
+.music-style-spotify .player-info h3 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 2px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.music-style-spotify .progress-row {
-  order: 2;
+.music-style-spotify .player-info p {
+  font-size: 0.72rem;
+  color: #b3b3b3;
+  margin: 0;
+  opacity: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .music-style-spotify .controls-row {
+  grid-area: controls;
   display: flex !important;
-  gap: 12px;
+  gap: 20px;
   flex-shrink: 0;
-  order: 3;
   justify-content: center;
+  align-items: center;
+  padding-bottom: 2px;
+}
+
+.music-style-spotify .player-btn {
+  background: transparent;
+  color: #b3b3b3;
+  font-size: 1rem;
+  border: none;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition:
+    color 0.15s,
+    transform 0.1s;
+}
+
+.music-style-spotify .player-btn:hover {
+  color: #fff;
 }
 
 .music-style-spotify .play-pause-btn {
@@ -480,6 +525,65 @@
   align-items: center;
   border: none;
   line-height: normal;
+  transition: transform 0.15s;
+}
+
+.music-style-spotify .play-pause-btn:hover {
+  transform: scale(1.06);
+  color: #000;
+}
+
+/* Progress bar inside Spotify player */
+.music-style-spotify .progress-row {
+  grid-area: progress;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-style-spotify .progress-time {
+  font-size: 0.7rem;
+  color: #a7a7a7;
+  min-width: 30px;
+  opacity: 1;
+}
+
+.music-style-spotify .progress-bar-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1); /* Spotify dark grey track */
+  border-radius: 2px;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.music-style-spotify .progress-bar-fill {
+  background: #fff; /* Spotify default white fill */
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+}
+
+.music-style-spotify .progress-bar-track:hover .progress-bar-fill {
+  background: #1db954; /* Spotify green on hover */
+}
+
+/* Add thumb visible on hover for Spotify progress */
+.music-style-spotify .progress-bar-thumb {
+  display: none;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.music-style-spotify .progress-bar-track:hover .progress-bar-thumb {
+  display: block;
 }
 
 /* Music Visualizer */
@@ -832,3 +936,331 @@
   margin-right: 6px;
   font-size: 0.85rem;
 }
+
+/* =========================================
+   STYLE: APPLE MUSIC
+========================================= */
+.music-style-apple .music-player-wrapper {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 10px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.music-style-apple .disc-container {
+  width: 50px;
+  height: 50px;
+}
+.music-style-apple .vinyl-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px; /* Apple uses rounded squares */
+  animation: none !important;
+}
+.music-style-apple .vinyl-disc::before {
+  display: none;
+}
+.music-style-apple .player-main {
+  display: grid;
+  grid-template-areas: "info controls" "progress progress";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 6px;
+  width: 100%;
+}
+.music-style-apple .player-info {
+  grid-area: info;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.music-style-apple .player-info h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.music-style-apple .player-info p {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.music-style-apple .controls-row {
+  grid-area: controls;
+  gap: 12px;
+}
+.music-style-apple .player-btn {
+  font-size: 1rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.15); /* Soft dark bubble behind icon */
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.music-style-apple .player-btn:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+.music-style-apple .play-pause-btn {
+  font-size: 1.15rem;
+}
+.music-style-apple .progress-row {
+  grid-area: progress;
+}
+.music-style-apple .progress-time {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.music-style-apple .progress-bar-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.music-style-apple .progress-bar-fill {
+  background: #fa243c; /* Apple Music Red/Pink or classic white */
+}
+.music-style-apple .music-visualizer {
+  height: 28px;
+}
+.music-style-apple .visualizer-bar {
+  background: rgba(255, 255, 255, 0.9);
+  width: 3px;
+  border-radius: 2px;
+}
+
+/* =========================================
+   STYLE: SOUNDCLOUD
+========================================= */
+.music-style-soundcloud .music-player-wrapper {
+  background: linear-gradient(180deg, #333, #111);
+  border: 1px solid #444;
+  border-radius: 2px;
+  padding: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+.music-style-soundcloud .disc-container {
+  width: 60px;
+  height: 60px;
+}
+.music-style-soundcloud .vinyl-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  animation: none !important;
+}
+.music-style-soundcloud .vinyl-disc::before {
+  display: none;
+}
+.music-style-soundcloud .player-main {
+  width: 100%;
+  gap: 8px;
+}
+.music-style-soundcloud .player-info h3 {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #ccc;
+  background: rgba(0, 0, 0, 0.8); /* SoundCloud title strip */
+  padding: 2px 6px;
+  display: inline-block;
+  margin-bottom: 3px;
+}
+.music-style-soundcloud .player-info p {
+  color: #999;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2px 6px;
+  display: inline-block;
+}
+.music-style-soundcloud .progress-bar-track {
+  height: 48px; /* High track to hold waveform visually */
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: visible;
+}
+/* Orange fill */
+.music-style-soundcloud .progress-bar-fill {
+  background: #ff5500;
+  opacity: 0.85;
+}
+/* Visualizer for SoundCloud */
+.music-style-soundcloud .music-visualizer {
+  height: 48px;
+  align-items: flex-end;
+  padding-bottom: 2px;
+}
+.music-style-soundcloud .visualizer-bar {
+  background: #ff5500; /* Match SC orange */
+  width: 3px;
+}
+.music-style-soundcloud .visualizer-bar.playing {
+  animation: visualizerPulseSC 0.6s ease-in-out infinite alternate;
+}
+@keyframes visualizerPulseSC {
+  0% { height: 10px; opacity: 0.6; }
+  100% { height: 40px; opacity: 1; }
+}
+
+.music-style-soundcloud .controls-row {
+  margin-top: 4px;
+}
+.music-style-soundcloud .player-btn {
+  color: #ff5500;
+}
+.music-style-soundcloud .player-btn:hover {
+  text-shadow: 0 0 8px rgba(255, 85, 0, 0.5);
+}
+
+/* =========================================
+   STYLE: CASSETTE
+========================================= */
+.music-style-cassette .music-player-wrapper {
+  background: #d4cbb3; /* Vintage plastic */
+  border: 4px solid #333;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.2),
+    6px 6px 0px rgba(0, 0, 0, 0.8);
+}
+.music-style-cassette .disc-container {
+  display: none; /* No disc, purely retro details */
+}
+.music-style-cassette .player-main {
+  width: 100%;
+}
+.music-style-cassette .player-info {
+  background: #ffffff;
+  border: 2px solid #555;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.music-style-cassette .player-info h3 {
+  font-family: inherit; /* Maybe they have retro font */
+  color: #222;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.music-style-cassette .player-info p {
+  color: #555;
+  font-size: 0.75rem;
+}
+.music-style-cassette .controls-row {
+  background: #222;
+  padding: 8px;
+  border-radius: 4px;
+  gap: 15px;
+  justify-content: center;
+}
+.music-style-cassette .player-btn {
+  background: #bc3e35; /* Orange/Red plastic buttons */
+  color: #fff;
+  border: 2px solid #111;
+  border-radius: 2px;
+  width: 44px;
+  height: 28px;
+  box-shadow: 0 3px 0 #88221b;
+}
+.music-style-cassette .player-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #88221b;
+}
+.music-style-cassette .progress-time {
+  color: #333;
+  font-weight: 600;
+}
+.music-style-cassette .progress-bar-track {
+  background: #555;
+  border: 2px solid #111;
+  height: 10px;
+}
+.music-style-cassette .progress-bar-fill {
+  background: #111; /* Magnetic tape */
+}
+
+/* =========================================
+   STYLE: PILL WIDGET
+========================================= */
+.music-style-pill .music-player-wrapper {
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 6px 14px 6px 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+}
+.music-style-pill .disc-container {
+  width: 32px;
+  height: 32px;
+}
+.music-style-pill .vinyl-disc {
+  border-radius: 50%;
+  animation: none !important;
+}
+.music-style-pill .player-main {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.music-style-pill .player-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 100px;
+  overflow: hidden;
+}
+.music-style-pill .player-info h3 {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.music-style-pill .player-info p {
+  display: none; /* Hide artist for space */
+}
+.music-style-pill .controls-row {
+  gap: 5px;
+}
+.music-style-pill .controls-row .prev-btn,
+.music-style-pill .controls-row .next-btn {
+  display: none; /* Minimalist */
+}
+.music-style-pill .player-btn {
+  font-size: 0.9rem;
+}
+.music-style-pill .progress-row {
+  position: absolute;
+  bottom: -4px;
+  left: 30px;
+  right: 30px;
+  opacity: 0.8;
+}
+.music-style-pill .progress-time {
+  display: none;
+}
+.music-style-pill .progress-bar-track {
+  height: 2px;
+  background: transparent;
+}
+.music-style-pill .progress-bar-fill {
+  background: var(--accent-color, #fff);
+}
+.music-style-pill .music-visualizer {
+  display: none !important;
+}
+
+
+.music-style-soundcloud .visualizer-bar:nth-child(1) { animation-delay: 0s; }
+.music-style-soundcloud .visualizer-bar:nth-child(2) { animation-delay: 0.15s; }
+.music-style-soundcloud .visualizer-bar:nth-child(3) { animation-delay: 0.3s; }
+.music-style-soundcloud .visualizer-bar:nth-child(4) { animation-delay: 0.45s; }
+.music-style-soundcloud .visualizer-bar:nth-child(5) { animation-delay: 0.6s; }
