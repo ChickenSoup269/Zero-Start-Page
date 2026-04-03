@@ -870,7 +870,7 @@ body.ghost-controls .side-controls:hover {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 280px;
+  width: 340px;
   max-height: 400px;
   display: flex;
   flex-direction: column;
@@ -920,6 +920,7 @@ body.ghost-controls .side-controls:hover {
   padding: 0;
   margin: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   flex-grow: 1;
 }
 
@@ -927,10 +928,17 @@ body.ghost-controls .side-controls:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 4px;
+  padding: 8px 6px;
+  margin: 2px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  transition: background 0.15s;
+  border-radius: 8px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.todo-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+  border-bottom-color: transparent;
 }
 
 .todo-item:last-child {
@@ -1016,6 +1024,12 @@ body.ghost-controls .side-controls:hover {
   opacity: 1;
   width: 15px;
   border-width: 2px;
+}
+
+.todo-container.hide-checkboxes .todo-checkbox,
+.todo-container.hide-checkboxes .todo-item-select,
+.todo-container.hide-checkboxes .todo-select-all-label {
+  display: none !important;
 }
 
 .todo-checkbox:checked {
