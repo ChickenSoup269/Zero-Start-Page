@@ -1,3 +1,57 @@
+### [1.1.1] - 2026-04-04
+
+#### 🇻🇳 Tiếng Việt (Vietnamese)
+
+**Tính năng mới & Nâng cấp (Features & Enhancements):**
+
+- **Hiệu ứng nền (Visual Effects):**
+  - Kích hoạt 3 hiệu ứng mới: **Đại dương (Ocean Fish)**, **Tán lá mọc (Plant Growth)**, và **Vệt tia sáng theo chuột (Cursor Trail)** (có hỗ trợ tuỳ màu).
+  - Làm lại hiệu ứng mưa: Thay thế `RainOnGlass` bằng phiên bản `StormRainEffect` hoành tráng hơn với mây đen và tia sét nhấp nháy.
+- **Ghi chú (Todo List):** Thêm tuỳ chọn thu gọn giao diện bằng cách ẩn/hiện ô checkbox đánh dấu trước mỗi tác vụ (Task) và làm mượt hiệu ứng lúc di chuột (hover).
+- **Trình phát nhạc (Music Player):** Đại tu lại giao diện phong cách, bổ sung thêm hệ thống chuyển đổi nền (Theme/Style) mới cho thanh trình phát.
+- **Tuỳ chỉnh Dấu trang (Bookmarks):**
+  - Đã có thể tuỳ chỉnh màu sắc (màu nền, màu chữ) và kích thước chữ riêng biệt cho các thư mục (Group).
+  - Hỗ trợ Kéo thả (Drag & Drop) khi thiết lập Custom Bookmarks.
+- **Tiện ích giao diện:**
+  - Thêm menu ngữ cảnh (chuột phải) tính năng **"Khóa Widgets"** (Lock Widgets), tránh trường hợp vô tình kéo lệnh lung tung trên màn hình.
+  - Bổ sung nút bấm ẩn/hiện khu vực điều khiển (Controls) ở góc trên cùng bên phải.
+  - Điều chỉnh thanh tìm kiếm (Search bar) mượt hơn, có menu thả xuống cho **Google Apps** và nhận diện hình ảnh qua **Google Lens**.
+  - Có thể chọn ẩn hoặc thu nhỏ lớp hình nền thông qua tuỳ chọn Background Visibility.
+- **Thông báo & Tương tác:** Popup thông báo khi có phiên bản mới cập nhật (Update Notification). Bổ sung tính năng **Mục lục (Table of Contents)** khi lướt dài. Thêm chế độ hiển thị 12 vạch giờ cho đồng hồ kim (Analog), cho phép tạo viền chữ (stroke) cho Ngày tháng.
+
+**Sửa lỗi & Tối ưu (Fixes & Re-factors):**
+
+- Nâng chỉ số phân lớp `z-index` cho thanh cài đặt và các widget để giải quyết triệt để lỗi các thẻ đè nhầm lên nhau.
+- Tối ưu hành vi thư mục lúc dùng Import Modal. Xoá bỏ các tệp tin không còn dùng (Code clean-up).
+
+---
+
+#### 🇬🇧 English
+
+**Features & Enhancements:**
+
+- **Visual Effects:**
+  - Added highly customizable Canvas effects: **Ocean Fish**, **Plant Growth**, and **Cursor Trail**.
+  - Rain effects heavily refactored: Replaced `RainOnGlassEffect` with a completely new `StormRainEffect` introducing animated thunderclouds and lightning strikes.
+- **Todo List:** Implemented a new checkbox visibility toggle for a cleaner task view, plus fluid hover layout animations.
+- **Music Player:** Amplified the widget's visual fidelity with newly introduced rendering styles and options.
+- **Bookmark Management:**
+  - Bookmark folders/groups now support isolated background colors, text colors, and font sizes.
+  - Allowed drag-and-drop mechanics in the custom bookmark configuration panel.
+- **UI Integrations & Tools:**
+  - Added a "Lock Widgets" toggle in the context menu to pin draggables.
+  - Added settings to toggle the visibility of Top-Right control buttons.
+  - Refactored the search bar, added custom sizing, a **Google Apps** integrated dropdown, and an embedded **Google Lens** lookup icon.
+  - Added background visibility modifiers to let widgets float seamlessly.
+- **General Elements:** New update notification popups. A "Table of Contents" inclusion. Added 12-ticks option for Analog clocks, and stroke/outline parameter linking to clock & date rendering.
+
+**Fixes & Chores:**
+
+- Overhauled Z-index layer hierarchies bridging the settings sidebar and draggable widgets, fixing visual overlapping glitches.
+- Improved logical parsing for folders running through the Bookmark Import modal and pruned dead assets from the codebase.
+
+---
+
 ### [1.0.1] - 2026-03-23
 
 #### Thêm mới (Added)
