@@ -326,7 +326,7 @@
   "settings_bookmark_bg_color": "Background Color",
   "settings_bookmark_text_color": "Text Color",
   "settings_bookmark_group_header": "Group Tabs Interface",
-  "settings_bookmark_group_bg_color": "Container Background Color",
+  "settings_bookmark_group_bg_color": "Tab Background Color",
   "settings_bookmark_group_text_color": "Tab Text Color",
   "settings_bookmark_group_font_size": "Tab Font Size",
   "settings_bookmark_hide_text": "Hide Title Text",

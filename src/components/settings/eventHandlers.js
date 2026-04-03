@@ -1123,8 +1123,8 @@ export function setupGeneralEventHandlers(
     const settings = getSettings()
     const wave = getSvgWaveParams(settings)
     if (!Array.isArray(settings.userSvgWaves)) settings.userSvgWaves = []
-    if (settings.userSvgWaves.length >= 12) {
-      showAlert("You can only save up to 12 wave presets.")
+    if (settings.userSvgWaves.length >= 50) {
+      showAlert("You can only save up to 50 wave presets.")
       return
     }
     settings.userSvgWaves.push(wave)
