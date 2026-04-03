@@ -1391,6 +1391,9 @@ export function setupGeneralEventHandlers(
   }
 
   setupLayoutCheckbox(DOM.showTodoCheckbox, "showTodoList", {})
+  if (DOM.todoShowCheckboxesToggle) {
+    setupLayoutCheckbox(DOM.todoShowCheckboxesToggle, "todoShowCheckboxes", {})
+  }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})

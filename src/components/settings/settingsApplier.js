@@ -858,6 +858,10 @@ function createUpdateSettingsInputs(effectInstances) {
     )
     renderUserGradients(effectInstances.DOM)
     DOM.showTodoCheckbox.checked = settings.showTodoList !== false
+    if (DOM.todoShowCheckboxesToggle) {
+      DOM.todoShowCheckboxesToggle.checked =
+        settings.todoShowCheckboxes !== false
+    }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false

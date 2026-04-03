@@ -543,6 +543,9 @@ export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
+export const todoShowCheckboxesToggle = document.getElementById(
+  "todo-show-checkboxes",
+)
 export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",

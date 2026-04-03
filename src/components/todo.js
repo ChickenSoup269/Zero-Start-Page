@@ -22,7 +22,10 @@ export class TodoList {
   createElements() {
     this.container = document.createElement("div")
     this.container.id = "todo-container"
-    this.container.className = "todo-container glass-panel drag-handle"
+    const settings = getSettings()
+    const checkboxClass =
+      settings.todoShowCheckboxes !== false ? "" : " hide-checkboxes"
+    this.container.className = `todo-container glass-panel drag-handle${checkboxClass}`
     this.container.innerHTML = `
             <div class="todo-header">
                 <label class="todo-select-all-label" title="Select All">
@@ -125,7 +128,15 @@ export class TodoList {
   }
 
   updateVisibility() {
+    const settings = getSettings()
+    this.isVisible = settings.showTodoList !== false
     this.container.style.display = this.isVisible ? "flex" : "none"
+
+    if (settings.todoShowCheckboxes !== false) {
+      this.container.classList.remove("hide-checkboxes")
+    } else {
+      this.container.classList.add("hide-checkboxes")
+    }
   }
 
   _updateSelectAllState() {
