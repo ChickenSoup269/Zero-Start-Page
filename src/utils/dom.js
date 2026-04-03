@@ -230,12 +230,6 @@ export const bubblesColorSetting = document.getElementById(
   "bubbles-color-setting",
 )
 
-export const rainOnGlassColorPicker = document.getElementById(
-  "rain-on-glass-color-picker",
-)
-export const rainOnGlassColorSetting = document.getElementById(
-  "rain-on-glass-color-setting",
-)
 export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export const rainHDColorSetting = document.getElementById(
   "rain-hd-color-setting",

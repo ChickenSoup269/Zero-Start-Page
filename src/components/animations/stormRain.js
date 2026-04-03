@@ -39,7 +39,7 @@ export class StormRainEffect {
     this.speedMult = options.speed ?? 1.0
     this.autoWind = options.autoWind ?? true // false = gió cố định
 
-    this._parseRainRgb(this.rainColor)
+    this._parseRainColor(this.rainColor)
 
     // Wind state
     this.windX = options.windX ?? 0.9
@@ -51,6 +51,11 @@ export class StormRainEffect {
     this.drops = []
     this.ripples = []
     this.fogParts = []
+    this.clouds = []
+    this.lightningFlash = 0
+    this.lightningTimer = 2000
+    this.currentLightningBolts = null
+
     this._time = 0
     this._lastTime = 0
 
@@ -71,6 +76,7 @@ export class StormRainEffect {
     this.canvas.style.display = "block"
     this._buildDrops()
     this._buildFog()
+    this._buildClouds()
     this._lastTime = performance.now()
     this._animate(this._lastTime)
   }
@@ -117,11 +123,36 @@ export class StormRainEffect {
 
   // ─── COLOUR HELPERS ──────────────────────────────────────────
 
-  _parseRainRgb(hex) {
+  _parseRainColor(hex) {
     const c = hex.replace("#", "")
-    this._r = parseInt(c.slice(0, 2), 16)
-    this._g = parseInt(c.slice(2, 4), 16)
-    this._b = parseInt(c.slice(4, 6), 16)
+    if (c.length === 6) {
+      this._r = parseInt(c.slice(0, 2), 16)
+      this._g = parseInt(c.slice(2, 4), 16)
+      this._b = parseInt(c.slice(4, 6), 16)
+    } else if (c.length === 3) {
+      this._r = parseInt(c[0] + c[0], 16)
+      this._g = parseInt(c[1] + c[1], 16)
+      this._b = parseInt(c[2] + c[2], 16)
+    }
+  }
+
+  _hexToRgb(color) {
+    const hex = color.replace("#", "")
+    if (hex.length === 6) {
+      return {
+        r: parseInt(hex.slice(0, 2), 16),
+        g: parseInt(hex.slice(2, 4), 16),
+        b: parseInt(hex.slice(4, 6), 16),
+      }
+    }
+    if (hex.length === 3) {
+      return {
+        r: parseInt(hex[0] + hex[0], 16),
+        g: parseInt(hex[1] + hex[1], 16),
+        b: parseInt(hex[2] + hex[2], 16),
+      }
+    }
+    return { r: 255, g: 255, b: 255 }
   }
 
   // ─── INIT ────────────────────────────────────────────────────
@@ -145,6 +176,52 @@ export class StormRainEffect {
     }))
   }
 
+  _buildClouds() {
+    const count = 16 + Math.floor((this.canvas.width / 1920) * 12)
+    this.clouds = []
+    for (let i = 0; i < count; i++) {
+      this.clouds.push(this._makeCloud(false))
+    }
+    this.clouds.sort((a, b) => a.layer - b.layer)
+  }
+
+  _makeCloud(spawnOffscreen = false) {
+    const W = this.canvas.width
+    const H = this.canvas.height
+    const scale = 0.5 + Math.random() * 1.5
+    const speed = 0.15 + Math.random() * 0.35
+    const layer = Math.random()
+    const alpha = 0.1 + layer * 0.3 // darker storm clouds
+    const x = spawnOffscreen
+      ? -(200 + Math.random() * 400) * scale
+      : Math.random() * (W + 400) - 200
+
+    return {
+      x,
+      y: -H * 0.05 + Math.random() * H * 0.35, // higher up in the storm
+      scale,
+      speed: speed * (0.5 + layer * 0.8),
+      alpha,
+      layer,
+      puffs: this._makePuffs(scale),
+    }
+  }
+
+  _makePuffs(scale) {
+    const baseR = 48 * scale // bigger puffs for storm
+    const puffs = []
+    const count = 4 + Math.floor(Math.random() * 5)
+    for (let i = 0; i < count; i++) {
+      const t = i / (count - 1)
+      puffs.push({
+        ox: (t - 0.5) * 220 * scale,
+        oy: -Math.sin(t * Math.PI) * 36 * scale,
+        r: baseR * (0.6 + Math.sin(t * Math.PI) * 0.5),
+      })
+    }
+    return puffs
+  }
+
   _newDrop(li, randomY = false) {
     const W = this.canvas.width,
       H = this.canvas.height
@@ -166,6 +243,148 @@ export class StormRainEffect {
   }
 
   // ─── DRAW ────────────────────────────────────────────────────
+
+  _drawClouds(dt) {
+    const W = this.canvas.width
+    const H = this.canvas.height
+    const ctx = this.ctx
+    const rgb = this._hexToRgb(this.cloudColor)
+
+    for (const cloud of this.clouds) {
+      cloud.x += cloud.speed * (dt / 16.67) + this.windX * 0.1 * (dt / 16.67)
+
+      const maxX = cloud.puffs.reduce((m, p) => Math.max(m, p.ox + p.r), 0)
+      if (cloud.x - maxX > W + 40) {
+        cloud.x = -(maxX * 2 + 80)
+        cloud.y = -H * 0.05 + Math.random() * H * 0.35
+      }
+
+      const { x, y, puffs, alpha } = cloud
+
+      for (const p of puffs) {
+        const gx = x + p.ox
+        const gy = y + p.oy
+
+        const grad = ctx.createRadialGradient(
+          gx,
+          gy - p.r * 0.2,
+          0,
+          gx,
+          gy,
+          p.r,
+        )
+        // Add lightning flash effect to clouds
+        const flashInt = this.lightningFlash > 0 ? this.lightningFlash * 0.4 : 0
+        const rr = Math.min(255, rgb.r + flashInt * 255)
+        const gg = Math.min(255, rgb.g + flashInt * 255)
+        const bb = Math.min(255, rgb.b + flashInt * 255)
+
+        grad.addColorStop(
+          0,
+          `rgba(${rr},${gg},${bb},${(alpha + 0.12).toFixed(3)})`,
+        )
+        grad.addColorStop(0.6, `rgba(${rr},${gg},${bb},${alpha.toFixed(3)})`)
+        grad.addColorStop(1, `rgba(${rr},${gg},${bb},0)`)
+
+        ctx.beginPath()
+        ctx.arc(gx, gy, p.r, 0, Math.PI * 2)
+        ctx.fillStyle = grad
+        ctx.fill()
+      }
+    }
+  }
+
+  _generateLightningBolts() {
+    const startX = Math.random() * this.canvas.width
+    const startY = -20 // starts slightly above screen
+    const bolts = []
+
+    // Recursive function to branch out the lightning
+    const createBranch = (x, y, angle, depth) => {
+      // Stop branching if it gets too deep or reaches bottom
+      if (depth > 8 || y > this.canvas.height) return
+
+      const length = 40 + Math.random() * 80
+      const targetX = x + Math.cos(angle) * length
+      const targetY = y + Math.sin(angle) * length
+
+      bolts.push({ x1: x, y1: y, x2: targetX, y2: targetY, depth })
+
+      // Continue main branch
+      createBranch(
+        targetX,
+        targetY,
+        angle + (Math.random() - 0.5) * 0.4,
+        depth + 1,
+      )
+
+      // Split sub branch
+      if (Math.random() < 0.4) {
+        const splitAngle =
+          angle +
+          (Math.random() > 0.5 ? 0.6 : -0.6) +
+          (Math.random() - 0.5) * 0.4
+        createBranch(targetX, targetY, splitAngle, depth + 1)
+      }
+    }
+
+    // Start roughly pointing down
+    createBranch(startX, startY, Math.PI / 2 + (Math.random() - 0.5) * 0.8, 0)
+    this.currentLightningBolts = bolts
+  }
+
+  _drawLightning(dt) {
+    const ctx = this.ctx
+    const W = this.canvas.width
+    const H = this.canvas.height
+
+    if (this.lightningFlash > 0) {
+      // 1. Background flash (lower intensity so bolt pops out more)
+      ctx.fillStyle = `rgba(240, 248, 255, ${this.lightningFlash * 0.45})`
+      ctx.fillRect(0, 0, W, H)
+
+      // 2. Draw actual lightning bolt lines
+      if (this.currentLightningBolts && this.currentLightningBolts.length > 0) {
+        ctx.save()
+        ctx.lineCap = "round"
+        ctx.lineJoin = "round"
+        // Outer glow
+        ctx.shadowBlur = 15
+        ctx.shadowColor = "rgba(255, 255, 255, 0.8)"
+
+        ctx.beginPath()
+        for (const bolt of this.currentLightningBolts) {
+          ctx.lineWidth = Math.max(1, 5 - bolt.depth * 0.5)
+          // Brighter at the top segments
+          const alphaFade = Math.max(0.1, 1 - bolt.depth * 0.08)
+          ctx.strokeStyle = `rgba(255, 255, 255, ${this.lightningFlash * alphaFade * 1.5})`
+          ctx.moveTo(bolt.x1, bolt.y1)
+          ctx.lineTo(bolt.x2, bolt.y2)
+          ctx.stroke()
+          ctx.beginPath() // Reset path for differently styled segments if needed, though stroke inside loop is fine
+        }
+        ctx.restore()
+      }
+
+      this.lightningFlash -= dt * 0.0018 // fade out speed
+    } else {
+      this.currentLightningBolts = null
+    }
+
+    this.lightningTimer -= dt
+    if (this.lightningTimer <= 0) {
+      if (Math.random() < 0.08) {
+        this.lightningFlash = 0.6 + Math.random() * 0.4 // Initial flash intensity
+        this._generateLightningBolts() // Generate branches
+
+        // Next lightning in 3s to 12s
+        this.lightningTimer = 3000 + Math.random() * 9000
+      } else {
+        // Check again soon
+        this.lightningTimer = 500
+      }
+    }
+  }
 
   _drawFog() {
     const ctx = this.ctx
@@ -312,6 +531,8 @@ export class StormRainEffect {
     const ctx = this.ctx
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
+    this._drawClouds(dt)
+    this._drawLightning(dt)
     this._drawFog()
     this._drawRain(dt)
     this._drawGround()

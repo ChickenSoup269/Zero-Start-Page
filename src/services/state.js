@@ -92,7 +92,6 @@ const defaultSettings = {
   snowfallColor: "#ffffff",
   fallingLeavesSkin: "maple",
   bubbleColor: "#60c8ff",
-  rainOnGlassColor: "#a8d8ff",
   rainHDColor: "#99ccff",
   stormRainColor: "#7dd3fc",
   wavyLinesColor: "#00bcd4",
