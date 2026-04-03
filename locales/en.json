@@ -1,7 +1,10 @@
 {
   "ok": "OK",
-  "cancel": "Cancel",
+  "cancel": "Close",
   "confirm": "Confirm",
+  "update_title": "Update Available!",
+  "update_desc": "A new version of Zero Startpage has been installed.",
+  "settings_check_updates": "View Changelog (GitHub)",
   "settings_title": "Settings",
   "settings_language": "Language",
   "settings_bg": "Background",

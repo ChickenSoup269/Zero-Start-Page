@@ -341,18 +341,6 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
-            <div class="lcp-row lcp-slider-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
-                        <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
-                    </span>
-                    <span class="range-val" id="lcp-search-bar-width-val"
-                        style="font-size: 0.8em; opacity: 0.8;">600px</span>
-                </div>
-                <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600"
-                    style="width: 100%;">
-            </div>
             <div class="lcp-row">
                 <i class="fa-solid fa-bookmark lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_show_bookmarks">Bookmarks</span>
@@ -400,6 +388,18 @@
                     <input type="checkbox" id="lcp-top-right-controls">
                     <span class="lcp-slider"></span>
                 </label>
+            </div>
+            <div class="lcp-row lcp-slider-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
+                        <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
+                    </span>
+                    <span class="range-val" id="lcp-search-bar-width-val"
+                        style="font-size: 0.8em; opacity: 0.8;">600px</span>
+                </div>
+                <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600"
+                    style="width: 100%;">
             </div>
             <div class="lcp-row lcp-row-select">
                 <i class="fa-solid fa-compact-disc lcp-icon"></i>
@@ -1876,6 +1876,29 @@
         </div>
     </div>
     <script type="module" src="src/main.js"></script>
+
+    <!-- Update Notification Popup -->
+    <div id="update-notification-popup"
+        style="display: none; position: fixed; right: 24px; bottom: 24px; width: 420px; background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); z-index: 10000; animation: lcpFadeIn 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <i class="fa-solid fa-circle-arrow-up" style="color: var(--accent-color); font-size: 1.4rem;"></i>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;" data-i18n="update_title">Update Available!</h3>
+        </div>
+        <p style="margin: 0 0 16px 0; font-size: 0.9rem; color: #ccc; line-height: 1.5;">
+            <span data-i18n="update_desc">A new version of Zero Startpage has been installed.</span>
+            <br>
+            <strong style="color: var(--accent-color);" id="update-version-label"></strong>
+        </p>
+        <div style="display: flex; gap: 10px;">
+            <button id="close-update-popup" class="secondary-btn" style="flex: 1; justify-content: center;"
+                data-i18n="cancel">Close</button>
+            <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank" class="primary-btn"
+                id="github-update-link"
+                style="flex: 2; text-decoration: none; text-align: center; justify-content: center; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
+            </a>
+        </div>
+    </div>
 </body>
 
 </html>

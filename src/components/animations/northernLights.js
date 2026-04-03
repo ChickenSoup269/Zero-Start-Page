@@ -13,37 +13,37 @@ export class NorthernLightsEffect {
 
     // Animation config
     this.waveCount = 3
-    this.particleCount = 200
+    this.particleCount = 50
     this.baseY = 0.3
     this.waveHeight = this.canvas.height * 0.4
     this.time = 0
     this.speed = 0.02
 
     // FPS control
-    this.fps = 60
+    this.fps = 30
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     // Aurora curtain planes — far/mid/near at different speeds for depth
-    // amp values increased significantly for full-screen span
+    // amp values normalized to reduce wave height and prevent lagging
     this.planes = [
       {
         speed: 0.38,
-        amp: 0.55,
+        amp: 0.35,
         alpha: 0.5,
         hueOff: 0,
         phase: Math.random() * Math.PI * 2,
       },
       {
         speed: 0.62,
-        amp: 0.4,
+        amp: 0.25,
         alpha: 0.36,
         hueOff: 28,
         phase: Math.random() * Math.PI * 2,
       },
       {
         speed: 0.9,
-        amp: 0.28,
+        amp: 0.16,
         alpha: 0.26,
         hueOff: 55,
         phase: Math.random() * Math.PI * 2,
@@ -112,8 +112,8 @@ export class NorthernLightsEffect {
 
   _initRays() {
     const W = this.canvas.width
-    this.rays = Array.from({ length: 12 }, (_, i) => ({
-      x: (i / 11) * W * 1.1 - W * 0.05,
+    this.rays = Array.from({ length: 6 }, (_, i) => ({
+      x: (i / 5) * W * 1.1 - W * 0.05,
       phase: Math.random() * Math.PI * 2,
       speed: Math.random() * 0.006 + 0.003,
       width: Math.random() * 20 + 5,
@@ -231,6 +231,31 @@ export class NorthernLightsEffect {
       ctx.fillStyle = topGrad
       ctx.fill()
 
+      // ── lower diffuse fade down to horizon ───────────────────────────────
+      ctx.beginPath()
+      ctx.moveTo(pts[0].x, pts[0].y)
+      for (let i = 1; i < pts.length - 1; i++) {
+        const mx = (pts[i].x + pts[i + 1].x) / 2
+        const my = (pts[i].y + pts[i + 1].y) / 2
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my)
+      }
+      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
+      ctx.lineTo(W, H)
+      ctx.lineTo(0, H)
+      ctx.closePath()
+      const botGrad = ctx.createLinearGradient(0, bandY, 0, H)
+      botGrad.addColorStop(
+        0,
+        `hsla(${hue2},${ss - 3}%,${ll - 8}%,${alp * 0.26})`,
+      )
+      botGrad.addColorStop(
+        0.35,
+        `hsla(${hue2},${ss - 10}%,${ll - 18}%,${alp * 0.09})`,
+      )
+      botGrad.addColorStop(1, `hsla(${hue},${ss - 30}%,${ll - 32}%,0)`)
+      ctx.fillStyle = botGrad
+      ctx.fill()
+
       // ── glowing ribbon along the wavefront edge ──────────────────────────
       const midY = pts.reduce((s, p) => s + p.y, 0) / pts.length
       const thickness = H * pl.amp * 0.36
@@ -260,31 +285,6 @@ export class NorthernLightsEffect {
       ctx.lineWidth = thickness
       ctx.lineCap = "round"
       ctx.stroke()
-
-      // ── lower diffuse fade down to horizon ───────────────────────────────
-      ctx.beginPath()
-      ctx.moveTo(pts[0].x, pts[0].y)
-      for (let i = 1; i < pts.length - 1; i++) {
-        const mx = (pts[i].x + pts[i + 1].x) / 2
-        const my = (pts[i].y + pts[i + 1].y) / 2
-        ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my)
-      }
-      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
-      ctx.lineTo(W, H)
-      ctx.lineTo(0, H)
-      ctx.closePath()
-      const botGrad = ctx.createLinearGradient(0, bandY, 0, H)
-      botGrad.addColorStop(
-        0,
-        `hsla(${hue2},${ss - 3}%,${ll - 8}%,${alp * 0.26})`,
-      )
-      botGrad.addColorStop(
-        0.35,
-        `hsla(${hue2},${ss - 10}%,${ll - 18}%,${alp * 0.09})`,
-      )
-      botGrad.addColorStop(1, `hsla(${hue},${ss - 30}%,${ll - 32}%,0)`)
-      ctx.fillStyle = botGrad
-      ctx.fill()
     }
   }
 

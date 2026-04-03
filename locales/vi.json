@@ -1,7 +1,10 @@
 {
   "ok": "Đồng ý",
-  "cancel": "Hủy",
+  "cancel": "Đóng",
   "confirm": "Xác nhận",
+  "update_title": "Cập nhật mới!",
+  "update_desc": "Zero Startpage đã được nâng cấp lên phiên bản mới.",
+  "settings_check_updates": "Xem Nhật ký thay đổi",
   "settings_title": "Cài đặt",
   "settings_language": "Ngôn ngữ",
   "settings_bg": "Hình nền",

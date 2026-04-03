@@ -288,4 +288,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? "Thu gọn"
         : "Collapse"
   }
+
+  // Update Notification Check
+  setTimeout(() => {
+    try {
+      const manifest = window.chrome?.runtime?.getManifest()
+      if (manifest && manifest.version) {
+        const currentVersion = manifest.version
+        const storedVersion = localStorage.getItem("startpage_last_version")
+
+        if (storedVersion && storedVersion !== currentVersion) {
+          // Version changed -> show update popup and sidebar link
+          const popup = document.getElementById("update-notification-popup")
+          const verLabel = document.getElementById("update-version-label")
+          const sidebarLink = document.getElementById("sidebar-update-link")
+
+          if (popup && verLabel) {
+            verLabel.textContent = `v${currentVersion}`
+            popup.style.display = "block"
+
+            document
+              .getElementById("close-update-popup")
+              ?.addEventListener("click", () => {
+                popup.style.display = "none"
+              })
+          }
+
+          if (sidebarLink) {
+            sidebarLink.style.display = "flex"
+          }
+        }
+
+        // Update stored version
+        localStorage.setItem("startpage_last_version", currentVersion)
+      }
+    } catch (e) {
+      console.warn("Update check failed:", e)
+    }
+  }, 1000)
 })
