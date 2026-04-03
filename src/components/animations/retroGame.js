@@ -19,6 +19,36 @@ export class RetroGameEffect {
       shootTimer: 0,
     }
 
+    this.keys = {}
+    this.manualControl = false
+
+    this._keydownHandler = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
+        return
+      this.keys[e.key] = true
+      if (
+        [
+          "ArrowLeft",
+          "ArrowRight",
+          "ArrowUp",
+          "ArrowDown",
+          "a",
+          "A",
+          "w",
+          "W",
+          "s",
+          "S",
+          "d",
+          "D",
+        ].includes(e.key)
+      ) {
+        this.manualControl = true
+      }
+    }
+    this._keyupHandler = (e) => {
+      this.keys[e.key] = false
+    }
+
     this.resize()
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
@@ -65,6 +95,8 @@ export class RetroGameEffect {
     this.lastDrawTime = 0
     this.canvas.hidden = false
     this.canvas.style.display = "block"
+    window.addEventListener("keydown", this._keydownHandler)
+    window.addEventListener("keyup", this._keyupHandler)
     this.animate(0)
   }
 
@@ -72,19 +104,50 @@ export class RetroGameEffect {
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+    window.removeEventListener("keydown", this._keydownHandler)
+    window.removeEventListener("keyup", this._keyupHandler)
+    this.keys = {}
+    this.manualControl = false
   }
 
   update() {
     const w = this.canvas.width
     const h = this.canvas.height
+    const speed = 10
 
-    // Move player (auto-ai)
-    const targetEnemy = this.gameState.enemies.find((e) => e.alive)
-    if (targetEnemy) {
-      const centerX = targetEnemy.x + targetEnemy.width / 2
-      if (this.gameState.player.x + 20 < centerX) this.gameState.player.x += 5
-      else if (this.gameState.player.x + 20 > centerX)
-        this.gameState.player.x -= 5
+    // Move player
+    if (this.manualControl) {
+      if (this.keys["ArrowLeft"] || this.keys["a"] || this.keys["A"]) {
+        this.gameState.player.x -= speed
+      }
+      if (this.keys["ArrowRight"] || this.keys["d"] || this.keys["D"]) {
+        this.gameState.player.x += speed
+      }
+      if (this.keys["ArrowUp"] || this.keys["w"] || this.keys["W"]) {
+        this.gameState.player.y -= speed
+      }
+      if (this.keys["ArrowDown"] || this.keys["s"] || this.keys["S"]) {
+        this.gameState.player.y += speed
+      }
+
+      // Restrict player to canvas bounds
+      this.gameState.player.x = Math.max(
+        0,
+        Math.min(w - this.gameState.player.width, this.gameState.player.x),
+      )
+      this.gameState.player.y = Math.max(
+        0,
+        Math.min(h - this.gameState.player.height, this.gameState.player.y),
+      )
+    } else {
+      // Auto-ai
+      const targetEnemy = this.gameState.enemies.find((e) => e.alive)
+      if (targetEnemy) {
+        const centerX = targetEnemy.x + targetEnemy.width / 2
+        if (this.gameState.player.x + 20 < centerX) this.gameState.player.x += 5
+        else if (this.gameState.player.x + 20 > centerX)
+          this.gameState.player.x -= 5
+      }
     }
 
     // Shoot

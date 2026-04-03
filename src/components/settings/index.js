@@ -90,6 +90,8 @@ import { MeteorEffect } from "../animations/meteor.js"
 import { WavyPatternEffect } from "../animations/wavyPattern.js"
 import { AngledPatternEffect } from "../animations/angledPattern.js"
 import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
+import { PlantGrowthEffect } from "../animations/plantGrowth.js"
+import { OceanFishEffect } from "../animations/oceanFish.js"
 
 function getExtensionVersion() {
   try {
@@ -210,6 +212,14 @@ export function initSettings() {
     meteorEffect: new MeteorEffect(
       "effect-canvas",
       settings.meteorColor || settings.starColor || "#ffffff",
+    ),
+    plantGrowthEffect: new PlantGrowthEffect(
+      "effect-canvas",
+      settings.plantGrowthColor || "#4caf50",
+    ),
+    oceanFishEffect: new OceanFishEffect(
+      "effect-canvas",
+      settings.oceanFishColor || "#ff7f50",
     ),
     wavyPatternEffect: new WavyPatternEffect(
       settings.wavyPatternColor1 || "#AB3E5B",

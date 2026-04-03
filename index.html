@@ -1035,6 +1035,14 @@
                             <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
                             <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
                         </button>
+                        <button class="effect-item" data-value="plantGrowth" data-search="plant growth nature">
+                            <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
+                            <span class="effect-name" data-i18n="effect_plant_growth">Plant Growth</span>
+                        </button>
+                        <button class="effect-item" data-value="oceanFish" data-search="ocean fish aquarium water swim">
+                            <span class="effect-icon"><i class="fa-solid fa-fish"></i></span>
+                            <span class="effect-name" data-i18n="effect_ocean_fish">Ocean Fishes</span>
+                        </button>
                         <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
                             <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
                             <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
@@ -1285,6 +1293,22 @@
                             Colors</label>
                         <input type="checkbox" id="cursor-trail-random-checkbox">
                     </div>
+
+                    <!-- Plant Growth Setting -->
+                    <div id="plant-growth-color-setting" class="setting-item" style="display: none;">
+                        <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Plant
+                            Color</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                        </div>
+                    </div>
+
+                    <!-- Ocean Fish Color -->
+                    <div id="ocean-fish-color-setting" class="setting-item" style="display: none;">
+                        <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish Color</label>
+                        <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
+                    </div>
+
                     <!-- Rain HD Color -->
                     <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
                         <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>

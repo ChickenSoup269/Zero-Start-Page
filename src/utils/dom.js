@@ -249,6 +249,20 @@ export const cursorTrailRandomSetting = document.getElementById(
   "cursor-trail-random-setting",
 )
 
+export const plantGrowthColorPicker = document.getElementById(
+  "plant-growth-color-picker",
+)
+export const plantGrowthColorSetting = document.getElementById(
+  "plant-growth-color-setting",
+)
+
+export const oceanFishColorPicker = document.getElementById(
+  "ocean-fish-color-picker",
+)
+export const oceanFishColorSetting = document.getElementById(
+  "ocean-fish-color-setting",
+)
+
 export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export const rainHDColorSetting = document.getElementById(
   "rain-hd-color-setting",
