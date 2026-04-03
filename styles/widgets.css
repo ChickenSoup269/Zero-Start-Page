@@ -686,12 +686,12 @@ body.ghost-controls .side-controls:hover {
   position: absolute;
   left: calc(100% + 12px);
   top: 0;
-  width: 220px;
+  width: 240px;
   background: rgba(20, 20, 30, 0.92);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
-  padding: 12px 10px;
+  padding: 16px 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   z-index: 3000;
   color: #fff;
@@ -758,6 +758,34 @@ body.ghost-controls .side-controls:hover {
 
 .lcp-row-select .lcp-label {
   width: 100%;
+}
+
+.lcp-slider-row input[type="range"] {
+  width: 100%;
+  height: 6px;
+  background: var(--input-bg, rgba(255, 255, 255, 0.1));
+  border-radius: 5px;
+  outline: none;
+  accent-color: var(--accent-color);
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: 6px;
+}
+
+.lcp-slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.lcp-slider-row input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
 }
 
 .lcp-select {
