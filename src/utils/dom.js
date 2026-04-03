@@ -230,6 +230,25 @@ export const bubblesColorSetting = document.getElementById(
   "bubbles-color-setting",
 )
 
+export const cursorTrailColorPicker = document.getElementById(
+  "cursor-trail-color-picker",
+)
+export const cursorTrailColorSetting = document.getElementById(
+  "cursor-trail-color-setting",
+)
+export const cursorTrailClickCheckbox = document.getElementById(
+  "cursor-trail-click-checkbox",
+)
+export const cursorTrailClickSetting = document.getElementById(
+  "cursor-trail-click-setting",
+)
+export const cursorTrailRandomCheckbox = document.getElementById(
+  "cursor-trail-random-checkbox",
+)
+export const cursorTrailRandomSetting = document.getElementById(
+  "cursor-trail-random-setting",
+)
+
 export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export const rainHDColorSetting = document.getElementById(
   "rain-hd-color-setting",

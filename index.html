@@ -405,16 +405,16 @@
                 <i class="fa-solid fa-compact-disc lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
                 <select id="lcp-music-style-select" class="lcp-select">
-<option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-<option value="pixel" data-i18n="style_pixel">Pixel</option>
-<option value="spotify" data-i18n="style_spotify">Spotify</option>
-<option value="apple" data-i18n="style_apple">Apple Music</option>
-<option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
-<option value="cassette" data-i18n="style_cassette">Cassette</option>
-<option value="pill" data-i18n="style_pill">Pill Widget</option>
-<option value="neon" data-i18n="style_neon">Neon</option>
-<option value="minimal" data-i18n="style_minimal">Minimal</option>
-</select>
+                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                    <option value="apple" data-i18n="style_apple">Apple Music</option>
+                    <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                    <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                    <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                    <option value="neon" data-i18n="style_neon">Neon</option>
+                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                </select>
             </div>
         </div>
     </div>
@@ -1030,6 +1030,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
                             <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
                         </button>
+                        <button class="effect-item" data-value="cursorTrail"
+                            data-search="cursor trail mouse interactive particles hover">
+                            <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
+                            <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
+                        </button>
                         <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
                             <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
                             <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
@@ -1256,6 +1261,29 @@
                     <div id="bubbles-color-setting" class="setting-item" style="display: none;">
                         <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
                         <input type="color" id="bubbles-color-picker" value="#60c8ff" />
+                    </div>
+
+                    <!-- Cursor Trail Color -->
+                    <div id="cursor-trail-color-setting" class="setting-item" style="display: none;">
+                        <label for="cursor-trail-color-picker" data-i18n="setting_cursor_trail_color">Cursor Trail
+                            Color</label>
+                        <input type="color" id="cursor-trail-color-picker" value="#60c8ff" />
+                    </div>
+
+                    <!-- Cursor Trail Click Explosion -->
+                    <div id="cursor-trail-click-setting" class="setting-item-row"
+                        style="display: none; margin-top: 0.6rem;">
+                        <label for="cursor-trail-click-checkbox" data-i18n="setting_cursor_trail_click">Click
+                            Explosion</label>
+                        <input type="checkbox" id="cursor-trail-click-checkbox">
+                    </div>
+
+                    <!-- Cursor Trail Random Colors -->
+                    <div id="cursor-trail-random-setting" class="setting-item-row"
+                        style="display: none; margin-top: 0.6rem;">
+                        <label for="cursor-trail-random-checkbox" data-i18n="setting_cursor_trail_random">Random
+                            Colors</label>
+                        <input type="checkbox" id="cursor-trail-random-checkbox">
                     </div>
                     <!-- Rain HD Color -->
                     <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
@@ -1675,16 +1703,16 @@
                     <div class="setting-item" style="margin-top: 10px;">
                         <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
                         <select id="music-style-select">
-<option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-<option value="pixel" data-i18n="style_pixel">Pixel</option>
-<option value="spotify" data-i18n="style_spotify">Spotify</option>
-<option value="apple" data-i18n="style_apple">Apple Music</option>
-<option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
-<option value="cassette" data-i18n="style_cassette">Cassette</option>
-<option value="pill" data-i18n="style_pill">Pill Widget</option>
-<option value="neon" data-i18n="style_neon">Neon</option>
-<option value="minimal" data-i18n="style_minimal">Minimal</option>
-</select>
+                            <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                            <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                            <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                            <option value="apple" data-i18n="style_apple">Apple Music</option>
+                            <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                            <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                            <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                            <option value="neon" data-i18n="style_neon">Neon</option>
+                            <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                        </select>
                     </div>
                     <div class="setting-item-row">
                         <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full

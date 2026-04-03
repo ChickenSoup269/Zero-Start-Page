@@ -63,6 +63,7 @@ const EFFECT_KEY_MAP = {
   meteor: "meteorEffect",
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
+  cursorTrail: "cursorTrailEffect",
 }
 
 function setEffectActive(effectGrid, value) {
@@ -527,6 +528,12 @@ function createUpdateSettingsInputs(effectInstances) {
     effectInstances.renderFontGrid()
     DOM.dateFormatSelect.value = settings.dateFormat
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
+    if (DOM.cursorTrailClickCheckbox)
+      DOM.cursorTrailClickCheckbox.checked =
+        settings.cursorTrailClickExplosion !== false
+    if (DOM.cursorTrailRandomCheckbox)
+      DOM.cursorTrailRandomCheckbox.checked =
+        settings.cursorTrailRandomColor === true
     DOM.clockDatePrioritySelect.value =
       settings.clockDatePriority === "date" ? "date" : "none"
     DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
@@ -738,6 +745,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
+    DOM.cursorTrailColorSetting.style.display =
+      settings.effect === "cursorTrail" ? "block" : "none"
+    DOM.cursorTrailClickSetting.style.display =
+      settings.effect === "cursorTrail" ? "flex" : "none"
+    DOM.cursorTrailRandomSetting.style.display =
+      settings.effect === "cursorTrail" ? "flex" : "none"
     DOM.rainHDColorSetting.style.display =
       settings.effect === "rainHD" ? "block" : "none"
     DOM.stormRainColorSetting.style.display =

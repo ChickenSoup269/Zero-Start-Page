@@ -66,6 +66,7 @@ import { SnowfallHDEffect } from "../animations/snowfallHD.js"
 import { AuroraWaveEffect } from "../animations/auroraWave.js"
 import { NorthernLightsEffect } from "../animations/northernLights.js"
 import { BubblesEffect } from "../animations/bubbles.js"
+import { CursorTrailEffect } from "../animations/cursorTrail.js"
 import { RainHDEffect } from "../animations/rainHD.js"
 import { StormRainEffect } from "../animations/stormRain.js"
 import { RainbowBackground } from "../animations/rainbowBackground.js"
@@ -141,6 +142,12 @@ export function initSettings() {
     bubblesEffect: new BubblesEffect(
       "effect-canvas",
       settings.bubbleColor || "#60c8ff",
+    ),
+    cursorTrailEffect: new CursorTrailEffect(
+      "effect-canvas",
+      settings.cursorTrailColor || "#60c8ff",
+      settings.cursorTrailClickExplosion !== false,
+      settings.cursorTrailRandomColor === true,
     ),
 
     rainHDEffect: new RainHDEffect(
