@@ -41,7 +41,6 @@ const EFFECT_KEY_MAP = {
   auroraWave: "auroraWaveEffect",
   northernLights: "northernLightsEffect",
   bubbles: "bubblesEffect",
-  rainOnGlass: "rainOnGlassEffect",
   rainHD: "rainHDEffect",
   stormRain: "stormRainEffect",
   rainbow: "rainbowEffect",
@@ -699,7 +698,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
-    DOM.rainOnGlassColorPicker.value = settings.rainOnGlassColor || "#a8d8ff"
+
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
     DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"
     DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
@@ -739,8 +738,6 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
-    DOM.rainOnGlassColorSetting.style.display =
-      settings.effect === "rainOnGlass" ? "block" : "none"
     DOM.rainHDColorSetting.style.display =
       settings.effect === "rainHD" ? "block" : "none"
     DOM.stormRainColorSetting.style.display =

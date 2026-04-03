@@ -146,17 +146,24 @@ export class MeteorEffect {
   _spawnMeteor() {
     const W = this.canvas.width,
       H = this.canvas.height
-    const angle = ((25 + Math.random() * 30) * Math.PI) / 180
+    // Góc chéo chuẩn từ Top-Left (khoảng 45 độ, dao động nhỏ)
+    const angle = ((45 + Math.random() * 4 - 2) * Math.PI) / 180
     const speed = (16 + Math.random() * 14) * this.speedMult
     const len = 80 + Math.random() * 160
+
+    // Phân bổ dọc theo toàn bộ viền trên (Top) và viền trái (Left) để phủ kín màn hình
     let x, y
-    if (Math.random() < 0.55) {
-      x = -len - Math.random() * W * 0.15
-      y = -Math.random() * H * 0.6
+    // Chia tỉ lệ xác suất dựa trên chiều rộng tự tương đối với chiều cao
+    if (Math.random() < W / (W + H)) {
+      // Bắt đầu dọc theo mép trên (Top), trải dài ra toàn bộ chiều rộng
+      x = -len + Math.random() * (W + len * 2)
+      y = -len - Math.random() * 100
     } else {
-      x = -len + Math.random() * W * 0.45
-      y = -len - Math.random() * 80
+      // Bắt đầu dọc theo mép trái (Left), trải dài ra toàn bộ chiều cao
+      x = -len - Math.random() * 100
+      y = -len + Math.random() * (H + len * 2)
     }
+
     this.meteors.push({
       x,
       y,
@@ -173,12 +180,26 @@ export class MeteorEffect {
   }
 
   _spawnShootingStar() {
+    const W = this.canvas.width
     const H = this.canvas.height
-    const speed = (32 + Math.random() * 18) * this.speedMult
-    const angle = ((28 + Math.random() * 12) * Math.PI) / 180
+    const speed = (28 + Math.random() * 12) * this.speedMult
+    // Góc chéo 45 độ chuẩn
+    const angle = ((45 + Math.random() * 2 - 1) * Math.PI) / 180
+
+    // Xuất hiện ngẫu nhiên dọc theo mép trái hoặc trên (nhưng thiên x/y sâu hơn để bao phủ trọn)
+    let x, y
+    if (Math.random() < 0.5) {
+      x = -200 - Math.random() * 100
+      y = Math.random() * (H * 0.7) - 100
+    } else {
+      x = Math.random() * (W * 0.7) - 100
+      y = -200 - Math.random() * 100
+    }
+
     this._ss = {
-      x: -120,
-      y: -40 + Math.random() * H * 0.2,
+      // Sao băng văng ngang qua màn hình
+      x,
+      y,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       len: 280 + Math.random() * 120,

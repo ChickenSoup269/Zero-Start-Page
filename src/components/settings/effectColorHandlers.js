@@ -80,17 +80,6 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.bubblesEffect.color = DOM.bubblesColorPicker.value
   })
 
-  DOM.rainOnGlassColorPicker.addEventListener("input", () => {
-    updateSetting("rainOnGlassColor", DOM.rainOnGlassColorPicker.value)
-    saveSettings()
-    if (effectInstances.rainOnGlassEffect) {
-      effectInstances.rainOnGlassEffect.color = DOM.rainOnGlassColorPicker.value
-      effectInstances.rainOnGlassEffect._parseColor(
-        DOM.rainOnGlassColorPicker.value,
-      )
-    }
-  })
-
   DOM.rainHDColorPicker.addEventListener("input", () => {
     updateSetting("rainHDColor", DOM.rainHDColorPicker.value)
     saveSettings()

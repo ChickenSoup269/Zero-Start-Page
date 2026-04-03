@@ -66,7 +66,6 @@ import { SnowfallHDEffect } from "../animations/snowfallHD.js"
 import { AuroraWaveEffect } from "../animations/auroraWave.js"
 import { NorthernLightsEffect } from "../animations/northernLights.js"
 import { BubblesEffect } from "../animations/bubbles.js"
-import { RainOnGlassEffect } from "../animations/rainOnGlass.js"
 import { RainHDEffect } from "../animations/rainHD.js"
 import { StormRainEffect } from "../animations/stormRain.js"
 import { RainbowBackground } from "../animations/rainbowBackground.js"
@@ -143,10 +142,7 @@ export function initSettings() {
       "effect-canvas",
       settings.bubbleColor || "#60c8ff",
     ),
-    rainOnGlassEffect: new RainOnGlassEffect(
-      "effect-canvas",
-      settings.rainOnGlassColor || "#a8d8ff",
-    ),
+
     rainHDEffect: new RainHDEffect(
       "effect-canvas",
       settings.rainHDColor || "#99ccff",

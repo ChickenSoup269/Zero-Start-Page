@@ -1005,10 +1005,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
                             <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
                         </button>
-                        <button class="effect-item" data-value="rainOnGlass" data-search="rain glass drop">
-                            <span class="effect-icon"><i class="fa-solid fa-droplet"></i></span>
-                            <span class="effect-name" data-i18n="effect_rain_on_glass">Rain Glass</span>
-                        </button>
                         <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
                             <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
                             <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
@@ -1236,12 +1232,6 @@
                         <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
                         <input type="color" id="bubbles-color-picker" value="#60c8ff" />
                     </div>
-                    <!-- Rain on Glass Color -->
-                    <div id="rain-on-glass-color-setting" class="setting-item" style="display: none;">
-                        <label for="rain-on-glass-color-picker" data-i18n="setting_rain_on_glass_color">Drop
-                            Color</label>
-                        <input type="color" id="rain-on-glass-color-picker" value="#a8d8ff" />
-                    </div>
                     <!-- Rain HD Color -->
                     <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
                         <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
@@ -1352,133 +1342,153 @@
             </div>
 
             <div class="settings-section" data-section-id="date-clock">
-                <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date &amp; Clock Format</span></h3>
+                <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
+                        &amp; Clock Format</span></h3>
                 <div class="section-content">
-                    <div class="setting-item-row" style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
+                    <div class="setting-item-row"
+                        style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
                         <label for="show-clock-checkbox" data-i18n="settings_show_clock">Show Clock</label>
                         <input type="checkbox" id="show-clock-checkbox" checked>
                     </div>
                     <div class="setting-group">
-                        <label data-i18n="settings_date_format_style"><i class="fa-solid fa-calendar-day"></i> Date Format String</label>
-                <select id="date-format-select">
-                    <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
-                    <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
-                    <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
-                    <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
-                    <option value="year" data-i18n="settings_date_format_year">Year only</option>
-                    <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
-                </select>
-                <div class="setting-item-row" style="margin-top: 0.6rem;">
-                    <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
-                    <input type="checkbox" id="hide-seconds-checkbox">
-                </div>
-                <div class="setting-item" style="margin-top: 0.6rem;">
-                    <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
-                        priority</label>
-                    <select id="clock-date-priority-select">
-                        <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
-                        <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday</option>
-                    </select>
-                </div>
-                <div class="setting-item" style="margin-top: 0.6rem;">
-                    <label for="clock-date-style-select" data-i18n="settings_clock_date_style">Clock/Date Style</label>
-                    <select id="clock-date-style-select">
-                        <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
-                        <option value="glow" data-i18n="settings_clock_date_style_glow">Glow</option>
-                        <option value="minimal" data-i18n="settings_clock_date_style_minimal">Minimal</option>
-                        <option value="glass" data-i18n="settings_clock_date_style_glass">Glass</option>
-                        <option value="round" data-i18n="settings_clock_date_style_round">Round Clock</option>
-                        <option value="square" data-i18n="settings_clock_date_style_square">Square Clock</option>
-                        <option value="analog" data-i18n="settings_clock_date_style_analog">Analog Clock</option>
-                    </select>
-                </div>
-                <div class="setting-item" style="margin-top: 0.6rem;">
-                    <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE Letters</label>
-                    <select id="hue-text-mode-select">
-                        <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
-                        <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
-                        <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
-                        <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
-                    </select>
-                </div>
-                <div id="analog-marker-mode-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
-                    <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker
-                        Mode</label>
-                    <select id="analog-marker-mode-select">
-                        <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
-                        <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
-                        <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick
-                            12,3,6,9</option>
-                        <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
-                        <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9</option>
-                    </select>
-                </div>
-                <div id="analog-blur-bg-setting" class="setting-item-row" style="margin-top: 0.6rem; display: none;">
-                    <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
-                        (Analog)</label>
-                    <input type="checkbox" id="analog-blur-bg-checkbox">
-                </div>
-
-                <div class="setting-item" id="clock-date-stroke-setting"
-                    style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                    <div class="setting-item" style="margin-bottom: 0.6rem;">
-                        <label for="clock-date-stroke-target-select" data-i18n="settings_clock_date_stroke_target">Text
-                            Border Target</label>
-                        <select id="clock-date-stroke-target-select">
-                            <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and Date
-                            </option>
-                            <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only
-                            </option>
-                            <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only</option>
+                        <label data-i18n="settings_date_format_style"><i class="fa-solid fa-calendar-day"></i> Date
+                            Format String</label>
+                        <select id="date-format-select">
+                            <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
+                            <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
+                            <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
+                            <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
+                            <option value="year" data-i18n="settings_date_format_year">Year only</option>
+                            <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
                         </select>
-                    </div>
-                    <label><i class="fa-solid fa-border-style"></i>
-                        <span data-i18n="settings_clock_date_stroke_width">Text Border Width:</span>
-                        <span id="clock-date-stroke-width-value">0px</span>
-                    </label>
-                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0">
+                        <div class="setting-item-row" style="margin-top: 0.6rem;">
+                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
+                            <input type="checkbox" id="hide-seconds-checkbox">
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
+                                priority</label>
+                            <select id="clock-date-priority-select">
+                                <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
+                                <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday
+                                </option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="clock-date-style-select" data-i18n="settings_clock_date_style">Clock/Date
+                                Style</label>
+                            <select id="clock-date-style-select">
+                                <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
+                                <option value="glow" data-i18n="settings_clock_date_style_glow">Glow</option>
+                                <option value="minimal" data-i18n="settings_clock_date_style_minimal">Minimal</option>
+                                <option value="glass" data-i18n="settings_clock_date_style_glass">Glass</option>
+                                <option value="round" data-i18n="settings_clock_date_style_round">Round Clock</option>
+                                <option value="square" data-i18n="settings_clock_date_style_square">Square Clock
+                                </option>
+                                <option value="analog" data-i18n="settings_clock_date_style_analog">Analog Clock
+                                </option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                Letters</label>
+                            <select id="hue-text-mode-select">
+                                <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
+                                <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
+                                <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
+                                <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
+                            </select>
+                        </div>
+                        <div id="analog-marker-mode-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker
+                                Mode</label>
+                            <select id="analog-marker-mode-select">
+                                <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
+                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12
+                                </option>
+                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show
+                                    Tick
+                                    12,3,6,9</option>
+                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
+                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9
+                                </option>
+                            </select>
+                        </div>
+                        <div id="analog-blur-bg-setting" class="setting-item-row"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
+                                (Analog)</label>
+                            <input type="checkbox" id="analog-blur-bg-checkbox">
+                        </div>
 
-                    <div class="setting-item"
-                        style="margin-top: 0.6rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-                        <label style="margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i
-                                class="fa-solid fa-palette"></i> <span
-                                data-i18n="settings_clock_date_stroke_color">Border
+                        <div class="setting-item" id="clock-date-stroke-setting"
+                            style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                            <div class="setting-item" style="margin-bottom: 0.6rem;">
+                                <label for="clock-date-stroke-target-select"
+                                    data-i18n="settings_clock_date_stroke_target">Text
+                                    Border Target</label>
+                                <select id="clock-date-stroke-target-select">
+                                    <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and
+                                        Date
+                                    </option>
+                                    <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only
+                                    </option>
+                                    <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only
+                                    </option>
+                                </select>
+                            </div>
+                            <label><i class="fa-solid fa-border-style"></i>
+                                <span data-i18n="settings_clock_date_stroke_width">Text Border Width:</span>
+                                <span id="clock-date-stroke-width-value">0px</span>
+                            </label>
+                            <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
+                                value="0">
+
+                            <div class="setting-item"
+                                style="margin-top: 0.6rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                                <label style="margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i
+                                        class="fa-solid fa-palette"></i> <span
+                                        data-i18n="settings_clock_date_stroke_color">Border
+                                        Color</span></label>
+                                <input type="color" id="clock-date-stroke-color-picker" value="#000000"
+                                    style="width: 40px; border: none; padding: 0; background: none; cursor: pointer; height: 30px; border-radius: 4px;">
+                            </div>
+                        </div>
+
+                        <div class="setting-item"
+                            style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                            <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock
+                                    Size:</span>
+                                <span id="clock-size-value">6rem</span></label>
+                            <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+
+                            <label style="margin-top: 0.7rem; display: block;"><i class="fa-solid fa-calendar-day"></i>
+                                <span data-i18n="settings_date_size">Date Size:</span> <span
+                                    id="date-size-value">1.5rem</span></label>
+                            <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock
                                 Color</span></label>
-                        <input type="color" id="clock-date-stroke-color-picker" value="#000000"
-                            style="width: 40px; border: none; padding: 0; background: none; cursor: pointer; height: 30px; border-radius: 4px;">
+                        <div class="input-group">
+                            <input type="color" id="clock-color-picker" value="#ffffff">
+                            <button id="reset-clock-color-btn" class="secondary-btn"
+                                data-i18n="settings_reset_color">Reset to
+                                Default</button>
+                        </div>
+
+                        <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-palette"></i> <span
+                                data-i18n="settings_date_color">Date Color</span></label>
+                        <div class="input-group">
+                            <input type="color" id="date-color-picker" value="#ffffff">
+                            <button id="reset-date-color-btn" class="secondary-btn"
+                                data-i18n="settings_reset_color_date">Reset
+                                Date to Default</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="setting-item"
-                    style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                    <label><i class="fa-solid fa-clock"></i> <span data-i18n="settings_clock_size">Clock Size:</span>
-                        <span id="clock-size-value">6rem</span></label>
-                    <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
-
-                    <label style="margin-top: 0.7rem; display: block;"><i class="fa-solid fa-calendar-day"></i> <span
-                            data-i18n="settings_date_size">Date Size:</span> <span
-                            id="date-size-value">1.5rem</span></label>
-                    <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
-                </div>
-            </div>
-
-            <div class="setting-group">
-                <label><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock
-                        Color</span></label>
-                <div class="input-group">
-                    <input type="color" id="clock-color-picker" value="#ffffff">
-                    <button id="reset-clock-color-btn" class="secondary-btn" data-i18n="settings_reset_color">Reset to
-                        Default</button>
-                </div>
-
-                <label style="margin-top: 10px; display: block;"><i class="fa-solid fa-palette"></i> <span
-                        data-i18n="settings_date_color">Date Color</span></label>
-                <div class="input-group">
-                    <input type="color" id="date-color-picker" value="#ffffff">
-                    <button id="reset-date-color-btn" class="secondary-btn" data-i18n="settings_reset_color_date">Reset
-                        Date to Default</button>
-                </div>
-            </div>
                 </div>
             </div>
 
@@ -1487,7 +1497,9 @@
                     Custom Bookmark</h3>
                 <div class="section-content">
                     <div class="setting-group">
-                        <p class="setting-hint" data-i18n="settings_bookmark_item_hint" style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">💡 Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
+                        <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
+                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                            💡 Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
                         <label><i class="fa-solid fa-text-height"></i> <span
                                 data-i18n="settings_bookmark_font_size">Font Size:</span> <span
                                 id="bookmark-font-size-value">10px</span></label>
@@ -1538,26 +1550,38 @@
                             <span id="bookmark-shadow-blur-value" style="font-size: 0.9em; min-width: 30px;">8px</span>
                         </div>
                     </div>
-                    <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
-                        <h4 style="margin-bottom: 5px; opacity: 0.9;"><i class="fa-regular fa-folder"></i> <span data-i18n="settings_bookmark_group_header">Group Tabs Interface</span></h4>
-                        <p class="setting-hint" data-i18n="settings_bookmark_group_hint" style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">💡 Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
-                        <label style="margin-top: 10px; display: block;"><span data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
+                    <div class="setting-group"
+                        style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
+                        <h4 style="margin-bottom: 5px; opacity: 0.9;"><i class="fa-regular fa-folder"></i> <span
+                                data-i18n="settings_bookmark_group_header">Group Tabs Interface</span></h4>
+                        <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
+                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                            💡 Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
+                        <label style="margin-top: 10px; display: block;"><span
+                                data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
                             <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff">
-                            <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1" value="0" style="flex: 1;" title="Opacity">
+                            <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1"
+                                value="0" style="flex: 1;" title="Opacity">
                         </div>
-                        <button id="reset-bookmark-group-bg-btn" class="secondary-btn full-width" style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
+                        <button id="reset-bookmark-group-bg-btn" class="secondary-btn full-width"
+                            style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
 
-                        <label style="margin-top: 15px; display: block;"><span data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
+                        <label style="margin-top: 15px; display: block;"><span
+                                data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
                             <input type="color" id="bookmark-group-text-color-picker" value="#ffffff">
                         </div>
-                        <button id="reset-bookmark-group-text-color-btn" class="secondary-btn full-width" style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
+                        <button id="reset-bookmark-group-text-color-btn" class="secondary-btn full-width"
+                            style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
 
-                        <label style="margin-top: 15px; display: block;"><span data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
+                        <label style="margin-top: 15px; display: block;"><span
+                                data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1" value="14" style="flex: 1;">
-                            <span id="bookmark-group-font-size-value" style="font-size: 0.9em; min-width: 30px;">14px</span>
+                            <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
+                                value="14" style="flex: 1;">
+                            <span id="bookmark-group-font-size-value"
+                                style="font-size: 0.9em; min-width: 30px;">14px</span>
                         </div>
                     </div>
 
