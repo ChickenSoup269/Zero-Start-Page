@@ -1494,12 +1494,11 @@ body.ghost-controls .side-controls:hover {
   margin-left: auto;
   margin-right: auto;
   border-radius: 12px;
-  background: var(--bookmark-group-bg, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
 }
 
 .bookmark-group-tab {
+  background: var(--bookmark-group-tab-bg, rgba(255, 255, 255, 0.06));
   color: var(--bookmark-group-text-color, rgba(255, 255, 255, 0.8));
   padding: 0.5rem 1.1rem;
   border-radius: 8px;
@@ -1512,9 +1511,8 @@ body.ghost-controls .side-controls:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(4px);
-  /* -webkit-backdrop-filter: blur(4px); */
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .bookmark-group-tab:hover {
@@ -1527,7 +1525,6 @@ body.ghost-controls .side-controls:hover {
 .bookmark-group-tab.active {
   color: var(--bookmark-group-text-color, white);
   font-weight: 600;
-  background: transparent;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 1px var(--accent-color) inset;
 }
@@ -2207,5 +2204,3 @@ body.ghost-controls .side-controls:hover {
     top: 50vh !important;
   }
 }
-
-

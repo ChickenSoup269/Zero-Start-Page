@@ -273,20 +273,20 @@ function createApplySettings(effectInstances) {
         groupBgRgb = hexToRgb(groupBgHex)
       if (groupBgRgb && groupBgOpacity < 100) {
         document.documentElement.style.setProperty(
-          "--bookmark-group-bg",
+          "--bookmark-group-tab-bg",
           `rgba(${groupBgRgb.r}, ${groupBgRgb.g}, ${groupBgRgb.b}, ${groupBgOpacity / 100})`,
         )
       } else {
         document.documentElement.style.setProperty(
-          "--bookmark-group-bg",
+          "--bookmark-group-tab-bg",
           groupBgHex,
         )
       }
     } else {
-      // default or transparent
+      // default fallback if setting exists but is disabled (not common for this currently, but added for safety)
       document.documentElement.style.setProperty(
-        "--bookmark-group-bg",
-        "transparent",
+        "--bookmark-group-tab-bg",
+        "rgba(255, 255, 255, 0.06)",
       )
     }
 
