@@ -4,13 +4,20 @@ export class RainbowBackground {
     this.ctx = this.canvas.getContext("2d")
     this.active = false
 
-    // Palette màu: Tím, Xanh dương, Xanh ngọc, Hồng
-    this.hues = [280, 210, 170, 320]
+    // Bảng màu cầu vồng mở rộng: Đỏ, Cam, Vàng, Lục, Lam, Chàm, Tím, Hồng
+    this.hues = [350, 20, 50, 150, 190, 230, 280, 320]
 
-    // Giảm số lượng tia vì tia giờ đã to hơn (để tránh rối mắt)
-    this.beamCount = 35
+    this.beamCount = 25 // Làm các tia chiếu to, rộng hơn nên giảm bớt số lượng
+    this.particleCount = 70 // Hạt bụi bay lơ lửng tĩnh trong dải sáng
     this.beams = []
+    this.particles = []
     this.animationFrame = null
+    this.time = 0
+
+    // Góc nghiêng chiếu rọi (khoảng 20 độ để ánh sáng đẹp hơn)
+    this.angle = (20 * Math.PI) / 180
+    this.sinA = Math.sin(this.angle)
+    this.cosA = Math.cos(this.angle)
 
     this.resize()
     window.addEventListener("resize", () => this.resize())
@@ -24,45 +31,52 @@ export class RainbowBackground {
 
   initBeams() {
     this.beams = []
+    this.particles = []
     const W = this.canvas.width
     const H = this.canvas.height
-    // Tính đường chéo để phủ kín màn hình khi xoay
-    const diagonal = Math.sqrt(W * W + H * H)
 
     for (let i = 0; i < this.beamCount; i++) {
-      this.beams.push(this._createBeam(diagonal, i))
+      this.beams.push(this._createBeam(W, H))
+    }
+
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push(this._createParticle(W, H))
     }
   }
 
-  _createBeam(maxDist, index) {
-    // Phân bố đều theo chiều dọc để không bị chồng đống
-    const rowHeight = maxDist / this.beamCount
-    // Thêm chút random để không quá thẳng hàng
-    const yPos = index * rowHeight - maxDist * 0.2
-
+  _createParticle(W, H) {
     return {
-      x: Math.random() * maxDist - maxDist * 0.5,
-      yBase: yPos,
-      yOffset: Math.random() * 40 - 20, // Độ lệch Y lớn hơn chút
-
-      // --- CẤU HÌNH KÍCH THƯỚC & TỐC ĐỘ (Mượt & To) ---
-      width: Math.random() * 4 + 3, // To hơn: 3px - 7px
-      length: Math.random() * 400 + 200, // Dài hơn: 200px - 600px
-      speed: Math.random() * 1.2 + 0.3, // Chậm lại: Trôi nhẹ nhàng
-
+      x: Math.random() * W * 1.5 - W * 0.25,
+      y: Math.random() * H,
+      size: Math.random() * 2 + 0.5,
+      speed: Math.random() * 0.4 + 0.1, // Hạt bụi trôi siêu chậm
       hue: this.hues[Math.floor(Math.random() * this.hues.length)],
-      opacity: Math.random() * 0.25 + 0.05, // Độ trong suốt khởi điểm
+      wobblePhase: Math.random() * Math.PI * 2,
+      baseOpacity: Math.random() * 0.4 + 0.1,
+    }
+  }
 
-      // Cấu hình Pulse (Lóe sáng)
-      pulse: 0,
-      pulseSpeed: Math.random() * 0.03 + 0.015, // Nhịp thở chậm (Slow breath)
-      maxPulseAmp: Math.random() * 0.4 + 0.4,
+  _createBeam(W, H) {
+    const diagonal = Math.sqrt(W * W + H * H)
+    return {
+      x: Math.random() * W * 1.5 - W * 0.25,
+      yBase: -Math.random() * H * 0.3 - 50, // Phát xuất từ tít mù trên đỉnh
+      width: Math.random() * 40 + 15, // Dải beam to, rộng sải thành dải lụa sáng
+      length: diagonal * 1.2, // Dài bao trùm xuyên suốt màn hình (KHÔNG ĐỨT)
+      driftSpeed: Math.random() * 0.2 + 0.05, // Trôi ngang qua lại RẤT MƯỢT (Pan slowly)
+      hue: this.hues[Math.floor(Math.random() * this.hues.length)],
+      opacity: Math.random() * 0.15 + 0.02, // Soft light
+
+      pulse: Math.random() * Math.PI * 2,
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: Math.random() * 0.015 + 0.005, // Chu kỳ tắt/sáng rất êm ái
     }
   }
 
   start() {
     if (this.active) return
     this.active = true
+    this.time = 0
     this.animate()
     this.canvas.style.display = "block"
   }
@@ -81,78 +95,86 @@ export class RainbowBackground {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const diagonal = Math.sqrt(W * W + H * H)
 
     ctx.clearRect(0, 0, W, H)
-
-    // Chế độ hòa trộn giúp màu sắc rực rỡ và mềm mại khi chồng lên nhau
     ctx.globalCompositeOperation = "lighter"
+    this.time += 1
 
-    // Xoay canvas 45 độ
-    ctx.save()
-    ctx.translate(W / 2, H / 2)
-    ctx.rotate((-45 * Math.PI) / 180)
-    ctx.translate(-diagonal / 2, -diagonal / 2)
+    // 1. Vẽ hạt bụi sao trôi lơ lửng rất tự nhiên
+    for (const p of this.particles) {
+      p.x +=
+        this.sinA * p.speed + Math.sin(this.time * 0.01 + p.wobblePhase) * 0.4
+      p.y += this.cosA * p.speed
 
-    for (const b of this.beams) {
-      // 1. Di chuyển
-      b.x -= b.speed
-
-      // Reset khi tia chạy hết màn hình
-      if (b.x + b.length < -200) {
-        b.x = diagonal + 200
-        b.hue = this.hues[Math.floor(Math.random() * this.hues.length)]
-        b.pulse = 0
+      if (p.y > H + 50 || p.x > W + 50) {
+        p.y = -50
+        p.x = Math.random() * W * 1.5 - W * 0.25
+        p.hue = this.hues[Math.floor(Math.random() * this.hues.length)]
       }
 
-      // 2. Logic "Nhịp thở" (Pulse)
-      // Tỉ lệ kích hoạt ngẫu nhiên (khoảng 0.3% mỗi frame)
-      if (b.pulse <= 0 && Math.random() < 0.003) {
-        b.pulse = 0.01 // Bắt đầu chu kỳ
-      }
+      const currentOpacity =
+        p.baseOpacity + Math.sin(this.time * 0.03 + p.wobblePhase) * 0.3
 
-      let currentOpacity = b.opacity
-      let currentWidth = b.width
-      let currentLightness = 55 // Độ sáng màu (gốc hơi tối chút cho đậm đà)
-
-      if (b.pulse > 0) {
-        b.pulse += b.pulseSpeed
-
-        // Hàm Sin tạo độ mượt: Tăng dần -> Đỉnh -> Giảm dần
-        const sinVal = Math.sin(b.pulse)
-
-        if (sinVal > 0) {
-          currentOpacity += sinVal * 0.6 // Tăng độ rõ
-          currentWidth += sinVal * 8 // Phình to thêm tới 8px (Tổng ~15px)
-          currentLightness += sinVal * 35 // Sáng lên gần trắng (90%)
-        }
-
-        if (b.pulse >= Math.PI) {
-          b.pulse = 0 // Kết thúc chu kỳ
-        }
-      }
-
-      // 3. Vẽ tia sáng (Gradient mềm)
-      const grad = ctx.createLinearGradient(b.x, 0, b.x + b.length, 0)
-      const color = `hsla(${b.hue}, 80%, ${currentLightness}%,`
-
-      // Gradient 4 điểm dừng để tia sáng trông "tròn" và mềm hơn ở giữa
-      grad.addColorStop(0, `${color} 0)`)
-      grad.addColorStop(0.2, `${color} ${currentOpacity * 0.5})`)
-      grad.addColorStop(0.5, `${color} ${currentOpacity})`) // Đậm nhất ở giữa
-      grad.addColorStop(0.8, `${color} ${currentOpacity * 0.5})`)
-      grad.addColorStop(1, `${color} 0)`)
-
-      ctx.fillStyle = grad
-
-      // Tính toán vị trí Y
-      const centerOffset = (diagonal - H) / 2
-      const drawY = b.yBase + b.yOffset + centerOffset
-
-      // Vẽ tia sáng
-      ctx.fillRect(b.x, drawY, b.length, currentWidth)
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+      ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${Math.max(0.01, currentOpacity)})`
+      ctx.fill()
     }
 
-    ctx.restore()
+    // 2. Vẽ dải ánh sáng XUYÊN MÀN HÌNH cố định (God Rays), không rớt liên tục
+    for (const b of this.beams) {
+      // Di chuyển NGANG siêu thong dong thay vì rớt dọc
+      b.x += b.driftSpeed
+      if (b.x > W * 1.5) {
+        b.x = -W * 0.5
+        b.hue = this.hues[Math.floor(Math.random() * this.hues.length)]
+      }
+
+      b.pulse += b.pulseSpeed
+      const pulseFactor = (Math.sin(b.pulse) + 1) / 2
+
+      const currentOpacity = b.opacity + pulseFactor * 0.15
+      const currentWidth = b.width + pulseFactor * 5
+      const currentLightness = 55 + pulseFactor * 20
+
+      // Tia rung rinh nhè nhẹ tại chỗ
+      const xWobble = Math.sin(this.time * 0.005 + b.pulsePhase) * 15
+      const startX = b.x + xWobble
+      const startY = b.yBase
+
+      const endX = startX + this.sinA * b.length
+      const endY = startY + this.cosA * b.length
+
+      const grad = ctx.createLinearGradient(startX, startY, endX, endY)
+      const color = `hsla(${b.hue}, 90%, ${currentLightness}%,`
+
+      grad.addColorStop(0, `${color} 0)`) // Gốc sáng yếu dần vào bóng tối
+      grad.addColorStop(0.1, `${color} ${currentOpacity})`) // Dày nhất đoạn gần gốc
+      grad.addColorStop(0.6, `${color} ${currentOpacity * 0.6})`) // Điểm thân chính
+      grad.addColorStop(1, `${color} 0)`) // Tan biến vào bóng tối ở đuôi
+
+      ctx.beginPath()
+      ctx.moveTo(startX, startY)
+      ctx.lineTo(endX, endY)
+      ctx.lineCap = "round"
+      ctx.lineWidth = currentWidth
+      ctx.strokeStyle = grad
+      ctx.stroke()
+
+      // Core glow phát ra từ tâm ánh sáng để tạo khối 3D chói loá
+      if (pulseFactor > 0.7) {
+        ctx.beginPath()
+        const midStartX = startX + this.sinA * (b.length * 0.1)
+        const midStartY = startY + this.cosA * (b.length * 0.1)
+        const midEndX = startX + this.sinA * (b.length * 0.6)
+        const midEndY = startY + this.cosA * (b.length * 0.6)
+
+        ctx.moveTo(midStartX, midStartY)
+        ctx.lineTo(midEndX, midEndY)
+        ctx.lineWidth = currentWidth * 0.2
+        ctx.strokeStyle = `hsla(${b.hue}, 100%, 90%, ${(pulseFactor - 0.7).toFixed(2)})`
+        ctx.stroke()
+      }
+    }
   }
 }
