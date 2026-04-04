@@ -378,6 +378,8 @@ export const importSettingsInput = document.getElementById(
   "import-settings-input",
 )
 export const dateFormatSelect = document.getElementById("date-format-select")
+export const timeFormatSelect = document.getElementById("time-format-select")
+export const timezoneSelect = document.getElementById("timezone-select")
 export const hideSecondsCheckbox = document.getElementById(
   "hide-seconds-checkbox",
 )

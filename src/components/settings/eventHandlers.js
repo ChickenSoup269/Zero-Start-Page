@@ -1230,6 +1230,28 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  if (DOM.timeFormatSelect) {
+    DOM.timeFormatSelect.addEventListener("change", () => {
+      handleSettingUpdate("timeFormat", DOM.timeFormatSelect.value)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "timeFormat", value: DOM.timeFormatSelect.value },
+        }),
+      )
+    })
+  }
+
+  if (DOM.timezoneSelect) {
+    DOM.timezoneSelect.addEventListener("change", () => {
+      handleSettingUpdate("timezone", DOM.timezoneSelect.value)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "timezone", value: DOM.timezoneSelect.value },
+        }),
+      )
+    })
+  }
+
   DOM.hideSecondsCheckbox.addEventListener("change", () => {
     handleSettingUpdate("hideSeconds", DOM.hideSecondsCheckbox.checked)
     window.dispatchEvent(

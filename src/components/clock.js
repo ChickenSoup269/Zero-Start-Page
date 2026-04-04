@@ -78,17 +78,32 @@ export function updateTime() {
     dateClockStyle === "round" || dateClockStyle === "square"
   const shouldShowDate =
     settings.showDate !== false && settings.showGregorian !== false
+  const use12Hour = settings.timeFormat === "12h"
+  const tz =
+    settings.timezone && settings.timezone !== "local"
+      ? settings.timezone
+      : undefined
   const timeOptions = settings.hideSeconds
-    ? { hour12: false, hour: "2-digit", minute: "2-digit" }
-    : { hour12: false }
+    ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
+    : {
+        hour12: use12Hour,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZone: tz,
+      }
   const timeString = now.toLocaleTimeString(langCode, timeOptions)
 
   // Keep layout stable by toggling visibility class instead of display.
   clockElement.classList.toggle("is-hidden", settings.showClock === false)
   if (dateClockStyle === "analog") {
-    const hours = now.getHours() % 12
-    const minutes = now.getMinutes()
-    const seconds = now.getSeconds()
+    let tDate = now
+    if (tz) {
+      tDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    }
+    const hours = tDate.getHours() % 12
+    const minutes = tDate.getMinutes()
+    const seconds = tDate.getSeconds()
     const markerMode = settings.analogMarkerMode || "quarters"
     const hourRotation = hours * 30 + minutes * 0.5
     const minuteRotation = minutes * 6 + seconds * 0.1
@@ -145,23 +160,42 @@ export function updateTime() {
     `
   } else if (isFramedClockStyle) {
     const roundTimeOptions = settings.hideSeconds
-      ? { hour: "2-digit", minute: "2-digit", hour12: true }
-      : { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }
+      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
+      : {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: use12Hour,
+          timeZone: tz,
+        }
     const timeParts = new Intl.DateTimeFormat(langCode, roundTimeOptions)
       .formatToParts(now)
       .filter((part) => part.type !== "literal")
+
+    const hhPart = timeParts.find((part) => part.type === "hour")
+    const mmPart = timeParts.find((part) => part.type === "minute")
+    const ssPart = timeParts.find((part) => part.type === "second")
     const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
 
-    const [hh = "00", mm = "00", ss = "00"] = timeString.split(":")
+    const hh = hhPart ? hhPart.value : "00"
+    const mm = mmPart ? mmPart.value : "00"
+    const ss = ssPart ? ssPart.value : "00"
+
     const timeMain = settings.hideSeconds
       ? `${hh}:${mm}`
       : `${hh}:${mm}<span class="clock-time-seconds">:${ss}</span>`
 
-    const weekday = now.toLocaleDateString(langCode, { weekday: "long" })
+    const weekday = now.toLocaleDateString(langCode, {
+      weekday: "long",
+      timeZone: tz,
+    })
+    const year = new Date(
+      now.toLocaleString("en-US", { timeZone: tz }),
+    ).getFullYear()
     const secondaryInfo = shouldShowDate
-      ? `<span class="clock-date-secondary">${now.getFullYear()} ${weekday}</span>`
+      ? `<span class="clock-date-secondary">${year} ${weekday}</span>`
       : ""
-    clockElement.innerHTML = `<span class="clock-time-main">${timeMain}</span><span class="clock-time-ampm">${dayPeriodPart?.value || ""}</span>${secondaryInfo}`
+    clockElement.innerHTML = `<span class="clock-time-main">${timeMain}</span><span class="clock-time-ampm">${dayPeriodPart ? dayPeriodPart.value : ""}</span>${secondaryInfo}`
   } else {
     clockElement.textContent = timeString
   }
@@ -174,10 +208,12 @@ export function updateTime() {
       ? "weekday"
       : selectedFormat
 
+  // Handle Date logic considering Timezone
   if (isFramedClockStyle) {
     const dayMonth = now.toLocaleDateString(langCode, {
       day: "2-digit",
       month: "long",
+      timeZone: tz,
     })
     dateString = dayMonth
   } else if (format === "full") {
@@ -186,17 +222,25 @@ export function updateTime() {
       day: "2-digit",
       month: "long",
       year: "numeric",
+      timeZone: tz,
     })
   } else if (format === "short") {
-    dateString = now.toLocaleDateString("en-GB")
+    dateString = now.toLocaleDateString("en-GB", { timeZone: tz })
   } else if (format === "us") {
-    dateString = now.toLocaleDateString("en-US")
+    dateString = now.toLocaleDateString("en-US", { timeZone: tz })
   } else if (format === "iso") {
-    dateString = now.toISOString().split("T")[0]
+    let isoDate = now
+    if (tz) isoDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    dateString = isoDate.toISOString().split("T")[0]
   } else if (format === "year") {
-    dateString = String(now.getFullYear())
+    let yearDate = now
+    if (tz) yearDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    dateString = String(yearDate.getFullYear())
   } else if (format === "weekday") {
-    dateString = now.toLocaleDateString(langCode, { weekday: "long" })
+    dateString = now.toLocaleDateString(langCode, {
+      weekday: "long",
+      timeZone: tz,
+    })
   }
 
   // Handle date visibility - check both showDate AND showGregorian

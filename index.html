@@ -1423,6 +1423,36 @@
                             <input type="checkbox" id="hide-seconds-checkbox">
                         </div>
                         <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="time-format-select" data-i18n="settings_time_format">Time Format (12h /
+                                24h)</label>
+                            <select id="time-format-select">
+                                <option value="24h">24h</option>
+                                <option value="12h">12h (AM/PM)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="timezone-select" data-i18n="settings_timezone">Timezone</label>
+                            <select id="timezone-select">
+                                <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
+                                <option value="UTC">UTC / GMT</option>
+                                <option value="America/New_York">New York (EST/EDT)</option>
+                                <option value="America/Chicago">Chicago (CST/CDT)</option>
+                                <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
+                                <option value="Europe/London">London (GMT/BST)</option>
+                                <option value="Europe/Paris">Paris (CET/CEST)</option>
+                                <option value="Africa/Cairo">Cairo (CAT)</option>
+                                <option value="Asia/Dubai">Dubai (EET)</option>
+                                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                                <option value="Asia/Shanghai">Shanghai (CST)</option>
+                                <option value="Asia/Seoul">Seoul (KST)</option>
+                                <option value="Asia/Ho_Chi_Minh">Ho Chi Minh (ICT)</option>
+                                <option value="Asia/Bangkok">Bangkok (ICT)</option>
+                                <option value="Asia/Kolkata">Bangkok/Hanoi/Jakarta (ICT)</option>
+                                <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+                                <option value="Pacific/Auckland">Auckland (AEST/AEDT)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
                             <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
                                 priority</label>
                             <select id="clock-date-priority-select">
