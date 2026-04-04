@@ -6,23 +6,22 @@ export class AuroraWaveEffect {
     this.color = color
     this.time = 0
 
-    // Config
-    this.waveCount = 4 // reduced from 5
-    this.wavePoints = 26 // reduced from 50; smooth via quadraticCurveTo
-    this.waveAmplitude = 100
-    this.waveFrequency = 0.01
+    // Config for a more majestic, flowing aurora appearance
+    this.waveCount = 5
+    this.wavePoints = 40
+    this.waveAmplitude = 120
+    this.waveFrequency = 0.005
 
     // FPS
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
-    // Cached per-wave data (rebuilt on resize / color change)
+    // Cached data
     this._gradients = []
     this._waveConfigs = []
-    this._floatParticles = []
+    this._particles = []
     this._rgb = { r: 0, g: 188, b: 212 }
-    this._floatBaseColor = "0,188,212"
 
     this._resizeHandler = () => this._onResize()
     window.addEventListener("resize", this._resizeHandler)
@@ -31,66 +30,59 @@ export class AuroraWaveEffect {
 
   // ─── Cache helpers ────────────────────────────────────────────────────────
 
-  /** Re-builds gradients and configs. Call on resize or color change. */
   _buildCache() {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
     this._rgb = this._hexToRgb(this.color)
     const { r, g, b } = this._rgb
-    const centerY = H * 0.6
-    const amp = this.waveAmplitude
+    const centerY = H * 0.45
+    const depth = H * 0.5
 
     this._gradients = []
     this._waveConfigs = []
 
     for (let w = 0; w < this.waveCount; w++) {
       const waveOffset = (w / this.waveCount) * Math.PI * 2
-      const yOffset = (w - this.waveCount / 2) * 40
-      const hueShift = (w / this.waveCount) * 60 - 30
-      const rr = Math.min(255, Math.max(0, r + hueShift))
-      const gg = Math.min(255, Math.max(0, g + hueShift))
-      const bb = Math.min(255, Math.max(0, b + Math.abs(hueShift)))
-      const alpha = 0.15 + w * 0.05
+      const hueShift = (w / this.waveCount) * 80 - 40
 
-      // Build gradient once — reused every frame until next resize/color change
+      const rr = Math.max(0, Math.min(255, r + hueShift * 0.8))
+      const gg = Math.max(0, Math.min(255, g + hueShift * 1.5))
+      const bb = Math.max(0, Math.min(255, b + hueShift * 0.5))
+
+      // Vertical gradient for the aurora curtain
       const grad = ctx.createLinearGradient(
         0,
-        centerY + yOffset - amp * 3,
+        centerY - depth * 0.5,
         0,
-        centerY + yOffset + amp * 3,
+        centerY + depth * 0.8,
       )
       grad.addColorStop(0, `rgba(${rr},${gg},${bb},0)`)
-      grad.addColorStop(0.3, `rgba(${rr},${gg},${bb},${alpha})`)
       grad.addColorStop(
-        0.5,
-        `rgba(${Math.min(255, rr + 30)},${Math.min(255, gg + 30)},${Math.min(255, bb + 30)},${alpha + 0.1})`,
+        0.3,
+        `rgba(${Math.min(255, rr + 40)},${Math.min(255, gg + 40)},${Math.min(255, bb + 40)},0.15)`,
       )
-      grad.addColorStop(0.7, `rgba(${rr},${gg},${bb},${alpha})`)
-      grad.addColorStop(1, `rgba(${rr},${gg},${bb},0)`)
-      this._gradients.push(grad)
+      grad.addColorStop(0.6, `rgba(${rr},${gg},${bb},0.4)`)
+      grad.addColorStop(0.8, `rgba(${rr * 0.5},${gg * 0.5},${bb * 0.5},0.1)`)
+      grad.addColorStop(1, `rgba(0,0,0,0)`)
 
-      // Pre-built shimmer halo color string (no Math.min per frame)
-      const sr = Math.min(255, r + 80)
-      const sg = Math.min(255, g + 80)
-      const sbv = Math.min(255, b + 80)
+      this._gradients.push(grad)
 
       this._waveConfigs.push({
         waveOffset,
-        yOffset,
-        lineWidth: 28 + w * 8, // slightly thinner than before
-        shimmerHalo: `${sr},${sg},${sbv}`,
+        speedMultiplier: 0.8 + w * 0.15,
+        ampMultiplier: 1 + w * 0.1,
+        yOffset: (w - this.waveCount / 2) * 30,
       })
     }
 
-    // Pre-allocate floating particles (fixed sizes — no Math.random in render loop)
-    this._floatBaseColor = `${Math.min(255, r + 50)},${Math.min(255, g + 50)},${Math.min(255, b + 50)}`
-    this._floatParticles = Array.from({ length: 20 }, (_, i) => ({
-      xStep: 37 + i * 0.9,
-      sinPhase: i * 0.31,
-      sinAmp: 140 + (i % 5) * 22,
-      size: 1 + (i % 3), // 1, 2, or 3 — fixed every frame
-      opPhase: i * 0.41,
+    // Stars/Particles (sparkling in the background)
+    this._particles = Array.from({ length: 40 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.7, // mostly in the upper canvas
+      size: Math.random() * 1.5 + 0.5,
+      alpha: Math.random(),
+      speed: Math.random() * 0.02 + 0.01,
     }))
   }
 
@@ -100,15 +92,18 @@ export class AuroraWaveEffect {
     this._buildCache()
   }
 
-  // ─── Wave math (inlined helper to avoid closure overhead) ─────────────────
+  // ─── Wave math ────────────────────────────────────────────────────────────
 
-  _waveY(x, t, waveOffset) {
+  _waveY(x, t, waveOffset, ampMult, speedMult) {
     const f = this.waveFrequency
-    const a = this.waveAmplitude
+    const a = this.waveAmplitude * ampMult
+    const time = t * speedMult
+
+    // Complex flowing wave combination
     return (
-      Math.sin(x * f + t + waveOffset) * a +
-      Math.sin(x * f * 2 + t * 1.5 + waveOffset) * (a * 0.5) +
-      Math.sin(x * f * 0.5 + t * 0.7 + waveOffset) * (a * 1.5)
+      Math.sin(x * f + time + waveOffset) * a +
+      Math.sin(x * f * 1.5 - time * 0.8 + waveOffset * 2) * (a * 0.4) +
+      Math.cos(x * f * 0.5 + time * 1.2 + waveOffset) * (a * 0.6)
     )
   }
 
@@ -117,8 +112,8 @@ export class AuroraWaveEffect {
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
-    this.animate(0)
+    this.lastDrawTime = performance.now()
+    this.animate(this.lastDrawTime)
     this.canvas.style.display = "block"
   }
 
@@ -141,13 +136,25 @@ export class AuroraWaveEffect {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const centerY = H * 0.6
+    const centerY = H * 0.45
 
-    // Fade trail — slightly higher opacity = fewer residual layers = faster composite
-    ctx.fillStyle = "rgba(0,0,0,0.05)"
+    // Smooth fading background for trail
+    ctx.globalCompositeOperation = "source-over"
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)"
     ctx.fillRect(0, 0, W, H)
 
-    this.time += 0.012
+    // Render stars/particles
+    ctx.globalCompositeOperation = "screen"
+    for (let p of this._particles) {
+      p.alpha += p.speed
+      const currentAlpha = (Math.sin(p.alpha) * 0.5 + 0.5) * 0.6 // 0 to 0.6
+      ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha.toFixed(2)})`
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    this.time += 0.006 // majestic, slow time step
 
     const t = this.time
     const pts = this.wavePoints
@@ -158,18 +165,25 @@ export class AuroraWaveEffect {
 
     for (let w = 0; w < this.waveCount; w++) {
       const cfg = this._waveConfigs[w]
-      const { waveOffset, yOffset, lineWidth, shimmerHalo } = cfg
+      const { waveOffset, speedMultiplier, ampMultiplier, yOffset } = cfg
       const baseY = centerY + yOffset
 
-      // ── Wave path (quadraticCurveTo = smooth curve with fewer points) ──
+      const ribbonThickness = 120 + Math.sin(t * 2 + waveOffset) * 40
+
+      // Reset blend mode for waves to make them vibrant
+      ctx.globalCompositeOperation = "lighter"
       ctx.beginPath()
+
+      // Top curve (going right)
       let px = 0
-      let py = baseY + this._waveY(0, t, waveOffset)
+      let py =
+        baseY + this._waveY(0, t, waveOffset, ampMultiplier, speedMultiplier)
       ctx.moveTo(px, py)
 
       for (let i = 1; i <= pts; i++) {
         const x = i * xStep
-        const y = baseY + this._waveY(x, t, waveOffset)
+        const y =
+          baseY + this._waveY(x, t, waveOffset, ampMultiplier, speedMultiplier)
         const cx = (px + x) * 0.5
         const cy = (py + y) * 0.5
         ctx.quadraticCurveTo(px, py, cx, cy)
@@ -177,49 +191,24 @@ export class AuroraWaveEffect {
         py = y
       }
 
-      ctx.strokeStyle = this._gradients[w]
-      ctx.lineWidth = lineWidth
-      ctx.stroke()
-
-      // ── Shimmer particles — batched into ONE fill() call per wave ──
-      // Halo pass (larger, tinted)
-      ctx.beginPath()
-      for (let i = 0; i < 8; i++) {
-        const progress = (i / 8 + t * 0.15 + w * 0.1) % 1
-        const x = progress * W
-        const y = baseY + this._waveY(x, t, waveOffset)
-        const intensity = Math.abs(Math.sin(progress * Math.PI)) * 0.7 + 0.3
-        const sz = 6 * intensity
-        ctx.moveTo(x + sz, y)
-        ctx.arc(x, y, sz, 0, Math.PI * 2)
+      // Bottom curve (going left to create a ribbon shape)
+      for (let i = pts; i >= 0; i--) {
+        const x = i * xStep
+        const bottomY =
+          baseY +
+          this._waveY(
+            x,
+            t,
+            waveOffset + 0.2,
+            ampMultiplier * 0.9,
+            speedMultiplier,
+          ) +
+          ribbonThickness
+        ctx.lineTo(x, bottomY)
       }
-      ctx.fillStyle = `rgba(${shimmerHalo},0.18)`
-      ctx.fill()
 
-      // Core pass (white, smaller)
-      ctx.beginPath()
-      for (let i = 0; i < 8; i++) {
-        const progress = (i / 8 + t * 0.15 + w * 0.1) % 1
-        const x = progress * W
-        const y = baseY + this._waveY(x, t, waveOffset)
-        const intensity = Math.abs(Math.sin(progress * Math.PI)) * 0.7 + 0.3
-        const sz = 3 * intensity
-        ctx.moveTo(x + sz, y)
-        ctx.arc(x, y, sz, 0, Math.PI * 2)
-      }
-      ctx.fillStyle = "rgba(255,255,255,0.55)"
-      ctx.fill()
-    }
-
-    // ── Floating particles (pre-allocated, no Math.random per frame) ──
-    for (let i = 0; i < this._floatParticles.length; i++) {
-      const p = this._floatParticles[i]
-      const x = (p.xStep * i + t * 18) % W
-      const y = centerY + Math.sin(x * 0.02 + t + p.sinPhase) * p.sinAmp
-      const op = Math.sin(t * 2 + p.opPhase) * 0.25 + 0.35
-      ctx.beginPath()
-      ctx.arc(x, y, p.size, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(${this._floatBaseColor},${op.toFixed(2)})`
+      ctx.closePath()
+      ctx.fillStyle = this._gradients[w]
       ctx.fill()
     }
   }
