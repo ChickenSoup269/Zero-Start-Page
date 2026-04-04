@@ -529,6 +529,10 @@ function createUpdateSettingsInputs(effectInstances) {
     // General Inputs
     effectInstances.renderFontGrid()
     DOM.dateFormatSelect.value = settings.dateFormat
+    if (DOM.timeFormatSelect)
+      DOM.timeFormatSelect.value = settings.timeFormat || "24h"
+    if (DOM.timezoneSelect)
+      DOM.timezoneSelect.value = settings.timezone || "local"
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     if (DOM.cursorTrailClickCheckbox)
       DOM.cursorTrailClickCheckbox.checked =

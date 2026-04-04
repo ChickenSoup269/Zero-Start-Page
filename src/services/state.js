@@ -23,6 +23,8 @@ const defaultSettings = {
   background: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",
+  timeFormat: "24h", // "12h" or "24h"
+  timezone: "local",
   dateClockStyle: "default",
   hueTextMode: "off",
   analogMarkerMode: "quarters",
@@ -266,6 +268,8 @@ export function resetSettingsState() {
     background: "#0f0c29",
     font: "'Outfit', sans-serif",
     dateFormat: "full",
+    timeFormat: "24h",
+    timezone: "local",
     dateClockStyle: "default",
     hueTextMode: "off",
     analogMarkerMode: "quarters",
