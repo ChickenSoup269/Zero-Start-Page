@@ -866,14 +866,30 @@ export function setupGeneralEventHandlers(
   }
 
   const updateCurrentGradient = () => {
+    const type = DOM.gradientTypeSelect?.value || "linear"
+    if (DOM.gradientAngleGroup) {
+      DOM.gradientAngleGroup.style.display =
+        type === "radial" ? "none" : "block"
+    }
+    if (DOM.gradientPositionGroup) {
+      DOM.gradientPositionGroup.style.display =
+        type === "linear" ? "none" : "flex"
+    }
+    if (DOM.gradientRadialShapeGroup) {
+      DOM.gradientRadialShapeGroup.style.display =
+        type === "radial" ? "flex" : "none"
+    }
+
     const gradientConfig = {
       start: DOM.gradientStartPicker.value,
       end: DOM.gradientEndPicker.value,
       angle: DOM.gradientAngleInput.value,
-      type: DOM.gradientTypeSelect?.value || "linear",
+      type: type,
       repeating: DOM.gradientRepeatingToggle?.checked === true,
       extraColorCount: Number(DOM.gradientExtraColorCount?.value || 2),
       customColors: DOM.gradientCustomColors?.value || "",
+      position: DOM.gradientPositionSelect?.value || "center",
+      radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
     }
 
     handleSettingUpdate(null, gradientConfig, true)
@@ -882,6 +898,11 @@ export function setupGeneralEventHandlers(
   DOM.gradientStartPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientEndPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientTypeSelect?.addEventListener("change", updateCurrentGradient)
+  DOM.gradientPositionSelect?.addEventListener("change", updateCurrentGradient)
+  DOM.gradientRadialShapeSelect?.addEventListener(
+    "change",
+    updateCurrentGradient,
+  )
   DOM.gradientRepeatingToggle?.addEventListener("change", updateCurrentGradient)
   DOM.gradientExtraColorCount?.addEventListener("change", () => {
     renderGradientExtraColorPickers()
@@ -943,6 +964,10 @@ export function setupGeneralEventHandlers(
       DOM.gradientExtraColorCount.value = String(selected.extraColorCount || 2)
     if (DOM.gradientCustomColors)
       DOM.gradientCustomColors.value = selected.customColors || ""
+    if (DOM.gradientPositionSelect)
+      DOM.gradientPositionSelect.value = selected.position || "center"
+    if (DOM.gradientRadialShapeSelect)
+      DOM.gradientRadialShapeSelect.value = selected.radialShape || "circle"
 
     renderGradientExtraColorPickers()
     updateCurrentGradient()
@@ -958,6 +983,8 @@ export function setupGeneralEventHandlers(
       repeating: DOM.gradientRepeatingToggle?.checked === true,
       extraColorCount: Number(DOM.gradientExtraColorCount?.value || 2),
       customColors: DOM.gradientCustomColors?.value || "",
+      position: DOM.gradientPositionSelect?.value || "center",
+      radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
     }
     const alreadyExists = settings.userGradients.some(
       (g) =>
@@ -967,7 +994,9 @@ export function setupGeneralEventHandlers(
         (g.type || "linear") === newGradient.type &&
         (g.repeating === true) === newGradient.repeating &&
         Number(g.extraColorCount || 2) === newGradient.extraColorCount &&
-        (g.customColors || "") === newGradient.customColors,
+        (g.customColors || "") === newGradient.customColors &&
+        (g.position || "center") === newGradient.position &&
+        (g.radialShape || "circle") === newGradient.radialShape,
     )
     if (!alreadyExists) {
       if (settings.userGradients.length >= 10) {

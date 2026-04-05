@@ -71,6 +71,21 @@ export const gradientAngleValue = document.getElementById(
 export const gradientTypeSelect = document.getElementById(
   "gradient-type-select",
 )
+export const gradientPositionGroup = document.getElementById(
+  "gradient-position-group",
+)
+export const gradientPositionSelect = document.getElementById(
+  "gradient-position-select",
+)
+export const gradientRadialShapeGroup = document.getElementById(
+  "gradient-radial-shape-group",
+)
+export const gradientRadialShapeSelect = document.getElementById(
+  "gradient-radial-shape-select",
+)
+export const gradientAngleGroup = document.getElementById(
+  "gradient-angle-group",
+)
 export const gradientToggleBtn = document.getElementById("gradient-toggle-btn")
 export const gradientToggleLabel = document.getElementById(
   "gradient-toggle-label",

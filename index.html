@@ -689,6 +689,31 @@
                             <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
                         </select>
                     </div>
+                    <div id="gradient-position-group"
+                        style="margin-top: 12px; display: none; gap: 8px; align-items: center;">
+                        <label for="gradient-position-select" data-i18n="settings_gradient_position"
+                            style="font-size: 0.9rem;">Position:</label>
+                        <select id="gradient-position-select" style="flex: 1; padding: 0.35rem;">
+                            <option value="center">Center</option>
+                            <option value="top">Top</option>
+                            <option value="bottom">Bottom</option>
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                            <option value="top left">Top Left</option>
+                            <option value="top right">Top Right</option>
+                            <option value="bottom left">Bottom Left</option>
+                            <option value="bottom right">Bottom Right</option>
+                        </select>
+                    </div>
+                    <div id="gradient-radial-shape-group"
+                        style="margin-top: 12px; display: none; gap: 8px; align-items: center;">
+                        <label for="gradient-radial-shape-select" data-i18n="settings_gradient_radial_shape"
+                            style="font-size: 0.9rem;">Radial Shape:</label>
+                        <select id="gradient-radial-shape-select" style="flex: 1; padding: 0.35rem;">
+                            <option value="circle">Circle</option>
+                            <option value="ellipse">Ellipse</option>
+                        </select>
+                    </div>
                     <label
                         style="margin-top: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
                         <input type="checkbox" id="gradient-repeating-toggle">
@@ -715,7 +740,7 @@
                         style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
                     <button id="random-gradient-colors-btn" class="secondary-btn full-width" style="margin-top: 8px;"
                         data-i18n="settings_gradient_random_colors">Random Gradient Colors</button>
-                    <div style="margin-top: 12px;">
+                    <div id="gradient-angle-group" style="margin-top: 12px;">
                         <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
                         <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
                     </div>
