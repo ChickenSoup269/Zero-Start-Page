@@ -106,6 +106,7 @@ const defaultSettings = {
   crtScanColor: "#7cffad",
   crtScanFrequency: 0.11,
   crtBackgroundColor: "#0a140f",
+  retroGameType: "space_invaders",
   retroGameColor: "#00ff00",
   wavyPatternColor1: "#AB3E5B",
   wavyPatternColor2: "#FFBE40",

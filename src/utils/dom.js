@@ -340,6 +340,12 @@ export const crtBackgroundColorPicker = document.getElementById(
 export const crtBackgroundColorSetting = document.getElementById(
   "crt-background-color-setting",
 )
+export const retroGameTypeSelect = document.getElementById(
+  "retro-game-type-select",
+)
+export const retroGameTypeSetting = document.getElementById(
+  "retro-game-type-setting",
+)
 export const retroGameColorPicker = document.getElementById(
   "retro-game-color-picker",
 )

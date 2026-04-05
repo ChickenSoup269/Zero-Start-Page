@@ -243,6 +243,18 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
+  if (DOM.retroGameTypeSelect) {
+    DOM.retroGameTypeSelect.addEventListener("change", () => {
+      updateSetting("retroGameType", DOM.retroGameTypeSelect.value)
+      saveSettings()
+      if (effectInstances.retroGameEffect) {
+        effectInstances.retroGameEffect.updateGameType(
+          DOM.retroGameTypeSelect.value,
+        )
+      }
+    })
+  }
+
   DOM.retroGameColorPicker.addEventListener("input", () => {
     updateSetting("retroGameColor", DOM.retroGameColorPicker.value)
     saveSettings()

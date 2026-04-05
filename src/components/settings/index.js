@@ -203,6 +203,7 @@ export function initSettings() {
     retroGameEffect: new RetroGameEffect(
       "effect-canvas",
       settings.retroGameColor || "#00ff00",
+      settings.retroGameType || "space_invaders",
     ),
     crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas", {
       scanColor: settings.crtScanColor || "#7cffad",
