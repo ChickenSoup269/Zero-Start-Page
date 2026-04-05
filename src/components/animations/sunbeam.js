@@ -16,7 +16,8 @@ export class SunbeamEffect {
     this.active = false
     this.rafId = null
 
-    this.fps = 30
+    // Higher FPS for smoother cinematic feel
+    this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
@@ -61,28 +62,32 @@ export class SunbeamEffect {
   // ── Beams ────────────────────────────────────────────────────────────────
   _buildBeams() {
     this.beams = []
-    // 6-9 individual rays
-    const count = 6 + Math.floor(Math.random() * 4)
+    // 10-15 individual rays for a richer cluster
+    const count = 10 + Math.floor(Math.random() * 6)
     for (let i = 0; i < count; i++) {
       this.beams.push(this._makeBeam(i, count))
     }
   }
 
   _makeBeam(i, total) {
-    // Spread rays over ~100° fan below the sun
-    const spreadRad = (100 * Math.PI) / 180
+    // Spread rays over ~130° fan below the sun
+    const spreadRad = (130 * Math.PI) / 180
     const baseAngle = Math.PI / 2 // pointing straight down
-    const angle = baseAngle - spreadRad / 2 + (spreadRad / (total - 1)) * i
+    const offset = (Math.random() - 0.5) * 0.2 // Add slight unevenness
+    const angle =
+      baseAngle - spreadRad / 2 + (spreadRad / (total - 1)) * i + offset
     return {
       angle, // base angle (rad) from sun point
-      halfWidth: (0.04 + Math.random() * 0.08) * Math.PI, // angular half-width (rad)
-      reach: 1.2 + Math.random() * 0.6, // fraction of diagonal length
-      alpha: 0.04 + Math.random() * 0.1, // peak opacity
+      swayPhase: Math.random() * Math.PI * 2, // individual drift
+      swaySpeed: 0.001 + Math.random() * 0.002, // individual drift speed
+      halfWidth: (0.03 + Math.random() * 0.08) * Math.PI, // angular half-width (rad)
+      reach: 1.1 + Math.random() * 0.8, // fraction of diagonal length
+      alpha: 0.05 + Math.random() * 0.15, // peak opacity, slightly brighter
       alphaPhase: Math.random() * Math.PI * 2, // shimmer phase
-      alphaSpeed: 0.012 + Math.random() * 0.018, // shimmer speed
-      // warm hue: 38-52° (golden yellow to amber)
-      hue: 38 + Math.random() * 14,
-      sat: 85 + Math.random() * 15,
+      alphaSpeed: 0.008 + Math.random() * 0.015, // shimmer speed
+      // warm hue: 35-55° (golden yellow to bright amber)
+      hue: 35 + Math.random() * 20,
+      sat: 80 + Math.random() * 20,
     }
   }
 
@@ -91,7 +96,8 @@ export class SunbeamEffect {
     this.dust = []
     const W = this.canvas.width
     const H = this.canvas.height
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 75; i++) {
+      // Increased dust count for more depth
       this.dust.push(this._makeDust(W, H, true))
     }
   }
@@ -100,12 +106,14 @@ export class SunbeamEffect {
     return {
       x: Math.random() * W,
       y: scattered ? Math.random() * H : H + 10,
-      r: 0.8 + Math.random() * 1.6,
-      vy: -(0.1 + Math.random() * 0.25), // drift upward very slowly
-      vx: (Math.random() - 0.5) * 0.18,
-      alpha: 0.15 + Math.random() * 0.45,
+      r: 0.6 + Math.random() * 1.8,
+      vy: -(0.05 + Math.random() * 0.2), // drift upward very slowly
+      vx: (Math.random() - 0.5) * 0.15,
+      wobbleSpeed: 0.01 + Math.random() * 0.02,
+      wobblePhase: Math.random() * Math.PI * 2,
+      alpha: 0.1 + Math.random() * 0.5,
       twinklePhase: Math.random() * Math.PI * 2,
-      twinkleSpeed: 0.03 + Math.random() * 0.04,
+      twinkleSpeed: 0.02 + Math.random() * 0.03,
     }
   }
 
@@ -142,7 +150,11 @@ export class SunbeamEffect {
     const H = this.canvas.height
     const diag = Math.sqrt(W * W + H * H)
 
-    const centerAngle = beam.angle + this.sweepAngle
+    // Add individual slight sway to each beam
+    const sway = Math.sin(beam.swayPhase) * 0.05
+    beam.swayPhase += beam.swaySpeed
+
+    const centerAngle = beam.angle + this.sweepAngle + sway
     const leftAngle = centerAngle - beam.halfWidth
     const rightAngle = centerAngle + beam.halfWidth
     const reach = diag * beam.reach
@@ -198,9 +210,24 @@ export class SunbeamEffect {
     const t = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(mote.twinklePhase))
     ctx.save()
     ctx.globalAlpha = mote.alpha * t
-    ctx.fillStyle = `hsl(45,80%,90%)`
+    ctx.globalCompositeOperation = "lighter" // Let dust glow brightly
+
+    // Add small fuzzy aura to dust
+    const radGrad = ctx.createRadialGradient(
+      mote.x,
+      mote.y,
+      0,
+      mote.x,
+      mote.y,
+      mote.r * 2,
+    )
+    radGrad.addColorStop(0, `hsla(45,90%,90%,1)`)
+    radGrad.addColorStop(0.4, `hsla(40,80%,80%,0.6)`)
+    radGrad.addColorStop(1, `hsla(35,70%,60%,0)`)
+
+    ctx.fillStyle = radGrad
     ctx.beginPath()
-    ctx.arc(mote.x, mote.y, mote.r, 0, Math.PI * 2)
+    ctx.arc(mote.x, mote.y, mote.r * 2, 0, Math.PI * 2)
     ctx.fill()
     ctx.restore()
   }
@@ -253,7 +280,7 @@ export class SunbeamEffect {
     })
 
     // Soft warm ambient glow near sun origin
-    const glowR = Math.min(W, H) * 0.55
+    const glowR = Math.min(W, H) * 0.7
     const glow = ctx.createRadialGradient(
       this.sunX,
       this.sunY,
@@ -262,9 +289,10 @@ export class SunbeamEffect {
       this.sunY,
       glowR,
     )
-    glow.addColorStop(0, `rgba(255,230,140,0.055)`)
-    glow.addColorStop(0.4, `rgba(255,200,80,0.022)`)
-    glow.addColorStop(1, `rgba(255,180,50,0)`)
+    glow.addColorStop(0, `rgba(255,240,160,0.12)`)
+    glow.addColorStop(0.3, `rgba(255,210,100,0.06)`)
+    glow.addColorStop(0.6, `rgba(255,180,60,0.02)`)
+    glow.addColorStop(1, `rgba(255,150,40,0)`)
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
     ctx.fillStyle = glow
@@ -277,9 +305,11 @@ export class SunbeamEffect {
       d.x += d.vx
       d.y += d.vy
       d.twinklePhase += d.twinkleSpeed
+      d.wobblePhase += d.wobbleSpeed
 
       // Gently drift horizontally with sweep (wind-like)
-      d.x += this.sweepAngle * 0.04
+      const wobble = Math.sin(d.wobblePhase) * 0.3
+      d.x += this.sweepAngle * 0.05 + wobble
 
       if (d.y < -10) {
         // Respawn at bottom

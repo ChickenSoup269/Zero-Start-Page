@@ -708,10 +708,15 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.networkColorPicker.value = settings.networkColor || "#00bcd4"
     DOM.matrixColorPicker.value = settings.matrixColor || "#00FF00"
     DOM.auraColorPicker.value = settings.auraColor || "#a8c0ff"
+    DOM.northernLightsColorPicker.value =
+      settings.northernLightsColor || "#00ff88"
     DOM.hackerColorPicker.value = settings.hackerColor || "#00FF00"
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
+    DOM.cursorTrailColorPicker.value = settings.cursorTrailColor || "#60c8ff"
+    DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
+    DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
     DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"
