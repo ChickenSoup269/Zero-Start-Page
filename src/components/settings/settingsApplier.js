@@ -189,6 +189,8 @@ function createApplySettings(effectInstances) {
             repeating: settings.gradientRepeating,
             extraColorCount: settings.gradientExtraColorCount,
             customColors: settings.gradientCustomColors,
+            position: settings.gradientPosition,
+            radialShape: settings.gradientRadialShape,
           })
         }
         document.body.classList.add("bg-layer-active")
@@ -682,6 +684,13 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.gradientAngleValue.textContent = settings.gradientAngle
     if (DOM.gradientTypeSelect) {
       DOM.gradientTypeSelect.value = settings.gradientType || "linear"
+    }
+    if (DOM.gradientPositionSelect) {
+      DOM.gradientPositionSelect.value = settings.gradientPosition || "center"
+    }
+    if (DOM.gradientRadialShapeSelect) {
+      DOM.gradientRadialShapeSelect.value =
+        settings.gradientRadialShape || "circle"
     }
     if (DOM.gradientRepeatingToggle) {
       DOM.gradientRepeatingToggle.checked = settings.gradientRepeating === true

@@ -29,11 +29,12 @@ function normalizeGradient(gradient) {
     ),
     customColors:
       typeof gradient?.customColors === "string" ? gradient.customColors : "",
+    position: gradient?.position || "center",
+    radialShape: gradient?.radialShape || "circle",
   }
 }
 
 function parseCustomColors(text) {
-  if (!text) return []
   const matches = text.match(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g) || []
   return matches.map((c) => {
     if (c.length === 4) {
@@ -83,8 +84,17 @@ function mixHex(a, b, t) {
 
 function buildGradientCss(gradient) {
   const normalized = normalizeGradient(gradient)
-  const { start, end, angle, type, repeating, extraColorCount, customColors } =
-    normalized
+  const {
+    start,
+    end,
+    angle,
+    type,
+    repeating,
+    extraColorCount,
+    customColors,
+    position,
+    radialShape,
+  } = normalized
   const customPalette = parseCustomColors(customColors).slice(0, 5)
   const generatedPalette = Array.from(
     { length: extraColorCount },
@@ -116,7 +126,7 @@ function buildGradientCss(gradient) {
           return `${color} ${from}% ${to}%`
         })
         .join(", ")
-      return `repeating-radial-gradient(circle at center, ${radialStops})`
+      return `repeating-radial-gradient(${radialShape} at ${position}, ${radialStops})`
     }
     if (type === "conic") {
       const conicStops = palette
@@ -127,7 +137,7 @@ function buildGradientCss(gradient) {
           return `${color} ${from}deg ${to}deg`
         })
         .join(", ")
-      return `repeating-conic-gradient(from ${angle}deg at 50% 50%, ${conicStops}, ${palette[0]} 360deg)`
+      return `repeating-conic-gradient(from ${angle}deg at ${position}, ${conicStops}, ${palette[0]} 360deg)`
     }
     // Repeating linear uses multiple color columns for textured backgrounds.
     return `repeating-linear-gradient(${angle}deg, ${linearStops})`
@@ -141,7 +151,7 @@ function buildGradientCss(gradient) {
     .join(", ")
 
   if (type === "radial") {
-    return `radial-gradient(circle at 50% 42%, ${gradientStops})`
+    return `radial-gradient(${radialShape} at ${position}, ${gradientStops})`
   }
   if (type === "conic") {
     const conicStops = palette
@@ -150,7 +160,7 @@ function buildGradientCss(gradient) {
         return `${color} ${deg}deg`
       })
       .join(", ")
-    return `conic-gradient(from ${angle}deg at 50% 50%, ${conicStops}, ${palette[0]} 360deg)`
+    return `conic-gradient(from ${angle}deg at ${position}, ${conicStops}, ${palette[0]} 360deg)`
   }
 
   return `linear-gradient(${angle}deg, ${gradientStops})`

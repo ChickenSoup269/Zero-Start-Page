@@ -256,6 +256,8 @@ export function initSettings() {
         "gradientCustomColors",
         typeof value.customColors === "string" ? value.customColors : "",
       )
+      updateSetting("gradientPosition", value.position || "center")
+      updateSetting("gradientRadialShape", value.radialShape || "circle")
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
     } else {
