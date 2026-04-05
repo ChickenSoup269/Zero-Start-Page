@@ -107,9 +107,6 @@ function createApplySettings(effectInstances) {
     }
     document.documentElement.style.setProperty("--text-color", "#ffffff")
 
-    // 2a. Stop SVG wave first (before background logic re-applies it)
-    if (effectInstances.svgWaveEffect) effectInstances.svgWaveEffect.stop()
-
     // 3. Background Logic
     let bg = settings.background
     // Resolve IndexedDB image/video ID to blob URL
@@ -177,7 +174,11 @@ function createApplySettings(effectInstances) {
       // If no background image/color, apply SVG wave → fallback
       if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
         shouldUseSvgWave = true
-        effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
+        if (effectInstances.svgWaveEffect.active) {
+          effectInstances.svgWaveEffect.update(getSvgWaveParams(settings))
+        } else {
+          effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
+        }
       } else {
         if (bgLayer) {
           bgLayer.style.background = buildGradientCss({
@@ -819,11 +820,13 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // SVG Wave Generator
     const waveActive = settings.svgWaveActive === true
-    DOM.svgWaveSettings.style.display = waveActive ? "block" : "none"
+    const waveGeneratorOpen =
+      localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
+    DOM.svgWaveSettings.style.display = waveGeneratorOpen ? "block" : "none"
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()
-      DOM.svgWaveToggleLabel.textContent = waveActive
-        ? i18n.settings_svg_wave_close || "Close Controls"
+      DOM.svgWaveToggleLabel.textContent = waveGeneratorOpen
+        ? i18n.settings_svg_wave_close || "Close Wave Generator"
         : i18n.settings_svg_wave_open || "Open Wave Generator"
     }
 
@@ -855,7 +858,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.svgWaveEndLight.value = settings.svgWaveEndLightness ?? 30
     DOM.svgWaveEndLightValue.textContent = DOM.svgWaveEndLight.value
     effectInstances.updateWaveColorPreviews(settings)
-    renderUserSvgWaves(effectInstances.DOM, effectInstances.svgWaveEffect)
+    renderUserSvgWaves(effectInstances.DOM, effectInstances.svgWaveEffect, () =>
+      effectInstances.handleSettingUpdate("svgWaveActive", true),
+    )
     renderLocalBackgrounds(
       effectInstances.DOM,
       effectInstances.handleSettingUpdate,
@@ -924,12 +929,25 @@ function createUpdateSettingsInputs(effectInstances) {
       item.classList.toggle("active", item.dataset.bgId === settings.background)
     })
     document.querySelectorAll(".user-gradient-item").forEach((item) => {
-      const isActive =
-        !settings.background &&
-        item.dataset.start === settings.gradientStart &&
-        item.dataset.end === settings.gradientEnd &&
-        item.dataset.angle === settings.gradientAngle
-      item.classList.toggle("active", isActive)
+      if (item.classList.contains("user-svg-wave-item")) {
+        const isActive =
+          settings.svgWaveActive &&
+          !settings.background &&
+          item.dataset.lines == settings.svgWaveLines &&
+          item.dataset.ampx == settings.svgWaveAmplitudeX &&
+          item.dataset.ampy == settings.svgWaveAmplitudeY &&
+          item.dataset.startHue == settings.svgWaveStartHue &&
+          item.dataset.endHue == settings.svgWaveEndHue
+        item.classList.toggle("active", isActive)
+      } else {
+        const isActive =
+          !settings.background &&
+          !settings.svgWaveActive &&
+          item.dataset.start === settings.gradientStart &&
+          item.dataset.end === settings.gradientEnd &&
+          item.dataset.angle === settings.gradientAngle
+        item.classList.toggle("active", isActive)
+      }
     })
   }
 }
