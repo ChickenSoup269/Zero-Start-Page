@@ -14,7 +14,7 @@ import { geti18n } from "../../services/i18n.js"
 import { showConfirm } from "../../utils/dialog.js"
 import { getSvgWaveParams } from "./svgWaveUtils.js"
 
-function renderUserSvgWaves(DOM, svgWaveEffect) {
+function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
   const settings = getSettings()
   if (!DOM.userSvgWavesGallery) return
   DOM.userSvgWavesGallery.innerHTML = ""
@@ -28,7 +28,12 @@ function renderUserSvgWaves(DOM, svgWaveEffect) {
   DOM.userSvgWavesGallery.parentElement.style.display = ""
   settings.userSvgWaves.forEach((wave, index) => {
     const item = document.createElement("div")
-    item.className = "user-gradient-item"
+    item.className = "user-gradient-item user-svg-wave-item local-bg-item"
+    item.dataset.lines = wave.lines
+    item.dataset.ampx = wave.amplitudeX
+    item.dataset.ampy = wave.amplitudeY
+    item.dataset.startHue = wave.startHue
+    item.dataset.endHue = wave.endHue
     item.title = `Wave ${index + 1}`
     item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
     item.style.backgroundSize = "cover"
@@ -42,7 +47,7 @@ function renderUserSvgWaves(DOM, svgWaveEffect) {
       if (await showConfirm(i18n.alert_delete_bg_confirm)) {
         settings.userSvgWaves.splice(index, 1)
         saveSettings()
-        renderUserSvgWaves(DOM, svgWaveEffect)
+        renderUserSvgWaves(DOM, svgWaveEffect, onActivate)
       }
     })
 
@@ -65,12 +70,8 @@ function renderUserSvgWaves(DOM, svgWaveEffect) {
       updateSetting("svgWaveActive", true)
       updateSetting("background", null)
       saveSettings()
-      const gParams = getSvgWaveParams(getSettings())
-      if (svgWaveEffect.active) {
-        svgWaveEffect.update(gParams)
-      } else {
-        svgWaveEffect.start(gParams)
-      }
+
+      if (onActivate) onActivate()
     })
 
     DOM.userSvgWavesGallery.appendChild(item)

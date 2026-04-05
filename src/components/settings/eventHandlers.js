@@ -1040,11 +1040,18 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.svgWaveToggleBtn.addEventListener("click", () => {
+    const isCurrentlyOpen =
+      localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
+    const nowOpen = !isCurrentlyOpen
+    localStorage.setItem("startpage_svgWaveGeneratorOpen", nowOpen ? "1" : "0")
+
     const settings = getSettings()
-    const nowActive = !settings.svgWaveActive
-    updateSetting("svgWaveActive", nowActive)
-    if (nowActive) updateSetting("background", null)
-    saveSettings()
+    // Mở ra thì tự động bật sóng nếu chưa bật
+    if (nowOpen && !settings.svgWaveActive) {
+      updateSetting("svgWaveActive", true)
+      updateSetting("background", null)
+      saveSettings()
+    }
     applySettings()
     updateSettingsInputs()
   })
@@ -1085,10 +1092,8 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.svgWaveCloseBtn.addEventListener("click", () => {
-    updateSetting("svgWaveActive", false)
-    saveSettings()
+    localStorage.setItem("startpage_svgWaveGeneratorOpen", "0")
     applySettings()
-    updateSettingsInputs()
   })
 
   DOM.svgWaveRandomizeBtn.addEventListener("click", () => {
@@ -1129,7 +1134,10 @@ export function setupGeneralEventHandlers(
     }
     settings.userSvgWaves.push(wave)
     saveSettings()
-    renderUserSvgWaves(DOM, effects.svgWaveEffect)
+    renderUserSvgWaves(DOM, effects.svgWaveEffect, () => {
+      applySettings()
+      updateSettingsInputs()
+    })
   })
 
   // Wave sliders

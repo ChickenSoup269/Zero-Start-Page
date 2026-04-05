@@ -264,7 +264,6 @@ export function initSettings() {
       }
     }
     saveSettings()
-    applySettings()
 
     // Avoid expensive gallery rerenders for unrelated toggles (e.g. clock/date).
     const shouldRefreshBackgroundGalleries =
@@ -273,6 +272,8 @@ export function initSettings() {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
     }
+
+    applySettings()
   }
 
   ctx.handleSettingUpdate = handleSettingUpdate
@@ -333,7 +334,6 @@ export function initSettings() {
 
   // Initialize data and renderers
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)
-  renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect)
   renderUserColors(DOM_EXPORTS)
   renderUserAccentColors(DOM_EXPORTS)
 
@@ -369,5 +369,8 @@ export function initSettings() {
   // Final setup
   renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
   renderUserGradients(DOM_EXPORTS)
+  renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+    handleSettingUpdate("svgWaveActive", true)
+  })
   applySettings()
 }
