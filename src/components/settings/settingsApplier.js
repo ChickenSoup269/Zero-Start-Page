@@ -194,6 +194,11 @@ function createApplySettings(effectInstances) {
         document.body.classList.add("bg-layer-active")
       }
     }
+
+    if (!shouldUseSvgWave && effectInstances.svgWaveEffect?.active) {
+      effectInstances.svgWaveEffect.stop()
+    }
+
     // 2.1 Background Position
     document.documentElement.style.setProperty(
       "--bg-pos-x",
@@ -805,6 +810,13 @@ function createUpdateSettingsInputs(effectInstances) {
     ).toFixed(2)
     DOM.crtBackgroundColorPicker.value =
       settings.crtBackgroundColor || "#0a140f"
+
+    DOM.retroGameTypeSetting.style.display =
+      settings.effect === "retroGame" ? "block" : "none"
+    if (DOM.retroGameTypeSelect) {
+      DOM.retroGameTypeSelect.value = settings.retroGameType || "space_invaders"
+    }
+
     DOM.retroGameColorSetting.style.display =
       settings.effect === "retroGame" ? "block" : "none"
     DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"

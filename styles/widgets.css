@@ -843,7 +843,9 @@ body.ghost-controls .side-controls:hover {
   top: 3px;
   background: #fff;
   border-radius: 50%;
-  transition: transform 0.2s;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
 }
 
 .lcp-switch input:checked + .lcp-slider {
@@ -852,6 +854,7 @@ body.ghost-controls .side-controls:hover {
 
 .lcp-switch input:checked + .lcp-slider::before {
   transform: translateX(16px);
+  background: var(--accent-contrast-color, #ffffff);
 }
 
 /* Glass Panels */
