@@ -61,6 +61,7 @@ import { AuraEffect } from "../animations/aura.js"
 import { WindEffect } from "../animations/wind.js"
 import { HackerEffect } from "../animations/hacker.js"
 import { PixelCubes } from "../animations/pixelCubes.js"
+import { Jellyfish } from "../animations/jellyfish.js"
 import { SakuraEffect } from "../animations/sakura.js"
 import { SnowfallEffect } from "../animations/snowfall.js"
 import { SnowfallHDEffect } from "../animations/snowfallHD.js"
@@ -231,6 +232,10 @@ export function initSettings() {
     angledPatternEffect: new AngledPatternEffect(
       settings.angledPatternColor1 || "#ECD078",
       settings.angledPatternColor2 || "#0B486B",
+    ),
+    jellyfishEffect: new Jellyfish(
+      "effect-canvas",
+      settings.jellyfishColor || "#ffaa00",
     ),
     svgWaveEffect: new SvgWaveGenerator(),
   }

@@ -1490,6 +1490,9 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
   setupLayoutCheckbox(DOM.showQuickAccessCheckbox, "showQuickAccess", {})
+  if (DOM.showDonateButtonCheckbox) {
+    setupLayoutCheckbox(DOM.showDonateButtonCheckbox, "showDonateButton", {})
+  }
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})

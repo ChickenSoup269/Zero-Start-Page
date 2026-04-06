@@ -68,6 +68,17 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
+  if (DOM.jellyfishColorPicker) {
+    DOM.jellyfishColorPicker.addEventListener("input", () => {
+      updateSetting("jellyfishColor", DOM.jellyfishColorPicker.value)
+      saveSettings()
+      if (effectInstances.jellyfishEffect)
+        effectInstances.jellyfishEffect.updateColor(
+          DOM.jellyfishColorPicker.value,
+        )
+    })
+  }
+
   DOM.sakuraColorPicker.addEventListener("input", () => {
     updateSetting("sakuraColor", DOM.sakuraColorPicker.value)
     saveSettings()

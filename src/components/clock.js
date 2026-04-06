@@ -1,5 +1,6 @@
 import { clockElement, dateElement } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
+import { geti18n } from "../services/i18n.js"
 
 function applyHuePerCharacter(target, seed = 0) {
   if (!target) return
@@ -158,6 +159,57 @@ export function updateTime() {
         <div class="analog-center-dot"></div>
       </div>
     `
+  } else if (dateClockStyle === "cool") {
+    let tDate = now
+    if (tz) {
+      tDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    }
+    const hour24 = tDate.getHours()
+
+    let greetingKey = "greeting_evening"
+    if (hour24 < 12) greetingKey = "greeting_morning"
+    else if (hour24 < 18) greetingKey = "greeting_afternoon"
+
+    const i18n = geti18n()
+    const greeting = i18n[greetingKey] || "Hello"
+
+    const timeOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: tz,
+    }
+    const timeStr = now.toLocaleTimeString(langCode, timeOptions)
+
+    const dayName = now.toLocaleDateString(langCode, {
+      weekday: "long",
+      timeZone: tz,
+    })
+    const day = now.toLocaleDateString(langCode, {
+      day: "2-digit",
+      timeZone: tz,
+    })
+    const monthName = now.toLocaleDateString(langCode, {
+      month: "long",
+      timeZone: tz,
+    })
+
+    clockElement.innerHTML = `
+      <div class="cool-style-wrapper">
+        <div class="cool-bar">|</div>
+        <div class="cool-greeting">${greeting}</div>
+        ${
+          shouldShowDate
+            ? `
+          <div class="cool-dayname">${dayName}</div>
+          <div class="cool-date">${day} - ${monthName}</div>
+        `
+            : ""
+        }
+        <div class="cool-time">${timeStr}</div>
+        <div class="cool-bar">|</div>
+      </div>
+    `
   } else if (isFramedClockStyle) {
     const roundTimeOptions = settings.hideSeconds
       ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
@@ -244,8 +296,14 @@ export function updateTime() {
   }
 
   // Handle date visibility - check both showDate AND showGregorian
-  dateElement.classList.toggle("is-hidden", !shouldShowDate)
-  if (isFramedClockStyle) {
+  dateElement.classList.toggle(
+    "is-hidden",
+    !shouldShowDate || dateClockStyle === "cool",
+  )
+  if (dateClockStyle === "cool") {
+    dateElement.innerHTML = ""
+    dateElement.textContent = ""
+  } else if (isFramedClockStyle) {
     dateElement.innerHTML = `<span class="clock-date-primary">${dateString || ""}</span>`
   } else {
     dateElement.textContent = dateString

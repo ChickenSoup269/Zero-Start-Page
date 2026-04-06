@@ -53,6 +53,10 @@
   "settings_clock_date_style_glass": "Glass",
   "settings_clock_date_style_round": "Round Clock",
   "settings_clock_date_style_square": "Square Clock",
+  "settings_clock_date_style_cool": "Cool Style",
+  "greeting_morning": "Good morning",
+  "greeting_afternoon": "Good afternoon",
+  "greeting_evening": "Good evening",
   "settings_clock_date_style_analog": "Analog Clock",
   "settings_hue_text_mode": "Random HUE Letters",
   "settings_hue_text_mode_off": "Off",
@@ -384,5 +388,8 @@
   "donate_title": "Support Developer",
   "donate_desc": "Choose a platform to support the development:",
   "donate_thank_you": "Thank you so much for your support! ❤️",
-  "donate_button": "Buy me a coffee"
+  "donate_button": "Buy me a coffee",
+  "settings_show_donate_btn": "Show Donate Button",
+  "effect_jellyfish": "Jellyfish",
+  "setting_jellyfish_color": "Jellyfish Color"
 }
