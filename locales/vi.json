@@ -52,6 +52,10 @@
   "settings_clock_date_style_glass": "Kính mờ",
   "settings_clock_date_style_round": "Đồng hồ tròn",
   "settings_clock_date_style_square": "Đồng hồ vuông",
+  "settings_clock_date_style_cool": "Kiểu ngầu",
+  "greeting_morning": "Buổi sáng năng lượng",
+  "greeting_afternoon": "Buổi chiều tươi mới",
+  "greeting_evening": "Buổi tối thư giãn",
   "settings_clock_date_style_analog": "Đồng hồ kim",
   "settings_hue_text_mode": "Chữ HUE ngẫu nhiên",
   "settings_hue_text_mode_off": "Tắt",
@@ -382,5 +386,8 @@
   "donate_title": "Ủng hộ Nhà phát triển",
   "donate_desc": "Chọn một nền tảng để ủng hộ dự án:",
   "donate_thank_you": "Cảm ơn bạn rất nhiều vì đã quyên góp ủng hộ! ❤️",
-  "donate_button": "Mời dev ly cà phê sữa"
+  "donate_button": "Mời dev ly cà phê sữa",
+  "settings_show_donate_btn": "Hiện nút Donate",
+  "effect_jellyfish": "Sứa Biển",
+  "setting_jellyfish_color": "Màu Sứa"
 }

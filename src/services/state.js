@@ -148,6 +148,7 @@ const defaultSettings = {
   musicPlayerExpanded: false,
   sideControlsGhostMode: false,
   showQuickAccess: true,
+  showDonateButton: true,
   showBookmarks: true,
   showBookmarkGroups: true,
   showSearchBar: true,
@@ -364,6 +365,7 @@ export function resetSettingsState() {
     timerIsRunning: false,
     musicPlayerExpanded: false,
     showQuickAccess: true,
+    showDonateButton: true,
   }
   settingsState = defaultSettings
   saveSettings()

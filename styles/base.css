@@ -739,3 +739,46 @@ body.bg-layer-active {
   background: transparent !important;
   animation: none !important;
 }
+
+/* Cool Style */
+body.date-clock-style-cool .clock-date-wrap {
+  text-align: center;
+}
+body.date-clock-style-cool .cool-style-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1.1;
+}
+body.date-clock-style-cool .cool-bar {
+  font-size: calc(var(--clock-size) * 0.2);
+  transform: scaleY(2.5);
+  font-weight: 600;
+  margin: 0.3rem 0;
+  padding: 25px;
+}
+body.date-clock-style-cool .cool-greeting {
+  font-size: calc(var(--clock-size) * 0.15);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+body.date-clock-style-cool .cool-dayname {
+  font-size: calc(var(--clock-size) * 0.6);
+  font-weight: bold;
+  color: var(--accent-color, #fff);
+  text-transform: uppercase;
+  margin: 0.2rem 0;
+}
+body.date-clock-style-cool .cool-date {
+  font-size: calc(var(--clock-size) * 0.25);
+  letter-spacing: 1px;
+}
+body.date-clock-style-cool .cool-time {
+  font-size: calc(var(--clock-size) * 0.15);
+  font-weight: bold;
+  padding-top: 10px;
+  letter-spacing: 2px;
+}

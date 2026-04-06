@@ -224,6 +224,12 @@ export const pixelCubesColorPicker = document.getElementById(
 export const pixelCubesColorSetting = document.getElementById(
   "pixel-cubes-color-setting",
 )
+export const jellyfishColorPicker = document.getElementById(
+  "jellyfish-color-picker",
+)
+export const jellyfishColorSetting = document.getElementById(
+  "jellyfish-color-setting",
+)
 export const sakuraColorPicker = document.getElementById("sakura-color-picker")
 export const sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
@@ -718,3 +724,8 @@ export const donateModal = document.getElementById("donate-modal")
 export const closeDonateModalBtn = document.getElementById("close-donate-modal")
 export const showMomoQrBtn = document.getElementById("show-momo-qr-btn")
 export const momoQrContainer = document.getElementById("momo-qr-container")
+
+export const showDonateButtonCheckbox = document.getElementById(
+  "show-donate-btn-checkbox",
+)
+export const donateSection = document.querySelector(".donate-section")

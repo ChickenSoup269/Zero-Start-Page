@@ -1036,6 +1036,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
                             <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
                         </button>
+                        <button class="effect-item" data-value="jellyfish"
+                            data-search="jellyfish sua mourse interactive hover">
+                            <span class="effect-icon"><i class="fas fa-smile"></i></span>
+                            <span class="effect-name" data-i18n="effect_jellyfish">Jellyfish</span>
+                        </button>
                         <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
                             <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
                             <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
@@ -1200,6 +1205,13 @@
                         <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes
                             Color</label>
                         <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
+                    </div>
+
+                    <!-- Jellyfish Color -->
+                    <div id="jellyfish-color-setting" class="setting-item" style="display: none;">
+                        <label for="jellyfish-color-picker" data-i18n="setting_jellyfish_color">Jellyfish
+                            Color</label>
+                        <input type="color" id="jellyfish-color-picker" value="#ffaa00" />
                     </div>
 
                     <!-- Star Color (Galaxy) -->
@@ -1522,6 +1534,7 @@
                                 <option value="round" data-i18n="settings_clock_date_style_round">Round Clock</option>
                                 <option value="square" data-i18n="settings_clock_date_style_square">Square Clock
                                 </option>
+                                <option value="cool" data-i18n="settings_clock_date_style_cool">Cool Style</option>
                                 <option value="analog" data-i18n="settings_clock_date_style_analog">Analog Clock
                                 </option>
                             </select>
@@ -1836,6 +1849,11 @@
                         <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show Google
                             Apps & Avatar</label>
                         <input type="checkbox" id="show-top-right-controls-checkbox" checked>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="show-donate-btn-checkbox" data-i18n="settings_show_donate_btn">Show Donate
+                            Button</label>
+                        <input type="checkbox" id="show-donate-btn-checkbox" checked>
                     </div>
                 </div>
             </div>

@@ -36,6 +36,7 @@ const EFFECT_KEY_MAP = {
   wind: "windEffect",
   hacker: "hackerEffect",
   pixelCubes: "pixelCubesEffect",
+  jellyfish: "jellyfishEffect",
   sakura: "sakuraEffect",
   snowfall: "snowfallEffect",
   snowfallHD: "snowfallHDEffect",
@@ -92,6 +93,12 @@ function createApplySettings(effectInstances) {
         "hidden",
         !settings.showTopRightControls,
       )
+    }
+
+    const donateSection = document.querySelector(".donate-section")
+    if (donateSection) {
+      donateSection.style.display =
+        settings.showDonateButton !== false ? "flex" : "none"
     }
 
     // 2. Reset Styles
@@ -727,6 +734,9 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.northernLightsColor || "#00ff88"
     DOM.hackerColorPicker.value = settings.hackerColor || "#00FF00"
     DOM.pixelCubesColorPicker.value = settings.pixelCubesColor || "#00ff73"
+    if (DOM.jellyfishColorPicker) {
+      DOM.jellyfishColorPicker.value = settings.jellyfishColor || "#ffaa00"
+    }
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
@@ -763,6 +773,10 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "hacker" ? "block" : "none"
     DOM.pixelCubesColorSetting.style.display =
       settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.jellyfishColorSetting) {
+      DOM.jellyfishColorSetting.style.display =
+        settings.effect === "jellyfish" ? "block" : "none"
+    }
     DOM.sakuraColorSetting.style.display =
       settings.effect === "sakura" ? "block" : "none"
     DOM.snowfallColorSetting.style.display =
@@ -909,6 +923,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
     DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+    if (DOM.showDonateButtonCheckbox) {
+      DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
+    }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.showSearchAiIconCheckbox) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
