@@ -246,6 +246,7 @@
   "settings_show_gregorian": "Show Gregorian Calendar",
   "settings_show_music": "Show Music Player",
   "settings_show_clock": "Show Clock",
+  "settings_free_move_clock": "Free Move Clock",
   "settings_show_full_calendar": "Show Full Calendar",
   "settings_show_lunar_calendar": "Show Lunar Calendar (Vietnamese)",
   "settings_reset_layout": "Reset Layout Positions",

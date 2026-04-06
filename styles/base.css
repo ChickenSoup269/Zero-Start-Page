@@ -782,3 +782,16 @@ body.date-clock-style-cool .cool-time {
   padding-top: 10px;
   letter-spacing: 2px;
 }
+
+/* Free Mode Clock */
+body.free-move-clock .clock-date-wrap {
+  position: absolute !important;
+  z-index: 100;
+  cursor: move;
+}
+
+body.free-move-clock:not(.date-clock-style-round):not(.date-clock-style-square)
+  .clock-date-wrap {
+  width: fit-content !important;
+  white-space: nowrap;
+}

@@ -14,12 +14,25 @@ export function makeDraggable(
   const settings = getSettings()
   const savedPos = settings.componentPositions?.[componentId]
 
-  if (savedPos) {
+  if (componentId === "clock" && !settings.freeMoveClock) {
+    element.style.position = ""
+    element.style.top = ""
+    element.style.left = ""
+    element.style.bottom = ""
+    element.style.right = ""
+    element.style.transform = ""
+    element.style.margin = ""
+  } else if (savedPos) {
     element.style.top = savedPos.top
     element.style.left = savedPos.left
     element.style.bottom = "auto"
     element.style.right = "auto"
+    element.style.margin = savedPos.margin || "0"
     if (savedPos.transform) element.style.transform = savedPos.transform
+  } else if (componentId === "clock" && settings.freeMoveClock) {
+    element.style.top = "35%"
+    element.style.left = "50%"
+    element.style.transform = "translate(-50%, -50%)"
   }
 
   // Also check if locked and add class
@@ -36,6 +49,10 @@ export function makeDraggable(
 
   // Attach contextmenu listener to the element and handle
   handle.addEventListener("contextmenu", (e) => {
+    const currentSettings = getSettings()
+    if (componentId === "clock" && !currentSettings.freeMoveClock) {
+      return // Don't show context menu for clock if free move is disabled
+    }
     e.preventDefault()
     e.stopPropagation()
     showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
@@ -51,6 +68,11 @@ export function makeDraggable(
       currentSettings.lockedWidgets[componentId]
     ) {
       return // Cannot drag if locked
+    }
+
+    // Check if free move is enabled for clock
+    if (componentId === "clock" && !currentSettings.freeMoveClock) {
+      return // Cannot drag clock unless free move is explicitly enabled
     }
     // If the click target is an interactive element (button, input, etc.)
     // and it's not explicitly the 'drag-handle' icon itself, prevent dragging.
@@ -80,13 +102,19 @@ export function makeDraggable(
     e.preventDefault() // Prevent default text selection, etc.
     pos3 = e.clientX
     pos4 = e.clientY
+
+    // Avoid visual jumping when element is dragged by converting its transformed/margined rect into explicit inline top/left.
+    const rect = element.getBoundingClientRect()
+    element.style.margin = "0"
+    element.style.transform = "none"
+    element.style.top = rect.top + window.scrollY + "px"
+    element.style.left = rect.left + window.scrollX + "px"
+    element.style.bottom = "auto"
+    element.style.right = "auto"
+
     document.onmouseup = closeDragElement
     document.onmousemove = elementDrag
     element.classList.add("dragging")
-
-    // Ensure positioning is ready for top/left updates
-    element.style.bottom = "auto"
-    element.style.right = "auto"
   }
 
   function elementDrag(e) {
@@ -111,10 +139,6 @@ export function makeDraggable(
 
     element.style.top = newTop + "px"
     element.style.left = newLeft + "px"
-    element.style.bottom = "auto"
-    element.style.right = "auto"
-    element.style.margin = "0"
-    element.style.transform = "none" // Essential: clear the translate(-50%) logic
   }
 
   function closeDragElement() {

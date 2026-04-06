@@ -47,6 +47,7 @@ import {
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
+import { hexToRgb } from "../../utils/colors.js"
 
 export function setupGeneralEventHandlers(
   ctx,
@@ -452,7 +453,20 @@ export function setupGeneralEventHandlers(
   })
 
   // Accent color
-  DOM.accentColorPicker.addEventListener("input", () =>
+  DOM.accentColorPicker.addEventListener("input", () => {
+    document.documentElement.style.setProperty(
+      "--accent-color",
+      DOM.accentColorPicker.value,
+    )
+    const rgb = hexToRgb(DOM.accentColorPicker.value)
+    if (rgb) {
+      document.documentElement.style.setProperty(
+        "--accent-color-rgb",
+        `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+      )
+    }
+  })
+  DOM.accentColorPicker.addEventListener("change", () =>
     handleSettingUpdate("accentColor", DOM.accentColorPicker.value),
   )
 
@@ -1401,11 +1415,23 @@ export function setupGeneralEventHandlers(
 
   DOM.clockSizeInput.addEventListener("input", () => {
     DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
+    document.documentElement.style.setProperty(
+      "--clock-size",
+      `${DOM.clockSizeInput.value}rem`,
+    )
+  })
+  DOM.clockSizeInput.addEventListener("change", () => {
     handleSettingUpdate("clockSize", DOM.clockSizeInput.value)
   })
 
   DOM.dateSizeInput.addEventListener("input", () => {
     DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
+    document.documentElement.style.setProperty(
+      "--date-size",
+      `${DOM.dateSizeInput.value}rem`,
+    )
+  })
+  DOM.dateSizeInput.addEventListener("change", () => {
     handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
 
@@ -1419,6 +1445,12 @@ export function setupGeneralEventHandlers(
 
   if (DOM.clockDateStrokeColorPicker) {
     DOM.clockDateStrokeColorPicker.addEventListener("input", (e) => {
+      document.documentElement.style.setProperty(
+        "--clock-date-stroke-color",
+        e.target.value,
+      )
+    })
+    DOM.clockDateStrokeColorPicker.addEventListener("change", (e) => {
       handleSettingUpdate("clockDateStrokeColor", e.target.value)
     })
   }
@@ -1429,14 +1461,26 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  DOM.clockColorPicker.addEventListener("input", () =>
+  DOM.clockColorPicker.addEventListener("input", () => {
+    document.documentElement.style.setProperty(
+      "--clock-color",
+      DOM.clockColorPicker.value,
+    )
+  })
+  DOM.clockColorPicker.addEventListener("change", () =>
     handleSettingUpdate("clockColor", DOM.clockColorPicker.value),
   )
   DOM.resetClockColorBtn.addEventListener("click", () =>
     handleSettingUpdate("clockColor", null),
   )
 
-  DOM.dateColorPicker.addEventListener("input", () =>
+  DOM.dateColorPicker.addEventListener("input", () => {
+    document.documentElement.style.setProperty(
+      "--date-color",
+      DOM.dateColorPicker.value,
+    )
+  })
+  DOM.dateColorPicker.addEventListener("change", () =>
     handleSettingUpdate("dateColor", DOM.dateColorPicker.value),
   )
   DOM.resetDateColorBtn.addEventListener("click", () =>
@@ -1487,6 +1531,7 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})
   setupLayoutCheckbox(DOM.showClockCheckbox, "showClock", {})
+  setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
   setupLayoutCheckbox(DOM.showQuickAccessCheckbox, "showQuickAccess", {})
