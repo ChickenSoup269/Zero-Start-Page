@@ -143,6 +143,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
               badge.className = "video-thumb-badge"
               badge.innerHTML = '<i class="fa-solid fa-film"></i>'
               item.appendChild(badge)
+
+              // FREE MEMORY IMMEDIATELY ONCE THUMBNAIL IS CAPTURED
+              vid.removeAttribute("src")
+              vid.load()
             },
             { once: true },
           )
