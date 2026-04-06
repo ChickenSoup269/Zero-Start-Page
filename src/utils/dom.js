@@ -218,7 +218,9 @@ export const hackerColorPicker = document.getElementById("hacker-color-picker")
 export const hackerColorSetting = document.getElementById(
   "hacker-color-setting",
 )
-export const pixelCubesColorPicker = document.getElementById("pixel-cubes-color-picker")
+export const pixelCubesColorPicker = document.getElementById(
+  "pixel-cubes-color-picker",
+)
 export const pixelCubesColorSetting = document.getElementById(
   "pixel-cubes-color-setting",
 )
@@ -711,8 +713,8 @@ export const userSvgWavesGallery = document.getElementById(
 )
 
 // Donate Modal
-export const donateTriggerBtn = document.getElementById('donate-trigger-btn');
-export const donateModal = document.getElementById('donate-modal');
-export const closeDonateModalBtn = document.getElementById('close-donate-modal');
-export const showMomoQrBtn = document.getElementById('show-momo-qr-btn');
-export const momoQrContainer = document.getElementById('momo-qr-container');
+export const donateTriggerBtn = document.getElementById("donate-trigger-btn")
+export const donateModal = document.getElementById("donate-modal")
+export const closeDonateModalBtn = document.getElementById("close-donate-modal")
+export const showMomoQrBtn = document.getElementById("show-momo-qr-btn")
+export const momoQrContainer = document.getElementById("momo-qr-container")

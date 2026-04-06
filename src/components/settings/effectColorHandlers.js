@@ -63,7 +63,9 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("pixelCubesColor", DOM.pixelCubesColorPicker.value)
     saveSettings()
     if (effectInstances.pixelCubesEffect)
-      effectInstances.pixelCubesEffect.updateColor(DOM.pixelCubesColorPicker.value)
+      effectInstances.pixelCubesEffect.updateColor(
+        DOM.pixelCubesColorPicker.value,
+      )
   })
 
   DOM.sakuraColorPicker.addEventListener("input", () => {
