@@ -709,3 +709,10 @@ export const svgWaveCrazyBtn = document.getElementById("svg-wave-crazy-btn")
 export const userSvgWavesGallery = document.getElementById(
   "user-svg-waves-gallery",
 )
+
+// Donate Modal
+export const donateTriggerBtn = document.getElementById('donate-trigger-btn');
+export const donateModal = document.getElementById('donate-modal');
+export const closeDonateModalBtn = document.getElementById('close-donate-modal');
+export const showMomoQrBtn = document.getElementById('show-momo-qr-btn');
+export const momoQrContainer = document.getElementById('momo-qr-container');

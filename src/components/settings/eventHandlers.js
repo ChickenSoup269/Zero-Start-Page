@@ -89,8 +89,37 @@ export function setupGeneralEventHandlers(
     DOM.settingsSidebar.classList.add("open"),
   )
   DOM.closeSettings.addEventListener("click", () =>
-    DOM.settingsSidebar.classList.remove("open"),
-  )
+      DOM.settingsSidebar.classList.remove("open")
+    )
+
+
+    const btnDonate = document.getElementById("donate-trigger-btn");
+    const modDonate = document.getElementById("donate-modal");
+    const closeDonate = document.getElementById("close-donate-modal");
+    const showMomo = document.getElementById("show-momo-qr-btn");
+    const momoQr = document.getElementById("momo-qr-container");
+
+    if (btnDonate) {
+        btnDonate.addEventListener("click", () => {
+            if (modDonate) modDonate.classList.add("show");
+            if (momoQr) momoQr.style.display = "none";
+        });
+    }
+    if (closeDonate) {
+        closeDonate.addEventListener("click", () => {
+            if (modDonate) modDonate.classList.remove("show");
+        });
+    }
+    if (showMomo) {
+        showMomo.addEventListener("click", () => {
+            if (momoQr) momoQr.style.display = momoQr.style.display === "none" ? "block" : "none";
+        });
+    }
+    window.addEventListener("click", (e) => {
+        if (modDonate && e.target === modDonate) {
+            modDonate.classList.remove("show");
+        }
+    });
   document.addEventListener("click", (e) => {
     if (
       !DOM.settingsSidebar.contains(e.target) &&
@@ -1954,3 +1983,6 @@ export function setupGeneralEventHandlers(
     }
   })
 }
+
+
+
