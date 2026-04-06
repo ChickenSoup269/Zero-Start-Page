@@ -42,7 +42,7 @@ export function makeDraggable(
 
   // Use the provided handleSelector or default to the entire element
   const handle = element.querySelector(handleSelector) || element
-  handle.style.cursor = "move"
+  handle.style.cursor = "default" // Set default cursor for handle
 
   // Attach mousedown listener to the handle
   handle.onmousedown = dragMouseDown

@@ -117,7 +117,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       if (isIdbVideo(bgId)) {
         item.classList.add("video-bg-item")
         item.innerHTML = '<i class="fa-solid fa-film"></i>'
-        
+
         if (_videoThumbCache.has(bgId)) {
           item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
           const placeholder = item.querySelector("i.fa-film")
@@ -163,11 +163,15 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
             },
             { once: true },
           )
-          vid.addEventListener("error", () => {
-            console.warn("Video thumbnail generation failed.");
-            vid.removeAttribute("src");
-            vid.load();
-          }, { once: true });
+          vid.addEventListener(
+            "error",
+            () => {
+              console.warn("Video thumbnail generation failed.")
+              vid.removeAttribute("src")
+              vid.load()
+            },
+            { once: true },
+          )
         }
       } else if (thumbUrl) {
         item.style.backgroundImage = `url('${thumbUrl}')`

@@ -1678,7 +1678,7 @@ body.ghost-controls .side-controls:hover {
   border: none;
   padding: 8px 12px;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: move;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
 }
