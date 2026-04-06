@@ -132,7 +132,10 @@ function createApplySettings(effectInstances) {
         bg.startsWith("blob:"))
     const bgVideoElement = document.getElementById("bg-video")
 
-    // Hide video by default
+    // Track if a video was assigned this render to clean up unused videos
+    let activeVideoSource = null
+
+    // Hide video by default, we'll show it if it's active
     if (bgVideoElement) bgVideoElement.style.display = "none"
 
     if (isPredefinedLocalBg) {
@@ -143,7 +146,10 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bg-image-active")
       if (bg.startsWith("data:video") || isVideoId) {
         if (bgVideoElement) {
-          bgVideoElement.src = bg
+          activeVideoSource = bg
+          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+            bgVideoElement.src = activeVideoSource
+          }
           bgVideoElement.style.display = "block"
         }
       } else {
@@ -160,7 +166,10 @@ function createApplySettings(effectInstances) {
         bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
       if (isVideoUrl) {
         if (bgVideoElement) {
-          bgVideoElement.src = bg
+          activeVideoSource = bg
+          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+            bgVideoElement.src = activeVideoSource
+          }
           bgVideoElement.style.display = "block"
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
@@ -203,6 +212,15 @@ function createApplySettings(effectInstances) {
         }
         document.body.classList.add("bg-layer-active")
       }
+    }
+
+    if (
+      !activeVideoSource &&
+      bgVideoElement &&
+      bgVideoElement.getAttribute("src")
+    ) {
+      bgVideoElement.removeAttribute("src")
+      bgVideoElement.load()
     }
 
     if (!shouldUseSvgWave && effectInstances.svgWaveEffect?.active) {
