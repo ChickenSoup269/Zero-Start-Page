@@ -29,6 +29,9 @@
 
 <body>
     <div id="bg-layer"></div>
+    <div id="bg-dim-overlay"
+        style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -2; pointer-events: none;">
+    </div>
     <canvas id="effect-canvas"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
@@ -1029,6 +1032,10 @@
                             <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
                             <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
                         </button>
+                        <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
+                            <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
+                        </button>
                         <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
                             <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
                             <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
@@ -1186,6 +1193,12 @@
                     <div id="hacker-color-setting" class="setting-item" style="display: none;">
                         <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
                         <input type="color" id="hacker-color-picker" value="#00FF00" />
+                    </div>
+
+                    <!-- Pixel Cubes Color -->
+                    <div id="pixel-cubes-color-setting" class="setting-item" style="display: none;">
+                        <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes Color</label>
+                        <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
                     </div>
 
                     <!-- Star Color (Galaxy) -->

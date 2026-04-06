@@ -1,6 +1,6 @@
 :root {
-  --bg-gradient-start: #0f0c29;
-  --bg-gradient-end: #302b63;
+  --bg-gradient-start: #0a1f11;
+  --bg-gradient-end: #1d472c;
   --bg-gradient: linear-gradient(
     var(--bg-gradient-angle, 135deg),
     var(--bg-gradient-start),
@@ -13,10 +13,10 @@
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --accent-color: #a8c0ff;
-  --accent-color-rgb: 168, 192, 255; /* RGB values for rgba() usage */
-  --bg-color: #1a1a2e;
-  --panel-bg: rgba(26, 26, 46, 0.7);
+  --accent-color: #00ff73;
+  --accent-color-rgb: 0, 255, 115; /* RGB values for rgba() usage */
+  --bg-color: #1a2e1f;
+  --panel-bg: rgba(26, 46, 31, 0.7);
   --hover-bg: rgba(255, 255, 255, 0.15);
   /* Sidebar Variables */
   --sidebar-bg: rgba(20, 20, 25, 0.85);

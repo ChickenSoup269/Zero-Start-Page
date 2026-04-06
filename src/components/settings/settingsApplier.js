@@ -35,6 +35,7 @@ const EFFECT_KEY_MAP = {
   aura: "auraEffect",
   wind: "windEffect",
   hacker: "hackerEffect",
+  pixelCubes: "pixelCubesEffect",
   sakura: "sakuraEffect",
   snowfall: "snowfallEffect",
   snowfallHD: "snowfallHDEffect",
@@ -725,6 +726,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.northernLightsColorPicker.value =
       settings.northernLightsColor || "#00ff88"
     DOM.hackerColorPicker.value = settings.hackerColor || "#00FF00"
+    DOM.pixelCubesColorPicker.value = settings.pixelCubesColor || "#00ff73"
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
@@ -759,6 +761,8 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "northernLights" ? "block" : "none"
     DOM.hackerColorSetting.style.display =
       settings.effect === "hacker" ? "block" : "none"
+    DOM.pixelCubesColorSetting.style.display =
+      settings.effect === "pixelCubes" ? "block" : "none"
     DOM.sakuraColorSetting.style.display =
       settings.effect === "sakura" ? "block" : "none"
     DOM.snowfallColorSetting.style.display =

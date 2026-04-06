@@ -218,7 +218,10 @@ export const hackerColorPicker = document.getElementById("hacker-color-picker")
 export const hackerColorSetting = document.getElementById(
   "hacker-color-setting",
 )
-
+export const pixelCubesColorPicker = document.getElementById("pixel-cubes-color-picker")
+export const pixelCubesColorSetting = document.getElementById(
+  "pixel-cubes-color-setting",
+)
 export const sakuraColorPicker = document.getElementById("sakura-color-picker")
 export const sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
