@@ -380,5 +380,9 @@
   "settings_bookmark_item_hint": "💡 Customize colors, size, and shadow for individual bookmark tiles.",
   "settings_bookmark_group_hint": "💡 Customize the appearance (background, text color) of the folder Tabs navigation at the top.",
   "settings_date_clock_section": "Date & Clock",
-  "settings_date_format_style": "Date Format Style"
+  "settings_date_format_style": "Date Format Style",
+  "donate_title": "Support Developer",
+  "donate_desc": "Choose a platform to support the development:",
+  "donate_thank_you": "Thank you so much for your support! ❤️",
+  "donate_button": "Support Developer"
 }

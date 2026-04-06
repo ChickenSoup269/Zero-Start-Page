@@ -378,5 +378,9 @@
   "settings_bookmark_item_hint": "💡 Tùy chỉnh màu sắc, kích thước và bóng đổ cho từng ô Dấu trang riêng lẻ.",
   "settings_bookmark_group_hint": "💡 Tùy chỉnh giao diện (màu nền, màu chữ) cho thanh Tabs chia thư mục ở phía trên.",
   "settings_date_clock_section": "Đồng hồ & Ngày tháng",
-  "settings_date_format_style": "Định dạng Tiêu chuẩn"
+  "settings_date_format_style": "Định dạng Tiêu chuẩn",
+  "donate_title": "Ủng hộ Nhà phát triển",
+  "donate_desc": "Chọn một nền tảng để ủng hộ dự án:",
+  "donate_thank_you": "Cảm ơn bạn rất nhiều vì đã quyên góp ủng hộ! ❤️",
+  "donate_button": "☕ Donate ủng hộ dev"
 }
