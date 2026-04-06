@@ -227,6 +227,7 @@ export class SvgWaveGenerator {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this._lastParams = null
     this._layers.forEach((el) => {

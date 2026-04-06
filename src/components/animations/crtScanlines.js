@@ -202,7 +202,7 @@ export class CrtScanlinesEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    this.rafId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -216,10 +216,11 @@ export class CrtScanlinesEffect {
     this.active = true
     this.lastDrawTime = 0
     this.canvas.style.display = "block"
-    this.rafId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.rafId) {
       cancelAnimationFrame(this.rafId)

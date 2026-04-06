@@ -61,6 +61,7 @@ export class Jellyfish {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.running = false
     if (this.animationId) cancelAnimationFrame(this.animationId)
     window.removeEventListener("mousemove", this.handleMouseMove)
@@ -141,7 +142,7 @@ export class Jellyfish {
     this._drawTentacles()
     this._drawBell(ctx, cx, cy, bellW, bellH, pulse)
 
-    this.animationId = requestAnimationFrame(this.animate)
+    this.animationId = this._animId = requestAnimationFrame(this.animate)
   }
 
   _drawBubbles() {

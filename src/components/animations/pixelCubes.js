@@ -150,6 +150,7 @@ export class PixelCubes {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)
       this.animationId = null

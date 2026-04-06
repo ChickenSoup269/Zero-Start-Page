@@ -44,6 +44,7 @@ export class MatrixRain {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -54,7 +55,7 @@ export class MatrixRain {
     if (!this.active) return
 
     // Yêu cầu khung hình tiếp theo luôn được gọi
-    requestAnimationFrame((t) => this.animate(t))
+    this._animId = requestAnimationFrame((t) => this.animate(t))
 
     // Tính toán thời gian trôi qua
     const elapsed = currentTime - this.lastDrawTime

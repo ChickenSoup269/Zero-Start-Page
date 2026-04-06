@@ -90,6 +90,8 @@ function renderUserAccentColors(DOM) {
   }
 }
 
+const _videoThumbCache = new Map()
+
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
@@ -115,7 +117,16 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       if (isIdbVideo(bgId)) {
         item.classList.add("video-bg-item")
         item.innerHTML = '<i class="fa-solid fa-film"></i>'
-        if (thumbUrl) {
+        
+        if (_videoThumbCache.has(bgId)) {
+          item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
+          const placeholder = item.querySelector("i.fa-film")
+          if (placeholder) placeholder.remove()
+          const badge = document.createElement("div")
+          badge.className = "video-thumb-badge"
+          badge.innerHTML = '<i class="fa-solid fa-film"></i>'
+          item.appendChild(badge)
+        } else if (thumbUrl) {
           const vid = document.createElement("video")
           vid.src = thumbUrl
           vid.muted = true
@@ -136,7 +147,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
               canvas
                 .getContext("2d")
                 .drawImage(vid, 0, 0, canvas.width, canvas.height)
-              item.style.backgroundImage = `url('${canvas.toDataURL()}')`
+              const dataUrl = canvas.toDataURL()
+              _videoThumbCache.set(bgId, dataUrl)
+              item.style.backgroundImage = `url('${dataUrl}')`
               const placeholder = item.querySelector("i.fa-film")
               if (placeholder) placeholder.remove()
               const badge = document.createElement("div")
@@ -150,6 +163,11 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
             },
             { once: true },
           )
+          vid.addEventListener("error", () => {
+            console.warn("Video thumbnail generation failed.");
+            vid.removeAttribute("src");
+            vid.load();
+          }, { once: true });
         }
       } else if (thumbUrl) {
         item.style.backgroundImage = `url('${thumbUrl}')`

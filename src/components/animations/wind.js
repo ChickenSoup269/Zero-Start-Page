@@ -76,7 +76,7 @@ export class WindEffect {
             line.draw(this.ctx);
         });
 
-        this.animationFrameId = requestAnimationFrame(() => this.animate());
+        this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate());
     }
 
     start() {
@@ -87,6 +87,7 @@ export class WindEffect {
     }
 
     stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;

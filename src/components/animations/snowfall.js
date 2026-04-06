@@ -54,6 +54,7 @@ export class SnowfallEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -118,7 +119,7 @@ export class SnowfallEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    requestAnimationFrame((t) => this.animate(t))
+    this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

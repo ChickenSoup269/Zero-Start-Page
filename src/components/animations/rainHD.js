@@ -219,6 +219,7 @@ export class RainHDEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
     this.animationFrame = null
@@ -232,7 +233,7 @@ export class RainHDEffect {
 
   animate(t = 0) {
     if (!this.active) return
-    this.animationFrame = requestAnimationFrame((t2) => this.animate(t2))
+    this.animationFrame = this._animId = requestAnimationFrame((t2) => this.animate(t2))
     const elapsed = t - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = t - (elapsed % this.fpsInterval)

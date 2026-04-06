@@ -142,6 +142,7 @@ export class CursorTrailEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (!this.active) return
     this.active = false
     window.removeEventListener("mousemove", this.handleMouseMove)

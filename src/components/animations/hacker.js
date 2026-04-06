@@ -428,18 +428,19 @@ export class HackerEffect {
       this.drawFlood(deltaTime)
     }
 
-    this.animationFrameId = requestAnimationFrame(() => this.animate())
+    this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
   }
 
   start() {
     if (!this.animationFrameId) {
       this.canvas.style.display = "block"
       this.lastTime = Date.now()
-      this.animationFrameId = requestAnimationFrame(() => this.animate())
+      this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
     }
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
       this.animationFrameId = null
