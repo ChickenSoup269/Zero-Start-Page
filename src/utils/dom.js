@@ -585,6 +585,7 @@ export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
+export const freeMoveClockCheckbox = document.getElementById('free-move-clock-checkbox')
 export const showClockCheckbox = document.getElementById("show-clock-checkbox")
 export const showDateCheckbox = document.getElementById("show-date-checkbox")
 export const showFullCalendarCheckbox = document.getElementById(

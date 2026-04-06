@@ -244,6 +244,7 @@
   "settings_show_gregorian": "Hiện Lịch dương",
   "settings_show_music": "Hiện Trình phát nhạc",
   "settings_show_clock": "Hiện Đồng hồ",
+    "settings_free_move_clock": "Tự do di chuyển đồng hồ",
   "settings_show_full_calendar": "Hiện Toàn bộ lịch",
   "settings_show_lunar_calendar": "Hiện Lịch âm Việt Nam",
   "settings_reset_layout": "Xác lập lại vị trí",

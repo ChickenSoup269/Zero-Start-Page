@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   makeDraggable(music.container, "music")
   makeDraggable(calendar.container, "calendar")
   makeDraggable(notepad.container, "notepad", null, ".notepad-header")
+  makeDraggable(document.getElementById("clock-date-wrap"), "clock")
 
   // Initial Quick Access Visibility
   const quickAccessBar = document.querySelector(".quick-access-bar")
@@ -242,6 +243,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.detail.key === "showBookmarkGroups") {
       const el = document.getElementById("bookmark-groups-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
+    }
+    if (e.detail.key === "freeMoveClock") {
+      document.body.classList.toggle("free-move-clock", e.detail.value === true)
+      const clockWrap = document.getElementById("clock-date-wrap")
+      if (clockWrap) {
+        if (e.detail.value === true) {
+          if (!clockWrap.style.top) {
+            clockWrap.style.top = "35%"
+            clockWrap.style.left = "50%"
+            clockWrap.style.transform = "translate(-50%, -50%)"
+          }
+        } else {
+          clockWrap.style.position = ""
+          clockWrap.style.top = ""
+          clockWrap.style.left = ""
+          clockWrap.style.bottom = ""
+          clockWrap.style.right = ""
+          clockWrap.style.transform = ""
+          clockWrap.style.margin = ""
+        }
+      }
     }
   })
 

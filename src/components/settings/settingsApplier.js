@@ -921,6 +921,8 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
     DOM.showClockCheckbox.checked = settings.showClock !== false
     DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
+    if (DOM.freeMoveClockCheckbox)
+      DOM.freeMoveClockCheckbox.checked = settings.freeMoveClock === true
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
     DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
     if (DOM.showDonateButtonCheckbox) {
@@ -952,6 +954,23 @@ function createUpdateSettingsInputs(effectInstances) {
       "ghost-controls",
       settings.sideControlsGhostMode === true,
     )
+    document.body.classList.toggle(
+      "free-move-clock",
+      settings.freeMoveClock === true,
+    )
+    if (settings.freeMoveClock !== true) {
+      const clockWrap = document.getElementById("clock-date-wrap")
+      if (clockWrap) {
+        clockWrap.style.position = ""
+        clockWrap.style.top = ""
+        clockWrap.style.left = ""
+        clockWrap.style.bottom = ""
+        clockWrap.style.right = ""
+        clockWrap.style.transform = ""
+        clockWrap.style.margin = ""
+      }
+    }
+
     DOM.lcpSearchBar.checked = settings.showSearchBar !== false
     if (DOM.lcpBookmarks) {
       DOM.lcpBookmarks.checked = settings.showBookmarks !== false
