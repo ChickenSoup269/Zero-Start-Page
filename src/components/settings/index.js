@@ -60,6 +60,7 @@ import { MatrixRain } from "../animations/matrixRain.js"
 import { AuraEffect } from "../animations/aura.js"
 import { WindEffect } from "../animations/wind.js"
 import { HackerEffect } from "../animations/hacker.js"
+import { PixelCubes } from "../animations/pixelCubes.js"
 import { SakuraEffect } from "../animations/sakura.js"
 import { SnowfallEffect } from "../animations/snowfall.js"
 import { SnowfallHDEffect } from "../animations/snowfallHD.js"
@@ -124,6 +125,7 @@ export function initSettings() {
     auraEffect: new AuraEffect("effect-canvas", settings.auraColor),
     windEffect: new WindEffect("effect-canvas"),
     hackerEffect: new HackerEffect("effect-canvas", settings.hackerColor),
+    pixelCubesEffect: new PixelCubes("effect-canvas", settings.pixelCubesColor),
     sakuraEffect: new SakuraEffect(
       "effect-canvas",
       settings.sakuraColor || "#ffb7c5",
