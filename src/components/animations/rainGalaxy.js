@@ -29,6 +29,7 @@ export class StarFall {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -52,7 +53,7 @@ export class StarFall {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    this.animationFrame = requestAnimationFrame((t) => this.animate(t))
+    this.animationFrame = this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

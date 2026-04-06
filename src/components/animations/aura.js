@@ -94,7 +94,7 @@ export class AuraEffect {
   }
 
   animate(currentTime = 0) {
-    this.animationFrameId = requestAnimationFrame((t) => this.animate(t))
+    this.animationFrameId = this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -120,6 +120,7 @@ export class AuraEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
       this.animationFrameId = null

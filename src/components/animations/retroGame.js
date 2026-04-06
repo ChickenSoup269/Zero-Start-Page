@@ -200,6 +200,7 @@ export class RetroGameEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.rafId) {
       cancelAnimationFrame(this.rafId)
@@ -699,7 +700,7 @@ export class RetroGameEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this.rafId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

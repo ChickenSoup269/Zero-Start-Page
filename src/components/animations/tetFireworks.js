@@ -260,7 +260,7 @@ export class TetFireworksEffect {
 
   animate(timestamp) {
     if (!this.active) return
-    requestAnimationFrame((ts) => this.animate(ts))
+    this._animId = requestAnimationFrame((ts) => this.animate(ts))
 
     const elapsed = timestamp - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -298,10 +298,11 @@ export class TetFireworksEffect {
     this.canvas.style.display = "block"
     this.resize()
     this.lastDrawTime = 0
-    requestAnimationFrame((ts) => this.animate(ts))
+    this._animId = requestAnimationFrame((ts) => this.animate(ts))
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this.canvas.style.display = "none"
     this.fireworks = []

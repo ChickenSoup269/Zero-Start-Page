@@ -116,6 +116,7 @@ export class AngledPatternEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this._outer.style.display = "none"
   }

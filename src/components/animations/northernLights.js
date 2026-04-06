@@ -385,6 +385,7 @@ export class NorthernLightsEffect {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)

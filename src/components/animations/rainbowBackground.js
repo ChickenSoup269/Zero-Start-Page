@@ -82,6 +82,7 @@ export class RainbowBackground {
   }
 
   stop() {
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -90,7 +91,7 @@ export class RainbowBackground {
 
   animate() {
     if (!this.active) return
-    this.animationFrame = requestAnimationFrame(() => this.animate())
+    this.animationFrame = this._animId = requestAnimationFrame(() => this.animate())
 
     const ctx = this.ctx
     const W = this.canvas.width
