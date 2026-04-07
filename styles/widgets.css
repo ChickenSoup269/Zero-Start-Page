@@ -3032,8 +3032,18 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
   padding-right: 5px; /* give it breathing room from the icons */
 }
 
-/* Khi Show Google Apps & Avatar bật, đẩy sidebar sát lên trên và cố định để tránh nhảy giao diện */
+/* Khi Show Google Apps & Avatar bật, tính toán lại vị trí giữa và giới hạn max-height để không đè vào nút Google */
 body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
-  top: 75px !important;
-  transform: none !important;
+  top: calc(50vh + 35px) !important;
+  transform: translateY(-50%) !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-widget {
+  transition:
+    top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
+  max-height: calc(100vh - 100px) !important;
 }
