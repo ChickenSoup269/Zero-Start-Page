@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.classList.toggle("active", isActive)
     })
   }
-  
+
   // Call once on init to set correct initial active states
   syncQuickButtons()
 

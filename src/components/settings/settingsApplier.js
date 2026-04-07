@@ -945,6 +945,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.freeMoveClockCheckbox)
       DOM.freeMoveClockCheckbox.checked = settings.freeMoveClock === true
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
+    if (DOM.lcpLunarCalendar) {
+      DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
+    }
 
     if (DOM.flipLayoutCheckbox) {
       DOM.flipLayoutCheckbox.checked = settings.flipLayout === true
@@ -957,6 +960,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
+    if (DOM.lcpSearchBar) {
+      DOM.lcpSearchBar.checked = settings.showSearchBar !== false
+    }
     if (DOM.showSearchAiIconCheckbox) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
     }
@@ -973,11 +979,23 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
+    if (DOM.lcpBookmarks) {
+      DOM.lcpBookmarks.checked = settings.showBookmarks !== false
+    }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
+    if (DOM.lcpBookmarkGroups) {
+      DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
+    }
     DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+    if (DOM.lcpGhostControls) {
+      DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
+    }
     DOM.showTopRightControlsCheckbox.checked =
       settings.showTopRightControls !== false
+    if (DOM.lcpTopRightControls) {
+      DOM.lcpTopRightControls.checked = settings.showTopRightControls !== false
+    }
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "ghost-controls",
