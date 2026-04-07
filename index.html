@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -376,7 +376,7 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
-            
+
             <div class="lcp-row">
                 <i class="fa-solid fa-eye-slash lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
@@ -849,7 +849,8 @@
 
                     <!-- Saved Multi-Color Presets -->
                     <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
-                        <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_saved_presets">Saved Presets</label><span id="count-multi-color"></span>
+                        <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_saved_presets">Saved
+                            Presets</label><span id="count-multi-color"></span>
                         <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
                     </div>
                 </div>
@@ -984,7 +985,8 @@
 
                 <!-- Saved Waves Gallery (always visible) -->
                 <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
-                    <label data-i18n="settings_svg_wave_saved_label" style="font-size:0.8rem;opacity:0.7;">Saved Waves</label><span id="count-svg-wave"></span>
+                    <label data-i18n="settings_svg_wave_saved_label" style="font-size:0.8rem;opacity:0.7;">Saved
+                        Waves</label><span id="count-svg-wave"></span>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery" style="margin-top:6px;"></div>
                 </div>
             </div>
@@ -1657,11 +1659,14 @@
                         data-i18n="settings_custom_title">Custom Title</span></h3>
                 <div class="section-content">
                     <div class="setting-item-row" style="margin-bottom: 0.8rem;">
-                        <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title">Show Custom Title</label>
+                        <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title">Show Custom
+                            Title</label>
                         <input type="checkbox" id="show-custom-title-checkbox">
                     </div>
-                    <div class="setting-item-row" style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
-                        <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title">Free Move Custom Title</label>
+                    <div class="setting-item-row"
+                        style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
+                        <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title">Free
+                            Move Custom Title</label>
                         <input type="checkbox" id="free-move-custom-title-checkbox">
                     </div>
                     <div class="setting-item-row" style="margin-bottom: 0.8rem;">
@@ -1735,7 +1740,8 @@
                     <div class="setting-group">
                         <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            ðŸ’¡ TÃ¹y chá»‰nh giao diá»‡n cho tá»«ng Ã´ Dáº¥u trang (mÃ u chá»¯, ná»n, bÃ³ng Ä‘á»•, kÃ­ch thÆ°á»›c...).</p>
+                            ðŸ’¡ TÃ¹y chá»‰nh giao diá»‡n cho tá»«ng Ã´ Dáº¥u trang (mÃ u chá»¯, ná»n, bÃ³ng Ä‘á»•,
+                            kÃ­ch thÆ°á»›c...).</p>
                         <label><i class="fa-solid fa-text-height"></i> <span
                                 data-i18n="settings_bookmark_font_size">Font Size:</span> <span
                                 id="bookmark-font-size-value">10px</span></label>
@@ -1792,7 +1798,8 @@
                                 data-i18n="settings_bookmark_group_header">Group Tabs Interface</span></h4>
                         <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            ðŸ’¡ TÃ¹y chá»‰nh thanh Ä‘iá»u hÆ°á»›ng nhÃ³m thÆ° má»¥c (Tabs) á»Ÿ phÃ­a trÃªn Dáº¥u trang.</p>
+                            ðŸ’¡ TÃ¹y chá»‰nh thanh Ä‘iá»u hÆ°á»›ng nhÃ³m thÆ° má»¥c (Tabs) á»Ÿ phÃ­a trÃªn Dáº¥u
+                            trang.</p>
                         <label style="margin-top: 10px; display: block;"><span
                                 data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
@@ -1831,6 +1838,16 @@
                             <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Bookmark
                                 Background</label>
                             <input type="checkbox" id="hide-bookmark-bg">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
+                            <select id="bookmark-layout" class="settings-select">
+                                <option value="default" data-i18n="layout_default">Default Grid</option>
+                                <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                                <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
+                                <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
+                                </option>
+                            </select>
                         </div>
                         <div class="setting-item-row">
                             <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag &
@@ -1874,7 +1891,7 @@
                         <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
                         <input type="checkbox" id="show-music-checkbox">
                     </div>
-                    
+
                     <div class="setting-item-row">
                         <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
                             Bar</label>
@@ -2043,12 +2060,19 @@
             </button>
         </div>
 
-        <div id="bookmarks-container" class="bookmarks-grid">
-            <!-- Bookmarks will be injected here -->
-        </div>
+        <!-- Bookmark Widget (Fixed inline with CSS calc trick) -->
+        <div class="bookmark-widget" id="bookmark-widget">
+            <div id="bookmarks-container" class="bookmarks-grid">
+                <!-- Bookmarks will be injected here -->
+            </div>
 
-        <div id="bookmark-groups-container" class="bookmark-groups-container">
-            <!-- Group Tabs will be injected here -->
+            <div id="bookmark-groups-container" class="bookmark-groups-container">
+                <!-- Group Tabs will be injected here -->
+            </div>
+
+            <div id="bookmark-groups-toggle" class="bookmark-groups-toggle" title="Toggle Bookmark Groups">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
         </div>
     </div>
 
@@ -2070,7 +2094,8 @@
             </div>
             <p data-i18n="donate_desc" style="margin-bottom: 10px;">Choose a platform to support the development:</p>
             <p data-i18n="donate_thank_you"
-                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cáº£m Æ¡n báº¡n
+                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cáº£m Æ¡n
+                báº¡n
                 ráº¥t nhiá»u vÃ¬ Ä‘Ã£ á»§ng há»™ dá»± Ã¡n! â¤ï¸</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
                 <a href="https://ko-fi.com/chickensoup269" target="_blank" class="primary-btn"
@@ -2193,6 +2218,3 @@
 </body>
 
 </html>
-
-
-

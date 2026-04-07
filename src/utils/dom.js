@@ -506,6 +506,9 @@ export const bookmarksContainer = document.getElementById("bookmarks-container")
 export const bookmarkGroupsContainer = document.getElementById(
   "bookmark-groups-container",
 )
+export const bookmarkGroupsToggle = document.getElementById(
+  "bookmark-groups-toggle",
+)
 
 export const bookmarkFontSizeInput = document.getElementById(
   "bookmark-font-size-input",
@@ -577,6 +580,7 @@ export const enableBookmarkDrag = document.getElementById(
 )
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
+export const bookmarkLayout = document.getElementById("bookmark-layout")
 
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
@@ -602,7 +606,9 @@ export const showLunarCalendarCheckbox = document.getElementById(
 export const showTopRightControlsCheckbox = document.getElementById(
   "show-top-right-controls-checkbox",
 )
-export const flipLayoutCheckbox = document.getElementById("flip-layout-checkbox")
+export const flipLayoutCheckbox = document.getElementById(
+  "flip-layout-checkbox",
+)
 export const ghostControlsCheckbox = document.getElementById(
   "ghost-controls-checkbox",
 )
@@ -734,19 +740,39 @@ export const showDonateButtonCheckbox = document.getElementById(
 )
 export const donateSection = document.querySelector(".donate-section")
 
-export const customTitleDisplay = document.getElementById('custom-title-display')
-export const customTitleText = document.getElementById('custom-title-text')
-export const customTitleMulticolor = document.getElementById('custom-title-multicolor')
-export const customTitleColor = document.getElementById('custom-title-color')
-export const customTitleFontSize = document.getElementById('custom-title-font-size')
-export const customTitleLetterSpacing = document.getElementById('custom-title-letter-spacing')
-export const customTitleShadowBlur = document.getElementById('custom-title-shadow-blur')
-export const customTitleShadowY = document.getElementById('custom-title-shadow-y')
-export const customTitleShadowColor = document.getElementById('custom-title-shadow-color')
-export const customTitleBorderSize = document.getElementById('custom-title-border-size')
-export const customTitleBorderColor = document.getElementById('custom-title-border-color')
+export const customTitleDisplay = document.getElementById(
+  "custom-title-display",
+)
+export const customTitleText = document.getElementById("custom-title-text")
+export const customTitleMulticolor = document.getElementById(
+  "custom-title-multicolor",
+)
+export const customTitleColor = document.getElementById("custom-title-color")
+export const customTitleFontSize = document.getElementById(
+  "custom-title-font-size",
+)
+export const customTitleLetterSpacing = document.getElementById(
+  "custom-title-letter-spacing",
+)
+export const customTitleShadowBlur = document.getElementById(
+  "custom-title-shadow-blur",
+)
+export const customTitleShadowY = document.getElementById(
+  "custom-title-shadow-y",
+)
+export const customTitleShadowColor = document.getElementById(
+  "custom-title-shadow-color",
+)
+export const customTitleBorderSize = document.getElementById(
+  "custom-title-border-size",
+)
+export const customTitleBorderColor = document.getElementById(
+  "custom-title-border-color",
+)
 
-export const showCustomTitleCheckbox = document.getElementById('show-custom-title-checkbox');
-export const freeMoveCustomTitleCheckbox = document.getElementById('free-move-custom-title-checkbox');
-
-
+export const showCustomTitleCheckbox = document.getElementById(
+  "show-custom-title-checkbox",
+)
+export const freeMoveCustomTitleCheckbox = document.getElementById(
+  "free-move-custom-title-checkbox",
+)
