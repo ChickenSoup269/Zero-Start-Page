@@ -555,6 +555,8 @@ function createApplySettings(effectInstances) {
 
     // Call updateSettingsInputs to sync all UI
     if (typeof effectInstances.updateSettingsInputs === "function") {
+      // Signal resizing to update layout-dependent widgets like bookmark overflow
+      window.dispatchEvent(new Event("resize"))
       effectInstances.updateSettingsInputs()
     }
   }
@@ -1017,6 +1019,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpGhostControls) {
       DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
     }
+    document.body.classList.toggle(
+      "has-top-right-controls",
+      settings.showTopRightControls !== false,
+    )
     DOM.showTopRightControlsCheckbox.checked =
       settings.showTopRightControls !== false
     if (DOM.lcpTopRightControls) {

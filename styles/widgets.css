@@ -2808,10 +2808,14 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
 }
 
 body.groups-hidden .bookmark-groups-toggle {
-  opacity: 1 !important;
+  opacity: 0 !important;
   /* Fancy rotate when sliding into the hidden group's place */
   transform: rotate(180deg) !important;
   background: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.groups-hidden .bookmark-groups-toggle:hover {
+  opacity: 1 !important;
 }
 
 /* Hide Bookmark Background Settings */
@@ -3026,4 +3030,10 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
 /* Sidebar mode exact position of groups - align left of icons */
 body.bookmark-sidebar-mode .bookmark-groups-container {
   padding-right: 5px; /* give it breathing room from the icons */
+}
+
+/* Khi Show Google Apps & Avatar bật, đẩy sidebar sát lên trên và cố định để tránh nhảy giao diện */
+body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
+  top: 75px !important;
+  transform: none !important;
 }
