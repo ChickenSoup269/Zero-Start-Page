@@ -28,6 +28,8 @@ const defaultSettings = {
   timezone: "local",
   dateClockStyle: "default",
 
+  showCustomTitle: true,
+  freeMoveCustomTitle: false,
   customTitleText: "",
   customTitleMulticolor: false,
   customTitleColor: "#ffffff",

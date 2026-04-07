@@ -2257,3 +2257,11 @@ body.ghost-controls .side-controls:hover {
   font-weight: 600;
   transition: opacity 0.3s ease;
 }
+
+body.free-move-custom-title .custom-title-display {
+  position: absolute !important;
+  z-index: 100;
+  cursor: pointer;
+  width: fit-content !important;
+  white-space: nowrap;
+}

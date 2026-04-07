@@ -978,6 +978,10 @@ function createUpdateSettingsInputs(effectInstances) {
       "free-move-clock",
       settings.freeMoveClock === true,
     )
+    document.body.classList.toggle(
+      "free-move-custom-title",
+      settings.freeMoveCustomTitle === true,
+    )
     if (settings.freeMoveClock !== true) {
       const clockWrap = document.getElementById("clock-date-wrap")
       if (clockWrap) {
@@ -990,17 +994,24 @@ function createUpdateSettingsInputs(effectInstances) {
         clockWrap.style.margin = ""
       }
     }
-
-    DOM.lcpSearchBar.checked = settings.showSearchBar !== false
-    if (DOM.lcpBookmarks) {
-      DOM.lcpBookmarks.checked = settings.showBookmarks !== false
+    if (settings.freeMoveCustomTitle !== true) {
+      const titleWrap = document.getElementById("custom-title-display")
+      if (titleWrap) {
+        titleWrap.style.position = ""
+        titleWrap.style.top = ""
+        titleWrap.style.left = ""
+        titleWrap.style.bottom = ""
+        titleWrap.style.right = ""
+        titleWrap.style.transform = ""
+        titleWrap.style.margin = ""
+      }
     }
-    DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
-    DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
-    DOM.lcpQuickAccess.checked = settings.showQuickAccess !== false
-    DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
-    if (DOM.lcpTopRightControls) {
-      DOM.lcpTopRightControls.checked = settings.showTopRightControls !== false
+    if (DOM.showCustomTitleCheckbox) {
+      DOM.showCustomTitleCheckbox.checked = settings.showCustomTitle !== false
+    }
+    if (DOM.freeMoveCustomTitleCheckbox) {
+      DOM.freeMoveCustomTitleCheckbox.checked =
+        settings.freeMoveCustomTitle === true
     }
     if (DOM.customTitleText) {
       DOM.customTitleText.value = settings.customTitleText || ""

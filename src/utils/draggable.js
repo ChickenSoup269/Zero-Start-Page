@@ -14,7 +14,10 @@ export function makeDraggable(
   const settings = getSettings()
   const savedPos = settings.componentPositions?.[componentId]
 
-  if (componentId === "clock" && !settings.freeMoveClock) {
+  if (
+    (componentId === "clock" && !settings.freeMoveClock) ||
+    (componentId === "customTitle" && !settings.freeMoveCustomTitle)
+  ) {
     element.style.position = ""
     element.style.top = ""
     element.style.left = ""
@@ -33,9 +36,14 @@ export function makeDraggable(
     element.style.top = "35%"
     element.style.left = "50%"
     element.style.transform = "translate(-50%, -50%)"
+  } else if (componentId === "customTitle" && settings.freeMoveCustomTitle) {
+    element.style.top = "45%"
+    element.style.left = "50%"
+    element.style.transform = "translate(-50%, 0)"
   }
 
   // Also check if locked and add class
+  element.classList.remove("is-locked")
   if (settings.lockedWidgets && settings.lockedWidgets[componentId]) {
     element.classList.add("is-locked")
   }
@@ -52,6 +60,9 @@ export function makeDraggable(
     const currentSettings = getSettings()
     if (componentId === "clock" && !currentSettings.freeMoveClock) {
       return // Don't show context menu for clock if free move is disabled
+    }
+    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) {
+      return // Don't show context menu for custom title if free move is disabled
     }
     e.preventDefault()
     e.stopPropagation()
@@ -73,6 +84,9 @@ export function makeDraggable(
     // Check if free move is enabled for clock
     if (componentId === "clock" && !currentSettings.freeMoveClock) {
       return // Cannot drag clock unless free move is explicitly enabled
+    }
+    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) {
+      return // Cannot drag custom title unless free move is explicitly enabled
     }
     // If the click target is an interactive element (button, input, etc.)
     // and it's not explicitly the 'drag-handle' icon itself, prevent dragging.

@@ -244,6 +244,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       const el = document.getElementById("bookmark-groups-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
     }
+    if (e.detail.key === "freeMoveCustomTitle") {
+      document.body.classList.toggle("free-move-custom-title", e.detail.value === true)
+      const titleWrap = document.getElementById("custom-title-display")
+      if (titleWrap) {
+        if (e.detail.value === true) {
+          if (!titleWrap.style.top) {
+            titleWrap.style.top = "45%"
+            titleWrap.style.left = "50%"
+            titleWrap.style.transform = "translate(-50%, 0)"
+          }
+        } else {
+          titleWrap.style.position = ""
+          titleWrap.style.top = ""
+          titleWrap.style.left = ""
+          titleWrap.style.bottom = ""
+          titleWrap.style.right = ""
+          titleWrap.style.transform = ""
+          titleWrap.style.margin = ""
+        }
+      }
+    }
+
     if (e.detail.key === "freeMoveClock") {
       document.body.classList.toggle("free-move-clock", e.detail.value === true)
       const clockWrap = document.getElementById("clock-date-wrap")
