@@ -116,16 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const type = btn.dataset.toggle
     if (!type) return
 
-    // Update active state on init
-    const settings = getSettings()
-    const isActive =
-      (type === "todo" && settings.showTodoList !== false) ||
-      (type === "notepad" && settings.showNotepad !== false) ||
-      (type === "timer" && settings.showTimer === true) ||
-      (type === "calendar" && settings.showFullCalendar === true) ||
-      (type === "music" && settings.musicPlayerEnabled === true)
-    if (isActive) btn.classList.add("active")
-
     btn.addEventListener("click", () => {
       let key, value, checkbox
       switch (type) {
@@ -153,7 +143,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           key = "showClock"
           checkbox = showClockCheckbox
           break
-
+        case "date":
+          key = "showDate"
+          checkbox = showDateCheckbox
+          break
         case "gregorian":
           key = "showGregorian"
           checkbox = showGregorianCheckbox
@@ -204,6 +197,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.classList.toggle("active", isActive)
     })
   }
+  
+  // Call once on init to set correct initial active states
+  syncQuickButtons()
 
   // Sync Quick Access active state when settings change
   window.addEventListener("layoutUpdated", (e) => {
@@ -291,6 +287,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   syncQuickButtons()
 
   // Collapse functionality
+  const quickAccessBar = document.querySelector(".quick-access-bar")
   const collapseBtn = document.getElementById("quick-access-collapse")
   if (collapseBtn && quickAccessBar) {
     // Initial State
