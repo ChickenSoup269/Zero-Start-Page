@@ -205,6 +205,15 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       DOM.localBackgroundGallery.appendChild(item)
     })
   }
+  const bgCountSpan = document.getElementById("count-bg")
+  if (bgCountSpan) {
+    const total =
+      1 +
+      (Array.isArray(settings.userBackgrounds)
+        ? settings.userBackgrounds.length
+        : 0)
+    bgCountSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+  }
 }
 
 function setupMultiSelectMode(DOM, handleSettingUpdate) {

@@ -201,6 +201,13 @@ function renderUserGradients(DOM) {
       DOM.userGradientsGallery.appendChild(item)
     })
   }
+  const gradSpan = document.getElementById("count-gradient")
+  if (gradSpan) {
+    const total = DOM.userGradientsGallery.querySelectorAll(
+      ".user-gradient-item",
+    ).length
+    gradSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+  }
 }
 
 export { renderUserGradients }
