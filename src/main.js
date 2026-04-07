@@ -68,13 +68,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   makeDraggable(notepad.container, "notepad", null, ".notepad-header")
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
 
-  // Initial Quick Access Visibility
-  const quickAccessBar = document.querySelector(".quick-access-bar")
-  if (quickAccessBar) {
-    quickAccessBar.style.display =
-      getSettings().showQuickAccess !== false ? "flex" : "none"
-  }
-
   // Initial Visibility: Search Bar, Bookmarks, Bookmark Groups
   const searchContainer = document.getElementById("search-container")
   const bookmarksContainer = document.getElementById("bookmarks-container")
@@ -215,13 +208,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Sync Quick Access active state when settings change
   window.addEventListener("layoutUpdated", (e) => {
     syncQuickButtons()
-
-    if (e.detail.key === "showQuickAccess") {
-      const quickAccessBar = document.querySelector(".quick-access-bar")
-      if (quickAccessBar) {
-        quickAccessBar.style.display = e.detail.value ? "flex" : "none"
-      }
-    }
     if (e.detail.key === "showSearchBar") {
       const el = document.getElementById("search-container")
       if (el) el.style.display = e.detail.value ? "" : "none"
@@ -245,7 +231,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (el) el.style.display = e.detail.value ? "" : "none"
     }
     if (e.detail.key === "freeMoveCustomTitle") {
-      document.body.classList.toggle("free-move-custom-title", e.detail.value === true)
+      document.body.classList.toggle(
+        "free-move-custom-title",
+        e.detail.value === true,
+      )
       const titleWrap = document.getElementById("custom-title-display")
       if (titleWrap) {
         if (e.detail.value === true) {

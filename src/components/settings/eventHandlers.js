@@ -1546,7 +1546,7 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
-  setupLayoutCheckbox(DOM.showQuickAccessCheckbox, "showQuickAccess", {})
+  setupLayoutCheckbox(DOM.flipLayoutCheckbox, "flipLayout", {})
   if (DOM.showDonateButtonCheckbox) {
     setupLayoutCheckbox(DOM.showDonateButtonCheckbox, "showDonateButton", {})
   }
@@ -1672,13 +1672,15 @@ export function setupGeneralEventHandlers(
       DOM.showLunarCalendarCheckbox,
     ),
   )
-  DOM.lcpQuickAccess.addEventListener("change", () =>
-    lcpToggle(
-      "showQuickAccess",
-      DOM.lcpQuickAccess.checked,
-      DOM.showQuickAccessCheckbox,
-    ),
-  )
+  if (DOM.lcpFlipLayout) {
+    DOM.lcpFlipLayout.addEventListener("change", () =>
+      lcpToggle(
+        "flipLayout",
+        DOM.lcpFlipLayout.checked,
+        DOM.flipLayoutCheckbox,
+      ),
+    )
+  }
 
   DOM.showTopRightControlsCheckbox.addEventListener("change", () => {
     const isVisible = DOM.showTopRightControlsCheckbox.checked
@@ -2147,3 +2149,7 @@ export function setupGeneralEventHandlers(
     }
   })
 }
+
+
+
+

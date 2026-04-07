@@ -2265,3 +2265,35 @@ body.free-move-custom-title .custom-title-display {
   width: fit-content !important;
   white-space: nowrap;
 }
+
+/* Flip Interface Layout */
+body.flip-layout .side-controls {
+  left: auto;
+  right: 25px;
+}
+body.flip-layout .side-controls .settings-panel {
+  left: auto;
+  right: 65px;
+  transform: translateX(20px);
+}
+body.flip-layout .side-controls .settings-panel.active {
+  transform: translateX(0);
+}
+body.flip-layout .top-right-controls {
+  right: auto;
+  left: 20px;
+}
+
+body.flip-layout .settings-sidebar {
+  left: auto;
+  right: -350px;
+}
+body.flip-layout .settings-sidebar.open {
+  left: auto;
+  right: 0;
+}
+
+body.flip-layout .layout-controls-popup {
+  left: auto;
+  right: calc(100% + 12px);
+}

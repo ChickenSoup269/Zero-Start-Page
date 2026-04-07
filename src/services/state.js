@@ -162,7 +162,7 @@ const defaultSettings = {
   timerIsRunning: false,
   musicPlayerExpanded: false,
   sideControlsGhostMode: false,
-  showQuickAccess: true,
+  flipLayout: false,
   showDonateButton: true,
   showBookmarks: true,
   showBookmarkGroups: true,
@@ -380,7 +380,7 @@ export function resetSettingsState() {
     timerEndTime: 0,
     timerIsRunning: false,
     musicPlayerExpanded: false,
-    showQuickAccess: true,
+    flipLayout: false,
     showDonateButton: true,
   }
   settingsState = defaultSettings
@@ -451,3 +451,4 @@ export function deleteCalendarEvent(id) {
 export function saveCalendarEvents() {
   localStorage.setItem("calendarEvents", JSON.stringify(calendarEventsState))
 }
+
