@@ -2045,6 +2045,28 @@ export function setupGeneralEventHandlers(
   })
 
   // Custom Title Settings
+  if (DOM.showCustomTitleCheckbox) {
+    DOM.showCustomTitleCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("showCustomTitle", e.target.checked)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showCustomTitle", value: e.target.checked },
+        }),
+      )
+    })
+  }
+
+  if (DOM.freeMoveCustomTitleCheckbox) {
+    DOM.freeMoveCustomTitleCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("freeMoveCustomTitle", e.target.checked)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "freeMoveCustomTitle", value: e.target.checked },
+        }),
+      )
+    })
+  }
+
   const customTitleFields = [
     { dom: DOM.customTitleText, key: "customTitleText", isCheckbox: false },
     {
@@ -2098,17 +2120,29 @@ export function setupGeneralEventHandlers(
   customTitleFields.forEach((field) => {
     if (field.dom) {
       field.dom.addEventListener("input", (e) => {
-        const val = field.isCheckbox ? e.target.checked : e.target.value
+        const val = field.isCheckbox
+          ? e.target.checked
+          : field.dom.type === "range"
+            ? parseInt(e.target.value)
+            : e.target.value
         if (field.valDisp) {
           const disp = document.getElementById(field.valDisp)
           if (disp) disp.textContent = val
         }
-        handleSettingUpdate(field.key, val)
+        updateSetting(field.key, val)
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
             detail: { key: field.key, value: val },
           }),
         )
+      })
+      field.dom.addEventListener("change", (e) => {
+        const val = field.isCheckbox
+          ? e.target.checked
+          : field.dom.type === "range"
+            ? parseInt(e.target.value)
+            : e.target.value
+        handleSettingUpdate(field.key, val)
       })
     }
   })

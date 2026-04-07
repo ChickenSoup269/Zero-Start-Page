@@ -747,3 +747,6 @@ export const customTitleShadowY = document.getElementById('custom-title-shadow-y
 export const customTitleShadowColor = document.getElementById('custom-title-shadow-color')
 export const customTitleBorderSize = document.getElementById('custom-title-border-size')
 export const customTitleBorderColor = document.getElementById('custom-title-border-color')
+
+export const showCustomTitleCheckbox = document.getElementById('show-custom-title-checkbox');
+export const freeMoveCustomTitleCheckbox = document.getElementById('free-move-custom-title-checkbox');

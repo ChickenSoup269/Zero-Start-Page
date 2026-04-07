@@ -1,6 +1,7 @@
 import { clockElement, dateElement } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
+import { makeDraggable } from "../utils/draggable.js"
 
 function applyHuePerCharacter(target, seed = 0) {
   if (!target) return
@@ -370,7 +371,11 @@ export function initClock() {
     }
   })
   window.addEventListener("layoutUpdated", (e) => {
-    if (e.detail.key.startsWith("customTitle")) {
+    if (
+      e.detail.key.startsWith("customTitle") ||
+      e.detail.key === "showCustomTitle" ||
+      e.detail.key === "freeMoveCustomTitle"
+    ) {
       updateCustomTitle()
     }
   })
@@ -380,6 +385,13 @@ export function updateCustomTitle() {
   const settings = getSettings()
   let el = document.getElementById("custom-title-display")
   if (!el) return
+
+  if (settings.showCustomTitle === false) {
+    el.style.display = "none"
+    return
+  } else {
+    el.style.display = ""
+  }
 
   const text = settings.customTitleText || ""
   if (!text.trim()) {
@@ -416,4 +428,6 @@ export function updateCustomTitle() {
   } else {
     el.style.textShadow = "none"
   }
+
+  makeDraggable(el, "customTitle")
 }

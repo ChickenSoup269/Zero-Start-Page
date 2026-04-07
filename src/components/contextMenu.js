@@ -194,8 +194,12 @@ function handleLock() {
     updateSetting("lockedWidgets", lockedWidgets)
     saveSettings()
 
-    // Optionally update UI for visual feedback (e.g., adding a lock icon or class to the widget)
-    const widget = document.getElementById(contextMenuTargetId)
+    // Optionally update UI for visual feedback
+    let widgetId = contextMenuTargetId
+    if (contextMenuTargetId === "clock") widgetId = "clock-date-wrap"
+    if (contextMenuTargetId === "customTitle") widgetId = "custom-title-display"
+
+    const widget = document.getElementById(widgetId)
     if (widget) {
       if (!isLocked) {
         widget.classList.add("is-locked")
