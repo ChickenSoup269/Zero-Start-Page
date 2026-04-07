@@ -27,7 +27,7 @@ export class MusicPlayer {
     this.updateVisibility()
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
-    
+
     // Only start polling if music player is enabled AND currently visible (expanded)
     if (this.showPlayer && this.isVisible) {
       this.startPolling()
