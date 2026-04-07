@@ -70,6 +70,27 @@ function applyHueMode(settings) {
   }
 }
 
+function formatViShortWeekday(str) {
+  if (!str) return str
+  return str
+    .replace(/Thứ Hai/gi, "HAI")
+    .replace(/Thứ Ba/gi, "BA")
+    .replace(/Thứ Tư/gi, "TƯ")
+    .replace(/Thứ Năm/gi, "NĂM")
+    .replace(/Thứ Sáu/gi, "SÁU")
+    .replace(/Thứ Bảy/gi, "BẢY")
+    .replace(/Chủ Nhật/gi, "CN")
+}
+
+function getSafeWeekday(date, lang, isShort, tz) {
+  const format = isShort && lang !== "vi-VN" ? "short" : "long"
+  let str = date.toLocaleDateString(lang, { weekday: format, timeZone: tz })
+  if (isShort && lang === "vi-VN") {
+    return formatViShortWeekday(str)
+  }
+  return str
+}
+
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
@@ -181,10 +202,7 @@ export function updateTime() {
     }
     const timeStr = now.toLocaleTimeString(langCode, timeOptions)
 
-    const dayName = now.toLocaleDateString(langCode, {
-      weekday: "long",
-      timeZone: tz,
-    })
+    const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
     const day = now.toLocaleDateString(langCode, {
       day: "2-digit",
       timeZone: tz,
@@ -237,10 +255,7 @@ export function updateTime() {
       ? `${hh}:${mm}`
       : `${hh}:${mm}<span class="clock-time-seconds">:${ss}</span>`
 
-    const weekday = now.toLocaleDateString(langCode, {
-      weekday: "long",
-      timeZone: tz,
-    })
+    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
     const year = new Date(
       now.toLocaleString("en-US", { timeZone: tz }),
     ).getFullYear()
@@ -269,13 +284,18 @@ export function updateTime() {
     })
     dateString = dayMonth
   } else if (format === "full") {
+    const formatWeekday =
+      settings.shortWeekday && langCode !== "vi-VN" ? "short" : "long"
     dateString = now.toLocaleDateString(langCode, {
-      weekday: "long",
+      weekday: formatWeekday,
       day: "2-digit",
       month: "long",
       year: "numeric",
       timeZone: tz,
     })
+    if (settings.shortWeekday && langCode === "vi-VN") {
+      dateString = formatViShortWeekday(dateString)
+    }
   } else if (format === "short") {
     dateString = now.toLocaleDateString("en-GB", { timeZone: tz })
   } else if (format === "us") {
@@ -289,10 +309,7 @@ export function updateTime() {
     if (tz) yearDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
     dateString = String(yearDate.getFullYear())
   } else if (format === "weekday") {
-    dateString = now.toLocaleDateString(langCode, {
-      weekday: "long",
-      timeZone: tz,
-    })
+    dateString = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
   }
 
   // Handle date visibility - check both showDate AND showGregorian

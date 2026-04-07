@@ -410,6 +410,9 @@ export const importSettingsInput = document.getElementById(
   "import-settings-input",
 )
 export const dateFormatSelect = document.getElementById("date-format-select")
+export const shortWeekdayCheckbox = document.getElementById(
+  "short-weekday-checkbox",
+)
 export const timeFormatSelect = document.getElementById("time-format-select")
 export const timezoneSelect = document.getElementById("timezone-select")
 export const hideSecondsCheckbox = document.getElementById(
@@ -585,7 +588,9 @@ export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
-export const freeMoveClockCheckbox = document.getElementById('free-move-clock-checkbox')
+export const freeMoveClockCheckbox = document.getElementById(
+  "free-move-clock-checkbox",
+)
 export const showClockCheckbox = document.getElementById("show-clock-checkbox")
 export const showDateCheckbox = document.getElementById("show-date-checkbox")
 export const showFullCalendarCheckbox = document.getElementById(

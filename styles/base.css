@@ -763,6 +763,7 @@ body.date-clock-style-cool .cool-greeting {
   font-size: calc(var(--clock-size) * 0.15);
   font-weight: bold;
   text-transform: uppercase;
+  line-height: 1.5;
   letter-spacing: 2px;
 }
 body.date-clock-style-cool .cool-dayname {
@@ -787,7 +788,7 @@ body.date-clock-style-cool .cool-time {
 body.free-move-clock .clock-date-wrap {
   position: absolute !important;
   z-index: 100;
-  cursor: move;
+  cursor: pointer;
 }
 
 body.free-move-clock:not(.date-clock-style-round):not(.date-clock-style-square)
