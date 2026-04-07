@@ -378,6 +378,25 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove("hide-bookmark-bg")
     }
 
+    let layout = settings.bookmarkLayout || "default"
+    // Handle legacy boolean setting, or removed "sidebar-left" setting
+    if (settings.bookmarkSidebarMode === true && layout === "default") {
+      layout = "sidebar"
+    }
+    if (layout === "sidebar-left") layout = "sidebar"
+
+    document.body.classList.remove(
+      "bookmark-sidebar-mode",
+      "bookmark-taskbar-mode",
+      "bookmark-taskbar-left-mode",
+    )
+    if (layout === "sidebar")
+      document.body.classList.add("bookmark-sidebar-mode")
+    else if (layout === "taskbar")
+      document.body.classList.add("bookmark-taskbar-mode")
+    else if (layout === "taskbar-left")
+      document.body.classList.add("bookmark-taskbar-left-mode")
+
     let shadowHex = settings.bookmarkShadowColor || "#000000"
     let shadowOpacity = settings.bookmarkShadowOpacity ?? 24
     let shadowBlur = settings.bookmarkShadowBlur ?? 8
@@ -653,6 +672,12 @@ function createUpdateSettingsInputs(effectInstances) {
       }
       if (DOM.hideBookmarkBg) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true
+      }
+      if (DOM.bookmarkLayout) {
+        let val = settings.bookmarkLayout || "default"
+        if (settings.bookmarkSidebarMode === true && val === "default")
+          val = "sidebar"
+        DOM.bookmarkLayout.value = val
       }
 
       if (DOM.bookmarkShadowColorPicker) {

@@ -90,6 +90,7 @@ const defaultSettings = {
   bookmarkEnableDrag: false,
   bookmarkHideText: false,
   bookmarkHideBg: false,
+  bookmarkLayout: "default",
   bookmarkTextColor: null,
   showTopRightControls: true,
   bookmarkShadowColor: "#000000",
@@ -337,6 +338,7 @@ export function resetSettingsState() {
     bookmarkEnableDrag: false,
     bookmarkHideText: false,
     bookmarkHideBg: false,
+    bookmarkLayout: "default",
     bookmarkTextColor: null,
     showTopRightControls: true,
     bookmarkShadowColor: "#000000",
@@ -451,4 +453,3 @@ export function deleteCalendarEvent(id) {
 export function saveCalendarEvents() {
   localStorage.setItem("calendarEvents", JSON.stringify(calendarEventsState))
 }
-

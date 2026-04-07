@@ -677,6 +677,12 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkLayout) {
+      DOM.bookmarkLayout.addEventListener("change", () => {
+        handleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
+      })
+    }
+
     if (DOM.bookmarkShadowColorPicker) {
       DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
         handleSettingUpdate(

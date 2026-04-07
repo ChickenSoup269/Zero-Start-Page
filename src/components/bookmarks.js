@@ -1,4 +1,8 @@
-import { bookmarksContainer, bookmarkGroupsContainer } from "../utils/dom.js"
+import {
+  bookmarksContainer,
+  bookmarkGroupsContainer,
+  bookmarkGroupsToggle,
+} from "../utils/dom.js"
 import { showPrompt } from "../utils/dialog.js"
 import {
   getBookmarks,
@@ -134,56 +138,66 @@ function createBookmarkIcon(bookmark) {
 }
 
 // --- Drag and Drop State ---
-let draggedBookmarkIndex = null;
+let draggedBookmarkIndex = null
 
 function handleDragStart(e) {
-  draggedBookmarkIndex = Number(this.dataset.index);
-  e.dataTransfer.effectAllowed = "move";
+  draggedBookmarkIndex = Number(this.dataset.index)
+  e.dataTransfer.effectAllowed = "move"
   // The timeout ensures the drop target is visually still clear, while the dragged shadow exists
-  setTimeout(() => this.classList.add("dragging"), 0);
+  setTimeout(() => this.classList.add("dragging"), 0)
 }
 
 function handleDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  return false;
+  e.preventDefault()
+  e.dataTransfer.dropEffect = "move"
+  return false
 }
 
 function handleDragEnter(e) {
-  e.preventDefault();
+  e.preventDefault()
   if (this.dataset.index !== String(draggedBookmarkIndex)) {
-    this.classList.add("drag-over");
+    this.classList.add("drag-over")
   }
 }
 
 function handleDragLeave(e) {
-  this.classList.remove("drag-over");
+  this.classList.remove("drag-over")
 }
 
 function handleDrop(e) {
-  e.stopPropagation();
-  e.preventDefault(); // prevent opening the link
-  this.classList.remove("drag-over");
-  const targetIndex = Number(this.dataset.index);
+  e.stopPropagation()
+  e.preventDefault() // prevent opening the link
+  this.classList.remove("drag-over")
+  const targetIndex = Number(this.dataset.index)
 
   if (draggedBookmarkIndex !== null && draggedBookmarkIndex !== targetIndex) {
-    const bookmarks = getBookmarks();
-    const [draggedItem] = bookmarks.splice(draggedBookmarkIndex, 1);
-    bookmarks.splice(targetIndex, 0, draggedItem);
-    setBookmarks(bookmarks);
-    saveBookmarks();
-    renderBookmarks();
+    const bookmarks = getBookmarks()
+    const [draggedItem] = bookmarks.splice(draggedBookmarkIndex, 1)
+    bookmarks.splice(targetIndex, 0, draggedItem)
+    setBookmarks(bookmarks)
+    saveBookmarks()
+    renderBookmarks()
   }
-  return false;
+  return false
 }
 
 function handleDragEnd(e) {
-  this.classList.remove("dragging");
-  document.querySelectorAll(".bookmark").forEach(el => el.classList.remove("drag-over"));
-  draggedBookmarkIndex = null;
+  this.classList.remove("dragging")
+  document
+    .querySelectorAll(".bookmark")
+    .forEach((el) => el.classList.remove("drag-over"))
+  draggedBookmarkIndex = null
 }
 
+let toggleListenerAdded = false;
+
 export function renderBookmarks() {
+  if (!toggleListenerAdded) {
+    bookmarkGroupsToggle.addEventListener("click", () => {
+      document.body.classList.toggle("groups-hidden")
+    })
+    toggleListenerAdded = true
+  }
   const i18n = geti18n()
 
   // 1. Render Group Tabs
@@ -192,31 +206,34 @@ export function renderBookmarks() {
   // 2. Render Bookmarks for Active Group
   const bookmarks = getBookmarks() // This now returns items of active group
   bookmarksContainer.innerHTML = ""
-  
-  const settings = getSettings();
-  const enableDrag = settings.bookmarkEnableDrag === true;
+
+  const settings = getSettings()
+  const enableDrag = settings.bookmarkEnableDrag === true
 
   bookmarks.forEach((bookmark, index) => {
     const bookmarkEl = document.createElement("a")
     bookmarkEl.href = bookmark.url
     bookmarkEl.classList.add("bookmark")
     bookmarkEl.target = "_blank"
-    
+
     if (enableDrag) {
-      bookmarkEl.draggable = true;
-      bookmarkEl.dataset.index = index;
-      bookmarkEl.addEventListener("dragstart", handleDragStart);
-      bookmarkEl.addEventListener("dragover", handleDragOver);
-      bookmarkEl.addEventListener("drop", handleDrop);
-      bookmarkEl.addEventListener("dragenter", handleDragEnter);
-      bookmarkEl.addEventListener("dragleave", handleDragLeave);
-      bookmarkEl.addEventListener("dragend", handleDragEnd);
+      bookmarkEl.draggable = true
+      bookmarkEl.dataset.index = index
+      bookmarkEl.addEventListener("dragstart", handleDragStart)
+      bookmarkEl.addEventListener("dragover", handleDragOver)
+      bookmarkEl.addEventListener("drop", handleDrop)
+      bookmarkEl.addEventListener("dragenter", handleDragEnter)
+      bookmarkEl.addEventListener("dragleave", handleDragLeave)
+      bookmarkEl.addEventListener("dragend", handleDragEnd)
       // prevent link navigation right after dragging
       bookmarkEl.addEventListener("click", (e) => {
-        if (bookmarkEl.classList.contains("dragging") || draggedBookmarkIndex !== null) {
-           e.preventDefault();
+        if (
+          bookmarkEl.classList.contains("dragging") ||
+          draggedBookmarkIndex !== null
+        ) {
+          e.preventDefault()
         }
-      });
+      })
     }
 
     const titleEl = document.createElement("span")
@@ -309,3 +326,5 @@ function renderGroupTabs() {
 export function initBookmarks() {
   renderBookmarks()
 }
+
+
