@@ -602,9 +602,7 @@ export const showLunarCalendarCheckbox = document.getElementById(
 export const showTopRightControlsCheckbox = document.getElementById(
   "show-top-right-controls-checkbox",
 )
-export const showQuickAccessCheckbox = document.getElementById(
-  "show-quick-access-checkbox",
-)
+export const flipLayoutCheckbox = document.getElementById("flip-layout-checkbox")
 export const ghostControlsCheckbox = document.getElementById(
   "ghost-controls-checkbox",
 )
@@ -647,7 +645,7 @@ export const lcpSearchBarWidthVal = document.getElementById(
 export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
-export const lcpQuickAccess = document.getElementById("lcp-quick-access")
+export const lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export const lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
 )
@@ -750,3 +748,5 @@ export const customTitleBorderColor = document.getElementById('custom-title-bord
 
 export const showCustomTitleCheckbox = document.getElementById('show-custom-title-checkbox');
 export const freeMoveCustomTitleCheckbox = document.getElementById('free-move-custom-title-checkbox');
+
+

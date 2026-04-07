@@ -403,6 +403,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-analog",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+    document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
@@ -944,7 +945,14 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.freeMoveClockCheckbox)
       DOM.freeMoveClockCheckbox.checked = settings.freeMoveClock === true
     DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
-    DOM.showQuickAccessCheckbox.checked = settings.showQuickAccess !== false
+
+    if (DOM.flipLayoutCheckbox) {
+      DOM.flipLayoutCheckbox.checked = settings.flipLayout === true
+    }
+    if (DOM.lcpFlipLayout) {
+      DOM.lcpFlipLayout.checked = settings.flipLayout === true
+    }
+
     if (DOM.showDonateButtonCheckbox) {
       DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
     }
@@ -970,14 +978,17 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
     DOM.showTopRightControlsCheckbox.checked =
       settings.showTopRightControls !== false
+    document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "ghost-controls",
       settings.sideControlsGhostMode === true,
     )
+    document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "free-move-clock",
       settings.freeMoveClock === true,
     )
+    document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "free-move-custom-title",
       settings.freeMoveCustomTitle === true,

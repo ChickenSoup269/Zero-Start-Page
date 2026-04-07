@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -337,6 +337,14 @@
             <div class="lcp-title"><i class="fa-solid fa-sliders"></i> <span data-i18n="quick_layout_title">Layout
                     Controls</span></div>
             <div class="lcp-row">
+                <i class="fa-solid fa-arrow-right-arrow-left lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_flip_layout">Flip Interface Layout</span>
+                <label class="lcp-switch">
+                    <input type="checkbox" id="lcp-flip-layout">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
                 <i class="fa-solid fa-magnifying-glass lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_show_search_bar">Search Bar</span>
                 <label class="lcp-switch">
@@ -368,14 +376,7 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
-            <div class="lcp-row">
-                <i class="fas fa-bars lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_quick_access">Quick Access Bar</span>
-                <label class="lcp-switch">
-                    <input type="checkbox" id="lcp-quick-access">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
+            
             <div class="lcp-row">
                 <i class="fa-solid fa-eye-slash lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
@@ -442,10 +443,10 @@
         </div>
         <div class="sidebar-content">
             <div class="setting-group">
-                <label data-i18n="settings_language"><i class="fa-solid fa-language"></i> Language / Ngôn ngữ</label>
+                <label data-i18n="settings_language"><i class="fa-solid fa-language"></i> Language / NgÃ´n ngá»¯</label>
                 <select id="language-select">
                     <option value="en">English</option>
-                    <option value="vi">Tiếng Việt</option>
+                    <option value="vi">Tiáº¿ng Viá»‡t</option>
                 </select>
             </div>
 
@@ -893,15 +894,15 @@
                     <div class="setting-item">
                         <div class="wave-angle-header">
                             <label><span data-i18n="settings_svg_wave_angle">Angle</span>: <span
-                                    id="svg-wave-angle-value">0</span>°</label>
+                                    id="svg-wave-angle-value">0</span>Â°</label>
                             <div class="wave-angle-presets">
-                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270Â°)"><i
                                         class="fa-solid fa-arrow-left"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90Â°)"><i
                                         class="fa-solid fa-arrow-right"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0Â°)"><i
                                         class="fa-solid fa-arrow-up"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180Â°)"><i
                                         class="fa-solid fa-arrow-down"></i></button>
                             </div>
                         </div>
@@ -1135,7 +1136,7 @@
                         <button class="effect-item" data-value="tetFireworks"
                             data-search="tet fireworks hoa mai chuc mung nam moi">
                             <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
-                            <span class="effect-name" data-i18n="effect_tet_fireworks">Tết Fireworks</span>
+                            <span class="effect-name" data-i18n="effect_tet_fireworks">Táº¿t Fireworks</span>
                         </button>
                         <button class="effect-item" data-value="skyLanterns"
                             data-search="den hoa dang sky lanterns floating light festival">
@@ -1224,19 +1225,19 @@
                         <input type="color" id="meteor-color-picker" value="#ffffff" />
                     </div>
 
-                    <!-- Network Color (Mới) -->
+                    <!-- Network Color (Má»›i) -->
                     <div id="network-color-setting" class="setting-item" style="display: none;">
                         <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
                         <input type="color" id="network-color-picker" value="#00bcd4" />
                     </div>
 
-                    <!-- Matrix Color (Mới) -->
+                    <!-- Matrix Color (Má»›i) -->
                     <div id="matrix-color-setting" class="setting-item" style="display: none;">
                         <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
                         <input type="color" id="matrix-color-picker" value="#00FF00" />
                     </div>
 
-                    <!-- Sakura Color (Mới) -->
+                    <!-- Sakura Color (Má»›i) -->
                     <div id="sakura-color-setting" class="setting-item" style="display: none;">
                         <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
                         <input type="color" id="sakura-color-picker" value="#ffb7c5" />
@@ -1656,6 +1657,14 @@
                         data-i18n="settings_custom_title">Custom Title</span></h3>
                 <div class="section-content">
                     <div class="setting-item-row" style="margin-bottom: 0.8rem;">
+                        <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title">Show Custom Title</label>
+                        <input type="checkbox" id="show-custom-title-checkbox">
+                    </div>
+                    <div class="setting-item-row" style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
+                        <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title">Free Move Custom Title</label>
+                        <input type="checkbox" id="free-move-custom-title-checkbox">
+                    </div>
+                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
                         <label for="custom-title-text" data-i18n="settings_custom_title_text">Title text</label>
                         <input type="text" id="custom-title-text" placeholder="..."
                             style="flex: 1; max-width: 150px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 4px;">
@@ -1726,7 +1735,7 @@
                     <div class="setting-group">
                         <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            💡 Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
+                            ðŸ’¡ TÃ¹y chá»‰nh giao diá»‡n cho tá»«ng Ã´ Dáº¥u trang (mÃ u chá»¯, ná»n, bÃ³ng Ä‘á»•, kÃ­ch thÆ°á»›c...).</p>
                         <label><i class="fa-solid fa-text-height"></i> <span
                                 data-i18n="settings_bookmark_font_size">Font Size:</span> <span
                                 id="bookmark-font-size-value">10px</span></label>
@@ -1783,7 +1792,7 @@
                                 data-i18n="settings_bookmark_group_header">Group Tabs Interface</span></h4>
                         <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            💡 Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
+                            ðŸ’¡ TÃ¹y chá»‰nh thanh Ä‘iá»u hÆ°á»›ng nhÃ³m thÆ° má»¥c (Tabs) á»Ÿ phÃ­a trÃªn Dáº¥u trang.</p>
                         <label style="margin-top: 10px; display: block;"><span
                                 data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
                         <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
@@ -1837,6 +1846,10 @@
                     Features</h3>
                 <div class="section-content">
                     <div class="setting-item-row">
+                        <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface Layout</label>
+                        <input type="checkbox" id="flip-layout-checkbox">
+                    </div>
+                    <div class="setting-item-row">
                         <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
                         <input type="checkbox" id="show-todo-checkbox" checked>
                     </div>
@@ -1861,11 +1874,7 @@
                         <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
                         <input type="checkbox" id="show-music-checkbox">
                     </div>
-                    <div class="setting-item-row">
-                        <label for="show-quick-access-checkbox" data-i18n="settings_show_quick_access">Show Quick Access
-                            Bar</label>
-                        <input type="checkbox" id="show-quick-access-checkbox" checked>
-                    </div>
+                    
                     <div class="setting-item-row">
                         <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
                             Bar</label>
@@ -2061,8 +2070,8 @@
             </div>
             <p data-i18n="donate_desc" style="margin-bottom: 10px;">Choose a platform to support the development:</p>
             <p data-i18n="donate_thank_you"
-                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cảm ơn bạn
-                rất nhiều vì đã ủng hộ dự án! ❤️</p>
+                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cáº£m Æ¡n báº¡n
+                ráº¥t nhiá»u vÃ¬ Ä‘Ã£ á»§ng há»™ dá»± Ã¡n! â¤ï¸</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
                 <a href="https://ko-fi.com/chickensoup269" target="_blank" class="primary-btn"
                     style="flex: 1; display:flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; background: #29ABE0; color:white">
@@ -2184,3 +2193,6 @@
 </body>
 
 </html>
+
+
+
