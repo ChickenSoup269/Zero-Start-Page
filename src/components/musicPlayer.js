@@ -27,7 +27,11 @@ export class MusicPlayer {
     this.updateVisibility()
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
-    this.startPolling()
+    
+    // Only start polling if music player is enabled AND currently visible (expanded)
+    if (this.showPlayer && this.isVisible) {
+      this.startPolling()
+    }
   }
 
   createElements() {
@@ -125,9 +129,11 @@ export class MusicPlayer {
           this.showPlayer = e.detail.value
           this.updateVisibility()
           if (this.showPlayer) {
-            this.startPolling()
             this.isVisible = true
             this.container.classList.remove("minimized")
+            this.startPolling()
+            updateSetting("musicPlayerExpanded", true)
+            saveSettings()
           } else {
             this.stopPolling()
           }
@@ -146,24 +152,28 @@ export class MusicPlayer {
 
   startPolling() {
     if (this.pollInterval) return
-    this.pollInterval = setInterval(() => {
-      if (!this.showPlayer) return
-      try {
-        chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
-          if (chrome.runtime.lastError) {
-            this.setInactive()
-            return
-          }
-          if (response && response.audible) {
-            this.updateUI(response)
-          } else {
-            this.setInactive()
-          }
-        })
-      } catch (e) {
-        this.setInactive()
-      }
-    }, 1000)
+    this.pollInterval = setInterval(() => this.fetchMediaState(), 1000)
+    // Run an initial fetch
+    this.fetchMediaState()
+  }
+
+  fetchMediaState() {
+    if (!this.showPlayer || !this.isVisible) return
+    try {
+      chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
+        if (chrome.runtime.lastError) {
+          this.setInactive()
+          return
+        }
+        if (response && response.audible) {
+          this.updateUI(response)
+        } else {
+          this.setInactive()
+        }
+      })
+    } catch (e) {
+      this.setInactive()
+    }
   }
 
   stopPolling() {
@@ -171,6 +181,9 @@ export class MusicPlayer {
       clearInterval(this.pollInterval)
       this.pollInterval = null
     }
+    // Stop visualizer and animations when not polling to save resources
+    if (this.visualizer) this.visualizer.stop()
+    this._stopProgressAnimation()
   }
 
   updateUI(data) {
@@ -312,6 +325,14 @@ export class MusicPlayer {
     this.container.classList.toggle("minimized", !this.isVisible)
     updateSetting("musicPlayerExpanded", this.isVisible)
     saveSettings()
+
+    // Control polling based on visibility
+    if (this.isVisible) {
+      this.startPolling()
+      this.fetchMediaState()
+    } else {
+      this.stopPolling()
+    }
   }
 
   updateVisibility() {
