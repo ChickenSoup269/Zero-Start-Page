@@ -76,6 +76,14 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
 
     DOM.userSvgWavesGallery.appendChild(item)
   })
+
+  const svgWaveSpan = document.getElementById("count-svg-wave")
+  if (svgWaveSpan) {
+    const total = DOM.userSvgWavesGallery.querySelectorAll(
+      ".user-svg-wave-item",
+    ).length
+    svgWaveSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+  }
 }
 
 export { renderUserSvgWaves }

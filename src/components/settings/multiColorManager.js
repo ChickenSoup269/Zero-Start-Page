@@ -590,6 +590,14 @@ export function setupMultiColorManager(applySettings) {
         DOM.savedMultiColorPresets.appendChild(item)
       })
     }
+
+    const multiSpan = document.getElementById("count-multi-color")
+    if (multiSpan) {
+      const total = DOM.savedMultiColorPresets.querySelectorAll(
+        ".user-gradient-item",
+      ).length
+      multiSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+    }
   }
 
   // Handle count selector change
