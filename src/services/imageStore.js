@@ -24,8 +24,8 @@ function openDb() {
 }
 
 /** Lưu Blob vào IndexedDB, trả về ID */
-export async function saveImage(blob) {
-  const id = `idb-img-${Date.now()}`
+export async function saveImage(blob, customId) {
+  const id = customId || `idb-img-${Date.now()}`
   const db = await openDb()
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite")
