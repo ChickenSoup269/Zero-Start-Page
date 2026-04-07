@@ -563,6 +563,8 @@ function createUpdateSettingsInputs(effectInstances) {
     // General Inputs
     effectInstances.renderFontGrid()
     DOM.dateFormatSelect.value = settings.dateFormat
+    if (DOM.shortWeekdayCheckbox)
+      DOM.shortWeekdayCheckbox.checked = settings.shortWeekday === true
     if (DOM.timeFormatSelect)
       DOM.timeFormatSelect.value = settings.timeFormat || "24h"
     if (DOM.timezoneSelect)

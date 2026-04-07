@@ -1311,6 +1311,18 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.shortWeekdayCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate("shortWeekday", DOM.shortWeekdayCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "shortWeekday",
+          value: DOM.shortWeekdayCheckbox.checked,
+        },
+      }),
+    )
+  })
+
   if (DOM.timeFormatSelect) {
     DOM.timeFormatSelect.addEventListener("change", () => {
       handleSettingUpdate("timeFormat", DOM.timeFormatSelect.value)
