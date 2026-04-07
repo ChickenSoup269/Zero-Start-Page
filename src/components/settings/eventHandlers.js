@@ -1543,6 +1543,9 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})
   setupLayoutCheckbox(DOM.showClockCheckbox, "showClock", {})
+  if (DOM.showDateCheckbox) {
+    setupLayoutCheckbox(DOM.showDateCheckbox, "showDate", {})
+  }
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
