@@ -2151,8 +2151,26 @@ export function setupGeneralEventHandlers(
       })
     }
   })
+
+  // Ensure LCP side controls stay in sync with layout visibility toggles
+  window.addEventListener("layoutUpdated", (e) => {
+    if (!e.detail) return
+    const { key, value } = e.detail
+    if (key === "showSearchBar" && DOM.lcpSearchBar)
+      DOM.lcpSearchBar.checked = value
+    if (key === "showBookmarks" && DOM.lcpBookmarks)
+      DOM.lcpBookmarks.checked = value
+    if (key === "showBookmarkGroups" && DOM.lcpBookmarkGroups)
+      DOM.lcpBookmarkGroups.checked = value
+    if (key === "showLunarCalendar" && DOM.lcpLunarCalendar)
+      DOM.lcpLunarCalendar.checked = value
+    if (key === "sideControlsGhostMode" && DOM.lcpGhostControls)
+      DOM.lcpGhostControls.checked = value
+    if (key === "showTopRightControls" && DOM.lcpTopRightControls)
+      DOM.lcpTopRightControls.checked = value
+    if (key === "flipLayout" && DOM.lcpFlipLayout)
+      DOM.lcpFlipLayout.checked = value
+    if (key === "searchBarWidth" && DOM.lcpSearchBarWidth)
+      DOM.lcpSearchBarWidth.value = value
+  })
 }
-
-
-
-
