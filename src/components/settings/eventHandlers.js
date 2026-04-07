@@ -680,6 +680,13 @@ export function setupGeneralEventHandlers(
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
         handleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
+        if (DOM.lcpBookmarkLayout) DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
+      })
+    }
+    if (DOM.lcpBookmarkLayout) {
+      DOM.lcpBookmarkLayout.addEventListener("change", () => {
+        handleSettingUpdate("bookmarkLayout", DOM.lcpBookmarkLayout.value)
+        if (DOM.bookmarkLayout) DOM.bookmarkLayout.value = DOM.lcpBookmarkLayout.value
       })
     }
 
@@ -2178,5 +2185,8 @@ export function setupGeneralEventHandlers(
       DOM.lcpFlipLayout.checked = value
     if (key === "searchBarWidth" && DOM.lcpSearchBarWidth)
       DOM.lcpSearchBarWidth.value = value
+    if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout) 
+      DOM.lcpBookmarkLayout.value = value
   })
 }
+

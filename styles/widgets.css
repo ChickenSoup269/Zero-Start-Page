@@ -502,7 +502,7 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 700;
-  color: #2c2c2c;
+  color: white;
   background: linear-gradient(135deg, #f8f9fa, #d7dbe3);
 }
 
@@ -2298,301 +2298,294 @@ body.flip-layout .layout-controls-popup {
   right: calc(100% + 12px);
 }
 
-
-
-
-
-
 /* --- Minimal Bookmark Layout Modes --- */
 
 /* Base overrides for all custom modes (sidebar, taskbar, taskbar-left) */
 body.bookmark-sidebar-mode .bookmark-widget,
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    background: transparent !important;
-    backdrop-filter: none !important;
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    width: auto !important;
-    max-width: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  width: auto !important;
+  max-width: none !important;
 }
 
 body.bookmark-sidebar-mode .bookmarks-header,
 body.bookmark-taskbar-mode .bookmarks-header,
 body.bookmark-taskbar-left-mode .bookmarks-header {
-    /* Re-enabled top controls */
+  /* Re-enabled top controls */
 }
 
 /* Remove backgrounds from bookmarks themselves */
 body.bookmark-sidebar-mode .bookmark-item,
 body.bookmark-taskbar-mode .bookmark-item,
 body.bookmark-taskbar-left-mode .bookmark-item {
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 10px; /* Reduced padding */
-    backdrop-filter: none !important;
-    border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 10px; /* Reduced padding */
+  backdrop-filter: none !important;
+  border: none !important;
 }
 
 body.bookmark-sidebar-mode .bookmark-item:hover,
 body.bookmark-taskbar-mode .bookmark-item:hover,
 body.bookmark-taskbar-left-mode .bookmark-item:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px;
 }
 
 body.bookmark-sidebar-mode .bookmark-title,
 body.bookmark-taskbar-mode .bookmark-title,
 body.bookmark-taskbar-left-mode .bookmark-title {
-    display: none; /* Hide text */
+  display: none; /* Hide text */
 }
 
 body.bookmark-sidebar-mode .bookmark-icon,
 body.bookmark-taskbar-mode .bookmark-icon,
 body.bookmark-taskbar-left-mode .bookmark-icon {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 0; /* Remove bottom margin since text is gone */
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0; /* Remove bottom margin since text is gone */
 }
 
 /* Group container styling for custom modes */
 body.bookmark-sidebar-mode .bookmark-groups-container,
 body.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    background: transparent !important;
-    padding: 0;
-    margin: 0;
-    border: none !important;
-    gap: 10px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+  background: transparent !important;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  gap: 10px;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
-body.bookmark-sidebar-mode .group-tab,
-body.bookmark-taskbar-mode .group-tab,
-body.bookmark-taskbar-left-mode .group-tab {
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85em;
+body.bookmark-sidebar-mode .bookmark-group-tab,
+body.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab {
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
 }
 
-body.bookmark-sidebar-mode .group-tab:hover,
-body.bookmark-taskbar-mode .group-tab:hover,
-body.bookmark-taskbar-left-mode .group-tab:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
+body.bookmark-sidebar-mode .bookmark-group-tab:hover,
+body.bookmark-taskbar-mode .bookmark-group-tab:hover,
+body.bookmark-taskbar-left-mode .bookmark-group-tab:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
-body.bookmark-sidebar-mode .group-tab.active,
-body.bookmark-taskbar-mode .group-tab.active,
-body.bookmark-taskbar-left-mode .group-tab.active {
-    background: var(--text-color, #fff) !important;
-    color: #000 !important;
-    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+body.bookmark-sidebar-mode .bookmark-group-tab.active,
+body.bookmark-taskbar-mode .bookmark-group-tab.active,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.active {
+  background: var(--text-color, #fff) !important;
+  color: #000 !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* Groups toggle button */
 .bookmark-groups-toggle {
-    display: none; /* Hidden by default in standard mode */
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.4);
-    color: white;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.2s ease;
+  display: none; /* Hidden by default in standard mode */
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.2s ease;
 }
 
 .bookmark-groups-toggle:hover {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 body.bookmark-sidebar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
-    display: flex;
+  display: flex;
 }
 
 /* Hidden groups state */
 body.groups-hidden .bookmark-groups-container {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.9);
 }
 
 body.groups-hidden .bookmark-groups-toggle {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 body.groups-hidden .bookmark-groups-toggle:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* 1. Sidebar Mode (Right) */
 body.bookmark-sidebar-mode .bookmark-widget {
-    position: fixed !important;
-    top: 50% !important;
-    right: 20px !important;
-    left: auto !important;
-    bottom: auto !important;
-    transform: translateY(-50%) !important;
-    display: flex;
-    flex-direction: row-reverse; /* Reverses order: bookmarks on outside, groups inside */
-    align-items: center;
-    gap: 15px;
-    z-index: 100;
+  position: fixed !important;
+  top: 50% !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  display: flex;
+  flex-direction: row-reverse; /* Reverses order: bookmarks on outside, groups inside */
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
 }
 
 body.bookmark-sidebar-mode .bookmarks-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.3) !important; 
-    padding: 10px;
-    border-radius: 16px;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-height: 80vh;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3) !important;
+  padding: 10px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 body.bookmark-sidebar-mode .bookmark-groups-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Align tabs to the right (towards the icons) */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align tabs to the right (towards the icons) */
 }
 
 body.bookmark-sidebar-mode .bookmark-groups-toggle {
-    right: 80px; /* Position to the left of the group block */
-    top: 50%;
-    transform: translateY(-50%);
+  right: 80px; /* Position to the left of the group block */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container {
-    transform: translateX(20px) scale(0.9);
+  transform: translateX(20px) scale(0.9);
 }
-
 
 /* 2. Taskbar Mode (Bottom Center) */
 body.bookmark-taskbar-mode .bookmark-widget {
-    position: fixed !important;
-    bottom: 20px !important;
-    left: 50% !important;
-    top: auto !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    display: flex;
-    flex-direction: column-reverse; /* Icons bottom, groups above */
-    align-items: center;
-    gap: 15px;
-    z-index: 100;
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  display: flex;
+  flex-direction: column-reverse; /* Icons bottom, groups above */
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.3) !important;
-    padding: 10px 15px;
-    border-radius: 16px;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 90vw;
-    overflow-x: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3) !important;
+  padding: 10px 15px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 90vw;
+  overflow-x: auto;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 80vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 80vw;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-toggle {
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container {
-    transform: translateY(20px) scale(0.9);
+  transform: translateY(20px) scale(0.9);
 }
-
-
 
 /* 3. Taskbar Mode (Bottom Left) */
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    position: fixed !important;
-    bottom: 20px !important;
-    left: 20px !important;
-    top: auto !important;
-    right: auto !important;
-    transform: none !important;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-start;
-    gap: 15px;
-    z-index: 100;
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 20px !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 15px;
+  z-index: 100;
 }
 
 body.bookmark-taskbar-left-mode .bookmarks-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.3) !important;
-    padding: 10px 15px;
-    border-radius: 16px;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 80vw;
-    overflow-x: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3) !important;
+  padding: 10px 15px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 80vw;
+  overflow-x: auto;
 }
 
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    max-width: 80vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  max-width: 80vw;
 }
 
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
-    bottom: 80px;
-    left: 20px;
+  bottom: 80px;
+  left: 20px;
 }
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
-    transform: translateY(20px) scale(0.9);
+  transform: translateY(20px) scale(0.9);
 }
-
 
 /* Scrollbar hiding for mini grids */
 body.bookmark-sidebar-mode .bookmarks-grid::-webkit-scrollbar,
 body.bookmark-taskbar-mode .bookmarks-grid::-webkit-scrollbar,
 body.bookmark-taskbar-left-mode .bookmarks-grid::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 body.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-taskbar-left-mode .bookmarks-grid {
-    scrollbar-width: none;
+  scrollbar-width: none;
 }
 
 /* Disable main-container containing blocks for fixed layout to work properly */
 body.bookmark-sidebar-mode .main-container,
 body.bookmark-taskbar-mode .main-container,
 body.bookmark-taskbar-left-mode .main-container {
-    transform: none !important;
+  transform: none !important;
 }
 body.bookmark-sidebar-mode .clock-date-wrap,
 body.bookmark-sidebar-mode .search-container,
@@ -2603,37 +2596,34 @@ body.bookmark-taskbar-mode #custom-title-display,
 body.bookmark-taskbar-left-mode .clock-date-wrap,
 body.bookmark-taskbar-left-mode .search-container,
 body.bookmark-taskbar-left-mode #custom-title-display {
-    transform: scale(var(--clock-scale, 1));
+  transform: scale(var(--clock-scale, 1));
 }
 
 /* --- REVISED MINIMAL BOOKMARK LAYOUTS --- */
 body.bookmark-sidebar-mode .bookmark span,
 body.bookmark-taskbar-mode .bookmark span,
 body.bookmark-taskbar-left-mode .bookmark span {
-    display: none !important; /* Hide text */
+  display: none !important; /* Hide text */
 }
 
 /* Base adjustments - Let it inherit custom settings like Background, Sizes, Shadows */
 body.bookmark-sidebar-mode .bookmark,
 body.bookmark-taskbar-mode .bookmark,
-body.bookmark-taskbar-left-mode .bookmark,
-body.bookmark-sidebar-mode .add-bookmark-card,
-body.bookmark-taskbar-mode .add-bookmark-card,
-body.bookmark-taskbar-left-mode .add-bookmark-card {
-    /* Allow width/height to follow custom settings by resetting our static overrides */
-    width: auto !important;
-    height: auto !important;
-    min-width: unset !important;
-    min-height: unset !important;
-    padding: 5px !important;
-    margin: 0 !important;
-    justify-content: center;
+body.bookmark-taskbar-left-mode .bookmark {
+  /* Allow width/height to follow custom settings by resetting our static overrides */
+  width: auto !important;
+  height: auto !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  padding: 5px !important;
+  margin: 0 !important;
+  justify-content: center;
 }
 
 body.bookmark-sidebar-mode .bookmark:hover,
 body.bookmark-taskbar-mode .bookmark:hover,
 body.bookmark-taskbar-left-mode .bookmark:hover {
-    transform: translateY(-3px) !important;
+  transform: translateY(-3px) !important;
 }
 
 /* Icon images inside the bookmark cards - inherit sizes from CSS variables */
@@ -2643,178 +2633,397 @@ body.bookmark-taskbar-mode .bookmark img,
 body.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback,
 body.bookmark-taskbar-left-mode .bookmark img,
 body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback {
-    /* Make sure bottom margin is zero since there's no text */
-    margin-bottom: 0 !important;
-    
-    /* Re-apply CSS variables to override previous transparent hacks */
-    width: var(--bookmark-icon-size, 42px) !important;
-    height: var(--bookmark-icon-size, 42px) !important;
-    padding: 4px !important;
-    background-color: var(--bookmark-bg-color, rgba(255, 255, 255, 0.2)) !important;
-    border-radius: var(--bookmark-border-radius, 12px) !important;
-    box-shadow: var(--bookmark-shadow, 0 4px 6px rgba(0,0,0,0.1)) !important;
+  /* Make sure bottom margin is zero since there's no text */
+  margin-bottom: 0 !important;
+
+  /* Re-apply CSS variables to override previous transparent hacks */
+  width: var(--bookmark-icon-size, 42px) !important;
+  height: var(--bookmark-icon-size, 42px) !important;
+  padding: 4px !important;
+  background-color: var(
+    --bookmark-bg-color,
+    rgba(255, 255, 255, 0.2)
+  ) !important;
+  border-radius: var(--bookmark-border-radius, 12px) !important;
+  box-shadow: var(--bookmark-shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
 }
 
-/* Add Bookmark icon specifically */
-body.bookmark-sidebar-mode .add-bookmark-card i,
-body.bookmark-taskbar-mode .add-bookmark-card i,
-body.bookmark-taskbar-left-mode .add-bookmark-card i {
-    font-size: calc(var(--bookmark-icon-size, 42px) * 0.5) !important;
-}
+/* Add Bookmark icon default restored */
 
 /* Force ALL layouts to be vertical (hàng dọc) */
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    flex-direction: row-reverse !important; /* Groups on inside, icons on outside */
+  flex-direction: row-reverse !important; /* Groups on inside, icons on outside */
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-taskbar-left-mode .bookmarks-grid {
-    flex-direction: column !important; /* Force icons vertical */
-    max-width: 60px !important;
-    max-height: 80vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+  flex-direction: column !important; /* Force icons vertical */
+  max-width: 60px !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    flex-direction: column !important; /* Force groups vertical */
-    align-items: flex-end !important;
+  flex-direction: column !important; /* Force groups vertical */
+  align-items: flex-end !important;
 }
 
 /* Toggle Button Nicer Styling */
 body.bookmark-sidebar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
-    position: static !important; /* Fit into the flex container instead of absolute floating */
-    margin: 5px;
-    align-self: center;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: none !important;
-    width: 32px !important;
-    height: 32px !important;
-    transform: none !important;
+  position: static !important; /* Fit into the flex container instead of absolute floating */
+  margin: 5px;
+  align-self: center;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  transform: none !important;
 }
 body.bookmark-sidebar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Specific position adjustments for Toggle Button flow */
 body.bookmark-sidebar-mode .bookmark-widget,
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    /* Since we made the toggle static, let's wrap the groups and toggle nicely */
-    align-items: center;
+  /* Since we made the toggle static, let's wrap the groups and toggle nicely */
+  align-items: center;
 }
 
 /* Taskbar Center needs slightly different positioning */
 body.bookmark-taskbar-mode .bookmark-widget {
-    bottom: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, 50%) !important;
+  bottom: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, 50%) !important;
 }
 
 /* Taskbar Left needs slightly different positioning */
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    bottom: 50% !important;
-    left: 20px !important;
-    transform: translateY(50%) !important;
-    flex-direction: row !important; /* Groups on right of icons instead of left */
+  bottom: 50% !important;
+  left: 20px !important;
+  transform: translateY(50%) !important;
+  flex-direction: row !important; /* Groups on right of icons instead of left */
 }
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    align-items: flex-start !important;
+  align-items: flex-start !important;
 }
 
 /* --- TASKBAR LAYOUT & GROUP TOGGLE ANIMATION FIXES --- */
 /* Restore Taskbar to act like a real taskbar (Nằm dọc theo mép dưới - Horizontal) */
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    flex-direction: column-reverse !important; /* Groups stack above the horizontal Grid */
-    align-items: center !important;
+  flex-direction: column-reverse !important; /* Groups stack above the horizontal Grid */
+  align-items: center !important;
 }
 
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    align-items: flex-start !important;
+  align-items: flex-start !important;
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-taskbar-left-mode .bookmarks-grid {
-    flex-direction: row !important; /* Icons span horizontally left to right */
-    max-width: 90vw !important;
-    max-height: none !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+  flex-direction: row !important; /* Icons span horizontally left to right */
+  max-width: 90vw !important;
+  max-height: none !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    flex-direction: row !important; /* Groups span horizontally */
-    flex-wrap: wrap !important;
-    align-items: center !important;
+  flex-direction: row !important; /* Groups span horizontally */
+  flex-wrap: wrap !important;
+  align-items: center !important;
 }
 
 /* Fix precise positions at the bottom */
 body.bookmark-taskbar-mode .bookmark-widget {
-    bottom: 20px !important;
-    left: 50% !important;
-    top: auto !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
 }
 body.bookmark-taskbar-left-mode .bookmark-widget {
-    bottom: 20px !important;
-    left: 20px !important;
-    top: auto !important;
-    right: auto !important;
-    transform: none !important;
+  bottom: 20px !important;
+  left: 20px !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
 }
 
 /* Smooth Animation for Groups Container scaling down to 0 */
 .bookmark-groups-container {
-    transition: max-width 0.4s ease, max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease, transform 0.4s ease !important;
-    overflow: hidden !important;
-    transform-origin: center;
+  transition:
+    max-width 0.4s ease,
+    max-height 0.4s ease,
+    opacity 0.3s ease,
+    margin 0.4s ease,
+    transform 0.4s ease !important;
+  overflow: hidden !important;
+  transform-origin: center;
 }
 
 /* Initial Max values so transition works */
 body.bookmark-sidebar-mode .bookmark-groups-container {
-    max-width: 400px;
-    max-height: 80vh;
+  max-width: 400px;
+  max-height: 80vh;
 }
 body.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
-    max-width: 90vw;
-    max-height: 200px;
+  max-width: 90vw;
+  max-height: 200px;
 }
 
 /* HIDDEN STATE - Slide and Collapse */
 body.groups-hidden .bookmark-groups-container {
-    opacity: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    transform: scale(0.5) !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  transform: scale(0.5) !important;
 }
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container {
-    max-width: 0 !important; /* Collapses horizontally, Toggle slides Right */
+  max-width: 0 !important; /* Collapses horizontally, Toggle slides Right */
 }
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
-    max-height: 0 !important; /* Collapses vertically, Toggle slides Down */
+  max-height: 0 !important; /* Collapses vertically, Toggle slides Down */
 }
 
 /* Beautiful Toggle Icon Animation */
 .bookmark-groups-toggle {
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, opacity 0.3s ease !important;
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s ease,
+    opacity 0.3s ease !important;
 }
 
 body.groups-hidden .bookmark-groups-toggle {
-    opacity: 1 !important;
-    /* Fancy rotate when sliding into the hidden group's place */
-    transform: rotate(180deg) !important;
-    background: rgba(255, 255, 255, 0.2) !important;
+  opacity: 1 !important;
+  /* Fancy rotate when sliding into the hidden group's place */
+  transform: rotate(180deg) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
 }
 
+/* Hide Bookmark Background Settings */
+body.hide-bookmark-bg.bookmark-sidebar-mode .bookmark img,
+body.hide-bookmark-bg.bookmark-sidebar-mode .bookmark .bookmark-icon-fallback,
+body.hide-bookmark-bg.bookmark-taskbar-mode .bookmark img,
+body.hide-bookmark-bg.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback,
+body.hide-bookmark-bg.bookmark-taskbar-left-mode .bookmark img,
+body.hide-bookmark-bg.bookmark-taskbar-left-mode
+  .bookmark
+  .bookmark-icon-fallback {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Make Bookmark Sidebar respect the Flip Layout (thuộc tính của layout control) */
+body.flip-layout.bookmark-sidebar-mode .bookmark-widget {
+  right: auto !important;
+  left: 20px !important;
+  flex-direction: row !important; /* Groups on right, icons on left */
+}
+body.flip-layout.bookmark-sidebar-mode .bookmark-groups-container {
+  align-items: flex-start !important; /* Groups align to the left */
+}
+body.flip-layout.bookmark-sidebar-mode.groups-hidden
+  .bookmark-groups-container {
+  transform: translateX(-20px) scale(0.9) !important;
+}
+/* End of user fix */
+
+/* End of update 2 */
+/* Taskbar Center to behave internally like Taskbar Left (Align Left edges) */
+body.bookmark-taskbar-mode .bookmark-widget {
+  align-items: flex-start !important;
+}
+body.bookmark-taskbar-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+}
+/* Taskbar Center to behave internally like Taskbar Left (Align Left edges) */
+body.bookmark-taskbar-mode .bookmark-widget {
+  align-items: flex-start !important;
+}
+body.bookmark-taskbar-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+}
+/* Prevent wrapping inside bookmarks container for all minimal modes */
+body.bookmark-sidebar-mode #bookmarks-container,
+body.bookmark-taskbar-mode #bookmarks-container,
+body.bookmark-taskbar-left-mode #bookmarks-container,
+body.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-taskbar-left-mode .bookmarks-grid {
+  flex-wrap: nowrap !important;
+}
+/* Also prevent wrapping for the group tabs so they can scroll */
+body.bookmark-sidebar-mode .bookmark-groups-container,
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  flex-wrap: nowrap !important;
+}
+/* Prevent wrapping inside bookmarks container for all minimal modes */
+body.bookmark-sidebar-mode #bookmarks-container,
+body.bookmark-taskbar-mode #bookmarks-container,
+body.bookmark-taskbar-left-mode #bookmarks-container,
+body.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-taskbar-left-mode .bookmarks-grid {
+  flex-wrap: nowrap !important;
+}
+/* Also prevent wrapping for the group tabs so they can scroll */
+body.bookmark-sidebar-mode .bookmark-groups-container,
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  flex-wrap: nowrap !important;
+}
+
+/* === HIDDEN BOOKMARKS SUB-MENU POPUP === */
+#hidden-bookmarks-popup {
+  position: fixed;
+  background: var(--glass-bg, rgba(0, 0, 0, 0.4));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  /* Apply Custom colors from CSS variables by inheriting from body */
+}
+
+/* Sidebar mode: Display as a vertical column */
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar {
+  flex-direction: column;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Taskbar modes: Display as a horizontal row */
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
+  flex-direction: row;
+  max-width: 80vw;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Inherit styling exactly like .bookmarks-grid */
+#hidden-bookmarks-popup .bookmark img,
+#hidden-bookmarks-popup .bookmark .bookmark-icon-fallback {
+  width: var(--bookmark-icon-size, 42px) !important;
+  height: var(--bookmark-icon-size, 42px) !important;
+  padding: 4px !important;
+  background-color: var(--bookmark-bg-color) !important;
+  border-radius: var(--bookmark-border-radius, 12px) !important;
+  box-shadow: var(--bookmark-shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
+  margin-bottom: 0 !important;
+}
+
+#hidden-bookmarks-popup .bookmark {
+  /* Base wrapper styling */
+  width: auto !important;
+  height: auto !important;
+  padding: 5px !important;
+  margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+#hidden-bookmarks-popup .bookmark:hover {
+  transform: translateY(-3px) !important;
+}
+
+/* Hide fallback text in the mini-popup */
+#hidden-bookmarks-popup .bookmark span:not(.bookmark-icon-fallback) {
+  display: none !important;
+}
+
+/* Hide scrollbar for the popup */
+#hidden-bookmarks-popup::-webkit-scrollbar {
+  display: none;
+}
+#hidden-bookmarks-popup {
+  scrollbar-width: none;
+}
+/* Increase capacity thresholds so original grid can hold more items before overflowing */
+body.bookmark-taskbar-mode .bookmarks-grid {
+  max-width: 95vw !important;
+}
+body.bookmark-taskbar-left-mode .bookmarks-grid {
+  max-width: 95vw !important;
+}
+body.bookmark-sidebar-mode .bookmarks-grid {
+  max-height: 92vh !important;
+}
+/* Increase capacity thresholds so original grid can hold more items before overflowing */
+body.bookmark-taskbar-mode .bookmarks-grid {
+  max-width: 95vw !important;
+}
+body.bookmark-taskbar-left-mode .bookmarks-grid {
+  max-width: 95vw !important;
+}
+body.bookmark-sidebar-mode .bookmarks-grid {
+  max-height: 92vh !important;
+}
+
+/* Tweak Sub-Taskbar UI for greater elegance */
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
+  background: rgba(0, 0, 0, 0.3) !important;
+  padding: 10px 15px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.6) !important;
+  align-items: center;
+}
+/* Enhance Group Tabs minimal aesthetics */
+body.bookmark-sidebar-mode .bookmark-group-tab,
+body.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab {
+  padding: 6px 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  gap: 8px !important;
+}
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  gap: 8px !important;
+  padding-bottom: 8px !important;
+}
+/* Taskbar Sub-bar gap and blur */
+#hidden-bookmarks-popup {
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Ensure no wrap on the popup */
+#hidden-bookmarks-popup {
+  flex-wrap: nowrap !important;
+}
+
+/* Sidebar mode exact position of groups - align left of icons */
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  padding-right: 5px; /* give it breathing room from the icons */
+}

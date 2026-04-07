@@ -776,3 +776,5 @@ export const showCustomTitleCheckbox = document.getElementById(
 export const freeMoveCustomTitleCheckbox = document.getElementById(
   "free-move-custom-title-checkbox",
 )
+
+export const lcpBookmarkLayout = document.getElementById('lcp-bookmark-layout')

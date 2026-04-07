@@ -678,6 +678,7 @@ function createUpdateSettingsInputs(effectInstances) {
         if (settings.bookmarkSidebarMode === true && val === "default")
           val = "sidebar"
         DOM.bookmarkLayout.value = val
+        if (DOM.lcpBookmarkLayout) DOM.lcpBookmarkLayout.value = val
       }
 
       if (DOM.bookmarkShadowColorPicker) {
