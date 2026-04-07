@@ -735,3 +735,15 @@ export const showDonateButtonCheckbox = document.getElementById(
   "show-donate-btn-checkbox",
 )
 export const donateSection = document.querySelector(".donate-section")
+
+export const customTitleDisplay = document.getElementById('custom-title-display')
+export const customTitleText = document.getElementById('custom-title-text')
+export const customTitleMulticolor = document.getElementById('custom-title-multicolor')
+export const customTitleColor = document.getElementById('custom-title-color')
+export const customTitleFontSize = document.getElementById('custom-title-font-size')
+export const customTitleLetterSpacing = document.getElementById('custom-title-letter-spacing')
+export const customTitleShadowBlur = document.getElementById('custom-title-shadow-blur')
+export const customTitleShadowY = document.getElementById('custom-title-shadow-y')
+export const customTitleShadowColor = document.getElementById('custom-title-shadow-color')
+export const customTitleBorderSize = document.getElementById('custom-title-border-size')
+export const customTitleBorderColor = document.getElementById('custom-title-border-color')

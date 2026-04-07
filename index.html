@@ -1653,6 +1653,74 @@
                 </div>
             </div>
 
+            <div class="settings-section" data-section-id="custom-title">
+                <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
+                        data-i18n="settings_custom_title">Custom Title</span></h3>
+                <div class="section-content">
+                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
+                        <label for="custom-title-text" data-i18n="settings_custom_title_text">Title text</label>
+                        <input type="text" id="custom-title-text" placeholder="..."
+                            style="flex: 1; max-width: 150px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 4px;">
+                    </div>
+                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
+                        <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor">Rainbow
+                            colors</label>
+                        <input type="checkbox" id="custom-title-multicolor">
+                    </div>
+                    <div class="setting-item-row" id="custom-title-color-wrap" style="margin-bottom: 0.8rem;">
+                        <label for="custom-title-color" data-i18n="settings_custom_title_color">Title Color</label>
+                        <input type="color" id="custom-title-color" value="#ffffff">
+                    </div>
+                    <div class="setting-item" style="margin-bottom: 0.8rem;">
+                        <label data-i18n="settings_custom_title_fontsize">Font Size (<span
+                                id="custom-title-fontsize-val">24</span>px)</label>
+                        <input type="range" id="custom-title-font-size" min="10" max="100" value="24" class="slider">
+                    </div>
+                    <div class="setting-item" style="margin-bottom: 0.8rem;">
+                        <label data-i18n="settings_custom_title_letter_spacing">Letter Spacing (<span
+                                id="custom-title-letter-spacing-val">0</span>px)</label>
+                        <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0"
+                            class="slider">
+                    </div>
+
+                    <div class="setting-group" style="margin-top: 0.5rem;">
+                        <label style="margin-bottom: 0.5rem; display: block;"
+                            data-i18n="settings_custom_title_shadow">Drop Shadow</label>
+                        <div class="setting-item-row">
+                            <label data-i18n="settings_custom_title_shadow_blur">Shadow Blur (<span
+                                    id="custom-title-shadow-blur-val">0</span>px)</label>
+                            <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider"
+                                style="width: 80px;">
+                        </div>
+                        <div class="setting-item-row">
+                            <label data-i18n="settings_custom_title_shadow_y">Shadow Y Offset (<span
+                                    id="custom-title-shadow-y-val">0</span>px)</label>
+                            <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider"
+                                style="width: 80px;">
+                        </div>
+                        <div class="setting-item-row">
+                            <label data-i18n="settings_custom_title_shadow_color">Shadow Color</label>
+                            <input type="color" id="custom-title-shadow-color" value="#000000">
+                        </div>
+                    </div>
+
+                    <div class="setting-group" style="margin-top: 0.5rem;">
+                        <label style="margin-bottom: 0.5rem; display: block;"
+                            data-i18n="settings_custom_title_border">Text Border</label>
+                        <div class="setting-item-row">
+                            <label data-i18n="settings_custom_title_border_size">Border Thickness (<span
+                                    id="custom-title-border-size-val">0</span>px)</label>
+                            <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider"
+                                style="width: 80px;">
+                        </div>
+                        <div class="setting-item-row">
+                            <label data-i18n="settings_custom_title_border_color">Border Color</label>
+                            <input type="color" id="custom-title-border-color" value="#000000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="settings-section" data-section-id="bookmark-custom">
                 <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
                     Custom Bookmark</h3>
@@ -1910,6 +1978,7 @@
             <div id="clock">00:00:00</div>
             <div id="date">Loading date...</div>
         </div>
+        <div id="custom-title-display" class="custom-title-display"></div>
         <div id="full-calendar-container" style="display: none;"></div>
 
         <div id="search-container" class="search-container">

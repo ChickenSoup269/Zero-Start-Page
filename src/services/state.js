@@ -27,6 +27,18 @@ const defaultSettings = {
   timeFormat: "24h", // "12h" or "24h"
   timezone: "local",
   dateClockStyle: "default",
+
+  customTitleText: "",
+  customTitleMulticolor: false,
+  customTitleColor: "#ffffff",
+  customTitleFontSize: 24,
+  customTitleLetterSpacing: 0,
+  customTitleShadowBlur: 0,
+  customTitleShadowY: 0,
+  customTitleShadowColor: "#000000",
+  customTitleBorderSize: 0,
+  customTitleBorderColor: "#000000",
+
   hueTextMode: "off",
   analogMarkerMode: "quarters",
   analogBlurBackground: false,
