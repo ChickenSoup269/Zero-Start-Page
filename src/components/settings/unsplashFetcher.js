@@ -10,6 +10,7 @@ import {
   saveSettings,
 } from "../../services/state.js"
 import { showAlert } from "../../utils/dialog.js"
+import { saveImage } from "../../services/imageStore.js"
 
 function firstPhoto(payload) {
   return Array.isArray(payload) ? payload[0] : payload
@@ -228,7 +229,24 @@ async function setUnsplashRandomBackground(
       bgLayer.style.opacity = "1"
     }
 
-    await preloadImage(imageUrl)
+    // Tải ảnh về ở dạng blob và lưu vào IndexedDB (tránh tải lại mỗi lần reload)
+    let finalBgValue = imageUrl
+    try {
+      const imgRes = await fetch(imageUrl)
+      if (imgRes.ok) {
+        const blob = await imgRes.blob()
+        finalBgValue = await saveImage(blob, "idb-img-unsplash")
+      } else {
+        await preloadImage(imageUrl)
+      }
+    } catch (fetchErr) {
+      console.warn(
+        "Could not download Unsplash blob, falling back to URL:",
+        fetchErr,
+      )
+      await preloadImage(imageUrl).catch(() => {})
+    }
+
     if (bgLayer) bgLayer.style.transition = ""
 
     // Show photo credit
@@ -251,7 +269,7 @@ async function setUnsplashRandomBackground(
     })
     saveSettings()
 
-    handleSettingUpdateCallback("background", imageUrl)
+    handleSettingUpdateCallback("background", finalBgValue)
     btn.disabled = false
     btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
   } catch (err) {
