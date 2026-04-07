@@ -2249,3 +2249,11 @@ body.ghost-controls .side-controls:hover {
     top: 50vh !important;
   }
 }
+
+/* Custom Title */
+.custom-title-display {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}

@@ -1002,6 +1002,48 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpTopRightControls) {
       DOM.lcpTopRightControls.checked = settings.showTopRightControls !== false
     }
+    if (DOM.customTitleText) {
+      DOM.customTitleText.value = settings.customTitleText || ""
+      if (DOM.customTitleMulticolor)
+        DOM.customTitleMulticolor.checked =
+          settings.customTitleMulticolor === true
+      if (DOM.customTitleColor)
+        DOM.customTitleColor.value = settings.customTitleColor || "#ffffff"
+
+      const fs = settings.customTitleFontSize || 24
+      if (DOM.customTitleFontSize) DOM.customTitleFontSize.value = fs
+      const fsd = document.getElementById("custom-title-fontsize-val")
+      if (fsd) fsd.textContent = fs
+
+      const ls = settings.customTitleLetterSpacing || 0
+      if (DOM.customTitleLetterSpacing) DOM.customTitleLetterSpacing.value = ls
+      const lsd = document.getElementById("custom-title-letter-spacing-val")
+      if (lsd) lsd.textContent = ls
+
+      const sb = settings.customTitleShadowBlur || 0
+      if (DOM.customTitleShadowBlur) DOM.customTitleShadowBlur.value = sb
+      const sbd = document.getElementById("custom-title-shadow-blur-val")
+      if (sbd) sbd.textContent = sb
+
+      const sy = settings.customTitleShadowY || 0
+      if (DOM.customTitleShadowY) DOM.customTitleShadowY.value = sy
+      const syd = document.getElementById("custom-title-shadow-y-val")
+      if (syd) syd.textContent = sy
+
+      if (DOM.customTitleShadowColor)
+        DOM.customTitleShadowColor.value =
+          settings.customTitleShadowColor || "#000000"
+
+      const bs = settings.customTitleBorderSize || 0
+      if (DOM.customTitleBorderSize) DOM.customTitleBorderSize.value = bs
+      const bsd = document.getElementById("custom-title-border-size-val")
+      if (bsd) bsd.textContent = bs
+
+      if (DOM.customTitleBorderColor)
+        DOM.customTitleBorderColor.value =
+          settings.customTitleBorderColor || "#000000"
+    }
+
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"

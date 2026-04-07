@@ -2043,4 +2043,73 @@ export function setupGeneralEventHandlers(
       showAlert("Import failed.")
     }
   })
+
+  // Custom Title Settings
+  const customTitleFields = [
+    { dom: DOM.customTitleText, key: "customTitleText", isCheckbox: false },
+    {
+      dom: DOM.customTitleMulticolor,
+      key: "customTitleMulticolor",
+      isCheckbox: true,
+    },
+    { dom: DOM.customTitleColor, key: "customTitleColor", isCheckbox: false },
+    {
+      dom: DOM.customTitleFontSize,
+      key: "customTitleFontSize",
+      isCheckbox: false,
+      valDisp: "custom-title-fontsize-val",
+    },
+    {
+      dom: DOM.customTitleLetterSpacing,
+      key: "customTitleLetterSpacing",
+      isCheckbox: false,
+      valDisp: "custom-title-letter-spacing-val",
+    },
+    {
+      dom: DOM.customTitleShadowBlur,
+      key: "customTitleShadowBlur",
+      isCheckbox: false,
+      valDisp: "custom-title-shadow-blur-val",
+    },
+    {
+      dom: DOM.customTitleShadowY,
+      key: "customTitleShadowY",
+      isCheckbox: false,
+      valDisp: "custom-title-shadow-y-val",
+    },
+    {
+      dom: DOM.customTitleShadowColor,
+      key: "customTitleShadowColor",
+      isCheckbox: false,
+    },
+    {
+      dom: DOM.customTitleBorderSize,
+      key: "customTitleBorderSize",
+      isCheckbox: false,
+      valDisp: "custom-title-border-size-val",
+    },
+    {
+      dom: DOM.customTitleBorderColor,
+      key: "customTitleBorderColor",
+      isCheckbox: false,
+    },
+  ]
+
+  customTitleFields.forEach((field) => {
+    if (field.dom) {
+      field.dom.addEventListener("input", (e) => {
+        const val = field.isCheckbox ? e.target.checked : e.target.value
+        if (field.valDisp) {
+          const disp = document.getElementById(field.valDisp)
+          if (disp) disp.textContent = val
+        }
+        handleSettingUpdate(field.key, val)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: field.key, value: val },
+          }),
+        )
+      })
+    }
+  })
 }

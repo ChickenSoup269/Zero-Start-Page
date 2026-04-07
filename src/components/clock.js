@@ -349,6 +349,7 @@ export function updateTime() {
 
 export function initClock() {
   updateTime()
+  updateCustomTitle()
   setInterval(updateTime, 1000)
 
   window.addEventListener("layoutUpdated", (e) => {
@@ -368,4 +369,51 @@ export function initClock() {
       updateTime()
     }
   })
+  window.addEventListener("layoutUpdated", (e) => {
+    if (e.detail.key.startsWith("customTitle")) {
+      updateCustomTitle()
+    }
+  })
+}
+
+export function updateCustomTitle() {
+  const settings = getSettings()
+  let el = document.getElementById("custom-title-display")
+  if (!el) return
+
+  const text = settings.customTitleText || ""
+  if (!text.trim()) {
+    el.innerHTML = ""
+    el.dataset.prevText = ""
+    return
+  }
+
+  const isMulti = settings.customTitleMulticolor === true
+  if (
+    el.dataset.prevText !== text ||
+    el.dataset.prevMulti !== String(isMulti)
+  ) {
+    el.textContent = text
+    if (isMulti) {
+      applyHuePerCharacter(el, 42)
+    }
+    el.dataset.prevText = text
+    el.dataset.prevMulti = String(isMulti)
+  }
+
+  el.style.color = settings.customTitleColor || "#ffffff"
+  el.style.fontSize = (settings.customTitleFontSize || 24) + "px"
+  el.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"
+
+  if (settings.customTitleBorderSize > 0) {
+    el.style.webkitTextStroke = `${settings.customTitleBorderSize}px ${settings.customTitleBorderColor}`
+  } else {
+    el.style.webkitTextStroke = ""
+  }
+
+  if (settings.customTitleShadowBlur > 0 || settings.customTitleShadowY != 0) {
+    el.style.textShadow = `0px ${settings.customTitleShadowY || 0}px ${settings.customTitleShadowBlur || 0}px ${settings.customTitleShadowColor || "#000000"}`
+  } else {
+    el.style.textShadow = "none"
+  }
 }
