@@ -680,13 +680,55 @@ export function setupGeneralEventHandlers(
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
         handleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
-        if (DOM.lcpBookmarkLayout) DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
+        if (DOM.lcpBookmarkLayout)
+          DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
+
+        // Show/hide bg style row based on layout
+        if (DOM.bookmarkLayoutBgStyleRow) {
+          DOM.bookmarkLayoutBgStyleRow.style.display =
+            DOM.bookmarkLayout.value === "default" ? "none" : "flex"
+        }
       })
     }
     if (DOM.lcpBookmarkLayout) {
       DOM.lcpBookmarkLayout.addEventListener("change", () => {
         handleSettingUpdate("bookmarkLayout", DOM.lcpBookmarkLayout.value)
-        if (DOM.bookmarkLayout) DOM.bookmarkLayout.value = DOM.lcpBookmarkLayout.value
+        if (DOM.bookmarkLayout)
+          DOM.bookmarkLayout.value = DOM.lcpBookmarkLayout.value
+
+        // Show/hide bg style row based on layout
+        if (DOM.bookmarkLayoutBgStyleRow) {
+          DOM.bookmarkLayoutBgStyleRow.style.display =
+            DOM.lcpBookmarkLayout.value === "default" ? "none" : "flex"
+        }
+      })
+    }
+
+    if (DOM.bookmarkLayoutBgStyle) {
+      DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
+        handleSettingUpdate(
+          "bookmarkLayoutBgStyle",
+          DOM.bookmarkLayoutBgStyle.value,
+        )
+        if (DOM.bookmarkLayoutBgColorRow) {
+          DOM.bookmarkLayoutBgColorRow.style.display =
+            DOM.bookmarkLayoutBgStyle.value === "colored" ? "flex" : "none"
+        }
+      })
+    }
+
+    if (DOM.bookmarkLayoutBgColor) {
+      DOM.bookmarkLayoutBgColor.addEventListener("input", () => {
+        handleSettingUpdate(
+          "bookmarkLayoutBgColor",
+          DOM.bookmarkLayoutBgColor.value,
+        )
+      })
+    }
+
+    if (DOM.bookmarkItemStyle) {
+      DOM.bookmarkItemStyle.addEventListener("change", () => {
+        handleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
       })
     }
 
@@ -2185,8 +2227,7 @@ export function setupGeneralEventHandlers(
       DOM.lcpFlipLayout.checked = value
     if (key === "searchBarWidth" && DOM.lcpSearchBarWidth)
       DOM.lcpSearchBarWidth.value = value
-    if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout) 
+    if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout)
       DOM.lcpBookmarkLayout.value = value
   })
 }
-
