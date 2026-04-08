@@ -105,7 +105,24 @@ function createApplySettings(effectInstances) {
     }
 
     // 2. Reset Styles
-    document.body.className = ""
+    document.body.classList.remove(
+      "bg-layer-active",
+      "bg-image-active",
+      "bookmark-sidebar-mode",
+      "bookmark-taskbar-mode",
+      "bookmark-taskbar-left-mode",
+      "bookmark-layout-bg-hidden",
+      "bookmark-layout-bg-colored",
+      "bookmark-item-card-style",
+      "hide-bookmark-text",
+      "hide-bookmark-bg",
+      "flip-layout",
+    )
+    document.body.className.split(" ").forEach((cls) => {
+      if (cls.startsWith("date-clock-style-"))
+        document.body.classList.remove(cls)
+    })
+
     document.body.style.background = ""
     document.body.style.backgroundImage = ""
     const bgLayer = document.getElementById("bg-layer")
@@ -930,7 +947,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
-    DOM.gridScanColorSetting.style.display = settings.effect === "gridScan" ? "block" : "none"
+    DOM.gridScanColorSetting.style.display =
+      settings.effect === "gridScan" ? "block" : "none"
     DOM.cursorTrailColorSetting.style.display =
       settings.effect === "cursorTrail" ? "block" : "none"
     DOM.cursorTrailClickSetting.style.display =

@@ -2849,17 +2849,17 @@ body.flip-layout.bookmark-sidebar-mode.groups-hidden
 /* End of update 2 */
 /* Taskbar Center to behave internally like Taskbar Left (Align Left edges) */
 body.bookmark-taskbar-mode .bookmark-widget {
-  align-items: flex-start !important;
+  align-items: center !important;
 }
 body.bookmark-taskbar-mode .bookmark-groups-container {
-  justify-content: flex-start !important;
+  justify-content: center !important;
 }
 /* Taskbar Center to behave internally like Taskbar Left (Align Left edges) */
 body.bookmark-taskbar-mode .bookmark-widget {
-  align-items: flex-start !important;
+  align-items: center !important;
 }
 body.bookmark-taskbar-mode .bookmark-groups-container {
-  justify-content: flex-start !important;
+  justify-content: center !important;
 }
 /* Prevent wrapping inside bookmarks container for all minimal modes */
 body.bookmark-sidebar-mode #bookmarks-container,
