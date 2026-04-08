@@ -262,6 +262,12 @@ export const cursorTrailColorPicker = document.getElementById(
 export const cursorTrailColorSetting = document.getElementById(
   "cursor-trail-color-setting",
 )
+export const gridScanColorPicker = document.getElementById(
+  "grid-scan-color-picker",
+)
+export const gridScanColorSetting = document.getElementById(
+  "grid-scan-color-setting",
+)
 export const cursorTrailClickCheckbox = document.getElementById(
   "cursor-trail-click-checkbox",
 )
@@ -331,6 +337,37 @@ export const lineShinyColorPicker = document.getElementById(
 )
 export const lineShinyColorSetting = document.getElementById(
   "line-shiny-color-setting",
+)
+
+export const pixelWeatherStyleSection = document.getElementById(
+  "pixel-weather-style-section",
+)
+export const pixelWeatherStyleSelect = document.getElementById(
+  "pixel-weather-style-select",
+)
+export const pixelWeatherResolutionSlider = document.getElementById(
+  "pixel-weather-resolution-slider",
+)
+export const pixelWeatherResolutionVal = document.getElementById(
+  "pixel-weather-resolution-val",
+)
+export const pixelWeatherSpeedSlider = document.getElementById(
+  "pixel-weather-speed-slider",
+)
+export const pixelWeatherSpeedVal = document.getElementById(
+  "pixel-weather-speed-val",
+)
+export const pixelWeatherSizeSlider = document.getElementById(
+  "pixel-weather-size-slider",
+)
+export const pixelWeatherSizeVal = document.getElementById(
+  "pixel-weather-size-val",
+)
+export const pixelWeatherDensitySlider = document.getElementById(
+  "pixel-weather-density-slider",
+)
+export const pixelWeatherDensityVal = document.getElementById(
+  "pixel-weather-density-val",
 )
 
 export const pixelRunColorPicker = document.getElementById(
