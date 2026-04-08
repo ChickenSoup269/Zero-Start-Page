@@ -30,12 +30,9 @@ export class SunbeamEffect {
     // Dust motes
     this.dust = []
 
-    // Sweep state: the whole group of beams shifts angle slowly
-    this.sweepAngle = 0 // current group offset angle (radians)
-    this.sweepTarget = 0 // target angle
-    this.sweepSpeed = 0.0006 // radians per frame (base drift)
-    this.sweepTimer = 0 // frames until next sweep event
-    this._scheduleSweep()
+    // Global wind for dust drift
+    this.globalWind = 0
+    this.globalWindPhase = 0
 
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
@@ -62,32 +59,34 @@ export class SunbeamEffect {
   // ── Beams ────────────────────────────────────────────────────────────────
   _buildBeams() {
     this.beams = []
-    // 10-15 individual rays for a richer cluster
-    const count = 10 + Math.floor(Math.random() * 6)
+    // 15-25 individual rays for a sharper, denser light ray look
+    const count = 15 + Math.floor(Math.random() * 10)
     for (let i = 0; i < count; i++) {
       this.beams.push(this._makeBeam(i, count))
     }
   }
 
   _makeBeam(i, total) {
-    // Spread rays over ~130° fan below the sun
-    const spreadRad = (130 * Math.PI) / 180
+    // Spread rays over ~140° fan below the sun
+    const spreadRad = (140 * Math.PI) / 180
     const baseAngle = Math.PI / 2 // pointing straight down
-    const offset = (Math.random() - 0.5) * 0.2 // Add slight unevenness
+    const offset = (Math.random() - 0.5) * 0.3 // Add slight unevenness
     const angle =
       baseAngle - spreadRad / 2 + (spreadRad / (total - 1)) * i + offset
     return {
       angle, // base angle (rad) from sun point
-      swayPhase: Math.random() * Math.PI * 2, // individual drift
-      swaySpeed: 0.001 + Math.random() * 0.002, // individual drift speed
-      halfWidth: (0.03 + Math.random() * 0.08) * Math.PI, // angular half-width (rad)
-      reach: 1.1 + Math.random() * 0.8, // fraction of diagonal length
-      alpha: 0.05 + Math.random() * 0.15, // peak opacity, slightly brighter
+      sweepPhase: Math.random() * Math.PI * 2, // individual drift phase
+      sweepSpeed: 0.0003 + Math.random() * 0.0008, // slow individual sweep speed
+      sweepAmplitude: 0.1 + Math.random() * 0.15, // sweeping range (radians)
+      halfWidth: (0.01 + Math.random() * 0.04) * Math.PI, // narrower for distinct sharp light rays
+      reach: 1.2 + Math.random() * 0.8, // fraction of diagonal length
+      alpha: 0.1 + Math.random() * 0.2, // peak opacity, brighter
       alphaPhase: Math.random() * Math.PI * 2, // shimmer phase
-      alphaSpeed: 0.008 + Math.random() * 0.015, // shimmer speed
-      // warm hue: 35-55° (golden yellow to bright amber)
-      hue: 35 + Math.random() * 20,
-      sat: 80 + Math.random() * 20,
+      alphaSpeed: 0.005 + Math.random() * 0.01, // shimmer speed
+      // paler, cooler color for sharp light rays
+      hue: 45 + Math.random() * 15,
+      sat: 30 + Math.random() * 30, // lower sat for whiter light
+      light: 85 + Math.random() * 15,
     }
   }
 
@@ -117,30 +116,11 @@ export class SunbeamEffect {
     }
   }
 
-  // ── Sweep scheduling ─────────────────────────────────────────────────────
-  _scheduleSweep() {
-    // Wait 120-350 frames, then start a sweep
-    this.sweepTimer = Math.floor(Math.random() * 230 + 120)
-  }
-
-  _updateSweep() {
-    if (this.sweepTimer > 0) {
-      this.sweepTimer--
-    } else {
-      // Trigger: shift target by ±15-40°
-      const dir = Math.random() < 0.5 ? -1 : 1
-      const shift = ((15 + Math.random() * 25) * Math.PI) / 180
-      this.sweepTarget += dir * shift
-      // Clamp to ±55° so rays never go sideways
-      const maxShift = (55 * Math.PI) / 180
-      this.sweepTarget = Math.max(
-        -maxShift,
-        Math.min(maxShift, this.sweepTarget),
-      )
-      this._scheduleSweep()
-    }
-    // Smooth lerp toward target
-    this.sweepAngle += (this.sweepTarget - this.sweepAngle) * 0.008
+  // ── Wind scheduling for dust ─────────────────────────────────────────────
+  _updateWind() {
+    this.globalWindPhase += 0.002
+    this.globalWindPhase %= Math.PI * 2
+    this.globalWind = Math.sin(this.globalWindPhase) * 0.4
   }
 
   // ── Drawing ──────────────────────────────────────────────────────────────
@@ -150,56 +130,45 @@ export class SunbeamEffect {
     const H = this.canvas.height
     const diag = Math.sqrt(W * W + H * H)
 
-    // Add individual slight sway to each beam
-    const sway = Math.sin(beam.swayPhase) * 0.05
-    beam.swayPhase += beam.swaySpeed
+    // Generate individual sweeping angle
+    beam.sweepPhase += beam.sweepSpeed
+    const sweepOffset = Math.sin(beam.sweepPhase) * beam.sweepAmplitude
 
-    const centerAngle = beam.angle + this.sweepAngle + sway
+    const centerAngle = beam.angle + sweepOffset
     const leftAngle = centerAngle - beam.halfWidth
     const rightAngle = centerAngle + beam.halfWidth
     const reach = diag * beam.reach
 
-    // Four points of a triangular/trapezoidal beam
+    // Three points of a triangular light ray beam
     const sx = this.sunX
     const sy = this.sunY
     const lx = sx + Math.cos(leftAngle) * reach
     const ly = sy + Math.sin(leftAngle) * reach
     const rx = sx + Math.cos(rightAngle) * reach
     const ry = sy + Math.sin(rightAngle) * reach
+    const cx = sx + Math.cos(centerAngle) * reach
+    const cy = sy + Math.sin(centerAngle) * reach
 
-    // Shimmer: oscillate alpha
+    // Shimmer: oscillate alpha slightly
     const shimmer = 0.5 + 0.5 * Math.sin(phase + beam.alphaPhase)
-    const alpha = beam.alpha * (0.55 + 0.45 * shimmer)
+    const alpha = beam.alpha * (0.6 + 0.4 * shimmer)
 
-    // Radial gradient from sun point outward
-    const grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, reach)
-    grad.addColorStop(0, `hsla(${beam.hue},${beam.sat}%,82%,${alpha})`)
-    grad.addColorStop(
-      0.25,
-      `hsla(${beam.hue},${beam.sat}%,78%,${alpha * 0.75})`,
-    )
-    grad.addColorStop(
-      0.65,
-      `hsla(${beam.hue},${beam.sat}%,72%,${alpha * 0.35})`,
-    )
-    grad.addColorStop(1, `hsla(${beam.hue},${beam.sat}%,70%,0)`)
+    // Linear gradient along the beam's center for distinct light ray look
+    const grad = ctx.createLinearGradient(sx, sy, cx, cy)
+    const baseColor = `hsla(${beam.hue},${beam.sat}%,${beam.light}%,`
+    grad.addColorStop(0, `${baseColor}${alpha})`)
+    grad.addColorStop(0.3, `${baseColor}${alpha * 0.8})`)
+    grad.addColorStop(0.7, `${baseColor}${alpha * 0.3})`)
+    grad.addColorStop(1, `${baseColor}0)`)
 
     ctx.save()
     ctx.beginPath()
     ctx.moveTo(sx, sy)
     ctx.lineTo(lx, ly)
-    // Slightly curved wide end for softer look
-    ctx.arcTo(
-      sx + Math.cos(centerAngle) * reach * 1.02,
-      sy + Math.sin(centerAngle) * reach * 1.02,
-      rx,
-      ry,
-      reach * 0.3,
-    )
     ctx.lineTo(rx, ry)
     ctx.closePath()
     ctx.fillStyle = grad
-    ctx.globalCompositeOperation = "lighter"
+    ctx.globalCompositeOperation = "screen"
     ctx.fill()
     ctx.restore()
   }
@@ -243,7 +212,10 @@ export class SunbeamEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     if (this.rafId) {
       cancelAnimationFrame(this.rafId)
@@ -268,8 +240,8 @@ export class SunbeamEffect {
     ctx.clearRect(0, 0, W, H)
     ctx.globalCompositeOperation = "source-over"
 
-    // Update sweep
-    this._updateSweep()
+    // Update wind for dust
+    this._updateWind()
 
     // Phase for shimmer (advances each frame)
     this._phase = (this._phase || 0) + 0.022
@@ -308,9 +280,9 @@ export class SunbeamEffect {
       d.twinklePhase += d.twinkleSpeed
       d.wobblePhase += d.wobbleSpeed
 
-      // Gently drift horizontally with sweep (wind-like)
+      // Gently drift horizontally independent of light rays
       const wobble = Math.sin(d.wobblePhase) * 0.3
-      d.x += this.sweepAngle * 0.05 + wobble
+      d.x += this.globalWind + wobble
 
       if (d.y < -10) {
         // Respawn at bottom

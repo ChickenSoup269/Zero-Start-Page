@@ -54,6 +54,8 @@ const EFFECT_KEY_MAP = {
   greenLeaves: "greenLeavesEffect",
   fallingLeavesSettled: "fallingLeavesSettledEffect",
   sunbeam: "sunbeamEffect",
+  lightPillars: "lightPillarsEffect",
+  pixelWeather: "pixelWeatherEffect",
   shiny: "shinyEffect",
   lineShiny: "lineShinyEffect",
   tetFireworks: "tetFireworksEffect",
@@ -66,6 +68,7 @@ const EFFECT_KEY_MAP = {
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
   cursorTrail: "cursorTrailEffect",
+  gridScan: "gridScanEffect",
   plantGrowth: "plantGrowthEffect",
   oceanFish: "oceanFishEffect",
 }
@@ -534,6 +537,13 @@ function createApplySettings(effectInstances) {
     const selectedEffect = effectInstances[mappedKey]
     const effectChanged = effectToStart !== _prevEffect
     const effectCanvas = document.getElementById("effect-canvas")
+    if (
+      effectToStart === "pixelWeather" &&
+      selectedEffect &&
+      selectedEffect.setMode
+    ) {
+      selectedEffect.setMode(settings.pixelWeatherStyle || "snow")
+    }
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
@@ -833,6 +843,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.sakuraColorPicker.value = settings.sakuraColor || "#ffb7c5"
     DOM.snowfallColorPicker.value = settings.snowfallColor || "#ffffff"
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
+    DOM.gridScanColorPicker.value = settings.gridScanColor || "#00ffcc"
     DOM.cursorTrailColorPicker.value = settings.cursorTrailColor || "#60c8ff"
     DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
     DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
@@ -866,6 +877,43 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "hacker" ? "block" : "none"
     DOM.pixelCubesColorSetting.style.display =
       settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.pixelWeatherStyleSection) {
+      DOM.pixelWeatherStyleSection.style.display =
+        settings.effect === "pixelWeather" ? "block" : "none"
+    }
+    if (DOM.pixelWeatherStyleSelect) {
+      DOM.pixelWeatherStyleSelect.value = settings.pixelWeatherStyle || "snow"
+    }
+
+    if (DOM.pixelWeatherResolutionSlider) {
+      DOM.pixelWeatherResolutionSlider.value =
+        settings.pixelWeatherResolution || 1
+      if (DOM.pixelWeatherResolutionVal)
+        DOM.pixelWeatherResolutionVal.textContent =
+          settings.pixelWeatherResolution || 1
+    }
+    if (DOM.pixelWeatherSpeedSlider) {
+      DOM.pixelWeatherSpeedSlider.value = settings.pixelWeatherSpeed || 1.0
+      if (DOM.pixelWeatherSpeedVal)
+        DOM.pixelWeatherSpeedVal.textContent = (
+          settings.pixelWeatherSpeed || 1.0
+        ).toFixed(1)
+    }
+    if (DOM.pixelWeatherSizeSlider) {
+      DOM.pixelWeatherSizeSlider.value = settings.pixelWeatherSize || 1.0
+      if (DOM.pixelWeatherSizeVal)
+        DOM.pixelWeatherSizeVal.textContent = (
+          settings.pixelWeatherSize || 1.0
+        ).toFixed(1)
+    }
+    if (DOM.pixelWeatherDensitySlider) {
+      DOM.pixelWeatherDensitySlider.value = settings.pixelWeatherDensity || 1.0
+      if (DOM.pixelWeatherDensityVal)
+        DOM.pixelWeatherDensityVal.textContent = (
+          settings.pixelWeatherDensity || 1.0
+        ).toFixed(1)
+    }
+
     if (DOM.jellyfishColorSetting) {
       DOM.jellyfishColorSetting.style.display =
         settings.effect === "jellyfish" ? "block" : "none"
@@ -882,6 +930,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
+    DOM.gridScanColorSetting.style.display = settings.effect === "gridScan" ? "block" : "none"
     DOM.cursorTrailColorSetting.style.display =
       settings.effect === "cursorTrail" ? "block" : "none"
     DOM.cursorTrailClickSetting.style.display =

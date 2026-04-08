@@ -69,6 +69,7 @@ import { AuroraWaveEffect } from "../animations/auroraWave.js"
 import { NorthernLightsEffect } from "../animations/northernLights.js"
 import { BubblesEffect } from "../animations/bubbles.js"
 import { CursorTrailEffect } from "../animations/cursorTrail.js"
+import { GridScanEffect } from "../animations/gridScan.js"
 import { RainHDEffect } from "../animations/rainHD.js"
 import { StormRainEffect } from "../animations/stormRain.js"
 import { RainbowBackground } from "../animations/rainbowBackground.js"
@@ -81,6 +82,8 @@ import { AutumnLeavesEffect } from "../animations/autumnLeaves.js"
 import { GreenLeavesEffect } from "../animations/greenLeaves.js"
 import { FallingLeavesSettledEffect } from "../animations/fallingLeavesSettled.js"
 import { SunbeamEffect } from "../animations/sunbeam.js"
+import { LightPillarsEffect } from "../animations/lightPillars.js"
+import { PixelWeatherEffect } from "../animations/pixelWeather.js"
 import { ShinyEffect } from "../animations/shiny.js"
 import { LineShinyEffect } from "../animations/lineShiny.js"
 import { TetFireworksEffect } from "../animations/tetFireworks.js"
@@ -155,6 +158,7 @@ export function initSettings() {
       settings.cursorTrailRandomColor === true,
     ),
 
+    gridScanEffect: new GridScanEffect("effect-canvas", settings.gridScanColor || "#00ffcc"),
     rainHDEffect: new RainHDEffect(
       "effect-canvas",
       settings.rainHDColor || "#99ccff",
@@ -185,6 +189,11 @@ export function initSettings() {
       settings.fallingLeavesSkin || "maple",
     ),
     sunbeamEffect: new SunbeamEffect("effect-canvas"),
+    lightPillarsEffect: new LightPillarsEffect("effect-canvas"),
+    pixelWeatherEffect: new PixelWeatherEffect(
+      "effect-canvas",
+      settings.pixelWeatherStyle || "snow",
+    ),
     shinyEffect: new ShinyEffect(
       "effect-canvas",
       settings.shinyColor || "#ff0000",

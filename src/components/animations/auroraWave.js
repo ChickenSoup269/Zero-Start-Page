@@ -1,23 +1,27 @@
 export class AuroraWaveEffect {
   constructor(canvasId, color = "#00bcd4") {
     this.canvas = document.getElementById(canvasId)
-    this.ctx = this.canvas.getContext("2d")
+    this.ctx = this.canvas.getContext("2d", { alpha: true })
+
     this.active = false
     this.color = color
     this.time = 0
 
-    // Config for a more majestic, flowing aurora appearance
-    this.waveCount = 5
-    this.wavePoints = 40
-    this.waveAmplitude = 120
-    this.waveFrequency = 0.005
+    // ================== CẤU HÌNH ==================
+    this.waveCount = 7
+    this.wavePoints = 48
+    this.waveAmplitude = 65 // sóng nhỏ như bạn yêu cầu trước
+    this.waveFrequency = 0.0055
 
-    // FPS
+    this.brightness = 0.68 // ← GIẢM ĐỘ SÁNG (0.5 ~ 0.8 là đẹp nhất)
+
+    this.quality = 1.0
+
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
-    // Cached data
+    // Cache
     this._gradients = []
     this._waveConfigs = []
     this._particles = []
@@ -28,61 +32,60 @@ export class AuroraWaveEffect {
     this._onResize()
   }
 
-  // ─── Cache helpers ────────────────────────────────────────────────────────
-
   _buildCache() {
-    const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
     this._rgb = this._hexToRgb(this.color)
     const { r, g, b } = this._rgb
     const centerY = H * 0.45
-    const depth = H * 0.5
+    const depth = H * 0.52
 
     this._gradients = []
     this._waveConfigs = []
 
     for (let w = 0; w < this.waveCount; w++) {
-      const waveOffset = (w / this.waveCount) * Math.PI * 2
-      const hueShift = (w / this.waveCount) * 80 - 40
+      const waveOffset = (w / this.waveCount) * Math.PI * 2.5
+      const hueShift = (w - this.waveCount / 2) * 18
 
-      const rr = Math.max(0, Math.min(255, r + hueShift * 0.8))
-      const gg = Math.max(0, Math.min(255, g + hueShift * 1.5))
-      const bb = Math.max(0, Math.min(255, b + hueShift * 0.5))
+      const rr = Math.max(40, Math.min(255, r + hueShift * 0.8))
+      const gg = Math.max(90, Math.min(255, g + hueShift * 1.4))
+      const bb = Math.max(110, Math.min(255, b + hueShift * 0.5))
 
-      // Vertical gradient for the aurora curtain
-      const grad = ctx.createLinearGradient(
+      const grad = this.ctx.createLinearGradient(
         0,
-        centerY - depth * 0.5,
+        centerY - depth * 0.55,
         0,
-        centerY + depth * 0.8,
+        centerY + depth * 0.85,
       )
-      grad.addColorStop(0, `rgba(${rr},${gg},${bb},0)`)
+
+      // Gradient tối hơn, ít sáng hơn
+      grad.addColorStop(0.0, `rgba(${rr},${gg},${bb},0)`)
+      grad.addColorStop(0.3, `rgba(${rr + 25},${gg + 35},${bb + 15},0.18)`)
+      grad.addColorStop(0.6, `rgba(${rr},${gg},${bb},0.38)`) // giảm opacity
       grad.addColorStop(
-        0.3,
-        `rgba(${Math.min(255, rr + 40)},${Math.min(255, gg + 40)},${Math.min(255, bb + 40)},0.15)`,
+        0.82,
+        `rgba(${rr * 0.55},${gg * 0.52},${bb * 0.58},0.12)`,
       )
-      grad.addColorStop(0.6, `rgba(${rr},${gg},${bb},0.4)`)
-      grad.addColorStop(0.8, `rgba(${rr * 0.5},${gg * 0.5},${bb * 0.5},0.1)`)
-      grad.addColorStop(1, `rgba(0,0,0,0)`)
+      grad.addColorStop(1.0, `rgba(6,10,28,0)`)
 
       this._gradients.push(grad)
 
       this._waveConfigs.push({
         waveOffset,
-        speedMultiplier: 0.8 + w * 0.15,
-        ampMultiplier: 1 + w * 0.1,
-        yOffset: (w - this.waveCount / 2) * 30,
+        speedMultiplier: 0.82 + w * 0.16,
+        ampMultiplier: 0.95 + w * 0.07,
+        yOffset: (w - this.waveCount / 2) * 18,
+        alpha: (0.78 - w * 0.09) * this.brightness, // nhân với brightness
       })
     }
 
-    // Stars/Particles (sparkling in the background)
+    // Particles tối hơn
     this._particles = Array.from({ length: 40 }, () => ({
       x: Math.random() * W,
-      y: Math.random() * H * 0.7, // mostly in the upper canvas
-      size: Math.random() * 1.5 + 0.5,
-      alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.01,
+      y: Math.random() * H * 0.68,
+      size: Math.random() * 1.6 + 0.5,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.014 + 0.007,
     }))
   }
 
@@ -92,22 +95,18 @@ export class AuroraWaveEffect {
     this._buildCache()
   }
 
-  // ─── Wave math ────────────────────────────────────────────────────────────
-
   _waveY(x, t, waveOffset, ampMult, speedMult) {
     const f = this.waveFrequency
     const a = this.waveAmplitude * ampMult
     const time = t * speedMult
 
-    // Complex flowing wave combination
-    return (
-      Math.sin(x * f + time + waveOffset) * a +
-      Math.sin(x * f * 1.5 - time * 0.8 + waveOffset * 2) * (a * 0.4) +
-      Math.cos(x * f * 0.5 + time * 1.2 + waveOffset) * (a * 0.6)
-    )
-  }
+    let y = Math.sin(x * f + time + waveOffset) * a
+    y += Math.sin(x * f * 1.7 - time * 0.8 + waveOffset * 2) * (a * 0.38)
+    y += Math.cos(x * f * 0.55 + time * 1.25 + waveOffset) * (a * 0.55)
+    y += Math.sin(x * f * 4.1 + time * 3.2) * (a * 0.06)
 
-  // ─── Lifecycle ────────────────────────────────────────────────────────────
+    return y
+  }
 
   start() {
     if (this.active) return
@@ -118,13 +117,11 @@ export class AuroraWaveEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
-
-  // ─── Render loop ──────────────────────────────────────────────────────────
 
   animate(currentTime = 0) {
     if (!this.active) return
@@ -139,47 +136,50 @@ export class AuroraWaveEffect {
     const H = this.canvas.height
     const centerY = H * 0.45
 
-    // Smooth fading background for trail
+    // Background tối hơn để hút sáng
     ctx.globalCompositeOperation = "source-over"
-    ctx.fillStyle = "rgba(0, 0, 0, 0.25)"
+    ctx.fillStyle = "rgba(2, 4, 18, 0.32)"
     ctx.fillRect(0, 0, W, H)
 
-    // Render stars/particles
+    // Particles dịu hơn
     ctx.globalCompositeOperation = "screen"
     for (let p of this._particles) {
-      p.alpha += p.speed
-      const currentAlpha = (Math.sin(p.alpha) * 0.5 + 0.5) * 0.6 // 0 to 0.6
-      ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha.toFixed(2)})`
+      p.phase += p.speed
+      const alpha = (Math.sin(p.phase) * 0.35 + 0.65) * 0.55 // giảm sáng
+
+      ctx.fillStyle = `rgba(235, 245, 255, ${alpha.toFixed(3)})`
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
       ctx.fill()
     }
 
-    this.time += 0.006 // majestic, slow time step
+    this.time += 0.0055
 
     const t = this.time
-    const pts = this.wavePoints
+    const pts = Math.floor(this.wavePoints * this.quality)
     const xStep = W / pts
 
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.shadowBlur = 12 // giảm glow để bớt chói
+    ctx.shadowColor = this.color
 
     for (let w = 0; w < this.waveCount; w++) {
       const cfg = this._waveConfigs[w]
-      const { waveOffset, speedMultiplier, ampMultiplier, yOffset } = cfg
+      const { waveOffset, speedMultiplier, ampMultiplier, yOffset, alpha } = cfg
       const baseY = centerY + yOffset
 
-      const ribbonThickness = 120 + Math.sin(t * 2 + waveOffset) * 40
+      const ribbonThickness = 78 + Math.sin(t * 2.2 + waveOffset) * 22
 
-      // Reset blend mode for waves to make them vibrant
       ctx.globalCompositeOperation = "lighter"
-      ctx.beginPath()
+      ctx.globalAlpha = alpha
 
-      // Top curve (going right)
+      const path = new Path2D()
+
       let px = 0
       let py =
         baseY + this._waveY(0, t, waveOffset, ampMultiplier, speedMultiplier)
-      ctx.moveTo(px, py)
+      path.moveTo(px, py)
 
       for (let i = 1; i <= pts; i++) {
         const x = i * xStep
@@ -187,12 +187,11 @@ export class AuroraWaveEffect {
           baseY + this._waveY(x, t, waveOffset, ampMultiplier, speedMultiplier)
         const cx = (px + x) * 0.5
         const cy = (py + y) * 0.5
-        ctx.quadraticCurveTo(px, py, cx, cy)
+        path.quadraticCurveTo(px, py, cx, cy)
         px = x
         py = y
       }
 
-      // Bottom curve (going left to create a ribbon shape)
       for (let i = pts; i >= 0; i--) {
         const x = i * xStep
         const bottomY =
@@ -200,28 +199,37 @@ export class AuroraWaveEffect {
           this._waveY(
             x,
             t,
-            waveOffset + 0.2,
+            waveOffset + 0.18,
             ampMultiplier * 0.9,
             speedMultiplier,
           ) +
           ribbonThickness
-        ctx.lineTo(x, bottomY)
+        path.lineTo(x, bottomY)
       }
 
-      ctx.closePath()
+      path.closePath()
       ctx.fillStyle = this._gradients[w]
-      ctx.fill()
+      ctx.fill(path)
     }
+
+    ctx.globalAlpha = 1.0
+    ctx.shadowBlur = 0
   }
 
-  // ─── Color update (called from settings) ─────────────────────────────────
+  // Thêm hàm này để bạn dễ chỉnh độ sáng realtime
+  setBrightness(value) {
+    this.brightness = Math.max(0.3, Math.min(1.2, value))
+    this._buildCache() // rebuild gradient + alpha
+  }
 
   setColor(hex) {
     this.color = hex
     this._buildCache()
   }
 
-  // ─── Utils ────────────────────────────────────────────────────────────────
+  setQuality(q = 1.0) {
+    this.quality = Math.max(0.5, Math.min(1.3, q))
+  }
 
   _hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -232,10 +240,5 @@ export class AuroraWaveEffect {
           b: parseInt(result[3], 16),
         }
       : { r: 0, g: 188, b: 212 }
-  }
-
-  /** @deprecated kept for backward compat */
-  hexToRgb(hex) {
-    return this._hexToRgb(hex)
   }
 }

@@ -100,6 +100,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.bubblesEffect.color = DOM.bubblesColorPicker.value
   })
 
+  DOM.gridScanColorPicker.addEventListener("input", () => {
+    updateSetting("gridScanColor", DOM.gridScanColorPicker.value)
+    saveSettings()
+    if (effectInstances.gridScanEffect)
+      effectInstances.gridScanEffect.updateColor(DOM.gridScanColorPicker.value)
+  })
+
   DOM.cursorTrailColorPicker.addEventListener("input", () => {
     updateSetting("cursorTrailColor", DOM.cursorTrailColorPicker.value)
     saveSettings()

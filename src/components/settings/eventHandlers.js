@@ -1352,6 +1352,47 @@ export function setupGeneralEventHandlers(
     if (item) handleSettingUpdate("effect", item.dataset.value)
   })
 
+  if (DOM.pixelWeatherStyleSelect) {
+    DOM.pixelWeatherStyleSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("pixelWeatherStyle", e.target.value)
+    })
+  }
+  if (DOM.pixelWeatherResolutionSlider) {
+    DOM.pixelWeatherResolutionSlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.pixelWeatherResolutionVal)
+        DOM.pixelWeatherResolutionVal.textContent = val
+      handleSettingUpdate("pixelWeatherResolution", val)
+    })
+  }
+
+  if (DOM.pixelWeatherSpeedSlider) {
+    DOM.pixelWeatherSpeedSlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.pixelWeatherSpeedVal)
+        DOM.pixelWeatherSpeedVal.textContent = val.toFixed(1)
+      handleSettingUpdate("pixelWeatherSpeed", val)
+    })
+  }
+
+  if (DOM.pixelWeatherSizeSlider) {
+    DOM.pixelWeatherSizeSlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.pixelWeatherSizeVal)
+        DOM.pixelWeatherSizeVal.textContent = val.toFixed(1)
+      handleSettingUpdate("pixelWeatherSize", val)
+    })
+  }
+
+  if (DOM.pixelWeatherDensitySlider) {
+    DOM.pixelWeatherDensitySlider.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      if (DOM.pixelWeatherDensityVal)
+        DOM.pixelWeatherDensityVal.textContent = val.toFixed(1)
+      handleSettingUpdate("pixelWeatherDensity", val)
+    })
+  }
+
   DOM.effectSearch.addEventListener("input", () => {
     const q = DOM.effectSearch.value.toLowerCase()
     DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {

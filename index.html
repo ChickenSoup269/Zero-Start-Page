@@ -28,7 +28,6 @@
 </head>
 
 <body>
-    <script src="src/initLayout.js"></script>
     <div id="bg-layer"></div>
     <div id="bg-dim-overlay"
         style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -2; pointer-events: none;">
@@ -1062,6 +1061,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
                             <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
                         </button>
+                        <button class="effect-item" data-value="pixelWeather"
+                            data-search="pixel snow rain wind square block weather weather">
+                            <span class="effect-icon"><i class="fa-brands fa-joomla"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixelWeather">Pixel Weather</span>
+                        </button>
                         <button class="effect-item" data-value="snowfallHD"
                             data-search="snow snowfall hd high quality accumulate pile">
                             <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
@@ -1084,6 +1088,10 @@
                             data-search="cursor trail mouse interactive particles hover">
                             <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
                             <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
+                        </button>
+                        <button class="effect-item" data-value="gridScan" data-search="grid scan matrix retro tech radar">
+                            <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                            <span class="effect-name" data-i18n="effect_gridScan">Grid Scan</span>
                         </button>
                         <button class="effect-item" data-value="plantGrowth" data-search="plant growth nature">
                             <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
@@ -1138,6 +1146,10 @@
                         <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
                             <span class="effect-icon"><i class="fa-solid fa-sun"></i></span>
                             <span class="effect-name" data-i18n="effect_sunbeam">Sunbeam</span>
+                        </button>
+                        <button class="effect-item" data-value="lightPillars" data-search="light pillars vertical sky">
+                            <span class="effect-icon"><i class="fa-solid fa-lines-leaning"></i></span>
+                            <span class="effect-name" data-i18n="effect_lightPillars">Light Pillars</span>
                         </button>
                         <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
                             <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
@@ -1218,6 +1230,46 @@
                         <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes
                             Color</label>
                         <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
+                    </div>
+
+                    <!-- Pixel Weather Settings -->
+                    <div id="pixel-weather-style-section" class="setting-item" style="display: none;">
+                        <label for="pixel-weather-style-select" data-i18n="settings_pixel_weather_style">Weather
+                            Style</label>
+                        <select id="pixel-weather-style-select" style="margin-bottom: 20px;">
+                            <option value="snow" data-i18n="style_pixel_snow">Snow</option>
+                            <option value="rain" data-i18n="style_pixel_rain">Rain</option>
+                            <option value="wind" data-i18n="style_pixel_wind">Wind</option>
+                        </select>
+
+                        <label for="pixel-weather-resolution-slider"><span
+                                data-i18n="settings_pixel_weather_resolution">Resolution</span> <span
+                                id="pixel-weather-resolution-val">1</span></label>
+                        <input type="range" id="pixel-weather-resolution-slider" min="1" max="10" step="1" value="1"
+                            style="margin-bottom: 10px;">
+
+                        <label for="pixel-weather-speed-slider"><span
+                                data-i18n="settings_pixel_weather_speed">Speed</span> <span
+                                id="pixel-weather-speed-val">1.0</span></label>
+                        <input type="range" id="pixel-weather-speed-slider" min="0.1" max="3.0" step="0.1" value="1.0"
+                            style="margin-bottom: 10px;">
+
+                        <label for="pixel-weather-size-slider"><span data-i18n="settings_pixel_weather_flake_size">Flake
+                                Size</span> <span id="pixel-weather-size-val">1.0</span></label>
+                        <input type="range" id="pixel-weather-size-slider" min="0.5" max="5.0" step="0.1" value="1.0"
+                            style="margin-bottom: 10px;">
+
+                        <label for="pixel-weather-density-slider"><span
+                                data-i18n="settings_pixel_weather_density">Density</span> <span
+                                id="pixel-weather-density-val">1.0</span></label>
+                        <input type="range" id="pixel-weather-density-slider" min="0.2" max="3.0" step="0.1"
+                            value="1.0">
+                    </div>
+
+                    <!-- Grid Scan Color -->
+                    <div id="grid-scan-color-setting" class="setting-item" style="display: none;">
+                        <label for="grid-scan-color-picker" data-i18n="setting_grid_scan_color">Grid Scan Color</label>
+                        <input type="color" id="grid-scan-color-picker" value="#00ffcc" />
                     </div>
 
                     <!-- Jellyfish Color -->
@@ -1874,7 +1926,8 @@
                             <label for="bookmark-layout-bg-color"
                                 data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
                             <div class="input-group">
-                                <input type="color" id="bookmark-layout-bg-color" class="color-picker-input" style="width: 100%;">
+                                <input type="color" id="bookmark-layout-bg-color" class="color-picker-input"
+                                    style="width: 100%;">
                             </div>
                         </div>
                         <div class="setting-item" id="bookmark-item-style-row">
@@ -2253,3 +2306,4 @@
 </body>
 
 </html>
+
