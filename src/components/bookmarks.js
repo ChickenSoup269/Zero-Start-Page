@@ -205,8 +205,9 @@ export function renderBookmarks() {
 
   // 2. Render Bookmarks for Active Group
   const bookmarks = getBookmarks() // This now returns items of active group
-  bookmarksContainer.innerHTML = ""
 
+  // Use Document Fragment to prevent multiple reflows / layout shifts
+  const frag = document.createDocumentFragment()
   const settings = getSettings()
   const enableDrag = settings.bookmarkEnableDrag === true
 
@@ -244,7 +245,7 @@ export function renderBookmarks() {
       e.preventDefault()
       showContextMenu(e.clientX, e.clientY, index)
     })
-    bookmarksContainer.appendChild(bookmarkEl)
+    frag.appendChild(bookmarkEl)
   })
 
   // Add Button (Always at end of list)
@@ -253,8 +254,14 @@ export function renderBookmarks() {
   addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
   addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addBtn.addEventListener("click", () => openModal(null))
-  bookmarksContainer.appendChild(addBtn)
-  requestAnimationFrame(updateOverflowBookmarks)
+  frag.appendChild(addBtn)
+
+  // Clear and update DOM once
+  bookmarksContainer.innerHTML = ""
+  bookmarksContainer.appendChild(frag)
+
+  // Use requestAnimationFrame so UI can render before calculations
+  requestAnimationFrame(() => requestAnimationFrame(updateOverflowBookmarks))
 }
 
 export function updateOverflowBookmarks() {
@@ -525,4 +532,14 @@ export function initBookmarks() {
   window.addEventListener("resize", () =>
     requestAnimationFrame(updateOverflowBookmarks),
   )
+  window.addEventListener("layoutUpdated", (e) => {
+    if (
+      e.detail &&
+      (e.detail.key === "bookmarkLayout" ||
+        e.detail.key === "bookmarkSidebarMode" ||
+        e.detail.key === "bookmarkTheme")
+    ) {
+      requestAnimationFrame(updateOverflowBookmarks)
+    }
+  })
 }
