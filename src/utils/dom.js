@@ -581,6 +581,19 @@ export const enableBookmarkDrag = document.getElementById(
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export const bookmarkLayout = document.getElementById("bookmark-layout")
+export const bookmarkLayoutBgStyle = document.getElementById(
+  "bookmark-layout-bg-style",
+)
+export const bookmarkLayoutBgStyleRow = document.getElementById(
+  "bookmark-layout-bg-style-row",
+)
+export const bookmarkLayoutBgColor = document.getElementById(
+  "bookmark-layout-bg-color",
+)
+export const bookmarkLayoutBgColorRow = document.getElementById(
+  "bookmark-layout-bg-color-row",
+)
+export const bookmarkItemStyle = document.getElementById("bookmark-item-style")
 
 // Layout Toggles
 export const showTodoCheckbox = document.getElementById("show-todo-checkbox")
@@ -777,4 +790,4 @@ export const freeMoveCustomTitleCheckbox = document.getElementById(
   "free-move-custom-title-checkbox",
 )
 
-export const lcpBookmarkLayout = document.getElementById('lcp-bookmark-layout')
+export const lcpBookmarkLayout = document.getElementById("lcp-bookmark-layout")

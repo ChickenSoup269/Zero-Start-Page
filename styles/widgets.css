@@ -3047,3 +3047,59 @@ body.bookmark-sidebar-mode .bookmark-widget {
 body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
   max-height: calc(100vh - 100px) !important;
 }
+
+/* --- BOOKMARK LAYOUT BACKGROUND STYLES --- */
+body.bookmark-layout-bg-hidden.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-layout-bg-hidden.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-layout-bg-hidden.bookmark-taskbar-left-mode .bookmarks-grid {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.bookmark-layout-bg-colored.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-layout-bg-colored.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-layout-bg-colored.bookmark-taskbar-left-mode .bookmarks-grid {
+  background: var(--bookmark-layout-bg-color, #ffffff) !important;
+}
+
+/* --- BOOKMARK ITEM CARD STYLE --- */
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--bookmark-border-radius, 12px) !important;
+  padding: 8px !important;
+  margin: 2px !important;
+  transition:
+    transform 0.2s,
+    background 0.2s !important;
+}
+
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark:hover,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark:hover,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-5px) !important;
+}
+
+/* Ensure the icon inside a card doesn't have an extra background unless wanted */
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-sidebar-mode
+  .bookmark
+  .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-mode
+  .bookmark
+  .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode
+  .bookmark
+  .bookmark-icon-fallback {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}

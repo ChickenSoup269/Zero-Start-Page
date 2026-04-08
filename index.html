@@ -1860,6 +1860,27 @@
                                 </option>
                             </select>
                         </div>
+                        <div class="setting-item-row" id="bookmark-layout-bg-style-row" style="display: none;">
+                            <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Layout
+                                Container Background</label>
+                            <select id="bookmark-layout-bg-style" class="settings-select">
+                                <option value="default" data-i18n="layout_bg_default">Default</option>
+                                <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
+                                <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
+                            </select>
+                        </div>
+                        <div class="setting-item-row" id="bookmark-layout-bg-color-row" style="display: none;">
+                            <label for="bookmark-layout-bg-color"
+                                data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
+                            <input type="color" id="bookmark-layout-bg-color" class="color-picker-input">
+                        </div>
+                        <div class="setting-item-row" id="bookmark-item-style-row">
+                            <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
+                            <select id="bookmark-item-style" class="settings-select">
+                                <option value="default" data-i18n="item_style_default">Default</option>
+                                <option value="card" data-i18n="item_style_card">Card</option>
+                            </select>
+                        </div>
                         <div class="setting-item-row">
                             <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag &
                                 drop to reorder</label>
@@ -2229,5 +2250,3 @@
 </body>
 
 </html>
-
-

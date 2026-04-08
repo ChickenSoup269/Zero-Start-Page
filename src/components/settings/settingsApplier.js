@@ -397,6 +397,30 @@ function createApplySettings(effectInstances) {
     else if (layout === "taskbar-left")
       document.body.classList.add("bookmark-taskbar-left-mode")
 
+    let bgStyle = settings.bookmarkLayoutBgStyle || "default"
+    let bgColor = settings.bookmarkLayoutBgColor || ""
+    let itemStyle = settings.bookmarkItemStyle || "default"
+
+    document.body.classList.remove(
+      "bookmark-layout-bg-hidden",
+      "bookmark-layout-bg-colored",
+      "bookmark-item-card-style",
+    )
+
+    if (bgStyle === "hidden") {
+      document.body.classList.add("bookmark-layout-bg-hidden")
+    } else if (bgStyle === "colored") {
+      document.body.classList.add("bookmark-layout-bg-colored")
+      document.documentElement.style.setProperty(
+        "--bookmark-layout-bg-color",
+        bgColor,
+      )
+    }
+
+    if (itemStyle === "card") {
+      document.body.classList.add("bookmark-item-card-style")
+    }
+
     let shadowHex = settings.bookmarkShadowColor || "#000000"
     let shadowOpacity = settings.bookmarkShadowOpacity ?? 24
     let shadowBlur = settings.bookmarkShadowBlur ?? 8
@@ -681,6 +705,26 @@ function createUpdateSettingsInputs(effectInstances) {
           val = "sidebar"
         DOM.bookmarkLayout.value = val
         if (DOM.lcpBookmarkLayout) DOM.lcpBookmarkLayout.value = val
+
+        if (DOM.bookmarkLayoutBgStyleRow) {
+          DOM.bookmarkLayoutBgStyleRow.style.display =
+            val === "default" ? "none" : "flex"
+        }
+      }
+      if (DOM.bookmarkLayoutBgStyle) {
+        DOM.bookmarkLayoutBgStyle.value =
+          settings.bookmarkLayoutBgStyle || "default"
+        if (DOM.bookmarkLayoutBgColorRow) {
+          DOM.bookmarkLayoutBgColorRow.style.display =
+            DOM.bookmarkLayoutBgStyle.value === "colored" ? "flex" : "none"
+        }
+      }
+      if (DOM.bookmarkLayoutBgColor) {
+        DOM.bookmarkLayoutBgColor.value =
+          settings.bookmarkLayoutBgColor || "#000000"
+      }
+      if (DOM.bookmarkItemStyle) {
+        DOM.bookmarkItemStyle.value = settings.bookmarkItemStyle || "default"
       }
 
       if (DOM.bookmarkShadowColorPicker) {
