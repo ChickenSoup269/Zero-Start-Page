@@ -2446,7 +2446,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
   transform: translateY(-50%) !important;
   display: flex;
   flex-direction: row-reverse; /* Reverses order: bookmarks on outside, groups inside */
-  align-items: flex-start; /* Nằm top (Align top) */
+  align-items: center; /* Nằm giữa (Center) */
   gap: 8px; /* Gần hơn (Closer) */
   z-index: 100;
 }

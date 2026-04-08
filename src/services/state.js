@@ -413,17 +413,28 @@ export const resetComponentPositions = () => {
   window.location.reload()
 }
 
-export function saveSettings() {
-  try {
-    localStorage.setItem("pageSettings", JSON.stringify(settingsState))
-  } catch (e) {
-    if (e.name === "QuotaExceededError") {
-      showAlert(
-        "Storage quota exceeded. Please remove some uploaded backgrounds to free up space.",
-      )
-    } else {
-      throw e
+let saveSettingsTimeout = null
+export function saveSettings(immediate = false) {
+  const performSave = () => {
+    try {
+      localStorage.setItem("pageSettings", JSON.stringify(settingsState))
+    } catch (e) {
+      if (e.name === "QuotaExceededError") {
+        showAlert(
+          "Storage quota exceeded. Please remove some uploaded backgrounds to free up space.",
+        )
+      } else {
+        throw e
+      }
     }
+  }
+
+  if (immediate) {
+    if (saveSettingsTimeout) clearTimeout(saveSettingsTimeout)
+    performSave()
+  } else {
+    if (saveSettingsTimeout) clearTimeout(saveSettingsTimeout)
+    saveSettingsTimeout = setTimeout(performSave, 300) // Debounce localStorage saving to improve INP
   }
 }
 
