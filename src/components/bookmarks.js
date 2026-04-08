@@ -189,7 +189,7 @@ function handleDragEnd(e) {
   draggedBookmarkIndex = null
 }
 
-let toggleListenerAdded = false;
+let toggleListenerAdded = false
 
 export function renderBookmarks() {
   if (!toggleListenerAdded) {
@@ -258,158 +258,194 @@ export function renderBookmarks() {
 }
 
 export function updateOverflowBookmarks() {
-  const container = document.getElementById("bookmarks-container");
-  if (!container) return;
+  const container = document.getElementById("bookmarks-container")
+  if (!container) return
 
-  const isMinimalModeMatch = document.body.className.match(/bookmark-(sidebar|taskbar|taskbar-left)-mode/);
-  
+  const isMinimalModeMatch = document.body.className.match(
+    /bookmark-(sidebar|taskbar|taskbar-left)-mode/,
+  )
+
   // Cleanup previously hidden items and indicator
-  const existingIndicator = container.querySelector(".overflow-indicator");
-  if (existingIndicator) existingIndicator.remove();
-  
-  // Cleanup popup if exists
-  const existingPopup = document.getElementById("hidden-bookmarks-popup");
-  if (existingPopup) existingPopup.remove();
+  const existingIndicator = container.querySelector(".overflow-indicator")
+  if (existingIndicator) existingIndicator.remove()
 
-  const children = Array.from(container.children);
-  children.forEach(c => {
-    if(c.classList.contains("bookmark") || c.classList.contains("add-bookmark-card")) {
-        c.style.display = "";
+  // Cleanup popup if exists
+  const existingPopup = document.getElementById("hidden-bookmarks-popup")
+  if (existingPopup) existingPopup.remove()
+
+  const children = Array.from(container.children)
+  children.forEach((c) => {
+    if (
+      c.classList.contains("bookmark") ||
+      c.classList.contains("add-bookmark-card")
+    ) {
+      c.style.display = ""
     }
-  });
+  })
 
   if (!isMinimalModeMatch) {
-    if (container.style.overflow) container.style.overflow = "";
-    return;
+    if (container.style.overflow) container.style.overflow = ""
+    return
   }
 
-  container.style.overflow = "hidden";
-  const isSidebar = isMinimalModeMatch[1] === "sidebar";
+  container.style.overflow = "hidden"
+  const isSidebar = isMinimalModeMatch[1] === "sidebar"
   const checkOverflow = () => {
-      let visibleCount = 0;
-      for (let j = 0; j < children.length - 1; j++) {
-        if (children[j].style.display !== "none") visibleCount++;
-      }
-      if (visibleCount > 15) return true;
-    return isSidebar ? 
-      (container.scrollHeight > Math.ceil(container.clientHeight) + 2) : 
-      (container.scrollWidth > Math.ceil(container.clientWidth) + 2);
-  };
+    let visibleCount = 0
+    for (let j = 0; j < children.length - 1; j++) {
+      if (children[j].style.display !== "none") visibleCount++
+    }
+    if (visibleCount > 15) return true
+    return isSidebar
+      ? container.scrollHeight > Math.ceil(container.clientHeight) + 2
+      : container.scrollWidth > Math.ceil(container.clientWidth) + 2
+  }
 
   if (!checkOverflow()) {
-      container.style.overflow = "";
-      return;
+    container.style.overflow = ""
+    return
   }
 
-  const addBtn = children[children.length - 1];
-  let hiddenCount = 0;
-  const hiddenElements = [];
-  
-  const indicator = document.createElement("div");
-  indicator.className = "bookmark overflow-indicator";
-  indicator.title = "Show hidden bookmarks";
-  indicator.style.cursor = "pointer";
-  
-  const fallback = document.createElement("div");
-  fallback.className = "bookmark-icon-fallback";
-  fallback.style.display = "flex";
-  fallback.style.justifyContent = "center";
-  fallback.style.alignItems = "center";
-  fallback.style.fontSize = "1rem";
-  fallback.style.fontWeight = "bold";
-  indicator.appendChild(fallback);
+  const addBtn = children[children.length - 1]
+  let hiddenCount = 0
+  const hiddenElements = []
+
+  const indicator = document.createElement("div")
+  indicator.className = "bookmark overflow-indicator"
+  indicator.title = "Show hidden bookmarks"
+  indicator.style.cursor = "pointer"
+
+  const fallback = document.createElement("div")
+  fallback.className = "bookmark-icon-fallback"
+  fallback.style.display = "flex"
+  fallback.style.justifyContent = "center"
+  fallback.style.alignItems = "center"
+  fallback.style.fontSize = "1rem"
+  fallback.style.fontWeight = "bold"
+  indicator.appendChild(fallback)
 
   if (isSidebar) {
-      container.insertBefore(indicator, container.firstChild);
+    container.insertBefore(indicator, container.firstChild)
   } else {
-      container.insertBefore(indicator, addBtn);
+    container.insertBefore(indicator, addBtn)
   }
-  
+
   for (let i = children.length - 2; i >= 0; i--) {
-     const el = children[i];
-     el.style.display = "none";
-     hiddenElements.unshift(el);
-     hiddenCount++;
-     
-     fallback.textContent = "+" + hiddenCount;
-     
-     if (!checkOverflow()) break;
+    const el = children[i]
+    el.style.display = "none"
+    hiddenElements.unshift(el)
+    hiddenCount++
+
+    fallback.textContent = "+" + hiddenCount
+
+    if (!checkOverflow()) break
   }
-  
+
   // Click handler to show sub-popup
   indicator.addEventListener("click", (e) => {
-      e.stopPropagation();
-      let popup = document.getElementById("hidden-bookmarks-popup");
-      if (popup) {
-          popup.remove();
-          return; // Toggle off
-      }
-      
-      popup = document.createElement("div");
-      popup.id = "hidden-bookmarks-popup";
-      popup.className = isSidebar ? "hidden-bookmarks-sidebar" : "hidden-bookmarks-taskbar";
-      
-      // Clone elements into popup
-      hiddenElements.forEach(el => {
-          const clone = el.cloneNode(true);
-          clone.style.display = "";
-          clone.draggable = false;
-          clone.classList.remove("dragging", "drag-over");
-          
-          clone.addEventListener("contextmenu", (evt) => {
-              evt.preventDefault();
-              popup.remove();
-              const simulatedEvt = new MouseEvent("contextmenu", {
-                  bubbles: true, cancelable: true, clientX: evt.clientX, clientY: evt.clientY
-              });
-              el.dispatchEvent(simulatedEvt);
-          });
-          
-          clone.addEventListener("click", () => { 
-                popup.remove(); 
-          });
-          popup.appendChild(clone);
-      });
-      
-      document.body.appendChild(popup);
-      
-      // Calculate position relative to indicator
-      const rect = indicator.getBoundingClientRect();
-      const popupRect = popup.getBoundingClientRect();
-      
-      if (isSidebar) {
-         // Anchor to the left of the indicator
-         popup.style.top = Math.max(20, rect.top - (popupRect.height / 2) + (rect.height / 2)) + "px";
-         
-         const isFlipped = document.body.classList.contains("flip-layout");
-         if (isFlipped) {
-             popup.style.left = (rect.right + 15) + "px"; // Expand to right
-         } else {
-             popup.style.right = (window.innerWidth - rect.left + 15) + "px"; // Expand to left
-         }
+    e.stopPropagation()
+    let popup = document.getElementById("hidden-bookmarks-popup")
+    if (popup) {
+      popup.remove()
+      return // Toggle off
+    }
+
+    popup = document.createElement("div")
+    popup.id = "hidden-bookmarks-popup"
+    popup.className = isSidebar
+      ? "hidden-bookmarks-sidebar"
+      : "hidden-bookmarks-taskbar"
+
+    // Clone elements into popup
+    hiddenElements.forEach((el) => {
+      const clone = el.cloneNode(true)
+      clone.style.display = ""
+      clone.draggable = false
+      clone.classList.remove("dragging", "drag-over")
+
+      clone.addEventListener("contextmenu", (evt) => {
+        evt.preventDefault()
+        popup.remove()
+        const simulatedEvt = new MouseEvent("contextmenu", {
+          bubbles: true,
+          cancelable: true,
+          clientX: evt.clientX,
+          clientY: evt.clientY,
+        })
+        el.dispatchEvent(simulatedEvt)
+      })
+
+      clone.addEventListener("click", () => {
+        popup.remove()
+      })
+      popup.appendChild(clone)
+    })
+
+    document.body.appendChild(popup)
+
+    // Calculate position relative to indicator
+    const rect = indicator.getBoundingClientRect()
+    const popupRect = popup.getBoundingClientRect()
+
+    if (isSidebar) {
+      // Anchor to the left of the indicator
+      popup.style.top =
+        Math.max(20, rect.top - popupRect.height / 2 + rect.height / 2) + "px"
+
+      const isFlipped = document.body.classList.contains("flip-layout")
+      if (isFlipped) {
+        popup.style.left = rect.right + 15 + "px" // Expand to right
       } else {
-         // Taskbar cases
-         const isTaskbarLeft = isMinimalModeMatch[1] === "taskbar-left";
-         popup.style.bottom = (window.innerHeight - rect.top + 15) + "px";
-         
-         if (isTaskbarLeft) {
-            popup.style.left = rect.left + "px";
-         } else {
-            popup.style.left = Math.max(20, rect.left - (popupRect.width / 2) + (rect.width / 2)) + "px";
-         }
+        popup.style.right = window.innerWidth - rect.left + 15 + "px" // Expand to left
       }
-      
-      // Close popup when clicking outside
-      const closePopup = (evt) => {
-          if (!popup.contains(evt.target) && !indicator.contains(evt.target)) {
-              popup.remove();
-              document.removeEventListener("click", closePopup);
-          }
-      };
-      
-      // Small delay to prevent immediate trigger
-      setTimeout(() => document.addEventListener("click", closePopup), 50);
-  });
+    } else {
+      // Taskbar cases
+      const isTaskbarLeft = isMinimalModeMatch[1] === "taskbar-left"
+      popup.style.bottom = window.innerHeight - rect.top + 15 + "px"
+
+      if (isTaskbarLeft) {
+        popup.style.left = rect.left + "px"
+      } else {
+        popup.style.left =
+          Math.max(20, rect.left - popupRect.width / 2 + rect.width / 2) + "px"
+      }
+    }
+
+    // Close popup when clicking outside
+    const closePopup = (evt) => {
+      if (!popup.contains(evt.target) && !indicator.contains(evt.target)) {
+        popup.remove()
+        document.removeEventListener("click", closePopup)
+      }
+    }
+
+    // Small delay to prevent immediate trigger
+    setTimeout(() => document.addEventListener("click", closePopup), 50)
+  })
+}
+
+function getGroupIcon(name) {
+  const lower = name.toLowerCase()
+  if (/social|friend|chat|mạng xã hội/.test(lower)) return "fa-users"
+  if (/work|office|job|công việc/.test(lower)) return "fa-briefcase"
+  if (/game|play|trò chơi/.test(lower)) return "fa-gamepad"
+  if (/music|audio|song|nhạc/.test(lower)) return "fa-music"
+  if (/video|movie|film|youtube|phim/.test(lower)) return "fa-video"
+  if (/read|book|sách|truyện/.test(lower)) return "fa-book"
+  if (/code|dev|program|lập trình/.test(lower)) return "fa-code"
+  if (/shop|buy|store|mua sắm/.test(lower)) return "fa-cart-shopping"
+  if (/tech|it|công nghệ/.test(lower)) return "fa-microchip"
+  if (/news|báo|tin tức/.test(lower)) return "fa-newspaper"
+  if (/learn|study|học/.test(lower)) return "fa-graduation-cap"
+  if (/tool|công cụ/.test(lower)) return "fa-wrench"
+  if (/pic|img|photo|ảnh/.test(lower)) return "fa-image"
+  if (/art|design|thiết kế/.test(lower)) return "fa-palette"
+  if (/finance|bank|money|tiền|tài chính/.test(lower))
+    return "fa-money-bill-wave"
+  if (/travel|trip|du lịch/.test(lower)) return "fa-plane"
+  if (/ai|gpt|gemini|claude/.test(lower)) return "fa-robot"
+  if (/mail|inbox|thư/.test(lower)) return "fa-envelope"
+  return "fa-folder" // Default icon
 }
 
 function renderGroupTabs() {
@@ -420,6 +456,11 @@ function renderGroupTabs() {
   groups.forEach((group) => {
     const tab = document.createElement("div")
     tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
+
+    // Representative Icon
+    const icon = document.createElement("i")
+    icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
+    tab.appendChild(icon)
 
     // Name Span (for double-click edit)
     const nameSpan = document.createElement("span")
@@ -481,11 +522,7 @@ function renderGroupTabs() {
 
 export function initBookmarks() {
   renderBookmarks()
-  window.addEventListener('resize', () => requestAnimationFrame(updateOverflowBookmarks))
+  window.addEventListener("resize", () =>
+    requestAnimationFrame(updateOverflowBookmarks),
+  )
 }
-
-
-
-
-
-
