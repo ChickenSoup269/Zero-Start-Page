@@ -759,7 +759,8 @@
                         <label>Gradient Angle: <span id="gradient-angle-value">135</span>deg</label>
                         <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
                     </div>
-                    <button id="generate-modern-gradient-btn" class="secondary-btn full-width" style="margin-top: 10px;"
+                    <button id="generate-modern-gradient-btn" class="secondary-btn full-width"
+                        style="margin-top: 10px; margin-bottom: 10px;"
                         data-i18n="settings_gradient_generate_modern">Generate Modern Landing Gradient</button>
                     <button id="save-gradient-btn" class="secondary-btn full-width"
                         data-i18n="settings_save_gradient_btn">Save Gradient</button>
@@ -906,15 +907,15 @@
                     <div class="setting-item">
                         <div class="wave-angle-header">
                             <label><span data-i18n="settings_svg_wave_angle">Angle</span>: <span
-                                    id="svg-wave-angle-value">0</span>Â°</label>
+                                    id="svg-wave-angle-value">0</span>°</label>
                             <div class="wave-angle-presets">
-                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270Â°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
                                         class="fa-solid fa-arrow-left"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90Â°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90°)"><i
                                         class="fa-solid fa-arrow-right"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0Â°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0°)"><i
                                         class="fa-solid fa-arrow-up"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180Â°)"><i
+                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
                                         class="fa-solid fa-arrow-down"></i></button>
                             </div>
                         </div>
@@ -1850,7 +1851,7 @@
                                 Background</label>
                             <input type="checkbox" id="hide-bookmark-bg">
                         </div>
-                        <div class="setting-item-row">
+                        <div class="setting-item">
                             <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
                             <select id="bookmark-layout" class="settings-select">
                                 <option value="default" data-i18n="layout_default">Default Grid</option>
@@ -1860,7 +1861,7 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="setting-item-row" id="bookmark-layout-bg-style-row" style="display: none;">
+                        <div class="setting-item" id="bookmark-layout-bg-style-row" style="display: none;">
                             <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Layout
                                 Container Background</label>
                             <select id="bookmark-layout-bg-style" class="settings-select">
@@ -1869,12 +1870,14 @@
                                 <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
                             </select>
                         </div>
-                        <div class="setting-item-row" id="bookmark-layout-bg-color-row" style="display: none;">
+                        <div class="setting-item" id="bookmark-layout-bg-color-row" style="display: none;">
                             <label for="bookmark-layout-bg-color"
                                 data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
-                            <input type="color" id="bookmark-layout-bg-color" class="color-picker-input">
+                            <div class="input-group">
+                                <input type="color" id="bookmark-layout-bg-color" class="color-picker-input" style="width: 100%;">
+                            </div>
                         </div>
-                        <div class="setting-item-row" id="bookmark-item-style-row">
+                        <div class="setting-item" id="bookmark-item-style-row">
                             <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
                             <select id="bookmark-item-style" class="settings-select">
                                 <option value="default" data-i18n="item_style_default">Default</option>

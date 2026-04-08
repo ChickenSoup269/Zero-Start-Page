@@ -59,6 +59,52 @@ export function setupGeneralEventHandlers(
   const i18n = ctx.i18n
   const effects = ctx.effects
 
+  const throttledUpdates = {}
+  const lastUpdateTimes = {}
+  let reqAnimFrame = null
+
+  const throttleSettingUpdate = (key, value) => {
+    const fastFeedbackKeys = [
+      "bookmarkBgColor",
+      "bookmarkBgOpacity",
+      "bookmarkTextColor",
+      "bookmarkGroupBgColor",
+      "bookmarkGroupBgOpacity",
+      "bookmarkGroupTextColor",
+      "bookmarkShadowColor",
+      "bookmarkShadowOpacity",
+      "bookmarkShadowBlur",
+      "bookmarkLayoutBgColor",
+    ]
+    const isFast = fastFeedbackKeys.includes(key)
+    const delay = isFast ? 40 : 200
+
+    if (isFast) {
+      const now = Date.now()
+      if (!lastUpdateTimes[key] || now - lastUpdateTimes[key] >= delay) {
+        if (reqAnimFrame) cancelAnimationFrame(reqAnimFrame)
+        reqAnimFrame = requestAnimationFrame(() => {
+          handleSettingUpdate(key, value)
+        })
+        lastUpdateTimes[key] = now
+      }
+
+      if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
+      throttledUpdates[key] = setTimeout(() => {
+        if (reqAnimFrame) cancelAnimationFrame(reqAnimFrame)
+        reqAnimFrame = requestAnimationFrame(() => {
+          handleSettingUpdate(key, value)
+        })
+        lastUpdateTimes[key] = Date.now()
+      }, delay + 10)
+    } else {
+      if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
+      throttledUpdates[key] = setTimeout(() => {
+        handleSettingUpdate(key, value)
+        delete throttledUpdates[key]
+      }, delay)
+    }
+  }
   const blobToDataUrl = (blob) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -574,15 +620,15 @@ export function setupGeneralEventHandlers(
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
       DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
-      handleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
+      throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
     })
 
     DOM.bookmarkBgColorPicker.addEventListener("input", () => {
-      handleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
+      throttleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
     })
 
     DOM.bookmarkBgOpacityInput.addEventListener("input", () => {
-      handleSettingUpdate(
+      throttleSettingUpdate(
         "bookmarkBgOpacity",
         Number(DOM.bookmarkBgOpacityInput.value),
       )
@@ -591,13 +637,13 @@ export function setupGeneralEventHandlers(
     DOM.resetBookmarkBgBtn.addEventListener("click", () => {
       DOM.bookmarkBgColorPicker.value = "#ffffff"
       DOM.bookmarkBgOpacityInput.value = 100
-      handleSettingUpdate("bookmarkBgColor", "#ffffff")
-      handleSettingUpdate("bookmarkBgOpacity", 100)
+      throttleSettingUpdate("bookmarkBgColor", "#ffffff")
+      throttleSettingUpdate("bookmarkBgOpacity", 100)
     })
 
     if (DOM.bookmarkGroupBgColorPicker) {
       DOM.bookmarkGroupBgColorPicker.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkGroupBgColor",
           DOM.bookmarkGroupBgColorPicker.value,
         )
@@ -605,7 +651,7 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.bookmarkGroupBgOpacityInput) {
       DOM.bookmarkGroupBgOpacityInput.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkGroupBgOpacity",
           Number(DOM.bookmarkGroupBgOpacityInput.value),
         )
@@ -615,13 +661,13 @@ export function setupGeneralEventHandlers(
       DOM.resetBookmarkGroupBgBtn.addEventListener("click", () => {
         DOM.bookmarkGroupBgColorPicker.value = "#ffffff"
         DOM.bookmarkGroupBgOpacityInput.value = 0
-        handleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
-        handleSettingUpdate("bookmarkGroupBgOpacity", 0)
+        throttleSettingUpdate("bookmarkGroupBgColor", "#ffffff")
+        throttleSettingUpdate("bookmarkGroupBgOpacity", 0)
       })
     }
     if (DOM.bookmarkGroupTextColorPicker) {
       DOM.bookmarkGroupTextColorPicker.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkGroupTextColor",
           DOM.bookmarkGroupTextColorPicker.value,
         )
@@ -630,14 +676,14 @@ export function setupGeneralEventHandlers(
     if (DOM.resetBookmarkGroupTextColorBtn) {
       DOM.resetBookmarkGroupTextColorBtn.addEventListener("click", () => {
         DOM.bookmarkGroupTextColorPicker.value = "#ffffff"
-        handleSettingUpdate("bookmarkGroupTextColor", null)
+        throttleSettingUpdate("bookmarkGroupTextColor", null)
       })
     }
     if (DOM.bookmarkGroupFontSizeInput) {
       DOM.bookmarkGroupFontSizeInput.addEventListener("input", () => {
         if (DOM.bookmarkGroupFontSizeValue)
           DOM.bookmarkGroupFontSizeValue.textContent = `${DOM.bookmarkGroupFontSizeInput.value}px`
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkGroupFontSize",
           Number(DOM.bookmarkGroupFontSizeInput.value),
         )
@@ -645,7 +691,10 @@ export function setupGeneralEventHandlers(
     }
 
     DOM.enableBookmarkDrag.addEventListener("change", () => {
-      handleSettingUpdate("bookmarkEnableDrag", DOM.enableBookmarkDrag.checked)
+      throttleSettingUpdate(
+        "bookmarkEnableDrag",
+        DOM.enableBookmarkDrag.checked,
+      )
       renderBookmarks()
     })
 
@@ -661,25 +710,25 @@ export function setupGeneralEventHandlers(
     if (DOM.resetBookmarkTextColorBtn) {
       DOM.resetBookmarkTextColorBtn.addEventListener("click", () => {
         DOM.bookmarkTextColorPicker.value = "#ffffff"
-        handleSettingUpdate("bookmarkTextColor", null)
+        throttleSettingUpdate("bookmarkTextColor", null)
       })
     }
 
     if (DOM.hideBookmarkText) {
       DOM.hideBookmarkText.addEventListener("change", () => {
-        handleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
+        throttleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
       })
     }
 
     if (DOM.hideBookmarkBg) {
       DOM.hideBookmarkBg.addEventListener("change", () => {
-        handleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
+        throttleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
       })
     }
 
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
-        handleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
+        throttleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
         if (DOM.lcpBookmarkLayout)
           DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
 
@@ -692,7 +741,7 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.lcpBookmarkLayout) {
       DOM.lcpBookmarkLayout.addEventListener("change", () => {
-        handleSettingUpdate("bookmarkLayout", DOM.lcpBookmarkLayout.value)
+        throttleSettingUpdate("bookmarkLayout", DOM.lcpBookmarkLayout.value)
         if (DOM.bookmarkLayout)
           DOM.bookmarkLayout.value = DOM.lcpBookmarkLayout.value
 
@@ -719,7 +768,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkLayoutBgColor) {
       DOM.bookmarkLayoutBgColor.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkLayoutBgColor",
           DOM.bookmarkLayoutBgColor.value,
         )
@@ -728,19 +777,19 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkItemStyle) {
       DOM.bookmarkItemStyle.addEventListener("change", () => {
-        handleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
+        throttleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
       })
     }
 
     if (DOM.bookmarkShadowColorPicker) {
       DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkShadowColor",
           DOM.bookmarkShadowColorPicker.value,
         )
       })
       DOM.bookmarkShadowOpacityInput.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkShadowOpacity",
           Number(DOM.bookmarkShadowOpacityInput.value),
         )
@@ -749,7 +798,7 @@ export function setupGeneralEventHandlers(
         if (DOM.bookmarkShadowBlurValue) {
           DOM.bookmarkShadowBlurValue.textContent = `${DOM.bookmarkShadowBlurInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
         }
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkShadowBlur",
           Number(DOM.bookmarkShadowBlurInput.value),
         )

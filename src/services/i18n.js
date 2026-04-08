@@ -17,7 +17,7 @@ export async function loadLanguage(lang) {
   } catch (e) {
     console.error(
       `Could not load ${language}.json, falling back to English.`,
-      e
+      e,
     )
     if (language !== "en") {
       const response = await fetch(`./locales/en.json`)
@@ -30,7 +30,28 @@ export async function loadLanguage(lang) {
 export function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n")
-    if (i18n[key]) el.textContent = i18n[key]
+    if (i18n[key]) {
+      // If the element has children (like an icon <i>), only replace the text nodes
+      if (el.children.length > 0) {
+        let textNodeFound = false
+        // Specifically look for text nodes after icons
+        for (let i = 0; i < el.childNodes.length; i++) {
+          if (
+            el.childNodes[i].nodeType === 3 &&
+            el.childNodes[i].nodeValue.trim().length > 0
+          ) {
+            el.childNodes[i].nodeValue = " " + i18n[key]
+            textNodeFound = true
+            break
+          }
+        }
+        if (!textNodeFound) {
+          el.appendChild(document.createTextNode(" " + i18n[key]))
+        }
+      } else {
+        el.textContent = i18n[key]
+      }
+    }
   })
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder")
