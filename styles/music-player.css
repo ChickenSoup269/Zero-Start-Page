@@ -382,7 +382,7 @@
 .music-style-pixel .player-info h3 {
   text-transform: uppercase;
   font-weight: bold;
-  color: #0f0;
+  color: var(--accent-color);
 }
 
 .music-style-pixel .player-info p {
@@ -1101,8 +1101,14 @@
   animation: visualizerPulseSC 0.6s ease-in-out infinite alternate;
 }
 @keyframes visualizerPulseSC {
-  0% { height: 10px; opacity: 0.6; }
-  100% { height: 40px; opacity: 1; }
+  0% {
+    height: 10px;
+    opacity: 0.6;
+  }
+  100% {
+    height: 40px;
+    opacity: 1;
+  }
 }
 
 .music-style-soundcloud .controls-row {
@@ -1116,72 +1122,236 @@
 }
 
 /* =========================================
-   STYLE: CASSETTE
+   STYLE: CASSETTE — ENHANCED
 ========================================= */
+
+/* === Vỏ máy — nhựa vintage có chiều sâu === */
 .music-style-cassette .music-player-wrapper {
-  background: #d4cbb3; /* Vintage plastic */
-  border: 4px solid #333;
-  border-radius: 6px;
-  padding: 15px;
+  background: linear-gradient(160deg, #252525 0%, #30302f 60%, #2e2d2d 100%);
+  border: 3px solid #000000;
+  border-radius: 5px;
+  padding: 16px;
   box-shadow:
-    inset 0 0 10px rgba(0, 0, 0, 0.2),
-    6px 6px 0px rgba(0, 0, 0, 0.8);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    4px 6px 0 #1a1208,
+    8px 10px 0 rgba(0, 0, 0, 0.2);
 }
-.music-style-cassette .disc-container {
-  display: none; /* No disc, purely retro details */
-}
-.music-style-cassette .player-main {
-  width: 100%;
-}
+
+/* === Màn hình LCD retro === */
 .music-style-cassette .player-info {
-  background: #ffffff;
-  border: 2px solid #555;
-  padding: 8px 12px;
-  border-radius: 4px;
-  text-align: center;
-  margin-bottom: 12px;
-}
-.music-style-cassette .player-info h3 {
-  font-family: inherit; /* Maybe they have retro font */
-  color: #222;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-.music-style-cassette .player-info p {
-  color: #555;
-  font-size: 0.75rem;
-}
-.music-style-cassette .controls-row {
-  background: #222;
-  padding: 8px;
-  border-radius: 4px;
-  gap: 15px;
-  justify-content: center;
-}
-.music-style-cassette .player-btn {
-  background: #bc3e35; /* Orange/Red plastic buttons */
-  color: #fff;
+  overflow: hidden;
+  background: #1a2a1a;
   border: 2px solid #111;
-  border-radius: 2px;
-  width: 44px;
-  height: 28px;
-  box-shadow: 0 3px 0 #88221b;
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  /* Scanline effect */
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 3px
+  );
 }
+
+.music-style-cassette .player-info h3 {
+  color: #7ecf6a;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(100, 220, 80, 0.6);
+  /* Marquee scroll */
+  white-space: nowrap;
+  overflow: hidden; /* Thêm */
+  display: block; /* Thêm — đảm bảo overflow hoạt động */
+  animation: cassette-marquee 8s linear infinite;
+}
+
+.music-style-cassette .player-info p {
+  color: #4a8a3a;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+@keyframes cassette-marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* === Disc container → cửa sổ băng cassette === */
+.music-style-cassette .disc-container {
+  display: flex;
+  background: #0d0d0d;
+  border: 1px solid #111;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 12px;
+  justify-content: center;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* === Panel nút điều khiển === */
+.music-style-cassette .controls-row {
+  background: #1a2a1a;
+  border: 2px solid #111;
+  padding: 8px 10px;
+  border-radius: 4px;
+  gap: 8px;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* === Nút nhựa đỏ 3D === */
+.music-style-cassette .player-btn {
+  background: white;
+  color: #000000;
+  border: 1.5px solid #131212;
+  border-radius: 3px;
+  width: 42px;
+  height: 26px;
+  font-size: 10px;
+  box-shadow:
+    0 3px 0 #000000,
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition:
+    transform 0.05s ease,
+    box-shadow 0.05s ease;
+  cursor: pointer;
+}
+
 .music-style-cassette .player-btn:active {
   transform: translateY(3px);
-  box-shadow: 0 0 0 #88221b;
+  transition: all 0.1s ease;
+  box-shadow: 0 0 0 #ffffff;
 }
+
+/* === Thanh tiến trình — texture băng từ === */
 .music-style-cassette .progress-time {
-  color: #333;
-  font-weight: 600;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
+
 .music-style-cassette .progress-bar-track {
-  background: #555;
+  background: #1a1208;
   border: 2px solid #111;
-  height: 10px;
+  border-radius: 2px;
+  height: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
 }
+
 .music-style-cassette .progress-bar-fill {
-  background: #111; /* Magnetic tape */
+  /* Texture dải băng từ */
+  background: repeating-linear-gradient(
+    90deg,
+    #1a1208 0px,
+    #1a1208 2px,
+    #444 2px,
+    #444 4px
+  );
+  border-radius: 0;
+  position: relative;
+}
+
+/* Đầu đọc băng */
+.music-style-cassette .progress-bar-fill::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #aaa;
+}
+
+.music-style-cassette .vinyl-disc {
+  display: hidden;
+}
+
+/* =========================================
+   CASSETTE — Music Visualizer (EQ cổ điển)
+========================================= */
+.music-style-cassette .music-visualizer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 32px;
+  padding: 0 8px;
+  background: #1a2a1a;
+  border: 1px solid #111;
+  border-radius: 3px;
+  margin-top: 4px;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.music-style-cassette .visualizer-bar {
+  width: 4px;
+  border-radius: 1px 1px 0 0;
+  background: #3ecf2a;
+  box-shadow: 0 0 4px rgba(62, 207, 42, 0.5);
+  transition: height 0.1s ease;
+}
+
+/* Màu EQ theo chiều cao — xanh → vàng → đỏ */
+.music-style-cassette .visualizer-bar:nth-child(1),
+.music-style-cassette .visualizer-bar:nth-child(5) {
+  background: #3ecf2a;
+}
+.music-style-cassette .visualizer-bar:nth-child(2),
+.music-style-cassette .visualizer-bar:nth-child(4) {
+  background: #aadd22;
+}
+.music-style-cassette .visualizer-bar:nth-child(3) {
+  background: #ffcc00;
+}
+
+.music-style-cassette .visualizer-bar.playing {
+  animation: cassette-eq 0.55s ease-in-out infinite alternate;
+}
+
+.music-style-cassette .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+  animation-duration: 0.5s;
+}
+.music-style-cassette .visualizer-bar:nth-child(2) {
+  animation-delay: 0.1s;
+  animation-duration: 0.65s;
+}
+.music-style-cassette .visualizer-bar:nth-child(3) {
+  animation-delay: 0.2s;
+  animation-duration: 0.45s;
+}
+.music-style-cassette .visualizer-bar:nth-child(4) {
+  animation-delay: 0.05s;
+  animation-duration: 0.7s;
+}
+.music-style-cassette .visualizer-bar:nth-child(5) {
+  animation-delay: 0.15s;
+  animation-duration: 0.55s;
+}
+
+@keyframes cassette-eq {
+  0% {
+    height: 4px;
+    opacity: 0.6;
+  }
+  100% {
+    height: 28px;
+    opacity: 1;
+  }
 }
 
 /* =========================================
@@ -1258,9 +1428,18 @@
   display: none !important;
 }
 
-
-.music-style-soundcloud .visualizer-bar:nth-child(1) { animation-delay: 0s; }
-.music-style-soundcloud .visualizer-bar:nth-child(2) { animation-delay: 0.15s; }
-.music-style-soundcloud .visualizer-bar:nth-child(3) { animation-delay: 0.3s; }
-.music-style-soundcloud .visualizer-bar:nth-child(4) { animation-delay: 0.45s; }
-.music-style-soundcloud .visualizer-bar:nth-child(5) { animation-delay: 0.6s; }
+.music-style-soundcloud .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(4) {
+  animation-delay: 0.45s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(5) {
+  animation-delay: 0.6s;
+}

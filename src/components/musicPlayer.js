@@ -198,7 +198,7 @@ export class MusicPlayer {
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
       this.platformIcon.className = "platform-icon fa-brands fa-youtube"
       this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = "#FF0000"
+      this.platformIcon.style.color = "#ffffff"
     } else if (url.includes("spotify.com")) {
       this.platformIcon.className = "platform-icon fa-brands fa-spotify"
       this.platformIcon.style.display = "inline"
