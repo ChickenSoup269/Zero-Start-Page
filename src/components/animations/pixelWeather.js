@@ -65,8 +65,9 @@ export class PixelWeatherEffect {
     const H = this.canvas.height
 
     let count = 100
-    if (this.mode === "rain") count = 150
+    if (this.mode === "rain") count = 350
     if (this.mode === "wind") count = 120
+    if (this.mode === "snow") count = 400
 
     count = Math.floor(count * this.densityMul)
 
@@ -78,31 +79,41 @@ export class PixelWeatherEffect {
   _makeParticle(W, H, initial = false) {
     let size, vx, vy, alpha, colorLight
 
-    // Base features: everything is a block (pixel)
-    // Mode-specific velocities and sizes
     if (this.mode === "rain") {
-      // Fast, elongated visually by speed, but drawn as squares or thin rects usually.
-      // The user wants "khối vuông là chính" (squares primarily)
-      size = Math.random() < 0.8 ? 2 : 4 + Math.random() * 2 // mostly small fast squares
-      vx = (Math.random() - 0.5) * 1 // slight wind
-      vy = 10 + Math.random() * 15 // fast falling
+      size = Math.random() < 0.8 ? 2 : 4 + Math.random() * 2
+      vx = (Math.random() - 0.5) * 1
+      vy = 10 + Math.random() * 15
       alpha = 0.3 + Math.random() * 0.5
       colorLight = 60 + Math.random() * 20
     } else if (this.mode === "wind") {
-      // Fast horizontal blowing
       size = Math.floor(2 + Math.random() * 6)
-      vx = 8 + Math.random() * 12 // strong wind to the right
+      vx = 8 + Math.random() * 12
       vy = 1 + Math.random() * 3
       alpha = 0.4 + Math.random() * 0.6
       colorLight = 80 + Math.random() * 20
     } else {
-      // Default: Snow
-      // Light, floating squares
-      size = Math.floor(4 + Math.random() * 8)
-      vx = (Math.random() - 0.5) * 2
-      vy = 1 + Math.random() * 3
-      alpha = 0.5 + Math.random() * 0.5
-      colorLight = 90 + Math.random() * 10
+      // Snow — giống ảnh: hạt nhỏ 1-2px, mostly static với drift nhẹ
+      const r = Math.random()
+      size =
+        r < 0.7
+          ? 5 // 70% hạt 1px
+          : r < 0.92
+            ? 2 // 22% hạt 2px
+            : 3 // 8% hạt 3px (điểm sáng)
+
+      vx = (Math.random() - 0.5) * 0.4 // drift ngang rất nhẹ
+      vy = 0.2 + Math.random() * 0.8 // rơi cực chậm
+
+      // Alpha: phần lớn mờ, một số sáng hơn — tạo chiều sâu
+      const ar = Math.random()
+      alpha =
+        ar < 0.5
+          ? 0.15 + Math.random() * 0.2 // mờ (xa)
+          : ar < 0.85
+            ? 0.4 + Math.random() * 0.3 // vừa
+            : 0.8 + Math.random() * 0.2 // sáng (gần)
+
+      colorLight = 85 + Math.random() * 15 // trắng gần thuần
     }
 
     return {
@@ -116,13 +127,17 @@ export class PixelWeatherEffect {
         : this.mode === "wind"
           ? Math.random() * H
           : -20,
-      size: size,
-      vx: vx,
-      vy: vy,
-      alpha: alpha,
+      size,
+      vx,
+      vy,
+      alpha,
       light: colorLight,
       wobblePhase: Math.random() * Math.PI * 2,
-      wobbleSpeed: this.mode === "snow" ? 0.02 + Math.random() * 0.05 : 0,
+      wobbleSpeed: this.mode === "snow" ? 0.005 + Math.random() * 0.01 : 0,
+      // Thêm: lấp lánh ngẫu nhiên
+      twinklePhase: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.02 + Math.random() * 0.06,
+      twinkleAmp: Math.random() * 0.3,
     }
   }
 
@@ -165,16 +180,15 @@ export class PixelWeatherEffect {
     ctx.globalCompositeOperation = "screen"
 
     this.particles.forEach((p) => {
-      // Update position
       if (this.mode === "snow") {
         p.wobblePhase += p.wobbleSpeed * this.speedMul
-        p.x += (p.vx + Math.sin(p.wobblePhase) * 1.5) * this.speedMul
+        p.twinklePhase += p.twinkleSpeed
+        p.x += (p.vx + Math.sin(p.wobblePhase) * 0.3) * this.speedMul
       } else {
         p.x += p.vx * this.speedMul
       }
       p.y += p.vy * this.speedMul
 
-      // Reset particle if off-screen
       if (
         p.y > H + 20 * this.sizeMul ||
         p.x > W + 20 * this.sizeMul ||
@@ -183,11 +197,18 @@ export class PixelWeatherEffect {
         Object.assign(p, this._makeParticle(W, H, false))
       }
 
-      // Draw purely square pixel based on resolution
-      ctx.fillStyle = `hsla(210, 100%, ${p.light}%, ${p.alpha})`
+      // Lấp lánh: alpha dao động theo sin
+      const twinkledAlpha =
+        this.mode === "snow"
+          ? Math.max(0.05, p.alpha + Math.sin(p.twinklePhase) * p.twinkleAmp)
+          : p.alpha
 
-      const drawSize = p.size * this.resFactor * this.sizeMul
-      // Snap to resolution grid for strict pixel effect if needed, but normally just multiplier
+      ctx.fillStyle = `hsla(210, 20%, ${p.light}%, ${twinkledAlpha})`
+
+      const drawSize = Math.max(
+        1,
+        Math.floor(p.size * this.resFactor * this.sizeMul),
+      )
       const drawX = Math.floor(p.x / this.resFactor) * this.resFactor
       const drawY = Math.floor(p.y / this.resFactor) * this.resFactor
 
