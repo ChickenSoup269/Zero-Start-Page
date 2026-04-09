@@ -220,7 +220,10 @@ export class CrtScanlinesEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     if (this.rafId) {
       cancelAnimationFrame(this.rafId)

@@ -160,7 +160,7 @@ function renderBookmarkTree(node, container) {
     })
 
     let iconHtml = node.url
-      ? `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(node.url)}&sz=32" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;" onerror="this.style.display='none'">`
+      ? `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(node.url)}&sz=32" style="width:14px;height:14px;border-radius:3px;flex-shrink:0;">`
       : '<i class="fa-solid fa-globe" style="font-size:0.8rem;opacity:0.5;flex-shrink:0;"></i>'
     const label = document.createElement("span")
     label.style.overflow = "hidden"
@@ -168,6 +168,13 @@ function renderBookmarkTree(node, container) {
     label.style.whiteSpace = "nowrap"
     label.innerHTML = `${iconHtml} ${node.title}`
     label.title = node.url
+
+    const imgElement = label.querySelector("img")
+    if (imgElement) {
+      imgElement.addEventListener("error", function () {
+        this.style.display = "none"
+      })
+    }
 
     itemDiv.appendChild(checkbox)
     itemDiv.appendChild(label)

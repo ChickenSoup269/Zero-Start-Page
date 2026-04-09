@@ -65,12 +65,14 @@ export function setupGeneralEventHandlers(
 
   const throttleSettingUpdate = (key, value) => {
     const fastFeedbackKeys = [
+      "bookmarkGap",
       "bookmarkBgColor",
       "bookmarkBgOpacity",
       "bookmarkTextColor",
       "bookmarkGroupBgColor",
       "bookmarkGroupBgOpacity",
       "bookmarkGroupTextColor",
+      "bookmarkGroupFontSize",
       "bookmarkShadowColor",
       "bookmarkShadowOpacity",
       "bookmarkShadowBlur",
@@ -79,24 +81,89 @@ export function setupGeneralEventHandlers(
     const isFast = fastFeedbackKeys.includes(key)
     const delay = isFast ? 40 : 200
 
-    if (isFast) {
-      const now = Date.now()
-      if (!lastUpdateTimes[key] || now - lastUpdateTimes[key] >= delay) {
-        if (reqAnimFrame) cancelAnimationFrame(reqAnimFrame)
-        reqAnimFrame = requestAnimationFrame(() => {
-          handleSettingUpdate(key, value)
-        })
-        lastUpdateTimes[key] = now
+    const performFastCssUpdate = (k, v) => {
+      // 1. Force state memory sync
+      updateSetting(k, v)
+      let settings = getSettings()
+
+      // 2. Direct CSS override matching settingsApplier
+      const hexToRgbFast = (hex) => {
+        let res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+        return res
+          ? {
+              r: parseInt(res[1], 16),
+              g: parseInt(res[2], 16),
+              b: parseInt(res[3], 16),
+            }
+          : null
       }
+
+      const rootStyle = document.documentElement.style
+      if (k === "bookmarkGap") rootStyle.setProperty("--bookmark-gap", `${v}px`)
+      else if (k === "bookmarkBgColor" || k === "bookmarkBgOpacity") {
+        let hex = settings.bookmarkBgColor || "#ffffff"
+        let op = settings.bookmarkBgOpacity ?? 100
+        let rgb = hexToRgbFast(hex)
+        if (rgb && op < 100)
+          rootStyle.setProperty(
+            "--bookmark-bg-color",
+            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${op / 100})`,
+          )
+        else rootStyle.setProperty("--bookmark-bg-color", hex)
+      } else if (k === "bookmarkTextColor") {
+        if (v) rootStyle.setProperty("--bookmark-text-color", v)
+        else rootStyle.removeProperty("--bookmark-text-color")
+      } else if (
+        k === "bookmarkGroupBgColor" ||
+        k === "bookmarkGroupBgOpacity"
+      ) {
+        let hex = settings.bookmarkGroupBgColor || "transparent"
+        let op = settings.bookmarkGroupBgOpacity ?? 0
+        let rgb = hexToRgbFast(hex)
+        if (hex !== "transparent" && rgb && op < 100)
+          rootStyle.setProperty(
+            "--bookmark-group-tab-bg",
+            `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${op / 100})`,
+          )
+        else rootStyle.setProperty("--bookmark-group-tab-bg", hex)
+      } else if (k === "bookmarkGroupTextColor") {
+        if (v) rootStyle.setProperty("--bookmark-group-text-color", v)
+        else rootStyle.removeProperty("--bookmark-group-text-color")
+      } else if (k === "bookmarkGroupFontSize") {
+        rootStyle.setProperty("--bookmark-group-font-size", `${v}px`)
+      } else if (
+        k === "bookmarkShadowColor" ||
+        k === "bookmarkShadowOpacity" ||
+        k === "bookmarkShadowBlur"
+      ) {
+        let hex = settings.bookmarkShadowColor || "#000000"
+        let op = settings.bookmarkShadowOpacity ?? 24
+        let blur = settings.bookmarkShadowBlur ?? 8
+        let rgb = hexToRgbFast(hex) || { r: 0, g: 0, b: 0 }
+        let rgbaStr = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${op / 100})`
+        rootStyle.setProperty(
+          "--bookmark-box-shadow",
+          `${rgbaStr} 0px 3px ${blur}px`,
+        )
+        rootStyle.setProperty(
+          "--bookmark-icon-drop-shadow",
+          `0px 2px ${Math.max(2, Math.round(blur / 2))}px ${rgbaStr}`,
+        )
+      } else if (k === "bookmarkLayoutBgColor") {
+        rootStyle.setProperty("--bookmark-layout-bg", v)
+      }
+    }
+
+    if (isFast) {
+      if (reqAnimFrame) cancelAnimationFrame(reqAnimFrame)
+      reqAnimFrame = requestAnimationFrame(() => {
+        performFastCssUpdate(key, value)
+      })
 
       if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
       throttledUpdates[key] = setTimeout(() => {
-        if (reqAnimFrame) cancelAnimationFrame(reqAnimFrame)
-        reqAnimFrame = requestAnimationFrame(() => {
-          handleSettingUpdate(key, value)
-        })
-        lastUpdateTimes[key] = Date.now()
-      }, delay + 10)
+        handleSettingUpdate(key, value) // skipSave = false to persist changes
+      }, 500) // Heavy debounce (500ms) to ensure saving/re-rendering ONLY happens after dragging finishes completely
     } else {
       if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
       throttledUpdates[key] = setTimeout(() => {
@@ -700,7 +767,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {
-        handleSettingUpdate(
+        throttleSettingUpdate(
           "bookmarkTextColor",
           DOM.bookmarkTextColorPicker.value,
         )

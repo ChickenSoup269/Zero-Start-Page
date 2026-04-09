@@ -470,7 +470,7 @@
   margin-bottom: 0;
 }
 
-.setting-group > label {
+.setting-group > label, .setting-group > .setting-label {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -482,7 +482,7 @@
   letter-spacing: 1px;
 }
 
-.setting-group > label i {
+.setting-group > label, .setting-group > .setting-label i {
   color: var(--accent-color);
   font-size: 1.1rem;
 }
@@ -561,7 +561,7 @@
   margin-bottom: 0;
 }
 
-.setting-item label {
+.setting-item label, .setting-item .setting-label {
   display: block;
   font-size: 0.9rem;
   color: #bbb;
@@ -576,7 +576,7 @@
   margin-bottom: 8px;
 }
 
-.wave-angle-header label {
+.wave-angle-header label, .wave-angle-header .setting-label {
   margin-bottom: 0;
 }
 
@@ -668,7 +668,7 @@
   color: #fff;
 }
 
-.setting-item-row label {
+.setting-item-row label, .setting-item-row .setting-label {
   font-size: 0.95rem;
   color: #eee;
 }
@@ -1306,7 +1306,7 @@
   border-radius: 8px;
 }
 
-.setting-item-row label {
+.setting-item-row label, .setting-item-row .setting-label {
   text-transform: none;
   letter-spacing: normal;
   font-weight: 500;

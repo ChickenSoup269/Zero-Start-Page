@@ -100,11 +100,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   initBookmarks()
   initSearch()
   initContextMenu()
+  initModal()
 
-  // Load language as other heavy/modal components depend on it translations
+  // Wait for rendering and layout to stabilize, then fade in main-container    
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const mc = document.querySelector(".main-container");
+      if (mc) mc.classList.add("ready");
+    });
+  });
+
+  // Load language as other heavy/modal components depend on it translations    
   await initI18n()
 
-  // Load active background image specifically
   const { isIdbMedia, getImageUrl } = await import("./services/imageStore.js")
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
@@ -122,16 +130,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateSetting("userBackgrounds", migrated)
       saveSettings()
     }
-    preloadImages(getSettings().userBackgrounds)
+    await preloadImages(getSettings().userBackgrounds)
 
-    initModal()
-
-    // Initialize new features as classes
+    // Re-apply background settings if an IDB local background is active,
+    // now that it has been preloaded and the sync URL is available.
+    if (typeof window.appApplySettings === "function") {
+      window.appApplySettings()
+    }
+    const notepad = new Notepad()
     const todo = new TodoList()
     const timer = new Timer()
     const music = new MusicPlayer()
     const calendar = new FullCalendar()
-    const notepad = new Notepad()
 
     makeDraggable(todo.container, "todo")
     makeDraggable(timer.container, "timer")
@@ -227,10 +237,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (key && checkbox) {
-          value = !checkbox.checked
-          checkbox.checked = value
-          checkbox.dispatchEvent(new Event("change"))
-          // Removed manual toggle: the listeners below will handle it based on dispatched events
+          // Trigger a native click instead of manually changing state and dispatching
+          checkbox.click()
         }
       })
     })
@@ -240,6 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const settings = getSettings()
       quickBtns.forEach((btn) => {
         const type = btn.dataset.toggle
+        if (!type) return // Added this to skip buttons without data-toggle
         let isActive = false
         switch (type) {
           case "todo":
@@ -398,8 +407,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Update Notification Check
     setTimeout(() => {
       try {
-        const manifest = window.chrome?.runtime?.getManifest()
-        if (manifest && manifest.version) {
+        const manifest = window.chrome?.runtime?.getManifest?.()
+        if (manifest && manifest.version && window.chrome?.storage?.local) {
           const currentVersion = manifest.version
 
           chrome.storage.local.get(["extensionUpdated"], (result) => {

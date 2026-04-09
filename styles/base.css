@@ -78,6 +78,13 @@ i {
   width: 100%;
   max-width: 800px;
   padding: 20px;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.main-container.ready {
+  visibility: visible;
+  opacity: 1;
   animation: fadeIn 1s ease-out;
 }
 
