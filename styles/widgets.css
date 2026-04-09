@@ -2423,17 +2423,23 @@ body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
 }
 
 /* Hidden groups state */
-body.groups-hidden .bookmark-groups-container {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   opacity: 0;
   pointer-events: none;
   transform: scale(0.9);
 }
 
-body.groups-hidden .bookmark-groups-toggle {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
   opacity: 0.5;
 }
 
-body.groups-hidden .bookmark-groups-toggle:hover {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1;
 }
 
@@ -2789,7 +2795,9 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
 }
 
 /* HIDDEN STATE - Slide and Collapse */
-body.groups-hidden .bookmark-groups-container {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   opacity: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -2812,14 +2820,18 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
     opacity 0.3s ease !important;
 }
 
-body.groups-hidden .bookmark-groups-toggle {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
   opacity: 0 !important;
   /* Fancy rotate when sliding into the hidden group's place */
   transform: rotate(180deg) !important;
   background: rgba(255, 255, 255, 0.2) !important;
 }
 
-body.groups-hidden .bookmark-groups-toggle:hover {
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1 !important;
 }
 
