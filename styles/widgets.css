@@ -751,12 +751,12 @@ body.ghost-controls .side-controls:hover {
 }
 
 .lcp-row-select {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.lcp-row-select .lcp-label {
+.lcp-row-select .lcp-select {
   width: 100%;
 }
 
