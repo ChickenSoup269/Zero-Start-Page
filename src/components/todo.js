@@ -28,8 +28,8 @@ export class TodoList {
     this.container.className = `todo-container glass-panel drag-handle${checkboxClass}`
     this.container.innerHTML = `
             <div class="todo-header">
-                <label class="todo-select-all-label" title="Select All">
-                    <input type="checkbox" id="todo-select-all" class="todo-checkbox">
+                  <label class="todo-select-all-label" title="Select All" for="todo-select-all">
+                    <input type="checkbox" id="todo-select-all" name="todo-select-all" class="todo-checkbox">
                 </label>
                 <h3 data-i18n="todo_title">Tasks</h3>
                 <button id="todo-delete-selected-btn" class="icon-btn todo-delete-selected-btn" style="display:none;"><i class="fa-solid fa-trash-can"></i></button>
@@ -182,8 +182,8 @@ export class TodoList {
       const li = document.createElement("li")
       li.className = `todo-item ${todo.completed ? "completed" : ""} ${isSelected ? "selected" : ""}`
       li.innerHTML = `
-                <label class="todo-item-select" title="">
-                    <input type="checkbox" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
+                  <label class="todo-item-select" title="" for="todo-cb-${todo.id}">
+                      <input type="checkbox" id="todo-cb-${todo.id}" name="todo-cb-[${todo.id}]" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
                 </label>
                 <span class="todo-text">${todo.text}</span>
                 <div class="todo-actions">

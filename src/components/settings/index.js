@@ -267,7 +267,12 @@ export function initSettings() {
     i18n: geti18n(),
   }
 
-  function handleSettingUpdate(key, value, isGradient = false) {
+  function handleSettingUpdate(
+    key,
+    value,
+    isGradient = false,
+    skipSave = false,
+  ) {
     if (isGradient) {
       updateSetting("gradientStart", value.start)
       updateSetting("gradientEnd", value.end)
@@ -292,7 +297,10 @@ export function initSettings() {
         updateSetting("svgWaveActive", false)
       }
     }
-    saveSettings()
+
+    if (!skipSave) {
+      saveSettings()
+    }
 
     // Avoid expensive gallery rerenders for unrelated toggles (e.g. clock/date).
     const shouldRefreshBackgroundGalleries =
@@ -329,7 +337,8 @@ export function initSettings() {
   ctx.applySettings = applySettings
   ctx.updateSettingsInputs = updateSettingsInputs
 
-  // Collapsible groups
+  // Expose applySettings globally so it can be re-run after heavy async ops like preloadImages
+  window.appApplySettings = applySettings
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
   document
     .querySelectorAll(".setting-group.collapsible-group")

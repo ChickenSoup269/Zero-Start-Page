@@ -63,7 +63,6 @@ function getIconCandidates(bookmark) {
   if (bookmark.icon) list.push(bookmark.icon)
 
   if (hostname) {
-    list.push(`https://logo.clearbit.com/${hostname}`) // đẹp nhất
     list.push(`https://icon.horse/icon/${hostname}`)
     list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
   }
@@ -91,7 +90,7 @@ async function getBestIcon(bookmark) {
 
     const size = Math.min(img.width, img.height)
 
-    // ❌ loại icon rác
+    // loại icon rác
     if (size < 24) continue
 
     const isSquare = Math.abs(img.width - img.height) < 5
@@ -110,6 +109,8 @@ async function getBestIcon(bookmark) {
 function createBookmarkIcon(bookmark) {
   const img = document.createElement("img")
 
+  // Use a 1x1 transparent Base64 GIF to initialize layout and avoid CLS
+  img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
   img.alt = `${bookmark.title} icon`
   img.loading = "lazy"
   img.decoding = "async"

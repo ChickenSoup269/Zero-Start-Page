@@ -52,7 +52,7 @@ export class Timer {
                 <button id="timer-settings" class="icon-btn"><i class="fa-solid fa-ellipsis"></i></button>
             </div>
             <div id="timer-modal" class="timer-input-modal" style="display: none;">
-                <input type="text" id="timer-smart-input" placeholder="Enter time" maxlength="6" inputmode="numeric">
+                <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="Enter time" maxlength="6" inputmode="numeric">
                 <button id="timer-set-confirm" class="icon-btn"><i class="fa-solid fa-check"></i></button>
             </div>
             <button id="stop-alarm-btn" class="primary-btn" style="display: none; margin-top: 10px; width: 100%;">Stop Alarm</button>

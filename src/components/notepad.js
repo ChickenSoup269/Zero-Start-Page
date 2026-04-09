@@ -456,7 +456,7 @@ export class Notepad {
 
     noteDiv.innerHTML = `
       <div class="note-header">
-        <input type="text" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
+        <input type="text" id="note-title-${note.id}" name="note-title-${note.id}" class="note-title-input" value="${this.escapeHtml(note.title)}" placeholder="Note Title">
         <div class="note-actions">
           <div class="note-color-dropdown">
             <button class="icon-btn note-action-btn note-color-trigger" title="Change Color">
