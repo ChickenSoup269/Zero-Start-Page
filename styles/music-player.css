@@ -1028,7 +1028,7 @@
   height: 28px;
 }
 .music-style-apple .visualizer-bar {
-  background: rgba(255, 255, 255, 0.9);
+  background: #fa243c;
   width: 3px;
   border-radius: 2px;
 }
