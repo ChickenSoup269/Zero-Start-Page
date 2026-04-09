@@ -117,6 +117,13 @@ export function initSettings() {
     DOM_EXPORTS.settingsVersion.textContent = version ? `v${version}` : ""
   }
 
+  const effectCountSpan = document.getElementById("count-effect")
+  if (effectCountSpan) {
+    const effectItemCount = document.querySelectorAll(".effect-item").length
+    // Subtract 1 to exclude 'None' from the count
+    effectCountSpan.textContent = `(${effectItemCount - 1})`
+  }
+
   // Create effect instances
   const effects = {
     starFallEffect: new StarFall("effect-canvas", settings.starColor),
@@ -158,7 +165,10 @@ export function initSettings() {
       settings.cursorTrailRandomColor === true,
     ),
 
-    gridScanEffect: new GridScanEffect("effect-canvas", settings.gridScanColor || "#00ffcc"),
+    gridScanEffect: new GridScanEffect(
+      "effect-canvas",
+      settings.gridScanColor || "#00ffcc",
+    ),
     rainHDEffect: new RainHDEffect(
       "effect-canvas",
       settings.rainHDColor || "#99ccff",

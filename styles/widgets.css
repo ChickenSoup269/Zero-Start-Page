@@ -2298,6 +2298,12 @@ body.flip-layout .layout-controls-popup {
   right: calc(100% + 12px);
 }
 
+body.flip-layout .g-apps-dropdown {
+  right: auto;
+  left: 0;
+  transform-origin: top left;
+}
+
 /* --- Minimal Bookmark Layout Modes --- */
 
 /* Base overrides for all custom modes (sidebar, taskbar, taskbar-left) */
@@ -2313,12 +2319,6 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   border-radius: 0;
   width: auto !important;
   max-width: none !important;
-}
-
-body.bookmark-sidebar-mode .bookmarks-header,
-body.bookmark-taskbar-mode .bookmarks-header,
-body.bookmark-taskbar-left-mode .bookmarks-header {
-  /* Re-enabled top controls */
 }
 
 /* Remove backgrounds from bookmarks themselves */
@@ -2449,6 +2449,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
   align-items: center; /* Nằm giữa (Center) */
   gap: 8px; /* Gần hơn (Closer) */
   z-index: 100;
+  contain: layout paint;
 }
 
 body.bookmark-sidebar-mode .bookmarks-grid {
@@ -2462,6 +2463,7 @@ body.bookmark-sidebar-mode .bookmarks-grid {
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-height: 80vh;
   overflow-y: auto;
+  min-width: 50px;
 }
 
 body.bookmark-sidebar-mode .bookmark-groups-container {
@@ -2493,6 +2495,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
   align-items: center;
   gap: 8px;
   z-index: 100;
+  contain: layout paint;
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid {
@@ -2506,6 +2509,7 @@ body.bookmark-taskbar-mode .bookmarks-grid {
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 90vw;
   overflow-x: auto;
+  min-height: 50px;
 }
 
 body.bookmark-taskbar-mode .bookmark-groups-container {
@@ -2538,6 +2542,7 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   align-items: flex-start;
   gap: 8px;
   z-index: 100;
+  contain: layout paint;
 }
 
 body.bookmark-taskbar-left-mode .bookmarks-grid {
@@ -2551,6 +2556,7 @@ body.bookmark-taskbar-left-mode .bookmarks-grid {
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 80vw;
   overflow-x: auto;
+  min-height: 50px;
 }
 
 body.bookmark-taskbar-left-mode .bookmark-groups-container {
@@ -3052,6 +3058,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
   transition:
     top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: top, transform; /* Hardware Acceleration */
 }
 
 body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
