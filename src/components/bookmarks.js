@@ -449,6 +449,7 @@ function getGroupIcon(name) {
   if (/art|design|thiết kế/.test(lower)) return "fa-palette"
   if (/finance|bank|money|tiền|tài chính/.test(lower))
     return "fa-money-bill-wave"
+  if (/main|chính|1/.test(lower)) return "fa-home"
   if (/travel|trip|du lịch/.test(lower)) return "fa-plane"
   if (/ai|gpt|gemini|claude/.test(lower)) return "fa-robot"
   if (/mail|inbox|thư/.test(lower)) return "fa-envelope"

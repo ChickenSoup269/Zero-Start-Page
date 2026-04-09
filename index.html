@@ -574,7 +574,10 @@
                     </div>
 
                     <div class="setting-item">
-                        <label data-i18n="settings_local_bg">Local Themes</label><span id="count-bg"></span>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <label data-i18n="settings_local_bg" style="margin-bottom: 0;">Local Themes</label>
+                            <span id="count-bg"></span>
+                        </div>
                         <div class="local-bg-gallery-controls">
                             <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
                             <input type="file" id="local-video-upload"
@@ -767,7 +770,10 @@
             </div>
 
             <div class="setting-group">
-                <label data-i18n="settings_saved_gradients">Saved Gradients</label><span id="count-gradient"></span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <label data-i18n="settings_saved_gradients" style="margin-bottom: 0;">Saved Gradients</label>
+                    <span id="count-gradient"></span>
+                </div>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
 
@@ -860,8 +866,12 @@
 
                     <!-- Saved Multi-Color Presets -->
                     <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
-                        <label style="font-size: 0.9rem;" data-i18n="settings_multi_color_saved_presets">Saved
-                            Presets</label><span id="count-multi-color"></span>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <label style="font-size: 0.9rem; margin-bottom: 0;"
+                                data-i18n="settings_multi_color_saved_presets">Saved
+                                Presets</label>
+                            <span id="count-multi-color"></span>
+                        </div>
                         <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
                     </div>
                 </div>
@@ -996,9 +1006,13 @@
 
                 <!-- Saved Waves Gallery (always visible) -->
                 <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
-                    <label data-i18n="settings_svg_wave_saved_label" style="font-size:0.8rem;opacity:0.7;">Saved
-                        Waves</label><span id="count-svg-wave"></span>
-                    <div id="user-svg-waves-gallery" class="local-bg-gallery" style="margin-top:6px;"></div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <label data-i18n="settings_svg_wave_saved_label"
+                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved
+                            Waves</label>
+                        <span id="count-svg-wave"></span>
+                    </div>
+                    <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 
@@ -1006,7 +1020,9 @@
                 <div class="group-header">
                     <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
                     <span data-i18n="setting_effect">Effect</span>
-                    <i class="fa-solid fa-chevron-down group-chevron"></i>
+                    <span id="count-effect"
+                        style="margin-left: auto; font-size: 0.8rem; opacity: 0.6; font-weight: normal; text-transform: lowercase;"></span>
+                    <i class="fa-solid fa-chevron-down group-chevron" style="margin-left: 10px;"></i>
                 </div>
                 <div class="group-body">
                     <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
@@ -1089,7 +1105,8 @@
                             <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
                             <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
                         </button>
-                        <button class="effect-item" data-value="gridScan" data-search="grid scan matrix retro tech radar">
+                        <button class="effect-item" data-value="gridScan"
+                            data-search="grid scan matrix retro tech radar">
                             <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
                             <span class="effect-name" data-i18n="effect_gridScan">Grid Scan</span>
                         </button>
@@ -2306,4 +2323,3 @@
 </body>
 
 </html>
-
