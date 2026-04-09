@@ -110,7 +110,8 @@ function createBookmarkIcon(bookmark) {
   const img = document.createElement("img")
 
   // Use a 1x1 transparent Base64 GIF to initialize layout and avoid CLS
-  img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+  img.src =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
   img.alt = `${bookmark.title} icon`
   img.loading = "lazy"
   img.decoding = "async"
