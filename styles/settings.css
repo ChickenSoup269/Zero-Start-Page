@@ -461,6 +461,7 @@
   margin-bottom: 30px;
   padding: 15px;
   background: rgba(255, 255, 255, 0.02);
+
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -484,6 +485,11 @@
 .setting-group > label i {
   color: var(--accent-color);
   font-size: 1.1rem;
+}
+
+.setting-group.collapsible-group {
+  background: rgba(255, 255, 255, 0.072);
+  border: 1px solid var(--accent-color);
 }
 
 /* ── Collapsible setting group ─────────────────────────────────────────────── */

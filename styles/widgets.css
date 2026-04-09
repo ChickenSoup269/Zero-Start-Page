@@ -455,6 +455,7 @@
   color: var(--text-color);
   transition: all 0.3s ease;
   cursor: pointer;
+  flex-shrink: 0;
   width: calc(
     var(--bookmark-icon-size, 42px) + 18px
   ); /* slightly larger than icon to account for spacing */
@@ -2449,7 +2450,6 @@ body.bookmark-sidebar-mode .bookmark-widget {
   align-items: center; /* Nằm giữa (Center) */
   gap: 8px; /* Gần hơn (Closer) */
   z-index: 100;
-  contain: layout paint;
 }
 
 body.bookmark-sidebar-mode .bookmarks-grid {
@@ -3051,7 +3051,7 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
 /* Khi Show Google Apps & Avatar bật, tính toán lại vị trí giữa và giới hạn max-height để không đè vào nút Google */
 body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
   top: calc(50vh + 35px) !important;
-  transform: translateY(-50%) !important;
+  transform: translateY(-52%) !important;
 }
 
 body.bookmark-sidebar-mode .bookmark-widget {
