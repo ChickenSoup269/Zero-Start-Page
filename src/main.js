@@ -102,15 +102,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   initContextMenu()
   initModal()
 
-  // Wait for rendering and layout to stabilize, then fade in main-container    
+  // Wait for rendering and layout to stabilize, then fade in main-container
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const mc = document.querySelector(".main-container");
-      if (mc) mc.classList.add("ready");
-    });
-  });
+      const mc = document.querySelector(".main-container")
+      if (mc) mc.classList.add("ready")
+    })
+  })
 
-  // Load language as other heavy/modal components depend on it translations    
+  // Load language as other heavy/modal components depend on it translations
   await initI18n()
 
   const { isIdbMedia, getImageUrl } = await import("./services/imageStore.js")
