@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clocks</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0c0c1e, #1a1a2e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            font-family: 'Roboto', sans-serif;
+            color: #fff;
+            overflow: hidden;
+        }
+
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid #00ffcc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Clock 1 - English Style (giống ảnh đầu) */
+        .clock-en {
+            text-align: start;
+            letter-spacing: 5px;
+            border-left: 2px dashed rgba(255, 255, 255, 0.3);
+            padding-left: 32px;
+            margin-left: 8px;
+            min-width: 320px;
+            margin-bottom: 56px;
+        }
+
+        .clock-en .day {
+            font-size: 56px;
+            letter-spacing: 10px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .clock-en .date {
+            font-size: 20px;
+            opacity: 0.8;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+
+        .clock-en .time {
+            font-size: 20px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 2px;
+            padding-left: 8px;
+        }
+
+        /* Clock 2 - Japanese Style (giống ảnh thứ 2) */
+        .clock-jp {
+            font-family: 'Noto Sans JP', sans-serif;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            margin-top: 56px;
+        }
+
+        .clock-jp .row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+        }
+
+        .clock-jp .day {
+            font-size: 60px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .clock-jp .time {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+
+        .clock-jp .date {
+            font-size: 22px;
+            opacity: 0.9;
+            text-align: right;
+        }
+
+        .clock-jp .date .jp-symbol {
+            display: inline-block;
+            margin: 0 0.18em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- English Clock (giống ảnh 1) -->
+    <div class="clock-en" id="clockEn">
+        <div class="day" id="enDay">SATURDAY</div>
+        <div class="date" id="enDate">29 Jun 2024</div>
+        <div class="time" id="enTime">12:28 PM</div>
+    </div>
+
+    <!-- Japanese Clock (giống ảnh 2) -->
+    <div class="clock-jp" id="clockJp">
+        <div class="row">
+            <span class="day" id="jpDay">金曜日</span>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="time" id="jpTime">10:26</span>
+                <span class="date" id="jpDate">
+                    <span id="jpMonth">07</span><span class="jp-symbol">月</span>
+                    <span id="jpDayNum">12</span><span class="jp-symbol">日</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClocks() {
+            const now = new Date();
+
+            // English Clock
+            const enDays = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+            const enMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            document.getElementById("enDay").textContent = enDays[now.getDay()];
+            document.getElementById("enDate").textContent = `${now.getDate()} ${enMonths[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById("enTime").textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            // Japanese Clock
+            const jpDays = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
+            document.getElementById("jpDay").textContent = jpDays[now.getDay()];
+            document.getElementById("jpTime").textContent = now.toLocaleTimeString('ja-JP', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById("jpMonth").textContent = (now.getMonth() + 1).toString().padStart(2, '0');
+            document.getElementById("jpDayNum").textContent = now.getDate().toString().padStart(2, '0');
+        }
+
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        // Loading
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById("loading").style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById("loading").style.display = "none";
+                }, 800);
+            }, 1200);
+        };
+    </script>
+</body>
+
+</html>

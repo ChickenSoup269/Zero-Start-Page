@@ -212,7 +212,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       (Array.isArray(settings.userBackgrounds)
         ? settings.userBackgrounds.length
         : 0)
-    bgCountSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+    bgCountSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
   }
 }
 
