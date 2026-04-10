@@ -488,7 +488,7 @@
 .setting-group > label,
 .setting-group > .setting-label i {
   color: var(--accent-color);
-  font-size: 1.1rem;
+  font-size: 0.85rem;
 }
 
 .setting-group.collapsible-group {
