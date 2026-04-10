@@ -462,6 +462,12 @@ export const clockDateStyleSelect = document.getElementById(
   "clock-date-style-select",
 )
 export const hueTextModeSelect = document.getElementById("hue-text-mode-select")
+export const jpStyleLanguageSetting = document.getElementById(
+  "jp-style-language-setting",
+)
+export const jpStyleLanguageSelect = document.getElementById(
+  "jp-style-language-select",
+)
 export const analogMarkerModeSetting = document.getElementById(
   "analog-marker-mode-setting",
 )

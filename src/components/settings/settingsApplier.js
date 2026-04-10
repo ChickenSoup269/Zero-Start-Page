@@ -652,10 +652,16 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.clockDatePrioritySelect.value =
       settings.clockDatePriority === "date" ? "date" : "none"
     DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+    DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
     DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
     DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
+
+    // Manage display of conditional settings
     DOM.analogMarkerModeSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
+    DOM.jpStyleLanguageSetting.style.display =
+      (settings.dateClockStyle || "default") === "jp-style" ? "block" : "none"
+
     DOM.analogBlurBgSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"
     DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
