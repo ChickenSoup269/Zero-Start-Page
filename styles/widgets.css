@@ -3177,11 +3177,19 @@ body.bookmark-macos-hover .bookmark:hover > span {
 }
 /* MacOS Hover clipping fix for layouts with scrolling */
 body.bookmark-macos-hover .bookmarks-grid {
-  padding-top: 1rem !important;
   overflow: visible !important;
 }
 body.bookmark-macos-hover.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-macos-hover.bookmark-taskbar-left-mode
   .bookmark-groups-container {
   margin-bottom: -2.5rem !important;
+}
+
+/* Ensure popup tooltips show properly during MacOS hover */
+body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
+  display: block !important;
+}
+body.bookmark-macos-hover #hidden-bookmarks-popup.hidden-bookmarks-taskbar,
+body.bookmark-macos-hover #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
+  overflow: visible !important;
 }
