@@ -229,6 +229,125 @@ export function updateTime() {
         <div class="cool-bar">|</div>
       </div>
     `
+  } else if (dateClockStyle === "sidestyle") {
+    const timeOptions = settings.hideSeconds
+      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
+      : {
+          hour12: use12Hour,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: tz,
+        }
+    const timeStr = now.toLocaleTimeString(langCode, timeOptions)
+
+    // Get short weekday as VI strings are long, e.g. "THỨ BẢY" instead of "SATURDAY".
+    // but the test style has SATURDAY. Let's use getSafeWeekday to get long weekday for EN.
+    const dayName = getSafeWeekday(now, langCode, false, tz).toUpperCase()
+
+    const enMonths = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ]
+    let dateStr = ""
+    if (langCode === "vi-VN") {
+      dateStr = now.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        timeZone: tz,
+      })
+    } else {
+      dateStr = `${now.getDate()} ${enMonths[now.getMonth()]} ${now.getFullYear()}`
+    }
+
+    clockElement.innerHTML = `
+      <div class="clock-sidestyle">
+        <div class="clock-sidestyle-day">${dayName}</div>
+        ${shouldShowDate ? `<div class="clock-sidestyle-date">${dateStr}</div>` : ""}
+        <div class="clock-sidestyle-time">${timeStr}</div>
+      </div>
+    `
+  } else if (dateClockStyle === "jp-style") {
+    const timeOptions = settings.hideSeconds
+      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
+      : {
+          hour12: use12Hour,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: tz,
+        }
+
+    // Choose actual language based on jpStyleLanguage option (auto vs ja)
+    const jpLangOption = settings.jpStyleLanguage || "auto"
+    const displayLang = jpLangOption === "ja" ? "ja-JP" : langCode
+    const timeStr = now.toLocaleTimeString(displayLang, timeOptions)
+
+    let dayName = ""
+    if (jpLangOption === "ja") {
+      const jpDays = [
+        "日曜日",
+        "月曜日",
+        "火曜日",
+        "水曜日",
+        "木曜日",
+        "金曜日",
+        "土曜日",
+      ]
+      dayName = jpDays[now.getDay()]
+    } else {
+      dayName = getSafeWeekday(now, displayLang, false, tz).toUpperCase()
+    }
+
+    const month = (now.getMonth() + 1).toString().padStart(2, "0")
+    const dayNum = now.getDate().toString().padStart(2, "0")
+
+    // Use symbols based on lang
+    let dateHtml = ""
+    if (displayLang === "ja-JP") {
+      dateHtml = `<span class="clock-jp-month">${month}</span><span class="jp-symbol">月</span><span class="clock-jp-daynum">${dayNum}</span><span class="jp-symbol">日</span>`
+    } else if (displayLang === "vi-VN") {
+      dateHtml = `<span class="clock-jp-daynum" style="margin-right: 0.5em;">Ngày ${dayNum}</span><span class="clock-jp-month">Thg ${month}</span>`
+    } else {
+      const enMonths = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ]
+      dateHtml = `<span class="clock-jp-month">${enMonths[now.getMonth()]}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
+    }
+
+    clockElement.innerHTML = `
+      <div class="clock-jp-style">
+        <div class="clock-jp-row">
+            <span class="clock-jp-day-left">${dayName}</span>
+            <div class="clock-jp-col">
+                <span class="clock-jp-time">${timeStr}</span>
+                ${shouldShowDate ? `<span class="clock-jp-date">${dateHtml}</span>` : ""}
+            </div>
+        </div>
+      </div>
+    `
   } else if (isFramedClockStyle) {
     const roundTimeOptions = settings.hideSeconds
       ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
@@ -316,9 +435,16 @@ export function updateTime() {
   // Handle date visibility - check both showDate AND showGregorian
   dateElement.classList.toggle(
     "is-hidden",
-    !shouldShowDate || dateClockStyle === "cool",
+    !shouldShowDate ||
+      dateClockStyle === "cool" ||
+      dateClockStyle === "sidestyle" ||
+      dateClockStyle === "jp-style",
   )
-  if (dateClockStyle === "cool") {
+  if (
+    dateClockStyle === "cool" ||
+    dateClockStyle === "sidestyle" ||
+    dateClockStyle === "jp-style"
+  ) {
     dateElement.innerHTML = ""
     dateElement.textContent = ""
   } else if (isFramedClockStyle) {
@@ -364,6 +490,7 @@ export function initClock() {
       e.detail.key === "clockDatePriority" ||
       e.detail.key === "dateFormat" ||
       e.detail.key === "dateClockStyle" ||
+      e.detail.key === "jpStyleLanguage" ||
       e.detail.key === "analogMarkerMode" ||
       e.detail.key === "hueTextMode"
     ) {

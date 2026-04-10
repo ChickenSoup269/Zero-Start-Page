@@ -1580,11 +1580,36 @@ export function setupGeneralEventHandlers(
 
   DOM.clockDateStyleSelect.addEventListener("change", () => {
     handleSettingUpdate("dateClockStyle", DOM.clockDateStyleSelect.value)
+
+    if (DOM.clockDateStyleSelect.value === "analog") {
+      DOM.analogMarkerModeSetting.style.display = ""
+    } else {
+      DOM.analogMarkerModeSetting.style.display = "none"
+    }
+
+    if (DOM.clockDateStyleSelect.value === "jp-style") {
+      DOM.jpStyleLanguageSetting.style.display = ""
+    } else {
+      DOM.jpStyleLanguageSetting.style.display = "none"
+    }
+
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: {
           key: "dateClockStyle",
           value: DOM.clockDateStyleSelect.value,
+        },
+      }),
+    )
+  })
+
+  DOM.jpStyleLanguageSelect.addEventListener("change", () => {
+    handleSettingUpdate("jpStyleLanguage", DOM.jpStyleLanguageSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "jpStyleLanguage",
+          value: DOM.jpStyleLanguageSelect.value,
         },
       }),
     )
