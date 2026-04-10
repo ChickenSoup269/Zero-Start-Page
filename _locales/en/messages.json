@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Zero Startpage - Newtab Replacement",
+    "description": "Name of the extension."
+  },
+  "extDesc": {
+    "message": "A beautiful and simple startpage replacement.",
+    "description": "Description of the extension."
+  }
+}

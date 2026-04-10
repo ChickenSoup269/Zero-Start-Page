@@ -243,7 +243,12 @@ export function updateTime() {
 
     // Get short weekday as VI strings are long, e.g. "THỨ BẢY" instead of "SATURDAY".
     // but the test style has SATURDAY. Let's use getSafeWeekday to get long weekday for EN.
-    const dayName = getSafeWeekday(now, langCode, false, tz).toUpperCase()
+    const dayName = getSafeWeekday(
+      now,
+      langCode,
+      settings.shortWeekday,
+      tz,
+    ).toUpperCase()
 
     const enMonths = [
       "Jan",
@@ -305,9 +310,19 @@ export function updateTime() {
         "金曜日",
         "土曜日",
       ]
-      dayName = jpDays[now.getDay()]
+      // Try to abbreviate JP days if shortWeekday is true
+      if (settings.shortWeekday) {
+        dayName = jpDays[now.getDay()].replace("曜日", "")
+      } else {
+        dayName = jpDays[now.getDay()]
+      }
     } else {
-      dayName = getSafeWeekday(now, displayLang, false, tz).toUpperCase()
+      dayName = getSafeWeekday(
+        now,
+        displayLang,
+        settings.shortWeekday,
+        tz,
+      ).toUpperCase()
     }
 
     const month = (now.getMonth() + 1).toString().padStart(2, "0")
