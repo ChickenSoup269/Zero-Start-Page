@@ -95,6 +95,7 @@ const defaultSettings = {
   bookmarkEnableDrag: false,
   bookmarkHideText: false,
   bookmarkHideBg: false,
+  bookmarkMacosHover: false,
   bookmarkLayout: "default",
   bookmarkLayoutBgStyle: "default",
   bookmarkLayoutBgColor: "",

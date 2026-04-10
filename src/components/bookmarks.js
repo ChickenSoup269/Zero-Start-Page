@@ -546,3 +546,42 @@ export function initBookmarks() {
     }
   })
 }
+
+// MacOS Hover Effect
+let macosHoverEnabled = false;
+
+export function initMacosHoverForBookmarks(isEnabled) {
+  macosHoverEnabled = isEnabled;
+}
+
+bookmarksContainer.addEventListener('mousemove', (e) => {
+  if (!macosHoverEnabled) return;
+  const rect = bookmarksContainer.getBoundingClientRect();
+  const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    const bookmarks = Array.from(bookmarksContainer.querySelectorAll('.bookmark:not(.add-bookmark-card)'));
+
+    bookmarks.forEach(item => {
+      const itemRect = item.getBoundingClientRect();
+      const itemCenterX = itemRect.left + itemRect.width / 2;
+      const itemCenterY = itemRect.top + itemRect.height / 2;
+      // Use 2D distance for grid and vertical/horizontal layout support
+      const dist = Math.sqrt(Math.pow(mouseX - itemCenterX, 2) + Math.pow(mouseY - itemCenterY, 2));
+    // scale: max 1.6, min 1, falloff by distance
+    let scale = Math.max(1, 1.6 - dist / 80);
+    // don't scale if dragging
+    if (item.classList.contains('dragging')) scale = 1;
+    item.style.transform = "scale(" + scale + ")";
+    item.style.zIndex = Math.round(scale * 100);
+  });
+});
+
+bookmarksContainer.addEventListener('mouseleave', () => {
+  if (!macosHoverEnabled) return;
+  const bookmarks = document.querySelectorAll('.bookmark');
+  bookmarks.forEach(item => {
+    item.style.transform = '';
+    item.style.zIndex = '';
+  });
+});
+

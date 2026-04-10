@@ -793,6 +793,15 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkMacosHover) {
+      DOM.bookmarkMacosHover.addEventListener("change", () => {
+        throttleSettingUpdate(
+          "bookmarkMacosHover",
+          DOM.bookmarkMacosHover.checked,
+        )
+      })
+    }
+
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
         throttleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)

@@ -3132,3 +3132,56 @@ body.bookmark-item-card-style.bookmark-taskbar-left-mode
   box-shadow: none !important;
   border: none !important;
 }
+/* MacOS Dock Hover Effect for Bookmarks */
+body.bookmark-macos-hover .bookmark {
+  position: relative;
+  transition:
+    transform 0.1s ease-out,
+    box-shadow 0.2s ease-in-out,
+    background 0.2s ease-in-out !important;
+  transform-origin: bottom center;
+}
+
+body.bookmark-macos-hover .bookmark > span {
+  display: block !important;
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  width: fit-content;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--widget-bg, rgba(10, 10, 18, 0.95));
+  backdrop-filter: blur(10px);
+  padding: 4px 8px;
+  font-size: 13px !important;
+  color: var(--text-color, #fff) !important;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+body.bookmark-macos-hover .bookmark:hover > span {
+  opacity: 1;
+  visibility: visible;
+  top: -2.8rem;
+}
+/* MacOS Hover clipping fix for layouts with scrolling */
+body.bookmark-macos-hover .bookmarks-grid {
+  padding-top: 1rem !important;
+  overflow: visible !important;
+}
+body.bookmark-macos-hover.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-macos-hover.bookmark-taskbar-left-mode
+  .bookmark-groups-container {
+  margin-bottom: -2.5rem !important;
+}
