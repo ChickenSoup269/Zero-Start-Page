@@ -2250,8 +2250,7 @@
             </div>
             <p data-i18n="donate_desc" style="margin-bottom: 10px;">Choose a platform to support the development:</p>
             <p data-i18n="donate_thank_you"
-                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cảm ơn
-                bạn
+                style="margin-bottom: 20px; font-weight: 500; font-size: 0.95em; color: var(--accent-color);">Cảm ơn bạn
                 rất nhiều vì đã ủng hộ dự án!</p>
             <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
                 <a href="https://ko-fi.com/chickensoup269" target="_blank" class="primary-btn"
@@ -2263,12 +2262,26 @@
                     <i class="fa-solid fa-qrcode"></i> MoMo
                 </button>
             </div>
-            <div id="momo-qr-container" style="display: none; background: white; padding: 10px; border-radius: 8px; 
-margin: 0 auto; width: fit-content; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-text-align: center;">
-
-                <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/momo_qr_Thien.jpg?raw=true"
-                    alt="MoMo QR" style="max-width: 250px; height: 200px; border-radius: 8px;">
+            <div id="momo-qr-container" style="
+                        display: none;
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        
+                        background: white;
+                        padding: 20px;
+                        border-radius: 12px;
+                        box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+                        text-align: center;
+                        z-index: 9999;
+                    ">
+                <img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/img_repo_extension_Startpage/qr_donation/image.png?raw=true"
+                    alt="MoMo QR" style="
+                        width: 350px;
+                        height: auto;
+                        border-radius: 10px;
+                        margin-bottom: 15px;">
             </div>
             <div style="margin-top: 20px;">
                 <button type="button" class="secondary-btn" id="close-donate-modal"
