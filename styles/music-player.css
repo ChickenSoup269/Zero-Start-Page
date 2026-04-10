@@ -1127,7 +1127,7 @@
 
 /* === Vỏ máy — nhựa vintage có chiều sâu === */
 .music-style-cassette .music-player-wrapper {
-  background: linear-gradient(160deg, #252525 0%, #30302f 60%, #2e2d2d 100%);
+  background: linear-gradient(160deg, #d6d3d3 0%, #a1a1a1 60%, #a29b9b 100%);
   border: 3px solid #000000;
   border-radius: 5px;
   padding: 16px;

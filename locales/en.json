@@ -386,6 +386,7 @@
   "settings_bookmark_group_font_size": "Tab Font Size",
   "settings_bookmark_hide_text": "Hide Title Text",
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
+  "settings_bookmark_macos_hover": "Enable MacOS Hover Effect",
   "settings_bookmark_layout": "Bookmark Layout",
   "settings_bookmark_layout_bg": "Layout Container Background",
   "layout_bg_default": "Default Background",

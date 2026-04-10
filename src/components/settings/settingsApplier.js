@@ -8,6 +8,7 @@ import {
   updateSetting,
   saveSettings,
 } from "../../services/state.js"
+import { initMacosHoverForBookmarks } from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
 import { getContrastYIQ, hexToRgb } from "../../utils/colors.js"
 import {
@@ -398,6 +399,14 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove("hide-bookmark-bg")
     }
 
+    if (settings.bookmarkMacosHover) {
+      document.body.classList.add("bookmark-macos-hover")
+      initMacosHoverForBookmarks(true)
+    } else {
+      document.body.classList.remove("bookmark-macos-hover")
+      initMacosHoverForBookmarks(false)
+    }
+
     let layout = settings.bookmarkLayout || "default"
     // Handle legacy boolean setting, or removed "sidebar-left" setting
     if (settings.bookmarkSidebarMode === true && layout === "default") {
@@ -731,6 +740,9 @@ function createUpdateSettingsInputs(effectInstances) {
       }
       if (DOM.hideBookmarkBg) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true
+      }
+      if (DOM.bookmarkMacosHover) {
+        DOM.bookmarkMacosHover.checked = settings.bookmarkMacosHover === true
       }
       if (DOM.bookmarkLayout) {
         let val = settings.bookmarkLayout || "default"

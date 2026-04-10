@@ -623,6 +623,9 @@ export const enableBookmarkDrag = document.getElementById(
 )
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
+export const bookmarkMacosHover = document.getElementById(
+  "bookmark-macos-hover",
+)
 export const bookmarkLayout = document.getElementById("bookmark-layout")
 export const bookmarkLayoutBgStyle = document.getElementById(
   "bookmark-layout-bg-style",
