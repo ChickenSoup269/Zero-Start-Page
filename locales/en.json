@@ -441,5 +441,6 @@
   "donate_button": "Buy me a coffee",
   "settings_show_donate_btn": "Show Donate Button",
   "effect_jellyfish": "Jellyfish",
-  "setting_jellyfish_color": "Jellyfish Color"
+  "setting_jellyfish_color": "Jellyfish Color",
+  "settings_font_restriction_note": "Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date."
 }

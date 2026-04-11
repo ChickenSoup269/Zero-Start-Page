@@ -38,6 +38,16 @@ const PREDEFINED_FONTS = [
     tag: "Pixel",
     google: true,
   },
+  {
+    label: "Electroharmonix",
+    value: "'Electroharmonix', sans-serif",
+    tag: "Clock/Date",
+  },
+  {
+    label: "Anurati",
+    value: "'Anurati', sans-serif",
+    tag: "Clock/Date",
+  },
 ]
 
 function loadGoogleFont(fontName) {

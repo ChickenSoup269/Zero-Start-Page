@@ -438,5 +438,6 @@
   "settings_pixel_weather_density": "Mật độ hạt rơi",
   "style_pixel_snow": "Tuyết rơi",
   "style_pixel_rain": "Mưa",
-  "style_pixel_wind": "Gió"
+  "style_pixel_wind": "Gió",
+  "settings_font_restriction_note": "Ghi chú: Font 'Electroharmonix' và 'Anurati' chỉ áp dụng cho Đồng hồ & Thứ ngày."
 }

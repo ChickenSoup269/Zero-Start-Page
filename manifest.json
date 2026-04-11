@@ -14,6 +14,7 @@
   "background": {
     "service_worker": "background.js"
   },
+
   "host_permissions": [
     "https://suggestqueries.google.com/*",
     "*://*.youtube.com/*",
@@ -22,6 +23,6 @@
     "*://images.google.com/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; "
   }
 }

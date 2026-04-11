@@ -91,6 +91,7 @@ i {
 .clock-date-wrap {
   width: 100%;
   position: relative;
+  font-family: var(--font-clock-date);
 }
 
 .clock-date-wrap.timer-running-hidden {
@@ -117,6 +118,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
 #clock {
   font-size: var(--clock-size);
   font-weight: 600;
+  font-family: var(--font-clock-date);
   letter-spacing: 2px;
   margin-bottom: 5px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -132,6 +134,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
 #date {
   font-size: var(--date-size);
   font-weight: 300;
+  font-family: var(--font-clock-date);
   margin-bottom: 40px;
   opacity: 0.9;
   color: var(--date-color);
@@ -823,7 +826,7 @@ body.date-clock-style-sidestyle .clock-sidestyle-time {
 
 /* JP Style */
 body.date-clock-style-jp-style .clock-jp-style {
-  font-family: var(--font-family, "Arial", sans-serif); /* Fallback nicely */
+  font-family: var(--font-clock-date); /* Use clock/date dedicated font variable */
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 body.date-clock-style-jp-style .clock-jp-row {

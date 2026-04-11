@@ -1,3 +1,20 @@
+@font-face {
+  font-family: "Electroharmonix";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/Electroharmonix.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Anurati";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/Anurati-Regular.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-gradient-start: #0a1f11;
   --bg-gradient-end: #1d472c;
@@ -8,6 +25,7 @@
   );
   --text-color: #ffffff;
   --font-primary: "Outfit", sans-serif;
+  --font-clock-date: var(--font-primary);
   --clock-size: 6rem;
   --date-size: 1.5rem;
   --glass-bg: rgba(255, 255, 255, 0.05);

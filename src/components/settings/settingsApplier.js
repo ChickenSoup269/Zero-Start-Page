@@ -284,7 +284,28 @@ function createApplySettings(effectInstances) {
     }
 
     // 3. UI Props
-    document.documentElement.style.setProperty("--font-primary", settings.font)
+    const isRestrictedFont =
+      settings.font.includes("Electroharmonix") ||
+      settings.font.includes("Anurati")
+    if (isRestrictedFont) {
+      document.documentElement.style.setProperty(
+        "--font-primary",
+        "'Outfit', sans-serif",
+      )
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        settings.font,
+      )
+    } else {
+      document.documentElement.style.setProperty(
+        "--font-primary",
+        settings.font,
+      )
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        settings.font,
+      )
+    }
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
     const baseDateSize = Number.isFinite(rawDateSize)

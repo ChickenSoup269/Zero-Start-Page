@@ -447,7 +447,10 @@
                 </button>
                 <h2 data-i18n="settings_title">Settings</h2>
                 <span id="settings-version" class="settings-version" aria-label="Extension version"></span>
-                <a id="sidebar-update-link" href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement" target="_blank" class="sidebar-update-link" style="display: none;" data-i18n-title="settings_check_updates" title="New update available!">
+                <a id="sidebar-update-link"
+                    href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
+                    target="_blank" class="sidebar-update-link" style="display: none;"
+                    data-i18n-title="settings_check_updates" title="New update available!">
                     <i class="fa-solid fa-circle-arrow-up"></i>
                 </a>
             </div>
@@ -1527,7 +1530,10 @@
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
                 <div class="section-content">
                     <div class="setting-group">
-                        <div id="font-grid" class="font-grid"></div>
+                    <div id="font-grid" class="font-grid"></div>
+                    <small style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;" data-i18n="settings_font_restriction_note">
+                        <i class="fa-solid fa-circle-info"></i> Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date.
+                    </small>
                     </div>
 
                     <div class="setting-group">
@@ -2092,6 +2098,7 @@
                             <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
                             <option value="cassette" data-i18n="style_cassette">Cassette</option>
                             <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                            <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
                             <option value="neon" data-i18n="style_neon">Neon</option>
                             <option value="minimal" data-i18n="style_minimal">Minimal</option>
                         </select>
