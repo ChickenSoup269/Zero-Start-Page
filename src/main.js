@@ -408,11 +408,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => {
       try {
         const manifest = window.chrome?.runtime?.getManifest?.()
-        if (manifest && manifest.version && window.chrome?.storage?.local) {
+        if (manifest && manifest.version) {
           const currentVersion = manifest.version
+          
+          // Use chrome.storage.local if available, fallback to localStorage
+          if (window.chrome?.storage?.local) {
+            chrome.storage.local.get(["lastVersion"], (result) => {
+              const lastVersion = result.lastVersion
+              handleVersionCheck(lastVersion, currentVersion, (ver) => {
+                chrome.storage.local.set({ lastVersion: ver })
+              })
+            })
+          } else {
+            // Fallback for non-extension environments or missing permissions
+            const lastVersion = localStorage.getItem("lastVersion")
+            handleVersionCheck(lastVersion, currentVersion, (ver) => {
+              localStorage.setItem("lastVersion", ver)
+            })
+          }
+        }
 
-          chrome.storage.local.get(["extensionUpdated"], (result) => {
-            if (result.extensionUpdated) {
+        function handleVersionCheck(lastVersion, currentVersion, saveFn) {
+          if (lastVersion) {
+            if (lastVersion !== currentVersion) {
               // Version changed -> show update popup and sidebar link
               const popup = document.getElementById("update-notification-popup")
               const verLabel = document.getElementById("update-version-label")
@@ -426,17 +444,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                   .getElementById("close-update-popup")
                   ?.addEventListener("click", () => {
                     popup.style.display = "none"
+                    // Save the new version only when the popup is closed or shown?
+                    // Usually we save it once detected to avoid annoying the user on every tab.
                   })
               }
 
               if (sidebarLink) {
                 sidebarLink.style.display = "flex"
               }
-
-              // Clear the flag after showing
-              chrome.storage.local.remove("extensionUpdated")
+              
+              saveFn(currentVersion)
             }
-          })
+          } else {
+            // First time detecting version (initial install or feature update)
+            saveFn(currentVersion)
+          }
         }
       } catch (e) {
         console.warn("Update check failed:", e)

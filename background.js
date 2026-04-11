@@ -1,11 +1,6 @@
 console.log("Background script loaded") // For debugging
 
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === "update") {
-    // Flag the update so main.js can show the update-notification-popup
-    chrome.storage.local.set({ extensionUpdated: true })
-  }
-})
+// Version update check is now handled in main.js for better reliability
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // console.log("Message received:", request) // For debugging

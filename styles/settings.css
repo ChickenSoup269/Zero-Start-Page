@@ -190,6 +190,43 @@
   transform: translateY(-3px);
 }
 
+.sidebar-update-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #ffcc00;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform: translateY(-4px);
+  animation: updatePulse 2s infinite ease-in-out;
+  text-decoration: none;
+}
+
+.sidebar-update-link:hover {
+  transform: translateY(-4px) scale(1.2);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+}
+
+@keyframes updatePulse {
+  0% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-4px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1);
+  }
+}
+
 .sidebar-toc-btn {
   background: none;
   border: none;
