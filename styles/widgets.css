@@ -3175,6 +3175,7 @@ body.bookmark-macos-hover .bookmark:hover > span {
   visibility: visible;
   top: -2.8rem;
 }
+
 /* MacOS Hover clipping fix for layouts with scrolling */
 body.bookmark-macos-hover .bookmarks-grid {
   overflow: visible !important;

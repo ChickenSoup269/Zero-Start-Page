@@ -27,6 +27,8 @@ const defaultSettings = {
   timeFormat: "24h", // "12h" or "24h"
   timezone: "local",
   dateClockStyle: "default",
+  sidestyleAlign: "left",
+  clockFontTarget: "both",
 
   showCustomTitle: true,
   freeMoveCustomTitle: false,

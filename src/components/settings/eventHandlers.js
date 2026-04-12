@@ -1602,6 +1602,11 @@ export function setupGeneralEventHandlers(
       DOM.jpStyleLanguageSetting.style.display = "none"
     }
 
+    if (DOM.sidestyleAlignSetting) {
+      DOM.sidestyleAlignSetting.style.display =
+        DOM.clockDateStyleSelect.value === "sidestyle" ? "" : "none"
+    }
+
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: {
@@ -1611,6 +1616,26 @@ export function setupGeneralEventHandlers(
       }),
     )
   })
+
+  if (DOM.sidestyleAlignSelect) {
+    DOM.sidestyleAlignSelect.addEventListener("change", () => {
+      handleSettingUpdate("sidestyleAlign", DOM.sidestyleAlignSelect.value)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "sidestyleAlign",
+            value: DOM.sidestyleAlignSelect.value,
+          },
+        }),
+      )
+    })
+  }
+
+  if (DOM.clockFontTargetSelect) {
+    DOM.clockFontTargetSelect.addEventListener("change", () => {
+      handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)
+    })
+  }
 
   DOM.jpStyleLanguageSelect.addEventListener("change", () => {
     handleSettingUpdate("jpStyleLanguage", DOM.jpStyleLanguageSelect.value)

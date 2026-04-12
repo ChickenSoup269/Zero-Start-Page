@@ -283,28 +283,26 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    // 3. UI Props
+    const clockFontTarget = settings.clockFontTarget || "both"
     const isRestrictedFont =
       settings.font.includes("Electroharmonix") ||
       settings.font.includes("Anurati")
-    if (isRestrictedFont) {
-      document.documentElement.style.setProperty(
-        "--font-primary",
-        "'Outfit', sans-serif",
-      )
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        settings.font,
-      )
-    } else {
-      document.documentElement.style.setProperty(
-        "--font-primary",
-        settings.font,
-      )
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        settings.font,
-      )
+      
+    const primaryFont = isRestrictedFont ? "'Outfit', sans-serif" : settings.font
+    document.documentElement.style.setProperty("--font-primary", primaryFont)
+
+    if (clockFontTarget === "both") {
+      document.documentElement.style.setProperty("--font-clock-date", settings.font)
+      document.documentElement.style.setProperty("--font-clock", settings.font)
+      document.documentElement.style.setProperty("--font-date", settings.font)
+    } else if (clockFontTarget === "clock") {
+      document.documentElement.style.setProperty("--font-clock-date", settings.font)
+      document.documentElement.style.setProperty("--font-clock", settings.font)
+      document.documentElement.style.setProperty("--font-date", primaryFont)
+    } else if (clockFontTarget === "date") {
+      document.documentElement.style.setProperty("--font-clock-date", primaryFont)
+      document.documentElement.style.setProperty("--font-clock", primaryFont)
+      document.documentElement.style.setProperty("--font-date", settings.font)
     }
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
@@ -496,6 +494,18 @@ function createApplySettings(effectInstances) {
       "date-clock-style-analog",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+
+    // Apply sidestyle alignment body class
+    document.body.classList.remove(
+      "sidestyle-align-left",
+      "sidestyle-align-center",
+      "sidestyle-align-right",
+    )
+    if (dateClockStyle === "sidestyle") {
+      const align = settings.sidestyleAlign || "left"
+      document.body.classList.add(`sidestyle-align-${align}`)
+    }
+
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
@@ -685,12 +695,19 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
     DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
     DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
+    if (DOM.sidestyleAlignSelect)
+      DOM.sidestyleAlignSelect.value = settings.sidestyleAlign || "left"
+    if (DOM.clockFontTargetSelect)
+      DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
     // Manage display of conditional settings
     DOM.analogMarkerModeSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
     DOM.jpStyleLanguageSetting.style.display =
       (settings.dateClockStyle || "default") === "jp-style" ? "block" : "none"
+    if (DOM.sidestyleAlignSetting)
+      DOM.sidestyleAlignSetting.style.display =
+        (settings.dateClockStyle || "default") === "sidestyle" ? "block" : "none"
 
     DOM.analogBlurBgSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"

@@ -92,6 +92,69 @@ function getSafeWeekday(date, lang, isShort, tz) {
   return str
 }
 
+function getCustomDateString(now, langCode, tz, settings, formatOverride) {
+  const format = formatOverride || settings.dateFormat || "full"
+  let dateString = ""
+
+  if (format === "short") {
+    dateString = now.toLocaleDateString("en-GB", { timeZone: tz })
+  } else if (format === "us") {
+    dateString = now.toLocaleDateString("en-US", { timeZone: tz })
+  } else if (format === "iso") {
+    let isoDate = now
+    if (tz) isoDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    dateString = isoDate.toISOString().split("T")[0]
+  } else if (format === "year") {
+    let yearDate = now
+    if (tz) yearDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
+    dateString = String(yearDate.getFullYear())
+  } else if (format === "weekday") {
+    dateString = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+  } else {
+    // "full"
+    const formatWeekday =
+      settings.shortWeekday && langCode !== "vi-VN" ? "short" : "long"
+    dateString = now.toLocaleDateString(langCode, {
+      weekday: formatWeekday,
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      timeZone: tz,
+    })
+    if (settings.shortWeekday && langCode === "vi-VN") {
+      dateString = formatViShortWeekday(dateString)
+    }
+  }
+  return dateString
+}
+
+function _buildSidestyleDateStr(now, langCode, tz, settings) {
+  const format = settings.dateFormat || "full"
+  let dateStr = ""
+  
+  if (format === "full") {
+    // Retain the specific layout used originally for "full" sidestyle date
+    const enMonths = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ]
+    if (langCode === "vi-VN") {
+      dateStr = now.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        timeZone: tz,
+      })
+    } else {
+      dateStr = `${now.getDate()} ${enMonths[now.getMonth()]} ${now.getFullYear()}`
+    }
+  } else {
+    dateStr = getCustomDateString(now, langCode, tz, settings)
+  }
+
+  return `<div class="clock-sidestyle-date">${dateStr}</div>`
+}
+
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
@@ -204,14 +267,21 @@ export function updateTime() {
     const timeStr = now.toLocaleTimeString(langCode, timeOptions)
 
     const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
-    const day = now.toLocaleDateString(langCode, {
-      day: "2-digit",
-      timeZone: tz,
-    })
-    const monthName = now.toLocaleDateString(langCode, {
-      month: "long",
-      timeZone: tz,
-    })
+      const format = settings.dateFormat || "full"
+      let dateHtml = ""
+      if (format === "full") {
+        const day = now.toLocaleDateString(langCode, {
+          day: "2-digit",
+          timeZone: tz,
+        })
+        const monthName = now.toLocaleDateString(langCode, {
+          month: "long",
+          timeZone: tz,
+        })
+        dateHtml = `${day} - ${monthName}`
+      } else {
+        dateHtml = getCustomDateString(now, langCode, tz, settings)
+      }
 
     clockElement.innerHTML = `
       <div class="cool-style-wrapper">
@@ -221,7 +291,7 @@ export function updateTime() {
           shouldShowDate
             ? `
           <div class="cool-dayname">${dayName}</div>
-          <div class="cool-date">${day} - ${monthName}</div>
+          <div class="cool-date">${dateHtml}</div>
         `
             : ""
         }
@@ -279,7 +349,7 @@ export function updateTime() {
     clockElement.innerHTML = `
       <div class="clock-sidestyle">
         <div class="clock-sidestyle-day">${dayName}</div>
-        ${shouldShowDate ? `<div class="clock-sidestyle-date">${dateStr}</div>` : ""}
+        ${shouldShowDate ? _buildSidestyleDateStr(now, langCode, tz, settings) : ""}
         <div class="clock-sidestyle-time">${timeStr}</div>
       </div>
     `
@@ -329,28 +399,35 @@ export function updateTime() {
     const dayNum = now.getDate().toString().padStart(2, "0")
 
     // Use symbols based on lang
+    const format = settings.dateFormat || "full"
     let dateHtml = ""
-    if (displayLang === "ja-JP") {
-      dateHtml = `<span class="clock-jp-month">${month}</span><span class="jp-symbol">月</span><span class="clock-jp-daynum">${dayNum}</span><span class="jp-symbol">日</span>`
-    } else if (displayLang === "vi-VN") {
-      dateHtml = `<span class="clock-jp-daynum" style="margin-right: 0.5em;">Ngày ${dayNum}</span><span class="clock-jp-month">Thg ${month}</span>`
+    
+    if (format === "full") {
+      if (displayLang === "ja-JP") {
+        dateHtml = `<span class="clock-jp-month">${month}</span><span class="jp-symbol">月</span><span class="clock-jp-daynum">${dayNum}</span><span class="jp-symbol">日</span>`
+      } else if (displayLang === "vi-VN") {
+        dateHtml = `<span class="clock-jp-daynum" style="margin-right: 0.5em;">Ngày ${dayNum}</span><span class="clock-jp-month">Thg ${month}</span>`
+      } else {
+        const enMonths = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ]
+        dateHtml = `<span class="clock-jp-month">${enMonths[now.getMonth()]}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
+      }
     } else {
-      const enMonths = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ]
-      dateHtml = `<span class="clock-jp-month">${enMonths[now.getMonth()]}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
+      dateHtml = `<span class="clock-jp-month" style="font-size: 0.85em; font-weight: normal;">${getCustomDateString(now, displayLang, tz, settings)}</span>`
     }
+
 
     clockElement.innerHTML = `
       <div class="clock-jp-style">
@@ -390,12 +467,20 @@ export function updateTime() {
       ? `${hh}:${mm}`
       : `${hh}:${mm}<span class="clock-time-seconds">:${ss}</span>`
 
-    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
-    const year = new Date(
-      now.toLocaleString("en-US", { timeZone: tz }),
-    ).getFullYear()
+    const format = settings.dateFormat || "full"
+    let secondaryHtml = ""
+    if (format === "full") {
+      const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+      const year = new Date(
+        now.toLocaleString("en-US", { timeZone: tz }),
+      ).getFullYear()
+      secondaryHtml = `${year} ${weekday}`
+    } else {
+      secondaryHtml = getCustomDateString(now, langCode, tz, settings)
+    }
+
     const secondaryInfo = shouldShowDate
-      ? `<span class="clock-date-secondary">${year} ${weekday}</span>`
+      ? `<span class="clock-date-secondary">${secondaryHtml}</span>`
       : ""
     clockElement.innerHTML = `<span class="clock-time-main">${timeMain}</span><span class="clock-time-ampm">${dayPeriodPart ? dayPeriodPart.value : ""}</span>${secondaryInfo}`
   } else {
@@ -418,33 +503,8 @@ export function updateTime() {
       timeZone: tz,
     })
     dateString = dayMonth
-  } else if (format === "full") {
-    const formatWeekday =
-      settings.shortWeekday && langCode !== "vi-VN" ? "short" : "long"
-    dateString = now.toLocaleDateString(langCode, {
-      weekday: formatWeekday,
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      timeZone: tz,
-    })
-    if (settings.shortWeekday && langCode === "vi-VN") {
-      dateString = formatViShortWeekday(dateString)
-    }
-  } else if (format === "short") {
-    dateString = now.toLocaleDateString("en-GB", { timeZone: tz })
-  } else if (format === "us") {
-    dateString = now.toLocaleDateString("en-US", { timeZone: tz })
-  } else if (format === "iso") {
-    let isoDate = now
-    if (tz) isoDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
-    dateString = isoDate.toISOString().split("T")[0]
-  } else if (format === "year") {
-    let yearDate = now
-    if (tz) yearDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
-    dateString = String(yearDate.getFullYear())
-  } else if (format === "weekday") {
-    dateString = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+  } else {
+    dateString = getCustomDateString(now, langCode, tz, settings, format)
   }
 
   // Handle date visibility - check both showDate AND showGregorian
@@ -507,7 +567,8 @@ export function initClock() {
       e.detail.key === "dateClockStyle" ||
       e.detail.key === "jpStyleLanguage" ||
       e.detail.key === "analogMarkerMode" ||
-      e.detail.key === "hueTextMode"
+      e.detail.key === "hueTextMode" ||
+      e.detail.key === "sidestyleAlign"
     ) {
       updateTime()
     }

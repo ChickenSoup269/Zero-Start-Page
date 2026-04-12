@@ -34,6 +34,8 @@
   --text-color: #ffffff;
   --font-primary: "Outfit", sans-serif;
   --font-clock-date: var(--font-primary);
+  --font-clock: var(--font-clock-date);
+  --font-date: var(--font-clock-date);
   --clock-size: 6rem;
   --date-size: 1.5rem;
   --glass-bg: rgba(255, 255, 255, 0.05);

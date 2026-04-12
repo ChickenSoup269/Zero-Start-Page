@@ -480,6 +480,15 @@ export const analogBlurBgSetting = document.getElementById(
 export const analogBlurBgCheckbox = document.getElementById(
   "analog-blur-bg-checkbox",
 )
+export const sidestyleAlignSetting = document.getElementById(
+  "sidestyle-align-setting",
+)
+export const sidestyleAlignSelect = document.getElementById(
+  "sidestyle-align-select",
+)
+export const clockFontTargetSelect = document.getElementById(
+  "clock-font-target-select",
+)
 export const pageTitleInput = document.getElementById("page-title-input")
 export const tabIconInput = document.getElementById("tab-icon-input")
 export const tabIconPreview = document.getElementById("tab-icon-preview")

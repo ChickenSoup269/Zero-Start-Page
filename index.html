@@ -1530,10 +1530,13 @@
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
                 <div class="section-content">
                     <div class="setting-group">
-                    <div id="font-grid" class="font-grid"></div>
-                    <small style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;" data-i18n="settings_font_restriction_note">
-                        <i class="fa-solid fa-circle-info"></i> Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date.
-                    </small>
+                        <div id="font-grid" class="font-grid"></div>
+                        <small
+                            style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;"
+                            data-i18n="settings_font_restriction_note">
+                            <i class="fa-solid fa-circle-info"></i> Note: 'Electroharmonix' and 'Anurati' fonts only
+                            apply to Clock & Date.
+                        </small>
                     </div>
 
                     <div class="setting-group">
@@ -1666,14 +1669,13 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
-                                Letters</label>
-                            <select id="hue-text-mode-select">
-                                <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
-                                <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
-                                <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
-                                <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
+                        <div id="sidestyle-align-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style Alignment</label>
+                            <select id="sidestyle-align-select">
+                                <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
+                                <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
+                                <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
                             </select>
                         </div>
                         <div id="jp-style-language-setting" class="setting-item"
@@ -1684,6 +1686,16 @@
                                 <option value="auto" data-i18n="settings_jp_style_language_auto">Default (Follow System
                                     Value)</option>
                                 <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                Letters</label>
+                            <select id="hue-text-mode-select">
+                                <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
+                                <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
+                                <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
+                                <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
                             </select>
                         </div>
                         <div id="analog-marker-mode-setting" class="setting-item"
@@ -1707,6 +1719,15 @@
                             <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
                                 (Analog)</label>
                             <input type="checkbox" id="analog-blur-bg-checkbox">
+                        </div>
+
+                        <div class="setting-item" style="margin-top: 0.6rem;">
+                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target"><i class="fa-solid fa-font"></i> Clock Font Applies To</label>
+                            <select id="clock-font-target-select">
+                                <option value="both" data-i18n="settings_clock_font_target_both">Clock &amp; Date</option>
+                                <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
+                                <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
+                            </select>
                         </div>
 
                         <div class="setting-item" id="clock-date-stroke-setting"
