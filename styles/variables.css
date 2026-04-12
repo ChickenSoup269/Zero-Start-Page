@@ -14,6 +14,14 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "GohuFont";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/GohuFont11NerdFontPropo-Regular.woff2")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+}
 
 :root {
   --bg-gradient-start: #0a1f11;

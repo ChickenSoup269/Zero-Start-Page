@@ -10,7 +10,9 @@ export class Timer {
     this.endTime = settings.timerEndTime || 0
     this.isRunning = settings.timerIsRunning || false
     this.timerId = null
-    this.alarm = new Audio("sounds/bedside_clock_alarm.mp3")
+    this.alarm = new Audio(
+      "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/bedside_clock_alarm.mp3",
+    )
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
 

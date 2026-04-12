@@ -6,6 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clocks</title>
     <style>
+        /* Clock Custom - Uppercase Day, Date, Time, Centered */
+        .clock-custom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .clock-custom .custom-day {
+            font-size: 120px;
+            font-weight: 800;
+            letter-spacing: 40px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .clock-custom .custom-date {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        .clock-custom .custom-time {
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 
         * {
@@ -215,6 +246,13 @@
         <div class="time" id="enTime">12:28 PM</div>
     </div>
 
+    <!-- Custom Clock (Uppercase Day, Date, Time, Centered) -->
+    <div class="clock-custom" id="clockCustom">
+        <div class="custom-day" id="customDay">SATURDAY</div>
+        <div class="custom-date" id="customDate">29 06 2024</div>
+        <div class="custom-time" id="customTime">12:28 PM</div>
+    </div>
+
     <!-- Japanese Clock (giống ảnh 2) -->
     <div class="clock-jp" id="clockJp">
         <div class="row">
@@ -300,6 +338,24 @@
             });
             document.getElementById("jpMonth").textContent = (now.getMonth() + 1).toString().padStart(2, '0');
             document.getElementById("jpDayNum").textContent = now.getDate().toString().padStart(2, '0');
+
+            // Custom Clock
+            const customDays = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+            document.getElementById("customDay").textContent = customDays[now.getDay()];
+            // Format: 29 may 2026
+            const day = now.getDate().toString().padStart(2, '0');
+            const monthsLower = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+            const month = monthsLower[now.getMonth()];
+            const year = now.getFullYear();
+            document.getElementById("customDate").textContent = `${day} ${month} ${year}`;
+            // Format: 12:28 - PM
+            const timeStr = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            const timeOnly = timeStr.split(' ')[0];
+            document.getElementById("customTime").textContent = `-  ${timeOnly}  -`;
         }
 
         setInterval(updateClocks, 1000);

@@ -48,6 +48,11 @@ const PREDEFINED_FONTS = [
     value: "'Anurati', sans-serif",
     tag: "Clock/Date",
   },
+  {
+    label: "GohuFont",
+    value: "'GohuFont', sans-serif",
+    tag: "Pixel",
+  },
 ]
 
 function loadGoogleFont(fontName) {
