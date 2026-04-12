@@ -2631,8 +2631,8 @@ body.bookmark-taskbar-left-mode .bookmark {
   /* Allow width/height to follow custom settings by resetting our static overrides */
   width: auto !important;
   height: auto !important;
-  min-width: unset !important;
-  min-height: unset !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
   padding: 5px !important;
   margin: 0 !important;
   justify-content: center;

@@ -41,7 +41,8 @@ const SEARCH_ENGINES = {
   },
   "google-lens": {
     name: "Google Lens",
-    url: (q) => `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
+    url: (q) =>
+      `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
     placeholder: "Search any image with Lens...",
     icon: "fa-solid fa-camera-viewfinder",
   },
@@ -211,7 +212,7 @@ function submitSearch() {
     return
   } else if (isImageUrl) {
     // Handle image URLs - search by URL via Google Lens
-    console.log("Image URL detected. Redirecting to Google Lens search by URL.")
+    // console.log("Image URL detected. Redirecting to Google Lens search by URL.")
     window.open(
       `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&vpw=1920&vph=969&pcl=f2f2f2&url=${encodeURIComponent(query)}`,
       "_blank",
@@ -272,7 +273,10 @@ function updateSearchUI() {
     lensBtn.style.display = currentEngine === "google-lens" ? "block" : "none"
   }
   if (aiBtn) {
-    aiBtn.style.display = (currentEngine === "google" || currentEngine === "google-image") ? "block" : "none"
+    aiBtn.style.display =
+      currentEngine === "google" || currentEngine === "google-image"
+        ? "block"
+        : "none"
   }
   searchInput.placeholder = engine.placeholder
 }
