@@ -486,6 +486,71 @@ export function updateTime() {
       ? `<span class="clock-date-secondary">${secondaryHtml}</span>`
       : ""
     clockElement.innerHTML = `<span class="clock-time-main">${timeMain}</span><span class="clock-time-ampm">${dayPeriodPart ? dayPeriodPart.value : ""}</span>${secondaryInfo}`
+  } else if (dateClockStyle === "sidebar") {
+    const timeOptions = settings.hideSeconds
+      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
+      : {
+          hour12: use12Hour,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          timeZone: tz,
+        }
+    const timeParts = new Intl.DateTimeFormat("en-US", timeOptions)
+      .formatToParts(now)
+      .filter((part) => part.type !== "literal")
+
+    const hhPart = timeParts.find((part) => part.type === "hour")
+    const mmPart = timeParts.find((part) => part.type === "minute")
+    const ssPart = timeParts.find((part) => part.type === "second")
+    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
+    
+    const hh = hhPart ? hhPart.value : "00"
+    const mm = mmPart ? mmPart.value : "00"
+
+    if (settings.sidebarClockFlip) {
+      // Date is vertical, time is horizontal below
+      // Extract date units:
+      const dateParts = new Intl.DateTimeFormat(langCode, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: tz
+      }).formatToParts(now).filter(p => p.type !== "literal");
+      
+      const day = dateParts.find(p => p.type === "day")?.value || "";
+      const month = dateParts.find(p => p.type === "month")?.value || "";
+      const year = dateParts.find(p => p.type === "year")?.value || "";
+      
+      const timeHtml = `<div class="clock-sidebar-date">${timeString}</div>`;
+      
+      clockElement.innerHTML = `
+        <div class="clock-sidebar-style is-flipped">
+          <div class="clock-sidebar-time">
+            ${day ? `<div class="clock-sidebar-unit">${day}</div>` : ""}
+            ${month ? `<div class="clock-sidebar-unit" style="font-size: 0.6em; text-transform: uppercase;">${month}</div>` : ""}
+            ${year ? `<div class="clock-sidebar-unit" style="font-size: 0.5em; opacity: 0.6;">${year}</div>` : ""}
+          </div>
+          ${timeHtml}
+        </div>
+      `;
+    } else {
+      const dateHtml = shouldShowDate 
+        ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>` 
+        : ""
+
+      clockElement.innerHTML = `
+        <div class="clock-sidebar-style">
+          <div class="clock-sidebar-time">
+            <div class="clock-sidebar-unit clock-sidebar-hour">${hh}</div>
+            <div class="clock-sidebar-unit clock-sidebar-minute">${mm}</div>
+            ${!settings.hideSeconds && ssPart ? `<div class="clock-sidebar-unit clock-sidebar-second">${ssPart.value}</div>` : ""}
+            ${dayPeriodPart ? `<div class="clock-sidebar-unit clock-sidebar-ampm">${dayPeriodPart.value}</div>` : ""}
+          </div>
+          ${dateHtml}
+        </div>
+      `
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -516,12 +581,14 @@ export function updateTime() {
     !shouldShowDate ||
       dateClockStyle === "cool" ||
       dateClockStyle === "sidestyle" ||
-      dateClockStyle === "jp-style",
+      dateClockStyle === "jp-style" ||
+      dateClockStyle === "sidebar",
   )
   if (
     dateClockStyle === "cool" ||
     dateClockStyle === "sidestyle" ||
-    dateClockStyle === "jp-style"
+    dateClockStyle === "jp-style" ||
+    dateClockStyle === "sidebar"
   ) {
     dateElement.innerHTML = ""
     dateElement.textContent = ""

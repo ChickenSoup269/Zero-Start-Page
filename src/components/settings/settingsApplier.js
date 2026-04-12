@@ -716,6 +716,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleNoBorderCheckbox)
       DOM.sidestyleNoBorderCheckbox.checked =
         settings.sidestyleNoBorder === true
+    if (DOM.sidebarClockFlipCheckbox)
+      DOM.sidebarClockFlipCheckbox.checked =
+        settings.sidebarClockFlip === true
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
@@ -727,6 +730,11 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
         (settings.dateClockStyle || "default") === "sidestyle"
+          ? "block"
+          : "none"
+    if (DOM.sidebarClockFlipSetting)
+      DOM.sidebarClockFlipSetting.style.display =
+        (settings.dateClockStyle || "default") === "sidebar"
           ? "block"
           : "none"
 

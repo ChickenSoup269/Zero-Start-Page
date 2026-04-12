@@ -29,6 +29,7 @@ const defaultSettings = {
   dateClockStyle: "default",
   sidestyleAlign: "left",
   sidestyleNoBorder: false,
+  sidebarClockFlip: false,
   clockFontTarget: "both",
 
   showCustomTitle: true,

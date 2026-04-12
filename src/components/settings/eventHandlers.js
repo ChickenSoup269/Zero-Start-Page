@@ -1648,6 +1648,23 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  if (DOM.sidebarClockFlipCheckbox) {
+    DOM.sidebarClockFlipCheckbox.addEventListener("change", () => {
+      handleSettingUpdate(
+        "sidebarClockFlip",
+        DOM.sidebarClockFlipCheckbox.checked,
+      )
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "sidebarClockFlip",
+            value: DOM.sidebarClockFlipCheckbox.checked,
+          },
+        }),
+      )
+    })
+  }
+
   if (DOM.clockFontTargetSelect) {
     DOM.clockFontTargetSelect.addEventListener("change", () => {
       handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)

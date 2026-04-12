@@ -906,6 +906,50 @@ body.date-clock-style-jp-style .clock-jp-daynum {
   font-weight: 500;
 }
 
+/* Sidebar Style */
+body.date-clock-style-sidebar .clock-sidebar-style {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-clock);
+}
+body.date-clock-style-sidebar .clock-sidebar-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left: 2px solid var(--accent-color, #fff);
+  padding-left: calc(var(--clock-size) * 0.2);
+  margin-left: calc(var(--clock-size) * 0.2);
+}
+body.date-clock-style-sidebar .clock-sidebar-unit {
+  font-size: calc(var(--clock-size) * 0.8);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: 2px;
+}
+body.date-clock-style-sidebar .clock-sidebar-second {
+  font-size: calc(var(--clock-size) * 0.3);
+  font-weight: 400;
+  color: var(--accent-color, #fff);
+  margin-top: 5px;
+}
+body.date-clock-style-sidebar .clock-sidebar-ampm {
+  font-size: calc(var(--clock-size) * 0.25);
+  font-weight: 600;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+body.date-clock-style-sidebar .clock-sidebar-date {
+  font-family: var(--font-date);
+  font-size: calc(var(--clock-size) * 0.22);
+  margin-top: calc(var(--clock-size) * 0.2);
+  opacity: 0.85;
+  text-align: center;
+}
+
+
 /* Free Mode Clock */
 body.free-move-clock .clock-date-wrap {
   position: absolute !important;

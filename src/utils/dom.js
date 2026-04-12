@@ -489,6 +489,12 @@ export const sidestyleAlignSelect = document.getElementById(
 export const sidestyleNoBorderCheckbox = document.getElementById(
   "sidestyle-no-border-checkbox",
 )
+export const sidebarClockFlipSetting = document.getElementById(
+  "sidebar-clock-flip-setting",
+)
+export const sidebarClockFlipCheckbox = document.getElementById(
+  "sidebar-clock-flip-checkbox",
+)
 export const clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )

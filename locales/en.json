@@ -57,6 +57,8 @@
   "settings_clock_date_style_cool": "Cool Style",
   "settings_clock_date_style_sidestyle": "Side Style",
   "settings_clock_date_style_jp_style": "JP Style",
+  "settings_clock_date_style_sidebar": "Sidebar",
+  "settings_sidebar_clock_flip": "Flip Vertical (Date Vertical/Time Horizontal)",
   "settings_jp_style_language": "JP Style Language",
   "settings_jp_style_language_auto": "Follow Selected App Language",
   "settings_jp_style_language_ja": "Always Japanese",

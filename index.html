@@ -1667,6 +1667,8 @@
                                 </option>
                                 <option value="analog" data-i18n="settings_clock_date_style_analog">Analog Clock
                                 </option>
+                                <option value="sidebar" data-i18n="settings_clock_date_style_sidebar">Sidebar
+                                </option>
                             </select>
                         </div>
                         <div id="sidestyle-align-setting" class="setting-item"
@@ -1680,6 +1682,12 @@
                             <div style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
                                 <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide Dashed Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
+                            </div>
+                        </div>
+                        <div id="sidebar-clock-flip-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip Vertical Layout</label>
+                                <input type="checkbox" id="sidebar-clock-flip-checkbox">
                             </div>
                         </div>
                         <div id="jp-style-language-setting" class="setting-item"
@@ -2253,7 +2261,7 @@
         </div>
 
         <!-- Bookmark Widget (Fixed inline with CSS calc trick) -->
-        <div class="bookmark-widget" id="bookmark-widget">
+        <div class="bookmark-widget no-transition" id="bookmark-widget">
             <div id="bookmarks-container" class="bookmarks-grid">
                 <!-- Bookmarks will be injected here -->
             </div>

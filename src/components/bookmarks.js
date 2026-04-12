@@ -545,6 +545,12 @@ export function initBookmarks() {
       requestAnimationFrame(updateOverflowBookmarks)
     }
   })
+
+  // FOUC/Layout shift fix: remove no-transition class shortly after init
+  setTimeout(() => {
+    const bw = document.getElementById("bookmark-widget")
+    if (bw) bw.classList.remove("no-transition")
+  }, 100)
 }
 
 // MacOS Hover Effect

@@ -2443,6 +2443,12 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1;
 }
 
+/* Initial Load Fix (FOUC) */
+.bookmark-widget.no-transition,
+.bookmark-widget.no-transition * {
+  transition: none !important;
+}
+
 /* 1. Sidebar Mode (Right) */
 body.bookmark-sidebar-mode .bookmark-widget {
   position: fixed !important;
@@ -2636,7 +2642,6 @@ body.bookmark-sidebar-mode .bookmark:hover,
 body.bookmark-taskbar-mode .bookmark:hover,
 body.bookmark-taskbar-left-mode .bookmark:hover {
   transform: translateY(-3px) !important;
-  transform: scale(1.3) !important;
 }
 
 /* Icon images inside the bookmark cards - inherit sizes from CSS variables */
@@ -2661,11 +2666,8 @@ body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback {
 }
 
 body.bookmark-sidebar-mode .bookmark img:hover,
-body.bookmark-sidebar-mode .bookmark .bookmark-icon-fallback:hover,
 body.bookmark-taskbar-mode .bookmark img:hover,
-body.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback:hover,
-body.bookmark-taskbar-left-mode .bookmark img:hover,
-body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback:hover {
+body.bookmark-taskbar-left-mode .bookmark img:hover {
   transform: scale(1.3) !important;
 }
 
