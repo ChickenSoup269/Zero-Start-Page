@@ -547,41 +547,46 @@ export function initBookmarks() {
   })
 }
 
-    // MacOS Hover Effect
-  let macosHoverEnabled = false;
+// MacOS Hover Effect
+let macosHoverEnabled = false
 
-  export function initMacosHoverForBookmarks(isEnabled) {
-    macosHoverEnabled = isEnabled;
+export function initMacosHoverForBookmarks(isEnabled) {
+  macosHoverEnabled = isEnabled
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (!macosHoverEnabled) return
+
+  const container =
+    e.target.closest("#bookmarks-container") ||
+    e.target.closest("#hidden-bookmarks-popup")
+
+  if (container) {
+    const mouseX = e.clientX
+    const mouseY = e.clientY
+    const bookmarks = Array.from(
+      container.querySelectorAll(".bookmark:not(.add-bookmark-card)"),
+    )
+
+    bookmarks.forEach((item) => {
+      const itemRect = item.getBoundingClientRect()
+      const itemCenterX = itemRect.left + itemRect.width / 2
+      const itemCenterY = itemRect.top + itemRect.height / 2
+      const dist = Math.sqrt(
+        Math.pow(mouseX - itemCenterX, 2) + Math.pow(mouseY - itemCenterY, 2),
+      )
+      let scale = Math.max(1, 1.6 - dist / 80)
+      if (item.classList.contains("dragging")) scale = 1
+      item.style.transform = "scale(" + scale + ")"
+      item.style.zIndex = Math.round(scale * 100)
+    })
+  } else {
+    const bookmarks = document.querySelectorAll(".bookmark")
+    bookmarks.forEach((item) => {
+      if (item.style.transform !== "") {
+        item.style.transform = ""
+        item.style.zIndex = ""
+      }
+    })
   }
-
-  document.addEventListener('mousemove', (e) => {
-    if (!macosHoverEnabled) return;
-    
-    const container = e.target.closest('#bookmarks-container') || e.target.closest('#hidden-bookmarks-popup');
-    
-    if (container) {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      const bookmarks = Array.from(container.querySelectorAll('.bookmark:not(.add-bookmark-card)'));
-
-      bookmarks.forEach(item => {
-        const itemRect = item.getBoundingClientRect();
-        const itemCenterX = itemRect.left + itemRect.width / 2;
-        const itemCenterY = itemRect.top + itemRect.height / 2;
-        const dist = Math.sqrt(Math.pow(mouseX - itemCenterX, 2) + Math.pow(mouseY - itemCenterY, 2));
-        let scale = Math.max(1, 1.6 - dist / 80);
-        if (item.classList.contains('dragging')) scale = 1;
-        item.style.transform = "scale(" + scale + ")";
-        item.style.zIndex = Math.round(scale * 100);
-      });
-    } else {
-      const bookmarks = document.querySelectorAll('.bookmark');
-      bookmarks.forEach(item => {
-        if (item.style.transform !== '') {
-          item.style.transform = '';
-          item.style.zIndex = '';
-        }
-      });
-    }
-  });
-
+})
