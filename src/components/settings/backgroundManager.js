@@ -342,7 +342,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
   DOM.localVideoUpload.addEventListener("change", async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const MAX_UPLOADS = 20
+    const MAX_UPLOADS = 25
     if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
       showAlert(
         geti18n().alert_upload_limit ||
@@ -361,7 +361,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
-      const MAX_UPLOADS = 20
+      const MAX_UPLOADS = 25
       if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
         showAlert(
           `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,

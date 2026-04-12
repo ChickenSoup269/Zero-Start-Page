@@ -2648,7 +2648,6 @@ body.bookmark-taskbar-left-mode .bookmark img,
 body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback {
   /* Make sure bottom margin is zero since there's no text */
   margin-bottom: 0 !important;
-
   /* Re-apply CSS variables to override previous transparent hacks */
   width: var(--bookmark-icon-size, 42px) !important;
   height: var(--bookmark-icon-size, 42px) !important;
@@ -2659,6 +2658,15 @@ body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback {
   ) !important;
   border-radius: var(--bookmark-border-radius, 12px) !important;
   box-shadow: var(--bookmark-shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
+}
+
+body.bookmark-sidebar-mode .bookmark img:hover,
+body.bookmark-sidebar-mode .bookmark .bookmark-icon-fallback:hover,
+body.bookmark-taskbar-mode .bookmark img:hover,
+body.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback:hover,
+body.bookmark-taskbar-left-mode .bookmark img:hover,
+body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback:hover {
+  transform: scale(1.3) !important;
 }
 
 /* Add Bookmark icon default restored */
@@ -2930,7 +2938,7 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
 /* Sidebar mode: Display as a vertical column */
 #hidden-bookmarks-popup.hidden-bookmarks-sidebar {
   flex-direction: column;
-  max-height: 70vh;
+  max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
 }
