@@ -24,18 +24,25 @@
   );
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
-  border: 1px solid rgba(30, 215, 96, 0.25);
+  border: 1px solid rgba(var(--accent-color-rgb, 30, 215, 96), 0.25);
   border-radius: 20px;
   padding: 18px 20px;
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(30, 215, 96, 0.08) inset;
+    0 0 0 1px rgba(var(--accent-color-rgb, 30, 215, 96), 0.08) inset;
   display: flex;
   align-items: center;
   gap: 20px;
   width: auto;
   min-width: 320px;
   position: relative;
+  transition:
+    background 0.5s ease,
+    border 0.5s ease,
+    box-shadow 0.5s ease,
+    padding 0.3s ease,
+    width 0.3s ease,
+    border-radius 0.3s ease;
 }
 
 /* Disc Container */
@@ -558,14 +565,14 @@
 }
 
 .music-style-spotify .progress-bar-fill {
-  background: #fff; /* Spotify default white fill */
+  background: var(--accent-color); /* Spotify accent fill */
   height: 100%;
   border-radius: 2px;
   width: 0%;
 }
 
 .music-style-spotify .progress-bar-track:hover .progress-bar-fill {
-  background: #1db954; /* Spotify green on hover */
+  filter: brightness(1.2); /* Slight highlight on hover */
 }
 
 /* Add thumb visible on hover for Spotify progress */
@@ -857,14 +864,14 @@
 /* Neon Style */
 .music-style-neon .music-player-wrapper {
   background: rgba(8, 8, 16, 0.75);
-  border: 1px solid rgba(0, 255, 255, 0.2);
+  border: 1px solid rgba(var(--accent-color-rgb, 0, 240, 255), 0.2);
   box-shadow:
-    0 0 25px rgba(0, 255, 255, 0.2),
+    0 0 25px rgba(var(--accent-color-rgb, 0, 240, 255), 0.2),
     0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
 .music-style-neon .vinyl-disc {
-  box-shadow: 0 0 18px rgba(0, 255, 255, 0.45);
+  box-shadow: 0 0 18px rgba(var(--accent-color-rgb, 0, 240, 255), 0.45);
 }
 
 .music-style-neon .player-btn {
@@ -872,13 +879,13 @@
 }
 
 .music-style-neon .play-pause-btn {
-  color: #00f0ff;
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+  color: var(--accent-color);
+  text-shadow: 0 0 10px rgba(var(--accent-color-rgb, 0, 240, 255), 0.7);
 }
 
 .music-style-neon .visualizer-bar {
-  background: linear-gradient(180deg, #00f0ff, #5b5bff);
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+  background: linear-gradient(180deg, var(--accent-color), #5b5bff);
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 0, 240, 255), 0.6);
 }
 
 .music-style-neon .visualizer-bar.playing {
@@ -1032,13 +1039,13 @@
   border-radius: 10px;
 }
 .music-style-apple .progress-bar-fill {
-  background: #fa243c; /* Apple Music Red/Pink or classic white */
+  background: var(--accent-color); /* Apple Music Accent */
 }
 .music-style-apple .music-visualizer {
   height: 28px;
 }
 .music-style-apple .visualizer-bar {
-  background: #fa243c;
+  background: var(--accent-color);
   width: 3px;
   border-radius: 2px;
 }
@@ -1094,7 +1101,7 @@
 }
 /* Orange fill */
 .music-style-soundcloud .progress-bar-fill {
-  background: #ff5500;
+  background: var(--accent-color);
   opacity: 0.85;
 }
 /* Visualizer for SoundCloud */
@@ -1104,7 +1111,7 @@
   padding-bottom: 2px;
 }
 .music-style-soundcloud .visualizer-bar {
-  background: #ff5500; /* Match SC orange */
+  background: var(--accent-color); /* Match accent */
   width: 3px;
 }
 .music-style-soundcloud .visualizer-bar.playing {

@@ -176,6 +176,7 @@ const defaultSettings = {
   timerEndTime: 0,
   timerIsRunning: false,
   musicPlayerExpanded: false,
+  musicPlayerUseDefaultColor: true,
   sideControlsGhostMode: false,
   flipLayout: false,
   showDonateButton: true,

@@ -1164,6 +1164,10 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showTimerCheckbox.checked = settings.showTimer === true
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
+    if (DOM.musicPlayerUseDefaultColorCheckbox) {
+      DOM.musicPlayerUseDefaultColorCheckbox.checked =
+        settings.musicPlayerUseDefaultColor !== false
+    }
     DOM.showClockCheckbox.checked = settings.showClock !== false
     DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
     if (DOM.freeMoveClockCheckbox)
@@ -1313,6 +1317,11 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
+    if (DOM.lcpMusicUseDefaultColorCheckbox) {
+      DOM.lcpMusicUseDefaultColorCheckbox.checked =
+        settings.musicPlayerUseDefaultColor !== false
+    }
+
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
     }

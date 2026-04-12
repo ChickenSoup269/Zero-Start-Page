@@ -9,6 +9,7 @@ export class MusicPlayer {
     this.isPlaying = false
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
+    this.useDefaultColor = settings.musicPlayerUseDefaultColor !== false
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
@@ -24,6 +25,7 @@ export class MusicPlayer {
   init() {
     this.createElements()
     this.setupEventListeners()
+    this.applyMusicStyle(this.currentStyle) // Ensure initial style and accent color are applied
     this.updateVisibility()
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
@@ -140,14 +142,82 @@ export class MusicPlayer {
         }
       }
       if (e.detail.key === "music_bar_style") {
-        // Remove old style class
-        this.container.classList.remove(`music-style-${this.currentStyle}`)
-        this.currentStyle = e.detail.value
-        // Add new style class
-        this.container.classList.add(`music-style-${this.currentStyle}`)
-        this.visualizer.setStyle(this.currentStyle)
+        this.applyMusicStyle(e.detail.value)
+      }
+      if (e.detail.key === "musicPlayerUseDefaultColor") {
+        this.useDefaultColor = e.detail.value
+        this.applyMusicStyle(this.currentStyle)
+      }
+      if (e.detail.key === "accentColor" && !this.useDefaultColor) {
+        this.applyMusicStyle(this.currentStyle)
       }
     })
+  }
+
+  applyMusicStyle(styleName) {
+    // Remove old style class
+    this.container.classList.remove(`music-style-${this.currentStyle}`)
+
+    this.currentStyle = styleName
+
+    // Add new style class
+    this.container.classList.add(`music-style-${this.currentStyle}`)
+
+    // Determine accent color
+    let accentColor = ""
+    if (this.useDefaultColor) {
+      switch (styleName) {
+        case "spotify":
+          accentColor = "#1DB954"
+          break
+        case "apple":
+          accentColor = "#fa243c"
+          break
+        case "soundcloud":
+          accentColor = "#ff5500"
+          break
+        case "neon":
+          accentColor = "#00f0ff"
+          break
+        case "cassette":
+          accentColor = "#7ecf6a"
+          break
+        case "pixel":
+          accentColor = "#ffffff"
+          break
+        default:
+          accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
+      }
+    } else {
+      accentColor = getSettings().accentColor || "#00ff73"
+    }
+
+    if (accentColor) {
+      this.container.style.setProperty("--accent-color", accentColor)
+      // Also set RGB version for semi-transparent uses if needed
+      // Handle hex, rgb, or rgba
+      let r = 30,
+        g = 215,
+        b = 96
+      if (accentColor.startsWith("#")) {
+        r = parseInt(accentColor.slice(1, 3), 16) || 0
+        g = parseInt(accentColor.slice(3, 5), 16) || 0
+        b = parseInt(accentColor.slice(5, 7), 16) || 0
+      } else if (accentColor.startsWith("rgb")) {
+        const matches = accentColor.match(/\d+/g)
+        if (matches) {
+          r = matches[0]
+          g = matches[1]
+          b = matches[2]
+        }
+      }
+      this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
+    }
+
+    // Update visualizer style
+    if (this.visualizer) {
+      this.visualizer.setStyle(this.currentStyle)
+    }
   }
 
   startPolling() {

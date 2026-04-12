@@ -711,6 +711,9 @@ export const showBookmarkGroupsCheckbox = document.getElementById(
   "show-bookmark-groups-checkbox",
 )
 export const musicStyleSelect = document.getElementById("music-style-select")
+export const musicPlayerUseDefaultColorCheckbox = document.getElementById(
+  "music-player-use-default-color-checkbox",
+)
 export const musicVisualizerStyleSelect = document.getElementById(
   "music-visualizer-style-select",
 )
@@ -735,6 +738,9 @@ export const lcpTopRightControls = document.getElementById(
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
 export const lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",
+)
+export const lcpMusicUseDefaultColorCheckbox = document.getElementById(
+  "lcp-music-player-use-default-color",
 )
 
 // SVG Wave Generator Controls

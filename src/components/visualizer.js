@@ -51,6 +51,18 @@ class MusicVisualizer {
   setStyle(style) {
     const prev = this.currentStyle
     this.currentStyle = style
+
+    // Dynamic bar count based on style
+    let newBarCount = 5
+    if (style === "minimal" || style === "pill") newBarCount = 3
+    if (style === "spotify" || style === "sidebar") newBarCount = 4
+    if (style === "soundcloud") newBarCount = 12
+
+    if (newBarCount !== this.barCount) {
+      this.barCount = newBarCount
+      this._recreateBars()
+    }
+
     if (prev === "pixel" && style !== "pixel") {
       this._stopPixel()
       if (this.isPlaying) this._startCSSLoop()
@@ -63,6 +75,29 @@ class MusicVisualizer {
       this._stopCSSLoop()
       this._startCSSLoop()
     }
+  }
+
+  _recreateBars() {
+    // Clear existing bars
+    this.bars.forEach((bar) => bar.remove())
+    this.bars = []
+
+    // Create new bars
+    for (let i = 0; i < this.barCount; i++) {
+      const bar = document.createElement("div")
+      bar.className = "visualizer-bar"
+      this.bars.push(bar)
+      this.container.appendChild(bar)
+    }
+
+    // Reset heights
+    this._currentHeights = new Array(this.barCount).fill(4)
+    this._targetHeights = new Array(this.barCount).fill(4)
+    this._simPhase = Array.from({ length: this.barCount }, (_, i) => i * 1.1)
+    this._simSpeeds = Array.from(
+      { length: this.barCount },
+      () => 1.5 + Math.random() * 1.5,
+    )
   }
 
   // ── Pixel canvas ─────────────────────────────────────────────────────────

@@ -432,6 +432,14 @@
                     <option value="minimal" data-i18n="style_minimal">Minimal</option>
                 </select>
             </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-palette lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_music_use_default_color">Use Default Style Color</span>
+                <label class="lcp-switch" for="lcp-music-player-use-default-color">
+                    <input type="checkbox" id="lcp-music-player-use-default-color">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
         </div>
     </div>
 
@@ -1673,20 +1681,25 @@
                         </div>
                         <div id="sidestyle-align-setting" class="setting-item"
                             style="margin-top: 0.6rem; display: none;">
-                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style Alignment</label>
+                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style
+                                Alignment</label>
                             <select id="sidestyle-align-select">
                                 <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
                                 <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
                                 <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
                             </select>
-                            <div style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
-                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide Dashed Borders</label>
+                            <div
+                                style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
+                                    Dashed Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
                             </div>
                         </div>
-                        <div id="sidebar-clock-flip-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
+                        <div id="sidebar-clock-flip-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
                             <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip Vertical Layout</label>
+                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip
+                                    Vertical Layout</label>
                                 <input type="checkbox" id="sidebar-clock-flip-checkbox">
                             </div>
                         </div>
@@ -1734,9 +1747,11 @@
                         </div>
 
                         <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target"><i class="fa-solid fa-font"></i> Clock Font Applies To</label>
+                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target"><i
+                                    class="fa-solid fa-font"></i> Clock Font Applies To</label>
                             <select id="clock-font-target-select">
-                                <option value="both" data-i18n="settings_clock_font_target_both">Clock &amp; Date</option>
+                                <option value="both" data-i18n="settings_clock_font_target_both">Clock &amp; Date
+                                </option>
                                 <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
                             </select>
@@ -1782,7 +1797,7 @@
                                     data-i18n="settings_clock_size">Clock
                                     Size:</span>
                                 <span id="clock-size-value">6rem</span></label>
-                            <input type="range" id="clock-size-input" min="2" max="10" step="0.5" value="6">
+                            <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6">
 
                             <label style="margin-top: 0.7rem; display: block;" for="date-size-input"><i
                                     class="fa-solid fa-calendar-day"></i>
@@ -2135,6 +2150,11 @@
                             <option value="neon" data-i18n="style_neon">Neon</option>
                             <option value="minimal" data-i18n="style_minimal">Minimal</option>
                         </select>
+                    </div>
+                    <div class="setting-item-row">
+                        <label for="music-player-use-default-color-checkbox"
+                            data-i18n="settings_music_use_default_color">Use Default Music Color</label>
+                        <input type="checkbox" id="music-player-use-default-color-checkbox" checked>
                     </div>
                     <div class="setting-item-row">
                         <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full

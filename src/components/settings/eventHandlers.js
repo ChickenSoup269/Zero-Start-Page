@@ -1893,6 +1893,21 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
+    handleSettingUpdate(
+      "musicPlayerUseDefaultColor",
+      DOM.musicPlayerUseDefaultColorCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "musicPlayerUseDefaultColor",
+          value: DOM.musicPlayerUseDefaultColorCheckbox.checked,
+        },
+      }),
+    )
+  })
+
   DOM.ghostControlsCheckbox.addEventListener("change", () => {
     const isGhost = DOM.ghostControlsCheckbox.checked
     handleSettingUpdate("sideControlsGhostMode", isGhost)
@@ -2042,6 +2057,22 @@ export function setupGeneralEventHandlers(
   if (DOM.lcpMusicStyleSelect) {
     DOM.lcpMusicStyleSelect.addEventListener("change", () => {
       applyMusicStyle(DOM.lcpMusicStyleSelect.value)
+    })
+  }
+
+  if (DOM.lcpMusicUseDefaultColorCheckbox) {
+    DOM.lcpMusicUseDefaultColorCheckbox.addEventListener("change", () => {
+      const isChecked = DOM.lcpMusicUseDefaultColorCheckbox.checked
+      DOM.musicPlayerUseDefaultColorCheckbox.checked = isChecked
+      handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: {
+            key: "musicPlayerUseDefaultColor",
+            value: isChecked,
+          },
+        }),
+      )
     })
   }
 
