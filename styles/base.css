@@ -828,7 +828,17 @@ body.date-clock-style-sidestyle.sidestyle-align-right .clock-sidestyle {
   margin-left: 0;
   margin-right: 8px;
 }
+
+/* Hide Borders Option */
+body.date-clock-style-sidestyle.sidestyle-no-border .clock-sidestyle {
+  border: none !important;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
 body.date-clock-style-sidestyle .clock-sidestyle-day {
+  font-family: var(--font-date);
   font-size: calc(var(--clock-size) * 0.6);
   letter-spacing: calc(var(--clock-size) * 0.08);
   font-weight: 700;
@@ -836,18 +846,21 @@ body.date-clock-style-sidestyle .clock-sidestyle-day {
   color: var(--accent-color, #fff);
 }
 body.date-clock-style-sidestyle .clock-sidestyle-date {
+  font-family: var(--font-date);
   font-size: calc(var(--clock-size) * 0.2);
   opacity: 0.8;
   margin-top: 2px;
   padding-left: 8px;
 }
 body.date-clock-style-sidestyle .clock-sidestyle-time {
+  font-family: var(--font-clock);
   font-size: calc(var(--clock-size) * 0.2); 
   font-weight: 400;
   opacity: 0.9;
   margin-top: 2px;
   padding-left: 8px;
 }
+
 
 /* JP Style */
 body.date-clock-style-jp-style .clock-jp-style {

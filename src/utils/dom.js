@@ -486,6 +486,9 @@ export const sidestyleAlignSetting = document.getElementById(
 export const sidestyleAlignSelect = document.getElementById(
   "sidestyle-align-select",
 )
+export const sidestyleNoBorderCheckbox = document.getElementById(
+  "sidestyle-no-border-checkbox",
+)
 export const clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )

@@ -28,6 +28,7 @@ const defaultSettings = {
   timezone: "local",
   dateClockStyle: "default",
   sidestyleAlign: "left",
+  sidestyleNoBorder: false,
   clockFontTarget: "both",
 
   showCustomTitle: true,

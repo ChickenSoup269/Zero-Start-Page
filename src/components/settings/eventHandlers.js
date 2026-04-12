@@ -1631,6 +1631,23 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  if (DOM.sidestyleNoBorderCheckbox) {
+    DOM.sidestyleNoBorderCheckbox.addEventListener("change", () => {
+      handleSettingUpdate(
+        "sidestyleNoBorder",
+        DOM.sidestyleNoBorderCheckbox.checked,
+      )
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "sidestyleNoBorder",
+            value: DOM.sidestyleNoBorderCheckbox.checked,
+          },
+        }),
+      )
+    })
+  }
+
   if (DOM.clockFontTargetSelect) {
     DOM.clockFontTargetSelect.addEventListener("change", () => {
       handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)

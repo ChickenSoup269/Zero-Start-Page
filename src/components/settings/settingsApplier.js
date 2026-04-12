@@ -500,10 +500,14 @@ function createApplySettings(effectInstances) {
       "sidestyle-align-left",
       "sidestyle-align-center",
       "sidestyle-align-right",
+      "sidestyle-no-border",
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"
       document.body.classList.add(`sidestyle-align-${align}`)
+      if (settings.sidestyleNoBorder) {
+        document.body.classList.add("sidestyle-no-border")
+      }
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -697,6 +701,8 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     if (DOM.sidestyleAlignSelect)
       DOM.sidestyleAlignSelect.value = settings.sidestyleAlign || "left"
+    if (DOM.sidestyleNoBorderCheckbox)
+      DOM.sidestyleNoBorderCheckbox.checked = settings.sidestyleNoBorder === true
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 

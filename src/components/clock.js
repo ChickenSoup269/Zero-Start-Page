@@ -309,7 +309,10 @@ export function updateTime() {
           second: "2-digit",
           timeZone: tz,
         }
-    const timeStr = now.toLocaleTimeString(langCode, timeOptions)
+    let timeStr = now.toLocaleTimeString(langCode, timeOptions)
+    if (settings.sidestyleAlign === "center" && settings.sidestyleNoBorder) {
+      timeStr = `- ${timeStr} -`
+    }
 
     // Get short weekday as VI strings are long, e.g. "THỨ BẢY" instead of "SATURDAY".
     // but the test style has SATURDAY. Let's use getSafeWeekday to get long weekday for EN.
@@ -568,7 +571,8 @@ export function initClock() {
       e.detail.key === "jpStyleLanguage" ||
       e.detail.key === "analogMarkerMode" ||
       e.detail.key === "hueTextMode" ||
-      e.detail.key === "sidestyleAlign"
+      e.detail.key === "sidestyleAlign" ||
+      e.detail.key === "sidestyleNoBorder"
     ) {
       updateTime()
     }
