@@ -286,21 +286,33 @@ function createApplySettings(effectInstances) {
     const clockFontTarget = settings.clockFontTarget || "both"
     const isRestrictedFont =
       settings.font.includes("Electroharmonix") ||
-      settings.font.includes("Anurati")
-      
-    const primaryFont = isRestrictedFont ? "'Outfit', sans-serif" : settings.font
+      settings.font.includes("Anurati") ||
+      settings.font.includes("E1234")
+
+    const primaryFont = isRestrictedFont
+      ? "'Outfit', sans-serif"
+      : settings.font
     document.documentElement.style.setProperty("--font-primary", primaryFont)
 
     if (clockFontTarget === "both") {
-      document.documentElement.style.setProperty("--font-clock-date", settings.font)
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        settings.font,
+      )
       document.documentElement.style.setProperty("--font-clock", settings.font)
       document.documentElement.style.setProperty("--font-date", settings.font)
     } else if (clockFontTarget === "clock") {
-      document.documentElement.style.setProperty("--font-clock-date", settings.font)
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        settings.font,
+      )
       document.documentElement.style.setProperty("--font-clock", settings.font)
       document.documentElement.style.setProperty("--font-date", primaryFont)
     } else if (clockFontTarget === "date") {
-      document.documentElement.style.setProperty("--font-clock-date", primaryFont)
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        primaryFont,
+      )
       document.documentElement.style.setProperty("--font-clock", primaryFont)
       document.documentElement.style.setProperty("--font-date", settings.font)
     }
@@ -702,7 +714,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleAlignSelect)
       DOM.sidestyleAlignSelect.value = settings.sidestyleAlign || "left"
     if (DOM.sidestyleNoBorderCheckbox)
-      DOM.sidestyleNoBorderCheckbox.checked = settings.sidestyleNoBorder === true
+      DOM.sidestyleNoBorderCheckbox.checked =
+        settings.sidestyleNoBorder === true
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
@@ -713,7 +726,9 @@ function createUpdateSettingsInputs(effectInstances) {
       (settings.dateClockStyle || "default") === "jp-style" ? "block" : "none"
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
-        (settings.dateClockStyle || "default") === "sidestyle" ? "block" : "none"
+        (settings.dateClockStyle || "default") === "sidestyle"
+          ? "block"
+          : "none"
 
     DOM.analogBlurBgSetting.style.display =
       (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"

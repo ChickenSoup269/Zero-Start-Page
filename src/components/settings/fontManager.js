@@ -49,6 +49,11 @@ const PREDEFINED_FONTS = [
     tag: "Clock/Date",
   },
   {
+    label: "E1234",
+    value: "'E1234', sans-serif",
+    tag: "Clock/Date",
+  },
+  {
     label: "GohuFont",
     value: "'GohuFont', sans-serif",
     tag: "Pixel",

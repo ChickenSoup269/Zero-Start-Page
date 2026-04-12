@@ -14,9 +14,19 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "GohuFont";
   src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/GohuFont11NerdFontPropo-Regular.woff2")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "E1234";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/E1234.ttf")
     format("truetype");
   font-style: normal;
   font-weight: normal;
