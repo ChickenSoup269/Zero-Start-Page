@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const manifest = window.chrome?.runtime?.getManifest?.()
         if (manifest && manifest.version) {
           const currentVersion = manifest.version
-          
+
           // Use chrome.storage.local if available, fallback to localStorage
           if (window.chrome?.storage?.local) {
             chrome.storage.local.get(["lastVersion"], (result) => {
@@ -452,7 +452,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if (sidebarLink) {
                 sidebarLink.style.display = "flex"
               }
-              
+
               saveFn(currentVersion)
             }
           } else {

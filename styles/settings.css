@@ -133,7 +133,7 @@
 
 .settings-sidebar {
   position: fixed;
-  left: -350px;
+  left: -400px;
   top: 0;
   width: var(--sidebar-width);
   height: 100%;

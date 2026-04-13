@@ -2774,6 +2774,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
   right: auto !important;
   transform: translateX(-50%) !important;
 }
+
 body.bookmark-taskbar-left-mode .bookmark-widget {
   bottom: 20px !important;
   left: 20px !important;
@@ -3143,6 +3144,7 @@ body.bookmark-item-card-style.bookmark-taskbar-left-mode
   box-shadow: none !important;
   border: none !important;
 }
+
 /* MacOS Dock Hover Effect for Bookmarks */
 body.bookmark-macos-hover .bookmark {
   position: relative;
