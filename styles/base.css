@@ -782,16 +782,19 @@ body.date-clock-style-cool .cool-dayname {
   color: var(--accent-color, #fff);
   text-transform: uppercase;
   margin: 0.2rem 0;
+  font-family: var(--font-date);
 }
 body.date-clock-style-cool .cool-date {
   font-size: calc(var(--clock-size) * 0.25);
   letter-spacing: 1px;
+  font-family: var(--font-date);
 }
 body.date-clock-style-cool .cool-time {
   font-size: calc(var(--clock-size) * 0.15);
   font-weight: bold;
   padding-top: 10px;
   letter-spacing: 2px;
+  font-family: var(--font-clock);
 }
 
 /* Side Style - Left (default) */
@@ -854,17 +857,18 @@ body.date-clock-style-sidestyle .clock-sidestyle-date {
 }
 body.date-clock-style-sidestyle .clock-sidestyle-time {
   font-family: var(--font-clock);
-  font-size: calc(var(--clock-size) * 0.2); 
+  font-size: calc(var(--clock-size) * 0.2);
   font-weight: 400;
   opacity: 0.9;
   margin-top: 2px;
   padding-left: 8px;
 }
 
-
 /* JP Style */
 body.date-clock-style-jp-style .clock-jp-style {
-  font-family: var(--font-clock-date); /* Use clock/date dedicated font variable */
+  font-family: var(
+    --font-clock-date
+  ); /* Use clock/date dedicated font variable */
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 body.date-clock-style-jp-style .clock-jp-row {
@@ -926,7 +930,7 @@ body.date-clock-style-sidebar .clock-sidebar-time {
 body.date-clock-style-sidebar .clock-sidebar-unit {
   font-size: calc(var(--clock-size) * 0.8);
   font-weight: 700;
-  line-height: 1.0;
+  line-height: 1;
   letter-spacing: 2px;
 }
 body.date-clock-style-sidebar .clock-sidebar-second {
@@ -948,7 +952,6 @@ body.date-clock-style-sidebar .clock-sidebar-date {
   opacity: 0.85;
   text-align: center;
 }
-
 
 /* Free Mode Clock */
 body.free-move-clock .clock-date-wrap {
