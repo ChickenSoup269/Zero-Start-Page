@@ -472,6 +472,105 @@ export function setupMultiColorManager(applySettings) {
     applyRandomizedColors(generateCrazyColors(count))
   })
 
+  let multiColorSelectMode = false
+  let multiColorSelectedIndices = new Set()
+
+  function setupMultiSelect() {
+    const updateMultiColorSelectCount = () => {
+      DOM.multiColorSelectCount.textContent = `${multiColorSelectedIndices.size} selected`
+      DOM.multiColorDeleteSelectedBtn.disabled =
+        multiColorSelectedIndices.size === 0
+    }
+
+    const enterMultiColorSelectMode = () => {
+      multiColorSelectMode = true
+      multiColorSelectedIndices.clear()
+      DOM.savedMultiColorPresets.classList.add("bg-select-mode")
+      DOM.multiColorSelectToolbar.style.display = "flex"
+      DOM.multiColorSelectModeBtn.style.display = "none"
+      updateMultiColorSelectCount()
+    }
+
+    const exitMultiColorSelectMode = () => {
+      multiColorSelectMode = false
+      multiColorSelectedIndices.clear()
+      DOM.savedMultiColorPresets.classList.remove("bg-select-mode")
+      DOM.multiColorSelectToolbar.style.display = "none"
+      DOM.multiColorSelectModeBtn.style.display = "block"
+      DOM.savedMultiColorPresets
+        .querySelectorAll(".user-gradient-item")
+        .forEach((el) => el.classList.remove("bg-selected"))
+    }
+
+    DOM.multiColorSelectModeBtn.addEventListener("click", () => {
+      if (multiColorSelectMode) exitMultiColorSelectMode()
+      else enterMultiColorSelectMode()
+    })
+
+    DOM.multiColorSelectCancelBtn.addEventListener(
+      "click",
+      exitMultiColorSelectMode,
+    )
+
+    DOM.multiColorSelectAllBtn.addEventListener("click", () => {
+      const settings = getSettings()
+      const allGradients = settings.userGradients || []
+      const multiColorIndices = allGradients
+        .map((g, i) => ({ g, i }))
+        .filter((item) => item.g.type === "multi-color")
+        .map((item) => item.i)
+
+      if (multiColorSelectedIndices.size === multiColorIndices.length) {
+        multiColorSelectedIndices.clear()
+        DOM.savedMultiColorPresets
+          .querySelectorAll(".user-gradient-item")
+          .forEach((el) => el.classList.remove("bg-selected"))
+      } else {
+        multiColorIndices.forEach((i) => multiColorSelectedIndices.add(i))
+        DOM.savedMultiColorPresets
+          .querySelectorAll(".user-gradient-item")
+          .forEach((el) => el.classList.add("bg-selected"))
+      }
+      updateMultiColorSelectCount()
+    })
+
+    DOM.multiColorDeleteSelectedBtn.addEventListener("click", async () => {
+      if (multiColorSelectedIndices.size === 0) return
+      const confirmed = await showConfirm(
+        `${t("alert_delete_bg_confirm", "Delete selected?")} (${multiColorSelectedIndices.size})`,
+      )
+      if (!confirmed) return
+
+      const settings = getSettings()
+      const sortedIndices = Array.from(multiColorSelectedIndices).sort(
+        (a, b) => b - a,
+      )
+      sortedIndices.forEach((index) => {
+        settings.userGradients.splice(index, 1)
+      })
+
+      saveSettings()
+      exitMultiColorSelectMode()
+      renderSavedPresets()
+    })
+
+    DOM.savedMultiColorPresets.addEventListener("click", (e) => {
+      if (!multiColorSelectMode) return
+      const item = e.target.closest(".user-gradient-item")
+      if (!item) return
+
+      const index = parseInt(item.dataset.index)
+      if (multiColorSelectedIndices.has(index)) {
+        multiColorSelectedIndices.delete(index)
+        item.classList.remove("bg-selected")
+      } else {
+        multiColorSelectedIndices.add(index)
+        item.classList.add("bg-selected")
+      }
+      updateMultiColorSelectCount()
+    })
+  }
+
   // Render saved multi-color presets
   function renderSavedPresets() {
     DOM.savedMultiColorPresets.innerHTML = ""
@@ -483,6 +582,7 @@ export function setupMultiColorManager(applySettings) {
 
         const item = document.createElement("div")
         item.className = "user-gradient-item"
+        item.dataset.index = index
         item.style.cursor = "pointer"
         item.title = `${preset.mode === "blocks" ? "Blocks" : "Gradient"} - ${preset.gradientStops.length} colors`
 
@@ -516,6 +616,7 @@ export function setupMultiColorManager(applySettings) {
 
         // Click to apply
         item.addEventListener("click", () => {
+          if (multiColorSelectMode) return
           // Update color pickers
           generateColorPickers(preset.gradientStops.length)
           const pickers = Array.from(
@@ -578,12 +679,14 @@ export function setupMultiColorManager(applySettings) {
         const removeBtn = document.createElement("button")
         removeBtn.className = "remove-bg-btn"
         removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-        removeBtn.addEventListener("click", (e) => {
+        removeBtn.addEventListener("click", async (e) => {
           e.stopPropagation()
-          settings.userGradients.splice(index, 1)
-          updateSetting("userGradients", settings.userGradients)
-          saveSettings()
-          renderSavedPresets()
+          if (await showConfirm(t("alert_delete_bg_confirm", "Delete?"))) {
+            settings.userGradients.splice(index, 1)
+            updateSetting("userGradients", settings.userGradients)
+            saveSettings()
+            renderSavedPresets()
+          }
         })
 
         item.appendChild(removeBtn)
@@ -599,6 +702,8 @@ export function setupMultiColorManager(applySettings) {
       multiSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
     }
   }
+
+  setupMultiSelect()
 
   // Handle count selector change
   DOM.multiColorCountSelect.addEventListener("change", (e) => {

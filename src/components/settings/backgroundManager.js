@@ -229,7 +229,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function enterBgSelectMode() {
     bgSelectMode = true
     bgSelectedIds.clear()
-    DOM.localBackgroundGallery.classList.add("select-mode")
+    DOM.localBackgroundGallery.classList.add("bg-select-mode")
     bgSelectToolbar.style.display = "flex"
     bgSelectModeBtn.style.opacity = "0.4"
     updateBgSelectCount()
@@ -238,7 +238,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function exitBgSelectMode() {
     bgSelectMode = false
     bgSelectedIds.clear()
-    DOM.localBackgroundGallery.classList.remove("select-mode")
+    DOM.localBackgroundGallery.classList.remove("bg-select-mode")
     bgSelectToolbar.style.display = "none"
     bgSelectModeBtn.style.opacity = ""
     DOM.localBackgroundGallery

@@ -46,8 +46,14 @@ import {
   setupMultiSelectMode,
   setupFileUploads,
 } from "./backgroundManager.js"
-import { renderUserGradients } from "./gradientManager.js"
-import { renderUserSvgWaves } from "./svgWaveManager.js"
+import {
+  renderUserGradients,
+  setupGradientMultiSelect,
+} from "./gradientManager.js"
+import {
+  renderUserSvgWaves,
+  setupSvgWaveMultiSelect,
+} from "./svgWaveManager.js"
 import { setupEffectColorHandlers } from "./effectColorHandlers.js"
 import { setupMultiColorManager } from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
@@ -401,6 +407,10 @@ export function initSettings() {
   )
   setupEffectColorHandlers(DOM_EXPORTS, effects)
   setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
+  setupGradientMultiSelect(DOM_EXPORTS)
+  setupSvgWaveMultiSelect(DOM_EXPORTS, effects.svgWaveEffect, () => {
+    handleSettingUpdate("svgWaveActive", true)
+  })
   setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
   setupMultiColorManager(applySettings)
 

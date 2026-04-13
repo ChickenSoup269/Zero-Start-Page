@@ -166,6 +166,103 @@ function buildGradientCss(gradient) {
   return `linear-gradient(${angle}deg, ${gradientStops})`
 }
 
+let gradientSelectMode = false
+let gradientSelectedIndices = new Set()
+
+function setupMultiSelect(DOM) {
+  const i18n = geti18n()
+
+  const updateGradientSelectCount = () => {
+    DOM.gradientSelectCount.textContent = `${gradientSelectedIndices.size} selected`
+    DOM.gradientDeleteSelectedBtn.disabled = gradientSelectedIndices.size === 0
+  }
+
+  const enterGradientSelectMode = () => {
+    gradientSelectMode = true
+    gradientSelectedIndices.clear()
+    DOM.userGradientsGallery.classList.add("bg-select-mode")
+    DOM.gradientSelectToolbar.style.display = "flex"
+    DOM.gradientSelectModeBtn.style.display = "none"
+    updateGradientSelectCount()
+  }
+
+  const exitGradientSelectMode = () => {
+    gradientSelectMode = false
+    gradientSelectedIndices.clear()
+    DOM.userGradientsGallery.classList.remove("bg-select-mode")
+    DOM.gradientSelectToolbar.style.display = "none"
+    DOM.gradientSelectModeBtn.style.display = "block"
+    DOM.userGradientsGallery
+      .querySelectorAll(".user-gradient-item")
+      .forEach((el) => el.classList.remove("bg-selected"))
+  }
+
+  DOM.gradientSelectModeBtn.addEventListener("click", () => {
+    if (gradientSelectMode) exitGradientSelectMode()
+    else enterGradientSelectMode()
+  })
+
+  DOM.gradientSelectCancelBtn.addEventListener("click", exitGradientSelectMode)
+
+  DOM.gradientSelectAllBtn.addEventListener("click", () => {
+    const settings = getSettings()
+    const allGradients = settings.userGradients || []
+    const standardGradientsIndices = allGradients
+      .map((g, i) => ({ g, i }))
+      .filter((item) => item.g.type !== "multi-color")
+      .map((item) => item.i)
+
+    if (gradientSelectedIndices.size === standardGradientsIndices.length) {
+      gradientSelectedIndices.clear()
+      DOM.userGradientsGallery
+        .querySelectorAll(".user-gradient-item")
+        .forEach((el) => el.classList.remove("bg-selected"))
+    } else {
+      standardGradientsIndices.forEach((i) => gradientSelectedIndices.add(i))
+      DOM.userGradientsGallery
+        .querySelectorAll(".user-gradient-item")
+        .forEach((el) => el.classList.add("bg-selected"))
+    }
+    updateGradientSelectCount()
+  })
+
+  DOM.gradientDeleteSelectedBtn.addEventListener("click", async () => {
+    if (gradientSelectedIndices.size === 0) return
+    const confirmed = await showConfirm(
+      `${i18n.alert_delete_bg_confirm || "Delete selected?"} (${gradientSelectedIndices.size})`,
+    )
+    if (!confirmed) return
+
+    const settings = getSettings()
+    const sortedIndices = Array.from(gradientSelectedIndices).sort(
+      (a, b) => b - a,
+    )
+    sortedIndices.forEach((index) => {
+      settings.userGradients.splice(index, 1)
+    })
+
+    saveSettings()
+    exitGradientSelectMode()
+    renderUserGradients(DOM)
+  })
+
+  DOM.userGradientsGallery.addEventListener("click", (e) => {
+    if (!gradientSelectMode) return
+    const item = e.target.closest(".user-gradient-item")
+    if (!item) return
+
+    const index = parseInt(item.dataset.index)
+    if (gradientSelectedIndices.has(index)) {
+      gradientSelectedIndices.delete(index)
+      item.classList.remove("bg-selected")
+    } else {
+      gradientSelectedIndices.add(index)
+      item.classList.add("bg-selected")
+    }
+    updateGradientSelectCount()
+  })
+}
+
 function renderUserGradients(DOM) {
   const settings = getSettings()
   DOM.userGradientsGallery.innerHTML = ""
@@ -176,6 +273,7 @@ function renderUserGradients(DOM) {
 
       const item = document.createElement("div")
       item.className = "user-gradient-item"
+      item.dataset.index = index
       item.dataset.start = gradient.start
       item.dataset.end = gradient.end
       item.dataset.angle = gradient.angle
@@ -185,6 +283,42 @@ function renderUserGradients(DOM) {
       item.dataset.customColors = gradient.customColors || ""
       item.style.background = buildGradientCss(gradient)
       item.title = `Gradient ${index + 1}`
+
+      item.addEventListener("click", () => {
+        if (gradientSelectMode) return
+        updateSetting("background", buildGradientCss(gradient))
+        updateSetting("backgroundType", "gradient")
+
+        // Sync inputs
+        DOM.gradientStartPicker.value = gradient.start
+        DOM.gradientEndPicker.value = gradient.end
+        DOM.gradientAngleInput.value = gradient.angle
+        DOM.gradientAngleValue.textContent = `${gradient.angle}°`
+        DOM.gradientTypeSelect.value = gradient.type || "linear"
+        if (gradient.repeating) DOM.gradientRepeatingToggle.checked = true
+
+        // Extra colors
+        if (gradient.extraColors) {
+          DOM.gradientExtraColorCount.value = gradient.extraColors.length
+          // Trigger change to show pickers
+          DOM.gradientExtraColorCount.dispatchEvent(new Event("change"))
+          const pickers = DOM.gradientExtraColorPickers.querySelectorAll(
+            'input[type="color"]',
+          )
+          gradient.extraColors.forEach((color, i) => {
+            if (pickers[i]) pickers[i].value = color
+          })
+        } else {
+          DOM.gradientExtraColorCount.value = 0
+          DOM.gradientExtraColorCount.dispatchEvent(new Event("change"))
+        }
+
+        // Radial position
+        if (gradient.type === "radial" && gradient.position) {
+          DOM.gradientPositionSelect.value = gradient.position
+        }
+      })
+
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
@@ -210,5 +344,5 @@ function renderUserGradients(DOM) {
   }
 }
 
-export { renderUserGradients }
+export { renderUserGradients, setupMultiSelect as setupGradientMultiSelect }
 export { buildGradientCss }

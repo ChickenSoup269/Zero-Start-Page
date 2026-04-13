@@ -797,6 +797,19 @@
                     <label data-i18n="settings_saved_gradients" style="margin-bottom: 0;"
                         for="multi-color-count-select">Saved Gradients</label>
                     <span id="count-gradient"></span>
+                    <button id="gradient-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                        data-i18n="bg_select_mode" style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                </div>
+                <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                    <span id="gradient-select-count" class="bg-select-count">0 selected</span>
+                    <button id="gradient-select-all-btn" class="secondary-btn"><i
+                            class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
+                            All</span></button>
+                    <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"><i
+                            class="fa-solid fa-trash"></i> <span
+                            data-i18n="bg_delete_selected">Delete</span></button>
+                    <button id="gradient-select-cancel-btn" class="secondary-btn"><i
+                            class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
@@ -899,6 +912,19 @@
                                 data-i18n="settings_multi_color_saved_presets" for="svg-wave-lines">Saved
                                 Presets</label>
                             <span id="count-multi-color"></span>
+                            <button id="multi-color-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                                data-i18n="bg_select_mode" style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                        </div>
+                        <div id="multi-color-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                            <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
+                            <button id="multi-color-select-all-btn" class="secondary-btn"><i
+                                    class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
+                                    All</span></button>
+                            <button id="multi-color-delete-selected-btn" class="secondary-btn danger-btn"><i
+                                    class="fa-solid fa-trash"></i> <span
+                                    data-i18n="bg_delete_selected">Delete</span></button>
+                            <button id="multi-color-select-cancel-btn" class="secondary-btn"><i
+                                    class="fa-solid fa-xmark"></i></button>
                         </div>
                         <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
                     </div>
@@ -1043,6 +1069,19 @@
                             style="font-size:0.8rem;opacity:0.7;margin-bottom:0;" for="aura-color-picker">Saved
                             Waves</label>
                         <span id="count-svg-wave"></span>
+                        <button id="svg-wave-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                            data-i18n="bg_select_mode" style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                    </div>
+                    <div id="svg-wave-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                        <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
+                        <button id="svg-wave-select-all-btn" class="secondary-btn"><i
+                                class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
+                                All</span></button>
+                        <button id="svg-wave-delete-selected-btn" class="secondary-btn danger-btn"><i
+                                class="fa-solid fa-trash"></i> <span
+                                data-i18n="bg_delete_selected">Delete</span></button>
+                        <button id="svg-wave-select-cancel-btn" class="secondary-btn"><i
+                                class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
                 </div>

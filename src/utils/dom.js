@@ -861,3 +861,63 @@ export const freeMoveCustomTitleCheckbox = document.getElementById(
 )
 
 export const lcpBookmarkLayout = document.getElementById("lcp-bookmark-layout")
+
+// Multi-select for Gradients
+export const gradientSelectModeBtn = document.getElementById(
+  "gradient-select-mode-btn",
+)
+export const gradientSelectToolbar = document.getElementById(
+  "gradient-select-toolbar",
+)
+export const gradientSelectCount = document.getElementById(
+  "gradient-select-count",
+)
+export const gradientSelectAllBtn = document.getElementById(
+  "gradient-select-all-btn",
+)
+export const gradientDeleteSelectedBtn = document.getElementById(
+  "gradient-delete-selected-btn",
+)
+export const gradientSelectCancelBtn = document.getElementById(
+  "gradient-select-cancel-btn",
+)
+
+// Multi-select for Multi-Color
+export const multiColorSelectModeBtn = document.getElementById(
+  "multi-color-select-mode-btn",
+)
+export const multiColorSelectToolbar = document.getElementById(
+  "multi-color-select-toolbar",
+)
+export const multiColorSelectCount = document.getElementById(
+  "multi-color-select-count",
+)
+export const multiColorSelectAllBtn = document.getElementById(
+  "multi-color-select-all-btn",
+)
+export const multiColorDeleteSelectedBtn = document.getElementById(
+  "multi-color-delete-selected-btn",
+)
+export const multiColorSelectCancelBtn = document.getElementById(
+  "multi-color-select-cancel-btn",
+)
+
+// Multi-select for SVG Waves
+export const svgWaveSelectModeBtn = document.getElementById(
+  "svg-wave-select-mode-btn",
+)
+export const svgWaveSelectToolbar = document.getElementById(
+  "svg-wave-select-toolbar",
+)
+export const svgWaveSelectCount = document.getElementById(
+  "svg-wave-select-count",
+)
+export const svgWaveSelectAllBtn = document.getElementById(
+  "svg-wave-select-all-btn",
+)
+export const svgWaveDeleteSelectedBtn = document.getElementById(
+  "svg-wave-delete-selected-btn",
+)
+export const svgWaveSelectCancelBtn = document.getElementById(
+  "svg-wave-select-cancel-btn",
+)

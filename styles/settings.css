@@ -1132,17 +1132,19 @@
 }
 
 /* In select mode, hide individual remove buttons */
-.local-bg-gallery.select-mode .remove-bg-btn {
+.bg-select-mode .remove-bg-btn {
   display: none !important;
 }
 
 /* In select mode, non-user-uploaded items (presets) are dimmed */
-.local-bg-gallery.select-mode .local-bg-item:not(.user-uploaded) {
+.local-bg-gallery.bg-select-mode .local-bg-item:not(.user-uploaded):not(.user-gradient-item):not(.user-svg-wave-item) {
   opacity: 0.4;
   pointer-events: none;
 }
 
-.local-bg-item.user-uploaded {
+.local-bg-item.user-uploaded,
+.user-gradient-item,
+.user-svg-wave-item {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
