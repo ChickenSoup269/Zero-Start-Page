@@ -54,9 +54,9 @@ class MusicVisualizer {
 
     // Dynamic bar count based on style
     let newBarCount = 5
-    if (style === "minimal" || style === "pill") newBarCount = 3
+    if (style === "minimal" || style === "pill") newBarCount = 4
     if (style === "spotify" || style === "sidebar") newBarCount = 4
-    if (style === "soundcloud") newBarCount = 12
+    if (style === "soundcloud") newBarCount = 6
 
     if (newBarCount !== this.barCount) {
       this.barCount = newBarCount
@@ -115,7 +115,7 @@ class MusicVisualizer {
     this.pixelCanvas = canvas
 
     // Each bar gets a different oscillation speed so they look like independent EQ bands
-    this.pixelSpeeds = [1.9, 2.4, 1.6, 2.8]
+    this.pixelSpeeds = [1.2, 2.2, 1.6, 2.8, 1.8]
     this.pixelPhase = this.pixelSpeeds.map((_, i) => i * 1.1)
     this.peakIdx = new Array(this.barCount).fill(0)
     this.peakTimer = 0
@@ -162,9 +162,9 @@ class MusicVisualizer {
         .getPropertyValue("--accent-color")
         .trim() || "#a8c0ff"
 
-    const gap = 5
+    const gap = 3
     const barW = Math.max(
-      4,
+      5,
       Math.floor((W - (this.barCount - 1) * gap) / this.barCount),
     )
     const totalW = this.barCount * barW + (this.barCount - 1) * gap
