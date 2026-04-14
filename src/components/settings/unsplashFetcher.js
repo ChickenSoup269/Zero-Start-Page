@@ -235,7 +235,8 @@ async function setUnsplashRandomBackground(
       const imgRes = await fetch(imageUrl)
       if (imgRes.ok) {
         const blob = await imgRes.blob()
-        finalBgValue = await saveImage(blob, "idb-img-unsplash")
+        // Use a unique ID for each Unsplash image
+        finalBgValue = await saveImage(blob, `idb-img-unsplash-${Date.now()}`)
       } else {
         await preloadImage(imageUrl)
       }

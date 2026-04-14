@@ -503,8 +503,7 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, #f8f9fa, #d7dbe3);
+  color: var(--accent-color);
 }
 
 body.hide-bookmark-bg .bookmark img,
@@ -2506,7 +2505,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
   flex-direction: column-reverse; /* Icons bottom, groups above */
   align-items: center;
   gap: 8px;
-  z-index: 100;
+  z-index: 10;
   contain: layout paint;
 }
 
@@ -2657,10 +2656,6 @@ body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback {
   width: var(--bookmark-icon-size, 42px) !important;
   height: var(--bookmark-icon-size, 42px) !important;
   padding: 4px !important;
-  background-color: var(
-    --bookmark-bg-color,
-    rgba(255, 255, 255, 0.2)
-  ) !important;
   border-radius: var(--bookmark-border-radius, 12px) !important;
   box-shadow: var(--bookmark-shadow, 0 4px 6px rgba(0, 0, 0, 0.1)) !important;
 }
@@ -3184,6 +3179,7 @@ body.bookmark-macos-hover .bookmark > span {
 }
 
 body.bookmark-macos-hover .bookmark:hover > span {
+  z-index: 1;
   opacity: 1;
   visibility: visible;
   top: -2.8rem;
@@ -3191,12 +3187,13 @@ body.bookmark-macos-hover .bookmark:hover > span {
 
 /* MacOS Hover clipping fix for layouts with scrolling */
 body.bookmark-macos-hover .bookmarks-grid {
+  z-index: 1;
   overflow: visible !important;
 }
 body.bookmark-macos-hover.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-macos-hover.bookmark-taskbar-left-mode
   .bookmark-groups-container {
-  margin-bottom: -2.5rem !important;
+  margin-bottom: -1.5rem !important;
 }
 
 /* Ensure popup tooltips show properly during MacOS hover */
