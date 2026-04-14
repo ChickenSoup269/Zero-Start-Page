@@ -13,15 +13,15 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
   <a href="https://chromewebstore.google.com/detail/ogdbkgoionmjnlinbmmjncnhafhaenck?utm_source=item-share-cb" target="_blank">
     <img 
       src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png"
-      width="320px" 
-      height="60"
+     
+      height="56"
       style="transform: translateY(-6px);"
     />
   </a>
 
   <!-- Right -->
   <a href="https://launch.j2team.dev/products/zero-startpage-newtab-replacement?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-zero-startpage-newtab-replacement" target="_blank">
-    <img src="https://launch.j2team.dev/badge/zero-startpage-newtab-replacement/light" width="226px" height="32" />
+    <img src="https://launch.j2team.dev/badge/zero-startpage-newtab-replacement/light" height="56" />
   </a>
 
 </div>
