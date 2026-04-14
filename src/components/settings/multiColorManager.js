@@ -6,6 +6,205 @@ import {
 import { geti18n } from "../../services/i18n.js"
 import * as DOM from "../../utils/dom.js"
 
+function t(key, fallback) {
+  const i18n = geti18n()
+  return i18n?.[key] || fallback
+}
+
+function hexToRgba(hex, alpha) {
+  const normalized = hex.replace("#", "")
+  const safeHex =
+    normalized.length === 3
+      ? normalized
+          .split("")
+          .map((ch) => ch + ch)
+          .join("")
+      : normalized
+  const value = parseInt(safeHex, 16)
+  const r = (value >> 16) & 255
+  const g = (value >> 8) & 255
+  const b = value & 255
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+function clampCount(value) {
+  return Math.min(6, Math.max(2, Number(value) || 2))
+}
+
+function ensureDividerAngles(count, currentAngles, fallbackAngle) {
+  const dividerCount = Math.max(0, clampCount(count) - 1)
+  const fallback = Number.isFinite(Number(fallbackAngle))
+    ? Number(fallbackAngle)
+    : 135
+  const source = Array.isArray(currentAngles) ? currentAngles : []
+
+  return Array.from({ length: dividerCount }, (_, index) => {
+    const raw = Number(source[index])
+    const safe = Number.isFinite(raw) ? raw : fallback
+    return Math.round(((safe % 360) + 360) % 360)
+  })
+}
+
+function generateDividerLayersCSS(
+  dividerCount,
+  segmentSize,
+  dividerConfig,
+  lineAngleConfig,
+  fallbackAngle,
+) {
+  const rawLineWidth = dividerConfig.width
+  const lineWidth = Math.min(Math.max(rawLineWidth, 0.1), segmentSize * 0.6)
+  const halfLine = lineWidth / 2
+  const dividerColor = hexToRgba(dividerConfig.color, 1)
+  const safeAngles = ensureDividerAngles(
+    dividerCount + 1,
+    lineAngleConfig?.lineAngles,
+    fallbackAngle,
+  )
+
+  return Array.from({ length: dividerCount }, (_, index) => {
+    const pivot = segmentSize * (index + 1)
+    const start = Math.max(0, pivot - halfLine)
+    const end = Math.min(100, pivot + halfLine)
+    const dividerAngle = lineAngleConfig?.enabled
+      ? safeAngles[index]
+      : Number(fallbackAngle)
+
+    return `linear-gradient(${dividerAngle}deg, transparent ${start}%, ${dividerColor} ${start}%, ${dividerColor} ${end}%, transparent ${end}%)`
+  })
+}
+
+function generateSolidBlocksCSS(
+  colors,
+  angle,
+  dividerConfig,
+  lineAngleConfig,
+) {
+  const blockCount = colors.length
+  const gradientItems = []
+  const showDividers = dividerConfig?.enabled && blockCount > 1
+
+  if (!showDividers) {
+    // Create equal-width color blocks
+    for (let i = 0; i < blockCount; i++) {
+      const percent = (100 / blockCount) * i
+      const nextPercent = (100 / blockCount) * (i + 1)
+
+      gradientItems.push(`${colors[i]} ${percent}%`)
+      gradientItems.push(`${colors[i]} ${nextPercent}%`)
+    }
+
+    return `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+  }
+
+  const segmentSize = 100 / blockCount
+
+  for (let i = 0; i < blockCount; i++) {
+    const segmentStart = segmentSize * i
+    const segmentEnd = segmentSize * (i + 1)
+    gradientItems.push(`${colors[i]} ${segmentStart}%`)
+    gradientItems.push(`${colors[i]} ${segmentEnd}%`)
+  }
+
+  const baseLayer = `linear-gradient(${angle}deg, ${gradientItems.join(", ")})`
+  const dividerLayers = generateDividerLayersCSS(
+    blockCount - 1,
+    segmentSize,
+    dividerConfig,
+    lineAngleConfig,
+    angle,
+  )
+
+  return [...dividerLayers, baseLayer].join(", ")
+}
+
+export function renderSavedMultiColors(DOM_REFS) {
+  const container =
+    DOM_REFS.savedMultiColorPresets ||
+    document.getElementById("saved-multi-color-presets")
+  if (!container) return
+  container.innerHTML = ""
+  const settings = getSettings()
+  if (Array.isArray(settings.userGradients)) {
+    settings.userGradients.forEach((preset, index) => {
+      // Only render multi-color presets
+      if (preset.type !== "multi-color") return
+
+      const item = document.createElement("div")
+      item.className = "user-gradient-item"
+      item.dataset.index = index
+      item.style.cursor = "pointer"
+      item.title = `${preset.mode === "blocks" ? "Blocks" : "Gradient"} - ${preset.gradientStops.length} colors`
+
+      // Generate preview CSS
+      if (preset.mode === "blocks") {
+        item.style.background = generateSolidBlocksCSS(
+          preset.gradientStops,
+          preset.angle,
+          {
+            enabled:
+              preset.showDividers === undefined ? true : preset.showDividers,
+            color: preset.dividerColor || "#FFFFFF",
+            width: preset.dividerWidth || 1.2,
+          },
+          {
+            enabled: Boolean(preset.freeLineAngles),
+            lineAngles: Array.isArray(preset.lineAngles)
+              ? preset.lineAngles
+              : [],
+          },
+        )
+      } else {
+        const gradientStops = preset.gradientStops
+          .map((color, idx) => {
+            const percent = (idx / (preset.gradientStops.length - 1)) * 100
+            return `${color} ${percent}%`
+          })
+          .join(", ")
+        item.style.background = `linear-gradient(${preset.angle}deg, ${gradientStops})`
+      }
+
+      item.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        import("../contextMenu.js").then((m) => {
+          m.showContextMenu(e.clientX, e.clientY, index, "userMultiColor")
+        })
+      })
+
+      // Click to apply
+      item.addEventListener("click", () => {
+        if (multiColorSelectMode) return
+        window.dispatchEvent(
+          new CustomEvent("multiColor:applyPreset", { detail: preset }),
+        )
+      })
+
+      // Delete button
+      const removeBtn = document.createElement("button")
+      removeBtn.className = "remove-bg-btn"
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+      removeBtn.addEventListener("click", async (e) => {
+        e.stopPropagation()
+        if (await showConfirm(t("alert_delete_bg_confirm", "Delete?"))) {
+          settings.userGradients.splice(index, 1)
+          updateSetting("userGradients", settings.userGradients)
+          saveSettings()
+          renderSavedMultiColors(DOM_REFS)
+        }
+      })
+
+      item.appendChild(removeBtn)
+      container.appendChild(item)
+    })
+  }
+
+  const multiSpan = document.getElementById("count-multi-color")
+  if (multiSpan) {
+    const total = container.querySelectorAll(".user-gradient-item").length
+    multiSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
+  }
+}
+
 export function setupMultiColorManager(applySettings) {
   function t(key, fallback) {
     const i18n = geti18n()
@@ -782,89 +981,145 @@ export function setupMultiColorManager(applySettings) {
 
   // Save preset
   DOM.saveMultiColorBtn.addEventListener("click", () => {
-    const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
-    const colors = pickers.map((p) => p.value)
-    const angle = DOM.multiGradientAngleInput.value
-    const mode = getMode()
-    const dividerConfig = getDividerConfig()
-    const lineAngleConfig = getLineAngleConfig()
+  const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+  const colors = pickers.map((p) => p.value)
+  const angle = DOM.multiGradientAngleInput.value
+  const mode = getMode()
+  const dividerConfig = getDividerConfig()
+  const lineAngleConfig = getLineAngleConfig()
 
-    const settings = getSettings()
-    const newPreset = {
-      id: `multi-color-${Date.now()}`,
-      gradientStops: colors,
-      angle: parseInt(angle),
-      mode: mode,
-      showDividers: dividerConfig.enabled,
-      dividerColor: dividerConfig.color,
-      dividerWidth: dividerConfig.width,
-      freeLineAngles: lineAngleConfig.enabled,
-      lineAngles: lineAngleConfig.lineAngles,
-      type: "multi-color",
-    }
+  const settings = getSettings()
+  const newPreset = {
+    id: `multi-color-${Date.now()}`,
+    gradientStops: colors,
+    angle: parseInt(angle),
+    mode: mode,
+    showDividers: dividerConfig.enabled,
+    dividerColor: dividerConfig.color,
+    dividerWidth: dividerConfig.width,
+    freeLineAngles: lineAngleConfig.enabled,
+    lineAngles: lineAngleConfig.lineAngles,
+    type: "multi-color",
+  }
 
-    if (!settings.userGradients) {
-      settings.userGradients = []
-    }
+  if (!settings.userGradients) {
+    settings.userGradients = []
+  }
 
-    settings.userGradients.push(newPreset)
-    updateSetting("userGradients", settings.userGradients)
-    saveSettings()
+  settings.userGradients.push(newPreset)
+  updateSetting("userGradients", settings.userGradients)
+  saveSettings()
 
-    // Render the saved presets gallery
-    renderSavedPresets()
+  // Render the saved presets gallery
+  renderSavedMultiColors(DOM)
 
-    // Brief visual feedback on button
-    const originalText = DOM.saveMultiColorBtn.textContent
-    DOM.saveMultiColorBtn.textContent = "✓ Saved"
-    setTimeout(() => {
-      DOM.saveMultiColorBtn.textContent = originalText
-    }, 1500)
+  // Brief visual feedback on button
+  const originalText = DOM.saveMultiColorBtn.textContent
+  DOM.saveMultiColorBtn.textContent = "✓ Saved"
+  setTimeout(() => {
+    DOM.saveMultiColorBtn.textContent = originalText
+  }, 1500)
   })
 
   function syncFromSettings() {
-    const settings = getSettings()
-    const initialCount = clampCount(settings.multiColorCount)
-    DOM.multiColorCountSelect.value = String(initialCount)
-    generateColorPickers(initialCount)
+  const settings = getSettings()
+  const initialCount = clampCount(settings.multiColorCount)
+  DOM.multiColorCountSelect.value = String(initialCount)
+  generateColorPickers(initialCount)
 
-    const persistedColors = Array.isArray(settings.multiColors)
-      ? settings.multiColors
-      : []
-    const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
-    pickers.forEach((picker, index) => {
-      picker.value = persistedColors[index] || picker.value
-    })
+  const persistedColors = Array.isArray(settings.multiColors)
+    ? settings.multiColors
+    : []
+  const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+  pickers.forEach((picker, index) => {
+    picker.value = persistedColors[index] || picker.value
+  })
 
-    DOM.multiGradientAngleInput.value = settings.multiGradientAngle || 135
-    DOM.multiGradientAngleValue.textContent = settings.multiGradientAngle || 135
-    DOM.multiColorDividersToggle.checked =
-      settings.multiColorDividers === undefined
-        ? true
-        : settings.multiColorDividers
-    DOM.multiColorLineColor.value = settings.multiColorDividerColor || "#FFFFFF"
-    DOM.multiColorLineWidth.value = settings.multiColorDividerWidth || 1.2
-    DOM.multiColorLineWidthValue.textContent = Number(
-      DOM.multiColorLineWidth.value,
-    ).toFixed(1)
-    DOM.multiColorFreeLineAngles.checked = Boolean(
-      settings.multiColorFreeLineAngles,
-    )
-    generateLineAngleControls(initialCount, settings.multiColorLineAngles)
+  DOM.multiGradientAngleInput.value = settings.multiGradientAngle || 135
+  DOM.multiGradientAngleValue.textContent = settings.multiGradientAngle || 135
+  DOM.multiColorDividersToggle.checked =
+    settings.multiColorDividers === undefined
+      ? true
+      : settings.multiColorDividers
+  DOM.multiColorLineColor.value = settings.multiColorDividerColor || "#FFFFFF"
+  DOM.multiColorLineWidth.value = settings.multiColorDividerWidth || 1.2
+  DOM.multiColorLineWidthValue.textContent = Number(
+    DOM.multiColorLineWidth.value,
+  ).toFixed(1)
+  DOM.multiColorFreeLineAngles.checked = Boolean(
+    settings.multiColorFreeLineAngles,
+  )
+  generateLineAngleControls(initialCount, settings.multiColorLineAngles)
 
-    const modeValue = settings.multiColorMode || "smooth"
-    Array.from(DOM.multiColorModeRadios).forEach((radio) => {
-      radio.checked = radio.value === modeValue
-    })
+  const modeValue = settings.multiColorMode || "smooth"
+  Array.from(DOM.multiColorModeRadios).forEach((radio) => {
+    radio.checked = radio.value === modeValue
+  })
 
-    setMultiControlsExpanded(settings.multiColorControlsOpen !== false)
-    updateDividerControlsVisibility()
-    updateMultiColorPreview()
-    renderSavedPresets()
+  setMultiControlsExpanded(settings.multiColorControlsOpen !== false)
+  updateDividerControlsVisibility()
+  updateMultiColorPreview()
+  renderSavedMultiColors(DOM)
   }
+
+  window.addEventListener("multiColor:applyPreset", (e) => {
+  const preset = e.detail
+  // Update color pickers
+  generateColorPickers(preset.gradientStops.length)
+  const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
+  pickers.forEach((picker, idx) => {
+    picker.value = preset.gradientStops[idx]
+  })
+
+  // Update mode
+  DOM.multiGradientAngleInput.value = preset.angle
+  DOM.multiGradientAngleValue.textContent = preset.angle
+  Array.from(DOM.multiColorModeRadios).forEach((radio) => {
+    radio.checked = radio.value === preset.mode
+  })
+  DOM.multiColorCountSelect.value = String(
+    clampCount(preset.gradientStops.length),
+  )
+  DOM.multiColorDividersToggle.checked =
+    preset.showDividers === undefined ? true : preset.showDividers
+  DOM.multiColorLineColor.value = preset.dividerColor || "#FFFFFF"
+  DOM.multiColorLineWidth.value = preset.dividerWidth || 1.2
+  DOM.multiColorLineWidthValue.textContent = Number(
+    DOM.multiColorLineWidth.value,
+  ).toFixed(1)
+  DOM.multiColorFreeLineAngles.checked = Boolean(preset.freeLineAngles)
+  generateLineAngleControls(
+    preset.gradientStops.length,
+    Array.isArray(preset.lineAngles) ? preset.lineAngles : [],
+  )
+  updateSetting("multiColorCount", preset.gradientStops.length)
+  updateSetting("multiColorDividers", DOM.multiColorDividersToggle.checked)
+  updateSetting("multiColorDividerColor", DOM.multiColorLineColor.value)
+  updateSetting(
+    "multiColorDividerWidth",
+    parseFloat(DOM.multiColorLineWidth.value),
+  )
+  updateSetting(
+    "multiColorFreeLineAngles",
+    DOM.multiColorFreeLineAngles.checked,
+  )
+  updateSetting(
+    "multiColorLineAngles",
+    ensureDividerAngles(
+      preset.gradientStops.length,
+      preset.lineAngles,
+      preset.angle,
+    ),
+  )
+
+  updateDividerControlsVisibility()
+  updateMultiColorPreview()
+  saveSettings()
+  })
 
   window.addEventListener("multiColor:sync", syncFromSettings)
 
   // Initialize on load
   syncFromSettings()
-}
+  }
+

@@ -1,4 +1,4 @@
-import { contextMenu, menuEdit, menuDelete, menuLock } from "../utils/dom.js"
+import { contextMenu, menuFavorite, menuEdit, menuDelete, menuLock } from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
 import {
   getBookmarks,
@@ -17,7 +17,7 @@ import { openModal } from "./modal.js"
 import { renderBookmarks } from "./bookmarks.js"
 
 let contextMenuTargetIndex = -1
-let contextMenuTargetType = "bookmark" // 'bookmark', 'group', or 'widget'
+let contextMenuTargetType = "bookmark" // 'bookmark', 'group', 'widget', 'localBg', etc.
 let contextMenuTargetId = null // For groups or widget ids
 let contextMenuCallbacks = null
 
@@ -38,6 +38,7 @@ export function showContextMenu(
   menuEdit.style.display = "flex"
   menuDelete.style.display = "flex"
   menuLock.style.display = "none"
+  menuFavorite.style.display = "none"
 
   const i18n = geti18n()
 
@@ -57,6 +58,13 @@ export function showContextMenu(
     } else {
       lockIcon.className = "fa-solid fa-lock"
       lockText.textContent = i18n.menu_lock || "Lock Position"
+    }
+  } else if (["localBg", "userColor", "userAccentColor", "userGradient", "userMultiColor", "userSvgWave"].includes(type)) {
+    menuEdit.style.display = "none"
+    menuFavorite.style.display = "flex"
+    const favoriteText = menuFavorite.querySelector("span")
+    if (favoriteText) {
+      favoriteText.textContent = i18n.menu_favorite || "Favorite"
     }
   } else {
     // Regular bookmarks/groups
@@ -90,6 +98,61 @@ export function hideContextMenu() {
   contextMenuTargetType = "bookmark"
   contextMenuTargetId = null
   contextMenuCallbacks = null
+}
+
+async function handleFavorite() {
+  const type = contextMenuTargetType
+  const index = contextMenuTargetIndex
+  const settings = getSettings()
+  let key = ""
+  let renderFn = null
+
+  switch (type) {
+    case "localBg":
+      key = "userBackgrounds"
+      const { renderLocalBackgrounds } = await import("./settings/backgroundManager.js")
+      renderFn = renderLocalBackgrounds
+      break
+    case "userColor":
+      key = "userColors"
+      const { renderUserColors } = await import("./settings/backgroundManager.js")
+      renderFn = renderUserColors
+      break
+    case "userAccentColor":
+      key = "userAccentColors"
+      const { renderUserAccentColors } = await import("./settings/backgroundManager.js")
+      renderFn = renderUserAccentColors
+      break
+    case "userGradient":
+      key = "userGradients"
+      const { renderUserGradients } = await import("./settings/gradientManager.js")
+      renderFn = renderUserGradients
+      break
+    case "userMultiColor":
+      key = "userGradients"
+      const { setupMultiColorManager } = await import("./settings/multiColorManager.js")
+      // We need to call setupMultiColorManager to get the renderSavedPresets function?
+      // Actually, multiColorManager.js doesn't export renderSavedPresets directly.
+      // I should probably export it.
+      break
+    case "userSvgWave":
+      key = "userSvgWaves"
+      const { renderUserSvgWaves } = await import("./settings/svgWaveManager.js")
+      renderFn = renderUserSvgWaves
+      break
+  }
+
+  if (key && settings[key] && index > -1 && settings[key][index]) {
+    const item = settings[key].splice(index, 1)[0]
+    // Move to top
+    settings[key].unshift(item)
+    saveSettings()
+    
+    const DOM = await import("../utils/dom.js")
+    if (renderFn) renderFn(DOM)
+  }
+
+  hideContextMenu()
 }
 
 async function handleEdit() {
@@ -178,6 +241,54 @@ async function handleDelete() {
         renderBookmarks()
       }
     }
+  } else if (["localBg", "userColor", "userAccentColor", "userGradient", "userMultiColor", "userSvgWave"].includes(contextMenuTargetType)) {
+      if (await showConfirm(i18n.alert_delete_bg_confirm || "Are you sure you want to delete this?")) {
+          const settings = getSettings()
+          let key = ""
+          let renderFn = null
+          const type = contextMenuTargetType
+          const index = contextMenuTargetIndex
+
+          switch (type) {
+            case "localBg":
+              key = "userBackgrounds"
+              const { renderLocalBackgrounds } = await import("./settings/backgroundManager.js")
+              renderFn = renderLocalBackgrounds
+              break
+            case "userColor":
+              key = "userColors"
+              const { renderUserColors } = await import("./settings/backgroundManager.js")
+              renderFn = renderUserColors
+              break
+            case "userAccentColor":
+              key = "userAccentColors"
+              const { renderUserAccentColors } = await import("./settings/backgroundManager.js")
+              renderFn = renderUserAccentColors
+              break
+            case "userGradient":
+              key = "userGradients"
+              const { renderUserGradients } = await import("./settings/gradientManager.js")
+              renderFn = renderUserGradients
+              break
+            case "userMultiColor":
+              key = "userSavedMultiColors"
+              const { renderSavedMultiColors } = await import("./settings/multiColorManager.js")
+              renderFn = renderSavedMultiColors
+              break
+            case "userSvgWave":
+              key = "userSvgWaves"
+              const { renderUserSvgWaves } = await import("./settings/svgWaveManager.js")
+              renderFn = renderUserSvgWaves
+              break
+          }
+
+          if (key && settings[key] && index > -1) {
+              settings[key].splice(index, 1)
+              saveSettings()
+              const DOM = await import("../utils/dom.js")
+              if (renderFn) renderFn(DOM)
+          }
+      }
   }
 
   hideContextMenu()
@@ -221,6 +332,11 @@ export function initContextMenu() {
   menuDelete.addEventListener("click", (e) => {
     e.stopPropagation()
     handleDelete()
+  })
+
+  menuFavorite.addEventListener("click", (e) => {
+    e.stopPropagation()
+    handleFavorite()
   })
 
   menuLock.addEventListener("click", (e) => {

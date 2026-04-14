@@ -256,12 +256,12 @@ export function renderBookmarks() {
   addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
   addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addBtn.addEventListener("click", () => {
-    const bookmarks = getBookmarks(); // lấy bookmark của group hiện tại
-    if (bookmarks.length >= 15) {
-      showAlert("Nhóm này đã đủ 15 bookmark!");
-      return;
+    const bookmarks = getBookmarks() // lấy bookmark của group hiện tại
+    if (bookmarks.length >= 20) {
+      showAlert("Nhóm này đã đủ 20 bookmark!")
+      return
     }
-    openModal(null);
+    openModal(null)
   })
   frag.appendChild(addBtn)
 

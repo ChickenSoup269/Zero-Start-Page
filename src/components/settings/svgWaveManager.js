@@ -132,6 +132,13 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
     item.style.backgroundSize = "cover"
 
+    item.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+      import("../contextMenu.js").then((m) => {
+        m.showContextMenu(e.clientX, e.clientY, index, "userSvgWave")
+      })
+    })
+
     const removeBtn = document.createElement("button")
     removeBtn.className = "remove-bg-btn"
     removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'

@@ -988,7 +988,7 @@ export function setupGeneralEventHandlers(
 
     const count = Math.min(
       5,
-      Math.max(1, Number(DOM.gradientExtraColorCount?.value || 2)),
+      Math.max(0, Number(DOM.gradientExtraColorCount?.value || 2)),
     )
     const fromInput = parseCustomColors(DOM.gradientCustomColors?.value || "")
     const existing = fromInput.slice(0, count)
@@ -1004,30 +1004,34 @@ export function setupGeneralEventHandlers(
     }
 
     DOM.gradientExtraColorPickers.innerHTML = ""
-    existing.forEach((color, index) => {
-      const picker = document.createElement("input")
-      picker.type = "color"
-      picker.value = color
-      picker.title = `Extra ${index + 1}`
-      picker.style.width = "42${DOM.bookmarkGroupFontSizeInput.value}px"
-      picker.style.height = "34${DOM.bookmarkGroupFontSizeInput.value}px"
-      picker.style.padding = "0"
-      picker.style.border =
-        "1${DOM.bookmarkGroupFontSizeInput.value}px solid var(--input-border)"
-      picker.style.borderRadius = "8${DOM.bookmarkGroupFontSizeInput.value}px"
-      picker.addEventListener("input", () => {
-        const pickers = Array.from(
-          DOM.gradientExtraColorPickers.querySelectorAll('input[type="color"]'),
-        )
-        if (DOM.gradientCustomColors) {
-          DOM.gradientCustomColors.value = pickers
-            .map((p) => p.value)
-            .join(", ")
-        }
-        updateCurrentGradient()
+    if (count > 0) {
+      existing.forEach((color, index) => {
+        const picker = document.createElement("input")
+        picker.type = "color"
+        picker.value = color
+        picker.title = `Extra ${index + 1}`
+        picker.style.width = "42${DOM.bookmarkGroupFontSizeInput.value}px"
+        picker.style.height = "34${DOM.bookmarkGroupFontSizeInput.value}px"
+        picker.style.padding = "0"
+        picker.style.border =
+          "1${DOM.bookmarkGroupFontSizeInput.value}px solid var(--input-border)"
+        picker.style.borderRadius = "8${DOM.bookmarkGroupFontSizeInput.value}px"
+        picker.addEventListener("input", () => {
+          const pickers = Array.from(
+            DOM.gradientExtraColorPickers.querySelectorAll(
+              'input[type="color"]',
+            ),
+          )
+          if (DOM.gradientCustomColors) {
+            DOM.gradientCustomColors.value = pickers
+              .map((p) => p.value)
+              .join(", ")
+          }
+          updateCurrentGradient()
+        })
+        DOM.gradientExtraColorPickers.appendChild(picker)
       })
-      DOM.gradientExtraColorPickers.appendChild(picker)
-    })
+    }
 
     if (DOM.gradientCustomColors) {
       DOM.gradientCustomColors.value = existing.join(", ")
@@ -1154,7 +1158,7 @@ export function setupGeneralEventHandlers(
   DOM.randomGradientColorsBtn?.addEventListener("click", () => {
     const extraCount = Math.min(
       5,
-      Math.max(1, Number(DOM.gradientExtraColorCount?.value || 2)),
+      Math.max(0, Number(DOM.gradientExtraColorCount?.value || 2)),
     )
     const palette = generateHarmonizedPalette(extraCount + 2)
     const [start, ...rest] = palette
@@ -1188,7 +1192,9 @@ export function setupGeneralEventHandlers(
     if (DOM.gradientRepeatingToggle)
       DOM.gradientRepeatingToggle.checked = selected.repeating
     if (DOM.gradientExtraColorCount)
-      DOM.gradientExtraColorCount.value = String(selected.extraColorCount || 2)
+      DOM.gradientExtraColorCount.value = String(
+        selected.extraColorCount !== undefined ? selected.extraColorCount : 2,
+      )
     if (DOM.gradientCustomColors)
       DOM.gradientCustomColors.value = selected.customColors || ""
     if (DOM.gradientPositionSelect)

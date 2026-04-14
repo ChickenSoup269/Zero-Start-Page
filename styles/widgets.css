@@ -503,12 +503,12 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 700;
-  color: var(--accent-color);
+  color: white;
 }
 
 body.hide-bookmark-bg .bookmark img,
 body.hide-bookmark-bg .bookmark .bookmark-icon-fallback {
-  background: transparent !important;
+  background-color: red !important;
   box-shadow: none;
   border: none;
   padding: 0;
@@ -2939,6 +2939,7 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
   max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
+  background: rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Taskbar modes: Display as a horizontal row */

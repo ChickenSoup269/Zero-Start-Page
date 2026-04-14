@@ -559,6 +559,7 @@ export const browserBookmarksList = document.getElementById(
 )
 
 export const contextMenu = document.getElementById("context-menu")
+export const menuFavorite = document.getElementById("menu-favorite")
 export const menuEdit = document.getElementById("menu-edit")
 export const menuDelete = document.getElementById("menu-delete")
 export const menuLock = document.getElementById("menu-lock")

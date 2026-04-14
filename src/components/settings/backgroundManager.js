@@ -33,6 +33,14 @@ function renderUserColors(DOM) {
       item.dataset.bgId = color
       item.style.background = color
       item.title = `Color ${index + 1}`
+
+      item.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        import("../contextMenu.js").then((m) => {
+          m.showContextMenu(e.clientX, e.clientY, index, "userColor")
+        })
+      })
+
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
       removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
@@ -70,6 +78,13 @@ function renderUserAccentColors(DOM) {
       item.addEventListener("click", () => {
         DOM.accentColorPicker.value = color
         DOM.accentColorPicker.dispatchEvent(new Event("input"))
+      })
+
+      item.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        import("../contextMenu.js").then((m) => {
+          m.showContextMenu(e.clientX, e.clientY, index, "userAccentColor")
+        })
       })
 
       const removeBtn = document.createElement("button")
@@ -177,6 +192,13 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         item.style.backgroundImage = `url('${thumbUrl}')`
       }
       item.title = `User ${isIdbVideo(bgId) ? "Video" : "Image"} ${index + 1}`
+
+      item.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        import("../contextMenu.js").then((m) => {
+          m.showContextMenu(e.clientX, e.clientY, index, "localBg")
+        })
+      })
 
       const checkBadge = document.createElement("span")
       checkBadge.className = "bg-select-check"

@@ -284,6 +284,13 @@ function renderUserGradients(DOM) {
       item.style.background = buildGradientCss(gradient)
       item.title = `Gradient ${index + 1}`
 
+      item.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        import("../contextMenu.js").then((m) => {
+          m.showContextMenu(e.clientX, e.clientY, index, "userGradient")
+        })
+      })
+
       item.addEventListener("click", () => {
         if (gradientSelectMode) return
         updateSetting("background", buildGradientCss(gradient))
