@@ -508,7 +508,7 @@
 
 body.hide-bookmark-bg .bookmark img,
 body.hide-bookmark-bg .bookmark .bookmark-icon-fallback {
-  background-color: red !important;
+  background-color: transparent !important;
   box-shadow: none;
   border: none;
   padding: 0;

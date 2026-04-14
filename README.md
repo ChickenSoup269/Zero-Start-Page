@@ -2,6 +2,30 @@
 
 Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
+<div style="display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
+  
+  <!-- Left -->
+  <a href="https://unikorn.vn/p/zero-startpage?ref=embed-zero-startpage" target="_blank">
+    <img src="https://unikorn.vn/api/widgets/badge/zero-startpage?theme=light" height="56" />
+  </a>
+
+  <!-- Center (Chrome - bigger & higher) -->
+  <a href="https://chromewebstore.google.com/detail/ogdbkgoionmjnlinbmmjncnhafhaenck?utm_source=item-share-cb" target="_blank">
+    <img 
+      src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png"
+      width="320px" 
+      height="60"
+      style="transform: translateY(-6px);"
+    />
+  </a>
+
+  <!-- Right -->
+  <a href="https://launch.j2team.dev/products/zero-startpage-newtab-replacement?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-zero-startpage-newtab-replacement" target="_blank">
+    <img src="https://launch.j2team.dev/badge/zero-startpage-newtab-replacement/light" width="226px" height="32" />
+  </a>
+
+</div>
+
 ---
 
  <table width="100%" >
@@ -12,18 +36,12 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
       <td align="right">
         <a href="">CHANGELOG.md</a>
       </td>
-      <td align="right">
-        <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?authuser=0&hl=en"> 
-        Link Extension 🌐   
-        </a>
-      </td>
-    </tr>
   </table>
 
 ## Features
 
 <table align="center">
-<tr>I
+<tr>
 <th> Clock & Date</th>
 <th> Smart Search</th>
 </tr>
