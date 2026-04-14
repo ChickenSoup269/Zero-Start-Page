@@ -809,6 +809,7 @@ body.date-clock-style-sidestyle .clock-sidestyle {
   padding-left: calc(var(--clock-size) * 0.25);
   margin-left: 8px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  font-family: var(--font-clock);
 }
 
 /* Side Style - Center */
@@ -845,7 +846,7 @@ body.date-clock-style-sidestyle.sidestyle-no-border .clock-sidestyle {
   margin-right: 0;
 }
 body.date-clock-style-sidestyle .clock-sidestyle-day {
-  font-family: var(--font-date);
+  font-family: var(--font-weekday);
   font-size: calc(var(--clock-size) * 0.6);
   letter-spacing: calc(var(--clock-size) * 0.08);
   font-weight: 700;
@@ -870,9 +871,7 @@ body.date-clock-style-sidestyle .clock-sidestyle-time {
 
 /* JP Style */
 body.date-clock-style-jp-style .clock-jp-style {
-  font-family: var(
-    --font-clock-date
-  ); /* Use clock/date dedicated font variable */
+  font-family: var(--font-clock);
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
 }
 body.date-clock-style-jp-style .clock-jp-row {
