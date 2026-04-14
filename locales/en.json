@@ -445,5 +445,8 @@
   "settings_show_donate_btn": "Show Donate Button",
   "effect_jellyfish": "Jellyfish",
   "setting_jellyfish_color": "Jellyfish Color",
-  "settings_font_restriction_note": "Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date."
+  "settings_font_restriction_note": "Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date.",
+  "alert_bg_already_saved": "This background is already saved.",
+  "alert_bg_gallery_full": "Gallery full! Please remove some backgrounds before saving more.",
+  "alert_bg_saved": "Background saved to Local Themes!"
 }

@@ -548,13 +548,16 @@ export function setupGeneralEventHandlers(
     if (!bg) return
 
     if (getSettings().userBackgrounds.includes(bg)) {
-      showAlert("This background is already saved.")
+      showAlert(
+        geti18n().alert_bg_already_saved || "This background is already saved.",
+      )
       return
     }
 
     if (getSettings().userBackgrounds.length >= 20) {
       showAlert(
-        "Gallery full! Please remove some backgrounds before saving more.",
+        geti18n().alert_bg_gallery_full ||
+          "Gallery full! Please remove some backgrounds before saving more.",
       )
       return
     }
@@ -562,7 +565,7 @@ export function setupGeneralEventHandlers(
     getSettings().userBackgrounds.push(bg)
     saveSettings()
     renderLocalBackgrounds(DOM, handleSettingUpdate)
-    showAlert("Background saved to Local Themes!")
+    showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
   })
 
   // Accent color

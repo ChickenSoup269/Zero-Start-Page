@@ -3,7 +3,7 @@ import {
   bookmarkGroupsContainer,
   bookmarkGroupsToggle,
 } from "../utils/dom.js"
-import { showPrompt } from "../utils/dialog.js"
+import { showPrompt, showAlert } from "../utils/dialog.js"
 import {
   getBookmarks,
   setBookmarks,
@@ -255,7 +255,14 @@ export function renderBookmarks() {
   addBtn.className = "add-bookmark-card"
   addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
   addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
-  addBtn.addEventListener("click", () => openModal(null))
+  addBtn.addEventListener("click", () => {
+    const bookmarks = getBookmarks(); // lấy bookmark của group hiện tại
+    if (bookmarks.length >= 15) {
+      showAlert("Nhóm này đã đủ 15 bookmark!");
+      return;
+    }
+    openModal(null);
+  })
   frag.appendChild(addBtn)
 
   // Clear and update DOM once
