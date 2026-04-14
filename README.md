@@ -13,7 +13,6 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
   <a href="https://chromewebstore.google.com/detail/ogdbkgoionmjnlinbmmjncnhafhaenck?utm_source=item-share-cb" target="_blank">
     <img 
       src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png"
-     
       height="56"
       style="transform: translateY(-6px);"
     />
