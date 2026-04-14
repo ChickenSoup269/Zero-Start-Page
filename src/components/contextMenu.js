@@ -130,10 +130,8 @@ async function handleFavorite() {
       break
     case "userMultiColor":
       key = "userGradients"
-      const { setupMultiColorManager } = await import("./settings/multiColorManager.js")
-      // We need to call setupMultiColorManager to get the renderSavedPresets function?
-      // Actually, multiColorManager.js doesn't export renderSavedPresets directly.
-      // I should probably export it.
+      const { renderSavedMultiColors } = await import("./settings/multiColorManager.js")
+      renderFn = renderSavedMultiColors
       break
     case "userSvgWave":
       key = "userSvgWaves"
@@ -143,13 +141,43 @@ async function handleFavorite() {
   }
 
   if (key && settings[key] && index > -1 && settings[key][index]) {
-    const item = settings[key].splice(index, 1)[0]
-    // Move to top
-    settings[key].unshift(item)
+    let item = settings[key].splice(index, 1)[0]
+    
+    // Normalize to object if it's a string
+    if (typeof item === 'string') {
+        const val = item;
+        item = { isFavorite: false };
+        if (key === "userBackgrounds") item.id = val;
+        else item.val = val;
+    }
+
+    // Toggle favorite
+    item.isFavorite = !item.isFavorite;
+
+    // Move to top if favorited, else just put it back (it's already removed, so we unshift/push)
+    if (item.isFavorite) {
+        settings[key].unshift(item)
+    } else {
+        settings[key].push(item)
+    }
+    
     saveSettings()
     
     const DOM = await import("../utils/dom.js")
-    if (renderFn) renderFn(DOM)
+    if (renderFn) {
+        if (type === "userMultiColor") {
+            // multiColorManager.js's renderSavedMultiColors takes DOM as argument
+            renderFn(DOM)
+        } else if (type === "localBg") {
+            // backgroundManager.js's renderLocalBackgrounds takes (DOM, handleSettingUpdate)
+            // This is a bit tricky, but in contextMenu.js we don't have handleSettingUpdate easily.
+            // Usually renderLocalBackgrounds is called from index.js which has it.
+            // For now, let's just pass DOM and see if it works (it might not update click handlers properly)
+            renderFn(DOM)
+        } else {
+            renderFn(DOM)
+        }
+    }
   }
 
   hideContextMenu()

@@ -284,6 +284,12 @@ function renderUserGradients(DOM) {
       item.style.background = buildGradientCss(gradient)
       item.title = `Gradient ${index + 1}`
 
+      if (gradient.isFavorite) {
+        const star = document.createElement("i")
+        star.className = "fa-solid fa-star favorite-star-badge"
+        item.appendChild(star)
+      }
+
       item.addEventListener("contextmenu", (e) => {
         e.preventDefault()
         import("../contextMenu.js").then((m) => {

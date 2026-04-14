@@ -27,14 +27,23 @@ function renderUserColors(DOM) {
 
   userColorsGallery.innerHTML = ""
   if (Array.isArray(settings.userColors)) {
-    settings.userColors.forEach((color, index) => {
-      const item = document.createElement("div")
-      item.className = "user-color-item"
-      item.dataset.bgId = color
-      item.style.background = color
-      item.title = `Color ${index + 1}`
+    settings.userColors.forEach((item, index) => {
+      const color = typeof item === "object" ? item.val : item
+      const isFavorite = typeof item === "object" ? item.isFavorite : false
 
-      item.addEventListener("contextmenu", (e) => {
+      const el = document.createElement("div")
+      el.className = "user-color-item"
+      el.dataset.bgId = color
+      el.style.background = color
+      el.title = `Color ${index + 1}`
+
+      if (isFavorite) {
+        const star = document.createElement("i")
+        star.className = "fa-solid fa-star favorite-star-badge"
+        el.appendChild(star)
+      }
+
+      el.addEventListener("contextmenu", (e) => {
         e.preventDefault()
         import("../contextMenu.js").then((m) => {
           m.showContextMenu(e.clientX, e.clientY, index, "userColor")
@@ -53,8 +62,8 @@ function renderUserColors(DOM) {
           renderUserColors(DOM)
         }
       })
-      item.appendChild(removeBtn)
-      userColorsGallery.appendChild(item)
+      el.appendChild(removeBtn)
+      userColorsGallery.appendChild(el)
     })
   }
 }
@@ -68,19 +77,28 @@ function renderUserAccentColors(DOM) {
 
   userAccentColorsGallery.innerHTML = ""
   if (Array.isArray(settings.userAccentColors)) {
-    settings.userAccentColors.forEach((color, index) => {
-      const item = document.createElement("div")
-      item.className = "user-color-item accent-preset-item"
-      item.dataset.bgId = color
-      item.style.background = color
-      item.title = `Accent Color: ${color}`
+    settings.userAccentColors.forEach((item, index) => {
+      const color = typeof item === "object" ? item.val : item
+      const isFavorite = typeof item === "object" ? item.isFavorite : false
 
-      item.addEventListener("click", () => {
+      const el = document.createElement("div")
+      el.className = "user-color-item accent-preset-item"
+      el.dataset.bgId = color
+      el.style.background = color
+      el.title = `Accent Color: ${color}`
+
+      if (isFavorite) {
+        const star = document.createElement("i")
+        star.className = "fa-solid fa-star favorite-star-badge"
+        el.appendChild(star)
+      }
+
+      el.addEventListener("click", () => {
         DOM.accentColorPicker.value = color
         DOM.accentColorPicker.dispatchEvent(new Event("input"))
       })
 
-      item.addEventListener("contextmenu", (e) => {
+      el.addEventListener("contextmenu", (e) => {
         e.preventDefault()
         import("../contextMenu.js").then((m) => {
           m.showContextMenu(e.clientX, e.clientY, index, "userAccentColor")
@@ -99,8 +117,8 @@ function renderUserAccentColors(DOM) {
           renderUserAccentColors(DOM)
         }
       })
-      item.appendChild(removeBtn)
-      userAccentColorsGallery.appendChild(item)
+      el.appendChild(removeBtn)
+      userAccentColorsGallery.appendChild(el)
     })
   }
 }
@@ -122,12 +140,20 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
-    settings.userBackgrounds.forEach((bgId, index) => {
+    settings.userBackgrounds.forEach((bgData, index) => {
+      const bgId = typeof bgData === "object" ? bgData.id : bgData
+      const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
       const thumbUrl = isIdbMedia(bgId) ? getBlobUrlSync(bgId) || "" : bgId
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
+
+      if (isFavorite) {
+        const star = document.createElement("i")
+        star.className = "fa-solid fa-star favorite-star-badge"
+        item.appendChild(star)
+      }
 
       if (isIdbVideo(bgId)) {
         item.classList.add("video-bg-item")

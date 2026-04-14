@@ -132,6 +132,12 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
     item.style.backgroundSize = "cover"
 
+    if (wave.isFavorite) {
+      const star = document.createElement("i")
+      star.className = "fa-solid fa-star favorite-star-badge"
+      item.appendChild(star)
+    }
+
     item.addEventListener("contextmenu", (e) => {
       e.preventDefault()
       import("../contextMenu.js").then((m) => {

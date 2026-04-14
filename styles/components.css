@@ -435,6 +435,23 @@
   color: #ffd8d8;
 }
 
+/* Favorite Star Icon */
+.favorite-star-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  color: #fbbf24;
+  font-size: 0.8rem;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  z-index: 5;
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+.user-color-item, .local-bg-item, .user-gradient-item {
+  position: relative;
+}
+
 /* Bookmark Tree View Selection */
 .bookmark-tree-container {
   max-height: 340px;
