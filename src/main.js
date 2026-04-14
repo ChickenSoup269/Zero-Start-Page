@@ -59,6 +59,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let bgStyle = currentSettings.bookmarkLayoutBgStyle || "default"
   if (bgStyle === "hidden")
     document.body.classList.add("bookmark-layout-bg-hidden")
+  else if (bgStyle === "white")
+    document.body.classList.add("bookmark-layout-bg-white")
   else if (bgStyle === "colored") {
     document.body.classList.add("bookmark-layout-bg-colored")
     document.documentElement.style.setProperty(

@@ -113,6 +113,7 @@ function createApplySettings(effectInstances) {
       "bookmark-taskbar-mode",
       "bookmark-taskbar-left-mode",
       "bookmark-layout-bg-hidden",
+      "bookmark-layout-bg-white",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
       "hide-bookmark-text",
@@ -301,6 +302,7 @@ function createApplySettings(effectInstances) {
       )
       document.documentElement.style.setProperty("--font-clock", settings.font)
       document.documentElement.style.setProperty("--font-date", settings.font)
+      document.documentElement.style.setProperty("--font-weekday", settings.font)
     } else if (clockFontTarget === "clock") {
       document.documentElement.style.setProperty(
         "--font-clock-date",
@@ -308,6 +310,7 @@ function createApplySettings(effectInstances) {
       )
       document.documentElement.style.setProperty("--font-clock", settings.font)
       document.documentElement.style.setProperty("--font-date", primaryFont)
+      document.documentElement.style.setProperty("--font-weekday", primaryFont)
     } else if (clockFontTarget === "date") {
       document.documentElement.style.setProperty(
         "--font-clock-date",
@@ -315,6 +318,15 @@ function createApplySettings(effectInstances) {
       )
       document.documentElement.style.setProperty("--font-clock", primaryFont)
       document.documentElement.style.setProperty("--font-date", settings.font)
+      document.documentElement.style.setProperty("--font-weekday", settings.font)
+    } else if (clockFontTarget === "weekday") {
+      document.documentElement.style.setProperty(
+        "--font-clock-date",
+        primaryFont,
+      )
+      document.documentElement.style.setProperty("--font-clock", primaryFont)
+      document.documentElement.style.setProperty("--font-date", primaryFont)
+      document.documentElement.style.setProperty("--font-weekday", settings.font)
     }
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
@@ -469,6 +481,8 @@ function createApplySettings(effectInstances) {
 
     if (bgStyle === "hidden") {
       document.body.classList.add("bookmark-layout-bg-hidden")
+    } else if (bgStyle === "white") {
+      document.body.classList.add("bookmark-layout-bg-white")
     } else if (bgStyle === "colored") {
       document.body.classList.add("bookmark-layout-bg-colored")
       document.documentElement.style.setProperty(

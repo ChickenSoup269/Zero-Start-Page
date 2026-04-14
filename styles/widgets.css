@@ -3101,6 +3101,14 @@ body.bookmark-layout-bg-colored.bookmark-taskbar-left-mode .bookmarks-grid {
   background: var(--bookmark-layout-bg-color, #ffffff) !important;
 }
 
+body.bookmark-layout-bg-white.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-layout-bg-white.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {
+  background: rgba(255, 255, 255, 0.099) !important;
+  backdrop-filter: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
 /* --- BOOKMARK ITEM CARD STYLE --- */
 body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark,
 body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark,
@@ -3157,7 +3165,7 @@ body.bookmark-macos-hover .bookmark > span {
   top: -2rem;
   left: 50%;
   width: fit-content;
-  max-width: 200px;
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: pre;

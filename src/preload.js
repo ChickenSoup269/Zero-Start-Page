@@ -27,6 +27,7 @@
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")
+      else if (bgStyle === "white") body.classList.add("bookmark-layout-bg-white")
       else if (bgStyle === "colored") {
         body.classList.add("bookmark-layout-bg-colored")
         document.documentElement.style.setProperty(

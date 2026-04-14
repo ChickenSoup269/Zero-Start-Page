@@ -94,6 +94,10 @@ i {
   font-family: var(--font-clock-date);
 }
 
+.weekday-part {
+  font-family: var(--font-weekday) !important;
+}
+
 .clock-date-wrap.timer-running-hidden {
   width: fit-content;
   margin: 0 auto;

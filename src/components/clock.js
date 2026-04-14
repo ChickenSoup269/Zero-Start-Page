@@ -87,9 +87,9 @@ function getSafeWeekday(date, lang, isShort, tz) {
   const format = isShort && lang !== "vi-VN" ? "short" : "long"
   let str = date.toLocaleDateString(lang, { weekday: format, timeZone: tz })
   if (isShort && lang === "vi-VN") {
-    return formatViShortWeekday(str)
+    str = formatViShortWeekday(str)
   }
-  return str
+  return `<span class="weekday-part">${str}</span>`
 }
 
 function getCustomDateString(now, langCode, tz, settings, formatOverride) {
@@ -114,16 +114,23 @@ function getCustomDateString(now, langCode, tz, settings, formatOverride) {
     // "full"
     const formatWeekday =
       settings.shortWeekday && langCode !== "vi-VN" ? "short" : "long"
-    dateString = now.toLocaleDateString(langCode, {
+    const weekdayStr = now.toLocaleDateString(langCode, {
       weekday: formatWeekday,
+      timeZone: tz,
+    })
+    const dayMonthYear = now.toLocaleDateString(langCode, {
       day: "2-digit",
       month: "long",
       year: "numeric",
       timeZone: tz,
     })
+
+    let finalWeekday = weekdayStr
     if (settings.shortWeekday && langCode === "vi-VN") {
-      dateString = formatViShortWeekday(dateString)
+      finalWeekday = formatViShortWeekday(finalWeekday)
     }
+
+    dateString = `<span class="weekday-part"> ${finalWeekday} </span>, ${dayMonthYear}`
   }
   return dateString
 }
@@ -131,12 +138,22 @@ function getCustomDateString(now, langCode, tz, settings, formatOverride) {
 function _buildSidestyleDateStr(now, langCode, tz, settings) {
   const format = settings.dateFormat || "full"
   let dateStr = ""
-  
+
   if (format === "full") {
     // Retain the specific layout used originally for "full" sidestyle date
     const enMonths = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ]
     if (langCode === "vi-VN") {
       dateStr = now.toLocaleDateString("vi-VN", {
@@ -267,21 +284,21 @@ export function updateTime() {
     const timeStr = now.toLocaleTimeString(langCode, timeOptions)
 
     const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
-      const format = settings.dateFormat || "full"
-      let dateHtml = ""
-      if (format === "full") {
-        const day = now.toLocaleDateString(langCode, {
-          day: "2-digit",
-          timeZone: tz,
-        })
-        const monthName = now.toLocaleDateString(langCode, {
-          month: "long",
-          timeZone: tz,
-        })
-        dateHtml = `${day} - ${monthName}`
-      } else {
-        dateHtml = getCustomDateString(now, langCode, tz, settings)
-      }
+    const format = settings.dateFormat || "full"
+    let dateHtml = ""
+    if (format === "full") {
+      const day = now.toLocaleDateString(langCode, {
+        day: "2-digit",
+        timeZone: tz,
+      })
+      const monthName = now.toLocaleDateString(langCode, {
+        month: "long",
+        timeZone: tz,
+      })
+      dateHtml = `${day} - ${monthName}`
+    } else {
+      dateHtml = getCustomDateString(now, langCode, tz, settings)
+    }
 
     clockElement.innerHTML = `
       <div class="cool-style-wrapper">
@@ -404,7 +421,7 @@ export function updateTime() {
     // Use symbols based on lang
     const format = settings.dateFormat || "full"
     let dateHtml = ""
-    
+
     if (format === "full") {
       if (displayLang === "ja-JP") {
         dateHtml = `<span class="clock-jp-month">${month}</span><span class="jp-symbol">月</span><span class="clock-jp-daynum">${dayNum}</span><span class="jp-symbol">日</span>`
@@ -430,7 +447,6 @@ export function updateTime() {
     } else {
       dateHtml = `<span class="clock-jp-month" style="font-size: 0.85em; font-weight: normal;">${getCustomDateString(now, displayLang, tz, settings)}</span>`
     }
-
 
     clockElement.innerHTML = `
       <div class="clock-jp-style">
@@ -504,7 +520,7 @@ export function updateTime() {
     const mmPart = timeParts.find((part) => part.type === "minute")
     const ssPart = timeParts.find((part) => part.type === "second")
     const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
-    
+
     const hh = hhPart ? hhPart.value : "00"
     const mm = mmPart ? mmPart.value : "00"
 
@@ -515,15 +531,17 @@ export function updateTime() {
         day: "numeric",
         month: "short",
         year: "numeric",
-        timeZone: tz
-      }).formatToParts(now).filter(p => p.type !== "literal");
-      
-      const day = dateParts.find(p => p.type === "day")?.value || "";
-      const month = dateParts.find(p => p.type === "month")?.value || "";
-      const year = dateParts.find(p => p.type === "year")?.value || "";
-      
-      const timeHtml = `<div class="clock-sidebar-date">${timeString}</div>`;
-      
+        timeZone: tz,
+      })
+        .formatToParts(now)
+        .filter((p) => p.type !== "literal")
+
+      const day = dateParts.find((p) => p.type === "day")?.value || ""
+      const month = dateParts.find((p) => p.type === "month")?.value || ""
+      const year = dateParts.find((p) => p.type === "year")?.value || ""
+
+      const timeHtml = `<div class="clock-sidebar-date">${timeString}</div>`
+
       clockElement.innerHTML = `
         <div class="clock-sidebar-style is-flipped">
           <div class="clock-sidebar-time">
@@ -533,10 +551,10 @@ export function updateTime() {
           </div>
           ${timeHtml}
         </div>
-      `;
+      `
     } else {
-      const dateHtml = shouldShowDate 
-        ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>` 
+      const dateHtml = shouldShowDate
+        ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
         : ""
 
       clockElement.innerHTML = `
@@ -595,7 +613,7 @@ export function updateTime() {
   } else if (isFramedClockStyle) {
     dateElement.innerHTML = `<span class="clock-date-primary">${dateString || ""}</span>`
   } else {
-    dateElement.textContent = dateString
+    dateElement.innerHTML = dateString
   }
 
   applyHueMode(settings)
