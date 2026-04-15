@@ -13,6 +13,7 @@ import {
   isIdbImage,
   isIdbVideo,
   getBlobUrlSync,
+  getImageUrl,
   deleteImage,
   saveImage,
   saveVideo,
@@ -143,8 +144,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     settings.userBackgrounds.forEach((bgData, index) => {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
-      const thumbUrl = isIdbMedia(bgId) ? getBlobUrlSync(bgId) || "" : bgId
-
+      
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
@@ -155,67 +155,68 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         item.appendChild(star)
       }
 
+      const applyThumb = (url) => {
+          if (!url) return;
+          if (isIdbVideo(bgId)) {
+              if (_videoThumbCache.has(bgId)) {
+                  item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
+                  const placeholder = item.querySelector("i.fa-film")
+                  if (placeholder) placeholder.remove()
+                  if (!item.querySelector(".video-thumb-badge")) {
+                      const badge = document.createElement("div")
+                      badge.className = "video-thumb-badge"
+                      badge.innerHTML = '<i class="fa-solid fa-film"></i>'
+                      item.appendChild(badge)
+                  }
+              } else {
+                  const vid = document.createElement("video")
+                  vid.src = url
+                  vid.muted = true
+                  vid.preload = "metadata"
+                  vid.addEventListener("loadeddata", () => { vid.currentTime = 0 }, { once: true })
+                  vid.addEventListener("seeked", () => {
+                      const canvas = document.createElement("canvas")
+                      canvas.width = vid.videoWidth || 160
+                      canvas.height = vid.videoHeight || 90
+                      canvas.getContext("2d").drawImage(vid, 0, 0, canvas.width, canvas.height)
+                      const dataUrl = canvas.toDataURL()
+                      _videoThumbCache.set(bgId, dataUrl)
+                      item.style.backgroundImage = `url('${dataUrl}')`
+                      const placeholder = item.querySelector("i.fa-film")
+                      if (placeholder) placeholder.remove()
+                      if (!item.querySelector(".video-thumb-badge")) {
+                          const badge = document.createElement("div")
+                          badge.className = "video-thumb-badge"
+                          badge.innerHTML = '<i class="fa-solid fa-film"></i>'
+                          item.appendChild(badge)
+                      }
+                      vid.removeAttribute("src")
+                      vid.load()
+                  }, { once: true })
+              }
+          } else {
+              item.style.backgroundImage = `url('${url}')`
+          }
+      }
+
+      if (isIdbMedia(bgId)) {
+        const cached = getBlobUrlSync(bgId)
+        if (cached) {
+            applyThumb(cached)
+        } else {
+            getImageUrl(bgId).then(url => {
+                if (url) applyThumb(url)
+            })
+        }
+      } else if (bgId) {
+        item.style.backgroundImage = `url('${bgId}')`
+      }
+
       if (isIdbVideo(bgId)) {
         item.classList.add("video-bg-item")
-        item.innerHTML = '<i class="fa-solid fa-film"></i>'
-
-        if (_videoThumbCache.has(bgId)) {
-          item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
-          const placeholder = item.querySelector("i.fa-film")
-          if (placeholder) placeholder.remove()
-          const badge = document.createElement("div")
-          badge.className = "video-thumb-badge"
-          badge.innerHTML = '<i class="fa-solid fa-film"></i>'
-          item.appendChild(badge)
-        } else if (thumbUrl) {
-          const vid = document.createElement("video")
-          vid.src = thumbUrl
-          vid.muted = true
-          vid.preload = "metadata"
-          vid.addEventListener(
-            "loadeddata",
-            () => {
-              vid.currentTime = 0
-            },
-            { once: true },
-          )
-          vid.addEventListener(
-            "seeked",
-            () => {
-              const canvas = document.createElement("canvas")
-              canvas.width = vid.videoWidth || 160
-              canvas.height = vid.videoHeight || 90
-              canvas
-                .getContext("2d")
-                .drawImage(vid, 0, 0, canvas.width, canvas.height)
-              const dataUrl = canvas.toDataURL()
-              _videoThumbCache.set(bgId, dataUrl)
-              item.style.backgroundImage = `url('${dataUrl}')`
-              const placeholder = item.querySelector("i.fa-film")
-              if (placeholder) placeholder.remove()
-              const badge = document.createElement("div")
-              badge.className = "video-thumb-badge"
-              badge.innerHTML = '<i class="fa-solid fa-film"></i>'
-              item.appendChild(badge)
-
-              // FREE MEMORY IMMEDIATELY ONCE THUMBNAIL IS CAPTURED
-              vid.removeAttribute("src")
-              vid.load()
-            },
-            { once: true },
-          )
-          vid.addEventListener(
-            "error",
-            () => {
-              console.warn("Video thumbnail generation failed.")
-              vid.removeAttribute("src")
-              vid.load()
-            },
-            { once: true },
-          )
+        if (!item.style.backgroundImage) {
+            item.innerHTML = '<i class="fa-solid fa-film"></i>'
         }
-      } else if (thumbUrl) {
-        item.style.backgroundImage = `url('${thumbUrl}')`
       }
       item.title = `User ${isIdbVideo(bgId) ? "Video" : "Image"} ${index + 1}`
 
@@ -265,6 +266,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 }
 
 function setupMultiSelectMode(DOM, handleSettingUpdate) {
+  if (DOM.localBackgroundGallery.dataset.eventsAttached) return { enterBgSelectMode: () => {}, exitBgSelectMode: () => {} };
+  DOM.localBackgroundGallery.dataset.eventsAttached = "true";
+
   let bgSelectMode = false
   const bgSelectedIds = new Set()
   const bgSelectModeBtn = document.getElementById("bg-select-mode-btn")

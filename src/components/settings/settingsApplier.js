@@ -142,7 +142,22 @@ function createApplySettings(effectInstances) {
     // Resolve IndexedDB image/video ID to blob URL
     const isVideoId = isIdbVideo(bg)
     if (isIdbMedia(bg)) {
-      bg = getBlobUrlSync(bg) || bg
+      const cachedUrl = getBlobUrlSync(bg)
+      if (cachedUrl) {
+        bg = cachedUrl
+      } else {
+        // Not in sync cache yet, fetch it async and re-apply
+        import("../../services/imageStore.js").then((m) => {
+          m.getImageUrl(settings.background).then((url) => {
+            if (url && settings.background === _prevBg) {
+              applySettings()
+            }
+          })
+        })
+        // Do NOT set bg = null here. Keep the ID so the code below 
+        // treats it as an image/video source (even if it won't render until url resolves)
+        // This prevents the "flash" or fallback to gradient/wave.
+      }
     }
     const isPredefinedLocalBg = effectInstances.localBackgrounds.some(
       (b) => b.id === bg,

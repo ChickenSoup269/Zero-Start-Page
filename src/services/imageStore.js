@@ -44,13 +44,19 @@ export function getBlobUrlSync(id) {
 
 /** Lấy blob URL, load từ IndexedDB nếu chưa có trong cache */
 export async function getImageUrl(id) {
+  if (typeof id !== "string" && typeof id !== "number") return null
+  if (!id) return null
   if (_urlCache.has(id)) return _urlCache.get(id)
   const db = await openDb()
   const blob = await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readonly")
-    const req = tx.objectStore(STORE_NAME).get(id)
-    req.onsuccess = (e) => resolve(e.target.result)
-    req.onerror = (e) => reject(e.target.error)
+    try {
+      const tx = db.transaction(STORE_NAME, "readonly")
+      const req = tx.objectStore(STORE_NAME).get(id)
+      req.onsuccess = (e) => resolve(e.target.result)
+      req.onerror = (e) => reject(e.target.error)
+    } catch (err) {
+      reject(err)
+    }
   })
   if (!blob) return null
   const url = URL.createObjectURL(blob)

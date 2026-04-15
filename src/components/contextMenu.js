@@ -214,36 +214,46 @@ async function handleFavorite() {
   }
 
   if (key && settings[key] && index > -1 && settings[key][index]) {
+    const currentBg = settings.background
     let item = settings[key].splice(index, 1)[0]
     
     // Normalize to object if it's a string
     if (typeof item === 'string') {
         const val = item;
-        item = { isFavorite: false };
-        if (key === "userBackgrounds") item.id = val;
-        else if (key === "userSavedFonts") item.label = val;
-        else item.val = val;
+        item = { id: val, isFavorite: false };
+        if (key === "userSavedFonts") item.label = val;
+        else if (key !== "userBackgrounds") item.val = val;
     }
 
     // Toggle favorite
     item.isFavorite = !item.isFavorite;
 
-    // Move to top if favorited
+    // Move to top if favorited, otherwise to bottom
     if (item.isFavorite) {
         settings[key].unshift(item)
     } else {
         settings[key].push(item)
     }
     
+    // Safety: ensure background setting is NOT corrupted by object
+    if (key === "userBackgrounds" && typeof settings.background === "object" && settings.background !== null) {
+        settings.background = settings.background.id || currentBg
+    }
+    
     saveSettings()
+    
+    // Ensure the page background and settings UI are in sync
+    if (typeof window.appApplySettings === "function") {
+        window.appApplySettings()
+    }
     
     const DOM_UTIL = await import("../utils/dom.js")
     if (renderFn) {
-        if (type === "userMultiColor") {
-            renderFn(DOM_UTIL)
-        } else if (type === "localBg") {
-            // Use global handleSettingUpdate if possible, or dummy
+        // For backgrounds, we pass the real handleSettingUpdate to ensure UI stays in sync
+        if (type === "localBg") {
             renderFn(DOM_UTIL, window.appHandleSettingUpdate || (() => {}))
+        } else if (type === "userMultiColor") {
+            renderFn(DOM_UTIL)
         } else {
             renderFn(DOM_UTIL)
         }
@@ -393,10 +403,35 @@ async function handleDelete() {
           }
 
           if (key && settings[key] && index > -1) {
+              const item = settings[key][index]
+              const itemId = typeof item === "object" ? item.id || item.val || item.label : item
+              
               settings[key].splice(index, 1)
-              saveSettings()
+              
+              // If deleted item is the current background, reset it
+              if (key === "userBackgrounds" && settings.background === itemId) {
+                  if (window.appHandleSettingUpdate) {
+                      window.appHandleSettingUpdate("background", null)
+                  } else {
+                      updateSetting("background", null)
+                      saveSettings()
+                  }
+              } else {
+                  saveSettings()
+              }
+
+              if (typeof window.appApplySettings === "function") {
+                  window.appApplySettings()
+              }
+
               const DOM = await import("../utils/dom.js")
-              if (renderFn) renderFn(DOM)
+              if (renderFn) {
+                  if (type === "localBg") {
+                      renderFn(DOM, window.appHandleSettingUpdate || (() => {}))
+                  } else {
+                      renderFn(DOM)
+                  }
+              }
           }
       }
   }

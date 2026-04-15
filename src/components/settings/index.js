@@ -321,6 +321,9 @@ export function initSettings() {
 
   ctx.handleSettingUpdate = handleSettingUpdate
 
+  // Expose for global access (e.g. from context menu)
+  window.appHandleSettingUpdate = handleSettingUpdate
+
   // Bridge shared helpers expected by settingsApplier/updateSettingsInputs.
   effects.DOM = DOM_EXPORTS
   effects.localBackgrounds = localBackgrounds
