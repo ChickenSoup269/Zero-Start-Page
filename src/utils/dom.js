@@ -37,6 +37,7 @@ export const bgPosYInput = document.getElementById("bg-pos-y-input")
 export const bgPosYValue = document.getElementById("bg-pos-y-value")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
+export const accentColorHexInput = document.getElementById("accent-color-hex-input")
 export const randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )

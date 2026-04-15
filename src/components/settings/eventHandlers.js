@@ -512,6 +512,23 @@ export function setupGeneralEventHandlers(
         DOM.unsplashAccessKeyInput.value.trim(),
       )
     })
+
+    // Eye icon toggle for Unsplash key
+    const toggleBtn = document.getElementById("toggle-unsplash-key")
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", () => {
+        const type =
+          DOM.unsplashAccessKeyInput.getAttribute("type") === "password"
+            ? "text"
+            : "password"
+        DOM.unsplashAccessKeyInput.setAttribute("type", type)
+        const icon = toggleBtn.querySelector("i")
+        if (icon) {
+          icon.className =
+            type === "password" ? "fa-solid fa-eye" : "fa-solid fa-eye-slash"
+        }
+      })
+    }
   }
 
   // Save custom color
@@ -575,27 +592,47 @@ export function setupGeneralEventHandlers(
   })
 
   // Accent color
+  const updateAccentHexInput = (color) => {
+    if (DOM.accentColorHexInput) {
+      DOM.accentColorHexInput.value = color.toUpperCase()
+    }
+  }
+
   DOM.accentColorPicker.addEventListener("input", () => {
-    document.documentElement.style.setProperty(
-      "--accent-color",
-      DOM.accentColorPicker.value,
-    )
-    const rgb = hexToRgb(DOM.accentColorPicker.value)
+    const val = DOM.accentColorPicker.value
+    document.documentElement.style.setProperty("--accent-color", val)
+    const rgb = hexToRgb(val)
     if (rgb) {
       document.documentElement.style.setProperty(
         "--accent-color-rgb",
         `${rgb.r}, ${rgb.g}, ${rgb.b}`,
       )
     }
+    updateAccentHexInput(val)
   })
   DOM.accentColorPicker.addEventListener("change", () =>
     handleSettingUpdate("accentColor", DOM.accentColorPicker.value),
   )
 
+  if (DOM.accentColorHexInput) {
+    DOM.accentColorHexInput.addEventListener("input", (e) => {
+      let val = e.target.value.trim()
+      if (!val.startsWith("#")) val = "#" + val
+      e.target.value = val
+
+      if (/^#[0-9A-F]{6}$/i.test(val)) {
+        DOM.accentColorPicker.value = val
+        DOM.accentColorPicker.dispatchEvent(new Event("input"))
+        handleSettingUpdate("accentColor", val)
+      }
+    })
+  }
+
   document.querySelectorAll(".accent-color-preset").forEach((btn) => {
     btn.addEventListener("click", () => {
       const color = btn.dataset.color
       DOM.accentColorPicker.value = color
+      updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
       document
         .querySelectorAll(".accent-color-preset")
@@ -607,6 +644,7 @@ export function setupGeneralEventHandlers(
   DOM.randomAccentColorBtn.addEventListener("click", () => {
     const color = getRandomHexColor()
     DOM.accentColorPicker.value = color
+    updateAccentHexInput(color)
     handleSettingUpdate("accentColor", color)
     document
       .querySelectorAll(".accent-color-preset")
@@ -637,6 +675,7 @@ export function setupGeneralEventHandlers(
     if (item && !e.target.closest(".remove-bg-btn")) {
       const color = item.dataset.bgId
       DOM.accentColorPicker.value = color
+      updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
       document
         .querySelectorAll(".accent-color-preset")

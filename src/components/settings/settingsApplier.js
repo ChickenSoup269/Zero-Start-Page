@@ -778,6 +778,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
     DOM.languageSelect.value = settings.language || "en"
     DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
+    if (DOM.accentColorHexInput) {
+      DOM.accentColorHexInput.value = (settings.accentColor || "#a8c0ff").toUpperCase()
+    }
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
     if (DOM.clockDateStrokeWidthInput) {
       DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0

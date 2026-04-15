@@ -191,8 +191,13 @@ async function setUnsplashRandomBackground(
   }
 
   const btn = unsplashRandomBtn
+  const originalHtml = btn.innerHTML
   btn.disabled = true
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
+  const icon = btn.querySelector("i")
+  if (icon) {
+    icon.classList.remove("fa-sync-alt")
+    icon.classList.add("fa-spinner", "fa-spin")
+  }
 
   const category =
     unsplashCategorySelect?.value ||
@@ -272,7 +277,7 @@ async function setUnsplashRandomBackground(
 
     handleSettingUpdateCallback("background", finalBgValue)
     btn.disabled = false
-    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
+    btn.innerHTML = originalHtml
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
     if (unsplashCredit) unsplashCredit.style.display = "none"
@@ -281,7 +286,7 @@ async function setUnsplashRandomBackground(
     handleSettingUpdateCallback("background", previousBackground)
 
     btn.disabled = false
-    btn.innerHTML = '<i class="fa-solid fa-sync-alt"></i> Unsplash'
+    btn.innerHTML = originalHtml
     showAlert(
       "Failed to load Unsplash image. Please check your Access Key and try again.",
     )

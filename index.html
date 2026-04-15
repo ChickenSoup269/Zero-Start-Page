@@ -502,125 +502,128 @@
             <div class="settings-section" data-section-id="background">
                 <h3 class="section-toggle" data-i18n="settings_bg"><i class="fa-solid fa-image"></i> Background</h3>
                 <div class="section-content">
-                    <div class="setting-item">
-                        <label for="bg-input" data-i18n="settings_bg_placeholder">URL or Color</label>
-                        <div class="input-group">
-                            <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" />
-                            <input type="color" id="bg-color-picker" aria-label="Pick a color" />
-                            <div id="unsplash-credit"
-                                style="display:none;margin-top:6px;font-size:0.72rem;opacity:0.7;line-height:1.5;">
+                    <!-- Source Selection Card -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title"><i class="fa-solid fa-link"></i> Source & Colors</div>
+                        <div class="background-inputs-grid">
+                            <div class="full-row" style="position: relative;">
+                                <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" class="full-width" />
+                                <input type="color" id="bg-color-picker" aria-label="Pick a color" class="bg-picker-input" />
                             </div>
-                            <button id="save-color-btn" class="primary-btn full-width"
-                                data-i18n="settings_save_color">Save
-                                Solid Color</button>
-                            <label for="unsplash-access-key-input" data-i18n="settings_unsplash_access_key"
-                                style="font-size:0.8rem;opacity:0.75;margin-bottom:4px;display:block;">Unsplash Access
-                                Key</label>
-                            <input type="text" id="unsplash-access-key-input" class="full-width"
-                                data-i18n-placeholder="settings_unsplash_access_key_placeholder"
-                                placeholder="Enter your Unsplash Access Key" autocomplete="off"
-                                style="margin-bottom:4px;" />
-                            <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
-                                <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
-                                    style="color: white;" data-i18n="settings_unsplash_api_info">Get a free key at
-                                    unsplash.com/developers</a>
-                            </small>
-                            <small style="display:block;margin-bottom:8px;opacity:0.6;font-size:0.75rem;">
-                                <a href="https://www.youtube.com/watch?v=zQR_sWfoRTY" target="_blank" rel="noopener"
-                                    style="color: white;" data-i18n="settings_unsplash_api_info_video">Video how to get
-                                    api
-                                    key</a>
-                            </small>
-
-                            <select id="unsplash-category-select" class="full-width"
-                                style="margin-bottom: 8px;"></select>
-                            <button id="unsplash-random-btn" class="secondary-btn"
-                                data-i18n="settings_unsplash_random_btn"
-                                title="Load random Unsplash image (or press Space)"><i
-                                    class="fa-solid fa-sync-alt"></i></button>
-                            <button id="remove-bg-btn" class="secondary-btn" data-i18n="settings_remove_bg_btn"
-                                title="Remove background and show gradient"><i class="fa-solid fa-trash"></i></button>
-                            <button id="save-current-bg-btn" class="secondary-btn"
-                                title="Save current background to Local Themes"
-                                data-i18n="settings_save_bg_btn">Save</button>
-
+                            <div id="unsplash-credit" class="full-row unsplash-credit-text"></div>
+                            <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color">Save Color</button>
+                            <button id="save-current-bg-btn" class="secondary-btn" data-i18n="settings_save_bg_btn">Save Theme</button>
+                            <button id="remove-bg-btn" class="secondary-btn full-row" data-i18n="settings_remove_bg_btn"><i class="fa-solid fa-trash"></i> Reset Background</button>
                         </div>
                     </div>
 
-                    <!-- Background Blur -->
-                    <div class="setting-group">
-                        <label for="bg-blur-input"><i class="fa-solid fa-droplet"></i> <span
-                                data-i18n="settings_bg_blur">Background
-                                Blur</span>: <span id="bg-blur-value">0px</span></label>
-                        <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
+                    <!-- Unsplash Card -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title"><i class="fa-brands fa-unsplash"></i> Unsplash Integration</div>
+                        <div class="unsplash-input-wrapper">
+                            <div class="unsplash-key-wrapper">
+                                <input type="password" id="unsplash-access-key-input" placeholder="Access Key" class="unsplash-key-input" />
+                                <button type="button" class="toggle-password-btn" id="toggle-unsplash-key" title="Toggle visibility">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                            <button id="unsplash-random-btn" class="unsplash-random-btn" title="Random (Space)">
+                                <i class="fa-solid fa-shuffle"></i>
+                            </button>
+                        </div>
+                        <select id="unsplash-category-select" class="full-width"></select>
+                        <div class="unsplash-links">
+                            <a href="https://unsplash.com/developers" target="_blank" class="unsplash-link-item">
+                                <i class="fa-solid fa-key"></i> <span data-i18n="settings_unsplash_api_info">Get free key</span>
+                            </a>
+                            <a href="https://www.youtube.com/watch?v=zQR_sWfoRTY" target="_blank" class="unsplash-link-item">
+                                <i class="fa-solid fa-play"></i> <span data-i18n="settings_unsplash_api_info_video">Tutorial</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Background Brightness -->
-                    <div class="setting-group">
-                        <label for="bg-brightness-input"><i class="fa-solid fa-sun"></i> <span
-                                data-i18n="settings_bg_brightness">Brightness</span>: <span
-                                id="bg-brightness-value">100%</span></label>
-                        <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100">
+                    <!-- Visual Effects Card -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Effects</div>
+                        
+                        <div class="bg-slider-item">
+                            <div class="bg-slider-info">
+                                <span class="bg-slider-label"><i class="fa-solid fa-droplet"></i> <span data-i18n="settings_bg_blur">Blur</span></span>
+                                <span id="bg-blur-value" class="bg-slider-value">0px</span>
+                            </div>
+                            <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
+                        </div>
+
+                        <div class="bg-slider-item">
+                            <div class="bg-slider-info">
+                                <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span data-i18n="settings_bg_brightness">Brightness</span></span>
+                                <span id="bg-brightness-value" class="bg-slider-value">100%</span>
+                            </div>
+                            <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100">
+                        </div>
+
+                        <div class="bg-slider-item">
+                            <div class="bg-slider-info">
+                                <span class="bg-slider-label"><i class="fa-solid fa-hourglass-half"></i> <span data-i18n="settings_bg_fadein">Fade-in</span></span>
+                                <span id="bg-fadein-value" class="bg-slider-value">0.5s</span>
+                            </div>
+                            <input type="range" id="bg-fadein-input" min="0" max="5" step="0.1" value="0.5">
+                        </div>
                     </div>
 
-                    <!-- Background Fade-in Time -->
-                    <div class="setting-group">
-                        <label for="bg-fadein-input"><i class="fa-solid fa-hourglass-half"></i> <span
-                                data-i18n="settings_bg_fadein">Fade-in
-                                Time</span>: <span id="bg-fadein-value">0.5s</span></label>
-                        <input type="range" id="bg-fadein-input" min="0" max="5" step="0.1" value="0.5">
-                    </div>
-
-                    <!-- Background Position -->
-                    <div id="bg-position-setting" class="setting-group" style="display: none;">
-                        <label for="bg-size-select"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span
-                                data-i18n="settings_bg_position">Background Position</span></label>
-                        <div class="setting-item">
-                            <div data-i18n="settings_bg_fit" class="setting-label">Image Fit</div>
+                    <!-- Layout & Fit Card -->
+                    <div id="bg-position-setting" class="bg-control-card" style="display: none;">
+                        <div class="bg-control-title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Layout & Fit</div>
+                        <div class="setting-item no-margin-top">
+                            <label data-i18n="settings_bg_fit">Image Fit</label>
                             <select id="bg-size-select">
                                 <option value="cover" data-i18n="settings_bg_fit_cover">Cover (crop)</option>
-                                <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)
-                                </option>
+                                <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)</option>
                             </select>
                         </div>
-                        <div class="setting-item">
-                            <label for="bg-pos-x-input">Horizontal: <span id="bg-pos-x-value">50%</span></label>
-                            <input type="range" id="bg-pos-x-input" min="0" max="100" value="50">
-                        </div>
-                        <div class="setting-item">
-                            <label for="bg-pos-y-input">Vertical: <span id="bg-pos-y-value">50%</span></label>
-                            <input type="range" id="bg-pos-y-input" min="0" max="100" value="50">
+                        
+                        <div class="layout-fit-grid">
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label">Horizontal</span>
+                                    <span id="bg-pos-x-value" class="bg-slider-value">50%</span>
+                                </div>
+                                <input type="range" id="bg-pos-x-input" min="0" max="100" value="50">
+                            </div>
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label">Vertical</span>
+                                    <span id="bg-pos-y-value" class="bg-slider-value">50%</span>
+                                </div>
+                                <input type="range" id="bg-pos-y-input" min="0" max="100" value="50">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="setting-item">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <label data-i18n="settings_local_bg" style="margin-bottom: 0;"
-                                for="gradient-type-select">Local Themes</label>
-                            <span id="count-bg"></span>
+                    <!-- Local Themes Gallery Card -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title">
+                            <i class="fa-solid fa-images"></i> 
+                            <span data-i18n="settings_local_bg">Local Themes</span>
+                            <span id="count-bg" style="margin-left: auto; opacity: 0.6;"></span>
                         </div>
-                        <div class="local-bg-gallery-controls">
+                        <div class="local-bg-gallery-controls" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                             <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
-                            <input type="file" id="local-video-upload"
-                                accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />
-                            <button id="upload-local-image-btn" class="secondary-btn"
-                                data-i18n="settings_upload_image">Upload Image</button>
-                            <button id="upload-local-video-btn" class="secondary-btn"
-                                data-i18n="settings_upload_video">Upload Video</button>
-                            <button id="bg-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                                data-i18n="bg_select_mode">Select</button>
+                            <input type="file" id="local-video-upload" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />
+                            <button id="upload-local-image-btn" class="secondary-btn" data-i18n="settings_upload_image"><i class="fa-solid fa-image"></i> Image</button>
+                            <button id="upload-local-video-btn" class="secondary-btn" data-i18n="settings_upload_video"><i class="fa-solid fa-video"></i> Video</button>
+                            <button id="bg-select-mode-btn" class="secondary-btn full-row" data-i18n="bg_select_mode"><i class="fa-solid fa-check-double"></i> Batch Manage</button>
                         </div>
+                        
                         <div id="bg-select-toolbar" class="bg-select-toolbar" style="display:none;">
                             <span id="bg-select-count" class="bg-select-count">0 selected</span>
-                            <button id="bg-select-all-btn" class="secondary-btn"><i
-                                    class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
-                                    All</span></button>
-                            <button id="bg-delete-selected-btn" class="secondary-btn danger-btn"><i
-                                    class="fa-solid fa-trash"></i> <span
-                                    data-i18n="bg_delete_selected">Delete</span></button>
-                            <button id="bg-select-cancel-btn" class="secondary-btn"><i
-                                    class="fa-solid fa-xmark"></i></button>
+                            <div style="display: flex; gap: 6px;">
+                                <button id="bg-select-all-btn" class="icon-btn" title="All"><i class="fa-solid fa-check-double"></i></button>
+                                <button id="bg-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                <button id="bg-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
                         </div>
+
                         <div id="local-background-gallery" class="local-bg-gallery"></div>
                     </div>
                 </div>
@@ -631,79 +634,73 @@
                     Color</label>
                 <div class="accent-color-selector">
                     <div class="accent-color-presets">
-                        <!-- Vibrant Colors -->
-                        <button class="accent-color-preset" data-color="#FF6B6B" style="background-color: #FF6B6B"
-                            title="Coral Red"></button>
-                        <button class="accent-color-preset" data-color="#FF8C42" style="background-color: #FF8C42"
-                            title="Orange"></button>
-                        <button class="accent-color-preset" data-color="#FFD93D" style="background-color: #FFD93D"
-                            title="Golden Yellow"></button>
-                        <button class="accent-color-preset" data-color="#6BCF7F" style="background-color: #6BCF7F"
-                            title="Emerald"></button>
-                        <button class="accent-color-preset" data-color="#4ECDC4" style="background-color: #4ECDC4"
-                            title="Turquoise"></button>
-                        <button class="accent-color-preset" data-color="#45B7D1" style="background-color: #45B7D1"
-                            title="Sky Blue"></button>
-                        <button class="accent-color-preset" data-color="#5B8FF9" style="background-color: #5B8FF9"
-                            title="Royal Blue"></button>
-                        <button class="accent-color-preset" data-color="#7B68EE" style="background-color: #7B68EE"
-                            title="Purple"></button>
-                        <button class="accent-color-preset" data-color="#E55FFF" style="background-color: #E55FFF"
-                            title="Magenta"></button>
-                        <button class="accent-color-preset" data-color="#FF69B4" style="background-color: #FF69B4"
-                            title="Hot Pink"></button>
+                        <!-- Group: Modern & Vibrant -->
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Modern & Vibrant</div>
+                        <button class="accent-color-preset" data-color="#6366f1" style="background-color: #6366f1" title="Indigo"></button>
+                        <button class="accent-color-preset" data-color="#8b5cf6" style="background-color: #8b5cf6" title="Violet"></button>
+                        <button class="accent-color-preset" data-color="#d946ef" style="background-color: #d946ef" title="Fuchsia"></button>
+                        <button class="accent-color-preset" data-color="#ec4899" style="background-color: #ec4899" title="Pink"></button>
+                        <button class="accent-color-preset" data-color="#f43f5e" style="background-color: #f43f5e" title="Rose"></button>
+                        <button class="accent-color-preset" data-color="#ef4444" style="background-color: #ef4444" title="Red"></button>
+                        <button class="accent-color-preset" data-color="#f97316" style="background-color: #f97316" title="Orange"></button>
+                        <button class="accent-color-preset" data-color="#f59e0b" style="background-color: #f59e0b" title="Amber"></button>
+                        <button class="accent-color-preset" data-color="#eab308" style="background-color: #eab308" title="Yellow"></button>
+                        <button class="accent-color-preset" data-color="#84cc16" style="background-color: #84cc16" title="Lime"></button>
+                        <button class="accent-color-preset" data-color="#22c55e" style="background-color: #22c55e" title="Green"></button>
+                        <button class="accent-color-preset" data-color="#10b981" style="background-color: #10b981" title="Emerald"></button>
+                        <button class="accent-color-preset" data-color="#14b8a6" style="background-color: #14b8a6" title="Teal"></button>
+                        <button class="accent-color-preset" data-color="#06b6d4" style="background-color: #06b6d4" title="Cyan"></button>
+                        <button class="accent-color-preset" data-color="#0ea5e9" style="background-color: #0ea5e9" title="Sky"></button>
+                        <button class="accent-color-preset" data-color="#3b82f6" style="background-color: #3b82f6" title="Blue"></button>
 
-                        <!-- Pastel Colors -->
-                        <button class="accent-color-preset" data-color="#FFB4B4" style="background-color: #FFB4B4"
-                            title="Pastel Red"></button>
-                        <button class="accent-color-preset" data-color="#FFA07A" style="background-color: #FFA07A"
-                            title="Peach"></button>
-                        <button class="accent-color-preset" data-color="#F7DC6F" style="background-color: #F7DC6F"
-                            title="Pastel Yellow"></button>
-                        <button class="accent-color-preset" data-color="#98D8C8" style="background-color: #98D8C8"
-                            title="Mint"></button>
-                        <button class="accent-color-preset" data-color="#B4E7CE" style="background-color: #B4E7CE"
-                            title="Seafoam"></button>
-                        <button class="accent-color-preset" data-color="#A8D8EA" style="background-color: #A8D8EA"
-                            title="Baby Blue"></button>
-                        <button class="accent-color-preset" data-color="#85C1E2" style="background-color: #85C1E2"
-                            title="Light Blue"></button>
-                        <button class="accent-color-preset" data-color="#BB8FCE" style="background-color: #BB8FCE"
-                            title="Lavender"></button>
-                        <button class="accent-color-preset" data-color="#DDA0DD" style="background-color: #DDA0DD"
-                            title="Plum"></button>
-                        <button class="accent-color-preset" data-color="#FFC0CB" style="background-color: #FFC0CB"
-                            title="Pink"></button>
-
-                        <!-- Dark & Neutral -->
-                        <button class="accent-color-preset" data-color="#00D9FF" style="background-color: #00D9FF"
-                            title="Cyan"></button>
-                        <button class="accent-color-preset" data-color="#00FFA3" style="background-color: #00FFA3"
-                            title="Neon Green"></button>
-                        <button class="accent-color-preset" data-color="#FF0080" style="background-color: #FF0080"
-                            title="Hot Magenta"></button>
-                        <button class="accent-color-preset" data-color="#9D4EDD" style="background-color: #9D4EDD"
-                            title="Deep Purple"></button>
-                        <button class="accent-color-preset" data-color="#F72585" style="background-color: #F72585"
-                            title="Rose"></button>
-                        <button class="accent-color-preset" data-color="#2f4360"
-                            style="background-color: #2f4360; border: 1px solid #666;" title="GitHub Black"></button>
-                        <button class="accent-color-preset" data-color="#FFFFFF"
-                            style="background-color: #FFFFFF; border: 1px solid #999;" title="White"></button>
+                        <!-- Group: Pastel & Soft -->
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Pastel & Soft</div>
+                        <button class="accent-color-preset" data-color="#fda4af" style="background-color: #fda4af" title="Soft Rose"></button>
+                        <button class="accent-color-preset" data-color="#f9a8d4" style="background-color: #f9a8d4" title="Soft Pink"></button>
+                        <button class="accent-color-preset" data-color="#f0abfc" style="background-color: #f0abfc" title="Soft Fuchsia"></button>
+                        <button class="accent-color-preset" data-color="#d8b4fe" style="background-color: #d8b4fe" title="Soft Purple"></button>
+                        <button class="accent-color-preset" data-color="#c4b5fd" style="background-color: #c4b5fd" title="Soft Violet"></button>
+                        <button class="accent-color-preset" data-color="#a5b4fc" style="background-color: #a5b4fc" title="Soft Indigo"></button>
+                        <button class="accent-color-preset" data-color="#93c5fd" style="background-color: #93c5fd" title="Soft Blue"></button>
+                        <button class="accent-color-preset" data-color="#7dd3fc" style="background-color: #7dd3fc" title="Soft Sky"></button>
+                        <button class="accent-color-preset" data-color="#67e8f9" style="background-color: #67e8f9" title="Soft Cyan"></button>
+                        <button class="accent-color-preset" data-color="#5eead4" style="background-color: #5eead4" title="Soft Teal"></button>
+                        <button class="accent-color-preset" data-color="#6ee7b7" style="background-color: #6ee7b7" title="Soft Emerald"></button>
+                        <button class="accent-color-preset" data-color="#86efac" style="background-color: #86efac" title="Soft Green"></button>
+                        <button class="accent-color-preset" data-color="#bef264" style="background-color: #bef264" title="Soft Lime"></button>
+                        <button class="accent-color-preset" data-color="#fde047" style="background-color: #fde047" title="Soft Yellow"></button>
+                        <button class="accent-color-preset" data-color="#fcd34d" style="background-color: #fcd34d" title="Soft Amber"></button>
+                        <button class="accent-color-preset" data-color="#fdba74" style="background-color: #fdba74" title="Soft Orange"></button>
+                        
+                        <!-- Group: Dark & Monochrome -->
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Dark & Monochrome</div>
+                        <button class="accent-color-preset" data-color="#0f172a" style="background-color: #0f172a" title="Slate Dark"></button>
+                        <button class="accent-color-preset" data-color="#1e293b" style="background-color: #1e293b" title="Slate"></button>
+                        <button class="accent-color-preset" data-color="#334155" style="background-color: #334155" title="Slate Light"></button>
+                        <button class="accent-color-preset" data-color="#3f3f46" style="background-color: #3f3f46" title="Zinc"></button>
+                        <button class="accent-color-preset" data-color="#52525b" style="background-color: #52525b" title="Zinc Light"></button>
+                        <button class="accent-color-preset" data-color="#18181b" style="background-color: #18181b" title="Zinc Dark"></button>
+                        <button class="accent-color-preset" data-color="#ffffff" style="background-color: #ffffff; border: 1px solid #ddd;" title="Pure White"></button>
+                        <button class="accent-color-preset" data-color="#e2e8f0" style="background-color: #e2e8f0" title="Slate 200"></button>
                     </div>
-                    <div class="accent-color-picker-wrapper"
-                        style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <input type="color" id="accent-color-picker" title="Custom Color" />
-                        <button id="random-accent-color-btn" class="secondary-btn" title="Random Color"
-                            data-i18n-title="settings_accent_random" style="padding: 4px 8px; height: 32px;">
-                            <i class="fa-solid fa-dice"></i>
-                        </button>
-                        <button id="save-accent-color-btn" class="secondary-btn" title="Save Accent Color"
-                            data-i18n-title="settings_save_color_btn" style="padding: 4px 8px; height: 32px;">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                        </button>
+                    <div class="accent-color-custom-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 8px; display: block;" data-i18n="settings_custom_color_label">Custom Color</label>
+                        <div class="accent-color-picker-wrapper" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 4px; flex: 1; min-width: 150px; transition: all 0.3s ease;">
+                                <input type="color" id="accent-color-picker" title="Custom Color" style="width: 32px; height: 32px; border: none; border-radius: 6px; padding: 0; cursor: pointer; background: transparent; flex-shrink: 0;" />
+                                <input type="text" id="accent-color-hex-input" placeholder="#HEX" style="background: transparent; border: none; color: #fff; padding: 4px 8px; width: 100%; outline: none; font-family: monospace; font-size: 0.95rem; font-weight: 600;" maxlength="7" />
+                            </div>
+                            <button id="random-accent-color-btn" class="secondary-btn" title="Random Color"
+                                data-i18n-title="settings_accent_random" style="padding: 0 12px; height: 42px;">
+                                <i class="fa-solid fa-dice"></i>
+                            </button>
+                            <button id="save-accent-color-btn" class="secondary-btn" title="Save Accent Color"
+                                data-i18n-title="settings_save_color_btn" style="padding: 0 12px; height: 42px;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                            </button>
+                        </div>
+                        <div id="user-accent-colors-gallery" class="user-colors-gallery" style="margin-top: 10px;"></div>
                     </div>
-                    <div id="user-accent-colors-gallery" class="user-colors-gallery" style="margin-top: 10px;"></div>
                 </div>
             </div>
 
@@ -1642,36 +1639,29 @@
                         <input type="checkbox" id="free-move-clock-checkbox">
                     </div>
                     <div class="setting-group">
-                        <label data-i18n="settings_date_format_style" for="date-format-select"><i
-                                class="fa-solid fa-calendar-day"></i> Date
-                            Format String</label>
-                        <select id="date-format-select">
-                            <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
-                            <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
-                            <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
-                            <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
-                            <option value="year" data-i18n="settings_date_format_year">Year only</option>
-                            <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
-                        </select>
-                        <div class="setting-item-row" style="margin-top: 0.6rem;">
-                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbreviate
-                                Weekday</label>
-                            <input type="checkbox" id="short-weekday-checkbox">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_date_format_style" for="date-format-select"><i class="fa-solid fa-calendar-day"></i> Date Format</label>
+                                <select id="date-format-select">
+                                    <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
+                                    <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
+                                    <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
+                                    <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
+                                    <option value="year" data-i18n="settings_date_format_year">Year only</option>
+                                    <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
+                                </select>
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="time-format-select" data-i18n="settings_time_format"><i class="fa-solid fa-clock"></i> Time Format</label>
+                                <select id="time-format-select">
+                                    <option value="24h">24h</option>
+                                    <option value="12h">12h (AM/PM)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="setting-item-row" style="margin-top: 0.6rem;">
-                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
-                            <input type="checkbox" id="hide-seconds-checkbox">
-                        </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="time-format-select" data-i18n="settings_time_format">Time Format (12h /
-                                24h)</label>
-                            <select id="time-format-select">
-                                <option value="24h">24h</option>
-                                <option value="12h">12h (AM/PM)</option>
-                            </select>
-                        </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="timezone-select" data-i18n="settings_timezone">Timezone</label>
+
+                        <div class="setting-item" style="margin-top: 10px;">
+                            <label for="timezone-select" data-i18n="settings_timezone"><i class="fa-solid fa-globe"></i> Timezone</label>
                             <select id="timezone-select">
                                 <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
                                 <option value="UTC">UTC / GMT</option>
@@ -1692,19 +1682,41 @@
                                 <option value="Pacific/Auckland">Auckland (AEST/AEDT)</option>
                             </select>
                         </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
-                                priority</label>
-                            <select id="clock-date-priority-select">
-                                <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
-                                <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday
-                                </option>
-                            </select>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px;">
+                            <div class="setting-item-row" style="margin: 0;">
+                                <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Short Weekday</label>
+                                <input type="checkbox" id="short-weekday-checkbox">
+                            </div>
+                            <div class="setting-item-row" style="margin: 0;">
+                                <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
+                                <input type="checkbox" id="hide-seconds-checkbox">
+                            </div>
                         </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="clock-date-style-select" data-i18n="settings_clock_date_style">Clock/Date
-                                Style</label>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom priority</label>
+                                <select id="clock-date-priority-select">
+                                    <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
+                                    <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday</option>
+                                </select>
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE Letters</label>
+                                <select id="hue-text-mode-select">
+                                    <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
+                                    <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
+                                    <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
+                                    <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" style="margin-top: 10px;">
+                            <label for="clock-date-style-select" data-i18n="settings_clock_date_style"><i class="fa-solid fa-swatchbook"></i> Clock/Date Style</label>
                             <select id="clock-date-style-select">
+
                                 <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
                                 <option value="glow" data-i18n="settings_clock_date_style_glow">Glow</option>
                                 <option value="minimal" data-i18n="settings_clock_date_style_minimal">Minimal</option>
