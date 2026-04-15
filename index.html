@@ -629,13 +629,16 @@
                 </div>
             </div>
 
-            <div class="setting-item">
-                <label for="accent-color-picker" data-i18n="settings_accent"><i class="fa-solid fa-palette"></i> Accent
-                    Color</label>
-                <div class="accent-color-selector">
+            <div class="setting-group">
+                <div class="setting-label"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent Color</span></div>
+                <button id="accent-color-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-eye-slash"></i>
+                    <span id="accent-color-toggle-label" data-i18n="settings_accent_close">Hide Controls</span>
+                </button>
+                <div id="accent-color-settings-body" class="accent-color-selector">
                     <div class="accent-color-presets">
                         <!-- Group: Modern & Vibrant -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Modern & Vibrant</div>
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_modern">Modern & Vibrant</div>
                         <button class="accent-color-preset" data-color="#6366f1" style="background-color: #6366f1" title="Indigo"></button>
                         <button class="accent-color-preset" data-color="#8b5cf6" style="background-color: #8b5cf6" title="Violet"></button>
                         <button class="accent-color-preset" data-color="#d946ef" style="background-color: #d946ef" title="Fuchsia"></button>
@@ -654,7 +657,7 @@
                         <button class="accent-color-preset" data-color="#3b82f6" style="background-color: #3b82f6" title="Blue"></button>
 
                         <!-- Group: Pastel & Soft -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Pastel & Soft</div>
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_pastel">Pastel & Soft</div>
                         <button class="accent-color-preset" data-color="#fda4af" style="background-color: #fda4af" title="Soft Rose"></button>
                         <button class="accent-color-preset" data-color="#f9a8d4" style="background-color: #f9a8d4" title="Soft Pink"></button>
                         <button class="accent-color-preset" data-color="#f0abfc" style="background-color: #f0abfc" title="Soft Fuchsia"></button>
@@ -673,7 +676,7 @@
                         <button class="accent-color-preset" data-color="#fdba74" style="background-color: #fdba74" title="Soft Orange"></button>
                         
                         <!-- Group: Dark & Monochrome -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;">Dark & Monochrome</div>
+                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_dark">Dark & Monochrome</div>
                         <button class="accent-color-preset" data-color="#0f172a" style="background-color: #0f172a" title="Slate Dark"></button>
                         <button class="accent-color-preset" data-color="#1e293b" style="background-color: #1e293b" title="Slate"></button>
                         <button class="accent-color-preset" data-color="#334155" style="background-color: #334155" title="Slate Light"></button>
@@ -801,13 +804,11 @@
                 </div>
                 <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
                     <span id="gradient-select-count" class="bg-select-count">0 selected</span>
-                    <button id="gradient-select-all-btn" class="secondary-btn"><i class="fa-solid fa-check-double"></i>
-                        <span data-i18n="bg_select_all">Select
-                            All</span></button>
-                    <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"><i
-                            class="fa-solid fa-trash"></i> <span data-i18n="bg_delete_selected">Delete</span></button>
-                    <button id="gradient-select-cancel-btn" class="secondary-btn"><i
-                            class="fa-solid fa-xmark"></i></button>
+                    <div style="display: flex; gap: 6px;">
+                        <button id="gradient-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
+                        <button id="gradient-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        <button id="gradient-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
                 </div>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
@@ -917,14 +918,11 @@
                         <div id="multi-color-select-toolbar" class="bg-select-toolbar"
                             style="display:none; margin-bottom: 10px;">
                             <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
-                            <button id="multi-color-select-all-btn" class="secondary-btn"><i
-                                    class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
-                                    All</span></button>
-                            <button id="multi-color-delete-selected-btn" class="secondary-btn danger-btn"><i
-                                    class="fa-solid fa-trash"></i> <span
-                                    data-i18n="bg_delete_selected">Delete</span></button>
-                            <button id="multi-color-select-cancel-btn" class="secondary-btn"><i
-                                    class="fa-solid fa-xmark"></i></button>
+                            <div style="display: flex; gap: 6px;">
+                                <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
+                                <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
                         </div>
                         <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
                     </div>
@@ -1076,14 +1074,11 @@
                     <div id="svg-wave-select-toolbar" class="bg-select-toolbar"
                         style="display:none; margin-bottom: 10px;">
                         <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
-                        <button id="svg-wave-select-all-btn" class="secondary-btn"><i
-                                class="fa-solid fa-check-double"></i> <span data-i18n="bg_select_all">Select
-                                All</span></button>
-                        <button id="svg-wave-delete-selected-btn" class="secondary-btn danger-btn"><i
-                                class="fa-solid fa-trash"></i> <span
-                                data-i18n="bg_delete_selected">Delete</span></button>
-                        <button id="svg-wave-select-cancel-btn" class="secondary-btn"><i
-                                class="fa-solid fa-xmark"></i></button>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
+                            <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
                     </div>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
                 </div>
@@ -1627,16 +1622,15 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
                         &amp; Clock Format</span></h3>
                 <div class="section-content">
-                    <div class="setting-item-row"
-                        style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
-                        <label for="show-clock-checkbox" data-i18n="settings_show_clock">Show Clock</label>
-                        <input type="checkbox" id="show-clock-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row"
-                        style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
-                        <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock">Free Move
-                            Clock</label>
-                        <input type="checkbox" id="free-move-clock-checkbox">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
+                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 600;"><i class="fa-solid fa-eye"></i> Show Clock</label>
+                            <input type="checkbox" id="show-clock-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-clock-checkbox">
+                        </div>
                     </div>
                     <div class="setting-group">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -1769,16 +1763,6 @@
                                 <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
                             </select>
                         </div>
-                        <div class="setting-item" style="margin-top: 0.6rem;">
-                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
-                                Letters</label>
-                            <select id="hue-text-mode-select">
-                                <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
-                                <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
-                                <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
-                                <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
-                            </select>
-                        </div>
                         <div id="analog-marker-mode-setting" class="setting-item"
                             style="margin-top: 0.6rem; display: none;">
                             <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker
@@ -1813,75 +1797,72 @@
                                 <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only</option>
                                 </select>                        </div>
 
-                        <div class="setting-item" id="clock-date-stroke-setting"
-                            style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                            <div class="setting-item" style="margin-bottom: 0.6rem;">
-                                <label for="clock-date-stroke-target-select"
-                                    data-i18n="settings_clock_date_stroke_target">Text
-                                    Border Target</label>
-                                <select id="clock-date-stroke-target-select">
-                                    <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and
-                                        Date
-                                    </option>
-                                    <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only
-                                    </option>
-                                    <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only
-                                    </option>
-                                </select>
+                        <div class="setting-item" id="clock-date-stroke-setting" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                            <label style="margin-bottom: 10px; display: block; font-weight: 600;"><i class="fa-solid fa-border-style"></i> Text Outline / Border</label>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="clock-date-stroke-target-select" data-i18n="settings_clock_date_stroke_target" style="font-size: 0.8rem;">Target</label>
+                                    <select id="clock-date-stroke-target-select">
+                                        <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and Date</option>
+                                        <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only</option>
+                                        <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="clock-date-stroke-color-picker" data-i18n="settings_clock_date_stroke_color" style="font-size: 0.8rem;">Color</label>
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="clock-date-stroke-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
                             </div>
-                            <label for="clock-date-stroke-width-input"><i class="fa-solid fa-border-style"></i>
-                                <span data-i18n="settings_clock_date_stroke_width">Text Border Width:</span>
-                                <span id="clock-date-stroke-width-value">0px</span>
-                            </label>
-                            <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
-                                value="0">
-
-                            <div class="setting-item"
-                                style="margin-top: 0.6rem; display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-                                <label style="margin: 0; display: flex; align-items: center; gap: 0.5rem;"
-                                    for="clock-date-stroke-color-picker"><i class="fa-solid fa-palette"></i> <span
-                                        data-i18n="settings_clock_date_stroke_color">Border
-                                        Color</span></label>
-                                <input type="color" id="clock-date-stroke-color-picker" value="#000000"
-                                    style="width: 40px; border: none; padding: 0; background: none; cursor: pointer; height: 30px; border-radius: 4px;">
+                            
+                            <div class="setting-item no-margin-top">
+                                <label for="clock-date-stroke-width-input" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <span data-i18n="settings_clock_date_stroke_width">Width</span>
+                                    <span id="clock-date-stroke-width-value" style="opacity: 0.7; font-family: monospace;">0px</span>
+                                </label>
+                                <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0" style="width: 100%;">
                             </div>
                         </div>
 
-                        <div class="setting-item"
-                            style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                            <label for="clock-size-input"><i class="fa-solid fa-clock"></i> <span
-                                    data-i18n="settings_clock_size">Clock
-                                    Size:</span>
-                                <span id="clock-size-value">6rem</span></label>
-                            <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6">
-
-                            <label style="margin-top: 0.7rem; display: block;" for="date-size-input"><i
-                                    class="fa-solid fa-calendar-day"></i>
-                                <span data-i18n="settings_date_size">Date Size:</span> <span
-                                    id="date-size-value">1.5rem</span></label>
-                            <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
-                        </div>
-                    </div>
-
-                    <div class="setting-group">
-                        <label for="show-custom-title-checkbox"><i class="fa-solid fa-palette"></i> <span
-                                data-i18n="settings_clock_color">Clock
-                                Color</span></label>
-                        <div class="input-group">
-                            <input type="color" id="clock-color-picker" value="#ffffff">
-                            <button id="reset-clock-color-btn" class="secondary-btn"
-                                data-i18n="settings_reset_color">Reset to
-                                Default</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="clock-size-input" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-expand"></i> <span data-i18n="settings_clock_size">Clock Size</span></span>
+                                    <span id="clock-size-value" style="opacity: 0.7; font-family: monospace;">6rem</span>
+                                </label>
+                                <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="date-size-input" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-compress"></i> <span data-i18n="settings_date_size">Date Size</span></span>
+                                    <span id="date-size-value" style="opacity: 0.7; font-family: monospace;">1.5rem</span>
+                                </label>
+                                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5" style="width: 100%;">
+                            </div>
                         </div>
 
-                        <div style="margin-top: 10px; display: block;" class="setting-label"><i
-                                class="fa-solid fa-palette"></i> <span data-i18n="settings_date_color">Date Color</span>
-                        </div>
-                        <div class="input-group">
-                            <input type="color" id="date-color-picker" value="#ffffff">
-                            <button id="reset-date-color-btn" class="secondary-btn"
-                                data-i18n="settings_reset_color_date">Reset
-                                Date to Default</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock Color</span></label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="clock-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-clock-color-btn" class="secondary-btn" title="Reset" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_date_color">Date Color</span></label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="date-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-date-color-btn" class="secondary-btn" title="Reset" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1977,58 +1958,77 @@
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             =� Tùy ch�0nh giao di�!n cho từng ô Dấu trang (màu chữ, n�n, bóng ��",
                             kích thư�:c...).</p>
-                        <label for="bookmark-font-size-input"><i class="fa-solid fa-text-height"></i> <span
-                                data-i18n="settings_bookmark_font_size">Font Size:</span> <span
-                                id="bookmark-font-size-value">10px</span></label>
-                        <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10">
-
-                        <label style="margin-top: 10px; display: block;" for="bookmark-icon-size-input"><i
-                                class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon
-                                Size:</span> <span id="bookmark-icon-size-value">42px</span></label>
-                        <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42">
-
-                        <label style="margin-top: 10px; display: block;" for="bookmark-gap-input"><i
-                                class="fa-solid fa-arrows-left-right"></i>
-                            <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks:</span> <span
-                                id="bookmark-gap-value">8px</span></label>
-                        <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="bookmark-font-size-input" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_bookmark_font_size">Font Size</span></span>
+                                    <span id="bookmark-font-size-value" style="opacity: 0.7; font-family: monospace;">10px</span>
+                                </label>
+                                <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="bookmark-icon-size-input" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
+                                    <span id="bookmark-icon-size-value" style="opacity: 0.7; font-family: monospace;">42px</span>
+                                </label>
+                                <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
+                                <label for="bookmark-gap-input" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
+                                    <span id="bookmark-gap-value" style="opacity: 0.7; font-family: monospace;">8px</span>
+                                </label>
+                                <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8" style="width: 100%;">
+                            </div>
+                        </div>
                     </div>
                     <div class="setting-group">
-                        <label for="hide-bookmark-text"><i class="fa-solid fa-palette"></i> <span
-                                data-i18n="settings_bookmark_text_color">Text
-                                Color</span></label>
-                        <div class="input-group">
-                            <input type="color" id="bookmark-text-color-picker" value="#ffffff">
-                            <button id="reset-bookmark-text-color-btn" class="secondary-btn"
-                                data-i18n="settings_reset_color_date">Reset Default</button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" for="hide-bookmark-text"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-text-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-bookmark-text-color-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-fill"></i> <span data-i18n="settings_bookmark_bg_color">Background</span></label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-bg-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                                    <span style="font-size: 0.8rem; opacity: 0.7;">Opacity</span>
+                                    <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100" style="flex: 1;">
+                                </div>
+                            </div>
                         </div>
 
-                        <div style="margin-top: 15px; display: block;" class="setting-label"><i
-                                class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_bg_color">Background
-                                Color</span></div>
-                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="color" id="bookmark-bg-color-picker" value="#ffffff">
-                            <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100"
-                                style="flex: 1;" title="Opacity">
-                        </div>
-                        <button id="reset-bookmark-bg-btn" class="secondary-btn full-width" style="margin-top: 10px;"
-                            data-i18n="settings_reset_color">Reset Background to Default</button>
-
-                        <div style="margin-top: 15px; display: block;" class="setting-label"><i
-                                class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop
-                                Shadow</span></div>
-                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="color" id="bookmark-shadow-color-picker" value="#000000">
-                            <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24"
-                                style="flex: 1;" title="Opacity">
-                        </div>
-                        <div class="input-group"
-                            style="margin-top: 5px; display: flex; gap: 10px; align-items: center;">
-                            <span style="font-size: 0.9em; opacity: 0.8;"
-                                data-i18n="settings_bookmark_shadow_blur">Blur:</span>
-                            <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8"
-                                style="flex: 1;">
-                            <span id="bookmark-shadow-blur-value" style="font-size: 0.9em; min-width: 30px;">8px</span>
+                        <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
+                                        <input type="color" id="bookmark-shadow-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                        <span>Opacity</span>
+                                    </div>
+                                    <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                                <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                                <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
+                                <span id="bookmark-shadow-blur-value" style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
+                            </div>
                         </div>
                     </div>
                     <div class="setting-group"
@@ -2039,88 +2039,94 @@
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             =� Tùy ch�0nh thanh �i�u hư�:ng nhóm thư mục (Tabs) �x phía trên Dấu
                             trang.</p>
-                        <div style="margin-top: 10px; display: block;" class="setting-label"><span
-                                data-i18n="settings_bookmark_group_bg_color">Background Color</span></div>
-                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff">
-                            <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1"
-                                value="0" style="flex: 1;" title="Opacity">
-                        </div>
-                        <button id="reset-bookmark-group-bg-btn" class="secondary-btn full-width"
-                            style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
-
-                        <div style="margin-top: 15px; display: block;" class="setting-label"><span
-                                data-i18n="settings_bookmark_group_text_color">Text Color</span></div>
-                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="color" id="bookmark-group-text-color-picker" value="#ffffff">
-                        </div>
-                        <button id="reset-bookmark-group-text-color-btn" class="secondary-btn full-width"
-                            style="margin-top: 10px;" data-i18n="settings_reset_color">Reset</button>
-
-                        <div style="margin-top: 15px; display: block;" class="setting-label"><span
-                                data-i18n="settings_bookmark_group_font_size">Font Size</span></div>
-                        <div class="input-group" style="display: flex; gap: 10px; align-items: center;">
-                            <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
-                                value="14" style="flex: 1;">
-                            <span id="bookmark-group-font-size-value"
-                                style="font-size: 0.9em; min-width: 30px;">14px</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
+                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff" style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-bookmark-group-bg-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span style="font-size: 0.75rem; opacity: 0.7;">Opacity</span>
+                                    <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1" value="0" style="flex: 1;">
+                                </div>
+                            </div>
+                            
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-group-text-color-picker" value="#ffffff" style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-bookmark-group-text-color-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                    <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
+                                    <span id="bookmark-group-font-size-value" style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">14px</span>
+                                </div>
+                                <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1" value="14" style="width: 100%; margin-top: 4px;">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="setting-group">
-                        <div class="setting-item-row">
-                            <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title
-                                Text</label>
-                            <input type="checkbox" id="hide-bookmark-text">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Bookmark
-                                Background</label>
-                            <input type="checkbox" id="hide-bookmark-bg">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover">MacOS Hover
-                                Effect</label>
-                            <input type="checkbox" id="bookmark-macos-hover">
-                        </div>
-                        <div class="setting-item">
-                            <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
-                            <select id="bookmark-layout" class="settings-select">
-                                <option value="default" data-i18n="layout_default">Default Grid</option>
-                                <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
-                                <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
-                                <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
-                                </option>
-                            </select>
-                        </div>
-                        <div class="setting-item" id="bookmark-layout-bg-style-row" style="display: none;">
-                            <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Layout
-                                Container Background</label>
-                            <select id="bookmark-layout-bg-style" class="settings-select">
-                                <option value="default" data-i18n="layout_bg_default">Default</option>
-                                <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
-                                <option value="white" data-i18n="layout_bg_white">White</option>
-                                <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
-                            </select>                        </div>
-                        <div class="setting-item" id="bookmark-layout-bg-color-row" style="display: none;">
-                            <label for="bookmark-layout-bg-color"
-                                data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
-                            <div class="input-group">
-                                <input type="color" id="bookmark-layout-bg-color" class="color-picker-input"
-                                    style="width: 100%;">
+                    <!-- Toggles & Layout Options -->
+                    <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
+                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text" style="font-size: 0.85rem;">Hide Title</label>
+                                <input type="checkbox" id="hide-bookmark-text">
+                            </div>
+                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg" style="font-size: 0.85rem;">Hide Background</label>
+                                <input type="checkbox" id="hide-bookmark-bg">
+                            </div>
+                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover" style="font-size: 0.85rem;">MacOS Hover</label>
+                                <input type="checkbox" id="bookmark-macos-hover">
+                            </div>
+                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag" style="font-size: 0.85rem;">Drag & Drop</label>
+                                <input type="checkbox" id="enable-bookmark-drag">
                             </div>
                         </div>
-                        <div class="setting-item" id="bookmark-item-style-row">
-                            <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
-                            <select id="bookmark-item-style" class="settings-select">
-                                <option value="default" data-i18n="item_style_default">Default</option>
-                                <option value="card" data-i18n="item_style_card">Card</option>
-                            </select>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
+                                <select id="bookmark-layout" class="settings-select">
+                                    <option value="default" data-i18n="layout_default">Default Grid</option>
+                                    <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                                    <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
+                                    <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)</option>
+                                </select>
+                            </div>
+                            <div class="setting-item no-margin-top" id="bookmark-item-style-row">
+                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
+                                <select id="bookmark-item-style" class="settings-select">
+                                    <option value="default" data-i18n="item_style_default">Default</option>
+                                    <option value="card" data-i18n="item_style_card">Card</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="setting-item-row">
-                            <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Enable drag &
-                                drop to reorder</label>
-                            <input type="checkbox" id="enable-bookmark-drag">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none;">
+                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Container Background</label>
+                                <select id="bookmark-layout-bg-style" class="settings-select">
+                                    <option value="default" data-i18n="layout_bg_default">Default</option>
+                                    <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
+                                    <option value="white" data-i18n="layout_bg_white">White</option>
+                                    <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
+                                </select>
+                            </div>
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none;">
+                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                    <input type="color" id="bookmark-layout-bg-color" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -683,6 +683,23 @@ export function setupGeneralEventHandlers(
     }
   })
 
+  const setAccentControlsExpanded = (isOpen) => {
+    if (!DOM.accentColorSettingsBody || !DOM.accentColorToggleLabel) return
+    DOM.accentColorSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
+    DOM.accentColorToggleLabel.textContent =
+      geti18n()?.[
+        isOpen ? "settings_accent_close" : "settings_accent_open"
+      ] || (isOpen ? "Hide Controls" : "Show Controls")
+  }
+
+  DOM.accentColorToggleBtn?.addEventListener("click", () => {
+    const nextIsOpen = DOM.accentColorSettingsBody?.style.display === "none"
+    setAccentControlsExpanded(nextIsOpen)
+    updateSetting("accentControlsOpen", nextIsOpen)
+    saveSettings()
+  })
+
   renderUserAccentColors(DOM)
 
   // Background effects

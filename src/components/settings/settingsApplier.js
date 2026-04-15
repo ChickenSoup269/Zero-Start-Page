@@ -781,6 +781,17 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.accentColorHexInput) {
       DOM.accentColorHexInput.value = (settings.accentColor || "#a8c0ff").toUpperCase()
     }
+    if (DOM.accentColorSettingsBody) {
+      const isOpen = settings.accentControlsOpen !== false
+      DOM.accentColorSettingsBody.style.display = isOpen ? "block" : "none"
+      DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
+      if (DOM.accentColorToggleLabel) {
+        const i18n = geti18n()
+        DOM.accentColorToggleLabel.textContent =
+          i18n[isOpen ? "settings_accent_close" : "settings_accent_open"] ||
+          (isOpen ? "Hide Controls" : "Show Controls")
+      }
+    }
     DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
     if (DOM.clockDateStrokeWidthInput) {
       DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0

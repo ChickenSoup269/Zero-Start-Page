@@ -1174,21 +1174,23 @@
 
 .bg-select-toolbar {
   background: var(--glass-bg);
-  padding: 12px 16px;
-  border-radius: 14px;
-  margin-top: 1rem;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-top: 0.8rem;
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   border: 1px solid var(--input-border);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .bg-select-count {
   font-weight: 600;
-  font-size: 0.9rem;
-  flex: 1;
+  font-size: 0.85rem;
+  flex: 1 1 100%;
   color: var(--accent-color);
+  margin-bottom: 4px;
 }
 
 /* New Control Groups */
