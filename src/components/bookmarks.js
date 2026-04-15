@@ -554,10 +554,11 @@ export function initBookmarks() {
   })
 
   // FOUC/Layout shift fix: remove no-transition class shortly after init
+  // Increased timeout to 500ms to allow async chrome.bookmarks.getTree to finish
   setTimeout(() => {
     const bw = document.getElementById("bookmark-widget")
     if (bw) bw.classList.remove("no-transition")
-  }, 100)
+  }, 500)
 }
 
 // MacOS Hover Effect

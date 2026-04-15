@@ -24,6 +24,7 @@
       if (settings.flipLayout) body.classList.add("flip-layout")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
+      if (settings.showTopRightControls !== false) body.classList.add("has-top-right-controls")
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")

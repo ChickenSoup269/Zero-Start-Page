@@ -1907,78 +1907,105 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
                         data-i18n="settings_custom_title">Custom Title</span></h3>
                 <div class="section-content">
-                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
-                        <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title">Show Custom
-                            Title</label>
-                        <input type="checkbox" id="show-custom-title-checkbox">
-                    </div>
-                    <div class="setting-item-row"
-                        style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.8rem;">
-                        <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title">Free
-                            Move Custom Title</label>
-                        <input type="checkbox" id="free-move-custom-title-checkbox">
-                    </div>
-                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
-                        <label for="custom-title-text" data-i18n="settings_custom_title_text">Title text</label>
-                        <input type="text" id="custom-title-text" placeholder="..."
-                            style="flex: 1; max-width: 150px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 8px; border-radius: 4px;">
-                    </div>
-                    <div class="setting-item-row" style="margin-bottom: 0.8rem;">
-                        <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor">Rainbow
-                            colors</label>
-                        <input type="checkbox" id="custom-title-multicolor">
-                    </div>
-                    <div class="setting-item-row" id="custom-title-color-wrap" style="margin-bottom: 0.8rem;">
-                        <label for="custom-title-color" data-i18n="settings_custom_title_color">Title Color</label>
-                        <input type="color" id="custom-title-color" value="#ffffff">
-                    </div>
-                    <div class="setting-item" style="margin-bottom: 0.8rem;">
-                        <label data-i18n="settings_custom_title_fontsize" for="custom-title-font-size">Font Size (<span
-                                id="custom-title-fontsize-val">24</span>px)</label>
-                        <input type="range" id="custom-title-font-size" min="10" max="100" value="24" class="slider">
-                    </div>
-                    <div class="setting-item" style="margin-bottom: 0.8rem;">
-                        <label data-i18n="settings_custom_title_letter_spacing" for="custom-title-letter-spacing">Letter
-                            Spacing (<span id="custom-title-letter-spacing-val">0</span>px)</label>
-                        <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0"
-                            class="slider">
-                    </div>
-
-                    <div class="setting-group" style="margin-top: 0.5rem;">
-                        <label style="margin-bottom: 0.5rem; display: block;" data-i18n="settings_custom_title_shadow"
-                            for="custom-title-shadow-blur">Drop Shadow</label>
-                        <div class="setting-item-row">
-                            <div data-i18n="settings_custom_title_shadow_blur" class="setting-label">Shadow Blur (<span
-                                    id="custom-title-shadow-blur-val">0</span>px)</div>
-                            <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider"
-                                style="width: 80px;">
+                    <!-- Toggles -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
+                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title" style="font-weight: 600;"><i class="fa-solid fa-eye"></i> Show Title</label>
+                            <input type="checkbox" id="show-custom-title-checkbox">
                         </div>
-                        <div class="setting-item-row">
-                            <label data-i18n="settings_custom_title_shadow_y" for="custom-title-shadow-y">Shadow Y
-                                Offset (<span id="custom-title-shadow-y-val">0</span>px)</label>
-                            <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider"
-                                style="width: 80px;">
-                        </div>
-                        <div class="setting-item-row">
-                            <label data-i18n="settings_custom_title_shadow_color" for="custom-title-shadow-color">Shadow
-                                Color</label>
-                            <input type="color" id="custom-title-shadow-color" value="#000000">
+                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                            <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-custom-title-checkbox">
                         </div>
                     </div>
 
-                    <div class="setting-group" style="margin-top: 0.5rem;">
-                        <label style="margin-bottom: 0.5rem; display: block;" data-i18n="settings_custom_title_border"
-                            for="custom-title-border-size">Text Border</label>
-                        <div class="setting-item-row">
-                            <div data-i18n="settings_custom_title_border_size" class="setting-label">Border Thickness
-                                (<span id="custom-title-border-size-val">0</span>px)</div>
-                            <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider"
-                                style="width: 80px;">
+                    <!-- Text Input & Font Settings -->
+                    <div class="setting-group" style="margin-bottom: 15px;">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_text">Text Content & Typography</span></h4>
+                        <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
+                            <input type="text" id="custom-title-text" placeholder="..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 1rem;">
                         </div>
-                        <div class="setting-item-row">
-                            <label data-i18n="settings_custom_title_border_color" for="custom-title-border-color">Border
-                                Color</label>
-                            <input type="color" id="custom-title-border-color" value="#000000">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="custom-title-font-size" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_fontsize">Font Size</span></span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-fontsize-val">24</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-font-size" min="10" max="200" value="24" class="slider" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="custom-title-letter-spacing" style="display: flex; justify-content: space-between;">
+                                    <span><i class="fa-solid fa-text-width"></i> <span data-i18n="settings_custom_title_letter_spacing">Letter Spacing</span></span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-letter-spacing-val">0</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0" class="slider" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Settings -->
+                    <div class="setting-group" style="margin-bottom: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_custom_title_color">Title Color</span></h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="setting-item no-margin-top" id="custom-title-color-wrap" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" data-i18n="settings_custom_title_color">Solid Color</label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="custom-title-color" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setting-item-row no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+                                <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor" style="margin: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <span><i class="fa-solid fa-rainbow"></i> Rainbow Effect</span>
+                                    <input type="checkbox" id="custom-title-multicolor">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shadows & Borders -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="setting-group" style="margin-top: 0; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
+                            <div class="setting-item no-margin-top" style="margin-bottom: 10px;">
+                                <label for="custom-title-shadow-color" data-i18n="settings_custom_title_shadow_color" style="font-size: 0.8rem; margin-bottom: 4px;">Color</label>
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 32px;">
+                                    <input type="color" id="custom-title-shadow-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+                            <div class="setting-item no-margin-top" style="margin-bottom: 8px;">
+                                <label for="custom-title-shadow-blur" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-blur-val">0</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="custom-title-shadow-y" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-y-val">0</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider" style="width: 100%;">
+                            </div>
+                        </div>
+
+                        <div class="setting-group" style="margin-top: 0; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.85rem;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <div class="setting-item no-margin-top" style="margin-bottom: 10px;">
+                                <label for="custom-title-border-color" data-i18n="settings_custom_title_border_color" style="font-size: 0.8rem; margin-bottom: 4px;">Color</label>
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 32px;">
+                                    <input type="color" id="custom-title-border-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="custom-title-border-size" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <span data-i18n="settings_custom_title_border_size">Thickness</span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-border-size-val">0</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider" style="width: 100%;">
+                            </div>
                         </div>
                     </div>
                 </div>
