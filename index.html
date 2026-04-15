@@ -941,122 +941,157 @@
                 </button>
                 <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
 
-                    <!-- Lines -->
-                    <div class="setting-item">
-                        <div class="setting-label"><span data-i18n="settings_svg_wave_lines">Lines</span>: <span
-                                id="svg-wave-lines-value">5</span></div>
-                        <input type="range" id="svg-wave-lines" min="1" max="15" value="5">
-                    </div>
-                    <!-- Amplitude X -->
-                    <div class="setting-item">
-                        <label for="svg-wave-amp-x"><span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>: <span
-                                id="svg-wave-amp-x-value">200</span></label>
-                        <input type="range" id="svg-wave-amp-x" min="30" max="600" value="200">
-                    </div>
-                    <!-- Amplitude Y -->
-                    <div class="setting-item">
-                        <label for="svg-wave-amp-y"><span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>: <span
-                                id="svg-wave-amp-y-value">80</span></label>
-                        <input type="range" id="svg-wave-amp-y" min="5" max="300" value="80">
-                    </div>
-                    <!-- Offset X -->
-                    <div class="setting-item">
-                        <label for="svg-wave-offset-x"><span data-i18n="settings_svg_wave_offset_x">Offset X</span>:
-                            <span id="svg-wave-offset-x-value">0</span></label>
-                        <input type="range" id="svg-wave-offset-x" min="0" max="500" value="0">
-                    </div>
-                    <!-- Angle -->
-                    <div class="setting-item">
-                        <div class="wave-angle-header">
-                            <label for="svg-wave-smoothness"><span data-i18n="settings_svg_wave_angle">Angle</span>:
-                                <span id="svg-wave-angle-value">0</span>°</label>
-                            <div class="wave-angle-presets">
-                                <button class="wave-angle-preset-btn" data-angle="270" title="Left (270°)"><i
-                                        class="fa-solid fa-arrow-left"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="90" title="Right (90°)"><i
-                                        class="fa-solid fa-arrow-right"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="0" title="Top (0°)"><i
-                                        class="fa-solid fa-arrow-up"></i></button>
-                                <button class="wave-angle-preset-btn" data-angle="180" title="Bottom (180°)"><i
-                                        class="fa-solid fa-arrow-down"></i></button>
+                    <!-- Core Shape & Geometry -->
+                    <div class="setting-group" style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-shapes"></i> Geometry</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-lines" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_lines">Lines</span>
+                                    <span id="svg-wave-lines-value" style="opacity: 0.8; font-family: monospace;">5</span>
+                                </label>
+                                <input type="range" id="svg-wave-lines" min="1" max="50" value="5" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-smoothness" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_smoothness">Smoothness</span>
+                                    <span id="svg-wave-smoothness-value" style="opacity: 0.8; font-family: monospace;">0.5</span>
+                                </label>
+                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-craziness" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_craziness">Craziness</span>
+                                    <span id="svg-wave-craziness-value" style="opacity: 0.8; font-family: monospace;">30</span>
+                                </label>
+                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-offset-x" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_offset_x">Offset X</span>
+                                    <span id="svg-wave-offset-x-value" style="opacity: 0.8; font-family: monospace;">0</span>
+                                </label>
+                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0" style="width: 100%;">
                             </div>
                         </div>
-                        <input type="range" id="svg-wave-angle" min="-360" max="360" value="0">
                     </div>
-                    <!-- Smoothness -->
-                    <div class="setting-item">
-                        <label for="svg-wave-smoothness"><span
-                                data-i18n="settings_svg_wave_smoothness">Smoothness</span>: <span
-                                id="svg-wave-smoothness-value">0.5</span></label>
-                        <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5">
+
+                    <!-- Amplitude & Angle -->
+                    <div class="setting-group" style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-amp-x" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
+                                    <span id="svg-wave-amp-x-value" style="opacity: 0.8; font-family: monospace;">200</span>
+                                </label>
+                                <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label for="svg-wave-amp-y" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
+                                    <span id="svg-wave-amp-y-value" style="opacity: 0.8; font-family: monospace;">80</span>
+                                </label>
+                                <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
+                                <div class="wave-angle-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                    <label for="svg-wave-angle" style="margin: 0;">
+                                        <span data-i18n="settings_svg_wave_angle">Angle</span>:
+                                        <span id="svg-wave-angle-value" style="opacity: 0.8; font-family: monospace;">0</span>°
+                                    </label>
+                                    <div class="wave-angle-presets" style="display: flex; gap: 4px;">
+                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270" title="Left"><i class="fa-solid fa-arrow-left"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90" title="Right"><i class="fa-solid fa-arrow-right"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0" title="Top"><i class="fa-solid fa-arrow-up"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180" title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+                                    </div>
+                                </div>
+                                <input type="range" id="svg-wave-angle" min="-360" max="360" value="0" style="width: 100%;">
+                            </div>
+                        </div>
                     </div>
-                    <!-- Craziness -->
-                    <div class="setting-item">
-                        <label for="svg-wave-craziness"><span data-i18n="settings_svg_wave_craziness">Craziness</span>:
-                            <span id="svg-wave-craziness-value">30</span></label>
-                        <input type="range" id="svg-wave-craziness" min="0" max="200" value="30">
-                    </div>
-                    <!-- Fill toggle -->
-                    <div class="setting-item-row" style="margin-bottom: 10px;">
-                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill">Fill</label>
+
+                    <div class="setting-item-row" style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 8px;">
+                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill" style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill Shape</label>
                         <input type="checkbox" id="svg-wave-fill" checked>
                     </div>
 
-                    <!-- Start Color -->
-                    <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_start_color" for="svg-wave-start-hue"><strong>Start
-                                Color</strong></label>
-                        <div id="svg-wave-start-preview"
-                            style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(200,70%,40%);transition:background 0.2s;">
+                    <!-- Colors -->
+                    <div class="setting-group" style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-palette"></i> Colors</h4>
+                        
+                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <label data-i18n="settings_svg_wave_start_color" style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
+                            <div id="svg-wave-start-preview" style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);"></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label for="svg-wave-start-hue" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                        <span id="svg-wave-start-hue-value" style="opacity:0.8;">200</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label for="svg-wave-start-sat" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                        <span id="svg-wave-start-sat-value" style="opacity:0.8;">70%</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70" style="width: 100%;">
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <label for="svg-wave-start-light" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_light">Light</span>
+                                        <span id="svg-wave-start-light-value" style="opacity:0.8;">40%</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-start-light" min="0" max="100" value="40" style="width: 100%;">
+                                </div>
+                            </div>
                         </div>
-                        <div class="setting-label"><span data-i18n="settings_svg_wave_hue">Hue</span>: <span
-                                id="svg-wave-start-hue-value">200</span></div>
-                        <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200">
-                        <label for="svg-wave-start-sat"><span data-i18n="settings_svg_wave_sat">Saturation</span>: <span
-                                id="svg-wave-start-sat-value">70</span>%</label>
-                        <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70">
-                        <label for="svg-wave-start-light"><span data-i18n="settings_svg_wave_light">Lightness</span>:
-                            <span id="svg-wave-start-light-value">40</span>%</label>
-                        <input type="range" id="svg-wave-start-light" min="0" max="100" value="40">
+
+                        <div>
+                            <label data-i18n="settings_svg_wave_end_color" style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
+                            <div id="svg-wave-end-preview" style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);"></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <label for="svg-wave-end-hue" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                        <span id="svg-wave-end-hue-value" style="opacity:0.8;">280</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label for="svg-wave-end-sat" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                        <span id="svg-wave-end-sat-value" style="opacity:0.8;">70%</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70" style="width: 100%;">
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <label for="svg-wave-end-light" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <span data-i18n="settings_svg_wave_light">Light</span>
+                                        <span id="svg-wave-end-light-value" style="opacity:0.8;">30%</span>
+                                    </label>
+                                    <input type="range" id="svg-wave-end-light" min="0" max="100" value="30" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- End Color -->
-                    <div class="setting-item">
-                        <label data-i18n="settings_svg_wave_end_color" for="svg-wave-end-hue"><strong>End
-                                Color</strong></label>
-                        <div id="svg-wave-end-preview"
-                            style="height:14px;border-radius:6px;margin-bottom:6px;background:hsl(280,70%,30%);transition:background 0.2s;">
-                        </div>
-                        <div class="setting-label"><span data-i18n="settings_svg_wave_hue">Hue</span>: <span
-                                id="svg-wave-end-hue-value">280</span></div>
-                        <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280">
-                        <label for="svg-wave-end-sat"><span data-i18n="settings_svg_wave_sat">Saturation</span>: <span
-                                id="svg-wave-end-sat-value">70</span>%</label>
-                        <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70">
-                        <label for="svg-wave-end-light"><span data-i18n="settings_svg_wave_light">Lightness</span>:
-                            <span id="svg-wave-end-light-value">30</span>%</label>
-                        <input type="range" id="svg-wave-end-light" min="0" max="100" value="30">
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize">
+                            <i class="fa-solid fa-dice"></i> <span data-i18n="settings_svg_wave_randomize">Randomize</span>
+                        </button>
+                        <button id="svg-wave-crazy-btn" class="secondary-btn" style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
+                            <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy Mode!</span>
+                        </button>
                     </div>
-
-                    <!-- Randomize -->
-                    <button id="svg-wave-randomize-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
-                        <i class="fa-solid fa-dice"></i>
-                        <span data-i18n="settings_svg_wave_randomize">Randomize</span>
+                    <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px;">
+                        <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save Wave</span>
                     </button>
-                    <!-- Crazy Mode -->
-                    <button id="svg-wave-crazy-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
-                        <i class="fa-solid fa-bolt"></i>
-                        <span data-i18n="settings_svg_wave_crazy">Crazy Mode!</span>
-                    </button>
-                    <!-- Save Wave -->
-                    <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom:6px;">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span data-i18n="settings_svg_wave_save">Save Wave</span>
-                    </button>
-                    <!-- Close Controls -->
                     <button id="svg-wave-close-btn" class="secondary-btn full-width">
-                        <i class="fa-solid fa-xmark"></i>
-                        <span data-i18n="settings_svg_wave_close">Close Controls</span>
+                        <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close Controls</span>
                     </button>
                 </div>
 
@@ -1953,11 +1988,11 @@
                 <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
                     Custom Bookmark</h3>
                 <div class="section-content">
-                    <div class="setting-group">
+                    <div class="setting-group" style="margin-bottom: 15px;">
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-ruler-combined"></i> <span data-i18n="settings_bookmark_size_header">Sizes & Spacing</span></h4>
                         <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
-                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 20px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            =� Tùy ch�0nh giao di�!n cho từng ô Dấu trang (màu chữ, n�n, bóng ��",
-                            kích thư�:c...).</p>
+                            style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
+                            = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div class="setting-item no-margin-top">
                                 <label for="bookmark-font-size-input" style="display: flex; justify-content: space-between;">
@@ -2037,8 +2072,7 @@
                                 data-i18n="settings_bookmark_group_header">Group Tabs Interface</span></h4>
                         <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
-                            =� Tùy ch�0nh thanh �i�u hư�:ng nhóm thư mục (Tabs) �x phía trên Dấu
-                            trang.</p>
+                            = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
                             <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
@@ -2073,6 +2107,7 @@
 
                     <!-- Toggles & Layout Options -->
                     <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_bookmark_layout_header">Layout & Behavior</span></h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
                             <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
                                 <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text" style="font-size: 0.85rem;">Hide Title</label>
