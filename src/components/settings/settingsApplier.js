@@ -285,49 +285,48 @@ function createApplySettings(effectInstances) {
     }
 
     const clockFontTarget = settings.clockFontTarget || "both"
-    const isRestrictedFont =
-      settings.font.includes("Electroharmonix") ||
-      settings.font.includes("Anurati") ||
-      settings.font.includes("E1234")
+    const rawFont = settings.font || "'Outfit', sans-serif"
+    const rawClockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
 
-    const primaryFont = isRestrictedFont
+    const isRestrictedFont = (f) =>
+        f.includes("Electroharmonix") ||
+        f.includes("Anurati") ||
+        f.includes("E1234")
+
+    // General font (primary) should never be a restricted clock font
+    const primaryFont = isRestrictedFont(rawFont)
       ? "'Outfit', sans-serif"
-      : settings.font
+      : rawFont
+      
+    // Clock font can be restricted
+    const clockFont = rawClockFont
+
     document.documentElement.style.setProperty("--font-primary", primaryFont)
 
-    if (clockFontTarget === "both") {
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        settings.font,
-      )
-      document.documentElement.style.setProperty("--font-clock", settings.font)
-      document.documentElement.style.setProperty("--font-date", settings.font)
-      document.documentElement.style.setProperty("--font-weekday", settings.font)
-    } else if (clockFontTarget === "clock") {
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        settings.font,
-      )
-      document.documentElement.style.setProperty("--font-clock", settings.font)
-      document.documentElement.style.setProperty("--font-date", primaryFont)
-      document.documentElement.style.setProperty("--font-weekday", primaryFont)
-    } else if (clockFontTarget === "date") {
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        primaryFont,
-      )
-      document.documentElement.style.setProperty("--font-clock", primaryFont)
-      document.documentElement.style.setProperty("--font-date", settings.font)
-      document.documentElement.style.setProperty("--font-weekday", settings.font)
-    } else if (clockFontTarget === "weekday") {
-      document.documentElement.style.setProperty(
-        "--font-clock-date",
-        primaryFont,
-      )
-      document.documentElement.style.setProperty("--font-clock", primaryFont)
-      document.documentElement.style.setProperty("--font-date", primaryFont)
-      document.documentElement.style.setProperty("--font-weekday", settings.font)
+    const applyToTargets = (targets, font) => {
+        targets.forEach(t => {
+            document.documentElement.style.setProperty(`--font-${t}`, font)
+        })
     }
+
+    // Default everything to primary then override based on target
+    applyToTargets(["clock-date", "clock", "date", "weekday"], primaryFont)
+
+    if (clockFontTarget === "both") {
+        applyToTargets(["clock-date", "clock", "date", "weekday"], clockFont)
+    } else {
+        applyToTargets([clockFontTarget], clockFont)
+        if (clockFontTarget === "clock") {
+             document.documentElement.style.setProperty("--font-clock-date", clockFont)
+        }
+    }
+
+    // Special handling for JP style font inheritance if needed
+    // JP style elements use --font-clock by default in CSS, but we might want more granular
+    document.documentElement.style.setProperty("--font-jp-time", (clockFontTarget === "both" || clockFontTarget === "clock") ? clockFont : primaryFont)
+    document.documentElement.style.setProperty("--font-jp-date", (clockFontTarget === "both" || clockFontTarget === "date") ? clockFont : primaryFont)
+    document.documentElement.style.setProperty("--font-jp-weekday", (clockFontTarget === "both" || clockFontTarget === "weekday") ? clockFont : primaryFont)
+
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
     const baseDateSize = Number.isFinite(rawDateSize)

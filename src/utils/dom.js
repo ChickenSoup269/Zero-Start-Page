@@ -47,6 +47,9 @@ export const userAccentColorsGallery = document.getElementById(
   "user-accent-colors-gallery",
 )
 export const fontGrid = document.getElementById("font-grid")
+export const clockFontGrid = document.getElementById("clock-font-grid")
+export const fontTargetGeneralBtn = document.getElementById("font-target-general")
+export const fontTargetClockBtn = document.getElementById("font-target-clock")
 export const customFontInput = document.getElementById("custom-font-input")
 export const loadCustomFontBtn = document.getElementById("load-custom-font-btn")
 export const saveFontBtn = document.getElementById("save-font-btn")

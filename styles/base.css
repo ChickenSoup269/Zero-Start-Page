@@ -881,6 +881,7 @@ body.date-clock-style-jp-style .clock-jp-row {
   gap: calc(var(--clock-size) * 0.25);
 }
 body.date-clock-style-jp-style .clock-jp-day-left {
+  font-family: var(--font-jp-weekday, var(--font-clock));
   font-size: calc(var(--clock-size) * 0.7);
   font-weight: 700;
   line-height: 1.1;
@@ -892,12 +893,14 @@ body.date-clock-style-jp-style .clock-jp-col {
   align-items: center;
 }
 body.date-clock-style-jp-style .clock-jp-time {
+  font-family: var(--font-jp-time, var(--font-clock));
   font-size: calc(var(--clock-size) * 0.65);
   font-weight: 700;
   letter-spacing: 2px;
   margin-bottom: 2px;
 }
 body.date-clock-style-jp-style .clock-jp-date {
+  font-family: var(--font-jp-date, var(--font-clock));
   font-size: calc(var(--clock-size) * 0.25);
   opacity: 0.9;
   text-align: right;

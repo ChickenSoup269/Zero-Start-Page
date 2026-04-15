@@ -325,8 +325,10 @@ export function initSettings() {
   effects.DOM = DOM_EXPORTS
   effects.localBackgrounds = localBackgrounds
   effects.handleSettingUpdate = handleSettingUpdate
-  effects.renderFontGrid = () =>
+  effects.renderFontGrid = () => {
     renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
+  }
+
   effects.renderTabIconPreview = renderTabIconPreview
   effects.updateWaveColorPreviews = (settingsState) =>
     updateWaveColorPreviews(

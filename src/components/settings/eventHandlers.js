@@ -544,17 +544,23 @@ export function setupGeneralEventHandlers(
 
   // Save current background
   DOM.saveCurrentBgBtn.addEventListener("click", () => {
-    const bg = getSettings().background
+    const settings = getSettings()
+    const bg = settings.background
     if (!bg) return
 
-    if (getSettings().userBackgrounds.includes(bg)) {
+    const isAlreadySaved = settings.userBackgrounds.some((b) => {
+      const id = typeof b === "string" ? b : b.id
+      return id === bg
+    })
+
+    if (isAlreadySaved) {
       showAlert(
         geti18n().alert_bg_already_saved || "This background is already saved.",
       )
       return
     }
 
-    if (getSettings().userBackgrounds.length >= 20) {
+    if (settings.userBackgrounds.length >= 25) {
       showAlert(
         geti18n().alert_bg_gallery_full ||
           "Gallery full! Please remove some backgrounds before saving more.",
@@ -562,7 +568,7 @@ export function setupGeneralEventHandlers(
       return
     }
 
-    getSettings().userBackgrounds.push(bg)
+    settings.userBackgrounds.push(bg)
     saveSettings()
     renderLocalBackgrounds(DOM, handleSettingUpdate)
     showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
@@ -1515,7 +1521,12 @@ export function setupGeneralEventHandlers(
     }
     const settings = getSettings()
     const savedFonts = settings.userSavedFonts || []
-    if (savedFonts.includes(fontName)) {
+    const isAlreadySaved = savedFonts.some((f) => {
+      const name = typeof f === "string" ? f : f.label
+      return name === fontName
+    })
+
+    if (isAlreadySaved) {
       showAlert(i18n.alert_font_already_saved || "Font already saved.")
       return
     }

@@ -66,6 +66,27 @@
   gap: 6px;
 }
 
+.font-grid-separator {
+    grid-column: 1 / -1;
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 8px 0 4px;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-grid-separator::before,
+.font-grid-separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(var(--accent-color-rgb), 0.3);
+}
+
 .font-item {
   display: flex;
   flex-direction: column;
@@ -111,6 +132,19 @@
 .font-item.active .font-item-name {
   color: var(--accent-color);
   opacity: 1;
+}
+
+.font-item.is-favorite .font-item-name {
+    font-weight: 700;
+}
+
+.favorite-star {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: #ffcc00;
+    font-size: 0.7rem;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
 }
 
 .font-item-delete {

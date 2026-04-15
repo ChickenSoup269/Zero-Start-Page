@@ -2879,28 +2879,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
 body.bookmark-taskbar-mode .bookmark-groups-container {
   justify-content: center !important;
 }
-/* Taskbar Center to behave internally like Taskbar Left (Align Left edges) */
-body.bookmark-taskbar-mode .bookmark-widget {
-  align-items: center !important;
-}
-body.bookmark-taskbar-mode .bookmark-groups-container {
-  justify-content: center !important;
-}
-/* Prevent wrapping inside bookmarks container for all minimal modes */
-body.bookmark-sidebar-mode #bookmarks-container,
-body.bookmark-taskbar-mode #bookmarks-container,
-body.bookmark-taskbar-left-mode #bookmarks-container,
-body.bookmark-sidebar-mode .bookmarks-grid,
-body.bookmark-taskbar-mode .bookmarks-grid,
-body.bookmark-taskbar-left-mode .bookmarks-grid {
-  flex-wrap: nowrap !important;
-}
-/* Also prevent wrapping for the group tabs so they can scroll */
-body.bookmark-sidebar-mode .bookmark-groups-container,
-body.bookmark-taskbar-mode .bookmark-groups-container,
-body.bookmark-taskbar-left-mode .bookmark-groups-container {
-  flex-wrap: nowrap !important;
-}
+
 /* Prevent wrapping inside bookmarks container for all minimal modes */
 body.bookmark-sidebar-mode #bookmarks-container,
 body.bookmark-taskbar-mode #bookmarks-container,

@@ -11,6 +11,8 @@ import {
 import { geti18n } from "../../services/i18n.js"
 import { showAlert } from "../../utils/dialog.js"
 
+import { showContextMenu } from "../contextMenu.js"
+
 const PREDEFINED_FONTS = [
   { label: "Outfit", value: "'Outfit', sans-serif", google: true },
   { label: "Inter", value: "'Inter', sans-serif", google: true },
@@ -71,87 +73,158 @@ function loadGoogleFont(fontName) {
 
 /**
  * Initializes the font on page load.
- * Checks if the currently saved font is a Google font and loads it.
  */
 function initFont() {
   const settings = getSettings()
-  const currentFontValue = settings.font || "'Outfit', sans-serif"
+  
+  const fontsToLoad = [
+      settings.font || "'Outfit', sans-serif",
+      settings.clockFont || "'Outfit', sans-serif"
+  ]
 
-  // Extract font name from value like "'Outfit', sans-serif" -> "Outfit"
-  const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
+  fontsToLoad.forEach(currentFontValue => {
+      // Extract font name from value like "'Outfit', sans-serif" -> "Outfit"
+      const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
 
-  // Check if it's a predefined Google font or a user-saved font
-  const isPredefinedGoogle = PREDEFINED_FONTS.some(
-    (f) => f.google && f.label === fontName,
-  )
-  const isUserSaved = (settings.userSavedFonts || []).includes(fontName)
+      // Check if it's a predefined Google font or a user-saved font
+      const isPredefinedGoogle = PREDEFINED_FONTS.some(
+        (f) => f.google && f.label === fontName,
+      )
+      
+      const savedFonts = settings.userSavedFonts || []
+      const isUserSaved = savedFonts.some(f => {
+          const name = typeof f === 'string' ? f : f.label;
+          return name === fontName;
+      })
 
-  // Pre-loaded fonts in index.html don't need to be reloaded
-  const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
+      // Pre-loaded fonts in index.html don't need to be reloaded
+      const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
 
-  if ((isPredefinedGoogle || isUserSaved) && !isPreloaded) {
-    loadGoogleFont(fontName)
-  }
+      if ((isPredefinedGoogle || isUserSaved) && !isPreloaded) {
+        loadGoogleFont(fontName)
+      }
+  })
 }
 
 function renderFontGrid(fontGrid, updateSettingCallback) {
+  if (!fontGrid) return
+
   const settings = getSettings()
-  const currentFont = settings.font
   const savedFonts = settings.userSavedFonts || []
 
   fontGrid.innerHTML = ""
 
+  // Build a map of favorites from userSavedFonts
+  const favoritesMap = new Map();
+  savedFonts.forEach(f => {
+      if (typeof f === 'object' && f.isFavorite) {
+          favoritesMap.set(f.label, f);
+      }
+  });
+
   const allFonts = [
-    ...PREDEFINED_FONTS,
-    ...savedFonts.map((name) => ({
-      label: name,
-      value: `'${name}', sans-serif`,
-      custom: true,
-    })),
+    ...PREDEFINED_FONTS.map(f => {
+        const fav = favoritesMap.get(f.label);
+        return { 
+            ...f, 
+            type: f.tag === "Clock/Date" ? "clock" : "general",
+            isFavorite: !!fav
+        };
+    }),
+    ...savedFonts.filter(f => {
+        const label = typeof f === 'string' ? f : f.label;
+        return !PREDEFINED_FONTS.some(pf => pf.label === label);
+    }).map((f, index) => {
+        const label = typeof f === 'string' ? f : f.label;
+        const isFavorite = typeof f === 'string' ? false : !!f.isFavorite;
+        // Find original index in userSavedFonts for context menu
+        const originalIndex = savedFonts.findIndex(sf => (typeof sf === 'string' ? sf : sf.label) === label);
+        return {
+            label: label,
+            value: `'${label}', sans-serif`,
+            custom: true,
+            isFavorite: isFavorite,
+            originalIndex: originalIndex,
+            type: "saved"
+        }
+    }),
   ]
 
-  allFonts.forEach(({ label, value, tag, custom, google }) => {
-    const card = document.createElement("div")
-    card.className = "font-item" + (value === currentFont ? " active" : "")
-    card.dataset.fontValue = value
+  const favoriteFonts = allFonts.filter(f => f.isFavorite)
+  const generalFonts = allFonts.filter(f => !f.isFavorite && f.type === "general")
+  const clockFonts = allFonts.filter(f => !f.isFavorite && f.type === "clock")
+  const savedFontsList = allFonts.filter(f => !f.isFavorite && f.type === "saved")
 
-    const preview = document.createElement("span")
-    preview.className = "font-item-preview"
-    preview.textContent = "Aa"
-    preview.style.fontFamily = value
+  const sections = [
+      { label: "--- Favorite ---", fonts: favoriteFonts },
+      { label: "--- General Fonts ---", fonts: generalFonts },
+      { label: "--- Clock Fonts ---", fonts: clockFonts },
+      { label: "--- Saved Fonts ---", fonts: savedFontsList }
+  ]
 
-    const name = document.createElement("span")
-    name.className = "font-item-name"
-    name.textContent = label + (tag ? ` (${tag})` : "")
+  sections.forEach(section => {
+      if (section.fonts.length === 0) return;
 
-    card.appendChild(preview)
-    card.appendChild(name)
+      const sep = document.createElement("div")
+      sep.className = "font-grid-separator"
+      sep.textContent = section.label
+      fontGrid.appendChild(sep)
 
-    if (custom) {
-      const delBtn = document.createElement("button")
-      delBtn.className = "font-item-delete"
-      delBtn.innerHTML = "&times;"
-      delBtn.title = "Remove font"
-      delBtn.addEventListener("click", (e) => {
-        e.stopPropagation()
-        const s = getSettings()
-        updateSetting(
-          "userSavedFonts",
-          (s.userSavedFonts || []).filter((f) => f !== label),
-        )
-        saveSettings()
-        renderFontGrid(fontGrid, updateSettingCallback)
+      section.fonts.forEach((fontObj) => {
+        const { label, value, tag, custom, google, isFavorite, originalIndex, type } = fontObj
+        const card = document.createElement("div")
+        
+        const isActive = (type === "clock") ? (value === settings.clockFont) : (value === settings.font)
+        card.className = "font-item" + (isActive ? " active" : "")
+        if (isFavorite) card.classList.add("is-favorite")
+        card.dataset.fontValue = value
+
+        const preview = document.createElement("span")
+        preview.className = "font-item-preview"
+        preview.textContent = "Aa"
+        preview.style.fontFamily = value
+
+        const name = document.createElement("span")
+        name.className = "font-item-name"
+        
+        let displayTag = tag;
+        if (type === "saved") displayTag = "Saved Font";
+        
+        name.textContent = label + (displayTag ? ` (${displayTag})` : "")
+
+        if (isFavorite) {
+            const favIcon = document.createElement("i")
+            favIcon.className = "fa-solid fa-star favorite-star"
+            card.appendChild(favIcon)
+        }
+
+        card.appendChild(preview)
+        card.appendChild(name)
+
+        card.addEventListener("click", () => {
+          if (custom || google) loadGoogleFont(label)
+          
+          if (type === "clock") {
+              updateSettingCallback("clockFont", value)
+          } else {
+              updateSettingCallback("font", value)
+              updateSettingCallback("clockFont", value)
+          }
+          renderFontGrid(fontGrid, updateSettingCallback)
+        })
+
+        card.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+            if (custom) {
+                showContextMenu(e.clientX, e.clientY, originalIndex, "userFont")
+            } else {
+                // For predefined fonts, pass type and label as ID
+                showContextMenu(e.clientX, e.clientY, -1, "predefinedFont", label)
+            }
+        })
+
+        fontGrid.appendChild(card)
       })
-      card.appendChild(delBtn)
-    }
-
-    card.addEventListener("click", () => {
-      if (custom || google) loadGoogleFont(label)
-      updateSettingCallback("font", value)
-      renderFontGrid(fontGrid, updateSettingCallback)
-    })
-
-    fontGrid.appendChild(card)
   })
 }
 

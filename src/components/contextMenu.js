@@ -59,12 +59,55 @@ export function showContextMenu(
       lockIcon.className = "fa-solid fa-lock"
       lockText.textContent = i18n.menu_lock || "Lock Position"
     }
-  } else if (["localBg", "userColor", "userAccentColor", "userGradient", "userMultiColor", "userSvgWave"].includes(type)) {
+  } else if (["localBg", "userColor", "userAccentColor", "userGradient", "userMultiColor", "userSvgWave", "userFont"].includes(type)) {
     menuEdit.style.display = "none"
     menuFavorite.style.display = "flex"
+    
+    // Check if currently favorited
+    let isFavorite = false;
+    let key = "";
+    const settings = getSettings();
+    switch (type) {
+      case "localBg": key = "userBackgrounds"; break;
+      case "userColor": key = "userColors"; break;
+      case "userAccentColor": key = "userAccentColors"; break;
+      case "userGradient": key = "userGradients"; break;
+      case "userMultiColor": key = "userMultiColors"; break;
+      case "userSvgWave": key = "userSvgWaves"; break;
+      case "userFont": key = "userSavedFonts"; break;
+    }
+    
+    if (key && settings[key] && index > -1 && settings[key][index]) {
+        const item = settings[key][index];
+        isFavorite = typeof item === 'object' ? !!item.isFavorite : false;
+    }
+    
     const favoriteText = menuFavorite.querySelector("span")
     if (favoriteText) {
-      favoriteText.textContent = i18n.menu_favorite || "Favorite"
+      favoriteText.textContent = isFavorite 
+        ? (i18n.menu_unfavorite || "Unfavorite") 
+        : (i18n.menu_favorite || "Favorite")
+    }
+
+    menuDelete.style.display = "flex"
+    menuLock.style.display = "none"
+  } else if (type === "predefinedFont") {
+    menuEdit.style.display = "none"
+    menuFavorite.style.display = "flex"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "none"
+    
+    const settings = getSettings();
+    const label = id; // id contains font label
+    const savedFonts = settings.userSavedFonts || []
+    const found = savedFonts.find(f => (typeof f === 'string' ? f : f.label) === label);
+    const isFavorite = found && typeof found === 'object' ? !!found.isFavorite : false;
+    
+    const favoriteText = menuFavorite.querySelector("span")
+    if (favoriteText) {
+      favoriteText.textContent = isFavorite 
+        ? (i18n.menu_unfavorite || "Unfavorite") 
+        : (i18n.menu_favorite || "Favorite")
     }
   } else {
     // Regular bookmarks/groups
@@ -138,6 +181,36 @@ async function handleFavorite() {
       const { renderUserSvgWaves } = await import("./settings/svgWaveManager.js")
       renderFn = renderUserSvgWaves
       break
+    case "userFont":
+      key = "userSavedFonts"
+      const { renderFontGrid } = await import("./settings/fontManager.js")
+      renderFn = (DOM) => {
+          renderFontGrid(DOM.fontGrid, (k,v) => { updateSetting(k,v); saveSettings(); })
+      }
+      break
+    case "predefinedFont":
+        const label = contextMenuTargetId; // font label
+        const savedFonts = settings.userSavedFonts || [];
+        const foundIndex = savedFonts.findIndex(f => (typeof f === 'string' ? f : f.label) === label);
+        
+        if (foundIndex === -1) {
+            // Add as favorite
+            savedFonts.push({ label: label, isFavorite: true });
+        } else {
+            // Toggle favorite
+            if (typeof savedFonts[foundIndex] === 'string') {
+                savedFonts[foundIndex] = { label: savedFonts[foundIndex], isFavorite: true };
+            } else {
+                savedFonts[foundIndex].isFavorite = !savedFonts[foundIndex].isFavorite;
+            }
+        }
+        updateSetting("userSavedFonts", savedFonts);
+        saveSettings();
+        const { renderFontGrid: rg } = await import("./settings/fontManager.js")
+        const fGrid = document.getElementById("font-grid");
+        if (fGrid) rg(fGrid, (k,v) => { updateSetting(k,v); saveSettings(); });
+        hideContextMenu();
+        return; // Already handled
   }
 
   if (key && settings[key] && index > -1 && settings[key][index]) {
@@ -148,13 +221,14 @@ async function handleFavorite() {
         const val = item;
         item = { isFavorite: false };
         if (key === "userBackgrounds") item.id = val;
+        else if (key === "userSavedFonts") item.label = val;
         else item.val = val;
     }
 
     // Toggle favorite
     item.isFavorite = !item.isFavorite;
 
-    // Move to top if favorited, else just put it back (it's already removed, so we unshift/push)
+    // Move to top if favorited
     if (item.isFavorite) {
         settings[key].unshift(item)
     } else {
@@ -163,19 +237,15 @@ async function handleFavorite() {
     
     saveSettings()
     
-    const DOM = await import("../utils/dom.js")
+    const DOM_UTIL = await import("../utils/dom.js")
     if (renderFn) {
         if (type === "userMultiColor") {
-            // multiColorManager.js's renderSavedMultiColors takes DOM as argument
-            renderFn(DOM)
+            renderFn(DOM_UTIL)
         } else if (type === "localBg") {
-            // backgroundManager.js's renderLocalBackgrounds takes (DOM, handleSettingUpdate)
-            // This is a bit tricky, but in contextMenu.js we don't have handleSettingUpdate easily.
-            // Usually renderLocalBackgrounds is called from index.js which has it.
-            // For now, let's just pass DOM and see if it works (it might not update click handlers properly)
-            renderFn(DOM)
+            // Use global handleSettingUpdate if possible, or dummy
+            renderFn(DOM_UTIL, window.appHandleSettingUpdate || (() => {}))
         } else {
-            renderFn(DOM)
+            renderFn(DOM_UTIL)
         }
     }
   }
@@ -308,6 +378,18 @@ async function handleDelete() {
               const { renderUserSvgWaves } = await import("./settings/svgWaveManager.js")
               renderFn = renderUserSvgWaves
               break
+            case "userFont":
+                key = "userSavedFonts"
+                const { renderFontGrid } = await import("./settings/fontManager.js")
+                renderFn = (DOM) => {
+                    const handleSettingUpdate = (key, val) => {
+                        updateSetting(key, val)
+                        saveSettings()
+                    }
+                    renderFontGrid(DOM.fontGrid, handleSettingUpdate)
+                    renderFontGrid(DOM.clockFontGrid, handleSettingUpdate, true)
+                }
+                break
           }
 
           if (key && settings[key] && index > -1) {
