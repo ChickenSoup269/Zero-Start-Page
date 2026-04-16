@@ -1131,6 +1131,10 @@
                     <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
                         autocomplete="off">
                     <div id="effect-grid" class="effect-grid">
+                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 10px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span data-i18n="effect_overlay_header">Overlay Effects (No Background)</span>
+                        </div>
                         <button class="effect-item" data-value="none" data-search="none off disable">
                             <span class="effect-icon"><i class="fa-solid fa-ban"></i></span>
                             <span class="effect-name" data-i18n="effect_none">None</span>
@@ -1151,10 +1155,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
                             <span class="effect-name" data-i18n="effect_matrix">Matrix</span>
                         </button>
-                        <button class="effect-item" data-value="aura" data-search="aura gradient glow">
-                            <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
-                            <span class="effect-name" data-i18n="effect_aura">Aura</span>
-                        </button>
                         <button class="effect-item" data-value="wind" data-search="wind anime speed lines">
                             <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
                             <span class="effect-name" data-i18n="effect_wind">Wind</span>
@@ -1162,10 +1162,6 @@
                         <button class="effect-item" data-value="hacker" data-search="hacker binary code">
                             <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
                             <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
-                        </button>
-                        <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
-                            <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
-                            <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
                         </button>
                         <button class="effect-item" data-value="jellyfish"
                             data-search="jellyfish sua mourse interactive hover">
@@ -1190,15 +1186,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
                             <span class="effect-name" data-i18n="effect_snowfall_hd">Snowfall HD</span>
                         </button>
-                        <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
-                            <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
-                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
-                        </button>
-                        <button class="effect-item" data-value="northernLights"
-                            data-search="northern lights aurora borealis waves">
-                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
-                            <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
-                        </button>
                         <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
                             <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
                             <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
@@ -1207,11 +1194,6 @@
                             data-search="cursor trail mouse interactive particles hover">
                             <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
                             <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
-                        </button>
-                        <button class="effect-item" data-value="gridScan"
-                            data-search="grid scan matrix retro tech radar">
-                            <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
-                            <span class="effect-name" data-i18n="effect_gridScan">Grid Scan</span>
                         </button>
                         <button class="effect-item" data-value="plantGrowth" data-search="plant growth nature">
                             <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
@@ -1230,10 +1212,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-cloud-bolt"></i></span>
                             <span class="effect-name" data-i18n="effect_storm_rain">Storm Rain</span>
                         </button>
-                        <button class="effect-item" data-value="rainbow" data-search="rainbow color">
-                            <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
-                            <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
-                        </button>
                         <button class="effect-item" data-value="wavyLines" data-search="wavy lines wave">
                             <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
                             <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
@@ -1245,10 +1223,6 @@
                         <button class="effect-item" data-value="oceanWave" data-search="ocean wave sea">
                             <span class="effect-icon"><i class="fa-solid fa-sailboat"></i></span>
                             <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
-                        </button>
-                        <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
-                            <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
-                            <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
                         </button>
                         <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
                             <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
@@ -1271,14 +1245,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-lines-leaning"></i></span>
                             <span class="effect-name" data-i18n="effect_lightPillars">Light Pillars</span>
                         </button>
-                        <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
-                            <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
-                            <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
-                        </button>
-                        <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
-                            <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
-                            <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
-                        </button>
                         <button class="effect-item" data-value="tetFireworks"
                             data-search="tet fireworks hoa mai chuc mung nam moi">
                             <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
@@ -1288,6 +1254,54 @@
                             data-search="den hoa dang sky lanterns floating light festival">
                             <span class="effect-icon"><i class="fa-solid fa-fire-flame-curved"></i></span>
                             <span class="effect-name" data-i18n="effect_sky_lanterns">Sky Lanterns</span>
+                        </button>
+                        <button class="effect-item" data-value="meteor"
+                            data-search="meteor shower sao bang falling stars comet night sky">
+                            <span class="effect-icon"><i class="fa-solid fa-meteor"></i></span>
+                            <span class="effect-name" data-i18n="effect_meteor">Meteor Shower</span>
+                        </button>
+
+                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 15px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
+                            <i class="fa-solid fa-image"></i>
+                            <span data-i18n="effect_background_header">Background Effects (Has Background)</span>
+                        </div>
+                        <button class="effect-item" data-value="aura" data-search="aura gradient glow">
+                            <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                            <span class="effect-name" data-i18n="effect_aura">Aura</span>
+                        </button>
+                        <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
+                            <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
+                        </button>
+                        <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
+                            <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
+                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
+                        </button>
+                        <button class="effect-item" data-value="northernLights"
+                            data-search="northern lights aurora borealis waves">
+                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                            <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
+                        </button>
+                        <button class="effect-item" data-value="gridScan"
+                            data-search="grid scan matrix retro tech radar">
+                            <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                            <span class="effect-name" data-i18n="effect_gridScan">Grid Scan</span>
+                        </button>
+                        <button class="effect-item" data-value="rainbow" data-search="rainbow color">
+                            <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
+                            <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
+                        </button>
+                        <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
+                            <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
+                            <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
+                        </button>
+                        <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
+                            <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
+                            <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
+                        </button>
+                        <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
+                            <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
+                            <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
                         </button>
                         <button class="effect-item" data-value="pixelRun"
                             data-search="pixel run square particles matrix retro">
@@ -1309,11 +1323,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-gamepad"></i></span>
                             <span class="effect-name" data-i18n="effect_retro_game">Retro Game</span>
                         </button>
-                        <button class="effect-item" data-value="meteor"
-                            data-search="meteor shower sao bang falling stars comet night sky">
-                            <span class="effect-icon"><i class="fa-solid fa-meteor"></i></span>
-                            <span class="effect-name" data-i18n="effect_meteor">Meteor Shower</span>
-                        </button>
                         <button class="effect-item" data-value="wavyPattern"
                             data-search="wavy pattern scallop fish scale ripple animated css">
                             <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
@@ -1326,23 +1335,22 @@
                         </button>
                     </div>
 
-                    <!-- Aura Color -->
-                    <div id="aura-color-setting" class="setting-item" style="display: none;">
-                        <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
-                        <input type="color" id="aura-color-picker" value="#a8c0ff" />
-                    </div>
-
-                    <!-- Northern Lights Color -->
-                    <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
-                        <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora Light
-                            Color</label>
-                        <input type="color" id="northern-lights-color-picker" value="#00ff88" />
-                    </div>
-
                     <!-- Hacker Color -->
                     <div id="hacker-color-setting" class="setting-item" style="display: none;">
                         <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
                         <input type="color" id="hacker-color-picker" value="#00FF00" />
+                    </div>
+
+                    <!-- Aura Color -->
+                    <div id="aura-color-setting" class="setting-item" style="display: none;">
+                        <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
+                        <input type="color" id="aura-color-picker" value="#00ff73" />
+                    </div>
+
+                    <!-- Northern Lights Color -->
+                    <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
+                        <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora Color</label>
+                        <input type="color" id="northern-lights-color-picker" value="#00ffcc" />
                     </div>
 
                     <!-- Pixel Cubes Color -->
@@ -1411,19 +1419,19 @@
                         <input type="color" id="meteor-color-picker" value="#ffffff" />
                     </div>
 
-                    <!-- Network Color (M�:i) -->
+                    <!-- Network Color (M:i) -->
                     <div id="network-color-setting" class="setting-item" style="display: none;">
                         <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
                         <input type="color" id="network-color-picker" value="#00bcd4" />
                     </div>
 
-                    <!-- Matrix Color (M�:i) -->
+                    <!-- Matrix Color (M:i) -->
                     <div id="matrix-color-setting" class="setting-item" style="display: none;">
                         <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
                         <input type="color" id="matrix-color-picker" value="#00FF00" />
                     </div>
 
-                    <!-- Sakura Color (M�:i) -->
+                    <!-- Sakura Color (M:i) -->
                     <div id="sakura-color-setting" class="setting-item" style="display: none;">
                         <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
                         <input type="color" id="sakura-color-picker" value="#ffb7c5" />
@@ -1528,7 +1536,7 @@
                     <!-- Cursor Trail Click Explosion -->
                     <div id="cursor-trail-click-setting" class="setting-item-row"
                         style="display: none; margin-top: 0.6rem;">
-                        <label for="cursor-trail-click-checkbox" data-i18n="setting_cursor_trail_click">Click
+                        <label for="cursor-trail-click-checkbox" data-i18n="settings_cursor_trail_click">Click
                             Explosion</label>
                         <input type="checkbox" id="cursor-trail-click-checkbox">
                     </div>
@@ -1536,7 +1544,7 @@
                     <!-- Cursor Trail Random Colors -->
                     <div id="cursor-trail-random-setting" class="setting-item-row"
                         style="display: none; margin-top: 0.6rem;">
-                        <label for="cursor-trail-random-checkbox" data-i18n="setting_cursor_trail_random">Random
+                        <label for="cursor-trail-random-checkbox" data-i18n="settings_cursor_trail_random">Random
                             Colors</label>
                         <input type="checkbox" id="cursor-trail-random-checkbox">
                     </div>
@@ -1657,18 +1665,19 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
                         &amp; Clock Format</span></h3>
                 <div class="section-content">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
-                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 600;"><i class="fa-solid fa-eye"></i> Show Clock</label>
-                            <input type="checkbox" id="show-clock-checkbox" checked>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.06); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                        <div class="setting-item-row" style="margin: 0; padding: 6px; border: none; display: flex; flex-direction: column; align-items: center; gap: 6px; height: auto;">
+                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 600; font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-eye"></i> Show Clock</label>
+                            <input type="checkbox" id="show-clock-checkbox" checked style="transform: scale(1.1); margin: 0;">
                         </div>
-                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
-                            <input type="checkbox" id="free-move-clock-checkbox">
+                        <div style="height: 1px; background: rgba(255,255,255,0.08); width: 60%; margin: 2px auto;"></div>
+                        <div class="setting-item-row" style="margin: 0; padding: 6px; border: none; display: flex; flex-direction: column; align-items: center; gap: 6px; height: auto;">
+                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock" style="font-weight: 600; font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-clock-checkbox" style="transform: scale(1.1); margin: 0;">
                         </div>
                     </div>
                     <div class="setting-group">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
                             <div class="setting-item no-margin-top">
                                 <label data-i18n="settings_date_format_style" for="date-format-select"><i class="fa-solid fa-calendar-day"></i> Date Format</label>
                                 <select id="date-format-select">
@@ -1712,18 +1721,18 @@
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px;">
-                            <div class="setting-item-row" style="margin: 0;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px;">
+                            <div class="setting-item-row" style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
                                 <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Short Weekday</label>
                                 <input type="checkbox" id="short-weekday-checkbox">
                             </div>
-                            <div class="setting-item-row" style="margin: 0;">
+                            <div class="setting-item-row" style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
                                 <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
                                 <input type="checkbox" id="hide-seconds-checkbox">
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px;">
                             <div class="setting-item no-margin-top">
                                 <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom priority</label>
                                 <select id="clock-date-priority-select">
@@ -1774,7 +1783,7 @@
                                 <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
                             </select>
                             <div
-                                style="margin-top: 0.6rem; display: flex; align-items: center; justify-content: space-between;">
+                                style="margin-top: 0.8rem; display: flex; flex-direction: column; gap: 8px;">
                                 <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
                                     Dashed Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
@@ -1782,7 +1791,7 @@
                         </div>
                         <div id="sidebar-clock-flip-setting" class="setting-item"
                             style="margin-top: 0.6rem; display: none;">
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip
                                     Vertical Layout</label>
                                 <input type="checkbox" id="sidebar-clock-flip-checkbox">
@@ -1814,11 +1823,13 @@
                                 </option>
                             </select>
                         </div>
-                        <div id="analog-blur-bg-setting" class="setting-item-row"
+                        <div id="analog-blur-bg-setting" class="setting-item"
                             style="margin-top: 0.6rem; display: none;">
-                            <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
-                                (Analog)</label>
-                            <input type="checkbox" id="analog-blur-bg-checkbox">
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
+                                    (Analog)</label>
+                                <input type="checkbox" id="analog-blur-bg-checkbox">
+                            </div>
                         </div>
 
                         <div class="setting-item" style="margin-top: 0.6rem;">
@@ -1835,7 +1846,7 @@
                         <div class="setting-item" id="clock-date-stroke-setting" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
                             <label style="margin-bottom: 10px; display: block; font-weight: 600;"><i class="fa-solid fa-border-style"></i> Text Outline / Border</label>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px;">
                                 <div class="setting-item no-margin-top">
                                     <label for="clock-date-stroke-target-select" data-i18n="settings_clock_date_stroke_target" style="font-size: 0.8rem;">Target</label>
                                     <select id="clock-date-stroke-target-select">
@@ -1861,7 +1872,7 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
                             <div class="setting-item no-margin-top">
                                 <label for="clock-size-input" style="display: flex; justify-content: space-between;">
                                     <span><i class="fa-solid fa-expand"></i> <span data-i18n="settings_clock_size">Clock Size</span></span>
@@ -1878,7 +1889,7 @@
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 15px;">
                             <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 8px;">

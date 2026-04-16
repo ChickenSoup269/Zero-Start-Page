@@ -1542,6 +1542,8 @@ export function setupGeneralEventHandlers(
 
   DOM.effectSearch.addEventListener("input", () => {
     const q = DOM.effectSearch.value.toLowerCase()
+    
+    // Hide/show effects
     DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {
       el.style.display =
         el.dataset.search.includes(q) ||
@@ -1549,7 +1551,66 @@ export function setupGeneralEventHandlers(
           ? ""
           : "none"
     })
+    
+    // Hide/show category headers if all items under them are hidden
+    DOM.effectGrid.querySelectorAll(".effect-category-header").forEach((header) => {
+      let next = header.nextElementSibling;
+      let hasVisible = false;
+      while (next && !next.classList.contains("effect-category-header")) {
+        if (next.classList.contains("effect-item") && next.style.display !== "none") {
+          hasVisible = true;
+          break;
+        }
+        next = next.nextElementSibling;
+      }
+      header.style.display = hasVisible ? "flex" : "none";
+    })
   })
+
+  // Add context menu for effects
+  DOM.effectGrid.addEventListener("contextmenu", async (e) => {
+    const item = e.target.closest(".effect-item");
+    if (item) {
+      e.preventDefault();
+      const { showContextMenu } = await import("../contextMenu.js");
+      showContextMenu(e.clientX, e.clientY, -1, "effect", item.dataset.value);
+    }
+  });
+
+  // Handle favorite changed event to update UI
+  window.addEventListener('effectFavoriteChanged', (e) => {
+    updateEffectFavoriteUI();
+  });
+
+  function updateEffectFavoriteUI() {
+    const settings = getSettings();
+    const favoriteEffects = settings.favoriteEffects || [];
+    DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {
+      const effectId = el.dataset.value;
+      const isFav = favoriteEffects.includes(effectId);
+      
+      let favIcon = el.querySelector(".effect-favorite-icon");
+      if (isFav) {
+        if (!favIcon) {
+          favIcon = document.createElement("span");
+          favIcon.className = "effect-favorite-icon";
+          favIcon.innerHTML = '<i class="fa-solid fa-star"></i>';
+          favIcon.style.position = "absolute";
+          favIcon.style.top = "5px";
+          favIcon.style.right = "5px";
+          favIcon.style.color = "#ffcc00";
+          favIcon.style.fontSize = "0.7rem";
+          el.style.position = "relative";
+          el.appendChild(favIcon);
+        }
+      } else if (favIcon) {
+        favIcon.remove();
+      }
+    });
+  }
+  
+  // Initial UI update for favorites
+  updateEffectFavoriteUI();
 
   // Font management
   DOM.loadCustomFontBtn.addEventListener("click", () => {

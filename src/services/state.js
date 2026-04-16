@@ -57,6 +57,7 @@ const defaultSettings = {
   tabIcon: "",
   accentColor: "#00ff73",
   effect: "none",
+  favoriteEffects: [],
   pixelWeatherStyle: "snow",
   pixelWeatherResolution: 1,
   pixelWeatherSpeed: 1,

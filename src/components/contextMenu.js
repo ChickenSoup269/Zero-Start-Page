@@ -109,6 +109,23 @@ export function showContextMenu(
         ? (i18n.menu_unfavorite || "Unfavorite") 
         : (i18n.menu_favorite || "Favorite")
     }
+  } else if (type === "effect") {
+    menuEdit.style.display = "none"
+    menuFavorite.style.display = "flex"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "none"
+    
+    const settings = getSettings();
+    const effectId = id; // id contains effect data-value
+    const favoriteEffects = settings.favoriteEffects || []
+    const isFavorite = favoriteEffects.includes(effectId);
+    
+    const favoriteText = menuFavorite.querySelector("span")
+    if (favoriteText) {
+      favoriteText.textContent = isFavorite 
+        ? (i18n.menu_unfavorite || "Unfavorite") 
+        : (i18n.menu_favorite || "Favorite")
+    }
   } else {
     // Regular bookmarks/groups
     const editText = menuEdit.querySelector("span")
@@ -209,6 +226,22 @@ async function handleFavorite() {
         const { renderFontGrid: rg } = await import("./settings/fontManager.js")
         const fGrid = document.getElementById("font-grid");
         if (fGrid) rg(fGrid, (k,v) => { updateSetting(k,v); saveSettings(); });
+        hideContextMenu();
+        return; // Already handled
+    case "effect":
+        const effectId = contextMenuTargetId; // id contains effect data-value
+        let favoriteEffects = settings.favoriteEffects || []
+        const favIndex = favoriteEffects.indexOf(effectId);
+        if (favIndex > -1) {
+            favoriteEffects.splice(favIndex, 1);
+        } else {
+            favoriteEffects.push(effectId);
+        }
+        updateSetting("favoriteEffects", favoriteEffects);
+        saveSettings();
+        
+        // Dispatch custom event to notify UI to update favorite icons if any
+        window.dispatchEvent(new CustomEvent('effectFavoriteChanged', { detail: { effectId } }));
         hideContextMenu();
         return; // Already handled
   }

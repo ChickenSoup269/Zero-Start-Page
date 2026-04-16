@@ -13,7 +13,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.starFallEffect.updateColor(DOM.starColorPicker.value)
   })
 
-  DOM.meteorColorPicker.addEventListener("input", () => {
+  DOM.meteorColorPicker?.addEventListener("input", () => {
     updateSetting("meteorColor", DOM.meteorColorPicker.value)
     saveSettings()
     if (effectInstances.meteorEffect)
@@ -22,28 +22,28 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
-  DOM.networkColorPicker.addEventListener("input", () => {
+  DOM.networkColorPicker?.addEventListener("input", () => {
     updateSetting("networkColor", DOM.networkColorPicker.value)
     saveSettings()
     if (effectInstances.networkEffect)
       effectInstances.networkEffect.updateColor(DOM.networkColorPicker.value)
   })
 
-  DOM.matrixColorPicker.addEventListener("input", () => {
+  DOM.matrixColorPicker?.addEventListener("input", () => {
     updateSetting("matrixColor", DOM.matrixColorPicker.value)
     saveSettings()
     if (effectInstances.matrixRainEffect)
       effectInstances.matrixRainEffect.updateColor(DOM.matrixColorPicker.value)
   })
 
-  DOM.auraColorPicker.addEventListener("input", () => {
+  DOM.auraColorPicker?.addEventListener("input", () => {
     updateSetting("auraColor", DOM.auraColorPicker.value)
     saveSettings()
     if (effectInstances.auraEffect)
       effectInstances.auraEffect.updateColor(DOM.auraColorPicker.value)
   })
 
-  DOM.northernLightsColorPicker.addEventListener("input", () => {
+  DOM.northernLightsColorPicker?.addEventListener("input", () => {
     updateSetting("northernLightsColor", DOM.northernLightsColorPicker.value)
     saveSettings()
     if (effectInstances.northernLightsEffect)
@@ -52,7 +52,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
-  DOM.hackerColorPicker.addEventListener("input", () => {
+  DOM.hackerColorPicker?.addEventListener("input", () => {
     updateSetting("hackerColor", DOM.hackerColorPicker.value)
     saveSettings()
     if (effectInstances.hackerEffect)
