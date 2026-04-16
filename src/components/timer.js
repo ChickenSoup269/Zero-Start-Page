@@ -47,21 +47,57 @@ export class Timer {
     this.container.id = "timer-component"
 
     this.container.innerHTML = `
-            <div class="timer-display" id="timer-display">00:00:00</div>
-            <div class="timer-controls">
-                <button id="timer-start-pause" class="icon-btn"><i class="fa-solid fa-play"></i></button>
-                <button id="timer-reset" class="icon-btn"><i class="fa-solid fa-rotate-right"></i></button>
-                <button id="timer-settings" class="icon-btn"><i class="fa-solid fa-ellipsis"></i></button>
+            <div class="timer-main-view">
+                <div class="timer-display" id="timer-display">00:00:00</div>
+                <div class="timer-controls">
+                    <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
+                    <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button id="timer-edit" class="icon-btn" title="Set Time"><i class="fa-solid fa-keyboard"></i></button>
+                    <button id="timer-minimize" class="icon-btn" title="Minimize to Clock"><i class="fa-solid fa-compress"></i></button>
+                </div>
             </div>
-            <div id="timer-modal" class="timer-input-modal" style="display: none;">
-                <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="Enter time" maxlength="6" inputmode="numeric">
-                <button id="timer-set-confirm" class="icon-btn"><i class="fa-solid fa-check"></i></button>
+            <div id="timer-input-view" class="timer-input-view" style="display: none;">
+                <div class="timer-input-header">Set Timer</div>
+                <div class="timer-input-wrapper">
+                    <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="00h 00m 00s" maxlength="6" inputmode="numeric">
+                    <div class="timer-input-hint">Enter digits (e.g. 500 for 5m)</div>
+                </div>
+                <div class="timer-input-actions">
+                    <button id="timer-cancel-edit" class="secondary-btn">Cancel</button>
+                    <button id="timer-set-confirm" class="primary-btn">Set</button>
+                </div>
             </div>
-            <button id="stop-alarm-btn" class="primary-btn" style="display: none; margin-top: 10px; width: 100%;">Stop Alarm</button>
+            <div id="alarm-control-container" style="display: none; width: 100%;">
+                <button id="stop-alarm-btn" class="primary-btn">Stop Alarm</button>
+            </div>
         `
 
     document.body.appendChild(this.container)
     this.display = this.container.querySelector("#timer-display")
+    
+    // Create the mini clock indicator if it doesn't exist
+    this._createMiniIndicator()
+  }
+
+  _createMiniIndicator() {
+    const clockWrap = document.querySelector(".clock-date-wrap")
+    if (clockWrap && !document.getElementById("mini-timer-indicator")) {
+      const mini = document.createElement("div")
+      mini.id = "mini-timer-indicator"
+      mini.className = "mini-timer-indicator"
+      mini.style.display = "none"
+      mini.innerHTML = `
+        <i class="fa-solid fa-stopwatch"></i>
+        <span class="mini-timer-text">00:00</span>
+      `
+      mini.addEventListener("click", () => {
+        updateSetting("showTimer", true)
+        saveSettings()
+        this.isVisible = true
+        this.updateVisibility()
+      })
+      clockWrap.appendChild(mini)
+    }
   }
 
   setupEventListeners() {
@@ -72,8 +108,19 @@ export class Timer {
       .querySelector("#timer-reset")
       .addEventListener("click", () => this.resetTimer())
     this.container
-      .querySelector("#timer-settings")
-      .addEventListener("click", () => this.toggleModal())
+      .querySelector("#timer-edit")
+      .addEventListener("click", () => this.showInputView())
+    this.container
+      .querySelector("#timer-minimize")
+      .addEventListener("click", () => {
+        updateSetting("showTimer", false)
+        saveSettings()
+        this.isVisible = false
+        this.updateVisibility()
+      })
+    this.container
+      .querySelector("#timer-cancel-edit")
+      .addEventListener("click", () => this.hideInputView())
     this.container
       .querySelector("#timer-set-confirm")
       .addEventListener("click", () => this.setTimer())
@@ -91,9 +138,7 @@ export class Timer {
     // Smart input handler
     const smartInput = this.container.querySelector("#timer-smart-input")
     smartInput.addEventListener("input", (e) => {
-      // Only allow numbers
       e.target.value = e.target.value.replace(/\D/g, "")
-      // Update display preview as user types
       this.updateSmartInputPreview(e.target.value)
     })
 
@@ -106,6 +151,38 @@ export class Timer {
 
   updateVisibility() {
     this.container.style.display = this.isVisible ? "flex" : "none"
+    this._updateMiniIndicatorVisibility()
+  }
+
+  _updateMiniIndicatorVisibility() {
+    const mini = document.getElementById("mini-timer-indicator")
+    if (mini) {
+      const shouldShowMini = !this.isVisible && this.isRunning
+      mini.style.display = shouldShowMini ? "flex" : "none"
+      if (shouldShowMini) this.render()
+    }
+  }
+
+  showInputView() {
+    this.container.querySelector(".timer-main-view").style.display = "none"
+    this.container.querySelector("#timer-input-view").style.display = "flex"
+    const smartInput = this.container.querySelector("#timer-smart-input")
+    
+    const h = Math.floor(this.timeLeft / 3600)
+    const m = Math.floor((this.timeLeft % 3600) / 60)
+    const s = this.timeLeft % 60
+    smartInput.value = h > 0 ? 
+      h.toString().padStart(2, '0') + m.toString().padStart(2, '0') + s.toString().padStart(2, '0') :
+      (m > 0 ? m.toString().padStart(2, '0') + s.toString().padStart(2, '0') : s.toString())
+    
+    smartInput.focus()
+    smartInput.select()
+  }
+
+  hideInputView() {
+    this.container.querySelector(".timer-main-view").style.display = "flex"
+    this.container.querySelector("#timer-input-view").style.display = "none"
+    this.render()
   }
 
   toggleTimer() {
@@ -126,6 +203,7 @@ export class Timer {
     }
 
     this.saveState()
+    this._updateMiniIndicatorVisibility()
 
     this.timerId = setInterval(() => {
       const remaining = Math.ceil((this.endTime - Date.now()) / 1000)
@@ -151,6 +229,7 @@ export class Timer {
     const btn = this.container.querySelector("#timer-start-pause i")
     if (btn) btn.className = "fa-solid fa-play"
     this.saveState()
+    this._updateMiniIndicatorVisibility()
   }
 
   resetTimer() {
@@ -162,118 +241,49 @@ export class Timer {
     this.saveState()
   }
 
-  toggleModal() {
-    const modal = this.container.querySelector("#timer-modal")
-    const smartInput = this.container.querySelector("#timer-smart-input")
-    modal.style.display = modal.style.display === "none" ? "flex" : "none"
-    if (modal.style.display === "flex") {
-      // Convert current time to smart format
-      const h = Math.floor(this.timeLeft / 3600)
-      const m = Math.floor((this.timeLeft % 3600) / 60)
-      const s = this.timeLeft % 60
-
-      let smartValue = ""
-      if (h > 0) {
-        smartValue =
-          h.toString().padStart(2, "0") +
-          m.toString().padStart(2, "0") +
-          s.toString().padStart(2, "0")
-      } else if (m > 0) {
-        smartValue =
-          m.toString().padStart(2, "0") + s.toString().padStart(2, "0")
-      } else {
-        smartValue = s.toString()
-      }
-      smartInput.value = smartValue
-      smartInput.focus()
-      smartInput.select()
-    }
-  }
-
   updateSmartInputPreview(value) {
-    // Update the timer display to show preview
     if (!value) {
-      this.render()
+      this.display.textContent = "00:00:00"
       return
     }
     const parsed = this.parseSmartTimerInput(value)
-    const h = Math.floor(parsed / 3600)
-    const m = Math.floor((parsed % 3600) / 60)
-    const s = parsed % 60
-
-    let displayStr = ""
-    if (h > 0) {
-      displayStr = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
-    } else if (m > 0) {
-      displayStr = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
-    } else {
-      displayStr = `${s.toString().padStart(2, "0")}`
-    }
-    this.display.textContent = displayStr
+    this.renderTime(parsed, this.display)
   }
 
   parseSmartTimerInput(value) {
-    // Remove any non-digits
     const digits = value.replace(/\D/g, "")
     const len = digits.length
-
     if (len === 0) return 0
-
-    let hours = 0,
-      minutes = 0,
-      seconds = 0
-
+    let hours = 0, minutes = 0, seconds = 0
     if (len <= 2) {
-      // 1-2 digits: seconds only
       seconds = parseInt(digits)
     } else if (len <= 4) {
-      // 3-4 digits: MMSS
       minutes = parseInt(digits.slice(0, -2))
       seconds = parseInt(digits.slice(-2))
     } else {
-      // 5-6 digits: HHMMSS
       hours = parseInt(digits.slice(0, -4))
       minutes = parseInt(digits.slice(-4, -2))
       seconds = parseInt(digits.slice(-2))
     }
-
-    // Validate and cap values
-    hours = Math.min(hours, 23)
-    minutes = Math.min(minutes, 59)
-    seconds = Math.min(seconds, 59)
-
-    return hours * 3600 + minutes * 60 + seconds
+    return Math.min(hours, 23) * 3600 + Math.min(minutes, 59) * 60 + Math.min(seconds, 59)
   }
 
   setTimer() {
     const smartInput = this.container.querySelector("#timer-smart-input")
     const totalSeconds = this.parseSmartTimerInput(smartInput.value)
-
     if (totalSeconds === 0) {
-      this.toggleModal()
+      this.hideInputView()
       return
     }
-
-    // Remember if timer was running
     const wasRunning = this.isRunning
-
-    // Stop current timer if running
-    if (this.isRunning) {
-      this.pauseTimer()
-    }
-
-    // Set new time
+    if (this.isRunning) this.pauseTimer()
     this.initialTime = totalSeconds
     this.timeLeft = this.initialTime
     this.isRunning = false
     this.saveState()
     this.render()
-    this.toggleModal()
-
-    // Auto-start if it was running before
-    if (wasRunning) {
-      setTimeout(() => this.startTimer(), 100)
-    }
+    this.hideInputView()
+    if (wasRunning) setTimeout(() => this.startTimer(), 100)
   }
 
   saveState() {
@@ -282,56 +292,51 @@ export class Timer {
     updateSetting("timerEndTime", this.endTime)
     updateSetting("timerIsRunning", this.isRunning)
     saveSettings()
-
-    // Notify layout listeners so hidden-running indicator updates immediately.
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "timerIsRunning", value: this.isRunning },
-      }),
-    )
+    window.dispatchEvent(new CustomEvent("layoutUpdated", {
+      detail: { key: "timerIsRunning", value: this.isRunning },
+    }))
   }
 
   playAlarm() {
     this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
-    this.container.querySelector("#stop-alarm-btn").style.display = "block"
-
-    // Blink the timer toggle button when expired
+    this.container.querySelector("#alarm-control-container").style.display =
+      "block"
     const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
-    if (timerToggleBtn) {
-      timerToggleBtn.classList.add("timer-expired-blink")
-      // Remove blink class after animation completes
-      setTimeout(() => {
-        timerToggleBtn.classList.remove("timer-expired-blink")
-      }, 2100) // 0.5s * 4 cycles + buffer
-    }
+    if (timerToggleBtn) timerToggleBtn.classList.add("timer-expired-blink")
+
+    // Also blink mini indicator if hidden
+    const mini = document.getElementById("mini-timer-indicator")
+    if (mini) mini.classList.add("timer-expired-blink")
   }
 
   stopAlarm() {
     this.alarm.pause()
     this.alarm.currentTime = 0
-    this.container.querySelector("#stop-alarm-btn").style.display = "none"
-
-    // Clear blink animation if user stops alarm manually
+    this.container.querySelector("#alarm-control-container").style.display =
+      "none"
     const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
-    if (timerToggleBtn) {
-      timerToggleBtn.classList.remove("timer-expired-blink")
-    }
+    if (timerToggleBtn) timerToggleBtn.classList.remove("timer-expired-blink")
+    const mini = document.getElementById("mini-timer-indicator")
+    if (mini) mini.classList.remove("timer-expired-blink")
   }
 
   render() {
-    const h = Math.floor(this.timeLeft / 3600)
-    const m = Math.floor((this.timeLeft % 3600) / 60)
-    const s = this.timeLeft % 60
-
-    let displayStr = ""
-    if (h > 0) {
-      displayStr = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
-    } else if (m > 0) {
-      displayStr = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
-    } else {
-      displayStr = `${s.toString().padStart(2, "0")}`
+    this.renderTime(this.timeLeft, this.display)
+    
+    const miniText = document.querySelector("#mini-timer-indicator .mini-timer-text")
+    if (miniText) {
+      this.renderTime(this.timeLeft, miniText, true)
     }
+  }
 
-    this.display.textContent = displayStr
+  renderTime(seconds, element, short = false) {
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = seconds % 60
+    if (short && h === 0) {
+      element.textContent = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+    } else {
+      element.textContent = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+    }
   }
 }
