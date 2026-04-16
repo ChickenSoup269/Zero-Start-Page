@@ -114,9 +114,40 @@ export class PixelCubes {
           srz = Math.sin(c.rZ)
 
         if (this.shape === "circle") {
-          this.ctx.beginPath()
-          this.ctx.arc(px, py, s, 0, Math.PI * 2)
-          this.ctx.stroke()
+          // 3D Wireframe Sphere (3 perpendicular rings)
+          const steps = 12
+          const rings = [
+            [], // XY
+            [], // YZ
+            [], // XZ
+          ]
+          for (let i = 0; i < steps; i++) {
+            const a = (i / steps) * Math.PI * 2
+            const cos = Math.cos(a)
+            const sin = Math.sin(a)
+            rings[0].push([cos, sin, 0])
+            rings[1].push([0, cos, sin])
+            rings[2].push([cos, 0, sin])
+          }
+
+          rings.forEach((ring) => {
+            const p = ring.map((pt) => {
+              let x1 = pt[0] * s,
+                y1 = (pt[1] * crx - pt[2] * srx) * s,
+                z1 = (pt[1] * srx + pt[2] * crx) * s
+              let x2 = x1 * cry + z1 * sry,
+                y2 = y1
+              let x3 = x2 * crz - y2 * srz,
+                y3 = x2 * srz + y2 * crz
+              return { x: px + x3, y: py + y3 }
+            })
+
+            this.ctx.beginPath()
+            this.ctx.moveTo(p[0].x, p[0].y)
+            for (let i = 1; i < p.length; i++) this.ctx.lineTo(p[i].x, p[i].y)
+            this.ctx.closePath()
+            this.ctx.stroke()
+          })
         } else if (this.shape === "triangle") {
           // Pyramid vertices
           let v = [
