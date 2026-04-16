@@ -1907,35 +1907,37 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
                         data-i18n="settings_custom_title">Custom Title</span></h3>
                 <div class="section-content">
-                    <!-- Toggles -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
-                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title" style="font-weight: 600;"><i class="fa-solid fa-eye"></i> Show Title</label>
+                    <!-- Toggles & Basic Setup -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <div class="setting-item-row">
+                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i class="fa-solid fa-eye"></i> Show Title</label>
                             <input type="checkbox" id="show-custom-title-checkbox">
                         </div>
-                        <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
+                        <div class="setting-item-row">
                             <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
                             <input type="checkbox" id="free-move-custom-title-checkbox">
                         </div>
                     </div>
 
                     <!-- Text Input & Font Settings -->
-                    <div class="setting-group" style="margin-bottom: 15px;">
+                    <div class="setting-group" style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
                         <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_text">Text Content & Typography</span></h4>
-                        <div class="setting-item no-margin-top" style="margin-bottom: 12px;">
-                            <input type="text" id="custom-title-text" placeholder="..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 1rem;">
-                        </div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
                             <div class="setting-item no-margin-top">
-                                <label for="custom-title-font-size" style="display: flex; justify-content: space-between;">
+                                <input type="text" id="custom-title-text" placeholder="..." style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="custom-title-font-size" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_fontsize">Font Size</span></span>
                                     <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-fontsize-val">24</span>px</span>
                                 </label>
                                 <input type="range" id="custom-title-font-size" min="10" max="200" value="24" class="slider" style="width: 100%;">
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="custom-title-letter-spacing" style="display: flex; justify-content: space-between;">
+
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="custom-title-letter-spacing" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                     <span><i class="fa-solid fa-text-width"></i> <span data-i18n="settings_custom_title_letter_spacing">Letter Spacing</span></span>
                                     <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-letter-spacing-val">0</span>px</span>
                                 </label>
@@ -1945,66 +1947,66 @@
                     </div>
 
                     <!-- Color Settings -->
-                    <div class="setting-group" style="margin-bottom: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div class="setting-group" style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
                         <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_custom_title_color">Title Color</span></h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
                             <div class="setting-item no-margin-top" id="custom-title-color-wrap" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" data-i18n="settings_custom_title_color">Solid Color</label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="custom-title-color" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
+                                <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;" data-i18n="settings_custom_title_color">Solid Color</label>
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                    <input type="color" id="custom-title-color" value="#ffffff" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                 </div>
                             </div>
-                            <div class="setting-item-row no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
-                                <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor" style="margin: 0; display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                    <span><i class="fa-solid fa-rainbow"></i> Rainbow Effect</span>
-                                    <input type="checkbox" id="custom-title-multicolor">
-                                </label>
+                            <div class="setting-item-row">
+                                <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor"><i class="fa-solid fa-rainbow"></i> Rainbow Effect</label>
+                                <input type="checkbox" id="custom-title-multicolor">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Shadows & Borders -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div class="setting-group" style="margin-top: 0; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
-                            <div class="setting-item no-margin-top" style="margin-bottom: 10px;">
-                                <label for="custom-title-shadow-color" data-i18n="settings_custom_title_shadow_color" style="font-size: 0.8rem; margin-bottom: 4px;">Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 32px;">
-                                    <input type="color" id="custom-title-shadow-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                    <!-- Effects: Shadows & Borders -->
+                    <div style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <div class="setting-group no-margin-top" style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-color" data-i18n="settings_custom_title_shadow_color" style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="custom-title-shadow-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="setting-item no-margin-top" style="margin-bottom: 8px;">
-                                <label for="custom-title-shadow-blur" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
-                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-blur-val">0</span>px</span>
-                                </label>
-                                <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider" style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="custom-title-shadow-y" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
-                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-y-val">0</span>px</span>
-                                </label>
-                                <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider" style="width: 100%;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-blur" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-blur-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider" style="width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-y" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-y-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider" style="width: 100%;">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="setting-group" style="margin-top: 0; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.85rem;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
-                            <div class="setting-item no-margin-top" style="margin-bottom: 10px;">
-                                <label for="custom-title-border-color" data-i18n="settings_custom_title_border_color" style="font-size: 0.8rem; margin-bottom: 4px;">Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 32px;">
-                                    <input type="color" id="custom-title-border-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                        <div class="setting-group no-margin-top" style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-border-color" data-i18n="settings_custom_title_border_color" style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
+                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="custom-title-border-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="custom-title-border-size" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                    <span data-i18n="settings_custom_title_border_size">Thickness</span>
-                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-border-size-val">0</span>px</span>
-                                </label>
-                                <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider" style="width: 100%;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-border-size" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_border_size">Thickness</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-border-size-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider" style="width: 100%;">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2045,9 +2047,10 @@
                         </div>
                     </div>
                     <div class="setting-group">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_appearance_header">Appearance</span></h4>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
                             <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" for="hide-bookmark-text"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
                                         <input type="color" id="bookmark-text-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
@@ -2069,27 +2072,27 @@
                                     <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100" style="flex: 1;">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
-                                        <input type="color" id="bookmark-shadow-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
+                                            <input type="color" id="bookmark-shadow-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                            <span>Opacity</span>
+                                        </div>
+                                        <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="width: 100%;">
                                     </div>
                                 </div>
-                                <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
-                                        <span>Opacity</span>
-                                    </div>
-                                    <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="width: 100%;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                                    <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                                    <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
+                                    <span id="bookmark-shadow-blur-value" style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
                                 </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
-                                <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
-                                <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
-                                <span id="bookmark-shadow-blur-value" style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
                             </div>
                         </div>
                     </div>
@@ -2100,7 +2103,7 @@
                         <p class="setting-hint" data-i18n="settings_bookmark_group_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
                             <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
@@ -2135,29 +2138,30 @@
                     <!-- Toggles & Layout Options -->
                     <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
                         <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_bookmark_layout_header">Layout & Behavior</span></h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 10px;">
-                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text" style="font-size: 0.85rem;">Hide Title</label>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                            <div class="setting-item-row">
+                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title</label>
                                 <input type="checkbox" id="hide-bookmark-text">
                             </div>
-                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg" style="font-size: 0.85rem;">Hide Background</label>
+                            <div class="setting-item-row">
+                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Background</label>
                                 <input type="checkbox" id="hide-bookmark-bg">
                             </div>
-                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover" style="font-size: 0.85rem;">MacOS Hover</label>
+                            <div class="setting-item-row">
+                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover">MacOS Hover</label>
                                 <input type="checkbox" id="bookmark-macos-hover">
                             </div>
-                            <div class="setting-item-row" style="margin: 0; padding: 0; border: none;">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag" style="font-size: 0.85rem;">Drag & Drop</label>
+                            <div class="setting-item-row">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Drag & Drop</label>
                                 <input type="checkbox" id="enable-bookmark-drag">
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
                             <div class="setting-item no-margin-top">
                                 <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
-                                <select id="bookmark-layout" class="settings-select">
+                                <select id="bookmark-layout" class="settings-select" style="width: 100%; margin-top: 5px;">
                                     <option value="default" data-i18n="layout_default">Default Grid</option>
                                     <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
                                     <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
@@ -2166,17 +2170,14 @@
                             </div>
                             <div class="setting-item no-margin-top" id="bookmark-item-style-row">
                                 <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
-                                <select id="bookmark-item-style" class="settings-select">
+                                <select id="bookmark-item-style" class="settings-select" style="width: 100%; margin-top: 5px;">
                                     <option value="default" data-i18n="item_style_default">Default</option>
                                     <option value="card" data-i18n="item_style_card">Card</option>
                                 </select>
                             </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
                             <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none;">
                                 <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Container Background</label>
-                                <select id="bookmark-layout-bg-style" class="settings-select">
+                                <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%; margin-top: 5px;">
                                     <option value="default" data-i18n="layout_bg_default">Default</option>
                                     <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
                                     <option value="white" data-i18n="layout_bg_white">White</option>
@@ -2185,7 +2186,7 @@
                             </div>
                             <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none;">
                                 <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px; margin-top: 5px;">
                                     <input type="color" id="bookmark-layout-bg-color" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                 </div>
                             </div>
@@ -2198,107 +2199,119 @@
                 <h3 class="section-toggle" data-i18n="settings_layout"><i class="fa-solid fa-layer-group"></i> Layout &
                     Features</h3>
                 <div class="section-content">
-                    <div class="setting-item-row">
-                        <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface Layout</label>
-                        <input type="checkbox" id="flip-layout-checkbox">
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
-                        <input type="checkbox" id="show-todo-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo Checkboxes</label>
-                        <input type="checkbox" id="todo-show-checkboxes" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show Notepad</label>
-                        <input type="checkbox" id="show-notepad-checkbox">
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
-                        <input type="checkbox" id="show-timer-checkbox">
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
-                            Calendar</label>
-                        <input type="checkbox" id="show-gregorian-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
-                        <input type="checkbox" id="show-music-checkbox">
-                    </div>
-
-                    <div class="setting-item-row">
-                        <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
-                            Bar</label>
-                        <input type="checkbox" id="show-search-bar-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show Google
-                            AI Icon</label>
-                        <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
-                            Width</label>
-                        <div class="range-wrapper">
-                            <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10" value="600">
-                            <span class="range-val" id="search-bar-width-val">600px</span>
+                    <!-- Interface & General -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-display"></i> <span data-i18n="settings_group_interface">Interface</span></div>
+                        <div class="setting-item-row">
+                            <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface Layout</label>
+                            <input type="checkbox" id="flip-layout-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide controls</label>
+                            <input type="checkbox" id="ghost-controls-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show Google Apps & Avatar</label>
+                            <input type="checkbox" id="show-top-right-controls-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-donate-btn-checkbox" data-i18n="settings_show_donate_btn">Show Donate Button</label>
+                            <input type="checkbox" id="show-donate-btn-checkbox" checked>
                         </div>
                     </div>
-                    <div class="setting-item-row">
-                        <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show Bookmarks</label>
-                        <input type="checkbox" id="show-bookmarks-checkbox" checked>
+
+                    <!-- Search Bar -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="settings_group_search">Search Bar</span></div>
+                        <div class="setting-item-row">
+                            <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search Bar</label>
+                            <input type="checkbox" id="show-search-bar-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show Google AI Icon</label>
+                            <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar Width</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10" value="600">
+                                <span class="range-val" id="search-bar-width-val">600px</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="setting-item-row">
-                        <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show
-                            Bookmark Folders</label>
-                        <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
+
+                    <!-- Widgets -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-cubes"></i> <span data-i18n="settings_group_widgets">Widgets</span></div>
+                        <div class="setting-item-row">
+                            <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
+                            <input type="checkbox" id="show-todo-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo Checkboxes</label>
+                            <input type="checkbox" id="todo-show-checkboxes" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show Notepad</label>
+                            <input type="checkbox" id="show-notepad-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
+                            <input type="checkbox" id="show-timer-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show Bookmarks</label>
+                            <input type="checkbox" id="show-bookmarks-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show Bookmark Folders</label>
+                            <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
+                        </div>
                     </div>
-                    <div class="setting-item-row">
-                        <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
-                            controls</label>
-                        <input type="checkbox" id="ghost-controls-checkbox">
+
+                    <!-- Music Player -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-music"></i> <span data-i18n="settings_group_music">Music Player</span></div>
+                        <div class="setting-item-row">
+                            <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
+                            <input type="checkbox" id="show-music-checkbox">
+                        </div>
+                        <div class="setting-item">
+                            <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
+                            <select id="music-style-select">
+                                <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                                <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                                <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                                <option value="apple" data-i18n="style_apple">Apple Music</option>
+                                <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                                <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                                <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                                <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                                <option value="neon" data-i18n="style_neon">Neon</option>
+                                <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                            </select>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="music-player-use-default-color-checkbox" data-i18n="settings_music_use_default_color">Use Default Music Color</label>
+                            <input type="checkbox" id="music-player-use-default-color-checkbox" checked>
+                        </div>
                     </div>
-                    <div class="setting-item" style="margin-top: 10px;">
-                        <label for="music-style-select" data-i18n="settings_music_style">Music Bar Style</label>
-                        <select id="music-style-select">
-                            <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-                            <option value="pixel" data-i18n="style_pixel">Pixel</option>
-                            <option value="spotify" data-i18n="style_spotify">Spotify</option>
-                            <option value="apple" data-i18n="style_apple">Apple Music</option>
-                            <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
-                            <option value="cassette" data-i18n="style_cassette">Cassette</option>
-                            <option value="pill" data-i18n="style_pill">Pill Widget</option>
-                            <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
-                            <option value="neon" data-i18n="style_neon">Neon</option>
-                            <option value="minimal" data-i18n="style_minimal">Minimal</option>
-                        </select>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="music-player-use-default-color-checkbox"
-                            data-i18n="settings_music_use_default_color">Use Default Music Color</label>
-                        <input type="checkbox" id="music-player-use-default-color-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full
-                            Calendar</label>
-                        <input type="checkbox" id="show-full-calendar-checkbox">
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show Lunar
-                            Calendar</label>
-                        <input type="checkbox" id="show-lunar-calendar-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show Google
-                            Apps & Avatar</label>
-                        <input type="checkbox" id="show-top-right-controls-checkbox" checked>
-                    </div>
-                    <div class="setting-item-row">
-                        <label for="show-donate-btn-checkbox" data-i18n="settings_show_donate_btn">Show Donate
-                            Button</label>
-                        <input type="checkbox" id="show-donate-btn-checkbox" checked>
+
+                    <!-- Calendar -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="settings_group_calendar">Calendar</span></div>
+                        <div class="setting-item-row">
+                            <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian Calendar</label>
+                            <input type="checkbox" id="show-gregorian-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full Calendar</label>
+                            <input type="checkbox" id="show-full-calendar-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show Lunar Calendar</label>
+                            <input type="checkbox" id="show-lunar-calendar-checkbox" checked>
+                        </div>
                     </div>
                 </div>
             </div>
