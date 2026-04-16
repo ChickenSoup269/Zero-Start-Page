@@ -64,6 +64,37 @@ function renderUserColors(DOM) {
         }
       })
       el.appendChild(removeBtn)
+
+      // Drag and drop for reordering
+      const enableDrag = settings.bookmarkEnableDrag === true
+      if (enableDrag) {
+        el.draggable = true
+        el.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", index)
+          e.dataTransfer.effectAllowed = "move"
+          el.classList.add("dragging")
+        })
+        el.addEventListener("dragover", (e) => {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = "move"
+          el.classList.add("drag-over")
+        })
+        el.addEventListener("dragleave", () => el.classList.remove("drag-over"))
+        el.addEventListener("dragend", () => el.classList.remove("dragging"))
+        el.addEventListener("drop", (e) => {
+          e.preventDefault()
+          el.classList.remove("drag-over")
+          const fromIndex = parseInt(e.dataTransfer.getData("text/plain"))
+          if (fromIndex !== index) {
+            const items = settings.userColors
+            const [movedItem] = items.splice(fromIndex, 1)
+            items.splice(index, 0, movedItem)
+            saveSettings()
+            renderUserColors(DOM)
+          }
+        })
+      }
+
       userColorsGallery.appendChild(el)
     })
   }
@@ -119,6 +150,37 @@ function renderUserAccentColors(DOM) {
         }
       })
       el.appendChild(removeBtn)
+
+      // Drag and drop for reordering
+      const enableDrag = settings.bookmarkEnableDrag === true
+      if (enableDrag) {
+        el.draggable = true
+        el.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", index)
+          e.dataTransfer.effectAllowed = "move"
+          el.classList.add("dragging")
+        })
+        el.addEventListener("dragover", (e) => {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = "move"
+          el.classList.add("drag-over")
+        })
+        el.addEventListener("dragleave", () => el.classList.remove("drag-over"))
+        el.addEventListener("dragend", () => el.classList.remove("dragging"))
+        el.addEventListener("drop", (e) => {
+          e.preventDefault()
+          el.classList.remove("drag-over")
+          const fromIndex = parseInt(e.dataTransfer.getData("text/plain"))
+          if (fromIndex !== index) {
+            const items = settings.userAccentColors
+            const [movedItem] = items.splice(fromIndex, 1)
+            items.splice(index, 0, movedItem)
+            saveSettings()
+            renderUserAccentColors(DOM)
+          }
+        })
+      }
+
       userAccentColorsGallery.appendChild(el)
     })
   }
@@ -251,6 +313,39 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         }
       })
       item.appendChild(removeBtn)
+
+      // Drag and drop for reordering
+      const enableDrag = settings.bookmarkEnableDrag === true
+      if (enableDrag) {
+        item.draggable = true
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", index)
+          e.dataTransfer.effectAllowed = "move"
+          item.classList.add("dragging")
+        })
+        item.addEventListener("dragover", (e) => {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = "move"
+          item.classList.add("drag-over")
+        })
+        item.addEventListener("dragleave", () =>
+          item.classList.remove("drag-over"),
+        )
+        item.addEventListener("dragend", () => item.classList.remove("dragging"))
+        item.addEventListener("drop", (e) => {
+          e.preventDefault()
+          item.classList.remove("drag-over")
+          const fromIndex = parseInt(e.dataTransfer.getData("text/plain"))
+          if (fromIndex !== index) {
+            const items = settings.userBackgrounds
+            const [movedItem] = items.splice(fromIndex, 1)
+            items.splice(index, 0, movedItem)
+            saveSettings()
+            renderLocalBackgrounds(DOM, handleSettingUpdate)
+          }
+        })
+      }
+
       DOM.localBackgroundGallery.appendChild(item)
     })
   }

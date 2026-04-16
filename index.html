@@ -2163,13 +2163,16 @@
                                 <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover">MacOS Hover</label>
                                 <input type="checkbox" id="bookmark-macos-hover">
                             </div>
-                            <div class="setting-item-row">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Drag & Drop</label>
-                                <input type="checkbox" id="enable-bookmark-drag">
-                            </div>
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="setting-item-row" style="margin-bottom: 5px;">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Drag & Drop</label>
+                                <input type="checkbox" id="enable-bookmark-drag">
+                            </div>
+                            <p style="font-size: 0.75rem; opacity: 0.6; margin-top: -15px; margin-bottom: 5px; padding: 0 0; line-height: 1.3;" data-i18n="settings_drag_note">
+                                (Note: This also enables reordering for your saved backgrounds, colors, and gradients by dragging them)
+                            </p>
                             <div class="setting-item no-margin-top">
                                 <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
                                 <select id="bookmark-layout" class="settings-select" style="width: 100%; margin-top: 5px;">

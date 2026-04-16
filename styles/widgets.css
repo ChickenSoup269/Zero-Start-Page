@@ -2478,7 +2478,7 @@ body.bookmark-sidebar-mode .bookmarks-grid {
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-height: 80vh;
-  overflow-y: auto;
+  overflow: visible;
   min-width: 50px;
 }
 
@@ -2511,7 +2511,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
   align-items: center;
   gap: 8px;
   z-index: 10;
-  contain: layout paint;
+  contain: layout;
 }
 
 body.bookmark-taskbar-mode .bookmarks-grid {
@@ -2524,7 +2524,7 @@ body.bookmark-taskbar-mode .bookmarks-grid {
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 90vw;
-  overflow-x: auto;
+  overflow: visible;
   min-height: 50px;
 }
 
@@ -2558,7 +2558,7 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   align-items: flex-start;
   gap: 8px;
   z-index: 100;
-  contain: layout paint;
+  contain: layout;
 }
 
 body.bookmark-taskbar-left-mode .bookmarks-grid {
@@ -2571,7 +2571,7 @@ body.bookmark-taskbar-left-mode .bookmarks-grid {
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 80vw;
-  overflow-x: auto;
+  overflow: visible;
   min-height: 50px;
 }
 
@@ -2930,7 +2930,7 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
 #hidden-bookmarks-popup.hidden-bookmarks-taskbar {
   flex-direction: row;
   max-width: 80vw;
-  overflow-x: auto;
+  overflow: visible;
   overflow-y: hidden;
 }
 

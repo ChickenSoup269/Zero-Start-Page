@@ -801,7 +801,7 @@
 
 .setting-item-row input[type="checkbox"]:checked::before {
   left: 19px;
-  background-color: #fff;
+  background-color: var(--accent-contrast-color, #fff);
   box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
@@ -1121,15 +1121,17 @@
   outline-offset: 2px;
 }
 
-.local-bg-item.active::after {
-  content: '\f058';
+.local-bg-item.active::after,
+.user-gradient-item.active::after,
+.user-color-item.active::after {
+  content: '\f00c';
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
   top: 6px;
   right: 6px;
-  color: var(--accent-color);
-  background: white;
+  color: var(--accent-contrast-color, #fff);
+  background: var(--accent-color);
   border-radius: 50%;
   width: 18px;
   height: 18px;
@@ -1178,19 +1180,19 @@
 
 .remove-bg-btn {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 26px;
-  height: 26px;
-  background: rgba(239, 68, 68, 0.9);
-  color: white;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, white);
   border: none;
-  border-radius: 0 0 0 10px;
+  border-radius: 50%;
   cursor: pointer;
   display: none;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 10px;
   transition: all 0.2s;
   z-index: 3;
 }
@@ -1217,13 +1219,15 @@
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  color: white;
+  color: var(--accent-contrast-color, white);
   pointer-events: none;
   z-index: 4;
   backdrop-filter: blur(2px);
 }
 
-.bg-select-mode .local-bg-item.user-uploaded.bg-selected .bg-select-check {
+.bg-select-mode .local-bg-item.user-uploaded.bg-selected .bg-select-check,
+.bg-select-mode .user-gradient-item.bg-selected .bg-select-check,
+.bg-select-mode .user-svg-wave-item.bg-selected .bg-select-check {
   display: flex;
 }
 
@@ -1646,8 +1650,8 @@
   position: absolute;
   top: 2px;
   right: 2px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, white);
   border: none;
   border-radius: 50%;
   width: 20px;

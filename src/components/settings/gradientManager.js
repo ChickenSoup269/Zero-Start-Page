@@ -345,6 +345,44 @@ function renderUserGradients(DOM) {
         }
       })
       item.appendChild(removeBtn)
+
+      const checkBadge = document.createElement("span")
+      checkBadge.className = "bg-select-check"
+      checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(checkBadge)
+
+      // Drag and drop for reordering
+      const enableDrag = settings.bookmarkEnableDrag === true
+      if (enableDrag) {
+        item.draggable = true
+        item.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", index)
+          e.dataTransfer.effectAllowed = "move"
+          item.classList.add("dragging")
+        })
+        item.addEventListener("dragover", (e) => {
+          e.preventDefault()
+          e.dataTransfer.dropEffect = "move"
+          item.classList.add("drag-over")
+        })
+        item.addEventListener("dragleave", () =>
+          item.classList.remove("drag-over"),
+        )
+        item.addEventListener("dragend", () => item.classList.remove("dragging"))
+        item.addEventListener("drop", (e) => {
+          e.preventDefault()
+          item.classList.remove("drag-over")
+          const fromIndex = parseInt(e.dataTransfer.getData("text/plain"))
+          if (fromIndex !== index) {
+            const items = settings.userGradients
+            const [movedItem] = items.splice(fromIndex, 1)
+            items.splice(index, 0, movedItem)
+            saveSettings()
+            renderUserGradients(DOM)
+          }
+        })
+      }
+
       DOM.userGradientsGallery.appendChild(item)
     })
   }

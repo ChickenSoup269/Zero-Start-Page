@@ -141,11 +141,18 @@ function createBookmarkIcon(bookmark) {
 
 // --- Drag and Drop State ---
 let draggedBookmarkIndex = null
+let draggedGroupIndex = null
 
 function handleDragStart(e) {
   draggedBookmarkIndex = Number(this.dataset.index)
   e.dataTransfer.effectAllowed = "move"
   // The timeout ensures the drop target is visually still clear, while the dragged shadow exists
+  setTimeout(() => this.classList.add("dragging"), 0)
+}
+
+function handleGroupDragStart(e) {
+  draggedGroupIndex = Number(this.dataset.index)
+  e.dataTransfer.effectAllowed = "move"
   setTimeout(() => this.classList.add("dragging"), 0)
 }
 
@@ -157,8 +164,14 @@ function handleDragOver(e) {
 
 function handleDragEnter(e) {
   e.preventDefault()
-  if (this.dataset.index !== String(draggedBookmarkIndex)) {
-    this.classList.add("drag-over")
+  if (this.classList.contains("bookmark")) {
+    if (this.dataset.index !== String(draggedBookmarkIndex)) {
+      this.classList.add("drag-over")
+    }
+  } else if (this.classList.contains("bookmark-group-tab")) {
+    if (this.dataset.index !== String(draggedGroupIndex)) {
+      this.classList.add("drag-over")
+    }
   }
 }
 
@@ -183,12 +196,30 @@ function handleDrop(e) {
   return false
 }
 
+function handleGroupDrop(e) {
+  e.stopPropagation()
+  e.preventDefault()
+  this.classList.remove("drag-over")
+  const targetIndex = Number(this.dataset.index)
+
+  if (draggedGroupIndex !== null && draggedGroupIndex !== targetIndex) {
+    const groups = getBookmarkGroups()
+    const [draggedItem] = groups.splice(draggedGroupIndex, 1)
+    groups.splice(targetIndex, 0, draggedItem)
+    setBookmarkGroups(groups)
+    saveBookmarks()
+    renderBookmarks()
+  }
+  return false
+}
+
 function handleDragEnd(e) {
   this.classList.remove("dragging")
   document
-    .querySelectorAll(".bookmark")
+    .querySelectorAll(".bookmark, .bookmark-group-tab")
     .forEach((el) => el.classList.remove("drag-over"))
   draggedBookmarkIndex = null
+  draggedGroupIndex = null
 }
 
 let toggleListenerAdded = false
@@ -322,6 +353,8 @@ export function updateOverflowBookmarks() {
     return
   }
 
+  container.style.overflow = "visible"
+
   const addBtn = children[children.length - 1]
   let hiddenCount = 0
   const hiddenElements = []
@@ -404,9 +437,10 @@ export function updateOverflowBookmarks() {
     const popupRect = popup.getBoundingClientRect()
 
     if (isSidebar) {
-      // Anchor to the left of the indicator
+      // Anchor to the left of the indicator, moved down slightly
       popup.style.top =
-        Math.max(20, rect.top - popupRect.height / 2 + rect.height / 2) + "px"
+        Math.max(20, rect.top - popupRect.height / 2 + rect.height / 2 + 15) +
+        "px"
 
       const isFlipped = document.body.classList.contains("flip-layout")
       if (isFlipped) {
@@ -468,11 +502,24 @@ function getGroupIcon(name) {
 function renderGroupTabs() {
   const groups = getBookmarkGroups()
   const activeId = getActiveGroupId()
+  const settings = getSettings()
+  const enableDrag = settings.bookmarkEnableDrag === true
   bookmarkGroupsContainer.innerHTML = ""
 
-  groups.forEach((group) => {
+  groups.forEach((group, index) => {
     const tab = document.createElement("div")
     tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
+    tab.dataset.index = index
+
+    if (enableDrag) {
+      tab.draggable = true
+      tab.addEventListener("dragstart", handleGroupDragStart)
+      tab.addEventListener("dragover", handleDragOver)
+      tab.addEventListener("drop", handleGroupDrop)
+      tab.addEventListener("dragenter", handleDragEnter)
+      tab.addEventListener("dragleave", handleDragLeave)
+      tab.addEventListener("dragend", handleDragEnd)
+    }
 
     // Representative Icon
     const icon = document.createElement("i")

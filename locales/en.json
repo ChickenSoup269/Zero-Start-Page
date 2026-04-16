@@ -422,6 +422,7 @@
   "settings_bookmark_shadow": "Drop Shadow",
   "settings_bookmark_shadow_blur": "Blur:",
   "settings_bookmark_enable_drag": "Enable drag & drop to reorder",
+  "settings_drag_note": "(Note: This also enables reordering for your saved backgrounds, colors, and gradients by dragging them)",
   "sidebar_toc": "Table of Contents",
   "settings_show_top_right": "Show Google Apps & Avatar",
   "g_apps_favorites": "Your favorites",
