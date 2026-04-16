@@ -317,7 +317,7 @@
 }
 
 .toc-item {
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -330,15 +330,17 @@
 }
 
 .toc-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--accent-color-rgb, 255, 255, 255), 0.1);
   color: #fff;
-  padding-left: 18px;
+  transform: translateX(4px);
 }
 
 .toc-item i {
   color: var(--accent-color);
-  width: 18px;
-  text-align: center;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
 }
 
 .close-sidebar {

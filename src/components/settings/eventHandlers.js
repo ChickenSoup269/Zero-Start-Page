@@ -366,9 +366,8 @@ export function setupGeneralEventHandlers(
           const item = document.createElement("div")
           item.className = "toc-item"
           if (isSubItem) {
-            item.style.paddingLeft = "1.5rem"
-            item.style.fontSize = "0.9rem"
-            item.style.opacity = "0.9"
+            item.style.fontSize = "0.85rem"
+            item.style.opacity = "0.8"
           }
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {

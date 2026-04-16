@@ -332,6 +332,11 @@ export function updateOverflowBookmarks() {
 
   if (!isMinimalModeMatch) {
     if (container.style.overflow) container.style.overflow = ""
+    // Show widget for default grid too
+    const bw = document.getElementById("bookmark-widget")
+    if (bw && bw.classList.contains("no-transition")) {
+      setTimeout(() => bw.classList.remove("no-transition"), 150)
+    }
     return
   }
 
@@ -437,10 +442,16 @@ export function updateOverflowBookmarks() {
     const popupRect = popup.getBoundingClientRect()
 
     if (isSidebar) {
-      // Anchor to the left of the indicator, moved down slightly
-      popup.style.top =
-        Math.max(20, rect.top - popupRect.height / 2 + rect.height / 2 + 15) +
-        "px"
+      // Align top of popup with the indicator, with a small 5px offset down
+      let top = rect.top + 5
+
+      // Responsive check: if popup exceeds viewport bottom, pull it up
+      if (top + popupRect.height > window.innerHeight - 20) {
+        top = window.innerHeight - popupRect.height - 20
+      }
+
+      // Clamping top to ensure it's never above viewport
+      popup.style.top = Math.max(20, top) + "px"
 
       const isFlipped = document.body.classList.contains("flip-layout")
       if (isFlipped) {
@@ -472,6 +483,14 @@ export function updateOverflowBookmarks() {
     // Small delay to prevent immediate trigger
     setTimeout(() => document.addEventListener("click", closePopup), 50)
   })
+
+  // Finally show the widget after calculations (prevent FOUC and jumpy positioning)
+  const bw = document.getElementById("bookmark-widget")
+  if (bw && bw.classList.contains("no-transition")) {
+    setTimeout(() => {
+      bw.classList.remove("no-transition")
+    }, 250) // Slightly longer delay to ensure everything is ready
+  }
 }
 
 function getGroupIcon(name) {
@@ -600,12 +619,8 @@ export function initBookmarks() {
     }
   })
 
-  // FOUC/Layout shift fix: remove no-transition class shortly after init
-  // Increased timeout to 500ms to allow async chrome.bookmarks.getTree to finish
-  setTimeout(() => {
-    const bw = document.getElementById("bookmark-widget")
-    if (bw) bw.classList.remove("no-transition")
-  }, 500)
+  // FOUC/Layout shift fix: no-transition class is now removed precisely
+  // at the end of updateOverflowBookmarks() after first calculation.
 }
 
 // MacOS Hover Effect

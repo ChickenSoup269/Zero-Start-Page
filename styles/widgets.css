@@ -2,7 +2,10 @@
 .search-container {
   position: relative;
   display: flex;
-  margin: 24px auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 24px;
+  margin-bottom: 24px;
   align-items: center;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -2319,6 +2322,7 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   border-radius: 0;
   width: auto !important;
   max-width: none !important;
+  transition: opacity 0.5s ease, visibility 0.5s ease !important;
 }
 
 /* Remove backgrounds from bookmarks themselves */
@@ -3062,13 +3066,14 @@ body.bookmark-sidebar-mode .bookmark-widget {
   transition:
     top 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.4s ease;
+    opacity 0.5s ease,
+    visibility 0.5s ease;
   will-change: top, transform, opacity; /* Hardware Acceleration */
 }
 
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
