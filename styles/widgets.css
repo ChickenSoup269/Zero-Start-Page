@@ -1167,9 +1167,9 @@ body.ghost-controls .side-controls:hover {
 #alarm-control-container .primary-btn {
   width: 100%;
   margin-top: 5px;
-  background: #ff3b30;
-  border-color: #ff3b30;
-  color: white;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-contrast-color, #1a1a2e);
   height: 36px;
   font-size: 0.9rem;
 }
@@ -1206,6 +1206,7 @@ body.ghost-controls .side-controls:hover {
   font-family: monospace;
   outline: none;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
 #timer-smart-input:focus {
@@ -1264,14 +1265,13 @@ body.ghost-controls .side-controls:hover {
 }
 
 .timer-expired-blink {
-  animation: timerBlink 0.5s ease-in-out infinite alternate !important;
-  background: rgba(255, 59, 48, 0.4) !important;
-  border-color: #ff3b30 !important;
+  animation: timerBlink 0.6s ease-in-out infinite alternate !important;
+  color: #fff !important;
 }
 
 @keyframes timerBlink {
-  from { opacity: 1; }
-  to { opacity: 0.7; transform: translateX(-50%) scale(1.05); }
+  from { opacity: 1; filter: brightness(1); }
+  to { opacity: 0.5; filter: brightness(2); color: #fff; }
 }
 
 /* Calendar Widget */

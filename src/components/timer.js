@@ -138,8 +138,24 @@ export class Timer {
     // Smart input handler
     const smartInput = this.container.querySelector("#timer-smart-input")
     smartInput.addEventListener("input", (e) => {
-      e.target.value = e.target.value.replace(/\D/g, "")
-      this.updateSmartInputPreview(e.target.value)
+      let val = e.target.value.replace(/\D/g, "")
+      if (val.length > 6) val = val.slice(0, 6)
+
+      // Format with colons
+      let formatted = ""
+      if (val.length > 0) {
+        if (val.length <= 2) {
+          formatted = val
+        } else if (val.length <= 4) {
+          formatted = val.slice(0, -2) + ":" + val.slice(-2)
+        } else {
+          formatted =
+            val.slice(0, -4) + ":" + val.slice(-4, -2) + ":" + val.slice(-2)
+        }
+      }
+
+      e.target.value = formatted
+      this.updateSmartInputPreview(val)
     })
 
     smartInput.addEventListener("keypress", (e) => {
@@ -333,10 +349,16 @@ export class Timer {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
-    if (short && h === 0) {
-      element.textContent = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+
+    if (h > 0) {
+      // Always show HH:MM:SS if there are hours
+      element.textContent = `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+    } else if (m > 0) {
+      // Show MM:SS if there are minutes but no hours
+      element.textContent = `${m}:${s.toString().padStart(2, "0")}`
     } else {
-      element.textContent = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`
+      // Show just SS if there are only seconds
+      element.textContent = short ? s.toString() : s.toString().padStart(2, "0")
     }
   }
 }
