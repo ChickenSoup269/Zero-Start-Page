@@ -1021,6 +1021,9 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "hacker" ? "block" : "none"
     DOM.pixelCubesColorSetting.style.display =
       settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.pixelCubesShapeSelect) {
+      DOM.pixelCubesShapeSelect.value = settings.pixelCubesShape || "cube"
+    }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
         settings.effect === "pixelWeather" ? "block" : "none"

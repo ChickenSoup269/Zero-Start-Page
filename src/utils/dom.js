@@ -228,6 +228,9 @@ export const hackerColorSetting = document.getElementById(
 export const pixelCubesColorPicker = document.getElementById(
   "pixel-cubes-color-picker",
 )
+export const pixelCubesShapeSelect = document.getElementById(
+  "pixel-cubes-shape-select",
+)
 export const pixelCubesColorSetting = document.getElementById(
   "pixel-cubes-color-setting",
 )

@@ -142,7 +142,11 @@ export function initSettings() {
     auraEffect: new AuraEffect("effect-canvas", settings.auraColor),
     windEffect: new WindEffect("effect-canvas"),
     hackerEffect: new HackerEffect("effect-canvas", settings.hackerColor),
-    pixelCubesEffect: new PixelCubes("effect-canvas", settings.pixelCubesColor),
+    pixelCubesEffect: new PixelCubes(
+      "effect-canvas",
+      settings.pixelCubesColor,
+      settings.pixelCubesShape,
+    ),
     sakuraEffect: new SakuraEffect(
       "effect-canvas",
       settings.sakuraColor || "#ffb7c5",

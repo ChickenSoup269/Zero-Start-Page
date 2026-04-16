@@ -1,18 +1,23 @@
 export class PixelCubes {
-  constructor(canvas, color = "#00ff73") {
+  constructor(canvas, color = "#00ff73", shape = "cube") {
     this.canvas =
       typeof canvas === "string" ? document.getElementById(canvas) : canvas
     if (!this.canvas) return
     this.ctx = this.canvas.getContext("2d")
     this.animationId = null
     this.cubes = []
-    this.color = color // default green
+    this.color = color
+    this.shape = shape || "cube"
     this.angleY = 0
     this.angleX = 0
   }
 
   updateColor(color) {
     this.color = color
+  }
+
+  updateShape(shape) {
+    this.shape = shape
   }
 
   resize() {
@@ -100,18 +105,7 @@ export class PixelCubes {
         let alpha = Math.max(0, Math.min(1, (1000 - z) / 800))
         this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
 
-        // Draw cube
         let s = c.size * scale
-        let v = [
-          [-1, -1, -1],
-          [1, -1, -1],
-          [1, 1, -1],
-          [-1, 1, -1],
-          [-1, -1, 1],
-          [1, -1, 1],
-          [1, 1, 1],
-          [-1, 1, 1],
-        ]
         let crx = Math.cos(c.rX),
           srx = Math.sin(c.rX)
         let cry = Math.cos(c.rY),
@@ -119,38 +113,86 @@ export class PixelCubes {
         let crz = Math.cos(c.rZ),
           srz = Math.sin(c.rZ)
 
-        let p = v.map((pt) => {
-          let x1 = pt[0] * s,
-            y1 = (pt[1] * crx - pt[2] * srx) * s,
-            z1 = (pt[1] * srx + pt[2] * crx) * s
-          let x2 = x1 * cry + z1 * sry,
-            y2 = y1
-          let x3 = x2 * crz - y2 * srz,
-            y3 = x2 * srz + y2 * crz
-          return { x: px + x3, y: py + y3 }
-        })
-
-        const faces = [
-          [0, 1, 2, 3],
-          [4, 5, 6, 7],
-          [0, 4, 7, 3],
-          [1, 5, 6, 2],
-          [0, 1, 5, 4],
-          [3, 2, 6, 7],
-        ]
-        this.ctx.beginPath()
-        for (let f of faces) {
-          this.ctx.moveTo(p[f[0]].x, p[f[0]].y)
-          for (let i = 1; i < 4; i++) this.ctx.lineTo(p[f[i]].x, p[f[i]].y)
-          this.ctx.lineTo(p[f[0]].x, p[f[0]].y)
+        if (this.shape === "circle") {
+          this.ctx.beginPath()
+          this.ctx.arc(px, py, s, 0, Math.PI * 2)
+          this.ctx.stroke()
+        } else if (this.shape === "triangle") {
+          // Pyramid vertices
+          let v = [
+            [0, -1, 0], // Top
+            [-1, 1, -1],
+            [1, 1, -1],
+            [1, 1, 1],
+            [-1, 1, 1],
+          ]
+          let p = v.map((pt) => {
+            let x1 = pt[0] * s,
+              y1 = (pt[1] * crx - pt[2] * srx) * s,
+              z1 = (pt[1] * srx + pt[2] * crx) * s
+            let x2 = x1 * cry + z1 * sry,
+              y2 = y1
+            let x3 = x2 * crz - y2 * srz,
+              y3 = x2 * srz + y2 * crz
+            return { x: px + x3, y: py + y3 }
+          })
+          const faces = [
+            [0, 1, 2],
+            [0, 2, 3],
+            [0, 3, 4],
+            [0, 4, 1],
+            [1, 2, 3, 4],
+          ]
+          this.ctx.beginPath()
+          for (let f of faces) {
+            this.ctx.moveTo(p[f[0]].x, p[f[0]].y)
+            for (let i = 1; i < f.length; i++) this.ctx.lineTo(p[f[i]].x, p[f[i]].y)
+            this.ctx.lineTo(p[f[0]].x, p[f[0]].y)
+          }
+          this.ctx.stroke()
+        } else {
+          // Cube
+          let v = [
+            [-1, -1, -1],
+            [1, -1, -1],
+            [1, 1, -1],
+            [-1, 1, -1],
+            [-1, -1, 1],
+            [1, -1, 1],
+            [1, 1, 1],
+            [-1, 1, 1],
+          ]
+          let p = v.map((pt) => {
+            let x1 = pt[0] * s,
+              y1 = (pt[1] * crx - pt[2] * srx) * s,
+              z1 = (pt[1] * srx + pt[2] * crx) * s
+            let x2 = x1 * cry + z1 * sry,
+              y2 = y1
+            let x3 = x2 * crz - y2 * srz,
+              y3 = x2 * srz + y2 * crz
+            return { x: px + x3, y: py + y3 }
+          })
+          const faces = [
+            [0, 1, 2, 3],
+            [4, 5, 6, 7],
+            [0, 4, 7, 3],
+            [1, 5, 6, 2],
+            [0, 1, 5, 4],
+            [3, 2, 6, 7],
+          ]
+          this.ctx.beginPath()
+          for (let f of faces) {
+            this.ctx.moveTo(p[f[0]].x, p[f[0]].y)
+            for (let i = 1; i < 4; i++) this.ctx.lineTo(p[f[i]].x, p[f[i]].y)
+            this.ctx.lineTo(p[f[0]].x, p[f[0]].y)
+          }
+          this.ctx.stroke()
         }
-        this.ctx.stroke()
       }
     }
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)
       this.animationId = null

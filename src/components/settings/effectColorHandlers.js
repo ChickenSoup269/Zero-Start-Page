@@ -68,6 +68,16 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
+  if (DOM.pixelCubesShapeSelect) {
+    DOM.pixelCubesShapeSelect.addEventListener("change", () => {
+      updateSetting("pixelCubesShape", DOM.pixelCubesShapeSelect.value)
+      saveSettings()
+      if (effectInstances.pixelCubesEffect) {
+        effectInstances.pixelCubesEffect.updateShape(DOM.pixelCubesShapeSelect.value)
+      }
+    })
+  }
+
   if (DOM.jellyfishColorPicker) {
     DOM.jellyfishColorPicker.addEventListener("input", () => {
       updateSetting("jellyfishColor", DOM.jellyfishColorPicker.value)

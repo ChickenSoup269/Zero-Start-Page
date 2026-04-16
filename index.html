@@ -1260,11 +1260,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-meteor"></i></span>
                             <span class="effect-name" data-i18n="effect_meteor">Meteor Shower</span>
                         </button>
-
-                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 15px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
-                            <i class="fa-solid fa-image"></i>
-                            <span data-i18n="effect_background_header">Background Effects (Has Background)</span>
-                        </div>
                         <button class="effect-item" data-value="aura" data-search="aura gradient glow">
                             <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
                             <span class="effect-name" data-i18n="effect_aura">Aura</span>
@@ -1272,15 +1267,6 @@
                         <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
                             <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
                             <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
-                        </button>
-                        <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
-                            <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
-                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
-                        </button>
-                        <button class="effect-item" data-value="northernLights"
-                            data-search="northern lights aurora borealis waves">
-                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
-                            <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
                         </button>
                         <button class="effect-item" data-value="gridScan"
                             data-search="grid scan matrix retro tech radar">
@@ -1303,16 +1289,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
                             <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
                         </button>
-                        <button class="effect-item" data-value="pixelRun"
-                            data-search="pixel run square particles matrix retro">
-                            <span class="effect-icon"><i class="fa-solid fa-grip"></i></span>
-                            <span class="effect-name" data-i18n="effect_pixel_run">Pixel Run</span>
-                        </button>
-                        <button class="effect-item" data-value="nintendoPixel"
-                            data-search="retro terminal crt monitor phosphor command line pixel scanline">
-                            <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
-                            <span class="effect-name" data-i18n="effect_nintendo_pixel">Retro Terminal</span>
-                        </button>
                         <button class="effect-item" data-value="crtScanlines"
                             data-search="crt scanline terminal 80s 90s monitor refresh sweep phosphor">
                             <span class="effect-icon"><i class="fa-solid fa-tv"></i></span>
@@ -1332,6 +1308,30 @@
                             data-search="angled pattern diamond tile stripe animated css">
                             <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
                             <span class="effect-name" data-i18n="effect_angled_pattern">Angled Pattern</span>
+                        </button>
+
+                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 15px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
+                            <i class="fa-solid fa-image"></i>
+                            <span data-i18n="effect_background_header">Background Effects (Has Background)</span>
+                        </div>
+                        <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
+                            <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
+                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
+                        </button>
+                        <button class="effect-item" data-value="northernLights"
+                            data-search="northern lights aurora borealis waves">
+                            <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                            <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
+                        </button>
+                        <button class="effect-item" data-value="pixelRun"
+                            data-search="pixel run square particles matrix retro">
+                            <span class="effect-icon"><i class="fa-solid fa-grip"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixel_run">Pixel Run</span>
+                        </button>
+                        <button class="effect-item" data-value="nintendoPixel"
+                            data-search="retro terminal crt monitor phosphor command line pixel scanline">
+                            <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
+                            <span class="effect-name" data-i18n="effect_nintendo_pixel">Retro Terminal</span>
                         </button>
                     </div>
 
@@ -1358,6 +1358,14 @@
                         <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes
                             Color</label>
                         <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
+
+                        <label for="pixel-cubes-shape-select" style="margin-top: 10px; display: block;"
+                            data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
+                        <select id="pixel-cubes-shape-select" style="width: 100%;">
+                            <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
+                            <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)</option>
+                            <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
+                        </select>
                     </div>
 
                     <!-- Pixel Weather Settings -->
