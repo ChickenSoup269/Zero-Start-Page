@@ -1065,6 +1065,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.jellyfishColorSetting.style.display =
         settings.effect === "jellyfish" ? "block" : "none"
     }
+    if (DOM.jellyfishTypeSelect) {
+      DOM.jellyfishTypeSelect.value = settings.jellyfishType || "jellyfish"
+    }
     DOM.sakuraColorSetting.style.display =
       settings.effect === "sakura" ? "block" : "none"
     DOM.snowfallColorSetting.style.display =

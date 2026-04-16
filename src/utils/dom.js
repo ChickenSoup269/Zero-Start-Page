@@ -237,6 +237,9 @@ export const pixelCubesColorSetting = document.getElementById(
 export const jellyfishColorPicker = document.getElementById(
   "jellyfish-color-picker",
 )
+export const jellyfishTypeSelect = document.getElementById(
+  "jellyfish-type-select",
+)
 export const jellyfishColorSetting = document.getElementById(
   "jellyfish-color-setting",
 )

@@ -265,6 +265,7 @@ export function initSettings() {
     jellyfishEffect: new Jellyfish(
       "effect-canvas",
       settings.jellyfishColor || "#ffaa00",
+      settings.jellyfishType || "jellyfish",
     ),
     svgWaveEffect: new SvgWaveGenerator(),
   }

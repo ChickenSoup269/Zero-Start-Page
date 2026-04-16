@@ -1,11 +1,12 @@
 export class Jellyfish {
-  constructor(canvasId, color = "#a050ff", numTentacles = 10, size = 38) {
+  constructor(canvasId, color = "#a050ff", type = "jellyfish", numTentacles = 10, size = 38) {
     this.canvas =
       typeof canvasId === "string"
         ? document.getElementById(canvasId)
         : canvasId
     this.ctx = this.canvas.getContext("2d")
     this.color = color
+    this.type = type || "jellyfish"
     this.numTentacles = numTentacles
     this.baseSize = size
 
@@ -26,13 +27,7 @@ export class Jellyfish {
     this.running = false
 
     this.tentacles = []
-    for (let t = 0; t < this.numTentacles; t++) {
-      const segs = []
-      for (let i = 0; i < this.SEG; i++) {
-        segs.push({ x: this.head.x, y: this.head.y })
-      }
-      this.tentacles.push({ segs, phase: Math.random() * Math.PI * 2 })
-    }
+    this._initTentacles()
 
     this.bubbles = []
     for (let i = 0; i < 30; i++) {
@@ -50,6 +45,17 @@ export class Jellyfish {
     this.animate = this.animate.bind(this)
   }
 
+  _initTentacles() {
+    this.tentacles = []
+    for (let t = 0; t < this.numTentacles; t++) {
+      const segs = []
+      for (let i = 0; i < this.SEG; i++) {
+        segs.push({ x: this.head.x, y: this.head.y })
+      }
+      this.tentacles.push({ segs, phase: Math.random() * Math.PI * 2 })
+    }
+  }
+
   start() {
     if (this.running) return
     this.running = true
@@ -61,9 +67,9 @@ export class Jellyfish {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.running = false
     if (this.animationId) cancelAnimationFrame(this.animationId)
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     window.removeEventListener("mousemove", this.handleMouseMove)
     window.removeEventListener("resize", this.handleResize)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -71,6 +77,11 @@ export class Jellyfish {
 
   updateColor(color) {
     this.color = color
+  }
+
+  updateType(type) {
+    this.type = type
+    this._initTentacles()
   }
 
   handleMouseMove(e) {
@@ -131,16 +142,23 @@ export class Jellyfish {
 
     const bobY = Math.sin(this.bobT) * 4
     const pulse = Math.sin(this.pulseT)
-    const bellW = this.baseSize + pulse * 6
-    const bellH = this.baseSize * 0.74 + pulse * 3
-
+    
     const cx = this.head.x
     const cy = this.head.y + bobY
 
     this._drawBubbles()
-    this._updateTentacles(cx, cy, bellW, bellH)
-    this._drawTentacles()
-    this._drawBell(ctx, cx, cy, bellW, bellH, pulse)
+
+    if (this.type === "turtle") {
+      this._drawTurtle(ctx, cx, cy, pulse)
+    } else if (this.type === "manta") {
+      this._drawManta(ctx, cx, cy, pulse)
+    } else {
+      const bellW = this.baseSize + pulse * 6
+      const bellH = this.baseSize * 0.74 + pulse * 3
+      this._updateTentacles(cx, cy, bellW, bellH)
+      this._drawTentacles()
+      this._drawBell(ctx, cx, cy, bellW, bellH, pulse)
+    }
 
     this.animationId = this._animId = requestAnimationFrame(this.animate)
   }
@@ -159,6 +177,116 @@ export class Jellyfish {
       ctx.lineWidth = 0.5
       ctx.stroke()
     }
+  }
+
+  _drawTurtle(ctx, cx, cy, pulse) {
+    const s = this.baseSize * 1.2
+    const angle = Math.atan2(this.vel.y, this.vel.x + 0.001)
+    
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.rotate(angle)
+
+    const baseColor = this.color || "#4caf50"
+    
+    // Fins movement
+    const finAngle = Math.sin(this.pulseT) * 0.4
+
+    // Back fins
+    ctx.fillStyle = baseColor
+    ctx.globalAlpha = 0.6
+    // Left back
+    ctx.save()
+    ctx.translate(-s*0.4, s*0.3)
+    ctx.rotate(-0.5 + finAngle*0.5)
+    ctx.beginPath(); ctx.ellipse(0, 0, s*0.3, s*0.15, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+    // Right back
+    ctx.save()
+    ctx.translate(-s*0.4, -s*0.3)
+    ctx.rotate(0.5 - finAngle*0.5)
+    ctx.beginPath(); ctx.ellipse(0, 0, s*0.3, s*0.15, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+
+    // Front fins
+    ctx.globalAlpha = 0.8
+    // Left front
+    ctx.save()
+    ctx.translate(s*0.2, s*0.5)
+    ctx.rotate(-0.2 + finAngle)
+    ctx.beginPath(); ctx.ellipse(0, 0, s*0.5, s*0.2, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+    // Right front
+    ctx.save()
+    ctx.translate(s*0.2, -s*0.5)
+    ctx.rotate(0.2 - finAngle)
+    ctx.beginPath(); ctx.ellipse(0, 0, s*0.5, s*0.2, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+
+    // Head
+    ctx.globalAlpha = 0.9
+    ctx.beginPath()
+    ctx.ellipse(s*0.7, 0, s*0.25, s*0.2, 0, 0, Math.PI*2)
+    ctx.fill()
+
+    // Shell
+    ctx.globalAlpha = 1
+    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, s*0.8)
+    grad.addColorStop(0, baseColor)
+    grad.addColorStop(1, "rgba(0,0,0,0.3)")
+    ctx.fillStyle = grad
+    ctx.beginPath()
+    ctx.ellipse(0, 0, s*0.7, s*0.55, 0, 0, Math.PI*2)
+    ctx.fill()
+    ctx.strokeStyle = "rgba(255,255,255,0.2)"
+    ctx.lineWidth = 2
+    ctx.stroke()
+
+    ctx.restore()
+  }
+
+  _drawManta(ctx, cx, cy, pulse) {
+    const s = this.baseSize * 1.5
+    const angle = Math.atan2(this.vel.y, this.vel.x + 0.001)
+    
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.rotate(angle)
+
+    const baseColor = this.color || "#5c6bc0"
+    const wingWave = Math.sin(this.pulseT) * s * 0.3
+
+    // Tail
+    ctx.strokeStyle = baseColor
+    ctx.lineWidth = 2
+    ctx.globalAlpha = 0.5
+    ctx.beginPath()
+    ctx.moveTo(-s*0.5, 0)
+    ctx.quadraticCurveTo(-s*1.2, Math.sin(this.pulseT)*10, -s*2, 0)
+    ctx.stroke()
+
+    // Body/Wings
+    ctx.globalAlpha = 0.8
+    const grad = ctx.createLinearGradient(-s, 0, s, 0)
+    grad.addColorStop(0, "rgba(0,0,0,0.2)")
+    grad.addColorStop(0.5, baseColor)
+    grad.addColorStop(1, "rgba(255,255,255,0.1)")
+    ctx.fillStyle = grad
+
+    ctx.beginPath()
+    ctx.moveTo(s*0.6, 0) // nose
+    ctx.bezierCurveTo(s*0.4, wingWave, -s*0.2, s + wingWave, -s*0.5, s*0.2) // left wing
+    ctx.bezierCurveTo(-s*0.7, 0, -s*0.7, 0, -s*0.5, -s*0.2) // back
+    ctx.bezierCurveTo(-s*0.2, -s - wingWave, s*0.4, -wingWave, s*0.6, 0) // right wing
+    ctx.fill()
+
+    // Cephalic fins (horns)
+    ctx.beginPath()
+    ctx.ellipse(s*0.55, s*0.15, s*0.1, s*0.05, 0.4, 0, Math.PI*2)
+    ctx.ellipse(s*0.55, -s*0.15, s*0.1, s*0.05, -0.4, 0, Math.PI*2)
+    ctx.fill()
+
+    ctx.restore()
   }
 
   _updateTentacles(cx, cy, bellW, bellH) {

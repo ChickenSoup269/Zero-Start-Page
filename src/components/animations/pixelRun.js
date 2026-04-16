@@ -1,64 +1,45 @@
 /**
- * PixelRunEffect — Retro 8-bit side-scroller nostalgia scene
- * Inspired by NES/Famicom era games (Mario, Contra, Megaman, Castlevania…)
- * Pixel size is adaptive: S = Math.max(2, floor(min(W,H)/240))
+ * PixelRunEffect — Premium 8-bit side-scroller nostalgic scene
+ * Improved with parallax layers, dynamic lighting, and richer pixel art.
  */
 export class PixelRunEffect {
   constructor(canvasId, color = "#00e5ff") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
-    this.color = color // used as accent / tint, can be overridden from settings
+    this.color = color
 
-    // Timing
     this.fps = 30
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
-    this.tick = 0 // logical frame counter
+    this.tick = 0
 
-    // Scene objects
     this.clouds = []
+    this.mountains = []
     this.coins = []
     this.stars = []
     this.heroes = []
     this.enemies = []
     this.platforms = []
-    this.particles = [] // coin-collect sparkles
+    this.particles = []
 
     this.resize()
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
   }
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-
   get S() {
     return Math.max(
       2,
-      Math.floor(Math.min(this.canvas.width, this.canvas.height) / 240),
+      Math.floor(Math.min(this.canvas.width, this.canvas.height) / 220),
     )
   }
 
-  _rgb(hex) {
-    const c = (hex || this.color).replace("#", "")
-    if (c.length === 3)
-      return {
-        r: parseInt(c[0] + c[0], 16),
-        g: parseInt(c[1] + c[1], 16),
-        b: parseInt(c[2] + c[2], 16),
-      }
-    return {
-      r: parseInt(c.slice(0, 2), 16),
-      g: parseInt(c.slice(2, 4), 16),
-      b: parseInt(c.slice(4, 6), 16),
-    }
-  }
-
-  // Draw a pixel grid from a 2-D array of css color strings ('' = transparent)
-  _drawSprite(sprite, x, y, s, flipX = false) {
+  _drawSprite(sprite, x, y, s, flipX = false, alpha = 1) {
     const ctx = this.ctx
     const rows = sprite.length
     const cols = sprite[0].length
+    ctx.globalAlpha = alpha
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const color = sprite[r][flipX ? cols - 1 - c : c]
@@ -67,262 +48,145 @@ export class PixelRunEffect {
         ctx.fillRect(Math.round(x + c * s), Math.round(y + r * s), s, s)
       }
     }
-  }
-
-  // ─── Sprite definitions (NES palette approximations) ──────────────────────
-
-  // Classic plumber – 8×12 px grid, two walk frames
-  get _heroFrames() {
-    const _ = ""
-    const R = "#e52222",
-      S = "#f5a623",
-      W = "#fff",
-      B = "#3d1c02",
-      bl = "#1a1aff",
-      br = "#8B4513"
-    const frame0 = [
-      [_, _, R, R, R, R, _, _],
-      [_, R, R, R, R, R, R, _],
-      [_, B, S, B, B, S, _, _],
-      [B, S, B, S, S, B, S, B],
-      [B, S, S, S, S, S, S, B],
-      [B, S, S, S, S, S, S, _],
-      [_, _, R, R, R, _, _, _],
-      [_, R, R, bl, bl, R, R, _],
-      [R, R, bl, bl, bl, bl, R, R],
-      [br, br, _, bl, bl, _, br, br],
-      [br, br, br, _, _, br, br, br],
-      [_, br, br, _, _, _, br, _],
-    ]
-    const frame1 = [
-      [_, _, R, R, R, R, _, _],
-      [_, R, R, R, R, R, R, _],
-      [_, B, S, B, B, S, _, _],
-      [B, S, B, S, S, B, S, B],
-      [B, S, S, S, S, S, S, B],
-      [B, S, S, S, S, S, S, _],
-      [_, _, R, R, R, _, _, _],
-      [_, R, R, bl, bl, R, R, _],
-      [R, R, bl, bl, bl, bl, R, R],
-      [_, br, _, bl, bl, _, br, br],
-      [br, br, br, _, _, br, br, _],
-      [br, _, br, _, _, _, _, br],
-    ]
-    return [frame0, frame1]
-  }
-
-  // Goomba-style enemy – 8×8 grid, two frames
-  get _enemyFrames() {
-    const _ = ""
-    const B = "#3d1c02",
-      R = "#8B0000",
-      S = "#c06000",
-      W = "#fff",
-      Y = "#f0e040"
-    const frame0 = [
-      [_, B, B, B, B, B, B, _],
-      [B, B, R, B, B, R, B, B],
-      [B, B, B, B, B, B, B, B],
-      [B, S, S, S, S, S, S, B],
-      [B, S, B, S, S, B, S, B],
-      [_, B, S, S, S, S, B, _],
-      [_, B, B, _, _, B, B, _],
-      [_, B, _, _, _, _, B, _],
-    ]
-    const frame1 = [
-      [_, B, B, B, B, B, B, _],
-      [B, B, R, B, B, R, B, B],
-      [B, B, B, B, B, B, B, B],
-      [B, S, S, S, S, S, S, B],
-      [B, S, B, S, S, B, S, B],
-      [_, B, S, S, S, S, B, _],
-      [_, B, B, _, _, B, B, _],
-      [B, _, B, _, _, B, _, B],
-    ]
-    return [frame0, frame1]
-  }
-
-  // Coin – 4×6 grid (animates shine)
-  _coinFrames() {
-    const _ = ""
-    const Y = "#f5d800",
-      W = "#fff",
-      G = "#d4a000"
-    return [
-      [
-        [_, Y, Y, _],
-        [Y, W, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, G, Y],
-        [_, Y, Y, _],
-      ],
-      [
-        [_, Y, Y, _],
-        [Y, Y, W, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, G, Y, Y],
-        [_, Y, Y, _],
-      ],
-      [
-        [_, Y, W, _],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [_, Y, Y, _],
-      ],
-      [
-        [_, W, Y, _],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [Y, Y, Y, Y],
-        [_, Y, Y, _],
-      ],
-    ]
-  }
-
-  // Pixel cloud – drawn procedurally from a bitmap
-  _drawCloud(x, y, s, alpha) {
-    const _ = ""
-    const W = "#fff",
-      C = "#ddeeff"
-    const cloud = [
-      [_, _, W, W, W, _, _, _],
-      [_, W, W, W, W, W, _, _],
-      [W, W, C, W, W, W, W, _],
-      [W, W, W, W, W, W, W, W],
-      [_, W, W, W, W, W, W, _],
-      [_, _, W, W, W, _, _, _],
-    ]
-    this.ctx.globalAlpha = alpha
-    this._drawSprite(cloud, x, y, s)
-    this.ctx.globalAlpha = 1
-  }
-
-  // 4×4 sparkle for coin collect
-  _drawSparkle(x, y, s, age, totalLife) {
-    const progress = age / totalLife
-    const alpha = 1 - progress
-    const spread = s * 3 * progress
-    const ctx = this.ctx
-    ctx.globalAlpha = alpha
-    ctx.fillStyle = "#f5d800"
-    const offsets = [
-      [-1, -1],
-      [1, -1],
-      [-1, 1],
-      [1, 1],
-      [0, -1.5],
-      [0, 1.5],
-      [-1.5, 0],
-      [1.5, 0],
-    ]
-    for (const [ox, oy] of offsets) {
-      ctx.fillRect(
-        Math.round(x + ox * spread),
-        Math.round(y + oy * spread),
-        s,
-        s,
-      )
-    }
     ctx.globalAlpha = 1
   }
 
-  // Pixel star (background)
-  _drawStar(x, y, s, bright) {
-    this.ctx.globalAlpha = bright ? 1 : 0.4
-    this.ctx.fillStyle = bright ? "#fff" : "#aac"
-    this.ctx.fillRect(x, y, s, s)
-    this.ctx.globalAlpha = 1
+  // ─── Sprites (Improved Palettes) ──────────────────────────────────────────
+
+  get _heroFrames() {
+    const _ = ""
+    const R = "#FF3D3D", // Red
+      S = "#FFD1A4", // Skin
+      W = "#FFFFFF", // White
+      B = "#1A1A1A", // Black/Outline
+      bl = "#4D4DFF", // Blue
+      br = "#7A4419" // Brown
+    
+    // Frame 0: Neutral / Start Walk
+    const f0 = [
+      [_, _, B, B, B, B, _, _],
+      [_, B, R, R, R, R, B, _],
+      [_, B, R, R, R, R, R, B],
+      [_, B, S, B, S, S, S, B],
+      [B, S, B, S, S, B, S, B],
+      [B, S, S, S, S, S, S, B],
+      [_, B, S, S, S, S, B, _],
+      [_, _, B, R, R, B, _, _],
+      [_, B, R, bl, bl, R, B, _],
+      [B, R, bl, bl, bl, bl, R, B],
+      [B, B, B, bl, bl, B, B, B],
+      [_, _, br, br, br, br, _, _],
+    ]
+    // Frame 1: Mid Walk
+    const f1 = [
+      [_, _, B, B, B, B, _, _],
+      [_, B, R, R, R, R, B, _],
+      [_, B, R, R, R, R, R, B],
+      [_, B, S, B, S, S, S, B],
+      [B, S, B, S, S, B, S, B],
+      [B, S, S, S, S, S, S, B],
+      [_, B, S, S, S, S, B, _],
+      [_, _, B, R, R, B, _, _],
+      [_, B, R, bl, bl, R, B, _],
+      [_, B, bl, bl, bl, bl, B, _],
+      [_, B, bl, B, B, bl, B, _],
+      [_, br, br, _, _, br, br, _],
+    ]
+    return [f0, f1]
   }
 
-  // Ground tile row (brick / ground)
+  get _enemyFrames() {
+    const _ = ""
+    const B = "#2D1B00", // Dark Brown
+      R = "#FF0000", // Eyes
+      S = "#D2691E", // Skin
+      W = "#FFFFFF"
+    const f0 = [
+      [_, _, B, B, B, B, _, _],
+      [_, B, S, S, S, S, B, _],
+      [B, S, S, S, S, S, S, B],
+      [B, S, W, S, S, W, S, B],
+      [B, S, R, S, S, R, S, B],
+      [B, S, S, S, S, S, S, B],
+      [_, B, B, B, B, B, B, _],
+      [_, B, B, _, _, B, B, _],
+    ]
+    const f1 = [
+      [_, _, B, B, B, B, _, _],
+      [_, B, S, S, S, S, B, _],
+      [B, S, S, S, S, S, S, B],
+      [B, S, W, S, S, W, S, B],
+      [B, S, R, S, S, R, S, B],
+      [B, S, S, S, S, S, S, B],
+      [_, B, B, B, B, B, B, _],
+      [B, B, _, _, _, _, B, B],
+    ]
+    return [f0, f1]
+  }
+
+  _coinFrames() {
+    const _ = ""
+    const Y = "#FFD700", W = "#FFF", G = "#B8860B"
+    return [
+      [[_,Y,Y,_],[Y,W,Y,Y],[Y,Y,Y,Y],[Y,Y,G,Y],[_,Y,Y,_]],
+      [[_,Y,Y,_],[Y,Y,W,Y],[Y,Y,Y,Y],[Y,G,Y,Y],[_,Y,Y,_]],
+      [[_,Y,W,_],[Y,Y,Y,Y],[Y,Y,Y,Y],[Y,Y,Y,Y],[_,Y,Y,_]],
+      [[_,W,Y,_],[Y,Y,Y,Y],[Y,Y,Y,Y],[Y,Y,Y,Y],[_,Y,Y,_]]
+    ]
+  }
+
+  // ─── Procedural Backgrounds ───────────────────────────────────────────────
+
+  _drawMountains(s) {
+    const ctx = this.ctx
+    const W = this.canvas.width
+    const H = this.canvas.height
+    const groundY = H - s * 4
+
+    for (const m of this.mountains) {
+      ctx.fillStyle = m.color
+      ctx.beginPath()
+      ctx.moveTo(m.x, groundY)
+      ctx.lineTo(m.x + m.w / 2, groundY - m.h)
+      ctx.lineTo(m.x + m.w, groundY)
+      ctx.fill()
+      
+      // Shadow side
+      ctx.fillStyle = "rgba(0,0,0,0.15)"
+      ctx.beginPath()
+      ctx.moveTo(m.x + m.w / 2, groundY - m.h)
+      ctx.lineTo(m.x + m.w, groundY)
+      ctx.lineTo(m.x + m.w / 2, groundY)
+      ctx.fill()
+    }
+  }
+
   _drawGround(s) {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
     const groundY = H - s * 4
-    const tileW = s * 4
+    
+    // Deep Ground
+    ctx.fillStyle = "#3d251e"
+    ctx.fillRect(0, groundY + s, W, H - groundY)
 
-    // Ground fill
-    ctx.fillStyle = "#6b3d0b"
-    ctx.fillRect(0, groundY + s, W, H - groundY - s)
-
-    // Top grass strip
-    ctx.fillStyle = "#228b22"
+    // Grass Top
+    ctx.fillStyle = "#38b000"
     ctx.fillRect(0, groundY, W, s)
+    ctx.fillStyle = "#008000"
+    ctx.fillRect(0, groundY + s*0.5, W, s*0.5)
 
-    // Brick pattern
-    ctx.fillStyle = "#8B4513"
-    for (let bx = 0; bx < W; bx += tileW) {
-      for (let by = groundY + s; by < H; by += s * 2) {
-        ctx.fillRect(bx, by, tileW - 1, s * 2 - 1)
+    // Dirt details
+    ctx.fillStyle = "#2b1712"
+    for (let x = 0; x < W; x += s * 8) {
+      for (let y = groundY + s * 2; y < H; y += s * 4) {
+        ctx.fillRect(x + (y%s*2), y, s*2, s)
       }
     }
-    // Offset row
-    ctx.fillStyle = "#7a3b10"
-    for (let bx = -tileW / 2; bx < W; bx += tileW) {
-      for (let by = groundY + s * 3; by < H; by += s * 4) {
-        ctx.fillRect(bx, by, tileW - 1, s * 2 - 1)
-      }
-    }
-    // Grass blades
-    ctx.fillStyle = "#1a7a1a"
-    for (let gx = 0; gx < W; gx += s * 2) {
-      ctx.fillRect(gx, groundY - s, s, s)
-    }
-    for (let gx = s; gx < W; gx += s * 4) {
-      ctx.fillRect(gx, groundY - s * 2, s, s * 2)
-    }
   }
 
-  // Question-block / brick block
-  _drawBlock(x, y, s, type = "Q") {
-    const ctx = this.ctx
-    if (type === "Q") {
-      ctx.fillStyle = "#f5a623"
-      ctx.fillRect(x, y, s * 4, s * 4)
-      ctx.fillStyle = "#3d1c02"
-      ctx.fillRect(x, y, s * 4, s) // top border
-      ctx.fillRect(x, y + s * 3, s * 4, s) // bottom border
-      ctx.fillRect(x, y, s, s * 4) // left border
-      ctx.fillRect(x + s * 3, y, s, s * 4) // right border
-      // "?" symbol
-      ctx.fillStyle = "#fff"
-      ctx.fillRect(x + s * 1.5, y + s, s, s)
-      ctx.fillRect(x + s * 1.5, y + s * 2, s, s)
-    } else {
-      ctx.fillStyle = "#8B4513"
-      ctx.fillRect(x, y, s * 4, s * 4)
-      ctx.fillStyle = "#6b3300"
-      ctx.fillRect(x, y, s * 4, s)
-      ctx.fillRect(x, y, s, s * 4)
-    }
-  }
-
-  // Pixel bush / shrub
-  _drawBush(x, y, s, alpha = 0.85) {
-    const _ = ""
-    const G = "#228b22",
-      L = "#1a6a1a",
-      H = "#33aa33"
-    const bush = [
-      [_, _, G, G, G, _, _, _, _, _],
-      [_, G, H, G, G, H, G, _, _, _],
-      [G, G, G, H, G, G, G, G, _, _],
-      [G, L, G, G, G, L, G, G, G, _],
-      [_, G, G, G, G, G, G, G, G, _],
-      [_, _, L, G, L, G, L, G, _, _],
-    ]
-    this.ctx.globalAlpha = alpha
-    this._drawSprite(bush, x, y, s)
-    this.ctx.globalAlpha = 1
-  }
-
-  // ─── Scene initialization ─────────────────────────────────────────────────
+  // ─── Scene Init ───────────────────────────────────────────────────────────
 
   resize() {
     this.canvas.width = window.innerWidth
@@ -331,362 +195,234 @@ export class PixelRunEffect {
   }
 
   _initScene() {
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const s = this.S
-
+    const W = this.canvas.width, H = this.canvas.height, s = this.S
     const groundY = H - s * 4
 
-    // Stars (background layer)
+    // Mountains (Far Parallax)
+    this.mountains = []
+    for(let i=0; i<8; i++) {
+      this.mountains.push({
+        x: Math.random() * W * 2,
+        w: 200 + Math.random() * 400,
+        h: 100 + Math.random() * 200,
+        speed: 0.05 + Math.random() * 0.1,
+        color: i % 2 === 0 ? "#1a2a4a" : "#14213d"
+      })
+    }
+
     this.stars = []
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 80; i++) {
       this.stars.push({
         x: Math.random() * W,
-        y: Math.random() * (H * 0.55),
+        y: Math.random() * (H * 0.6),
         bright: Math.random() < 0.3,
-        twinkleOffset: Math.random() * 60,
+        twinkle: Math.random() * 60
       })
     }
 
-    // Clouds
     this.clouds = []
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       this.clouds.push({
         x: Math.random() * W,
-        y: s * 4 + Math.random() * (H * 0.25),
-        speed: 0.2 + Math.random() * 0.3,
-        size: s * (1 + Math.floor(Math.random() * 2)),
-        alpha: 0.55 + Math.random() * 0.35,
+        y: H * 0.1 + Math.random() * H * 0.2,
+        speed: 0.3 + Math.random() * 0.4,
+        size: s * (2 + Math.random() * 2),
+        alpha: 0.4 + Math.random() * 0.3
       })
     }
 
-    // Platforms
     this.platforms = []
-    const numP = Math.floor(W / (s * 60)) + 3
-    for (let i = 0; i < numP; i++) {
+    for (let i = 0; i < Math.floor(W / 300); i++) {
       this.platforms.push({
-        x: s * 20 + i * (s * 55 + Math.random() * s * 30),
-        y: groundY - s * (8 + Math.floor(Math.random() * 8)),
-        type: Math.random() < 0.5 ? "Q" : "B",
-        hit: false,
-        hitAnim: 0,
+        x: 100 + i * 400 + Math.random() * 100,
+        y: groundY - s * (10 + Math.random() * 8),
+        type: Math.random() < 0.4 ? "Q" : "B"
       })
     }
 
-    // Coins (floating above platforms or in air)
     this.coins = []
-    for (let i = 0; i < 12; i++) {
-      const attachedToPlatform = i < this.platforms.length
-      const px = attachedToPlatform
-        ? this.platforms[i].x + s * 2
-        : s * 30 + Math.random() * W
-      const py = attachedToPlatform
-        ? this.platforms[i].y - s * 6
-        : groundY - s * (12 + Math.random() * 10)
-      this.coins.push({
-        x: px,
-        y: py,
-        frame: Math.floor(Math.random() * 4),
-        frameTimer: 0,
-        collected: false,
-        floatOffset: Math.random() * Math.PI * 2,
-      })
-    }
+    this.platforms.forEach(p => {
+      this.coins.push({ x: p.x + s*2, y: p.y - s*10, frame: 0, timer: 0, collected: false })
+    })
 
-    // Heroes
-    this.heroes = []
-    const numHeroes = Math.max(1, Math.floor(W / 600))
-    for (let i = 0; i < numHeroes; i++) {
-      this.heroes.push(
-        this._createHero(i * (W / numHeroes) + Math.random() * 100),
-      )
-    }
-
-    // Enemies
+    this.heroes = [this._createHero(100)]
     this.enemies = []
-    const numEnemies = Math.max(2, Math.floor(W / 400))
-    for (let i = 0; i < numEnemies; i++) {
+    for(let i=0; i<3; i++) {
       this.enemies.push({
-        x: 200 + i * (W / numEnemies) + Math.random() * 100,
+        x: W * 0.5 + Math.random() * W,
         y: groundY - s * 8,
-        speed: -(0.6 + Math.random() * 0.5),
-        frame: 0,
-        frameTimer: 0,
-        flipX: true,
+        speed: -(0.8 + Math.random() * 0.7),
+        frame: 0, timer: 0
       })
     }
-
     this.particles = []
   }
 
   _createHero(startX) {
-    const s = this.S
-    const H = this.canvas.height
-    const groundY = H - s * 4
+    const s = this.S, H = this.canvas.height, gY = H - s*4
     return {
-      x: startX || -s * 10,
-      y: groundY - s * 12,
-      speed: 1.2 + Math.random() * 0.6,
-      frame: 0,
-      frameTimer: 0,
-      jumping: false,
-      jumpVy: 0,
-      jumpY: groundY - s * 12,
-      jumpTimer: 0,
-      nextJump: 60 + Math.floor(Math.random() * 120),
+      x: startX, y: gY - s*12, speed: 2 + Math.random(),
+      frame: 0, timer: 0, jumping: false, vy: 0,
+      trail: []
     }
-  }
-
-  // ─── Update logic ─────────────────────────────────────────────────────────
-
-  _update() {
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const s = this.S
-    const groundY = H - s * 4
-
-    this.tick++
-
-    // Clouds scroll
-    for (const c of this.clouds) {
-      c.x -= c.speed
-      if (c.x + s * 8 < 0) c.x = W + s * 8
-    }
-
-    // Coin animation
-    for (const coin of this.coins) {
-      if (coin.collected) continue
-      coin.frameTimer++
-      if (coin.frameTimer >= 5) {
-        coin.frameTimer = 0
-        coin.frame = (coin.frame + 1) % 4
-      }
-      coin.floatOffset += 0.04
-      coin.y += Math.sin(coin.floatOffset) * 0.4
-    }
-
-    // Heroes
-    for (const h of this.heroes) {
-      h.x += h.speed
-      h.frameTimer++
-      if (h.frameTimer >= 8) {
-        h.frameTimer = 0
-        h.frame = (h.frame + 1) % 2
-      }
-
-      // Trigger jump
-      h.jumpTimer++
-      if (!h.jumping && h.jumpTimer >= h.nextJump) {
-        h.jumping = true
-        h.jumpVy = -(s * 4.5)
-        h.jumpY = h.y
-        h.jumpTimer = 0
-        h.nextJump = 80 + Math.floor(Math.random() * 120)
-      }
-      if (h.jumping) {
-        h.jumpVy += s * 0.45 // gravity
-        h.y += h.jumpVy
-        if (h.y >= groundY - s * 12) {
-          h.y = groundY - s * 12
-          h.jumping = false
-          h.jumpVy = 0
-        }
-      }
-
-      // Coin collect
-      for (const coin of this.coins) {
-        if (coin.collected) continue
-        const dx = Math.abs(h.x - coin.x),
-          dy = Math.abs(h.y - coin.y)
-        if (dx < s * 10 && dy < s * 10) {
-          coin.collected = true
-          this.particles.push({
-            x: coin.x + s * 2,
-            y: coin.y,
-            age: 0,
-            life: 20,
-          })
-        }
-      }
-
-      // Recycle hero (or restore coin)
-      if (h.x > W + s * 20) {
-        h.x = -s * 20
-        h.y = groundY - s * 12
-        h.frame = 0
-        // Restore all coins
-        for (const coin of this.coins) coin.collected = false
-      }
-    }
-
-    // Enemies patrol
-    for (const e of this.enemies) {
-      e.x += e.speed
-      e.frameTimer++
-      if (e.frameTimer >= 10) {
-        e.frameTimer = 0
-        e.frame = (e.frame + 1) % 2
-      }
-      e.flipX = e.speed < 0
-      if (e.x < -s * 20) {
-        e.x = W + s * 5
-        e.speed = -(0.6 + Math.random() * 0.5)
-      }
-      if (e.x > W + s * 20) {
-        e.x = -s * 5
-        e.speed = 0.6 + Math.random() * 0.5
-        e.flipX = false
-      }
-    }
-
-    // Sparkle particles
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-      this.particles[i].age++
-      if (this.particles[i].age >= this.particles[i].life)
-        this.particles.splice(i, 1)
-    }
-  }
-
-  // ─── Render ───────────────────────────────────────────────────────────────
-
-  _draw() {
-    const ctx = this.ctx
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const s = this.S
-    const groundY = H - s * 4
-    const coinFrames = this._coinFrames()
-    const heroFrames = this._heroFrames
-    const enemyFrames = this._enemyFrames
-
-    ctx.clearRect(0, 0, W, H)
-
-    // Sky gradient (night → dusk)
-    const sky = ctx.createLinearGradient(0, 0, 0, H)
-    sky.addColorStop(0, "#05051a")
-    sky.addColorStop(0.55, "#0a1533")
-    sky.addColorStop(1, "#1a1a2e")
-    ctx.fillStyle = sky
-    ctx.fillRect(0, 0, W, H)
-
-    // Stars (twinkle)
-    for (const st of this.stars) {
-      const on = (this.tick + st.twinkleOffset) % 40 < 30
-      if (on) this._drawStar(st.x, st.y, s, st.bright)
-    }
-
-    // Moon
-    ctx.globalAlpha = 0.9
-    ctx.fillStyle = "#fffacd"
-    const moonX = W * 0.85,
-      moonY = H * 0.1,
-      moonR = s * 5
-    ctx.beginPath()
-    ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2)
-    ctx.fill()
-    // Crater
-    ctx.globalAlpha = 0.25
-    ctx.fillStyle = "#ccc"
-    ctx.beginPath()
-    ctx.arc(
-      moonX + moonR * 0.3,
-      moonY - moonR * 0.2,
-      moonR * 0.3,
-      0,
-      Math.PI * 2,
-    )
-    ctx.fill()
-    ctx.globalAlpha = 1
-
-    // Clouds
-    for (const c of this.clouds) {
-      this._drawCloud(c.x, c.y, c.size, c.alpha)
-    }
-
-    // Bushes (background layer, static)
-    const bushPositions = [W * 0.08, W * 0.25, W * 0.5, W * 0.72, W * 0.9]
-    for (const bx of bushPositions) {
-      this._drawBush(bx, groundY - s * 6, s, 0.7)
-    }
-
-    // Platforms / blocks
-    for (const pl of this.platforms) {
-      if (pl.x > -s * 20 && pl.x < W + s * 20) {
-        const offY = pl.hit ? Math.sin(pl.hitAnim * 0.5) * s * -2 : 0
-        this._drawBlock(pl.x, pl.y + offY, s, pl.type)
-        if (pl.hit) {
-          pl.hitAnim++
-          if (pl.hitAnim > 12) {
-            pl.hit = false
-            pl.hitAnim = 0
-          }
-        }
-      }
-    }
-
-    // Coins
-    for (const coin of this.coins) {
-      if (coin.collected) continue
-      if (coin.x > -s * 8 && coin.x < W + s * 8) {
-        this._drawSprite(coinFrames[coin.frame], coin.x, coin.y, s)
-      }
-    }
-
-    // Ground
-    this._drawGround(s)
-
-    // Sparkles
-    for (const sp of this.particles) {
-      this._drawSparkle(sp.x, sp.y, s, sp.age, sp.life)
-    }
-
-    // Enemies
-    for (const e of this.enemies) {
-      if (e.x < -s * 20 || e.x > W + s * 20) continue
-      this._drawSprite(enemyFrames[e.frame], e.x, e.y, s, e.flipX)
-    }
-
-    // Heroes
-    for (const h of this.heroes) {
-      if (h.x < -s * 20 || h.x > W + s * 20) continue
-      this._drawSprite(heroFrames[h.frame], h.x, h.y, s, false)
-    }
-
-    // Retro scanline overlay (subtle CRT feel)
-    ctx.globalAlpha = 0.04
-    ctx.fillStyle = "#000"
-    for (let ly = 0; ly < H; ly += 4) {
-      ctx.fillRect(0, ly, W, 2)
-    }
-    ctx.globalAlpha = 1
   }
 
   // ─── Loop ─────────────────────────────────────────────────────────────────
 
+  _update() {
+    const W = this.canvas.width, H = this.canvas.height, s = this.S
+    const gY = H - s*4
+    this.tick++
+
+    // Parallax
+    this.mountains.forEach(m => {
+      m.x -= m.speed
+      if (m.x + m.w < 0) m.x = W + Math.random() * 100
+    })
+    this.clouds.forEach(c => {
+      c.x -= c.speed
+      if (c.x + s*20 < 0) c.x = W + s*20
+    })
+
+    // Hero
+    for (const h of this.heroes) {
+      h.x += h.speed
+      h.timer++
+      if (h.timer > 6) { h.timer = 0; h.frame = (h.frame + 1) % 2 }
+
+      // Jump Logic
+      if (!h.jumping && Math.random() < 0.01) {
+        h.jumping = true; h.vy = -s * 5
+      }
+      if (h.jumping) {
+        h.vy += s * 0.4; h.y += h.vy
+        if (h.y >= gY - s*12) { h.y = gY - s*12; h.jumping = false }
+      }
+
+      // Trail
+      if (this.tick % 3 === 0) {
+        h.trail.unshift({ x: h.x, y: h.y, f: h.frame })
+        if (h.trail.length > 5) h.trail.pop()
+      }
+
+      // Coin collect
+      this.coins.forEach(c => {
+        if (!c.collected && Math.hypot(h.x - c.x, h.y - c.y) < s * 15) {
+          c.collected = true
+          for(let i=0; i<8; i++) this.particles.push({
+            x: c.x, y: c.y, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 1
+          })
+        }
+      })
+
+      if (h.x > W + 100) {
+        h.x = -100; this.coins.forEach(c => c.collected = false)
+      }
+    }
+
+    // Enemies
+    this.enemies.forEach(e => {
+      e.x += e.speed
+      e.timer++
+      if (e.timer > 8) { e.timer = 0; e.frame = (e.frame + 1) % 2 }
+      if (e.x < -100) e.x = W + 100
+    })
+
+    // Particles
+    for(let i=this.particles.length-1; i>=0; i--) {
+      const p = this.particles[i]
+      p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life -= 0.05
+      if (p.life <= 0) this.particles.splice(i, 1)
+    }
+  }
+
+  _draw() {
+    const ctx = this.ctx, W = this.canvas.width, H = this.canvas.height, s = this.S
+    ctx.clearRect(0, 0, W, H)
+
+    // Sky
+    const sky = ctx.createLinearGradient(0, 0, 0, H)
+    sky.addColorStop(0, "#020111"); sky.addColorStop(0.5, "#191d35"); sky.addColorStop(1, "#20202c")
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H)
+
+    // Stars
+    this.stars.forEach(st => {
+      if ((this.tick + st.twinkle) % 50 < 40) {
+        ctx.fillStyle = st.bright ? "#FFF" : "#667"
+        ctx.fillRect(st.x, st.y, s, s)
+      }
+    })
+
+    this._drawMountains(s)
+    this._drawGround(s)
+
+    // Platforms & Coins
+    const cF = this._coinFrames()
+    this.platforms.forEach(p => {
+      ctx.fillStyle = "#f5a623"; ctx.fillRect(p.x, p.y, s*4, s*4)
+      ctx.strokeStyle = "#000"; ctx.strokeRect(p.x, p.y, s*4, s*4)
+    })
+    this.coins.forEach(c => {
+      if (!c.collected) {
+        c.timer++
+        if (c.timer > 5) { c.timer = 0; c.frame = (c.frame+1)%4 }
+        this._drawSprite(cF[c.frame], c.x, c.y, s)
+        // Glow
+        const g = ctx.createRadialGradient(c.x+s*2, c.y+s*2, 0, c.x+s*2, c.y+s*2, s*10)
+        g.addColorStop(0, "rgba(255,215,0,0.2)"); g.addColorStop(1, "transparent")
+        ctx.fillStyle = g; ctx.fillRect(c.x-s*8, c.y-s*8, s*20, s*20)
+      }
+    })
+
+    // Hero with Trail
+    const hF = this._heroFrames
+    this.heroes.forEach(h => {
+      h.trail.forEach((t, i) => {
+        this._drawSprite(hF[t.f], t.x, t.y, s, false, 0.3 - i*0.05)
+      })
+      this._drawSprite(hF[h.frame], h.x, h.y, s)
+      // Player Light
+      const g = ctx.createRadialGradient(h.x+s*4, h.y+s*6, 0, h.x+s*4, h.y+s*6, s*15)
+      g.addColorStop(0, "rgba(255,255,255,0.1)"); g.addColorStop(1, "transparent")
+      ctx.fillStyle = g; ctx.fillRect(h.x-s*10, h.y-s*10, s*30, s*30)
+    })
+
+    // Enemies
+    const eF = this._enemyFrames
+    this.enemies.forEach(e => this._drawSprite(eF[e.frame], e.x, e.y, s, e.speed < 0))
+
+    // Particles
+    this.particles.forEach(p => {
+      ctx.fillStyle = `rgba(255,215,0,${p.life})`
+      ctx.fillRect(p.x, p.y, s, s)
+    })
+
+    // CRT Overlay
+    ctx.globalAlpha = 0.05; ctx.fillStyle = "#000"
+    for (let i=0; i<H; i+=s*2) ctx.fillRect(0, i, W, s)
+    ctx.globalAlpha = 1
+  }
+
   animate(currentTime = 0) {
     if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
+    this._animId = requestAnimationFrame(t => this.animate(t))
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-    this._update()
-    this._draw()
+    this._update(); this._draw()
   }
 
   start() {
     if (this.active) return
-    this.active = true
-    this.lastDrawTime = 0
-    this.tick = 0
-    this._initScene()
-    this.animate(0)
+    this.active = true; this._initScene(); this.animate(0)
     this.canvas.style.display = "block"
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
 }
+
