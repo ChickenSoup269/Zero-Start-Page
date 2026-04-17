@@ -2598,7 +2598,10 @@ body.flip-layout .top-right-controls {
 
 body.flip-layout .settings-sidebar {
   left: auto;
-  right: -350px;
+  right: -400px;
+  border-right: none;
+  border-left: 1px solid var(--sidebar-border);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
 }
 body.flip-layout .settings-sidebar.open {
   left: auto;
@@ -2608,6 +2611,18 @@ body.flip-layout .settings-sidebar.open {
 body.flip-layout .layout-controls-popup {
   left: auto;
   right: calc(100% + 12px);
+  animation: lcpFadeInFlip 0.15s ease;
+}
+
+@keyframes lcpFadeInFlip {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 body.flip-layout .g-apps-dropdown {
