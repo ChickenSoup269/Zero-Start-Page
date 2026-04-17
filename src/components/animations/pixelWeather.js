@@ -138,9 +138,11 @@ export class PixelWeatherEffect {
           : Math.random() * W,
       y: initial
         ? Math.random() * H
-        : type === "bubble"
-          ? H + 20
-          : -20,
+        : this.mode === "wind"
+          ? Math.random() * H
+          : type === "bubble"
+            ? H + 20
+            : -20,
       size,
       vx,
       vy,

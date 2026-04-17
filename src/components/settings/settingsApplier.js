@@ -640,10 +640,31 @@ function createApplySettings(effectInstances) {
     const effectCanvas = document.getElementById("effect-canvas")
     if (
       effectToStart === "pixelWeather" &&
-      selectedEffect &&
-      selectedEffect.setMode
+      selectedEffect
     ) {
-      selectedEffect.setMode(settings.pixelWeatherStyle || "snow")
+      if (selectedEffect.setMode) {
+        selectedEffect.setMode(settings.pixelWeatherStyle || "snow")
+      }
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          density: settings.pixelWeatherDensity || 1.0,
+          resolution: settings.pixelWeatherResolution || 1,
+          speed: settings.pixelWeatherSpeed || 1.0,
+          size: settings.pixelWeatherSize || 1.0,
+        })
+      }
+    }
+
+    if (
+      effectToStart === "gridScan" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        speed: settings.pixelWeatherSpeed || 1.0, // Reusing speed slider for now or we can use generic ones
+        spacing: settings.gridSpacing || 50,
+        perspective: settings.gridPerspective !== false
+      })
     }
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.
