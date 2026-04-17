@@ -1,5 +1,5 @@
 export class RainbowBackground {
-  constructor(canvasId) {
+  constructor(canvasId, direction = "left") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
@@ -7,20 +7,36 @@ export class RainbowBackground {
     // Bảng màu cầu vồng mở rộng: Đỏ, Cam, Vàng, Lục, Lam, Chàm, Tím, Hồng
     this.hues = [350, 20, 50, 150, 190, 230, 280, 320]
 
-    this.beamCount = 25 // Làm các tia chiếu to, rộng hơn nên giảm bớt số lượng
-    this.particleCount = 70 // Hạt bụi bay lơ lửng tĩnh trong dải sáng
+    this.beamCount = 15 // Giảm từ 25 để tối ưu hiệu năng mà vẫn đủ đẹp
+    this.particleCount = 40 // Giảm từ 70
     this.beams = []
     this.particles = []
     this.animationFrame = null
     this.time = 0
+    this.beamCanvases = {} // Cache các dải sáng đã render sẵn
 
     // Góc nghiêng chiếu rọi (khoảng 20 độ để ánh sáng đẹp hơn)
-    this.angle = (20 * Math.PI) / 180
-    this.sinA = Math.sin(this.angle)
-    this.cosA = Math.cos(this.angle)
+    this.direction = direction // Sử dụng giá trị truyền vào hoặc mặc định
+    this.updateAngle()
 
     this.resize()
     window.addEventListener("resize", () => this.resize())
+  }
+
+  updateAngle() {
+    // left: từ trái trên xuống phải dưới, right: từ phải trên xuống trái dưới
+    const deg = this.direction === "left" ? 20 : -20
+    this.angle = (deg * Math.PI) / 180
+    this.sinA = Math.sin(this.angle)
+    this.cosA = Math.cos(this.angle)
+  }
+
+  setDirection(direction) {
+    if (this.direction === direction) return
+    this.direction = direction
+    this.updateAngle()
+    // Reset vị trí các hạt để không bị lệch đột ngột quá nhiều
+    this.initBeams()
   }
 
   resize() {
@@ -29,11 +45,40 @@ export class RainbowBackground {
     this.initBeams()
   }
 
+  // Pre-render các dải sáng để không phải tính toán gradient mỗi frame
+  _preRenderBeams() {
+    this.beamCanvases = {}
+    const beamHeight = 1200 // Chiều dài dải sáng cố định để render
+    const beamWidth = 100 // Chiều rộng dải sáng cố định
+
+    this.hues.forEach((hue) => {
+      const offCanvas = document.createElement("canvas")
+      offCanvas.width = beamWidth
+      offCanvas.height = beamHeight
+      const offCtx = offCanvas.getContext("2d")
+
+      const grad = offCtx.createLinearGradient(0, 0, 0, beamHeight)
+      const color = `hsla(${hue}, 90%, 65%,`
+      grad.addColorStop(0, `${color} 0)`)
+      grad.addColorStop(0.1, `${color} 1)`)
+      grad.addColorStop(0.6, `${color} 0.6)`)
+      grad.addColorStop(1, `${color} 0)`)
+
+      offCtx.fillStyle = grad
+      offCtx.fillRect(0, 0, beamWidth, beamHeight)
+      this.beamCanvases[hue] = offCanvas
+    })
+  }
+
   initBeams() {
     this.beams = []
     this.particles = []
     const W = this.canvas.width
     const H = this.canvas.height
+
+    if (Object.keys(this.beamCanvases).length === 0) {
+      this._preRenderBeams()
+    }
 
     for (let i = 0; i < this.beamCount; i++) {
       this.beams.push(this._createBeam(W, H))
@@ -60,16 +105,16 @@ export class RainbowBackground {
     const diagonal = Math.sqrt(W * W + H * H)
     return {
       x: Math.random() * W * 1.5 - W * 0.25,
-      yBase: -Math.random() * H * 0.3 - 50, // Phát xuất từ tít mù trên đỉnh
-      width: Math.random() * 40 + 15, // Dải beam to, rộng sải thành dải lụa sáng
-      length: diagonal * 1.2, // Dài bao trùm xuyên suốt màn hình (KHÔNG ĐỨT)
-      driftSpeed: Math.random() * 0.2 + 0.05, // Trôi ngang qua lại RẤT MƯỢT (Pan slowly)
+      yBase: -Math.random() * H * 0.3 - 50,
+      width: Math.random() * 40 + 15,
+      length: diagonal * 1.3,
+      driftSpeed: Math.random() * 0.2 + 0.05,
       hue: this.hues[Math.floor(Math.random() * this.hues.length)],
-      opacity: Math.random() * 0.15 + 0.02, // Soft light
+      opacity: Math.random() * 0.15 + 0.02,
 
       pulse: Math.random() * Math.PI * 2,
       pulsePhase: Math.random() * Math.PI * 2,
-      pulseSpeed: Math.random() * 0.015 + 0.005, // Chu kỳ tắt/sáng rất êm ái
+      pulseSpeed: Math.random() * 0.015 + 0.005,
     }
   }
 
@@ -82,8 +127,8 @@ export class RainbowBackground {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    if (this._animId) cancelAnimationFrame(this._animId)
     if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -91,7 +136,9 @@ export class RainbowBackground {
 
   animate() {
     if (!this.active) return
-    this.animationFrame = this._animId = requestAnimationFrame(() => this.animate())
+    this.animationFrame = this._animId = requestAnimationFrame(() =>
+      this.animate(),
+    )
 
     const ctx = this.ctx
     const W = this.canvas.width
@@ -101,7 +148,7 @@ export class RainbowBackground {
     ctx.globalCompositeOperation = "lighter"
     this.time += 1
 
-    // 1. Vẽ hạt bụi sao trôi lơ lửng rất tự nhiên
+    // 1. Vẽ hạt bụi sao (Optimization: dùng fillStyle một lần nếu cùng màu, nhưng ở đây nhiều màu nên giữ nguyên)
     for (const p of this.particles) {
       p.x +=
         this.sinA * p.speed + Math.sin(this.time * 0.01 + p.wobblePhase) * 0.4
@@ -110,71 +157,52 @@ export class RainbowBackground {
       if (p.y > H + 50 || p.x > W + 50) {
         p.y = -50
         p.x = Math.random() * W * 1.5 - W * 0.25
-        p.hue = this.hues[Math.floor(Math.random() * this.hues.length)]
       }
 
       const currentOpacity =
         p.baseOpacity + Math.sin(this.time * 0.03 + p.wobblePhase) * 0.3
-
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
       ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${Math.max(0.01, currentOpacity)})`
       ctx.fill()
     }
 
-    // 2. Vẽ dải ánh sáng XUYÊN MÀN HÌNH cố định (God Rays), không rớt liên tục
+    // 2. Vẽ dải ánh sáng XUYÊN MÀN HÌNH (Optimization: dùng drawImage từ offscreen canvas)
     for (const b of this.beams) {
-      // Di chuyển NGANG siêu thong dong thay vì rớt dọc
       b.x += b.driftSpeed
       if (b.x > W * 1.5) {
         b.x = -W * 0.5
-        b.hue = this.hues[Math.floor(Math.random() * this.hues.length)]
       }
 
       b.pulse += b.pulseSpeed
       const pulseFactor = (Math.sin(b.pulse) + 1) / 2
 
-      const currentOpacity = b.opacity + pulseFactor * 0.15
+      const currentOpacity = b.opacity + pulseFactor * 0.12
       const currentWidth = b.width + pulseFactor * 5
-      const currentLightness = 55 + pulseFactor * 20
-
-      // Tia rung rinh nhè nhẹ tại chỗ
       const xWobble = Math.sin(this.time * 0.005 + b.pulsePhase) * 15
+
       const startX = b.x + xWobble
       const startY = b.yBase
 
-      const endX = startX + this.sinA * b.length
-      const endY = startY + this.cosA * b.length
+      const offCanvas = this.beamCanvases[b.hue]
+      if (offCanvas) {
+        ctx.save()
+        // Di chuyển tới điểm bắt đầu và xoay theo góc nghiêng
+        ctx.translate(startX, startY)
+        ctx.rotate(this.angle)
 
-      const grad = ctx.createLinearGradient(startX, startY, endX, endY)
-      const color = `hsla(${b.hue}, 90%, ${currentLightness}%,`
+        ctx.globalAlpha = currentOpacity
+        // Scale hình ảnh: x là chiều rộng (currentWidth), y là chiều dài (b.length)
+        // Lưu ý: Canvas gốc rộng 100 nên ta vẽ từ -currentWidth/2 để căn giữa
+        ctx.drawImage(offCanvas, -currentWidth / 2, 0, currentWidth, b.length)
 
-      grad.addColorStop(0, `${color} 0)`) // Gốc sáng yếu dần vào bóng tối
-      grad.addColorStop(0.1, `${color} ${currentOpacity})`) // Dày nhất đoạn gần gốc
-      grad.addColorStop(0.6, `${color} ${currentOpacity * 0.6})`) // Điểm thân chính
-      grad.addColorStop(1, `${color} 0)`) // Tan biến vào bóng tối ở đuôi
-
-      ctx.beginPath()
-      ctx.moveTo(startX, startY)
-      ctx.lineTo(endX, endY)
-      ctx.lineCap = "round"
-      ctx.lineWidth = currentWidth
-      ctx.strokeStyle = grad
-      ctx.stroke()
-
-      // Core glow phát ra từ tâm ánh sáng để tạo khối 3D chói loá
-      if (pulseFactor > 0.7) {
-        ctx.beginPath()
-        const midStartX = startX + this.sinA * (b.length * 0.1)
-        const midStartY = startY + this.cosA * (b.length * 0.1)
-        const midEndX = startX + this.sinA * (b.length * 0.6)
-        const midEndY = startY + this.cosA * (b.length * 0.6)
-
-        ctx.moveTo(midStartX, midStartY)
-        ctx.lineTo(midEndX, midEndY)
-        ctx.lineWidth = currentWidth * 0.2
-        ctx.strokeStyle = `hsla(${b.hue}, 100%, 90%, ${(pulseFactor - 0.7).toFixed(2)})`
-        ctx.stroke()
+        // Core glow chói lọi hơn một chút khi pulse cao (vẽ thêm dải trắng hẹp)
+        if (pulseFactor > 0.8) {
+          ctx.globalAlpha = (pulseFactor - 0.8) * 2
+          // Dùng chính canvas đó nhưng scale rất hẹp để tạo lõi trắng sáng
+          ctx.drawImage(offCanvas, -currentWidth * 0.1, 0, currentWidth * 0.2, b.length)
+        }
+        ctx.restore()
       }
     }
   }

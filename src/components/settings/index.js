@@ -187,7 +187,10 @@ export function initSettings() {
       "effect-canvas",
       settings.stormRainColor || "#7dd3fc",
     ),
-    rainbowEffect: new RainbowBackground("effect-canvas"),
+    rainbowEffect: new RainbowBackground(
+      "effect-canvas",
+      settings.rainbowDirection || "left",
+    ),
     wavyLinesEffect: new WavyLinesEffect(
       "effect-canvas",
       settings.wavyLinesColor || "#00bcd4",

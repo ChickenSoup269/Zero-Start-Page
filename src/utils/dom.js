@@ -64,6 +64,14 @@ export const savedFontsList = document.getElementById("saved-fonts-list")
 export const languageSelect = document.getElementById("language-select")
 export const effectGrid = document.getElementById("effect-grid")
 export const effectSearch = document.getElementById("effect-search")
+export const activeEffectSettingsContainer = document.getElementById(
+  "active-effect-settings-container",
+)
+export const rainbowDirectionSetting = document.getElementById(
+  "rainbow-direction-setting",
+)
+export const rainbowDirLeftBtn = document.getElementById("rainbow-dir-left")
+export const rainbowDirRightBtn = document.getElementById("rainbow-dir-right")
 
 export const gradientStartPicker = document.getElementById(
   "gradient-start-picker",

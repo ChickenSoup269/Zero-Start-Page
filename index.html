@@ -1335,296 +1335,337 @@
                         </button>
                     </div>
 
-                    <!-- Hacker Color -->
-                    <div id="hacker-color-setting" class="setting-item" style="display: none;">
-                        <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
-                        <input type="color" id="hacker-color-picker" value="#00FF00" />
-                    </div>
-
-                    <!-- Aura Color -->
-                    <div id="aura-color-setting" class="setting-item" style="display: none;">
-                        <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
-                        <input type="color" id="aura-color-picker" value="#00ff73" />
-                    </div>
-
-                    <!-- Northern Lights Color -->
-                    <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
-                        <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora Color</label>
-                        <input type="color" id="northern-lights-color-picker" value="#00ffcc" />
-                    </div>
-
-                    <!-- Pixel Cubes Color -->
-                    <div id="pixel-cubes-color-setting" class="setting-item" style="display: none;">
-                        <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes
-                            Color</label>
-                        <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
-
-                        <label for="pixel-cubes-shape-select" style="margin-top: 10px; display: block;"
-                            data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
-                        <select id="pixel-cubes-shape-select" style="width: 100%;">
-                            <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
-                            <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)</option>
-                            <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
-                        </select>
-                    </div>
-
-                    <!-- Pixel Weather Settings -->
-                    <div id="pixel-weather-style-section" class="setting-item" style="display: none;">
-                        <label for="pixel-weather-style-select" data-i18n="settings_pixel_weather_style">Weather
-                            Style</label>
-                        <select id="pixel-weather-style-select" style="margin-bottom: 20px;">
-                            <option value="snow" data-i18n="style_pixel_snow">Snow</option>
-                            <option value="rain" data-i18n="style_pixel_rain">Rain</option>
-                            <option value="wind" data-i18n="style_pixel_wind">Wind</option>
-                        </select>
-
-                        <label for="pixel-weather-resolution-slider"><span
-                                data-i18n="settings_pixel_weather_resolution">Resolution</span> <span
-                                id="pixel-weather-resolution-val">1</span></label>
-                        <input type="range" id="pixel-weather-resolution-slider" min="1" max="10" step="1" value="1"
-                            style="margin-bottom: 10px;">
-
-                        <label for="pixel-weather-speed-slider"><span
-                                data-i18n="settings_pixel_weather_speed">Speed</span> <span
-                                id="pixel-weather-speed-val">1.0</span></label>
-                        <input type="range" id="pixel-weather-speed-slider" min="0.1" max="3.0" step="0.1" value="1.0"
-                            style="margin-bottom: 10px;">
-
-                        <label for="pixel-weather-size-slider"><span data-i18n="settings_pixel_weather_flake_size">Flake
-                                Size</span> <span id="pixel-weather-size-val">1.0</span></label>
-                        <input type="range" id="pixel-weather-size-slider" min="0.5" max="5.0" step="0.1" value="1.0"
-                            style="margin-bottom: 10px;">
-
-                        <label for="pixel-weather-density-slider"><span
-                                data-i18n="settings_pixel_weather_density">Density</span> <span
-                                id="pixel-weather-density-val">1.0</span></label>
-                        <input type="range" id="pixel-weather-density-slider" min="0.2" max="3.0" step="0.1"
-                            value="1.0">
-                    </div>
-
-                    <!-- Grid Scan Color -->
-                    <div id="grid-scan-color-setting" class="setting-item" style="display: none;">
-                        <label for="grid-scan-color-picker" data-i18n="setting_grid_scan_color">Grid Scan Color</label>
-                        <input type="color" id="grid-scan-color-picker" value="#00ffcc" />
-                    </div>
-
-                    <!-- Jellyfish Color -->
-                    <div id="jellyfish-color-setting" class="setting-item" style="display: none;">
-                        <label for="jellyfish-color-picker" data-i18n="setting_jellyfish_color">Jellyfish
-                            Color</label>
-                        <input type="color" id="jellyfish-color-picker" value="#ffaa00" />
-
-                        <label for="jellyfish-type-select" style="margin-top: 10px; display: block;"
-                            data-i18n="setting_jellyfish_type">Sea Creature</label>
-                        <select id="jellyfish-type-select" style="width: 100%;">
-                            <option value="jellyfish" data-i18n="creature_jellyfish">Jellyfish</option>
-                            <option value="turtle" data-i18n="creature_turtle">Sea Turtle</option>
-                            <option value="manta" data-i18n="creature_manta">Manta Ray</option>
-                        </select>
-                    </div>
-
-                    <!-- Star Color (Galaxy) -->
-                    <div id="star-color-setting" class="setting-item" style="display: none;">
-                        <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
-                        <input type="color" id="star-color-picker" />
-                    </div>
-
-                    <!-- Meteor Color -->
-                    <div id="meteor-color-setting" class="setting-item" style="display: none;">
-                        <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor Color</label>
-                        <input type="color" id="meteor-color-picker" value="#ffffff" />
-                    </div>
-
-                    <!-- Network Color (M:i) -->
-                    <div id="network-color-setting" class="setting-item" style="display: none;">
-                        <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
-                        <input type="color" id="network-color-picker" value="#00bcd4" />
-                    </div>
-
-                    <!-- Matrix Color (M:i) -->
-                    <div id="matrix-color-setting" class="setting-item" style="display: none;">
-                        <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
-                        <input type="color" id="matrix-color-picker" value="#00FF00" />
-                    </div>
-
-                    <!-- Sakura Color (M:i) -->
-                    <div id="sakura-color-setting" class="setting-item" style="display: none;">
-                        <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
-                        <input type="color" id="sakura-color-picker" value="#ffb7c5" />
-                    </div>
-                    <!-- Snowfall Color -->
-                    <div id="snowfall-color-setting" class="setting-item" style="display: none;">
-                        <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall Color</label>
-                        <input type="color" id="snowfall-color-picker" value="#ffffff" />
-                    </div>
-                    <!-- Falling Leaves Settled Skin -->
-                    <div id="falling-leaves-settled-skin-setting" class="setting-item" style="display: none;">
-                        <label for="falling-leaves-settled-skin" data-i18n="setting_falling_leaves_skin">Leaf
-                            Type</label>
-                        <select id="falling-leaves-settled-skin" class="full-width">
-                            <option value="maple" data-i18n="leaf_skin_maple">Maple Leaves</option>
-                            <option value="oak" data-i18n="leaf_skin_oak">Oak Leaves</option>
-                            <option value="simple" data-i18n="leaf_skin_simple">Simple Leaves</option>
-                            <option value="ginkgo" data-i18n="leaf_skin_ginkgo">Ginkgo Leaves</option>
-                            <option value="cherry" data-i18n="leaf_skin_cherry">Cherry Blossoms</option>
-                            <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals</option>
-                            <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
-                        </select>
-                    </div>
-                    <!-- Pixel Run Color -->
-                    <div id="pixel-run-color-setting" class="setting-item" style="display: none;">
-                        <label for="pixel-run-color-picker" data-i18n="setting_pixel_run_color">Pixel Color</label>
-                        <input type="color" id="pixel-run-color-picker" value="#00e5ff" />
-                    </div>
-                    <div id="nintendo-pixel-color-setting" class="setting-item" style="display: none;">
-                        <label for="nintendo-pixel-color-picker" data-i18n="setting_nintendo_pixel_color">Phosphor
-                            Glow</label>
-                        <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
-                    </div>
-                    <div id="crt-scan-color-setting" class="setting-item" style="display: none;">
-                        <label for="crt-scan-color-picker" data-i18n="setting_crt_scan_color">Scan Beam Color</label>
-                        <input type="color" id="crt-scan-color-picker" value="#7cffad" />
-                    </div>
-                    <div id="crt-scan-frequency-setting" class="setting-item" style="display: none;">
-                        <label for="crt-scan-frequency-input">
-                            <span data-i18n="setting_crt_scan_frequency">Scan Frequency</span>:
-                            <span id="crt-scan-frequency-value">0.11</span>
-                        </label>
-                        <input type="range" id="crt-scan-frequency-input" min="0.03" max="0.40" step="0.01"
-                            value="0.11" />
-                    </div>
-                    <div id="crt-background-color-setting" class="setting-item" style="display: none;">
-                        <label for="crt-background-color-picker" data-i18n="setting_crt_background_color">CRT Background
-                            Color</label>
-                        <input type="color" id="crt-background-color-picker" value="#0a140f" />
-                    </div>
-                    <!-- Retro Game Type -->
-                    <div id="retro-game-type-setting" class="setting-item" style="display: none;">
-                        <label for="retro-game-type-select" data-i18n="setting_retro_game_type">Game Type</label>
-                        <select id="retro-game-type-select">
-                            <option value="space_invaders" data-i18n="retro_game_space_invaders">Space Invaders</option>
-                            <option value="pong" data-i18n="retro_game_pong">Pong</option>
-                            <option value="pacman" data-i18n="retro_game_pacman">Pac-Man</option>
-                            <option value="tetris" data-i18n="retro_game_tetris">Tetris</option>
-                            <option value="snake" data-i18n="retro_game_snake">Snake</option>
-                        </select>
-                    </div>
-                    <!-- Retro Game Color -->
-                    <div id="retro-game-color-setting" class="setting-item" style="display: none;">
-                        <label for="retro-game-color-picker" data-i18n="setting_retro_game_color">Game Color</label>
-                        <input type="color" id="retro-game-color-picker" value="#00ff00" />
-                    </div>
-                    <!-- Wavy Pattern Colors -->
-                    <div id="wavy-pattern-color1-setting" class="setting-item" style="display: none;">
-                        <label for="wavy-pattern-color1-picker" data-i18n="setting_wavy_pattern_color1">Pattern Color
-                            1</label>
-                        <input type="color" id="wavy-pattern-color1-picker" value="#AB3E5B" />
-                    </div>
-                    <div id="wavy-pattern-color2-setting" class="setting-item" style="display: none;">
-                        <label for="wavy-pattern-color2-picker" data-i18n="setting_wavy_pattern_color2">Pattern Color
-                            2</label>
-                        <input type="color" id="wavy-pattern-color2-picker" value="#FFBE40" />
-                    </div>
-                    <!-- Angled Pattern Colors -->
-                    <div id="angled-pattern-color1-setting" class="setting-item" style="display: none;">
-                        <label for="angled-pattern-color1-picker" data-i18n="setting_angled_pattern_color1">Pattern
-                            Color</label>
-                        <input type="color" id="angled-pattern-color1-picker" value="#ECD078" />
-                    </div>
-                    <div id="angled-pattern-color2-setting" class="setting-item" style="display: none;">
-                        <label for="angled-pattern-color2-picker" data-i18n="setting_angled_pattern_color2">Background
-                            Color</label>
-                        <input type="color" id="angled-pattern-color2-picker" value="#0B486B" />
-                    </div>
-                    <!-- Bubbles Color -->
-                    <div id="bubbles-color-setting" class="setting-item" style="display: none;">
-                        <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
-                        <input type="color" id="bubbles-color-picker" value="#60c8ff" />
-                    </div>
-
-                    <!-- Cursor Trail Color -->
-                    <div id="cursor-trail-color-setting" class="setting-item" style="display: none;">
-                        <label for="cursor-trail-color-picker" data-i18n="setting_cursor_trail_color">Cursor Trail
-                            Color</label>
-                        <input type="color" id="cursor-trail-color-picker" value="#60c8ff" />
-                    </div>
-
-                    <!-- Cursor Trail Click Explosion -->
-                    <div id="cursor-trail-click-setting" class="setting-item-row"
-                        style="display: none; margin-top: 0.6rem;">
-                        <label for="cursor-trail-click-checkbox" data-i18n="settings_cursor_trail_click">Click
-                            Explosion</label>
-                        <input type="checkbox" id="cursor-trail-click-checkbox">
-                    </div>
-
-                    <!-- Cursor Trail Random Colors -->
-                    <div id="cursor-trail-random-setting" class="setting-item-row"
-                        style="display: none; margin-top: 0.6rem;">
-                        <label for="cursor-trail-random-checkbox" data-i18n="settings_cursor_trail_random">Random
-                            Colors</label>
-                        <input type="checkbox" id="cursor-trail-random-checkbox">
-                    </div>
-
-                    <!-- Plant Growth Setting -->
-                    <div id="plant-growth-color-setting" class="setting-item" style="display: none;">
-                        <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Plant
-                            Color</label>
-                        <div class="color-picker-wrapper">
-                            <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                    <!-- Active Effect Settings (Card) -->
+                    <div id="active-effect-settings-container" class="bg-control-card" style="display: none; margin-top: 15px; animation: fadeIn 0.3s ease;">
+                        <div class="bg-control-title">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span data-i18n="effect_customization">Effect Settings</span>
                         </div>
-                    </div>
+                        <div id="active-effect-settings-body">
+                            <!-- Hacker Color -->
+                            <div id="hacker-color-setting" class="setting-item" style="display: none;">
+                                <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
+                                <input type="color" id="hacker-color-picker" value="#00FF00" />
+                            </div>
 
-                    <!-- Ocean Fish Color -->
-                    <div id="ocean-fish-color-setting" class="setting-item" style="display: none;">
-                        <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish Color</label>
-                        <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
-                    </div>
+                            <!-- Aura Color -->
+                            <div id="aura-color-setting" class="setting-item" style="display: none;">
+                                <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
+                                <input type="color" id="aura-color-picker" value="#00ff73" />
+                            </div>
 
-                    <!-- Rain HD Color -->
-                    <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
-                        <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
-                        <input type="color" id="rain-hd-color-picker" value="#99ccff" />
-                    </div>
+                            <!-- Northern Lights Color -->
+                            <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
+                                <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora
+                                    Color</label>
+                                <input type="color" id="northern-lights-color-picker" value="#00ffcc" />
+                            </div>
 
-                    <div id="storm-rain-color-setting" class="setting-item" style="display: none;">
-                        <label for="storm-rain-color-picker" data-i18n="setting_storm_rain_color">Rain Color</label>
-                        <input type="color" id="storm-rain-color-picker" value="#7dd3fc" />
-                    </div>
-                    <!-- Wavy Lines Color -->
-                    <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
-                        <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave Color</label>
-                        <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
-                    </div>
-                    <!-- Ocean Wave Color -->
-                    <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
-                        <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave Color</label>
-                        <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
-                    </div>
-                    <!-- Ocean Wave Position -->
-                    <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
-                        <label data-i18n="setting_ocean_wave_position" for="cloud-drift-color-picker">Wave
-                            Position</label>
-                        <div class="btn-group">
-                            <button id="ocean-wave-pos-bottom" class="btn-group-item active"
-                                data-i18n="position_bottom">Bottom</button>
-                            <button id="ocean-wave-pos-top" class="btn-group-item" data-i18n="position_top">Top</button>
+                            <!-- Pixel Cubes Color -->
+                            <div id="pixel-cubes-color-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel Cubes
+                                    Color</label>
+                                <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
+
+                                <label for="pixel-cubes-shape-select" style="margin-top: 10px; display: block;"
+                                    data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
+                                <select id="pixel-cubes-shape-select" style="width: 100%;">
+                                    <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
+                                    <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)</option>
+                                    <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
+                                </select>
+                            </div>
+
+                            <!-- Pixel Weather Settings -->
+                            <div id="pixel-weather-style-section" class="setting-item" style="display: none;">
+                                <label for="pixel-weather-style-select" data-i18n="settings_pixel_weather_style">Weather
+                                    Style</label>
+                                <select id="pixel-weather-style-select" style="margin-bottom: 20px;">
+                                    <option value="snow" data-i18n="style_pixel_snow">Snow</option>
+                                    <option value="rain" data-i18n="style_pixel_rain">Rain</option>
+                                    <option value="wind" data-i18n="style_pixel_wind">Wind</option>
+                                </select>
+
+                                <label for="pixel-weather-resolution-slider"><span
+                                        data-i18n="settings_pixel_weather_resolution">Resolution</span> <span
+                                        id="pixel-weather-resolution-val">1</span></label>
+                                <input type="range" id="pixel-weather-resolution-slider" min="1" max="10" step="1"
+                                    value="1" style="margin-bottom: 10px;">
+
+                                <label for="pixel-weather-speed-slider"><span
+                                        data-i18n="settings_pixel_weather_speed">Speed</span> <span
+                                        id="pixel-weather-speed-val">1.0</span></label>
+                                <input type="range" id="pixel-weather-speed-slider" min="0.1" max="3.0" step="0.1"
+                                    value="1.0" style="margin-bottom: 10px;">
+
+                                <label for="pixel-weather-size-slider"><span
+                                        data-i18n="settings_pixel_weather_flake_size">Flake
+                                        Size</span> <span id="pixel-weather-size-val">1.0</span></label>
+                                <input type="range" id="pixel-weather-size-slider" min="0.5" max="5.0" step="0.1"
+                                    value="1.0" style="margin-bottom: 10px;">
+
+                                <label for="pixel-weather-density-slider"><span
+                                        data-i18n="settings_pixel_weather_density">Density</span> <span
+                                        id="pixel-weather-density-val">1.0</span></label>
+                                <input type="range" id="pixel-weather-density-slider" min="0.2" max="3.0" step="0.1"
+                                    value="1.0">
+                            </div>
+
+                            <!-- Grid Scan Color -->
+                            <div id="grid-scan-color-setting" class="setting-item" style="display: none;">
+                                <label for="grid-scan-color-picker" data-i18n="setting_grid_scan_color">Grid Scan
+                                    Color</label>
+                                <input type="color" id="grid-scan-color-picker" value="#00ffcc" />
+                            </div>
+
+                            <!-- Jellyfish Color -->
+                            <div id="jellyfish-color-setting" class="setting-item" style="display: none;">
+                                <label for="jellyfish-color-picker" data-i18n="setting_jellyfish_color">Jellyfish
+                                    Color</label>
+                                <input type="color" id="jellyfish-color-picker" value="#ffaa00" />
+
+                                <label for="jellyfish-type-select" style="margin-top: 10px; display: block;"
+                                    data-i18n="setting_jellyfish_type">Sea Creature</label>
+                                <select id="jellyfish-type-select" style="width: 100%;">
+                                    <option value="jellyfish" data-i18n="creature_jellyfish">Jellyfish</option>
+                                    <option value="turtle" data-i18n="creature_turtle">Sea Turtle</option>
+                                    <option value="manta" data-i18n="creature_manta">Manta Ray</option>
+                                </select>
+                            </div>
+
+                            <!-- Star Color (Galaxy) -->
+                            <div id="star-color-setting" class="setting-item" style="display: none;">
+                                <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
+                                <input type="color" id="star-color-picker" />
+                            </div>
+
+                            <!-- Meteor Color -->
+                            <div id="meteor-color-setting" class="setting-item" style="display: none;">
+                                <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor Color</label>
+                                <input type="color" id="meteor-color-picker" value="#ffffff" />
+                            </div>
+
+                            <!-- Network Color (M:i) -->
+                            <div id="network-color-setting" class="setting-item" style="display: none;">
+                                <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
+                                <input type="color" id="network-color-picker" value="#00bcd4" />
+                            </div>
+
+                            <!-- Matrix Color (M:i) -->
+                            <div id="matrix-color-setting" class="setting-item" style="display: none;">
+                                <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix Color</label>
+                                <input type="color" id="matrix-color-picker" value="#00FF00" />
+                            </div>
+
+                            <!-- Sakura Color (M:i) -->
+                            <div id="sakura-color-setting" class="setting-item" style="display: none;">
+                                <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
+                                <input type="color" id="sakura-color-picker" value="#ffb7c5" />
+                            </div>
+                            <!-- Snowfall Color -->
+                            <div id="snowfall-color-setting" class="setting-item" style="display: none;">
+                                <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall
+                                    Color</label>
+                                <input type="color" id="snowfall-color-picker" value="#ffffff" />
+                            </div>
+                            <!-- Falling Leaves Settled Skin -->
+                            <div id="falling-leaves-settled-skin-setting" class="setting-item" style="display: none;">
+                                <label for="falling-leaves-settled-skin" data-i18n="setting_falling_leaves_skin">Leaf
+                                    Type</label>
+                                <select id="falling-leaves-settled-skin" class="full-width">
+                                    <option value="maple" data-i18n="leaf_skin_maple">Maple Leaves</option>
+                                    <option value="oak" data-i18n="leaf_skin_oak">Oak Leaves</option>
+                                    <option value="simple" data-i18n="leaf_skin_simple">Simple Leaves</option>
+                                    <option value="ginkgo" data-i18n="leaf_skin_ginkgo">Ginkgo Leaves</option>
+                                    <option value="cherry" data-i18n="leaf_skin_cherry">Cherry Blossoms</option>
+                                    <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals</option>
+                                    <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
+                                </select>
+                            </div>
+                            <!-- Pixel Run Color -->
+                            <div id="pixel-run-color-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-run-color-picker" data-i18n="setting_pixel_run_color">Pixel
+                                    Color</label>
+                                <input type="color" id="pixel-run-color-picker" value="#00e5ff" />
+                            </div>
+                            <div id="nintendo-pixel-color-setting" class="setting-item" style="display: none;">
+                                <label for="nintendo-pixel-color-picker"
+                                    data-i18n="setting_nintendo_pixel_color">Phosphor
+                                    Glow</label>
+                                <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
+                            </div>
+                            <div id="crt-scan-color-setting" class="setting-item" style="display: none;">
+                                <label for="crt-scan-color-picker" data-i18n="setting_crt_scan_color">Scan Beam
+                                    Color</label>
+                                <input type="color" id="crt-scan-color-picker" value="#7cffad" />
+                            </div>
+                            <div id="crt-scan-frequency-setting" class="setting-item" style="display: none;">
+                                <label for="crt-scan-frequency-input">
+                                    <span data-i18n="setting_crt_scan_frequency">Scan Frequency</span>:
+                                    <span id="crt-scan-frequency-value">0.11</span>
+                                </label>
+                                <input type="range" id="crt-scan-frequency-input" min="0.03" max="0.40" step="0.01"
+                                    value="0.11" />
+                            </div>
+                            <div id="crt-background-color-setting" class="setting-item" style="display: none;">
+                                <label for="crt-background-color-picker" data-i18n="setting_crt_background_color">CRT
+                                    Background
+                                    Color</label>
+                                <input type="color" id="crt-background-color-picker" value="#0a140f" />
+                            </div>
+                            <!-- Retro Game Type -->
+                            <div id="retro-game-type-setting" class="setting-item" style="display: none;">
+                                <label for="retro-game-type-select" data-i18n="setting_retro_game_type">Game Type</label>
+                                <select id="retro-game-type-select">
+                                    <option value="space_invaders" data-i18n="retro_game_space_invaders">Space
+                                        Invaders</option>
+                                    <option value="pong" data-i18n="retro_game_pong">Pong</option>
+                                    <option value="pacman" data-i18n="retro_game_pacman">Pac-Man</option>
+                                    <option value="tetris" data-i18n="retro_game_tetris">Tetris</option>
+                                    <option value="snake" data-i18n="retro_game_snake">Snake</option>
+                                </select>
+                            </div>
+                            <!-- Retro Game Color -->
+                            <div id="retro-game-color-setting" class="setting-item" style="display: none;">
+                                <label for="retro-game-color-picker" data-i18n="setting_retro_game_color">Game
+                                    Color</label>
+                                <input type="color" id="retro-game-color-picker" value="#00ff00" />
+                            </div>
+                            <!-- Wavy Pattern Colors -->
+                            <div id="wavy-pattern-color1-setting" class="setting-item" style="display: none;">
+                                <label for="wavy-pattern-color1-picker" data-i18n="setting_wavy_pattern_color1">Pattern
+                                    Color
+                                    1</label>
+                                <input type="color" id="wavy-pattern-color1-picker" value="#AB3E5B" />
+                            </div>
+                            <div id="wavy-pattern-color2-setting" class="setting-item" style="display: none;">
+                                <label for="wavy-pattern-color2-picker" data-i18n="setting_wavy_pattern_color2">Pattern
+                                    Color
+                                    2</label>
+                                <input type="color" id="wavy-pattern-color2-picker" value="#FFBE40" />
+                            </div>
+                            <!-- Angled Pattern Colors -->
+                            <div id="angled-pattern-color1-setting" class="setting-item" style="display: none;">
+                                <label for="angled-pattern-color1-picker"
+                                    data-i18n="setting_angled_pattern_color1">Pattern
+                                    Color</label>
+                                <input type="color" id="angled-pattern-color1-picker" value="#ECD078" />
+                            </div>
+                            <div id="angled-pattern-color2-setting" class="setting-item" style="display: none;">
+                                <label for="angled-pattern-color2-picker"
+                                    data-i18n="setting_angled_pattern_color2">Background
+                                    Color</label>
+                                <input type="color" id="angled-pattern-color2-picker" value="#0B486B" />
+                            </div>
+                            <!-- Bubbles Color -->
+                            <div id="bubbles-color-setting" class="setting-item" style="display: none;">
+                                <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble Color</label>
+                                <input type="color" id="bubbles-color-picker" value="#60c8ff" />
+                            </div>
+
+                            <!-- Cursor Trail Color -->
+                            <div id="cursor-trail-color-setting" class="setting-item" style="display: none;">
+                                <label for="cursor-trail-color-picker" data-i18n="setting_cursor_trail_color">Cursor
+                                    Trail
+                                    Color</label>
+                                <input type="color" id="cursor-trail-color-picker" value="#60c8ff" />
+                            </div>
+
+                            <!-- Cursor Trail Click Explosion -->
+                            <div id="cursor-trail-click-setting" class="setting-item-row"
+                                style="display: none; margin-top: 0.6rem;">
+                                <label for="cursor-trail-click-checkbox" data-i18n="settings_cursor_trail_click">Click
+                                    Explosion</label>
+                                <input type="checkbox" id="cursor-trail-click-checkbox">
+                            </div>
+
+                            <!-- Cursor Trail Random Colors -->
+                            <div id="cursor-trail-random-setting" class="setting-item-row"
+                                style="display: none; margin-top: 0.6rem;">
+                                <label for="cursor-trail-random-checkbox" data-i18n="settings_cursor_trail_random">Random
+                                    Colors</label>
+                                <input type="checkbox" id="cursor-trail-random-checkbox">
+                            </div>
+
+                            <!-- Plant Growth Setting -->
+                            <div id="plant-growth-color-setting" class="setting-item" style="display: none;">
+                                <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Plant
+                                    Color</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                                </div>
+                            </div>
+
+                            <!-- Ocean Fish Color -->
+                            <div id="ocean-fish-color-setting" class="setting-item" style="display: none;">
+                                <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish
+                                    Color</label>
+                                <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
+                            </div>
+
+                            <!-- Rain HD Color -->
+                            <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
+                                <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain Color</label>
+                                <input type="color" id="rain-hd-color-picker" value="#99ccff" />
+                            </div>
+
+                            <div id="storm-rain-color-setting" class="setting-item" style="display: none;">
+                                <label for="storm-rain-color-picker" data-i18n="setting_storm_rain_color">Rain
+                                    Color</label>
+                                <input type="color" id="storm-rain-color-picker" value="#7dd3fc" />
+                            </div>
+                            <!-- Wavy Lines Color -->
+                            <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
+                                <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave
+                                    Color</label>
+                                <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                            </div>
+                            <!-- Ocean Wave Color -->
+                            <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
+                                <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave
+                                    Color</label>
+                                <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+                            </div>
+                            <!-- Rainbow Direction -->
+                            <div id="rainbow-direction-setting" class="setting-item" style="display: none;">
+                                <label data-i18n="setting_rainbow_direction">Light Direction</label>
+                                <div class="btn-group">
+                                    <button id="rainbow-dir-left" class="btn-group-item active"
+                                        data-i18n="direction_left">Left</button>
+                                    <button id="rainbow-dir-right" class="btn-group-item"
+                                        data-i18n="direction_right">Right</button>
+                                </div>
+                            </div>
+
+                            <!-- Ocean Wave Position -->
+                            <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
+                                <label data-i18n="setting_ocean_wave_position" for="cloud-drift-color-picker">Wave
+                                    Position</label>
+                                <div class="btn-group">
+                                    <button id="ocean-wave-pos-bottom" class="btn-group-item active"
+                                        data-i18n="position_bottom">Bottom</button>
+                                    <button id="ocean-wave-pos-top" class="btn-group-item"
+                                        data-i18n="position_top">Top</button>
+                                </div>
+                            </div>
+                            <!-- Cloud Drift Color -->
+                            <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
+                                <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud
+                                    Color</label>
+                                <input type="color" id="cloud-drift-color-picker" value="#0a0a0a" />
+                            </div>
+                            <!-- Shiny Tint Color -->
+                            <div id="shiny-color-setting" class="setting-item" style="display: none;">
+                                <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic Tint</label>
+                                <input type="color" id="shiny-color-picker" value="#ff0000" />
+                            </div>
+                            <!-- Line Shiny Tint Color -->
+                            <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
+                                <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray
+                                    Color</label>
+                                <input type="color" id="line-shiny-color-picker" value="#ffffff" />
+                            </div>
                         </div>
-                    </div>
-                    <!-- Cloud Drift Color -->
-                    <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
-                        <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud Color</label>
-                        <input type="color" id="cloud-drift-color-picker" value="#0a0a0a" />
-                    </div>
-                    <!-- Shiny Tint Color -->
-                    <div id="shiny-color-setting" class="setting-item" style="display: none;">
-                        <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic Tint</label>
-                        <input type="color" id="shiny-color-picker" value="#ff0000" />
-                    </div>
-                    <!-- Line Shiny Tint Color -->
-                    <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
-                        <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray
-                            Color</label>
-                        <input type="color" id="line-shiny-color-picker" value="#ffffff" />
                     </div>
                 </div><!-- /.group-body -->
             </div>

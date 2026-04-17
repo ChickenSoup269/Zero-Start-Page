@@ -1811,3 +1811,66 @@
   margin-bottom: 0;
   display: inline-block;
 }
+
+/* Active Effect Settings Card Customization */
+#active-effect-settings-container {
+  border-left: 4px solid var(--accent-color);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb), 0.08) 0%,
+    rgba(20, 20, 30, 0.45) 100%
+  );
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#active-effect-settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#active-effect-settings-body .setting-item {
+  margin-bottom: 0;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+#active-effect-settings-body .setting-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateX(4px);
+}
+
+#active-effect-settings-body .setting-item label {
+  font-weight: 600;
+  color: var(--accent-color);
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+#active-effect-settings-body .setting-item input[type="color"] {
+  height: 38px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+#active-effect-settings-body .setting-item select {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+#active-effect-settings-body .setting-item-row {
+  margin-bottom: 0;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

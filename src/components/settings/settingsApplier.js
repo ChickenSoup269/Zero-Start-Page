@@ -1130,6 +1130,58 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.shinyColorPicker.value = settings.shinyColor || "#ff0000"
     DOM.lineShinyColorSetting.style.display =
       settings.effect === "lineShiny" ? "block" : "none"
+
+    DOM.rainbowDirectionSetting.style.display =
+      settings.effect === "rainbow" ? "block" : "none"
+    if (settings.rainbowDirection === "right") {
+      DOM.rainbowDirRightBtn?.classList.add("active")
+      DOM.rainbowDirLeftBtn?.classList.remove("active")
+    } else {
+      DOM.rainbowDirLeftBtn?.classList.add("active")
+      DOM.rainbowDirRightBtn?.classList.remove("active")
+    }
+
+    // Visibility of Active Effect Settings Container
+    if (DOM.activeEffectSettingsContainer) {
+      const effectsWithSettings = [
+        "rainbow",
+        "galaxy",
+        "meteor",
+        "network",
+        "matrix",
+        "aura",
+        "northernLights",
+        "hacker",
+        "pixelCubes",
+        "pixelWeather",
+        "jellyfish",
+        "sakura",
+        "snowfall",
+        "fallingLeavesSettled",
+        "bubbles",
+        "gridScan",
+        "cursorTrail",
+        "plantGrowth",
+        "oceanFish",
+        "rainHD",
+        "stormRain",
+        "wavyLines",
+        "oceanWave",
+        "cloudDrift",
+        "shiny",
+        "lineShiny",
+        "pixelRun",
+        "nintendoPixel",
+        "crtScanlines",
+        "retroGame",
+        "wavyPattern",
+        "angledPattern",
+      ]
+      const hasSettings = effectsWithSettings.includes(settings.effect)
+      DOM.activeEffectSettingsContainer.style.display = hasSettings
+        ? "block"
+        : "none"
+    }
     DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
     DOM.pixelRunColorSetting.style.display =
       settings.effect === "pixelRun" ? "block" : "none"

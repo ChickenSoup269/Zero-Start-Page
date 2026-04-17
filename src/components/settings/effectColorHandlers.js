@@ -351,6 +351,24 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
+  DOM.rainbowDirLeftBtn?.addEventListener("click", () => {
+    updateSetting("rainbowDirection", "left")
+    saveSettings()
+    if (effectInstances.rainbowEffect)
+      effectInstances.rainbowEffect.setDirection("left")
+    DOM.rainbowDirLeftBtn.classList.add("active")
+    DOM.rainbowDirRightBtn.classList.remove("active")
+  })
+
+  DOM.rainbowDirRightBtn?.addEventListener("click", () => {
+    updateSetting("rainbowDirection", "right")
+    saveSettings()
+    if (effectInstances.rainbowEffect)
+      effectInstances.rainbowEffect.setDirection("right")
+    DOM.rainbowDirRightBtn.classList.add("active")
+    DOM.rainbowDirLeftBtn.classList.remove("active")
+  })
+
   // Falling Leaves Settled Skin selector
   const fallingLeavesSelect = document.getElementById(
     "falling-leaves-settled-skin",
