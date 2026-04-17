@@ -1681,15 +1681,22 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
                         &amp; Clock Format</span></h3>
                 <div class="section-content">
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px; background: rgba(255,255,255,0.06); padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-                        <div class="setting-item-row" style="margin: 0; padding: 6px; border: none; display: flex; flex-direction: column; align-items: center; gap: 6px; height: auto;">
-                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 600; font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-eye"></i> Show Clock</label>
-                            <input type="checkbox" id="show-clock-checkbox" checked style="transform: scale(1.1); margin: 0;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; background: rgba(255,255,255,0.06); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-eye" style="width: 14px;"></i> Show Clock</label>
+                            <input type="checkbox" id="show-clock-checkbox" checked style="transform: scale(0.8); margin: 0;">
                         </div>
-                        <div style="height: 1px; background: rgba(255,255,255,0.08); width: 60%; margin: 2px auto;"></div>
-                        <div class="setting-item-row" style="margin: 0; padding: 6px; border: none; display: flex; flex-direction: column; align-items: center; gap: 6px; height: auto;">
-                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock" style="font-weight: 600; font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
-                            <input type="checkbox" id="free-move-clock-checkbox" style="transform: scale(1.1); margin: 0;">
+                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-arrows-up-down-left-right" style="width: 14px;"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-clock-checkbox" style="transform: scale(0.8); margin: 0;">
+                        </div>
+                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-calendar-day" style="width: 14px;"></i> Abbr Day</label>
+                            <input type="checkbox" id="short-weekday-checkbox" style="transform: scale(0.8); margin: 0;">
+                        </div>
+                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-stopwatch" style="width: 14px;"></i> Hide Sec</label>
+                            <input type="checkbox" id="hide-seconds-checkbox" style="transform: scale(0.8); margin: 0;">
                         </div>
                     </div>
                     <div class="setting-group">
@@ -1737,17 +1744,6 @@
                             </select>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px;">
-                            <div class="setting-item-row" style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
-                                <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Short Weekday</label>
-                                <input type="checkbox" id="short-weekday-checkbox">
-                            </div>
-                            <div class="setting-item-row" style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
-                                <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Seconds</label>
-                                <input type="checkbox" id="hide-seconds-checkbox">
-                            </div>
-                        </div>
-
                         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px;">
                             <div class="setting-item no-margin-top">
                                 <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom priority</label>
@@ -1789,64 +1785,49 @@
                                 </option>
                             </select>
                         </div>
-                        <div id="sidestyle-align-setting" class="setting-item"
-                            style="margin-top: 0.6rem; display: none;">
-                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style
-                                Alignment</label>
-                            <select id="sidestyle-align-select">
-                                <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
-                                <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
-                                <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
-                            </select>
-                            <div
-                                style="margin-top: 0.8rem; display: flex; flex-direction: column; gap: 8px;">
-                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
-                                    Dashed Borders</label>
-                                <input type="checkbox" id="sidestyle-no-border-checkbox">
+                            <div id="sidestyle-align-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
+                                <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style Alignment</label>
+                                <select id="sidestyle-align-select">
+                                    <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
+                                    <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
+                                    <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
+                                </select>
+                                <div class="setting-item-row" style="margin-top: 0.8rem; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Dashed Borders</label>
+                                    <input type="checkbox" id="sidestyle-no-border-checkbox" style="transform: scale(0.8); margin: 0;">
+                                </div>
                             </div>
-                        </div>
-                        <div id="sidebar-clock-flip-setting" class="setting-item"
-                            style="margin-top: 0.6rem; display: none;">
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip
-                                    Vertical Layout</label>
-                                <input type="checkbox" id="sidebar-clock-flip-checkbox">
+                            <div id="sidebar-clock-flip-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
+                                <div class="setting-item-row" style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Flip Vertical Layout</label>
+                                    <input type="checkbox" id="sidebar-clock-flip-checkbox" style="transform: scale(0.8); margin: 0;">
+                                </div>
                             </div>
-                        </div>
-                        <div id="jp-style-language-setting" class="setting-item"
-                            style="margin-top: 0.6rem; display: none;">
-                            <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP Style
-                                Language</label>
-                            <select id="jp-style-language-select">
-                                <option value="auto" data-i18n="settings_jp_style_language_auto">Default (Follow System
-                                    Value)</option>
-                                <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
-                            </select>
-                        </div>
-                        <div id="analog-marker-mode-setting" class="setting-item"
-                            style="margin-top: 0.6rem; display: none;">
-                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker
-                                Mode</label>
-                            <select id="analog-marker-mode-select">
-                                <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
-                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12
-                                </option>
-                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show
-                                    Tick
-                                    12,3,6,9</option>
-                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
-                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9
-                                </option>
-                            </select>
-                        </div>
-                        <div id="analog-blur-bg-setting" class="setting-item"
-                            style="margin-top: 0.6rem; display: none;">
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background
-                                    (Analog)</label>
-                                <input type="checkbox" id="analog-blur-bg-checkbox">
+                            <div id="jp-style-language-setting" class="setting-item"
+                                style="margin-top: 0.6rem; display: none;">
+                                <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP Style Language</label>
+                                <select id="jp-style-language-select">
+                                    <option value="auto" data-i18n="settings_jp_style_language_auto">Default (Follow System Value)</option>
+                                    <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
+                                </select>
                             </div>
-                        </div>
+                            <div id="analog-marker-mode-setting" class="setting-item"
+                                style="margin-top: 0.6rem; display: none;">
+                                <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker Mode</label>
+                                <select id="analog-marker-mode-select">
+                                    <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
+                                    <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
+                                    <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick 12,3,6,9</option>
+                                    <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
+                                    <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9</option>
+                                </select>
+                            </div>
+                            <div id="analog-blur-bg-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
+                                <div class="setting-item-row" style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Blur Background (Analog)</label>
+                                    <input type="checkbox" id="analog-blur-bg-checkbox" style="transform: scale(0.8); margin: 0;">
+                                </div>
+                            </div>
 
                         <div class="setting-item" style="margin-top: 0.6rem;">
                             <label for="clock-font-target-select" data-i18n="settings_clock_font_target"><i
@@ -2049,23 +2030,23 @@
                         <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                            <div class="setting-item no-margin-top">
-                                <label for="bookmark-font-size-input" style="display: flex; justify-content: space-between;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-font-size-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                                     <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_bookmark_font_size">Font Size</span></span>
                                     <span id="bookmark-font-size-value" style="opacity: 0.7; font-family: monospace;">10px</span>
                                 </label>
                                 <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10" style="width: 100%;">
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="bookmark-icon-size-input" style="display: flex; justify-content: space-between;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-icon-size-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                                     <span><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
                                     <span id="bookmark-icon-size-value" style="opacity: 0.7; font-family: monospace;">42px</span>
                                 </label>
                                 <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42" style="width: 100%;">
                             </div>
-                            <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
-                                <label for="bookmark-gap-input" style="display: flex; justify-content: space-between;">
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-gap-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
                                     <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
                                     <span id="bookmark-gap-value" style="opacity: 0.7; font-family: monospace;">8px</span>
                                 </label>
