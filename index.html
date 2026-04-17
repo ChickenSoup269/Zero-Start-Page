@@ -507,13 +507,19 @@
                         <div class="bg-control-title"><i class="fa-solid fa-link"></i> Source & Colors</div>
                         <div class="background-inputs-grid">
                             <div class="full-row" style="position: relative;">
-                                <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder" class="full-width" />
-                                <input type="color" id="bg-color-picker" aria-label="Pick a color" class="bg-picker-input" />
+                                <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder"
+                                    class="full-width" />
+                                <input type="color" id="bg-color-picker" aria-label="Pick a color"
+                                    class="bg-picker-input" />
                             </div>
                             <div id="unsplash-credit" class="full-row unsplash-credit-text"></div>
-                            <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color">Save Color</button>
-                            <button id="save-current-bg-btn" class="secondary-btn" data-i18n="settings_save_bg_btn">Save Theme</button>
-                            <button id="remove-bg-btn" class="secondary-btn full-row" data-i18n="settings_remove_bg_btn"><i class="fa-solid fa-trash"></i> Reset Background</button>
+                            <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color">Save
+                                Color</button>
+                            <button id="save-current-bg-btn" class="secondary-btn" data-i18n="settings_save_bg_btn">Save
+                                Theme</button>
+                            <button id="remove-bg-btn" class="secondary-btn full-row"
+                                data-i18n="settings_remove_bg_btn"><i class="fa-solid fa-trash"></i> Reset
+                                Background</button>
                         </div>
                     </div>
 
@@ -522,8 +528,10 @@
                         <div class="bg-control-title"><i class="fa-brands fa-unsplash"></i> Unsplash Integration</div>
                         <div class="unsplash-input-wrapper">
                             <div class="unsplash-key-wrapper">
-                                <input type="password" id="unsplash-access-key-input" placeholder="Access Key" class="unsplash-key-input" />
-                                <button type="button" class="toggle-password-btn" id="toggle-unsplash-key" title="Toggle visibility">
+                                <input type="password" id="unsplash-access-key-input" placeholder="Access Key"
+                                    class="unsplash-key-input" />
+                                <button type="button" class="toggle-password-btn" id="toggle-unsplash-key"
+                                    title="Toggle visibility">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </div>
@@ -534,21 +542,26 @@
                         <select id="unsplash-category-select" class="full-width"></select>
                         <div class="unsplash-links">
                             <a href="https://unsplash.com/developers" target="_blank" class="unsplash-link-item">
-                                <i class="fa-solid fa-key"></i> <span data-i18n="settings_unsplash_api_info">Get free key</span>
+                                <i class="fa-solid fa-key"></i> <span data-i18n="settings_unsplash_api_info">Get free
+                                    key</span>
                             </a>
-                            <a href="https://www.youtube.com/watch?v=zQR_sWfoRTY" target="_blank" class="unsplash-link-item">
-                                <i class="fa-solid fa-play"></i> <span data-i18n="settings_unsplash_api_info_video">Tutorial</span>
+                            <a href="https://www.youtube.com/watch?v=zQR_sWfoRTY" target="_blank"
+                                class="unsplash-link-item">
+                                <i class="fa-solid fa-play"></i> <span
+                                    data-i18n="settings_unsplash_api_info_video">Tutorial</span>
                             </a>
                         </div>
                     </div>
 
                     <!-- Visual Effects Card -->
                     <div class="bg-control-card">
-                        <div class="bg-control-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Effects</div>
-                        
+                        <div class="bg-control-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Effects
+                        </div>
+
                         <div class="bg-slider-item">
                             <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-droplet"></i> <span data-i18n="settings_bg_blur">Blur</span></span>
+                                <span class="bg-slider-label"><i class="fa-solid fa-droplet"></i> <span
+                                        data-i18n="settings_bg_blur">Blur</span></span>
                                 <span id="bg-blur-value" class="bg-slider-value">0px</span>
                             </div>
                             <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
@@ -556,7 +569,8 @@
 
                         <div class="bg-slider-item">
                             <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span data-i18n="settings_bg_brightness">Brightness</span></span>
+                                <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span
+                                        data-i18n="settings_bg_brightness">Brightness</span></span>
                                 <span id="bg-brightness-value" class="bg-slider-value">100%</span>
                             </div>
                             <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100">
@@ -564,7 +578,8 @@
 
                         <div class="bg-slider-item">
                             <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-hourglass-half"></i> <span data-i18n="settings_bg_fadein">Fade-in</span></span>
+                                <span class="bg-slider-label"><i class="fa-solid fa-hourglass-half"></i> <span
+                                        data-i18n="settings_bg_fadein">Fade-in</span></span>
                                 <span id="bg-fadein-value" class="bg-slider-value">0.5s</span>
                             </div>
                             <input type="range" id="bg-fadein-input" min="0" max="5" step="0.1" value="0.5">
@@ -573,15 +588,17 @@
 
                     <!-- Layout & Fit Card -->
                     <div id="bg-position-setting" class="bg-control-card" style="display: none;">
-                        <div class="bg-control-title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Layout & Fit</div>
+                        <div class="bg-control-title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Layout & Fit
+                        </div>
                         <div class="setting-item no-margin-top">
                             <label data-i18n="settings_bg_fit">Image Fit</label>
                             <select id="bg-size-select">
                                 <option value="cover" data-i18n="settings_bg_fit_cover">Cover (crop)</option>
-                                <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)</option>
+                                <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)
+                                </option>
                             </select>
                         </div>
-                        
+
                         <div class="layout-fit-grid">
                             <div class="bg-slider-item">
                                 <div class="bg-slider-info">
@@ -603,24 +620,32 @@
                     <!-- Local Themes Gallery Card -->
                     <div class="bg-control-card">
                         <div class="bg-control-title">
-                            <i class="fa-solid fa-images"></i> 
+                            <i class="fa-solid fa-images"></i>
                             <span data-i18n="settings_local_bg">Local Themes</span>
                             <span id="count-bg" style="margin-left: auto; opacity: 0.6;"></span>
                         </div>
-                        <div class="local-bg-gallery-controls" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="local-bg-gallery-controls"
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                             <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
-                            <input type="file" id="local-video-upload" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />
-                            <button id="upload-local-image-btn" class="secondary-btn" data-i18n="settings_upload_image"><i class="fa-solid fa-image"></i> Image</button>
-                            <button id="upload-local-video-btn" class="secondary-btn" data-i18n="settings_upload_video"><i class="fa-solid fa-video"></i> Video</button>
-                            <button id="bg-select-mode-btn" class="secondary-btn full-row" data-i18n="bg_select_mode"><i class="fa-solid fa-check-double"></i> Batch Manage</button>
+                            <input type="file" id="local-video-upload"
+                                accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />
+                            <button id="upload-local-image-btn" class="secondary-btn"
+                                data-i18n="settings_upload_image"><i class="fa-solid fa-image"></i> Image</button>
+                            <button id="upload-local-video-btn" class="secondary-btn"
+                                data-i18n="settings_upload_video"><i class="fa-solid fa-video"></i> Video</button>
+                            <button id="bg-select-mode-btn" class="secondary-btn full-row" data-i18n="bg_select_mode"><i
+                                    class="fa-solid fa-check-double"></i> Batch Manage</button>
                         </div>
-                        
+
                         <div id="bg-select-toolbar" class="bg-select-toolbar" style="display:none;">
                             <span id="bg-select-count" class="bg-select-count">0 selected</span>
                             <div style="display: flex; gap: 6px;">
-                                <button id="bg-select-all-btn" class="icon-btn" title="All"><i class="fa-solid fa-check-double"></i></button>
-                                <button id="bg-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                <button id="bg-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                                <button id="bg-select-all-btn" class="icon-btn" title="All"><i
+                                        class="fa-solid fa-check-double"></i></button>
+                                <button id="bg-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                        class="fa-solid fa-trash"></i></button>
+                                <button id="bg-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                        class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>
 
@@ -630,7 +655,8 @@
             </div>
 
             <div class="setting-group">
-                <div class="setting-label"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent Color</span></div>
+                <div class="setting-label"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent
+                        Color</span></div>
                 <button id="accent-color-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
                     <i class="fa-solid fa-eye-slash"></i>
                     <span id="accent-color-toggle-label" data-i18n="settings_accent_close">Hide Controls</span>
@@ -638,60 +664,113 @@
                 <div id="accent-color-settings-body" class="accent-color-selector">
                     <div class="accent-color-presets">
                         <!-- Group: Modern & Vibrant -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_modern">Modern & Vibrant</div>
-                        <button class="accent-color-preset" data-color="#6366f1" style="background-color: #6366f1" title="Indigo"></button>
-                        <button class="accent-color-preset" data-color="#8b5cf6" style="background-color: #8b5cf6" title="Violet"></button>
-                        <button class="accent-color-preset" data-color="#d946ef" style="background-color: #d946ef" title="Fuchsia"></button>
-                        <button class="accent-color-preset" data-color="#ec4899" style="background-color: #ec4899" title="Pink"></button>
-                        <button class="accent-color-preset" data-color="#f43f5e" style="background-color: #f43f5e" title="Rose"></button>
-                        <button class="accent-color-preset" data-color="#ef4444" style="background-color: #ef4444" title="Red"></button>
-                        <button class="accent-color-preset" data-color="#f97316" style="background-color: #f97316" title="Orange"></button>
-                        <button class="accent-color-preset" data-color="#f59e0b" style="background-color: #f59e0b" title="Amber"></button>
-                        <button class="accent-color-preset" data-color="#eab308" style="background-color: #eab308" title="Yellow"></button>
-                        <button class="accent-color-preset" data-color="#84cc16" style="background-color: #84cc16" title="Lime"></button>
-                        <button class="accent-color-preset" data-color="#22c55e" style="background-color: #22c55e" title="Green"></button>
-                        <button class="accent-color-preset" data-color="#10b981" style="background-color: #10b981" title="Emerald"></button>
-                        <button class="accent-color-preset" data-color="#14b8a6" style="background-color: #14b8a6" title="Teal"></button>
-                        <button class="accent-color-preset" data-color="#06b6d4" style="background-color: #06b6d4" title="Cyan"></button>
-                        <button class="accent-color-preset" data-color="#0ea5e9" style="background-color: #0ea5e9" title="Sky"></button>
-                        <button class="accent-color-preset" data-color="#3b82f6" style="background-color: #3b82f6" title="Blue"></button>
+                        <div class="color-group-label"
+                            style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;"
+                            data-i18n="settings_accent_modern">Modern & Vibrant</div>
+                        <button class="accent-color-preset" data-color="#6366f1" style="background-color: #6366f1"
+                            title="Indigo"></button>
+                        <button class="accent-color-preset" data-color="#8b5cf6" style="background-color: #8b5cf6"
+                            title="Violet"></button>
+                        <button class="accent-color-preset" data-color="#d946ef" style="background-color: #d946ef"
+                            title="Fuchsia"></button>
+                        <button class="accent-color-preset" data-color="#ec4899" style="background-color: #ec4899"
+                            title="Pink"></button>
+                        <button class="accent-color-preset" data-color="#f43f5e" style="background-color: #f43f5e"
+                            title="Rose"></button>
+                        <button class="accent-color-preset" data-color="#ef4444" style="background-color: #ef4444"
+                            title="Red"></button>
+                        <button class="accent-color-preset" data-color="#f97316" style="background-color: #f97316"
+                            title="Orange"></button>
+                        <button class="accent-color-preset" data-color="#f59e0b" style="background-color: #f59e0b"
+                            title="Amber"></button>
+                        <button class="accent-color-preset" data-color="#eab308" style="background-color: #eab308"
+                            title="Yellow"></button>
+                        <button class="accent-color-preset" data-color="#84cc16" style="background-color: #84cc16"
+                            title="Lime"></button>
+                        <button class="accent-color-preset" data-color="#22c55e" style="background-color: #22c55e"
+                            title="Green"></button>
+                        <button class="accent-color-preset" data-color="#10b981" style="background-color: #10b981"
+                            title="Emerald"></button>
+                        <button class="accent-color-preset" data-color="#14b8a6" style="background-color: #14b8a6"
+                            title="Teal"></button>
+                        <button class="accent-color-preset" data-color="#06b6d4" style="background-color: #06b6d4"
+                            title="Cyan"></button>
+                        <button class="accent-color-preset" data-color="#0ea5e9" style="background-color: #0ea5e9"
+                            title="Sky"></button>
+                        <button class="accent-color-preset" data-color="#3b82f6" style="background-color: #3b82f6"
+                            title="Blue"></button>
 
                         <!-- Group: Pastel & Soft -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_pastel">Pastel & Soft</div>
-                        <button class="accent-color-preset" data-color="#fda4af" style="background-color: #fda4af" title="Soft Rose"></button>
-                        <button class="accent-color-preset" data-color="#f9a8d4" style="background-color: #f9a8d4" title="Soft Pink"></button>
-                        <button class="accent-color-preset" data-color="#f0abfc" style="background-color: #f0abfc" title="Soft Fuchsia"></button>
-                        <button class="accent-color-preset" data-color="#d8b4fe" style="background-color: #d8b4fe" title="Soft Purple"></button>
-                        <button class="accent-color-preset" data-color="#c4b5fd" style="background-color: #c4b5fd" title="Soft Violet"></button>
-                        <button class="accent-color-preset" data-color="#a5b4fc" style="background-color: #a5b4fc" title="Soft Indigo"></button>
-                        <button class="accent-color-preset" data-color="#93c5fd" style="background-color: #93c5fd" title="Soft Blue"></button>
-                        <button class="accent-color-preset" data-color="#7dd3fc" style="background-color: #7dd3fc" title="Soft Sky"></button>
-                        <button class="accent-color-preset" data-color="#67e8f9" style="background-color: #67e8f9" title="Soft Cyan"></button>
-                        <button class="accent-color-preset" data-color="#5eead4" style="background-color: #5eead4" title="Soft Teal"></button>
-                        <button class="accent-color-preset" data-color="#6ee7b7" style="background-color: #6ee7b7" title="Soft Emerald"></button>
-                        <button class="accent-color-preset" data-color="#86efac" style="background-color: #86efac" title="Soft Green"></button>
-                        <button class="accent-color-preset" data-color="#bef264" style="background-color: #bef264" title="Soft Lime"></button>
-                        <button class="accent-color-preset" data-color="#fde047" style="background-color: #fde047" title="Soft Yellow"></button>
-                        <button class="accent-color-preset" data-color="#fcd34d" style="background-color: #fcd34d" title="Soft Amber"></button>
-                        <button class="accent-color-preset" data-color="#fdba74" style="background-color: #fdba74" title="Soft Orange"></button>
-                        
+                        <div class="color-group-label"
+                            style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;"
+                            data-i18n="settings_accent_pastel">Pastel & Soft</div>
+                        <button class="accent-color-preset" data-color="#fda4af" style="background-color: #fda4af"
+                            title="Soft Rose"></button>
+                        <button class="accent-color-preset" data-color="#f9a8d4" style="background-color: #f9a8d4"
+                            title="Soft Pink"></button>
+                        <button class="accent-color-preset" data-color="#f0abfc" style="background-color: #f0abfc"
+                            title="Soft Fuchsia"></button>
+                        <button class="accent-color-preset" data-color="#d8b4fe" style="background-color: #d8b4fe"
+                            title="Soft Purple"></button>
+                        <button class="accent-color-preset" data-color="#c4b5fd" style="background-color: #c4b5fd"
+                            title="Soft Violet"></button>
+                        <button class="accent-color-preset" data-color="#a5b4fc" style="background-color: #a5b4fc"
+                            title="Soft Indigo"></button>
+                        <button class="accent-color-preset" data-color="#93c5fd" style="background-color: #93c5fd"
+                            title="Soft Blue"></button>
+                        <button class="accent-color-preset" data-color="#7dd3fc" style="background-color: #7dd3fc"
+                            title="Soft Sky"></button>
+                        <button class="accent-color-preset" data-color="#67e8f9" style="background-color: #67e8f9"
+                            title="Soft Cyan"></button>
+                        <button class="accent-color-preset" data-color="#5eead4" style="background-color: #5eead4"
+                            title="Soft Teal"></button>
+                        <button class="accent-color-preset" data-color="#6ee7b7" style="background-color: #6ee7b7"
+                            title="Soft Emerald"></button>
+                        <button class="accent-color-preset" data-color="#86efac" style="background-color: #86efac"
+                            title="Soft Green"></button>
+                        <button class="accent-color-preset" data-color="#bef264" style="background-color: #bef264"
+                            title="Soft Lime"></button>
+                        <button class="accent-color-preset" data-color="#fde047" style="background-color: #fde047"
+                            title="Soft Yellow"></button>
+                        <button class="accent-color-preset" data-color="#fcd34d" style="background-color: #fcd34d"
+                            title="Soft Amber"></button>
+                        <button class="accent-color-preset" data-color="#fdba74" style="background-color: #fdba74"
+                            title="Soft Orange"></button>
+
                         <!-- Group: Dark & Monochrome -->
-                        <div class="color-group-label" style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;" data-i18n="settings_accent_dark">Dark & Monochrome</div>
-                        <button class="accent-color-preset" data-color="#0f172a" style="background-color: #0f172a" title="Slate Dark"></button>
-                        <button class="accent-color-preset" data-color="#1e293b" style="background-color: #1e293b" title="Slate"></button>
-                        <button class="accent-color-preset" data-color="#334155" style="background-color: #334155" title="Slate Light"></button>
-                        <button class="accent-color-preset" data-color="#3f3f46" style="background-color: #3f3f46" title="Zinc"></button>
-                        <button class="accent-color-preset" data-color="#52525b" style="background-color: #52525b" title="Zinc Light"></button>
-                        <button class="accent-color-preset" data-color="#18181b" style="background-color: #18181b" title="Zinc Dark"></button>
-                        <button class="accent-color-preset" data-color="#ffffff" style="background-color: #ffffff; border: 1px solid #ddd;" title="Pure White"></button>
-                        <button class="accent-color-preset" data-color="#e2e8f0" style="background-color: #e2e8f0" title="Slate 200"></button>
+                        <div class="color-group-label"
+                            style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;"
+                            data-i18n="settings_accent_dark">Dark & Monochrome</div>
+                        <button class="accent-color-preset" data-color="#0f172a" style="background-color: #0f172a"
+                            title="Slate Dark"></button>
+                        <button class="accent-color-preset" data-color="#1e293b" style="background-color: #1e293b"
+                            title="Slate"></button>
+                        <button class="accent-color-preset" data-color="#334155" style="background-color: #334155"
+                            title="Slate Light"></button>
+                        <button class="accent-color-preset" data-color="#3f3f46" style="background-color: #3f3f46"
+                            title="Zinc"></button>
+                        <button class="accent-color-preset" data-color="#52525b" style="background-color: #52525b"
+                            title="Zinc Light"></button>
+                        <button class="accent-color-preset" data-color="#18181b" style="background-color: #18181b"
+                            title="Zinc Dark"></button>
+                        <button class="accent-color-preset" data-color="#ffffff"
+                            style="background-color: #ffffff; border: 1px solid #ddd;" title="Pure White"></button>
+                        <button class="accent-color-preset" data-color="#e2e8f0" style="background-color: #e2e8f0"
+                            title="Slate 200"></button>
                     </div>
-                    <div class="accent-color-custom-section" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 8px; display: block;" data-i18n="settings_custom_color_label">Custom Color</label>
-                        <div class="accent-color-picker-wrapper" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                            <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 4px; flex: 1; min-width: 150px; transition: all 0.3s ease;">
-                                <input type="color" id="accent-color-picker" title="Custom Color" style="width: 32px; height: 32px; border: none; border-radius: 6px; padding: 0; cursor: pointer; background: transparent; flex-shrink: 0;" />
-                                <input type="text" id="accent-color-hex-input" placeholder="#HEX" style="background: transparent; border: none; color: #fff; padding: 4px 8px; width: 100%; outline: none; font-family: monospace; font-size: 0.95rem; font-weight: 600;" maxlength="7" />
+                    <div class="accent-color-custom-section"
+                        style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 8px; display: block;"
+                            data-i18n="settings_custom_color_label">Custom Color</label>
+                        <div class="accent-color-picker-wrapper"
+                            style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <div class="custom-color-input-group"
+                                style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 4px; flex: 1; min-width: 150px; transition: all 0.3s ease;">
+                                <input type="color" id="accent-color-picker" title="Custom Color"
+                                    style="width: 32px; height: 32px; border: none; border-radius: 6px; padding: 0; cursor: pointer; background: transparent; flex-shrink: 0;" />
+                                <input type="text" id="accent-color-hex-input" placeholder="#HEX"
+                                    style="background: transparent; border: none; color: #fff; padding: 4px 8px; width: 100%; outline: none; font-family: monospace; font-size: 0.95rem; font-weight: 600;"
+                                    maxlength="7" />
                             </div>
                             <button id="random-accent-color-btn" class="secondary-btn" title="Random Color"
                                 data-i18n-title="settings_accent_random" style="padding: 0 12px; height: 42px;">
@@ -702,7 +781,8 @@
                                 <i class="fa-solid fa-floppy-disk"></i>
                             </button>
                         </div>
-                        <div id="user-accent-colors-gallery" class="user-colors-gallery" style="margin-top: 10px;"></div>
+                        <div id="user-accent-colors-gallery" class="user-colors-gallery" style="margin-top: 10px;">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -805,9 +885,12 @@
                 <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
                     <span id="gradient-select-count" class="bg-select-count">0 selected</span>
                     <div style="display: flex; gap: 6px;">
-                        <button id="gradient-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
-                        <button id="gradient-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        <button id="gradient-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                        <button id="gradient-select-all-btn" class="icon-btn" title="Select All"><i
+                                class="fa-solid fa-check-double"></i></button>
+                        <button id="gradient-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                class="fa-solid fa-trash"></i></button>
+                        <button id="gradient-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
@@ -919,9 +1002,12 @@
                             style="display:none; margin-bottom: 10px;">
                             <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
                             <div style="display: flex; gap: 6px;">
-                                <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
-                                <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                                <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i
+                                        class="fa-solid fa-check-double"></i></button>
+                                <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn"
+                                    title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                        class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>
                         <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
@@ -942,137 +1028,186 @@
                 <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
 
                     <!-- Core Shape & Geometry -->
-                    <div class="setting-group" style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-shapes"></i> Geometry</h4>
+                    <div class="setting-group"
+                        style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                class="fa-solid fa-shapes"></i> Geometry</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-lines" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_lines">Lines</span>
-                                    <span id="svg-wave-lines-value" style="opacity: 0.8; font-family: monospace;">5</span>
+                                    <span id="svg-wave-lines-value"
+                                        style="opacity: 0.8; font-family: monospace;">5</span>
                                 </label>
                                 <input type="range" id="svg-wave-lines" min="1" max="50" value="5" style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-smoothness" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_smoothness">Smoothness</span>
-                                    <span id="svg-wave-smoothness-value" style="opacity: 0.8; font-family: monospace;">0.5</span>
+                                    <span id="svg-wave-smoothness-value"
+                                        style="opacity: 0.8; font-family: monospace;">0.5</span>
                                 </label>
-                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5" style="width: 100%;">
+                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5"
+                                    style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-craziness" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_craziness">Craziness</span>
-                                    <span id="svg-wave-craziness-value" style="opacity: 0.8; font-family: monospace;">30</span>
+                                    <span id="svg-wave-craziness-value"
+                                        style="opacity: 0.8; font-family: monospace;">30</span>
                                 </label>
-                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30" style="width: 100%;">
+                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30"
+                                    style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-offset-x" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_offset_x">Offset X</span>
-                                    <span id="svg-wave-offset-x-value" style="opacity: 0.8; font-family: monospace;">0</span>
+                                    <span id="svg-wave-offset-x-value"
+                                        style="opacity: 0.8; font-family: monospace;">0</span>
                                 </label>
-                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0" style="width: 100%;">
+                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0"
+                                    style="width: 100%;">
                             </div>
                         </div>
                     </div>
 
                     <!-- Amplitude & Angle -->
-                    <div class="setting-group" style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
+                    <div class="setting-group"
+                        style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-amp-x" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
-                                    <span id="svg-wave-amp-x-value" style="opacity: 0.8; font-family: monospace;">200</span>
+                                    <span id="svg-wave-amp-x-value"
+                                        style="opacity: 0.8; font-family: monospace;">200</span>
                                 </label>
-                                <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200" style="width: 100%;">
+                                <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200"
+                                    style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label for="svg-wave-amp-y" style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
-                                    <span id="svg-wave-amp-y-value" style="opacity: 0.8; font-family: monospace;">80</span>
+                                    <span id="svg-wave-amp-y-value"
+                                        style="opacity: 0.8; font-family: monospace;">80</span>
                                 </label>
-                                <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80" style="width: 100%;">
+                                <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80"
+                                    style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
-                                <div class="wave-angle-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <div class="wave-angle-header"
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                                     <label for="svg-wave-angle" style="margin: 0;">
                                         <span data-i18n="settings_svg_wave_angle">Angle</span>:
-                                        <span id="svg-wave-angle-value" style="opacity: 0.8; font-family: monospace;">0</span>°
+                                        <span id="svg-wave-angle-value"
+                                            style="opacity: 0.8; font-family: monospace;">0</span>°
                                     </label>
                                     <div class="wave-angle-presets" style="display: flex; gap: 4px;">
-                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270" title="Left"><i class="fa-solid fa-arrow-left"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90" title="Right"><i class="fa-solid fa-arrow-right"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0" title="Top"><i class="fa-solid fa-arrow-up"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn" style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180" title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn"
+                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270"
+                                            title="Left"><i class="fa-solid fa-arrow-left"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn"
+                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90"
+                                            title="Right"><i class="fa-solid fa-arrow-right"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn"
+                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0" title="Top"><i
+                                                class="fa-solid fa-arrow-up"></i></button>
+                                        <button class="wave-angle-preset-btn secondary-btn"
+                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180"
+                                            title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
                                     </div>
                                 </div>
-                                <input type="range" id="svg-wave-angle" min="-360" max="360" value="0" style="width: 100%;">
+                                <input type="range" id="svg-wave-angle" min="-360" max="360" value="0"
+                                    style="width: 100%;">
                             </div>
                         </div>
                     </div>
 
-                    <div class="setting-item-row" style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 8px;">
-                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill" style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill Shape</label>
+                    <div class="setting-item-row"
+                        style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 8px;">
+                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill"
+                            style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill Shape</label>
                         <input type="checkbox" id="svg-wave-fill" checked>
                     </div>
 
                     <!-- Colors -->
-                    <div class="setting-group" style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-palette"></i> Colors</h4>
-                        
-                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <label data-i18n="settings_svg_wave_start_color" style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
-                            <div id="svg-wave-start-preview" style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);"></div>
+                    <div class="setting-group"
+                        style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                class="fa-solid fa-palette"></i> Colors</h4>
+
+                        <div
+                            style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <label data-i18n="settings_svg_wave_start_color"
+                                style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
+                            <div id="svg-wave-start-preview"
+                                style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
+                            </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div>
-                                    <label for="svg-wave-start-hue" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-start-hue"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_hue">Hue</span>
                                         <span id="svg-wave-start-hue-value" style="opacity:0.8;">200</span>
                                     </label>
-                                    <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200" style="width: 100%;">
+                                    <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200"
+                                        style="width: 100%;">
                                 </div>
                                 <div>
-                                    <label for="svg-wave-start-sat" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-start-sat"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_sat">Sat.</span>
                                         <span id="svg-wave-start-sat-value" style="opacity:0.8;">70%</span>
                                     </label>
-                                    <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70" style="width: 100%;">
+                                    <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70"
+                                        style="width: 100%;">
                                 </div>
                                 <div style="grid-column: 1 / -1;">
-                                    <label for="svg-wave-start-light" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-start-light"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_light">Light</span>
                                         <span id="svg-wave-start-light-value" style="opacity:0.8;">40%</span>
                                     </label>
-                                    <input type="range" id="svg-wave-start-light" min="0" max="100" value="40" style="width: 100%;">
+                                    <input type="range" id="svg-wave-start-light" min="0" max="100" value="40"
+                                        style="width: 100%;">
                                 </div>
                             </div>
                         </div>
 
                         <div>
-                            <label data-i18n="settings_svg_wave_end_color" style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
-                            <div id="svg-wave-end-preview" style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);"></div>
+                            <label data-i18n="settings_svg_wave_end_color"
+                                style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
+                            <div id="svg-wave-end-preview"
+                                style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
+                            </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div>
-                                    <label for="svg-wave-end-hue" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-end-hue"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_hue">Hue</span>
                                         <span id="svg-wave-end-hue-value" style="opacity:0.8;">280</span>
                                     </label>
-                                    <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280" style="width: 100%;">
+                                    <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280"
+                                        style="width: 100%;">
                                 </div>
                                 <div>
-                                    <label for="svg-wave-end-sat" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-end-sat"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_sat">Sat.</span>
                                         <span id="svg-wave-end-sat-value" style="opacity:0.8;">70%</span>
                                     </label>
-                                    <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70" style="width: 100%;">
+                                    <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70"
+                                        style="width: 100%;">
                                 </div>
                                 <div style="grid-column: 1 / -1;">
-                                    <label for="svg-wave-end-light" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                    <label for="svg-wave-end-light"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                         <span data-i18n="settings_svg_wave_light">Light</span>
                                         <span id="svg-wave-end-light-value" style="opacity:0.8;">30%</span>
                                     </label>
-                                    <input type="range" id="svg-wave-end-light" min="0" max="100" value="30" style="width: 100%;">
+                                    <input type="range" id="svg-wave-end-light" min="0" max="100" value="30"
+                                        style="width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -1081,17 +1216,22 @@
                     <!-- Action Buttons -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                         <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize">
-                            <i class="fa-solid fa-dice"></i> <span data-i18n="settings_svg_wave_randomize">Randomize</span>
+                            <i class="fa-solid fa-dice"></i> <span
+                                data-i18n="settings_svg_wave_randomize">Randomize</span>
                         </button>
-                        <button id="svg-wave-crazy-btn" class="secondary-btn" style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
-                            <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy Mode!</span>
+                        <button id="svg-wave-crazy-btn" class="secondary-btn"
+                            style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
+                            <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy
+                                Mode!</span>
                         </button>
                     </div>
                     <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px;">
-                        <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save Wave</span>
+                        <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save
+                            Wave</span>
                     </button>
                     <button id="svg-wave-close-btn" class="secondary-btn full-width">
-                        <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close Controls</span>
+                        <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close
+                            Controls</span>
                     </button>
                 </div>
 
@@ -1110,9 +1250,12 @@
                         style="display:none; margin-bottom: 10px;">
                         <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
                         <div style="display: flex; gap: 6px;">
-                            <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i class="fa-solid fa-check-double"></i></button>
-                            <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                            <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i class="fa-solid fa-xmark"></i></button>
+                            <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i
+                                    class="fa-solid fa-check-double"></i></button>
+                            <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                    class="fa-solid fa-trash"></i></button>
+                            <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                    class="fa-solid fa-xmark"></i></button>
                         </div>
                     </div>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
@@ -1131,7 +1274,8 @@
                     <input type="text" id="effect-search" class="effect-search-input" placeholder="Search effects..."
                         autocomplete="off">
                     <div id="effect-grid" class="effect-grid">
-                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 10px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
+                        <div class="effect-category-header"
+                            style="grid-column: 1 / -1; margin: 10px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
                             <i class="fa-solid fa-layer-group"></i>
                             <span data-i18n="effect_overlay_header">Overlay Effects (No Background)</span>
                         </div>
@@ -1310,7 +1454,8 @@
                             <span class="effect-name" data-i18n="effect_angled_pattern">Angled Pattern</span>
                         </button>
 
-                        <div class="effect-category-header" style="grid-column: 1 / -1; margin: 15px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
+                        <div class="effect-category-header"
+                            style="grid-column: 1 / -1; margin: 15px 0 5px 0; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--accent-color); display: flex; align-items: center; gap: 10px; border-left: 3px solid var(--accent-color);">
                             <i class="fa-solid fa-image"></i>
                             <span data-i18n="effect_background_header">Background Effects (Has Background)</span>
                         </div>
@@ -1336,7 +1481,8 @@
                     </div>
 
                     <!-- Active Effect Settings (Card) -->
-                    <div id="active-effect-settings-container" class="bg-control-card" style="display: none; margin-top: 15px; animation: fadeIn 0.3s ease;">
+                    <div id="active-effect-settings-container" class="bg-control-card"
+                        style="display: none; margin-top: 15px; animation: fadeIn 0.3s ease;">
                         <div class="bg-control-title">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                             <span data-i18n="effect_customization">Effect Settings</span>
@@ -1344,7 +1490,8 @@
                         <div id="active-effect-settings-body">
                             <!-- Hacker Color -->
                             <div id="hacker-color-setting" class="setting-item" style="display: none;">
-                                <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text Color</label>
+                                <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text
+                                    Color</label>
                                 <input type="color" id="hacker-color-picker" value="#00FF00" />
                             </div>
 
@@ -1356,7 +1503,8 @@
 
                             <!-- Northern Lights Color -->
                             <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
-                                <label for="northern-lights-color-picker" data-i18n="setting_northern_lights_color">Aurora
+                                <label for="northern-lights-color-picker"
+                                    data-i18n="setting_northern_lights_color">Aurora
                                     Color</label>
                                 <input type="color" id="northern-lights-color-picker" value="#00ffcc" />
                             </div>
@@ -1371,7 +1519,8 @@
                                     data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
                                 <select id="pixel-cubes-shape-select" style="width: 100%;">
                                     <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
-                                    <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)</option>
+                                    <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)
+                                    </option>
                                     <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
                                 </select>
                             </div>
@@ -1447,7 +1596,8 @@
 
                             <!-- Network Color (M:i) -->
                             <div id="network-color-setting" class="setting-item" style="display: none;">
-                                <label for="network-color-picker" data-i18n="setting_network_color">Network Color</label>
+                                <label for="network-color-picker" data-i18n="setting_network_color">Network
+                                    Color</label>
                                 <input type="color" id="network-color-picker" value="#00bcd4" />
                             </div>
 
@@ -1478,7 +1628,8 @@
                                     <option value="simple" data-i18n="leaf_skin_simple">Simple Leaves</option>
                                     <option value="ginkgo" data-i18n="leaf_skin_ginkgo">Ginkgo Leaves</option>
                                     <option value="cherry" data-i18n="leaf_skin_cherry">Cherry Blossoms</option>
-                                    <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals</option>
+                                    <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals
+                                    </option>
                                     <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
                                 </select>
                             </div>
@@ -1515,7 +1666,8 @@
                             </div>
                             <!-- Retro Game Type -->
                             <div id="retro-game-type-setting" class="setting-item" style="display: none;">
-                                <label for="retro-game-type-select" data-i18n="setting_retro_game_type">Game Type</label>
+                                <label for="retro-game-type-select" data-i18n="setting_retro_game_type">Game
+                                    Type</label>
                                 <select id="retro-game-type-select">
                                     <option value="space_invaders" data-i18n="retro_game_space_invaders">Space
                                         Invaders</option>
@@ -1582,7 +1734,8 @@
                             <!-- Cursor Trail Random Colors -->
                             <div id="cursor-trail-random-setting" class="setting-item-row"
                                 style="display: none; margin-top: 0.6rem;">
-                                <label for="cursor-trail-random-checkbox" data-i18n="settings_cursor_trail_random">Random
+                                <label for="cursor-trail-random-checkbox"
+                                    data-i18n="settings_cursor_trail_random">Random
                                     Colors</label>
                                 <input type="checkbox" id="cursor-trail-random-checkbox">
                             </div>
@@ -1678,7 +1831,8 @@
                         <small
                             style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;"
                             data-i18n="settings_font_restriction_note">
-                            <i class="fa-solid fa-circle-info"></i> Note: 'Electroharmonix', 'Anurati' and 'E1234' fonts only
+                            <i class="fa-solid fa-circle-info"></i> Note: 'Electroharmonix', 'Anurati' and 'E1234' fonts
+                            only
                             apply to Clock & Date.
                         </small>
                     </div>
@@ -1722,39 +1876,60 @@
                 <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
                         &amp; Clock Format</span></h3>
                 <div class="section-content">
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; background: rgba(255,255,255,0.06); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                            <label for="show-clock-checkbox" data-i18n="settings_show_clock" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-eye" style="width: 14px;"></i> Show Clock</label>
-                            <input type="checkbox" id="show-clock-checkbox" checked style="transform: scale(0.8); margin: 0;">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px; background: rgba(255,255,255,0.06); padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                        <div class="setting-item-row"
+                            style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="show-clock-checkbox" data-i18n="settings_show_clock"
+                                style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i
+                                    class="fa-solid fa-eye" style="width: 14px;"></i> Show Clock</label>
+                            <input type="checkbox" id="show-clock-checkbox" checked
+                                style="transform: scale(0.8); margin: 0;">
                         </div>
-                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-arrows-up-down-left-right" style="width: 14px;"></i> Free Move</label>
-                            <input type="checkbox" id="free-move-clock-checkbox" style="transform: scale(0.8); margin: 0;">
+                        <div class="setting-item-row"
+                            style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock"
+                                style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i
+                                    class="fa-solid fa-arrows-up-down-left-right" style="width: 14px;"></i> Free
+                                Move</label>
+                            <input type="checkbox" id="free-move-clock-checkbox"
+                                style="transform: scale(0.8); margin: 0;">
                         </div>
-                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-calendar-day" style="width: 14px;"></i> Abbr Day</label>
-                            <input type="checkbox" id="short-weekday-checkbox" style="transform: scale(0.8); margin: 0;">
+                        <div class="setting-item-row"
+                            style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday"
+                                style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i
+                                    class="fa-solid fa-calendar-day" style="width: 14px;"></i> Abbr Day</label>
+                            <input type="checkbox" id="short-weekday-checkbox"
+                                style="transform: scale(0.8); margin: 0;">
                         </div>
-                        <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i class="fa-solid fa-stopwatch" style="width: 14px;"></i> Hide Sec</label>
+                        <div class="setting-item-row"
+                            style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds"
+                                style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;"><i
+                                    class="fa-solid fa-stopwatch" style="width: 14px;"></i> Hide Sec</label>
                             <input type="checkbox" id="hide-seconds-checkbox" style="transform: scale(0.8); margin: 0;">
                         </div>
                     </div>
                     <div class="setting-group">
                         <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
                             <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_date_format_style" for="date-format-select"><i class="fa-solid fa-calendar-day"></i> Date Format</label>
+                                <label data-i18n="settings_date_format_style" for="date-format-select"><i
+                                        class="fa-solid fa-calendar-day"></i> Date Format</label>
                                 <select id="date-format-select">
-                                    <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
+                                    <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
+                                    </option>
                                     <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
                                     <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
                                     <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
                                     <option value="year" data-i18n="settings_date_format_year">Year only</option>
-                                    <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
+                                    <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only
+                                    </option>
                                 </select>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="time-format-select" data-i18n="settings_time_format"><i class="fa-solid fa-clock"></i> Time Format</label>
+                                <label for="time-format-select" data-i18n="settings_time_format"><i
+                                        class="fa-solid fa-clock"></i> Time Format</label>
                                 <select id="time-format-select">
                                     <option value="24h">24h</option>
                                     <option value="12h">12h (AM/PM)</option>
@@ -1763,7 +1938,8 @@
                         </div>
 
                         <div class="setting-item" style="margin-top: 10px;">
-                            <label for="timezone-select" data-i18n="settings_timezone"><i class="fa-solid fa-globe"></i> Timezone</label>
+                            <label for="timezone-select" data-i18n="settings_timezone"><i class="fa-solid fa-globe"></i>
+                                Timezone</label>
                             <select id="timezone-select">
                                 <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
                                 <option value="UTC">UTC / GMT</option>
@@ -1787,14 +1963,18 @@
 
                         <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px;">
                             <div class="setting-item no-margin-top">
-                                <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom priority</label>
+                                <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
+                                    priority</label>
                                 <select id="clock-date-priority-select">
-                                    <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
-                                    <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday</option>
+                                    <option value="none" data-i18n="settings_clock_date_priority_none">No priority
+                                    </option>
+                                    <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize
+                                        weekday</option>
                                 </select>
                             </div>
                             <div class="setting-item no-margin-top">
-                                <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE Letters</label>
+                                <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                    Letters</label>
                                 <select id="hue-text-mode-select">
                                     <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
                                     <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
@@ -1805,7 +1985,8 @@
                         </div>
 
                         <div class="setting-item" style="margin-top: 10px;">
-                            <label for="clock-date-style-select" data-i18n="settings_clock_date_style"><i class="fa-solid fa-swatchbook"></i> Clock/Date Style</label>
+                            <label for="clock-date-style-select" data-i18n="settings_clock_date_style"><i
+                                    class="fa-solid fa-swatchbook"></i> Clock/Date Style</label>
                             <select id="clock-date-style-select">
 
                                 <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
@@ -1826,49 +2007,71 @@
                                 </option>
                             </select>
                         </div>
-                            <div id="sidestyle-align-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
-                                <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style Alignment</label>
-                                <select id="sidestyle-align-select">
-                                    <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
-                                    <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
-                                    <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
-                                </select>
-                                <div class="setting-item-row" style="margin-top: 0.8rem; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Dashed Borders</label>
-                                    <input type="checkbox" id="sidestyle-no-border-checkbox" style="transform: scale(0.8); margin: 0;">
-                                </div>
+                        <div id="sidestyle-align-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Side Style
+                                Alignment</label>
+                            <select id="sidestyle-align-select">
+                                <option value="left" data-i18n="settings_sidestyle_align_left">Left (original)</option>
+                                <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
+                                <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
+                            </select>
+                            <div class="setting-item-row"
+                                style="margin-top: 0.8rem; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Dashed
+                                    Borders</label>
+                                <input type="checkbox" id="sidestyle-no-border-checkbox"
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div id="sidebar-clock-flip-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
-                                <div class="setting-item-row" style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Flip Vertical Layout</label>
-                                    <input type="checkbox" id="sidebar-clock-flip-checkbox" style="transform: scale(0.8); margin: 0;">
-                                </div>
+                        </div>
+                        <div id="sidebar-clock-flip-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <div class="setting-item-row"
+                                style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Flip Vertical
+                                    Layout</label>
+                                <input type="checkbox" id="sidebar-clock-flip-checkbox"
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div id="jp-style-language-setting" class="setting-item"
-                                style="margin-top: 0.6rem; display: none;">
-                                <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP Style Language</label>
-                                <select id="jp-style-language-select">
-                                    <option value="auto" data-i18n="settings_jp_style_language_auto">Default (Follow System Value)</option>
-                                    <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
-                                </select>
+                        </div>
+                        <div id="jp-style-language-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP Style
+                                Language</label>
+                            <select id="jp-style-language-select">
+                                <option value="auto" data-i18n="settings_jp_style_language_auto">Default (Follow System
+                                    Value)</option>
+                                <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese Language</option>
+                            </select>
+                        </div>
+                        <div id="analog-marker-mode-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker
+                                Mode</label>
+                            <select id="analog-marker-mode-select">
+                                <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
+                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12
+                                </option>
+                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show
+                                    Tick 12,3,6,9</option>
+                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
+                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9
+                                </option>
+                            </select>
+                        </div>
+                        <div id="analog-blur-bg-setting" class="setting-item"
+                            style="margin-top: 0.6rem; display: none;">
+                            <div class="setting-item-row"
+                                style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Blur Background
+                                    (Analog)</label>
+                                <input type="checkbox" id="analog-blur-bg-checkbox"
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div id="analog-marker-mode-setting" class="setting-item"
-                                style="margin-top: 0.6rem; display: none;">
-                                <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Analog Marker Mode</label>
-                                <select id="analog-marker-mode-select">
-                                    <option value="ticks" data-i18n="settings_analog_marker_mode_ticks">Show Ticks</option>
-                                    <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
-                                    <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick 12,3,6,9</option>
-                                    <option value="full" data-i18n="settings_analog_marker_mode_full">Show 1-12</option>
-                                    <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show 12,3,6,9</option>
-                                </select>
-                            </div>
-                            <div id="analog-blur-bg-setting" class="setting-item" style="margin-top: 0.6rem; display: none;">
-                                <div class="setting-item-row" style="padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Blur Background (Analog)</label>
-                                    <input type="checkbox" id="analog-blur-bg-checkbox" style="transform: scale(0.8); margin: 0;">
-                                </div>
-                            </div>
+                        </div>
 
                         <div class="setting-item" style="margin-top: 0.6rem;">
                             <label for="clock-font-target-select" data-i18n="settings_clock_font_target"><i
@@ -1878,73 +2081,110 @@
                                 </option>
                                 <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
-                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only</option>
-                                </select>                        </div>
+                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only
+                                </option>
+                            </select>
+                        </div>
 
-                        <div class="setting-item" id="clock-date-stroke-setting" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                            <label style="margin-bottom: 10px; display: block; font-weight: 600;"><i class="fa-solid fa-border-style"></i> Text Outline / Border</label>
-                            
+                        <div class="setting-item" id="clock-date-stroke-setting"
+                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                            <label style="margin-bottom: 10px; display: block; font-weight: 600;"><i
+                                    class="fa-solid fa-border-style"></i> Text Outline / Border</label>
+
                             <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px;">
                                 <div class="setting-item no-margin-top">
-                                    <label for="clock-date-stroke-target-select" data-i18n="settings_clock_date_stroke_target" style="font-size: 0.8rem;">Target</label>
+                                    <label for="clock-date-stroke-target-select"
+                                        data-i18n="settings_clock_date_stroke_target"
+                                        style="font-size: 0.8rem;">Target</label>
                                     <select id="clock-date-stroke-target-select">
-                                        <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock and Date</option>
-                                        <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock only</option>
-                                        <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date only</option>
+                                        <option value="both" data-i18n="settings_clock_date_stroke_target_both">Clock
+                                            and Date</option>
+                                        <option value="clock" data-i18n="settings_clock_date_stroke_target_clock">Clock
+                                            only</option>
+                                        <option value="date" data-i18n="settings_clock_date_stroke_target_date">Date
+                                            only</option>
                                     </select>
                                 </div>
                                 <div class="setting-item no-margin-top">
-                                    <label for="clock-date-stroke-color-picker" data-i18n="settings_clock_date_stroke_color" style="font-size: 0.8rem;">Color</label>
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
-                                        <input type="color" id="clock-date-stroke-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <label for="clock-date-stroke-color-picker"
+                                        data-i18n="settings_clock_date_stroke_color"
+                                        style="font-size: 0.8rem;">Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="clock-date-stroke-color-picker" value="#000000"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="setting-item no-margin-top">
-                                <label for="clock-date-stroke-width-input" style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                <label for="clock-date-stroke-width-input"
+                                    style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                     <span data-i18n="settings_clock_date_stroke_width">Width</span>
-                                    <span id="clock-date-stroke-width-value" style="opacity: 0.7; font-family: monospace;">0px</span>
+                                    <span id="clock-date-stroke-width-value"
+                                        style="opacity: 0.7; font-family: monospace;">0px</span>
                                 </label>
-                                <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0" style="width: 100%;">
+                                <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
+                                    value="0" style="width: 100%;">
                             </div>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                        <div
+                            style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
                             <div class="setting-item no-margin-top">
                                 <label for="clock-size-input" style="display: flex; justify-content: space-between;">
-                                    <span><i class="fa-solid fa-expand"></i> <span data-i18n="settings_clock_size">Clock Size</span></span>
-                                    <span id="clock-size-value" style="opacity: 0.7; font-family: monospace;">6rem</span>
+                                    <span><i class="fa-solid fa-expand"></i> <span data-i18n="settings_clock_size">Clock
+                                            Size</span></span>
+                                    <span id="clock-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">6rem</span>
                                 </label>
-                                <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6" style="width: 100%;">
+                                <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6"
+                                    style="width: 100%;">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label for="date-size-input" style="display: flex; justify-content: space-between;">
-                                    <span><i class="fa-solid fa-compress"></i> <span data-i18n="settings_date_size">Date Size</span></span>
-                                    <span id="date-size-value" style="opacity: 0.7; font-family: monospace;">1.5rem</span>
+                                    <span><i class="fa-solid fa-compress"></i> <span data-i18n="settings_date_size">Date
+                                            Size</span></span>
+                                    <span id="date-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">1.5rem</span>
                                 </label>
-                                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5" style="width: 100%;">
+                                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5"
+                                    style="width: 100%;">
                             </div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 15px;">
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock Color</span></label>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                        class="fa-solid fa-palette"></i> <span data-i18n="settings_clock_color">Clock
+                                        Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="clock-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="clock-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
-                                    <button id="reset-clock-color-btn" class="secondary-btn" title="Reset" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <button id="reset-clock-color-btn" class="secondary-btn" title="Reset"
+                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                             </div>
-                            
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_date_color">Date Color</span></label>
+
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                        class="fa-solid fa-palette"></i> <span data-i18n="settings_date_color">Date
+                                        Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="date-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="date-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
-                                    <button id="reset-date-color-btn" class="secondary-btn" title="Reset" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <button id="reset-date-color-btn" class="secondary-btn" title="Reset"
+                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1952,195 +2192,133 @@
                 </div>
             </div>
 
-            <div class="settings-section" data-section-id="custom-title">
-                <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
-                        data-i18n="settings_custom_title">Custom Title</span></h3>
-                <div class="section-content">
-                    <!-- Toggles & Basic Setup -->
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-                        <div class="setting-item-row">
-                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i class="fa-solid fa-eye"></i> Show Title</label>
-                            <input type="checkbox" id="show-custom-title-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
-                            <input type="checkbox" id="free-move-custom-title-checkbox">
-                        </div>
-                    </div>
 
-                    <!-- Text Input & Font Settings -->
-                    <div class="setting-group" style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_text">Text Content & Typography</span></h4>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top">
-                                <input type="text" id="custom-title-text" placeholder="..." style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem;">
-                            </div>
-                            
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="custom-title-font-size" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_custom_title_fontsize">Font Size</span></span>
-                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-fontsize-val">24</span>px</span>
-                                </label>
-                                <input type="range" id="custom-title-font-size" min="10" max="200" value="24" class="slider" style="width: 100%;">
-                            </div>
-
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="custom-title-letter-spacing" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-text-width"></i> <span data-i18n="settings_custom_title_letter_spacing">Letter Spacing</span></span>
-                                    <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-letter-spacing-val">0</span>px</span>
-                                </label>
-                                <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0" class="slider" style="width: 100%;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Color Settings -->
-                    <div class="setting-group" style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_custom_title_color">Title Color</span></h4>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <div class="setting-item no-margin-top" id="custom-title-color-wrap" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;" data-i18n="settings_custom_title_color">Solid Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
-                                    <input type="color" id="custom-title-color" value="#ffffff" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                </div>
-                            </div>
-                            <div class="setting-item-row">
-                                <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor"><i class="fa-solid fa-rainbow"></i> Rainbow Effect</label>
-                                <input type="checkbox" id="custom-title-multicolor">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Effects: Shadows & Borders -->
-                    <div style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <div class="setting-group no-margin-top" style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
-                            <div style="display: flex; flex-direction: column; gap: 15px;">
-                                <div class="setting-item no-margin-top">
-                                    <label for="custom-title-shadow-color" data-i18n="settings_custom_title_shadow_color" style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
-                                        <input type="color" id="custom-title-shadow-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
-                                </div>
-                                <div class="setting-item no-margin-top">
-                                    <label for="custom-title-shadow-blur" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                        <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
-                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-blur-val">0</span>px</span>
-                                    </label>
-                                    <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0" class="slider" style="width: 100%;">
-                                </div>
-                                <div class="setting-item no-margin-top">
-                                    <label for="custom-title-shadow-y" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                        <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
-                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-shadow-y-val">0</span>px</span>
-                                    </label>
-                                    <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0" class="slider" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="setting-group no-margin-top" style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
-                            <div style="display: flex; flex-direction: column; gap: 15px;">
-                                <div class="setting-item no-margin-top">
-                                    <label for="custom-title-border-color" data-i18n="settings_custom_title_border_color" style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
-                                        <input type="color" id="custom-title-border-color" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
-                                </div>
-                                <div class="setting-item no-margin-top">
-                                    <label for="custom-title-border-size" style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
-                                        <span data-i18n="settings_custom_title_border_size">Thickness</span>
-                                        <span style="opacity: 0.7; font-family: monospace;"><span id="custom-title-border-size-val">0</span>px</span>
-                                    </label>
-                                    <input type="range" id="custom-title-border-size" min="0" max="10" value="0" class="slider" style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="settings-section" data-section-id="bookmark-custom">
                 <h3 class="section-toggle" data-i18n="settings_custom_bookmark"><i class="fa-solid fa-bookmark"></i>
                     Custom Bookmark</h3>
                 <div class="section-content">
                     <div class="setting-group" style="margin-bottom: 15px;">
-                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-ruler-combined"></i> <span data-i18n="settings_bookmark_size_header">Sizes & Spacing</span></h4>
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
+                                class="fa-solid fa-ruler-combined"></i> <span
+                                data-i18n="settings_bookmark_size_header">Sizes & Spacing</span></h4>
                         <p class="setting-hint" data-i18n="settings_bookmark_item_hint"
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             = Tùy chỉnh giao diện cho từng ô Dấu trang (màu chữ, nền, bóng đổ, kích thước...).</p>
                         <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 15px;">
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-font-size-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-text-height"></i> <span data-i18n="settings_bookmark_font_size">Font Size</span></span>
-                                    <span id="bookmark-font-size-value" style="opacity: 0.7; font-family: monospace;">10px</span>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-font-size-input"
+                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                    <span><i class="fa-solid fa-text-height"></i> <span
+                                            data-i18n="settings_bookmark_font_size">Font Size</span></span>
+                                    <span id="bookmark-font-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">10px</span>
                                 </label>
-                                <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10" style="width: 100%;">
+                                <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10"
+                                    style="width: 100%;">
                             </div>
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-icon-size-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-image"></i> <span data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
-                                    <span id="bookmark-icon-size-value" style="opacity: 0.7; font-family: monospace;">42px</span>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-icon-size-input"
+                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                    <span><i class="fa-solid fa-image"></i> <span
+                                            data-i18n="settings_bookmark_icon_size">Icon Size</span></span>
+                                    <span id="bookmark-icon-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">42px</span>
                                 </label>
-                                <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42" style="width: 100%;">
+                                <input type="range" id="bookmark-icon-size-input" min="24" max="80" step="1" value="42"
+                                    style="width: 100%;">
                             </div>
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-gap-input" style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
-                                    <span><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
-                                    <span id="bookmark-gap-value" style="opacity: 0.7; font-family: monospace;">8px</span>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-gap-input"
+                                    style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                    <span><i class="fa-solid fa-arrows-left-right"></i> <span
+                                            data-i18n="settings_bookmark_gap">Gap Between Bookmarks</span></span>
+                                    <span id="bookmark-gap-value"
+                                        style="opacity: 0.7; font-family: monospace;">8px</span>
                                 </label>
-                                <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8" style="width: 100%;">
+                                <input type="range" id="bookmark-gap-input" min="0" max="40" step="1" value="8"
+                                    style="width: 100%;">
                             </div>
                         </div>
                     </div>
                     <div class="setting-group">
-                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_bookmark_appearance_header">Appearance</span></h4>
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
+                                class="fa-solid fa-palette"></i> <span
+                                data-i18n="settings_bookmark_appearance_header">Appearance</span></h4>
                         <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;" for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span data-i18n="settings_bookmark_text_color">Text Color</span></label>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"
+                                    for="bookmark-text-color-picker"><i class="fa-solid fa-font"></i> <span
+                                        data-i18n="settings_bookmark_text_color">Text Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-text-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-text-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
-                                    <button id="reset-bookmark-text-color-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-fill"></i> <span data-i18n="settings_bookmark_bg_color">Background</span></label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-bg-color-picker" value="#ffffff" style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
-                                    </div>
-                                    <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
-                                    <span style="font-size: 0.8rem; opacity: 0.7;">Opacity</span>
-                                    <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1" value="100" style="flex: 1;">
+                                    <button id="reset-bookmark-text-color-btn" class="secondary-btn"
+                                        title="Reset Default"
+                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                             </div>
 
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop Shadow</span></label>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                        class="fa-solid fa-fill"></i> <span
+                                        data-i18n="settings_bookmark_bg_color">Background</span></label>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-bg-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                    <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default"
+                                        style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+                                    <span style="font-size: 0.8rem; opacity: 0.7;">Opacity</span>
+                                    <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1"
+                                        value="100" style="flex: 1;">
+                                </div>
+                            </div>
+
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.85rem;"><i
+                                        class="fa-solid fa-moon"></i> <span data-i18n="settings_bookmark_shadow">Drop
+                                        Shadow</span></label>
                                 <div style="display: flex; flex-direction: column; gap: 10px;">
                                     <div style="display: flex; align-items: center; gap: 8px;">
-                                        <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
-                                            <input type="color" id="bookmark-shadow-color-picker" value="#000000" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                        <div class="custom-color-input-group"
+                                            style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1; height: 38px;">
+                                            <input type="color" id="bookmark-shadow-color-picker" value="#000000"
+                                                style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                         </div>
                                     </div>
-                                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-                                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                                    <div
+                                        style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
+                                        <div
+                                            style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
                                             <span>Opacity</span>
                                         </div>
-                                        <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100" step="1" value="24" style="width: 100%;">
+                                        <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100"
+                                            step="1" value="24" style="width: 100%;">
                                     </div>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
-                                    <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;" data-i18n="settings_bookmark_shadow_blur">Blur:</span>
-                                    <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1" value="8" style="flex: 1;">
-                                    <span id="bookmark-shadow-blur-value" style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
+                                    <span style="font-size: 0.8rem; opacity: 0.8; min-width: 30px;"
+                                        data-i18n="settings_bookmark_shadow_blur">Blur:</span>
+                                    <input type="range" id="bookmark-shadow-blur-input" min="0" max="30" step="1"
+                                        value="8" style="flex: 1;">
+                                    <span id="bookmark-shadow-blur-value"
+                                        style="font-size: 0.8rem; opacity: 0.8; font-family: monospace; min-width: 25px; text-align: right;">8px</span>
                                 </div>
                             </div>
                         </div>
@@ -2153,83 +2331,128 @@
                             style="font-size: 0.85em; opacity: 0.7; margin-bottom: 15px; font-style: italic; line-height: 1.4; color: var(--text-color);">
                             = Tùy chỉnh thanh điều hướng nhóm thư mục (Tabs) ở phía trên Dấu trang.</p>
                         <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
+                                        data-i18n="settings_bookmark_group_bg_color">Background Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff" style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-group-bg-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
-                                    <button id="reset-bookmark-group-bg-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <button id="reset-bookmark-group-bg-btn" class="secondary-btn" title="Reset Default"
+                                        style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 6px;">
                                     <span style="font-size: 0.75rem; opacity: 0.7;">Opacity</span>
-                                    <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1" value="0" style="flex: 1;">
+                                    <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1"
+                                        value="0" style="flex: 1;">
                                 </div>
                             </div>
-                            
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
+
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 8px; display: block; font-size: 0.8rem;"><span
+                                        data-i18n="settings_bookmark_group_text_color">Text Color</span></label>
                                 <div style="display: flex; align-items: center; gap: 6px;">
-                                    <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
-                                        <input type="color" id="bookmark-group-text-color-picker" value="#ffffff" style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; flex: 1;">
+                                        <input type="color" id="bookmark-group-text-color-picker" value="#ffffff"
+                                            style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
-                                    <button id="reset-bookmark-group-text-color-btn" class="secondary-btn" title="Reset Default" style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <button id="reset-bookmark-group-text-color-btn" class="secondary-btn"
+                                        title="Reset Default"
+                                        style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
-                                    <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
-                                    <span id="bookmark-group-font-size-value" style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">14px</span>
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                    <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
+                                            data-i18n="settings_bookmark_group_font_size">Font Size</span></label>
+                                    <span id="bookmark-group-font-size-value"
+                                        style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">14px</span>
                                 </div>
-                                <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1" value="14" style="width: 100%; margin-top: 4px;">
+                                <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
+                                    value="14" style="width: 100%; margin-top: 4px;">
                             </div>
                         </div>
                     </div>
 
                     <!-- Toggles & Layout Options -->
-                    <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
-                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_bookmark_layout_header">Layout & Behavior</span></h4>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px;">
-                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Title</label>
-                                <input type="checkbox" id="hide-bookmark-text" style="transform: scale(0.8); margin: 0;">
+                    <div class="setting-group"
+                        style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
+                        <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
+                                class="fa-solid fa-layer-group"></i> <span
+                                data-i18n="settings_bookmark_layout_header">Layout & Behavior</span></h4>
+
+                        <div
+                            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px;">
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Title</label>
+                                <input type="checkbox" id="hide-bookmark-text"
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Bg</label>
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Bg</label>
                                 <input type="checkbox" id="hide-bookmark-bg" style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px; grid-column: span 2;">
-                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Enable MacOS Hover Effect</label>
-                                <input type="checkbox" id="bookmark-macos-hover" style="transform: scale(0.8); margin: 0;">
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px; grid-column: span 2;">
+                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Enable MacOS Hover
+                                    Effect</label>
+                                <input type="checkbox" id="bookmark-macos-hover"
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Drag & Drop Reorder</label>
-                                <input type="checkbox" id="enable-bookmark-drag" checked style="transform: scale(0.8); margin: 0;">
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
+                                    style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Drag & Drop
+                                    Reorder</label>
+                                <input type="checkbox" id="enable-bookmark-drag" checked
+                                    style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <p style="font-size: 0.7rem; opacity: 0.5; margin: -4px 0 8px 10px; line-height: 1.3;" data-i18n="settings_drag_note">
+                            <p style="font-size: 0.7rem; opacity: 0.5; margin: -4px 0 8px 10px; line-height: 1.3;"
+                                data-i18n="settings_drag_note">
                                 (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
                             </p>
 
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Bookmark Layout</label>
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
+                                    style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Bookmark
+                                    Layout</label>
                                 <select id="bookmark-layout" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="layout_default">Default Grid</option>
                                     <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
                                     <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
-                                    <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)</option>
+                                    <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
+                                    </option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-item-style-row" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Item Style</label>
+                            <div class="setting-item no-margin-top" id="bookmark-item-style-row"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
+                                    style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Item Style</label>
                                 <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="item_style_default">Default</option>
                                     <option value="card" data-i18n="item_style_card">Card</option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container Background</label>
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row"
+                                style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg"
+                                    style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container
+                                    Background</label>
                                 <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="layout_bg_default">Default</option>
                                     <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
@@ -2237,10 +2460,173 @@
                                     <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
-                                    <input type="color" id="bookmark-layout-bg-color" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row"
+                                style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color"
+                                    style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container
+                                    Color</label>
+                                <div class="custom-color-input-group"
+                                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                    <input type="color" id="bookmark-layout-bg-color"
+                                        style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-section" data-section-id="custom-title">
+                <h3 class="section-toggle"><i class="fa-solid fa-heading"></i> <span
+                        data-i18n="settings_custom_title">Custom Title</span></h3>
+                <div class="section-content">
+                    <!-- Toggles & Basic Setup -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                        <div class="setting-item-row">
+                            <label for="show-custom-title-checkbox" data-i18n="settings_show_custom_title"><i
+                                    class="fa-solid fa-eye"></i> Show Title</label>
+                            <input type="checkbox" id="show-custom-title-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="free-move-custom-title-checkbox" data-i18n="settings_free_move_custom_title"><i
+                                    class="fa-solid fa-arrows-up-down-left-right"></i> Free Move</label>
+                            <input type="checkbox" id="free-move-custom-title-checkbox">
+                        </div>
+                    </div>
+
+                    <!-- Text Input & Font Settings -->
+                    <div class="setting-group"
+                        style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
+                                class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_text">Text
+                                Content & Typography</span></h4>
+
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <input type="text" id="custom-title-text" placeholder="..."
+                                    style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem;">
+                            </div>
+
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="custom-title-font-size"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span><i class="fa-solid fa-text-height"></i> <span
+                                            data-i18n="settings_custom_title_fontsize">Font Size</span></span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span
+                                            id="custom-title-fontsize-val">24</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-font-size" min="10" max="200" value="24"
+                                    class="slider" style="width: 100%;">
+                            </div>
+
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="custom-title-letter-spacing"
+                                    style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span><i class="fa-solid fa-text-width"></i> <span
+                                            data-i18n="settings_custom_title_letter_spacing">Letter
+                                            Spacing</span></span>
+                                    <span style="opacity: 0.7; font-family: monospace;"><span
+                                            id="custom-title-letter-spacing-val">0</span>px</span>
+                                </label>
+                                <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0"
+                                    class="slider" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Color Settings -->
+                    <div class="setting-group"
+                        style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
+                                class="fa-solid fa-palette"></i> <span data-i18n="settings_custom_title_color">Title
+                                Color</span></h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div class="setting-item no-margin-top" id="custom-title-color-wrap"
+                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;"
+                                    data-i18n="settings_custom_title_color">Solid Color</label>
+                                <div class="custom-color-input-group"
+                                    style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                    <input type="color" id="custom-title-color" value="#ffffff"
+                                        style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                </div>
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="custom-title-multicolor" data-i18n="settings_custom_title_multicolor"><i
+                                        class="fa-solid fa-rainbow"></i> Rainbow Effect</label>
+                                <input type="checkbox" id="custom-title-multicolor">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Effects: Shadows & Borders -->
+                    <div
+                        style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <div class="setting-group no-margin-top"
+                            style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
+                                    class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop
+                                    Shadow</span></h4>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-color"
+                                        data-i18n="settings_custom_title_shadow_color"
+                                        style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="custom-title-shadow-color" value="#000000"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-blur"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_blur">Blur</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-shadow-blur-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-blur" min="0" max="50" value="0"
+                                        class="slider" style="width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-shadow-y"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_shadow_y">Offset Y</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-shadow-y-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-shadow-y" min="-20" max="50" value="0"
+                                        class="slider" style="width: 100%;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group no-margin-top"
+                            style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
+                                    class="fa-solid fa-border-style"></i> <span
+                                    data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-border-color"
+                                        data-i18n="settings_custom_title_border_color"
+                                        style="font-size: 0.8rem; margin-bottom: 8px; display: block;">Color</label>
+                                    <div class="custom-color-input-group"
+                                        style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
+                                        <input type="color" id="custom-title-border-color" value="#000000"
+                                            style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
+                                    </div>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label for="custom-title-border-size"
+                                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px;">
+                                        <span data-i18n="settings_custom_title_border_size">Thickness</span>
+                                        <span style="opacity: 0.7; font-family: monospace;"><span
+                                                id="custom-title-border-size-val">0</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-border-size" min="0" max="10" value="0"
+                                        class="slider" style="width: 100%;">
                                 </div>
                             </div>
                         </div>
@@ -2254,40 +2640,50 @@
                 <div class="section-content">
                     <!-- Interface & General -->
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-display"></i> <span data-i18n="settings_group_interface">Interface</span></div>
+                        <div class="setting-label"><i class="fa-solid fa-display"></i> <span
+                                data-i18n="settings_group_interface">Interface</span></div>
                         <div class="setting-item-row">
-                            <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface Layout</label>
+                            <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
+                                Layout</label>
                             <input type="checkbox" id="flip-layout-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide controls</label>
+                            <label for="ghost-controls-checkbox" data-i18n="settings_ghost_controls">Auto-hide
+                                controls</label>
                             <input type="checkbox" id="ghost-controls-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show Google Apps & Avatar</label>
+                            <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
+                                Google Apps & Avatar</label>
                             <input type="checkbox" id="show-top-right-controls-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-donate-btn-checkbox" data-i18n="settings_show_donate_btn">Show Donate Button</label>
+                            <label for="show-donate-btn-checkbox" data-i18n="settings_show_donate_btn">Show Donate
+                                Button</label>
                             <input type="checkbox" id="show-donate-btn-checkbox" checked>
                         </div>
                     </div>
 
                     <!-- Search Bar -->
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="settings_group_search">Search Bar</span></div>
+                        <div class="setting-label"><i class="fa-solid fa-magnifying-glass"></i> <span
+                                data-i18n="settings_group_search">Search Bar</span></div>
                         <div class="setting-item-row">
-                            <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search Bar</label>
+                            <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
+                                Bar</label>
                             <input type="checkbox" id="show-search-bar-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show Google AI Icon</label>
+                            <label for="show-search-ai-icon-checkbox" data-i18n="settings_show_search_ai_icon">Show
+                                Google AI Icon</label>
                             <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
                         </div>
                         <div class="setting-item">
-                            <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar Width</label>
+                            <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
+                                Width</label>
                             <div class="range-wrapper">
-                                <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10" value="600">
+                                <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10"
+                                    value="600">
                                 <span class="range-val" id="search-bar-width-val">600px</span>
                             </div>
                         </div>
@@ -2295,13 +2691,15 @@
 
                     <!-- Widgets -->
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-cubes"></i> <span data-i18n="settings_group_widgets">Widgets</span></div>
+                        <div class="setting-label"><i class="fa-solid fa-cubes"></i> <span
+                                data-i18n="settings_group_widgets">Widgets</span></div>
                         <div class="setting-item-row">
                             <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
                             <input type="checkbox" id="show-todo-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo Checkboxes</label>
+                            <label for="todo-show-checkboxes" data-i18n="settings_todo_checkboxes">Todo
+                                Checkboxes</label>
                             <input type="checkbox" id="todo-show-checkboxes" checked>
                         </div>
                         <div class="setting-item-row">
@@ -2313,18 +2711,21 @@
                             <input type="checkbox" id="show-timer-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show Bookmarks</label>
+                            <label for="show-bookmarks-checkbox" data-i18n="settings_show_bookmarks">Show
+                                Bookmarks</label>
                             <input type="checkbox" id="show-bookmarks-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show Bookmark Folders</label>
+                            <label for="show-bookmark-groups-checkbox" data-i18n="settings_show_bookmark_groups">Show
+                                Bookmark Folders</label>
                             <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
                         </div>
                     </div>
 
                     <!-- Music Player -->
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-music"></i> <span data-i18n="settings_group_music">Music Player</span></div>
+                        <div class="setting-label"><i class="fa-solid fa-music"></i> <span
+                                data-i18n="settings_group_music">Music Player</span></div>
                         <div class="setting-item-row">
                             <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
                             <input type="checkbox" id="show-music-checkbox">
@@ -2345,24 +2746,29 @@
                             </select>
                         </div>
                         <div class="setting-item-row">
-                            <label for="music-player-use-default-color-checkbox" data-i18n="settings_music_use_default_color">Use Default Music Color</label>
+                            <label for="music-player-use-default-color-checkbox"
+                                data-i18n="settings_music_use_default_color">Use Default Music Color</label>
                             <input type="checkbox" id="music-player-use-default-color-checkbox" checked>
                         </div>
                     </div>
 
                     <!-- Calendar -->
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-calendar-days"></i> <span data-i18n="settings_group_calendar">Calendar</span></div>
+                        <div class="setting-label"><i class="fa-solid fa-calendar-days"></i> <span
+                                data-i18n="settings_group_calendar">Calendar</span></div>
                         <div class="setting-item-row">
-                            <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian Calendar</label>
+                            <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
+                                Calendar</label>
                             <input type="checkbox" id="show-gregorian-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full Calendar</label>
+                            <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full
+                                Calendar</label>
                             <input type="checkbox" id="show-full-calendar-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show Lunar Calendar</label>
+                            <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show
+                                Lunar Calendar</label>
                             <input type="checkbox" id="show-lunar-calendar-checkbox" checked>
                         </div>
                     </div>
