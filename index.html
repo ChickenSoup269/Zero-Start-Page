@@ -2147,57 +2147,58 @@
                     <div class="setting-group" style="padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 15px;">
                         <h4 style="margin-bottom: 15px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_bookmark_layout_header">Layout & Behavior</span></h4>
                         
-                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                            <div class="setting-item-row">
-                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text">Hide Title</label>
-                                <input type="checkbox" id="hide-bookmark-text">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 15px;">
+                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Title</label>
+                                <input type="checkbox" id="hide-bookmark-text" style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div class="setting-item-row">
-                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg">Hide Background</label>
-                                <input type="checkbox" id="hide-bookmark-bg">
+                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="hide-bookmark-bg" data-i18n="settings_bookmark_hide_bg" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Hide Bg</label>
+                                <input type="checkbox" id="hide-bookmark-bg" style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <div class="setting-item-row">
-                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover">MacOS Hover</label>
-                                <input type="checkbox" id="bookmark-macos-hover">
+                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px; grid-column: span 2;">
+                                <label for="bookmark-macos-hover" data-i18n="settings_bookmark_macos_hover" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Enable MacOS Hover Effect</label>
+                                <input type="checkbox" id="bookmark-macos-hover" style="transform: scale(0.8); margin: 0;">
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item-row" style="margin-bottom: 5px;">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag">Drag & Drop</label>
-                                <input type="checkbox" id="enable-bookmark-drag">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="setting-item-row" style="margin: 0; padding: 6px 10px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag" style="font-weight: 500; font-size: 0.75rem; margin: 0; flex: 1;">Drag & Drop Reorder</label>
+                                <input type="checkbox" id="enable-bookmark-drag" checked style="transform: scale(0.8); margin: 0;">
                             </div>
-                            <p style="font-size: 0.75rem; opacity: 0.6; margin-top: -15px; margin-bottom: 5px; padding: 0 0; line-height: 1.3;" data-i18n="settings_drag_note">
-                                (Note: This also enables reordering for your saved backgrounds, colors, and gradients by dragging them)
+                            <p style="font-size: 0.7rem; opacity: 0.5; margin: -4px 0 8px 10px; line-height: 1.3;" data-i18n="settings_drag_note">
+                                (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
                             </p>
-                            <div class="setting-item no-margin-top">
-                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout">Bookmark Layout</label>
-                                <select id="bookmark-layout" class="settings-select" style="width: 100%; margin-top: 5px;">
+
+                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout" data-i18n="settings_bookmark_layout" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Bookmark Layout</label>
+                                <select id="bookmark-layout" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="layout_default">Default Grid</option>
                                     <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
                                     <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
                                     <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)</option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-item-style-row">
-                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style">Item Style</label>
-                                <select id="bookmark-item-style" class="settings-select" style="width: 100%; margin-top: 5px;">
+                            <div class="setting-item no-margin-top" id="bookmark-item-style-row" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Item Style</label>
+                                <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="item_style_default">Default</option>
                                     <option value="card" data-i18n="item_style_card">Card</option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none;">
-                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg">Container Background</label>
-                                <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%; margin-top: 5px;">
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout-bg-style" data-i18n="settings_bookmark_layout_bg" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container Background</label>
+                                <select id="bookmark-layout-bg-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="layout_bg_default">Default</option>
                                     <option value="hidden" data-i18n="layout_bg_hidden">Hidden / Transparent</option>
                                     <option value="white" data-i18n="layout_bg_white">White</option>
                                     <option value="colored" data-i18n="layout_bg_colored">Solid Color</option>
                                 </select>
                             </div>
-                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none;">
-                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color">Container Color</label>
-                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px; margin-top: 5px;">
+                            <div class="setting-item no-margin-top" id="bookmark-layout-bg-color-row" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                <label for="bookmark-layout-bg-color" data-i18n="settings_bookmark_layout_bg_color" style="font-size: 0.85rem; margin-bottom: 8px; display: block;">Container Color</label>
+                                <div class="custom-color-input-group" style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
                                     <input type="color" id="bookmark-layout-bg-color" style="width: 100%; height: 100%; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                 </div>
                             </div>
