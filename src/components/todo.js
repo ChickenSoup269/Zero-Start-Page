@@ -229,17 +229,21 @@ export class TodoList {
       if (!validIds.has(id)) this.selectedIds.delete(id)
     })
 
-    this.todos.forEach((item) => {
+    this.todos.forEach((item, index) => {
       if (item.type === "section") {
         const li = document.createElement("li")
         li.className = "todo-section-header"
+        li.draggable = true
+        li.dataset.index = index
         li.innerHTML = `
-          <span class="section-title">${item.text}</span>
+          <span class="section-title"><i class="fa-solid fa-grip-vertical drag-handle-todo" style="margin-right: 8px; opacity: 0.5; cursor: grab;"></i>${item.text}</span>
           <div class="todo-actions">
             <button class="delete-btn"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         `
-        li.querySelector(".delete-btn").addEventListener("click", async () => {
+        this._addDragEventListeners(li)
+        li.querySelector(".delete-btn").addEventListener("click", async (e) => {
+          e.stopPropagation()
           if (await showConfirm(`Delete section "${item.text}"?`)) {
             this.deleteTodo(item.id)
           }
@@ -251,16 +255,21 @@ export class TodoList {
       const isSelected = this.selectedIds.has(item.id)
       const li = document.createElement("li")
       li.className = `todo-item ${item.completed ? "completed" : ""} ${isSelected ? "selected" : ""}`
+      li.draggable = true
+      li.dataset.index = index
       li.innerHTML = `
                   <label class="todo-item-select" title="" for="todo-cb-${item.id}">
                       <input type="checkbox" id="todo-cb-${item.id}" name="todo-cb-[${item.id}]" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
                 </label>
+                <i class="fa-solid fa-grip-vertical drag-handle-todo" style="opacity: 0.3; cursor: grab; font-size: 0.8rem;"></i>
                 <span class="todo-text">${item.text}</span>
                 <div class="todo-actions">
-                    <button class="toggle-btn"><i class="fa-solid ${item.completed ? "fa-circle-check" : "fa-circle"}"></i></button>
+                    <button class="toggle-btn" title="${item.completed ? "Mark incomplete" : "Mark complete"}"><i class="${item.completed ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}" style="${item.completed ? "color: var(--accent-color);" : ""}"></i></button>
                     <button class="delete-btn"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `
+
+      this._addDragEventListeners(li)
 
       li.querySelector(".todo-item-cb").addEventListener("change", (e) => {
         if (e.target.checked) {
@@ -272,18 +281,14 @@ export class TodoList {
         this._updateSelectAllState()
       })
 
-      li.querySelector(".toggle-btn").addEventListener("click", () =>
-        this.toggleTodo(item.id),
-      )
+      li.querySelector(".toggle-btn").addEventListener("click", (e) => {
+        e.stopPropagation()
+        this.toggleTodo(item.id)
+      })
 
-      li.querySelector(".delete-btn").addEventListener("click", async () => {
-        if (
-          await showConfirm(
-            geti18n().alert_delete_todo_confirm || "Delete this task?",
-          )
-        ) {
-          this.deleteTodo(item.id)
-        }
+      li.querySelector(".delete-btn").addEventListener("click", (e) => {
+        e.stopPropagation()
+        this._confirmDelete(item)
       })
 
       const textSpan = li.querySelector(".todo-text")
@@ -311,13 +316,7 @@ export class TodoList {
               }
             },
             onDelete: async () => {
-              if (
-                await showConfirm(
-                  geti18n().alert_delete_todo_confirm || "Delete this task?",
-                )
-              ) {
-                this.deleteTodo(item.id)
-              }
+              this._confirmDelete(item)
             },
           },
         )
@@ -327,5 +326,61 @@ export class TodoList {
     })
 
     this._updateSelectAllState()
+  }
+
+  async _confirmDelete(item) {
+    if (
+      await showConfirm(
+        geti18n().alert_delete_todo_confirm || "Delete this task?",
+      )
+    ) {
+      this.deleteTodo(item.id)
+    }
+  }
+
+  _addDragEventListeners(el) {
+    el.addEventListener("dragstart", (e) => {
+      this.draggedIndex = Number(el.dataset.index)
+      e.dataTransfer.effectAllowed = "move"
+      setTimeout(() => el.classList.add("dragging"), 0)
+    })
+
+    el.addEventListener("dragover", (e) => {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = "move"
+      const target = e.target.closest("li")
+      if (target && target !== el) {
+        target.classList.add("drag-over")
+      }
+    })
+
+    el.addEventListener("dragleave", (e) => {
+      const target = e.target.closest("li")
+      if (target) {
+        target.classList.remove("drag-over")
+      }
+    })
+
+    el.addEventListener("drop", (e) => {
+      e.preventDefault()
+      const target = e.target.closest("li")
+      if (target) {
+        target.classList.remove("drag-over")
+        const targetIndex = Number(target.dataset.index)
+        if (this.draggedIndex !== null && this.draggedIndex !== targetIndex) {
+          const [movedItem] = this.todos.splice(this.draggedIndex, 1)
+          this.todos.splice(targetIndex, 0, movedItem)
+          this.saveTodos()
+          this.render()
+        }
+      }
+      this.draggedIndex = null
+    })
+
+    el.addEventListener("dragend", () => {
+      el.classList.remove("dragging")
+      const list = this.container.querySelector("#todo-list")
+      list.querySelectorAll("li").forEach(li => li.classList.remove("drag-over"))
+    })
   }
 }

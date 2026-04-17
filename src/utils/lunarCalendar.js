@@ -177,7 +177,10 @@ export function convertSolar2Lunar(dd, mm, yy, timeZone = 7) {
  */
 export function getLunarDateString(dd, mm, yy) {
   const lunar = convertSolar2Lunar(dd, mm, yy)
-  return `${lunar.day}/${lunar.month}${lunar.leap ? " (nhuận)" : ""}`
+  if (lunar.day === 1) {
+    return `${lunar.day}/${lunar.month}${lunar.leap ? "n" : ""}`
+  }
+  return `${lunar.day}`
 }
 
 /**

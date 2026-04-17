@@ -419,7 +419,6 @@ export function updateOverflowBookmarks() {
 
       clone.addEventListener("contextmenu", (evt) => {
         evt.preventDefault()
-        popup.remove()
         const simulatedEvt = new MouseEvent("contextmenu", {
           bubbles: true,
           cancelable: true,
@@ -474,7 +473,10 @@ export function updateOverflowBookmarks() {
 
     // Close popup when clicking outside
     const closePopup = (evt) => {
-      if (!popup.contains(evt.target) && !indicator.contains(evt.target)) {
+      const contextMenu = document.getElementById("context-menu")
+      const isClickOnContextMenu = contextMenu && contextMenu.contains(evt.target)
+      
+      if (!popup.contains(evt.target) && !indicator.contains(evt.target) && !isClickOnContextMenu) {
         popup.remove()
         document.removeEventListener("click", closePopup)
       }

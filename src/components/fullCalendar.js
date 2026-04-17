@@ -339,7 +339,7 @@ export class FullCalendar {
     const now = new Date()
 
     this.container.innerHTML = ""
-    this.container.className = "calendar-card glass-panel drag-handle"
+    this.container.className = `calendar-card glass-panel drag-handle${this.showLunar ? " with-lunar" : ""}`
 
     const monthName = this.viewDate.toLocaleString("default", {
       month: "long",
@@ -394,11 +394,15 @@ export class FullCalendar {
         dayDiv.classList.add("today")
       }
 
-      // Day number
+      // Day header (Solar + Lunar)
+      const dayHeader = document.createElement("div")
+      dayHeader.className = "day-info-header"
+
+      // Day number (Solar)
       const dayNumber = document.createElement("div")
       dayNumber.className = "day-number"
       dayNumber.textContent = day
-      dayDiv.appendChild(dayNumber)
+      dayHeader.appendChild(dayNumber)
 
       // Lunar date (if enabled)
       if (this.showLunar) {
@@ -406,8 +410,11 @@ export class FullCalendar {
         const lunarDiv = document.createElement("div")
         lunarDiv.className = "lunar-date"
         lunarDiv.textContent = lunarDate
-        dayDiv.appendChild(lunarDiv)
+        dayHeader.appendChild(lunarDiv)
+      }
+      dayDiv.appendChild(dayHeader)
 
+      if (this.showLunar) {
         // Check for Vietnamese holidays
         const holiday = getVietnameseHoliday(day, month + 1, year)
         if (holiday) {
