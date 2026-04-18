@@ -188,6 +188,17 @@ function renderUserAccentColors(DOM) {
 
 const _videoThumbCache = new Map()
 
+import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
+
+function extractUnsplashId(url) {
+  if (!url || typeof url !== "string") return null
+  // Match patterns like photo-1234567890 or other formats containing ID
+  const match = url.match(/photo-([a-zA-Z0-9-]+)/)
+  return match ? match[1] : null
+}
+
+let _repairingMetadata = false
+
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
@@ -201,15 +212,63 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
   DOM.localBackgroundGallery.appendChild(randomItem)
 
+  // Repair metadata for old Unsplash backgrounds if needed
+  if (!_repairingMetadata && Array.isArray(settings.userBackgrounds)) {
+    const oldUnsplashBgs = settings.userBackgrounds.filter(bg => {
+        return typeof bg === 'string' && (bg.includes('unsplash.com') || bg.includes('unsplash-'))
+    })
+    
+    if (oldUnsplashBgs.length > 0 && settings.unsplashAccessKey) {
+        _repairingMetadata = true
+        Promise.all(oldUnsplashBgs.map(async (bgUrl) => {
+            try {
+                const photoId = extractUnsplashId(bgUrl)
+                if (!photoId) return
+                
+                const data = await fetchUnsplashPhotoById(settings.unsplashAccessKey, photoId)
+                const index = settings.userBackgrounds.indexOf(bgUrl)
+                if (index !== -1) {
+                    settings.userBackgrounds[index] = {
+                        id: bgUrl,
+                        authorName: data.user?.name || "Unsplash Author",
+                        authorUrl: data.user?.links?.html || "",
+                        photoUrl: data.links?.html || ""
+                    }
+                }
+            } catch (err) {
+                console.warn("Failed to repair metadata for", bgUrl, err)
+            }
+        })).then(() => {
+            saveSettings()
+            _repairingMetadata = false
+            renderLocalBackgrounds(DOM, handleSettingUpdate)
+        })
+    }
+  }
+
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgData, index) => {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
+      const authorName = typeof bgData === "object" ? bgData.authorName : null
       
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
+
+      if (authorName) {
+          const creditIcon = document.createElement("div")
+          creditIcon.className = "video-thumb-badge unsplash-credit-badge"
+          creditIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
+          creditIcon.title = `Photo by ${authorName} on Unsplash`
+          item.appendChild(creditIcon)
+
+          const authorTag = document.createElement("div")
+          authorTag.className = "unsplash-author-tag"
+          authorTag.textContent = authorName
+          item.appendChild(authorTag)
+      }
 
       if (isFavorite) {
         const star = document.createElement("i")
@@ -224,33 +283,29 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                   item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
                   const placeholder = item.querySelector("i.fa-film")
                   if (placeholder) placeholder.remove()
-                  if (!item.querySelector(".video-thumb-badge")) {
-                      const badge = document.createElement("div")
-                      badge.className = "video-thumb-badge"
-                      badge.innerHTML = '<i class="fa-solid fa-film"></i>'
-                      item.appendChild(badge)
-                  }
               } else {
                   const vid = document.createElement("video")
                   vid.src = url
                   vid.muted = true
+                  vid.crossOrigin = "anonymous"
                   vid.preload = "metadata"
-                  vid.addEventListener("loadeddata", () => { vid.currentTime = 0 }, { once: true })
+                  vid.addEventListener("loadeddata", () => { 
+                      vid.currentTime = 0.5 // Seek a bit to avoid black frame
+                  }, { once: true })
                   vid.addEventListener("seeked", () => {
                       const canvas = document.createElement("canvas")
-                      canvas.width = vid.videoWidth || 160
-                      canvas.height = vid.videoHeight || 90
-                      canvas.getContext("2d").drawImage(vid, 0, 0, canvas.width, canvas.height)
-                      const dataUrl = canvas.toDataURL()
-                      _videoThumbCache.set(bgId, dataUrl)
-                      item.style.backgroundImage = `url('${dataUrl}')`
-                      const placeholder = item.querySelector("i.fa-film")
-                      if (placeholder) placeholder.remove()
-                      if (!item.querySelector(".video-thumb-badge")) {
-                          const badge = document.createElement("div")
-                          badge.className = "video-thumb-badge"
-                          badge.innerHTML = '<i class="fa-solid fa-film"></i>'
-                          item.appendChild(badge)
+                      canvas.width = 320 // Higher res thumb
+                      canvas.height = 180
+                      const ctx = canvas.getContext("2d")
+                      ctx.drawImage(vid, 0, 0, canvas.width, canvas.height)
+                      try {
+                          const dataUrl = canvas.toDataURL("image/jpeg", 0.7)
+                          _videoThumbCache.set(bgId, dataUrl)
+                          item.style.backgroundImage = `url('${dataUrl}')`
+                          const placeholder = item.querySelector("i.fa-film")
+                          if (placeholder) placeholder.remove()
+                      } catch (e) {
+                          console.warn("Failed to generate video thumb:", e)
                       }
                       vid.removeAttribute("src")
                       vid.load()
@@ -471,6 +526,13 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
         .padStart(6, "0")}`
       handleSettingUpdate("background", randomColor)
     } else {
+      // Clear Unsplash credit if switching to a non-Unsplash local image
+      updateSetting("unsplashLastCredit", null)
+      saveSettings()
+      if (DOM.unsplashCredit) {
+        DOM.unsplashCredit.style.display = "none"
+        DOM.unsplashCredit.innerHTML = ""
+      }
       handleSettingUpdate("background", item.dataset.bgId)
     }
   })

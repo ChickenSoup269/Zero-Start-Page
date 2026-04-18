@@ -293,8 +293,16 @@ async function setUnsplashRandomBackground(
   }
 }
 
+async function fetchUnsplashPhotoById(accessKey, photoId) {
+  const url = `https://api.unsplash.com/photos/${photoId}?client_id=${accessKey}`
+  const response = await fetch(url)
+  if (!response.ok) throw new Error("Failed to fetch photo metadata")
+  return await response.json()
+}
+
 export {
   fetchBestUnsplashPhoto,
+  fetchUnsplashPhotoById,
   populateUnsplashCollections,
   setUnsplashRandomBackground,
 }

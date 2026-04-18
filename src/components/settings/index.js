@@ -307,8 +307,19 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
     } else {
       updateSetting(key, value)
-      if (key === "background" && value != null) {
-        updateSetting("svgWaveActive", false)
+      if (key === "background") {
+        if (value != null) {
+          updateSetting("svgWaveActive", false)
+        }
+        // Clear Unsplash credit if we switch to a different background
+        // that isn't an Unsplash image (managed in unsplashFetcher.js)
+        if (!String(value).includes("unsplash")) {
+          updateSetting("unsplashLastCredit", null)
+          if (DOM_EXPORTS.unsplashCredit) {
+            DOM_EXPORTS.unsplashCredit.style.display = "none"
+            DOM_EXPORTS.unsplashCredit.innerHTML = ""
+          }
+        }
       }
     }
 

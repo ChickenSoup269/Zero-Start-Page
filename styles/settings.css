@@ -1198,7 +1198,7 @@
   transform: scale(1.05);
 }
 
-.user-gradient-item .remove-bg-btn {
+.local-bg-item .remove-bg-btn {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1206,6 +1206,66 @@
   width: 24px;
   height: 24px;
   font-size: 0.8rem;
+  z-index: 5;
+}
+
+.video-thumb-badge,
+.unsplash-credit-badge {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: white;
+  z-index: 4;
+  width: 22px;
+  height: 22px;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  bottom: 6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.video-thumb-badge {
+  left: 6px;
+}
+
+.unsplash-credit-badge {
+  right: 6px;
+}
+
+.video-thumb-badge i,
+.unsplash-credit-badge i {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.unsplash-author-tag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  transform: translateX(-5px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  font-size: 0.6rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.local-bg-item:hover .unsplash-author-tag {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .user-gradient-item:hover .remove-bg-btn {
@@ -1307,12 +1367,18 @@
 
 .favorite-star-badge {
   position: absolute;
-  top: 6px;
+  bottom: 6px;
   left: 6px;
   color: #ffca28;
-  font-size: 14px;
+  font-size: 13px;
   filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
   z-index: 2;
+  transition: left 0.2s ease;
+}
+
+/* Move star to the right if video badge exists */
+.local-bg-item.video-bg-item .favorite-star-badge {
+  left: 32px;
 }
 
 .video-thumb-badge {

@@ -584,7 +584,15 @@ export function setupGeneralEventHandlers(
       return
     }
 
-    settings.userBackgrounds.push(bg)
+    const unsplashCredit = settings.unsplashLastCredit
+    const bgData = unsplashCredit ? {
+      id: bg,
+      authorName: unsplashCredit.authorName,
+      authorUrl: unsplashCredit.authorUrl,
+      photoUrl: unsplashCredit.photoUrl
+    } : bg
+
+    settings.userBackgrounds.push(bgData)
     saveSettings()
     renderLocalBackgrounds(DOM, handleSettingUpdate)
     showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
