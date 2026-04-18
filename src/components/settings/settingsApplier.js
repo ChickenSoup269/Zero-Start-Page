@@ -716,6 +716,22 @@ function createApplySettings(effectInstances) {
         ) {
           selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
         }
+
+        if (effectToStart === "meteor" && selectedEffect) {
+          if (selectedEffect.setAngle)
+            selectedEffect.setAngle(settings.meteorAngle ?? 45)
+          if (selectedEffect.setFullColor)
+            selectedEffect.setFullColor(settings.meteorFullColor === true)
+
+          const userColors = (settings.userColors || []).map((c) =>
+            typeof c === "string" ? c : c.val,
+          )
+          const palette =
+            settings.meteorFullColor === true
+              ? [settings.meteorColor, ...userColors]
+              : settings.meteorColor
+          selectedEffect.setColor(palette)
+        }
         selectedEffect.start?.()
       }
     }
@@ -1121,6 +1137,14 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
     DOM.meteorColorPicker.value =
       settings.meteorColor || settings.starColor || "#ffffff"
+    if (DOM.meteorFullColorToggle) {
+      DOM.meteorFullColorToggle.checked = settings.meteorFullColor === true
+    }
+    if (DOM.meteorAngleInput) {
+      DOM.meteorAngleInput.value = settings.meteorAngle ?? 45
+      if (DOM.meteorAngleValue)
+        DOM.meteorAngleValue.textContent = `${settings.meteorAngle ?? 45}°`
+    }
     DOM.networkColorPicker.value = settings.networkColor || "#00bcd4"
     DOM.matrixColorPicker.value = settings.matrixColor || "#00FF00"
     DOM.auraColorPicker.value = settings.auraColor || "#a8c0ff"

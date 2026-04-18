@@ -29,8 +29,11 @@ export class MeteorEffect {
     this.active = false
     this.speedMult = 1.0
     this.spawnRate = 4.0
+    this.angleDeg = 45 // Default angle
+    this.fullColor = false
 
-    this._setColor(color)
+    this.colors = []
+    this.setColor(color)
 
     this.meteors = []
     this.sparks = []
@@ -71,9 +74,23 @@ export class MeteorEffect {
     window.removeEventListener("resize", this._onResize)
   }
 
-  /** Đổi màu accent (hex string). */
-  setColor(hex) {
-    this._setColor(hex)
+  /** Đổi màu accent (hex string hoặc array hex). */
+  setColor(color) {
+    if (Array.isArray(color)) {
+      this.colors = color.map(c => this._parseHex(c))
+    } else {
+      this.colors = [this._parseHex(color)]
+    }
+  }
+
+  /** Đặt góc rơi (độ). */
+  setAngle(deg) {
+    this.angleDeg = deg
+  }
+
+  /** Chế độ đa màu. */
+  setFullColor(enabled) {
+    this.fullColor = enabled
   }
 
   /** Hệ số tốc độ (0.3 → 3.0). */
@@ -95,17 +112,24 @@ export class MeteorEffect {
 
   // ─── COLOUR ──────────────────────────────────────────────────
 
-  _setColor(hex) {
-    this._hex = hex || "#c8b8ff"
-    const c = this._hex.replace("#", "")
+  _parseHex(hex) {
+    const c = (hex || "#c8b8ff").replace("#", "")
     const full = c.length === 3 ? c[0] + c[0] + c[1] + c[1] + c[2] + c[2] : c
-    this._r = parseInt(full.slice(0, 2), 16)
-    this._g = parseInt(full.slice(2, 4), 16)
-    this._b = parseInt(full.slice(4, 6), 16)
+    return {
+      r: parseInt(full.slice(0, 2), 16),
+      g: parseInt(full.slice(2, 4), 16),
+      b: parseInt(full.slice(4, 6), 16),
+      hex: "#" + full
+    }
   }
 
   _rgba(r, g, b, a) {
     return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, a))})`
+  }
+
+  _getRandomColor() {
+    if (this.colors.length === 0) return this._parseHex("#ffffff")
+    return this.colors[Math.floor(Math.random() * this.colors.length)]
   }
 
   // ─── STARS ───────────────────────────────────────────────────
@@ -147,36 +171,49 @@ export class MeteorEffect {
   _spawnMeteor() {
     const W = this.canvas.width,
       H = this.canvas.height
-    // Góc chéo chuẩn từ Top-Left (khoảng 45 độ, dao động nhỏ)
-    const angle = ((45 + Math.random() * 4 - 2) * Math.PI) / 180
+    
+    // Sử dụng góc đã chọn, thêm chút biến thiên ngẫu nhiên
+    const angle = ((this.angleDeg + Math.random() * 4 - 2) * Math.PI) / 180
     const speed = (16 + Math.random() * 14) * this.speedMult
     const len = 80 + Math.random() * 160
+    const color = this._getRandomColor()
 
-    // Phân bổ dọc theo toàn bộ viền trên (Top) và viền trái (Left) để phủ kín màn hình
+    // Phân bổ dựa trên hướng rơi
     let x, y
-    // Chia tỉ lệ xác suất dựa trên chiều rộng tự tương đối với chiều cao
-    if (Math.random() < W / (W + H)) {
-      // Bắt đầu dọc theo mép trên (Top), trải dài ra toàn bộ chiều rộng
-      x = -len + Math.random() * (W + len * 2)
-      y = -len - Math.random() * 100
+    const cosA = Math.cos(angle)
+    const sinA = Math.sin(angle)
+
+    // Đơn giản hóa việc spawn: sinh ra ở các cạnh đối diện hướng bay
+    if (Math.abs(cosA) > Math.abs(sinA)) {
+      // Bay ngang chủ yếu
+      x = cosA > 0 ? -len : W + len
+      y = Math.random() * H
     } else {
-      // Bắt đầu dọc theo mép trái (Left), trải dài ra toàn bộ chiều cao
-      x = -len - Math.random() * 100
-      y = -len + Math.random() * (H + len * 2)
+      // Bay dọc chủ yếu
+      x = Math.random() * W
+      y = sinA > 0 ? -len : H + len
     }
+
+    // Thêm bù trừ ngẫu nhiên để không bị tụ lại một chỗ
+    if (cosA > 0) x -= Math.random() * W * 0.5
+    else x += Math.random() * W * 0.5
+    
+    if (sinA > 0) y -= Math.random() * H * 0.5
+    else y += Math.random() * H * 0.5
 
     this.meteors.push({
       x,
       y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      ax: 0.008 + Math.random() * 0.012,
-      ay: 0.008 + Math.random() * 0.012,
-      len: 80 + Math.random() * 160,
+      vx: cosA * speed,
+      vy: sinA * speed,
+      ax: cosA * (0.008 + Math.random() * 0.012),
+      ay: sinA * (0.008 + Math.random() * 0.012),
+      len: len,
       size: 0.8 + Math.random() * 1.8,
       life: 1,
       fadeSpeed: 0.004 + Math.random() * 0.007,
       burst: false,
+      color: color
     })
   }
 
@@ -184,33 +221,35 @@ export class MeteorEffect {
     const W = this.canvas.width
     const H = this.canvas.height
     const speed = (28 + Math.random() * 12) * this.speedMult
-    // Góc chéo 45 độ chuẩn
-    const angle = ((45 + Math.random() * 2 - 1) * Math.PI) / 180
+    const angle = ((this.angleDeg + Math.random() * 2 - 1) * Math.PI) / 180
+    const color = this._getRandomColor()
 
-    // Xuất hiện ngẫu nhiên dọc theo mép trái hoặc trên (nhưng thiên x/y sâu hơn để bao phủ trọn)
+    const cosA = Math.cos(angle)
+    const sinA = Math.sin(angle)
+
     let x, y
-    if (Math.random() < 0.5) {
-      x = -200 - Math.random() * 100
-      y = Math.random() * (H * 0.7) - 100
+    if (Math.abs(cosA) > Math.abs(sinA)) {
+      x = cosA > 0 ? -400 : W + 400
+      y = Math.random() * (H * 0.8) + H * 0.1
     } else {
-      x = Math.random() * (W * 0.7) - 100
-      y = -200 - Math.random() * 100
+      x = Math.random() * (W * 0.8) + W * 0.1
+      y = sinA > 0 ? -400 : H + 400
     }
 
     this._ss = {
-      // Sao băng văng ngang qua màn hình
       x,
       y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
+      vx: cosA * speed,
+      vy: sinA * speed,
       len: 280 + Math.random() * 120,
       size: 2.2 + Math.random() * 0.8,
       life: 1,
       fadeSpeed: 0.008,
+      color: color
     }
   }
 
-  _spawnBurst(x, y) {
+  _spawnBurst(x, y, color) {
     const n = 4 + Math.floor(Math.random() * 5)
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2
@@ -222,6 +261,7 @@ export class MeteorEffect {
         vy: Math.sin(a) * s,
         life: 0.6 + Math.random() * 0.4,
         size: 0.4 + Math.random() * 0.9,
+        color: color
       })
     }
   }
@@ -256,9 +296,9 @@ export class MeteorEffect {
       m.life -= m.fadeSpeed * s
       if (m.life <= 0.12 && !m.burst) {
         m.burst = true
-        this._spawnBurst(m.x, m.y)
+        this._spawnBurst(m.x, m.y, m.color)
       }
-      return m.life > 0 && m.x < W + m.len && m.y < H + m.len
+      return m.life > 0 && m.x > -m.len * 2 && m.x < W + m.len * 2 && m.y > -m.len * 2 && m.y < H + m.len * 2
     })
 
     // Update shooting star
@@ -266,7 +306,7 @@ export class MeteorEffect {
       this._ss.x += this._ss.vx * s
       this._ss.y += this._ss.vy * s
       this._ss.life -= this._ss.fadeSpeed * s
-      if (this._ss.life <= 0 || this._ss.x > W + 400) this._ss = null
+      if (this._ss.life <= 0 || this._ss.x > W + 400 || this._ss.x < -400 || this._ss.y > H + 400 || this._ss.y < -400) this._ss = null
     }
 
     // Update sparks
@@ -283,7 +323,13 @@ export class MeteorEffect {
 
   _drawStars(t) {
     const ctx = this.ctx
-    const { _r: r, _g: g, _b: b } = this
+    // Đảm bảo luôn có ít nhất một màu để vẽ, nếu không có lấy mặc định trắng
+    const color = (this.colors && this.colors.length > 0) 
+      ? this.colors[0] 
+      : this._parseHex("#ffffff");
+    
+    const { r, g, b } = color
+    
     for (const s of this.stars) {
       const tw = 0.5 + Math.sin(t * s.speed + s.phase) * 0.35
       ctx.globalAlpha = Math.max(0.03, s.baseAlpha * tw)
@@ -297,7 +343,7 @@ export class MeteorEffect {
 
   _drawStreak(m, alpha) {
     const ctx = this.ctx
-    const { _r: r, _g: g, _b: b } = this
+    const { r, g, b } = m.color
     const angle = Math.atan2(m.vy, m.vx)
     const tailX = m.x - Math.cos(angle) * m.len
     const tailY = m.y - Math.sin(angle) * m.len
@@ -307,9 +353,20 @@ export class MeteorEffect {
     // Gradient streak
     const gr = ctx.createLinearGradient(tailX, tailY, m.x, m.y)
     gr.addColorStop(0, this._rgba(r, g, b, 0))
-    gr.addColorStop(0.55, this._rgba(r, g, b, 0.38 * alpha))
+    
+    if (this.fullColor && this.colors.length >= 2) {
+      // Đa sắc cho đuôi
+      const color2 = this.colors[1 % this.colors.length]
+      gr.addColorStop(0.3, this._rgba(color2.r, color2.g, color2.b, 0.2 * alpha))
+      const color3 = this.colors[2 % this.colors.length]
+      gr.addColorStop(0.6, this._rgba(color3.r, color3.g, color3.b, 0.4 * alpha))
+    } else {
+      gr.addColorStop(0.55, this._rgba(r, g, b, 0.38 * alpha))
+    }
+
     gr.addColorStop(0.85, this._rgba(255, 255, 255, 0.65 * alpha))
     gr.addColorStop(1, this._rgba(255, 255, 255, 0.95 * alpha))
+    
     ctx.strokeStyle = gr
     ctx.lineWidth = m.size
     ctx.lineCap = "round"
@@ -364,8 +421,8 @@ export class MeteorEffect {
     if (this._ss) this._drawStreak(this._ss, this._ss.life)
 
     // Sparks
-    const { _r: r, _g: g, _b: b } = this
     for (const sp of this.sparks) {
+      const { r, g, b } = sp.color
       ctx.globalAlpha = sp.life * 0.85
       ctx.fillStyle = `rgb(${r},${g},${b})`
       ctx.beginPath()
@@ -386,3 +443,4 @@ export class MeteorEffect {
     requestAnimationFrame((t) => this._loop(t))
   }
 }
+

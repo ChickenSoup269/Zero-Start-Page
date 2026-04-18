@@ -265,6 +265,8 @@
   "pixel_cubes_circle": "Circle (Sphere)",
   "setting_star_color": "Star Color",
   "setting_meteor_color": "Meteor Color",
+  "setting_meteor_full_color": "Multi-Color Meteor (HUE)",
+  "setting_meteor_angle": "Falling Angle",
   "setting_shooting_star_color": "Shooting Star Color",
   "setting_sakura_color": "Sakura Petal Color",
   "setting_snowfall_color": "Snowflake Color",

@@ -224,6 +224,11 @@ export const starColorPicker = document.getElementById("star-color-picker")
 export const starColorSetting = document.getElementById("star-color-setting")
 
 export const meteorColorPicker = document.getElementById("meteor-color-picker")
+export const meteorFullColorToggle = document.getElementById(
+  "meteor-full-color-toggle",
+)
+export const meteorAngleInput = document.getElementById("meteor-angle-input")
+export const meteorAngleValue = document.getElementById("meteor-angle-value")
 export const meteorColorSetting = document.getElementById(
   "meteor-color-setting",
 )

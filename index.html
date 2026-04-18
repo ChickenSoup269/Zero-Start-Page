@@ -1672,6 +1672,19 @@
                             <div id="meteor-color-setting" class="setting-item" style="display: none;">
                                 <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor Color</label>
                                 <input type="color" id="meteor-color-picker" value="#ffffff" />
+
+                                <div class="setting-item-row" style="margin-top: 10px;">
+                                    <label for="meteor-full-color-toggle" data-i18n="setting_meteor_full_color">Full Color (Multi-HUE)</label>
+                                    <input type="checkbox" id="meteor-full-color-toggle">
+                                </div>
+
+                                <div class="setting-item" style="margin-top: 10px;">
+                                    <div class="flex-space-between">
+                                        <label for="meteor-angle-input" data-i18n="setting_meteor_angle">Falling Angle</label>
+                                        <span id="meteor-angle-value" class="range-val">45°</span>
+                                    </div>
+                                    <input type="range" id="meteor-angle-input" min="0" max="360" value="45" style="width: 100%;">
+                                </div>
                             </div>
 
                             <!-- Network Color (M:i) -->

@@ -16,10 +16,41 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   DOM.meteorColorPicker?.addEventListener("input", () => {
     updateSetting("meteorColor", DOM.meteorColorPicker.value)
     saveSettings()
-    if (effectInstances.meteorEffect)
-      effectInstances.meteorEffect.updateAccentColor(
-        DOM.meteorColorPicker.value,
-      )
+    if (effectInstances.meteorEffect) {
+      const settings = effectInstances.getSettings()
+      if (settings.meteorFullColor) {
+        // Nếu bật full color, lấy thêm màu từ userColors
+        const userColors = (settings.userColors || []).map(c => typeof c === 'string' ? c : c.val)
+        const palette = [DOM.meteorColorPicker.value, ...userColors]
+        effectInstances.meteorEffect.setColor(palette)
+      } else {
+        effectInstances.meteorEffect.setColor(DOM.meteorColorPicker.value)
+      }
+    }
+  })
+
+  DOM.meteorFullColorToggle?.addEventListener("change", () => {
+    const enabled = DOM.meteorFullColorToggle.checked
+    updateSetting("meteorFullColor", enabled)
+    saveSettings()
+    if (effectInstances.meteorEffect) {
+      effectInstances.meteorEffect.setFullColor(enabled)
+      // Refresh colors
+      const settings = effectInstances.getSettings()
+      const userColors = (settings.userColors || []).map(c => typeof c === 'string' ? c : c.val)
+      const palette = enabled ? [settings.meteorColor, ...userColors] : settings.meteorColor
+      effectInstances.meteorEffect.setColor(palette)
+    }
+  })
+
+  DOM.meteorAngleInput?.addEventListener("input", () => {
+    const deg = parseInt(DOM.meteorAngleInput.value)
+    if (DOM.meteorAngleValue) DOM.meteorAngleValue.textContent = `${deg}°`
+    updateSetting("meteorAngle", deg)
+    saveSettings()
+    if (effectInstances.meteorEffect) {
+      effectInstances.meteorEffect.setAngle(deg)
+    }
   })
 
   DOM.networkColorPicker?.addEventListener("input", () => {

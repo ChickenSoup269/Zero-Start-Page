@@ -262,6 +262,8 @@
   "pixel_cubes_circle": "Hình cầu (Tròn)",
   "setting_star_color": "Màu ngôi sao",
   "setting_meteor_color": "Màu sao băng (Mưa)",
+  "setting_meteor_full_color": "Chế độ Đa sắc (HUE từ Gallery)",
+  "setting_meteor_angle": "Góc độ rơi",
   "setting_shooting_star_color": "Màu sao băng",
   "setting_sakura_color": "Màu cánh hoa anh đào",
   "setting_snowfall_color": "Màu bông tuyết",

@@ -91,6 +91,8 @@ const defaultSettings = {
   userGradients: [], // Add userGradients
   starColor: "#ffffff",
   meteorColor: "#ffffff",
+  meteorAngle: 45,
+  meteorFullColor: false,
 
   bookmarkFontSize: 10,
   bookmarkIconSize: 42,
