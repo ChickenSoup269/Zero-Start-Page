@@ -482,6 +482,9 @@ export const clockDatePrioritySelect = document.getElementById(
 export const clockDateStyleSelect = document.getElementById(
   "clock-date-style-select",
 )
+export const styleSpecificCustomization = document.getElementById(
+  "style-specific-customization",
+)
 export const hueTextModeSelect = document.getElementById("hue-text-mode-select")
 export const jpStyleLanguageSetting = document.getElementById(
   "jp-style-language-setting",

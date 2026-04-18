@@ -1612,8 +1612,8 @@ export function setupGeneralEventHandlers(
   updateEffectFavoriteUI();
 
   // Font management
-  DOM.loadCustomFontBtn.addEventListener("click", () => {
-    const fontName = DOM.customFontInput.value.trim()
+  DOM.loadCustomFontBtn?.addEventListener("click", () => {
+    const fontName = DOM.customFontInput?.value?.trim()
     if (!fontName) {
       showAlert(i18n.alert_font_error || "Please enter a font name.")
       return
@@ -1625,12 +1625,12 @@ export function setupGeneralEventHandlers(
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
-      DOM.customFontInput.value = ""
+      if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
 
-  DOM.saveFontBtn.addEventListener("click", () => {
-    const fontName = DOM.customFontInput.value.trim()
+  DOM.saveFontBtn?.addEventListener("click", () => {
+    const fontName = DOM.customFontInput?.value?.trim()
     if (!fontName) {
       showAlert(i18n.alert_font_error || "Please enter a font name.")
       return
@@ -1654,12 +1654,12 @@ export function setupGeneralEventHandlers(
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       showAlert(i18n.alert_font_saved || "Font saved!")
-      DOM.customFontInput.value = ""
+      if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
 
   // Date/time settings
-  DOM.dateFormatSelect.addEventListener("change", () => {
+  DOM.dateFormatSelect?.addEventListener("change", () => {
     handleSettingUpdate("dateFormat", DOM.dateFormatSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1680,29 +1680,25 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  if (DOM.timeFormatSelect) {
-    DOM.timeFormatSelect.addEventListener("change", () => {
-      handleSettingUpdate("timeFormat", DOM.timeFormatSelect.value)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "timeFormat", value: DOM.timeFormatSelect.value },
-        }),
-      )
-    })
-  }
+  DOM.timeFormatSelect?.addEventListener("change", () => {
+    handleSettingUpdate("timeFormat", DOM.timeFormatSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "timeFormat", value: DOM.timeFormatSelect.value },
+      }),
+    )
+  })
 
-  if (DOM.timezoneSelect) {
-    DOM.timezoneSelect.addEventListener("change", () => {
-      handleSettingUpdate("timezone", DOM.timezoneSelect.value)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "timezone", value: DOM.timezoneSelect.value },
-        }),
-      )
-    })
-  }
+  DOM.timezoneSelect?.addEventListener("change", () => {
+    handleSettingUpdate("timezone", DOM.timezoneSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "timezone", value: DOM.timezoneSelect.value },
+      }),
+    )
+  })
 
-  DOM.hideSecondsCheckbox.addEventListener("change", () => {
+  DOM.hideSecondsCheckbox?.addEventListener("change", () => {
     handleSettingUpdate("hideSeconds", DOM.hideSecondsCheckbox.checked)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1711,7 +1707,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockDatePrioritySelect.addEventListener("change", () => {
+  DOM.clockDatePrioritySelect?.addEventListener("change", () => {
     handleSettingUpdate("clockDatePriority", DOM.clockDatePrioritySelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1723,25 +1719,8 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockDateStyleSelect.addEventListener("change", () => {
+  DOM.clockDateStyleSelect?.addEventListener("change", () => {
     handleSettingUpdate("dateClockStyle", DOM.clockDateStyleSelect.value)
-
-    if (DOM.clockDateStyleSelect.value === "analog") {
-      DOM.analogMarkerModeSetting.style.display = ""
-    } else {
-      DOM.analogMarkerModeSetting.style.display = "none"
-    }
-
-    if (DOM.clockDateStyleSelect.value === "jp-style") {
-      DOM.jpStyleLanguageSetting.style.display = ""
-    } else {
-      DOM.jpStyleLanguageSetting.style.display = "none"
-    }
-
-    if (DOM.sidestyleAlignSetting) {
-      DOM.sidestyleAlignSetting.style.display =
-        DOM.clockDateStyleSelect.value === "sidestyle" ? "" : "none"
-    }
 
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1753,61 +1732,53 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  if (DOM.sidestyleAlignSelect) {
-    DOM.sidestyleAlignSelect.addEventListener("change", () => {
-      handleSettingUpdate("sidestyleAlign", DOM.sidestyleAlignSelect.value)
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: {
-            key: "sidestyleAlign",
-            value: DOM.sidestyleAlignSelect.value,
-          },
-        }),
-      )
-    })
-  }
+  DOM.sidestyleAlignSelect?.addEventListener("change", () => {
+    handleSettingUpdate("sidestyleAlign", DOM.sidestyleAlignSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "sidestyleAlign",
+          value: DOM.sidestyleAlignSelect.value,
+        },
+      }),
+    )
+  })
 
-  if (DOM.sidestyleNoBorderCheckbox) {
-    DOM.sidestyleNoBorderCheckbox.addEventListener("change", () => {
-      handleSettingUpdate(
-        "sidestyleNoBorder",
-        DOM.sidestyleNoBorderCheckbox.checked,
-      )
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: {
-            key: "sidestyleNoBorder",
-            value: DOM.sidestyleNoBorderCheckbox.checked,
-          },
-        }),
-      )
-    })
-  }
+  DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "sidestyleNoBorder",
+      DOM.sidestyleNoBorderCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "sidestyleNoBorder",
+          value: DOM.sidestyleNoBorderCheckbox.checked,
+        },
+      }),
+    )
+  })
 
-  if (DOM.sidebarClockFlipCheckbox) {
-    DOM.sidebarClockFlipCheckbox.addEventListener("change", () => {
-      handleSettingUpdate(
-        "sidebarClockFlip",
-        DOM.sidebarClockFlipCheckbox.checked,
-      )
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: {
-            key: "sidebarClockFlip",
-            value: DOM.sidebarClockFlipCheckbox.checked,
-          },
-        }),
-      )
-    })
-  }
+  DOM.sidebarClockFlipCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "sidebarClockFlip",
+      DOM.sidebarClockFlipCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "sidebarClockFlip",
+          value: DOM.sidebarClockFlipCheckbox.checked,
+        },
+      }),
+    )
+  })
 
-  if (DOM.clockFontTargetSelect) {
-    DOM.clockFontTargetSelect.addEventListener("change", () => {
-      handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)
-    })
-  }
+  DOM.clockFontTargetSelect?.addEventListener("change", () => {
+    handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)
+  })
 
-  DOM.jpStyleLanguageSelect.addEventListener("change", () => {
+  DOM.jpStyleLanguageSelect?.addEventListener("change", () => {
     handleSettingUpdate("jpStyleLanguage", DOM.jpStyleLanguageSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1819,7 +1790,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.hueTextModeSelect.addEventListener("change", () => {
+  DOM.hueTextModeSelect?.addEventListener("change", () => {
     handleSettingUpdate("hueTextMode", DOM.hueTextModeSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1831,7 +1802,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.analogMarkerModeSelect.addEventListener("change", () => {
+  DOM.analogMarkerModeSelect?.addEventListener("change", () => {
     handleSettingUpdate("analogMarkerMode", DOM.analogMarkerModeSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -1843,21 +1814,21 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.analogBlurBgCheckbox.addEventListener("change", () => {
+  DOM.analogBlurBgCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "analogBlurBackground",
       DOM.analogBlurBgCheckbox.checked,
     )
   })
 
-  DOM.pageTitleInput.addEventListener("input", () => {
+  DOM.pageTitleInput?.addEventListener("input", () => {
     const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)
     saveSettings()
     document.title = newTitle
   })
 
-  DOM.tabIconInput.addEventListener("input", () => {
+  DOM.tabIconInput?.addEventListener("input", () => {
     const raw = DOM.tabIconInput.value
     const chars = getTabIconChars(raw)
     updateSetting("tabIcon", chars)
@@ -1866,82 +1837,76 @@ export function setupGeneralEventHandlers(
     renderTabIconPreview(chars, DOM.tabIconPreview)
   })
 
-  DOM.clockSizeInput.addEventListener("input", () => {
-    DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
+  DOM.clockSizeInput?.addEventListener("input", () => {
+    if (DOM.clockSizeValue) DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
     document.documentElement.style.setProperty(
       "--clock-size",
       `${DOM.clockSizeInput.value}rem`,
     )
   })
-  DOM.clockSizeInput.addEventListener("change", () => {
+  DOM.clockSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("clockSize", DOM.clockSizeInput.value)
   })
 
-  DOM.dateSizeInput.addEventListener("input", () => {
-    DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
+  DOM.dateSizeInput?.addEventListener("input", () => {
+    if (DOM.dateSizeValue) DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
     document.documentElement.style.setProperty(
       "--date-size",
       `${DOM.dateSizeInput.value}rem`,
     )
   })
-  DOM.dateSizeInput.addEventListener("change", () => {
+  DOM.dateSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
 
-  if (DOM.clockDateStrokeWidthInput) {
-    DOM.clockDateStrokeWidthInput.addEventListener("input", (e) => {
-      if (DOM.clockDateStrokeWidthValue)
-        DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}${DOM.bookmarkGroupFontSizeInput.value}px`
-      handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
-    })
-  }
+  DOM.clockDateStrokeWidthInput?.addEventListener("input", (e) => {
+    if (DOM.clockDateStrokeWidthValue)
+      DOM.clockDateStrokeWidthValue.textContent = `${e.target.value}${DOM.bookmarkGroupFontSizeInput?.value || 16}px`
+    handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
+  })
 
-  if (DOM.clockDateStrokeColorPicker) {
-    DOM.clockDateStrokeColorPicker.addEventListener("input", (e) => {
-      document.documentElement.style.setProperty(
-        "--clock-date-stroke-color",
-        e.target.value,
-      )
-    })
-    DOM.clockDateStrokeColorPicker.addEventListener("change", (e) => {
-      handleSettingUpdate("clockDateStrokeColor", e.target.value)
-    })
-  }
+  DOM.clockDateStrokeColorPicker?.addEventListener("input", (e) => {
+    document.documentElement.style.setProperty(
+      "--clock-date-stroke-color",
+      e.target.value,
+    )
+  })
+  DOM.clockDateStrokeColorPicker?.addEventListener("change", (e) => {
+    handleSettingUpdate("clockDateStrokeColor", e.target.value)
+  })
 
-  if (DOM.clockDateStrokeTargetSelect) {
-    DOM.clockDateStrokeTargetSelect.addEventListener("change", (e) => {
-      handleSettingUpdate("clockDateStrokeTarget", e.target.value)
-    })
-  }
+  DOM.clockDateStrokeTargetSelect?.addEventListener("change", (e) => {
+    handleSettingUpdate("clockDateStrokeTarget", e.target.value)
+  })
 
-  DOM.clockColorPicker.addEventListener("input", () => {
+  DOM.clockColorPicker?.addEventListener("input", () => {
     document.documentElement.style.setProperty(
       "--clock-color",
       DOM.clockColorPicker.value,
     )
   })
-  DOM.clockColorPicker.addEventListener("change", () =>
+  DOM.clockColorPicker?.addEventListener("change", () =>
     handleSettingUpdate("clockColor", DOM.clockColorPicker.value),
   )
-  DOM.resetClockColorBtn.addEventListener("click", () =>
+  DOM.resetClockColorBtn?.addEventListener("click", () =>
     handleSettingUpdate("clockColor", null),
   )
 
-  DOM.dateColorPicker.addEventListener("input", () => {
+  DOM.dateColorPicker?.addEventListener("input", () => {
     document.documentElement.style.setProperty(
       "--date-color",
       DOM.dateColorPicker.value,
     )
   })
-  DOM.dateColorPicker.addEventListener("change", () =>
+  DOM.dateColorPicker?.addEventListener("change", () =>
     handleSettingUpdate("dateColor", DOM.dateColorPicker.value),
   )
-  DOM.resetDateColorBtn.addEventListener("click", () =>
+  DOM.resetDateColorBtn?.addEventListener("click", () =>
     handleSettingUpdate("dateColor", null),
   )
 
   // Reset all settings
-  DOM.resetSettingsBtn.addEventListener("click", async () => {
+  DOM.resetSettingsBtn?.addEventListener("click", async () => {
     if (await showConfirm(i18n.alert_reset)) {
       resetSettingsState()
       applySettings()

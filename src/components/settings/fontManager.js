@@ -92,16 +92,21 @@ function initFont() {
       )
       
       const savedFonts = settings.userSavedFonts || []
-      const isUserSaved = savedFonts.some(f => {
-          const name = typeof f === 'string' ? f : f.label;
-          return name === fontName;
-      })
+      const fontDef = PREDEFINED_FONTS.find(f => f.label === fontName)
+      
+      const isGoogleFont = (fontDef && fontDef.google) || 
+                          savedFonts.some(f => (typeof f === 'string' ? f : f.label) === fontName);
 
       // Pre-loaded fonts in index.html don't need to be reloaded
       const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
 
-      if ((isPredefinedGoogle || isUserSaved) && !isPreloaded) {
-        loadGoogleFont(fontName)
+      if (isGoogleFont && !isPreloaded) {
+        // Double check if it's a known non-google predefined font
+        if (fontDef && !fontDef.google) {
+           // Skip
+        } else {
+           loadGoogleFont(fontName)
+        }
       }
   })
 }

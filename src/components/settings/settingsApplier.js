@@ -772,33 +772,47 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
     // Manage display of conditional settings
-    DOM.analogMarkerModeSetting.style.display =
-      (settings.dateClockStyle || "default") === "analog" ? "block" : "none"
-    DOM.jpStyleLanguageSetting.style.display =
-      (settings.dateClockStyle || "default") === "jp-style" ? "block" : "none"
+    const style = settings.dateClockStyle || "default"
+
+    // Show style-specific container if current style has special settings
+    const styleHasExtras = [
+      "analog",
+      "jp-style",
+      "sidestyle",
+      "sidebar",
+    ].includes(style)
+    if (DOM.styleSpecificCustomization) {
+      DOM.styleSpecificCustomization.style.display = styleHasExtras
+        ? "block"
+        : "none"
+    }
+
+    DOM.analogMarkerModeSetting.style.display = style === "analog" ? "block" : "none"
+    DOM.jpStyleLanguageSetting.style.display = style === "jp-style" ? "block" : "none"
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
-        (settings.dateClockStyle || "default") === "sidestyle"
-          ? "block"
-          : "none"
+        style === "sidestyle" ? "block" : "none"
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
-        (settings.dateClockStyle || "default") === "sidebar"
-          ? "block"
-          : "none"
+        style === "sidebar" ? "block" : "none"
 
-    DOM.analogBlurBgSetting.style.display =
-      (settings.dateClockStyle || "default") === "analog" ? "flex" : "none"
-    DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
-    DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
-    DOM.tabIconInput.value = settings.tabIcon || ""
+    DOM.analogBlurBgSetting.style.display = style === "analog" ? "flex" : "none"
+    if (DOM.analogBlurBgCheckbox)
+      DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
+
+    if (DOM.pageTitleInput) DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
+    if (DOM.tabIconInput) DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")
-    DOM.clockSizeInput.value = settings.clockSize
-    DOM.clockSizeValue.textContent = `${settings.clockSize}rem`
-    DOM.dateSizeInput.value = String(baseDateSize)
-    DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
-    DOM.languageSelect.value = settings.language || "en"
-    DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
+
+    if (DOM.clockSizeInput) DOM.clockSizeInput.value = settings.clockSize
+    if (DOM.clockSizeValue)
+      DOM.clockSizeValue.textContent = `${settings.clockSize}rem`
+    if (DOM.dateSizeInput) DOM.dateSizeInput.value = String(baseDateSize)
+    if (DOM.dateSizeValue)
+      DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
+
+    if (DOM.languageSelect) DOM.languageSelect.value = settings.language || "en"
+    if (DOM.accentColorPicker) DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     if (DOM.accentColorHexInput) {
       DOM.accentColorHexInput.value = (settings.accentColor || "#a8c0ff").toUpperCase()
     }
@@ -832,14 +846,17 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // Custom Bookmark Inputs
     if (DOM.bookmarkFontSizeInput) {
-      DOM.bookmarkFontSizeInput.value = settings.bookmarkFontSize ?? 10
-      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
+      if (DOM.bookmarkFontSizeInput) DOM.bookmarkFontSizeInput.value = settings.bookmarkFontSize ?? 16
+      if (DOM.bookmarkFontSizeValue && DOM.bookmarkFontSizeInput)
+        DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
 
-      DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42
-      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
+      if (DOM.bookmarkIconSizeInput) DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42
+      if (DOM.bookmarkIconSizeValue && DOM.bookmarkIconSizeInput)
+        DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
 
-      DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
-      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
+      if (DOM.bookmarkGapInput) DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
+      if (DOM.bookmarkGapValue && DOM.bookmarkGapInput)
+        DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
 
       DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
       DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
