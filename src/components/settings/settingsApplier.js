@@ -72,6 +72,7 @@ const EFFECT_KEY_MAP = {
   gridScan: "gridScanEffect",
   plantGrowth: "plantGrowthEffect",
   oceanFish: "oceanFishEffect",
+  floatingLines: "floatingLinesEffect",
 }
 
 function setEffectActive(effectGrid, value) {
@@ -1137,6 +1138,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.cursorTrailColorPicker.value = settings.cursorTrailColor || "#60c8ff"
     DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
     DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
+    DOM.floatingLinesColorPicker.value = settings.floatingLinesColor || "#ffffff"
+    DOM.floatingLinesAngleInput.value = settings.floatingLinesAngle || 0
+    DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
     DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"
@@ -1240,6 +1244,10 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "plantGrowth" ? "block" : "none"
     DOM.oceanFishColorSetting.style.display =
       settings.effect === "oceanFish" ? "block" : "none"
+    DOM.floatingLinesColorSetting.style.display =
+      settings.effect === "floatingLines" ? "block" : "none"
+    DOM.floatingLinesAngleSetting.style.display =
+      settings.effect === "floatingLines" ? "block" : "none"
     DOM.rainHDColorSetting.style.display =
       settings.effect === "rainHD" ? "block" : "none"
     DOM.stormRainColorSetting.style.display =
@@ -1303,6 +1311,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "retroGame",
         "wavyPattern",
         "angledPattern",
+        "floatingLines",
       ]
       const hasSettings = effectsWithSettings.includes(settings.effect)
       DOM.activeEffectSettingsContainer.style.display = hasSettings

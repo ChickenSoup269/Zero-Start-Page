@@ -179,6 +179,38 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
+  let floatingLinesTimer = null
+  DOM.floatingLinesColorPicker.addEventListener("input", () => {
+    // Update live color in effect if it's not too heavy, 
+    // but debounce the saving and state update to prevent lag
+    if (effectInstances.floatingLinesEffect) {
+      effectInstances.floatingLinesEffect.updateColor(
+        DOM.floatingLinesColorPicker.value,
+      )
+    }
+
+    clearTimeout(floatingLinesTimer)
+    floatingLinesTimer = setTimeout(() => {
+      updateSetting("floatingLinesColor", DOM.floatingLinesColorPicker.value)
+      saveSettings()
+    }, 250)
+  })
+
+  DOM.floatingLinesAngleInput.addEventListener("input", () => {
+    const angle = parseInt(DOM.floatingLinesAngleInput.value)
+    DOM.floatingLinesAngleValue.textContent = `${angle}°`
+
+    if (effectInstances.floatingLinesEffect) {
+      effectInstances.floatingLinesEffect.setAngle(angle)
+    }
+
+    clearTimeout(floatingLinesTimer)
+    floatingLinesTimer = setTimeout(() => {
+      updateSetting("floatingLinesAngle", angle)
+      saveSettings()
+    }, 250)
+  })
+
   DOM.rainHDColorPicker.addEventListener("input", () => {
     updateSetting("rainHDColor", DOM.rainHDColorPicker.value)
     saveSettings()

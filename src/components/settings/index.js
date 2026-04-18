@@ -103,6 +103,7 @@ import { AngledPatternEffect } from "../animations/angledPattern.js"
 import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
 import { PlantGrowthEffect } from "../animations/plantGrowth.js"
 import { OceanFishEffect } from "../animations/oceanFish.js"
+import { FloatingLinesEffect } from "../animations/floatingLines.js"
 
 function getExtensionVersion() {
   try {
@@ -257,6 +258,11 @@ export function initSettings() {
     oceanFishEffect: new OceanFishEffect(
       "effect-canvas",
       settings.oceanFishColor || "#ff7f50",
+    ),
+    floatingLinesEffect: new FloatingLinesEffect(
+      "effect-canvas",
+      settings.floatingLinesColor || "#ffffff",
+      settings.floatingLinesAngle || 0,
     ),
     wavyPatternEffect: new WavyPatternEffect(
       settings.wavyPatternColor1 || "#AB3E5B",

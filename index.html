@@ -1553,6 +1553,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
                             <span class="effect-name" data-i18n="effect_nintendo_pixel">Retro Terminal</span>
                         </button>
+                        <button class="effect-item" data-value="floatingLines"
+                            data-search="floating lines space cosmic bend mouse hover wavy">
+                            <span class="effect-icon"><i class="fa-solid fa-braille"></i></span>
+                            <span class="effect-name" data-i18n="effect_floating_lines">Floating Lines</span>
+                        </button>
                     </div>
 
                     <!-- Active Effect Settings (Card) -->
@@ -1840,6 +1845,25 @@
                                 <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish
                                     Color</label>
                                 <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
+                            </div>
+
+                            <!-- Floating Lines Color -->
+                            <div id="floating-lines-color-setting" class="setting-item" style="display: none;">
+                                <label for="floating-lines-color-picker"
+                                    data-i18n="settings_floating_lines_color">Lines
+                                    Color</label>
+                                <input type="color" id="floating-lines-color-picker" value="#ffffff" />
+                            </div>
+
+                            <!-- Floating Lines Angle -->
+                            <div id="floating-lines-angle-setting" class="setting-item" style="display: none;">
+                                <div class="flex-space-between" style="margin-bottom: 8px;">
+                                    <label data-i18n="settings_floating_lines_angle" style="font-weight: 600;">Lines
+                                        Angle</label>
+                                    <span id="floating-lines-angle-value" class="bg-slider-value">0°</span>
+                                </div>
+                                <input type="range" id="floating-lines-angle-input" min="0" max="360" value="0"
+                                    style="width: 100%;">
                             </div>
 
                             <!-- Rain HD Color -->

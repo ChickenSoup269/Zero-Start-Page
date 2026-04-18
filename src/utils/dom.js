@@ -342,7 +342,21 @@ export const oceanFishColorPicker = document.getElementById(
 export const oceanFishColorSetting = document.getElementById(
   "ocean-fish-color-setting",
 )
-
+export const floatingLinesColorPicker = document.getElementById(
+  "floating-lines-color-picker",
+)
+export const floatingLinesColorSetting = document.getElementById(
+  "floating-lines-color-setting",
+)
+export const floatingLinesAngleInput = document.getElementById(
+  "floating-lines-angle-input",
+)
+export const floatingLinesAngleValue = document.getElementById(
+  "floating-lines-angle-value",
+)
+export const floatingLinesAngleSetting = document.getElementById(
+  "floating-lines-angle-setting",
+)
 export const rainHDColorPicker = document.getElementById("rain-hd-color-picker")
 export const rainHDColorSetting = document.getElementById(
   "rain-hd-color-setting",

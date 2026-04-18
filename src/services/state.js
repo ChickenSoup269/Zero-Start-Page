@@ -153,6 +153,8 @@ const defaultSettings = {
   gridScanColor: "#00ffcc",
   plantGrowthColor: "#4caf50",
   oceanFishColor: "#ff7f50",
+  floatingLinesColor: "#ffffff",
+  floatingLinesAngle: 0,
   bgPositionX: 50,
   bgPositionY: 50,
   bgSize: "cover",
