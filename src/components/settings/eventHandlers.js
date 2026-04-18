@@ -956,6 +956,8 @@ export function setupGeneralEventHandlers(
       repeating: false,
       extraColorCount: 3,
       customColors: "",
+      position: "center",
+      radialShape: "circle",
     },
     {
       start: "#0EA5E9",
@@ -965,6 +967,8 @@ export function setupGeneralEventHandlers(
       repeating: false,
       extraColorCount: 3,
       customColors: "",
+      position: "center",
+      radialShape: "circle",
     },
     {
       start: "#14B8A6",
@@ -974,6 +978,8 @@ export function setupGeneralEventHandlers(
       repeating: true,
       extraColorCount: 4,
       customColors: "#22d3ee, #60a5fa, #a78bfa",
+      position: "center",
+      radialShape: "circle",
     },
     {
       start: "#F43F5E",
@@ -983,6 +989,8 @@ export function setupGeneralEventHandlers(
       repeating: true,
       extraColorCount: 5,
       customColors: "#f43f5e, #f59e0b, #22d3ee, #8b5cf6",
+      position: "center",
+      radialShape: "circle",
     },
     {
       start: "#22D3EE",
@@ -992,6 +1000,63 @@ export function setupGeneralEventHandlers(
       repeating: true,
       extraColorCount: 4,
       customColors: "#22d3ee, #38bdf8, #818cf8",
+      position: "center",
+      radialShape: "circle",
+    },
+    {
+      start: "#ee9ca7",
+      end: "#ffdde1",
+      angle: "90",
+      type: "linear",
+      repeating: false,
+      extraColorCount: 0,
+      customColors: "",
+      position: "center",
+      radialShape: "circle",
+    },
+    {
+      start: "#6a11cb",
+      end: "#2575fc",
+      angle: "45",
+      type: "linear",
+      repeating: false,
+      extraColorCount: 0,
+      customColors: "",
+      position: "center",
+      radialShape: "circle",
+    },
+    {
+      start: "#ff7e5f",
+      end: "#feb47b",
+      angle: "135",
+      type: "linear",
+      repeating: false,
+      extraColorCount: 0,
+      customColors: "",
+      position: "center",
+      radialShape: "circle",
+    },
+    {
+      start: "#232526",
+      end: "#414345",
+      angle: "180",
+      type: "linear",
+      repeating: false,
+      extraColorCount: 0,
+      customColors: "",
+      position: "center",
+      radialShape: "circle",
+    },
+    {
+      start: "#f83600",
+      end: "#f9d423",
+      angle: "0",
+      type: "linear",
+      repeating: false,
+      extraColorCount: 2,
+      customColors: "#f83600, #f9d423",
+      position: "center",
+      radialShape: "circle",
     },
   ]
 
@@ -1047,9 +1112,10 @@ export function setupGeneralEventHandlers(
   const renderGradientExtraColorPickers = () => {
     if (!DOM.gradientExtraColorPickers) return
 
+    const rawValue = DOM.gradientExtraColorCount?.value
     const count = Math.min(
       5,
-      Math.max(0, Number(DOM.gradientExtraColorCount?.value || 2)),
+      Math.max(0, rawValue !== undefined ? Number(rawValue) : 0),
     )
     const fromInput = parseCustomColors(DOM.gradientCustomColors?.value || "")
     const existing = fromInput.slice(0, count)
@@ -1071,12 +1137,11 @@ export function setupGeneralEventHandlers(
         picker.type = "color"
         picker.value = color
         picker.title = `Extra ${index + 1}`
-        picker.style.width = "42${DOM.bookmarkGroupFontSizeInput.value}px"
-        picker.style.height = "34${DOM.bookmarkGroupFontSizeInput.value}px"
+        picker.style.width = "42px"
+        picker.style.height = "34px"
         picker.style.padding = "0"
-        picker.style.border =
-          "1${DOM.bookmarkGroupFontSizeInput.value}px solid var(--input-border)"
-        picker.style.borderRadius = "8${DOM.bookmarkGroupFontSizeInput.value}px"
+        picker.style.border = "1px solid var(--input-border)"
+        picker.style.borderRadius = "8px"
         picker.addEventListener("input", () => {
           const pickers = Array.from(
             DOM.gradientExtraColorPickers.querySelectorAll(
@@ -1205,7 +1270,9 @@ export function setupGeneralEventHandlers(
     updateCurrentGradient()
   })
   DOM.gradientAngleInput.addEventListener("input", () => {
-    DOM.gradientAngleValue.textContent = DOM.gradientAngleInput.value
+    DOM.gradientAngleValue.textContent = `${DOM.gradientAngleInput.value}°`
+  })
+  DOM.gradientAngleInput.addEventListener("change", () => {
     updateCurrentGradient()
   })
 
@@ -1306,6 +1373,9 @@ export function setupGeneralEventHandlers(
 
   // User gradient gallery
   DOM.userGradientsGallery.addEventListener("click", (e) => {
+    // Check selection mode from DOM attribute
+    if (DOM.userGradientsGallery.dataset.selectMode === "true") return
+
     const item = e.target.closest(".user-gradient-item")
     if (item && !e.target.closest(".remove-bg-btn")) {
       const gradient = {
@@ -1316,6 +1386,8 @@ export function setupGeneralEventHandlers(
         repeating: item.dataset.repeating === "true",
         extraColorCount: Number(item.dataset.extraColorCount || 2),
         customColors: item.dataset.customColors || "",
+        position: item.dataset.position || "center",
+        radialShape: item.dataset.radialShape || "circle",
       }
       if (DOM.gradientExtraColorCount) {
         DOM.gradientExtraColorCount.value = String(gradient.extraColorCount)
@@ -1323,8 +1395,15 @@ export function setupGeneralEventHandlers(
       if (DOM.gradientCustomColors) {
         DOM.gradientCustomColors.value = gradient.customColors
       }
+      if (DOM.gradientPositionSelect) {
+        DOM.gradientPositionSelect.value = gradient.position
+      }
+      if (DOM.gradientRadialShapeSelect) {
+        DOM.gradientRadialShapeSelect.value = gradient.radialShape
+      }
       renderGradientExtraColorPickers()
       handleSettingUpdate(null, gradient, true)
+      updateSettingsInputs()
     }
   })
 

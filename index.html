@@ -788,111 +788,117 @@
             </div>
 
             <div class="setting-group">
-                <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> Background Gradient</div>
-                <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
+                <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span data-i18n="settings_gradient_title">Background Gradient</span></div>
+                <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
                     <i class="fa-solid fa-eye-slash"></i>
                     <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
                 </button>
                 <div id="gradient-settings-body">
-                    <div style="display: flex; gap: 10px;">
-                        <input type="color" id="gradient-start-picker" title="Pick a start color">
-                        <input type="color" id="gradient-end-picker" title="Pick an end color">
+                    <div class="gradient-config-card">
+                        <div class="gradient-swatch-grid">
+                            <div class="gradient-swatch">
+                                <label data-i18n="gradient_start_color">Start Color</label>
+                                <input type="color" id="gradient-start-picker" value="#a8c0ff" title="Pick a start color">
+                            </div>
+                            <div class="gradient-swatch">
+                                <label data-i18n="gradient_end_color">End Color</label>
+                                <input type="color" id="gradient-end-picker" value="#3f2b96" title="Pick an end color">
+                            </div>
+                        </div>
+
+                        <div class="bg-control-grid" style="display: flex; flex-direction: column; gap: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label for="gradient-type-select" data-i18n="settings_gradient_type" style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient Type</label>
+                                <select id="gradient-type-select" style="width: 100%;">
+                                    <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                                    <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                                    <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                                </select>
+                            </div>
+
+                            <div id="gradient-angle-group" class="setting-item no-margin-top">
+                                <div class="flex-space-between" style="margin-bottom: 8px;">
+                                    <label data-i18n="settings_gradient_angle" style="font-weight: 600;">Angle</label>
+                                    <span id="gradient-angle-value" class="bg-slider-value">135°</span>
+                                </div>
+                                <input type="range" id="gradient-angle-input" min="0" max="360" value="135" style="width: 100%;">
+                            </div>
+
+                            <div id="gradient-position-group" class="setting-item no-margin-top" style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_position" style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
+                                <select id="gradient-position-select" style="width: 100%;">
+                                    <option value="center">Center</option>
+                                    <option value="top">Top</option>
+                                    <option value="bottom">Bottom</option>
+                                    <option value="left">Left</option>
+                                    <option value="right">Right</option>
+                                    <option value="top left">Top Left</option>
+                                    <option value="top right">Top Right</option>
+                                    <option value="bottom left">Bottom Left</option>
+                                    <option value="bottom right">Bottom Right</option>
+                                </select>
+                            </div>
+
+                            <div id="gradient-radial-shape-group" class="setting-item no-margin-top" style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_radial_shape" style="display: block; margin-bottom: 8px; font-weight: 600;">Radial Shape</label>
+                                <select id="gradient-radial-shape-select" style="width: 100%;">
+                                    <option value="circle">Circle</option>
+                                    <option value="ellipse">Ellipse</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item-row" style="margin-top: 15px;">
+                            <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating Gradient</label>
+                            <input type="checkbox" id="gradient-repeating-toggle">
+                        </div>
+
+                        <div class="setting-item" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
+                            <label style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;" data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
+                            <select id="gradient-extra-color-count" style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container"></div>
+                            <input type="text" id="gradient-custom-colors" style="display: none;">
+                        </div>
+
+                        <div class="background-inputs-grid" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors" data-i18n-title="settings_accent_random" style="width: 100%;">
+                                <i class="fa-solid fa-shuffle"></i> <span data-i18n="settings_gradient_random_colors">Random Colors</span>
+                            </button>
+                            <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%;">
+                                <i class="fa-solid fa-sparkles"></i> <span data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
+                            </button>
+                            <button id="save-gradient-btn" class="primary-btn" style="width: 100%;">
+                                <i class="fa-solid fa-heart"></i> <span data-i18n="settings_save_gradient_btn">Save to Gallery</span>
+                            </button>
+                        </div>
+                        <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets' for professionally picked color combinations!</div>
                     </div>
-                    <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
-                        <label for="gradient-type-select" data-i18n="settings_gradient_type"
-                            style="font-size: 0.9rem;">Gradient Type:</label>
-                        <select id="gradient-type-select" style="flex: 1; padding: 0.35rem;">
-                            <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
-                            <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
-                            <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
-                        </select>
-                    </div>
-                    <div id="gradient-position-group"
-                        style="margin-top: 12px; display: none; gap: 8px; align-items: center;">
-                        <label for="gradient-position-select" data-i18n="settings_gradient_position"
-                            style="font-size: 0.9rem;">Position:</label>
-                        <select id="gradient-position-select" style="flex: 1; padding: 0.35rem;">
-                            <option value="center">Center</option>
-                            <option value="top">Top</option>
-                            <option value="bottom">Bottom</option>
-                            <option value="left">Left</option>
-                            <option value="right">Right</option>
-                            <option value="top left">Top Left</option>
-                            <option value="top right">Top Right</option>
-                            <option value="bottom left">Bottom Left</option>
-                            <option value="bottom right">Bottom Right</option>
-                        </select>
-                    </div>
-                    <div id="gradient-radial-shape-group"
-                        style="margin-top: 12px; display: none; gap: 8px; align-items: center;">
-                        <label for="gradient-radial-shape-select" data-i18n="settings_gradient_radial_shape"
-                            style="font-size: 0.9rem;">Radial Shape:</label>
-                        <select id="gradient-radial-shape-select" style="flex: 1; padding: 0.35rem;">
-                            <option value="circle">Circle</option>
-                            <option value="ellipse">Ellipse</option>
-                        </select>
-                    </div>
-                    <label
-                        style="margin-top: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;"
-                        for="gradient-extra-color-count">
-                        <input type="checkbox" id="gradient-repeating-toggle">
-                        <span data-i18n="settings_gradient_repeating">Repeating Gradient</span>
-                    </label>
-                    <div style="margin-top: 10px; display: flex; gap: 8px; align-items: center;">
-                        <label for="gradient-extra-color-count" data-i18n="settings_gradient_extra_color_count"
-                            style="font-size: 0.9rem;">Extra Colors:</label>
-                        <select id="gradient-extra-color-count" style="flex: 1; padding: 0.35rem;">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div style="margin-top: 8px;">
-                        <label for="gradient-custom-colors" data-i18n="settings_gradient_custom_colors"
-                            style="font-size: 0.9rem;">Custom Colors (comma separated):</label>
-                        <input type="text" id="gradient-custom-colors" placeholder="#ff6b6b, #feca57, #48dbfb"
-                            style="width: 100%; margin-top: 6px; padding: 0.45rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                    </div>
-                    <div id="gradient-extra-color-pickers"
-                        style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
-                    <button id="random-gradient-colors-btn" class="secondary-btn full-width" style="margin-top: 8px;"
-                        data-i18n="settings_gradient_random_colors">Random Gradient Colors</button>
-                    <div id="gradient-angle-group" style="margin-top: 12px;">
-                        <label for="gradient-angle-input">Gradient Angle: <span
-                                id="gradient-angle-value">135</span>deg</label>
-                        <input type="range" id="gradient-angle-input" min="0" max="360" value="135">
-                    </div>
-                    <button id="generate-modern-gradient-btn" class="secondary-btn full-width"
-                        style="margin-top: 10px; margin-bottom: 10px;"
-                        data-i18n="settings_gradient_generate_modern">Generate Modern Landing Gradient</button>
-                    <button id="save-gradient-btn" class="secondary-btn full-width"
-                        data-i18n="settings_save_gradient_btn">Save Gradient</button>
                 </div>
             </div>
 
             <div class="setting-group">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <label data-i18n="settings_saved_gradients" style="margin-bottom: 0;"
-                        for="multi-color-count-select">Saved Gradients</label>
+                <div class="setting-label">
+                    <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved Gallery</span>
                     <span id="count-gradient"></span>
-                    <button id="gradient-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                        data-i18n="bg_select_mode"
-                        style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
                 </div>
                 <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
                     <span id="gradient-select-count" class="bg-select-count">0 selected</span>
                     <div style="display: flex; gap: 6px;">
-                        <button id="gradient-select-all-btn" class="icon-btn" title="Select All"><i
-                                class="fa-solid fa-check-double"></i></button>
-                        <button id="gradient-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                class="fa-solid fa-trash"></i></button>
-                        <button id="gradient-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                class="fa-solid fa-xmark"></i></button>
+                        <button id="gradient-select-all-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;">Select All</button>
+                        <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn" style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;">Delete</button>
+                        <button id="gradient-select-cancel-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;">Cancel</button>
                     </div>
                 </div>
+                <button id="gradient-select-mode-btn" class="secondary-btn full-width" style="margin-bottom: 12px;" data-i18n="bg_select_mode">
+                    <i class="fa-solid fa-check-double"></i> Select to Delete
+                </button>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
             </div>
 

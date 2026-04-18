@@ -169,6 +169,10 @@ function buildGradientCss(gradient) {
 let gradientSelectMode = false
 let gradientSelectedIndices = new Set()
 
+export function isGradientSelectMode() {
+  return gradientSelectMode
+}
+
 function setupMultiSelect(DOM) {
   const i18n = geti18n()
 
@@ -179,6 +183,7 @@ function setupMultiSelect(DOM) {
 
   const enterGradientSelectMode = () => {
     gradientSelectMode = true
+    DOM.userGradientsGallery.dataset.selectMode = "true"
     gradientSelectedIndices.clear()
     DOM.userGradientsGallery.classList.add("bg-select-mode")
     DOM.gradientSelectToolbar.style.display = "flex"
@@ -188,6 +193,7 @@ function setupMultiSelect(DOM) {
 
   const exitGradientSelectMode = () => {
     gradientSelectMode = false
+    DOM.userGradientsGallery.dataset.selectMode = "false"
     gradientSelectedIndices.clear()
     DOM.userGradientsGallery.classList.remove("bg-select-mode")
     DOM.gradientSelectToolbar.style.display = "none"
@@ -281,6 +287,8 @@ function renderUserGradients(DOM) {
       item.dataset.repeating = String(gradient.repeating === true)
       item.dataset.extraColorCount = String(gradient.extraColorCount || 2)
       item.dataset.customColors = gradient.customColors || ""
+      item.dataset.position = gradient.position || "center"
+      item.dataset.radialShape = gradient.radialShape || "circle"
       item.style.background = buildGradientCss(gradient)
       item.title = `Gradient ${index + 1}`
 
@@ -295,41 +303,6 @@ function renderUserGradients(DOM) {
         import("../contextMenu.js").then((m) => {
           m.showContextMenu(e.clientX, e.clientY, index, "userGradient")
         })
-      })
-
-      item.addEventListener("click", () => {
-        if (gradientSelectMode) return
-        updateSetting("background", buildGradientCss(gradient))
-        updateSetting("backgroundType", "gradient")
-
-        // Sync inputs
-        DOM.gradientStartPicker.value = gradient.start
-        DOM.gradientEndPicker.value = gradient.end
-        DOM.gradientAngleInput.value = gradient.angle
-        DOM.gradientAngleValue.textContent = `${gradient.angle}°`
-        DOM.gradientTypeSelect.value = gradient.type || "linear"
-        if (gradient.repeating) DOM.gradientRepeatingToggle.checked = true
-
-        // Extra colors
-        if (gradient.extraColors) {
-          DOM.gradientExtraColorCount.value = gradient.extraColors.length
-          // Trigger change to show pickers
-          DOM.gradientExtraColorCount.dispatchEvent(new Event("change"))
-          const pickers = DOM.gradientExtraColorPickers.querySelectorAll(
-            'input[type="color"]',
-          )
-          gradient.extraColors.forEach((color, i) => {
-            if (pickers[i]) pickers[i].value = color
-          })
-        } else {
-          DOM.gradientExtraColorCount.value = 0
-          DOM.gradientExtraColorCount.dispatchEvent(new Event("change"))
-        }
-
-        // Radial position
-        if (gradient.type === "radial" && gradient.position) {
-          DOM.gradientPositionSelect.value = gradient.position
-        }
       })
 
       const removeBtn = document.createElement("button")
