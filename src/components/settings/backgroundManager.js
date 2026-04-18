@@ -314,22 +314,39 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                       vid.currentTime = midTime;
                   }, { once: true })
                   vid.addEventListener("seeked", () => {
-                      const canvas = document.createElement("canvas")
-                      canvas.width = 480 
-                      canvas.height = 270
-                      const ctx = canvas.getContext("2d")
-                      ctx.drawImage(vid, 0, 0, canvas.width, canvas.height)
-                      try {
-                          const dataUrl = canvas.toDataURL("image/jpeg", 0.85)
-                          _videoThumbCache.set(bgId, dataUrl)
-                          item.style.backgroundImage = `url('${dataUrl}')`
-                          const placeholder = item.querySelector("i.fa-film")
-                          if (placeholder) placeholder.remove()
-                      } catch (e) {
-                          console.warn("Failed to generate video thumb:", e)
-                      }
-                      vid.removeAttribute("src")
-                      vid.load()
+                      // Small timeout to ensure frame is painted
+                      setTimeout(() => {
+                          const vW = vid.videoWidth
+                          const vH = vid.videoHeight
+                          if (vW === 0 || vH === 0) return;
+
+                          const canvas = document.createElement("canvas")
+                          const MAX_THUMB = 480
+                          if (vW > vH) {
+                              canvas.width = MAX_THUMB
+                              canvas.height = (vH * MAX_THUMB) / vW
+                          } else {
+                              canvas.height = MAX_THUMB
+                              canvas.width = (vW * MAX_THUMB) / vH
+                          }
+
+                          const ctx = canvas.getContext("2d")
+                          ctx.drawImage(vid, 0, 0, canvas.width, canvas.height)
+
+                          try {
+                              const dataUrl = canvas.toDataURL("image/jpeg", 0.85)
+                              _videoThumbCache.set(bgId, dataUrl)
+                              item.style.backgroundImage = `url('${dataUrl}')`
+                              item.style.backgroundSize = "cover"
+                              item.style.backgroundPosition = "center"
+                              const placeholder = item.querySelector("i.fa-film")
+                              if (placeholder) placeholder.remove()
+                          } catch (e) {
+                              console.warn("Failed to generate video thumb:", e)
+                          }
+                          vid.removeAttribute("src")
+                          vid.load()
+                      }, 150)
                   }, { once: true })
               }
           } else {

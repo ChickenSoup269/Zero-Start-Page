@@ -4,7 +4,7 @@
   "version": "1.3.1",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
-  "permissions": ["bookmarks", "scripting", "tabs"],
+  "permissions": ["bookmarks", "scripting", "tabs", "storage", "unlimitedStorage"],
   "icons": {
     "128": "icon/logo.png"
   },
@@ -27,6 +27,6 @@
     "https://i.scdn.co/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https://images.unsplash.com https://*.googleusercontent.com https://*.gstatic.com https://i.ytimg.com https://i.scdn.co https://upload.wikimedia.org https://img.youtube.com https://www.google.com https://github.com https://*.githubusercontent.com https://icon.horse; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://api.unsplash.com https://images.unsplash.com https://suggestqueries.google.com;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https://images.unsplash.com https://*.googleusercontent.com https://*.gstatic.com https://i.ytimg.com https://i.scdn.co https://upload.wikimedia.org https://img.youtube.com https://www.google.com https://github.com https://*.githubusercontent.com https://icon.horse https://icons.duckduckgo.com; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://api.unsplash.com https://images.unsplash.com https://suggestqueries.google.com;"
   }
 }
