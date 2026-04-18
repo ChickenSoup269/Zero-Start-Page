@@ -10,6 +10,7 @@ import { geti18n } from "../services/i18n.js"
 import {
   getLunarDateString,
   getVietnameseHoliday,
+  convertSolar2Lunar,
 } from "../utils/lunarCalendar.js"
 
 export class FullCalendar {
@@ -345,13 +346,24 @@ export class FullCalendar {
       month: "long",
     })
 
+    let lunarMonthHeader = ""
+    if (this.showLunar) {
+      // Get lunar info for the first day of the viewed month
+      const firstDayLunar = convertSolar2Lunar(1, month + 1, year)
+      // Or better, get it for the middle of the month to be more representative
+      const midDayLunar = convertSolar2Lunar(15, month + 1, year)
+      lunarMonthHeader = `<span class="lunar-month-title"> (Tháng ${midDayLunar.month}${midDayLunar.leap ? " nhuận" : ""})</span>`
+    }
+
     const header = document.createElement("div")
     header.className = "calendar-header"
     header.innerHTML = `
             <button id="prev-month" class="icon-btn" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
-            <h3 class="month-title">${monthName} ${year}</h3>
-            <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
-            <button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}" style="margin-left: auto;"><i class="fa-solid fa-plus"></i></button>
+            <h3 class="month-title">${monthName} ${year}${lunarMonthHeader}</h3>
+            <div class="calendar-header-actions" style="margin-left: auto; display: flex; gap: 5px;">
+              <button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>
+              <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
         `
     this.container.appendChild(header)
 

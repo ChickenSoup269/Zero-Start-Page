@@ -1368,7 +1368,9 @@ body.ghost-controls .side-controls:hover {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: min(380px, 95vw);
+  width: fit-content;
+  min-width: 280px;
+  max-width: min(420px, 95vw);
   z-index: 100;
   padding: 1.2rem;
   transition: all 0.3s ease;
@@ -1377,7 +1379,16 @@ body.ghost-controls .side-controls:hover {
 }
 
 .calendar-card.with-lunar {
-  width: min(420px, 95vw);
+  width: fit-content;
+  min-width: 320px;
+}
+
+.lunar-month-title {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  font-weight: 400;
+  color: var(--accent-color);
+  margin-left: 4px;
 }
 
 .calendar-header {
