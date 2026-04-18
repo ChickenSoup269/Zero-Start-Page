@@ -1,298 +1,162 @@
 /**
- * SunbeamEffect — Warm sunrays sweeping slowly across the screen
- *
- * Simulates volumetric god-rays / crepuscular rays from an off-screen sun:
- *   - Several wide, soft, angled light beams radiate from a sun point near
- *     the top of the screen and slowly sweep left/right.
- *   - Each beam fades from bright golden near the source to transparent.
- *   - Periodic "sweep" events make a cluster of beams glide across together.
- *   - Tiny dust motes float lazily inside the brightest beams.
- *   - Fully built on Canvas 2D, no external deps.
+ * SunbeamEffect (Dynamic White Light Wall Edition)
+ * A unified wall of pure white light with autonomous shimmering motion. 
+ * Features vertical fading, depth-based blurring, and continuous light dancing.
  */
 export class SunbeamEffect {
-  constructor(canvasId) {
+  constructor(canvasId, color = "#ffffff") {
     this.canvas = document.getElementById(canvasId)
-    this.ctx = this.canvas.getContext("2d")
+    if (!this.canvas) return
+    this.ctx = this.canvas.getContext("2d", { alpha: true })
     this.active = false
-    this.rafId = null
-
-    // Higher FPS for smoother cinematic feel
-    this.fps = 60
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
-
-    // Sun origin (set in resize)
-    this.sunX = 0
-    this.sunY = 0
-
-    // Beams
-    this.beams = []
-    // Dust motes
-    this.dust = []
-
-    // Global wind for dust drift
-    this.globalWind = 0
-    this.globalWindPhase = 0
+    this.color = color
+    this.time = 0
+    this.sunPos = { x: 0, y: 0 }
+    this.angle = 0 
 
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
   }
 
-  // ── Resize ───────────────────────────────────────────────────────────────
+  updateColor(hex) {
+    this.color = hex
+  }
+
+  setAngle(deg) {
+    this.angle = deg
+  }
+
   resize() {
+    if (!this.canvas) return
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
-    this._placeSun()
-    this._buildBeams()
-    this._buildDust()
+    this.sunPos.x = this.canvas.width * 0.5
+    this.sunPos.y = -this.canvas.height * 0.2
   }
 
-  _placeSun() {
-    const W = this.canvas.width
-    const H = this.canvas.height
-    // Sun sits just above the viewport, a bit left/right of center
-    this.sunX = W * (0.35 + Math.random() * 0.3)
-    this.sunY = -H * 0.08
+  start() {
+    if (this.active) return
+    this.active = true
+    this.canvas.style.display = "block"
+    this._animate()
   }
 
-  // ── Beams ────────────────────────────────────────────────────────────────
-  _buildBeams() {
-    this.beams = []
-    // 15-25 individual rays for a sharper, denser light ray look
-    const count = 15 + Math.floor(Math.random() * 10)
-    for (let i = 0; i < count; i++) {
-      this.beams.push(this._makeBeam(i, count))
-    }
+  stop() {
+    this.active = false
+    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.canvas.style.display = "none"
   }
 
-  _makeBeam(i, total) {
-    // Spread rays over ~140° fan below the sun
-    const spreadRad = (140 * Math.PI) / 180
-    const baseAngle = Math.PI / 2 // pointing straight down
-    const offset = (Math.random() - 0.5) * 0.3 // Add slight unevenness
-    const angle =
-      baseAngle - spreadRad / 2 + (spreadRad / (total - 1)) * i + offset
-    return {
-      angle, // base angle (rad) from sun point
-      sweepPhase: Math.random() * Math.PI * 2, // individual drift phase
-      sweepSpeed: 0.0003 + Math.random() * 0.0008, // slow individual sweep speed
-      sweepAmplitude: 0.1 + Math.random() * 0.15, // sweeping range (radians)
-      halfWidth: (0.01 + Math.random() * 0.04) * Math.PI, // narrower for distinct sharp light rays
-      reach: 1.2 + Math.random() * 0.8, // fraction of diagonal length
-      alpha: 0.1 + Math.random() * 0.2, // peak opacity, brighter
-      alphaPhase: Math.random() * Math.PI * 2, // shimmer phase
-      alphaSpeed: 0.005 + Math.random() * 0.01, // shimmer speed
-      // paler, cooler color for sharp light rays
-      hue: 45 + Math.random() * 15,
-      sat: 30 + Math.random() * 30, // lower sat for whiter light
-      light: 85 + Math.random() * 15,
-    }
-  }
-
-  // ── Dust motes ───────────────────────────────────────────────────────────
-  _buildDust() {
-    this.dust = []
-    const W = this.canvas.width
-    const H = this.canvas.height
-    for (let i = 0; i < 75; i++) {
-      // Increased dust count for more depth
-      this.dust.push(this._makeDust(W, H, true))
-    }
-  }
-
-  _makeDust(W, H, scattered = false) {
-    return {
-      x: Math.random() * W,
-      y: scattered ? Math.random() * H : H + 10,
-      r: 0.6 + Math.random() * 1.8,
-      vy: -(0.05 + Math.random() * 0.2), // drift upward very slowly
-      vx: (Math.random() - 0.5) * 0.15,
-      wobbleSpeed: 0.01 + Math.random() * 0.02,
-      wobblePhase: Math.random() * Math.PI * 2,
-      alpha: 0.1 + Math.random() * 0.5,
-      twinklePhase: Math.random() * Math.PI * 2,
-      twinkleSpeed: 0.02 + Math.random() * 0.03,
-    }
-  }
-
-  // ── Wind scheduling for dust ─────────────────────────────────────────────
-  _updateWind() {
-    this.globalWindPhase += 0.002
-    this.globalWindPhase %= Math.PI * 2
-    this.globalWind = Math.sin(this.globalWindPhase) * 0.4
-  }
-
-  // ── Drawing ──────────────────────────────────────────────────────────────
-  _drawBeam(beam, phase) {
+  _drawLightWall(baseAngle) {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
     const diag = Math.sqrt(W * W + H * H)
+    const reach = diag * 1.5
 
-    // Generate individual sweeping angle
-    beam.sweepPhase += beam.sweepSpeed
-    const sweepOffset = Math.sin(beam.sweepPhase) * beam.sweepAmplitude
-
-    const centerAngle = beam.angle + sweepOffset
-    const leftAngle = centerAngle - beam.halfWidth
-    const rightAngle = centerAngle + beam.halfWidth
-    const reach = diag * beam.reach
-
-    // Three points of a triangular light ray beam
-    const sx = this.sunX
-    const sy = this.sunY
-    const lx = sx + Math.cos(leftAngle) * reach
-    const ly = sy + Math.sin(leftAngle) * reach
-    const rx = sx + Math.cos(rightAngle) * reach
-    const ry = sy + Math.sin(rightAngle) * reach
-    const cx = sx + Math.cos(centerAngle) * reach
-    const cy = sy + Math.sin(centerAngle) * reach
-
-    // Shimmer: oscillate alpha slightly
-    const shimmer = 0.5 + 0.5 * Math.sin(phase + beam.alphaPhase)
-    const alpha = beam.alpha * (0.6 + 0.4 * shimmer)
-
-    // Linear gradient along the beam's center for distinct light ray look
-    const grad = ctx.createLinearGradient(sx, sy, cx, cy)
-    const baseColor = `hsla(${beam.hue},${beam.sat}%,${beam.light}%,`
-    grad.addColorStop(0, `${baseColor}${alpha})`)
-    grad.addColorStop(0.3, `${baseColor}${alpha * 0.8})`)
-    grad.addColorStop(0.7, `${baseColor}${alpha * 0.3})`)
-    grad.addColorStop(1, `${baseColor}0)`)
+    let r=255, g=255, b=255 
+    if (this.color && this.color !== "#ffffff" && this.color.startsWith('#')) {
+        r = parseInt(this.color.slice(1, 3), 16)
+        g = parseInt(this.color.slice(3, 5), 16)
+        b = parseInt(this.color.slice(5, 7), 16)
+    }
 
     ctx.save()
-    ctx.beginPath()
-    ctx.moveTo(sx, sy)
-    ctx.lineTo(lx, ly)
-    ctx.lineTo(rx, ry)
-    ctx.closePath()
-    ctx.fillStyle = grad
     ctx.globalCompositeOperation = "screen"
-    ctx.fill()
+
+    // Draw multiple layers of light with autonomous motion
+    const layers = 8 // More layers for smoother motion
+    for (let i = 0; i < layers; i++) {
+        // Each layer moves at a slightly different speed and phase
+        const moveOffset = Math.sin(this.time * 0.8 + i * 1.5) * 0.05
+        const spread = 0.3 + (i * 0.1) + moveOffset
+        
+        // Intensity pulses independently
+        const pulse = 0.8 + Math.sin(this.time * 1.2 + i) * 0.2
+        const opacity = (0.25 / layers) * (1 - i/layers * 0.7) * pulse
+        
+        const grad = ctx.createRadialGradient(
+            this.sunPos.x, this.sunPos.y, 0, 
+            this.sunPos.x, this.sunPos.y, reach
+        )
+
+        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${opacity})`)
+        grad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, ${opacity * 0.6})`)
+        grad.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, ${opacity * 0.2})`)
+        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`)
+
+        ctx.beginPath()
+        ctx.moveTo(this.sunPos.x, this.sunPos.y)
+        // Apply individual rotation to each layer for "dancing" light effect
+        const layerAngle = baseAngle + Math.sin(this.time * 0.5 + i) * 0.02
+        ctx.arc(this.sunPos.x, this.sunPos.y, reach, layerAngle - spread, layerAngle + spread)
+        ctx.closePath()
+        ctx.fillStyle = grad
+        ctx.fill()
+    }
+
     ctx.restore()
   }
 
-  _drawDust(mote, W) {
-    const ctx = this.ctx
-    // Twinkle
-    const t = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(mote.twinklePhase))
-    ctx.save()
-    ctx.globalAlpha = mote.alpha * t
-    ctx.globalCompositeOperation = "lighter" // Let dust glow brightly
-
-    // Add small fuzzy aura to dust
-    const radGrad = ctx.createRadialGradient(
-      mote.x,
-      mote.y,
-      0,
-      mote.x,
-      mote.y,
-      mote.r * 2,
-    )
-    radGrad.addColorStop(0, `hsla(45,90%,90%,1)`)
-    radGrad.addColorStop(0.4, `hsla(40,80%,80%,0.6)`)
-    radGrad.addColorStop(1, `hsla(35,70%,60%,0)`)
-
-    ctx.fillStyle = radGrad
-    ctx.beginPath()
-    ctx.arc(mote.x, mote.y, mote.r * 2, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.restore()
-  }
-
-  // ── Lifecycle ────────────────────────────────────────────────────────────
-  start() {
-    if (this.active) return
-    this.active = true
-    this.lastDrawTime = 0
-    this.resize()
-    this.animate(0)
-    this.canvas.style.display = "block"
-  }
-
-  stop() {
-    if (this._animId) {
-      cancelAnimationFrame(this._animId)
-      this._animId = null
-    }
-    this.active = false
-    if (this.rafId) {
-      cancelAnimationFrame(this.rafId)
-      this.rafId = null
-    }
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.canvas.style.display = "none"
-  }
-
-  animate(currentTime = 0) {
+  _animate() {
     if (!this.active) return
-    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
-
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-
+    this.time += 0.015
+    const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const ctx = this.ctx
 
     ctx.clearRect(0, 0, W, H)
-    ctx.globalCompositeOperation = "source-over"
 
-    // Update wind for dust
-    this._updateWind()
+    // 1. Deep Ocean Background
+    const oceanBg = ctx.createLinearGradient(0, 0, 0, H)
+    oceanBg.addColorStop(0, "#010408")
+    oceanBg.addColorStop(1, "#000000")
+    ctx.fillStyle = oceanBg
+    ctx.fillRect(0, 0, W, H)
 
-    // Phase for shimmer (advances each frame)
-    this._phase = (this._phase || 0) + 0.022
+    // Base angle with very slow autonomous drift
+    const drift = Math.sin(this.time * 0.3) * 0.01
+    const baseAngle = (Math.PI / 2) + (this.angle * Math.PI / 180) + drift
 
-    // Draw beams (back to front sorted by alpha so brighter ones on top)
-    this.beams.forEach((b) => {
-      b.alphaPhase += b.alphaSpeed
-      this._drawBeam(b, this._phase)
-    })
-
-    // Soft warm ambient glow near sun origin
-    const glowR = Math.min(W, H) * 0.7
-    const glow = ctx.createRadialGradient(
-      this.sunX,
-      this.sunY,
-      0,
-      this.sunX,
-      this.sunY,
-      glowR,
-    )
-    glow.addColorStop(0, `rgba(255,240,160,0.12)`)
-    glow.addColorStop(0.3, `rgba(255,210,100,0.06)`)
-    glow.addColorStop(0.6, `rgba(255,180,60,0.02)`)
-    glow.addColorStop(1, `rgba(255,150,40,0)`)
+    // 2. Animated Surface Shimmer (Caustics)
+    const surfaceGlow = ctx.createRadialGradient(this.sunPos.x, this.sunPos.y, 0, this.sunPos.x, this.sunPos.y, W)
+    const shimmerAlpha = 0.04 + Math.sin(this.time * 2) * 0.02
+    surfaceGlow.addColorStop(0, `rgba(255, 255, 255, ${shimmerAlpha})`)
+    surfaceGlow.addColorStop(1, "rgba(0, 0, 0, 0)")
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
-    ctx.fillStyle = glow
+    ctx.fillStyle = surfaceGlow
     ctx.fillRect(0, 0, W, H)
     ctx.restore()
 
-    // Update & draw dust motes
+    // 3. Dynamic Light Wall
+    this._drawLightWall(baseAngle)
+
+    // 4. Floating Particles (Marine Snow)
+    ctx.globalCompositeOperation = "lighter"
+    for (let i = 0; i < 60; i++) {
+        const x = (Math.sin(i * 123.4 + this.time * 0.08) * 0.5 + 0.5) * W
+        const y = (Math.cos(i * 456.7 + this.time * 0.04) * 0.5 + 0.5) * H
+        const size = 0.6 + Math.random() * 0.8
+        
+        const dxS = x - this.sunPos.x
+        const dyS = y - this.sunPos.y
+        const angleToPoint = Math.atan2(dyS, dxS)
+        const distToLight = Math.abs(angleToPoint - baseAngle)
+        
+        const lightExposure = distToLight < 0.4 ? (1.0 - distToLight / 0.4) : 0.1
+        const opacity = 0.05 + lightExposure * 0.4
+        
+        ctx.globalAlpha = opacity * (0.4 + 0.6 * Math.sin(this.time + i))
+        ctx.fillStyle = "#ffffff"
+        ctx.beginPath()
+        ctx.arc(x, y, size, 0, Math.PI * 2)
+        ctx.fill()
+    }
+
+    ctx.globalAlpha = 1
     ctx.globalCompositeOperation = "source-over"
-    this.dust.forEach((d) => {
-      d.x += d.vx
-      d.y += d.vy
-      d.twinklePhase += d.twinkleSpeed
-      d.wobblePhase += d.wobbleSpeed
-
-      // Gently drift horizontally independent of light rays
-      const wobble = Math.sin(d.wobblePhase) * 0.3
-      d.x += this.globalWind + wobble
-
-      if (d.y < -10) {
-        // Respawn at bottom
-        Object.assign(d, this._makeDust(W, H, false))
-        d.y = H + 10
-      }
-      if (d.x < -5) d.x = W + 5
-      if (d.x > W + 5) d.x = -5
-
-      this._drawDust(d, W)
-    })
+    requestAnimationFrame(() => this._animate())
   }
 }

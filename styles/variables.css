@@ -49,8 +49,19 @@
   --clock-size: 6rem;
   --date-size: 1.5rem;
   --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.2); /* For rim lighting effect */
+  --glass-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.45);
+  --accent-glow: 0 0 15px rgba(var(--accent-color-rgb), 0.5);
+  --inner-glow: inset 0 0 15px rgba(255, 255, 255, 0.02);
+  --shimmer-gradient: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent
+  );
   --accent-color: #00ff73;
   --accent-color-rgb: 0, 255, 115; /* RGB values for rgba() usage */
   --bg-color: #1a2e1f;

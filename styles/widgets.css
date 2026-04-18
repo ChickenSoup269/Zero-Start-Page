@@ -8,15 +8,16 @@
   margin-bottom: 24px;
   align-items: center;
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
-  border-radius: 10px;
-  padding: 12px 25px;
+  border-top: 1px solid var(--glass-edge);
+  border-radius: 12px;
+  padding: 8px 18px; /* Slightly adjusted padding */
   width: 100%;
   max-width: var(--search-bar-width, 600px);
-  box-shadow: var(--glass-shadow);
-  transition: all 0.3s ease;
+  box-shadow: var(--glass-shadow), var(--inner-glow);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
 }
 
@@ -28,10 +29,12 @@
 
 .search-container:hover,
 .search-container:focus-within {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.55),
+    var(--inner-glow);
+  transform: translateY(-3px) scale(1.005);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
 }
 
 #search-input {
@@ -39,10 +42,11 @@
   background: transparent;
   border: none;
   color: var(--text-color);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-family: var(--font-primary);
-  padding: 0 15px;
+  padding: 8px 12px;
   outline: none;
+  width: 100%;
 }
 
 #search-input::placeholder {
@@ -979,8 +983,14 @@ body.ghost-controls .side-controls:hover {
   display: flex !important;
 }
 
-.todo-container.hide-checkboxes .todo-item:hover .todo-item-select .todo-checkbox,
-.todo-container.hide-checkboxes .todo-item.selected .todo-item-select .todo-checkbox {
+.todo-container.hide-checkboxes
+  .todo-item:hover
+  .todo-item-select
+  .todo-checkbox,
+.todo-container.hide-checkboxes
+  .todo-item.selected
+  .todo-item-select
+  .todo-checkbox {
   opacity: 1;
   width: 15px;
   border-width: 2px;
@@ -1199,7 +1209,8 @@ body.ghost-controls .side-controls:hover {
   transition: all 0.3s ease;
 }
 
-.timer-main-view, .timer-input-view {
+.timer-main-view,
+.timer-input-view {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -1340,7 +1351,7 @@ body.ghost-controls .side-controls:hover {
   backdrop-filter: blur(8px);
   transition: all 0.2s;
   z-index: 10;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .mini-timer-indicator:hover {
@@ -1359,8 +1370,15 @@ body.ghost-controls .side-controls:hover {
 }
 
 @keyframes timerBlink {
-  from { opacity: 1; filter: brightness(1); }
-  to { opacity: 0.5; filter: brightness(2); color: #fff; }
+  from {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  to {
+    opacity: 0.5;
+    filter: brightness(2);
+    color: #fff;
+  }
 }
 
 /* Calendar Widget */
@@ -1573,8 +1591,14 @@ body.ghost-controls .side-controls:hover {
 }
 
 @keyframes contextMenuFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .context-menu-item {
@@ -1613,16 +1637,16 @@ body.ghost-controls .side-controls:hover {
     left: 15px !important;
     padding: 1rem !important;
   }
-  
+
   .day-item {
     min-height: 45px !important;
     padding: 2px !important;
   }
-  
+
   .day-item .day-number {
     font-size: 0.85rem !important;
   }
-  
+
   .day-item .lunar-date {
     font-size: 0.55rem !important;
   }
@@ -1633,7 +1657,7 @@ body.ghost-controls .side-controls:hover {
     left: 15px !important;
     max-height: 350px !important;
   }
-  
+
   .calendar-header .month-title {
     font-size: 1rem !important;
   }
@@ -1646,16 +1670,16 @@ body.ghost-controls .side-controls:hover {
     align-items: center;
     gap: 0;
   }
-  
+
   .day-item .lunar-date {
     line-height: 1;
     margin-top: -2px;
   }
-  
+
   .calendar-event .event-title {
     display: none;
   }
-  
+
   .calendar-event {
     justify-content: center;
     padding: 2px;
@@ -1666,11 +1690,11 @@ body.ghost-controls .side-controls:hover {
   .todo-container {
     max-height: 250px !important;
   }
-  
+
   .calendar-card {
     padding: 0.8rem !important;
   }
-  
+
   .day-item {
     min-height: 40px !important;
   }
@@ -2657,7 +2681,9 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   border-radius: 0;
   width: auto !important;
   max-width: none !important;
-  transition: opacity 0.5s ease, visibility 0.5s ease !important;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease !important;
 }
 
 /* Remove backgrounds from bookmarks themselves */
@@ -3408,7 +3434,9 @@ body.bookmark-sidebar-mode .bookmark-widget {
 
 body.bookmark-taskbar-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
 }
 
 body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
@@ -3452,7 +3480,10 @@ body.bookmark-item-card-style .add-bookmark-card {
   width: auto !important;
   height: auto !important;
   min-width: 60px;
-  box-shadow: var(--bookmark-box-shadow, 0 4px 12px rgba(0, 0, 0, 0.2)) !important;
+  box-shadow: var(
+    --bookmark-box-shadow,
+    0 4px 12px rgba(0, 0, 0, 0.2)
+  ) !important;
   transition:
     transform 0.2s,
     background 0.2s,
