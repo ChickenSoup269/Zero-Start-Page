@@ -25,7 +25,7 @@ function normalizeGradient(gradient) {
     repeating,
     extraColorCount: Math.min(
       5,
-      Math.max(1, Number(gradient?.extraColorCount) || 2),
+      Math.max(0, gradient?.extraColorCount !== undefined ? Number(gradient.extraColorCount) : 2),
     ),
     customColors:
       typeof gradient?.customColors === "string" ? gradient.customColors : "",
