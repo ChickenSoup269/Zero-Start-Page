@@ -287,9 +287,17 @@ async function setUnsplashRandomBackground(
 
     btn.disabled = false
     btn.innerHTML = originalHtml
-    showAlert(
-      "Failed to load Unsplash image. Please check your Access Key and try again.",
-    )
+    
+    let errorMsg = "Failed to load Unsplash image."
+    if (err.message.includes("401")) {
+        errorMsg = "Invalid Unsplash Access Key. Please check your key in Settings."
+    } else if (err.message.includes("403")) {
+        errorMsg = "Unsplash API rate limit exceeded or Access Key unauthorized."
+    } else if (err.message.includes("Failed to fetch")) {
+        errorMsg = "Network error. Please check your internet connection or Unsplash permissions."
+    }
+    
+    showAlert(errorMsg)
   }
 }
 

@@ -305,22 +305,40 @@ function getMediaFromTab(tabId, sendResponse) {
           duration: video ? (isFinite(video.duration) ? video.duration : 0) : 0,
           url: window.location.href,
           thumbnail: (() => {
+            // Priority 1: MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
-              const largest = metadata.artwork.reduce((prev, curr) => {
-                const prevSize = parseInt(prev.sizes?.split("x")[0] || 0)
-                const currSize = parseInt(curr.sizes?.split("x")[0] || 0)
-                return currSize > prevSize ? curr : prev
-              })
-              return largest.src
+              try {
+                const largest = metadata.artwork.reduce((prev, curr) => {
+                  const getVal = (s) => parseInt(s?.split("x")[0]) || 0
+                  return getVal(curr.sizes) >= getVal(prev.sizes) ? curr : prev
+                })
+                if (largest.src) return largest.src
+              } catch (e) {}
             }
-            // Fallback thumbnail for YouTube
-            if (window.location.href.includes("youtube.com/watch")) {
-              const videoId = new URLSearchParams(window.location.search).get(
-                "v",
-              )
-              if (videoId)
-                return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+
+            // Priority 2: YouTube Specific
+            if (window.location.href.includes("youtube.com")) {
+              const videoId = new URLSearchParams(window.location.search).get("v")
+              if (videoId) return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+              
+              // YouTube Music player bar thumbnail fallback
+              const ytThumb = document.querySelector("img.ytp-videowall-still-image")?.src || 
+                             document.querySelector("img.yt-music-player-bar")?.src ||
+                             document.querySelector(".ytp-cued-thumbnail-overlay-image")?.style.backgroundImage?.slice(5, -2)
+              if (ytThumb) return ytThumb
             }
+
+            // Priority 3: Spotify Specific
+            if (window.location.href.includes("spotify.com")) {
+               const spotThumb = document.querySelector('[data-testid="now-playing-widget"] img')?.src ||
+                                document.querySelector(".cover-art img")?.src
+               if (spotThumb) return spotThumb
+            }
+
+            // Priority 4: Generic OG Image
+            const ogImg = document.querySelector('meta[property="og:image"]')?.content
+            if (ogImg) return ogImg
+
             return ""
           })(),
         }

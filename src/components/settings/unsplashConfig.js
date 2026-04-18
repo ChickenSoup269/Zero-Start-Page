@@ -19,7 +19,7 @@ const UNSPLASH_COLLECTIONS = [
   },
   {
     key: "new-spring",
-    topic: "spring-wallpapers",
+    topic: "",
     collections: [],
     keywords: [
       "new spring wallpaper",
@@ -32,7 +32,7 @@ const UNSPLASH_COLLECTIONS = [
   },
   {
     key: "spring-wallpapers",
-    topic: "spring-wallpapers",
+    topic: "",
     collections: [],
     keywords: [
       "spring wallpaper",

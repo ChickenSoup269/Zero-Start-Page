@@ -149,14 +149,15 @@ function createApplySettings(effectInstances) {
         // Not in sync cache yet, fetch it async and re-apply
         import("../../services/imageStore.js").then((m) => {
           m.getImageUrl(settings.background).then((url) => {
-            if (url && settings.background === _prevBg) {
+            // Check if the background setting is still the same one we started fetching
+            if (url && getSettings().background === bg) {
               applySettings()
             }
           })
         })
-        // Do NOT set bg = null here. Keep the ID so the code below 
-        // treats it as an image/video source (even if it won't render until url resolves)
-        // This prevents the "flash" or fallback to gradient/wave.
+        // If it's a video, we MUST NOT let it proceed with bg as an ID string
+        // because bg.startsWith("data:video") will be false and it might fall through.
+        // We set a flag or keep the ID but handle it carefully below.
       }
     }
     const isPredefinedLocalBg = effectInstances.localBackgrounds.some(
@@ -166,7 +167,9 @@ function createApplySettings(effectInstances) {
       bg &&
       (bg.startsWith("data:image") ||
         bg.startsWith("data:video") ||
-        bg.startsWith("blob:"))
+        bg.startsWith("blob:") ||
+        isIdbImage(bg) ||
+        isIdbVideo(bg))
     const bgVideoElement = document.getElementById("bg-video")
 
     // Track if a video was assigned this render to clean up unused videos
@@ -184,15 +187,37 @@ function createApplySettings(effectInstances) {
       if (bg.startsWith("data:video") || isVideoId) {
         if (bgVideoElement) {
           activeVideoSource = bg
-          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-            bgVideoElement.src = activeVideoSource
+          if (isIdbMedia(bg)) {
+              const url = getBlobUrlSync(bg)
+              if (url) {
+                  activeVideoSource = url
+                  if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                    bgVideoElement.src = activeVideoSource
+                  }
+                  bgVideoElement.style.display = "block"
+                  bgVideoElement.style.opacity = "1"
+              } else {
+                  // Keep activeVideoSource = ID so it's NOT cleared below
+                  bgVideoElement.style.display = "block"
+              }
+          } else {
+              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                bgVideoElement.src = activeVideoSource
+              }
+              bgVideoElement.style.display = "block"
+              bgVideoElement.style.opacity = "1"
           }
-          bgVideoElement.style.display = "block"
         }
       } else {
         if (bgLayer) {
-          bgLayer.style.backgroundImage = `url('${bg}')`
-          bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          let imageUrl = bg
+          if (isIdbMedia(bg)) {
+              imageUrl = getBlobUrlSync(bg)
+          }
+          if (imageUrl) {
+            bgLayer.style.backgroundImage = `url('${imageUrl}')`
+            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          }
         }
       }
       document.body.style.backgroundSize = settings.bgSize || "cover"
@@ -709,6 +734,9 @@ function createApplySettings(effectInstances) {
       settings.gradientAngle + "deg",
     )
 
+    // Update Main Background Credit (Bottom Left)
+    updateMainBgCredit()
+
     // Call updateSettingsInputs to sync all UI
     if (typeof effectInstances.updateSettingsInputs === "function") {
       // Signal resizing to update layout-dependent widgets like bookmark overflow
@@ -716,6 +744,53 @@ function createApplySettings(effectInstances) {
       effectInstances.updateSettingsInputs()
     }
   }
+}
+
+function updateMainBgCredit() {
+  const settings = getSettings()
+  const creditEl = document.getElementById("main-bg-credit")
+  if (!creditEl) return
+
+  const bg = settings.background
+  const info = settings.unsplashPhotoInfo
+
+  // Case 1: Unsplash
+  const isUnsplash = info && info.authorName && (bg && (bg.includes("unsplash.com") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com")))
+  
+  if (isUnsplash) {
+    const authorLink = info.authorUrl ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>` : info.authorName
+    const photoLink = info.photoUrl ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">Unsplash</a>` : "Unsplash"
+    
+    creditEl.innerHTML = `
+      <i class="fa-brands fa-unsplash credit-logo-unsplash"></i>
+      <span>${photoLink} &bull; ${authorLink}</span>
+    `
+    creditEl.style.display = "flex"
+    return
+  }
+
+  // Case 2: Local Video (IndexedDB)
+  if (isIdbVideo(bg)) {
+    creditEl.innerHTML = `
+      <i class="fa-solid fa-circle-play credit-logo-local"></i>
+      <span data-i18n="credit_local_video">Local Video</span>
+    `
+    creditEl.style.display = "flex"
+    return
+  }
+
+  // Case 3: Local Image (IndexedDB)
+  if (isIdbImage(bg)) {
+    creditEl.innerHTML = `
+      <i class="fa-solid fa-image credit-logo-local"></i>
+      <span data-i18n="credit_local_image">Local Image</span>
+    `
+    creditEl.style.display = "flex"
+    return
+  }
+
+  // Fallback: Hide if no credit needed (gradient, wave, etc.)
+  creditEl.style.display = "none"
 }
 
 function createUpdateSettingsInputs(effectInstances) {

@@ -492,5 +492,8 @@
   "settings_font_restriction_note": "Note: 'Electroharmonix' and 'Anurati' fonts only apply to Clock & Date.",
   "alert_bg_already_saved": "This background is already saved.",
   "alert_bg_gallery_full": "Gallery full! Please remove some backgrounds before saving more.",
-  "alert_bg_saved": "Background saved to Local Themes!"
+  "alert_bg_saved": "Background saved to Local Themes!",
+  "alert_upload_limit": "You can only upload up to {count} custom backgrounds.",
+  "credit_local_video": "Local Video",
+  "credit_local_image": "Local Image"
 }

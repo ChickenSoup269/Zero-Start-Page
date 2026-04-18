@@ -115,8 +115,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Load language as other heavy/modal components depend on it translations
   await initI18n()
 
-  const { isIdbMedia, getImageUrl } = await import("./services/imageStore.js")
+  const { isIdbMedia, getImageUrl, preloadImages } = await import("./services/imageStore.js")
   if (isIdbMedia(currentSettings.background)) {
+    // Kích hoạt nạp trước cho ảnh nền hiện tại
     await getImageUrl(currentSettings.background).catch(() => {})
   }
 
@@ -132,6 +133,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateSetting("userBackgrounds", migrated)
       saveSettings()
     }
+    // Nạp trước toàn bộ ảnh trong bộ sưu tập để dùng ngay
     await preloadImages(getSettings().userBackgrounds)
 
     // Re-apply background settings if an IDB local background is active,

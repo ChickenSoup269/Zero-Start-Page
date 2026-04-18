@@ -221,14 +221,19 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     if (oldUnsplashBgs.length > 0 && settings.unsplashAccessKey) {
         _repairingMetadata = true
         Promise.all(oldUnsplashBgs.map(async (bgUrl) => {
+            const indexInArray = () => settings.userBackgrounds.indexOf(bgUrl)
             try {
                 const photoId = extractUnsplashId(bgUrl)
-                if (!photoId) return
+                if (!photoId) {
+                    const idx = indexInArray()
+                    if (idx !== -1) settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
+                    return
+                }
                 
                 const data = await fetchUnsplashPhotoById(settings.unsplashAccessKey, photoId)
-                const index = settings.userBackgrounds.indexOf(bgUrl)
-                if (index !== -1) {
-                    settings.userBackgrounds[index] = {
+                const idx = indexInArray()
+                if (idx !== -1) {
+                    settings.userBackgrounds[idx] = {
                         id: bgUrl,
                         authorName: data.user?.name || "Unsplash Author",
                         authorUrl: data.user?.links?.html || "",
@@ -236,7 +241,11 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                     }
                 }
             } catch (err) {
-                console.warn("Failed to repair metadata for", bgUrl, err)
+                // Silently mark as processed even on error so we don't retry and don't spam console
+                const idx = indexInArray()
+                if (idx !== -1) {
+                    settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
+                }
             }
         })).then(() => {
             saveSettings()
@@ -257,17 +266,27 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
 
+      // Icon badge for source type (Video/Image/Unsplash)
+      const typeIcon = document.createElement("div")
+      typeIcon.className = "video-thumb-badge unsplash-credit-badge"
+      
       if (authorName) {
-          const creditIcon = document.createElement("div")
-          creditIcon.className = "video-thumb-badge unsplash-credit-badge"
-          creditIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
-          creditIcon.title = `Photo by ${authorName} on Unsplash`
-          item.appendChild(creditIcon)
+          typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
+          typeIcon.title = `Photo by ${authorName} on Unsplash`
+          item.appendChild(typeIcon)
 
           const authorTag = document.createElement("div")
           authorTag.className = "unsplash-author-tag"
           authorTag.textContent = authorName
           item.appendChild(authorTag)
+      } else if (isIdbVideo(bgId)) {
+          typeIcon.innerHTML = '<i class="fa-solid fa-video"></i>'
+          typeIcon.title = "Local Video"
+          item.appendChild(typeIcon)
+      } else if (isIdbImage(bgId)) {
+          typeIcon.innerHTML = '<i class="fa-solid fa-image"></i>'
+          typeIcon.title = "Local Image"
+          item.appendChild(typeIcon)
       }
 
       if (isFavorite) {
@@ -290,16 +309,17 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                   vid.crossOrigin = "anonymous"
                   vid.preload = "metadata"
                   vid.addEventListener("loadeddata", () => { 
-                      vid.currentTime = 0.5 // Seek a bit to avoid black frame
+                      vid.currentTime = 1.0 // Seek to 1s for better thumbnail
                   }, { once: true })
                   vid.addEventListener("seeked", () => {
                       const canvas = document.createElement("canvas")
-                      canvas.width = 320 // Higher res thumb
-                      canvas.height = 180
+                      // Higher quality thumb resolution
+                      canvas.width = 480 
+                      canvas.height = 270
                       const ctx = canvas.getContext("2d")
                       ctx.drawImage(vid, 0, 0, canvas.width, canvas.height)
                       try {
-                          const dataUrl = canvas.toDataURL("image/jpeg", 0.7)
+                          const dataUrl = canvas.toDataURL("image/jpeg", 0.85)
                           _videoThumbCache.set(bgId, dataUrl)
                           item.style.backgroundImage = `url('${dataUrl}')`
                           const placeholder = item.querySelector("i.fa-film")
@@ -551,7 +571,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
   DOM.localVideoUpload.addEventListener("change", async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const MAX_UPLOADS = 25
+    const MAX_UPLOADS = 50
     if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
       showAlert(
         geti18n().alert_upload_limit ||
@@ -560,9 +580,15 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       e.target.value = null
       return
     }
-    const id = await saveVideo(file)
-    getSettings().userBackgrounds.push(id)
-    handleSettingUpdate("background", id)
+    try {
+        const id = await saveVideo(file)
+        getSettings().userBackgrounds.push(id)
+        handleSettingUpdate("background", id)
+        renderLocalBackgrounds(DOM, handleSettingUpdate)
+    } catch (err) {
+        console.error("Failed to save video:", err)
+        showAlert("Failed to save video. It might be too large or storage is full.")
+    }
     e.target.value = null
   })
 
@@ -570,10 +596,11 @@ function setupFileUploads(DOM, handleSettingUpdate) {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
-      const MAX_UPLOADS = 25
+      const MAX_UPLOADS = 50
       if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
         showAlert(
-          `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,
+            geti18n().alert_upload_limit ||
+            `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,
         )
         return
       }
@@ -582,6 +609,10 @@ function setupFileUploads(DOM, handleSettingUpdate) {
         saveImage(file).then((id) => {
           getSettings().userBackgrounds.push(id)
           handleSettingUpdate("background", id)
+          renderLocalBackgrounds(DOM, handleSettingUpdate)
+        }).catch(err => {
+            console.error("Failed to save GIF:", err)
+            showAlert("Failed to save GIF image.")
         })
         return
       }
@@ -613,12 +644,19 @@ function setupFileUploads(DOM, handleSettingUpdate) {
               saveImage(blob).then((id) => {
                 getSettings().userBackgrounds.push(id)
                 handleSettingUpdate("background", id)
+                renderLocalBackgrounds(DOM, handleSettingUpdate)
+              }).catch(err => {
+                console.error("Failed to save image blob:", err)
+                showAlert("Failed to save processed image.")
               })
             },
             "image/jpeg",
             0.85,
           )
         }
+      }
+      reader.onerror = () => {
+          showAlert("Failed to read the selected file.")
       }
       reader.readAsDataURL(file)
     }

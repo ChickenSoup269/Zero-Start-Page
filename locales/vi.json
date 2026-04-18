@@ -488,5 +488,8 @@
   "settings_font_restriction_note": "Ghi chú: Font 'Electroharmonix' và 'Anurati' chỉ áp dụng cho Đồng hồ & Thứ ngày.",
   "alert_bg_already_saved": "Hình nền này đã được lưu rồi.",
   "alert_bg_gallery_full": "Bộ sưu tập đã đầy! Vui lòng xóa bớt hình nền trước khi lưu thêm.",
-  "alert_bg_saved": "Đã lưu hình nền vào Chủ đề cục bộ!"
+  "alert_bg_saved": "Đã lưu hình nền vào Chủ đề cục bộ!",
+  "alert_upload_limit": "Bạn chỉ có thể tải lên tối đa {count} hình nền tùy chỉnh.",
+  "credit_local_video": "Video cục bộ",
+  "credit_local_image": "Ảnh cục bộ"
 }

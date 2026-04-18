@@ -972,3 +972,53 @@ body.free-move-clock:not(.date-clock-style-round):not(.date-clock-style-square)
   width: fit-content !important;
   white-space: nowrap;
 }
+
+/* Background Credit Logo at Bottom Left */
+.main-bg-credit {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 0.85rem;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.main-bg-credit:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.main-bg-credit a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.main-bg-credit a:hover {
+  text-decoration: underline;
+}
+
+.main-bg-credit i {
+  font-size: 1.1rem;
+}
+
+.main-bg-credit .credit-logo-unsplash {
+  color: #fff;
+}
+
+.main-bg-credit .credit-logo-local {
+  color: var(--accent-color);
+}
