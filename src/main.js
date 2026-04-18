@@ -431,35 +431,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         function handleVersionCheck(lastVersion, currentVersion, saveFn) {
+          const isFreshInstall = !lastVersion && !localStorage.getItem("pageSettings") && !localStorage.getItem("bookmarks")
+
           if (lastVersion) {
             if (lastVersion !== currentVersion) {
-              // Version changed -> show update popup and sidebar link
-              const popup = document.getElementById("update-notification-popup")
-              const verLabel = document.getElementById("update-version-label")
-              const sidebarLink = document.getElementById("sidebar-update-link")
-
-              if (popup && verLabel) {
-                verLabel.textContent = `v${currentVersion}`
-                popup.style.display = "block"
-
-                document
-                  .getElementById("close-update-popup")
-                  ?.addEventListener("click", () => {
-                    popup.style.display = "none"
-                    // Save the new version only when the popup is closed or shown?
-                    // Usually we save it once detected to avoid annoying the user on every tab.
-                  })
-              }
-
-              if (sidebarLink) {
-                sidebarLink.style.display = "flex"
-              }
-
+              showUpdateUI(currentVersion)
               saveFn(currentVersion)
             }
           } else {
-            // First time detecting version (initial install or feature update)
+            // If it's not a fresh install, it's an update from an older version without tracking
+            if (!isFreshInstall) {
+              showUpdateUI(currentVersion)
+            }
             saveFn(currentVersion)
+          }
+        }
+
+        function showUpdateUI(currentVersion) {
+          const popup = document.getElementById("update-notification-popup")
+          const verLabel = document.getElementById("update-version-label")
+          const sidebarLink = document.getElementById("sidebar-update-link")
+
+          if (popup && verLabel) {
+            verLabel.textContent = `v${currentVersion}`
+            popup.style.display = "block"
+
+            document
+              .getElementById("close-update-popup")
+              ?.addEventListener("click", () => {
+                popup.style.display = "none"
+              })
+          }
+
+          if (sidebarLink) {
+            sidebarLink.style.display = "flex"
           }
         }
       } catch (e) {

@@ -355,6 +355,10 @@ export function updateOverflowBookmarks() {
 
   if (!checkOverflow()) {
     container.style.overflow = ""
+    const bw = document.getElementById("bookmark-widget")
+    if (bw && bw.classList.contains("no-transition")) {
+      setTimeout(() => bw.classList.remove("no-transition"), 150)
+    }
     return
   }
 

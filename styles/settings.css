@@ -167,7 +167,7 @@
 
 .settings-sidebar {
   position: fixed;
-  left: -400px;
+  left: -450px;
   top: 0;
   width: var(--sidebar-width);
   height: 100%;
@@ -1119,8 +1119,7 @@
 .local-bg-item.active {
   border-color: var(--accent-color);
   box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.5);
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
+  border-width: 2px;
 }
 
 .local-bg-item.active::after,
@@ -1130,7 +1129,7 @@
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
-  top: 6px;
+  bottom: 6px;
   right: 6px;
   color: var(--accent-contrast-color, #fff);
   background: var(--accent-color);
@@ -1141,7 +1140,7 @@
   align-items: center;
   justify-content: center;
   font-size: 11px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   z-index: 2;
 }
 

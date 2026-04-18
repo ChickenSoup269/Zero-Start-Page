@@ -2598,7 +2598,7 @@ body.flip-layout .top-right-controls {
 
 body.flip-layout .settings-sidebar {
   left: auto;
-  right: -400px;
+  right: -450px;
   border-right: none;
   border-left: 1px solid var(--sidebar-border);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
