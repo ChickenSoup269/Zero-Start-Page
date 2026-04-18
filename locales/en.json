@@ -158,6 +158,8 @@
   "settings_gradient_type_radial": "Radial",
   "settings_gradient_type_conic": "Conic",
   "settings_gradient_repeating": "Repeating Gradient",
+  "settings_gradient_position": "Position:",
+  "settings_gradient_radial_shape": "Shape:",
   "settings_gradient_open": "Show Controls",
   "settings_gradient_close": "Hide Controls",
   "settings_gradient_extra_color_count": "Extra Colors:",

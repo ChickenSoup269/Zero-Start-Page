@@ -936,10 +936,10 @@
                     <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide Controls</span>
                 </button>
                 <div id="multi-color-settings-body">
-                    <div style="margin-bottom: 12px;">
+                    <div class="setting-item" style="margin-bottom: 12px;">
                         <label for="multi-color-count-select" style="font-size: 0.9rem;"
                             data-i18n="settings_multi_color_count">Number of Colors:</label>
-                        <select id="multi-color-count-select" style="width: 100%; padding: 0.4rem; margin-top: 4px;">
+                        <select id="multi-color-count-select" style="width: 100%; margin-top: 6px;">
                             <option value="2">2 Colors</option>
                             <option value="3">3 Colors</option>
                             <option value="4">4 Colors</option>
@@ -947,59 +947,104 @@
                             <option value="6">6 Colors</option>
                         </select>
                     </div>
+
+                    <div class="setting-item" style="margin-bottom: 12px;">
+                        <label data-i18n="settings_multi_color_mode">Mode:</label>
+                        <div class="btn-group" style="margin-top: 8px;">
+                            <button type="button" class="btn-group-item multi-color-mode-btn active" data-mode="smooth"
+                                data-i18n="settings_multi_color_smooth">Smooth</button>
+                            <button type="button" class="btn-group-item multi-color-mode-btn" data-mode="blocks"
+                                data-i18n="settings_multi_color_blocks">Blocks</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item" style="margin-bottom: 12px;">
+                        <label style="font-size: 0.85rem;" data-i18n="settings_gradient_type">Type:</label>
+                        <select id="multi-color-type-select" style="width: 100%; margin-top: 6px;">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                            <option value="conic">Conic</option>
+                        </select>
+                    </div>
+
+                    <div id="multi-color-radial-conic-controls"
+                        style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <div class="setting-item">
+                            <label style="font-size: 0.85rem;" data-i18n="settings_gradient_position">Position:</label>
+                            <select id="multi-color-position-select" style="width: 100%; margin-top: 6px;">
+                                <option value="center">Center</option>
+                                <option value="top">Top</option>
+                                <option value="bottom">Bottom</option>
+                                <option value="left">Left</option>
+                                <option value="right">Right</option>
+                                <option value="top left">Top Left</option>
+                                <option value="top right">Top Right</option>
+                                <option value="bottom left">Bottom Left</option>
+                                <option value="bottom right">Bottom Right</option>
+                            </select>
+                        </div>
+                        <div id="multi-color-radial-shape-group" class="setting-item">
+                            <label style="font-size: 0.85rem;" data-i18n="settings_gradient_radial_shape">Shape:</label>
+                            <select id="multi-color-radial-shape-select" style="width: 100%; margin-top: 6px;">
+                                <option value="circle">Circle</option>
+                                <option value="ellipse">Ellipse</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item-row" style="margin-bottom: 12px;">
+                        <label for="multi-color-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
+                            Gradient</label>
+                        <input type="checkbox" id="multi-color-repeating-toggle">
+                    </div>
+
                     <div id="multi-color-pickers-container"
                         style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                         <!-- Color pickers will be generated here -->
                     </div>
-                    <div style="margin-bottom: 12px;">
-                        <label data-i18n="settings_multi_color_mode" for="multi-color-line-color">Mode:</label>
-                        <div style="display: flex; gap: 12px; margin-top: 6px;">
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"
-                                for="multi-color-mode-smooth">
-                                <input type="radio" name="multi-color-mode" value="smooth" id="multi-color-mode-smooth"
-                                    checked> <span data-i18n="settings_multi_color_smooth">Smooth Gradient</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"
-                                for="multi-color-mode-blocks">
-                                <input type="radio" name="multi-color-mode" value="blocks" id="multi-color-mode-blocks">
-                                <span data-i18n="settings_multi_color_blocks">Solid Blocks</span>
-                            </label>
-                        </div>
-                    </div>
+
                     <div id="multi-color-divider-settings" style="margin-bottom: 12px; display: none;">
-                        <label
-                            style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
+                        <div class="setting-item-row" style="margin-bottom: 10px;">
+                            <label for="multi-color-dividers-toggle" data-i18n="settings_multi_color_dividers">Show
+                                Divider Lines</label>
                             <input type="checkbox" id="multi-color-dividers-toggle" checked>
-                            <span data-i18n="settings_multi_color_dividers">Show Divider Lines</span>
-                        </label>
-                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
                             <label for="multi-color-line-color" style="font-size: 0.85rem;"
                                 data-i18n="settings_multi_color_line_color">Line Color:</label>
-                            <input type="color" id="multi-color-line-color" value="#ffffff" style="flex: 1;">
+                            <input type="color" id="multi-color-line-color" value="#ffffff"
+                                style="flex: 1; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: none; cursor: pointer;">
                         </div>
-                        <div>
-                            <label for="multi-color-line-width"><span data-i18n="settings_multi_color_line_width">Line
-                                    Width:</span> <span id="multi-color-line-width-value">1.2</span>%</label>
+
+                        <div class="setting-item" style="margin-bottom: 10px;">
+                            <div class="setting-label" style="display: flex; justify-content: space-between;">
+                                <span data-i18n="settings_multi_color_line_width">Line Width:</span>
+                                <span><span id="multi-color-line-width-value">1.2</span>%</span>
+                            </div>
                             <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2"
-                                style="width: 100%;">
+                                style="width: 100%; margin-top: 6px;">
                         </div>
+
                         <div style="margin-top: 10px;">
-                            <label
-                                style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;"
-                                for="multi-gradient-angle-input">
+                            <div class="setting-item-row" style="margin-bottom: 10px;">
+                                <label for="multi-color-free-line-angles"
+                                    data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
+                                    line)</label>
                                 <input type="checkbox" id="multi-color-free-line-angles">
-                                <span data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
-                                    line)</span>
-                            </label>
+                            </div>
                             <div id="multi-color-line-angles-container"
-                                style="display: none; flex-direction: column; gap: 8px;"></div>
+                                style="display: none; flex-direction: column; gap: 10px;"></div>
                         </div>
                     </div>
-                    <div style="margin-bottom: 12px;">
-                        <div class="setting-label"><span data-i18n="settings_multi_color_angle">Angle:</span> <span
-                                id="multi-gradient-angle-value">135</span>deg</div>
+
+                    <div class="setting-item" style="margin-bottom: 12px;">
+                        <div class="setting-label" style="display: flex; justify-content: space-between;">
+                            <span data-i18n="settings_multi_color_angle">Angle:</span>
+                            <span><span id="multi-gradient-angle-value">135</span>deg</span>
+                        </div>
                         <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135"
-                            style="width: 100%;">
+                            style="width: 100%; margin-top: 6px;">
                     </div>
                     <div id="multi-gradient-preview"
                         style="width: 100%; height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
@@ -1155,7 +1200,7 @@
                     </div>
 
                     <div class="setting-item-row"
-                        style="margin-bottom: 12px; background: rgba(0,0,0,0.15); padding: 12px; border-radius: 8px;">
+                        style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
                         <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill"
                             style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill Shape</label>
                         <input type="checkbox" id="svg-wave-fill" checked>

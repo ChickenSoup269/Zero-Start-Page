@@ -135,6 +135,27 @@ export const userGradientsGallery = document.getElementById(
 export const multiColorCountSelect = document.getElementById(
   "multi-color-count-select",
 )
+export const multiColorTypeSelect = document.getElementById(
+  "multi-color-type-select",
+)
+export const multiColorRepeatingToggle = document.getElementById(
+  "multi-color-repeating-toggle",
+)
+export const multiColorPositionSelect = document.getElementById(
+  "multi-color-position-select",
+)
+export const multiColorRadialShapeSelect = document.getElementById(
+  "multi-color-radial-shape-select",
+)
+export const multiColorRadialShapeGroup = document.getElementById(
+  "multi-color-radial-shape-group",
+)
+export const multiColorRadialConicControls = document.getElementById(
+  "multi-color-radial-conic-controls",
+)
+export const multiColorRepeatingGroup = document.getElementById(
+  "multi-color-repeating-group",
+)
 export const multiColorPickersContainer = document.getElementById(
   "multi-color-pickers-container",
 )
@@ -195,8 +216,8 @@ export const savedMultiColorPresets = document.getElementById(
 )
 
 // Multi-Color Mode
-export const multiColorModeRadios = document.querySelectorAll(
-  'input[name="multi-color-mode"]',
+export const multiColorModeBtns = document.querySelectorAll(
+  ".multi-color-mode-btn",
 )
 
 export const starColorPicker = document.getElementById("star-color-picker")
