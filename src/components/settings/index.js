@@ -173,6 +173,7 @@ export function initSettings() {
       settings.cursorTrailColor || "#60c8ff",
       settings.cursorTrailClickExplosion !== false,
       settings.cursorTrailRandomColor === true,
+      settings.cursorTrailStyle || "classic",
     ),
 
     gridScanEffect: new GridScanEffect(

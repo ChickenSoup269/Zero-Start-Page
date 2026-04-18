@@ -3440,43 +3440,63 @@ body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {
 }
 
 /* --- BOOKMARK ITEM CARD STYLE --- */
-body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark,
-body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark,
-body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark {
+body.bookmark-item-card-style .bookmark,
+body.bookmark-item-card-style .add-bookmark-card {
   background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--bookmark-border-radius, 12px) !important;
-  padding: 8px !important;
+  padding: 10px !important;
   margin: 2px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 60px;
+  box-shadow: var(--bookmark-box-shadow, 0 4px 12px rgba(0, 0, 0, 0.2)) !important;
   transition:
     transform 0.2s,
-    background 0.2s !important;
+    background 0.2s,
+    box-shadow 0.2s !important;
 }
 
-body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark:hover,
-body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark:hover,
-body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+body.bookmark-item-card-style .bookmark:hover,
+body.bookmark-item-card-style .add-bookmark-card:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
   transform: translateY(-5px) !important;
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Ensure the icon inside a card doesn't have an extra background unless wanted */
-body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark img,
-body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark img,
-body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark img,
-body.bookmark-item-card-style.bookmark-sidebar-mode
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-item-card-style.bookmark-taskbar-mode
-  .bookmark
-  .bookmark-icon-fallback,
-body.bookmark-item-card-style.bookmark-taskbar-left-mode
-  .bookmark
-  .bookmark-icon-fallback {
+body.bookmark-item-card-style .bookmark img,
+body.bookmark-item-card-style .bookmark .bookmark-icon-fallback {
   background-color: transparent !important;
   box-shadow: none !important;
   border: none !important;
+  margin-bottom: 8px !important;
+}
+
+body.bookmark-item-card-style .add-bookmark-card i {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  margin-bottom: 0 !important; /* Center the plus icon */
+}
+
+body.bookmark-item-card-style .bookmark span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Specific layout adjustments for Card style to keep it clean */
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark span,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark span,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark span {
+  display: none !important; /* Keep text hidden in minimal modes even if card style is on */
 }
 
 /* MacOS Dock Hover Effect for Bookmarks */

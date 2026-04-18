@@ -1230,6 +1230,8 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "gridScan" ? "block" : "none"
     DOM.cursorTrailColorSetting.style.display =
       settings.effect === "cursorTrail" ? "block" : "none"
+    DOM.cursorTrailStyleSetting.style.display =
+      settings.effect === "cursorTrail" ? "block" : "none"
     DOM.cursorTrailClickSetting.style.display =
       settings.effect === "cursorTrail" ? "flex" : "none"
     DOM.cursorTrailRandomSetting.style.display =
@@ -1560,6 +1562,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.customTitleBorderColor)
         DOM.customTitleBorderColor.value =
           settings.customTitleBorderColor || "#000000"
+    }
+
+    if (DOM.cursorTrailStyleSelect) {
+      DOM.cursorTrailStyleSelect.value = settings.cursorTrailStyle || "classic"
     }
 
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"

@@ -310,6 +310,12 @@ export const gridScanColorPicker = document.getElementById(
 export const gridScanColorSetting = document.getElementById(
   "grid-scan-color-setting",
 )
+export const cursorTrailStyleSelect = document.getElementById(
+  "cursor-trail-style-select",
+)
+export const cursorTrailStyleSetting = document.getElementById(
+  "cursor-trail-style-setting",
+)
 export const cursorTrailClickCheckbox = document.getElementById(
   "cursor-trail-click-checkbox",
 )

@@ -134,6 +134,13 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.cursorTrailEffect.color = DOM.cursorTrailColorPicker.value
   })
 
+  DOM.cursorTrailStyleSelect?.addEventListener("change", () => {
+    updateSetting("cursorTrailStyle", DOM.cursorTrailStyleSelect.value)
+    saveSettings()
+    if (effectInstances.cursorTrailEffect)
+      effectInstances.cursorTrailEffect.setStyle(DOM.cursorTrailStyleSelect.value)
+  })
+
   DOM.cursorTrailClickCheckbox.addEventListener("change", () => {
     updateSetting(
       "cursorTrailClickExplosion",

@@ -147,6 +147,7 @@ const defaultSettings = {
   angledPatternColor1: "#ECD078",
   angledPatternColor2: "#0B486B",
   cursorTrailColor: "#60c8ff",
+  cursorTrailStyle: "classic",
   cursorTrailClickExplosion: true,
   cursorTrailRandomColor: false,
   gridScanColor: "#00ffcc",
