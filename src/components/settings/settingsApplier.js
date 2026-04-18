@@ -749,48 +749,81 @@ function createApplySettings(effectInstances) {
 function updateMainBgCredit() {
   const settings = getSettings()
   const creditEl = document.getElementById("main-bg-credit")
-  if (!creditEl) return
-
-  const bg = settings.background
-  const info = settings.unsplashPhotoInfo
-
-  // Case 1: Unsplash
-  const isUnsplash = info && info.authorName && (bg && (bg.includes("unsplash.com") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com")))
+  const settingsCreditEl = document.getElementById("unsplash-credit")
   
-  if (isUnsplash) {
+  const bg = settings.background
+  let info = settings.unsplashPhotoInfo
+
+  // If not Unsplash or missing info, try to find metadata in userBackgrounds
+  if (!info || !info.authorName) {
+      const localEntry = (settings.userBackgrounds || []).find(item => 
+          (typeof item === 'object' && item.id === bg) || item === bg
+      )
+      if (localEntry && typeof localEntry === 'object') {
+          info = localEntry
+      }
+  }
+
+  const isUnsplash = info && info.authorName && (
+      (bg && (bg.includes("unsplash.com") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com"))) ||
+      (info.photoUrl && info.photoUrl.includes("unsplash.com"))
+  )
+  const isLocalMedia = isIdbMedia(bg)
+  
+  if (info && info.authorName) {
     const authorLink = info.authorUrl ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>` : info.authorName
-    const photoLink = info.photoUrl ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">Unsplash</a>` : "Unsplash"
+    const photoLink = info.photoUrl ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${isUnsplash ? "Unsplash" : "Source"}</a>` : (isUnsplash ? "Unsplash" : "Local")
     
-    creditEl.innerHTML = `
-      <i class="fa-brands fa-unsplash credit-logo-unsplash"></i>
+    const iconClass = isUnsplash ? "fa-brands fa-unsplash credit-logo-unsplash" : (isIdbVideo(bg) ? "fa-solid fa-video credit-logo-local" : "fa-solid fa-image credit-logo-local")
+    
+    const html = `
+      <i class="${iconClass}"></i>
       <span>${photoLink} &bull; ${authorLink}</span>
     `
-    creditEl.style.display = "flex"
+    
+    if (creditEl) {
+        creditEl.innerHTML = html
+        creditEl.style.display = "flex"
+    }
+    
+    if (settingsCreditEl) {
+        settingsCreditEl.innerHTML = html
+        settingsCreditEl.style.display = "flex"
+    }
     return
   }
 
-  // Case 2: Local Video (IndexedDB)
+  // Hide settings credit if no info
+  if (settingsCreditEl) {
+      settingsCreditEl.style.display = "none"
+      settingsCreditEl.innerHTML = ""
+  }
+
+  // Fallback for local media without metadata
   if (isIdbVideo(bg)) {
-    creditEl.innerHTML = `
-      <i class="fa-solid fa-circle-play credit-logo-local"></i>
-      <span data-i18n="credit_local_video">Local Video</span>
-    `
-    creditEl.style.display = "flex"
+    if (creditEl) {
+        creditEl.innerHTML = `
+          <i class="fa-solid fa-video credit-logo-local"></i>
+          <span data-i18n="credit_local_video">Local Video</span>
+        `
+        creditEl.style.display = "flex"
+    }
     return
   }
 
-  // Case 3: Local Image (IndexedDB)
   if (isIdbImage(bg)) {
-    creditEl.innerHTML = `
-      <i class="fa-solid fa-image credit-logo-local"></i>
-      <span data-i18n="credit_local_image">Local Image</span>
-    `
-    creditEl.style.display = "flex"
+    if (creditEl) {
+        creditEl.innerHTML = `
+          <i class="fa-solid fa-image credit-logo-local"></i>
+          <span data-i18n="credit_local_image">Local Image</span>
+        `
+        creditEl.style.display = "flex"
+    }
     return
   }
 
   // Fallback: Hide if no credit needed (gradient, wave, etc.)
-  creditEl.style.display = "none"
+  if (creditEl) creditEl.style.display = "none"
 }
 
 function createUpdateSettingsInputs(effectInstances) {

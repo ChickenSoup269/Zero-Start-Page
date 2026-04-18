@@ -984,21 +984,57 @@ body.free-move-clock:not(.date-clock-style-round):not(.date-clock-style-square)
   gap: 10px;
   color: #fff;
   font-size: 0.85rem;
-  opacity: 0.4;
-  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  background: rgba(0, 0, 0, 0.1);
-  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 14px;
   border-radius: 20px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(10px);
+}
+
+/* Hover area for the corner to show credit */
+body:hover .main-bg-credit {
+    /* Optional: can make it slightly visible when mouse is in the page */
 }
 
 .main-bg-credit:hover {
   opacity: 1;
-  background: rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(0);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Let's make it slightly visible (very subtle) when hover near the corner */
+body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    height: 100px;
+    z-index: 9;
+    pointer-events: none;
+}
+
+body:has(.main-bg-credit:hover) .main-bg-credit,
+.main-bg-credit:hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Trick to make the hover area larger without showing the box */
+.main-bg-credit::before {
+    content: "";
+    position: absolute;
+    inset: -20px;
+    z-index: -1;
 }
 
 .main-bg-credit a {

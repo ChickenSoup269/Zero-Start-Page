@@ -788,7 +788,8 @@
             </div>
 
             <div class="setting-group">
-                <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span data-i18n="settings_gradient_title">Background Gradient</span></div>
+                <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
+                        data-i18n="settings_gradient_title">Background Gradient</span></div>
                 <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
                     <i class="fa-solid fa-eye-slash"></i>
                     <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
@@ -798,7 +799,8 @@
                         <div class="gradient-swatch-grid">
                             <div class="gradient-swatch">
                                 <label data-i18n="gradient_start_color">Start Color</label>
-                                <input type="color" id="gradient-start-picker" value="#a8c0ff" title="Pick a start color">
+                                <input type="color" id="gradient-start-picker" value="#a8c0ff"
+                                    title="Pick a start color">
                             </div>
                             <div class="gradient-swatch">
                                 <label data-i18n="gradient_end_color">End Color</label>
@@ -808,7 +810,8 @@
 
                         <div class="bg-control-grid" style="display: flex; flex-direction: column; gap: 15px;">
                             <div class="setting-item no-margin-top">
-                                <label for="gradient-type-select" data-i18n="settings_gradient_type" style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient Type</label>
+                                <label for="gradient-type-select" data-i18n="settings_gradient_type"
+                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient Type</label>
                                 <select id="gradient-type-select" style="width: 100%;">
                                     <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
                                     <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
@@ -821,11 +824,14 @@
                                     <label data-i18n="settings_gradient_angle" style="font-weight: 600;">Angle</label>
                                     <span id="gradient-angle-value" class="bg-slider-value">135°</span>
                                 </div>
-                                <input type="range" id="gradient-angle-input" min="0" max="360" value="135" style="width: 100%;">
+                                <input type="range" id="gradient-angle-input" min="0" max="360" value="135"
+                                    style="width: 100%;">
                             </div>
 
-                            <div id="gradient-position-group" class="setting-item no-margin-top" style="display: none; flex-direction: column;">
-                                <label data-i18n="settings_gradient_position" style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
+                            <div id="gradient-position-group" class="setting-item no-margin-top"
+                                style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_position"
+                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
                                 <select id="gradient-position-select" style="width: 100%;">
                                     <option value="center">Center</option>
                                     <option value="top">Top</option>
@@ -839,8 +845,10 @@
                                 </select>
                             </div>
 
-                            <div id="gradient-radial-shape-group" class="setting-item no-margin-top" style="display: none; flex-direction: column;">
-                                <label data-i18n="settings_gradient_radial_shape" style="display: block; margin-bottom: 8px; font-weight: 600;">Radial Shape</label>
+                            <div id="gradient-radial-shape-group" class="setting-item no-margin-top"
+                                style="display: none; flex-direction: column;">
+                                <label data-i18n="settings_gradient_radial_shape"
+                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Radial Shape</label>
                                 <select id="gradient-radial-shape-select" style="width: 100%;">
                                     <option value="circle">Circle</option>
                                     <option value="ellipse">Ellipse</option>
@@ -849,13 +857,18 @@
                         </div>
 
                         <div class="setting-item-row" style="margin-top: 15px;">
-                            <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating Gradient</label>
+                            <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
+                                Gradient</label>
                             <input type="checkbox" id="gradient-repeating-toggle">
                         </div>
 
-                        <div class="setting-item" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
-                            <label style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;" data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
-                            <select id="gradient-extra-color-count" style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
+                        <div class="setting-item"
+                            style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
+                            <label
+                                style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;"
+                                data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
+                            <select id="gradient-extra-color-count"
+                                style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
                                 <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -867,36 +880,47 @@
                             <input type="text" id="gradient-custom-colors" style="display: none;">
                         </div>
 
-                        <div class="background-inputs-grid" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                            <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors" data-i18n-title="settings_accent_random" style="width: 100%;">
-                                <i class="fa-solid fa-shuffle"></i> <span data-i18n="settings_gradient_random_colors">Random Colors</span>
+                        <div class="background-inputs-grid"
+                            style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors"
+                                data-i18n-title="settings_accent_random" style="width: 100%;">
+                                <i class="fa-solid fa-shuffle"></i> <span
+                                    data-i18n="settings_gradient_random_colors">Random Colors</span>
                             </button>
                             <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%;">
-                                <i class="fa-solid fa-sparkles"></i> <span data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
+                                <i class="fa-solid fa-sparkles"></i> <span
+                                    data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
                             </button>
                             <button id="save-gradient-btn" class="primary-btn" style="width: 100%;">
-                                <i class="fa-solid fa-heart"></i> <span data-i18n="settings_save_gradient_btn">Save to Gallery</span>
+                                <i class="fa-solid fa-heart"></i> <span data-i18n="settings_save_gradient_btn">Save to
+                                    Gallery</span>
                             </button>
                         </div>
-                        <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets' for professionally picked color combinations!</div>
+                        <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets' for
+                            professionally picked color combinations!</div>
                     </div>
                 </div>
             </div>
 
             <div class="setting-group">
                 <div class="setting-label">
-                    <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved Gallery</span>
+                    <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved
+                        Gallery</span>
                     <span id="count-gradient"></span>
                 </div>
                 <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
                     <span id="gradient-select-count" class="bg-select-count">0 selected</span>
                     <div style="display: flex; gap: 6px;">
-                        <button id="gradient-select-all-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;">Select All</button>
-                        <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn" style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;">Delete</button>
-                        <button id="gradient-select-cancel-btn" class="secondary-btn" style="padding: 4px 10px; font-size: 0.75rem;">Cancel</button>
+                        <button id="gradient-select-all-btn" class="secondary-btn"
+                            style="padding: 4px 10px; font-size: 0.75rem;">Select All</button>
+                        <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"
+                            style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;">Delete</button>
+                        <button id="gradient-select-cancel-btn" class="secondary-btn"
+                            style="padding: 4px 10px; font-size: 0.75rem;">Cancel</button>
                     </div>
                 </div>
-                <button id="gradient-select-mode-btn" class="secondary-btn full-width" style="margin-bottom: 12px;" data-i18n="bg_select_mode">
+                <button id="gradient-select-mode-btn" class="secondary-btn full-width" style="margin-bottom: 12px;"
+                    data-i18n="bg_select_mode">
                     <i class="fa-solid fa-check-double"></i> Select to Delete
                 </button>
                 <div id="user-gradients-gallery" class="local-bg-gallery"></div>
@@ -1879,11 +1903,13 @@
 
 
             <div class="settings-section" data-section-id="date-clock">
-                <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date & Clock Format</span></h3>
+                <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
+                        & Clock Format</span></h3>
                 <div class="section-content">
                     <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-gears"></i> <span data-i18n="settings_font_general">General Settings</span></div>
-                        
+                        <div class="setting-label"><i class="fa-solid fa-gears"></i> <span
+                                data-i18n="settings_font_general">General Settings</span></div>
+
                         <div class="setting-item-row">
                             <label for="show-clock-checkbox" data-i18n="settings_show_clock">Show Clock</label>
                             <input type="checkbox" id="show-clock-checkbox" checked>
@@ -1904,7 +1930,8 @@
                         <div class="setting-item" style="margin-top: 15px;">
                             <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
                             <select id="date-format-select">
-                                <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY</option>
+                                <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
+                                </option>
                                 <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
                                 <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
                                 <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
@@ -1930,14 +1957,17 @@
                             </select>
                         </div>
                         <div class="setting-item">
-                            <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom priority</label>
+                            <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
+                                priority</label>
                             <select id="clock-date-priority-select">
                                 <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
-                                <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday</option>
+                                <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday
+                                </option>
                             </select>
                         </div>
                         <div class="setting-item">
-                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE Letters</label>
+                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                Letters</label>
                             <select id="hue-text-mode-select">
                                 <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
                                 <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
@@ -1949,8 +1979,10 @@
 
                     <!-- Style Selection -->
                     <div class="setting-group" style="margin-bottom: 20px;">
-                        <div class="setting-label" style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock Style</span>
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock
+                                Style</span>
                         </div>
                         <select id="clock-date-style-select">
                             <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
@@ -1958,7 +1990,8 @@
                             <option value="minimal" data-i18n="settings_clock_date_style_minimal">Minimal</option>
                             <option value="glass" data-i18n="settings_clock_date_style_glass">Glass</option>
                             <option value="cool" data-i18n="settings_clock_date_style_cool">Cool Style</option>
-                            <option value="sidestyle" data-i18n="settings_clock_date_style_sidestyle">Side Style</option>
+                            <option value="sidestyle" data-i18n="settings_clock_date_style_sidestyle">Side Style
+                            </option>
                             <option value="jp-style" data-i18n="settings_clock_date_style_jp_style">JP Style</option>
                             <option value="round" data-i18n="settings_clock_date_style_round">Round Clock</option>
                             <option value="square" data-i18n="settings_clock_date_style_square">Square Clock</option>
@@ -1968,9 +2001,12 @@
                     </div>
 
                     <!-- Style Specific Customization (Stand-alone group) -->
-                    <div id="style-specific-customization" class="setting-group" style="display: none; background: rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--accent-color-rgb), 0.15);">
-                        <div class="setting-label" style="color: var(--accent-color); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="effect_customization">Style Customization</span>
+                    <div id="style-specific-customization" class="setting-group"
+                        style="display: none; background: rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--accent-color-rgb), 0.15);">
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="effect_customization">Style
+                                Customization</span>
                         </div>
 
                         <div id="sidestyle-align-setting" class="setting-item no-margin-top" style="display: none;">
@@ -1980,21 +2016,25 @@
                                 <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
                                 <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
                             </select>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
-                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide Borders</label>
+                            <div class="setting-item-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
+                                    Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
                             </div>
                         </div>
 
                         <div id="sidebar-clock-flip-setting" class="setting-item no-margin-top" style="display: none;">
                             <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
-                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip Layout</label>
+                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip
+                                    Layout</label>
                                 <input type="checkbox" id="sidebar-clock-flip-checkbox">
                             </div>
                         </div>
 
                         <div id="jp-style-language-setting" class="setting-item no-margin-top" style="display: none;">
-                            <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP Language</label>
+                            <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP
+                                Language</label>
                             <select id="jp-style-language-select">
                                 <option value="auto" data-i18n="settings_jp_style_language_auto">Auto</option>
                                 <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese</option>
@@ -2002,7 +2042,8 @@
                         </div>
 
                         <div id="analog-marker-mode-setting" class="setting-item no-margin-top" style="display: none;">
-                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Marker Mode</label>
+                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Marker
+                                Mode</label>
                             <select id="analog-marker-mode-select">
                                 <option value="ticks">Ticks</option>
                                 <option value="full">Numbers</option>
@@ -2010,20 +2051,25 @@
                             </select>
                         </div>
 
-                        <div id="analog-blur-bg-setting" class="setting-item-row" style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
-                            <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur Background</label>
+                        <div id="analog-blur-bg-setting" class="setting-item-row"
+                            style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
+                            <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur
+                                Background</label>
                             <input type="checkbox" id="analog-blur-bg-checkbox">
                         </div>
                     </div>
 
                     <!-- Appearance, Colors & Sizing -->
                     <div class="setting-group" style="margin-top: 20px;">
-                        <div class="setting-label" style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-paintbrush"></i> <span data-i18n="settings_font_style">Appearance & Colors</span>
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-paintbrush"></i> <span data-i18n="settings_font_style">Appearance &
+                                Colors</span>
                         </div>
-                        
+
                         <div class="setting-item no-margin-top">
-                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target">Apply Font To</label>
+                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target">Apply Font
+                                To</label>
                             <select id="clock-font-target-select">
                                 <option value="both" data-i18n="settings_clock_font_target_both">Both</option>
                                 <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
@@ -2035,14 +2081,16 @@
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_clock_size">Clock Size</span>
-                                    <span id="clock-size-value" style="opacity: 0.7; font-family: monospace;">6rem</span>
+                                    <span id="clock-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">6rem</span>
                                 </label>
                                 <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_date_size">Date Size</span>
-                                    <span id="date-size-value" style="opacity: 0.7; font-family: monospace;">1.5rem</span>
+                                    <span id="date-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">1.5rem</span>
                                 </label>
                                 <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
                             </div>
@@ -2052,32 +2100,43 @@
                             <div class="setting-item no-margin-top">
                                 <label data-i18n="settings_clock_color">Clock Color</label>
                                 <div style="display: flex; gap: 5px;">
-                                    <input type="color" id="clock-color-picker" value="#ffffff" style="height: 38px; flex: 1;">
-                                    <button id="reset-clock-color-btn" class="secondary-btn" style="width: 38px; height: 38px; padding: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <input type="color" id="clock-color-picker" value="#ffffff"
+                                        style="height: 38px; flex: 1;">
+                                    <button id="reset-clock-color-btn" class="secondary-btn"
+                                        style="width: 38px; height: 38px; padding: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label data-i18n="settings_date_color">Date Color</label>
                                 <div style="display: flex; gap: 5px;">
-                                    <input type="color" id="date-color-picker" value="#ffffff" style="height: 38px; flex: 1;">
-                                    <button id="reset-date-color-btn" class="secondary-btn" style="width: 38px; height: 38px; padding: 0;"><i class="fa-solid fa-rotate-left"></i></button>
+                                    <input type="color" id="date-color-picker" value="#ffffff"
+                                        style="height: 38px; flex: 1;">
+                                    <button id="reset-date-color-btn" class="secondary-btn"
+                                        style="width: 38px; height: 38px; padding: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-item" id="clock-date-stroke-setting" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                            <label style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <div class="setting-item" id="clock-date-stroke-setting"
+                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                            <label
+                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
                                 <span>Text Outline</span>
-                                <span id="clock-date-stroke-width-value" style="opacity: 0.7; font-family: monospace;">0px</span>
+                                <span id="clock-date-stroke-width-value"
+                                    style="opacity: 0.7; font-family: monospace;">0px</span>
                             </label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div class="setting-item no-margin-top">
                                     <label style="font-size: 0.7rem; opacity: 0.7;">Color</label>
-                                    <input type="color" id="clock-date-stroke-color-picker" value="#000000" style="height: 34px; width: 100%;">
+                                    <input type="color" id="clock-date-stroke-color-picker" value="#000000"
+                                        style="height: 34px; width: 100%;">
                                 </div>
                                 <div class="setting-item no-margin-top">
                                     <label style="font-size: 0.7rem; opacity: 0.7;">Thickness</label>
-                                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5" value="0">
+                                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
+                                        value="0">
                                 </div>
                             </div>
                         </div>
@@ -2310,14 +2369,14 @@
                                 <input type="checkbox" id="enable-bookmark-drag" checked
                                     style="transform: scale(1.1); margin: 0;">
                             </div>
-                            </div>
+                        </div>
 
-                            <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
+                        <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
                             data-i18n="settings_drag_note">
                             (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
-                            </p>
+                        </p>
 
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div class="setting-item no-margin-top"
                                 style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label for="bookmark-layout" data-i18n="settings_bookmark_layout"
@@ -2334,7 +2393,8 @@
                             <div class="setting-item no-margin-top" id="bookmark-item-style-row"
                                 style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label for="bookmark-item-style" data-i18n="settings_bookmark_item_style"
-                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item Style</label>
+                                    style="font-size: 0.9rem; margin-bottom: 8px; display: block; font-weight: 500;">Item
+                                    Style</label>
                                 <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="item_style_default">Default</option>
                                     <option value="card" data-i18n="item_style_card">Card</option>

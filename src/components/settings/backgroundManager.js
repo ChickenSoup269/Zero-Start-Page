@@ -308,12 +308,13 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                   vid.muted = true
                   vid.crossOrigin = "anonymous"
                   vid.preload = "metadata"
-                  vid.addEventListener("loadeddata", () => { 
-                      vid.currentTime = 1.0 // Seek to 1s for better thumbnail
+                  vid.addEventListener("loadedmetadata", () => { 
+                      // Capture frame from the middle of the video
+                      const midTime = vid.duration > 0 ? vid.duration / 2 : 1.0;
+                      vid.currentTime = midTime;
                   }, { once: true })
                   vid.addEventListener("seeked", () => {
                       const canvas = document.createElement("canvas")
-                      // Higher quality thumb resolution
                       canvas.width = 480 
                       canvas.height = 270
                       const ctx = canvas.getContext("2d")

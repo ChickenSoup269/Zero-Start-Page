@@ -1209,6 +1209,28 @@
   z-index: 5;
 }
 
+.unsplash-credit-text {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-style: italic;
+  display: none;
+  align-items: center;
+  gap: 5px;
+}
+
+.unsplash-credit-text a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.unsplash-credit-text a:hover {
+  text-decoration: underline;
+}
+
 .video-thumb-badge,
 .unsplash-credit-badge {
   position: absolute;
