@@ -34,15 +34,76 @@ class SpeedLine {
     }
 }
 
+class SpeedLine3D {
+    constructor(width, height) {
+        this.reset(width, height, true);
+    }
+
+    reset(width, height, initial = false) {
+        // Tạo vị trí trong không gian 3D
+        this.x = (Math.random() - 0.5) * width * 4;
+        this.y = (Math.random() - 0.5) * height * 4;
+        this.z = initial ? Math.random() * 2000 : 2000;
+        
+        // Tốc độ nhanh hơn một chút (15-35)
+        this.speed = Math.random() * 20 + 15; 
+        this.length = Math.random() * 400 + 200; 
+        this.opacity = 0;
+    }
+
+    update(width, height) {
+        this.z -= this.speed;
+        if (this.z < 1) {
+            this.reset(width, height);
+        }
+        // Fade in/out mượt mà
+        this.opacity = Math.min(1, (2000 - this.z) / 600) * Math.min(1, this.z / 400);
+    }
+
+    draw(ctx, width, height) {
+        const factor = 1000 / this.z;
+        const x = this.x * factor + width / 2;
+        const y = this.y * factor + height / 2;
+        
+        const h = this.length * factor * 0.4;
+        const w = Math.max(0.5, 1.2 * factor);
+
+        if (x < -width || x > width * 2 || y < -height || y > height * 2) return;
+
+        ctx.save();
+        ctx.translate(x, y);
+        
+        const angleToCenter = Math.atan2(y - height / 2, x - width / 2);
+        ctx.rotate(angleToCenter + Math.PI / 2); 
+        ctx.rotate(0.05); 
+
+        const gradient = ctx.createLinearGradient(0, -h/2, 0, h/2);
+        gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
+        gradient.addColorStop(0.5, `rgba(255, 255, 255, ${this.opacity * 0.5})`);
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(-w/2, -h/2, w, h);
+        ctx.restore();
+    }
+}
+
 export class WindEffect {
-    constructor(canvasId) {
+    constructor(canvasId, mode = "2d") {
         this.canvas = document.getElementById(canvasId);
         if (!this.canvas) return;
         this.ctx = this.canvas.getContext("2d");
         this.lines = [];
-        this.animationFrameId = null;
+        this._animId = null;
+        this.mode = mode; // "2d" or "3d"
         this.init();
         window.addEventListener("resize", () => this.handleResize());
+    }
+
+    setMode(mode) {
+        if (this.mode === mode) return;
+        this.mode = mode;
+        this.createLines();
     }
 
     init() {
@@ -63,8 +124,14 @@ export class WindEffect {
 
     createLines() {
         this.lines = [];
-        for (let i = 0; i < 60; i++) {
-            this.lines.push(new SpeedLine(this.width, this.height));
+        // Giữ số lượng tia ở mức 150 để cân bằng giữa độ phủ và hiệu suất
+        const count = this.mode === "3d" ? 150 : 60;
+        for (let i = 0; i < count; i++) {
+            if (this.mode === "3d") {
+                this.lines.push(new SpeedLine3D(this.width, this.height));
+            } else {
+                this.lines.push(new SpeedLine(this.width, this.height));
+            }
         }
     }
 
@@ -73,24 +140,27 @@ export class WindEffect {
 
         this.lines.forEach(line => {
             line.update(this.width, this.height);
-            line.draw(this.ctx);
+            if (this.mode === "3d") {
+                line.draw(this.ctx, this.width, this.height);
+            } else {
+                line.draw(this.ctx);
+            }
         });
 
-        this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate());
+        this._animId = requestAnimationFrame(() => this.animate());
     }
 
     start() {
-        if (!this.animationFrameId) {
+        if (!this._animId) {
             this.canvas.style.display = "block";
             this.animate();
         }
     }
 
     stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
-            this.animationFrameId = null;
+        if (this._animId) {
+            cancelAnimationFrame(this._animId);
+            this._animId = null;
             this.ctx.clearRect(0, 0, this.width, this.height);
             this.canvas.style.display = "none";
         }

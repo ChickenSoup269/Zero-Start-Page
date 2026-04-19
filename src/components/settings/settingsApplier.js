@@ -1196,6 +1196,14 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "hacker" ? "block" : "none"
     DOM.pixelCubesColorSetting.style.display =
       settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.windModeSetting) {
+      DOM.windModeSetting.style.display =
+        settings.effect === "wind" ? "block" : "none"
+    }
+    if (DOM.windModeSelect) {
+      DOM.windModeSelect.value = settings.windMode || "2d"
+    }
+
     if (DOM.pixelCubesShapeSelect) {
       DOM.pixelCubesShapeSelect.value = settings.pixelCubesShape || "cube"
     }
@@ -1366,6 +1374,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "matrix",
         "aura",
         "northernLights",
+        "wind",
         "hacker",
         "pixelCubes",
         "pixelWeather",

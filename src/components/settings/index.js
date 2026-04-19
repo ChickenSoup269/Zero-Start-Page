@@ -142,7 +142,7 @@ export function initSettings() {
     ),
     matrixRainEffect: new MatrixRain("effect-canvas", settings.matrixColor),
     auraEffect: new AuraEffect("effect-canvas", settings.auraColor),
-    windEffect: new WindEffect("effect-canvas"),
+    windEffect: new WindEffect("effect-canvas", settings.windMode || "2d"),
     hackerEffect: new HackerEffect("effect-canvas", settings.hackerColor),
     pixelCubesEffect: new PixelCubes(
       "effect-canvas",

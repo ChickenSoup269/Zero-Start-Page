@@ -109,6 +109,16 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     })
   }
 
+  if (DOM.windModeSelect) {
+    DOM.windModeSelect.addEventListener("change", () => {
+      updateSetting("windMode", DOM.windModeSelect.value)
+      saveSettings()
+      if (effectInstances.windEffect) {
+        effectInstances.windEffect.setMode(DOM.windModeSelect.value)
+      }
+    })
+  }
+
   if (DOM.jellyfishColorPicker) {
     DOM.jellyfishColorPicker.addEventListener("input", () => {
       updateSetting("jellyfishColor", DOM.jellyfishColorPicker.value)

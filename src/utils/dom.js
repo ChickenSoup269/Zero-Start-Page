@@ -268,6 +268,8 @@ export const pixelCubesShapeSelect = document.getElementById(
 export const pixelCubesColorSetting = document.getElementById(
   "pixel-cubes-color-setting",
 )
+export const windModeSelect = document.getElementById("wind-mode-select")
+export const windModeSetting = document.getElementById("wind-mode-setting")
 export const jellyfishColorPicker = document.getElementById(
   "jellyfish-color-picker",
 )
