@@ -23,12 +23,16 @@ export class CursorTrailEffect {
     this.mouseX = null
     this.mouseY = null
     this.time = 0
+    this.lastParticleTime = 0
+    this.maxParticles = 200 // Giới hạn số lượng hạt tối đa
 
     this.resize()
 
     this.handleResize = () => this.resize()
     this.handleMouseMove = (e) => this.onMouseMove(e)
     this.handleMouseDown = (e) => this.onMouseDown(e)
+
+    this.cachedColor = this.hexToRgb(this.color)
 
     window.addEventListener("resize", this.handleResize)
   }
@@ -47,6 +51,16 @@ export class CursorTrailEffect {
 
   onMouseMove(e) {
     if (!this.active) return
+
+    // Throttle: Chỉ tạo hạt tối đa mỗi 10ms để giảm tải khi vẩy chuột nhanh
+    const now = performance.now()
+    if (now - this.lastParticleTime < 10) {
+      this.mouseX = e.clientX
+      this.mouseY = e.clientY
+      return
+    }
+    this.lastParticleTime = now
+
     this.mouseX = e.clientX
     this.mouseY = e.clientY
 
@@ -69,14 +83,16 @@ export class CursorTrailEffect {
 
     if (this.style === "fire") {
       // Fire explosion
-      for (let i = 0; i < 20; i++) {
+      const count = Math.min(20, this.maxParticles - this.particles.length)
+      for (let i = 0; i < count; i++) {
         this.particles.push(new FireParticle(this.mouseX, this.mouseY, true))
       }
       return
     }
 
-    const staticColor = this.randomColor ? null : this.hexToRgb(this.color)
-    for (let i = 0; i < 30; i++) {
+    const staticColor = this.randomColor ? null : this.cachedColor
+    const count = Math.min(30, this.maxParticles - this.particles.length)
+    for (let i = 0; i < count; i++) {
       const size = Math.random() * 8 + 3
       const angle = Math.random() * Math.PI * 2
       const speed = Math.random() * 5 + 2
@@ -118,9 +134,11 @@ export class CursorTrailEffect {
 
   addParticle() {
     if (this.mouseX === null || this.mouseY === null) return
-    const staticColor = this.randomColor ? null : this.hexToRgb(this.color)
+    if (this.particles.length >= this.maxParticles) return
 
-    for (let i = 0; i < 3; i++) {
+    const staticColor = this.randomColor ? null : this.cachedColor
+
+    for (let i = 0; i < 2; i++) {
       const size = Math.random() * 5 + 2
       const pColor = this.randomColor ? this.getRandomColor() : staticColor
 
@@ -141,8 +159,8 @@ export class CursorTrailEffect {
   addFireParticles() {
     if (this.mouseX === null || this.mouseY === null) return
     // Limit particles for performance
-    if (this.particles.length < 150) {
-      for (let i = 0; i < 4; i++) {
+    if (this.particles.length < this.maxParticles) {
+      for (let i = 0; i < 3; i++) {
         this.particles.push(new FireParticle(this.mouseX, this.mouseY, false))
       }
       if (Math.random() > 0.8) {
@@ -167,6 +185,7 @@ export class CursorTrailEffect {
     this.active = true
     this.lastDrawTime = 0
     this.particles = []
+    this.cachedColor = this.hexToRgb(this.color) // Cập nhật màu cache khi bắt đầu
     window.addEventListener("mousemove", this.handleMouseMove)
     window.addEventListener("mousedown", this.handleMouseDown)
     this.canvas.style.display = "block"

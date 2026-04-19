@@ -497,6 +497,29 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       }
     })
   }
+
+  // Tet Fireworks
+  if (DOM.tetFireworksShowPetalsCheckbox) {
+    DOM.tetFireworksShowPetalsCheckbox.addEventListener("change", (e) => {
+      const show = e.target.checked
+      updateSetting("tetFireworksShowPetals", show)
+      saveSettings()
+      if (effectInstances.tetFireworksEffect) {
+        effectInstances.tetFireworksEffect.setOptions({ showPetals: show })
+      }
+    })
+  }
+
+  if (DOM.tetFireworksPetalTypeSelect) {
+    DOM.tetFireworksPetalTypeSelect.addEventListener("change", (e) => {
+      const type = e.target.value
+      updateSetting("tetFireworksPetalType", type)
+      saveSettings()
+      if (effectInstances.tetFireworksEffect) {
+        effectInstances.tetFireworksEffect.setOptions({ petalType: type })
+      }
+    })
+  }
 }
 
 export { setupEffectColorHandlers }

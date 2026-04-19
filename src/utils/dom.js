@@ -296,6 +296,19 @@ export const fallingLeavesSettledSkinSetting = document.getElementById(
   "falling-leaves-settled-skin-setting",
 )
 
+export const tetFireworksPetalsSetting = document.getElementById(
+  "tet-fireworks-petals-setting",
+)
+export const tetFireworksShowPetalsCheckbox = document.getElementById(
+  "tet-fireworks-show-petals",
+)
+export const tetFireworksTypeSetting = document.getElementById(
+  "tet-fireworks-type-setting",
+)
+export const tetFireworksPetalTypeSelect = document.getElementById(
+  "tet-fireworks-petal-type",
+)
+
 export const sunbeamColorPicker = document.getElementById(
   "sunbeam-color-picker",
 )
