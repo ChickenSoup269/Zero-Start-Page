@@ -283,6 +283,61 @@ export const sakuraColorPicker = document.getElementById("sakura-color-picker")
 export const sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
 )
+// Aurora Wave
+export const auroraWaveColorPicker = document.getElementById(
+  "aurora-wave-color-picker",
+)
+export const auroraWaveColorSetting = document.getElementById(
+  "aurora-wave-color-setting",
+)
+export const auroraWaveTitleSetting = document.getElementById(
+  "aurora-wave-title-setting",
+)
+export const auroraWaveBrightnessSlider = document.getElementById(
+  "aurora-wave-brightness-slider",
+)
+export const auroraWaveBrightnessVal = document.getElementById(
+  "aurora-wave-brightness-val",
+)
+export const auroraWaveBrightnessSetting = document.getElementById(
+  "aurora-wave-brightness-setting",
+)
+export const auroraWaveSpeedSlider = document.getElementById(
+  "aurora-wave-speed-slider",
+)
+export const auroraWaveSpeedVal = document.getElementById(
+  "aurora-wave-speed-val",
+)
+export const auroraWaveSpeedSetting = document.getElementById(
+  "aurora-wave-speed-setting",
+)
+export const auroraWaveAmplitudeSlider = document.getElementById(
+  "aurora-wave-amplitude-slider",
+)
+export const auroraWaveAmplitudeVal = document.getElementById(
+  "aurora-wave-amplitude-val",
+)
+export const auroraWaveAmplitudeSetting = document.getElementById(
+  "aurora-wave-amplitude-setting",
+)
+export const auroraWaveTransparentCheckbox = document.getElementById(
+  "aurora-wave-transparent",
+)
+export const auroraWaveBgColorPicker = document.getElementById(
+  "aurora-wave-bg-color-picker",
+)
+export const auroraWaveBgColorContainer = document.getElementById(
+  "aurora-wave-bg-color-container",
+)
+export const auroraWaveBgOpacitySlider = document.getElementById(
+  "aurora-wave-bg-opacity-slider",
+)
+export const auroraWaveBgOpacityVal = document.getElementById(
+  "aurora-wave-bg-opacity-val",
+)
+export const auroraWaveBgSetting = document.getElementById(
+  "aurora-wave-bg-setting",
+)
 
 export const snowfallColorPicker = document.getElementById(
   "snowfall-color-picker",
@@ -329,6 +384,30 @@ export const pixelBlastVariantSetting = document.getElementById(
 )
 export const pixelBlastSizeSetting = document.getElementById(
   "pixel-blast-size-setting",
+)
+export const pixelBlastLiquidCheckbox = document.getElementById(
+  "pixel-blast-liquid",
+)
+export const pixelBlastLiquidStrengthSlider = document.getElementById(
+  "pixel-blast-liquid-strength-slider",
+)
+export const pixelBlastLiquidStrengthVal = document.getElementById(
+  "pixel-blast-liquid-strength-val",
+)
+export const pixelBlastLiquidSetting = document.getElementById(
+  "pixel-blast-liquid-setting",
+)
+export const pixelBlastCursorRadiusSlider = document.getElementById(
+  "pixel-blast-cursor-radius-slider",
+)
+export const pixelBlastCursorRadiusVal = document.getElementById(
+  "pixel-blast-cursor-radius-val",
+)
+export const pixelBlastRippleCheckbox = document.getElementById(
+  "pixel-blast-ripples",
+)
+export const pixelBlastInteractiveSetting = document.getElementById(
+  "pixel-blast-interactive-setting",
 )
 
 export const sunbeamColorPicker = document.getElementById(

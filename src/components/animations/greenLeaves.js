@@ -6,8 +6,6 @@ export class GreenLeavesEffect {
     this.leaves = []
     this.leafCount = 40
 
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     // Wind state
@@ -91,7 +89,7 @@ export class GreenLeavesEffect {
       -s * 0.1,
       s * 0.55,
     )
-    grd.addColorStop(0, `rgba(255,255,255,${opacity * 0.28})`)
+    grd.addColorStop(0, `rgba(255,255,255,\${opacity * 0.28})`)
     grd.addColorStop(1, `rgba(255,255,255,0)`)
     ctx.beginPath()
     ctx.ellipse(0, 0, s * 0.42, s * 0.75, 0, 0, Math.PI * 2)
@@ -102,13 +100,13 @@ export class GreenLeavesEffect {
     ctx.beginPath()
     ctx.moveTo(0, s * 0.72)
     ctx.bezierCurveTo(s * 0.04, s * 0.2, -s * 0.04, -s * 0.2, 0, -s * 0.72)
-    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.5})`
+    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.5})`
     ctx.lineWidth = s * 0.06
     ctx.stroke()
 
     // A couple of side veins
     ctx.lineWidth = s * 0.03
-    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.3})`
+    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.3})`
 
     ctx.beginPath()
     ctx.moveTo(0, s * 0.2)
@@ -126,7 +124,7 @@ export class GreenLeavesEffect {
     ctx.moveTo(0, s * 0.2)
     ctx.bezierCurveTo(
       -s * 0.15,
-      s * 0.05,
+      -s * 0.05,
       -s * 0.38,
       -s * 0.05,
       -s * 0.38,
@@ -163,17 +161,17 @@ export class GreenLeavesEffect {
     ctx.moveTo(0, s * 0.72)
     ctx.lineTo(0, s * 1.05)
     ctx.lineWidth = s * 0.07
-    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.55})`
+    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.55})`
     ctx.stroke()
 
     ctx.restore()
   }
 
-  updateWind() {
+  updateWind(deltaTime) {
     if (this.windAge >= this.windDuration) {
       // End gust — fade back to calm
       this.windTarget = 0
-      this.windTimer--
+      this.windTimer -= deltaTime
       if (this.windTimer <= 0) {
         // Schedule a new gust
         this.windTimer = Math.floor(Math.random() * 200 + 80) // 80-280 frames of calm
@@ -184,24 +182,24 @@ export class GreenLeavesEffect {
         this.windTarget = dir * (Math.random() * 3 + 1.5)
       }
     } else {
-      this.windAge++
+      this.windAge += deltaTime
     }
 
     // Smooth interpolation toward target (ease in/out)
-    this.windStrength += (this.windTarget - this.windStrength) * 0.04
+    this.windStrength += (this.windTarget - this.windStrength) * 0.04 * deltaTime
   }
 
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
+    this.lastDrawTime = performance.now()
     this.windStrength = 0
     this.windTarget = 0
     this.windTimer = Math.floor(Math.random() * 150 + 60)
     this.windDuration = 0
     this.windAge = 0
     this.initLeaves()
-    this.animate(0)
+    this.animate(performance.now())
     this.canvas.style.display = "block"
   }
 
@@ -218,29 +216,29 @@ export class GreenLeavesEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
+    this.lastDrawTime = currentTime
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-    this.updateWind()
+    this.updateWind(deltaTime)
 
     this.leaves.forEach((leaf) => {
       // Gravity
-      leaf.y += leaf.speedY
+      leaf.y += leaf.speedY * deltaTime
 
       // Wind + natural horizontal drift
       const windPush = this.windStrength * leaf.windSensitivity
-      leaf.x += leaf.speedX + windPush
+      leaf.x += (leaf.speedX + windPush) * deltaTime
 
       // Swing (pendulum-like)
-      leaf.swingOffset += leaf.swingSpeed
-      leaf.x += Math.sin(leaf.swingOffset) * leaf.swing
+      leaf.swingOffset += leaf.swingSpeed * deltaTime
+      leaf.x += Math.sin(leaf.swingOffset) * leaf.swing * deltaTime
 
       // Rotation — spin faster in wind
       const windSpin = Math.abs(this.windStrength) * 0.4
       leaf.rotation +=
-        leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)
+        (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) * deltaTime
 
       // Draw
       this.ctx.save()

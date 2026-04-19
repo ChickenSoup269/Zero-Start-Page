@@ -8,8 +8,6 @@ export class FallingLeavesSettledEffect {
     this.leafCount = 50
     this.leafType = leafType
 
-    this.fps = 60 // Smooth 60 FPS
-    this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     // Wind state
@@ -168,11 +166,11 @@ export class FallingLeavesSettledEffect {
     }
   }
 
-  updateWind() {
+  updateWind(deltaTime) {
     if (this.windAge >= this.windDuration) {
       // End gust — fade back to calm
       this.windTarget = 0
-      this.windTimer--
+      this.windTimer -= deltaTime
       if (this.windTimer <= 0) {
         // Schedule a new gust
         this.windTimer = Math.floor(Math.random() * 200 + 80) // 80-280 frames of calm
@@ -183,24 +181,24 @@ export class FallingLeavesSettledEffect {
         this.windTarget = dir * (Math.random() * 2 + 1.0)
       }
     } else {
-      this.windAge++
+      this.windAge += deltaTime
     }
 
     // Smooth interpolation toward target (ease in/out)
-    this.windStrength += (this.windTarget - this.windStrength) * 0.04
+    this.windStrength += (this.windTarget - this.windStrength) * 0.04 * deltaTime
   }
 
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
+    this.lastDrawTime = performance.now()
     this.windStrength = 0
     this.windTarget = 0
     this.windTimer = Math.floor(Math.random() * 150 + 60)
     this.windDuration = 0
     this.windAge = 0
     this.initLeaves()
-    this.animate(0)
+    this.animate(performance.now())
     this.canvas.style.display = "block"
   }
 
@@ -306,16 +304,14 @@ export class FallingLeavesSettledEffect {
       s * 0.18,
       -s * 0.4,
       s * 0.22,
-      -s * 0.44,
-      s * 0.38,
+      -s * 0.44, s * 0.38,
     )
     ctx.bezierCurveTo(
       -s * 0.48,
       s * 0.62,
       -s * 0.2,
       s * 0.5,
-      -s * 0.08,
-      s * 0.55,
+      -s * 0.08, s * 0.55,
     )
 
     ctx.lineTo(0, s * 0.9)
@@ -457,7 +453,7 @@ export class FallingLeavesSettledEffect {
     const s = size
     const type = leafType || this.leafType
 
-    ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.22})`
+    ctx.strokeStyle = `rgba(0, 0, 0, \${opacity * 0.22})`
     ctx.lineWidth = 0.7
 
     if (type === "maple") {
@@ -547,14 +543,14 @@ export class FallingLeavesSettledEffect {
       }
     } else if (type === "cherryPetal") {
       // Sakura petal detail lines
-      ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.5})`
+      ctx.strokeStyle = `rgba(255, 255, 255, \${opacity * 0.5})`
       ctx.lineWidth = Math.max(0.45, s * 0.08)
       ctx.beginPath()
       ctx.moveTo(0, -s * 0.72)
       ctx.lineTo(0, s * 0.72)
       ctx.stroke()
 
-      ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.2})`
+      ctx.strokeStyle = `rgba(255, 255, 255, \${opacity * 0.2})`
       ctx.lineWidth = Math.max(0.35, s * 0.05)
       ctx.beginPath()
       ctx.ellipse(0, 0, s * 0.34, s * 0.58, 0, 0, Math.PI * 2)
@@ -588,13 +584,13 @@ export class FallingLeavesSettledEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
+    this.lastDrawTime = currentTime
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     // Update wind
-    this.updateWind()
+    this.updateWind(deltaTime)
 
     // Draw settled leaves first (so they appear behind falling leaves)
     this.settledLeaves.forEach((leaf) => {
@@ -623,7 +619,7 @@ export class FallingLeavesSettledEffect {
     // Update and draw falling leaves
     this.leaves.forEach((leaf) => {
       if (leaf.settlingState === "settling") {
-        leaf.settlingProgress += 0.02
+        leaf.settlingProgress += 0.02 * deltaTime
 
         if (leaf.settlingProgress >= 1) {
           // Settling complete - move to settled leaves
@@ -640,7 +636,7 @@ export class FallingLeavesSettledEffect {
           Object.assign(leaf, refreshed)
         } else {
           // Smoothstep easing keeps entry/exit velocity soft
-          const t = leaf.settlingProgress
+          const t = Math.min(1, leaf.settlingProgress)
           const easeProgress = t * t * (3 - 2 * t)
 
           leaf.y =
@@ -651,8 +647,8 @@ export class FallingLeavesSettledEffect {
             (leaf.targetSettleX - leaf.startSettleX) * easeProgress +
             Math.sin(leaf.swingOffset) * leaf.swing * 0.2
 
-          leaf.swingOffset += leaf.swingSpeed * 0.35
-          leaf.rotation += leaf.rotationSpeed * 0.35
+          leaf.swingOffset += leaf.swingSpeed * 0.35 * deltaTime
+          leaf.rotation += leaf.rotationSpeed * 0.35 * deltaTime
 
           this.ctx.save()
           this.ctx.translate(leaf.x, leaf.y)
@@ -677,20 +673,20 @@ export class FallingLeavesSettledEffect {
         }
       } else {
         // Gravity
-        leaf.y += leaf.speedY
+        leaf.y += leaf.speedY * deltaTime
 
         // Wind + natural horizontal drift
         const windPush = this.windStrength * leaf.windSensitivity
-        leaf.x += leaf.speedX + windPush
+        leaf.x += (leaf.speedX + windPush) * deltaTime
 
         // Swing (pendulum-like)
-        leaf.swingOffset += leaf.swingSpeed
-        leaf.x += Math.sin(leaf.swingOffset) * leaf.swing
+        leaf.swingOffset += leaf.swingSpeed * deltaTime
+        leaf.x += Math.sin(leaf.swingOffset) * leaf.swing * deltaTime
 
         // Rotation — spin faster in wind
         const windSpin = Math.abs(this.windStrength) * 0.4
         leaf.rotation +=
-          leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)
+          (leaf.rotationSpeed + windSpin * Math.sign(this.windStrength || 1)) * deltaTime
 
         // Check if leaf has entered settlement zone
         const settlementZone = this.canvas.height - 120

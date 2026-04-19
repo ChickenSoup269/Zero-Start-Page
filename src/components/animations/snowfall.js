@@ -7,8 +7,6 @@ export class SnowfallEffect {
     this.snowflakes = []
     this.snowflakeCount = 100
 
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     this.resize()
@@ -47,9 +45,9 @@ export class SnowfallEffect {
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
+    this.lastDrawTime = performance.now()
     this.initSnowflakes()
-    this.animate(0)
+    this.animate(performance.now())
     this.canvas.style.display = "block"
   }
 
@@ -71,8 +69,8 @@ export class SnowfallEffect {
     const armCount = 6
     const armLength = snowflake.size
 
-    this.ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${snowflake.opacity})`
-    this.ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${snowflake.opacity * 0.8})`
+    this.ctx.strokeStyle = `rgba(\${rgb.r}, \${rgb.g}, \${rgb.b}, \${snowflake.opacity})`
+    this.ctx.fillStyle = `rgba(\${rgb.r}, \${rgb.g}, \${rgb.b}, \${snowflake.opacity * 0.8})`
     this.ctx.lineWidth = snowflake.size * 0.15
 
     // Main arms
@@ -122,8 +120,8 @@ export class SnowfallEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
+    this.lastDrawTime = currentTime
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -131,15 +129,15 @@ export class SnowfallEffect {
 
     this.snowflakes.forEach((snowflake) => {
       // Update position
-      snowflake.y += snowflake.speedY
-      snowflake.rotation += snowflake.rotationSpeed
+      snowflake.y += snowflake.speedY * deltaTime
+      snowflake.rotation += snowflake.rotationSpeed * deltaTime
 
       // Swinging motion (sine wave)
-      snowflake.swingOffset += snowflake.swingSpeed
-      snowflake.x += Math.sin(snowflake.swingOffset) * snowflake.swing
+      snowflake.swingOffset += snowflake.swingSpeed * deltaTime
+      snowflake.x += Math.sin(snowflake.swingOffset) * snowflake.swing * deltaTime
 
       // Gentle horizontal drift
-      snowflake.x += snowflake.speedX
+      snowflake.x += snowflake.speedX * deltaTime
 
       // Draw snowflake
       this.drawSnowflake(snowflake, rgb)

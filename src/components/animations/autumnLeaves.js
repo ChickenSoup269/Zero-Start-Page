@@ -6,8 +6,6 @@ export class AutumnLeavesEffect {
     this.leaves = []
     this.leafCount = 45
 
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     // Autumn color palette (red, orange, amber tones)
@@ -65,9 +63,9 @@ export class AutumnLeavesEffect {
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
+    this.lastDrawTime = performance.now()
     this.initLeaves()
-    this.animate(0)
+    this.animate(performance.now())
     this.canvas.style.display = "block"
   }
 
@@ -197,8 +195,7 @@ export class AutumnLeavesEffect {
       s * 0.62,
       -s * 0.2,
       s * 0.5,
-      -s * 0.08,
-      s * 0.55,
+      -s * 0.08, s * 0.55,
     )
 
     ctx.lineTo(0, s * 0.9)
@@ -208,7 +205,7 @@ export class AutumnLeavesEffect {
   // Draws simple vein lines clipped to the leaf shape
   drawVeins(ctx, size, opacity) {
     const s = size
-    ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.22})`
+    ctx.strokeStyle = `rgba(0, 0, 0, \${opacity * 0.22})`
     ctx.lineWidth = 0.7
 
     // Center vein
@@ -276,16 +273,16 @@ export class AutumnLeavesEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
+    this.lastDrawTime = currentTime
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this.leaves.forEach((leaf) => {
-      leaf.y += leaf.speedY
-      leaf.rotation += leaf.rotationSpeed
-      leaf.swingOffset += leaf.swingSpeed
-      leaf.x += Math.sin(leaf.swingOffset) * leaf.swing + leaf.speedX
+      leaf.y += leaf.speedY * deltaTime
+      leaf.rotation += leaf.rotationSpeed * deltaTime
+      leaf.swingOffset += leaf.swingSpeed * deltaTime
+      leaf.x += (Math.sin(leaf.swingOffset) * leaf.swing + leaf.speedX) * deltaTime
 
       this.ctx.save()
       this.ctx.translate(leaf.x, leaf.y)

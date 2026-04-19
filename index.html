@@ -1536,7 +1536,7 @@
                         </div>
                         <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
                             <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
-                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora</span>
+                            <span class="effect-name" data-i18n="effect_aurora_wave">Aurora Wave</span>
                         </button>
                         <button class="effect-item" data-value="northernLights"
                             data-search="northern lights aurora borealis waves">
@@ -1573,6 +1573,57 @@
                             <span data-i18n="effect_customization">Effect Settings</span>
                         </div>
                         <div id="active-effect-settings-body">
+                            <!-- Aurora Wave Settings -->
+                            <div id="aurora-wave-color-setting" class="setting-item" style="display: none;">
+                                <label for="aurora-wave-color-picker" data-i18n="setting_aurora_wave_color">Aurora Color</label>
+                                <input type="color" id="aurora-wave-color-picker" value="#00bcd4" />
+                            </div>
+
+                            <div id="aurora-wave-brightness-setting" class="setting-item" style="display: none;">
+                                <label for="aurora-wave-brightness-slider">
+                                    <span data-i18n="setting_aurora_wave_brightness">Brightness</span>:
+                                    <span id="aurora-wave-brightness-val">0.65</span>
+                                </label>
+                                <input type="range" id="aurora-wave-brightness-slider" min="0.1" max="1.5" step="0.05" value="0.65" />
+                            </div>
+
+                            <div id="aurora-wave-speed-setting" class="setting-item" style="display: none;">
+                                <label for="aurora-wave-speed-slider">
+                                    <span data-i18n="settings_pixel_weather_speed">Speed</span>:
+                                    <span id="aurora-wave-speed-val">1.0</span>x
+                                </label>
+                                <input type="range" id="aurora-wave-speed-slider" min="0.1" max="3.0" step="0.1" value="1.0" />
+                            </div>
+
+                            <div id="aurora-wave-amplitude-setting" class="setting-item" style="display: none;">
+                                <label for="aurora-wave-amplitude-slider">
+                                    <span data-i18n="setting_aurora_wave_amplitude">Wave Height</span>:
+                                    <span id="aurora-wave-amplitude-val">70</span>px
+                                </label>
+                                <input type="range" id="aurora-wave-amplitude-slider" min="10" max="200" step="5" value="70" />
+                            </div>
+
+                            <div id="aurora-wave-bg-setting" class="setting-item" style="display: none;">
+                                <div class="setting-row">
+                                    <label for="aurora-wave-transparent" data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                    <label class="lcp-switch">
+                                        <input type="checkbox" id="aurora-wave-transparent" checked>
+                                        <span class="lcp-slider round"></span>
+                                    </label>
+                                </div>
+                                <div id="aurora-wave-bg-color-container" style="margin-top: 10px; display: none;">
+                                    <label for="aurora-wave-bg-color-picker" data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                    <input type="color" id="aurora-wave-bg-color-picker" value="#000000" />
+                                </div>
+                                <div id="aurora-wave-bg-opacity-container" style="margin-top: 10px;">
+                                    <label for="aurora-wave-bg-opacity-slider">
+                                        <span data-i18n="setting_aurora_wave_bg_opacity">Overlay Opacity</span>:
+                                        <span id="aurora-wave-bg-opacity-val">0.15</span>
+                                    </label>
+                                    <input type="range" id="aurora-wave-bg-opacity-slider" min="0" max="1" step="0.05" value="0.15" />
+                                </div>
+                            </div>
+
                             <!-- Hacker Color -->
                             <div id="hacker-color-setting" class="setting-item" style="display: none;">
                                 <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text
@@ -1722,6 +1773,7 @@
                                 <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura Color</label>
                                 <input type="color" id="sakura-color-picker" value="#ffb7c5" />
                             </div>
+
                             <!-- Snowfall Color -->
                             <div id="snowfall-color-setting" class="setting-item" style="display: none;">
                                 <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall
@@ -1774,6 +1826,47 @@
                                     <option value="triangle" data-i18n="pixel_blast_triangle">Triangle</option>
                                     <option value="diamond" data-i18n="pixel_blast_diamond">Diamond</option>
                                 </select>
+                            </div>
+
+                            <div id="pixel-blast-size-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-blast-size-slider">
+                                    <span data-i18n="setting_pixel_blast_size">Pixel Size</span>:
+                                    <span id="pixel-blast-size-val">15</span>px
+                                </label>
+                                <input type="range" id="pixel-blast-size-slider" min="5" max="50" step="1" value="15" />
+                            </div>
+
+                            <div id="pixel-blast-liquid-setting" class="setting-item" style="display: none;">
+                                <div class="setting-row">
+                                    <label for="pixel-blast-liquid" data-i18n="setting_pixel_blast_liquid">Liquid Distortion</label>
+                                    <label class="lcp-switch">
+                                        <input type="checkbox" id="pixel-blast-liquid" checked>
+                                        <span class="lcp-slider round"></span>
+                                    </label>
+                                </div>
+                                <div id="pixel-blast-liquid-strength-container" style="margin-top: 10px;">
+                                    <label for="pixel-blast-liquid-strength-slider">
+                                        <span data-i18n="setting_pixel_blast_liquid_strength">Distortion Strength</span>:
+                                        <span id="pixel-blast-liquid-strength-val">1.0</span>
+                                    </label>
+                                    <input type="range" id="pixel-blast-liquid-strength-slider" min="0" max="3" step="0.1" value="1.0" />
+                                </div>
+                            </div>
+
+                            <div id="pixel-blast-interactive-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-blast-cursor-radius-slider">
+                                    <span data-i18n="setting_pixel_blast_cursor_radius">Interaction Radius</span>:
+                                    <span id="pixel-blast-cursor-radius-val">150</span>px
+                                </label>
+                                <input type="range" id="pixel-blast-cursor-radius-slider" min="50" max="500" step="10" value="150" />
+                                
+                                <div class="setting-row" style="margin-top: 10px;">
+                                    <label for="pixel-blast-ripples" data-i18n="setting_pixel_blast_ripples">Enable Ripples (Click)</label>
+                                    <label class="lcp-switch">
+                                        <input type="checkbox" id="pixel-blast-ripples" checked>
+                                        <span class="lcp-slider round"></span>
+                                    </label>
+                                </div>
                             </div>
 
                             <!-- Sunbeam Settings -->

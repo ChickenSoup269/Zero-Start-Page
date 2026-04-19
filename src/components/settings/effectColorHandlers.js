@@ -569,6 +569,136 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     })
     DOM.pixelBlastBgColorPicker.addEventListener("change", () => saveSettings())
   }
+
+  if (DOM.pixelBlastLiquidCheckbox) {
+    DOM.pixelBlastLiquidCheckbox.addEventListener("change", (e) => {
+      const liquid = e.target.checked
+      updateSetting("pixelBlastLiquid", liquid)
+      saveSettings()
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ liquid })
+      }
+    })
+  }
+
+  if (DOM.pixelBlastLiquidStrengthSlider) {
+    DOM.pixelBlastLiquidStrengthSlider.addEventListener("input", (e) => {
+      const liquidStrength = parseFloat(e.target.value)
+      if (DOM.pixelBlastLiquidStrengthVal) {
+        DOM.pixelBlastLiquidStrengthVal.textContent = liquidStrength.toFixed(1)
+      }
+      updateSetting("pixelBlastLiquidStrength", liquidStrength)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ liquidStrength })
+      }
+    })
+    DOM.pixelBlastLiquidStrengthSlider.addEventListener("change", () => saveSettings())
+  }
+
+  if (DOM.pixelBlastCursorRadiusSlider) {
+    DOM.pixelBlastCursorRadiusSlider.addEventListener("input", (e) => {
+      const cursorRadius = parseInt(e.target.value)
+      if (DOM.pixelBlastCursorRadiusVal) {
+        DOM.pixelBlastCursorRadiusVal.textContent = cursorRadius
+      }
+      updateSetting("pixelBlastCursorRadius", cursorRadius)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ cursorRadius })
+      }
+    })
+    DOM.pixelBlastCursorRadiusSlider.addEventListener("change", () => saveSettings())
+  }
+
+  if (DOM.pixelBlastRippleCheckbox) {
+    DOM.pixelBlastRippleCheckbox.addEventListener("change", (e) => {
+      const enableRipples = e.target.checked
+      updateSetting("pixelBlastRipples", enableRipples)
+      saveSettings()
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ enableRipples })
+      }
+    })
+  }
+
+  DOM.auroraWaveColorPicker?.addEventListener("input", () => {
+    updateSetting("auroraWaveColor", DOM.auroraWaveColorPicker.value)
+    saveSettings()
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({
+        color: DOM.auroraWaveColorPicker.value,
+      })
+    }
+  })
+
+  DOM.auroraWaveBrightnessSlider?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    if (DOM.auroraWaveBrightnessVal)
+      DOM.auroraWaveBrightnessVal.textContent = val.toFixed(2)
+    updateSetting("auroraWaveBrightness", val)
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ brightness: val })
+    }
+  })
+  DOM.auroraWaveBrightnessSlider?.addEventListener("change", () =>
+    saveSettings(),
+  )
+
+  DOM.auroraWaveSpeedSlider?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    if (DOM.auroraWaveSpeedVal) DOM.auroraWaveSpeedVal.textContent = val.toFixed(1)
+    updateSetting("auroraWaveSpeed", val)
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ speed: val })
+    }
+  })
+  DOM.auroraWaveSpeedSlider?.addEventListener("change", () => saveSettings())
+
+  DOM.auroraWaveAmplitudeSlider?.addEventListener("input", (e) => {
+    const val = parseInt(e.target.value)
+    if (DOM.auroraWaveAmplitudeVal) DOM.auroraWaveAmplitudeVal.textContent = val
+    updateSetting("auroraWaveAmplitude", val)
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ waveAmplitude: val })
+    }
+  })
+  DOM.auroraWaveAmplitudeSlider?.addEventListener("change", () =>
+    saveSettings(),
+  )
+
+  DOM.auroraWaveTransparentCheckbox?.addEventListener("change", (e) => {
+    const isTransparent = e.target.checked
+    updateSetting("auroraWaveTransparent", isTransparent)
+    saveSettings()
+    if (DOM.auroraWaveBgColorContainer) {
+      DOM.auroraWaveBgColorContainer.style.display = isTransparent
+        ? "none"
+        : "block"
+    }
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ transparent: isTransparent })
+    }
+  })
+
+  DOM.auroraWaveBgColorPicker?.addEventListener("input", (e) => {
+    const color = e.target.value
+    updateSetting("auroraWaveBgColor", color)
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ backgroundColor: color })
+    }
+  })
+  DOM.auroraWaveBgColorPicker?.addEventListener("change", () => saveSettings())
+
+  DOM.auroraWaveBgOpacitySlider?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    if (DOM.auroraWaveBgOpacityVal) DOM.auroraWaveBgOpacityVal.textContent = val
+    updateSetting("auroraWaveBgOpacity", val)
+    if (effectInstances.auroraWaveEffect) {
+      effectInstances.auroraWaveEffect.setOptions({ bgOpacity: val })
+    }
+  })
+  DOM.auroraWaveBgOpacitySlider?.addEventListener("change", () =>
+    saveSettings(),
+  )
 }
 
 export { setupEffectColorHandlers }

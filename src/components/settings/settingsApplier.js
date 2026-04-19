@@ -693,6 +693,39 @@ function createApplySettings(effectInstances) {
         perspective: settings.gridPerspective !== false
       })
     }
+    if (
+      effectToStart === "auroraWave" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        color: settings.auroraWaveColor || "#00bcd4",
+        brightness: settings.auroraWaveBrightness || 0.65,
+        speed: settings.auroraWaveSpeed || 1.0,
+        waveAmplitude: settings.auroraWaveAmplitude || 70,
+        transparent: settings.auroraWaveTransparent !== false,
+        backgroundColor: settings.auroraWaveBgColor || "#000000",
+        bgOpacity: settings.auroraWaveBgOpacity ?? 0.15,
+      })
+    }
+
+    if (
+      effectToStart === "pixelBlast" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        pixelSize: settings.pixelBlastSize || 15,
+        variant: settings.pixelBlastVariant || "square",
+        color: settings.pixelBlastColor || "#B497CF",
+        transparent: settings.pixelBlastTransparent !== false,
+        backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
+        liquid: settings.pixelBlastLiquid !== false,
+        liquidStrength: settings.pixelBlastLiquidStrength ?? 1.0,
+        cursorRadius: settings.pixelBlastCursorRadius || 150,
+        enableRipples: settings.pixelBlastRipples !== false,
+      })
+    }
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
@@ -913,8 +946,10 @@ function createUpdateSettingsInputs(effectInstances) {
         : "none"
     }
 
-    DOM.analogMarkerModeSetting.style.display = style === "analog" ? "block" : "none"
-    DOM.jpStyleLanguageSetting.style.display = style === "jp-style" ? "block" : "none"
+    if (DOM.analogMarkerModeSetting)
+      DOM.analogMarkerModeSetting.style.display = style === "analog" ? "block" : "none"
+    if (DOM.jpStyleLanguageSetting)
+      DOM.jpStyleLanguageSetting.style.display = style === "jp-style" ? "block" : "none"
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
         style === "sidestyle" ? "block" : "none"
@@ -922,7 +957,8 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"
 
-    DOM.analogBlurBgSetting.style.display = style === "analog" ? "flex" : "none"
+    if (DOM.analogBlurBgSetting)
+      DOM.analogBlurBgSetting.style.display = style === "analog" ? "flex" : "none"
     if (DOM.analogBlurBgCheckbox)
       DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
 
@@ -1090,7 +1126,8 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.background.startsWith("blob:") ||
         settings.background.startsWith("http"))
 
-    DOM.bgPositionSetting.style.display = isImageBg ? "block" : "none"
+    if (DOM.bgPositionSetting)
+      DOM.bgPositionSetting.style.display = isImageBg ? "block" : "none"
 
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
     DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"
@@ -1180,22 +1217,30 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
 
     // Visibility of Effect Settings
-    DOM.starColorSetting.style.display =
-      settings.effect === "galaxy" ? "block" : "none"
-    DOM.meteorColorSetting.style.display =
-      settings.effect === "meteor" ? "block" : "none"
-    DOM.networkColorSetting.style.display =
-      settings.effect === "network" ? "block" : "none"
-    DOM.matrixColorSetting.style.display =
-      settings.effect === "matrix" ? "block" : "none"
-    DOM.auraColorSetting.style.display =
-      settings.effect === "aura" ? "block" : "none"
-    DOM.northernLightsColorSetting.style.display =
-      settings.effect === "northernLights" ? "block" : "none"
-    DOM.hackerColorSetting.style.display =
-      settings.effect === "hacker" ? "block" : "none"
-    DOM.pixelCubesColorSetting.style.display =
-      settings.effect === "pixelCubes" ? "block" : "none"
+    if (DOM.starColorSetting)
+      DOM.starColorSetting.style.display =
+        settings.effect === "galaxy" ? "block" : "none"
+    if (DOM.meteorColorSetting)
+      DOM.meteorColorSetting.style.display =
+        settings.effect === "meteor" ? "block" : "none"
+    if (DOM.networkColorSetting)
+      DOM.networkColorSetting.style.display =
+        settings.effect === "network" ? "block" : "none"
+    if (DOM.matrixColorSetting)
+      DOM.matrixColorSetting.style.display =
+        settings.effect === "matrix" ? "block" : "none"
+    if (DOM.auraColorSetting)
+      DOM.auraColorSetting.style.display =
+        settings.effect === "aura" ? "block" : "none"
+    if (DOM.northernLightsColorSetting)
+      DOM.northernLightsColorSetting.style.display =
+        settings.effect === "northernLights" ? "block" : "none"
+    if (DOM.hackerColorSetting)
+      DOM.hackerColorSetting.style.display =
+        settings.effect === "hacker" ? "block" : "none"
+    if (DOM.pixelCubesColorSetting)
+      DOM.pixelCubesColorSetting.style.display =
+        settings.effect === "pixelCubes" ? "block" : "none"
     if (DOM.windModeSetting) {
       DOM.windModeSetting.style.display =
         settings.effect === "wind" ? "block" : "none"
@@ -1251,12 +1296,82 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.jellyfishTypeSelect) {
       DOM.jellyfishTypeSelect.value = settings.jellyfishType || "jellyfish"
     }
-    DOM.sakuraColorSetting.style.display =
-      settings.effect === "sakura" ? "block" : "none"
-    DOM.snowfallColorSetting.style.display =
-      settings.effect === "snowfall" ? "block" : "none"
-    DOM.fallingLeavesSettledSkinSetting.style.display =
-      settings.effect === "fallingLeavesSettled" ? "block" : "none"
+    if (DOM.sakuraColorSetting) {
+      DOM.sakuraColorSetting.style.display =
+        settings.effect === "sakura" ? "block" : "none"
+    }
+
+    // Aurora Wave
+    if (DOM.auroraWaveTitleSetting) {
+      DOM.auroraWaveTitleSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveColorSetting) {
+      DOM.auroraWaveColorSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveBrightnessSetting) {
+      DOM.auroraWaveBrightnessSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveSpeedSetting) {
+      DOM.auroraWaveSpeedSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveAmplitudeSetting) {
+      DOM.auroraWaveAmplitudeSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+    if (DOM.auroraWaveBgSetting) {
+      DOM.auroraWaveBgSetting.style.display =
+        settings.effect === "auroraWave" ? "block" : "none"
+    }
+
+    if (DOM.auroraWaveColorPicker) {
+      DOM.auroraWaveColorPicker.value = settings.auroraWaveColor || "#00bcd4"
+    }
+    if (DOM.auroraWaveTransparentCheckbox) {
+      const isTransparent = settings.auroraWaveTransparent !== false
+      DOM.auroraWaveTransparentCheckbox.checked = isTransparent
+      if (DOM.auroraWaveBgColorContainer) {
+        DOM.auroraWaveBgColorContainer.style.display = isTransparent
+          ? "none"
+          : "block"
+      }
+    }
+    if (DOM.auroraWaveBgColorPicker) {
+      DOM.auroraWaveBgColorPicker.value = settings.auroraWaveBgColor || "#000000"
+    }
+    if (DOM.auroraWaveBgOpacitySlider) {
+      const op = settings.auroraWaveBgOpacity ?? 0.15
+      DOM.auroraWaveBgOpacitySlider.value = op
+      if (DOM.auroraWaveBgOpacityVal) DOM.auroraWaveBgOpacityVal.textContent = op
+    }
+    if (DOM.auroraWaveBrightnessSlider) {
+      const b = settings.auroraWaveBrightness || 0.65
+      DOM.auroraWaveBrightnessSlider.value = b
+      if (DOM.auroraWaveBrightnessVal)
+        DOM.auroraWaveBrightnessVal.textContent = b.toFixed(2)
+    }
+    if (DOM.auroraWaveSpeedSlider) {
+      const s = settings.auroraWaveSpeed || 1.0
+      DOM.auroraWaveSpeedSlider.value = s
+      if (DOM.auroraWaveSpeedVal) DOM.auroraWaveSpeedVal.textContent = s.toFixed(1)
+    }
+    if (DOM.auroraWaveAmplitudeSlider) {
+      const a = settings.auroraWaveAmplitude || 70
+      DOM.auroraWaveAmplitudeSlider.value = a
+      if (DOM.auroraWaveAmplitudeVal) DOM.auroraWaveAmplitudeVal.textContent = a
+    }
+
+    if (DOM.snowfallColorSetting) {
+      DOM.snowfallColorSetting.style.display =
+        settings.effect === "snowfall" ? "block" : "none"
+    }
+    if (DOM.fallingLeavesSettledSkinSetting) {
+      DOM.fallingLeavesSettledSkinSetting.style.display =
+        settings.effect === "fallingLeavesSettled" ? "block" : "none"
+    }
     if (DOM.fallingLeavesSettledSkinSelect) {
       DOM.fallingLeavesSettledSkinSelect.value =
         settings.fallingLeavesSkin || "maple"
@@ -1279,6 +1394,15 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelBlastBgSetting.style.display =
         settings.effect === "pixelBlast" ? "block" : "none"
     }
+    if (DOM.pixelBlastLiquidSetting) {
+      DOM.pixelBlastLiquidSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
+    if (DOM.pixelBlastInteractiveSetting) {
+      DOM.pixelBlastInteractiveSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
+
     if (DOM.pixelBlastColorPicker) {
       DOM.pixelBlastColorPicker.value = settings.pixelBlastColor || "#B497CF"
     }
@@ -1286,10 +1410,29 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelBlastVariantSelect.value = settings.pixelBlastVariant || "square"
     }
     if (DOM.pixelBlastSizeSlider) {
-      DOM.pixelBlastSizeSlider.value = settings.pixelBlastSize || 4
+      DOM.pixelBlastSizeSlider.value = settings.pixelBlastSize || 15
       if (DOM.pixelBlastSizeVal) {
-        DOM.pixelBlastSizeVal.textContent = settings.pixelBlastSize || 4
+        DOM.pixelBlastSizeVal.textContent = settings.pixelBlastSize || 15
       }
+    }
+    if (DOM.pixelBlastLiquidCheckbox) {
+      DOM.pixelBlastLiquidCheckbox.checked = settings.pixelBlastLiquid !== false
+    }
+    if (DOM.pixelBlastLiquidStrengthSlider) {
+      const strength = settings.pixelBlastLiquidStrength ?? 1.0
+      DOM.pixelBlastLiquidStrengthSlider.value = strength
+      if (DOM.pixelBlastLiquidStrengthVal) {
+        DOM.pixelBlastLiquidStrengthVal.textContent = strength.toFixed(1)
+      }
+    }
+    if (DOM.pixelBlastCursorRadiusSlider) {
+      DOM.pixelBlastCursorRadiusSlider.value = settings.pixelBlastCursorRadius || 150
+      if (DOM.pixelBlastCursorRadiusVal) {
+        DOM.pixelBlastCursorRadiusVal.textContent = settings.pixelBlastCursorRadius || 150
+      }
+    }
+    if (DOM.pixelBlastRippleCheckbox) {
+      DOM.pixelBlastRippleCheckbox.checked = settings.pixelBlastRipples !== false
     }
     if (DOM.pixelBlastTransparentCheckbox) {
       DOM.pixelBlastTransparentCheckbox.checked =
@@ -1304,10 +1447,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     // Sunbeam
-    DOM.sunbeamColorSetting.style.display =
-      settings.effect === "sunbeam" ? "block" : "none"
-    DOM.sunbeamAngleSetting.style.display =
-      settings.effect === "sunbeam" ? "block" : "none"
+    if (DOM.sunbeamColorSetting)
+      DOM.sunbeamColorSetting.style.display =
+        settings.effect === "sunbeam" ? "block" : "none"
+    if (DOM.sunbeamAngleSetting)
+      DOM.sunbeamAngleSetting.style.display =
+        settings.effect === "sunbeam" ? "block" : "none"
     if (DOM.sunbeamColorPicker) {
       DOM.sunbeamColorPicker.value = settings.sunbeamColor || "#ffffff"
     }
@@ -1316,46 +1461,66 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.sunbeamAngleValue)
         DOM.sunbeamAngleValue.textContent = DOM.sunbeamAngleInput.value
     }
-    DOM.bubblesColorSetting.style.display =
-      settings.effect === "bubbles" ? "block" : "none"
-    DOM.gridScanColorSetting.style.display =
-      settings.effect === "gridScan" ? "block" : "none"
-    DOM.cursorTrailColorSetting.style.display =
-      settings.effect === "cursorTrail" ? "block" : "none"
-    DOM.cursorTrailStyleSetting.style.display =
-      settings.effect === "cursorTrail" ? "block" : "none"
-    DOM.cursorTrailClickSetting.style.display =
-      settings.effect === "cursorTrail" ? "flex" : "none"
-    DOM.cursorTrailRandomSetting.style.display =
-      settings.effect === "cursorTrail" ? "flex" : "none"
-    DOM.plantGrowthColorSetting.style.display =
-      settings.effect === "plantGrowth" ? "block" : "none"
-    DOM.oceanFishColorSetting.style.display =
-      settings.effect === "oceanFish" ? "block" : "none"
-    DOM.floatingLinesColorSetting.style.display =
-      settings.effect === "floatingLines" ? "block" : "none"
-    DOM.floatingLinesAngleSetting.style.display =
-      settings.effect === "floatingLines" ? "block" : "none"
-    DOM.rainHDColorSetting.style.display =
-      settings.effect === "rainHD" ? "block" : "none"
-    DOM.stormRainColorSetting.style.display =
-      settings.effect === "stormRain" ? "block" : "none"
-    DOM.wavyLinesColorSetting.style.display =
-      settings.effect === "wavyLines" ? "block" : "none"
-    DOM.oceanWaveColorSetting.style.display =
-      settings.effect === "oceanWave" ? "block" : "none"
-    DOM.oceanWavePositionSetting.style.display =
-      settings.effect === "oceanWave" ? "block" : "none"
-    DOM.cloudDriftColorSetting.style.display =
-      settings.effect === "cloudDrift" ? "block" : "none"
-    DOM.shinyColorSetting.style.display =
-      settings.effect === "shiny" ? "block" : "none"
-    DOM.shinyColorPicker.value = settings.shinyColor || "#ff0000"
-    DOM.lineShinyColorSetting.style.display =
-      settings.effect === "lineShiny" ? "block" : "none"
+    if (DOM.bubblesColorSetting)
+      DOM.bubblesColorSetting.style.display =
+        settings.effect === "bubbles" ? "block" : "none"
+    if (DOM.gridScanColorSetting)
+      DOM.gridScanColorSetting.style.display =
+        settings.effect === "gridScan" ? "block" : "none"
+    if (DOM.cursorTrailColorSetting)
+      DOM.cursorTrailColorSetting.style.display =
+        settings.effect === "cursorTrail" ? "block" : "none"
+    if (DOM.cursorTrailStyleSetting)
+      DOM.cursorTrailStyleSetting.style.display =
+        settings.effect === "cursorTrail" ? "block" : "none"
+    if (DOM.cursorTrailClickSetting)
+      DOM.cursorTrailClickSetting.style.display =
+        settings.effect === "cursorTrail" ? "flex" : "none"
+    if (DOM.cursorTrailRandomSetting)
+      DOM.cursorTrailRandomSetting.style.display =
+        settings.effect === "cursorTrail" ? "flex" : "none"
+    if (DOM.plantGrowthColorSetting)
+      DOM.plantGrowthColorSetting.style.display =
+        settings.effect === "plantGrowth" ? "block" : "none"
+    if (DOM.oceanFishColorSetting)
+      DOM.oceanFishColorSetting.style.display =
+        settings.effect === "oceanFish" ? "block" : "none"
+    if (DOM.floatingLinesColorSetting)
+      DOM.floatingLinesColorSetting.style.display =
+        settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.floatingLinesAngleSetting)
+      DOM.floatingLinesAngleSetting.style.display =
+        settings.effect === "floatingLines" ? "block" : "none"
+    if (DOM.rainHDColorSetting)
+      DOM.rainHDColorSetting.style.display =
+        settings.effect === "rainHD" ? "block" : "none"
+    if (DOM.stormRainColorSetting)
+      DOM.stormRainColorSetting.style.display =
+        settings.effect === "stormRain" ? "block" : "none"
+    if (DOM.wavyLinesColorSetting)
+      DOM.wavyLinesColorSetting.style.display =
+        settings.effect === "wavyLines" ? "block" : "none"
+    if (DOM.oceanWaveColorSetting)
+      DOM.oceanWaveColorSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.oceanWavePositionSetting)
+      DOM.oceanWavePositionSetting.style.display =
+        settings.effect === "oceanWave" ? "block" : "none"
+    if (DOM.cloudDriftColorSetting)
+      DOM.cloudDriftColorSetting.style.display =
+        settings.effect === "cloudDrift" ? "block" : "none"
+    if (DOM.shinyColorSetting)
+      DOM.shinyColorSetting.style.display =
+        settings.effect === "shiny" ? "block" : "none"
+    if (DOM.shinyColorPicker)
+      DOM.shinyColorPicker.value = settings.shinyColor || "#ff0000"
+    if (DOM.lineShinyColorSetting)
+      DOM.lineShinyColorSetting.style.display =
+        settings.effect === "lineShiny" ? "block" : "none"
 
-    DOM.rainbowDirectionSetting.style.display =
-      settings.effect === "rainbow" ? "block" : "none"
+    if (DOM.rainbowDirectionSetting)
+      DOM.rainbowDirectionSetting.style.display =
+        settings.effect === "rainbow" ? "block" : "none"
     if (settings.rainbowDirection === "right") {
       DOM.rainbowDirRightBtn?.classList.add("active")
       DOM.rainbowDirLeftBtn?.classList.remove("active")
@@ -1379,6 +1544,11 @@ function createUpdateSettingsInputs(effectInstances) {
         "pixelCubes",
         "pixelWeather",
         "pixelBlast",
+        "auroraWave",
+        "sunbeam",
+        "lightPillars",
+        "tetFireworks",
+        "skyLanterns",
         "jellyfish",
         "sakura",
         "snowfall",
@@ -1408,26 +1578,37 @@ function createUpdateSettingsInputs(effectInstances) {
         ? "block"
         : "none"
     }
-    DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
-    DOM.pixelRunColorSetting.style.display =
-      settings.effect === "pixelRun" ? "block" : "none"
-    DOM.pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
-    DOM.nintendoPixelColorSetting.style.display =
-      settings.effect === "nintendoPixel" ? "block" : "none"
-    DOM.nintendoPixelColorPicker.value =
-      settings.nintendoPixelColor || "#63f5ff"
-    DOM.crtScanColorSetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
-    DOM.crtScanFrequencySetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
-    DOM.crtScanAngleSetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
-    DOM.crtScanDensitySetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
-    DOM.crtGammaSetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
-    DOM.crtBackgroundColorSetting.style.display =
-      settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.lineShinyColorPicker)
+      DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
+    if (DOM.pixelRunColorSetting)
+      DOM.pixelRunColorSetting.style.display =
+        settings.effect === "pixelRun" ? "block" : "none"
+    if (DOM.pixelRunColorPicker)
+      DOM.pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
+    if (DOM.nintendoPixelColorSetting)
+      DOM.nintendoPixelColorSetting.style.display =
+        settings.effect === "nintendoPixel" ? "block" : "none"
+    if (DOM.nintendoPixelColorPicker)
+      DOM.nintendoPixelColorPicker.value =
+        settings.nintendoPixelColor || "#63f5ff"
+    if (DOM.crtScanColorSetting)
+      DOM.crtScanColorSetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.crtScanFrequencySetting)
+      DOM.crtScanFrequencySetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.crtScanAngleSetting)
+      DOM.crtScanAngleSetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.crtScanDensitySetting)
+      DOM.crtScanDensitySetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.crtGammaSetting)
+      DOM.crtGammaSetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
+    if (DOM.crtBackgroundColorSetting)
+      DOM.crtBackgroundColorSetting.style.display =
+        settings.effect === "crtScanlines" ? "block" : "none"
     DOM.crtScanColorPicker.value = settings.crtScanColor || "#7cffad"
     DOM.crtScanFrequencyInput.value = String(settings.crtScanFrequency ?? 0.11)
     if (DOM.crtScanFrequencyValue)
@@ -1450,35 +1631,47 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.crtBackgroundColorPicker.value =
       settings.crtBackgroundColor || "#0a140f"
 
-    DOM.retroGameTypeSetting.style.display =
-      settings.effect === "retroGame" ? "block" : "none"
+    if (DOM.retroGameTypeSetting)
+      DOM.retroGameTypeSetting.style.display =
+        settings.effect === "retroGame" ? "block" : "none"
     if (DOM.retroGameTypeSelect) {
       DOM.retroGameTypeSelect.value = settings.retroGameType || "space_invaders"
     }
 
-    DOM.retroGameColorSetting.style.display =
-      settings.effect === "retroGame" ? "block" : "none"
-    DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"
-    DOM.wavyPatternColor1Setting.style.display =
-      settings.effect === "wavyPattern" ? "block" : "none"
-    DOM.wavyPatternColor2Setting.style.display =
-      settings.effect === "wavyPattern" ? "block" : "none"
-    DOM.wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B"
-    DOM.wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40"
-    DOM.angledPatternColor1Setting.style.display =
-      settings.effect === "angledPattern" ? "block" : "none"
-    DOM.angledPatternColor2Setting.style.display =
-      settings.effect === "angledPattern" ? "block" : "none"
-    DOM.angledPatternColor1Picker.value =
-      settings.angledPatternColor1 || "#ECD078"
-    DOM.angledPatternColor2Picker.value =
-      settings.angledPatternColor2 || "#0B486B"
+    if (DOM.retroGameColorSetting)
+      DOM.retroGameColorSetting.style.display =
+        settings.effect === "retroGame" ? "block" : "none"
+    if (DOM.retroGameColorPicker)
+      DOM.retroGameColorPicker.value = settings.retroGameColor || "#00ff00"
+    if (DOM.wavyPatternColor1Setting)
+      DOM.wavyPatternColor1Setting.style.display =
+        settings.effect === "wavyPattern" ? "block" : "none"
+    if (DOM.wavyPatternColor2Setting)
+      DOM.wavyPatternColor2Setting.style.display =
+        settings.effect === "wavyPattern" ? "block" : "none"
+    if (DOM.wavyPatternColor1Picker)
+      DOM.wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B"
+    if (DOM.wavyPatternColor2Picker)
+      DOM.wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40"
+    if (DOM.angledPatternColor1Setting)
+      DOM.angledPatternColor1Setting.style.display =
+        settings.effect === "angledPattern" ? "block" : "none"
+    if (DOM.angledPatternColor2Setting)
+      DOM.angledPatternColor2Setting.style.display =
+        settings.effect === "angledPattern" ? "block" : "none"
+    if (DOM.angledPatternColor1Picker)
+      DOM.angledPatternColor1Picker.value =
+        settings.angledPatternColor1 || "#ECD078"
+    if (DOM.angledPatternColor2Picker)
+      DOM.angledPatternColor2Picker.value =
+        settings.angledPatternColor2 || "#0B486B"
 
     // SVG Wave Generator
     const waveActive = settings.svgWaveActive === true
     const waveGeneratorOpen =
       localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
-    DOM.svgWaveSettings.style.display = waveGeneratorOpen ? "block" : "none"
+    if (DOM.svgWaveSettings)
+      DOM.svgWaveSettings.style.display = waveGeneratorOpen ? "block" : "none"
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()
       DOM.svgWaveToggleLabel.textContent = waveGeneratorOpen
