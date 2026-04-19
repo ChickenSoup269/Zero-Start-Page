@@ -1,201 +1,168 @@
 import { hexToRgb } from "../../utils/colors.js"
 
+/**
+ * GridScanEffect - Reborn as "3D Volume Scanner"
+ * A pure 3D scanning effect with floating corner particles and a depth-scanning wave.
+ * No grids, no axes, just pure digital scanning aesthetics.
+ */
 export class GridScanEffect {
   constructor(canvasId, color = "#00ffcc") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.color = color
-    this.scanY = 0
-    this.scanSpeed = 1 // Slower default speed
-    this.gridSpacing = 50
-    this.perspective = true
-    this.glowPoints = []
-    this.maxGlowPoints = 15
+    this.time = 0
+    this.particles = []
+    this.scanZ = 2000
+    
+    // Initialize random 3D corner particles
+    this.initParticles()
 
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
   }
 
-  updateColor(color) {
-    this.color = color
-    this.glowPoints = [] // Reset glow points on color change
+  initParticles() {
+    this.particles = []
+    for (let i = 0; i < 80; i++) {
+      this.particles.push({
+        x: (Math.random() - 0.5) * 3000,
+        y: (Math.random() - 0.5) * 2000,
+        z: Math.random() * 2000,
+        size: 15 + Math.random() * 25,
+        rot: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 1.5
+      })
+    }
   }
 
-  setOptions(opts = {}) {
-    // Reduced multiplier from 2.0 to 1.2 to make it significantly slower
-    if (opts.speed !== undefined) this.scanSpeed = opts.speed * 1.2
-    if (opts.spacing !== undefined) this.gridSpacing = opts.spacing
-    if (opts.perspective !== undefined) this.perspective = opts.perspective
+  updateColor(color) {
+    this.color = color
   }
 
   resize() {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
-    this._initGlowPoints()
-  }
-
-  _initGlowPoints() {
-    this.glowPoints = []
-    const cols = Math.ceil(this.canvas.width / this.gridSpacing)
-    const rows = Math.ceil(this.canvas.height / this.gridSpacing)
-    
-    for (let i = 0; i < this.maxGlowPoints; i++) {
-      this.glowPoints.push({
-        col: Math.floor(Math.random() * cols),
-        row: Math.floor(Math.random() * rows),
-        alpha: 0,
-        targetAlpha: Math.random() * 0.5 + 0.2,
-        speed: 0.01 + Math.random() * 0.02,
-        life: Math.random() * 100
-      })
-    }
   }
 
   start() {
     if (this.active) return
     this.active = true
-    this.resize()
     this.animate()
     this.canvas.style.display = "block"
   }
 
   stop() {
     this.active = false
-    if (this._animId) {
-      cancelAnimationFrame(this._animId)
-      this._animId = null
-    }
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+  }
+
+  drawCorner(ctx, x, y, size, angle, opacity, rgbStr) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(angle)
+    ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
+    ctx.lineWidth = 1.5
+    
+    ctx.beginPath()
+    ctx.moveTo(size, 0)
+    ctx.lineTo(0, 0)
+    ctx.lineTo(0, size)
+    ctx.stroke()
+    ctx.restore()
   }
 
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())
+    this.time += 0.01
 
     const W = this.canvas.width
     const H = this.canvas.height
     const ctx = this.ctx
-
     ctx.clearRect(0, 0, W, H)
 
     const rgb = hexToRgb(this.color)
     const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
-
-    // 1. Draw Background Grid (Subtle)
-    ctx.lineWidth = 1
-    ctx.strokeStyle = `rgba(${rgbStr}, 0.08)`
     
-    ctx.beginPath()
-    for (let x = 0; x <= W; x += this.gridSpacing) {
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, H)
-    }
-    for (let y = 0; y <= H; y += this.gridSpacing) {
-      ctx.moveTo(0, y)
-      ctx.lineTo(W, y)
-    }
-    ctx.stroke()
+    const focalLength = 800
+    const centerX = W / 2
+    const centerY = H / 2
 
-    // 2. Draw 3D Perspective Grid (More Depth)
-    if (this.perspective) {
-      ctx.save()
-      const horizon = H * 0.45
-      const gridH = H - horizon
-      
-      // Depth/Fog Gradient
-      const depthGradient = ctx.createLinearGradient(0, horizon, 0, H)
-      depthGradient.addColorStop(0, `rgba(${rgbStr}, 0)`)
-      depthGradient.addColorStop(0.3, `rgba(${rgbStr}, 0.05)`)
-      depthGradient.addColorStop(1, `rgba(${rgbStr}, 0.25)`)
-      ctx.strokeStyle = depthGradient
-      ctx.lineWidth = 1
+    // Move the scanning wave train
+    this.scanZ -= 4
+    if (this.scanZ < -1500) this.scanZ = 2500 // Adjusted for longer train
 
-      ctx.beginPath()
-      // Converging lines (Perspective)
-      const lineCount = 24
-      for (let i = 0; i <= lineCount; i++) {
-        const xTop = (W / lineCount) * i
-        const xBottom = (W * 3 / lineCount) * i - W // Wider spread at bottom
-        ctx.moveTo(xTop, horizon)
-        ctx.lineTo(xBottom, H)
-      }
-      
-      // Horizontal lines with exponential spacing (Real perspective)
-      for (let i = 0; i < 12; i++) {
-        const ratio = i / 12
-        const y = horizon + Math.pow(ratio, 2.5) * gridH
-        ctx.moveTo(0, y)
-        ctx.lineTo(W, y)
-      }
-      ctx.stroke()
-      ctx.restore()
-    }
+    const waveOffsets = [0, 400, 800, 1200, 1600, 2000] // Total 6 frames
 
-    // 3. Update and Draw Glow Points
-    this.glowPoints.forEach(p => {
-      p.life -= 0.5
-      if (p.life <= 0) {
-        const cols = Math.ceil(W / this.gridSpacing)
-        const rows = Math.ceil(H / this.gridSpacing)
-        p.col = Math.floor(Math.random() * cols)
-        p.row = Math.floor(Math.random() * rows)
-        p.life = 50 + Math.random() * 100
-        p.alpha = 0
+    // Sort particles
+    this.particles.sort((a, b) => b.z - a.z)
+
+    this.particles.forEach(p => {
+      p.z -= p.speed
+      if (p.z < -1000) {
+          p.z = 2500
+          p.x = (Math.random() - 0.5) * 4500
+          p.y = (Math.random() - 0.5) * 3500
       }
 
-      if (p.alpha < p.targetAlpha) p.alpha += p.speed
+      const scale = focalLength / (focalLength + p.z)
+      const x2d = centerX + p.x * scale
+      const y2d = centerY + p.y * scale
+      const size2d = p.size * scale
+
+      // Highlight logic: Is a wave passing through this particle?
+      let highlight = 0
+      waveOffsets.forEach(offset => {
+          let wZ = this.scanZ + offset
+          if (wZ > 2500) wZ -= 4000 // Wrap logic for 6 frames
+          const dist = Math.abs(p.z - wZ)
+          if (dist < 150) {
+              highlight = Math.max(highlight, 1 - dist / 150)
+          }
+      })
+
+      // Base opacity + highlight boost
+      let opacity = (0.15 + highlight * 0.6) * (1 - p.z / 2500)
+      if (p.z < 0) opacity *= (1 + p.z / 1000)
       
-      const x = p.col * this.gridSpacing
-      const y = p.row * this.gridSpacing
-      
-      const g = ctx.createRadialGradient(x, y, 0, x, y, 15)
-      g.addColorStop(0, `rgba(${rgbStr}, ${p.alpha})`)
-      g.addColorStop(1, `rgba(${rgbStr}, 0)`)
-      
-      ctx.fillStyle = g
-      ctx.fillRect(x - 15, y - 15, 30, 30)
-      
-      ctx.fillStyle = `rgba(${rgbStr}, ${p.alpha * 1.5})`
-      ctx.fillRect(x - 1, y - 1, 3, 3)
+      if (opacity > 0.01 && p.z > -focalLength + 50) {
+        this.drawCorner(ctx, x2d, y2d, size2d * (1 + highlight * 0.3), p.rot, opacity, rgbStr)
+      }
     })
 
-    // 4. Moving Scan Line (Slower & More Glow)
-    this.scanY += this.scanSpeed
-    if (this.scanY > H + 150) this.scanY = -150
+    // Render Wave Frames (6 frames)
+    waveOffsets.forEach((offset, index) => {
+        let wZ = this.scanZ + offset
+        if (wZ > 2500) wZ -= 4000
+        if (wZ < -1000) return
 
-    // Scan line gradient trail
-    const scanGrad = ctx.createLinearGradient(0, this.scanY - 150, 0, this.scanY)
-    scanGrad.addColorStop(0, `rgba(${rgbStr}, 0)`)
-    scanGrad.addColorStop(0.7, `rgba(${rgbStr}, 0.1)`)
-    scanGrad.addColorStop(0.95, `rgba(${rgbStr}, 0.4)`)
-    scanGrad.addColorStop(1, `rgba(${rgbStr}, 0.6)`)
+        const waveScale = focalLength / (focalLength + wZ)
+        const isMain = index === 0
+        const sw = W * 1.3 * waveScale
+        const sh = H * 1.3 * waveScale
+        const sx = centerX - sw / 2
+        const sy = centerY - sh / 2
+        
+        let waveAlpha = isMain ? 0.4 : 0.2 / (1 + index * 0.2)
+        if (wZ > 2000) waveAlpha *= (1 - (wZ - 2000) / 500)
+        if (wZ < 0) waveAlpha *= (1 + wZ / 1000)
 
-    ctx.fillStyle = scanGrad
-    ctx.fillRect(0, this.scanY - 150, W, 150)
-
-    // Layered main scan line for depth
-    ctx.shadowColor = this.color
-    ctx.shadowBlur = 20
-    ctx.fillStyle = `rgba(${rgbStr}, 1)`
-    ctx.fillRect(0, this.scanY, W, 2)
-    
-    // Core white line for intense glow effect
-    ctx.shadowBlur = 5
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)"
-    ctx.fillRect(0, this.scanY, W, 1)
-    
-    // Pixel glitches
-    if (Math.random() > 0.9) {
-      const glitchW = Math.random() * 120 + 60
-      const glitchX = Math.random() * (W - glitchW)
-      ctx.fillStyle = `rgba(${rgbStr}, 0.5)`
-      ctx.fillRect(glitchX, this.scanY - 5, glitchW, 1)
-      ctx.fillRect(W - glitchX - glitchW, this.scanY + 5, glitchW, 1)
-    }
-    
-    ctx.shadowBlur = 0
+        if (waveAlpha > 0.01 && wZ > -focalLength + 100) {
+            ctx.strokeStyle = `rgba(${rgbStr}, ${waveAlpha})`
+            ctx.lineWidth = isMain ? 2 : 1
+            ctx.strokeRect(sx, sy, sw, sh)
+            
+            // Corner Brackets for the frame
+            const bSize = (isMain ? 50 : 30) * waveScale
+            this.drawCorner(ctx, sx, sy, bSize, 0, waveAlpha, rgbStr)
+            this.drawCorner(ctx, sx + sw, sy, bSize, Math.PI/2, waveAlpha, rgbStr)
+            this.drawCorner(ctx, sx + sw, sy + sh, bSize, Math.PI, waveAlpha, rgbStr)
+            this.drawCorner(ctx, sx, sy + sh, bSize, -Math.PI/2, waveAlpha, rgbStr)
+        }
+    })
   }
 }
