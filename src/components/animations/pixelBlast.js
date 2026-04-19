@@ -5,8 +5,8 @@ export class PixelBlastEffect {
     this.active = false
 
     // Props - High performance defaults
+    this.pixelSize = 15 // Hardcoded pixel size
     this.variant = options.variant || 'square'
-    this.pixelSize = Math.max(options.pixelSize || 12, 10) // Larger pixels = higher FPS
     this.color = options.color || '#B497CF'
     this.patternScale = options.patternScale || 2
     this.patternDensity = options.patternDensity || 1
@@ -21,6 +21,9 @@ export class PixelBlastEffect {
     this.liquidWobbleSpeed = options.liquidWobbleSpeed || 4.5
     this.speed = options.speed || 0.5
     this.edgeFade = options.edgeFade || 0.25
+    this.noiseAmount = options.noiseAmount || 0
+    this.transparent = options.transparent !== undefined ? options.transparent : true
+    this.backgroundColor = options.backgroundColor || '#0a0a0a'
 
     this.time = 0
     this.ripples = []
@@ -45,9 +48,13 @@ export class PixelBlastEffect {
 
   setOptions(options) {
     Object.keys(options).forEach(key => {
-      if (this[key] !== undefined) this[key] = options[key]
+      if (this[key] !== undefined && key !== 'pixelSize') {
+        this[key] = options[key]
+      }
     })
-    if (this.active && (options.pixelSize || options.variant)) this.resize()
+    if (this.active && (options.variant || options.color)) {
+      this.updateShapeCache()
+    }
   }
 
   resize() {
@@ -109,7 +116,13 @@ export class PixelBlastEffect {
 
     this.time += 0.01 * this.speed
     const ctx = this.ctx
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    
+    if (this.transparent) {
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    } else {
+      ctx.fillStyle = this.backgroundColor
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
+    }
 
     this.ripples = this.ripples.filter(r => {
       r.radius += 12 * this.rippleSpeed
@@ -126,11 +139,6 @@ export class PixelBlastEffect {
       for (let j = 0; j < this.rows; j++) {
         const yBase = j * this.pixelSize
         
-        // Fast Noise
-        const n = Math.sin(i * 0.2 * this.patternScale + this.time) * 
-                  Math.cos(j * 0.2 * this.patternScale + this.time)
-        if (n < patternThreshold) continue
-
         let x = xBase, y = yBase, scale = 1
 
         // Interaction (Only if mouse near or ripple active)
@@ -160,8 +168,7 @@ export class PixelBlastEffect {
           }
         }
 
-        const alpha = (n + 1) * 0.4
-        ctx.globalAlpha = alpha
+        ctx.globalAlpha = 0.9 // Consistent alpha
         ctx.drawImage(this.shapeCanvas, x, y, this.pixelSize * scale, this.pixelSize * scale)
       }
     }

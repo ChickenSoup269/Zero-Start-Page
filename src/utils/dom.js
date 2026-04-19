@@ -323,6 +323,18 @@ export const pixelBlastSizeVal = document.getElementById("pixel-blast-size-val")
 export const pixelBlastColorSetting = document.getElementById(
   "pixel-blast-color-setting",
 )
+export const pixelBlastBgSetting = document.getElementById(
+  "pixel-blast-bg-setting",
+)
+export const pixelBlastTransparentCheckbox = document.getElementById(
+  "pixel-blast-transparent",
+)
+export const pixelBlastBgColorContainer = document.getElementById(
+  "pixel-blast-bg-color-container",
+)
+export const pixelBlastBgColorPicker = document.getElementById(
+  "pixel-blast-bg-color-picker",
+)
 export const pixelBlastVariantSetting = document.getElementById(
   "pixel-blast-variant-setting",
 )

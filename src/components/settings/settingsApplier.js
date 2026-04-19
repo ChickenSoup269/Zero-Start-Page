@@ -1288,6 +1288,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelBlastSizeSetting.style.display =
         settings.effect === "pixelBlast" ? "block" : "none"
     }
+    if (DOM.pixelBlastBgSetting) {
+      DOM.pixelBlastBgSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
     if (DOM.pixelBlastColorPicker) {
       DOM.pixelBlastColorPicker.value = settings.pixelBlastColor || "#B497CF"
     }
@@ -1299,6 +1303,17 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.pixelBlastSizeVal) {
         DOM.pixelBlastSizeVal.textContent = settings.pixelBlastSize || 4
       }
+    }
+    if (DOM.pixelBlastTransparentCheckbox) {
+      DOM.pixelBlastTransparentCheckbox.checked =
+        settings.pixelBlastTransparent !== false
+    }
+    if (DOM.pixelBlastBgColorContainer) {
+      DOM.pixelBlastBgColorContainer.style.display =
+        settings.pixelBlastTransparent !== false ? "none" : "block"
+    }
+    if (DOM.pixelBlastBgColorPicker) {
+      DOM.pixelBlastBgColorPicker.value = settings.pixelBlastBgColor || "#0a0a0a"
     }
 
     // Sunbeam
@@ -1376,6 +1391,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "pixelCubes",
         "pixelWeather",
         "tetFireworks",
+        "pixelBlast",
         "jellyfish",
         "sakura",
         "snowfall",

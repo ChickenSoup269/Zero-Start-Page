@@ -293,6 +293,7 @@ export function initSettings() {
       edgeFade: settings.pixelBlastEdgeFade || 0.25,
       noiseAmount: settings.pixelBlastNoise || 0,
       transparent: settings.pixelBlastTransparent !== false,
+      backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
     }),
     wavyPatternEffect: new WavyPatternEffect(
       settings.wavyPatternColor1 || "#AB3E5B",

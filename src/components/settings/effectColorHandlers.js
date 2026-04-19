@@ -555,6 +555,33 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     })
     DOM.pixelBlastSizeSlider.addEventListener("change", () => saveSettings())
   }
+
+  if (DOM.pixelBlastTransparentCheckbox) {
+    DOM.pixelBlastTransparentCheckbox.addEventListener("change", (e) => {
+      const transparent = e.target.checked
+      updateSetting("pixelBlastTransparent", transparent)
+      saveSettings()
+      if (DOM.pixelBlastBgColorContainer) {
+        DOM.pixelBlastBgColorContainer.style.display = transparent
+          ? "none"
+          : "block"
+      }
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ transparent })
+      }
+    })
+  }
+
+  if (DOM.pixelBlastBgColorPicker) {
+    DOM.pixelBlastBgColorPicker.addEventListener("input", (e) => {
+      const color = e.target.value
+      updateSetting("pixelBlastBgColor", color)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ backgroundColor: color })
+      }
+    })
+    DOM.pixelBlastBgColorPicker.addEventListener("change", () => saveSettings())
+  }
 }
 
 export { setupEffectColorHandlers }

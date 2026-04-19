@@ -1760,6 +1760,20 @@
                                 <input type="color" id="pixel-blast-color-picker" value="#B497CF" />
                             </div>
 
+                            <div id="pixel-blast-bg-setting" class="setting-item" style="display: none;">
+                                <div class="setting-row">
+                                    <label for="pixel-blast-transparent" data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                    <label class="lcp-switch">
+                                        <input type="checkbox" id="pixel-blast-transparent" checked>
+                                        <span class="lcp-slider round"></span>
+                                    </label>
+                                </div>
+                                <div id="pixel-blast-bg-color-container" style="margin-top: 10px; display: none;">
+                                    <label for="pixel-blast-bg-color-picker" data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                    <input type="color" id="pixel-blast-bg-color-picker" value="#0a0a0a" />
+                                </div>
+                            </div>
+
                             <div id="pixel-blast-variant-setting" class="setting-item" style="display: none;">
                                 <label for="pixel-blast-variant-select" data-i18n="setting_pixel_blast_variant">Pixel Shape</label>
                                 <select id="pixel-blast-variant-select" class="full-width">
@@ -1768,14 +1782,6 @@
                                     <option value="triangle" data-i18n="pixel_blast_triangle">Triangle</option>
                                     <option value="diamond" data-i18n="pixel_blast_diamond">Diamond</option>
                                 </select>
-                            </div>
-
-                            <div id="pixel-blast-size-setting" class="setting-item" style="display: none;">
-                                <label for="pixel-blast-size-slider">
-                                    <span data-i18n="setting_pixel_blast_size">Pixel Size</span>:
-                                    <span id="pixel-blast-size-val">4</span>px
-                                </label>
-                                <input type="range" id="pixel-blast-size-slider" min="2" max="20" step="1" value="4">
                             </div>
 
                             <!-- Sunbeam Settings -->
