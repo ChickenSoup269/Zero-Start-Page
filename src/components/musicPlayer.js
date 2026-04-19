@@ -185,6 +185,9 @@ export class MusicPlayer {
         case "pixel":
           accentColor = "#ffffff"
           break
+        case "moon8":
+          accentColor = "#fff9c4"
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }

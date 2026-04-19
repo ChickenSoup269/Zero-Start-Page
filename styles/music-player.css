@@ -1448,6 +1448,40 @@
   display: none !important;
 }
 
+/* =========================================
+   STYLE: MOON FIGURE-8
+========================================= */
+.music-style-moon8 .music-player-wrapper {
+  background: linear-gradient(135deg, rgba(10, 10, 25, 0.92), rgba(0, 0, 5, 0.96));
+  border: 1px solid rgba(var(--accent-color-rgb, 255, 249, 196), 0.3);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(var(--accent-color-rgb, 255, 249, 196), 0.1);
+  overflow: visible !important;
+}
+
+.music-style-moon8 .visualizer-bar {
+  display: none;
+}
+
+.music-style-moon8 .music-visualizer {
+  width: 140px;
+  height: 45px;
+  padding: 0;
+  margin-left: 10px;
+  overflow: visible !important;
+}
+
+.music-style-moon8 .player-info h3 {
+  color: #eee;
+  text-shadow: 0 0 5px rgba(var(--accent-color-rgb, 255, 249, 196), 0.3);
+}
+
+.music-style-moon8 .play-pause-btn {
+  color: var(--accent-color);
+  filter: drop-shadow(0 0 5px rgba(var(--accent-color-rgb, 255, 249, 196), 0.4));
+}
+
 .music-style-soundcloud .visualizer-bar:nth-child(1) {
   animation-delay: 0s;
 }
