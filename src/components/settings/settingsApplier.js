@@ -66,6 +66,7 @@ const EFFECT_KEY_MAP = {
   retroGame: "retroGameEffect",
   crtScanlines: "crtScanlinesEffect",
   meteor: "meteorEffect",
+  pixelBlast: "pixelBlastEffect",
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
   cursorTrail: "cursorTrailEffect",
@@ -1272,6 +1273,32 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.tetFireworksPetalTypeSelect) {
       DOM.tetFireworksPetalTypeSelect.value =
         settings.tetFireworksPetalType || "mai"
+    }
+
+    // Pixel Blast
+    if (DOM.pixelBlastColorSetting) {
+      DOM.pixelBlastColorSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
+    if (DOM.pixelBlastVariantSetting) {
+      DOM.pixelBlastVariantSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
+    if (DOM.pixelBlastSizeSetting) {
+      DOM.pixelBlastSizeSetting.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    }
+    if (DOM.pixelBlastColorPicker) {
+      DOM.pixelBlastColorPicker.value = settings.pixelBlastColor || "#B497CF"
+    }
+    if (DOM.pixelBlastVariantSelect) {
+      DOM.pixelBlastVariantSelect.value = settings.pixelBlastVariant || "square"
+    }
+    if (DOM.pixelBlastSizeSlider) {
+      DOM.pixelBlastSizeSlider.value = settings.pixelBlastSize || 4
+      if (DOM.pixelBlastSizeVal) {
+        DOM.pixelBlastSizeVal.textContent = settings.pixelBlastSize || 4
+      }
     }
 
     // Sunbeam

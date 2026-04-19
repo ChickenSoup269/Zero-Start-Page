@@ -520,6 +520,41 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       }
     })
   }
+
+  // Pixel Blast
+  if (DOM.pixelBlastColorPicker) {
+    DOM.pixelBlastColorPicker.addEventListener("input", (e) => {
+      const color = e.target.value
+      updateSetting("pixelBlastColor", color)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ color })
+      }
+    })
+    DOM.pixelBlastColorPicker.addEventListener("change", () => saveSettings())
+  }
+
+  if (DOM.pixelBlastVariantSelect) {
+    DOM.pixelBlastVariantSelect.addEventListener("change", (e) => {
+      const variant = e.target.value
+      updateSetting("pixelBlastVariant", variant)
+      saveSettings()
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ variant })
+      }
+    })
+  }
+
+  if (DOM.pixelBlastSizeSlider) {
+    DOM.pixelBlastSizeSlider.addEventListener("input", (e) => {
+      const pixelSize = parseInt(e.target.value)
+      if (DOM.pixelBlastSizeVal) DOM.pixelBlastSizeVal.textContent = pixelSize
+      updateSetting("pixelBlastSize", pixelSize)
+      if (effectInstances.pixelBlastEffect) {
+        effectInstances.pixelBlastEffect.setOptions({ pixelSize })
+      }
+    })
+    DOM.pixelBlastSizeSlider.addEventListener("change", () => saveSettings())
+  }
 }
 
 export { setupEffectColorHandlers }

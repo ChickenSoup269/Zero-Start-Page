@@ -6,45 +6,38 @@ export class NetworkEffect {
     this.active = false
     this.color = color
 
-    // Cấu hình nâng cao
-    this.particleCount = 80
-    this.connectionDistance = 120
-    this.mouseDistance = 250
-    this.mouseRepelForce = 0.5
-    this.hoverNodes = []
+    // Configuration
+    this.particleCount = 100
+    this.connectionDistance = 150
+    this.mouseDistance = 180
+    this.mouseForce = 0.15 // Attraction/Repulsion force factor
+    
     this.pulseTime = 0
-
-    // FPS throttling
-    this.fps = 30
+    this.fps = 60 // Higher FPS for smoother motion
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
     this.resize()
     window.addEventListener("resize", () => this.resize())
 
-    // Tương tác chuột nâng cao
-    this.mouse = { x: null, y: null, radius: 100 }
-    this.mouseVelocity = { x: 0, y: 0 }
-    this.lastMousePos = { x: 0, y: 0 }
-
-    window.addEventListener("mousemove", (e) => {
-      this.mouseVelocity.x = e.x - this.lastMousePos.x
-      this.mouseVelocity.y = e.y - this.lastMousePos.y
-      this.lastMousePos.x = e.x
-      this.lastMousePos.y = e.y
-      this.mouse.x = e.x
-      this.mouse.y = e.y
-    })
-    window.addEventListener("mouseout", () => {
+    // Mouse tracking
+    this.mouse = { x: null, y: null }
+    this.handleMouseMove = (e) => {
+      this.mouse.x = e.clientX
+      this.mouse.y = e.clientY
+    }
+    this.handleMouseOut = () => {
       this.mouse.x = null
       this.mouse.y = null
-      this.mouseVelocity = { x: 0, y: 0 }
-    })
+    }
   }
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    if (this.canvas) {
+      this.canvas.width = window.innerWidth
+      this.canvas.height = window.innerHeight
+      if (this.active) this.createParticles()
+    }
   }
 
   start() {
@@ -52,13 +45,17 @@ export class NetworkEffect {
     this.active = true
     this.lastDrawTime = 0
     this.createParticles()
-    this.animate(0)
+    window.addEventListener("mousemove", this.handleMouseMove)
+    window.addEventListener("mouseout", this.handleMouseOut)
     this.canvas.style.display = "block"
+    this.animate(0)
   }
 
   stop() {
     if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    window.removeEventListener("mousemove", this.handleMouseMove)
+    window.removeEventListener("mouseout", this.handleMouseOut)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.particles = []
     this.canvas.style.display = "none"
@@ -70,14 +67,12 @@ export class NetworkEffect {
       this.particles.push({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        size: Math.random() * 2.5 + 1.5,
-        baseSize: Math.random() * 2.5 + 1.5,
-        originalVx: (Math.random() - 0.5) * 2,
-        originalVy: (Math.random() - 0.5) * 2,
-        connections: 0,
-        brightness: Math.random() * 0.3 + 0.7, // Độ sáng khác nhau
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        size: Math.random() * 2 + 1,
+        baseSize: Math.random() * 2 + 1,
+        brightness: Math.random() * 0.5 + 0.5,
+        pulseOffset: Math.random() * Math.PI * 2
       })
     }
   }
@@ -92,32 +87,81 @@ export class NetworkEffect {
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.pulseTime += 0.05
 
-    this.pulseTime += 0.02
-
-    // Cache color once per frame
     const rgb = this.hexToRgb(this.color)
     const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
 
-    // Reset connection count
-    this.particles.forEach((p) => (p.connections = 0))
+    // Update and draw connections first (background layer)
+    this.ctx.lineWidth = 1
+    for (let i = 0; i < this.particles.length; i++) {
+      const p1 = this.particles[i]
+      
+      // Connect to other particles
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const p2 = this.particles[j]
+        const dx = p1.x - p2.x
+        const dy = p1.y - p2.y
+        const distSq = dx * dx + dy * dy
+        const limitSq = this.connectionDistance * this.connectionDistance
 
-    // Xử lý từng hạt
-    this.particles.forEach((p, index) => {
-      // Tương tác với chuột
-      if (this.mouse.x != null) {
+        if (distSq < limitSq) {
+          const dist = Math.sqrt(distSq)
+          let opacity = (1 - dist / this.connectionDistance) * 0.4
+          
+          // Boost opacity if mouse is near the connection
+          if (this.mouse.x !== null) {
+            const midX = (p1.x + p2.x) / 2
+            const midY = (p1.y + p2.y) / 2
+            const mdx = this.mouse.x - midX
+            const mdy = this.mouse.y - midY
+            const mDist = Math.sqrt(mdx * mdx + mdy * mdy)
+            if (mDist < 100) {
+              opacity *= (1 + (1 - mDist / 100) * 1.5)
+            }
+          }
+
+          this.ctx.beginPath()
+          this.ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
+          this.ctx.moveTo(p1.x, p1.y)
+          this.ctx.lineTo(p2.x, p2.y)
+          this.ctx.stroke()
+        }
+      }
+
+      // Connect to mouse
+      if (this.mouse.x !== null) {
+        const dx = p1.x - this.mouse.x
+        const dy = p1.y - this.mouse.y
+        const distSq = dx * dx + dy * dy
+        if (distSq < this.mouseDistance * this.mouseDistance) {
+          const dist = Math.sqrt(distSq)
+          const opacity = (1 - dist / this.mouseDistance) * 0.6
+          this.ctx.beginPath()
+          this.ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
+          this.ctx.lineWidth = 1.5
+          this.ctx.moveTo(p1.x, p1.y)
+          this.ctx.lineTo(this.mouse.x, this.mouse.y)
+          this.ctx.stroke()
+          this.ctx.lineWidth = 1
+        }
+      }
+    }
+
+    // Update and draw particles
+    this.particles.forEach((p) => {
+      // Mouse interaction: soft attraction
+      if (this.mouse.x !== null) {
         const dx = this.mouse.x - p.x
         const dy = this.mouse.y - p.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < this.mouseDistance) {
-          const force =
-            ((this.mouseDistance - distance) / this.mouseDistance) *
-            this.mouseRepelForce
-          const angle = Math.atan2(dy, dx)
-          p.vx -= Math.cos(angle) * force
-          p.vy -= Math.sin(angle) * force
-          p.size = p.baseSize * (1 + (1 - distance / this.mouseDistance) * 0.8)
+        const distSq = dx * dx + dy * dy
+        const dist = Math.sqrt(distSq)
+        
+        if (dist < this.mouseDistance) {
+          const proximity = 1 - dist / this.mouseDistance
+          p.x += dx * proximity * this.mouseForce * 0.1
+          p.y += dy * proximity * this.mouseForce * 0.1
+          p.size = p.baseSize * (1 + proximity * 1.5)
         } else {
           p.size += (p.baseSize - p.size) * 0.1
         }
@@ -125,97 +169,41 @@ export class NetworkEffect {
         p.size += (p.baseSize - p.size) * 0.1
       }
 
-      // Cập nhật vị trí + friction
+      // Movement
       p.x += p.vx
       p.y += p.vy
-      p.vx *= 0.98
-      p.vy *= 0.98
 
-      const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
-      if (speed > 3) {
-        p.vx = (p.vx / speed) * 3
-        p.vy = (p.vy / speed) * 3
-      }
+      // Bounce
+      if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1
+      if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1
 
-      if (p.x < 0 || p.x > this.canvas.width) {
-        p.vx *= -0.8
-        p.x = Math.max(0, Math.min(this.canvas.width, p.x))
-      }
-      if (p.y < 0 || p.y > this.canvas.height) {
-        p.vy *= -0.8
-        p.y = Math.max(0, Math.min(this.canvas.height, p.y))
-      }
-
-      p.vx += (p.originalVx - p.vx) * 0.005
-      p.vy += (p.originalVy - p.vy) * 0.005
-
-      // Vẽ hạt - solid circles (no radialGradient per particle)
+      // Draw particle with glow
+      const finalPulse = Math.sin(this.pulseTime + p.pulseOffset) * 0.2 + 0.8
       this.ctx.beginPath()
-      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-      this.ctx.fillStyle = `rgba(${rgbStr}, ${p.brightness * 0.6})`
-      this.ctx.fill()
-
-      this.ctx.beginPath()
-      this.ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2)
+      this.ctx.arc(p.x, p.y, p.size * finalPulse, 0, Math.PI * 2)
       this.ctx.fillStyle = `rgba(${rgbStr}, ${p.brightness})`
       this.ctx.fill()
-
-      // Nối dây với hạt khác - simple rgba (no linearGradient)
-      for (let j = index + 1; j < this.particles.length; j++) {
-        const p2 = this.particles[j]
-        const dx = p.x - p2.x
-        const dy = p.y - p2.y
-        const distSq = dx * dx + dy * dy
-
-        if (distSq < this.connectionDistance * this.connectionDistance) {
-          p.connections++
-          p2.connections++
-          const distance = Math.sqrt(distSq)
-          const opacity = (1 - distance / this.connectionDistance) * 0.5
-
-          this.ctx.beginPath()
-          this.ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
-          this.ctx.lineWidth = Math.max(
-            0.5,
-            1.5 - distance / this.connectionDistance,
-          )
-          this.ctx.moveTo(p.x, p.y)
-          this.ctx.lineTo(p2.x, p2.y)
-          this.ctx.stroke()
-        }
-      }
-
-      // Nối dây với chuột
-      if (this.mouse.x != null) {
-        const dx = p.x - this.mouse.x
-        const dy = p.y - this.mouse.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < this.mouseDistance) {
-          const opacity = (1 - distance / this.mouseDistance) * 0.6
-          this.ctx.beginPath()
-          this.ctx.strokeStyle = `rgba(${rgbStr}, ${opacity})`
-          this.ctx.lineWidth = 1.5
-          this.ctx.moveTo(p.x, p.y)
-          this.ctx.lineTo(this.mouse.x, this.mouse.y)
-          this.ctx.stroke()
-        }
+      
+      // Outer glow for nodes
+      if (p.size > 2.5) {
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2)
+        this.ctx.fillStyle = `rgba(${rgbStr}, 0.1)`
+        this.ctx.fill()
       }
     })
 
-    // Vẽ mouse cursor effect
-    if (this.mouse.x != null) {
-      const pulse = Math.sin(this.pulseTime * 3) * 0.3 + 0.7
-
+    // Draw mouse interactive ring
+    if (this.mouse.x !== null) {
       this.ctx.beginPath()
-      this.ctx.arc(this.mouse.x, this.mouse.y, 8, 0, Math.PI * 2)
-      this.ctx.fillStyle = `rgba(${rgbStr}, ${0.2 * pulse})`
+      this.ctx.arc(this.mouse.x, this.mouse.y, 4, 0, Math.PI * 2)
+      this.ctx.fillStyle = `rgba(${rgbStr}, 0.8)`
       this.ctx.fill()
-
+      
       this.ctx.beginPath()
-      this.ctx.arc(this.mouse.x, this.mouse.y, 15, 0, Math.PI * 2)
-      this.ctx.strokeStyle = `rgba(${rgbStr}, ${0.4 * pulse})`
-      this.ctx.lineWidth = 2
+      this.ctx.arc(this.mouse.x, this.mouse.y, 12 + Math.sin(this.pulseTime * 2) * 4, 0, Math.PI * 2)
+      this.ctx.strokeStyle = `rgba(${rgbStr}, 0.3)`
+      this.ctx.lineWidth = 1
       this.ctx.stroke()
     }
   }

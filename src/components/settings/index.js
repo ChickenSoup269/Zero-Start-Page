@@ -104,6 +104,7 @@ import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
 import { PlantGrowthEffect } from "../animations/plantGrowth.js"
 import { OceanFishEffect } from "../animations/oceanFish.js"
 import { FloatingLinesEffect } from "../animations/floatingLines.js"
+import { PixelBlastEffect } from "../animations/pixelBlast.js"
 
 function getExtensionVersion() {
   try {
@@ -273,6 +274,26 @@ export function initSettings() {
       settings.floatingLinesColor || "#ffffff",
       settings.floatingLinesAngle || 0,
     ),
+    pixelBlastEffect: new PixelBlastEffect("effect-canvas", {
+      variant: settings.pixelBlastVariant || "square",
+      pixelSize: settings.pixelBlastSize || 4,
+      color: settings.pixelBlastColor || "#B497CF",
+      patternScale: settings.pixelBlastPatternScale || 2,
+      patternDensity: settings.pixelBlastPatternDensity || 1,
+      pixelSizeJitter: settings.pixelBlastSizeJitter || 0,
+      enableRipples: settings.pixelBlastEnableRipples !== false,
+      rippleSpeed: settings.pixelBlastRippleSpeed || 0.3,
+      rippleThickness: settings.pixelBlastRippleThickness || 0.1,
+      rippleIntensityScale: settings.pixelBlastRippleIntensity || 1,
+      liquid: settings.pixelBlastLiquid === true,
+      liquidStrength: settings.pixelBlastLiquidStrength || 0.1,
+      liquidRadius: settings.pixelBlastLiquidRadius || 1,
+      liquidWobbleSpeed: settings.pixelBlastLiquidWobbleSpeed || 4.5,
+      speed: settings.pixelBlastSpeed || 0.5,
+      edgeFade: settings.pixelBlastEdgeFade || 0.25,
+      noiseAmount: settings.pixelBlastNoise || 0,
+      transparent: settings.pixelBlastTransparent !== false,
+    }),
     wavyPatternEffect: new WavyPatternEffect(
       settings.wavyPatternColor1 || "#AB3E5B",
       settings.wavyPatternColor2 || "#FFBE40",

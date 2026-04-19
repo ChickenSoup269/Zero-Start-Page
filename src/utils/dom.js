@@ -309,6 +309,27 @@ export const tetFireworksPetalTypeSelect = document.getElementById(
   "tet-fireworks-petal-type",
 )
 
+// Pixel Blast
+export const pixelBlastColorPicker = document.getElementById(
+  "pixel-blast-color-picker",
+)
+export const pixelBlastVariantSelect = document.getElementById(
+  "pixel-blast-variant-select",
+)
+export const pixelBlastSizeSlider = document.getElementById(
+  "pixel-blast-size-slider",
+)
+export const pixelBlastSizeVal = document.getElementById("pixel-blast-size-val")
+export const pixelBlastColorSetting = document.getElementById(
+  "pixel-blast-color-setting",
+)
+export const pixelBlastVariantSetting = document.getElementById(
+  "pixel-blast-variant-setting",
+)
+export const pixelBlastSizeSetting = document.getElementById(
+  "pixel-blast-size-setting",
+)
+
 export const sunbeamColorPicker = document.getElementById(
   "sunbeam-color-picker",
 )

@@ -1558,6 +1558,11 @@
                             <span class="effect-icon"><i class="fa-solid fa-braille"></i></span>
                             <span class="effect-name" data-i18n="effect_floating_lines">Floating Lines</span>
                         </button>
+                        <button class="effect-item" data-value="pixelBlast"
+                            data-search="pixel blast blast grid ripples liquid distortion modern">
+                            <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixel_blast">Pixel Blast</span>
+                        </button>
                     </div>
 
                     <!-- Active Effect Settings (Card) -->
@@ -1748,6 +1753,31 @@
                                     <option value="lantern" data-i18n="tet_petal_lantern">Lồng Đèn (Lantern)</option>
                                 </select>
                             </div>
+
+                            <!-- Pixel Blast Settings -->
+                            <div id="pixel-blast-color-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-blast-color-picker" data-i18n="setting_pixel_blast_color">Pixel Color</label>
+                                <input type="color" id="pixel-blast-color-picker" value="#B497CF" />
+                            </div>
+
+                            <div id="pixel-blast-variant-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-blast-variant-select" data-i18n="setting_pixel_blast_variant">Pixel Shape</label>
+                                <select id="pixel-blast-variant-select" class="full-width">
+                                    <option value="square" data-i18n="pixel_blast_square">Square</option>
+                                    <option value="circle" data-i18n="pixel_blast_circle">Circle</option>
+                                    <option value="triangle" data-i18n="pixel_blast_triangle">Triangle</option>
+                                    <option value="diamond" data-i18n="pixel_blast_diamond">Diamond</option>
+                                </select>
+                            </div>
+
+                            <div id="pixel-blast-size-setting" class="setting-item" style="display: none;">
+                                <label for="pixel-blast-size-slider">
+                                    <span data-i18n="setting_pixel_blast_size">Pixel Size</span>:
+                                    <span id="pixel-blast-size-val">4</span>px
+                                </label>
+                                <input type="range" id="pixel-blast-size-slider" min="2" max="20" step="1" value="4">
+                            </div>
+
                             <!-- Sunbeam Settings -->
                             <div id="sunbeam-color-setting" class="setting-item" style="display: none;">
                                 <label for="sunbeam-color-picker" data-i18n="setting_sunbeam_color">Sunbeam Color</label>
