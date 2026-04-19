@@ -1,33 +1,17 @@
 export class TetFireworksEffect {
   constructor(
     canvasId,
-    options = { showPetals: true, petalType: "mai" }
+    options = {}
   ) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.fireworks = []
     this.particles = []
-    this.petals = []
     
-    this.showPetals = options.showPetals !== undefined ? options.showPetals : true
-    this.petalType = options.petalType || "mai" // 'mai' or 'lantern'
-
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
-
-    // Hoa mai colors: bright yellow + warm gold tones
-    this.petalColors = [
-      "#FFD700",
-      "#FFC200",
-      "#FFB800",
-      "#FFE066",
-      "#FFA500",
-      "#FFCC00",
-      "#FFF176",
-      "#FFD54F",
-    ]
 
     // Firework burst colors: festive reds, golds, greens
     this.fireworkColors = [
@@ -50,170 +34,13 @@ export class TetFireworksEffect {
   }
 
   setOptions(options) {
-    if (options.showPetals !== undefined) {
-      const oldShow = this.showPetals
-      this.showPetals = options.showPetals
-      if (this.showPetals && !oldShow) {
-        this.initPetals()
-      }
-    }
-    if (options.petalType !== undefined) {
-      const oldType = this.petalType
-      this.petalType = options.petalType
-      if (oldType !== this.petalType && this.showPetals) {
-        this.initPetals()
-      }
-    }
+    // No options to set anymore
   }
 
   resize() {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
-    if (this.showPetals) this.initPetals()
-  }
-
-  // ─── Hoa Mai Petals / Lanterns ──────────────────────────────────────────────
-
-  initPetals() {
-    this.petals = []
-    if (!this.showPetals) return
-    
-    const density = this.petalType === "lantern" ? 120000 : 50000
-    const count = Math.floor((this.canvas.width * this.canvas.height) / density)
-    for (let i = 0; i < count; i++) {
-      this.petals.push(this.createPetal(true))
-    }
-  }
-
-  createPetal(scattered = false) {
-    const size = this.petalType === "lantern" 
-      ? 15 + Math.random() * 10 
-      : 7 + Math.random() * 10
-      
-    return {
-      x: Math.random() * this.canvas.width,
-      y: scattered ? Math.random() * this.canvas.height : -size * 2,
-      size,
-      color: this.petalType === "lantern" 
-        ? "#e62e2e" 
-        : this.petalColors[Math.floor(Math.random() * this.petalColors.length)],
-      speedX: (Math.random() - 0.5) * (this.petalType === "lantern" ? 0.8 : 1.2),
-      speedY: this.petalType === "lantern" ? 0.4 + Math.random() * 0.6 : 0.6 + Math.random() * 1.0,
-      rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: (Math.random() - 0.5) * (this.petalType === "lantern" ? 0.02 : 0.05),
-      sway: Math.random() * Math.PI * 2,
-      swaySpeed: 0.01 + Math.random() * 0.02,
-      swayAmp: 1 + Math.random() * 2,
-      opacity: 0.8 + Math.random() * 0.2,
-      blink: Math.random() * Math.PI,
-    }
-  }
-
-  drawPetal(p) {
-    if (this.petalType === "lantern") {
-      this.drawLantern(p)
-    } else {
-      this.drawMai(p)
-    }
-  }
-
-  drawMai(p) {
-    const ctx = this.ctx
-    ctx.save()
-    ctx.translate(p.x, p.y)
-    ctx.rotate(p.rotation)
-    ctx.globalAlpha = p.opacity
-
-    // 5-petal apricot blossom (hoa mai)
-    const petals = 5
-    const r1 = p.size
-    const r2 = p.size * 0.38
-    ctx.beginPath()
-    for (let i = 0; i < petals; i++) {
-      const angle = (i * Math.PI * 2) / petals - Math.PI / 2
-      const nextAngle = angle + Math.PI / petals
-      const cx1 = Math.cos(angle) * r1
-      const cy1 = Math.sin(angle) * r1
-      const cx2 = Math.cos(nextAngle) * r2
-      const cy2 = Math.sin(nextAngle) * r2
-      if (i === 0) ctx.moveTo(cx1, cy1)
-      else ctx.lineTo(cx1, cy1)
-      ctx.bezierCurveTo(
-        cx1 + Math.cos(angle + 0.6) * r1 * 0.7,
-        cy1 + Math.sin(angle + 0.6) * r1 * 0.7,
-        cx2 + Math.cos(nextAngle - 0.6) * r2 * 2,
-        cy2 + Math.sin(nextAngle - 0.6) * r2 * 2,
-        cx2,
-        cy2,
-      )
-    }
-    ctx.closePath()
-    ctx.fillStyle = p.color
-    ctx.fill()
-
-    // center stamen dot
-    ctx.beginPath()
-    ctx.arc(0, 0, p.size * 0.18, 0, Math.PI * 2)
-    ctx.fillStyle = "#fff8dc"
-    ctx.fill()
-
-    ctx.restore()
-  }
-
-  drawLantern(p) {
-    const ctx = this.ctx
-    ctx.save()
-    ctx.translate(p.x, p.y)
-    ctx.rotate(Math.sin(p.sway) * 0.2) // Lồng đèn lắc nhẹ
-    ctx.globalAlpha = p.opacity
-
-    const w = p.size * 0.8
-    const h = p.size
-    
-    // Lantern body
-    ctx.beginPath()
-    ctx.ellipse(0, 0, w, h, 0, 0, Math.PI * 2)
-    ctx.fillStyle = "#ff2a2a"
-    ctx.fill()
-    
-    // Golden lines on lantern
-    ctx.strokeStyle = "#ffd700"
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(-w * 0.5, -h)
-    ctx.bezierCurveTo(-w * 0.2, -h, -w * 0.2, h, -w * 0.5, h)
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(w * 0.5, -h)
-    ctx.bezierCurveTo(w * 0.2, -h, w * 0.2, h, w * 0.5, h)
-    ctx.stroke()
-    
-    // Top and bottom caps
-    ctx.fillStyle = "#ffd700"
-    ctx.fillRect(-w * 0.4, -h - 2, w * 0.8, 4)
-    ctx.fillRect(-w * 0.4, h - 2, w * 0.8, 4)
-    
-    // Tassels (tua rua)
-    ctx.beginPath()
-    ctx.moveTo(0, h)
-    ctx.lineTo(0, h + p.size * 0.6)
-    ctx.strokeStyle = "#ffd700"
-    ctx.lineWidth = 2
-    ctx.stroke()
-
-    ctx.restore()
-  }
-
-  updatePetal(p) {
-    p.sway += p.swaySpeed
-    p.x += p.speedX + Math.sin(p.sway) * p.swayAmp
-    p.y += p.speedY
-    if (this.petalType === "mai") p.rotation += p.rotationSpeed
-    
-    if (p.y > this.canvas.height + p.size * 2) {
-      Object.assign(p, this.createPetal(false))
-    }
   }
 
   // ─── HD Fireworks ──────────────────────────────────────────────────────────
@@ -410,14 +237,8 @@ export class TetFireworksEffect {
       return !this.updateParticle(p)
     })
 
-    // Draw & update petals/lanterns
+    // Petal/lantern code removed
     ctx.globalCompositeOperation = "source-over"
-    if (this.showPetals) {
-      for (const p of this.petals) {
-        this.drawPetal(p)
-        this.updatePetal(p)
-      }
-    }
   }
 
   start() {
@@ -435,6 +256,5 @@ export class TetFireworksEffect {
     this.canvas.style.display = "none"
     this.fireworks = []
     this.particles = []
-    this.petals = []
   }
 }

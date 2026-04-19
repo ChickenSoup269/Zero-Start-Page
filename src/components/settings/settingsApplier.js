@@ -718,13 +718,6 @@ function createApplySettings(effectInstances) {
           selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
         }
 
-        if (effectToStart === "tetFireworks" && selectedEffect.setOptions) {
-          selectedEffect.setOptions({
-            showPetals: settings.tetFireworksShowPetals !== false,
-            petalType: settings.tetFireworksPetalType || "mai",
-          })
-        }
-
         if (effectToStart === "meteor" && selectedEffect) {
           if (selectedEffect.setAngle)
             selectedEffect.setAngle(settings.meteorAngle ?? 45)
@@ -1261,20 +1254,6 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.fallingLeavesSkin || "maple"
     }
 
-    // Tet Fireworks
-    DOM.tetFireworksPetalsSetting.style.display =
-      settings.effect === "tetFireworks" ? "block" : "none"
-    DOM.tetFireworksTypeSetting.style.display =
-      settings.effect === "tetFireworks" ? "block" : "none"
-    if (DOM.tetFireworksShowPetalsCheckbox) {
-      DOM.tetFireworksShowPetalsCheckbox.checked =
-        settings.tetFireworksShowPetals !== false
-    }
-    if (DOM.tetFireworksPetalTypeSelect) {
-      DOM.tetFireworksPetalTypeSelect.value =
-        settings.tetFireworksPetalType || "mai"
-    }
-
     // Pixel Blast
     if (DOM.pixelBlastColorSetting) {
       DOM.pixelBlastColorSetting.style.display =
@@ -1390,7 +1369,6 @@ function createUpdateSettingsInputs(effectInstances) {
         "hacker",
         "pixelCubes",
         "pixelWeather",
-        "tetFireworks",
         "pixelBlast",
         "jellyfish",
         "sakura",

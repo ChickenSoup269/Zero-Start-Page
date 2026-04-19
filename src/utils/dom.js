@@ -296,19 +296,6 @@ export const fallingLeavesSettledSkinSetting = document.getElementById(
   "falling-leaves-settled-skin-setting",
 )
 
-export const tetFireworksPetalsSetting = document.getElementById(
-  "tet-fireworks-petals-setting",
-)
-export const tetFireworksShowPetalsCheckbox = document.getElementById(
-  "tet-fireworks-show-petals",
-)
-export const tetFireworksTypeSetting = document.getElementById(
-  "tet-fireworks-type-setting",
-)
-export const tetFireworksPetalTypeSelect = document.getElementById(
-  "tet-fireworks-petal-type",
-)
-
 // Pixel Blast
 export const pixelBlastColorPicker = document.getElementById(
   "pixel-blast-color-picker",

@@ -231,10 +231,7 @@ export function initSettings() {
       "effect-canvas",
       settings.lineShinyColor || "#ffffff",
     ),
-    tetFireworksEffect: new TetFireworksEffect("effect-canvas", {
-      showPetals: settings.tetFireworksShowPetals !== false,
-      petalType: settings.tetFireworksPetalType || "mai",
-    }),
+    tetFireworksEffect: new TetFireworksEffect("effect-canvas", {}),
     skyLanternsEffect: new SkyLanternsEffect("effect-canvas"),
     pixelRunEffect: new PixelRunEffect(
       "effect-canvas",
