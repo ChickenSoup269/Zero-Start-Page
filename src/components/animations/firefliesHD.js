@@ -1,320 +1,248 @@
 /**
- * FirefliesHD — Canvas recreation of the classic CSS firefly animation.
+ * FirefliesHD — Smoother, physics-based recreation of bioluminescent fireflies.
  *
- * Each firefly mirrors the original SCSS structure:
- *   - Core element   : slow random movement between waypoints + scale change
- *   - ::before       : small dark satellite dot orbiting the core (drift rotation)
- *   - ::after        : white dot at center that periodically flashes with yellow glow
- *
- * All values are kept as close as possible to the original CSS:
- *   - Firefly size    : 0.4vw
- *   - Orbit radius    : 10vw  (transform-origin: -10vw in CSS)
- *   - Total move time : 350 s  (slowed down for realism)
- *   - Drift speed     : 15–30 s per revolution
- *   - Flash period    : 5 000–11 000 ms, delay 500–8 500 ms
+ * Features:
+ * - Physics-driven movement (velocity, acceleration, friction).
+ * - Organic "wander" behavior using smooth angle transitions.
+ * - Depth simulation (z-index) affecting size, speed, and blur.
+ * - Realistic layered bioluminescent flashing.
+ * - Directional orientation (body aligns with movement).
  */
 export class FirefliesHD {
-  constructor(canvasId, quantity = 15) {
-    this.canvas = document.getElementById(canvasId)
-    this.ctx = this.canvas.getContext("2d")
-    this.active = false
-    this.quantity = quantity
-    this.flies = []
+  constructor(canvasId, quantity = 18) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext("2d");
+    this.active = false;
+    this.quantity = quantity;
+    this.flies = [];
 
-    this.fps = 60
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
-
-    this.resize()
-    window.addEventListener("resize", () => this.resize())
+    this.lastDrawTime = 0;
+    this.resize();
+    window.addEventListener("resize", () => this.resize());
   }
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
-    // Rebuild flies on resize so vw-based sizes stay correct
-    if (this.active) this._build()
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    if (this.active) this._build();
   }
 
-  // ── Firefly factory ──────────────────────────────────────────────────────
   _build() {
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.canvas.width;
+    const H = this.canvas.height;
 
-    this.flies = []
+    this.flies = [];
     for (let i = 0; i < this.quantity; i++) {
-      // Number of movement waypoints: 16–28 (matches $steps: random(12)+16)
-      const steps = Math.floor(Math.random() * 13) + 16
-      const waypoints = []
-      for (let s = 0; s <= steps; s++) {
-        waypoints.push({
-          x: (Math.random() - 0.5) * W * 0.8 + W * 0.5,
-          y: (Math.random() - 0.5) * H * 0.75 + H * 0.55, // favor lower half like real fireflies
-          scale: Math.random() * 0.75 + 0.25, // 0.25–1.0
-        })
-      }
-
-      // drift rotation speed: 15–30 s (slower orbit)
-      const driftPeriod = (Math.random() * 15 + 15) * 1000
-
-      // flash: period 5 000–11 000 ms, delay 500–8 500 ms
-      const flashPeriod = Math.random() * 6000 + 5000
-      const flashDelay = Math.random() * 8000 + 500
-
+      const z = Math.random(); // Depth factor 0 (far) to 1 (near)
+      
       this.flies.push({
-        waypoints,
-        wpIdx: 0,
-        // Current world position (starts at first waypoint)
-        x: waypoints[0].x,
-        y: waypoints[0].y,
-        scale: waypoints[0].scale,
-        // Per-segment travel time: total 350 s / steps (slower, more realistic)
-        segDuration: (350000 / steps) * (0.8 + Math.random() * 0.4),
-        segElapsed: Math.random() * 5000, // stagger start
-        // Drift (orbit)
-        driftAngle: Math.random() * Math.PI * 2,
-        driftPeriod,
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        z: z,
+        
+        // Physics constants
+        baseSpeed: (1.2 + Math.random() * 0.8) * (0.5 + z * 0.5),
+        friction: 0.98,
+        wanderAngle: Math.random() * Math.PI * 2,
+        wanderChange: 0,
+        
         // Flash state
-        flashPeriod,
-        flashDelay,
-        flashClock: -(Math.random() * flashDelay), // negative = pre-delay
+        flashClock: Math.random() * 10000,
+        flashPeriod: 6000 + Math.random() * 6000,
+        flashDuration: 1500 + Math.random() * 1000,
         flashOpacity: 0,
-        glowRadius: 0,
-        // Idle ambient glow color (warm green-yellow, bioluminescent)
-        idleGlow: Math.random() * 0.08 + 0.04, // 0.04–0.12 base ambient opacity
-        // Micro-wander: tiny random drift each frame
-        wanderVx: (Math.random() - 0.5) * 0.3,
-        wanderVy: (Math.random() - 0.5) * 0.3,
-        wanderX: 0,
-        wanderY: 0,
-        // Trail history
-        trail: [],
-      })
+        
+        // Visuals
+        size: (2 + z * 3) * (W / 1920), // Responsive size based on width
+        hue: 55 + Math.random() * 20, // Green-yellow spectrum
+        
+        // Tail for motion blur feel
+        history: []
+      });
     }
   }
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────
   start() {
-    if (this.active) return
-    this.active = true
-    this.lastDrawTime = 0
-    this._build()
-    this.canvas.style.display = "block"
-    this.animate(0)
+    if (this.active) return;
+    this.active = true;
+    this.lastDrawTime = performance.now();
+    this._build();
+    this.canvas.style.display = "block";
+    this.animate(performance.now());
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
-    this.active = false
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    this.flies = []
-    this.canvas.style.display = "none"
+    this.active = false;
+    if (this._animId) {
+      cancelAnimationFrame(this._animId);
+      this._animId = null;
+    }
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.flies = [];
+    this.canvas.style.display = "none";
   }
 
-  // ── Update ───────────────────────────────────────────────────────────────
-  _updateFly(fly, dt) {
-    // ── Position / scale (waypoint lerp) ────────────────────────────────
-    fly.segElapsed += dt
-    const pct = Math.min(fly.segElapsed / fly.segDuration, 1)
-    const eased = this._easeInOut(pct)
+  _updateFly(fly, dt, W, H) {
+    // 1. Organic Wander Force
+    // Slowly change the wander angle for smooth turns
+    fly.wanderChange += (Math.random() - 0.5) * 0.2;
+    fly.wanderChange *= 0.9; // Dampen change
+    fly.wanderAngle += fly.wanderChange;
 
-    const a = fly.waypoints[fly.wpIdx]
-    const b = fly.waypoints[(fly.wpIdx + 1) % fly.waypoints.length]
+    // Apply acceleration based on wander angle
+    const ax = Math.cos(fly.wanderAngle) * 0.1;
+    const ay = Math.sin(fly.wanderAngle) * 0.1;
 
-    fly.x = a.x + (b.x - a.x) * eased
-    fly.y = a.y + (b.y - a.y) * eased
-    fly.scale = a.scale + (b.scale - a.scale) * eased
+    fly.vx += ax;
+    fly.vy += ay;
 
-    if (pct >= 1) {
-      fly.wpIdx = (fly.wpIdx + 1) % fly.waypoints.length
-      fly.segElapsed = 0
+    // 2. Physics Constraints
+    fly.vx *= fly.friction;
+    fly.vy *= fly.friction;
+
+    // Cap speed
+    const speed = Math.sqrt(fly.vx * fly.vx + fly.vy * fly.vy);
+    if (speed > fly.baseSpeed) {
+      fly.vx = (fly.vx / speed) * fly.baseSpeed;
+      fly.vy = (fly.vy / speed) * fly.baseSpeed;
     }
 
-    // ── Drift angle (continuous rotation) ───────────────────────────────
-    fly.driftAngle += (Math.PI * 2 * dt) / fly.driftPeriod
+    // 3. Position Update
+    fly.x += fly.vx * (dt / 16);
+    fly.y += fly.vy * (dt / 16);
 
-    // ── Micro-wander: subtle jitter so they don't glide perfectly ────────
-    fly.wanderVx += (Math.random() - 0.5) * 0.04
-    fly.wanderVy += (Math.random() - 0.5) * 0.04
-    // Dampen wander velocity so it stays subtle
-    fly.wanderVx *= 0.97
-    fly.wanderVy *= 0.97
-    fly.wanderX = Math.max(-4, Math.min(4, fly.wanderX + fly.wanderVx))
-    fly.wanderY = Math.max(-4, Math.min(4, fly.wanderY + fly.wanderVy))
+    // 4. Screen Wrap with Margin
+    const margin = 100;
+    if (fly.x < -margin) fly.x = W + margin;
+    if (fly.x > W + margin) fly.x = -margin;
+    if (fly.y < -margin) fly.y = H + margin;
+    if (fly.y > H + margin) fly.y = -margin;
 
-    // ── Trail history ────────────────────────────────────────────────────
-    fly.trail.push({ x: fly.x + fly.wanderX, y: fly.y + fly.wanderY })
-    if (fly.trail.length > 8) fly.trail.shift()
-
-    // ── Flash (mirrors @keyframes flash) ────────────────────────────────
-    fly.flashClock += dt
-    // Start flashing only after delay has passed
-    if (fly.flashClock < 0) {
-      fly.flashOpacity = 0
-      fly.glowRadius = 0
-      return
-    }
-
-    const t = (fly.flashClock % fly.flashPeriod) / fly.flashPeriod // 0–1
-
-    // Original: opacity peaks at ~5 %, back to 0 at 30 %, stays 0 until 100 %
-    // box-shadow: 0 0 0vw 0vw → 0 0 2vw 0.4vw at 5 %
-    if (t < 0.05) {
-      // Rising edge (0 → 5%)
-      const p = t / 0.05
-      fly.flashOpacity = this._easeInOut(p)
-      fly.glowRadius = this._easeInOut(p)
-    } else if (t < 0.3) {
-      // Falling edge (5 → 30%)
-      const p = (t - 0.05) / 0.25
-      fly.flashOpacity = 1 - this._easeInOut(p)
-      fly.glowRadius = 1 - this._easeInOut(p)
+    // 5. Flash Logic
+    fly.flashClock += dt;
+    const cyclePos = fly.flashClock % fly.flashPeriod;
+    
+    if (cyclePos < fly.flashDuration) {
+      // Smooth bell curve for flashing using sin
+      const progress = cyclePos / fly.flashDuration;
+      fly.flashOpacity = Math.pow(Math.sin(progress * Math.PI), 2);
     } else {
-      fly.flashOpacity = 0
-      fly.glowRadius = 0
+      fly.flashOpacity = 0;
     }
+
+    // 6. History for Motion Blur
+    fly.history.push({ x: fly.x, y: fly.y });
+    if (fly.history.length > 5) fly.history.shift();
   }
 
-  _easeInOut(t) {
-    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-  }
-
-  // ── Draw ─────────────────────────────────────────────────────────────────
   _drawFly(fly) {
-    const ctx = this.ctx
-    const W = this.canvas.width
-    const vw = W / 100 // 1vw in px
+    const { x, y, z, size, hue, flashOpacity, vx, vy, history } = fly;
+    const ctx = this.ctx;
 
-    const coreSize = 0.4 * vw * fly.scale // 0.4vw * scale
-    const orbitR = 10 * vw * fly.scale // 10vw * scale
-    const glowMax = 2 * vw * fly.scale // 2vw box-shadow blur
-    const spreadMax = 0.4 * vw * fly.scale // 0.4vw spread
+    // Determine orientation based on velocity
+    const angle = Math.atan2(vy, vx);
 
-    const drawX = fly.x + fly.wanderX
-    const drawY = fly.y + fly.wanderY
+    ctx.save();
+    ctx.translate(x, y);
 
-    // ── Trail — faint dotted light trail behind the firefly ──────────────
-    if (fly.trail.length > 1) {
-      for (let i = 0; i < fly.trail.length - 1; i++) {
-        const alpha = (i / fly.trail.length) * 0.18
-        const radius = Math.max(coreSize * 0.35 * (i / fly.trail.length), 0.5)
-        ctx.beginPath()
-        ctx.arc(fly.trail[i].x, fly.trail[i].y, radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(180, 255, 120, ${alpha})`
-        ctx.fill()
+    // Subtle motion blur trail
+    if (history.length > 1) {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform to draw absolute coordinates
+      ctx.globalCompositeOperation = "screen";
+      for (let i = 0; i < history.length - 1; i++) {
+        const p1 = history[i];
+        const p2 = history[i + 1];
+        const alpha = (i / history.length) * 0.2 * (0.3 + z * 0.7);
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `hsla(${hue}, 100%, 70%, ${alpha})`;
+        ctx.lineWidth = size * 0.5;
+        ctx.lineCap = "round";
+        ctx.stroke();
       }
+      ctx.restore();
     }
 
-    ctx.save()
-    ctx.translate(drawX, drawY)
+    // --- Glow Layers ---
+    // Use "screen" for additive color
+    ctx.globalCompositeOperation = "screen";
 
-    // ── ::before — orbiting dark satellite (body segment) ────────────────
-    const satX = Math.cos(fly.driftAngle) * orbitR
-    const satY = Math.sin(fly.driftAngle) * orbitR
+    // 1. Core Ambient (Always there, very faint)
+    const ambientAlpha = (0.05 + z * 0.05);
+    const ambientGlow = size * 4;
+    const gradAmb = ctx.createRadialGradient(0, 0, 0, 0, 0, ambientGlow);
+    gradAmb.addColorStop(0, `hsla(${hue}, 100%, 70%, ${ambientAlpha})`);
+    gradAmb.addColorStop(1, `hsla(${hue}, 100%, 50%, 0)`);
+    ctx.fillStyle = gradAmb;
+    ctx.beginPath();
+    ctx.arc(0, 0, ambientGlow, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.beginPath()
-    ctx.arc(satX, satY, Math.max(coreSize * 0.6, 1), 0, Math.PI * 2)
-    ctx.fillStyle = "rgba(0, 0, 0, 0.4)"
-    ctx.fill()
+    // 2. Periodic Flash Glow
+    if (flashOpacity > 0.01) {
+      const flashSize = size * (10 + z * 10) * flashOpacity;
+      const gradFlash = ctx.createRadialGradient(0, 0, 0, 0, 0, flashSize);
+      gradFlash.addColorStop(0, `hsla(${hue}, 100%, 80%, ${flashOpacity * 0.6})`);
+      gradFlash.addColorStop(0.3, `hsla(${hue}, 100%, 60%, ${flashOpacity * 0.2})`);
+      gradFlash.addColorStop(1, `hsla(${hue}, 100%, 40%, 0)`);
+      
+      ctx.fillStyle = gradFlash;
+      ctx.beginPath();
+      ctx.arc(0, 0, flashSize, 0, Math.PI * 2);
+      ctx.fill();
 
-    // ── Idle ambient bioluminescent glow (always on, green-yellow) ───────
-    const ambientR = (glowMax * 0.6 + coreSize) * (1 + fly.idleGlow * 2)
-    const ambGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, ambientR)
-    ambGrad.addColorStop(0, `rgba(180, 255, 80, ${fly.idleGlow * 1.5})`)
-    ambGrad.addColorStop(0.5, `rgba(140, 220, 60, ${fly.idleGlow * 0.6})`)
-    ambGrad.addColorStop(1, "rgba(100, 180, 40, 0)")
-    ctx.beginPath()
-    ctx.arc(0, 0, ambientR, 0, Math.PI * 2)
-    ctx.fillStyle = ambGrad
-    ctx.fill()
-
-    // ── ::after — white core + warm yellow flash ──────────────────────
-    if (fly.flashOpacity > 0) {
-      // Layered glow: outer warm yellow → inner bright white-yellow
-      const glowCurrent = glowMax * fly.glowRadius + spreadMax * fly.glowRadius
-      const glowRadius = glowCurrent + coreSize * 3
-
-      // Outer halo
-      const outerGrad = ctx.createRadialGradient(
-        0,
-        0,
-        0,
-        0,
-        0,
-        glowRadius * 2.5,
-      )
-      outerGrad.addColorStop(
-        0,
-        `rgba(255, 255, 180, ${fly.flashOpacity * 0.6})`,
-      )
-      outerGrad.addColorStop(
-        0.4,
-        `rgba(255, 230, 50, ${fly.flashOpacity * 0.3})`,
-      )
-      outerGrad.addColorStop(
-        0.8,
-        `rgba(200, 180, 0, ${fly.flashOpacity * 0.1})`,
-      )
-      outerGrad.addColorStop(1, "rgba(150, 140, 0, 0)")
-      ctx.beginPath()
-      ctx.arc(0, 0, glowRadius * 2.5, 0, Math.PI * 2)
-      ctx.fillStyle = outerGrad
-      ctx.fill()
-
-      // Inner bright core glow
-      const innerGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, glowRadius)
-      innerGrad.addColorStop(0, `rgba(255, 255, 220, ${fly.flashOpacity})`)
-      innerGrad.addColorStop(
-        0.3,
-        `rgba(255, 245, 80, ${fly.flashOpacity * 0.85})`,
-      )
-      innerGrad.addColorStop(
-        0.7,
-        `rgba(255, 220, 0, ${fly.flashOpacity * 0.4})`,
-      )
-      innerGrad.addColorStop(1, "rgba(255, 180, 0, 0)")
-      ctx.beginPath()
-      ctx.arc(0, 0, glowRadius, 0, Math.PI * 2)
-      ctx.fillStyle = innerGrad
-      ctx.fill()
+      // Inner Hot Spot
+      const hotSpotSize = size * 2 * flashOpacity;
+      const gradHot = ctx.createRadialGradient(0, 0, 0, 0, 0, hotSpotSize);
+      gradHot.addColorStop(0, `rgba(255, 255, 255, ${flashOpacity})`);
+      gradHot.addColorStop(1, `hsla(${hue}, 100%, 90%, 0)`);
+      ctx.fillStyle = gradHot;
+      ctx.beginPath();
+      ctx.arc(0, 0, hotSpotSize, 0, Math.PI * 2);
+      ctx.fill();
     }
 
-    // Core dot: dim green-white idle, bright warm-white on flash
-    const coreAlpha = 0.25 + fly.flashOpacity * 0.75
-    const coreR = Math.floor(200 + fly.flashOpacity * 55)
-    const coreG = Math.floor(255)
-    const coreB = Math.floor(160 - fly.flashOpacity * 110)
-    ctx.beginPath()
-    ctx.arc(0, 0, Math.max(coreSize, 1), 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(${coreR}, ${coreG}, ${coreB}, ${coreAlpha})`
-    ctx.fill()
+    // 3. Body Segment (The firefly itself)
+    // Dark body, slightly rotated
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, size, size * 0.6, 0, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(20, 30, 0, ${0.4 + z * 0.3})`;
+    ctx.fill();
 
-    ctx.restore()
+    // Small bright spot on the "tail" when flashing
+    if (flashOpacity > 0.1) {
+        ctx.beginPath();
+        ctx.arc(-size * 0.4, 0, size * 0.5 * flashOpacity, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${flashOpacity})`;
+        ctx.fill();
+    }
+
+    ctx.restore();
   }
 
-  // ── Animation loop ────────────────────────────────────────────────────────
-  animate(currentTime = 0) {
-    if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
+  animate(currentTime) {
+    if (!this.active) return;
+    this._animId = requestAnimationFrame((t) => this.animate(t));
 
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    const dt = elapsed // delta time in milliseconds
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+    const dt = currentTime - this.lastDrawTime;
+    if (dt < 1) return; // Prevent division by zero or too fast updates
+    this.lastDrawTime = currentTime;
 
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.canvas.width;
+    const H = this.canvas.height;
 
-    this.ctx.clearRect(0, 0, W, H)
-
-    // Use "screen" blending so overlapping glows add together naturally
-    this.ctx.globalCompositeOperation = "screen"
+    // Clear with slight trail effect? 
+    // For "HD" feel, a pure clear is usually better if we handle trails via history
+    this.ctx.clearRect(0, 0, W, H);
 
     for (const fly of this.flies) {
-      this._updateFly(fly, dt)
-      this._drawFly(fly)
+      this._updateFly(fly, dt, W, H);
+      this._drawFly(fly);
     }
-
-    this.ctx.globalCompositeOperation = "source-over"
   }
 }
