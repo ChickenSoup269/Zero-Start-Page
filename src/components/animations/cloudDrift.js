@@ -1,175 +1,137 @@
+import { hexToRgb } from "../../utils/colors.js"
+
 export class CloudDriftEffect {
   constructor(canvasId, color = "#ffffff") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
-    this.color = color
-
-    // FPS throttling
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
-
+    this.baseColor = color
     this.clouds = []
+    this.lastTime = 0
+    this._animId = null
 
+    this._resizeHandler = () => this.resize()
+    window.addEventListener("resize", this._resizeHandler)
     this.resize()
-    window.addEventListener("resize", () => this._onResize())
-  }
-
-  _onResize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
-    // Re-scatter clouds on resize without regenerating them fully
-    this.clouds.forEach((c) => {
-      if (c.y > this.canvas.height) c.y = Math.random() * this.canvas.height
-    })
   }
 
   resize() {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
+    if (this.active) this.initClouds()
   }
 
-  /** Parse hex color → { r, g, b } */
-  _hexToRgb(color) {
-    const hex = color.replace("#", "")
-    if (hex.length === 6) {
-      return {
-        r: parseInt(hex.slice(0, 2), 16),
-        g: parseInt(hex.slice(2, 4), 16),
-        b: parseInt(hex.slice(4, 6), 16),
-      }
-    }
-    if (hex.length === 3) {
-      return {
-        r: parseInt(hex[0] + hex[0], 16),
-        g: parseInt(hex[1] + hex[1], 16),
-        b: parseInt(hex[2] + hex[2], 16),
-      }
-    }
-    return { r: 255, g: 255, b: 255 }
-  }
-
-  /** Spawn a single cloud object */
-  _makeCloud(spawnOffscreen = false) {
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const scale = 0.5 + Math.random() * 1.5 // size multiplier
-    const speed = 0.15 + Math.random() * 0.35 // px per frame
-    const layer = Math.random() // 0 = far, 1 = near
-    const alpha = 0.08 + layer * 0.28 // far = transparent
-    const x = spawnOffscreen
-      ? -(200 + Math.random() * 400) * scale // start just off left edge
-      : Math.random() * (W + 400) - 200 // random across screen
-
-    return {
-      x,
-      y: H * 0.05 + Math.random() * H * 0.55, // upper ~60% of screen
-      scale,
-      speed: speed * (0.5 + layer * 0.8), // near clouds faster
-      alpha,
-      layer,
-      // Each cloud is a set of overlapping circles
-      puffs: this._makePuffs(scale),
-    }
-  }
-
-  /** Generate puff circles for a cloud */
-  _makePuffs(scale) {
-    const baseR = 38 * scale
-    const puffs = []
-    const count = 4 + Math.floor(Math.random() * 4) // 4–7 puffs
-    for (let i = 0; i < count; i++) {
-      const t = i / (count - 1)
-      puffs.push({
-        ox: (t - 0.5) * 180 * scale, // spread along x
-        oy: -Math.sin(t * Math.PI) * 28 * scale, // arch upward in middle
-        r: baseR * (0.55 + Math.sin(t * Math.PI) * 0.5),
-      })
-    }
-    return puffs
-  }
-
-  /** Draw one cloud at (cx, cy) with given alpha and color */
-  _drawCloud(cloud, rgb) {
-    const ctx = this.ctx
-    const { x, y, puffs, alpha } = cloud
-
-    for (const p of puffs) {
-      const gx = x + p.ox
-      const gy = y + p.oy
-
-      // Soft radial gradient per puff for fluffy look
-      const grad = ctx.createRadialGradient(gx, gy - p.r * 0.2, 0, gx, gy, p.r)
-      grad.addColorStop(
-        0,
-        `rgba(${rgb.r},${rgb.g},${rgb.b},${(alpha + 0.12).toFixed(3)})`,
-      )
-      grad.addColorStop(
-        0.6,
-        `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha.toFixed(3)})`,
-      )
-      grad.addColorStop(1, `rgba(${rgb.r},${rgb.g},${rgb.b},0)`)
-
-      ctx.beginPath()
-      ctx.arc(gx, gy, p.r, 0, Math.PI * 2)
-      ctx.fillStyle = grad
-      ctx.fill()
-    }
-  }
-
-  _spawnClouds() {
-    const count = 10 + Math.floor((this.canvas.width / 1920) * 8)
+  initClouds() {
+    const count = 6 + Math.floor(window.innerWidth / 400)
     this.clouds = []
     for (let i = 0; i < count; i++) {
-      this.clouds.push(this._makeCloud(false))
+      // Phân bổ đều mây ban đầu
+      const cloud = this.createCloudData()
+      cloud.x = Math.random() * (this.canvas.width + 600) - 300
+      this.clouds.push(cloud)
     }
-    // Sort by layer so far clouds render first
     this.clouds.sort((a, b) => a.layer - b.layer)
+  }
+
+  createCloudData() {
+    const layer = Math.random()
+    const scale = 0.6 + layer * 1.0
+    const puffCount = 5 + Math.floor(Math.random() * 4)
+    const puffs = []
+    for (let i = 0; i < puffCount; i++) {
+      puffs.push({
+        ox: (i - puffCount / 2) * (35 * scale),
+        oy: (Math.random() * 20 - 10) * scale,
+        r: (50 + Math.random() * 40) * scale,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.2 + Math.random() * 0.2
+      })
+    }
+
+    return {
+      x: -400,
+      y: Math.random() * (this.canvas.height * 0.5),
+      speed: (15 + layer * 25), // Pixels per second
+      alpha: 0.25 + layer * 0.3,
+      layer: layer,
+      puffs: puffs,
+      scale: scale
+    }
   }
 
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
     this.canvas.style.display = "block"
-    this._spawnClouds()
-    this.animate(0)
+    this.initClouds()
+    this.lastTime = performance.now()
+
+    const animateLoop = (now) => {
+      if (!this.active) return
+      const deltaTime = (now - this.lastTime) / 1000 // Chuyển sang giây
+      this.lastTime = now
+
+      // Giới hạn deltaTime để tránh nhảy vọt khi quay lại tab
+      const limitedDelta = Math.min(deltaTime, 0.1) 
+      
+      this.update(limitedDelta, now / 1000)
+      this.draw()
+      this._animId = requestAnimationFrame(animateLoop)
+    }
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.canvas.style.display = "none"
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
-  animate(currentTime = 0) {
-    if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
-
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
-
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const rgb = this._hexToRgb(this.color)
-
-    this.ctx.clearRect(0, 0, W, H)
-
-    for (const cloud of this.clouds) {
-      cloud.x += cloud.speed
-
-      // Wrap around: when cloud fully exits right edge, respawn off left
-      const maxX = cloud.puffs.reduce((m, p) => Math.max(m, p.ox + p.r), 0)
-      if (cloud.x - maxX > W + 40) {
-        // Recycle by moving back off left edge
-        cloud.x = -(maxX * 2 + 80)
-        cloud.y = H * 0.05 + Math.random() * H * 0.55
+  update(dt, time) {
+    for (const c of this.clouds) {
+      c.x += c.speed * dt
+      
+      // Update puff sizes
+      for (const p of c.puffs) {
+        p.currentR = p.r + Math.sin(time * p.speed + p.phase) * (p.r * 0.06)
       }
 
-      this._drawCloud(cloud, rgb)
+      // Wrap around mượt mà
+      if (c.x > this.canvas.width + 400) {
+        c.x = -400
+        c.y = Math.random() * (this.canvas.height * 0.5)
+      }
+    }
+  }
+
+  draw() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    const rgb = hexToRgb(this.baseColor)
+
+    for (const c of this.clouds) {
+      this.ctx.save()
+      this.ctx.translate(c.x, c.y)
+      
+      // Vẽ một lớp duy nhất nhưng tối ưu hơn để tránh đứng hình
+      for (const p of c.puffs) {
+        const grad = this.ctx.createRadialGradient(
+          p.ox, p.oy - p.currentR * 0.2, 0,
+          p.ox, p.oy, p.currentR
+        )
+        
+        const a = c.alpha
+        grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`)
+        grad.addColorStop(0.6, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a * 0.6})`)
+        grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+
+        this.ctx.fillStyle = grad
+        this.ctx.beginPath()
+        this.ctx.arc(p.ox, p.oy, p.currentR, 0, Math.PI * 2)
+        this.ctx.fill()
+      }
+      
+      this.ctx.restore()
     }
   }
 }
