@@ -1354,13 +1354,33 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.effect === "crtScanlines" ? "block" : "none"
     DOM.crtScanFrequencySetting.style.display =
       settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtScanAngleSetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtScanDensitySetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
+    DOM.crtGammaSetting.style.display =
+      settings.effect === "crtScanlines" ? "block" : "none"
     DOM.crtBackgroundColorSetting.style.display =
       settings.effect === "crtScanlines" ? "block" : "none"
     DOM.crtScanColorPicker.value = settings.crtScanColor || "#7cffad"
     DOM.crtScanFrequencyInput.value = String(settings.crtScanFrequency ?? 0.11)
-    DOM.crtScanFrequencyValue.textContent = Number(
-      DOM.crtScanFrequencyInput.value,
-    ).toFixed(2)
+    if (DOM.crtScanFrequencyValue)
+      DOM.crtScanFrequencyValue.textContent = Number(
+        DOM.crtScanFrequencyInput.value,
+      ).toFixed(2)
+
+    DOM.crtScanAngleInput.value = String(settings.crtScanAngle ?? 0)
+    if (DOM.crtScanAngleValue)
+      DOM.crtScanAngleValue.textContent = DOM.crtScanAngleInput.value
+
+    DOM.crtScanDensityInput.value = String(settings.crtScanDensity ?? 4)
+    if (DOM.crtScanDensityValue)
+      DOM.crtScanDensityValue.textContent = DOM.crtScanDensityInput.value
+
+    DOM.crtGammaInput.value = String(settings.crtGamma ?? 0.3)
+    if (DOM.crtGammaValue)
+      DOM.crtGammaValue.textContent = Number(DOM.crtGammaInput.value).toFixed(2)
+
     DOM.crtBackgroundColorPicker.value =
       settings.crtBackgroundColor || "#0a140f"
 

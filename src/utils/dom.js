@@ -464,6 +464,27 @@ export const crtScanFrequencyValue = document.getElementById(
 export const crtScanFrequencySetting = document.getElementById(
   "crt-scan-frequency-setting",
 )
+export const crtScanAngleInput = document.getElementById(
+  "crt-scan-angle-input",
+)
+export const crtScanAngleValue = document.getElementById(
+  "crt-scan-angle-value",
+)
+export const crtScanAngleSetting = document.getElementById(
+  "crt-scan-angle-setting",
+)
+export const crtScanDensityInput = document.getElementById(
+  "crt-scan-density-input",
+)
+export const crtScanDensityValue = document.getElementById(
+  "crt-scan-density-value",
+)
+export const crtScanDensitySetting = document.getElementById(
+  "crt-scan-density-setting",
+)
+export const crtGammaInput = document.getElementById("crt-gamma-input")
+export const crtGammaValue = document.getElementById("crt-gamma-value")
+export const crtGammaSetting = document.getElementById("crt-gamma-setting")
 export const crtBackgroundColorPicker = document.getElementById(
   "crt-background-color-picker",
 )

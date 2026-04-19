@@ -245,6 +245,9 @@ export function initSettings() {
     crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas", {
       scanColor: settings.crtScanColor || "#7cffad",
       scanFrequency: settings.crtScanFrequency ?? 0.11,
+      scanAngle: settings.crtScanAngle ?? 0,
+      scanDensity: settings.crtScanDensity ?? 4,
+      gamma: settings.crtGamma ?? 0.3,
       backgroundColor: settings.crtBackgroundColor || "#0a140f",
     }),
     meteorEffect: new MeteorEffect(

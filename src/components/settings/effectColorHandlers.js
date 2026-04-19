@@ -341,15 +341,43 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.crtScanColorPicker.value,
       )
   })
-
-  DOM.crtScanFrequencyInput?.addEventListener("input", () => {
-    const frequency = Number(DOM.crtScanFrequencyInput.value)
+DOM.crtScanFrequencyInput?.addEventListener("input", () => {
+  const frequency = Number(DOM.crtScanFrequencyInput.value)
+  if (DOM.crtScanFrequencyValue)
     DOM.crtScanFrequencyValue.textContent = frequency.toFixed(2)
-    updateSetting("crtScanFrequency", frequency)
-    saveSettings()
-    if (effectInstances.crtScanlinesEffect)
-      effectInstances.crtScanlinesEffect.updateScanFrequency(frequency)
-  })
+  updateSetting("crtScanFrequency", frequency)
+  saveSettings()
+  if (effectInstances.crtScanlinesEffect)
+    effectInstances.crtScanlinesEffect.updateScanFrequency(frequency)
+})
+
+DOM.crtScanAngleInput?.addEventListener("input", () => {
+  const angle = Number(DOM.crtScanAngleInput.value)
+  if (DOM.crtScanAngleValue) DOM.crtScanAngleValue.textContent = angle
+  updateSetting("crtScanAngle", angle)
+  saveSettings()
+  if (effectInstances.crtScanlinesEffect)
+    effectInstances.crtScanlinesEffect.updateScanAngle(angle)
+})
+
+DOM.crtScanDensityInput?.addEventListener("input", () => {
+  const density = Number(DOM.crtScanDensityInput.value)
+  if (DOM.crtScanDensityValue) DOM.crtScanDensityValue.textContent = density
+  updateSetting("crtScanDensity", density)
+  saveSettings()
+  if (effectInstances.crtScanlinesEffect)
+    effectInstances.crtScanlinesEffect.updateScanDensity(density)
+})
+
+DOM.crtGammaInput?.addEventListener("input", () => {
+  const gamma = Number(DOM.crtGammaInput.value)
+  if (DOM.crtGammaValue) DOM.crtGammaValue.textContent = gamma.toFixed(2)
+  updateSetting("crtGamma", gamma)
+  saveSettings()
+  if (effectInstances.crtScanlinesEffect)
+    effectInstances.crtScanlinesEffect.updateGamma(gamma)
+})
+
 
   DOM.crtBackgroundColorPicker?.addEventListener("input", () => {
     updateSetting("crtBackgroundColor", DOM.crtBackgroundColorPicker.value)

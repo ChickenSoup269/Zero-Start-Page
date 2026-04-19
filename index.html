@@ -1674,16 +1674,19 @@
                                 <input type="color" id="meteor-color-picker" value="#ffffff" />
 
                                 <div class="setting-item-row" style="margin-top: 10px;">
-                                    <label for="meteor-full-color-toggle" data-i18n="setting_meteor_full_color">Full Color (Multi-HUE)</label>
+                                    <label for="meteor-full-color-toggle" data-i18n="setting_meteor_full_color">Full
+                                        Color (Multi-HUE)</label>
                                     <input type="checkbox" id="meteor-full-color-toggle">
                                 </div>
 
                                 <div class="setting-item" style="margin-top: 10px;">
                                     <div class="flex-space-between">
-                                        <label for="meteor-angle-input" data-i18n="setting_meteor_angle">Falling Angle</label>
+                                        <label for="meteor-angle-input" data-i18n="setting_meteor_angle">Falling
+                                            Angle</label>
                                         <span id="meteor-angle-value" class="range-val">45°</span>
                                     </div>
-                                    <input type="range" id="meteor-angle-input" min="0" max="360" value="45" style="width: 100%;">
+                                    <input type="range" id="meteor-angle-input" min="0" max="360" value="45"
+                                        style="width: 100%;">
                                 </div>
                             </div>
 
@@ -1748,8 +1751,32 @@
                                     <span data-i18n="setting_crt_scan_frequency">Scan Frequency</span>:
                                     <span id="crt-scan-frequency-value">0.11</span>
                                 </label>
-                                <input type="range" id="crt-scan-frequency-input" min="0.03" max="0.40" step="0.01"
+                                <input type="range" id="crt-scan-frequency-input" min="0.01" max="2.00" step="0.01"
                                     value="0.11" />
+                            </div>
+                            <div id="crt-scan-angle-setting" class="setting-item" style="display: none;">
+                                <label for="crt-scan-angle-input">
+                                    <span data-i18n="setting_crt_scan_angle">Scan Angle</span>:
+                                    <span id="crt-scan-angle-value">0</span>°
+                                </label>
+                                <input type="range" id="crt-scan-angle-input" min="-180" max="180" step="1"
+                                    value="0" />
+                            </div>
+                            <div id="crt-scan-density-setting" class="setting-item" style="display: none;">
+                                <label for="crt-scan-density-input">
+                                    <span data-i18n="setting_crt_scan_density">Scan Density</span>:
+                                    <span id="crt-scan-density-value">4</span>
+                                </label>
+                                <input type="range" id="crt-scan-density-input" min="1" max="20" step="1"
+                                    value="4" />
+                            </div>
+                            <div id="crt-gamma-setting" class="setting-item" style="display: none;">
+                                <label for="crt-gamma-input">
+                                    <span data-i18n="setting_crt_gamma">CRT Gamma</span>:
+                                    <span id="crt-gamma-value">0.3</span>
+                                </label>
+                                <input type="range" id="crt-gamma-input" min="0" max="1" step="0.05"
+                                    value="0.3" />
                             </div>
                             <div id="crt-background-color-setting" class="setting-item" style="display: none;">
                                 <label for="crt-background-color-picker" data-i18n="setting_crt_background_color">CRT
@@ -1862,8 +1889,7 @@
 
                             <!-- Floating Lines Color -->
                             <div id="floating-lines-color-setting" class="setting-item" style="display: none;">
-                                <label for="floating-lines-color-picker"
-                                    data-i18n="settings_floating_lines_color">Lines
+                                <label for="floating-lines-color-picker" data-i18n="settings_floating_lines_color">Lines
                                     Color</label>
                                 <input type="color" id="floating-lines-color-picker" value="#ffffff" />
                             </div>

@@ -27,12 +27,9 @@ export class FloatingLinesEffect {
       mouseDamping: 0.05,
       parallax: true,
       parallaxStrength: 0.1,
-      topLineCount: 6,
-      middleLineCount: 8,
-      bottomLineCount: 6,
-      topLineDistance: 15,
-      middleLineDistance: 20,
-      bottomLineDistance: 15
+      topLineCount: 3,      // Reduced further for performance
+      middleLineCount: 4,   // Reduced further for performance
+      bottomLineCount: 3    // Reduced further for performance
     }
 
     this.parallaxOffset = { x: 0, y: 0 }
@@ -131,28 +128,32 @@ export class FloatingLinesEffect {
     const s = this.hsl.s
     const l = Math.max(this.hsl.l, 50) // Ensure visibility
     
+    const rad = (this.angle * Math.PI) / 180
+    const cosR = Math.cos(rad)
+    const sinR = Math.sin(rad)
+    const range = Math.sqrt(W*W + H*H) * 1.5
+    const step = 45 // Increased from 30 for performance
+    
+    const strokeColor1 = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.4})`
+    const strokeColor2 = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.9})`
+    const strokeColor3 = `rgba(255, 255, 255, ${opacity * 0.8})`
+
+    const isMainWave = Math.abs(hueShift) < 5
+
     for (let i = 0; i < count; i++) {
-      const fi = i
-      const offset = offsetBase + fi * 0.2
+      const offset = offsetBase + i * 0.2
       const xMovement = time * speed
       
-      const points = []
-      const step = 15
+      ctx.beginPath()
+      let first = true
       
-      // Increased range to cover screen when rotated
-      const range = Math.sqrt(W*W + H*H) * 1.5
-      
-      const rad = (this.angle * Math.PI) / 180
-      const cosR = Math.cos(rad)
-      const sinR = Math.sin(rad)
-
       for (let x = -range/2; x <= range/2; x += step) {
         const normalizedX = (x / W) * 2.0
         const amp = (Math.sin(offset + time * 0.2) * 0.3 + ampBase) * H * 0.1
         let y = yBase * H + Math.sin(normalizedX * 2 + offset + xMovement) * amp
         
         // Add distance between lines in the group
-        y += (fi * distance)
+        y += (i * distance)
 
         // Rotation logic
         const rx = x * cosR - (y - H/2) * sinR + W/2
@@ -162,53 +163,45 @@ export class FloatingLinesEffect {
         const px = rx + this.parallaxOffset.x * W * (1.0 + hueShift/200)
         const py = ry + this.parallaxOffset.y * H * (1.0 + hueShift/200)
 
+        let finalX = px
+        let finalY = py
+
         // Mouse bending logic
-        if (this.config.interactive) {
+        if (this.config.interactive && this.mouseInfluence > 0.01) {
           const dx = (this.mouse.x - px) / W
           const dy = (this.mouse.y - py) / H
           const distSq = dx * dx + dy * dy
-          const influence = Math.exp(-distSq * 25.0) * this.mouseInfluence 
           
-          const bendX = (this.mouse.x - px) * influence * this.config.bendStrength * 0.5
-          const bendY = (this.mouse.y - py) * influence * this.config.bendStrength * 0.5
-          
-          points.push({ x: px + bendX, y: py + bendY })
+          if (distSq < 0.15) { // Optimization: Only calculate exponential if close enough
+            const influence = Math.exp(-distSq * 25.0) * this.mouseInfluence 
+            finalX += (this.mouse.x - px) * influence * this.config.bendStrength * 0.5
+            finalY += (this.mouse.y - py) * influence * this.config.bendStrength * 0.5
+          }
+        }
+
+        if (first) {
+          ctx.moveTo(finalX, finalY)
+          first = false
         } else {
-          points.push({ x: px, y: py })
+          ctx.lineTo(finalX, finalY)
         }
       }
 
-      const strokeColor = (alpha) => `hsla(${h}, ${s}%, ${l}%, ${alpha})`
+      ctx.lineCap = "round"
 
       // Layer 1: Outer Glow
-      ctx.beginPath()
-      ctx.lineCap = "round"
-      ctx.lineWidth = (Math.abs(hueShift) < 5 ? 6 : 4)
-      ctx.strokeStyle = strokeColor(opacity * 0.4)
-      points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.y)
-        else ctx.lineTo(p.x, p.y)
-      })
+      ctx.lineWidth = isMainWave ? 6 : 4
+      ctx.strokeStyle = strokeColor1
       ctx.stroke()
 
       // Layer 2: Inner Core
-      ctx.beginPath()
-      ctx.lineWidth = (Math.abs(hueShift) < 5 ? 2.5 : 1.8)
-      ctx.strokeStyle = strokeColor(opacity * 0.9)
-      points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.y)
-        else ctx.lineTo(p.x, p.y)
-      })
+      ctx.lineWidth = isMainWave ? 2.5 : 1.8
+      ctx.strokeStyle = strokeColor2
       ctx.stroke()
       
       // Layer 3: Ultra Bright Center
-      ctx.beginPath()
       ctx.lineWidth = 0.8
-      ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.8})`
-      points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.y)
-        else ctx.lineTo(p.x, p.y)
-      })
+      ctx.strokeStyle = strokeColor3
       ctx.stroke()
     }
   }
@@ -237,6 +230,7 @@ export class FloatingLinesEffect {
     const h = this.hsl.h
     const s = Math.min(this.hsl.s, 60)
     
+    // Background Glows
     const grad1 = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, W * 0.8)
     grad1.addColorStop(0, `hsla(${(h - 30 + 360) % 360}, ${s}%, 20%, 0.25)`)
     grad1.addColorStop(1, "rgba(0, 0, 0, 0)")
@@ -249,15 +243,21 @@ export class FloatingLinesEffect {
     ctx.fillStyle = grad2
     ctx.fillRect(0, 0, W, H)
 
+    // Optimized Stars - Using squares for better performance (hardly noticeable at small sizes)
     ctx.fillStyle = "#ffffff"
-    for (let i = 0; i < 80; i++) {
+    const starCount = 40 // Further reduced for performance
+    const starParallaxX = this.parallaxOffset.x * W * 0.1
+    const starParallaxY = this.parallaxOffset.y * H * 0.1
+    
+    for (let i = 0; i < starCount; i++) {
         const x = (Math.sin(i * 123.4) * 0.5 + 0.5) * W
         const y = (Math.cos(i * 456.7) * 0.5 + 0.5) * H
         const size = (Math.sin(i + this.time) * 0.5 + 0.5) * 1.5
         ctx.globalAlpha = 0.2 + Math.abs(Math.sin(this.time * 0.5 + i)) * 0.6
-        ctx.beginPath()
-        ctx.arc(x + this.parallaxOffset.x * W * 0.1, y + this.parallaxOffset.y * H * 0.1, size, 0, Math.PI * 2)
-        ctx.fill()
+        
+        const sx = x + starParallaxX - size / 2
+        const sy = y + starParallaxY - size / 2
+        ctx.fillRect(sx, sy, size, size)
     }
     ctx.globalAlpha = 1
 
