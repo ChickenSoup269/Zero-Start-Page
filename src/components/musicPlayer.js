@@ -25,14 +25,40 @@ export class MusicPlayer {
   init() {
     this.createElements()
     this.setupEventListeners()
-    this.applyMusicStyle(this.currentStyle) // Ensure initial style and accent color are applied
+    this.applyMusicStyle(this.currentStyle) 
     this.updateVisibility()
+    
+    // Áp dụng Skin và Shaking ban đầu từ cài đặt
+    const settings = getSettings()
+    if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
+    if (settings.musicPlayerSkin === "gameboy") this.applySkin("gameboy")
+
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
 
     // Only start polling if music player is enabled AND currently visible (expanded)
     if (this.showPlayer && this.isVisible) {
       this.startPolling()
+    }
+  }
+
+  applySkin(skin) {
+    const wrapper = this.container.querySelector(".music-player-wrapper")
+    if (!wrapper) return
+    if (skin === "gameboy") {
+      wrapper.classList.add("skin-gameboy")
+    } else {
+      wrapper.classList.remove("skin-gameboy")
+    }
+  }
+
+  applyNoShaking(disabled) {
+    const wrapper = this.container.querySelector(".music-player-wrapper")
+    if (!wrapper) return
+    if (disabled) {
+      wrapper.classList.add("no-shaking")
+    } else {
+      wrapper.classList.remove("no-shaking")
     }
   }
 
@@ -123,12 +149,12 @@ export class MusicPlayer {
     })
 
     window.addEventListener("settingsUpdated", (e) => {
-      if (e.detail.key === "musicPlayerEnabled") {
-        if (this.showPlayer && e.detail.value === true) {
-          // If already enabled, toggle between minimized and expanded
+      const { key, value } = e.detail
+      if (key === "musicPlayerEnabled") {
+        if (this.showPlayer && value === true) {
           this.togglePlayer()
         } else {
-          this.showPlayer = e.detail.value
+          this.showPlayer = value
           this.updateVisibility()
           if (this.showPlayer) {
             this.isVisible = true
@@ -141,15 +167,22 @@ export class MusicPlayer {
           }
         }
       }
-      if (e.detail.key === "music_bar_style") {
-        this.applyMusicStyle(e.detail.value)
+      if (key === "music_bar_style" || key === "musicBarStyle") {
+        this.applyMusicStyle(value)
       }
-      if (e.detail.key === "musicPlayerUseDefaultColor") {
-        this.useDefaultColor = e.detail.value
+      if (key === "musicPlayerUseDefaultColor") {
+        this.useDefaultColor = value
         this.applyMusicStyle(this.currentStyle)
       }
-      if (e.detail.key === "accentColor" && !this.useDefaultColor) {
+      if (key === "accentColor" && !this.useDefaultColor) {
         this.applyMusicStyle(this.currentStyle)
+      }
+      // Cập nhật ngay lập tức các tùy chọn của style Nhịp Tim
+      if (key === "musicPlayerSkin") {
+        this.applySkin(value)
+      }
+      if (key === "musicPlayerNoShaking") {
+        this.applyNoShaking(value)
       }
     })
   }

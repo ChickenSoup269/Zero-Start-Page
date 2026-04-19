@@ -34,6 +34,9 @@ export function showContextMenu(
   contextMenuTargetId = id
   contextMenuCallbacks = callbacks
 
+  // Dọn dẹp các mục custom cũ nếu có
+  contextMenu.querySelectorAll(".custom-music-item").forEach(el => el.remove())
+
   // Reset display
   menuEdit.style.display = "flex"
   menuDelete.style.display = "flex"
@@ -58,6 +61,48 @@ export function showContextMenu(
     } else {
       lockIcon.className = "fa-solid fa-lock"
       lockText.textContent = i18n.menu_lock || "Lock Position"
+    }
+
+    // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
+    if (id === "music") {
+      const musicStyle = settings.music_bar_style || settings.musicBarStyle
+      if (musicStyle === "heartbeat") {
+        // Nút đổi Skin GameBoy
+        const isGameBoy = settings.musicPlayerSkin === "gameboy"
+        const skinBtn = document.createElement("div")
+        skinBtn.className = "context-menu-item custom-music-item"
+        skinBtn.innerHTML = `<i class="${isGameBoy ? "fa-solid fa-mobile-screen-button" : "fa-solid fa-gamepad"}"></i> <span>${isGameBoy ? (i18n.music_player_skin_modern || "Giao diện Hiện đại") : (i18n.music_player_skin_gameboy || "Giao diện GameBoy")}</span>`
+        skinBtn.onclick = () => {
+          const newSkin = isGameBoy ? "default" : "gameboy"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerSkin", value: newSkin } }))
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(skinBtn, menuLock)
+
+        // Nút tắt bồng bềnh
+        const isNoShaking = settings.musicPlayerNoShaking
+        const shakeBtn = document.createElement("div")
+        shakeBtn.className = "context-menu-item custom-music-item"
+        shakeBtn.innerHTML = `<i class="${isNoShaking ? "fa-solid fa-wand-magic-sparkles" : "fa-solid fa-anchor"}"></i> <span>${isNoShaking ? (i18n.music_player_shaking_on || "Bật bồng bềnh") : (i18n.music_player_no_shaking || "Tắt bồng bềnh")}</span>`
+        shakeBtn.onclick = () => {
+          const newVal = !isNoShaking
+          updateSetting("musicPlayerNoShaking", newVal)
+          saveSettings()
+          window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerNoShaking", value: newVal } }))
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(shakeBtn, menuLock)
+        
+        // Đường kẻ chia
+        const separator = document.createElement("div")
+        separator.className = "context-menu-separator custom-music-item"
+        separator.style.height = "1px"
+        separator.style.background = "rgba(255,255,255,0.1)"
+        separator.style.margin = "4px 0"
+        contextMenu.insertBefore(separator, skinBtn)
+      }
     }
   } else if (["localBg", "userColor", "userAccentColor", "userGradient", "userMultiColor", "userSvgWave", "userFont"].includes(type)) {
     menuEdit.style.display = "none"

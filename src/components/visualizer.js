@@ -635,36 +635,50 @@ class MusicVisualizer {
   }
 
   _startCSSLoop() {
-    if (this._cssAnimId) return
-    this.bars.forEach((bar) => {
-      bar.style.animation = "none"
-      bar.style.transition = "none"
-    })
+    this._stopCSSLoop()
     this._lastCssTs = performance.now()
     this._currentHeights = new Array(this.barCount).fill(4)
     this._targetHeights = new Array(this.barCount).fill(4)
+    
+    // Cache các thanh bars ngay khi bắt đầu loop
+    const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
+
     const loop = (ts) => {
+      if (!this.isPlaying || (this.currentStyle === "pixel" || this.currentStyle === "moon8" || this.currentStyle === "heartbeat")) {
+          this._cssAnimId = null
+          return
+      }
+      
       const dt = Math.min((ts - this._lastCssTs) / 1000, 0.05)
       this._lastCssTs = ts
+      
+      if (!bars.length) {
+          this._cssAnimId = requestAnimationFrame(loop)
+          return
+      }
+
       const containerH = this.container.offsetHeight || 40
       const minH = 4
       const maxH = containerH - 4
+      
       if (this._realBands && this._realBands.length > 0) {
-        for (let i = 0; i < this.barCount; i++) {
+        for (let i = 0; i < bars.length; i++) {
           const bandIdx = Math.min(i, this._realBands.length - 1)
           const t = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx])))
           this._targetHeights[i] = minH + t * (maxH - minH)
         }
       } else {
-        for (let i = 0; i < this.barCount; i++) {
+        for (let i = 0; i < bars.length; i++) {
           this._simPhase[i] += this._simSpeeds[i] * dt * Math.PI
           const t = (Math.sin(this._simPhase[i]) + 1) / 2
           this._targetHeights[i] = minH + t * (maxH - minH)
         }
       }
-      for (let i = 0; i < this.barCount; i++) {
-        this._currentHeights[i] += (this._targetHeights[i] - this._currentHeights[i]) * 0.2
-        this.bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
+      
+      for (let i = 0; i < bars.length; i++) {
+        if (!this._currentHeights[i]) this._currentHeights[i] = minH
+        this._currentHeights[i] += (this._targetHeights[i] - this._currentHeights[i]) * 0.3
+        bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
       }
       this._cssAnimId = requestAnimationFrame(loop)
     }
@@ -676,27 +690,28 @@ class MusicVisualizer {
       cancelAnimationFrame(this._cssAnimId)
       this._cssAnimId = null
     }
-    this.bars.forEach((bar) => {
+    const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
+    bars.forEach((bar) => {
       bar.style.height = ""
-      bar.style.animation = ""
-      bar.style.transition = ""
     })
   }
 
   start() {
     if (this.isPlaying) return
     this.isPlaying = true
-    if (this.currentStyle !== "pixel" && this.currentStyle !== "moon8") {
-      this._startCSSLoop()
-    }
+    if (this.currentStyle === "pixel") this._startPixel()
+    else if (this.currentStyle === "moon8") this._startMoon8()
+    else if (this.currentStyle === "heartbeat") this._startHeartbeat()
+    else this._startCSSLoop()
   }
 
   stop() {
     this.isPlaying = false
     this._realBands = null
-    if (this.currentStyle !== "pixel" && this.currentStyle !== "moon8") {
-      this._stopCSSLoop()
-    }
+    this._stopCSSLoop()
+    this._stopMoon8()
+    this._stopHeartbeat()
+    this._stopPixel()
   }
 
   destroy() {

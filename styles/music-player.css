@@ -1449,8 +1449,21 @@
 }
 
 /* =========================================
-   STYLE: HEARTBEAT (NHỊP TIM) - COMPACT
+   STYLE: HEARTBEAT (NHỊP TIM)
 ========================================= */
+/* GIAO DIỆN MẶC ĐỊNH (VUÔNG DỌC) */
+@keyframes heartbeatFloating {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(4px) rotate(-1.5deg);
+  }
+}
+
 .music-style-heartbeat .music-player-wrapper {
   flex-direction: column;
   width: 150px;
@@ -1465,25 +1478,15 @@
   align-items: center;
   text-align: center;
   min-width: unset;
-  /* Thêm hiệu ứng trôi bồng bềnh */
   animation: heartbeatFloating 6s ease-in-out infinite;
 }
 
-@keyframes heartbeatFloating {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-8px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(4px) rotate(-1.5deg);
-  }
+.music-style-heartbeat .music-player-wrapper.no-shaking {
+  animation: none !important;
 }
 
-
 .music-style-heartbeat .disc-container {
-  width: 126px; /* Gọn hơn */
+  width: 126px;
   height: 160px;
   border-radius: 10px;
   overflow: hidden;
@@ -1491,6 +1494,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   position: relative;
   background: #000;
+  transition: all 0.3s ease;
 }
 
 .music-style-heartbeat .vinyl-disc {
@@ -1501,20 +1505,7 @@
   border: none;
   background-size: cover;
   background-position: center;
-  opacity: 0.8; /* Làm mờ ảnh một chút để nổi bật nhịp tim */
-}
-
-.music-style-heartbeat .music-visualizer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  z-index: 5;
-  pointer-events: none;
-  background: transparent;
-  display: block !important;
+  opacity: 0.8;
 }
 
 .music-style-heartbeat .player-main {
@@ -1525,6 +1516,7 @@
 .music-style-heartbeat .player-info h3 {
   font-size: 0.85rem;
   margin-bottom: 2px;
+  color: #fff;
 }
 
 .music-style-heartbeat .player-info p {
@@ -1533,7 +1525,7 @@
 
 .music-style-heartbeat .progress-row {
   margin: 2px 0;
-  min-width: unset; /* Fix overflow */
+  min-width: unset;
   width: 100%;
 }
 
@@ -1549,27 +1541,96 @@
 .music-style-heartbeat .music-visualizer {
   position: relative;
   width: 100%;
-  height: 40px;
+  height: 35px;
   margin-top: 8px;
-  padding: 0 10px;
+  padding: 0;
   z-index: 5;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 8px;
-  display: flex !important; /* Hiện lại các thanh */
-  align-items: flex-end;
-  justify-content: center;
-  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  display: block !important;
   overflow: hidden;
 }
 
-.music-style-heartbeat .visualizer-bar {
-  width: 3px;
-  height: 4px;
-  background: var(--accent-color, #ff4d4d);
-  border-radius: 2px;
-  transition: none; /* Tắt transition để JS điều khiển hoàn toàn */
+/* GIAO DIỆN GAMEBOY (KHI CÓ CLASS .skin-gameboy) */
+.music-style-heartbeat .music-player-wrapper.skin-gameboy {
+  width: 160px;
+  padding: 15px 12px 25px;
+  border-radius: 10px 10px 40px 10px;
+  background: #c4c3c0;
+  border: 2px solid #a3a2a0;
+  box-shadow: 
+    inset -4px -4px 0 #91908e,
+    inset 4px 4px 0 #e2e1df,
+    0 15px 35px rgba(0, 0, 0, 0.5);
 }
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .disc-container {
+  width: 130px;
+  height: 120px;
+  background: #8b9506;
+  border: 10px solid #353535;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .vinyl-disc {
+  opacity: 0.2;
+  filter: grayscale(100%) contrast(1.2);
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .player-main {
+  padding-bottom: 40px;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .player-info h3 {
+  color: #222;
+  font-family: monospace;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .player-info p {
+  color: #444;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .player-btn {
+  color: #333;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy::before {
+  content: "";
+  position: absolute;
+  bottom: 20px;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, #353535 20%, transparent 20%),
+              linear-gradient(90deg, transparent 40%, #353535 40%, #353535 60%, transparent 60%),
+              linear-gradient(0deg, transparent 40%, #353535 40%, #353535 60%, transparent 60%);
+  opacity: 0.8;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy::after {
+  content: "";
+  position: absolute;
+  bottom: 25px;
+  right: 15px;
+  width: 18px;
+  height: 18px;
+  background: #a91152;
+  border-radius: 50%;
+  box-shadow: -22px 5px 0 #a91152;
+  opacity: 0.9;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-gameboy .music-visualizer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 110px;
+  height: 100px;
+  background: transparent;
+}
+
+
 
 
 .music-style-moon8 .music-player-wrapper {
