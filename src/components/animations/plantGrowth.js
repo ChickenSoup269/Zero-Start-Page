@@ -1,18 +1,20 @@
+import { hexToRgb } from "../../utils/colors.js"
+
 export class PlantGrowthEffect {
   constructor(canvasId, color = "#4caf50") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
-    this.color = color
-    this.fps = 30
-    this.fpsInterval = 1000 / this.fps
-    this.lastDrawTime = 0
+    this.baseColor = color
     this.plants = []
-    this.resetTimer = 0
+    this.grass = []
+    this.particles = []
+    this.time = 0
+    this._animId = null
 
-    this.resize()
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
+    this.resize()
   }
 
   resize() {
@@ -23,207 +25,316 @@ export class PlantGrowthEffect {
 
   initPlants() {
     this.plants = []
-    this.resetTimer = 0
-    const rootCount = Math.floor(window.innerWidth / 200) || 1
+    this.grass = []
+    this.particles = []
+    
+    // 1. Grass - Medium density
+    const grassCount = Math.floor(window.innerWidth / 8)
+    for (let i = 0; i < grassCount; i++) {
+      this.grass.push({
+        x: Math.random() * window.innerWidth,
+        y: window.innerHeight + 5,
+        height: 0,
+        targetHeight: Math.random() * 35 + 15,
+        angle: (Math.random() - 0.5) * 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.04 + 0.02,
+        w: Math.random() * 2 + 1
+      })
+    }
 
-    for (let i = 0; i < rootCount + 1; i++) {
-      const startX =
-        (window.innerWidth / rootCount) * i + (Math.random() * 100 - 50)
-      // Start with thickness between 8 and 14
-      const initialSize = Math.random() * 6 + 8
-      this.plants.push(
-        this.createBranch(
-          startX,
-          window.innerHeight + 10,
-          -Math.PI / 2,
-          initialSize,
-          0,
-        ),
-      )
+    // 2. Bottom Plants - Balanced density
+    const bottomRootCount = Math.floor(window.innerWidth / 250) + 2
+    for (let i = 0; i < bottomRootCount; i++) {
+      const x = (window.innerWidth / (bottomRootCount - 1)) * i + (Math.random() * 100 - 50)
+      const isVine = Math.random() < 0.3
+      this.plants.push(this.createBranch(x, window.innerHeight + 10, -Math.PI / 2, isVine ? 4 : 12, 0, isVine, false))
+    }
+
+    // 3. Top Hanging Vines - Balanced
+    const topRootCount = Math.floor(window.innerWidth / 350) + 1
+    for (let i = 0; i < topRootCount; i++) {
+      const x = (window.innerWidth / (topRootCount)) * (i + 0.5) + (Math.random() * 100 - 50)
+      this.plants.push(this.createBranch(x, -10, Math.PI / 2, 4, 0, true, true))
     }
   }
 
-  createBranch(x, y, angle, size, generation) {
+  createBranch(x, y, angle, size, gen, isVine = false, isTopDown = false) {
+    const baseLen = isTopDown ? 70 : (isVine ? 60 : 100)
+    const maxLen = baseLen + Math.random() * 80 - gen * 15
+    
     return {
-      points: [{ x, y }],
+      x, y,
       angle,
       size,
-      initialSize: size,
-      generation,
-      active: true,
-      leaves: [],
+      gen,
+      isVine,
+      isTopDown,
+      length: 0,
+      targetLength: Math.max(30, maxLen),
       children: [],
+      leaves: [],
+      tendrils: [],
+      flower: null,
+      growing: true,
+      phase: Math.random() * Math.PI * 2,
+      wiggleSpeed: (isVine || isTopDown) ? 0.03 : 0.015,
+      wiggleAmp: (isVine || isTopDown) ? 0.2 : 0.08,
+      spiralDir: Math.random() > 0.5 ? 1 : -1
     }
   }
 
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = performance.now()
     this.canvas.style.display = "block"
     this.initPlants()
 
     const animateLoop = (t) => {
       if (!this.active) return
-      this.animate(t)
-      requestAnimationFrame(animateLoop)
+      this.time = t / 1000
+      this.update()
+      this.draw()
+      this._animId = requestAnimationFrame(animateLoop)
     }
-    requestAnimationFrame(animateLoop)
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.canvas.style.display = "none"
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
-  hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
+  update() {
+    this.grass.forEach(g => { if (g.height < g.targetHeight) g.height += 0.6 })
+
+    const updateBranch = (b) => {
+      if (b.growing) {
+        b.length += (b.isVine || b.isTopDown) ? 1.4 : 1.0
+        
+        if (b.length >= b.targetLength) {
+          b.growing = false
+          
+          const maxGen = b.isTopDown ? 4 : (b.isVine ? 4 : 3)
+          if (b.gen < maxGen) {
+            const chance = (b.isVine || b.isTopDown) ? 0.6 : 0.5
+            if (Math.random() < chance) {
+              const numChildren = 1 // Mostly single branch for clarity
+              for (let i = 0; i < numChildren; i++) {
+                let childAngle = b.angle + (Math.random() - 0.5) * ( (b.isVine || b.isTopDown) ? 1.2 : 0.6)
+                const endX = b.x + Math.cos(b.angle) * b.length
+                const endY = b.y + Math.sin(b.angle) * b.length
+                
+                b.children.push(this.createBranch(
+                  endX, endY, 
+                  childAngle, 
+                  b.size * 0.75, 
+                  b.gen + 1, 
+                  b.isVine,
+                  b.isTopDown
+                ))
+              }
+            }
+          }
+
+          if (!b.isVine && !b.isTopDown && b.gen >= 2 && Math.random() < 0.3) {
+            b.flower = { size: 0, targetSize: Math.random() * 10 + 6 }
+          }
         }
-      : { r: 76, g: 175, b: 80 }
+
+        // Balanced leaf density
+        if (Math.random() < ( (b.isVine || b.isTopDown) ? 0.12 : 0.08)) {
+          const endX = b.x + Math.cos(b.angle) * b.length
+          const endY = b.y + Math.sin(b.angle) * b.length
+          
+          if ((b.isVine || b.isTopDown) && Math.random() < 0.3) {
+            b.tendrils.push({
+              x: endX, y: endY,
+              angle: b.angle + (Math.random() - 0.5) * 2,
+              size: 0, targetSize: Math.random() * 20 + 10,
+              dir: Math.random() > 0.5 ? 1 : -1
+            })
+          } else {
+            b.leaves.push({
+              p: b.length / b.targetLength,
+              side: Math.random() > 0.5 ? 1 : -1,
+              size: 0,
+              targetSize: (b.isVine || b.isTopDown) ? Math.random() * 4 + 3 : Math.random() * 7 + 5,
+              angle: (Math.random() - 0.5) * 0.5
+            })
+          }
+        }
+      }
+
+      b.leaves.forEach(l => { if (l.size < l.targetSize) l.size += 0.25 })
+      b.tendrils.forEach(t => { if (t.size < t.targetSize) t.size += 0.6 })
+      if (b.flower && b.flower.size < b.flower.targetSize) b.flower.size += 0.15
+
+      b.children.forEach(updateBranch)
+    }
+
+    this.plants.forEach(updateBranch)
+
+    if (Math.random() < 0.03) this.spawnPetal()
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i]
+      p.x += p.vx + Math.sin(this.time + p.y * 0.01) * 0.4
+      p.y += p.vy
+      p.r += p.vr
+      if (p.y > this.canvas.height + 20) this.particles.splice(i, 1)
+    }
   }
 
-  animate(currentTime = 0) {
-    const elapsed = currentTime - this.lastDrawTime
-    if (elapsed < this.fpsInterval) return
-    this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
+  spawnPetal() {
+    if (this.particles.length > 30) return
+    this.particles.push({
+      x: Math.random() * this.canvas.width,
+      y: -20,
+      vx: Math.random() * 0.8 - 0.4,
+      vy: Math.random() * 1 + 1,
+      r: Math.random() * Math.PI * 2,
+      vr: Math.random() * 0.06 - 0.03,
+      size: Math.random() * 3 + 2,
+      color: `hsl(${Math.random() * 40 + 330}, 80%, 85%)`
+    })
+  }
 
+  draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    const rgb = hexToRgb(this.baseColor)
+    
+    this.drawGrassLayer(rgb)
 
-    let activeBranches = 0
-    const rgb = this.hexToRgb(this.color)
+    const drawBranch = (b) => {
+      const wind = Math.sin(this.time * b.wiggleSpeed + b.phase) * b.wiggleAmp
+      const spiral = (b.isVine || b.isTopDown) ? Math.sin(this.time * 2 + b.phase) * 0.1 * b.spiralDir : 0
+      const currentAngle = b.angle + wind + spiral
+      
+      const endX = b.x + Math.cos(currentAngle) * b.length
+      const endY = b.y + Math.sin(currentAngle) * b.length
 
-    const growBranch = (branch) => {
-      if (branch.active) {
-        activeBranches++
-        const last = branch.points[branch.points.length - 1]
-
-        // Organic horizontal sway
-        branch.angle += (Math.random() - 0.5) * 0.2
-        // Bias upwards to prevent them from growing straight down
-        if (branch.angle < -Math.PI) branch.angle += 0.1
-        if (branch.angle > 0) branch.angle -= 0.1
-
-        const nx = last.x + Math.cos(branch.angle) * 5
-        const ny = last.y + Math.sin(branch.angle) * 5
-        branch.points.push({ x: nx, y: ny })
-
-        // Taper branch size
-        branch.size -= 0.04
-
-        // Spawn leaves randomly
-        if (Math.random() < 0.1 && branch.size > 2) {
-          branch.leaves.push({
-            x: nx,
-            y: ny,
-            angle:
-              branch.angle +
-              (Math.random() > 0.5 ? 1 : -1) *
-                (Math.PI / 2 + Math.random() * 0.5),
-            scale: 0,
-            maxScale: Math.random() * 6 + 4,
-          })
-        }
-
-        // Spawn child branches
-        if (Math.random() < 0.02 && branch.size > 4 && branch.generation < 5) {
-          branch.children.push(
-            this.createBranch(
-              nx,
-              ny,
-              branch.angle +
-                (Math.random() > 0.5 ? 1 : -1) *
-                  (Math.PI / 4 + Math.random() * 0.3),
-              branch.size * 0.65,
-              branch.generation + 1,
-            ),
-          )
-        }
-
-        if (
-          branch.size <= 0.5 ||
-          ny < -50 ||
-          nx < -50 ||
-          nx > this.canvas.width + 50
-        ) {
-          branch.active = false
-        }
+      this.ctx.beginPath()
+      this.ctx.lineWidth = Math.max(0.5, b.size)
+      this.ctx.lineCap = "round"
+      
+      if (b.isVine || b.isTopDown) {
+        this.ctx.strokeStyle = `rgba(${rgb.r * 0.3}, ${rgb.g * 0.7}, ${rgb.b * 0.2}, 0.6)`
+      } else {
+        const grad = this.ctx.createLinearGradient(b.x, b.y, endX, endY)
+        grad.addColorStop(0, `rgba(${rgb.r * 0.5}, ${rgb.g * 0.4}, ${rgb.b * 0.2}, 0.8)`)
+        grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`)
+        this.ctx.strokeStyle = grad
       }
 
-      // Animate leaves opening
-      branch.leaves.forEach((leaf) => {
-        if (leaf.scale < leaf.maxScale) leaf.scale += 0.3
+      this.ctx.moveTo(b.x, b.y)
+      this.ctx.lineTo(endX, endY)
+      this.ctx.stroke()
+
+      b.tendrils.forEach(t => {
+        this.drawTendril(t.x, t.y, t.angle + wind, t.size, t.dir, rgb)
       })
 
-      branch.children.forEach(growBranch)
-    }
-
-    this.plants.forEach(growBranch)
-
-    // Apply fading when resetting
-    if (activeBranches === 0) {
-      if (this.resetTimer > 150) {
-        this.ctx.globalAlpha = Math.max(0, 1 - (this.resetTimer - 150) / 50)
-      }
-    } else {
-      this.ctx.globalAlpha = 1
-    }
-
-    // Render configuration
-    this.ctx.lineCap = "round"
-    this.ctx.lineJoin = "round"
-
-    // Draw branch structure
-    const drawBranch = (branch) => {
-      // Draw branch stem
-      if (branch.points.length > 0) {
-        this.ctx.beginPath()
-        // Use initial branch size for the whole path
-        this.ctx.lineWidth = Math.max(1, branch.initialSize * 0.8)
-        this.ctx.strokeStyle = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
-        this.ctx.moveTo(branch.points[0].x, branch.points[0].y)
-        for (let i = 1; i < branch.points.length; i++) {
-          this.ctx.lineTo(branch.points[i].x, branch.points[i].y)
-        }
-        this.ctx.stroke()
-      }
-
-      // Draw branch leaves
-      // Slightly lighter color for leaves
-      this.ctx.fillStyle = `rgba(${Math.min(rgb.r + 30, 255)}, ${Math.min(rgb.g + 30, 255)}, ${Math.min(rgb.b + 30, 255)}, 0.85)`
-      branch.leaves.forEach((leaf) => {
-        this.ctx.save()
-        this.ctx.translate(leaf.x, leaf.y)
-        this.ctx.rotate(leaf.angle)
-        this.ctx.beginPath()
-        this.ctx.moveTo(0, 0)
-        // Draw simple organic leaf shape
-        this.ctx.quadraticCurveTo(leaf.scale, -leaf.scale, leaf.scale * 2, 0)
-        this.ctx.quadraticCurveTo(leaf.scale, leaf.scale, 0, 0)
-        this.ctx.fill()
-        this.ctx.restore()
+      b.leaves.forEach(l => {
+        const lx = b.x + Math.cos(currentAngle) * (b.length * l.p)
+        const ly = b.y + Math.sin(currentAngle) * (b.length * l.p)
+        this.drawLeaf(lx, ly, currentAngle + (Math.PI/2) * l.side + l.angle, l.size, (b.isVine || b.isTopDown), rgb)
       })
 
-      branch.children.forEach(drawBranch)
+      if (b.flower) this.drawFlower(endX, endY, b.flower.size, rgb)
+
+      b.children.forEach(c => {
+        c.x = endX
+        c.y = endY
+        drawBranch(c)
+      })
     }
 
     this.plants.forEach(drawBranch)
 
-    this.ctx.globalAlpha = 1.0
+    this.particles.forEach(p => {
+      this.ctx.save()
+      this.ctx.translate(p.x, p.y)
+      this.ctx.rotate(p.r)
+      this.ctx.fillStyle = p.color
+      this.ctx.beginPath()
+      this.ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI * 2)
+      this.ctx.fill()
+      this.ctx.restore()
+    })
+  }
 
-    // Reset game logic
-    if (activeBranches === 0) {
-      this.resetTimer++
-      if (this.resetTimer > 200) {
-        // wait ~6 seconds then fade out and reset
-        this.initPlants()
-      }
+  drawGrassLayer(rgb) {
+    this.ctx.lineCap = "round"
+    this.grass.forEach(g => {
+      const wind = Math.sin(this.time * g.speed + g.phase) * 0.2
+      const angle = g.angle + wind
+      const endX = g.x + Math.cos(-Math.PI/2 + angle) * g.height
+      const endY = g.y + Math.sin(-Math.PI/2 + angle) * g.height
+      
+      this.ctx.beginPath()
+      this.ctx.lineWidth = g.w
+      const r = Math.max(0, rgb.r - 20)
+      const g_val = Math.min(255, rgb.g + (g.height / 2))
+      const b = Math.max(0, rgb.b - 20)
+      this.ctx.strokeStyle = `rgba(${r}, ${g_val}, ${b}, 0.6)`
+      this.ctx.moveTo(g.x, g.y)
+      this.ctx.quadraticCurveTo(g.x, g.y - g.height * 0.5, endX, endY)
+      this.ctx.stroke()
+    })
+  }
+
+  drawTendril(x, y, angle, size, dir, rgb) {
+    this.ctx.beginPath()
+    this.ctx.lineWidth = 0.5
+    this.ctx.strokeStyle = `rgba(${rgb.r * 0.3}, ${rgb.g * 0.8}, ${rgb.b * 0.2}, 0.4)`
+    this.ctx.moveTo(x, y)
+    for (let i = 0; i < size; i++) {
+      const a = angle + Math.sin(i * 0.4) * 0.6 * dir
+      x += Math.cos(a) * 2
+      y += Math.sin(a) * 2
+      this.ctx.lineTo(x, y)
     }
+    this.ctx.stroke()
+  }
+
+  drawLeaf(x, y, angle, size, isSmall, rgb) {
+    if (size < 0.1) return
+    this.ctx.save()
+    this.ctx.translate(x, y)
+    this.ctx.rotate(angle)
+    
+    const r = isSmall ? rgb.r * 0.5 : rgb.r
+    const g_val = isSmall ? rgb.g * 0.7 : rgb.g
+    const b = isSmall ? rgb.b * 0.3 : rgb.b
+    
+    this.ctx.fillStyle = `rgba(${r}, ${g_val}, ${b}, 0.7)`
+    this.ctx.beginPath()
+    this.ctx.moveTo(0, 0)
+    this.ctx.quadraticCurveTo(size * 1.5, -size * 1.8, size * 3, 0)
+    this.ctx.quadraticCurveTo(size * 1.5, size * 1.8, 0, 0)
+    this.ctx.fill()
+    this.ctx.restore()
+  }
+
+  drawFlower(x, y, size, rgb) {
+    if (size < 0.1) return
+    this.ctx.save()
+    this.ctx.translate(x, y)
+    const hue = 340 + Math.sin(this.time * 0.5) * 30
+    this.ctx.fillStyle = `hsl(${hue}, 80%, 75%)`
+    for (let i = 0; i < 5; i++) {
+      this.ctx.rotate((Math.PI * 2) / 5)
+      this.ctx.beginPath()
+      this.ctx.moveTo(0, 0)
+      this.ctx.quadraticCurveTo(size * 1.8, -size * 1.8, size * 3.5, 0)
+      this.ctx.quadraticCurveTo(size * 1.8, size * 1.8, 0, 0)
+      this.ctx.fill()
+    }
+    this.ctx.fillStyle = "#fff"
+    this.ctx.beginPath()
+    this.ctx.arc(0, 0, size * 0.5, 0, Math.PI * 2)
+    this.ctx.fill()
+    this.ctx.restore()
   }
 }
