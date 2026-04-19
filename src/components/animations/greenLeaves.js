@@ -89,7 +89,7 @@ export class GreenLeavesEffect {
       -s * 0.1,
       s * 0.55,
     )
-    grd.addColorStop(0, `rgba(255,255,255,\${opacity * 0.28})`)
+    grd.addColorStop(0, `rgba(255,255,255,${opacity * 0.28})`)
     grd.addColorStop(1, `rgba(255,255,255,0)`)
     ctx.beginPath()
     ctx.ellipse(0, 0, s * 0.42, s * 0.75, 0, 0, Math.PI * 2)
@@ -100,13 +100,13 @@ export class GreenLeavesEffect {
     ctx.beginPath()
     ctx.moveTo(0, s * 0.72)
     ctx.bezierCurveTo(s * 0.04, s * 0.2, -s * 0.04, -s * 0.2, 0, -s * 0.72)
-    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.5})`
+    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.5})`
     ctx.lineWidth = s * 0.06
     ctx.stroke()
 
     // A couple of side veins
     ctx.lineWidth = s * 0.03
-    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.3})`
+    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.3})`
 
     ctx.beginPath()
     ctx.moveTo(0, s * 0.2)
@@ -161,7 +161,7 @@ export class GreenLeavesEffect {
     ctx.moveTo(0, s * 0.72)
     ctx.lineTo(0, s * 1.05)
     ctx.lineWidth = s * 0.07
-    ctx.strokeStyle = `rgba(0,80,0,\${opacity * 0.55})`
+    ctx.strokeStyle = `rgba(0,80,0,${opacity * 0.55})`
     ctx.stroke()
 
     ctx.restore()

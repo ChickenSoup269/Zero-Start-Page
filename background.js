@@ -166,7 +166,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               ]
               chrome.runtime.sendMessage(
                 { action: "audioSyncData", samples },
-                () => {},
+                () => {
+                  // Silently ignore connection errors
+                  const err = chrome.runtime.lastError;
+                },
               )
             }
 
@@ -240,6 +243,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       action: "audioSyncData",
       samples: request.samples,
       _relay: true,
+    }, () => {
+      const err = chrome.runtime.lastError;
     })
     sendResponse({ ok: true })
     return true

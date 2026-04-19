@@ -316,6 +316,7 @@ export class MusicPlayer {
       this.platformIcon.style.display = "none"
     }
 
+    const wasPlaying = this.container.querySelector(".vinyl-disc").classList.contains("playing")
     this.isPlaying = !data.paused
 
     const btn = document.getElementById("play-pause-btn")
@@ -326,9 +327,17 @@ export class MusicPlayer {
     if (this.isPlaying) {
       this.disc.classList.add("playing")
       this.visualizer.start()
+      // Chỉ gửi yêu cầu sync nếu trước đó chưa phát (tránh spam)
+      if (!wasPlaying) {
+        chrome.runtime.sendMessage({ action: "startAudioSync" })
+      }
     } else {
       this.disc.classList.remove("playing")
       this.visualizer.stop()
+      // Chỉ gửi yêu cầu stop nếu trước đó đang phát
+      if (wasPlaying) {
+        chrome.runtime.sendMessage({ action: "stopAudioSync" })
+      }
     }
 
     // Update thumbnail

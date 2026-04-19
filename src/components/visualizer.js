@@ -25,6 +25,13 @@ class MusicVisualizer {
     this._targetHeights = [4, 4, 4, 4]
     this._simPhase = [0, 1.1, 2.2, 3.3]
     this._simSpeeds = [1.9, 2.4, 1.6, 2.8]
+
+    // Listen for audio data from background
+    chrome.runtime.onMessage.addListener((request) => {
+      if (request.action === "audioSyncData" && request.samples) {
+        this.feedFrequencyData(request.samples)
+      }
+    })
   }
 
   init(musicPlayerContainer) {
@@ -289,6 +296,7 @@ class MusicVisualizer {
 
   _pixelFrame(dt) {
     const canvas = this.pixelCanvas
+    if (!canvas) return
     const W = this.container.offsetWidth || 120
     const H = this.container.offsetHeight || 40
     if (canvas.width !== W) canvas.width = W
@@ -319,11 +327,13 @@ class MusicVisualizer {
         }
       }
     }
+
     for (let i = 0; i < this.barCount; i++) {
       let norm
       if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
-        const bandIdx = Math.min(i, this._realBands.length - 1)
-        norm = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx])))
+        // Trải đều 4 dải âm lên các cột Pixel
+        const bandIdx = Math.floor((i / this.barCount) * this._realBands.length)
+        norm = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx] * 1.5)))
       } else {
         if (this.isPlaying) {
           this.pixelPhase[i] += this.pixelSpeeds[i] * dt * Math.PI
@@ -663,9 +673,23 @@ class MusicVisualizer {
       
       if (this._realBands && this._realBands.length > 0) {
         for (let i = 0; i < bars.length; i++) {
-          const bandIdx = Math.min(i, this._realBands.length - 1)
-          const t = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx])))
-          this._targetHeights[i] = minH + t * (maxH - minH)
+          // Trải đều 4 dải âm lên số lượng thanh bar bất kỳ
+          const bandIdx = Math.floor((i / bars.length) * this._realBands.length)
+          let val = this._realBands[bandIdx]
+          
+          // Tính toán norm với hệ số Gain mạnh
+          let t = Math.sqrt(Math.max(0, Math.min(1, val * 1.6)))
+          
+          // Tối ưu riêng cho từng style
+          if (this.currentStyle === "spotify" || this.currentStyle === "sidebar" || this.currentStyle === "neon") {
+            t *= 1.3 // Modern snappy styles
+          } else if (this.currentStyle === "soundcloud") {
+            t *= 1.15 // Waveform style
+          } else if (this.currentStyle === "cassette") {
+            t *= 1.1 // Retro EQ style
+          }
+
+          this._targetHeights[i] = minH + Math.min(1, t) * (maxH - minH)
         }
       } else {
         for (let i = 0; i < bars.length; i++) {
@@ -677,8 +701,12 @@ class MusicVisualizer {
       
       for (let i = 0; i < bars.length; i++) {
         if (!this._currentHeights[i]) this._currentHeights[i] = minH
-        this._currentHeights[i] += (this._targetHeights[i] - this._currentHeights[i]) * 0.3
+        // Hệ số Lerp 0.8 giúp phản hồi Snappy tuyệt vời cho tất cả style thanh bar
+        this._currentHeights[i] += (this._targetHeights[i] - this._currentHeights[i]) * 0.8
         bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
+        if (!bars[i].classList.contains("playing")) {
+          bars[i].classList.add("playing")
+        }
       }
       this._cssAnimId = requestAnimationFrame(loop)
     }
@@ -693,6 +721,7 @@ class MusicVisualizer {
     const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
     bars.forEach((bar) => {
       bar.style.height = ""
+      bar.classList.remove("playing")
     })
   }
 
