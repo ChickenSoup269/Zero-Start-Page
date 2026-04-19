@@ -57,7 +57,7 @@ class MusicVisualizer {
     if (style === "minimal" || style === "pill") newBarCount = 4
     if (style === "spotify" || style === "sidebar") newBarCount = 4
     if (style === "soundcloud") newBarCount = 6
-    if (style === "moon8") newBarCount = 0
+    if (style === "heartbeat" || style === "moon8") newBarCount = 0
 
     if (newBarCount !== this.barCount) {
       this.barCount = newBarCount
@@ -70,18 +70,160 @@ class MusicVisualizer {
     if (prev === "moon8" && style !== "moon8") {
       this._stopMoon8()
     }
+    if (prev === "heartbeat" && style !== "heartbeat") {
+      this._stopHeartbeat()
+    }
 
     if (style === "pixel") {
       this._stopCSSLoop()
       this._stopMoon8()
+      this._stopHeartbeat()
       this._startPixel()
     } else if (style === "moon8") {
       this._stopCSSLoop()
       this._stopPixel()
+      this._stopHeartbeat()
       this._startMoon8()
+    } else if (style === "heartbeat") {
+      this._stopCSSLoop()
+      this._stopPixel()
+      this._stopMoon8()
+      this._startHeartbeat()
     } else {
       if (this.isPlaying) this._startCSSLoop()
     }
+  }
+
+  _startHeartbeat() {
+    this._stopHeartbeat()
+    const canvas = document.createElement("canvas")
+    canvas.className = "heartbeat-canvas"
+    canvas.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
+    this.heartbeatCanvas = canvas
+    
+    if (this.container) {
+      this.container.appendChild(canvas)
+    }
+
+    this.heartbeatPoints = []
+    this._pulseTimer = 0
+    this._lastTs = performance.now()
+    this._baseYOffset = 0
+
+    const loop = (ts) => {
+      if (this.currentStyle !== "heartbeat") return
+      const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
+      this._lastTs = ts
+      this._heartbeatFrame(dt)
+      this.heartbeatAnimId = requestAnimationFrame(loop)
+    }
+    this.heartbeatAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopHeartbeat() {
+    if (this.heartbeatAnimId) {
+      cancelAnimationFrame(this.heartbeatAnimId)
+      this.heartbeatAnimId = null
+    }
+    if (this.heartbeatCanvas) {
+      this.heartbeatCanvas.remove()
+      this.heartbeatCanvas = null
+    }
+    this.heartbeatPoints = []
+  }
+
+  _heartbeatFrame(dt) {
+    const canvas = this.heartbeatCanvas
+    if (!canvas) return
+    const W = canvas.offsetWidth
+    const H = canvas.offsetHeight
+    
+    if (canvas.width !== W * 2) {
+      canvas.width = W * 2
+      canvas.height = H * 2
+    }
+
+    const ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
+    ctx.save()
+    ctx.scale(2, 2)
+
+    const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent-color").trim() || "#ff4d4d"
+
+    let norm = 0
+    let active = false
+    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
+      norm = (this._realBands[0] + this._realBands[1]) / 2
+      active = true
+    } else if (this.isPlaying) {
+      norm = 0.1
+      active = true
+    }
+
+    this._baseYOffset += (Math.random() - 0.5) * 2 
+    this._baseYOffset *= 0.98 
+    const drift = Math.sin(Date.now() * 0.003) * 5 
+    const currentBaseY = (H / 2) + this._baseYOffset + drift
+
+    const scrollSpeed = (W / 1.5) * dt 
+    
+    if (!this.heartbeatPoints) this.heartbeatPoints = []
+    
+    const lastX = this.heartbeatPoints.length > 0 ? this.heartbeatPoints[this.heartbeatPoints.length - 1].x : W
+    
+    if (lastX < W + 20) {
+        this._pulseTimer += dt
+        const beatInterval = active ? (0.7 - norm * 0.3) : 1.2 
+        
+        if (this._pulseTimer >= beatInterval) {
+            this._pulseTimer = 0
+            const bx = W + 10
+            const amp = active ? (1 + norm * 3.3) : 1.2
+            
+            this.heartbeatPoints.push({ x: bx, y: currentBaseY })
+            this.heartbeatPoints.push({ x: bx + 3, y: currentBaseY - 2 * amp })
+            this.heartbeatPoints.push({ x: bx + 5, y: currentBaseY + 2 * amp })
+            this.heartbeatPoints.push({ x: bx + 9, y: currentBaseY - 18 * amp })
+            this.heartbeatPoints.push({ x: bx + 14, y: currentBaseY + 28 * amp })
+            this.heartbeatPoints.push({ x: bx + 18, y: currentBaseY - 8 * amp })
+            this.heartbeatPoints.push({ x: bx + 22, y: currentBaseY })
+        } else {
+            const noise = (Math.random() - 0.5) * (active ? (1 + norm * 5) : 0.5)
+            this.heartbeatPoints.push({ x: W + 10, y: currentBaseY + noise })
+        }
+    }
+
+    if (this.heartbeatPoints.length > 1) {
+        ctx.beginPath()
+        ctx.strokeStyle = accent
+        ctx.lineWidth = 2.5
+        ctx.lineJoin = "round"
+        ctx.shadowBlur = 10
+        ctx.shadowColor = accent
+
+        for (let i = 0; i < this.heartbeatPoints.length; i++) {
+            const p = this.heartbeatPoints[i]
+            p.x -= scrollSpeed
+            if (i === 0) ctx.moveTo(p.x, p.y)
+            else ctx.lineTo(p.x, p.y)
+        }
+        ctx.stroke()
+        
+        const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
+        if (lastP.x <= W) {
+            ctx.beginPath()
+            ctx.fillStyle = "#fff"
+            ctx.arc(lastP.x, lastP.y, 2, 0, Math.PI * 2)
+            ctx.fill()
+        }
+    }
+
+    if (this.heartbeatPoints.length > 0 && this.heartbeatPoints[0].x < -50) {
+        this.heartbeatPoints.shift()
+    }
+    
+    ctx.restore()
   }
 
   _recreateBars() {

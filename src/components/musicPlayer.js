@@ -188,6 +188,9 @@ export class MusicPlayer {
         case "moon8":
           accentColor = "#fff9c4"
           break
+        case "heartbeat":
+          accentColor = "#ff4d4d"
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }
