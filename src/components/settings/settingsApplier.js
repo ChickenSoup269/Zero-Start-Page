@@ -1252,6 +1252,20 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.fallingLeavesSettledSkinSelect.value =
         settings.fallingLeavesSkin || "maple"
     }
+
+    // Sunbeam
+    DOM.sunbeamColorSetting.style.display =
+      settings.effect === "sunbeam" ? "block" : "none"
+    DOM.sunbeamAngleSetting.style.display =
+      settings.effect === "sunbeam" ? "block" : "none"
+    if (DOM.sunbeamColorPicker) {
+      DOM.sunbeamColorPicker.value = settings.sunbeamColor || "#ffffff"
+    }
+    if (DOM.sunbeamAngleInput) {
+      DOM.sunbeamAngleInput.value = String(settings.sunbeamAngle ?? 0)
+      if (DOM.sunbeamAngleValue)
+        DOM.sunbeamAngleValue.textContent = DOM.sunbeamAngleInput.value
+    }
     DOM.bubblesColorSetting.style.display =
       settings.effect === "bubbles" ? "block" : "none"
     DOM.gridScanColorSetting.style.display =

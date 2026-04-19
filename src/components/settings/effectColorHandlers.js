@@ -144,6 +144,22 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.snowfallEffect.color = DOM.snowfallColorPicker.value
   })
 
+  DOM.sunbeamColorPicker?.addEventListener("input", () => {
+    updateSetting("sunbeamColor", DOM.sunbeamColorPicker.value)
+    saveSettings()
+    if (effectInstances.sunbeamEffect)
+      effectInstances.sunbeamEffect.updateColor(DOM.sunbeamColorPicker.value)
+  })
+
+  DOM.sunbeamAngleInput?.addEventListener("input", () => {
+    const angle = Number(DOM.sunbeamAngleInput.value)
+    if (DOM.sunbeamAngleValue) DOM.sunbeamAngleValue.textContent = angle
+    updateSetting("sunbeamAngle", angle)
+    saveSettings()
+    if (effectInstances.sunbeamEffect)
+      effectInstances.sunbeamEffect.setAngle(angle)
+  })
+
   DOM.bubblesColorPicker.addEventListener("input", () => {
     updateSetting("bubbleColor", DOM.bubblesColorPicker.value)
     saveSettings()

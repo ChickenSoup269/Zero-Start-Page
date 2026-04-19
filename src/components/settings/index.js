@@ -213,7 +213,10 @@ export function initSettings() {
       "effect-canvas",
       settings.fallingLeavesSkin || "maple",
     ),
-    sunbeamEffect: new SunbeamEffect("effect-canvas"),
+    sunbeamEffect: new SunbeamEffect("effect-canvas", {
+      color: settings.sunbeamColor || "#ffffff",
+      angle: settings.sunbeamAngle ?? 0,
+    }),
     lightPillarsEffect: new LightPillarsEffect("effect-canvas"),
     pixelWeatherEffect: new PixelWeatherEffect(
       "effect-canvas",

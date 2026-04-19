@@ -129,6 +129,8 @@ const defaultSettings = {
   sakuraColor: "#ffb7c5",
   snowfallColor: "#ffffff",
   fallingLeavesSkin: "maple",
+  sunbeamColor: "#ffffff",
+  sunbeamAngle: 0,
   bubbleColor: "#60c8ff",
   rainHDColor: "#99ccff",
   stormRainColor: "#7dd3fc",

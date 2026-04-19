@@ -270,8 +270,11 @@
   "setting_shooting_star_color": "Màu sao băng",
   "setting_sakura_color": "Màu cánh hoa anh đào",
   "setting_snowfall_color": "Màu bông tuyết",
-  "setting_falling_leaves_skin": "Kiểu lá",
-  "leaf_skin_maple": "Lá Phong",
+  "setting_falling_leaves_skin": "Loại lá",
+  "setting_sunbeam_color": "Màu tia sáng",
+  "setting_sunbeam_angle": "Góc tia sáng",
+  "leaf_skin_maple": "Lá phong",
+
   "leaf_skin_oak": "Lá Sồi",
   "leaf_skin_simple": "Lá Đơn Giản",
   "leaf_skin_ginkgo": "Lá Bạch Quả",

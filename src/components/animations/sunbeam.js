@@ -1,38 +1,60 @@
 /**
- * SunbeamEffect (Dynamic White Light Wall Edition)
- * A unified wall of pure white light with autonomous shimmering motion. 
- * Features vertical fading, depth-based blurring, and continuous light dancing.
+ * SunbeamEffect (Pro Light Ray - Spreading Edition)
+ * A stunning god-ray effect with sharp cores and soft volumetric falloff.
+ * Originate from the center and slowly spread out.
  */
 export class SunbeamEffect {
-  constructor(canvasId, color = "#ffffff") {
+  constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
     if (!this.canvas) return
     this.ctx = this.canvas.getContext("2d", { alpha: true })
     this.active = false
-    this.color = color
-    this.time = 0
-    this.sunPos = { x: 0, y: 0 }
-    this.angle = 0 
+    
+    // Handle both cases: options as string (old) or object (new)
+    if (typeof options === 'string') {
+      this.color = options
+      this.angle = 0
+    } else {
+      this.color = options.color || "#ffffff"
+      this.angle = options.angle || 0
+    }
 
+    this.time = 0
+    this.rays = []
+    
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
+    this._initRays()
   }
 
-  updateColor(hex) {
-    this.color = hex
-  }
-
-  setAngle(deg) {
-    this.angle = deg
+  _initRays() {
+    this.rays = []
+    const count = 8 
+    for (let i = 0; i < count; i++) {
+      this.rays.push({
+        id: i,
+        width: 150 + Math.random() * 250,
+        spreadOffset: (i / (count - 1) - 0.5) * 1.5,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.002 + Math.random() * 0.004,
+        maxOpacity: 0.12 + Math.random() * 0.18,
+      })
+    }
   }
 
   resize() {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
-    this.sunPos.x = this.canvas.width * 0.5
-    this.sunPos.y = -this.canvas.height * 0.2
+  }
+
+  updateColor(color) {
+    this.color = color
+  }
+
+  setAngle(deg) {
+    this.angle = deg
   }
 
   start() {
@@ -48,115 +70,106 @@ export class SunbeamEffect {
     this.canvas.style.display = "none"
   }
 
-  _drawLightWall(baseAngle) {
-    const ctx = this.ctx
-    const W = this.canvas.width
-    const H = this.canvas.height
-    const diag = Math.sqrt(W * W + H * H)
-    const reach = diag * 1.5
-
-    let r=255, g=255, b=255 
-    if (this.color && this.color !== "#ffffff" && this.color.startsWith('#')) {
-        r = parseInt(this.color.slice(1, 3), 16)
-        g = parseInt(this.color.slice(3, 5), 16)
-        b = parseInt(this.color.slice(5, 7), 16)
-    }
-
-    ctx.save()
-    ctx.globalCompositeOperation = "screen"
-
-    // Draw multiple layers of light with autonomous motion
-    const layers = 8 // More layers for smoother motion
-    for (let i = 0; i < layers; i++) {
-        // Each layer moves at a slightly different speed and phase
-        const moveOffset = Math.sin(this.time * 0.8 + i * 1.5) * 0.05
-        const spread = 0.3 + (i * 0.1) + moveOffset
-        
-        // Intensity pulses independently
-        const pulse = 0.8 + Math.sin(this.time * 1.2 + i) * 0.2
-        const opacity = (0.25 / layers) * (1 - i/layers * 0.7) * pulse
-        
-        const grad = ctx.createRadialGradient(
-            this.sunPos.x, this.sunPos.y, 0, 
-            this.sunPos.x, this.sunPos.y, reach
-        )
-
-        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${opacity})`)
-        grad.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, ${opacity * 0.6})`)
-        grad.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, ${opacity * 0.2})`)
-        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`)
-
-        ctx.beginPath()
-        ctx.moveTo(this.sunPos.x, this.sunPos.y)
-        // Apply individual rotation to each layer for "dancing" light effect
-        const layerAngle = baseAngle + Math.sin(this.time * 0.5 + i) * 0.02
-        ctx.arc(this.sunPos.x, this.sunPos.y, reach, layerAngle - spread, layerAngle + spread)
-        ctx.closePath()
-        ctx.fillStyle = grad
-        ctx.fill()
-    }
-
-    ctx.restore()
+  _hexToRgb(hex) {
+    if (typeof hex !== 'string') return { r: 255, g: 255, b: 255 }
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 255, b: 255 }
   }
 
   _animate() {
     if (!this.active) return
-    this.time += 0.015
+    this.time += 0.008
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
 
     ctx.clearRect(0, 0, W, H)
 
-    // 1. Deep Ocean Background
-    const oceanBg = ctx.createLinearGradient(0, 0, 0, H)
-    oceanBg.addColorStop(0, "#010408")
-    oceanBg.addColorStop(1, "#000000")
-    ctx.fillStyle = oceanBg
-    ctx.fillRect(0, 0, W, H)
-
-    // Base angle with very slow autonomous drift
-    const drift = Math.sin(this.time * 0.3) * 0.01
-    const baseAngle = (Math.PI / 2) + (this.angle * Math.PI / 180) + drift
-
-    // 2. Animated Surface Shimmer (Caustics)
-    const surfaceGlow = ctx.createRadialGradient(this.sunPos.x, this.sunPos.y, 0, this.sunPos.x, this.sunPos.y, W)
-    const shimmerAlpha = 0.04 + Math.sin(this.time * 2) * 0.02
-    surfaceGlow.addColorStop(0, `rgba(255, 255, 255, ${shimmerAlpha})`)
-    surfaceGlow.addColorStop(1, "rgba(0, 0, 0, 0)")
     ctx.save()
-    ctx.globalCompositeOperation = "lighter"
-    ctx.fillStyle = surfaceGlow
-    ctx.fillRect(0, 0, W, H)
-    ctx.restore()
+    ctx.globalCompositeOperation = "screen"
 
-    // 3. Dynamic Light Wall
-    this._drawLightWall(baseAngle)
+    const rgb = this._hexToRgb(this.color)
+    const baseColor = (a) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`
 
-    // 4. Floating Particles (Marine Snow)
-    ctx.globalCompositeOperation = "lighter"
-    for (let i = 0; i < 60; i++) {
-        const x = (Math.sin(i * 123.4 + this.time * 0.08) * 0.5 + 0.5) * W
-        const y = (Math.cos(i * 456.7 + this.time * 0.04) * 0.5 + 0.5) * H
-        const size = 0.6 + Math.random() * 0.8
+    const sourceX = W / 2
+    const sourceY = -H * 0.15
+
+    const spreadFactor = 0.8 + Math.sin(this.time * 0.5) * 0.4 
+    const globalSweep = Math.sin(this.time * 0.3) * 0.05
+
+    this.rays.forEach(ray => {
+        const breathing = Math.sin(this.time + ray.phase)
+        const currentAngle = (this.angle * Math.PI / 180) + 
+                           (ray.spreadOffset * spreadFactor) + 
+                           globalSweep + (breathing * 0.01)
         
-        const dxS = x - this.sunPos.x
-        const dyS = y - this.sunPos.y
-        const angleToPoint = Math.atan2(dyS, dxS)
-        const distToLight = Math.abs(angleToPoint - baseAngle)
+        const rayLen = H * 1.6
+        const endX = sourceX + Math.sin(currentAngle) * rayLen
+        const endY = sourceY + Math.cos(currentAngle) * rayLen
+
+        const alpha = ray.maxOpacity * (0.7 + 0.3 * breathing)
         
-        const lightExposure = distToLight < 0.4 ? (1.0 - distToLight / 0.4) : 0.1
-        const opacity = 0.05 + lightExposure * 0.4
-        
-        ctx.globalAlpha = opacity * (0.4 + 0.6 * Math.sin(this.time + i))
-        ctx.fillStyle = "#ffffff"
+        // 1. Volumetric Outer Glow
+        const gradOuter = ctx.createLinearGradient(sourceX, sourceY, endX, endY)
+        gradOuter.addColorStop(0, baseColor(0))
+        gradOuter.addColorStop(0.2, baseColor(alpha * 0.5))
+        gradOuter.addColorStop(1, baseColor(0))
+
+        ctx.fillStyle = gradOuter
+        this._drawRayPath(ctx, sourceX, sourceY, endX, endY, ray.width || 300)
+        ctx.fill()
+
+        // 2. Sharp Inner Core
+        const gradCore = ctx.createLinearGradient(sourceX, sourceY, endX, endY)
+        gradCore.addColorStop(0, baseColor(0))
+        gradCore.addColorStop(0.15, baseColor(alpha))
+        gradCore.addColorStop(0.5, baseColor(alpha * 0.2))
+        gradCore.addColorStop(1, baseColor(0))
+
+        ctx.fillStyle = gradCore
+        this._drawRayPath(ctx, sourceX, sourceY, endX, endY, (ray.width || 300) * 0.2)
+        ctx.fill()
+    })
+
+    // Atmospheric Light Dust
+    for (let i = 0; i < 15; i++) {
+        const x = (Math.sin(i * 123 + this.time * 0.05) * 0.5 + 0.5) * W
+        const y = ((i * 456 + this.time * 15) % H)
+        const size = 1 + Math.random() * 1.2
+        const pAlpha = 0.04 * (1 - y/H)
+        ctx.fillStyle = baseColor(pAlpha)
         ctx.beginPath()
         ctx.arc(x, y, size, 0, Math.PI * 2)
         ctx.fill()
     }
 
-    ctx.globalAlpha = 1
-    ctx.globalCompositeOperation = "source-over"
+    // Concentrated Source Glow
+    const bloom = ctx.createRadialGradient(sourceX, 0, 0, sourceX, 0, W * 0.3)
+    bloom.addColorStop(0, baseColor(0.15))
+    bloom.addColorStop(1, baseColor(0))
+    ctx.fillStyle = bloom
+    ctx.fillRect(0, 0, W, H * 0.6)
+
+    ctx.restore()
     requestAnimationFrame(() => this._animate())
+  }
+
+  _drawRayPath(ctx, x1, y1, x2, y2, width) {
+    ctx.beginPath()
+    const angle = Math.atan2(y2 - y1, x2 - x1)
+    const perp = angle + Math.PI / 2
+    
+    const wTop = 4
+    const wBottom = width
+
+    ctx.moveTo(x1 - Math.cos(perp) * wTop, y1 - Math.sin(perp) * wTop)
+    ctx.lineTo(x1 + Math.cos(perp) * wTop, y1 + Math.sin(perp) * wTop)
+    ctx.lineTo(x2 + Math.cos(perp) * wBottom, y2 + Math.sin(perp) * wBottom)
+    ctx.lineTo(x2 - Math.cos(perp) * wBottom, y2 - Math.sin(perp) * wBottom)
+    ctx.closePath()
   }
 }

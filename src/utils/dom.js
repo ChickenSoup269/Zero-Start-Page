@@ -296,6 +296,18 @@ export const fallingLeavesSettledSkinSetting = document.getElementById(
   "falling-leaves-settled-skin-setting",
 )
 
+export const sunbeamColorPicker = document.getElementById(
+  "sunbeam-color-picker",
+)
+export const sunbeamColorSetting = document.getElementById(
+  "sunbeam-color-setting",
+)
+export const sunbeamAngleInput = document.getElementById("sunbeam-angle-input")
+export const sunbeamAngleValue = document.getElementById("sunbeam-angle-value")
+export const sunbeamAngleSetting = document.getElementById(
+  "sunbeam-angle-setting",
+)
+
 export const bubblesColorPicker = document.getElementById(
   "bubbles-color-picker",
 )

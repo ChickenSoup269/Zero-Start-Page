@@ -1729,6 +1729,18 @@
                                     <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
                                 </select>
                             </div>
+                            <!-- Sunbeam Settings -->
+                            <div id="sunbeam-color-setting" class="setting-item" style="display: none;">
+                                <label for="sunbeam-color-picker" data-i18n="setting_sunbeam_color">Sunbeam Color</label>
+                                <input type="color" id="sunbeam-color-picker" value="#ffffff" />
+                            </div>
+                            <div id="sunbeam-angle-setting" class="setting-item" style="display: none;">
+                                <label for="sunbeam-angle-input">
+                                    <span data-i18n="setting_sunbeam_angle">Sunbeam Angle</span>:
+                                    <span id="sunbeam-angle-value">0</span>°
+                                </label>
+                                <input type="range" id="sunbeam-angle-input" min="-90" max="90" step="1" value="0" />
+                            </div>
                             <!-- Pixel Run Color -->
                             <div id="pixel-run-color-setting" class="setting-item" style="display: none;">
                                 <label for="pixel-run-color-picker" data-i18n="setting_pixel_run_color">Pixel
