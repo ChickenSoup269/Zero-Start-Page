@@ -130,10 +130,12 @@ export class AuroraWaveEffect {
     const H = this.canvas.height
     const centerY = H * 0.45
 
+    // Reset trạng thái hòa trộn về mặc định
+    ctx.globalCompositeOperation = "source-over"
+
     if (this.transparent) {
       ctx.clearRect(0, 0, W, H)
-      // Optional dark overlay for better contrast
-      ctx.globalCompositeOperation = "source-over"
+      // Lớp phủ tối nhẹ để tăng tương phản, sử dụng bgOpacity từ cài đặt
       ctx.fillStyle = `rgba(0, 0, 0, ${this.bgOpacity})`
       ctx.fillRect(0, 0, W, H)
     } else {
@@ -144,12 +146,11 @@ export class AuroraWaveEffect {
     // Update time with delta
     this.time += 0.008 * deltaTime * this.speed
 
-    // Particles
+    // Particles - Dùng screen để lung linh hơn
     ctx.globalCompositeOperation = "screen"
     for (let p of this._particles) {
       p.phase += p.speed * deltaTime
       const alpha = (Math.sin(p.phase) * 0.4 + 0.6) * 0.5
-
       ctx.fillStyle = `rgba(230, 245, 255, ${alpha.toFixed(3)})`
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -160,6 +161,11 @@ export class AuroraWaveEffect {
     const pts = this.wavePoints
     const xStep = W / pts
 
+    // Chế độ hòa trộn thông minh: 
+    // Nếu có nền đặc (không trong suốt), dùng 'lighter' để rực rỡ nhất.
+    // Nếu trong suốt, dùng 'source-over' để giữ màu sắc không bị cháy sáng trên hình nền trắng.
+    ctx.globalCompositeOperation = this.transparent ? "source-over" : "lighter"
+    
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
 
