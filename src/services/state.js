@@ -350,10 +350,81 @@ export const saveComponentPosition = (componentId, position) => {
   saveSettings()
 }
 
-export const resetComponentPositions = () => {
-  const settings = getSettings()
-  settings.componentPositions = {}
-  saveSettings()
+export const resetComponentPositions = (options = {}) => {
+  const currentSettings = settingsState
+  
+  // Default to all false if no options provided
+  const {
+    all = false,
+    positions = false,
+    effectColors = false,
+    styles = false
+  } = options
+
+  // Danh sách các khóa cần giữ lại (Dữ liệu người dùng đã lưu)
+  // Luôn giữ lại những thứ này trừ khi reset hoàn toàn (nhưng ở đây ta chọn giữ lại để an toàn)
+  const preservedKeys = [
+    "userBackgrounds", "userColors", "userAccentColors", "userGradients", 
+    "userMultiColors", "userSvgWaves", "userSavedFonts", 
+    "unsplashAccessKey", "unsplashLastCredit", "background"
+  ]
+
+  let newSettings = { ...currentSettings }
+
+  if (all) {
+    newSettings = { ...defaultSettings }
+    // Khôi phục các dữ liệu cần bảo tồn
+    preservedKeys.forEach(key => {
+      if (currentSettings[key] !== undefined) {
+        newSettings[key] = currentSettings[key]
+      }
+    })
+    newSettings.componentPositions = {}
+    newSettings.lockedWidgets = {}
+  } else {
+    // Reset từng phần
+    if (positions) {
+      newSettings.componentPositions = {}
+      newSettings.lockedWidgets = {}
+    }
+
+    if (effectColors) {
+      const effectColorKeys = [
+        "starColor", "meteorColor", "auraColor", "northernLightsColor", "hackerColor",
+        "pixelCubesColor", "sakuraColor", "snowfallColor", "sunbeamColor", "bubbleColor",
+        "rainHDColor", "stormRainColor", "wavyLinesColor", "oceanWaveColor", "cloudDriftColor",
+        "shinyColor", "lineShinyColor", "nintendoPixelColor", "crtScanColor", "crtBackgroundColor",
+        "retroGameColor", "wavyPatternColor1", "wavyPatternColor2", "angledPatternColor1",
+        "angledPatternColor2", "cursorTrailColor", "gridScanColor", "plantGrowthColor",
+        "oceanFishColor", "floatingLinesColor", "auroraWaveColor"
+      ]
+      effectColorKeys.forEach(key => {
+        if (defaultSettings[key] !== undefined) {
+          newSettings[key] = defaultSettings[key]
+        }
+      })
+    }
+
+    if (styles) {
+      const styleKeys = [
+        "accentColor", "font", "clockFont", "clockSize", "dateSize", 
+        "clockColor", "dateColor", "customTitleColor", "customTitleFontSize",
+        "bookmarkBgColor", "bookmarkTextColor", "bookmarkGroupBgColor", "bookmarkGroupTextColor",
+        "clockDateStrokeColor", "clockDateStrokeWidth"
+      ]
+      styleKeys.forEach(key => {
+        if (defaultSettings[key] !== undefined) {
+          newSettings[key] = defaultSettings[key]
+        }
+      })
+    }
+  }
+
+  // Ghi đè state hiện tại
+  settingsState = newSettings
+
+  // Lưu và tải lại
+  saveSettings(true)
   window.location.reload()
 }
 

@@ -69,17 +69,17 @@ export class SakuraEffect {
     // Main petal body
     this.ctx.beginPath()
     this.ctx.ellipse(0, 0, petal.size, petal.size * 1.5, 0, 0, Math.PI * 2)
-    this.ctx.fillStyle = `rgba(\${rgb.r}, \${rgb.g}, \${rgb.b}, \${petal.opacity})`
+    this.ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${petal.opacity})`
     this.ctx.fill()
 
     // Add lighter center line for detail
     this.ctx.beginPath()
     this.ctx.moveTo(0, -petal.size * 1.5)
     this.ctx.lineTo(0, petal.size * 1.5)
-    this.ctx.strokeStyle = `rgba(\${Math.min(rgb.r + 40, 255)}, \${Math.min(
+    this.ctx.strokeStyle = `rgba(${Math.min(rgb.r + 40, 255)}, ${Math.min(
       rgb.g + 40,
       255,
-    )}, \${Math.min(rgb.b + 40, 255)}, \${petal.opacity * 0.6})`
+    )}, ${Math.min(rgb.b + 40, 255)}, ${petal.opacity * 0.6})`
     this.ctx.lineWidth = petal.size * 0.15
     this.ctx.stroke()
 
@@ -94,7 +94,7 @@ export class SakuraEffect {
       0,
       Math.PI * 2,
     )
-    this.ctx.fillStyle = `rgba(255, 255, 255, \${petal.opacity * 0.3})`
+    this.ctx.fillStyle = `rgba(255, 255, 255, ${petal.opacity * 0.3})`
     this.ctx.fill()
 
     this.ctx.restore()

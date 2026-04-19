@@ -1,5 +1,5 @@
-import { initI18n } from "./services/i18n.js"
-import { showConfirm } from "./utils/dialog.js"
+import { initI18n, geti18n } from "./services/i18n.js"
+import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
@@ -182,14 +182,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     const resetLayoutBtn = document.getElementById("reset-layout")
     const resetLayoutQuick = document.getElementById("reset-layout-quick")
     const handleReset = async () => {
-      if (
-        await showConfirm(
-          getSettings().language === "vi"
-            ? "Bạn có chắc chắn muốn đặt lại vị trí của tất cả các thành phần?"
-            : "Are you sure you want to reset all component positions?",
-        )
-      ) {
-        resetComponentPositions()
+      const i18n = geti18n ? geti18n() : {}
+      const options = [
+        { key: "all", label: i18n.reset_opt_all || "Entire Settings", checked: false },
+        { key: "positions", label: i18n.reset_opt_positions || "Layout Positions", checked: false },
+        { key: "effectColors", label: i18n.reset_opt_effects || "Effect Colors", checked: false },
+        { key: "styles", label: i18n.reset_opt_styles || "Custom Styles", checked: false }
+      ]
+      
+      const selection = await showChecklistConfirm(
+        options,
+        i18n.settings_reset_layout || "Reset Settings",
+        i18n.alert_reset_layout_confirm || "Select items to reset:"
+      )
+      
+      if (selection) {
+        // Kiểm tra xem có mục nào được chọn không
+        const hasSelection = Object.values(selection).some(v => v === true)
+        if (!hasSelection) return
+
+        showAlert(i18n.alert_resetting || "Restoring settings...")
+        setTimeout(() => {
+          resetComponentPositions(selection)
+        }, 1000)
       }
     }
 
