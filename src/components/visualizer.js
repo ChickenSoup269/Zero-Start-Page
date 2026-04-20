@@ -50,9 +50,12 @@ class MusicVisualizer {
 
     // Dynamic bar count based on style
     let newBarCount = 5
-    if (style === "minimal" || style === "pill") newBarCount = 4
-    if (style === "spotify" || style === "sidebar") newBarCount = 4
-    if (style === "soundcloud") newBarCount = 6
+    if (style === "vinyl" || style === "apple") newBarCount = 6
+    if (style === "neon") newBarCount = 8
+    if (style === "minimal") newBarCount = 6
+    if (style === "pill") newBarCount = 4
+    if (style === "spotify" || style === "sidebar") newBarCount = 5
+    if (style === "soundcloud") newBarCount = 10
     if (style === "heartbeat" || style === "moon8") newBarCount = 0
 
     if (newBarCount !== this.barCount) {
@@ -145,7 +148,8 @@ class MusicVisualizer {
     ctx.save()
     ctx.scale(2, 2)
 
-    const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent-color").trim() || "#ff4d4d"
+    const rootStyle = getComputedStyle(document.documentElement)
+    const accent = rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
 
     let norm = 0
     let active = false
@@ -683,7 +687,9 @@ class MusicVisualizer {
       } else {
         for (let i = 0; i < bars.length; i++) {
           this._simPhase[i] += this._simSpeeds[i] * dt * Math.PI
-          const t = (Math.sin(this._simPhase[i]) + 1) / 2
+          // Thêm nhiễu ngẫu nhiên để chuyển động phiêu hơn
+          const noise = (Math.random() - 0.5) * 0.4
+          const t = Math.max(0, Math.min(1, (Math.sin(this._simPhase[i]) + 1) / 2 + noise))
           this._targetHeights[i] = minH + t * (maxH - minH)
         }
       }

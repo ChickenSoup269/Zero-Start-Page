@@ -324,8 +324,10 @@ export class MusicPlayer {
       ? '<i class="fa-solid fa-pause"></i>'
       : '<i class="fa-solid fa-play"></i>'
 
+    const wrapper = this.container.querySelector(".music-player-wrapper")
     if (this.isPlaying) {
       this.disc.classList.add("playing")
+      if (wrapper) wrapper.classList.add("playing")
       this.visualizer.start()
       // Chỉ gửi yêu cầu sync nếu trước đó chưa phát (tránh spam)
       if (!wasPlaying) {
@@ -333,6 +335,7 @@ export class MusicPlayer {
       }
     } else {
       this.disc.classList.remove("playing")
+      if (wrapper) wrapper.classList.remove("playing")
       this.visualizer.stop()
       // Chỉ gửi yêu cầu stop nếu trước đó đang phát
       if (wasPlaying) {

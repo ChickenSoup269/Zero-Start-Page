@@ -667,6 +667,14 @@
   );
 }
 
+/* Hiệu ứng sóng dồn: Thanh đầu đi trước, các thanh sau dồn lại */
+.music-style-vinyl .visualizer-bar:nth-child(1) { animation-delay: 0.1s; }
+.music-style-vinyl .visualizer-bar:nth-child(2) { animation-delay: 0.2s; }
+.music-style-vinyl .visualizer-bar:nth-child(3) { animation-delay: 0.3s; }
+.music-style-vinyl .visualizer-bar:nth-child(4) { animation-delay: 0.4s; }
+.music-style-vinyl .visualizer-bar:nth-child(5) { animation-delay: 0.5s; }
+.music-style-vinyl .visualizer-bar:nth-child(6) { animation-delay: 0.6s; }
+
 /* Visualizer for Pixel Style — Canvas-drawn EQ with physics peak block */
 .music-style-pixel .music-visualizer {
   display: block;
@@ -697,40 +705,40 @@
   width: 3px;
   border-radius: 2px;
   background: var(--accent-color);
-  box-shadow: none;
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3);
 }
 
 .music-style-spotify .visualizer-bar.playing {
-  animation: visualizerPulseGlow 0.75s ease-in-out infinite alternate;
+  animation: visualizerPulseGlow 0.5s ease-in-out infinite alternate;
 }
 
-/* Spotify center-out animation pattern */
+/* Spotify center-out animation pattern (Updated for 5 bars) */
 .music-style-spotify .visualizer-bar:nth-child(1) {
-  animation-delay: 0.6s;
+  animation-delay: 0.4s;
 }
 .music-style-spotify .visualizer-bar:nth-child(2) {
-  animation-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 .music-style-spotify .visualizer-bar:nth-child(3) {
   animation-delay: 0s;
 }
 .music-style-spotify .visualizer-bar:nth-child(4) {
-  animation-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 .music-style-spotify .visualizer-bar:nth-child(5) {
-  animation-delay: 0.6s;
+  animation-delay: 0.4s;
 }
 
 @keyframes visualizerPulseGlow {
   0% {
     height: 8px;
-    opacity: 0.5;
-    filter: blur(0px);
+    opacity: 0.6;
+    transform: scaleY(1);
   }
   100% {
     height: 36px;
     opacity: 1;
-    filter: blur(0.5px);
+    transform: scaleY(1.1);
   }
 }
 
@@ -884,30 +892,40 @@
 }
 
 .music-style-neon .visualizer-bar {
-  background: linear-gradient(180deg, var(--accent-color), #5b5bff);
-  box-shadow: 0 0 8px rgba(var(--accent-color-rgb, 0, 240, 255), 0.6);
+  width: 3.5px;
+  border-radius: 4px;
+  background: linear-gradient(to top, var(--accent-color), #fff, var(--accent-color));
+  box-shadow: 
+    0 0 5px #fff,
+    0 0 10px var(--accent-color),
+    0 0 20px var(--accent-color);
+  opacity: 0.9;
 }
 
 .music-style-neon .visualizer-bar.playing {
-  animation: visualizerHeartbeatGlow 2.2s ease-in-out infinite;
+  animation: neonVisualizerPulse 0.4s ease-in-out infinite alternate;
 }
 
-/* Neon right-to-left animation pattern */
-.music-style-neon .visualizer-bar:nth-child(1) {
-  animation-delay: 0.6s;
+@keyframes neonVisualizerPulse {
+  0% {
+    height: 6px;
+    filter: brightness(1) blur(0px);
+  }
+  100% {
+    height: 38px;
+    filter: brightness(1.5) blur(0.5px);
+  }
 }
-.music-style-neon .visualizer-bar:nth-child(2) {
-  animation-delay: 0.45s;
-}
-.music-style-neon .visualizer-bar:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.music-style-neon .visualizer-bar:nth-child(4) {
-  animation-delay: 0.15s;
-}
-.music-style-neon .visualizer-bar:nth-child(5) {
-  animation-delay: 0s;
-}
+
+/* Neon Wave Delays (8 bars) */
+.music-style-neon .visualizer-bar:nth-child(1) { animation-delay: 0.0s; }
+.music-style-neon .visualizer-bar:nth-child(2) { animation-delay: 0.1s; }
+.music-style-neon .visualizer-bar:nth-child(3) { animation-delay: 0.2s; }
+.music-style-neon .visualizer-bar:nth-child(4) { animation-delay: 0.3s; }
+.music-style-neon .visualizer-bar:nth-child(5) { animation-delay: 0.4s; }
+.music-style-neon .visualizer-bar:nth-child(6) { animation-delay: 0.3s; }
+.music-style-neon .visualizer-bar:nth-child(7) { animation-delay: 0.2s; }
+.music-style-neon .visualizer-bar:nth-child(8) { animation-delay: 0.1s; }
 
 /* Minimal Style */
 .music-style-minimal .music-player-wrapper {
@@ -938,15 +956,41 @@
 
 .music-style-minimal .music-visualizer {
   height: 28px;
-  gap: 2px;
-  padding: 0 6px;
+  gap: 3px;
+  padding: 0 8px;
+  align-items: center;
 }
 
 .music-style-minimal .visualizer-bar {
-  width: 2px;
-  border-radius: 1px;
-  opacity: 0.85;
+  width: 1.5px;
+  border-radius: 10px;
+  background: var(--accent-color);
+  opacity: 0.7;
+  transition: height 0.2s ease, opacity 0.2s ease;
 }
+
+.music-style-minimal .visualizer-bar.playing {
+  animation: minimalBarWave 1s ease-in-out infinite;
+}
+
+@keyframes minimalBarWave {
+  0%, 100% {
+    height: 4px;
+    opacity: 0.4;
+  }
+  50% {
+    height: 22px;
+    opacity: 1;
+  }
+}
+
+/* Minimal wave delays (6 bars) */
+.music-style-minimal .visualizer-bar:nth-child(1) { animation-delay: 0.0s; }
+.music-style-minimal .visualizer-bar:nth-child(2) { animation-delay: 0.1s; }
+.music-style-minimal .visualizer-bar:nth-child(3) { animation-delay: 0.2s; }
+.music-style-minimal .visualizer-bar:nth-child(4) { animation-delay: 0.3s; }
+.music-style-minimal .visualizer-bar:nth-child(5) { animation-delay: 0.4s; }
+.music-style-minimal .visualizer-bar:nth-child(6) { animation-delay: 0.5s; }
 
 /* Platform Icon Styles */
 .platform-icon {
@@ -1042,13 +1086,40 @@
   background: var(--accent-color); /* Apple Music Accent */
 }
 .music-style-apple .music-visualizer {
-  height: 28px;
+  height: 32px;
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
 }
 .music-style-apple .visualizer-bar {
   background: var(--accent-color);
-  width: 3px;
-  border-radius: 2px;
+  width: 4px;
+  border-radius: 4px;
+  opacity: 0.85;
+  box-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.2);
 }
+.music-style-apple .visualizer-bar.playing {
+  animation: applePulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes applePulse {
+  0% {
+    height: 4px;
+    opacity: 0.5;
+  }
+  100% {
+    height: 28px;
+    opacity: 1;
+  }
+}
+
+/* Apple center-out animation pattern (6 bars) */
+.music-style-apple .visualizer-bar:nth-child(1) { animation-delay: 0.5s; }
+.music-style-apple .visualizer-bar:nth-child(2) { animation-delay: 0.3s; }
+.music-style-apple .visualizer-bar:nth-child(3) { animation-delay: 0.1s; }
+.music-style-apple .visualizer-bar:nth-child(4) { animation-delay: 0.1s; }
+.music-style-apple .visualizer-bar:nth-child(5) { animation-delay: 0.3s; }
+.music-style-apple .visualizer-bar:nth-child(6) { animation-delay: 0.5s; }
 
 /* =========================================
    STYLE: SOUNDCLOUD
@@ -1107,25 +1178,62 @@
 /* Visualizer for SoundCloud */
 .music-style-soundcloud .music-visualizer {
   height: 48px;
-  align-items: flex-end;
-  padding-bottom: 2px;
+  align-items: center;
+  padding: 0 10px;
+  gap: 3px;
 }
 .music-style-soundcloud .visualizer-bar {
-  background: var(--accent-color); /* Match accent */
+  background: var(--accent-color);
   width: 3px;
+  border-radius: 10px;
+  opacity: 0.8;
+  transition: height 0.15s ease;
 }
 .music-style-soundcloud .visualizer-bar.playing {
-  animation: visualizerPulseSC 0.6s ease-in-out infinite alternate;
+  animation: visualizerPulseSC 1.2s ease-in-out infinite;
 }
 @keyframes visualizerPulseSC {
-  0% {
-    height: 10px;
-    opacity: 0.6;
-  }
+  0%,
   100% {
+    height: 8px;
+    opacity: 0.4;
+  }
+  50% {
     height: 40px;
     opacity: 1;
   }
+}
+
+/* Hiệu ứng sóng chạy tới và quay lại (Ping-pong delay) */
+.music-style-soundcloud .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(6) {
+  animation-delay: 0.5s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(7) {
+  animation-delay: 0.6s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(8) {
+  animation-delay: 0.7s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(9) {
+  animation-delay: 0.8s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(10) {
+  animation-delay: 0.9s;
 }
 
 .music-style-soundcloud .controls-row {
@@ -1444,8 +1552,70 @@
 .music-style-pill .progress-bar-fill {
   background: var(--accent-color, #fff);
 }
+.music-style-pill .music-player-wrapper.playing {
+  border-color: rgba(var(--accent-color-rgb), 0.5);
+  box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.2);
+}
+
+@keyframes pillPulse {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.02) translateY(-2px);
+  }
+}
+
 .music-style-pill .music-visualizer {
-  display: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 10px;
+  background: rgba(var(--accent-color-rgb), 0.15);
+  border-radius: 20px;
+  height: 26px;
+  margin-left: auto;
+  border: 1px solid rgba(var(--accent-color-rgb), 0.1);
+}
+
+.music-style-pill .visualizer-bar {
+  width: 3px;
+  height: 6px;
+  background: var(--accent-color, #fff);
+  border-radius: 10px; /* Hình viên thuốc hoàn hảo */
+  opacity: 0.9;
+  box-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.3);
+  transition: height 0.2s ease;
+}
+
+.music-style-pill .visualizer-bar.playing {
+  animation: pillBarDance 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes pillBarDance {
+  0% {
+    height: 4px;
+    transform: scaleY(1);
+  }
+  100% {
+    height: 14px;
+    transform: scaleY(1.2);
+  }
+}
+
+.music-style-pill .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.music-style-pill .visualizer-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.music-style-pill .visualizer-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.music-style-pill .visualizer-bar:nth-child(4) {
+  animation-delay: 0.3s;
 }
 
 /* =========================================
@@ -1453,7 +1623,8 @@
 ========================================= */
 /* GIAO DIỆN MẶC ĐỊNH (VUÔNG DỌC) */
 @keyframes heartbeatFloating {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
   33% {
@@ -1473,8 +1644,8 @@
   background: rgba(10, 10, 10, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(var(--accent-color-rgb, 255, 77, 77), 0.2);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(var(--accent-color-rgb), 0.1);
   align-items: center;
   text-align: center;
   min-width: unset;
@@ -1559,7 +1730,7 @@
   border-radius: 10px 10px 40px 10px;
   background: #c4c3c0;
   border: 2px solid #a3a2a0;
-  box-shadow: 
+  box-shadow:
     inset -4px -4px 0 #91908e,
     inset 4px 4px 0 #e2e1df,
     0 15px 35px rgba(0, 0, 0, 0.5);
@@ -1570,7 +1741,7 @@
   height: 120px;
   background: #8b9506;
   border: 10px solid #353535;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .music-style-heartbeat .music-player-wrapper.skin-gameboy .vinyl-disc {
@@ -1602,9 +1773,22 @@
   left: 15px;
   width: 40px;
   height: 40px;
-  background: radial-gradient(circle, #353535 20%, transparent 20%),
-              linear-gradient(90deg, transparent 40%, #353535 40%, #353535 60%, transparent 60%),
-              linear-gradient(0deg, transparent 40%, #353535 40%, #353535 60%, transparent 60%);
+  background:
+    radial-gradient(circle, #353535 20%, transparent 20%),
+    linear-gradient(
+      90deg,
+      transparent 40%,
+      #353535 40%,
+      #353535 60%,
+      transparent 60%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 40%,
+      #353535 40%,
+      #353535 60%,
+      transparent 60%
+    );
   opacity: 0.8;
 }
 
@@ -1630,11 +1814,12 @@
   background: transparent;
 }
 
-
-
-
 .music-style-moon8 .music-player-wrapper {
-  background: linear-gradient(135deg, rgba(10, 10, 25, 0.92), rgba(0, 0, 5, 0.96));
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 25, 0.92),
+    rgba(0, 0, 5, 0.96)
+  );
   border: 1px solid rgba(var(--accent-color-rgb, 255, 249, 196), 0.3);
   box-shadow:
     0 12px 35px rgba(0, 0, 0, 0.7),
@@ -1661,7 +1846,9 @@
 
 .music-style-moon8 .play-pause-btn {
   color: var(--accent-color);
-  filter: drop-shadow(0 0 5px rgba(var(--accent-color-rgb, 255, 249, 196), 0.4));
+  filter: drop-shadow(
+    0 0 5px rgba(var(--accent-color-rgb, 255, 249, 196), 0.4)
+  );
 }
 
 .music-style-soundcloud .visualizer-bar:nth-child(1) {
@@ -1835,26 +2022,26 @@
   width: 3px;
   border-radius: 2px;
   background: var(--accent-color);
-  box-shadow: none;
+  box-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3);
 }
 
 .music-style-sidebar .visualizer-bar.playing {
-  animation: visualizerPulseGlow 0.75s ease-in-out infinite alternate;
+  animation: visualizerPulseGlow 0.5s ease-in-out infinite alternate;
 }
 
-/* Spotify center-out animation pattern */
+/* Sidebar center-out animation pattern (5 bars) */
 .music-style-sidebar .visualizer-bar:nth-child(1) {
-  animation-delay: 0.6s;
+  animation-delay: 0.4s;
 }
 .music-style-sidebar .visualizer-bar:nth-child(2) {
-  animation-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 .music-style-sidebar .visualizer-bar:nth-child(3) {
   animation-delay: 0s;
 }
 .music-style-sidebar .visualizer-bar:nth-child(4) {
-  animation-delay: 0.3s;
+  animation-delay: 0.2s;
 }
 .music-style-sidebar .visualizer-bar:nth-child(5) {
-  animation-delay: 0.6s;
+  animation-delay: 0.4s;
 }
