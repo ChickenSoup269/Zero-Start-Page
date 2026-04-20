@@ -54,7 +54,7 @@ class MusicVisualizer {
     // Dynamic bar count based on style
     let newBarCount = 5
     if (style === "vinyl" || style === "apple") newBarCount = 6
-    if (style === "neon") newBarCount = 8
+    if (style === "neon" || style === "beach") newBarCount = 8
     if (style === "minimal") newBarCount = 6
     if (style === "pill") newBarCount = 4
     if (style === "spotify" || style === "sidebar") newBarCount = 5

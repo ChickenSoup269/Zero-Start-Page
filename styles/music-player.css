@@ -82,10 +82,10 @@
 .music-player-wrapper.skin-white-blur .progress-bar-track {
   background: rgba(0, 0, 0, 0.1) !important;
 }
-
-.music-player-wrapper.skin-white-blur .visualizer-bar {
-  /* Giữ nguyên màu accent của thanh nhạc */
-}
+/* Giữ nguyên màu accent của thanh nhạc */
+/* .music-player-wrapper.skin-white-blur .visualizer-bar {
+  
+} */
 
 /* White Blur Skin overrides for specific styles */
 .music-style-soundcloud .music-player-wrapper.skin-white-blur .player-info h3,
@@ -148,7 +148,9 @@
 
 .music-style-moon8 .music-player-wrapper.skin-white-blur::before {
   opacity: 0.15; /* Làm mờ sao để không bị gắt trên nền trắng */
-  filter: invert(1); /* Đổi sao trắng thành sao đen/xám để nổi bật trên nền sáng */
+  filter: invert(
+    1
+  ); /* Đổi sao trắng thành sao đen/xám để nổi bật trên nền sáng */
 }
 
 .music-player-wrapper.skin-white-blur .disc-container {
@@ -1786,6 +1788,199 @@
 }
 .music-style-pill .visualizer-bar:nth-child(4) {
   animation-delay: 0.3s;
+}
+
+/* =========================================
+   STYLE: BEACH (BÃI BIỂN)
+========================================= */
+.music-style-beach .music-player-wrapper {
+  /* Nền biển có chiều sâu: Cát -> Cát ướt -> Nước nông -> Biển sâu */
+  background: linear-gradient(
+    115deg,
+    #eeddbb 0%,
+    /* Cát khô */ #d2b48c 15%,
+    /* Cát ướt */ #ffffff 15%,
+    /* Viền bọt sóng */ #40e0d0 18%,
+    /* Nước nông */ #0077be 60%,
+    /* Biển sâu */ #005a9c 100% /* Thẳm đại dương */
+  );
+  background-size: 250% 100%;
+  animation:
+    beachTide 10s ease-in-out infinite,
+    musicFloating 6s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    inset 0 0 20px rgba(0, 0, 0, 0.1); /* Tạo độ trũng cho mặt biển */
+  color: #2c3e50;
+  position: relative;
+  overflow: hidden !important;
+}
+
+/* Các dải sóng lướt mượt mà (Ocean Waves) */
+.music-style-beach .music-player-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: 15%;
+  right: -100%;
+  bottom: -50%;
+  background: repeating-linear-gradient(
+    115deg,
+    transparent 0px,
+    transparent 80px,
+    rgba(255, 255, 255, 0.3) 90px,
+    /* Dải sóng mờ */ rgba(255, 255, 255, 0.1) 110px,
+    transparent 120px
+  );
+  filter: blur(4px); /* Làm mượt cạnh sóng */
+  background-size: 200px 100%;
+  animation: beachWavesRolling 8s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Hiệu ứng bóng đổ tạo chiều sâu tại viền nước */
+.music-style-beach .music-player-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  width: 10px;
+  bottom: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+@keyframes beachWavesRolling {
+  0% {
+    transform: translateX(0) skewX(-10deg);
+  }
+  100% {
+    transform: translateX(-200px) skewX(-10deg);
+  }
+}
+
+@keyframes beachTide {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 12% 0%; /* Thủy triều lướt lên cát */
+  }
+}
+
+.music-style-beach .music-player-wrapper.skin-white-blur {
+  background: linear-gradient(
+    115deg,
+    rgba(238, 221, 187, 0.8) 0%,
+    rgba(210, 180, 140, 0.8) 15%,
+    rgba(255, 255, 255, 0.9) 15%,
+    rgba(64, 224, 208, 0.8) 18%,
+    rgba(0, 119, 190, 0.8) 60%,
+    rgba(0, 90, 156, 0.8) 100%
+  ) !important;
+  background-size: 250% 100% !important;
+}
+
+.music-style-beach .player-info {
+  position: relative;
+  z-index: 2;
+  padding-left: 15px;
+}
+
+.music-style-beach .player-info h3 {
+  color: #1a3a5a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+}
+
+.music-style-beach .player-info p {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.music-style-beach .controls-row button {
+  color: #1a3a5a;
+  position: relative;
+  z-index: 2;
+}
+
+.music-style-beach .progress-bar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.music-style-beach .progress-bar-fill {
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.music-style-beach .music-visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  position: relative;
+  z-index: 2;
+}
+
+.music-style-beach .visualizer-bar {
+  width: 4px;
+  border-radius: 2px;
+  animation: beachWave 2s ease-in-out infinite;
+}
+
+.music-style-beach .visualizer-bar:nth-child(1) {
+  background: #eeddbb;
+  box-shadow: 0 0 8px #eeddbb;
+  animation-delay: 0.1s;
+}
+.music-style-beach .visualizer-bar:nth-child(2) {
+  background: #ffcc00;
+  box-shadow: 0 0 8px #ffcc00;
+  animation-delay: 0.4s;
+}
+.music-style-beach .visualizer-bar:nth-child(3) {
+  background: #f0f8ff;
+  box-shadow: 0 0 8px #f0f8ff;
+  animation-delay: 0.8s;
+}
+.music-style-beach .visualizer-bar:nth-child(4) {
+  background: #40e0d0;
+  box-shadow: 0 0 8px #40e0d0;
+  animation-delay: 1.2s;
+}
+.music-style-beach .visualizer-bar:nth-child(5) {
+  background: #0077be;
+  box-shadow: 0 0 8px #0077be;
+  animation-delay: 2.1s;
+}
+.music-style-beach .visualizer-bar:nth-child(6) {
+  background: #40e0d0;
+  box-shadow: 0 0 8px #40e0d0;
+  animation-delay: 0.8s;
+}
+.music-style-beach .visualizer-bar:nth-child(7) {
+  background: #f0f8ff;
+  box-shadow: 0 0 8px #f0f8ff;
+  animation-delay: 0.4s;
+}
+.music-style-beach .visualizer-bar:nth-child(8) {
+  background: #eeddbb;
+  box-shadow: 0 0 8px #eeddbb;
+  animation-delay: 0.1s;
+}
+
+@keyframes beachWave {
+  0%,
+  100% {
+    height: 6px;
+  }
+  50% {
+    height: 30px;
+  }
 }
 
 /* =========================================
