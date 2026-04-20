@@ -232,6 +232,9 @@ export class MusicPlayer {
         case "heartbeat":
           accentColor = "#ff4d4d"
           break
+        case "terminal":
+          accentColor = "#00ff41" // Classic terminal green
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }

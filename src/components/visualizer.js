@@ -59,6 +59,7 @@ class MusicVisualizer {
     if (style === "pill") newBarCount = 4
     if (style === "spotify" || style === "sidebar") newBarCount = 5
     if (style === "soundcloud") newBarCount = 10
+    if (style === "terminal") newBarCount = 12
     if (style === "heartbeat" || style === "moon8") newBarCount = 0
 
     if (newBarCount !== this.barCount) {

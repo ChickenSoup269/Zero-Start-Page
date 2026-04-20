@@ -2464,3 +2464,137 @@
 .music-style-sidebar .visualizer-bar:nth-child(5) {
   animation-delay: 0.4s;
 }
+
+/* =========================================
+   STYLE: TERMINAL (C? ÐI?N)
+========================================= */
+.music-style-terminal .music-player-wrapper {
+  background: #0c0c0c;
+  border: 2px solid var(--accent-color);
+  border-radius: 4px;
+  padding: 15px;
+  font-family: 'Courier New', Courier, monospace;
+  box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* CRT Scanlines Effect */
+.music-style-terminal .music-player-wrapper::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 10;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+.music-style-terminal .disc-container {
+  border: 1px solid var(--accent-color);
+  border-radius: 2px;
+  background: #1a1a1a;
+  padding: 2px;
+  width: 50px;
+  height: 50px;
+}
+
+.music-style-terminal .vinyl-disc {
+  border-radius: 0;
+  animation: none !important;
+  border: none;
+}
+
+.music-style-terminal .vinyl-disc::before {
+  display: none;
+}
+
+.music-style-terminal .player-info h3 {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.music-style-terminal .player-info h3::before {
+  content: ">_ ";
+}
+
+.music-style-terminal .player-info p {
+  color: var(--accent-color);
+  opacity: 0.8;
+  font-size: 0.75rem;
+}
+
+.music-style-terminal .player-btn {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 0;
+  margin-right: 5px;
+  height: 28px;
+  width: 32px;
+}
+
+.music-style-terminal .player-btn:hover {
+  background: var(--accent-color);
+  color: #000;
+}
+
+.music-style-terminal .progress-bar-track {
+  background: rgba(var(--accent-color-rgb), 0.1);
+  border: 1px solid var(--accent-color);
+  height: 10px;
+  border-radius: 0;
+}
+
+.music-style-terminal .progress-bar-fill {
+  background: var(--accent-color);
+  border-radius: 0;
+}
+
+.music-style-terminal .progress-time {
+  color: var(--accent-color);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Robot Voice Visualizer */
+.music-style-terminal .music-visualizer {
+  height: 40px;
+  align-items: center; 
+  gap: 2px;
+}
+
+.music-style-terminal .visualizer-bar {
+  width: 6px;
+  background: var(--accent-color);
+  border-radius: 0;
+  box-shadow: 0 0 5px var(--accent-color);
+}
+
+.music-style-terminal .visualizer-bar.playing {
+  animation: robotVoice 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes robotVoice {
+  0% {
+    height: 4px;
+    opacity: 0.4;
+  }
+  100% {
+    height: 35px;
+    opacity: 1;
+  }
+}
+
+.music-style-terminal .visualizer-bar:nth-child(even) {
+    animation-duration: 0.3s;
+}
+
+.music-style-terminal .visualizer-bar:nth-child(3n) {
+    animation-duration: 0.5s;
+}
