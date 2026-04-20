@@ -12,8 +12,8 @@ body {
   background-position: var(--bg-pos-x) var(--bg-pos-y) !important;
   transition:
     background-position 0.2s ease-out,
-    background-image 0.5s ease-in-out,
-    opacity 0.5s ease;
+    background-image var(--bg-fade-in, 0.5s) ease-in-out,
+    opacity var(--bg-fade-in, 0.5s) ease;
   animation: gradientBG 15s ease infinite;
   color: var(--text-color);
   font-family: var(--font-primary);
@@ -86,7 +86,7 @@ i {
 .main-container.ready {
   visibility: visible;
   opacity: 1;
-  animation: fadeIn 1s ease-out;
+  animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 
 .clock-date-wrap {
