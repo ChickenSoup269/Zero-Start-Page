@@ -1792,7 +1792,7 @@
    STYLE: HEARTBEAT (NHỊP TIM)
 ========================================= */
 /* GIAO DIỆN MẶC ĐỊNH (VUÔNG DỌC) */
-@keyframes heartbeatFloating {
+@keyframes musicFloating {
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -1803,6 +1803,14 @@
   66% {
     transform: translateY(4px) rotate(-1.5deg);
   }
+}
+
+.music-player-wrapper {
+  animation: musicFloating 6s ease-in-out infinite;
+}
+
+.music-player-wrapper.no-shaking {
+  animation: none !important;
 }
 
 .music-style-heartbeat .music-player-wrapper {
@@ -1821,7 +1829,7 @@
   align-items: center;
   text-align: center;
   min-width: unset;
-  animation: heartbeatFloating 6s ease-in-out infinite;
+  animation: musicFloating 6s ease-in-out infinite;
 }
 
 .music-style-heartbeat .music-player-wrapper.no-shaking {
