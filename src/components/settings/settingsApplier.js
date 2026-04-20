@@ -74,6 +74,7 @@ const EFFECT_KEY_MAP = {
   plantGrowth: "plantGrowthEffect",
   oceanFish: "oceanFishEffect",
   floatingLines: "floatingLinesEffect",
+  hyperspace: "hyperspaceEffect",
 }
 
 function setEffectActive(effectGrid, value) {
@@ -664,6 +665,12 @@ function createApplySettings(effectInstances) {
     const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
     const selectedEffect = effectInstances[mappedKey]
     const effectChanged = effectToStart !== _prevEffect
+
+    // Update Hyperspace color if active
+    if (effectToStart === "hyperspace" && selectedEffect && selectedEffect.updateColor) {
+      selectedEffect.updateColor(settings.accentColor)
+    }
+
     const effectCanvas = document.getElementById("effect-canvas")
     if (
       effectToStart === "pixelWeather" &&

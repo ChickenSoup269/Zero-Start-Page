@@ -105,6 +105,7 @@ import { PlantGrowthEffect } from "../animations/plantGrowth.js"
 import { OceanFishEffect } from "../animations/oceanFish.js"
 import { FloatingLinesEffect } from "../animations/floatingLines.js"
 import { PixelBlastEffect } from "../animations/pixelBlast.js"
+import { HyperspaceEffect } from "../animations/hyperspace.js"
 
 function getExtensionVersion() {
   try {
@@ -296,6 +297,10 @@ export function initSettings() {
       "effect-canvas",
       settings.jellyfishColor || "#ffaa00",
       settings.jellyfishType || "jellyfish",
+    ),
+    hyperspaceEffect: new HyperspaceEffect(
+      "effect-canvas",
+      settings.accentColor,
     ),
     svgWaveEffect: new SvgWaveGenerator(),
   }
