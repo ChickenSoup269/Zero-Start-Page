@@ -372,7 +372,7 @@ export function updateOverflowBookmarks() {
 
   const indicator = document.createElement("div")
   indicator.className = "bookmark overflow-indicator"
-  indicator.title = "Show hidden bookmarks"
+  indicator.title = i18n.bookmark_show_hidden || "Show hidden bookmarks"
   indicator.style.cursor = "pointer"
 
   const fallback = document.createElement("div")
@@ -568,7 +568,8 @@ function renderGroupTabs() {
 
     // Rename (Double Click) - Keeping as valid shortcut
     tab.addEventListener("dblclick", async () => {
-      const newName = await showPrompt("Enter new group name:", group.name)
+      const currentI18n = geti18n()
+      const newName = await showPrompt(currentI18n.prompt_rename_group || "Enter new group name:", group.name)
       if (newName && newName.trim() !== "") {
         group.name = newName.trim()
         saveBookmarks()
@@ -592,14 +593,15 @@ function renderGroupTabs() {
   addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addTab.title = "Add Group"
   addTab.addEventListener("click", async () => {
+    const currentI18n = geti18n()
     const name = await showPrompt(
-      "Enter group name:",
-      `Group ${groups.length + 1}`,
+      currentI18n.prompt_add_group || "Enter group name:",
+      (currentI18n.bookmark_group_default_name || "Group {count}").replace("{count}", groups.length + 1),
     )
     if (name) {
       const newGroup = {
         id: `group-${Date.now()}`,
-        name: name.trim() || `Group ${groups.length + 1}`,
+        name: name.trim() || (currentI18n.bookmark_group_default_name || "Group {count}").replace("{count}", groups.length + 1),
         items: [],
       }
       groups.push(newGroup)

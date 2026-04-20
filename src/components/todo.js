@@ -244,7 +244,9 @@ export class TodoList {
         this._addDragEventListeners(li)
         li.querySelector(".delete-btn").addEventListener("click", async (e) => {
           e.stopPropagation()
-          if (await showConfirm(`Delete section "${item.text}"?`)) {
+          const i18n = geti18n()
+          const confirmMsg = (i18n.todo_delete_section_confirm || 'Delete section "{name}"?').replace("{name}", item.text)
+          if (await showConfirm(confirmMsg)) {
             this.deleteTodo(item.id)
           }
         })

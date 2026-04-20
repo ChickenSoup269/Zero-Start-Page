@@ -1,5 +1,6 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import MusicVisualizer from "./visualizer.js"
+import { geti18n } from "../services/i18n.js"
 
 export class MusicPlayer {
   constructor() {
@@ -69,6 +70,7 @@ export class MusicPlayer {
   }
 
   createElements() {
+    const i18n = geti18n()
     this.container = document.createElement("div")
     this.container.id = "music-player-container"
     this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`
@@ -81,7 +83,7 @@ export class MusicPlayer {
                 </div>
                 <div class="player-main">
                     <div class="player-info">
-                        <h3 id="music-title">No Media Playing</h3>
+                        <h3 id="music-title" data-i18n="music_no_media">${i18n.music_no_media || "No Media Playing"}</h3>
                         <p id="music-artist">
                             <i id="platform-icon" class="platform-icon" style="display: none;"></i>
                             <span id="artist-text"></span>
@@ -302,10 +304,11 @@ export class MusicPlayer {
   }
 
   updateUI(data) {
-    this.titleElement.textContent = data.title || "Unknown Title"
+    const i18n = geti18n()
+    this.titleElement.textContent = data.title || i18n.music_unknown_title || "Unknown Title"
 
     // Update artist text and platform icon
-    const artist = data.artist || "Unknown Artist"
+    const artist = data.artist || i18n.music_unknown_artist || "Unknown Artist"
     this.artistText.textContent = artist
 
     // Show platform icon based on URL
@@ -426,7 +429,8 @@ export class MusicPlayer {
   }
 
   setInactive() {
-    this.titleElement.textContent = "No Media Playing"
+    const i18n = geti18n()
+    this.titleElement.textContent = i18n.music_no_media || "No Media Playing"
     this.artistText.textContent = ""
     this.platformIcon.style.display = "none"
     this.isPlaying = false

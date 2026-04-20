@@ -57,6 +57,10 @@ export function applyTranslations() {
     const key = el.getAttribute("data-i18n-placeholder")
     if (i18n[key]) el.placeholder = i18n[key]
   })
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title")
+    if (i18n[key]) el.title = i18n[key]
+  })
   updateTime() // Update time to reflect language change in date format
 }
 

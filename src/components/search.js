@@ -1,49 +1,50 @@
 import { searchInput, clearBtn } from "../utils/dom.js"
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
+import { geti18n } from "../services/i18n.js"
 
 const SEARCH_ENGINES = {
   google: {
     name: "Google",
     url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
-    placeholder: "Search Google...",
+    placeholderKey: "search_placeholder_google",
     icon: "fa-brands fa-google",
   },
   bing: {
     name: "Bing",
     url: (q) => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
-    placeholder: "Search Bing...",
+    placeholderKey: "search_placeholder_bing",
     icon: "fa-brands fa-microsoft",
   },
   yahoo: {
     name: "Yahoo",
     url: (q) => `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`,
-    placeholder: "Search Yahoo...",
+    placeholderKey: "search_placeholder_yahoo",
     icon: "fa-brands fa-yahoo",
   },
   duckduckgo: {
     name: "DuckDuckGo",
     url: (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
-    placeholder: "Search DuckDuckGo...",
+    placeholderKey: "search_placeholder_duckduckgo",
     icon: "fa-solid fa-shield-halved",
   },
   ecosia: {
     name: "Ecosia",
     url: (q) => `https://www.ecosia.org/search?q=${encodeURIComponent(q)}`,
-    placeholder: "Search Ecosia...",
+    placeholderKey: "search_placeholder_ecosia",
     icon: "fa-solid fa-leaf",
   },
   "google-image": {
     name: "Images",
     url: (q) =>
       `https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=isch`,
-    placeholder: "Search Google Images (or Paste Image)...",
+    placeholderKey: "search_placeholder_images",
     icon: "fa-regular fa-image",
   },
   "google-lens": {
     name: "Google Lens",
     url: (q) =>
       `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
-    placeholder: "Search any image with Lens...",
+    placeholderKey: "search_placeholder_lens",
     icon: "fa-solid fa-camera-viewfinder",
   },
 }
@@ -233,7 +234,8 @@ async function uploadImageToGoogle(file) {
   window.open("https://images.google.com/", "_blank")
   clearImagePreview()
   searchInput.disabled = false
-  searchInput.placeholder = "Search Google Images..."
+  const i18n = geti18n()
+  searchInput.placeholder = i18n.search_placeholder_images || "Search Google Images..."
 }
 
 function handleImageSelection(file) {
@@ -246,7 +248,8 @@ function handleImageSelection(file) {
     previewContainer.style.display = "flex"
     // Hide camera btn temporarily or keep it? Keep it.
     // Update placeholder to indicate readiness
-    searchInput.placeholder = "Press Enter to Search Image..."
+    const i18n = geti18n()
+    searchInput.placeholder = i18n.search_press_enter_image || "Press Enter to Search Image..."
     searchInput.value = "" // Clear text if any? Or keep it? Clearing is safer to avoid ambiguity
     searchInput.focus()
   }
@@ -278,7 +281,8 @@ function updateSearchUI() {
         ? "block"
         : "none"
   }
-  searchInput.placeholder = engine.placeholder
+  const i18n = geti18n()
+  searchInput.placeholder = i18n[engine.placeholderKey] || engine.name
 }
 
 function initSearch() {
