@@ -466,7 +466,6 @@ class MusicVisualizer {
         const diff = Math.abs(this.moonPhase - this.startSpecialPhase)
         this.specialLaps = diff / (Math.PI * 2)
 
-        // Sau 6 vòng line, bắt đầu xoay 3D (vũ trụ) trong 6 vòng tiếp theo
         if (this.specialLaps > 6) {
           const rotSpeed = dt * 1.5
           this.universeRotY += rotSpeed
@@ -489,18 +488,14 @@ class MusicVisualizer {
     const amplitudeX = CW * 0.38
     const amplitudeY = CH * 0.32
 
-    // Hàm getPos nâng cấp với khả năng biến hình (shapeMorph: 0 = Figure-8, 1 = Circle)
     const getPos = (p, rotY = 0, rotX = 0, shapeMorph = 0) => {
-      // Morphing giữa sin(2p) (số 8) và cos(p) (vòng tròn)
       const x = amplitudeX * Math.sin(p)
       const y = amplitudeY * ((1 - shapeMorph) * Math.sin(2 * p) + shapeMorph * Math.cos(p))
       const z = amplitudeX * Math.cos(p)
 
-      // Rotate Y
       let x1 = x * Math.cos(rotY) - z * Math.sin(rotY)
       let z1 = x * Math.sin(rotY) + z * Math.cos(rotY)
 
-      // Rotate X
       let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX)
       let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX)
 
@@ -514,7 +509,6 @@ class MusicVisualizer {
       }
     }
 
-    // Hàm nội bộ để tính toán transition mượt mà (smoothstep)
     const smoothStep = (x) => x * x * (3 - 2 * x)
 
     let collisionFactor = 0
@@ -523,13 +517,10 @@ class MusicVisualizer {
 
     if (this.isSpecialMode) {
       collisionFactor = 1.0
-      // Kiểm soát Universe (xoay 3D) và ShapeMorph (biến hình tròn)
       if (this.specialLaps > 6) {
-        // Universe factor: Bay vào không gian
         const progress = Math.min(1, this.specialLaps - 6)
         universeFactor = smoothStep(progress) 
         
-        // Shape Morph: Biến thành hình tròn từ vòng 6-7, giữ đến 11, biến lại thành số 8 từ 11-12
         if (this.specialLaps <= 7) {
           shapeMorph = smoothStep(this.specialLaps - 6)
         } else if (this.specialLaps <= 11) {
@@ -547,10 +538,8 @@ class MusicVisualizer {
     const currentRotY = (this.universeRotY || 0) * universeFactor
     const currentRotX = ((this.universeRotX || 0) + Math.sin(this.moonPhase * 0.5) * 0.2) * universeFactor
 
-    // Vẽ khung số 8/Circle với Depth Shading
     ctx.save()
     ctx.strokeStyle = accent
-    ctx.shadowColor = accent
     
     for (let p = 0; p <= Math.PI * 2; p += 0.2) {
       const pNext = p + 0.22
@@ -560,10 +549,6 @@ class MusicVisualizer {
       const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
       ctx.globalAlpha = (0.05 + collisionFactor * 0.4) * (0.3 + 0.7 * zFactor)
       ctx.lineWidth = (1 + collisionFactor * 2) * (0.5 + 0.5 * zFactor)
-      
-      if (collisionFactor > 0.3) {
-        ctx.shadowBlur = collisionFactor * 15 * zFactor
-      }
 
       ctx.beginPath()
       ctx.moveTo(pos1.x, pos1.y)
@@ -578,7 +563,6 @@ class MusicVisualizer {
       const segmentLen = this.isSpecialMode ? (0.8 + norm * 1.5) : (0.4 + collisionFactor * 0.6 + norm * 0.8)
       
       ctx.lineCap = "round"
-      ctx.shadowColor = accent
 
       const step = 0.05
       for (let s = 0; s <= segmentLen; s += step) {
@@ -596,7 +580,6 @@ class MusicVisualizer {
         ctx.lineWidth = (2.5 + collisionFactor * 4 + norm * 5) * (0.4 + 0.6 * zFactor)
         ctx.strokeStyle = accent
         ctx.globalAlpha = (0.4 + collisionFactor * 0.6) * (0.2 + 0.8 * zFactor) * fadeFactor
-        ctx.shadowBlur = (12 + norm * 20) * (0.4 + 0.6 * collisionFactor) * zFactor
         
         ctx.moveTo(pos1.x, pos1.y)
         ctx.lineTo(pos2.x, pos2.y)
@@ -608,7 +591,6 @@ class MusicVisualizer {
       ctx.beginPath()
       ctx.fillStyle = "#fff"
       ctx.globalAlpha = (0.8 + collisionFactor * 0.2) * (0.5 + 0.5 * headZFactor)
-      ctx.shadowBlur = 15 * headZFactor
       ctx.arc(headPos.x, headPos.y, (1.5 + collisionFactor * 2 + norm * 2) * (0.6 + 0.4 * headZFactor), 0, Math.PI * 2)
       ctx.fill()
     }
@@ -630,7 +612,6 @@ class MusicVisualizer {
     }
 
     ctx.globalAlpha = 1.0
-    ctx.shadowBlur = 0
   }
 
   feedFrequencyData(bands) {

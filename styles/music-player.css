@@ -668,12 +668,24 @@
 }
 
 /* Hiệu ứng sóng dồn: Thanh đầu đi trước, các thanh sau dồn lại */
-.music-style-vinyl .visualizer-bar:nth-child(1) { animation-delay: 0.1s; }
-.music-style-vinyl .visualizer-bar:nth-child(2) { animation-delay: 0.2s; }
-.music-style-vinyl .visualizer-bar:nth-child(3) { animation-delay: 0.3s; }
-.music-style-vinyl .visualizer-bar:nth-child(4) { animation-delay: 0.4s; }
-.music-style-vinyl .visualizer-bar:nth-child(5) { animation-delay: 0.5s; }
-.music-style-vinyl .visualizer-bar:nth-child(6) { animation-delay: 0.6s; }
+.music-style-vinyl .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.music-style-vinyl .visualizer-bar:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.music-style-vinyl .visualizer-bar:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.music-style-vinyl .visualizer-bar:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.music-style-vinyl .visualizer-bar:nth-child(5) {
+  animation-delay: 0.1s;
+}
+.music-style-vinyl .visualizer-bar:nth-child(6) {
+  animation-delay: 0.4s;
+}
 
 /* Visualizer for Pixel Style — Canvas-drawn EQ with physics peak block */
 .music-style-pixel .music-visualizer {
@@ -894,8 +906,13 @@
 .music-style-neon .visualizer-bar {
   width: 3.5px;
   border-radius: 4px;
-  background: linear-gradient(to top, var(--accent-color), #fff, var(--accent-color));
-  box-shadow: 
+  background: linear-gradient(
+    to top,
+    var(--accent-color),
+    #fff,
+    var(--accent-color)
+  );
+  box-shadow:
     0 0 5px #fff,
     0 0 10px var(--accent-color),
     0 0 20px var(--accent-color);
@@ -918,14 +935,30 @@
 }
 
 /* Neon Wave Delays (8 bars) */
-.music-style-neon .visualizer-bar:nth-child(1) { animation-delay: 0.0s; }
-.music-style-neon .visualizer-bar:nth-child(2) { animation-delay: 0.1s; }
-.music-style-neon .visualizer-bar:nth-child(3) { animation-delay: 0.2s; }
-.music-style-neon .visualizer-bar:nth-child(4) { animation-delay: 0.3s; }
-.music-style-neon .visualizer-bar:nth-child(5) { animation-delay: 0.4s; }
-.music-style-neon .visualizer-bar:nth-child(6) { animation-delay: 0.3s; }
-.music-style-neon .visualizer-bar:nth-child(7) { animation-delay: 0.2s; }
-.music-style-neon .visualizer-bar:nth-child(8) { animation-delay: 0.1s; }
+.music-style-neon .visualizer-bar:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.music-style-neon .visualizer-bar:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.music-style-neon .visualizer-bar:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.music-style-neon .visualizer-bar:nth-child(4) {
+  animation-delay: 0.8s;
+}
+.music-style-neon .visualizer-bar:nth-child(5) {
+  animation-delay: 0.1s;
+}
+.music-style-neon .visualizer-bar:nth-child(6) {
+  animation-delay: 0.4s;
+}
+.music-style-neon .visualizer-bar:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.music-style-neon .visualizer-bar:nth-child(8) {
+  animation-delay: 0.2s;
+}
 
 /* Minimal Style */
 .music-style-minimal .music-player-wrapper {
@@ -962,11 +995,13 @@
 }
 
 .music-style-minimal .visualizer-bar {
-  width: 1.5px;
+  width: 2px;
   border-radius: 10px;
   background: var(--accent-color);
   opacity: 0.7;
-  transition: height 0.2s ease, opacity 0.2s ease;
+  transition:
+    height 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .music-style-minimal .visualizer-bar.playing {
@@ -974,7 +1009,8 @@
 }
 
 @keyframes minimalBarWave {
-  0%, 100% {
+  0%,
+  100% {
     height: 4px;
     opacity: 0.4;
   }
@@ -985,12 +1021,24 @@
 }
 
 /* Minimal wave delays (6 bars) */
-.music-style-minimal .visualizer-bar:nth-child(1) { animation-delay: 0.0s; }
-.music-style-minimal .visualizer-bar:nth-child(2) { animation-delay: 0.1s; }
-.music-style-minimal .visualizer-bar:nth-child(3) { animation-delay: 0.2s; }
-.music-style-minimal .visualizer-bar:nth-child(4) { animation-delay: 0.3s; }
-.music-style-minimal .visualizer-bar:nth-child(5) { animation-delay: 0.4s; }
-.music-style-minimal .visualizer-bar:nth-child(6) { animation-delay: 0.5s; }
+.music-style-minimal .visualizer-bar:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.music-style-minimal .visualizer-bar:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.music-style-minimal .visualizer-bar:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.music-style-minimal .visualizer-bar:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.music-style-minimal .visualizer-bar:nth-child(5) {
+  animation-delay: 0.6s;
+}
+.music-style-minimal .visualizer-bar:nth-child(6) {
+  animation-delay: 0.9s;
+}
 
 /* Platform Icon Styles */
 .platform-icon {
@@ -1093,7 +1141,7 @@
 }
 .music-style-apple .visualizer-bar {
   background: var(--accent-color);
-  width: 4px;
+  width: 3px;
   border-radius: 4px;
   opacity: 0.85;
   box-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.2);
@@ -1114,12 +1162,24 @@
 }
 
 /* Apple center-out animation pattern (6 bars) */
-.music-style-apple .visualizer-bar:nth-child(1) { animation-delay: 0.5s; }
-.music-style-apple .visualizer-bar:nth-child(2) { animation-delay: 0.3s; }
-.music-style-apple .visualizer-bar:nth-child(3) { animation-delay: 0.1s; }
-.music-style-apple .visualizer-bar:nth-child(4) { animation-delay: 0.1s; }
-.music-style-apple .visualizer-bar:nth-child(5) { animation-delay: 0.3s; }
-.music-style-apple .visualizer-bar:nth-child(6) { animation-delay: 0.5s; }
+.music-style-apple .visualizer-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.music-style-apple .visualizer-bar:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.music-style-apple .visualizer-bar:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.music-style-apple .visualizer-bar:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.music-style-apple .visualizer-bar:nth-child(5) {
+  animation-delay: 0.8s;
+}
+.music-style-apple .visualizer-bar:nth-child(6) {
+  animation-delay: 1s;
+}
 
 /* =========================================
    STYLE: SOUNDCLOUD
@@ -1206,34 +1266,34 @@
 
 /* Hiệu ứng sóng chạy tới và quay lại (Ping-pong delay) */
 .music-style-soundcloud .visualizer-bar:nth-child(1) {
-  animation-delay: 0s;
-}
-.music-style-soundcloud .visualizer-bar:nth-child(2) {
   animation-delay: 0.1s;
 }
-.music-style-soundcloud .visualizer-bar:nth-child(3) {
-  animation-delay: 0.2s;
-}
-.music-style-soundcloud .visualizer-bar:nth-child(4) {
+.music-style-soundcloud .visualizer-bar:nth-child(2) {
   animation-delay: 0.3s;
 }
-.music-style-soundcloud .visualizer-bar:nth-child(5) {
-  animation-delay: 0.4s;
-}
-.music-style-soundcloud .visualizer-bar:nth-child(6) {
+.music-style-soundcloud .visualizer-bar:nth-child(3) {
   animation-delay: 0.5s;
 }
-.music-style-soundcloud .visualizer-bar:nth-child(7) {
-  animation-delay: 0.6s;
-}
-.music-style-soundcloud .visualizer-bar:nth-child(8) {
+.music-style-soundcloud .visualizer-bar:nth-child(4) {
   animation-delay: 0.7s;
 }
+.music-style-soundcloud .visualizer-bar:nth-child(5) {
+  animation-delay: 0.9s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(6) {
+  animation-delay: 1.2s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(7) {
+  animation-delay: 1.4s;
+}
+.music-style-soundcloud .visualizer-bar:nth-child(8) {
+  animation-delay: 1.6s;
+}
 .music-style-soundcloud .visualizer-bar:nth-child(9) {
-  animation-delay: 0.8s;
+  animation-delay: 1.8s;
 }
 .music-style-soundcloud .visualizer-bar:nth-child(10) {
-  animation-delay: 0.9s;
+  animation-delay: 2.2s;
 }
 
 .music-style-soundcloud .controls-row {
@@ -1645,7 +1705,9 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(var(--accent-color-rgb), 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(var(--accent-color-rgb), 0.1);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(var(--accent-color-rgb), 0.1);
   align-items: center;
   text-align: center;
   min-width: unset;
@@ -1824,7 +1886,51 @@
   box-shadow:
     0 12px 35px rgba(0, 0, 0, 0.7),
     0 0 20px rgba(var(--accent-color-rgb, 255, 249, 196), 0.1);
-  overflow: visible !important;
+  overflow: hidden !important;
+  position: relative;
+}
+
+/* Hiệu ứng bầu trời sao */
+.music-style-moon8 .music-player-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, rgba(0, 0, 0, 0)),
+    radial-gradient(1.5px 1.5px at 50px 70px, #fff, rgba(0, 0, 0, 0)),
+    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0, 0, 0, 0)),
+    radial-gradient(
+      2px 2px at 130px 80px,
+      rgba(var(--accent-color-rgb), 0.8),
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(1px 1px at 160px 120px, #fff, rgba(0, 0, 0, 0)),
+    radial-gradient(1.5px 1.5px at 210px 50px, #fff, rgba(0, 0, 0, 0)),
+    radial-gradient(
+      1px 1px at 240px 90px,
+      rgba(var(--accent-color-rgb), 0.5),
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(2px 2px at 280px 30px, #fff, rgba(0, 0, 0, 0));
+  background-size: 300px 150px;
+  opacity: 0.4;
+  animation: infinityStarsTwinkle 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes infinityStarsTwinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
 }
 
 .music-style-moon8 .visualizer-bar {
