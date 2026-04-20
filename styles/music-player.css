@@ -87,6 +87,47 @@
   /* Giữ nguyên màu accent của thanh nhạc */
 }
 
+/* White Blur Skin overrides for specific styles */
+.music-style-soundcloud .music-player-wrapper.skin-white-blur .player-info h3,
+.music-style-soundcloud .music-player-wrapper.skin-white-blur .player-info p {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+}
+
+.music-style-cassette .music-player-wrapper.skin-white-blur .player-info {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.05) 0px,
+    rgba(0, 0, 0, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  ) !important;
+}
+
+.music-style-cassette .music-player-wrapper.skin-white-blur .player-info h3 {
+  color: #000 !important;
+  text-shadow: none !important;
+}
+
+.music-style-cassette .music-player-wrapper.skin-white-blur .player-info p {
+  color: #333 !important;
+}
+
+.music-style-cassette .music-player-wrapper.skin-white-blur .disc-container,
+.music-style-cassette .music-player-wrapper.skin-white-blur .controls-row,
+.music-style-cassette .music-player-wrapper.skin-white-blur .progress-bar-track,
+.music-style-cassette .music-player-wrapper.skin-white-blur .music-visualizer {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-cassette .music-player-wrapper.skin-white-blur .visualizer-bar {
+  box-shadow: none !important;
+}
+
 /* White Blur Skin cho Heartbeat */
 .music-style-heartbeat .music-player-wrapper.skin-white-blur {
   background: rgba(255, 255, 255, 0.4) !important;

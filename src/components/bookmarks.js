@@ -307,6 +307,7 @@ export function renderBookmarks() {
 }
 
 export function updateOverflowBookmarks() {
+  const i18n = geti18n()
   const container = document.getElementById("bookmarks-container")
   if (!container) return
 
