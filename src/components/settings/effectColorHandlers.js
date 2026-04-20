@@ -151,7 +151,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("snowfallColor", DOM.snowfallColorPicker.value)
     saveSettings()
     if (effectInstances.snowfallEffect)
-      effectInstances.snowfallEffect.color = DOM.snowfallColorPicker.value
+      effectInstances.snowfallEffect.updateColor(DOM.snowfallColorPicker.value)
   })
 
   DOM.sunbeamColorPicker?.addEventListener("input", () => {

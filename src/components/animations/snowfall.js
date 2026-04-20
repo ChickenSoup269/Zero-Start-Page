@@ -42,6 +42,10 @@ export class SnowfallEffect {
     }
   }
 
+  updateColor(color) {
+    this.color = color
+  }
+
   start() {
     if (this.active) return
     this.active = true
@@ -52,7 +56,10 @@ export class SnowfallEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
@@ -69,8 +76,8 @@ export class SnowfallEffect {
     const armCount = 6
     const armLength = snowflake.size
 
-    this.ctx.strokeStyle = `rgba(\${rgb.r}, \${rgb.g}, \${rgb.b}, \${snowflake.opacity})`
-    this.ctx.fillStyle = `rgba(\${rgb.r}, \${rgb.g}, \${rgb.b}, \${snowflake.opacity * 0.8})`
+    this.ctx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${snowflake.opacity})`
+    this.ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${snowflake.opacity * 0.8})`
     this.ctx.lineWidth = snowflake.size * 0.15
 
     // Main arms
@@ -134,7 +141,8 @@ export class SnowfallEffect {
 
       // Swinging motion (sine wave)
       snowflake.swingOffset += snowflake.swingSpeed * deltaTime
-      snowflake.x += Math.sin(snowflake.swingOffset) * snowflake.swing * deltaTime
+      snowflake.x +=
+        Math.sin(snowflake.swingOffset) * snowflake.swing * deltaTime
 
       // Gentle horizontal drift
       snowflake.x += snowflake.speedX * deltaTime
