@@ -710,7 +710,7 @@
   margin-left: 0;
   justify-content: flex-end;
   order: 3;
-  gap: 2px;
+  gap: 3px;
 }
 
 .music-style-spotify .visualizer-bar {

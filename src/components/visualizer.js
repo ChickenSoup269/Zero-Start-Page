@@ -19,7 +19,10 @@ class MusicVisualizer {
     this._lastTs = 0
     // Simulate phase and speeds for purely animative visualizer
     this._simPhase = Array.from({ length: 10 }, (_, i) => i * 1.1)
-    this._simSpeeds = Array.from({ length: 10 }, () => 1.5 + Math.random() * 2.0)
+    this._simSpeeds = Array.from(
+      { length: 10 },
+      () => 1.5 + Math.random() * 2.0,
+    )
     this._realBands = null // We will not use real audio data anymore
   }
 
@@ -97,9 +100,10 @@ class MusicVisualizer {
     this._stopHeartbeat()
     const canvas = document.createElement("canvas")
     canvas.className = "heartbeat-canvas"
-    canvas.style.cssText = "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
+    canvas.style.cssText =
+      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;"
     this.heartbeatCanvas = canvas
-    
+
     if (this.container) {
       this.container.appendChild(canvas)
     }
@@ -136,7 +140,7 @@ class MusicVisualizer {
     if (!canvas) return
     const W = canvas.offsetWidth
     const H = canvas.offsetHeight
-    
+
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
@@ -144,12 +148,13 @@ class MusicVisualizer {
 
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
+
     ctx.save()
     ctx.scale(2, 2)
 
     const rootStyle = getComputedStyle(document.documentElement)
-    const accent = rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
+    const accent =
+      rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
 
     let norm = 0
     let active = false
@@ -161,68 +166,74 @@ class MusicVisualizer {
       active = true
     }
 
-    this._baseYOffset += (Math.random() - 0.5) * 2 
-    this._baseYOffset *= 0.98 
-    const drift = Math.sin(Date.now() * 0.003) * 5 
-    const currentBaseY = (H / 2) + this._baseYOffset + drift
+    this._baseYOffset += (Math.random() - 0.5) * 2
+    this._baseYOffset *= 0.98
+    const drift = Math.sin(Date.now() * 0.003) * 5
+    const currentBaseY = H / 2 + this._baseYOffset + drift
 
-    const scrollSpeed = (W / 1.5) * dt 
-    
+    const scrollSpeed = (W / 1.5) * dt
+
     if (!this.heartbeatPoints) this.heartbeatPoints = []
-    
-    const lastX = this.heartbeatPoints.length > 0 ? this.heartbeatPoints[this.heartbeatPoints.length - 1].x : W
-    
+
+    const lastX =
+      this.heartbeatPoints.length > 0
+        ? this.heartbeatPoints[this.heartbeatPoints.length - 1].x
+        : W
+
     if (lastX < W + 20) {
-        this._pulseTimer += dt
-        const beatInterval = active ? (0.7 - norm * 0.3) : 1.2 
-        
-        if (this._pulseTimer >= beatInterval) {
-            this._pulseTimer = 0
-            const bx = W + 10
-            const amp = active ? (1 + norm * 3.3) : 1.2
-            
-            this.heartbeatPoints.push({ x: bx, y: currentBaseY })
-            this.heartbeatPoints.push({ x: bx + 3, y: currentBaseY - 2 * amp })
-            this.heartbeatPoints.push({ x: bx + 5, y: currentBaseY + 2 * amp })
-            this.heartbeatPoints.push({ x: bx + 9, y: currentBaseY - 18 * amp })
-            this.heartbeatPoints.push({ x: bx + 14, y: currentBaseY + 28 * amp })
-            this.heartbeatPoints.push({ x: bx + 18, y: currentBaseY - 8 * amp })
-            this.heartbeatPoints.push({ x: bx + 22, y: currentBaseY })
-        } else {
-            const noise = (Math.random() - 0.5) * (active ? (1 + norm * 5) : 0.5)
-            this.heartbeatPoints.push({ x: W + 10, y: currentBaseY + noise })
-        }
+      this._pulseTimer += dt
+      const beatInterval = active ? 0.7 - norm * 0.3 : 1.2
+
+      if (this._pulseTimer >= beatInterval) {
+        this._pulseTimer = 0
+        const bx = W + 10
+        const amp = active ? 1 + norm * 3.5 : 1.2
+
+        // Mô phỏng chu trình P-QRS-T chuẩn hơn
+        this.heartbeatPoints.push({ x: bx, y: currentBaseY })
+        this.heartbeatPoints.push({ x: bx + 4, y: currentBaseY - 3 * amp }) // Sóng P (nhô nhẹ)
+        this.heartbeatPoints.push({ x: bx + 8, y: currentBaseY }) // Về nền
+        this.heartbeatPoints.push({ x: bx + 10, y: currentBaseY + 2 * amp }) // Sóng Q (hụp nhẹ)
+        this.heartbeatPoints.push({ x: bx + 14, y: currentBaseY - 24 * amp }) // Sóng R (đỉnh nhọn cực cao)
+        this.heartbeatPoints.push({ x: bx + 18, y: currentBaseY + 12 * amp }) // Sóng S (hụp sâu)
+        this.heartbeatPoints.push({ x: bx + 22, y: currentBaseY }) // Về nền
+        this.heartbeatPoints.push({ x: bx + 28, y: currentBaseY - 6 * amp }) // Sóng T (nhô vừa)
+        this.heartbeatPoints.push({ x: bx + 34, y: currentBaseY }) // Kết thúc chu trình
+      } else {
+        const noise = (Math.random() - 0.5) * (active ? 1 + norm * 5 : 0.5)
+        this.heartbeatPoints.push({ x: W + 10, y: currentBaseY + noise })
+      }
     }
 
     if (this.heartbeatPoints.length > 1) {
-        ctx.beginPath()
-        ctx.strokeStyle = accent
-        ctx.lineWidth = 2.5
-        ctx.lineJoin = "round"
-        ctx.shadowBlur = 10
-        ctx.shadowColor = accent
+      ctx.beginPath()
+      ctx.strokeStyle = accent
+      ctx.lineWidth = 2.5
+      ctx.lineJoin = "round"
+      ctx.shadowBlur = 10
+      ctx.shadowColor = accent
 
-        for (let i = 0; i < this.heartbeatPoints.length; i++) {
-            const p = this.heartbeatPoints[i]
-            p.x -= scrollSpeed
-            if (i === 0) ctx.moveTo(p.x, p.y)
-            else ctx.lineTo(p.x, p.y)
-        }
-        ctx.stroke()
-        
-        const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
-        if (lastP.x <= W) {
-            ctx.beginPath()
-            ctx.fillStyle = "#fff"
-            ctx.arc(lastP.x, lastP.y, 2, 0, Math.PI * 2)
-            ctx.fill()
-        }
+      for (let i = 0; i < this.heartbeatPoints.length; i++) {
+        const p = this.heartbeatPoints[i]
+        p.x -= scrollSpeed
+        if (i === 0) ctx.moveTo(p.x, p.y)
+        else ctx.lineTo(p.x, p.y)
+      }
+      ctx.stroke()
+
+      const lastP = this.heartbeatPoints[this.heartbeatPoints.length - 1]
+      if (lastP.x <= W) {
+        ctx.beginPath()
+        ctx.fillStyle = "#fff"
+        ctx.arc(lastP.x, lastP.y, 2, 0, Math.PI * 2)
+        ctx.fill()
+      }
     }
 
     if (this.heartbeatPoints.length > 0 && this.heartbeatPoints[0].x < -50) {
-        this.heartbeatPoints.shift()
+      this.heartbeatPoints.shift()
     }
-    
+
     ctx.restore()
   }
 
@@ -326,7 +337,9 @@ class MusicVisualizer {
       if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
         // Trải đều 4 dải âm lên các cột Pixel
         const bandIdx = Math.floor((i / this.barCount) * this._realBands.length)
-        norm = Math.sqrt(Math.max(0, Math.min(1, this._realBands[bandIdx] * 1.5)))
+        norm = Math.sqrt(
+          Math.max(0, Math.min(1, this._realBands[bandIdx] * 1.5)),
+        )
       } else {
         if (this.isPlaying) {
           this.pixelPhase[i] += this.pixelSpeeds[i] * dt * Math.PI
@@ -363,12 +376,12 @@ class MusicVisualizer {
     // Vùng vẽ mở rộng để chứa glow nhưng đặt tuyệt đối giữa
     canvas.style.cssText =
       "position:absolute; top:50%; left:50%; width:300%; height:300%; transform:translate(-50%, -50%); pointer-events:none; z-index: 1;"
-    
+
     this.container.style.position = "relative"
     this.container.style.overflow = "visible"
     this.container.appendChild(canvas)
     this.moonCanvas = canvas
-    
+
     this.moonPhase = 0
     this.moonDir = 1
     this.collisionCount = 0
@@ -408,7 +421,7 @@ class MusicVisualizer {
     const canvas = this.moonCanvas
     const CW = this.container.offsetWidth || 140
     const CH = this.container.offsetHeight || 45
-    
+
     if (canvas.width !== CW * 3) {
       canvas.width = CW * 3
       canvas.height = CH * 3
@@ -430,14 +443,15 @@ class MusicVisualizer {
     }
 
     if (this.isPlaying) {
-      const baseSpeed = Math.PI / 2 
+      const baseSpeed = Math.PI / 2
       const speedBoost = 1 + norm * 2.5
-      
+
       if (!this.isSpecialMode) {
         this.moonPhase += dt * baseSpeed * speedBoost * this.moonDir
-        const crossedLimit = this.moonDir > 0 
-          ? this.moonPhase >= this.nextCollisionPhase 
-          : this.moonPhase <= this.nextCollisionPhase
+        const crossedLimit =
+          this.moonDir > 0
+            ? this.moonPhase >= this.nextCollisionPhase
+            : this.moonPhase <= this.nextCollisionPhase
 
         if (crossedLimit) {
           this.collisionCount++
@@ -451,13 +465,15 @@ class MusicVisualizer {
             const mode = Math.floor((this.collisionCount - 1) / 2) % 2
             if (mode === 0) {
               this.moonDir *= -1
-              this.nextCollisionPhase = this.moonDir > 0 
-                ? Math.ceil((this.moonPhase + 0.01) / Math.PI) * Math.PI 
-                : Math.floor((this.moonPhase - 0.01) / Math.PI) * Math.PI
+              this.nextCollisionPhase =
+                this.moonDir > 0
+                  ? Math.ceil((this.moonPhase + 0.01) / Math.PI) * Math.PI
+                  : Math.floor((this.moonPhase - 0.01) / Math.PI) * Math.PI
             } else {
-              this.nextCollisionPhase = this.moonDir > 0 
-                ? this.nextCollisionPhase + Math.PI 
-                : this.nextCollisionPhase - Math.PI
+              this.nextCollisionPhase =
+                this.moonDir > 0
+                  ? this.nextCollisionPhase + Math.PI
+                  : this.nextCollisionPhase - Math.PI
             }
           }
         }
@@ -476,7 +492,8 @@ class MusicVisualizer {
           this.isSpecialMode = false
           this.collisionCount = 0
           this.moonDir = 1
-          this.nextCollisionPhase = Math.round(this.moonPhase / Math.PI) * Math.PI + Math.PI
+          this.nextCollisionPhase =
+            Math.round(this.moonPhase / Math.PI) * Math.PI + Math.PI
           this.universeRotY = 0
           this.universeRotX = 0
         }
@@ -490,7 +507,9 @@ class MusicVisualizer {
 
     const getPos = (p, rotY = 0, rotX = 0, shapeMorph = 0) => {
       const x = amplitudeX * Math.sin(p)
-      const y = amplitudeY * ((1 - shapeMorph) * Math.sin(2 * p) + shapeMorph * Math.cos(p))
+      const y =
+        amplitudeY *
+        ((1 - shapeMorph) * Math.sin(2 * p) + shapeMorph * Math.cos(p))
       const z = amplitudeX * Math.cos(p)
 
       let x1 = x * Math.cos(rotY) - z * Math.sin(rotY)
@@ -501,11 +520,11 @@ class MusicVisualizer {
 
       const perspective = 400
       const scale = perspective / (perspective + z2)
-      
+
       return {
         x: centerX + x1 * scale,
         y: centerY + y2 * scale,
-        z: z2
+        z: z2,
       }
     }
 
@@ -519,8 +538,8 @@ class MusicVisualizer {
       collisionFactor = 1.0
       if (this.specialLaps > 6) {
         const progress = Math.min(1, this.specialLaps - 6)
-        universeFactor = smoothStep(progress) 
-        
+        universeFactor = smoothStep(progress)
+
         if (this.specialLaps <= 7) {
           shapeMorph = smoothStep(this.specialLaps - 6)
         } else if (this.specialLaps <= 11) {
@@ -531,21 +550,25 @@ class MusicVisualizer {
         }
       }
     } else {
-      const distToCenter = Math.abs(this.moonPhase - Math.round(this.moonPhase / Math.PI) * Math.PI)
+      const distToCenter = Math.abs(
+        this.moonPhase - Math.round(this.moonPhase / Math.PI) * Math.PI,
+      )
       collisionFactor = Math.pow(Math.max(0, 1 - distToCenter / 0.5), 4)
     }
 
     const currentRotY = (this.universeRotY || 0) * universeFactor
-    const currentRotX = ((this.universeRotX || 0) + Math.sin(this.moonPhase * 0.5) * 0.2) * universeFactor
+    const currentRotX =
+      ((this.universeRotX || 0) + Math.sin(this.moonPhase * 0.5) * 0.2) *
+      universeFactor
 
     ctx.save()
     ctx.strokeStyle = accent
-    
+
     for (let p = 0; p <= Math.PI * 2; p += 0.2) {
       const pNext = p + 0.22
       const pos1 = getPos(p, currentRotY, currentRotX, shapeMorph)
       const pos2 = getPos(pNext, currentRotY, currentRotX, shapeMorph)
-      
+
       const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
       ctx.globalAlpha = (0.05 + collisionFactor * 0.4) * (0.3 + 0.7 * zFactor)
       ctx.lineWidth = (1 + collisionFactor * 2) * (0.5 + 0.5 * zFactor)
@@ -560,27 +583,31 @@ class MusicVisualizer {
     const drawLine = (isSecond) => {
       let pBase = isSecond ? -this.moonPhase : this.moonPhase
       let currentDir = this.isSpecialMode ? 1 : this.moonDir
-      const segmentLen = this.isSpecialMode ? (0.8 + norm * 1.5) : (0.4 + collisionFactor * 0.6 + norm * 0.8)
-      
+      const segmentLen = this.isSpecialMode
+        ? 0.8 + norm * 1.5
+        : 0.4 + collisionFactor * 0.6 + norm * 0.8
+
       ctx.lineCap = "round"
 
       const step = 0.05
       for (let s = 0; s <= segmentLen; s += step) {
         const dir = isSecond ? -currentDir : currentDir
-        const p1 = pBase - (s * dir)
-        const p2 = pBase - ((s + step) * dir)
-        
+        const p1 = pBase - s * dir
+        const p2 = pBase - (s + step) * dir
+
         const pos1 = getPos(p1, currentRotY, currentRotX, shapeMorph)
         const pos2 = getPos(p2, currentRotY, currentRotX, shapeMorph)
-        
+
         const zFactor = (pos1.z + amplitudeX) / (2 * amplitudeX)
-        const fadeFactor = 1 - (s / segmentLen)
+        const fadeFactor = 1 - s / segmentLen
 
         ctx.beginPath()
-        ctx.lineWidth = (2.5 + collisionFactor * 4 + norm * 5) * (0.4 + 0.6 * zFactor)
+        ctx.lineWidth =
+          (2.5 + collisionFactor * 4 + norm * 5) * (0.4 + 0.6 * zFactor)
         ctx.strokeStyle = accent
-        ctx.globalAlpha = (0.4 + collisionFactor * 0.6) * (0.2 + 0.8 * zFactor) * fadeFactor
-        
+        ctx.globalAlpha =
+          (0.4 + collisionFactor * 0.6) * (0.2 + 0.8 * zFactor) * fadeFactor
+
         ctx.moveTo(pos1.x, pos1.y)
         ctx.lineTo(pos2.x, pos2.y)
         ctx.stroke()
@@ -590,8 +617,15 @@ class MusicVisualizer {
       const headZFactor = (headPos.z + amplitudeX) / (2 * amplitudeX)
       ctx.beginPath()
       ctx.fillStyle = "#fff"
-      ctx.globalAlpha = (0.8 + collisionFactor * 0.2) * (0.5 + 0.5 * headZFactor)
-      ctx.arc(headPos.x, headPos.y, (1.5 + collisionFactor * 2 + norm * 2) * (0.6 + 0.4 * headZFactor), 0, Math.PI * 2)
+      ctx.globalAlpha =
+        (0.8 + collisionFactor * 0.2) * (0.5 + 0.5 * headZFactor)
+      ctx.arc(
+        headPos.x,
+        headPos.y,
+        (1.5 + collisionFactor * 2 + norm * 2) * (0.6 + 0.4 * headZFactor),
+        0,
+        Math.PI * 2,
+      )
       ctx.fill()
     }
 
@@ -600,7 +634,14 @@ class MusicVisualizer {
 
     if (!this.isSpecialMode && collisionFactor > 0.8) {
       const burstSize = (collisionFactor - 0.8) * 70 + norm * 50
-      const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, burstSize)
+      const grad = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        burstSize,
+      )
       grad.addColorStop(0, "#fff")
       grad.addColorStop(0.4, accent)
       grad.addColorStop(1, "transparent")
@@ -623,39 +664,48 @@ class MusicVisualizer {
     this._lastCssTs = performance.now()
     this._currentHeights = new Array(this.barCount).fill(4)
     this._targetHeights = new Array(this.barCount).fill(4)
-    
+
     // Cache các thanh bars ngay khi bắt đầu loop
     const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
 
     const loop = (ts) => {
-      if (!this.isPlaying || (this.currentStyle === "pixel" || this.currentStyle === "moon8" || this.currentStyle === "heartbeat")) {
-          this._cssAnimId = null
-          return
+      if (
+        !this.isPlaying ||
+        this.currentStyle === "pixel" ||
+        this.currentStyle === "moon8" ||
+        this.currentStyle === "heartbeat"
+      ) {
+        this._cssAnimId = null
+        return
       }
-      
+
       const dt = Math.min((ts - this._lastCssTs) / 1000, 0.05)
       this._lastCssTs = ts
-      
+
       if (!bars.length) {
-          this._cssAnimId = requestAnimationFrame(loop)
-          return
+        this._cssAnimId = requestAnimationFrame(loop)
+        return
       }
 
       const containerH = this.container.offsetHeight || 40
       const minH = 4
       const maxH = containerH - 4
-      
+
       if (this._realBands && this._realBands.length > 0) {
         for (let i = 0; i < bars.length; i++) {
           // Trải đều 4 dải âm lên số lượng thanh bar bất kỳ
           const bandIdx = Math.floor((i / bars.length) * this._realBands.length)
           let val = this._realBands[bandIdx]
-          
+
           // Tính toán norm với hệ số Gain mạnh
           let t = Math.sqrt(Math.max(0, Math.min(1, val * 1.6)))
-          
+
           // Tối ưu riêng cho từng style
-          if (this.currentStyle === "spotify" || this.currentStyle === "sidebar" || this.currentStyle === "neon") {
+          if (
+            this.currentStyle === "spotify" ||
+            this.currentStyle === "sidebar" ||
+            this.currentStyle === "neon"
+          ) {
             t *= 1.3 // Modern snappy styles
           } else if (this.currentStyle === "soundcloud") {
             t *= 1.15 // Waveform style
@@ -670,15 +720,19 @@ class MusicVisualizer {
           this._simPhase[i] += this._simSpeeds[i] * dt * Math.PI
           // Thêm nhiễu ngẫu nhiên để chuyển động phiêu hơn
           const noise = (Math.random() - 0.5) * 0.4
-          const t = Math.max(0, Math.min(1, (Math.sin(this._simPhase[i]) + 1) / 2 + noise))
+          const t = Math.max(
+            0,
+            Math.min(1, (Math.sin(this._simPhase[i]) + 1) / 2 + noise),
+          )
           this._targetHeights[i] = minH + t * (maxH - minH)
         }
       }
-      
+
       for (let i = 0; i < bars.length; i++) {
         if (!this._currentHeights[i]) this._currentHeights[i] = minH
         // Hệ số Lerp 0.8 giúp phản hồi Snappy tuyệt vời cho tất cả style thanh bar
-        this._currentHeights[i] += (this._targetHeights[i] - this._currentHeights[i]) * 0.8
+        this._currentHeights[i] +=
+          (this._targetHeights[i] - this._currentHeights[i]) * 0.8
         bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
         if (!bars[i].classList.contains("playing")) {
           bars[i].classList.add("playing")
