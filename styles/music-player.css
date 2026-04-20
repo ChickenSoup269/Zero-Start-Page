@@ -45,6 +45,75 @@
     border-radius 0.3s ease;
 }
 
+/* GIAO DIỆN TRẮNG BLUR TRONG SUỐT */
+.music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(25px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-player-wrapper.skin-white-blur h3,
+.music-player-wrapper.skin-white-blur h3 *,
+.music-player-wrapper.skin-white-blur .progress-time,
+.music-player-wrapper.skin-white-blur p,
+.music-player-wrapper.skin-white-blur p *,
+.music-player-wrapper.skin-white-blur span {
+  color: #000 !important;
+  text-shadow: none !important;
+}
+
+.music-player-wrapper.skin-white-blur .player-btn {
+  color: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.music-player-wrapper.skin-white-blur .player-btn:hover {
+  color: #000 !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-player-wrapper.skin-white-blur .play-pause-btn {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.music-player-wrapper.skin-white-blur .progress-bar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-player-wrapper.skin-white-blur .visualizer-bar {
+  /* Giữ nguyên màu accent của thanh nhạc */
+}
+
+/* White Blur Skin cho Heartbeat */
+.music-style-heartbeat .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-heartbeat .music-player-wrapper.skin-white-blur .music-visualizer {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* White Blur Skin cho Infinity */
+.music-style-moon8 .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-moon8 .music-player-wrapper.skin-white-blur::before {
+  opacity: 0.15; /* Làm mờ sao để không bị gắt trên nền trắng */
+  filter: invert(1); /* Đổi sao trắng thành sao đen/xám để nổi bật trên nền sáng */
+}
+
+.music-player-wrapper.skin-white-blur .disc-container {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
 /* Disc Container */
 .disc-container {
   position: relative;

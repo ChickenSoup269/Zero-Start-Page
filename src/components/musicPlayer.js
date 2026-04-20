@@ -31,7 +31,9 @@ export class MusicPlayer {
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
-    if (settings.musicPlayerSkin === "gameboy") this.applySkin("gameboy")
+    if (settings.musicPlayerSkin === "gameboy" || settings.musicPlayerSkin === "white-blur") {
+      this.applySkin(settings.musicPlayerSkin)
+    }
 
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
@@ -45,10 +47,14 @@ export class MusicPlayer {
   applySkin(skin) {
     const wrapper = this.container.querySelector(".music-player-wrapper")
     if (!wrapper) return
+    
+    // Xóa tất cả skin classes cũ
+    wrapper.classList.remove("skin-gameboy", "skin-white-blur")
+    
     if (skin === "gameboy") {
       wrapper.classList.add("skin-gameboy")
-    } else {
-      wrapper.classList.remove("skin-gameboy")
+    } else if (skin === "white-blur") {
+      wrapper.classList.add("skin-white-blur")
     }
   }
 

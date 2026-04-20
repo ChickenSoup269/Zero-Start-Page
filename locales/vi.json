@@ -80,5 +80,7 @@
   "layout_default": "Lưới con (Mặc định)",
   "layout_sidebar": "Thanh bên",
   "layout_taskbar": "Thanh ngang (Dưới giữa)",
-  "layout_taskbar_left": "Thanh ngang (Dưới trái)"
+  "layout_taskbar_left": "Thanh ngang (Dưới trái)",
+  "music_player_skin_white_blur": "Nền Trắng Blur",
+  "music_player_skin_default": "Giao diện Mặc định"
 }

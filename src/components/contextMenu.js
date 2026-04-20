@@ -66,6 +66,7 @@ export function showContextMenu(
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
     if (id === "music") {
       const musicStyle = settings.music_bar_style || settings.musicBarStyle
+      
       if (musicStyle === "heartbeat") {
         // Nút đổi Skin GameBoy
         const isGameBoy = settings.musicPlayerSkin === "gameboy"
@@ -81,6 +82,20 @@ export function showContextMenu(
         }
         contextMenu.insertBefore(skinBtn, menuLock)
 
+        // Nút đổi Skin Trắng Blur
+        const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
+        const whiteSkinBtn = document.createElement("div")
+        whiteSkinBtn.className = "context-menu-item custom-music-item"
+        whiteSkinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? (i18n.music_player_skin_default || "Giao diện Mặc định") : (i18n.music_player_skin_white_blur || "Nền Trắng Blur")}</span>`
+        whiteSkinBtn.onclick = () => {
+          const newSkin = isWhiteBlur ? "default" : "white-blur"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerSkin", value: newSkin } }))
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(whiteSkinBtn, menuLock)
+
         // Nút tắt bồng bềnh
         const isNoShaking = settings.musicPlayerNoShaking
         const shakeBtn = document.createElement("div")
@@ -94,6 +109,28 @@ export function showContextMenu(
           hideContextMenu()
         }
         contextMenu.insertBefore(shakeBtn, menuLock)
+        
+        // Đường kẻ chia
+        const separator = document.createElement("div")
+        separator.className = "context-menu-separator custom-music-item"
+        separator.style.height = "1px"
+        separator.style.background = "rgba(255,255,255,0.1)"
+        separator.style.margin = "4px 0"
+        contextMenu.insertBefore(separator, skinBtn)
+      } else {
+        // Tùy chọn skin Trắng Blur cho tất cả các style khác
+        const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
+        const skinBtn = document.createElement("div")
+        skinBtn.className = "context-menu-item custom-music-item"
+        skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? (i18n.music_player_skin_default || "Giao diện Mặc định") : (i18n.music_player_skin_white_blur || "Nền Trắng Blur")}</span>`
+        skinBtn.onclick = () => {
+          const newSkin = isWhiteBlur ? "default" : "white-blur"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(new CustomEvent("settingsUpdated", { detail: { key: "musicPlayerSkin", value: newSkin } }))
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(skinBtn, menuLock)
         
         // Đường kẻ chia
         const separator = document.createElement("div")
