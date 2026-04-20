@@ -837,6 +837,15 @@ export function setupGeneralEventHandlers(
       renderBookmarks()
     })
 
+    if (DOM.bookmarkLimit20) {
+      DOM.bookmarkLimit20.addEventListener("change", () => {
+        throttleSettingUpdate(
+          "bookmarkLimit20",
+          DOM.bookmarkLimit20.checked,
+        )
+      })
+    }
+
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {
         throttleSettingUpdate(

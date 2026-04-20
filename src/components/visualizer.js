@@ -17,21 +17,10 @@ class MusicVisualizer {
     this.peakIdx = [] // segment index (integer) for each bar's peak
     this.peakTimer = 0 // accumulator for step-based drop
     this._lastTs = 0
-    // Real frequency data from Web Audio API
-    this._realBands = null
-    this._cssAnimId = null
-    this._lastCssTs = 0
-    this._currentHeights = [4, 4, 4, 4]
-    this._targetHeights = [4, 4, 4, 4]
-    this._simPhase = [0, 1.1, 2.2, 3.3]
-    this._simSpeeds = [1.9, 2.4, 1.6, 2.8]
-
-    // Listen for audio data from background
-    chrome.runtime.onMessage.addListener((request) => {
-      if (request.action === "audioSyncData" && request.samples) {
-        this.feedFrequencyData(request.samples)
-      }
-    })
+    // Simulate phase and speeds for purely animative visualizer
+    this._simPhase = Array.from({ length: 10 }, (_, i) => i * 1.1)
+    this._simSpeeds = Array.from({ length: 10 }, () => 1.5 + Math.random() * 2.0)
+    this._realBands = null // We will not use real audio data anymore
   }
 
   init(musicPlayerContainer) {

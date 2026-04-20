@@ -287,9 +287,11 @@ export function renderBookmarks() {
   addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
   addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addBtn.addEventListener("click", () => {
-    const bookmarks = getBookmarks() // lấy bookmark của group hiện tại
-    if (bookmarks.length >= 20) {
-      showAlert("Nhóm này đã đủ 20 bookmark!")
+    const bookmarks = getBookmarks()
+    const settings = getSettings()
+    const currentI18n = geti18n()
+    if (settings.bookmarkLimit20 !== false && bookmarks.length >= 20) {
+      showAlert(currentI18n.alert_bookmark_limit_reached || "This group already has 20 bookmarks!")
       return
     }
     openModal(null)

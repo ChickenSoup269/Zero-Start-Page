@@ -1099,6 +1099,9 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.enableBookmarkDrag) {
         DOM.enableBookmarkDrag.checked = settings.bookmarkEnableDrag === true
       }
+      if (DOM.bookmarkLimit20) {
+        DOM.bookmarkLimit20.checked = settings.bookmarkLimit20 !== false
+      }
     }
 
     DOM.bgSizeSelect.value = settings.bgSize || "cover"
