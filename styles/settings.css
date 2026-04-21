@@ -2162,7 +2162,7 @@
   margin-bottom: 8px !important;
   min-height: 52px;
   gap: 12px !important;
-  display: flex !important;
+  display: flex;
   flex-wrap: wrap; /* Allow wrapping for long labels */
   align-items: center;
   justify-content: space-between;
@@ -2274,9 +2274,22 @@
   }
 }
 
-/* Collapsible Group Styles */
+/* Collapsible Group Styles with smooth animation */
+.collapsible-group .collapsible-content {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  opacity: 1;
+}
+
 .collapsible-group.collapsed .collapsible-content {
-  display: none;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.collapsible-group .collapsible-content > div {
+  overflow: hidden;
 }
 
 .collapsible-group .section-toggle {
@@ -2284,7 +2297,7 @@
 }
 
 .collapsible-group .toggle-icon {
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collapsible-group.collapsed .toggle-icon {

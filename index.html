@@ -2394,16 +2394,17 @@
                             <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Marker
                                 Mode</label>
                             <select id="analog-marker-mode-select">
-                                <option value="ticks">Ticks</option>
-                                <option value="full">Numbers</option>
-                                <option value="quarters">12, 3, 6, 9</option>
+                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
+                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick 12,3,6,9</option>
+                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show Numbers 1-12</option>
+                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show Numbers 12,3,6,9</option>
                             </select>
                         </div>
 
                         <div id="analog-blur-bg-setting" class="setting-item-row"
                             style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
                             <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur
-                                Background</label>
+                                Background (Analog)</label>
                             <input type="checkbox" id="analog-blur-bg-checkbox">
                         </div>
                     </div>

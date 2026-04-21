@@ -997,18 +997,21 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     if (DOM.analogMarkerModeSetting)
-      DOM.analogMarkerModeSetting.style.display = style === "analog" ? "block" : "none"
+      DOM.analogMarkerModeSetting.style.display =
+        style === "analog" ? "block" : "none"
+    if (DOM.analogBlurBgSetting)
+      DOM.analogBlurBgSetting.style.display =
+        style === "analog" ? "flex" : "none"
+
     if (DOM.jpStyleLanguageSetting)
-      DOM.jpStyleLanguageSetting.style.display = style === "jp-style" ? "block" : "none"
+      DOM.jpStyleLanguageSetting.style.display =
+        style === "jp-style" ? "block" : "none"
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
         style === "sidestyle" ? "block" : "none"
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"
-
-    if (DOM.analogBlurBgSetting)
-      DOM.analogBlurBgSetting.style.display = style === "analog" ? "flex" : "none"
     if (DOM.analogBlurBgCheckbox)
       DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
 
