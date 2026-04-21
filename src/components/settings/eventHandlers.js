@@ -2076,6 +2076,9 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
+  DOM.contextMenuStyleSelect.addEventListener("change", () =>
+    handleSettingUpdate("contextMenuStyle", DOM.contextMenuStyleSelect.value),
+  )
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
   DOM.showMusicCheckbox.addEventListener("change", () => {
@@ -2177,6 +2180,13 @@ export function setupGeneralEventHandlers(
         DOM.showBookmarksCheckbox,
       ),
     )
+  }
+  if (DOM.lcpContextMenuStyle) {
+    DOM.lcpContextMenuStyle.addEventListener("change", () => {
+      const val = DOM.lcpContextMenuStyle.value
+      if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = val
+      handleSettingUpdate("contextMenuStyle", val)
+    })
   }
   DOM.lcpBookmarkGroups.addEventListener("change", () =>
     lcpToggle(
@@ -2693,6 +2703,8 @@ export function setupGeneralEventHandlers(
       DOM.lcpSearchBar.checked = value
     if (key === "showBookmarks" && DOM.lcpBookmarks)
       DOM.lcpBookmarks.checked = value
+    if (key === "showContextMenuBg" && DOM.lcpContextMenuBg)
+      DOM.lcpContextMenuBg.checked = value
     if (key === "showBookmarkGroups" && DOM.lcpBookmarkGroups)
       DOM.lcpBookmarkGroups.checked = value
     if (key === "showLunarCalendar" && DOM.lcpLunarCalendar)

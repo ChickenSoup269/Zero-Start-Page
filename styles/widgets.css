@@ -1711,79 +1711,130 @@ body.ghost-controls .side-controls:hover {
   background: #1a1a2e;
 }
 
-/* Context Menu General Styling */
+/* Context Menu General Styling (MacOS Inspired) */
 #context-menu,
 .calendar-context-menu {
   position: fixed;
-  background: var(--glass-bg, rgba(20, 20, 30, 0.7));
-  backdrop-filter: blur(15px) saturate(160%);
-  -webkit-backdrop-filter: blur(15px) saturate(160%);
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
-  border-radius: 12px;
-  padding: 6px;
-  min-width: 180px;
+  padding: 5px;
+  min-width: 200px;
   z-index: 10000;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), var(--inner-glow);
-  animation: contextMenuFadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px; /* Reduced bo góc chuẩn MacOS */
+  animation: contextMenuFadeIn 0.12s ease-out;
+  transition: background 0.2s ease, backdrop-filter 0.2s ease, border 0.2s ease;
 }
 
-/* Global Danger/Delete Styles */
-.danger,
-.delete,
-.delete-btn,
-#menu-delete,
-#bookmark-delete-selected,
-#todo-delete-selected,
-#bg-delete-selected,
-.context-menu-item.danger,
-.menu-item.danger {
-  color: #ff5555 !important;
+/* Dark Glass (MacOS Dark Mode) */
+body.context-menu-dark #context-menu,
+body.context-menu-dark .calendar-context-menu {
+  background: rgba(35, 35, 45, 0.75);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.danger i,
-.delete i,
-.delete-btn i,
-#menu-delete i,
-#bookmark-delete-selected i,
-#todo-delete-selected i,
-#bg-delete-selected i,
-.context-menu-item.danger i,
-.menu-item.danger i {
-  color: #ff5555 !important;
+/* Light Glass (MacOS Light Mode) */
+body.context-menu-light #context-menu,
+body.context-menu-light .calendar-context-menu {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+body.context-menu-light .context-menu-item,
+body.context-menu-light .menu-item {
+  color: #1a1a1a !important; /* Chữ đen đậm dễ nhìn */
+  font-weight: 500;
+}
+
+body.context-menu-light .context-menu-item i,
+body.context-menu-light .menu-item i {
+  color: #444 !important;
+  opacity: 0.8;
+}
+
+body.context-menu-light .context-menu-item:hover,
+body.context-menu-light .menu-item:hover {
+  background: var(--accent-color, #007aff) !important; /* Hover xanh chuẩn Mac */
+  color: var(--accent-contrast-color, #fff) !important;
+}
+
+body.context-menu-light .context-menu-item:hover i,
+body.context-menu-light .menu-item:hover i {
+  color: var(--accent-contrast-color, #fff) !important;
   opacity: 1;
 }
 
-.danger:hover,
-.delete:hover,
-.delete-btn:hover,
-#menu-delete:hover,
-#bookmark-delete-selected:hover,
-#todo-delete-selected:hover,
-#bg-delete-selected:hover,
-.context-menu-item.danger:hover,
-.menu-item.danger:hover {
-  background: rgba(255, 85, 85, 0.15) !important;
-  color: #ff7777 !important;
+body.context-menu-light .context-menu-divider {
+  background: rgba(0, 0, 0, 0.08);
 }
 
+/* Common Item Styling */
 .context-menu-item,
 .menu-item {
-  padding: 10px 14px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  font-weight: 500;
+  gap: 10px;
+  font-size: 13px; /* Kích thước chữ chuẩn Mac */
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 4px;
+  transition: background 0.1s ease;
+  margin: 1px 0;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.context-menu-item:hover,
-.menu-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+body.context-menu-dark .context-menu-item:hover,
+body.context-menu-dark .menu-item:hover {
+  background: var(--accent-color, #007aff);
+  color: var(--accent-contrast-color, #fff);
+}
+
+body.context-menu-dark .context-menu-item:hover i,
+body.context-menu-dark .menu-item:hover i {
+  color: var(--accent-contrast-color, #fff);
+}
+
+/* Danger / Delete Item - MacOS Style */
+.context-menu-item.danger,
+.menu-item.danger,
+#menu-delete {
+  color: #ff3b30 !important; /* Đỏ MacOS */
+}
+
+.context-menu-item.danger:hover,
+.menu-item.danger:hover,
+#menu-delete:hover {
+  background: #ff3b30 !important;
+  color: #fff !important;
+}
+
+.context-menu-item.danger:hover i,
+.menu-item.danger:hover i,
+#menu-delete:hover i {
+  color: #fff !important;
+}
+
+/* Transparent (None) */
+body.context-menu-none #context-menu,
+body.context-menu-none .calendar-context-menu {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.context-menu-none .context-menu-divider {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+body.context-menu-none .context-menu-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .context-menu-item i,

@@ -579,6 +579,14 @@ function createApplySettings(effectInstances) {
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
+    // Context Menu Style
+    document.body.classList.remove(
+      "context-menu-dark",
+      "context-menu-light",
+      "context-menu-none",
+    )
+    document.body.classList.add(`context-menu-${settings.contextMenuStyle || "dark"}`)
+
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
@@ -913,6 +921,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.timeFormatSelect.value = settings.timeFormat || "24h"
     if (DOM.timezoneSelect)
       DOM.timezoneSelect.value = settings.timezone || "local"
+    if (DOM.contextMenuStyleSelect)
+      DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
+    if (DOM.lcpContextMenuStyle)
+      DOM.lcpContextMenuStyle.value = settings.contextMenuStyle || "dark"
     DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     if (DOM.cursorTrailClickCheckbox)
       DOM.cursorTrailClickCheckbox.checked =
@@ -1777,8 +1789,15 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
+    if (DOM.showContextMenuBgCheckbox) {
+      DOM.showContextMenuBgCheckbox.checked =
+        settings.showContextMenuBg !== false
+    }
     if (DOM.lcpBookmarks) {
       DOM.lcpBookmarks.checked = settings.showBookmarks !== false
+    }
+    if (DOM.lcpContextMenuBg) {
+      DOM.lcpContextMenuBg.checked = settings.showContextMenuBg !== false
     }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false

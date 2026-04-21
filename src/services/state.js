@@ -197,6 +197,7 @@ const defaultSettings = {
   flipLayout: false,
   showDonateButton: true,
   showBookmarks: true,
+  contextMenuStyle: "dark",
   showBookmarkGroups: true,
   showSearchBar: true,
   searchBarWidth: 600,
