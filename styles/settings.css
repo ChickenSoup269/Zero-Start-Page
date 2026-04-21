@@ -2274,8 +2274,19 @@
   }
 }
 
-/* Custom width for specific inputs in rows */
-.setting-item-row select, 
-.setting-item-row input[type="range"] {
-  max-width: 140px !important;
+/* Collapsible Group Styles */
+.collapsible-group.collapsed .collapsible-content {
+  display: none;
+}
+
+.collapsible-group .section-toggle {
+  user-select: none;
+}
+
+.collapsible-group .toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.collapsible-group.collapsed .toggle-icon {
+  transform: rotate(-90deg);
 }

@@ -95,8 +95,8 @@ function applyHueMode(settings) {
   // 2. Determine targets for Date effect
   const dateTargets = []
   if (mode === "date" || mode === "both") {
-    // In Weekday-only mode, the weekday is always in dateElement regardless of style
-    if (displayMode === "weekday") {
+    // In Weekday-only mode OR Weekday-style, the weekday is always in dateElement
+    if (displayMode === "weekday" || style === "weekday-style") {
       dateTargets.push(dateElement)
     } else {
       if (
@@ -663,12 +663,12 @@ export function updateTime() {
   const finalShouldShowDate = settings.showGregorian !== false
 
   // Determine if we should show the standard date element
-  // For special styles, we usually hide the standard date element UNLESS we are in keepOnlyWeekday mode
   const isSpecialStyle = [
     "cool",
     "sidestyle",
     "jp-style",
     "sidebar",
+    "weekday-style",
   ].includes(dateClockStyle)
 
   dateElement.classList.toggle(
@@ -676,9 +676,13 @@ export function updateTime() {
     !finalShouldShowDate || (isSpecialStyle && !keepOnlyWeekday),
   )
 
-  if (keepOnlyWeekday) {
+  if (keepOnlyWeekday || dateClockStyle === "weekday-style") {
     // FORCE ONLY WEEKDAY for ALL styles including special ones
-    const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    let weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    // For weekday-style, force uppercase
+    if (dateClockStyle === "weekday-style") {
+      weekdayStr = weekdayStr.toUpperCase()
+    }
     dateElement.innerHTML = `<span class="clock-date-primary">${weekdayStr}</span>`
     // Clear clock element just in case to be sure no time is leaking
     if (isSpecialStyle) {

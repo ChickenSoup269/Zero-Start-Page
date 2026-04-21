@@ -2276,65 +2276,64 @@
                     </div>
 
                     <!-- Style Selection -->
-                    <div class="setting-group" style="margin-bottom: 20px;">
-                        <div class="setting-label"
-                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <div class="setting-group collapsible-group" style="margin-bottom: 20px;">
+                        <div class="setting-label group-toggle"
+                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                             <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock
                                 Style</span>
+                            <i class="fa-solid fa-chevron-down toggle-icon" style="margin-left: auto; font-size: 0.7rem; opacity: 0.5;"></i>
+                        </div>                        <div class="collapsible-content">
+                            <div id="clock-style-grid" class="clock-style-grid">
+                                <div class="clock-style-card" data-value="default">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_default">Default</span>
+                                </div>
+                                <div class="clock-style-card" data-value="glow">
+                                    <i class="fa-solid fa-sun"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_glow">Glow</span>
+                                </div>
+                                <div class="clock-style-card" data-value="minimal">
+                                    <i class="fa-solid fa-minus"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_minimal">Minimal</span>
+                                </div>
+                                <div class="clock-style-card" data-value="glass">
+                                    <i class="fa-solid fa-window-maximize"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_glass">Glass</span>
+                                </div>
+                                <div class="clock-style-card" data-value="cool">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_cool">Cool</span>
+                                </div>
+                                <div class="clock-style-card" data-value="sidestyle">
+                                    <i class="fa-solid fa-grip-lines-vertical"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_sidestyle">Side</span>
+                                </div>
+                                <div class="clock-style-card" data-value="jp-style">
+                                    <i class="fa-solid fa-torii-gate"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_jp_style">JP</span>
+                                </div>
+                                <div class="clock-style-card" data-value="round">
+                                    <i class="fa-regular fa-circle"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_round">Round</span>
+                                </div>
+                                <div class="clock-style-card" data-value="square">
+                                    <i class="fa-regular fa-square"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_square">Square</span>
+                                </div>
+                                <div class="clock-style-card" data-value="analog">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_analog">Analog</span>
+                                </div>
+                                <div class="clock-style-card" data-value="sidebar">
+                                    <i class="fa-solid fa-columns"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
+                                </div>
+                                <div class="clock-style-card" data-value="weekday-style">
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_weekday">Weekday</span>
+                                </div>
+                            </div>
                         </div>
-                        <div id="clock-style-grid" class="clock-style-grid">
-                            <div class="clock-style-card" data-value="default">
-                                <i class="fa-solid fa-clock"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_default">Default</span>
-                            </div>
-                            <div class="clock-style-card" data-value="glow">
-                                <i class="fa-solid fa-sun"></i>
-                                <span class="clock-style-name" data-i18n="settings_clock_date_style_glow">Glow</span>
-                            </div>
-                            <div class="clock-style-card" data-value="minimal">
-                                <i class="fa-solid fa-minus"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_minimal">Minimal</span>
-                            </div>
-                            <div class="clock-style-card" data-value="glass">
-                                <i class="fa-solid fa-window-maximize"></i>
-                                <span class="clock-style-name" data-i18n="settings_clock_date_style_glass">Glass</span>
-                            </div>
-                            <div class="clock-style-card" data-value="cool">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span class="clock-style-name" data-i18n="settings_clock_date_style_cool">Cool</span>
-                            </div>
-                            <div class="clock-style-card" data-value="sidestyle">
-                                <i class="fa-solid fa-grip-lines-vertical"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_sidestyle">Side</span>
-                            </div>
-                            <div class="clock-style-card" data-value="jp-style">
-                                <i class="fa-solid fa-torii-gate"></i>
-                                <span class="clock-style-name" data-i18n="settings_clock_date_style_jp_style">JP</span>
-                            </div>
-                            <div class="clock-style-card" data-value="round">
-                                <i class="fa-regular fa-circle"></i>
-                                <span class="clock-style-name" data-i18n="settings_clock_date_style_round">Round</span>
-                            </div>
-                            <div class="clock-style-card" data-value="square">
-                                <i class="fa-regular fa-square"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_square">Square</span>
-                            </div>
-                            <div class="clock-style-card" data-value="analog">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_analog">Analog</span>
-                            </div>
-                            <div class="clock-style-card" data-value="sidebar">
-                                <i class="fa-solid fa-columns"></i>
-                                <span class="clock-style-name"
-                                    data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
-                            </div>
-                        </div>
-                        <!-- Hidden select for background compatibility if needed, or we just update JS -->
                         <select id="clock-date-style-select" style="display: none;">
                             <option value="default">Default</option>
                             <option value="glow">Glow</option>
@@ -2347,6 +2346,7 @@
                             <option value="square">Square Clock</option>
                             <option value="analog">Analog Clock</option>
                             <option value="sidebar">Sidebar</option>
+                            <option value="weekday-style">Weekday Style</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->

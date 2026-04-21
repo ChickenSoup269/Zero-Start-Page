@@ -955,6 +955,14 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.clockDateStyleSelect)
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+
+    // Sync Clock Style Cards
+    const clockCards = document.querySelectorAll(".clock-style-card")
+    const currentStyle = settings.dateClockStyle || "default"
+    clockCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentStyle)
+    })
+
     if (DOM.jpStyleLanguageSelect)
       DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
     if (DOM.hueTextModeSelect)
