@@ -150,6 +150,15 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
 }
 
+#date.only-weekday-mode {
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+#date.only-weekday-mode .weekday-part {
+  font-weight: 500;
+}
+
 #clock.is-hidden,
 #date.is-hidden {
   opacity: 0;
@@ -493,7 +502,7 @@ body.date-clock-style-square #date {
 }
 
 .clock-date-primary {
-  font-size: clamp(1rem, 3.1vw, 1.25rem);
+  font-size: var(--date-size, clamp(1rem, 3.1vw, 1.25rem));
   font-weight: 600;
   text-transform: capitalize;
   letter-spacing: 0.06em;

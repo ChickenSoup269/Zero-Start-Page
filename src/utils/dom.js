@@ -894,8 +894,7 @@ export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",
 )
-export const showClockCheckbox = document.getElementById("show-clock-checkbox")
-export const showDateCheckbox = document.getElementById("show-date-checkbox")
+export const clockDisplaySelect = document.getElementById("clock-display-select")
 export const showFullCalendarCheckbox = document.getElementById(
   "show-full-calendar-checkbox",
 )

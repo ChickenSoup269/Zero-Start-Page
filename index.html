@@ -2156,7 +2156,7 @@
                     </div>
 
                     <div class="setting-group">
-                        <label data-i18n="settings_custom_font" for="show-clock-checkbox"><i
+                        <label data-i18n="settings_custom_font" for="custom-font-input"><i
                                 class="fa-solid fa-font"></i> Custom Google
                             Font</label>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -2199,10 +2199,6 @@
                                 data-i18n="settings_font_general">General Settings</span></div>
 
                         <div class="setting-item-row">
-                            <label for="show-clock-checkbox" data-i18n="settings_show_clock">Show Clock</label>
-                            <input type="checkbox" id="show-clock-checkbox" checked>
-                        </div>
-                        <div class="setting-item-row">
                             <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock">Free Move</label>
                             <input type="checkbox" id="free-move-clock-checkbox">
                         </div>
@@ -2210,12 +2206,17 @@
                             <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbr Day</label>
                             <input type="checkbox" id="short-weekday-checkbox">
                         </div>
-                        <div class="setting-item-row">
+                        <div class="setting-item">
+                            <label for="clock-display-select" data-i18n="settings_clock_display">Clock Display</label>
+                            <select id="clock-display-select">
+                                <option value="all" data-i18n="settings_clock_display_all">Show All</option>
+                                <option value="weekday" data-i18n="settings_clock_display_weekday">Weekday only</option>
+                                <option value="hide" data-i18n="settings_clock_display_hide">Hide Clock</option>
+                            </select>
+                        </div>                        <div class="setting-item-row">
                             <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
                             <input type="checkbox" id="hide-seconds-checkbox">
-                        </div>
-
-                        <div class="setting-item" style="margin-top: 15px;">
+                        </div>                        <div class="setting-item" style="margin-top: 15px;">
                             <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
                             <select id="date-format-select">
                                 <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
@@ -2245,18 +2246,8 @@
                             </select>
                         </div>
                         <div class="setting-item">
-                            <label for="clock-date-priority-select" data-i18n="settings_clock_date_priority">Zoom
-                                priority</label>
-                            <select id="clock-date-priority-select">
-                                <option value="none" data-i18n="settings_clock_date_priority_none">No priority</option>
-                                <option value="date" data-i18n="settings_clock_date_priority_date">Prioritize weekday
-                                </option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
-                                Letters</label>
-                            <select id="hue-text-mode-select">
+                             <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                 Letters</label>                            <select id="hue-text-mode-select">
                                 <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
                                 <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
@@ -2362,8 +2353,8 @@
                                 <option value="both" data-i18n="settings_clock_font_target_both">Both</option>
                                 <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
-                            </select>
-                        </div>
+                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only</option>
+                            </select>                        </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                             <div class="setting-item no-margin-top">

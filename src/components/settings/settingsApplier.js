@@ -357,11 +357,12 @@ function createApplySettings(effectInstances) {
 
     if (clockFontTarget === "both") {
         applyToTargets(["clock-date", "clock", "date", "weekday"], clockFont)
-    } else {
-        applyToTargets([clockFontTarget], clockFont)
-        if (clockFontTarget === "clock") {
-             document.documentElement.style.setProperty("--font-clock-date", clockFont)
-        }
+    } else if (clockFontTarget === "clock") {
+        applyToTargets(["clock", "clock-date"], clockFont)
+    } else if (clockFontTarget === "date") {
+        applyToTargets(["date"], clockFont)
+    } else if (clockFontTarget === "weekday") {
+        applyToTargets(["weekday"], clockFont)
     }
 
     // Special handling for JP style font inheritance if needed
@@ -376,10 +377,13 @@ function createApplySettings(effectInstances) {
       ? Math.min(10, Math.max(0.8, rawDateSize))
       : 1.5
     const priority = settings.clockDatePriority === "date" ? "date" : "none"
+    const displayMode = settings.clockDisplayMode || "all"
     let computedClockSize = baseClockSize
     let computedDateSize = baseDateSize
-    if (priority === "date") {
-      // Date-priority mode swaps the visual emphasis between clock and date.
+
+    if (priority === "date" || displayMode === "weekday") {
+      // In date-priority mode OR Weekday-only mode, the date/weekday 
+      // should take the prominent size (clock size).
       computedClockSize = baseDateSize
       computedDateSize = baseClockSize
     }
@@ -592,7 +596,19 @@ function createApplySettings(effectInstances) {
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
     )
 
-    // 3.1 Clock & Date Color Contrast Logic
+    // 3.1 Clock & Date Visibility & Contrast
+    const clockEl = document.getElementById("clock")
+    const dateEl = document.getElementById("date")
+
+    if (clockEl) {
+      clockEl.style.display = displayMode === "hide" || displayMode === "weekday" ? "none" : "block"
+    }
+
+    if (dateEl) {
+      dateEl.style.display = displayMode === "hide" ? "none" : "block"
+      dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
+    }
+
     let finalClockColor = settings.clockColor
     let finalDateColor = settings.dateColor
 
@@ -914,7 +930,7 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // General Inputs
     effectInstances.renderFontGrid()
-    DOM.dateFormatSelect.value = settings.dateFormat
+    if (DOM.dateFormatSelect) DOM.dateFormatSelect.value = settings.dateFormat
     if (DOM.shortWeekdayCheckbox)
       DOM.shortWeekdayCheckbox.checked = settings.shortWeekday === true
     if (DOM.timeFormatSelect)
@@ -925,19 +941,26 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
     if (DOM.lcpContextMenuStyle)
       DOM.lcpContextMenuStyle.value = settings.contextMenuStyle || "dark"
-    DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
+    if (DOM.hideSecondsCheckbox)
+      DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     if (DOM.cursorTrailClickCheckbox)
       DOM.cursorTrailClickCheckbox.checked =
         settings.cursorTrailClickExplosion !== false
     if (DOM.cursorTrailRandomCheckbox)
       DOM.cursorTrailRandomCheckbox.checked =
         settings.cursorTrailRandomColor === true
-    DOM.clockDatePrioritySelect.value =
-      settings.clockDatePriority === "date" ? "date" : "none"
-    DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
-    DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
-    DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
-    DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
+    if (DOM.clockDatePrioritySelect) {
+      DOM.clockDatePrioritySelect.value =
+        settings.clockDatePriority === "date" ? "date" : "none"
+    }
+    if (DOM.clockDateStyleSelect)
+      DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+    if (DOM.jpStyleLanguageSelect)
+      DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
+    if (DOM.hueTextModeSelect)
+      DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
+    if (DOM.analogMarkerModeSelect)
+      DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     if (DOM.sidestyleAlignSelect)
       DOM.sidestyleAlignSelect.value = settings.sidestyleAlign || "left"
     if (DOM.sidestyleNoBorderCheckbox)
@@ -1750,7 +1773,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.musicPlayerUseDefaultColorCheckbox.checked =
         settings.musicPlayerUseDefaultColor !== false
     }
-    DOM.showClockCheckbox.checked = settings.showClock !== false
+    if (DOM.clockDisplaySelect) {
+      DOM.clockDisplaySelect.value = settings.clockDisplayMode || "all"
+    }
     DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
     if (DOM.freeMoveClockCheckbox)
       DOM.freeMoveClockCheckbox.checked = settings.freeMoveClock === true

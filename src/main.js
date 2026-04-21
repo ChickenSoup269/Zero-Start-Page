@@ -25,8 +25,7 @@ import {
   showTimerCheckbox,
   showFullCalendarCheckbox,
   showMusicCheckbox,
-  showClockCheckbox,
-  showDateCheckbox,
+  clockDisplaySelect,
   showGregorianCheckbox,
   showNotepadCheckbox,
 } from "./utils/dom.js"
@@ -242,12 +241,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             checkbox = showMusicCheckbox
             break
           case "clock":
-            key = "showClock"
-            checkbox = showClockCheckbox
-            break
-          case "date":
-            key = "showDate"
-            checkbox = showDateCheckbox
+            // Special handling for select instead of checkbox
+            const currentMode = getSettings().clockDisplayMode || "all"
+            const nextMode = currentMode === "hide" ? "all" : "hide"
+            updateSetting("clockDisplayMode", nextMode)
+            if (clockDisplaySelect) clockDisplaySelect.value = nextMode
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "clockDisplayMode", value: nextMode },
+              }),
+            )
             break
           case "gregorian":
             key = "showGregorian"
@@ -256,7 +259,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (key && checkbox) {
-          // Trigger a native click instead of manually changing state and dispatching
           checkbox.click()
         }
       })
@@ -286,10 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             isActive = settings.musicPlayerEnabled === true
             break
           case "clock":
-            isActive = settings.showClock !== false
-            break
-          case "date":
-            isActive = settings.showDate !== false
+            isActive = settings.clockDisplayMode !== "hide"
             break
           case "gregorian":
             isActive = settings.showGregorian !== false

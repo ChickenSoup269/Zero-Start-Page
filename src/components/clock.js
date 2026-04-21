@@ -198,7 +198,12 @@ export function updateTime() {
   const timeString = now.toLocaleTimeString(langCode, timeOptions)
 
   // Keep layout stable by toggling visibility class instead of display.
-  clockElement.classList.toggle("is-hidden", settings.showClock === false)
+  const displayMode = settings.clockDisplayMode || "all"
+  const shouldHideClock = displayMode === "hide" || displayMode === "weekday"
+  const keepOnlyWeekday = displayMode === "weekday"
+
+  clockElement.classList.toggle("is-hidden", shouldHideClock)
+
   if (dateClockStyle === "analog") {
     let tDate = now
     if (tz) {
@@ -593,15 +598,18 @@ export function updateTime() {
     dateString = getCustomDateString(now, langCode, tz, settings, format)
   }
 
-  // Handle date visibility - check both showDate AND showGregorian
+  // Handle date visibility - check both showDate (removed, default true) AND showGregorian
+  const finalShouldShowDate = settings.showGregorian !== false
+
   dateElement.classList.toggle(
     "is-hidden",
-    !shouldShowDate ||
+    !finalShouldShowDate ||
       dateClockStyle === "cool" ||
       dateClockStyle === "sidestyle" ||
       dateClockStyle === "jp-style" ||
       dateClockStyle === "sidebar",
   )
+
   if (
     dateClockStyle === "cool" ||
     dateClockStyle === "sidestyle" ||
@@ -610,6 +618,10 @@ export function updateTime() {
   ) {
     dateElement.innerHTML = ""
     dateElement.textContent = ""
+  } else if (keepOnlyWeekday) {
+    // SPECIAL MODE: Force only weekday
+    const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    dateElement.innerHTML = `<span class="clock-date-primary">${weekdayStr}</span>`
   } else if (isFramedClockStyle) {
     dateElement.innerHTML = `<span class="clock-date-primary">${dateString || ""}</span>`
   } else {
@@ -645,8 +657,7 @@ export function initClock() {
   window.addEventListener("layoutUpdated", (e) => {
     if (
       e.detail.key === "showGregorian" ||
-      e.detail.key === "showClock" ||
-      e.detail.key === "showDate" ||
+      e.detail.key === "clockDisplayMode" ||
       e.detail.key === "hideSeconds" ||
       e.detail.key === "showTimer" ||
       e.detail.key === "timerIsRunning" ||

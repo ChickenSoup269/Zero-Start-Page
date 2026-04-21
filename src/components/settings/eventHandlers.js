@@ -2044,9 +2044,10 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})
-  setupLayoutCheckbox(DOM.showClockCheckbox, "showClock", {})
-  if (DOM.showDateCheckbox) {
-    setupLayoutCheckbox(DOM.showDateCheckbox, "showDate", {})
+  if (DOM.clockDisplaySelect) {
+    DOM.clockDisplaySelect.addEventListener("change", () => {
+      handleSettingUpdate("clockDisplayMode", DOM.clockDisplaySelect.value)
+    })
   }
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
