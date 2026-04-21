@@ -647,5 +647,8 @@
   "settings_bottom_right": "Dưới - Phải",
   "settings_circle": "Hình tròn",
   "settings_ellipse": "Hình Elip",
+  "menu_select": "Chọn",
+  "bookmark_selected": "Đã chọn",
+  "bookmark_delete_selected_confirm": "Xóa {count} dấu trang đã chọn?",
   "settings_extra_colors": "Màu bổ sung"
 }

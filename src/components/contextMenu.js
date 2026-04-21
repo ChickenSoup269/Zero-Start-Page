@@ -1,4 +1,11 @@
-import { contextMenu, menuFavorite, menuEdit, menuDelete, menuLock } from "../utils/dom.js"
+import {
+  contextMenu,
+  menuFavorite,
+  menuSelect,
+  menuEdit,
+  menuDelete,
+  menuLock,
+} from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
 import {
   getBookmarks,
@@ -14,7 +21,7 @@ import {
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
-import { renderBookmarks } from "./bookmarks.js"
+import { renderBookmarks, toggleSelectionMode } from "./bookmarks.js"
 
 let contextMenuTargetIndex = -1
 let contextMenuTargetType = "bookmark" // 'bookmark', 'group', 'widget', 'localBg', etc.
@@ -40,10 +47,15 @@ export function showContextMenu(
   // Reset display
   menuEdit.style.display = "flex"
   menuDelete.style.display = "flex"
+  menuSelect.style.display = "none"
   menuLock.style.display = "none"
   menuFavorite.style.display = "none"
 
   const i18n = geti18n()
+
+  if (type === "bookmark") {
+    menuSelect.style.display = "flex"
+  }
 
   if (type === "widget") {
     menuEdit.style.display = "none"
@@ -599,6 +611,14 @@ function handleLock() {
 }
 
 export function initContextMenu() {
+  menuSelect.addEventListener("click", (e) => {
+    e.stopPropagation()
+    if (contextMenuTargetType === "bookmark") {
+      toggleSelectionMode(contextMenuTargetIndex)
+    }
+    hideContextMenu()
+  })
+
   menuEdit.addEventListener("click", (e) => {
     e.stopPropagation()
     handleEdit()

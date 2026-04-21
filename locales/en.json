@@ -646,5 +646,8 @@
   "settings_bottom_right": "Bottom Right",
   "settings_circle": "Circle",
   "settings_ellipse": "Ellipse",
+  "menu_select": "Select",
+  "bookmark_selected": "Selected",
+  "bookmark_delete_selected_confirm": "Delete {count} selected bookmarks?",
   "settings_extra_colors": "Extra Colors"
 }

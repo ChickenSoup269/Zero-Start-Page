@@ -3,7 +3,7 @@ import {
   bookmarkGroupsContainer,
   bookmarkGroupsToggle,
 } from "../utils/dom.js"
-import { showPrompt, showAlert } from "../utils/dialog.js"
+import { showPrompt, showAlert, showConfirm } from "../utils/dialog.js"
 import {
   getBookmarks,
   setBookmarks,
@@ -27,6 +27,64 @@ function getHostname(url) {
 }
 
 const iconCache = new Map()
+
+// --- Selection State ---
+let isSelectionMode = false
+let selectedIndices = new Set()
+
+export function toggleSelectionMode(initialIndex = -1) {
+  isSelectionMode = true
+  selectedIndices.clear()
+  if (initialIndex !== -1) {
+    selectedIndices.add(initialIndex)
+  }
+  renderBookmarks()
+  updateSelectionUI()
+}
+
+function cancelSelection() {
+  isSelectionMode = false
+  selectedIndices.clear()
+  renderBookmarks()
+  updateSelectionUI()
+}
+
+async function deleteSelected() {
+  if (selectedIndices.size === 0) return
+
+  const i18n = geti18n()
+  const confirmed = await showConfirm(
+    (i18n.bookmark_delete_selected_confirm || "Delete {count} selected bookmarks?").replace(
+      "{count}",
+      selectedIndices.size,
+    ),
+  )
+
+  if (confirmed) {
+    const bookmarks = getBookmarks()
+    const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a)
+    sortedIndices.forEach((index) => {
+      bookmarks.splice(index, 1)
+    })
+    setBookmarks(bookmarks)
+    saveBookmarks()
+    cancelSelection()
+  }
+}
+
+function updateSelectionUI() {
+  const toolbar = document.getElementById("bookmark-selection-toolbar")
+  const countEl = document.getElementById("selection-count")
+
+  if (!toolbar || !countEl) return
+
+  if (isSelectionMode) {
+    toolbar.style.display = "flex"
+    countEl.textContent = selectedIndices.size
+  } else {
+    toolbar.style.display = "none"
+  }
+}
 
 function loadImage(src, timeout = 2500) {
   return new Promise((resolve) => {
@@ -248,9 +306,12 @@ export function renderBookmarks() {
     const bookmarkEl = document.createElement("a")
     bookmarkEl.href = bookmark.url
     bookmarkEl.classList.add("bookmark")
+    if (selectedIndices.has(index)) {
+      bookmarkEl.classList.add("selected")
+    }
     bookmarkEl.target = "_blank"
 
-    if (enableDrag) {
+    if (enableDrag && !isSelectionMode) {
       bookmarkEl.draggable = true
       bookmarkEl.dataset.index = index
       bookmarkEl.addEventListener("dragstart", handleDragStart)
@@ -259,23 +320,37 @@ export function renderBookmarks() {
       bookmarkEl.addEventListener("dragenter", handleDragEnter)
       bookmarkEl.addEventListener("dragleave", handleDragLeave)
       bookmarkEl.addEventListener("dragend", handleDragEnd)
-      // prevent link navigation right after dragging
-      bookmarkEl.addEventListener("click", (e) => {
-        if (
-          bookmarkEl.classList.contains("dragging") ||
-          draggedBookmarkIndex !== null
-        ) {
-          e.preventDefault()
-        }
-      })
     }
 
     const titleEl = document.createElement("span")
     titleEl.textContent = bookmark.title
     bookmarkEl.appendChild(createBookmarkIcon(bookmark))
     bookmarkEl.appendChild(titleEl)
+
+    bookmarkEl.addEventListener("click", (e) => {
+      if (isSelectionMode) {
+        e.preventDefault()
+        if (selectedIndices.has(index)) {
+          selectedIndices.delete(index)
+        } else {
+          selectedIndices.add(index)
+        }
+        renderBookmarks()
+        updateSelectionUI()
+        return
+      }
+
+      if (
+        bookmarkEl.classList.contains("dragging") ||
+        draggedBookmarkIndex !== null
+      ) {
+        e.preventDefault()
+      }
+    })
+
     bookmarkEl.addEventListener("contextmenu", (e) => {
       e.preventDefault()
+      if (isSelectionMode) return
       showContextMenu(e.clientX, e.clientY, index)
     })
     frag.appendChild(bookmarkEl)
@@ -562,6 +637,7 @@ function renderGroupTabs() {
     // Events
     tab.addEventListener("click", () => {
       if (group.id !== activeId) {
+        if (isSelectionMode) cancelSelection()
         setActiveGroupId(group.id)
         renderBookmarks()
       }
@@ -616,6 +692,25 @@ function renderGroupTabs() {
 
 export function initBookmarks() {
   renderBookmarks()
+
+  // Selection toolbar events
+  const deleteBtn = document.getElementById("bookmark-delete-selected")
+  const cancelBtn = document.getElementById("bookmark-cancel-selection")
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      deleteSelected()
+    })
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      cancelSelection()
+    })
+  }
+
   window.addEventListener("resize", () =>
     requestAnimationFrame(updateOverflowBookmarks),
   )
