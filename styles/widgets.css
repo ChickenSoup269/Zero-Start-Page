@@ -685,8 +685,9 @@ body.ghost-controls .side-controls:hover {
 }
 
 .quick-btn.active {
-  color: var(--accent-color);
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--accent-contrast-color, #1a1a2e);
+  background: var(--accent-color);
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
 }
 
 /* Layout Controls Popup */
