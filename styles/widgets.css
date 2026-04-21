@@ -3408,18 +3408,67 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
   transform: translateY(-3px) !important;
 }
 
-/* Hide fallback text in the mini-popup */
+/* Ensure popup bookmarks respect global hide settings */
+body.hide-bookmark-bg #hidden-bookmarks-popup .bookmark img,
+body.hide-bookmark-bg #hidden-bookmarks-popup .bookmark .bookmark-icon-fallback {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+body.hide-bookmark-text #hidden-bookmarks-popup .bookmark span:not(.bookmark-icon-fallback) {
+  display: none !important;
+}
+
+/* Hide fallback text in the mini-popup by default, but allow it for MacOS Hover */
 #hidden-bookmarks-popup .bookmark span:not(.bookmark-icon-fallback) {
   display: none !important;
 }
 
-/* Hide scrollbar for the popup */
-#hidden-bookmarks-popup::-webkit-scrollbar {
-  display: none;
+body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark span:not(.bookmark-icon-fallback) {
+  display: block !important; /* Re-enable for MacOS Hover logic */
 }
+
+/* Tooltip positioning for Hidden Bookmarks Popup */
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark > span {
+  top: 50% !important;
+  left: auto !important;
+  right: calc(100% + 15px) !important;
+  transform: translateY(-50%) !important;
+  margin-top: 0;
+}
+
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark:hover > span {
+  right: calc(100% + 20px) !important;
+}
+
+/* Flip Layout for Sidebar Popup Tooltip */
+body.flip-layout #hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark > span {
+  right: auto !important;
+  left: calc(100% + 15px) !important;
+}
+
+body.flip-layout #hidden-bookmarks-popup.hidden-bookmarks-sidebar .bookmark:hover > span {
+  left: calc(100% + 20px) !important;
+}
+
+/* Taskbar Popup Tooltip (Always on top) */
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar .bookmark > span {
+  top: -2.2rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar .bookmark:hover > span {
+  top: -2.8rem !important;
+}
+
+/* Ensure no clipping */
 #hidden-bookmarks-popup {
-  scrollbar-width: none;
+  overflow: visible !important;
 }
+
 /* Increase capacity thresholds so original grid can hold more items before overflowing */
 body.bookmark-taskbar-mode .bookmarks-grid {
   max-width: 95vw !important;
@@ -3613,11 +3662,28 @@ body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark span {
 /* MacOS Dock Hover Effect for Bookmarks */
 body.bookmark-macos-hover .bookmark {
   position: relative;
-  transition:
-    transform 0.1s ease-out,
-    box-shadow 0.2s ease-in-out,
-    background 0.2s ease-in-out !important;
-  transform-origin: bottom center;
+  will-change: transform;
+  transition: background 0.2s, box-shadow 0.2s; /* Only transition non-transform props */
+}
+
+/* Dynamic origins based on layout */
+body.bookmark-taskbar-mode.bookmark-macos-hover .bookmark,
+body.bookmark-taskbar-left-mode.bookmark-macos-hover .bookmark {
+  transform-origin: bottom center !important;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark {
+  transform-origin: center right !important;
+}
+
+body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover .bookmark {
+  transform-origin: center left !important;
+}
+
+/* Disable ALL transforms transitions when MacOS hover is active */
+body.bookmark-macos-hover #bookmarks-container:hover .bookmark,
+body.bookmark-macos-hover #hidden-bookmarks-popup:hover .bookmark {
+  transition: none !important;
 }
 
 body.bookmark-macos-hover .bookmark > span {

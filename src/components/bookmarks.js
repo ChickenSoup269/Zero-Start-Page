@@ -13,6 +13,8 @@ import {
   setActiveGroupId,
   saveBookmarks,
   getSettings,
+  updateSetting,
+  saveSettings,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
@@ -40,6 +42,14 @@ export function toggleSelectionMode(initialIndex = -1) {
   }
   renderBookmarks()
   updateSelectionUI()
+  
+  // Auto-open hidden popup if it exists
+  setTimeout(() => {
+    const indicator = document.querySelector(".overflow-indicator")
+    if (indicator && !document.getElementById("hidden-bookmarks-popup")) {
+      indicator.click()
+    }
+  }, 100)
 }
 
 function cancelSelection() {
@@ -47,6 +57,10 @@ function cancelSelection() {
   selectedIndices.clear()
   renderBookmarks()
   updateSelectionUI()
+  
+  // Auto-close hidden popup
+  const popup = document.getElementById("hidden-bookmarks-popup")
+  if (popup) popup.remove()
 }
 
 async function deleteSelected() {
@@ -283,21 +297,27 @@ function handleDragEnd(e) {
 let toggleListenerAdded = false
 
 export function renderBookmarks() {
+  const settings = getSettings()
+  
   if (!toggleListenerAdded) {
+    // Initial restoration of hidden state
+    if (settings.groupsHidden) {
+      document.body.classList.add("groups-hidden")
+    }
+
     bookmarkGroupsToggle.addEventListener("click", () => {
       const isHidden = document.body.classList.toggle("groups-hidden")
+      updateSetting("groupsHidden", isHidden)
+      saveSettings()
+      
       const icon = bookmarkGroupsToggle.querySelector("i")
       if (icon) {
         if (isHidden) {
           const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
           if (isSidebar) {
             const isFlipped = document.body.classList.contains("flip-layout")
-            // Logic: Point TOWARDS the hidden area
-            // Sidebar Right (Normal): Groups hide to the LEFT
-            // Sidebar Left (Flipped): Groups hide to the RIGHT
             icon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
           } else {
-            // Taskbar modes: Groups hide UPWARDS
             icon.className = "fa-solid fa-chevron-up"
           }
         } else {
@@ -305,6 +325,19 @@ export function renderBookmarks() {
         }
       }
     })
+    
+    // Initial icon state
+    const initialIcon = bookmarkGroupsToggle.querySelector("i")
+    if (initialIcon && settings.groupsHidden) {
+       const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+       if (isSidebar) {
+         const isFlipped = document.body.classList.contains("flip-layout")
+         initialIcon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+       } else {
+         initialIcon.className = "fa-solid fa-chevron-up"
+       }
+    }
+    
     toggleListenerAdded = true
   }
   const i18n = geti18n()
@@ -317,13 +350,14 @@ export function renderBookmarks() {
 
   // Use Document Fragment to prevent multiple reflows / layout shifts
   const frag = document.createDocumentFragment()
-  const settings = getSettings()
   const enableDrag = settings.bookmarkEnableDrag === true
 
   bookmarks.forEach((bookmark, index) => {
     const bookmarkEl = document.createElement("a")
     bookmarkEl.href = bookmark.url
     bookmarkEl.classList.add("bookmark")
+    bookmarkEl.dataset.index = index // Always set index for selection and identification
+    
     if (selectedIndices.has(index)) {
       bookmarkEl.classList.add("selected")
     }
@@ -331,7 +365,6 @@ export function renderBookmarks() {
 
     if (enableDrag && !isSelectionMode) {
       bookmarkEl.draggable = true
-      bookmarkEl.dataset.index = index
       bookmarkEl.addEventListener("dragstart", handleDragStart)
       bookmarkEl.addEventListener("dragover", handleDragOver)
       bookmarkEl.addEventListener("drop", handleDrop)
@@ -516,6 +549,19 @@ export function updateOverflowBookmarks() {
       clone.style.display = ""
       clone.draggable = false
       clone.classList.remove("dragging", "drag-over")
+      
+      // CRITICAL: Ensure index is explicitly set on the clone
+      const idx = el.dataset.index
+      if (idx !== undefined) {
+        clone.setAttribute("data-index", idx)
+        clone.dataset.index = idx
+      }
+
+      // Add selection state class initially
+      const numericIdx = parseInt(idx)
+      if (!isNaN(numericIdx) && selectedIndices.has(numericIdx)) {
+        clone.classList.add("selected")
+      }
 
       clone.addEventListener("contextmenu", (evt) => {
         evt.preventDefault()
@@ -528,11 +574,44 @@ export function updateOverflowBookmarks() {
         el.dispatchEvent(simulatedEvt)
       })
 
-      clone.addEventListener("click", () => {
-        popup.remove()
-      })
       popup.appendChild(clone)
     })
+
+    // Handle clicks inside popup with delegation
+    popup.addEventListener("click", (evt) => {
+      const bookmarkEl = evt.target.closest(".bookmark")
+      if (!bookmarkEl) return
+
+      const idxStr = bookmarkEl.getAttribute("data-index") || bookmarkEl.dataset.index
+      const idx = parseInt(idxStr)
+      
+      if (isNaN(idx)) return
+
+      if (isSelectionMode) {
+        evt.preventDefault()
+        evt.stopPropagation()
+        
+        if (selectedIndices.has(idx)) {
+          selectedIndices.delete(idx)
+          bookmarkEl.classList.remove("selected")
+          // Sync original hidden element in the main container
+          const original = container.querySelector(`.bookmark[data-index="${idx}"]`)
+          if (original) original.classList.remove("selected")
+        } else {
+          selectedIndices.add(idx)
+          bookmarkEl.classList.add("selected")
+          // Sync original hidden element in the main container
+          const original = container.querySelector(`.bookmark[data-index="${idx}"]`)
+          if (original) original.classList.add("selected")
+        }
+        
+        updateSelectionUI()
+        return false
+      } else {
+        // Normal mode: close popup
+        setTimeout(() => popup.remove(), 100)
+      }
+    }, true) // Use capture phase to intercept clicks
 
     document.body.appendChild(popup)
 
@@ -754,6 +833,57 @@ export function initMacosHoverForBookmarks(isEnabled) {
   macosHoverEnabled = isEnabled
 }
 
+let mouseX = 0, mouseY = 0
+let isHoveringContainer = false
+let rafId = null
+
+function updateMacosHover() {
+  if (!macosHoverEnabled || !isHoveringContainer) {
+    const bookmarks = document.querySelectorAll(".bookmark")
+    bookmarks.forEach((item) => {
+      if (item.style.transform !== "") {
+        item.style.transform = ""
+        item.style.zIndex = ""
+      }
+    })
+    rafId = null
+    return
+  }
+
+  const container = document.querySelector("#bookmarks-container") || document.querySelector("#hidden-bookmarks-popup")
+  if (container) {
+    const bookmarks = Array.from(container.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
+    const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+    const isFlipped = document.body.classList.contains("flip-layout")
+    
+    // MacOS parameters
+    const maxScale = 1.65
+    const range = 75 // Narrower range to reduce spread to neighbors
+
+    bookmarks.forEach((item) => {
+      const rect = item.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const dist = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2))
+      
+      let scale = 1
+      if (dist < range) {
+        // Sharper falloff (pow 2.5) means neighbors are much less affected
+        const factor = Math.pow(1 - dist / range, 2.5)
+        scale = 1 + (maxScale - 1) * factor
+      }
+
+      if (item.classList.contains("dragging")) scale = 1
+
+      // Only apply scaling, origins are handled by CSS
+      item.style.transform = `scale(${scale})`
+      item.style.zIndex = Math.round(scale * 100)
+    })
+  }
+
+  rafId = requestAnimationFrame(updateMacosHover)
+}
+
 document.addEventListener("mousemove", (e) => {
   if (!macosHoverEnabled) return
 
@@ -762,43 +892,11 @@ document.addEventListener("mousemove", (e) => {
     e.target.closest("#hidden-bookmarks-popup")
 
   if (container) {
-    const mouseX = e.clientX
-    const mouseY = e.clientY
-    const bookmarks = Array.from(
-      container.querySelectorAll(".bookmark:not(.add-bookmark-card)"),
-    )
-
-    bookmarks.forEach((item) => {
-      const itemRect = item.getBoundingClientRect()
-      const itemCenterX = itemRect.left + itemRect.width / 2
-      const itemCenterY = itemRect.top + itemRect.height / 2
-      const dist = Math.sqrt(
-        Math.pow(mouseX - itemCenterX, 2) + Math.pow(mouseY - itemCenterY, 2),
-      )
-      let scale = Math.max(1, 1.6 - dist / 80)
-      if (item.classList.contains("dragging")) scale = 1
-
-      // Add translateX for sidebar modes to avoid clipping text against screen edge
-      let translateX = 0
-      const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
-      if (isSidebar && scale > 1) {
-        const isFlipped = document.body.classList.contains("flip-layout")
-        // If sidebar is on the right (not flipped), move icons to the left
-        // If sidebar is on the left (flipped), move icons to the right
-        const offsetAmount = (scale - 1) * 35 
-        translateX = isFlipped ? offsetAmount : -offsetAmount
-      }
-
-      item.style.transform = `scale(${scale}) translateX(${translateX}px)`
-      item.style.zIndex = Math.round(scale * 100)
-    })
+    mouseX = e.clientX
+    mouseY = e.clientY
+    isHoveringContainer = true
+    if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   } else {
-    const bookmarks = document.querySelectorAll(".bookmark")
-    bookmarks.forEach((item) => {
-      if (item.style.transform !== "") {
-        item.style.transform = ""
-        item.style.zIndex = ""
-      }
-    })
+    isHoveringContainer = false
   }
 })
