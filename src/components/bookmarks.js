@@ -285,7 +285,25 @@ let toggleListenerAdded = false
 export function renderBookmarks() {
   if (!toggleListenerAdded) {
     bookmarkGroupsToggle.addEventListener("click", () => {
-      document.body.classList.toggle("groups-hidden")
+      const isHidden = document.body.classList.toggle("groups-hidden")
+      const icon = bookmarkGroupsToggle.querySelector("i")
+      if (icon) {
+        if (isHidden) {
+          const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+          if (isSidebar) {
+            const isFlipped = document.body.classList.contains("flip-layout")
+            // Logic: Point TOWARDS the hidden area
+            // Sidebar Right (Normal): Groups hide to the LEFT
+            // Sidebar Left (Flipped): Groups hide to the RIGHT
+            icon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+          } else {
+            // Taskbar modes: Groups hide UPWARDS
+            icon.className = "fa-solid fa-chevron-up"
+          }
+        } else {
+          icon.className = "fa-solid fa-layer-group"
+        }
+      }
     })
     toggleListenerAdded = true
   }
@@ -759,7 +777,19 @@ document.addEventListener("mousemove", (e) => {
       )
       let scale = Math.max(1, 1.6 - dist / 80)
       if (item.classList.contains("dragging")) scale = 1
-      item.style.transform = "scale(" + scale + ")"
+
+      // Add translateX for sidebar modes to avoid clipping text against screen edge
+      let translateX = 0
+      const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+      if (isSidebar && scale > 1) {
+        const isFlipped = document.body.classList.contains("flip-layout")
+        // If sidebar is on the right (not flipped), move icons to the left
+        // If sidebar is on the left (flipped), move icons to the right
+        const offsetAmount = (scale - 1) * 35 
+        translateX = isFlipped ? offsetAmount : -offsetAmount
+      }
+
+      item.style.transform = `scale(${scale}) translateX(${translateX}px)`
       item.style.zIndex = Math.round(scale * 100)
     })
   } else {

@@ -3161,18 +3161,7 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   transform-origin: center;
 }
 
-/* Initial Max values so transition works */
-body.bookmark-sidebar-mode .bookmark-groups-container {
-  max-width: 400px;
-  max-height: 80vh;
-}
-body.bookmark-taskbar-mode .bookmark-groups-container,
-body.bookmark-taskbar-left-mode .bookmark-groups-container {
-  max-width: 90vw;
-  max-height: 200px;
-}
-
-/* HIDDEN STATE - Slide and Collapse */
+/* Hidden state - Slide and Collapse */
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
@@ -3181,7 +3170,74 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   padding: 0 !important;
   border: none !important;
   transform: scale(0.5) !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
 }
+
+/* Remove gap and make toggle flush when hidden */
+body.groups-hidden .bookmark-widget {
+  gap: 0 !important;
+}
+
+/* Arrow Tab Styling when hidden */
+body.groups-hidden .bookmark-groups-toggle {
+  opacity: 0.8 !important;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.5) !important;
+  border: none !important; /* Remove border */
+  color: #fff !important;
+  z-index: 100;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
+  animation: tabPulse 2s infinite ease-in-out !important; /* Add pulse animation */
+}
+
+@keyframes tabPulse {
+  0% { box-shadow: 0 0 0px rgba(var(--accent-color-rgb), 0.2); transform: scale(1); }
+  50% { box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.6); transform: scale(1.05); }
+  100% { box-shadow: 0 0 0px rgba(var(--accent-color-rgb), 0.2); transform: scale(1); }
+}
+
+/* Sidebar mode: Tab sticking to the left/right edge */
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
+  width: 14px !important;
+  height: 70px !important;
+  border-radius: 12px 0 0 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-right: none !important;
+  position: relative;
+  left: 1px; /* Overlap slightly to be flush */
+}
+
+/* Flip layout: Tab sticking to the right edge */
+body.flip-layout.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
+  border-radius: 0 12px 12px 0 !important;
+  left: -1px;
+}
+
+/* Taskbar mode: Tab sticking to the top edge */
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
+  width: 70px !important;
+  height: 14px !important;
+  border-radius: 12px 12px 0 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-bottom: none !important;
+  position: relative;
+  top: 1px; /* Overlap slightly to be flush */
+}
+
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
+  opacity: 1 !important;
+  background: var(--accent-color) !important;
+  color: var(--accent-contrast-color, #1a1a2e) !important;
+}
+
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container {
   max-width: 0 !important; /* Collapses horizontally, Toggle slides Right */
 }
@@ -3201,10 +3257,33 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
-  opacity: 0 !important;
-  /* Fancy rotate when sliding into the hidden group's place */
-  transform: rotate(180deg) !important;
+  opacity: 0.3 !important;
+  /* Removed transform: rotate(180deg) to let JS handle arrow direction */
   background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* MacOS Dock Hover Effect for Bookmarks - Sidebar Position Fix */
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span {
+  top: 50% !important;
+  left: auto !important;
+  right: calc(100% + 15px) !important; /* Position to the left of the icon */
+  transform: translateY(-50%) !important;
+  margin-top: 0;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover > span {
+  top: 50% !important;
+  right: calc(100% + 25px) !important; /* Slight outward animation */
+}
+
+/* Flip layout: Move tooltip to the right of the icon */
+body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span {
+  right: auto !important;
+  left: calc(100% + 15px) !important;
+}
+
+body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover > span {
+  left: calc(100% + 25px) !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
