@@ -1822,10 +1822,18 @@ export function setupGeneralEventHandlers(
       const val = card.dataset.value
       handleSettingUpdate("dateClockStyle", val)
 
-      // SPECIAL: If Weekday Style is selected, automatically set display mode to 'weekday'
+      // SPECIAL: Logic for Weekday Style and Clock Display Mode synchronization
       if (val === "weekday-style") {
         handleSettingUpdate("clockDisplayMode", "weekday")
         if (DOM.clockDisplaySelect) DOM.clockDisplaySelect.value = "weekday"
+      } else {
+        // If switching AWAY from weekday-style, and we were in weekday display mode, 
+        // switch back to 'all' so the clock is visible in the new style.
+        const settings = getSettings()
+        if (settings.clockDisplayMode === "weekday") {
+          handleSettingUpdate("clockDisplayMode", "all")
+          if (DOM.clockDisplaySelect) DOM.clockDisplaySelect.value = "all"
+        }
       }
 
       // Update UI

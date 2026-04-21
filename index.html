@@ -663,7 +663,17 @@
                             </div>
                         </div>
 
-                        <div id="local-background-gallery" class="local-bg-gallery"></div>
+                        <div id="local-background-gallery" class="local-bg-gallery" style="display: none;"></div>
+                        
+                        <div id="local-images-section" class="gallery-section">
+                            <h5 class="gallery-subtitle"><i class="fa-solid fa-image"></i> <span data-i18n="settings_local_images">Images</span></h5>
+                            <div id="local-images-gallery" class="local-bg-gallery"></div>
+                        </div>
+
+                        <div id="local-videos-section" class="gallery-section" style="margin-top: 20px;">
+                            <h5 class="gallery-subtitle"><i class="fa-solid fa-video"></i> <span data-i18n="settings_local_videos">Videos</span></h5>
+                            <div id="local-videos-gallery" class="local-bg-gallery"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2223,6 +2233,10 @@
                             <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbr Day</label>
                             <input type="checkbox" id="short-weekday-checkbox">
                         </div>
+                        <div class="setting-item-row">
+                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
+                            <input type="checkbox" id="hide-seconds-checkbox">
+                        </div>
                         <div class="setting-item">
                             <label for="clock-display-select" data-i18n="settings_clock_display">Clock Display</label>
                             <select id="clock-display-select">
@@ -2230,10 +2244,6 @@
                                 <option value="weekday" data-i18n="settings_clock_display_weekday">Weekday only</option>
                                 <option value="hide" data-i18n="settings_clock_display_hide">Hide Clock</option>
                             </select>
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
-                            <input type="checkbox" id="hide-seconds-checkbox">
                         </div>
                         <div class="setting-item" style="margin-top: 15px;">
                             <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
@@ -2281,56 +2291,70 @@
                             style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                             <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock
                                 Style</span>
-                            <i class="fa-solid fa-chevron-down toggle-icon" style="margin-left: auto; font-size: 0.7rem; opacity: 0.5;"></i>
-                        </div>                        <div class="collapsible-content">
+                            <i class="fa-solid fa-chevron-down toggle-icon"
+                                style="margin-left: auto; font-size: 0.7rem; opacity: 0.5;"></i>
+                        </div>
+                        <div class="collapsible-content">
                             <div id="clock-style-grid" class="clock-style-grid">
                                 <div class="clock-style-card" data-value="default">
                                     <i class="fa-solid fa-clock"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_default">Default</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_default">Default</span>
                                 </div>
                                 <div class="clock-style-card" data-value="glow">
                                     <i class="fa-solid fa-sun"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_glow">Glow</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_glow">Glow</span>
                                 </div>
                                 <div class="clock-style-card" data-value="minimal">
                                     <i class="fa-solid fa-minus"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_minimal">Minimal</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_minimal">Minimal</span>
                                 </div>
                                 <div class="clock-style-card" data-value="glass">
                                     <i class="fa-solid fa-window-maximize"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_glass">Glass</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_glass">Glass</span>
                                 </div>
                                 <div class="clock-style-card" data-value="cool">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_cool">Cool</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_cool">Cool</span>
                                 </div>
                                 <div class="clock-style-card" data-value="sidestyle">
                                     <i class="fa-solid fa-grip-lines-vertical"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_sidestyle">Side</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_sidestyle">Side</span>
                                 </div>
                                 <div class="clock-style-card" data-value="jp-style">
                                     <i class="fa-solid fa-torii-gate"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_jp_style">JP</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_jp_style">JP</span>
                                 </div>
                                 <div class="clock-style-card" data-value="round">
                                     <i class="fa-regular fa-circle"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_round">Round</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_round">Round</span>
                                 </div>
                                 <div class="clock-style-card" data-value="square">
                                     <i class="fa-regular fa-square"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_square">Square</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_square">Square</span>
                                 </div>
                                 <div class="clock-style-card" data-value="analog">
                                     <i class="fa-solid fa-clock-rotate-left"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_analog">Analog</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_analog">Analog</span>
                                 </div>
                                 <div class="clock-style-card" data-value="sidebar">
                                     <i class="fa-solid fa-columns"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
                                 </div>
                                 <div class="clock-style-card" data-value="weekday-style">
                                     <i class="fa-solid fa-calendar-day"></i>
-                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_weekday">Weekday</span>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_weekday">Weekday</span>
                                 </div>
                             </div>
                         </div>
@@ -2394,10 +2418,14 @@
                             <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Marker
                                 Mode</label>
                             <select id="analog-marker-mode-select">
-                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12</option>
-                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show Tick 12,3,6,9</option>
-                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show Numbers 1-12</option>
-                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show Numbers 12,3,6,9</option>
+                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12
+                                </option>
+                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show
+                                    Tick 12,3,6,9</option>
+                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show Numbers 1-12
+                                </option>
+                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show Numbers
+                                    12,3,6,9</option>
                             </select>
                         </div>
 

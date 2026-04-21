@@ -1905,25 +1905,65 @@
 }
 
 .local-bg-item.video-bg-item::after {
-  content: "VIDEO";
-  font-size: 0.5rem;
-  letter-spacing: 0.05em;
-  opacity: 0.6;
+  display: none;
 }
 
 .video-thumb-badge {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
+  bottom: 6px;
+  right: 6px;
+  padding: 3px 6px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  color: white;
   font-size: 0.65rem;
-  padding: 2px 5px;
-  border-radius: 4px;
-  pointer-events: none;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
+  z-index: 5;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.gallery-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 8px;
+}
+
+.gallery-subtitle i {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.video-thumb-badge.is-video {
+  border-right: 3px solid #ff4b4b; /* Red for video */
+  border-left: none;
+}
+
+.video-thumb-badge.is-image {
+  border-right: 3px solid #4b7bff; /* Blue for image */
+  border-left: none;
+}
+
+.video-thumb-badge i {
+  font-size: 0.7rem;
+}
+
+.video-thumb-badge span {
+  opacity: 0.9;
 }
 
 .remove-bg-btn {

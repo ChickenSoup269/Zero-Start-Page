@@ -652,6 +652,15 @@ function createApplySettings(effectInstances) {
           `${rgb.r}, ${rgb.g}, ${rgb.b}`,
         )
       }
+
+      // Ensure Unsplash random button icon has contrast
+      const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
+      if (unsplashRandomBtn) {
+        const icon = unsplashRandomBtn.querySelector("i")
+        if (icon) {
+          icon.style.color = getContrastYIQ(settings.accentColor) === "black" ? "rgba(0,0,0,0.8)" : "#ffffff"
+        }
+      }
     }
 
     const strokeWidth = settings.clockDateStrokeWidth || 0

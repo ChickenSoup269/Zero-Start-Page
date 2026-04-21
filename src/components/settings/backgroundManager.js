@@ -202,17 +202,24 @@ let _repairingMetadata = false
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
-  DOM.localBackgroundGallery.innerHTML = ""
+  
+  // Clear all galleries
+  if (DOM.localBackgroundGallery) DOM.localBackgroundGallery.innerHTML = ""
+  
+  const imagesGallery = document.getElementById("local-images-gallery")
+  const videosGallery = document.getElementById("local-videos-gallery")
+  if (imagesGallery) imagesGallery.innerHTML = ""
+  if (videosGallery) videosGallery.innerHTML = ""
 
-  // Add Random Color Swatch
+  // Add Random Color Swatch to Images Gallery
   const randomItem = document.createElement("div")
   randomItem.className = "local-bg-item random-color-item"
   randomItem.dataset.bgId = "random-color"
   randomItem.title = "Random Color"
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
-  DOM.localBackgroundGallery.appendChild(randomItem)
+  if (imagesGallery) imagesGallery.appendChild(randomItem)
 
-  // Repair metadata for old Unsplash backgrounds if needed
+  // Repair metadata logic (unchanged)
   if (!_repairingMetadata && Array.isArray(settings.userBackgrounds)) {
     const oldUnsplashBgs = settings.userBackgrounds.filter(bg => {
         return typeof bg === 'string' && (bg.includes('unsplash.com') || bg.includes('unsplash-'))
@@ -241,11 +248,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                     }
                 }
             } catch (err) {
-                // Silently mark as processed even on error so we don't retry and don't spam console
                 const idx = indexInArray()
-                if (idx !== -1) {
-                    settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
-                }
+                if (idx !== -1) settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
             }
         })).then(() => {
             saveSettings()
@@ -261,6 +265,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
       const authorName = typeof bgData === "object" ? bgData.authorName : null
+      const isVideo = isIdbVideo(bgId)
       
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
@@ -268,7 +273,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       // Icon badge for source type (Video/Image/Unsplash)
       const typeIcon = document.createElement("div")
-      typeIcon.className = "video-thumb-badge unsplash-credit-badge"
+      typeIcon.className = "video-thumb-badge"
       
       if (authorName) {
           typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
@@ -279,12 +284,14 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           authorTag.className = "unsplash-author-tag"
           authorTag.textContent = authorName
           item.appendChild(authorTag)
-      } else if (isIdbVideo(bgId)) {
-          typeIcon.innerHTML = '<i class="fa-solid fa-video"></i>'
+      } else if (isVideo) {
+          typeIcon.innerHTML = '<i class="fa-solid fa-video"></i> <span>VIDEO</span>'
+          typeIcon.classList.add("is-video")
           typeIcon.title = "Local Video"
           item.appendChild(typeIcon)
       } else if (isIdbImage(bgId)) {
-          typeIcon.innerHTML = '<i class="fa-solid fa-image"></i>'
+          typeIcon.innerHTML = '<i class="fa-solid fa-image"></i> <span>IMAGE</span>'
+          typeIcon.classList.add("is-image")
           typeIcon.title = "Local Image"
           item.appendChild(typeIcon)
       }
@@ -297,7 +304,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       const applyThumb = (url) => {
           if (!url) return;
-          if (isIdbVideo(bgId)) {
+          if (isVideo) {
               if (_videoThumbCache.has(bgId)) {
                   item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
                   const placeholder = item.querySelector("i.fa-film")
@@ -309,12 +316,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                   vid.crossOrigin = "anonymous"
                   vid.preload = "metadata"
                   vid.addEventListener("loadedmetadata", () => { 
-                      // Capture frame from the middle of the video
                       const midTime = vid.duration > 0 ? vid.duration / 2 : 1.0;
                       vid.currentTime = midTime;
                   }, { once: true })
                   vid.addEventListener("seeked", () => {
-                      // Small timeout to ensure frame is painted
                       setTimeout(() => {
                           const vW = vid.videoWidth
                           const vH = vid.videoHeight
@@ -367,13 +372,13 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         item.style.backgroundImage = `url('${bgId}')`
       }
 
-      if (isIdbVideo(bgId)) {
+      if (isVideo) {
         item.classList.add("video-bg-item")
         if (!item.style.backgroundImage) {
             item.innerHTML = '<i class="fa-solid fa-film"></i>'
         }
       }
-      item.title = `User ${isIdbVideo(bgId) ? "Video" : "Image"} ${index + 1}`
+      item.title = `User ${isVideo ? "Video" : "Image"} ${index + 1}`
 
       item.addEventListener("contextmenu", (e) => {
         e.preventDefault()
@@ -407,7 +412,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       })
       item.appendChild(removeBtn)
 
-      // Drag and drop for reordering
+      // Drag and drop for reordering (unchanged logic)
       const enableDrag = settings.bookmarkEnableDrag === true
       if (enableDrag) {
         item.draggable = true
@@ -421,9 +426,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           e.dataTransfer.dropEffect = "move"
           item.classList.add("drag-over")
         })
-        item.addEventListener("dragleave", () =>
-          item.classList.remove("drag-over"),
-        )
+        item.addEventListener("dragleave", () => item.classList.remove("drag-over"))
         item.addEventListener("dragend", () => item.classList.remove("dragging"))
         item.addEventListener("drop", (e) => {
           e.preventDefault()
@@ -439,16 +442,24 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         })
       }
 
-      DOM.localBackgroundGallery.appendChild(item)
+      // Append to correct gallery
+      if (isVideo) {
+          if (videosGallery) videosGallery.appendChild(item)
+      } else {
+          if (imagesGallery) imagesGallery.appendChild(item)
+      }
     })
   }
+  
+  // Show/hide sections based on content
+  if (imagesGallery && videosGallery) {
+      const hasVideos = !!settings.userBackgrounds?.some(bg => isIdbVideo(typeof bg === 'object' ? bg.id : bg))
+      document.getElementById("local-videos-section").style.display = hasVideos ? "block" : "none"
+  }
+
   const bgCountSpan = document.getElementById("count-bg")
   if (bgCountSpan) {
-    const total =
-      1 +
-      (Array.isArray(settings.userBackgrounds)
-        ? settings.userBackgrounds.length
-        : 0)
+    const total = 1 + (Array.isArray(settings.userBackgrounds) ? settings.userBackgrounds.length : 0)
     bgCountSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
   }
 }
@@ -540,7 +551,14 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     renderLocalBackgrounds(DOM, handleSettingUpdate)
   })
 
-  DOM.localBackgroundGallery.addEventListener("click", (e) => {
+  // Add click listener to a common parent or both galleries
+  const galleries = [
+    document.getElementById("local-images-gallery"),
+    document.getElementById("local-videos-gallery"),
+    DOM.localBackgroundGallery // Keep original for compatibility
+  ].filter(Boolean);
+
+  const handleClick = (e) => {
     const item = e.target.closest(".local-bg-item")
     if (!item) return
 
@@ -573,7 +591,11 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
       }
       handleSettingUpdate("background", item.dataset.bgId)
     }
-  })
+  };
+
+  galleries.forEach(gallery => {
+    gallery.addEventListener("click", handleClick);
+  });
 
   return { enterBgSelectMode, exitBgSelectMode }
 }
