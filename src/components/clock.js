@@ -62,13 +62,74 @@ function applyHuePerCharacter(target, seed = 0) {
 
 function applyHueMode(settings) {
   const mode = settings.hueTextMode || "off"
+  if (mode === "off") return
+
+  const style = settings.dateClockStyle || "default"
+  const displayMode = settings.clockDisplayMode || "all"
+
+  // 1. Determine targets for Clock effect
+  const clockTargets = []
   if (mode === "clock" || mode === "both") {
-    applyHuePerCharacter(clockElement, 18)
+    if (
+      style === "default" ||
+      style === "glow" ||
+      style === "minimal" ||
+      style === "glass" ||
+      style === "analog"
+    ) {
+      clockTargets.push(clockElement)
+    } else if (style === "round" || style === "square") {
+      clockTargets.push(clockElement.querySelector(".clock-time-main"))
+      clockTargets.push(clockElement.querySelector(".clock-time-ampm"))
+    } else if (style === "cool") {
+      clockTargets.push(clockElement.querySelector(".cool-time"))
+    } else if (style === "sidestyle") {
+      clockTargets.push(clockElement.querySelector(".clock-sidestyle-time"))
+    } else if (style === "jp-style") {
+      clockTargets.push(clockElement.querySelector(".clock-jp-time"))
+    } else if (style === "sidebar") {
+      clockTargets.push(clockElement.querySelector(".clock-sidebar-time"))
+    }
   }
 
+  // 2. Determine targets for Date effect
+  const dateTargets = []
   if (mode === "date" || mode === "both") {
-    applyHuePerCharacter(dateElement, 198)
+    // In Weekday-only mode, the weekday is always in dateElement regardless of style
+    if (displayMode === "weekday") {
+      dateTargets.push(dateElement)
+    } else {
+      if (
+        style === "default" ||
+        style === "glow" ||
+        style === "minimal" ||
+        style === "glass"
+      ) {
+        dateTargets.push(dateElement)
+      } else if (style === "round" || style === "square") {
+        dateTargets.push(clockElement.querySelector(".clock-date-secondary"))
+      } else if (style === "cool") {
+        dateTargets.push(clockElement.querySelector(".cool-dayname"))
+        dateTargets.push(clockElement.querySelector(".cool-date"))
+      } else if (style === "sidestyle") {
+        dateTargets.push(clockElement.querySelector(".clock-sidestyle-day"))
+        dateTargets.push(clockElement.querySelector(".clock-sidestyle-date"))
+      } else if (style === "jp-style") {
+        dateTargets.push(clockElement.querySelector(".clock-jp-day-left"))
+        dateTargets.push(clockElement.querySelector(".clock-jp-date"))
+      } else if (style === "sidebar") {
+        dateTargets.push(clockElement.querySelector(".clock-sidebar-date"))
+      }
+    }
   }
+
+  // Apply effect to filtered valid targets
+  clockTargets
+    .filter((el) => el !== null)
+    .forEach((el) => applyHuePerCharacter(el, 18))
+  dateTargets
+    .filter((el) => el !== null)
+    .forEach((el) => applyHuePerCharacter(el, 198))
 }
 
 function formatViShortWeekday(str) {
@@ -601,27 +662,33 @@ export function updateTime() {
   // Handle date visibility - check both showDate (removed, default true) AND showGregorian
   const finalShouldShowDate = settings.showGregorian !== false
 
+  // Determine if we should show the standard date element
+  // For special styles, we usually hide the standard date element UNLESS we are in keepOnlyWeekday mode
+  const isSpecialStyle = [
+    "cool",
+    "sidestyle",
+    "jp-style",
+    "sidebar",
+  ].includes(dateClockStyle)
+
   dateElement.classList.toggle(
     "is-hidden",
-    !finalShouldShowDate ||
-      dateClockStyle === "cool" ||
-      dateClockStyle === "sidestyle" ||
-      dateClockStyle === "jp-style" ||
-      dateClockStyle === "sidebar",
+    !finalShouldShowDate || (isSpecialStyle && !keepOnlyWeekday),
   )
 
-  if (
-    dateClockStyle === "cool" ||
-    dateClockStyle === "sidestyle" ||
-    dateClockStyle === "jp-style" ||
-    dateClockStyle === "sidebar"
-  ) {
-    dateElement.innerHTML = ""
-    dateElement.textContent = ""
-  } else if (keepOnlyWeekday) {
-    // SPECIAL MODE: Force only weekday
+  if (keepOnlyWeekday) {
+    // FORCE ONLY WEEKDAY for ALL styles including special ones
     const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
     dateElement.innerHTML = `<span class="clock-date-primary">${weekdayStr}</span>`
+    // Clear clock element just in case to be sure no time is leaking
+    if (isSpecialStyle) {
+      clockElement.innerHTML = ""
+      clockElement.textContent = ""
+    }
+  } else if (isSpecialStyle) {
+    // Normal special style logic: standard date element is empty, clock element has everything
+    dateElement.innerHTML = ""
+    dateElement.textContent = ""
   } else if (isFramedClockStyle) {
     dateElement.innerHTML = `<span class="clock-date-primary">${dateString || ""}</span>`
   } else {

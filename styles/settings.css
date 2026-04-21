@@ -2152,3 +2152,130 @@
   align-items: center;
   justify-content: space-between;
 }
+
+/* --- Enhanced Settings UI (New Styles) --- */
+
+/* Fix cramped item rows and contain light effects */
+.settings-sidebar .setting-item-row {
+  overflow: hidden !important; /* Contain shimmer and glow */
+  padding: 12px 16px !important;
+  margin-bottom: 8px !important;
+  min-height: 52px;
+  gap: 12px !important;
+  display: flex !important;
+  flex-wrap: wrap; /* Allow wrapping for long labels */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.settings-sidebar .setting-item-row label {
+  white-space: normal !important;
+  line-height: 1.4 !important;
+  font-size: 0.9rem !important;
+  margin-right: 0 !important;
+  flex: 1 1 150px; /* Minimum width before wrapping */
+  cursor: pointer;
+}
+
+.settings-sidebar .setting-item-row select,
+.settings-sidebar .setting-item-row input[type="range"],
+.settings-sidebar .setting-item-row .btn-group {
+  flex-shrink: 0;
+  max-width: 150px !important;
+}
+
+/* Clock Style Grid & Cards */
+.clock-style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+  padding: 2px;
+}
+
+.clock-style-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.clock-style-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.clock-style-card.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
+              inset 0 0 0 1px var(--accent-color, #a8c0ff);
+}
+
+.clock-style-card i {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.45);
+  transition: all 0.3s ease;
+}
+
+.clock-style-card.active i {
+  color: var(--accent-color, #a8c0ff);
+  transform: scale(1.1);
+}
+
+.clock-style-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: color 0.3s ease;
+}
+
+.clock-style-card.active .clock-style-name {
+  color: #fff;
+  opacity: 1;
+}
+
+/* Active Indicator */
+.clock-style-card.active::after {
+  content: "\f058";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.75rem;
+  color: var(--accent-color, #a8c0ff);
+  animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 400px) {
+  .clock-style-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Custom width for specific inputs in rows */
+.setting-item-row select, 
+.setting-item-row input[type="range"] {
+  max-width: 140px !important;
+}

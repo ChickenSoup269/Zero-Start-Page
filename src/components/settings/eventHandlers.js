@@ -1815,6 +1815,28 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  // Clock Style Card Grid
+  const clockCards = document.querySelectorAll(".clock-style-card")
+  clockCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("dateClockStyle", val)
+
+      // Update UI
+      clockCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+
+      // Sync hidden select if it exists
+      if (DOM.clockDateStyleSelect) DOM.clockDateStyleSelect.value = val
+
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "dateClockStyle", value: val },
+        }),
+      )
+    })
+  })
+
   DOM.clockDateStyleSelect?.addEventListener("change", () => {
     handleSettingUpdate("dateClockStyle", DOM.clockDateStyleSelect.value)
 

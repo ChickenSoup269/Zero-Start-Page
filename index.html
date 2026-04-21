@@ -307,7 +307,8 @@
 
     <!-- Side Controls (Settings + Quick Access) -->
     <div class="side-controls">
-        <button id="settings-toggle" class="icon-btn" data-i18n-title="settings_title" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <button id="settings-toggle" class="icon-btn" data-i18n-title="settings_title" title="Settings"><i
+                class="fa-solid fa-gear"></i></button>
         <div id="quick-access-bar" class="quick-access-bar">
             <button class="quick-btn" data-toggle="todo" data-i18n-title="quick_access_todo" title="Toggle Todo"><i
                     class="fa-solid fa-list-check"></i></button>
@@ -323,8 +324,8 @@
                     class="fa-solid fa-clock"></i></button>
             <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
                 title="Toggle Gregorian Calendar"><i class="fa-solid fa-calendar-check"></i></button>
-            <button id="layout-controls-btn" class="quick-btn" data-i18n-title="quick_layout_title" title="Layout Controls"><i
-                    class="fa-solid fa-sliders"></i></button>
+            <button id="layout-controls-btn" class="quick-btn" data-i18n-title="quick_layout_title"
+                title="Layout Controls"><i class="fa-solid fa-sliders"></i></button>
             <button id="reset-layout-quick" class="quick-btn" data-i18n-title="settings_reset_layout"
                 title="Reset Layout"><i class="fa-solid fa-arrows-rotate"></i></button>
 
@@ -369,15 +370,6 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
-            <div class="lcp-row lcp-row-select">
-                <i class="fa-solid fa-square-poll-vertical lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_context_menu_style">Context Menu Style</span>
-                <select id="lcp-context-menu-style" class="lcp-select">
-                    <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
-                    <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
-                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
-                </select>
-            </div>
             <div class="lcp-row">
                 <i class="fa-solid fa-moon lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
@@ -416,6 +408,15 @@
                     style="width: 100%;">
             </div>
             <div class="lcp-row lcp-row-select">
+                <i class="fa-solid fa-square-poll-vertical lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_context_menu_style">Context Menu Style</span>
+                <select id="lcp-context-menu-style" class="lcp-select">
+                    <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
+                    <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
+                </select>
+            </div>
+            <div class="lcp-row lcp-row-select">
                 <i class="fa-solid fa-list lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_bookmark_layout">Bookmark Layout</span>
                 <select id="lcp-bookmark-layout" class="lcp-select">
@@ -439,7 +440,8 @@
                     <option value="beach" data-i18n="style_beach">Beach</option>
                     <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
                     <option value="terminal" data-i18n="style_terminal">Terminal</option>
-                    <option value="pill" data-i18n="style_pill">Pill Widget</option>                    <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                    <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                    <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
                     <option value="neon" data-i18n="style_neon">Neon</option>
                     <option value="minimal" data-i18n="style_minimal">Minimal</option>
                 </select>
@@ -926,7 +928,8 @@
                         <button id="gradient-select-all-btn" class="secondary-btn"
                             style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="bg_select_all">Select All</button>
                         <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"
-                            style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;" data-i18n="menu_delete">Delete</button>
+                            style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;"
+                            data-i18n="menu_delete">Delete</button>
                         <button id="gradient-select-cancel-btn" class="secondary-btn"
                             style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="cancel">Cancel</button>
                     </div>
@@ -1592,7 +1595,8 @@
                         <div id="active-effect-settings-body">
                             <!-- Aurora Wave Settings -->
                             <div id="aurora-wave-color-setting" class="setting-item" style="display: none;">
-                                <label for="aurora-wave-color-picker" data-i18n="setting_aurora_wave_color">Aurora Color</label>
+                                <label for="aurora-wave-color-picker" data-i18n="setting_aurora_wave_color">Aurora
+                                    Color</label>
                                 <input type="color" id="aurora-wave-color-picker" value="#00bcd4" />
                             </div>
 
@@ -1601,7 +1605,8 @@
                                     <span data-i18n="setting_aurora_wave_brightness">Brightness</span>:
                                     <span id="aurora-wave-brightness-val">0.65</span>
                                 </label>
-                                <input type="range" id="aurora-wave-brightness-slider" min="0.1" max="1.5" step="0.05" value="0.65" />
+                                <input type="range" id="aurora-wave-brightness-slider" min="0.1" max="1.5" step="0.05"
+                                    value="0.65" />
                             </div>
 
                             <div id="aurora-wave-speed-setting" class="setting-item" style="display: none;">
@@ -1609,7 +1614,8 @@
                                     <span data-i18n="settings_pixel_weather_speed">Speed</span>:
                                     <span id="aurora-wave-speed-val">1.0</span>x
                                 </label>
-                                <input type="range" id="aurora-wave-speed-slider" min="0.1" max="3.0" step="0.1" value="1.0" />
+                                <input type="range" id="aurora-wave-speed-slider" min="0.1" max="3.0" step="0.1"
+                                    value="1.0" />
                             </div>
 
                             <div id="aurora-wave-amplitude-setting" class="setting-item" style="display: none;">
@@ -1617,19 +1623,22 @@
                                     <span data-i18n="setting_aurora_wave_amplitude">Wave Height</span>:
                                     <span id="aurora-wave-amplitude-val">70</span>px
                                 </label>
-                                <input type="range" id="aurora-wave-amplitude-slider" min="10" max="200" step="5" value="70" />
+                                <input type="range" id="aurora-wave-amplitude-slider" min="10" max="200" step="5"
+                                    value="70" />
                             </div>
 
                             <div id="aurora-wave-bg-setting" class="setting-item" style="display: none;">
                                 <div class="setting-row">
-                                    <label for="aurora-wave-transparent" data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                    <label for="aurora-wave-transparent"
+                                        data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
                                     <label class="lcp-switch">
                                         <input type="checkbox" id="aurora-wave-transparent" checked>
                                         <span class="lcp-slider round"></span>
                                     </label>
                                 </div>
                                 <div id="aurora-wave-bg-color-container" style="margin-top: 10px; display: none;">
-                                    <label for="aurora-wave-bg-color-picker" data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                    <label for="aurora-wave-bg-color-picker"
+                                        data-i18n="setting_pixel_blast_bg_color">Background Color</label>
                                     <input type="color" id="aurora-wave-bg-color-picker" value="#000000" />
                                 </div>
                                 <div id="aurora-wave-bg-opacity-container" style="margin-top: 10px;">
@@ -1637,7 +1646,8 @@
                                         <span data-i18n="setting_aurora_wave_bg_opacity">Overlay Opacity</span>:
                                         <span id="aurora-wave-bg-opacity-val">0.15</span>
                                     </label>
-                                    <input type="range" id="aurora-wave-bg-opacity-slider" min="0" max="1" step="0.05" value="0.15" />
+                                    <input type="range" id="aurora-wave-bg-opacity-slider" min="0" max="1" step="0.05"
+                                        value="0.15" />
                                 </div>
                             </div>
 
@@ -1817,26 +1827,30 @@
 
                             <!-- Pixel Blast Settings -->
                             <div id="pixel-blast-color-setting" class="setting-item" style="display: none;">
-                                <label for="pixel-blast-color-picker" data-i18n="setting_pixel_blast_color">Pixel Color</label>
+                                <label for="pixel-blast-color-picker" data-i18n="setting_pixel_blast_color">Pixel
+                                    Color</label>
                                 <input type="color" id="pixel-blast-color-picker" value="#B497CF" />
                             </div>
 
                             <div id="pixel-blast-bg-setting" class="setting-item" style="display: none;">
                                 <div class="setting-row">
-                                    <label for="pixel-blast-transparent" data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                    <label for="pixel-blast-transparent"
+                                        data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
                                     <label class="lcp-switch">
                                         <input type="checkbox" id="pixel-blast-transparent" checked>
                                         <span class="lcp-slider round"></span>
                                     </label>
                                 </div>
                                 <div id="pixel-blast-bg-color-container" style="margin-top: 10px; display: none;">
-                                    <label for="pixel-blast-bg-color-picker" data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                    <label for="pixel-blast-bg-color-picker"
+                                        data-i18n="setting_pixel_blast_bg_color">Background Color</label>
                                     <input type="color" id="pixel-blast-bg-color-picker" value="#0a0a0a" />
                                 </div>
                             </div>
 
                             <div id="pixel-blast-variant-setting" class="setting-item" style="display: none;">
-                                <label for="pixel-blast-variant-select" data-i18n="setting_pixel_blast_variant">Pixel Shape</label>
+                                <label for="pixel-blast-variant-select" data-i18n="setting_pixel_blast_variant">Pixel
+                                    Shape</label>
                                 <select id="pixel-blast-variant-select" class="full-width">
                                     <option value="square" data-i18n="pixel_blast_square">Square</option>
                                     <option value="circle" data-i18n="pixel_blast_circle">Circle</option>
@@ -1855,7 +1869,8 @@
 
                             <div id="pixel-blast-liquid-setting" class="setting-item" style="display: none;">
                                 <div class="setting-row">
-                                    <label for="pixel-blast-liquid" data-i18n="setting_pixel_blast_liquid">Liquid Distortion</label>
+                                    <label for="pixel-blast-liquid" data-i18n="setting_pixel_blast_liquid">Liquid
+                                        Distortion</label>
                                     <label class="lcp-switch">
                                         <input type="checkbox" id="pixel-blast-liquid" checked>
                                         <span class="lcp-slider round"></span>
@@ -1863,10 +1878,12 @@
                                 </div>
                                 <div id="pixel-blast-liquid-strength-container" style="margin-top: 10px;">
                                     <label for="pixel-blast-liquid-strength-slider">
-                                        <span data-i18n="setting_pixel_blast_liquid_strength">Distortion Strength</span>:
+                                        <span data-i18n="setting_pixel_blast_liquid_strength">Distortion
+                                            Strength</span>:
                                         <span id="pixel-blast-liquid-strength-val">1.0</span>
                                     </label>
-                                    <input type="range" id="pixel-blast-liquid-strength-slider" min="0" max="3" step="0.1" value="1.0" />
+                                    <input type="range" id="pixel-blast-liquid-strength-slider" min="0" max="3"
+                                        step="0.1" value="1.0" />
                                 </div>
                             </div>
 
@@ -1875,10 +1892,12 @@
                                     <span data-i18n="setting_pixel_blast_cursor_radius">Interaction Radius</span>:
                                     <span id="pixel-blast-cursor-radius-val">150</span>px
                                 </label>
-                                <input type="range" id="pixel-blast-cursor-radius-slider" min="50" max="500" step="10" value="150" />
-                                
+                                <input type="range" id="pixel-blast-cursor-radius-slider" min="50" max="500" step="10"
+                                    value="150" />
+
                                 <div class="setting-row" style="margin-top: 10px;">
-                                    <label for="pixel-blast-ripples" data-i18n="setting_pixel_blast_ripples">Enable Ripples (Click)</label>
+                                    <label for="pixel-blast-ripples" data-i18n="setting_pixel_blast_ripples">Enable
+                                        Ripples (Click)</label>
                                     <label class="lcp-switch">
                                         <input type="checkbox" id="pixel-blast-ripples" checked>
                                         <span class="lcp-slider round"></span>
@@ -1888,7 +1907,8 @@
 
                             <!-- Sunbeam Settings -->
                             <div id="sunbeam-color-setting" class="setting-item" style="display: none;">
-                                <label for="sunbeam-color-picker" data-i18n="setting_sunbeam_color">Sunbeam Color</label>
+                                <label for="sunbeam-color-picker" data-i18n="setting_sunbeam_color">Sunbeam
+                                    Color</label>
                                 <input type="color" id="sunbeam-color-picker" value="#ffffff" />
                             </div>
                             <div id="sunbeam-angle-setting" class="setting-item" style="display: none;">
@@ -1928,24 +1948,21 @@
                                     <span data-i18n="setting_crt_scan_angle">Scan Angle</span>:
                                     <span id="crt-scan-angle-value">0</span>°
                                 </label>
-                                <input type="range" id="crt-scan-angle-input" min="-180" max="180" step="1"
-                                    value="0" />
+                                <input type="range" id="crt-scan-angle-input" min="-180" max="180" step="1" value="0" />
                             </div>
                             <div id="crt-scan-density-setting" class="setting-item" style="display: none;">
                                 <label for="crt-scan-density-input">
                                     <span data-i18n="setting_crt_scan_density">Scan Density</span>:
                                     <span id="crt-scan-density-value">4</span>
                                 </label>
-                                <input type="range" id="crt-scan-density-input" min="1" max="20" step="1"
-                                    value="4" />
+                                <input type="range" id="crt-scan-density-input" min="1" max="20" step="1" value="4" />
                             </div>
                             <div id="crt-gamma-setting" class="setting-item" style="display: none;">
                                 <label for="crt-gamma-input">
                                     <span data-i18n="setting_crt_gamma">CRT Gamma</span>:
                                     <span id="crt-gamma-value">0.3</span>
                                 </label>
-                                <input type="range" id="crt-gamma-input" min="0" max="1" step="0.05"
-                                    value="0.3" />
+                                <input type="range" id="crt-gamma-input" min="0" max="1" step="0.05" value="0.3" />
                             </div>
                             <div id="crt-background-color-setting" class="setting-item" style="display: none;">
                                 <label for="crt-background-color-picker" data-i18n="setting_crt_background_color">CRT
@@ -2156,8 +2173,8 @@
                     </div>
 
                     <div class="setting-group">
-                        <label data-i18n="settings_custom_font" for="custom-font-input"><i
-                                class="fa-solid fa-font"></i> Custom Google
+                        <label data-i18n="settings_custom_font" for="custom-font-input"><i class="fa-solid fa-font"></i>
+                            Custom Google
                             Font</label>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <input type="text" id="custom-font-input"
@@ -2213,10 +2230,12 @@
                                 <option value="weekday" data-i18n="settings_clock_display_weekday">Weekday only</option>
                                 <option value="hide" data-i18n="settings_clock_display_hide">Hide Clock</option>
                             </select>
-                        </div>                        <div class="setting-item-row">
+                        </div>
+                        <div class="setting-item-row">
                             <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
                             <input type="checkbox" id="hide-seconds-checkbox">
-                        </div>                        <div class="setting-item" style="margin-top: 15px;">
+                        </div>
+                        <div class="setting-item" style="margin-top: 15px;">
                             <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
                             <select id="date-format-select">
                                 <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
@@ -2246,8 +2265,8 @@
                             </select>
                         </div>
                         <div class="setting-item">
-                             <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
-                                 Letters</label>                            <select id="hue-text-mode-select">
+                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                Letters</label> <select id="hue-text-mode-select">
                                 <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
                                 <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
@@ -2263,22 +2282,73 @@
                             <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock
                                 Style</span>
                         </div>
-                        <select id="clock-date-style-select">
-                            <option value="default" data-i18n="settings_clock_date_style_default">Default</option>
-                            <option value="glow" data-i18n="settings_clock_date_style_glow">Glow</option>
-                            <option value="minimal" data-i18n="settings_clock_date_style_minimal">Minimal</option>
-                            <option value="glass" data-i18n="settings_clock_date_style_glass">Glass</option>
-                            <option value="cool" data-i18n="settings_clock_date_style_cool">Cool Style</option>
-                            <option value="sidestyle" data-i18n="settings_clock_date_style_sidestyle">Side Style
-                            </option>
-                            <option value="jp-style" data-i18n="settings_clock_date_style_jp_style">JP Style</option>
-                            <option value="round" data-i18n="settings_clock_date_style_round">Round Clock</option>
-                            <option value="square" data-i18n="settings_clock_date_style_square">Square Clock</option>
-                            <option value="analog" data-i18n="settings_clock_date_style_analog">Analog Clock</option>
-                            <option value="sidebar" data-i18n="settings_clock_date_style_sidebar">Sidebar</option>
+                        <div id="clock-style-grid" class="clock-style-grid">
+                            <div class="clock-style-card" data-value="default">
+                                <i class="fa-solid fa-clock"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_default">Default</span>
+                            </div>
+                            <div class="clock-style-card" data-value="glow">
+                                <i class="fa-solid fa-sun"></i>
+                                <span class="clock-style-name" data-i18n="settings_clock_date_style_glow">Glow</span>
+                            </div>
+                            <div class="clock-style-card" data-value="minimal">
+                                <i class="fa-solid fa-minus"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_minimal">Minimal</span>
+                            </div>
+                            <div class="clock-style-card" data-value="glass">
+                                <i class="fa-solid fa-window-maximize"></i>
+                                <span class="clock-style-name" data-i18n="settings_clock_date_style_glass">Glass</span>
+                            </div>
+                            <div class="clock-style-card" data-value="cool">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span class="clock-style-name" data-i18n="settings_clock_date_style_cool">Cool</span>
+                            </div>
+                            <div class="clock-style-card" data-value="sidestyle">
+                                <i class="fa-solid fa-grip-lines-vertical"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_sidestyle">Side</span>
+                            </div>
+                            <div class="clock-style-card" data-value="jp-style">
+                                <i class="fa-solid fa-torii-gate"></i>
+                                <span class="clock-style-name" data-i18n="settings_clock_date_style_jp_style">JP</span>
+                            </div>
+                            <div class="clock-style-card" data-value="round">
+                                <i class="fa-regular fa-circle"></i>
+                                <span class="clock-style-name" data-i18n="settings_clock_date_style_round">Round</span>
+                            </div>
+                            <div class="clock-style-card" data-value="square">
+                                <i class="fa-regular fa-square"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_square">Square</span>
+                            </div>
+                            <div class="clock-style-card" data-value="analog">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_analog">Analog</span>
+                            </div>
+                            <div class="clock-style-card" data-value="sidebar">
+                                <i class="fa-solid fa-columns"></i>
+                                <span class="clock-style-name"
+                                    data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
+                            </div>
+                        </div>
+                        <!-- Hidden select for background compatibility if needed, or we just update JS -->
+                        <select id="clock-date-style-select" style="display: none;">
+                            <option value="default">Default</option>
+                            <option value="glow">Glow</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="glass">Glass</option>
+                            <option value="cool">Cool Style</option>
+                            <option value="sidestyle">Side Style</option>
+                            <option value="jp-style">JP Style</option>
+                            <option value="round">Round Clock</option>
+                            <option value="square">Square Clock</option>
+                            <option value="analog">Analog Clock</option>
+                            <option value="sidebar">Sidebar</option>
                         </select>
                     </div>
-
                     <!-- Style Specific Customization (Stand-alone group) -->
                     <div id="style-specific-customization" class="setting-group"
                         style="display: none; background: rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--accent-color-rgb), 0.15);">
@@ -2353,8 +2423,10 @@
                                 <option value="both" data-i18n="settings_clock_font_target_both">Both</option>
                                 <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
                                 <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
-                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only</option>
-                            </select>                        </div>
+                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only
+                                </option>
+                            </select>
+                        </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                             <div class="setting-item no-margin-top">
@@ -2647,16 +2719,16 @@
                                     Reorder</label>
                                 <input type="checkbox" id="enable-bookmark-drag" checked
                                     style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                <div class="setting-item-row"
+                            </div>
+                            <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                 <label for="bookmark-limit-20" data-i18n="settings_bookmark_limit_20"
-                                   style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Limit to 20
-                                   bookmarks per group</label>
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Limit to 20
+                                    bookmarks per group</label>
                                 <input type="checkbox" id="bookmark-limit-20" checked
-                                   style="transform: scale(1.1); margin: 0;">
-                                </div>
-                                </div>
+                                    style="transform: scale(1.1); margin: 0;">
+                            </div>
+                        </div>
                         <p style="font-size: 0.75rem; opacity: 0.5; margin: -4px 0 12px 10px; line-height: 1.4;"
                             data-i18n="settings_drag_note">
                             (Note: This also enables reordering for your saved backgrounds, colors, and gradients)
@@ -2901,7 +2973,8 @@
                             <input type="checkbox" id="show-donate-btn-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
-                            <label for="context-menu-style-select" data-i18n="settings_context_menu_style">Context Menu Style</label>
+                            <label for="context-menu-style-select" data-i18n="settings_context_menu_style">Context Menu
+                                Style</label>
                             <select id="context-menu-style-select" class="settings-select">
                                 <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
                                 <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
@@ -2989,7 +3062,8 @@
                                 <option value="beach" data-i18n="style_beach">Beach</option>
                                 <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
                                 <option value="terminal" data-i18n="style_terminal">Terminal</option>
-                                <option value="pill" data-i18n="style_pill">Pill Widget</option>                                <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                                <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                                <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
                                 <option value="neon" data-i18n="style_neon">Neon</option>
                                 <option value="minimal" data-i18n="style_minimal">Minimal</option>
                             </select>
@@ -3053,7 +3127,8 @@
                 <button id="reset-layout" class="secondary-btn full-width" style="margin-top: 10px;"
                     data-i18n="settings_reset_layout">Reset
                     Layout Positions</button>
-                <div style="font-size: 0.7rem; opacity: 0.6; padding: 5px 0 0 0; text-align: center;" data-i18n="settings_reset_layout_hint">
+                <div style="font-size: 0.7rem; opacity: 0.6; padding: 5px 0 0 0; text-align: center;"
+                    data-i18n="settings_reset_layout_hint">
                     (Resets widget positions & effect colors to default)
                 </div>
             </div>
