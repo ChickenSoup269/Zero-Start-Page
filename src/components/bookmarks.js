@@ -857,8 +857,8 @@ function updateMacosHover() {
     const isFlipped = document.body.classList.contains("flip-layout")
     
     // MacOS parameters
-    const maxScale = 1.65
-    const range = 75 // Narrower range to reduce spread to neighbors
+    const maxScale = 1.6
+    const range = 80 // Reduced range to limit spread to neighbors
 
     bookmarks.forEach((item) => {
       const rect = item.getBoundingClientRect()
@@ -868,14 +868,15 @@ function updateMacosHover() {
       
       let scale = 1
       if (dist < range) {
-        // Sharper falloff (pow 2.5) means neighbors are much less affected
-        const factor = Math.pow(1 - dist / range, 2.5)
-        scale = 1 + (maxScale - 1) * factor
+        // Sharper falloff to prevent too much spread
+        const factor = 1 - dist / range
+        const smoothFactor = Math.pow(factor, 2.5) // Higher power = less spread
+        scale = 1 + (maxScale - 1) * smoothFactor
       }
 
       if (item.classList.contains("dragging")) scale = 1
 
-      // Only apply scaling, origins are handled by CSS
+      // Apply scaling and smooth z-index
       item.style.transform = `scale(${scale})`
       item.style.zIndex = Math.round(scale * 100)
     })

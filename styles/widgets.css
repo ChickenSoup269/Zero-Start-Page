@@ -1711,77 +1711,104 @@ body.ghost-controls .side-controls:hover {
   background: #1a1a2e;
 }
 
-/* Calendar Context Menu */
+/* Context Menu General Styling */
+#context-menu,
 .calendar-context-menu {
   position: fixed;
-  background: rgba(30, 30, 35, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
+  background: var(--glass-bg, rgba(20, 20, 30, 0.7));
+  backdrop-filter: blur(15px) saturate(160%);
+  -webkit-backdrop-filter: blur(15px) saturate(160%);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+  border-radius: 12px;
   padding: 6px;
   min-width: 180px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   z-index: 10000;
-  animation: contextMenuFadeIn 0.15s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), var(--inner-glow);
+  animation: contextMenuFadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes contextMenuFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* Global Danger/Delete Styles */
+.danger,
+.delete,
+.delete-btn,
+#menu-delete,
+#bookmark-delete-selected,
+#todo-delete-selected,
+#bg-delete-selected,
+.context-menu-item.danger,
+.menu-item.danger {
+  color: #ff5555 !important;
 }
 
-.context-menu-item {
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s;
+.danger i,
+.delete i,
+.delete-btn i,
+#menu-delete i,
+#bookmark-delete-selected i,
+#todo-delete-selected i,
+#bg-delete-selected i,
+.context-menu-item.danger i,
+.menu-item.danger i {
+  color: #ff5555 !important;
+  opacity: 1;
+}
+
+.danger:hover,
+.delete:hover,
+.delete-btn:hover,
+#menu-delete:hover,
+#bookmark-delete-selected:hover,
+#todo-delete-selected:hover,
+#bg-delete-selected:hover,
+.context-menu-item.danger:hover,
+.menu-item.danger:hover {
+  background: rgba(255, 85, 85, 0.15) !important;
+  color: #ff7777 !important;
+}
+
+.context-menu-item,
+.menu-item {
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.85rem;
+  gap: 12px;
   color: rgba(255, 255, 255, 0.9);
-  user-select: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
-.context-menu-item i {
-  width: 16px;
-  text-align: center;
-  opacity: 0.8;
-}
-
-.context-menu-item:hover {
+.context-menu-item:hover,
+.menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-.context-menu-item.event-item {
-  color: var(--accent-color);
-  font-weight: 500;
-}
-
-.context-menu-item.event-item:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
-}
-
-.context-menu-item.danger {
-  color: #ff6b6b;
-}
-
-.context-menu-item.danger:hover {
-  background: rgba(255, 107, 107, 0.15);
+.context-menu-item i,
+.menu-item i {
+  width: 18px;
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0.7;
 }
 
 .context-menu-divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
+  margin: 6px 4px;
+}
+
+@keyframes contextMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Draggable helper */
@@ -3663,7 +3690,7 @@ body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark span {
 body.bookmark-macos-hover .bookmark {
   position: relative;
   will-change: transform;
-  transition: background 0.2s, box-shadow 0.2s; /* Only transition non-transform props */
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.2s, box-shadow 0.2s;
 }
 
 /* Dynamic origins based on layout */
@@ -3680,10 +3707,10 @@ body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover .bookmark {
   transform-origin: center left !important;
 }
 
-/* Disable ALL transforms transitions when MacOS hover is active */
+/* Smoother tracking when MacOS hover is active */
 body.bookmark-macos-hover #bookmarks-container:hover .bookmark,
 body.bookmark-macos-hover #hidden-bookmarks-popup:hover .bookmark {
-  transition: none !important;
+  transition: transform 0.1s ease-out !important;
 }
 
 body.bookmark-macos-hover .bookmark > span {
