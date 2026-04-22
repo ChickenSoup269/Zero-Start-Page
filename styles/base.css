@@ -226,225 +226,347 @@ body.date-clock-style-glass #date {
   width: auto;
 }
 
-body.date-clock-style-round .clock-date-wrap,
-body.date-clock-style-square .clock-date-wrap {
-  --frame-size: min(82vw, 320px);
-  width: 320px;
-  height: 320px;
-  max-width: 82vw;
-  max-height: 82vw;
-  margin: 0 auto 36px;
-  border: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.65);
+/* Framed Clock Shared Themes */
+body.framed-theme-light .clock-date-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: 
+    0 40px 80px -15px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.2);
+}
+
+body.framed-theme-dark .clock-date-wrap {
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.45); /* Tối hơn hẳn */
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
+  box-shadow: 
+    0 40px 100px rgba(0, 0, 0, 0.65),
+    inset 0 0 30px rgba(255, 255, 255, 0.03);
+}
+
+body.framed-theme-light .round-clock-notch {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.framed-theme-dark .round-clock-notch {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Base styles for Round Clock */
+body.date-clock-style-round .clock-date-wrap {
+  --frame-size: min(88vw, 360px);
+  width: var(--frame-size);
+  height: var(--frame-size);
+  margin: 0 auto 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
+  overflow: visible;
+  animation: framedClockFloat 8s ease-in-out infinite;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover {
+  transform: scale(1.04) translateY(-8px);
+  box-shadow: 
+    0 50px 100px -20px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+}
+
+/* Base styles for Square Clock */
+body.date-clock-style-square .clock-date-wrap {
+  --frame-size: min(80vw, 280px); /* Nhỏ lại từ 360px xuống 280px */
+  width: var(--frame-size);
+  height: var(--frame-size);
+  margin: 0 auto 40px;
+  border-radius: 40px; /* Squircle gọn hơn */
+  display: flex;
+  flex-direction: column;
+  padding: 25px; /* Giảm padding cho cân đối size mới */
+  box-sizing: border-box;
+  justify-content: space-between;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  animation: framedClockFloat 8s ease-in-out infinite;
   overflow: hidden;
-  isolation: isolate;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.4),
-    0 0 26px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+}
+
+body.date-clock-style-square .clock-date-wrap:hover {
+  transform: scale(1.05) translateY(-5px);
+}
+
+/* Notch "Ngày tháng" mới - Phong cách Seamless Glass */
+.round-clock-notch {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 5px 24px;
+  border-radius: 40px;
+  border-style: solid;
+  border-width: 1px;
+  backdrop-filter: blur(15px) saturate(150%);
+  -webkit-backdrop-filter: blur(15px) saturate(150%);
+  box-shadow: 
+    0 10px 20px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s ease;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-notch {
+  top: -18px;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(var(--accent-color-rgb), 0.5);
+  box-shadow: 
+    0 15px 25px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.round-clock-date-top {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 5px; /* Khoảng cách rộng sang trọng */
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  display: block;
+  margin-right: -5px; /* Cân bằng letter-spacing */
+}
+
+.round-clock-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+  width: 100%;
+}
+
+.round-clock-time-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 2px;
+}
+
+.round-clock-hhmm {
+  font-size: clamp(3.8rem, 14vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -4px;
+  line-height: 0.85;
+  color: #fff;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+}
+
+.round-clock-side-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 12px;
+}
+
+.round-clock-ampm-top {
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent-color, #fff);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.round-clock-ss-bottom {
+  font-size: 1.4rem;
+  font-weight: 200;
+  font-family: 'JetBrains Mono', 'Segoe UI Mono', monospace;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+}
+
+.round-clock-bottom-info {
+  width: 65%;
+  display: flex;
+  justify(content): center;
+  padding-top: 18px;
+  margin-top: 8px;
+  position: relative;
+}
+
+.round-clock-bottom-info::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+}
+
+.round-clock-footer-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.4s ease;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer-text {
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 4px;
+}
+
+/* Tối ưu hóa căn giữa cho Main Container */
+.main-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 26px;
-  box-sizing: border-box;
-  text-shadow: none;
-  animation: framedClockFloat 8s ease-in-out infinite;
+  min-height: 45vh;
 }
 
-body.date-clock-style-round .clock-date-wrap::before,
-body.date-clock-style-square .clock-date-wrap::before {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  pointer-events: none;
-  z-index: -1;
+/* Hide original elements for this style */
+body.date-clock-style-round #date,
+body.date-clock-style-round #clock::after {
+  display: none !important;
 }
 
-body.date-clock-style-round .clock-date-wrap::after,
-body.date-clock-style-square .clock-date-wrap::after {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(255, 255, 255, 0.18),
-      rgba(255, 255, 255, 0) 36%
-    ),
-    radial-gradient(
-      circle at 86% 84%,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
-    );
-  pointer-events: none;
-  z-index: -2;
-  animation: framedClockShimmer 12s linear infinite;
-}
-
-body.date-clock-style-round .clock-date-wrap {
-  border-radius: 50%;
+/* Theme overrides for both styles - HIGHER SPECIFICITY */
+body.framed-theme-light.date-clock-style-round .clock-date-wrap,
+body.framed-theme-light.date-clock-style-square .clock-date-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   background: radial-gradient(
-    circle at 30% 25%,
-    rgba(255, 255, 255, 0.13),
-    rgba(255, 255, 255, 0.04) 52%,
-    rgba(0, 0, 0, 0.2)
-  );
+    circle at 30% 20%,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  ) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  box-shadow: 
+    0 30px 60px -15px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
-body.date-clock-style-round .clock-date-wrap::before {
-  border-radius: 50%;
+body.framed-theme-dark.date-clock-style-round .clock-date-wrap,
+body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
+  border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(40px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(150%) !important;
+  box-shadow: 
+    0 40px 100px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(255, 255, 255, 0.03) !important;
 }
 
-body.date-clock-style-round .clock-date-wrap::after {
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(255, 255, 255, 0.18),
-      rgba(255, 255, 255, 0) 36%
-    ),
-    radial-gradient(
-      circle at 86% 84%,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
-    ),
-    repeating-conic-gradient(
-      from -90deg,
-      rgba(255, 255, 255, 0.11) 0deg 0.9deg,
-      transparent 0.9deg 12deg
-    );
-  -webkit-mask: radial-gradient(
-    circle,
-    transparent 0 68%,
-    #000 68% 71%,
-    transparent 71%
-  );
-  mask: radial-gradient(
-    circle,
-    transparent 0 68%,
-    #000 68% 71%,
-    transparent 71%
-  );
-}
-
-body.date-clock-style-square .clock-date-wrap {
-  border-radius: 22px;
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.13),
-    rgba(255, 255, 255, 0.04) 52%,
-    rgba(0, 0, 0, 0.2)
-  );
-}
-
-body.date-clock-style-square .clock-date-wrap::before {
-  border-radius: 16px;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-body.date-clock-style-square .clock-date-wrap::after {
-  border-radius: 18px;
-  background:
-    linear-gradient(
-      125deg,
-      rgba(255, 255, 255, 0.14) 0%,
-      rgba(255, 255, 255, 0.04) 18%,
-      rgba(255, 255, 255, 0) 46%
-    ),
-    radial-gradient(
-      circle at 88% 86%,
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
-      rgba(var(--accent-color-rgb, 168, 192, 255), 0) 42%
-    );
-}
-
-body.date-clock-style-round #clock,
-body.date-clock-style-round #date,
-body.date-clock-style-square #clock,
-body.date-clock-style-square #date {
-  margin: 0;
-  text-shadow: none;
-}
-
-body.date-clock-style-round #clock,
-body.date-clock-style-square #clock {
-  position: relative;
+.square-clock-bold-layout {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
+}
+
+.sq-top-row {
+  display: flex;
   justify-content: flex-start;
+}
+
+.sq-date-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  opacity: 0.95;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.sq-main-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 15px;
+}
+
+.sq-time-hhmm {
+  font-size: clamp(4.5rem, 16vw, 6.5rem);
+  font-weight: 900;
+  color: #fff;
   line-height: 1;
-  font-weight: 600;
+  letter-spacing: -4px;
+  text-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(var(--accent-color-rgb), 0.2);
 }
 
-body.date-clock-style-round #clock::after,
-body.date-clock-style-square #clock::after {
-  content: "";
-  width: min(72%, 220px);
-  height: 1px;
-  margin-top: 10px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 0.42),
-    rgba(255, 255, 255, 0)
-  );
-  opacity: 0.8;
-}
-
-body.date-clock-style-round #date,
-body.date-clock-style-square #date {
+.sq-side-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  opacity: 0.95;
+  gap: 8px;
+  text-align: left;
 }
 
-.clock-time-main {
-  font-size: clamp(2rem, 6.2vw, 2.8rem);
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  margin-top: 4px;
-}
-
-body.date-clock-style-round .clock-time-main,
-body.date-clock-style-square .clock-time-main {
-  font-size: clamp(2.2rem, 7vw, 3.05rem);
-  letter-spacing: 0.09em;
-  text-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.45),
-    0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
-}
-
-.clock-time-seconds {
-  display: inline;
-  margin-top: 0;
-  font-size: 0.5em;
-  opacity: 0.85;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  vertical-align: 0.2em;
-}
-
-body.date-clock-style-round .clock-time-ampm,
-body.date-clock-style-square .clock-time-ampm {
-  display: block;
-  position: static;
-  margin: 4px 0px 4px 0;
-  font-size: clamp(0.8rem, 2.4vw, 1rem);
+.sq-ampm {
+  font-size: 1.1rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.25em;
-  opacity: 0.78;
+  color: var(--accent-color, #fff);
+  letter-spacing: 1.5px;
 }
 
-body.date-clock-style-square #date {
-  gap: 6px;
+.sq-ss {
+  font-size: 1.8rem;
+  font-weight: 200;
+  font-family: 'JetBrains Mono', monospace;
+  color: #fff;
+  opacity: 0.7;
+}
+
+.sq-bottom-row {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+}
+
+.sq-full-date {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  opacity: 0.5;
+}
+
+body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
+  opacity: 0.9;
+  color: var(--accent-color);
+}
+
+/* Ẩn thành phần cũ */
+body.date-clock-style-square #date,
+body.date-clock-style-square #clock::after {
+  display: none !important;
+}
+
+body.date-clock-style-square #clock {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 @media (max-width: 640px) {

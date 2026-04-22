@@ -525,7 +525,7 @@ export function updateTime() {
         </div>
       </div>
     `
-  } else if (isFramedClockStyle) {
+  } else if (dateClockStyle === "round") {
     const roundTimeOptions = settings.hideSeconds
       ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
       : {
@@ -547,28 +547,91 @@ export function updateTime() {
     const hh = hhPart ? hhPart.value : "00"
     const mm = mmPart ? mmPart.value : "00"
     const ss = ssPart ? ssPart.value : "00"
+    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
 
-    const timeMain = settings.hideSeconds
-      ? `${hh}:${mm}`
-      : `${hh}:${mm}<span class="clock-time-seconds">:${ss}</span>`
+    const day = now.getDate().toString().padStart(2, "0")
+    const month = (now.getMonth() + 1).toString().padStart(2, "0")
+    const year = new Date(
+      now.toLocaleString("en-US", { timeZone: tz }),
+    ).getFullYear()
+    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
 
-    const format = settings.dateFormat || "full"
-    let secondaryHtml = ""
-    if (format === "full") {
-      const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
-      const year = new Date(
-        now.toLocaleString("en-US", { timeZone: tz }),
-      ).getFullYear()
-      secondaryHtml = `${year} ${weekday}`
-    } else {
-      secondaryHtml = getCustomDateString(now, langCode, tz, settings)
-    }
+    const theme = settings.framedClockTheme || "light"
+    document.body.classList.remove("framed-theme-light", "framed-theme-dark")
+    document.body.classList.add(`framed-theme-${theme}`)
 
-    const secondaryInfo = shouldShowDate
-      ? `<span class="clock-date-secondary">${secondaryHtml}</span>`
-      : ""
-    clockElement.innerHTML = `<span class="clock-time-main">${timeMain}</span><span class="clock-time-ampm">${dayPeriodPart ? dayPeriodPart.value : ""}</span>${secondaryInfo}`
-  } else if (dateClockStyle === "sidebar") {
+    clockElement.innerHTML = `
+      <div class="round-clock-new-layout">
+        <div class="round-clock-notch">
+          <span class="round-clock-date-top">${day}/${month}</span>
+        </div>
+        <div class="round-clock-center">
+          <div class="round-clock-time-row">
+            <span class="round-clock-hhmm">${hh}:${mm}</span>
+            <div class="round-clock-side-meta">
+              <span class="round-clock-ampm-top">${ampm}</span>
+              ${!settings.hideSeconds ? `<span class="round-clock-ss-bottom">${ss}</span>` : ""}
+            </div>
+          </div>
+          <div class="round-clock-bottom-info">
+            <span class="round-clock-footer-text">${year} - ${weekday}</span>
+          </div>
+        </div>
+      </div>
+    `
+  } else if (dateClockStyle === "square") {
+    const roundTimeOptions = settings.hideSeconds
+      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
+      : {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: use12Hour,
+          timeZone: tz,
+        }
+    const timeParts = new Intl.DateTimeFormat(langCode, roundTimeOptions)
+      .formatToParts(now)
+      .filter((part) => part.type !== "literal")
+
+    const hhPart = timeParts.find((part) => part.type === "hour")
+    const mmPart = timeParts.find((part) => part.type === "minute")
+    const ssPart = timeParts.find((part) => part.type === "second")
+    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
+
+    const hh = hhPart ? hhPart.value : "00"
+    const mm = mmPart ? mmPart.value : "00"
+    const ss = ssPart ? ssPart.value : "00"
+    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
+
+    const day = now.getDate().toString().padStart(2, "0")
+    const month = (now.getMonth() + 1).toString().padStart(2, "0")
+    const year = new Date(
+      now.toLocaleString("en-US", { timeZone: tz }),
+    ).getFullYear()
+    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+
+    const theme = settings.framedClockTheme || "light"
+    document.body.classList.remove("framed-theme-light", "framed-theme-dark")
+    document.body.classList.add(`framed-theme-${theme}`)
+
+    clockElement.innerHTML = `
+      <div class="square-clock-bold-layout">
+        <div class="sq-top-row">
+          <span class="sq-date-val">${day} / ${month}</span>
+        </div>
+        <div class="sq-main-row">
+          <span class="sq-time-hhmm">${hh}:${mm}</span>
+          <div class="sq-side-info">
+            <span class="sq-ampm">${ampm}</span>
+            ${!settings.hideSeconds ? `<span class="sq-ss">${ss}</span>` : ""}
+          </div>
+        </div>
+        <div class="sq-bottom-row">
+          <span class="sq-full-date">${weekday.toUpperCase()} - ${year}</span>
+        </div>
+      </div>
+    `
+  } else if (isFramedClockStyle) {  } else if (dateClockStyle === "sidebar") {
     const timeOptions = settings.hideSeconds
       ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
       : {

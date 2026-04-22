@@ -1879,6 +1879,19 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.framedClockThemeSelect?.addEventListener("change", () => {
+    handleSettingUpdate("framedClockTheme", DOM.framedClockThemeSelect.value)
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "framedClockTheme",
+          value: DOM.framedClockThemeSelect.value,
+        },
+      }),
+    )
+  })
+
   DOM.sidestyleAlignSelect?.addEventListener("change", () => {
     handleSettingUpdate("sidestyleAlign", DOM.sidestyleAlignSelect.value)
     window.dispatchEvent(

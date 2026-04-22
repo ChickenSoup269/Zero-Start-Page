@@ -998,6 +998,8 @@ function createUpdateSettingsInputs(effectInstances) {
       "jp-style",
       "sidestyle",
       "sidebar",
+      "round",
+      "square",
     ].includes(style)
     if (DOM.styleSpecificCustomization) {
       DOM.styleSpecificCustomization.style.display = styleHasExtras
@@ -1021,6 +1023,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"
+
+    if (DOM.framedClockThemeSetting) {
+      DOM.framedClockThemeSetting.style.display =
+        (style === "round" || style === "square") ? "block" : "none"
+      if (DOM.framedClockThemeSelect) {
+        DOM.framedClockThemeSelect.value = settings.framedClockTheme || "light"
+      }
+    }
+
     if (DOM.analogBlurBgCheckbox)
       DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
 

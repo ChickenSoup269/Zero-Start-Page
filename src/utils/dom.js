@@ -712,6 +712,12 @@ export const sidebarClockFlipSetting = document.getElementById(
 export const sidebarClockFlipCheckbox = document.getElementById(
   "sidebar-clock-flip-checkbox",
 )
+export const framedClockThemeSetting = document.getElementById(
+  "framed-clock-theme-setting",
+)
+export const framedClockThemeSelect = document.getElementById(
+  "framed-clock-theme-select",
+)
 export const clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )
