@@ -680,13 +680,13 @@ body.ghost-controls .side-controls:hover {
 
 .quick-btn:hover {
   color: var(--accent-color);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--accent-contrast-color, rgba(255, 255, 255, 0.1));
   transform: scale(1.1);
 }
 
 .quick-btn.active {
-  color: var(--accent-contrast-color, #1a1a2e);
-  background: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--accent-contrast-color, #1a1a2e);
   box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
 }
 
@@ -1988,22 +1988,24 @@ body.context-menu-none .context-menu-item:hover {
 }
 
 .bookmark-group-tab:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--bookmark-group-text-color, #fff);
+  background: var(--accent-contrast-color, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--accent-color, #fff) !important;
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--accent-color) !important;
 }
 
 .bookmark-group-tab.active {
-  color: var(--bookmark-group-text-color, white);
+  color: var(--accent-color, white);
+  background: var(--bookmark-group-tab-bg, rgba(255, 255, 255, 0.06));
   font-weight: 600;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 1px var(--accent-color) inset;
+  box-shadow: 0 0 0 1px var(--accent-color) inset, 0 0 10px rgba(var(--accent-color-rgb), 0.2);
 }
 
 .bookmark-group-tab.active:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
-  border-color: var(--accent-color);
+  background: var(--accent-contrast-color, #fff) !important;
+  color: var(--accent-color, #000) !important;
+  border-color: var(--accent-color) !important;
 }
 
 .bookmark-group-tab.add-group-tab {
@@ -2827,15 +2829,18 @@ body.bookmark-taskbar-left-mode .bookmark-group-tab {
 body.bookmark-sidebar-mode .bookmark-group-tab:hover,
 body.bookmark-taskbar-mode .bookmark-group-tab:hover,
 body.bookmark-taskbar-left-mode .bookmark-group-tab:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: var(--accent-contrast-color, rgba(255, 255, 255, 0.2)) !important;
+  color: var(--accent-color, #fff) !important;
+  border-color: var(--accent-color) !important;
 }
 
 body.bookmark-sidebar-mode .bookmark-group-tab.active,
 body.bookmark-taskbar-mode .bookmark-group-tab.active,
 body.bookmark-taskbar-left-mode .bookmark-group-tab.active {
-  background: var(--text-color, #fff) !important;
-  color: #000 !important;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  background: var(--bookmark-group-tab-bg, rgba(0, 0, 0, 0.3)) !important;
+  color: var(--accent-color, #000) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3) !important;
 }
 
 /* Groups toggle button */

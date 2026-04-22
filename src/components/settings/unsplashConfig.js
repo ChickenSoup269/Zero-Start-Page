@@ -7,7 +7,7 @@ const UNSPLASH_COLLECTIONS = [
   {
     key: "featured",
     topic: "wallpapers",
-    collections: [],
+    collections: ["317099"], // Featured Wallpapers
     keywords: [
       "featured wallpaper",
       "editorial wallpaper",
@@ -16,6 +16,75 @@ const UNSPLASH_COLLECTIONS = [
     ],
     labelEn: "Featured",
     labelVi: "Nổi bật",
+  },
+  {
+    key: "lofi-aesthetic",
+    topic: "",
+    collections: ["8933951", "4415449"], // Lo-fi, Aesthetic collections
+    keywords: [
+      "lofi aesthetic",
+      "vaporwave wallpaper",
+      "retro anime aesthetic",
+      "moody night city lofi",
+      "cozy room aesthetic",
+    ],
+    labelEn: "Lo-fi Aesthetic",
+    labelVi: "Phong cách Lo-fi",
+  },
+  {
+    key: "cyberpunk-future",
+    topic: "",
+    collections: ["9354012"], // Cyberpunk & Future
+    keywords: [
+      "cyberpunk city night",
+      "futuristic neon city",
+      "blade runner aesthetic",
+      "night urban neon lights",
+      "synthwave wallpaper",
+    ],
+    labelEn: "Cyberpunk & Future",
+    labelVi: "Tương lai & Cyberpunk",
+  },
+  {
+    key: "minimalism",
+    topic: "wallpapers",
+    collections: ["1065976"], // Minimalism
+    keywords: [
+      "minimalist landscape",
+      "clean aesthetic wallpaper",
+      "minimalist architecture",
+      "simple background hd",
+      "muted colors nature",
+    ],
+    labelEn: "Minimalism",
+    labelVi: "Tối giản",
+  },
+  {
+    key: "space-galaxy",
+    topic: "nature",
+    collections: ["1111575"], // Space
+    keywords: [
+      "astrophotography galaxy",
+      "deep space nebula",
+      "starry night sky",
+      "milky way photography",
+      "cosmic wallpaper",
+    ],
+    labelEn: "Space & Galaxy",
+    labelVi: "Vũ trụ & Thiên hà",
+  },
+  {
+    key: "macro-world",
+    topic: "nature",
+    collections: ["17098", "927950"], // Macro
+    keywords: [
+      "macro photography nature",
+      "abstract close up",
+      "flower macro wallpaper",
+      "insect macro detail",
+    ],
+    labelEn: "Macro World",
+    labelVi: "Thế giới vi mô",
   },
   {
     key: "new-spring",
@@ -31,19 +100,6 @@ const UNSPLASH_COLLECTIONS = [
     labelVi: "Mùa xuân mới",
   },
   {
-    key: "spring-wallpapers",
-    topic: "",
-    collections: [],
-    keywords: [
-      "spring wallpaper",
-      "spring flowers wallpaper",
-      "pastel spring landscape",
-      "cherry blossom wallpaper",
-    ],
-    labelEn: "Spring Wallpapers",
-    labelVi: "Hình nền mùa xuân",
-  },
-  {
     key: "wallpapers",
     topic: "wallpapers",
     collections: [],
@@ -52,6 +108,7 @@ const UNSPLASH_COLLECTIONS = [
       "desktop wallpaper 4k",
       "minimal wallpaper",
       "aesthetic wallpaper",
+      "cinematic landscape",
     ],
     labelEn: "Wallpapers",
     labelVi: "Hình nền",
@@ -135,19 +192,6 @@ const UNSPLASH_COLLECTIONS = [
     labelVi: "Nhiếp ảnh đường phố",
   },
   {
-    key: "experimental",
-    topic: "experimental",
-    collections: [],
-    keywords: [
-      "experimental abstract wallpaper",
-      "creative abstract art",
-      "avant garde photography",
-      "conceptual visual art",
-    ],
-    labelEn: "Experimental",
-    labelVi: "Thực nghiệm",
-  },
-  {
     key: "travel",
     topic: "travel",
     collections: [],
@@ -160,19 +204,6 @@ const UNSPLASH_COLLECTIONS = [
     labelEn: "Travel",
     labelVi: "Du lịch",
   },
-  {
-    key: "people",
-    topic: "people",
-    collections: [],
-    keywords: [
-      "portrait people wallpaper",
-      "lifestyle portrait",
-      "human expression photography",
-      "street portrait",
-    ],
-    labelEn: "People",
-    labelVi: "Con người",
-  },
 ]
 
 const RANDOM_SEARCH_CATEGORIES = [
@@ -182,6 +213,8 @@ const RANDOM_SEARCH_CATEGORIES = [
   "travel",
   "architecture",
   "fashion",
+  "cyberpunk",
+  "minimalism",
 ]
 
 const RANDOM_SEARCH_KEYWORDS = {
@@ -195,6 +228,8 @@ const RANDOM_SEARCH_KEYWORDS = {
     "interior design",
   ],
   fashion: ["fashion editorial", "street style", "minimal fashion"],
+  cyberpunk: ["cyberpunk city", "neon night", "futuristic urban"],
+  minimalism: ["minimalist landscape", "clean aesthetic", "simple nature"],
 }
 
 function pickKeyword(collection) {
