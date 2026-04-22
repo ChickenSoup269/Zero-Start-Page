@@ -235,6 +235,9 @@ export class MusicPlayer {
         case "terminal":
           accentColor = "#00ff41" // Classic terminal green
           break
+        case "forest":
+          accentColor = "#4caf50"
+          break
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }

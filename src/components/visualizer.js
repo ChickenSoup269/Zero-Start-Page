@@ -54,13 +54,13 @@ class MusicVisualizer {
     // Dynamic bar count based on style
     let newBarCount = 5
     if (style === "vinyl" || style === "apple") newBarCount = 6
-    if (style === "neon" || style === "beach") newBarCount = 8
+    if (style === "neon") newBarCount = 8
     if (style === "minimal") newBarCount = 6
     if (style === "pill") newBarCount = 4
     if (style === "spotify" || style === "sidebar") newBarCount = 5
     if (style === "soundcloud") newBarCount = 10
     if (style === "terminal") newBarCount = 12
-    if (style === "heartbeat" || style === "moon8") newBarCount = 0
+    if (style === "heartbeat" || style === "moon8" || style === "forest" || style === "beach") newBarCount = 0
 
     if (newBarCount !== this.barCount) {
       this.barCount = newBarCount
@@ -76,25 +76,390 @@ class MusicVisualizer {
     if (prev === "heartbeat" && style !== "heartbeat") {
       this._stopHeartbeat()
     }
+    if (prev === "forest" && style !== "forest") {
+      this._stopForest()
+    }
+    if (prev === "beach" && style !== "beach") {
+      this._stopBeach()
+    }
 
     if (style === "pixel") {
       this._stopCSSLoop()
       this._stopMoon8()
       this._stopHeartbeat()
+      this._stopForest()
+      this._stopBeach()
       this._startPixel()
     } else if (style === "moon8") {
       this._stopCSSLoop()
       this._stopPixel()
       this._stopHeartbeat()
+      this._stopForest()
+      this._stopBeach()
       this._startMoon8()
     } else if (style === "heartbeat") {
       this._stopCSSLoop()
       this._stopPixel()
       this._stopMoon8()
+      this._stopForest()
+      this._stopBeach()
       this._startHeartbeat()
+    } else if (style === "forest") {
+      this._stopCSSLoop()
+      this._stopPixel()
+      this._stopMoon8()
+      this._stopHeartbeat()
+      this._stopBeach()
+      this._startForest()
+    } else if (style === "beach") {
+      this._stopCSSLoop()
+      this._stopPixel()
+      this._stopMoon8()
+      this._stopHeartbeat()
+      this._stopForest()
+      this._startBeach()
     } else {
       if (this.isPlaying) this._startCSSLoop()
     }
+  }
+
+  _startBeach() {
+    this._stopBeach()
+    this.bars.forEach((b) => (b.style.display = "none"))
+    const canvas = document.createElement("canvas")
+    canvas.className = "beach-canvas"
+    canvas.style.cssText =
+      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"
+    this.beachCanvas = canvas
+    if (this.container) {
+      this.container.style.position = "absolute"
+      this.container.style.top = "0"
+      this.container.style.left = "0"
+      this.container.style.width = "100%"
+      this.container.style.height = "100%"
+      this.container.appendChild(canvas)
+    }
+
+    this._lastTs = performance.now()
+    const loop = (ts) => {
+      if (this.currentStyle !== "beach") return
+      const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
+      this._lastTs = ts
+      this._beachFrame(dt)
+      this.beachAnimId = requestAnimationFrame(loop)
+    }
+    this.beachAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopBeach() {
+    if (this.beachAnimId) {
+      cancelAnimationFrame(this.beachAnimId)
+      this.beachAnimId = null
+    }
+    if (this.beachCanvas) {
+      this.beachCanvas.remove()
+      this.beachCanvas = null
+    }
+    if (this.container) {
+      this.container.style.position = ""
+      this.container.style.top = ""
+      this.container.style.left = ""
+      this.container.style.width = ""
+      this.container.style.height = ""
+    }
+    this.bars.forEach((b) => (b.style.display = ""))
+  }
+
+  _beachFrame(dt) {
+    const canvas = this.beachCanvas
+    if (!canvas) return
+    const W = this.container.parentNode?.offsetWidth || 300
+    const H = this.container.parentNode?.offsetHeight || 60
+
+    if (canvas.width !== W * 2) {
+      canvas.width = W * 2
+      canvas.height = H * 2
+    }
+    const ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.save()
+    ctx.scale(2, 2)
+
+    let norm = 0
+    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
+      norm = (this._realBands[0] + this._realBands[1]) / 2
+    } else if (this.isPlaying) {
+      norm = 0.15
+    }
+
+    const time = Date.now() * 0.002
+    
+    // Vẽ 3 lớp sóng biển
+    const drawWave = (offsetY, amplitude, freq, speed, color, alpha) => {
+        ctx.save()
+        ctx.fillStyle = color
+        ctx.globalAlpha = alpha
+        ctx.beginPath()
+        ctx.moveTo(0, H)
+        
+        for (let x = 0; x <= W; x += 5) {
+            const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
+            ctx.lineTo(x, y)
+        }
+        
+        ctx.lineTo(W, H)
+        ctx.lineTo(0, H)
+        ctx.fill()
+        
+        // Vẽ bọt biển trắng ở đỉnh sóng
+        if (norm > 0.2) {
+            ctx.fillStyle = "#fff"
+            ctx.globalAlpha = norm * 0.5
+            for (let x = 0; x <= W; x += 20) {
+                const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
+                ctx.beginPath()
+                ctx.arc(x, y, 2 * norm, 0, Math.PI * 2)
+                ctx.fill()
+            }
+        }
+        ctx.restore()
+    }
+
+    // Lớp sóng xa (Xanh nhạt)
+    drawWave(H * 0.6, 5, 0.01, 0.5, "#b3e5fc", 0.4)
+    // Lớp sóng giữa (Xanh ngọc lơ)
+    drawWave(H * 0.7, 8, 0.015, 0.8, "#e1f5fe", 0.5)
+    // Lớp sóng gần (Trắng xanh - gần như trắng)
+    drawWave(H * 0.8, 10, 0.02, 1.2, "#f0faff", 0.8)
+
+    ctx.restore()
+  }
+
+  _startForest() {
+    this._stopForest()
+    this.bars.forEach((b) => (b.style.display = "none"))
+    const canvas = document.createElement("canvas")
+    canvas.className = "forest-canvas"
+    canvas.style.cssText =
+      "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"
+    this.forestCanvas = canvas
+    if (this.container) {
+      // Đảm bảo container phủ toàn bộ wrapper để làm background
+      this.container.style.position = "absolute"
+      this.container.style.top = "0"
+      this.container.style.left = "0"
+      this.container.style.width = "100%"
+      this.container.style.height = "100%"
+      this.container.style.margin = "0"
+      this.container.appendChild(canvas)
+    }
+
+    // Tạo mạng lưới dây leo ngẫu nhiên cố định
+    this.forestVines = []
+    for (let i = 0; i < 15; i++) {
+      const isTop = Math.random() > 0.4 // 60% dây leo từ trên xuống
+      this.forestVines.push({
+        isTop,
+        startX: Math.random() * 300,
+        startY: isTop ? -5 : 65,
+        length: 20 + Math.random() * 40,
+        curve: (Math.random() - 0.5) * 40,
+        color: ["#1b5e20", "#2e7d32", "#388e3c", "#43a047"][Math.floor(Math.random() * 4)],
+        thickness: 0.8 + Math.random() * 1.5,
+        speed: 0.3 + Math.random() * 0.7,
+        leafNodes: Array.from({ length: 3 }, () => Math.random())
+      })
+    }
+
+    this.forestParticles = []
+    for (let i = 0; i < 20; i++) {
+      this.forestParticles.push(this._createForestParticle(true))
+    }
+
+    this._lastTs = performance.now()
+    const loop = (ts) => {
+      if (this.currentStyle !== "forest") return
+      const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
+      this._lastTs = ts
+      this._forestFrame(dt)
+      this.forestAnimId = requestAnimationFrame(loop)
+    }
+    this.forestAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopForest() {
+    if (this.forestAnimId) {
+      cancelAnimationFrame(this.forestAnimId)
+      this.forestAnimId = null
+    }
+    if (this.forestCanvas) {
+      this.forestCanvas.remove()
+      this.forestCanvas = null
+    }
+    this.forestParticles = []
+    this.forestVines = []
+    if (this.container) {
+      this.container.style.position = ""
+      this.container.style.top = ""
+      this.container.style.left = ""
+      this.container.style.width = ""
+      this.container.style.height = ""
+    }
+    this.bars.forEach((b) => (b.style.display = ""))
+  }
+
+  _createForestParticle(randomY = false) {
+    const isFlower = Math.random() > 0.7
+    return {
+      x: Math.random() * 300,
+      y: randomY ? Math.random() * 60 : -10,
+      size: 2 + Math.random() * 4,
+      speed: 10 + Math.random() * 20,
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 2,
+      type: isFlower ? "flower" : "leaf",
+      color: isFlower
+        ? ["#ff8a80", "#ffd180", "#ea80fc"][Math.floor(Math.random() * 3)]
+        : ["#81c784", "#a5d6a7", "#66bb6a"][Math.floor(Math.random() * 3)],
+      phase: Math.random() * Math.PI * 2,
+    }
+  }
+
+  _forestFrame(dt) {
+    const canvas = this.forestCanvas
+    if (!canvas) return
+    const W = this.container.parentNode?.offsetWidth || 300
+    const H = this.container.parentNode?.offsetHeight || 60
+
+    if (canvas.width !== W * 2) {
+      canvas.width = W * 2
+      canvas.height = H * 2
+    }
+    const ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.save()
+    ctx.scale(2, 2)
+
+    let norm = 0
+    if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
+      norm = (this._realBands[0] + this._realBands[1]) / 2
+    } else if (this.isPlaying) {
+      norm = 0.15
+    }
+
+    // 1. Vẽ mạng lưới Dây leo nền (Background Vines)
+    ctx.save()
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    this.forestVines.forEach((v, idx) => {
+      ctx.beginPath()
+      ctx.strokeStyle = v.color
+      ctx.lineWidth = v.thickness * (1 + norm * 0.5)
+      ctx.globalAlpha = 0.25 + norm * 0.3
+
+      const time = Date.now() * 0.001 * v.speed
+      // Chuyển động đung đưa (Swaying)
+      const sway = Math.sin(time + idx) * (v.curve + norm * 15)
+      
+      const startX = v.startX * (W / 300)
+      const startY = v.isTop ? -5 : H + 5
+      const endY = v.isTop ? v.length * (H / 60) : H - v.length * (H / 60)
+      const endX = startX + sway
+
+      ctx.moveTo(startX, startY)
+      // Vẽ đường cong Bezier để tạo cảm giác hữu cơ
+      ctx.bezierCurveTo(
+        startX, (startY + endY) / 2,
+        endX, (startY + endY) / 2,
+        endX, endY
+      )
+      ctx.stroke()
+
+      // Vẽ lá mọc trực tiếp trên dây leo
+      v.leafNodes.forEach((nodePos, lIdx) => {
+          const ly = startY + (endY - startY) * nodePos
+          // Tính toán vị trí x trên đường cong (đơn giản hóa bằng lerp)
+          const lx = startX + (endX - startX) * nodePos
+          
+          ctx.save()
+          ctx.translate(lx, ly)
+          ctx.rotate(Math.sin(time + lIdx) * 0.5)
+          ctx.fillStyle = v.color
+          const lSize = (2 + v.thickness) * (1 + norm)
+          
+          ctx.beginPath()
+          ctx.ellipse(0, 0, lSize, lSize / 2, Math.PI / 4, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.restore()
+      })
+
+      // Vẽ các tua cuốn (Tendrils) nhỏ
+      if (norm > 0.4 && idx % 3 === 0) {
+          ctx.beginPath()
+          ctx.lineWidth = 0.5
+          ctx.arc(endX, endY, 5 * norm, 0, Math.PI * 1.5)
+          ctx.stroke()
+      }
+    })
+    ctx.restore()
+
+    // 2. Vẽ Bụi cỏ dày ở cạnh dưới
+    ctx.save()
+    const grassCount = 15
+    for (let i = 0; i < grassCount; i++) {
+      const x = (i / (grassCount - 1)) * W
+      const h = (15 + Math.sin(i + Date.now() * 0.003) * 5) * (1 + norm)
+      ctx.fillStyle = i % 2 === 0 ? "#1b5e20" : "#2e7d32"
+      ctx.globalAlpha = 0.5 + norm * 0.3
+      ctx.beginPath()
+      ctx.moveTo(x - 5, H)
+      ctx.quadraticCurveTo(x, H - h, x + 5, H)
+      ctx.fill()
+    }
+    ctx.restore()
+
+    // 3. Cập nhật và vẽ hạt (Lá và Hoa bay)
+    for (let i = this.forestParticles.length - 1; i >= 0; i--) {
+      const p = this.forestParticles[i]
+      if (this.isPlaying) {
+        p.y += p.speed * dt * (1 + norm * 2)
+        p.rotation += p.rotSpeed * dt * (1 + norm * 5)
+        p.x += Math.sin(p.phase + Date.now() * 0.002) * 5 * dt
+      }
+
+      ctx.save()
+      ctx.translate(p.x * (W / 300), p.y * (H / 60))
+      ctx.rotate(p.rotation)
+      ctx.fillStyle = p.color
+      ctx.globalAlpha = 0.7 + norm * 0.3
+
+      const pulse = 1 + norm * (p.type === "flower" ? 1.5 : 0.5)
+
+      if (p.type === "leaf") {
+        ctx.beginPath()
+        ctx.moveTo(0, -p.size * pulse)
+        ctx.quadraticCurveTo(p.size * pulse, 0, 0, p.size * pulse)
+        ctx.quadraticCurveTo(-p.size * pulse, 0, 0, -p.size * pulse)
+        ctx.fill()
+      } else {
+        for (let j = 0; j < 5; j++) {
+          ctx.rotate((Math.PI * 2) / 5)
+          ctx.beginPath()
+          ctx.arc(p.size * 0.8 * pulse, 0, p.size * 0.5 * pulse, 0, Math.PI * 2)
+          ctx.fill()
+        }
+        ctx.fillStyle = "#fff"
+        ctx.beginPath()
+        ctx.arc(0, 0, p.size * 0.3 * pulse, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.restore()
+
+      if (p.y > 70) {
+        this.forestParticles[i] = this._createForestParticle()
+      }
+    }
+    ctx.restore()
   }
 
   _startHeartbeat() {
@@ -674,7 +1039,8 @@ class MusicVisualizer {
         !this.isPlaying ||
         this.currentStyle === "pixel" ||
         this.currentStyle === "moon8" ||
-        this.currentStyle === "heartbeat"
+        this.currentStyle === "heartbeat" ||
+        this.currentStyle === "forest"
       ) {
         this._cssAnimId = null
         return
@@ -762,6 +1128,7 @@ class MusicVisualizer {
     if (this.currentStyle === "pixel") this._startPixel()
     else if (this.currentStyle === "moon8") this._startMoon8()
     else if (this.currentStyle === "heartbeat") this._startHeartbeat()
+    else if (this.currentStyle === "forest") this._startForest()
     else this._startCSSLoop()
   }
 
@@ -771,6 +1138,7 @@ class MusicVisualizer {
     this._stopCSSLoop()
     this._stopMoon8()
     this._stopHeartbeat()
+    this._stopForest()
     this._stopPixel()
   }
 
