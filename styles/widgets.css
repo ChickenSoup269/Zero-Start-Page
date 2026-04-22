@@ -798,24 +798,32 @@ body.ghost-controls .side-controls:hover {
 }
 
 .lcp-select {
+  appearance: none;
   width: 100%;
-  height: 28px;
-  padding: 0 8px;
+  height: 30px;
+  padding: 0 28px 0 10px;
   border-radius: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.08);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px;
   color: #fff;
   font-size: 0.78rem;
   font-family: var(--font-primary);
   outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .lcp-select:focus {
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
 }
 
 .lcp-select option {
-  background: #111;
+  background: #1a1a2e;
   color: #fff;
 }
 

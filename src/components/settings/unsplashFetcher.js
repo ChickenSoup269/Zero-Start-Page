@@ -60,7 +60,7 @@ async function fetchUnsplashPhotoFromTopic(accessKey, topicId) {
   const page = String(Math.floor(Math.random() * 3) + 1)
   const search = new URLSearchParams({
     page,
-    per_page: "30",
+    per_page: "35",
     order_by: "popular",
     client_id: accessKey,
   })
@@ -89,7 +89,7 @@ async function fetchUnsplashPhotoFromSearch(accessKey, query) {
     query,
     orientation: "landscape",
     content_filter: "high",
-    per_page: "30",
+    per_page: "35",
     client_id: accessKey,
   })
   const res = await fetch(

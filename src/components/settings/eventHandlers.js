@@ -576,7 +576,7 @@ export function setupGeneralEventHandlers(
       return
     }
 
-    if (settings.userBackgrounds.length >= 25) {
+    if (settings.userBackgrounds.length >= 35) {
       showAlert(
         geti18n().alert_bg_gallery_full ||
           "Gallery full! Please remove some backgrounds before saving more.",
