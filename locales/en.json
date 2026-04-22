@@ -369,6 +369,8 @@
   "quick_access_timer": "Toggle Timer",
   "quick_access_calendar": "Toggle Calendar",
   "quick_access_music": "Toggle Music Player",
+  "quick_access_quotes": "Toggle Daily Quotes",
+  "settings_show_quotes": "Show Daily Quotes",
   "settings_music_style": "Music Bar Style",
   "settings_music_use_default_color": "Use Default Music Color",
   "settings_music_visualizer_style": "Music Animation",

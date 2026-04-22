@@ -11,6 +11,7 @@ import { Timer } from "./components/timer.js"
 import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
 import { Notepad } from "./components/notepad.js"
+import { DailyQuotes } from "./components/quotes.js"
 import { preloadImages, migrateDataUrls } from "./services/imageStore.js"
 
 import { makeDraggable } from "./utils/draggable.js"
@@ -145,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const timer = new Timer()
     const music = new MusicPlayer()
     const calendar = new FullCalendar()
+    const dailyQuotes = new DailyQuotes()
 
     makeDraggable(todo.container, "todo")
     makeDraggable(timer.container, "timer")
@@ -256,8 +258,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             key = "showGregorian"
             checkbox = showGregorianCheckbox
             break
-        }
-
+          case "quotes":
+            dailyQuotes.setVisibility(!dailyQuotes.showQuotes)
+            syncQuickButtons()
+            break
+          }
         if (key && checkbox) {
           checkbox.click()
         }
@@ -293,8 +298,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           case "gregorian":
             isActive = settings.showGregorian !== false
             break
-        }
-        btn.classList.toggle("active", isActive)
+          case "quotes":
+            isActive = settings.showQuotes !== false
+            break
+          }        btn.classList.toggle("active", isActive)
       })
     }
 

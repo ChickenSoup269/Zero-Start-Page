@@ -173,6 +173,7 @@ const defaultSettings = {
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
   unsplashLastCredit: null,
+  showQuotes: false,
   showTodoList: true,
   todoShowCheckboxes: true,
   showTimer: false,

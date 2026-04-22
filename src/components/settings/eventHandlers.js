@@ -2158,6 +2158,30 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.showQuotesCheckbox.addEventListener("change", () => {
+    handleSettingUpdate("showQuotes", DOM.showQuotesCheckbox.checked)
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "showQuotes",
+          value: DOM.showQuotesCheckbox.checked,
+        },
+      }),
+    )
+  })
+
+  DOM.lcpQuotes.addEventListener("change", () => {
+    handleSettingUpdate("showQuotes", DOM.lcpQuotes.checked)
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "showQuotes",
+          value: DOM.lcpQuotes.checked,
+        },
+      }),
+    )
+  })
+
   DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
     handleSettingUpdate(
       "musicPlayerUseDefaultColor",

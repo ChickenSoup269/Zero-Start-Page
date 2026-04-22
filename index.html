@@ -20,8 +20,9 @@
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/components.css">
-    <link rel="stylesheet" href="styles/widgets.css">
-    <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/widgets.css" />
+    <link rel="stylesheet" href="styles/quotes.css" />
+    <link rel="stylesheet" href="styles/settings.css" />
     <link rel="stylesheet" href="styles/music-player.css">
     <link rel="stylesheet" href="styles/dialog.css">
 
@@ -320,6 +321,8 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
                 title="Toggle Music"><i class="fa-solid fa-music"></i></button>
+            <button class="quick-btn" data-toggle="quotes" data-i18n-title="quick_access_quotes"
+                title="Toggle Quotes"><i class="fa-solid fa-quote-left"></i></button>
             <button class="quick-btn" data-toggle="clock" data-i18n-title="quick_access_clock" title="Toggle Clock"><i
                     class="fa-solid fa-clock"></i></button>
             <button class="quick-btn" data-toggle="gregorian" data-i18n-title="quick_access_gregorian"
@@ -375,6 +378,14 @@
                 <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
                 <label class="lcp-switch" for="lcp-lunar-calendar">
                     <input type="checkbox" id="lcp-lunar-calendar">
+                    <span class="lcp-slider"></span>
+                </label>
+            </div>
+            <div class="lcp-row">
+                <i class="fa-solid fa-quote-left lcp-icon"></i>
+                <span class="lcp-label" data-i18n="settings_show_quotes">Daily Quotes</span>
+                <label class="lcp-switch" for="lcp-quotes">
+                    <input type="checkbox" id="lcp-quotes">
                     <span class="lcp-slider"></span>
                 </label>
             </div>
@@ -3120,6 +3131,10 @@
                             <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
                                 Calendar</label>
                             <input type="checkbox" id="show-gregorian-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-quotes-checkbox" data-i18n="settings_show_quotes">Show Daily Quotes</label>
+                            <input type="checkbox" id="show-quotes-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
                             <label for="show-full-calendar-checkbox" data-i18n="settings_show_full_calendar">Show Full

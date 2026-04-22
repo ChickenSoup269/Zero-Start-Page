@@ -1,0 +1,76 @@
+/* Daily Quotes Component */
+.quotes-container {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    max-width: 450px;
+    min-width: 250px;
+    cursor: grab;
+    transition: background 0.3s, border 0.3s;
+    user-select: none;
+}
+
+.quotes-container:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quotes-container.locked {
+    cursor: default;
+    border: 1px solid transparent;
+}
+
+.quote-text {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.quote-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-color, #4caf50);
+    opacity: 0.8;
+}
+
+.quote-controls {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.quotes-container:hover .quote-controls {
+    opacity: 1;
+}
+
+.quote-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: color 0.2s;
+}
+
+.quote-btn:hover {
+    color: white;
+}
+
+.quote-btn.active {
+    color: var(--accent-color, #4caf50);
+}

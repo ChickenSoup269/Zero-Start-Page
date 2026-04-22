@@ -896,6 +896,7 @@ export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )
+export const showQuotesCheckbox = document.getElementById("show-quotes-checkbox")
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",
@@ -965,6 +966,7 @@ export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpContextMenuBg = document.getElementById("lcp-context-menu-bg")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
+export const lcpQuotes = document.getElementById("lcp-quotes")
 export const lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export const lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
