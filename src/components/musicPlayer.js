@@ -341,18 +341,22 @@ export class MusicPlayer {
       this.disc.classList.add("playing")
       if (wrapper) wrapper.classList.add("playing")
       this.visualizer.start()
-      // Chỉ gửi yêu cầu sync nếu trước đó chưa phát (tránh spam)
+      // Audio sync is currently disabled to prevent performance issues on media sites
+      /*
       if (!wasPlaying) {
         chrome.runtime.sendMessage({ action: "startAudioSync" })
       }
+      */
     } else {
       this.disc.classList.remove("playing")
       if (wrapper) wrapper.classList.remove("playing")
       this.visualizer.stop()
-      // Chỉ gửi yêu cầu stop nếu trước đó đang phát
+      // Audio sync is currently disabled
+      /*
       if (wasPlaying) {
         chrome.runtime.sendMessage({ action: "stopAudioSync" })
       }
+      */
     }
 
     // Update thumbnail
