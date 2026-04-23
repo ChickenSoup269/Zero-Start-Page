@@ -1,5 +1,5 @@
 /**
- * Northern Lights (Aurora Borealis) Effect - Hỗ trợ đa chế độ (Classic & HD)
+ * Northern Lights (Aurora Borealis) Effect - Hỗ trợ đa chế độ (Classic Enhanced & HD)
  */
 
 export class NorthernLightsEffect {
@@ -46,50 +46,53 @@ export class NorthernLightsEffect {
     }
   }
 
-  // ================= CLASSIC MODE LOGIC (Original Source) =================
+  // ================= CLASSIC MODE LOGIC (Enhanced) =================
   _initClassic() {
     this.planes = [
-      { speed: 0.32, amp: 0.28, alpha: 0.42, hueOff: 0, phase: Math.random() * Math.PI * 2 },
-      { speed: 0.55, amp: 0.22, alpha: 0.32, hueOff: 22, phase: Math.random() * Math.PI * 2 },
-      { speed: 0.78, amp: 0.16, alpha: 0.24, hueOff: 48, phase: Math.random() * Math.PI * 2 },
-      { speed: 1.05, amp: 0.11, alpha: 0.18, hueOff: 72, phase: Math.random() * Math.PI * 2 }
+      { speed: 0.25, amp: 0.32, alpha: 0.35, hueOff: -15, phase: Math.random() * Math.PI * 2 },
+      { speed: 0.45, amp: 0.25, alpha: 0.45, hueOff: 0, phase: Math.random() * Math.PI * 2 },
+      { speed: 0.65, amp: 0.18, alpha: 0.35, hueOff: 25, phase: Math.random() * Math.PI * 2 },
+      { speed: 0.90, amp: 0.12, alpha: 0.20, hueOff: 50, phase: Math.random() * Math.PI * 2 }
     ]
     const W = this.canvas.width
     const H = this.canvas.height
-    this.rays = Array.from({ length: 5 }, (_, i) => ({
-      x: (i / 4) * W * 1.15 - W * 0.08,
-      yStart: H * 0.15,
-      yEnd: H * 0.8,
+    this.rays = Array.from({ length: 6 }, (_, i) => ({
+      x: (i / 5) * W * 1.1 - W * 0.05,
+      yStart: H * 0.1,
+      yEnd: H * 0.85,
       phase: Math.random() * Math.PI * 2,
-      speed: Math.random() * 0.005 + 0.0025,
-      width: Math.random() * 16 + 4,
-      alpha: Math.random() * 0.055 + 0.015,
+      speed: Math.random() * 0.004 + 0.002,
+      width: Math.random() * 20 + 5,
+      alpha: Math.random() * 0.06 + 0.02,
     }))
-    this.particles = Array.from({ length: 45 }, () => this._newParticleClassic(true))
+    this.particles = Array.from({ length: 50 }, () => this._newParticleClassic(true))
   }
 
   _newParticleClassic(randomY = false) {
     const H = this.canvas.height
     return {
       x: Math.random() * this.canvas.width,
-      y: randomY ? Math.random() * H : H * 0.5 + (Math.random() - 0.5) * H * 0.5,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: -(Math.random() * 0.4 + 0.1),
+      y: randomY ? Math.random() * H : H * 0.5 + (Math.random() - 0.5) * H * 0.6,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: -(Math.random() * 0.5 + 0.1),
       life: randomY ? Math.random() * 0.9 + 0.1 : 1.0,
-      size: Math.random() * 1.8 + 0.5,
-      hueOff: (Math.random() - 0.5) * 60,
+      size: Math.random() * 2.2 + 0.4,
+      hueOff: (Math.random() - 0.5) * 50,
     }
   }
 
   _buildWavePtsClassic(W, H, baseY, phase, ampFrac) {
     const pts = []
-    const step = W / 14
-    for (let i = 0; i <= 14; i++) {
+    const segments = 16 // Tăng segments cho mượt hơn
+    const step = W / segments
+    for (let i = 0; i <= segments; i++) {
       const x = i * step
+      // Công thức sóng phức hợp hơn (4 tầng Sin)
       const y = baseY +
-        Math.sin(x * 0.0038 + phase) * H * ampFrac * 0.48 +
-        Math.sin(x * 0.0075 + phase * 1.35) * H * ampFrac * 0.26 +
-        Math.sin(x * 0.0016 + this.time * 0.65) * H * ampFrac * 0.14
+        Math.sin(x * 0.0035 + phase) * H * ampFrac * 0.45 +
+        Math.sin(x * 0.0070 + phase * 1.4) * H * ampFrac * 0.25 +
+        Math.sin(x * 0.0015 + this.time * 0.5) * H * ampFrac * 0.15 +
+        Math.cos(x * 0.0050 + phase * 0.8) * H * ampFrac * 0.10
       pts.push({ x, y })
     }
     return pts
@@ -110,7 +113,6 @@ export class NorthernLightsEffect {
         phase: Math.random() * Math.PI * 2
       })
     }
-    // HD Particles
     this.particles = Array.from({ length: 50 }, () => ({
         x: Math.random() * this.canvas.width,
         y: Math.random() * this.canvas.height,
@@ -165,7 +167,8 @@ export class NorthernLightsEffect {
       this._renderHD(ctx, W, H)
     } else {
       ctx.globalCompositeOperation = "source-over"
-      ctx.fillStyle = "rgba(1, 2, 12, 0.35)"
+      // Nền tối huyền ảo
+      ctx.fillStyle = "rgba(1, 4, 18, 0.3)"
       ctx.fillRect(0, 0, W, H)
       this._renderClassic(ctx, W, H)
     }
@@ -177,7 +180,6 @@ export class NorthernLightsEffect {
     ctx.fillRect(0, 0, W, H)
     ctx.globalCompositeOperation = "screen"
 
-    // Stars/Static particles
     ctx.fillStyle = "rgba(255, 255, 255, 0.15)"
     for (let i = 0; i < 40; i++) {
         const x = (Math.sin(i * 123) * 0.5 + 0.5) * W
@@ -185,7 +187,6 @@ export class NorthernLightsEffect {
         ctx.fillRect(x, y, 1.2, 1.2)
     }
 
-    // Floating Twinkle Particles
     this.particles.forEach(p => {
         p.twinklePhase += p.twinkleSpeed
         p.x += p.vx; p.y += p.vy
@@ -221,46 +222,54 @@ export class NorthernLightsEffect {
     
     ctx.globalCompositeOperation = "lighter"
 
+    // Rays (Pulsing Rays)
     for (const ray of this.rays) {
-      ray.phase += ray.speed * 0.45
-      const xShift = Math.sin(ray.phase) * 25
-      const hue = baseH + Math.sin(ray.phase * 0.55) * 20
-      const a = ray.alpha * (0.4 + 0.6 * Math.sin(ray.phase * 1.1)) * this.brightness
+      ray.phase += ray.speed * 0.5
+      const xShift = Math.sin(ray.phase) * 30
+      const pulse = Math.sin(ray.phase * 1.2) * 0.5 + 0.5
+      const hue = baseH + Math.sin(ray.phase * 0.5) * 25
+      const a = ray.alpha * (0.3 + 0.7 * pulse) * this.brightness
+      const rW = ray.width * (0.8 + 0.4 * pulse)
+
       const rg = ctx.createLinearGradient(ray.x + xShift, ray.yStart, ray.x + xShift, ray.yEnd)
-      rg.addColorStop(0, `hsla(${hue},${ss}%,${ll + 5}%,0)`)
-      rg.addColorStop(0.1, `hsla(${hue},${ss}%,${ll + 8}%,${a * 0.75})`)
-      rg.addColorStop(0.7, `hsla(${hue},${ss - 12}%,${ll - 15}%,${a * 0.25})`)
-      rg.addColorStop(1, `hsla(${hue},${ss - 25}%,${ll - 30}%,0)`)
+      rg.addColorStop(0, `hsla(${hue},${ss}%,${ll + 10}%,0)`)
+      rg.addColorStop(0.2, `hsla(${hue},${ss}%,${ll + 15}%,${a})`)
+      rg.addColorStop(0.8, `hsla(${hue},${ss - 10}%,${ll - 10}%,${a * 0.4})`)
+      rg.addColorStop(1, `hsla(${hue},${ss - 20}%,${ll - 25}%,0)`)
       ctx.fillStyle = rg
-      ctx.fillRect(ray.x + xShift - ray.width * 0.5, ray.yStart, ray.width, ray.yEnd - ray.yStart)
+      ctx.fillRect(ray.x + xShift - rW * 0.5, ray.yStart, rW, ray.yEnd - ray.yStart)
     }
 
+    // Aurora Planes (Enhanced Ribbons)
     this.planes.forEach((pl, pi) => {
-      pl.phase += pl.speed * 0.018
+      pl.phase += pl.speed * 0.015
       const bandY = H * 0.25 + (pi / (this.planes.length - 1)) * H * 0.45
       const pts = this._buildWavePtsClassic(W, H, bandY, pl.phase, pl.amp)
-      const hue = baseH + pl.hueOff + Math.sin(pl.phase * 0.3) * 18
-      const hue2 = hue + 35
+      const hue = baseH + pl.hueOff + Math.sin(pl.phase * 0.2) * 20
+      const hue2 = (hue + 40) % 360
       const alp = pl.alpha * this.brightness
 
+      // Lớp phát sáng rộng (Wide Glow)
       ctx.beginPath()
-      ctx.moveTo(0, bandY - H * 0.2); ctx.lineTo(W, bandY - H * 0.2)
+      ctx.moveTo(0, bandY - H * 0.25); ctx.lineTo(W, bandY - H * 0.25)
       ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
       for (let i = pts.length - 2; i >= 0; i--) ctx.lineTo(pts[i].x, pts[i].y)
       ctx.closePath()
-      const topGrad = ctx.createLinearGradient(0, bandY - H * 0.2, 0, bandY + H * pl.amp * 0.35)
-      topGrad.addColorStop(0, `hsla(${hue},${ss}%,${ll - 8}%,0)`)
-      topGrad.addColorStop(0.6, `hsla(${hue},${ss + 4}%,${ll + 3}%,${alp * 0.12})`)
-      topGrad.addColorStop(1, `hsla(${hue2},${ss + 6}%,${ll + 8}%,0)`)
+      const topGrad = ctx.createLinearGradient(0, bandY - H * 0.25, 0, bandY + H * pl.amp * 0.4)
+      topGrad.addColorStop(0, `hsla(${hue},${ss}%,${ll - 10}%,0)`)
+      topGrad.addColorStop(0.6, `hsla(${hue},${ss + 5}%,${ll + 5}%,${alp * 0.15})`)
+      topGrad.addColorStop(1, `hsla(${hue2},${ss + 10}%,${ll + 10}%,0)`)
       ctx.fillStyle = topGrad; ctx.fill()
 
-      const thickness = H * pl.amp * 0.28
-      const rg = ctx.createLinearGradient(0, bandY - thickness * 0.8, 0, bandY + thickness * 1.1)
+      // Dải lụa chính với Lõi Sáng (Main Ribbon with Core)
+      const thickness = H * pl.amp * 0.32
+      const rg = ctx.createLinearGradient(0, bandY - thickness * 0.8, 0, bandY + thickness * 1.2)
       rg.addColorStop(0, `hsla(${hue},${ss}%,${ll + 15}%,0)`)
-      rg.addColorStop(0.3, `hsla(${hue},${ss + 8}%,${ll + 22}%,${alp * 0.55})`)
-      rg.addColorStop(0.55, `hsla(${hue2},100%,${ll + 26}%,${alp * 0.85})`)
-      rg.addColorStop(0.8, `hsla(${hue},${ss + 5}%,${ll + 12}%,${alp * 0.4})`)
-      rg.addColorStop(1, `hsla(${hue},${ss - 10}%,${ll - 5}%,0)`)
+      rg.addColorStop(0.25, `hsla(${hue},${ss + 10}%,${ll + 25}%,${alp * 0.6})`)
+      rg.addColorStop(0.5, `hsla(${hue2},100%,${ll + 35}%,${alp})`) // Core sáng nhất
+      rg.addColorStop(0.75, `hsla(${hue},${ss + 5}%,${ll + 15}%,${alp * 0.5})`)
+      rg.addColorStop(1, `hsla(${hue},${ss - 15}%,${ll - 10}%,0)`)
+
       ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y)
       for (let i = 1; i < pts.length - 1; i++) {
         const mx = (pts[i].x + pts[i + 1].x) / 2
@@ -271,14 +280,20 @@ export class NorthernLightsEffect {
       ctx.strokeStyle = rg; ctx.lineWidth = thickness; ctx.stroke()
     })
 
+    // Cinematic Particles
     this.particles.forEach((p, i) => {
-      p.x += p.vx + Math.sin(this.time * 20 + p.x * 0.008) * 0.2
-      p.y += p.vy; p.life -= 0.0028
+      p.x += p.vx + Math.sin(this.time * 15 + p.x * 0.01) * 0.3
+      p.y += p.vy; p.life -= 0.0025
       if (p.life <= 0 || p.y < -20) this.particles[i] = this._newParticleClassic(false)
-      const opacity = p.life * 0.48 * this.brightness
+      const opacity = p.life * 0.6 * this.brightness
       if (opacity > 0.02) {
-          ctx.fillStyle = `hsla(${baseH + p.hueOff},${ss}%,${ll + 12}%,${opacity})`
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill()
+          const hue = baseH + p.hueOff
+          const pSize = p.size * (0.8 + 0.4 * Math.sin(this.time * 5 + i))
+          ctx.fillStyle = `hsla(${hue},${ss}%,${ll + 20}%,${opacity})`
+          ctx.beginPath(); ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2); ctx.fill()
+          // Thêm halo nhẹ cho hạt sáng
+          ctx.fillStyle = `hsla(${hue},${ss}%,${ll + 10}%,${opacity * 0.3})`
+          ctx.beginPath(); ctx.arc(p.x, p.y, pSize * 2.5, 0, Math.PI * 2); ctx.fill()
       }
     })
   }
@@ -301,7 +316,7 @@ export class NorthernLightsEffect {
   setOptions(opts = {}) {
     if (opts.color !== undefined) {
         this.color = opts.color
-        if (this.style === "hd") this._initHD() // Re-init HD to apply color immediately
+        if (this.style === "hd") this._initHD()
     }
     if (opts.style !== undefined && opts.style !== this.style) {
         this.style = opts.style
