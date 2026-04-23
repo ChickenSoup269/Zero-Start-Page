@@ -75,6 +75,7 @@ import { AuroraWaveEffect } from "../animations/auroraWave.js"
 import { NorthernLightsEffect } from "../animations/northernLights.js"
 import { BubblesEffect } from "../animations/bubbles.js"
 import { CursorTrailEffect } from "../animations/cursorTrail.js"
+import { FlashlightEffect } from "../animations/flashlight.js"
 import { GridScanEffect } from "../animations/gridScan.js"
 import { RainHDEffect } from "../animations/rainHD.js"
 import { StormRainEffect } from "../animations/stormRain.js"
@@ -176,6 +177,11 @@ export function initSettings() {
       settings.cursorTrailRandomColor === true,
       settings.cursorTrailStyle || "classic",
     ),
+    flashlightEffect: new FlashlightEffect("effect-canvas", {
+      color: settings.flashlightColor || "#000000",
+      size: settings.flashlightSize || 150,
+      opacity: settings.flashlightOpacity ?? 0.9,
+    }),
 
     gridScanEffect: new GridScanEffect(
       "effect-canvas",

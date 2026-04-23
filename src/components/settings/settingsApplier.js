@@ -70,6 +70,7 @@ const EFFECT_KEY_MAP = {
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
   cursorTrail: "cursorTrailEffect",
+  flashlight: "flashlightEffect",
   gridScan: "gridScanEffect",
   plantGrowth: "plantGrowthEffect",
   oceanFish: "oceanFishEffect",
@@ -766,6 +767,18 @@ function createApplySettings(effectInstances) {
         enableRipples: settings.pixelBlastRipples !== false,
       })
     }
+    if (
+      effectToStart === "flashlight" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        color: settings.flashlightColor || "#000000",
+        size: settings.flashlightSize || 150,
+        opacity: settings.flashlightOpacity ?? 0.9,
+      })
+    }
+
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
@@ -1283,6 +1296,21 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bubblesColorPicker.value = settings.bubbleColor || "#60c8ff"
     DOM.gridScanColorPicker.value = settings.gridScanColor || "#00ffcc"
     DOM.cursorTrailColorPicker.value = settings.cursorTrailColor || "#60c8ff"
+    if (DOM.flashlightColorPicker) {
+      DOM.flashlightColorPicker.value = settings.flashlightColor || "#000000"
+    }
+    if (DOM.flashlightSizeSlider) {
+      DOM.flashlightSizeSlider.value = settings.flashlightSize || 150
+      if (DOM.flashlightSizeVal) {
+        DOM.flashlightSizeVal.textContent = settings.flashlightSize || 150
+      }
+    }
+    if (DOM.flashlightOpacitySlider) {
+      DOM.flashlightOpacitySlider.value = settings.flashlightOpacity ?? 0.9
+      if (DOM.flashlightOpacityVal) {
+        DOM.flashlightOpacityVal.textContent = (settings.flashlightOpacity ?? 0.9).toFixed(2)
+      }
+    }
     DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
     DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
     DOM.floatingLinesColorPicker.value = settings.floatingLinesColor || "#ffffff"
@@ -1564,6 +1592,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.cursorTrailRandomSetting)
       DOM.cursorTrailRandomSetting.style.display =
         settings.effect === "cursorTrail" ? "flex" : "none"
+    if (DOM.flashlightColorSetting)
+      DOM.flashlightColorSetting.style.display =
+        settings.effect === "flashlight" ? "block" : "none"
+    if (DOM.flashlightSizeSetting)
+      DOM.flashlightSizeSetting.style.display =
+        settings.effect === "flashlight" ? "block" : "none"
+    if (DOM.flashlightOpacitySetting)
+      DOM.flashlightOpacitySetting.style.display =
+        settings.effect === "flashlight" ? "block" : "none"
     if (DOM.plantGrowthColorSetting)
       DOM.plantGrowthColorSetting.style.display =
         settings.effect === "plantGrowth" ? "block" : "none"
@@ -1639,6 +1676,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "snowfall",
         "fallingLeavesSettled",
         "bubbles",
+        "flashlight",
         "gridScan",
         "cursorTrail",
         "plantGrowth",

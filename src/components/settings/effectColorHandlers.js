@@ -241,6 +241,38 @@ function setupEffectColorHandlers(DOM, effectInstances) {
         DOM.cursorTrailRandomCheckbox.checked
   })
 
+  // Flashlight
+  DOM.flashlightColorPicker?.addEventListener("input", () => {
+    updateSetting("flashlightColor", DOM.flashlightColorPicker.value)
+    saveSettings()
+    if (effectInstances.flashlightEffect) {
+      effectInstances.flashlightEffect.setOptions({
+        color: DOM.flashlightColorPicker.value,
+      })
+    }
+  })
+
+  DOM.flashlightSizeSlider?.addEventListener("input", () => {
+    const val = parseInt(DOM.flashlightSizeSlider.value)
+    if (DOM.flashlightSizeVal) DOM.flashlightSizeVal.textContent = val
+    updateSetting("flashlightSize", val)
+    if (effectInstances.flashlightEffect) {
+      effectInstances.flashlightEffect.setOptions({ size: val })
+    }
+  })
+  DOM.flashlightSizeSlider?.addEventListener("change", () => saveSettings())
+
+  DOM.flashlightOpacitySlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.flashlightOpacitySlider.value)
+    if (DOM.flashlightOpacityVal)
+      DOM.flashlightOpacityVal.textContent = val.toFixed(2)
+    updateSetting("flashlightOpacity", val)
+    if (effectInstances.flashlightEffect) {
+      effectInstances.flashlightEffect.setOptions({ opacity: val })
+    }
+  })
+  DOM.flashlightOpacitySlider?.addEventListener("change", () => saveSettings())
+
   DOM.plantGrowthColorPicker.addEventListener("input", () => {
     updateSetting("plantGrowthColor", DOM.plantGrowthColorPicker.value)
     saveSettings()

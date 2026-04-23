@@ -159,6 +159,9 @@ const defaultSettings = {
   cursorTrailStyle: "classic",
   cursorTrailClickExplosion: true,
   cursorTrailRandomColor: false,
+  flashlightColor: "#000000",
+  flashlightSize: 150,
+  flashlightOpacity: 0.9,
   gridScanColor: "#00ffcc",
   plantGrowthColor: "#4caf50",
   oceanFishColor: "#ff7f50",
@@ -398,7 +401,7 @@ export const resetComponentPositions = (options = {}) => {
         "rainHDColor", "stormRainColor", "wavyLinesColor", "oceanWaveColor", "cloudDriftColor",
         "shinyColor", "lineShinyColor", "nintendoPixelColor", "crtScanColor", "crtBackgroundColor",
         "retroGameColor", "wavyPatternColor1", "wavyPatternColor2", "angledPatternColor1",
-        "angledPatternColor2", "cursorTrailColor", "gridScanColor", "plantGrowthColor",
+        "angledPatternColor2", "cursorTrailColor", "flashlightColor", "gridScanColor", "plantGrowthColor",
         "oceanFishColor", "floatingLinesColor", "auroraWaveColor"
       ]
       effectColorKeys.forEach(key => {

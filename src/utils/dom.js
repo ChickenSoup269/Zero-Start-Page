@@ -469,6 +469,29 @@ export const cursorTrailRandomSetting = document.getElementById(
   "cursor-trail-random-setting",
 )
 
+export const flashlightColorSetting = document.getElementById(
+  "flashlight-color-setting",
+)
+export const flashlightColorPicker = document.getElementById(
+  "flashlight-color-picker",
+)
+export const flashlightSizeSetting = document.getElementById(
+  "flashlight-size-setting",
+)
+export const flashlightSizeSlider = document.getElementById(
+  "flashlight-size-slider",
+)
+export const flashlightSizeVal = document.getElementById("flashlight-size-val")
+export const flashlightOpacitySetting = document.getElementById(
+  "flashlight-opacity-setting",
+)
+export const flashlightOpacitySlider = document.getElementById(
+  "flashlight-opacity-slider",
+)
+export const flashlightOpacityVal = document.getElementById(
+  "flashlight-opacity-val",
+)
+
 export const plantGrowthColorPicker = document.getElementById(
   "plant-growth-color-picker",
 )
