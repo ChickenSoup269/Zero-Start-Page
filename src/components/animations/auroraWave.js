@@ -1,3 +1,7 @@
+/**
+ * Aurora Wave Effect - Cinematic Fluid Version
+ */
+
 export class AuroraWaveEffect {
   constructor(canvasId, color = "#00bcd4") {
     this.canvas = document.getElementById(canvasId)
@@ -9,79 +13,24 @@ export class AuroraWaveEffect {
     this.lastDrawTime = 0
 
     // ================== CONFIGURATION ==================
-    this.waveCount = 6
-    this.wavePoints = 40
-    this.waveAmplitude = 70
-    this.waveFrequency = 0.005
-    this.brightness = 0.65
+    this.waveCount = 5
+    this.wavePoints = 50 // Tăng độ phân giải cho sóng mượt hơn
+    this.waveAmplitude = 80
+    this.waveFrequency = 0.004
+    this.brightness = 0.8
     this.speed = 1.0
     this.transparent = true
-    this.backgroundColor = "#000000"
-    this.bgOpacity = 0.15
+    this.backgroundColor = "#02040f"
+    this.bgOpacity = 0.2
 
-    // Cache
+    // State
     this._gradients = []
     this._waveConfigs = []
     this._particles = []
-    this._rgb = { r: 0, g: 188, b: 212 }
-
+    
     this._resizeHandler = () => this._onResize()
     window.addEventListener("resize", this._resizeHandler)
     this._onResize()
-  }
-
-  _buildCache() {
-    const W = this.canvas.width
-    const H = this.canvas.height
-    this._rgb = this._hexToRgb(this.color)
-    const { r, g, b } = this._rgb
-    const centerY = H * 0.45
-    const depth = H * 0.55
-
-    this._gradients = []
-    this._waveConfigs = []
-
-    for (let w = 0; w < this.waveCount; w++) {
-      const waveOffset = (w / this.waveCount) * Math.PI * 2.0
-      const hueShift = (w - this.waveCount / 2) * 15
-
-      const rr = Math.max(0, Math.min(255, r + hueShift * 0.5))
-      const gg = Math.max(0, Math.min(255, g + hueShift * 1.2))
-      const bb = Math.max(0, Math.min(255, b + hueShift * 0.4))
-
-      const grad = this.ctx.createLinearGradient(
-        0,
-        centerY - depth * 0.6,
-        0,
-        centerY + depth * 0.9,
-      )
-
-      const alphaMult = this.brightness * (1.0 - w * 0.1)
-      
-      grad.addColorStop(0.0, `rgba(${rr},${gg},${bb},0)`)
-      grad.addColorStop(0.25, `rgba(${rr + 20},${gg + 30},${bb + 10},${0.2 * alphaMult})`)
-      grad.addColorStop(0.5, `rgba(${rr},${gg},${bb},${0.4 * alphaMult})`)
-      grad.addColorStop(0.75, `rgba(${rr * 0.6},${gg * 0.6},${bb * 0.6},${0.15 * alphaMult})`)
-      grad.addColorStop(1.0, `rgba(0,0,0,0)`)
-
-      this._gradients.push(grad)
-
-      this._waveConfigs.push({
-        waveOffset,
-        speedMultiplier: 0.7 + w * 0.15,
-        ampMultiplier: 0.9 + w * 0.08,
-        yOffset: (w - this.waveCount / 2) * 20,
-        alpha: 1.0, // Now handled in gradient
-      })
-    }
-
-    this._particles = Array.from({ length: 45 }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H * 0.7,
-      size: Math.random() * 1.8 + 0.4,
-      phase: Math.random() * Math.PI * 2,
-      speed: Math.random() * 0.015 + 0.005,
-    }))
   }
 
   _onResize() {
@@ -90,15 +39,77 @@ export class AuroraWaveEffect {
     this._buildCache()
   }
 
-  _waveY(x, t, waveOffset, ampMult, speedMult) {
-    const f = this.waveFrequency
-    const a = this.waveAmplitude * ampMult
-    const time = t * speedMult
-
-    let y = Math.sin(x * f + time + waveOffset) * a
-    y += Math.sin(x * f * 1.5 - time * 0.7 + waveOffset * 2) * (a * 0.4)
-    y += Math.cos(x * f * 0.6 + time * 1.1 + waveOffset) * (a * 0.5)
+  _buildCache() {
+    const W = this.canvas.width
+    const H = this.canvas.height
+    const baseHsl = this._hexToHsl(this.color)
     
+    this._gradients = []
+    this._waveConfigs = []
+
+    for (let w = 0; w < this.waveCount; w++) {
+      const hue = (baseHsl.h + (w - this.waveCount / 2) * 20 + 360) % 360
+      const opacity = this.brightness * (0.4 - w * 0.05)
+      
+      // Tạo dải màu có chiều sâu
+      const grad = this.ctx.createLinearGradient(0, 0, 0, H * 0.8)
+      grad.addColorStop(0.0, `hsla(${hue}, 80%, 40%, 0)`)
+      grad.addColorStop(0.3, `hsla(${hue}, 90%, 60%, ${opacity * 0.5})`)
+      grad.addColorStop(0.5, `hsla(${(hue + 30) % 360}, 100%, 75%, ${opacity})`) // Lõi sáng
+      grad.addColorStop(0.7, `hsla(${hue}, 90%, 50%, ${opacity * 0.3})`)
+      grad.addColorStop(1.0, `hsla(${hue}, 80%, 30%, 0)`)
+
+      this._gradients.push(grad)
+
+      this._waveConfigs.push({
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.005 + w * 0.002,
+        amplitude: 0.8 + w * 0.15,
+        yOffset: (w - this.waveCount / 2) * (H * 0.08)
+      })
+    }
+
+    // Nâng cấp hệ thống hạt sáng
+    this._particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      size: Math.random() * 2.5 + 0.5,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.02 + 0.005,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.2
+    }))
+  }
+
+  _hexToHsl(hex) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255
+    const g = parseInt(hex.slice(3, 5), 16) / 255
+    const b = parseInt(hex.slice(5, 7), 16) / 255
+    const max = Math.max(r, g, b), min = Math.min(r, g, b)
+    let h, s, l = (max + min) / 2
+    if (max === min) h = s = 0
+    else {
+      const d = max - min
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break
+        case g: h = (b - r) / d + 2; break
+        case b: h = (r - g) / d + 4; break
+      }
+      h /= 6
+    }
+    return { h: h * 360, s: s * 100, l: l * 100 }
+  }
+
+  _getWaveY(x, t, cfg) {
+    const { phase, speed, amplitude } = cfg
+    const time = t * speed * this.speed
+    const f = this.waveFrequency
+    const a = this.waveAmplitude * amplitude
+
+    let y = Math.sin(x * f + time + phase) * a
+    y += Math.sin(x * f * 2.1 + time * 1.5 + phase) * (a * 0.3)
+    y += Math.cos(x * f * 0.8 - time * 0.7 + phase * 0.5) * (a * 0.4)
     return y
   }
 
@@ -111,8 +122,8 @@ export class AuroraWaveEffect {
   }
 
   stop() {
-    if (this._animId) cancelAnimationFrame(this._animId)
     this.active = false
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
@@ -122,87 +133,76 @@ export class AuroraWaveEffect {
     this._animId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
-    const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
+    if (elapsed < 16) return // Giới hạn ~60fps
     this.lastDrawTime = currentTime
+    this.time += 0.01
 
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const centerY = H * 0.45
+    const centerY = H * 0.5
 
-    // Reset trạng thái hòa trộn về mặc định
     ctx.globalCompositeOperation = "source-over"
-
     if (this.transparent) {
       ctx.clearRect(0, 0, W, H)
-      // Lớp phủ tối nhẹ để tăng tương phản, sử dụng bgOpacity từ cài đặt
-      ctx.fillStyle = `rgba(0, 0, 0, ${this.bgOpacity})`
+      ctx.fillStyle = `rgba(1, 2, 10, ${this.bgOpacity})`
       ctx.fillRect(0, 0, W, H)
     } else {
       ctx.fillStyle = this.backgroundColor
       ctx.fillRect(0, 0, W, H)
     }
 
-    // Update time with delta
-    this.time += 0.008 * deltaTime * this.speed
-
-    // Particles - Dùng screen để lung linh hơn
+    // Vẽ hạt sáng Cinematic
     ctx.globalCompositeOperation = "screen"
-    for (let p of this._particles) {
-      p.phase += p.speed * deltaTime
-      const alpha = (Math.sin(p.phase) * 0.4 + 0.6) * 0.5
-      ctx.fillStyle = `rgba(230, 245, 255, ${alpha.toFixed(3)})`
-      ctx.beginPath()
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-      ctx.fill()
-    }
+    this._particles.forEach((p, i) => {
+      p.phase += p.speed
+      p.x += p.vx * this.speed
+      p.y += p.vy * this.speed
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0
 
-    const t = this.time
-    const pts = this.wavePoints
-    const xStep = W / pts
+      const opacity = (Math.sin(p.phase) * 0.5 + 0.5) * 0.6 * this.brightness
+      const pSize = p.size * (0.8 + 0.4 * Math.sin(p.phase * 0.7))
+      
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
+      ctx.beginPath(); ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2); ctx.fill()
+      
+      // Quầng sáng mờ cho hạt
+      ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.2})`
+      ctx.beginPath(); ctx.arc(p.x, p.y, pSize * 3, 0, Math.PI * 2); ctx.fill()
+    })
 
-    // Chế độ hòa trộn thông minh: 
-    // Nếu có nền đặc (không trong suốt), dùng 'lighter' để rực rỡ nhất.
-    // Nếu trong suốt, dùng 'source-over' để giữ màu sắc không bị cháy sáng trên hình nền trắng.
-    ctx.globalCompositeOperation = this.transparent ? "source-over" : "lighter"
-    
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
+    // Vẽ các dải sóng Aurora
+    ctx.globalCompositeOperation = "lighter"
+    const step = W / this.wavePoints
 
     for (let w = 0; w < this.waveCount; w++) {
       const cfg = this._waveConfigs[w]
-      const { waveOffset, speedMultiplier, ampMultiplier, yOffset } = cfg
-      const baseY = centerY + yOffset
+      const baseY = centerY + cfg.yOffset
+      const thickness = 120 + Math.sin(this.time * 0.5 + w) * 40
 
-      const ribbonThickness = 85 + Math.sin(t * 1.8 + waveOffset) * 25
-
-      ctx.globalCompositeOperation = "lighter"
-      
-      const path = new Path2D()
-      let px = 0
-      let py = baseY + this._waveY(0, t, waveOffset, ampMultiplier, speedMultiplier)
-      path.moveTo(px, py)
-
-      for (let i = 1; i <= pts; i++) {
-        const x = i * xStep
-        const y = baseY + this._waveY(x, t, waveOffset, ampMultiplier, speedMultiplier)
-        const cx = (px + x) * 0.5
-        const cy = (py + y) * 0.5
-        path.quadraticCurveTo(px, py, cx, cy)
-        px = x
-        py = y
-      }
-
-      // Draw bottom line back
-      for (let i = pts; i >= 0; i--) {
-        const x = i * xStep
-        const bottomY = baseY + this._waveY(x, t, waveOffset + 0.2, ampMultiplier * 0.95, speedMultiplier) + ribbonThickness
-        path.lineTo(x, bottomY)
-      }
-
-      path.closePath()
       ctx.fillStyle = this._gradients[w]
-      ctx.fill(path)
+      
+      ctx.beginPath()
+      let firstY = baseY + this._getWaveY(0, this.time, cfg)
+      ctx.moveTo(0, firstY)
+
+      // Top curve
+      for (let i = 1; i <= this.wavePoints; i++) {
+        const x = i * step
+        const y = baseY + this._getWaveY(x, this.time, cfg)
+        ctx.lineTo(x, y)
+      }
+
+      // Bottom curve back
+      for (let i = this.wavePoints; i >= 0; i--) {
+        const x = i * step
+        const y = baseY + this._getWaveY(x, this.time, cfg) + thickness
+        ctx.lineTo(x, y)
+      }
+
+      ctx.closePath()
+      ctx.fill()
     }
   }
 
@@ -210,23 +210,10 @@ export class AuroraWaveEffect {
     if (options.color !== undefined) this.color = options.color
     if (options.brightness !== undefined) this.brightness = options.brightness
     if (options.speed !== undefined) this.speed = options.speed
-    if (options.waveAmplitude !== undefined)
-      this.waveAmplitude = options.waveAmplitude
+    if (options.waveAmplitude !== undefined) this.waveAmplitude = options.waveAmplitude
     if (options.transparent !== undefined) this.transparent = options.transparent
-    if (options.backgroundColor !== undefined)
-      this.backgroundColor = options.backgroundColor
+    if (options.backgroundColor !== undefined) this.backgroundColor = options.backgroundColor
     if (options.bgOpacity !== undefined) this.bgOpacity = options.bgOpacity
     this._buildCache()
-  }
-
-  _hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result
-      ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
-      : { r: 0, g: 188, b: 212 }
   }
 }
