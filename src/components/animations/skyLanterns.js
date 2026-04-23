@@ -1,10 +1,11 @@
 export class SkyLanternsEffect {
-  constructor(canvasId) {
+  constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.lanterns = []
     this.lanternCount = 18
+    this.type = options.type || "lantern" // 'lantern' or 'dots'
 
     this.fps = 30
     this.fpsInterval = 1000 / this.fps
@@ -25,6 +26,13 @@ export class SkyLanternsEffect {
 
     this.resize()
     window.addEventListener("resize", () => this.resize())
+  }
+
+  setOptions(options) {
+    if (options.type && options.type !== this.type) {
+      this.type = options.type
+      this.initLanterns()
+    }
   }
 
   resize() {
@@ -50,7 +58,7 @@ export class SkyLanternsEffect {
       scale,
       speedY: Math.random() * 0.55 + 0.25,
       speedX: 0,
-      swing: 0,
+      swing: Math.random() * 0.02 + 0.01,
       swingOffset: Math.random() * Math.PI * 2,
       rotation: 0,
       rotationSpeed: 0,
@@ -68,7 +76,6 @@ export class SkyLanternsEffect {
     }
   }
 
-  // Hex color → rgba string helper
   hexRgba(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16)
     const g = parseInt(hex.slice(3, 5), 16)
@@ -90,122 +97,121 @@ export class SkyLanternsEffect {
     ctx.rotate(lantern.rotation)
     ctx.globalAlpha = opacity
 
-    // ── Outer halo glow ──────────────────────────────────────────
-    const haloGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, hw * 2.2)
-    haloGrad.addColorStop(0, this.hexRgba(emitColor, 0.22 * flicker))
-    haloGrad.addColorStop(1, this.hexRgba(emitColor, 0))
-    ctx.beginPath()
-    ctx.arc(0, 0, hw * 2.2, 0, Math.PI * 2)
-    ctx.fillStyle = haloGrad
-    ctx.fill()
+    if (this.type === "dots") {
+      // ── Light Dots (Stars) ─────────────────────────────────────
+      const dotSize = hw * 1.2
+      const dotGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, dotSize)
+      dotGrad.addColorStop(0, `rgba(255, 255, 220, ${1.0 * flicker})`)
+      dotGrad.addColorStop(0.3, this.hexRgba(bodyColor, 0.8 * flicker))
+      dotGrad.addColorStop(0.6, this.hexRgba(emitColor, 0.3 * flicker))
+      dotGrad.addColorStop(1, `rgba(0, 0, 0, 0)`)
+      
+      ctx.beginPath()
+      ctx.arc(0, 0, dotSize, 0, Math.PI * 2)
+      ctx.fillStyle = dotGrad
+      ctx.fill()
+      
+      // Add a core glow
+      ctx.beginPath()
+      ctx.arc(0, 0, dotSize * 0.3, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.8 * flicker})`
+      ctx.fill()
+    } else {
+      // ── Improved Traditional Lantern ───────────────────────────
+      // 1. Outer halo glow
+      const haloGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, hw * 2.5)
+      haloGrad.addColorStop(0, this.hexRgba(emitColor, 0.3 * flicker))
+      haloGrad.addColorStop(0.5, this.hexRgba(emitColor, 0.1 * flicker))
+      haloGrad.addColorStop(1, "rgba(0, 0, 0, 0)")
+      ctx.beginPath()
+      ctx.arc(0, 0, hw * 2.5, 0, Math.PI * 2)
+      ctx.fillStyle = haloGrad
+      ctx.fill()
 
-    // ── Lantern body (barrel shape via bezier) ───────────────────
-    const topW = hw * 0.62
-    const midW = hw * 1.15
-    const botW = hw * 0.62
+      // 2. Body shape
+      const topW = hw * 0.7
+      const midW = hw * 1.2
+      const botW = hw * 0.8
 
-    ctx.beginPath()
-    ctx.moveTo(-topW, -hh)
-    ctx.bezierCurveTo(-midW, -hh * 0.3, -midW, hh * 0.3, -botW, hh)
-    ctx.lineTo(botW, hh)
-    ctx.bezierCurveTo(midW, hh * 0.3, midW, -hh * 0.3, topW, -hh)
-    ctx.closePath()
+      ctx.beginPath()
+      ctx.moveTo(-topW, -hh)
+      ctx.bezierCurveTo(-midW, -hh * 0.4, -midW, hh * 0.4, -botW, hh)
+      ctx.lineTo(botW, hh)
+      ctx.bezierCurveTo(midW, hh * 0.4, midW, -hh * 0.4, topW, -hh)
+      ctx.closePath()
 
-    // Side-lit gradient to give depth
-    const bodyGrad = ctx.createLinearGradient(-midW, 0, midW, 0)
-    bodyGrad.addColorStop(0, this.hexRgba(bodyColor, 0.45))
-    bodyGrad.addColorStop(0.3, this.hexRgba(bodyColor, 0.95))
-    bodyGrad.addColorStop(0.7, this.hexRgba(bodyColor, 0.95))
-    bodyGrad.addColorStop(1, this.hexRgba(bodyColor, 0.45))
-    ctx.fillStyle = bodyGrad
-    ctx.fill()
+      // Translucent body with depth
+      const bodyGrad = ctx.createLinearGradient(-midW, 0, midW, 0)
+      bodyGrad.addColorStop(0, this.hexRgba(bodyColor, 0.6))
+      bodyGrad.addColorStop(0.3, this.hexRgba(bodyColor, 0.9))
+      bodyGrad.addColorStop(0.7, this.hexRgba(bodyColor, 0.9))
+      bodyGrad.addColorStop(1, this.hexRgba(bodyColor, 0.6))
+      ctx.fillStyle = bodyGrad
+      ctx.fill()
 
-    // Inner candlelight glow
-    const innerGrad = ctx.createRadialGradient(0, hh * 0.25, 0, 0, 0, hw)
-    innerGrad.addColorStop(0, `rgba(255,240,160,${0.65 * flicker})`)
-    innerGrad.addColorStop(0.5, `rgba(255,160,40,${0.25 * flicker})`)
-    innerGrad.addColorStop(1, `rgba(255,80,0,0)`)
-    ctx.fillStyle = innerGrad
-    ctx.fill()
+      // 3. Inner flame and glow (Inside the body)
+      const innerGlowGrad = ctx.createRadialGradient(0, hh * 0.3, 0, 0, hh * 0.3, hw * 1.2)
+      innerGlowGrad.addColorStop(0, `rgba(255, 245, 180, ${0.8 * flicker})`)
+      innerGlowGrad.addColorStop(0.4, this.hexRgba(bodyColor, 0.5 * flicker))
+      innerGlowGrad.addColorStop(1, "rgba(0, 0, 0, 0)")
+      ctx.fillStyle = innerGlowGrad
+      ctx.fill()
 
-    // ── Top cap ──────────────────────────────────────────────────
-    const capH = 5 * scale
-    ctx.beginPath()
-    ctx.moveTo(-topW, -hh)
-    ctx.lineTo(topW, -hh)
-    ctx.lineTo(topW * 0.7, -hh - capH)
-    ctx.lineTo(-topW * 0.7, -hh - capH)
-    ctx.closePath()
-    ctx.fillStyle = this.hexRgba(bodyColor, 0.92)
-    ctx.fill()
+      // Small bright core (the actual flame inside)
+      ctx.beginPath()
+      ctx.ellipse(0, hh * 0.5, 3 * scale, 6 * scale * flicker, 0, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.9 * flicker})`
+      ctx.fill()
 
-    // Thin ring at top rim
-    ctx.beginPath()
-    ctx.moveTo(-topW, -hh)
-    ctx.lineTo(topW, -hh)
-    ctx.strokeStyle = this.hexRgba(emitColor, 0.7)
-    ctx.lineWidth = 1.2 * scale
-    ctx.stroke()
+      // 4. Caps (More structural look)
+      const capH = 4 * scale
+      ctx.fillStyle = "#331100" // Dark wood/bamboo color for caps
+      
+      // Top cap
+      ctx.beginPath()
+      ctx.roundRect(-topW - 1, -hh - capH, (topW + 1) * 2, capH, 2 * scale)
+      ctx.fill()
+      
+      // Bottom cap
+      ctx.beginPath()
+      ctx.roundRect(-botW - 1, hh, (botW + 1) * 2, capH, 2 * scale)
+      ctx.fill()
 
-    // ── Bottom cap ───────────────────────────────────────────────
-    ctx.beginPath()
-    ctx.moveTo(-botW, hh)
-    ctx.lineTo(botW, hh)
-    ctx.lineTo(botW * 0.7, hh + capH)
-    ctx.lineTo(-botW * 0.7, hh + capH)
-    ctx.closePath()
-    ctx.fillStyle = this.hexRgba(bodyColor, 0.92)
-    ctx.fill()
+      // 5. Decorative lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)"
+      ctx.lineWidth = 0.5 * scale
+      ctx.beginPath()
+      ctx.moveTo(0, -hh)
+      ctx.lineTo(0, hh)
+      ctx.stroke()
 
-    // Thin ring at bottom rim
-    ctx.beginPath()
-    ctx.moveTo(-botW, hh)
-    ctx.lineTo(botW, hh)
-    ctx.strokeStyle = this.hexRgba(emitColor, 0.7)
-    ctx.lineWidth = 1.2 * scale
-    ctx.stroke()
-
-    // ── Horizontal middle band (decorative) ──────────────────────
-    ctx.beginPath()
-    ctx.moveTo(-midW, 0)
-    ctx.lineTo(midW, 0)
-    ctx.strokeStyle = this.hexRgba(emitColor, 0.5)
-    ctx.lineWidth = 1.5 * scale
-    ctx.stroke()
-
-    // ── Hanging strings ──────────────────────────────────────────
-    const stringLen = 14 * scale
-    const stringY0 = hh + capH
-    ctx.strokeStyle = `rgba(200,150,80,${opacity * 0.65})`
-    ctx.lineWidth = 0.9
-
-    ctx.beginPath()
-    ctx.moveTo(-botW * 0.5, stringY0)
-    ctx.lineTo(0, stringY0 + stringLen)
-    ctx.stroke()
-
-    ctx.beginPath()
-    ctx.moveTo(botW * 0.5, stringY0)
-    ctx.lineTo(0, stringY0 + stringLen)
-    ctx.stroke()
-
-    // ── Candle flame dot at string tip ───────────────────────────
-    const flameY = stringY0 + stringLen
-    const flameGrad = ctx.createRadialGradient(
-      0,
-      flameY,
-      0,
-      0,
-      flameY,
-      4 * scale,
-    )
-    flameGrad.addColorStop(0, `rgba(255,255,200,${flicker})`)
-    flameGrad.addColorStop(0.5, `rgba(255,180,50,${0.7 * flicker})`)
-    flameGrad.addColorStop(1, `rgba(255,80,0,0)`)
-    ctx.beginPath()
-    ctx.arc(0, flameY, 4 * scale, 0, Math.PI * 2)
-    ctx.fillStyle = flameGrad
-    ctx.fill()
+      // 6. Hanging Tassels (Instead of simple strings)
+      const tasselLen = 15 * scale
+      ctx.strokeStyle = this.hexRgba(bodyColor, 0.8)
+      ctx.lineWidth = 1 * scale
+      
+      // Strings to tassel
+      ctx.beginPath()
+      ctx.moveTo(-botW * 0.4, hh + capH)
+      ctx.lineTo(0, hh + capH + tasselLen * 0.4)
+      ctx.moveTo(botW * 0.4, hh + capH)
+      ctx.lineTo(0, hh + capH + tasselLen * 0.4)
+      ctx.stroke()
+      
+      // Tassel head
+      ctx.beginPath()
+      ctx.arc(0, hh + capH + tasselLen * 0.4, 2 * scale, 0, Math.PI * 2)
+      ctx.fillStyle = bodyColor
+      ctx.fill()
+      
+      // Tassel hairs
+      ctx.beginPath()
+      for(let i = -2; i <= 2; i++) {
+        ctx.moveTo(i * 0.5 * scale, hh + capH + tasselLen * 0.4)
+        ctx.lineTo(i * 1.5 * scale, hh + capH + tasselLen)
+      }
+      ctx.stroke()
+    }
 
     ctx.restore()
   }
@@ -221,20 +227,20 @@ export class SkyLanternsEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this.lanterns.forEach((lantern) => {
-      // Drift upward
+      // Drift upward with wind-like swaying
       lantern.swingOffset += lantern.swing
-      lantern.x += Math.sin(lantern.swingOffset) * 0.6 + lantern.speedX
+      lantern.x += Math.sin(lantern.swingOffset) * 0.5 + Math.cos(currentTime * 0.001) * 0.2
       lantern.y -= lantern.speedY
       lantern.rotation += lantern.rotationSpeed
 
       // Gentle fade-out as lantern nears the top quarter
-      const fadeThreshold = this.canvas.height * 0.28
+      const fadeThreshold = this.canvas.height * 0.25
       if (lantern.y < fadeThreshold) {
-        lantern.opacity -= 0.004
+        lantern.opacity -= 0.005
       }
 
       // Recycle when fully faded or off-screen
-      if (lantern.opacity <= 0 || lantern.y < -lantern.h * 3) {
+      if (lantern.opacity <= 0 || lantern.y < -this.canvas.height * 0.1) {
         Object.assign(lantern, this.createLantern(true))
       }
 

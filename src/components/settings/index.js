@@ -237,7 +237,9 @@ export function initSettings() {
       settings.lineShinyColor || "#ffffff",
     ),
     tetFireworksEffect: new TetFireworksEffect("effect-canvas", {}),
-    skyLanternsEffect: new SkyLanternsEffect("effect-canvas"),
+    skyLanternsEffect: new SkyLanternsEffect("effect-canvas", {
+      type: settings.skyLanternsType || "lantern",
+    }),
     pixelRunEffect: new PixelRunEffect(
       "effect-canvas",
       settings.pixelRunColor || "#00e5ff",

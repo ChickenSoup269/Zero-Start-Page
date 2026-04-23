@@ -724,17 +724,26 @@ function createApplySettings(effectInstances) {
       }
     }
 
+    if (effectToStart === "skyLanterns" && selectedEffect) {
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          type: settings.skyLanternsType || "lantern",
+        })
+      }
+    }
+
     if (
       effectToStart === "gridScan" &&
       selectedEffect &&
       selectedEffect.setOptions
     ) {
       selectedEffect.setOptions({
-        speed: settings.pixelWeatherSpeed || 1.0, // Reusing speed slider for now or we can use generic ones
+        speed: settings.pixelWeatherSpeed || 1.0,
         spacing: settings.gridSpacing || 50,
         perspective: settings.gridPerspective !== false
       })
     }
+
     if (
       effectToStart === "auroraWave" &&
       selectedEffect &&
@@ -1370,7 +1379,14 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelWeatherStyleSection.style.display =
         settings.effect === "pixelWeather" ? "block" : "none"
     }
-    if (DOM.pixelWeatherStyleSelect) {
+    if (DOM.skyLanternsSetting) {
+      DOM.skyLanternsSetting.style.display =
+        settings.effect === "skyLanterns" ? "block" : "none"
+    }
+    if (DOM.skyLanternsTypeSelect) {
+      DOM.skyLanternsTypeSelect.value = settings.skyLanternsType || "lantern"
+    }
+    if (DOM.pixelRunColorSetting) {
       DOM.pixelWeatherStyleSelect.value = settings.pixelWeatherStyle || "snow"
     }
 

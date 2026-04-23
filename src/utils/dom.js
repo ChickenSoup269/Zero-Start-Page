@@ -595,6 +595,13 @@ export const pixelWeatherDensityVal = document.getElementById(
   "pixel-weather-density-val",
 )
 
+export const skyLanternsTypeSelect = document.getElementById(
+  "sky-lanterns-type-select",
+)
+export const skyLanternsSetting = document.getElementById(
+  "sky-lanterns-setting",
+)
+
 export const pixelRunColorPicker = document.getElementById(
   "pixel-run-color-picker",
 )

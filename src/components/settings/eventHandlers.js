@@ -1635,18 +1635,9 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  // Northern Lights
-  if (DOM.northernLightsStyleSelect) {
-    DOM.northernLightsStyleSelect.addEventListener("change", (e) => {
-      handleSettingUpdate("northernLightsStyle", e.target.value)
-    })
-  }
-  if (DOM.northernLightsBrightnessSlider) {
-    DOM.northernLightsBrightnessSlider.addEventListener("input", (e) => {
-      const val = parseFloat(e.target.value)
-      if (DOM.northernLightsBrightnessVal)
-        DOM.northernLightsBrightnessVal.textContent = val.toFixed(1)
-      handleSettingUpdate("northernLightsBrightness", val)
+  if (DOM.skyLanternsTypeSelect) {
+    DOM.skyLanternsTypeSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("skyLanternsType", e.target.value)
     })
   }
 
