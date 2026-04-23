@@ -5,12 +5,20 @@ export class PixelWeatherEffect {
     this.active = false
     this.rafId = null
 
-    this.mode = mode // 'snow', 'rain', or 'wind'
+    this.mode = mode // 'snow', 'rain', 'wind', or 'storm'
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
     this.particles = []
-    this.splashes = [] // Special for rain mode
+    this.splashes = []
+    this.clouds = []
+    this.lightning = {
+      active: false,
+      timer: 0,
+      opacity: 0,
+      branches: []
+    }
+    this.stormWind = 0 // Biến điều khiển sức gió trong bão
 
     this.resFactor = 1
     this.speedMul = 1.0
@@ -26,38 +34,52 @@ export class PixelWeatherEffect {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
     this._buildParticles()
+    this._buildClouds()
   }
 
   setMode(mode) {
     if (this.mode !== mode) {
       this.mode = mode
       this.splashes = []
+      this.stormWind = 0
       this._buildParticles()
+      this._buildClouds()
     }
   }
 
   setOptions(opts = {}) {
     let rebuild = false
-
     if (opts.density !== undefined && opts.density !== this.densityMul) {
       this.densityMul = opts.density
       rebuild = true
     }
-
     if (opts.resolution !== undefined && opts.resolution !== this.resFactor) {
       this.resFactor = opts.resolution
     }
-
-    if (opts.speed !== undefined) {
-      this.speedMul = opts.speed
-    }
-
-    if (opts.size !== undefined && opts.size !== this.sizeMul) {
-      this.sizeMul = opts.size
-    }
+    if (opts.speed !== undefined) this.speedMul = opts.speed
+    if (opts.size !== undefined && opts.size !== this.sizeMul) this.sizeMul = opts.size
 
     if (rebuild) {
       this._buildParticles()
+      this._buildClouds()
+    }
+  }
+
+  _buildClouds() {
+    this.clouds = []
+    if (this.mode !== "storm") return
+
+    const W = this.canvas.width
+    const count = 5 + Math.floor(Math.random() * 5)
+    for (let i = 0; i < count; i++) {
+      this.clouds.push({
+        x: Math.random() * W,
+        y: Math.random() * 100,
+        w: 100 + Math.random() * 200,
+        h: 40 + Math.random() * 60,
+        speed: 0.5 + Math.random() * 1,
+        opacity: 0.2 + Math.random() * 0.3
+      })
     }
   }
 
@@ -67,107 +89,86 @@ export class PixelWeatherEffect {
     const H = this.canvas.height
 
     let count = 100
-    if (this.mode === "rain") count = 250
-    if (this.mode === "wind") count = 120
+    if (this.mode === "rain") count = 150
+    if (this.mode === "storm") count = 300
+    if (this.mode === "wind") count = 200
     if (this.mode === "snow") count = 400
 
     count = Math.floor(count * this.densityMul)
-
     for (let i = 0; i < count; i++) {
       this.particles.push(this._makeParticle(W, H, true))
     }
   }
 
   _makeParticle(W, H, initial = false) {
-    let size, vx, vy, alpha, colorLight, type = "particle"
+    let size, vx, vy, alpha, colorLight, type = "particle", length = 1
 
-    if (this.mode === "rain") {
+    if (this.mode === "rain" || this.mode === "storm") {
       const r = Math.random()
-      if (r < 0.15) {
-        // Bubble (rarer)
+      if (r < 0.05) {
         type = "bubble"
         size = 4 + Math.random() * 4
         vx = (Math.random() - 0.5) * 0.5
-        vy = -0.2 - Math.random() * 0.5 // Bubbles drift up slightly
+        vy = -0.2 - Math.random() * 0.5
         alpha = 0.2 + Math.random() * 0.3
         colorLight = 90 + Math.random() * 10
       } else {
-        // Rain drop
-        size = Math.random() < 0.8 ? 2 : 3 + Math.random() * 2
-        vx = (Math.random() - 0.5) * 0.5
-        vy = 12 + Math.random() * 10
-        alpha = 0.4 + Math.random() * 0.4
-        colorLight = 95 + Math.random() * 5 // White rain
+        // Pixel Rain - Nâng cấp độ dài cho Storm
+        size = this.mode === "storm" ? 3 : 2
+        length = (this.mode === "storm" ? 25 : 8) + Math.random() * 20 // Dài hơn cho bão
+        vx = -4 - Math.random() * 4
+        vy = (this.mode === "storm" ? 25 : 15) + Math.random() * 10
+        alpha = 0.3 + Math.random() * 0.4
+        colorLight = 90 + Math.random() * 10
       }
     } else if (this.mode === "wind") {
-      size = Math.floor(2 + Math.random() * 6)
-      vx = 8 + Math.random() * 12
-      vy = 1 + Math.random() * 3
-      alpha = 0.4 + Math.random() * 0.6
-      colorLight = 80 + Math.random() * 20
+      size = Math.floor(2 + Math.random() * 4)
+      length = 10 + Math.random() * 20
+      vx = 10 + Math.random() * 15
+      vy = (Math.random() - 0.5) * 2
+      alpha = 0.3 + Math.random() * 0.5
+      colorLight = 85 + Math.random() * 15
     } else {
-      // Snow
       const r = Math.random()
-      size =
-        r < 0.7
-          ? 2 // Small
-          : r < 0.92
-            ? 4 // Medium
-            : 6 // Large/Front
-
+      size = r < 0.7 ? 2 : r < 0.92 ? 4 : 6
       vx = (Math.random() - 0.5) * 0.8
       vy = 0.5 + Math.random() * 1.5
-
-      const ar = Math.random()
-      alpha =
-        ar < 0.5
-          ? 0.2 + Math.random() * 0.2
-          : ar < 0.85
-            ? 0.5 + Math.random() * 0.3
-            : 0.8 + Math.random() * 0.2
-
+      alpha = Math.random() * 0.8
       colorLight = 90 + Math.random() * 10
     }
 
     return {
       type,
-      x: initial
-        ? Math.random() * W
-        : this.mode === "wind"
-          ? -20
-          : Math.random() * W,
-      y: initial
-        ? Math.random() * H
-        : this.mode === "wind"
-          ? Math.random() * H
-          : type === "bubble"
-            ? H + 20
-            : -20,
+      x: initial 
+        ? Math.random() * (W + 800) - 400 
+        : (this.mode === "wind" ? -50 : Math.random() * (W + 800)),
+      y: initial 
+        ? Math.random() * H 
+        : (this.mode === "wind" ? Math.random() * H : -100),
       size,
+      length,
       vx,
       vy,
       alpha,
       light: colorLight,
       wobblePhase: Math.random() * Math.PI * 2,
-      wobbleSpeed: this.mode === "snow" ? 0.01 + Math.random() * 0.02 : 0,
-      twinklePhase: Math.random() * Math.PI * 2,
-      twinkleSpeed: 0.03 + Math.random() * 0.07,
-      twinkleAmp: this.mode === "snow" ? Math.random() * 0.4 : 0,
     }
   }
 
-  _createSplash(x, y) {
-    const splashCount = 3 + Math.floor(Math.random() * 3)
-    for (let i = 0; i < splashCount; i++) {
-      this.splashes.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 4,
-        vy: -2 - Math.random() * 4,
-        size: 2,
-        life: 1.0,
-        decay: 0.05 + Math.random() * 0.1,
-      })
+  _triggerLightning() {
+    if (this.lightning.active) return
+    this.lightning.active = true
+    this.lightning.timer = 10 + Math.floor(Math.random() * 15)
+    this.lightning.opacity = 0.8
+    this.lightning.branches = []
+    let curX = Math.random() * this.canvas.width
+    let curY = 0
+    while (curY < this.canvas.height) {
+      let nextX = curX + (Math.random() - 0.5) * 100
+      let nextY = curY + 20 + Math.random() * 40
+      this.lightning.branches.push({x1: curX, y1: curY, x2: nextX, y2: nextY})
+      curX = nextX
+      curY = nextY
     }
   }
 
@@ -181,22 +182,31 @@ export class PixelWeatherEffect {
   }
 
   stop() {
-    if (this._animId) {
-      cancelAnimationFrame(this._animId)
-      this._animId = null
-    }
     this.active = false
-    if (this.rafId) {
-      cancelAnimationFrame(this.rafId)
-      this.rafId = null
-    }
+    if (this.rafId) cancelAnimationFrame(this.rafId)
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
 
+  _drawPixelCloud(ctx, c) {
+    ctx.fillStyle = `rgba(100, 100, 120, ${c.opacity})`
+    const blockSize = 10 * this.resFactor
+    for (let ox = 0; ox < c.w; ox += blockSize) {
+      for (let oy = 0; oy < c.h; oy += blockSize) {
+        if (Math.sin(ox / c.w * Math.PI) * Math.sin(oy / c.h * Math.PI) > Math.random() * 0.4) {
+          ctx.fillRect(
+            Math.floor((c.x + ox) / blockSize) * blockSize,
+            Math.floor((c.y + oy) / blockSize) * blockSize,
+            blockSize, blockSize
+          )
+        }
+      }
+    }
+  }
+
   animate(currentTime = 0) {
     if (!this.active) return
-    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = requestAnimationFrame((t) => this.animate(t))
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -207,75 +217,96 @@ export class PixelWeatherEffect {
     const ctx = this.ctx
 
     ctx.clearRect(0, 0, W, H)
-    ctx.globalCompositeOperation = "screen"
 
-    // Update and draw splashes
+    // Logic Sức gió trong bão (Thay đổi theo thời gian)
+    if (this.mode === "storm") {
+        const gustFactor = Math.sin(currentTime * 0.0005) * Math.cos(currentTime * 0.0003);
+        this.stormWind = gustFactor * 12; // Gió thổi mạnh lên đến 12px/frame
+    }
+
+    if (this.mode === "storm" && !this.lightning.active && Math.random() < 0.005) {
+      this._triggerLightning()
+    }
+
+    if (this.lightning.active) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.lightning.opacity * 0.3})`
+      ctx.fillRect(0, 0, W, H)
+      ctx.strokeStyle = `rgba(255, 255, 255, ${this.lightning.opacity})`
+      ctx.lineWidth = 4 * this.resFactor
+      ctx.beginPath()
+      this.lightning.branches.forEach(b => {
+        ctx.moveTo(b.x1, b.y1)
+        ctx.lineTo(b.x2, b.y1)
+        ctx.lineTo(b.x2, b.y2)
+      })
+      ctx.stroke()
+      this.lightning.timer--
+      this.lightning.opacity -= 0.05
+      if (this.lightning.timer <= 0) this.lightning.active = false
+    }
+
+    // Mây
+    this.clouds.forEach(c => {
+      c.x -= (c.speed + (this.mode === "storm" ? this.stormWind * 0.2 : 0)) * this.speedMul
+      if (c.x + c.w < 0) c.x = W + 100
+      this._drawPixelCloud(ctx, c)
+    })
+
+    // Splash hiệu ứng khi hạt mưa chạm đất
     for (let i = this.splashes.length - 1; i >= 0; i--) {
       const s = this.splashes[i]
-      s.x += s.vx
-      s.y += s.vy
-      s.vy += 0.5 // Gravity
-      s.life -= s.decay
-
-      if (s.life <= 0) {
-        this.splashes.splice(i, 1)
-        continue
-      }
-
+      s.x += s.vx + (this.mode === "storm" ? this.stormWind * 0.5 : 0)
+      s.y += s.vy; s.vy += 0.5; s.life -= s.decay
+      if (s.life <= 0) { this.splashes.splice(i, 1); continue }
       ctx.fillStyle = `rgba(255, 255, 255, ${s.life * 0.6})`
-      const ds = Math.max(1, Math.floor(s.size * this.resFactor))
-      const dx = Math.floor(s.x / this.resFactor) * this.resFactor
-      const dy = Math.floor(s.y / this.resFactor) * this.resFactor
-      ctx.fillRect(dx, dy, ds, ds)
+      ctx.fillRect(Math.floor(s.x), Math.floor(s.y), 2, 2)
     }
 
     this.particles.forEach((p) => {
-      if (this.mode === "snow") {
-        p.wobblePhase += p.wobbleSpeed * this.speedMul
-        p.twinklePhase += p.twinkleSpeed
-        p.x += (p.vx + Math.sin(p.wobblePhase) * 0.5) * this.speedMul
-      } else if (p.type === "bubble") {
-        p.wobblePhase += 0.05
-        p.x += Math.sin(p.wobblePhase) * 0.5
-      } else {
-        p.x += p.vx * this.speedMul
-      }
+      // Áp dụng sức gió vào vận tốc ngang
+      const currentVx = p.vx + (this.mode === "storm" ? this.stormWind : 0);
+      
+      p.x += currentVx * this.speedMul
       p.y += p.vy * this.speedMul
 
-      // Check ground collision for rain
-      if (this.mode === "rain" && p.type === "particle" && p.y > H - 10) {
-        if (Math.random() < 0.3) this._createSplash(p.x, H - 5)
+      if (p.y > H - 10 && (this.mode === "rain" || this.mode === "storm")) {
+        if (Math.random() < 0.3) {
+          const splashCount = 2
+          for(let i=0; i<splashCount; i++) {
+            this.splashes.push({x: p.x, y: H-5, vx: (Math.random()-0.5)*4, vy: -2-Math.random()*2, life: 1.0, decay: 0.1})
+          }
+        }
         Object.assign(p, this._makeParticle(W, H, false))
       }
 
-      if (
-        p.y > H + 20 * this.sizeMul ||
-        p.y < -40 * this.sizeMul ||
-        p.x > W + 20 * this.sizeMul ||
-        p.x < -20 * this.sizeMul
-      ) {
-        Object.assign(p, this._makeParticle(W, H, false))
+      if (this.mode === "wind" || this.mode === "storm") {
+          if (p.x > W + 400 || p.x < -400 || p.y > H + 100 || p.y < -150) {
+              Object.assign(p, this._makeParticle(W, H, false))
+          }
+      } else {
+          if (p.y > H + 50 || p.x < -100 || p.x > W + 500) {
+              Object.assign(p, this._makeParticle(W, H, false))
+          }
       }
 
-      const twinkledAlpha =
-        this.mode === "snow"
-          ? Math.max(0.1, p.alpha + Math.sin(p.twinklePhase) * p.twinkleAmp)
-          : p.alpha
-
-      const drawSize = Math.max(
-        1,
-        Math.floor(p.size * this.resFactor * this.sizeMul),
-      )
+      const drawSize = Math.max(1, Math.floor(p.size * this.resFactor * this.sizeMul))
       const drawX = Math.floor(p.x / this.resFactor) * this.resFactor
       const drawY = Math.floor(p.y / this.resFactor) * this.resFactor
 
       if (p.type === "bubble") {
-        // Draw pixel hollow square/circle for bubble
-        ctx.strokeStyle = `rgba(255, 255, 255, ${twinkledAlpha})`
-        ctx.lineWidth = Math.max(1, this.resFactor)
+        ctx.strokeStyle = `rgba(255, 255, 255, ${p.alpha})`
         ctx.strokeRect(drawX, drawY, drawSize, drawSize)
+      } else if (this.mode === "rain" || this.mode === "storm" || this.mode === "wind") {
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`
+        const drawLength = Math.max(2, Math.floor((p.length || 1) * this.resFactor * this.sizeMul))
+        ctx.save()
+        ctx.translate(drawX, drawY)
+        // Xoay hạt mưa theo vector vận tốc thực tế (kể cả gió)
+        ctx.rotate(-Math.atan2(currentVx, p.vy))
+        ctx.fillRect(0, 0, drawSize, drawLength)
+        ctx.restore()
       } else {
-        ctx.fillStyle = `hsla(210, 10%, ${p.light}%, ${twinkledAlpha})`
+        ctx.fillStyle = `hsla(210, 10%, ${p.light}%, ${p.alpha})`
         ctx.fillRect(drawX, drawY, drawSize, drawSize)
       }
     })
