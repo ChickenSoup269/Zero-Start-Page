@@ -32,7 +32,7 @@ export class NorthernLightsEffect {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
     if (this.style === "classic") {
-        this.baseY = this.canvas.height * 0.5 // Trọng tâm ở giữa
+        this.baseY = this.canvas.height * 0.5 
         this.waveHeight = this.canvas.height * 0.35
     }
     this._initStyles()
@@ -58,8 +58,8 @@ export class NorthernLightsEffect {
     const H = this.canvas.height
     this.rays = Array.from({ length: 5 }, (_, i) => ({
       x: (i / 4) * W * 1.15 - W * 0.08,
-      yStart: H * 0.15, // Tia sáng bắt đầu từ 15% chiều cao
-      yEnd: H * 0.8,    // Kết thúc ở 80%
+      yStart: H * 0.15,
+      yEnd: H * 0.8,
       phase: Math.random() * Math.PI * 2,
       speed: Math.random() * 0.005 + 0.0025,
       width: Math.random() * 16 + 4,
@@ -83,9 +83,8 @@ export class NorthernLightsEffect {
 
   _buildWavePtsClassic(W, H, baseY, phase, ampFrac) {
     const pts = []
-    const segments = 14
-    const step = W / segments
-    for (let i = 0; i <= segments; i++) {
+    const step = W / 14
+    for (let i = 0; i <= 14; i++) {
       const x = i * step
       const y = baseY +
         Math.sin(x * 0.0038 + phase) * H * ampFrac * 0.48 +
@@ -111,6 +110,16 @@ export class NorthernLightsEffect {
         phase: Math.random() * Math.PI * 2
       })
     }
+    // HD Particles
+    this.particles = Array.from({ length: 50 }, () => ({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        size: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        twinkleSpeed: 0.02 + Math.random() * 0.05,
+        twinklePhase: Math.random() * Math.PI * 2
+    }))
   }
 
   _hexToRgb(hex) {
@@ -155,7 +164,6 @@ export class NorthernLightsEffect {
       ctx.clearRect(0, 0, W, H)
       this._renderHD(ctx, W, H)
     } else {
-      // Classic Mode: Fade effect instead of clearRect
       ctx.globalCompositeOperation = "source-over"
       ctx.fillStyle = "rgba(1, 2, 12, 0.35)"
       ctx.fillRect(0, 0, W, H)
@@ -169,13 +177,24 @@ export class NorthernLightsEffect {
     ctx.fillRect(0, 0, W, H)
     ctx.globalCompositeOperation = "screen"
 
-    // Stars
-    ctx.fillStyle = "rgba(255, 255, 255, 0.1)"
-    for (let i = 0; i < 60; i++) {
+    // Stars/Static particles
+    ctx.fillStyle = "rgba(255, 255, 255, 0.15)"
+    for (let i = 0; i < 40; i++) {
         const x = (Math.sin(i * 123) * 0.5 + 0.5) * W
         const y = (Math.cos(i * 456) * 0.5 + 0.5) * H
-        ctx.fillRect(x, y, 1.5, 1.5)
+        ctx.fillRect(x, y, 1.2, 1.2)
     }
+
+    // Floating Twinkle Particles
+    this.particles.forEach(p => {
+        p.twinklePhase += p.twinkleSpeed
+        p.x += p.vx; p.y += p.vy
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0
+        const op = (Math.sin(p.twinklePhase) * 0.5 + 0.5) * this.brightness * 0.6
+        ctx.fillStyle = `rgba(255, 255, 255, ${op})`
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill()
+    })
 
     this.curtains.forEach(curtain => {
       curtain.phase += curtain.speed
@@ -202,7 +221,6 @@ export class NorthernLightsEffect {
     
     ctx.globalCompositeOperation = "lighter"
 
-    // Rays
     for (const ray of this.rays) {
       ray.phase += ray.speed * 0.45
       const xShift = Math.sin(ray.phase) * 25
@@ -217,17 +235,14 @@ export class NorthernLightsEffect {
       ctx.fillRect(ray.x + xShift - ray.width * 0.5, ray.yStart, ray.width, ray.yEnd - ray.yStart)
     }
 
-    // Aurora Planes
     this.planes.forEach((pl, pi) => {
       pl.phase += pl.speed * 0.018
-      // Cân chỉnh bandY xung quanh mức giữa (H * 0.5)
       const bandY = H * 0.25 + (pi / (this.planes.length - 1)) * H * 0.45
       const pts = this._buildWavePtsClassic(W, H, bandY, pl.phase, pl.amp)
       const hue = baseH + pl.hueOff + Math.sin(pl.phase * 0.3) * 18
       const hue2 = hue + 35
       const alp = pl.alpha * this.brightness
 
-      // Soft glow
       ctx.beginPath()
       ctx.moveTo(0, bandY - H * 0.2); ctx.lineTo(W, bandY - H * 0.2)
       ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
@@ -239,7 +254,6 @@ export class NorthernLightsEffect {
       topGrad.addColorStop(1, `hsla(${hue2},${ss + 6}%,${ll + 8}%,0)`)
       ctx.fillStyle = topGrad; ctx.fill()
 
-      // Ribbon
       const thickness = H * pl.amp * 0.28
       const rg = ctx.createLinearGradient(0, bandY - thickness * 0.8, 0, bandY + thickness * 1.1)
       rg.addColorStop(0, `hsla(${hue},${ss}%,${ll + 15}%,0)`)
@@ -257,7 +271,6 @@ export class NorthernLightsEffect {
       ctx.strokeStyle = rg; ctx.lineWidth = thickness; ctx.stroke()
     })
 
-    // Particles
     this.particles.forEach((p, i) => {
       p.x += p.vx + Math.sin(this.time * 20 + p.x * 0.008) * 0.2
       p.y += p.vy; p.life -= 0.0028
@@ -286,10 +299,13 @@ export class NorthernLightsEffect {
   }
 
   setOptions(opts = {}) {
-    if (opts.color !== undefined) this.color = opts.color
+    if (opts.color !== undefined) {
+        this.color = opts.color
+        if (this.style === "hd") this._initHD() // Re-init HD to apply color immediately
+    }
     if (opts.style !== undefined && opts.style !== this.style) {
         this.style = opts.style
-        this._onResize() // Gọi resize để tính toán lại baseY/trọng tâm
+        this._onResize()
     }
     if (opts.brightness !== undefined) this.brightness = opts.brightness
   }
