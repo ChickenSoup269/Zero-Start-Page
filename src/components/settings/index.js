@@ -160,10 +160,11 @@ export function initSettings() {
     ),
     snowfallHDEffect: new SnowfallHDEffect("effect-canvas"),
     auroraWaveEffect: new AuroraWaveEffect("effect-canvas", settings.auroraWaveColor || "#00bcd4"),
-    northernLightsEffect: new NorthernLightsEffect(
-      "effect-canvas",
-      settings.northernLightsColor || "#00ff88",
-    ),
+    northernLightsEffect: new NorthernLightsEffect("effect-canvas", {
+      color: settings.northernLightsColor || "#00ff88",
+      style: settings.northernLightsStyle || "hd",
+      brightness: settings.northernLightsBrightness ?? 0.8,
+    }),
     bubblesEffect: new BubblesEffect(
       "effect-canvas",
       settings.bubbleColor || "#60c8ff",

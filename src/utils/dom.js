@@ -254,6 +254,15 @@ export const northernLightsColorPicker = document.getElementById(
 export const northernLightsColorSetting = document.getElementById(
   "northern-lights-color-setting",
 )
+export const northernLightsStyleSelect = document.getElementById(
+  "northern-lights-style-select",
+)
+export const northernLightsBrightnessSlider = document.getElementById(
+  "northern-lights-brightness-slider",
+)
+export const northernLightsBrightnessVal = document.getElementById(
+  "northern-lights-brightness-val",
+)
 
 export const hackerColorPicker = document.getElementById("hacker-color-picker")
 export const hackerColorSetting = document.getElementById(

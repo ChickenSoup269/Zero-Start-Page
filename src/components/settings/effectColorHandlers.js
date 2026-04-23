@@ -78,9 +78,30 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("northernLightsColor", DOM.northernLightsColorPicker.value)
     saveSettings()
     if (effectInstances.northernLightsEffect)
-      effectInstances.northernLightsEffect.setColor(
-        DOM.northernLightsColorPicker.value,
-      )
+      effectInstances.northernLightsEffect.setOptions({
+        color: DOM.northernLightsColorPicker.value,
+      })
+  })
+
+  DOM.northernLightsStyleSelect?.addEventListener("change", () => {
+    updateSetting("northernLightsStyle", DOM.northernLightsStyleSelect.value)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        style: DOM.northernLightsStyleSelect.value,
+      })
+  })
+
+  DOM.northernLightsBrightnessSlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.northernLightsBrightnessSlider.value)
+    if (DOM.northernLightsBrightnessVal)
+      DOM.northernLightsBrightnessVal.textContent = val.toFixed(1)
+    updateSetting("northernLightsBrightness", val)
+    saveSettings()
+    if (effectInstances.northernLightsEffect)
+      effectInstances.northernLightsEffect.setOptions({
+        brightness: val,
+      })
   })
 
   DOM.hackerColorPicker?.addEventListener("input", () => {

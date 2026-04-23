@@ -1264,6 +1264,15 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.auraColorPicker.value = settings.auraColor || "#a8c0ff"
     DOM.northernLightsColorPicker.value =
       settings.northernLightsColor || "#00ff88"
+    if (DOM.northernLightsStyleSelect) {
+      DOM.northernLightsStyleSelect.value = settings.northernLightsStyle || "hd"
+    }
+    if (DOM.northernLightsBrightnessSlider) {
+      const b = settings.northernLightsBrightness ?? 0.8
+      DOM.northernLightsBrightnessSlider.value = b
+      if (DOM.northernLightsBrightnessVal)
+        DOM.northernLightsBrightnessVal.textContent = b.toFixed(1)
+    }
     DOM.hackerColorPicker.value = settings.hackerColor || "#00FF00"
     DOM.pixelCubesColorPicker.value = settings.pixelCubesColor || "#00ff73"
     if (DOM.jellyfishColorPicker) {
