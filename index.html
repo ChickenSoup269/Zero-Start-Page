@@ -3213,22 +3213,27 @@
             </button>
             <div id="sidebar-footer-content" class="sidebar-footer-content">
                 <div class="sidebar-footer-export-row">
-                    <button id="export-settings-btn" class="secondary-btn" data-i18n="settings_export">
-                        <i class="fa-solid fa-file-export"></i> Export Settings
+                    <button id="export-settings-btn" class="footer-btn">
+                        <i class="fa-solid fa-file-export"></i> <span data-i18n="settings_export">Export</span>
                     </button>
-                    <button id="import-settings-btn" class="secondary-btn" data-i18n="settings_import">
-                        <i class="fa-solid fa-file-import"></i> Import Settings
+                    <button id="import-settings-btn" class="footer-btn">
+                        <i class="fa-solid fa-file-import"></i> <span data-i18n="settings_import">Import</span>
                     </button>
                     <input type="file" id="import-settings-input" accept=".json" style="display:none">
                 </div>
-                <button id="reset-settings" class="secondary-btn full-width" data-i18n="settings_reset">Reset
-                    Defaults</button>
-                <button id="reset-layout" class="secondary-btn full-width" style="margin-top: 10px;"
-                    data-i18n="settings_reset_layout">Reset
-                    Layout Positions</button>
-                <div style="font-size: 0.7rem; opacity: 0.6; padding: 5px 0 0 0; text-align: center;"
-                    data-i18n="settings_reset_layout_hint">
+                <div class="sidebar-footer-reset-row">
+                    <button id="reset-settings" class="footer-btn reset-btn">
+                        <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset">Reset All</span>
+                    </button>
+                    <button id="reset-layout" class="footer-btn reset-btn">
+                        <i class="fa-solid fa-arrows-to-dot"></i> <span data-i18n="settings_reset_layout">Reset Layout</span>
+                    </button>
+                </div>
+                <div class="sidebar-footer-hint" data-i18n="settings_reset_layout_hint">
                     (Resets widget positions & effect colors to default)
+                </div>
+                <div class="sidebar-copyright">
+                    &copy; 2026 ChickenSoup269
                 </div>
             </div>
         </div>
