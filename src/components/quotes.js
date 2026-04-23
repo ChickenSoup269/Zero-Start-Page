@@ -202,7 +202,7 @@ const QUOTES_DATA = [
   {
     author: "Lao Tzu",
     text: "A journey of a thousand miles begins with a single step.",
-    translate: "Hành trình ngàn dặm bắt đầu từ một bước chân.",
+    translate: "Hạnh phục phụ thuộc vào chính chúng ta.",
   },
   {
     author: "Leonardo da Vinci",
@@ -211,11 +211,136 @@ const QUOTES_DATA = [
   },
 ]
 
+const CRYSTAL_BALL_ANSWERS = {
+  vi: {
+    no: [
+      "Không.",
+      "Đừng mơ.",
+      "Tuyệt đối không.",
+      "Tốn thời gian.",
+      "Dẹp đi bạn ơi.",
+      "Bỏ đi mà làm người.",
+      "Nghĩ cũng đừng nghĩ đến.",
+      "Vũ trụ bảo không.",
+    ],
+    maybe: [
+      "Tùy bạn thôi.",
+      "Có thể.",
+      "Hên xui.",
+      "Hỏi lại sau đi.",
+      "Mai rồi tính.",
+      "Cũng hên xui à nha.",
+      "Ngủ một giấc rồi tính sau.",
+    ],
+    wait: [
+      "Đang tải dữ liệu lười... chờ tí.",
+      "Cầu pha lê đang bận đi tắm, hỏi lại sau.",
+      "Vũ trụ đang bận kết nối, thử lại sau 5 phút.",
+      "Đợi tín hiệu từ hành tinh khác đi.",
+      "Để mai tính, nay lười quá.",
+      "Đang bận khịa người khác, xếp hàng đi.",
+    ],
+    yes: [
+      "Có.",
+      "Làm ngay.",
+      "Chốt đơn.",
+      "Không làm hơi phí.",
+      "Nhích luôn cho nóng.",
+      "Cơ hội ngàn năm có một.",
+      "Làm đi chờ chi.",
+    ],
+    ironic: [
+      "Không nên 🐧.",
+      "Thôi, khó quá bỏ qua.",
+      "Làm làm gì? 🤡",
+      "Làm thì sợ mệt, không làm thì sợ nghèo, thôi chọn cái sau đi 🐧.",
+      "Cầu bảo làm nhưng bạn có làm đâu mà hỏi? 🤡",
+      "Thôi, ngủ tiếp đi, mơ sẽ thấy mình làm được mà 💤.",
+      "Hỏi làm gì khi đằng nào cũng không làm? 🐧",
+      "Thôi bỏ đi bạn ơi 🤡.",
+      "Định làm thật à? Đùa đấy đừng làm ❓.",
+    ],
+    spam: [
+      "Đã bảo là KHÔNG là KHÔNG! Đừng có spam 💢.",
+      "Hỏi nữa là cầu nổ đấy! 💣",
+      "Kiên trì đấy, nhưng kết quả vẫn thế thôi.",
+      "Bộ không còn việc gì khác để làm à? 🙄",
+      "Spam nữa là khóa nút đấy nhé! 🔒",
+      "Vô ích thôi, câu trả lời vẫn là KHÔNG. 🤡",
+    ],
+    levels: [
+      "",
+      "Việc linh tinh (70% Không)",
+      "Việc nhỏ (Hên xui cao)",
+      "Trung bình (Có thể chờ đợi)",
+      "Quan trọng (80% Có)",
+      "Sống còn (Cẩn thận khịa 🤡)",
+    ],
+  },
+  en: {
+    no: [
+      "No.",
+      "Don't even dream about it.",
+      "Absolutely not.",
+      "Waste of time.",
+      "Forget it, buddy.",
+    ],
+    maybe: [
+      "It's up to you.",
+      "Maybe.",
+      "Fifty-fifty.",
+      "Ask again later.",
+    ],
+    wait: [
+      "Loading laziness data... wait a sec.",
+      "Crystal ball is in the shower, ask later.",
+      "Universe is busy connecting, try in 5 mins.",
+      "Wait for signals from another planet.",
+      "Let's decide tomorrow, too lazy today.",
+      "Busy roasting someone else, get in line.",
+    ],
+    yes: [
+      "Yes.",
+      "Do it now.",
+      "Just do it.",
+      "Go for it while it's hot.",
+    ],
+    ironic: [
+      "Better not 🐧.",
+      "Too hard, just skip it.",
+      "Afraid of work but afraid of being poor? Choose the latter 🐧.",
+      "The ball says yes, but we both know you won't do it 🤡.",
+      "Go back to sleep, you'll achieve it in your dreams 💤.",
+      "Why ask when you won't do it anyway? 🐧",
+      "Just give up, buddy 🤡.",
+    ],
+    spam: [
+      "I said NO means NO! Stop spamming 💢.",
+      "Ask again and I'll explode! 💣",
+      "Persistent, aren't you? But the answer is still the same.",
+      "Don't you have anything better to do? 🙄",
+      "Stop spamming or I'll lock the button! 🔒",
+    ],
+    levels: [
+      "",
+      "Trivial (70% No)",
+      "Minor (Risky)",
+      "Normal (Balanced/Wait)",
+      "Important (80% Yes)",
+      "Critical (Expect irony 🤡)",
+    ],
+  },
+}
+
 export class DailyQuotes {
   constructor() {
     this.container = null
     this.isLocked = getSettings().quotesLocked || false
-    this.showQuotes = getSettings().showQuotes === true // Default to false
+    this.showQuotes = getSettings().showQuotes === true
+    this.crystalBallVisible = false
+    this.currentPriority = 3
+    this.lastQuestion = ""
+    this.questionCount = 0
     this.init()
   }
 
@@ -224,6 +349,7 @@ export class DailyQuotes {
     this.updateQuote()
     this.applySettings()
     this.setupEventListeners()
+    this.updateCrystalBallUI()
   }
 
   render() {
@@ -232,13 +358,41 @@ export class DailyQuotes {
     this.container.className = `quotes-container ${this.isLocked ? "locked" : ""}`
 
     this.container.innerHTML = `
-            <div class="quote-text"></div>
-            <div class="quote-author"></div>
+            <div class="quote-content">
+                <div class="quote-text"></div>
+                <div class="quote-author"></div>
+            </div>
+            
+            <div class="crystal-ball-trigger" title="Ask the Crystal Ball">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+
+            <div class="crystal-ball-ui" style="display: none;">
+                <div class="cb-input-group">
+                    <input type="text" id="cb-work-input" placeholder="">
+                    <div class="cb-priority-wrapper">
+                        <div class="cb-priority-header">
+                            <span id="cb-priority-label">Priority:</span>
+                        </div>
+                        <div class="cb-priority-buttons">
+                            <button type="button" class="cb-prio-btn" data-level="1">1</button>
+                            <button type="button" class="cb-prio-btn" data-level="2">2</button>
+                            <button type="button" class="cb-prio-btn active" data-level="3">3</button>
+                            <button type="button" class="cb-prio-btn" data-level="4">4</button>
+                            <button type="button" class="cb-prio-btn" data-level="5">5</button>
+                        </div>
+                        <div id="cb-priority-desc" class="cb-priority-desc"></div>
+                    </div>
+                    <button id="cb-ask-btn">Ask 🔮</button>
+                </div>
+                <div id="cb-result-overlay" style="display: none;">
+                    <div class="cb-result-text"></div>
+                </div>
+            </div>
         `
 
     document.body.appendChild(this.container)
 
-    // Khôi phục vị trí
     const pos = getSettings().componentPositions?.["daily-quotes"]
     if (pos) {
       this.container.style.top = pos.top
@@ -252,7 +406,6 @@ export class DailyQuotes {
   }
 
   updateQuote() {
-    // Chọn câu nói dựa trên ngày (Day of the year)
     const now = new Date()
     const start = new Date(now.getFullYear(), 0, 0)
     const diff = now - start
@@ -265,14 +418,143 @@ export class DailyQuotes {
     const textEl = this.container.querySelector(".quote-text")
     const authorEl = this.container.querySelector(".quote-author")
 
+    if (!textEl || !authorEl) return
+
     const isVietnamese = getSettings().language === "vi"
     textEl.textContent = isVietnamese ? quote.translate : quote.text
     authorEl.textContent = `- ${quote.author}`
   }
 
+  updateCrystalBallUI() {
+    const isVietnamese = getSettings().language === "vi"
+    const input = this.container.querySelector("#cb-work-input")
+    const askBtn = this.container.querySelector("#cb-ask-btn")
+    const priorityLabel = this.container.querySelector("#cb-priority-label")
+    const trigger = this.container.querySelector(".crystal-ball-trigger")
+
+    input.placeholder = isVietnamese ? "Bạn muốn làm gì?" : "What do you want to do?"
+    askBtn.textContent = isVietnamese ? "Hỏi cầu pha lê 🔮" : "Ask the Crystal Ball 🔮"
+    priorityLabel.textContent = isVietnamese ? "Mức độ quan trọng:" : "Priority Level:"
+    trigger.title = isVietnamese ? "Hỏi cầu pha lê" : "Ask the Crystal Ball"
+    
+    this.updatePriorityDescription(this.currentPriority)
+  }
+
+  updatePriorityDescription(val) {
+    const isVietnamese = getSettings().language === "vi"
+    const lang = isVietnamese ? "vi" : "en"
+    const descEl = this.container.querySelector("#cb-priority-desc")
+    
+    descEl.textContent = CRYSTAL_BALL_ANSWERS[lang].levels[parseInt(val)]
+  }
+
   setupEventListeners() {
-    // Lắng nghe thay đổi ngôn ngữ
-    window.addEventListener("languageChanged", () => this.updateQuote())
+    window.addEventListener("languageChanged", () => {
+      this.updateQuote()
+      this.updateCrystalBallUI()
+    })
+
+    const trigger = this.container.querySelector(".crystal-ball-trigger")
+    const ui = this.container.querySelector(".crystal-ball-ui")
+    const prioBtns = this.container.querySelectorAll(".cb-prio-btn")
+    const askBtn = this.container.querySelector("#cb-ask-btn")
+    const input = this.container.querySelector("#cb-work-input")
+
+    trigger.addEventListener("click", () => {
+      this.crystalBallVisible = !this.crystalBallVisible
+      ui.style.display = this.crystalBallVisible ? "block" : "none"
+      trigger.classList.toggle("active", this.crystalBallVisible)
+      
+      if (this.crystalBallVisible) {
+          trigger.style.bottom = "auto"
+          trigger.style.top = "5px"
+      } else {
+          trigger.style.bottom = "5px"
+          trigger.style.top = "auto"
+      }
+    })
+
+    prioBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const level = parseInt(btn.dataset.level)
+            this.currentPriority = level
+            prioBtns.forEach(b => b.classList.remove("active"))
+            btn.classList.add("active")
+            this.updatePriorityDescription(level)
+        })
+    })
+
+    askBtn.addEventListener("click", () => this.askCrystalBall())
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") this.askCrystalBall()
+    })
+  }
+
+  askCrystalBall() {
+    const input = this.container.querySelector("#cb-work-input")
+    const resultOverlay = this.container.querySelector("#cb-result-overlay")
+    const resultText = this.container.querySelector(".cb-result-text")
+
+    const currentQuestion = input.value.trim().toLowerCase()
+    if (!currentQuestion) {
+      input.focus()
+      return
+    }
+
+    // Logic Easter Egg: Check spam
+    if (currentQuestion === this.lastQuestion) {
+      this.questionCount++
+    } else {
+      this.lastQuestion = currentQuestion
+      this.questionCount = 1
+    }
+
+    let answer = ""
+    const lang = getSettings().language === "vi" ? "vi" : "en"
+    const answers = CRYSTAL_BALL_ANSWERS[lang]
+
+    if (this.questionCount >= 3) {
+      answer = answers.spam[Math.floor(Math.random() * answers.spam.length)]
+    } else {
+      answer = this.generateAnswer(this.currentPriority)
+    }
+
+    this.container.classList.add("shaking")
+
+    setTimeout(() => {
+      this.container.classList.remove("shaking")
+      resultText.textContent = answer
+      resultOverlay.style.display = "flex"
+
+      setTimeout(() => {
+        resultOverlay.style.display = "none"
+      }, 3500) // Tăng thời gian hiển thị một chút để đọc câu dài
+    }, 500)
+  }
+
+  generateAnswer(priority) {
+    const random = Math.random() * 100
+    const lang = getSettings().language === "vi" ? "vi" : "en"
+    const answers = CRYSTAL_BALL_ANSWERS[lang]
+    let pool = []
+
+    if (priority <= 2) {
+      if (random < 70) pool = answers.no
+      else pool = answers.maybe
+    } else if (priority === 3) {
+      // 30% Yes, 30% Maybe, 25% Wait, 15% No
+      if (random < 30) pool = answers.yes
+      else if (random < 60) pool = answers.maybe
+      else if (random < 85) pool = answers.wait
+      else pool = answers.no
+    } else if (priority === 4) {
+      if (random < 80) pool = answers.yes
+      else pool = answers.maybe
+    } else if (priority === 5) {
+      pool = answers.ironic
+    }
+
+    return pool[Math.floor(Math.random() * pool.length)]
   }
 
   toggleLock() {
@@ -301,10 +583,7 @@ export class DailyQuotes {
     })
   }
 
-  disableDraggable() {
-    // Draggable utility should handle this, or we just rely on CSS cursor: default
-    // and the fact that we don't re-init draggable.
-  }
+  disableDraggable() {}
 
   applySettings() {
     this.container.style.display = this.showQuotes ? "block" : "none"
