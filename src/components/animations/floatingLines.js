@@ -1,7 +1,9 @@
 /**
- * Floating Lines Effect (Enhanced Beauty + High Performance)
- * Uses Path2D batching and shadow caching for neon glow without lag.
+ * Floating Lines Effect - Smooth Cinematic Edition
+ * Features tri-color neon, ultra-bright lines, and silky smooth drifting stars.
+ * Optimized with Delta Time for high-refresh rate displays.
  */
+
 export class FloatingLinesEffect {
   constructor(canvasId, color = "#ffffff", angle = 0) {
     this.canvas = typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId
@@ -9,39 +11,21 @@ export class FloatingLinesEffect {
     this.ctx = this.canvas.getContext("2d", { alpha: false })
     this.active = false
     this.time = 0
+    this.lastDrawTime = 0
     this.color = color
     this.angle = Number(angle) || 0
-    this.mouse = { x: -1000, y: -1000 }
-    this.targetMouse = { x: -1000, y: -1000 }
-    this.mouseInfluence = 0
-    this.targetInfluence = 0
     
     this.config = {
       animationSpeed: 1,
-      interactive: true,
-      bendStrength: -0.4,
-      mouseDamping: 0.1,
-      step: 80, // Balanced for beauty and speed
-      parallaxStrength: 0.04
+      step: 40, 
+      starCount: 80,
+      driftSpeed: 0.15
     }
 
-    this.parallaxOffset = { x: 0, y: 0 }
-    this.targetParallax = { x: 0, y: 0 }
     this.hsl = { h: 0, s: 0, l: 100 }
     this._updateHsl(color)
 
     this._resizeHandler = () => this.resize()
-    this._mouseHandler = (e) => {
-        this.targetMouse.x = e.clientX
-        this.targetMouse.y = e.clientY
-        this.targetInfluence = 1.0
-        
-        const centerX = window.innerWidth / 2
-        const centerY = window.innerHeight / 2
-        this.targetParallax.x = (e.clientX - centerX) / window.innerWidth * this.config.parallaxStrength
-        this.targetParallax.y = (e.clientY - centerY) / window.innerHeight * this.config.parallaxStrength
-    }
-    
     window.addEventListener("resize", this._resizeHandler)
     this.resize()
   }
@@ -63,7 +47,7 @@ export class FloatingLinesEffect {
         }
         h /= 6
     }
-    this.hsl = { h: h * 360, s: s * 100, l: l * 100 }
+    this.hsl = { h: h * 360, s: 95, l: 75 }
   }
 
   updateColor(hex) { this.color = hex; this._updateHsl(hex); }
@@ -77,13 +61,20 @@ export class FloatingLinesEffect {
   }
 
   _initStars() {
+    const W = this.canvas.width
+    const H = this.canvas.height
     this.stars = []
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < this.config.starCount; i++) {
       this.stars.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        size: Math.random() * 1.5,
-        opacity: Math.random()
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * this.config.driftSpeed,
+        vy: (Math.random() - 0.5) * this.config.driftSpeed,
+        size: Math.random() * 1.6 + 0.4,
+        opacity: Math.random() * 0.6 + 0.4,
+        twinkleSpeed: 0.02 + Math.random() * 0.03,
+        twinklePhase: Math.random() * Math.PI * 2,
+        color: `hsla(${this.hsl.h + (Math.random()-0.5)*30}, 80%, 95%, 1)`
       })
     }
   }
@@ -91,125 +82,125 @@ export class FloatingLinesEffect {
   start() {
     if (this.active) return
     this.active = true
-    window.addEventListener("mousemove", this._mouseHandler)
-    window.addEventListener("mouseleave", () => { this.targetInfluence = 0 })
+    this.lastDrawTime = performance.now()
     this.canvas.style.display = "block"
-    this._animate()
+    this._animate(this.lastDrawTime)
   }
 
   stop() {
     this.active = false
-    window.removeEventListener("mousemove", this._mouseHandler)
+    if (this._animId) cancelAnimationFrame(this._animId)
     this.canvas.style.display = "none"
   }
 
-  _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, hueShift = 0) {
+  _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, hueOffset = 0, dt = 1) {
     const ctx = this.ctx
     const W = this.canvas.width, H = this.canvas.height
     const time = this.time
     
-    const h = (this.hsl.h + hueShift + 360) % 360
+    const h = (this.hsl.h + hueOffset + 360) % 360
     const s = this.hsl.s
-    const l = Math.max(this.hsl.l, 60)
+    const l = this.hsl.l
     
     const rad = (this.angle * Math.PI) / 180
     const cosR = Math.cos(rad), sinR = Math.sin(rad)
-    const range = Math.sqrt(W*W + H*H) * 1.1
+    const range = Math.sqrt(W*W + H*H) * 1.2
     const step = this.config.step
     
     const path = new Path2D()
 
     for (let i = 0; i < count; i++) {
-      const offset = offsetBase + i * 0.2
+      const offset = offsetBase + i * 0.4
       let first = true
+      
       for (let x = -range/2; x <= range/2; x += step) {
         const normalizedX = (x / W) * 2
-        let y = yBase * H + Math.sin(normalizedX + offset + time * speed) * ampBase * H * 0.1
-        y += (i * 15)
+        let y = yBase * H + Math.sin(normalizedX * 1.2 + offset + time * speed) * ampBase * H * 0.1
+        y += Math.sin(normalizedX * 2.8 - time * speed * 0.5) * ampBase * H * 0.03
+        y += (i * 24)
 
         const rx = x * cosR - (y - H/2) * sinR + W/2
         const ry = x * sinR + (y - H/2) * cosR + H/2
 
-        let finalX = rx + this.parallaxOffset.x * W * (1 + hueShift/200)
-        let finalY = ry + this.parallaxOffset.y * H * (1 + hueShift/200)
-
-        if (this.mouseInfluence > 0.01) {
-          const dx = (this.mouse.x - finalX), dy = (this.mouse.y - finalY)
-          const distSq = dx*dx + dy*dy
-          if (distSq < 50000) {
-            const f = (1 - Math.sqrt(distSq)/223) * this.mouseInfluence * this.config.bendStrength
-            finalX += dx * f
-            finalY += dy * f
-          }
-        }
-        if (first) { path.moveTo(finalX, finalY); first = false; }
-        else { path.lineTo(finalX, finalY); }
+        if (first) { path.moveTo(rx, ry); first = false; }
+        else { path.lineTo(rx, ry); }
       }
     }
 
-    // --- Multi-tier Neon Glow Rendering ---
-    ctx.globalAlpha = opacity
-    
-    // Tier 1: Wide Ambient Bloom
-    ctx.shadowBlur = 20
-    ctx.shadowColor = `hsla(${h}, ${s}%, ${l}%, 0.9)`
-    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, 0.2)`
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+
+    // Ultra Bright Rendering
+    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.15})`
+    ctx.lineWidth = 22
+    ctx.stroke(path)
+
+    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.45})`
     ctx.lineWidth = 8
     ctx.stroke(path)
 
-    // Tier 2: Intense Neon Glow
-    ctx.shadowBlur = 8
-    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, 0.8)`
+    ctx.strokeStyle = `hsla(${h}, ${s}%, 95%, ${opacity * 0.85})`
     ctx.lineWidth = 3
     ctx.stroke(path)
-    
-    // Tier 3: Sharp High-Intensity Core
-    ctx.shadowBlur = 0
-    ctx.strokeStyle = `white`
-    ctx.lineWidth = 1
+
+    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.98})`
+    ctx.lineWidth = 1.2
     ctx.stroke(path)
-    
-    ctx.globalAlpha = 1
   }
 
-  _animate() {
+  _animate(currentTime = 0) {
     if (!this.active) return
-    this.time += 0.008
+    this._animId = requestAnimationFrame((t) => this._animate(t))
+    
+    const elapsed = currentTime - this.lastDrawTime
+    if (elapsed < 1) return 
+    const dt = elapsed / 16.67 // Normalize to 60fps
+    this.lastDrawTime = currentTime
+    
+    this.time += 0.008 * dt
     const ctx = this.ctx
     const W = this.canvas.width, H = this.canvas.height
 
-    this.mouse.x += (this.targetMouse.x - this.mouse.x) * this.config.mouseDamping
-    this.mouse.y += (this.targetMouse.y - this.mouse.y) * this.config.mouseDamping
-    this.mouseInfluence += (this.targetInfluence - this.mouseInfluence) * this.config.mouseDamping
-    this.parallaxOffset.x += (this.targetParallax.x - this.parallaxOffset.x) * this.config.mouseDamping
-    this.parallaxOffset.y += (this.targetParallax.y - this.parallaxOffset.y) * this.config.mouseDamping
-
-    // Background: Deep Cosmic Space
-    ctx.fillStyle = "#010206"
+    // Solid deep background
+    ctx.fillStyle = "#010205"
     ctx.fillRect(0, 0, W, H)
 
-    // Static Nebula Glow (Low cost)
-    const h = this.hsl.h
-    const grad = ctx.createRadialGradient(W/2 + this.parallaxOffset.x * 100, H/2 + this.parallaxOffset.y * 100, 0, W/2, H/2, W)
-    grad.addColorStop(0, `hsla(${h}, 50%, 15%, 0.2)`)
-    grad.addColorStop(1, "transparent")
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, W, H)
-
-    // Stars
+    // Drifting & Twinkling Stars
     ctx.fillStyle = "white"
     this.stars.forEach(s => {
-      ctx.globalAlpha = s.opacity * (0.5 + Math.abs(Math.sin(this.time + s.x)) * 0.5)
-      ctx.fillRect(s.x + this.parallaxOffset.x * 50, s.y + this.parallaxOffset.y * 50, s.size, s.size)
+      // Smooth movement
+      s.x += s.vx * dt
+      s.y += s.vy * dt
+      
+      // Wrapping logic
+      if (s.x < 0) s.x = W
+      if (s.x > W) s.x = 0
+      if (s.y < 0) s.y = H
+      if (s.y > H) s.y = 0
+
+      // Smooth twinkling
+      s.twinklePhase += s.twinkleSpeed * dt
+      const op = s.opacity * (0.3 + Math.sin(s.twinklePhase) * 0.7)
+      
+      ctx.globalAlpha = Math.max(0, Math.min(1, op))
+      ctx.fillStyle = s.color
+      ctx.beginPath()
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2)
+      ctx.fill()
     })
     ctx.globalAlpha = 1
 
     ctx.globalCompositeOperation = "lighter"
-    this._drawWaveGroup(3, 0.82, 0.35, 0.04, 1.5, 0.4, -25)
-    this._drawWaveGroup(4, 0.5, 0.5, 0.07, 2.0, 0.6, 0)
-    this._drawWaveGroup(3, 0.18, 0.35, 0.09, 1.0, 0.4, 25)
+    
+    // Group 1: Hue - 30
+    this._drawWaveGroup(3, 0.8, 0.4, 0.05, 1.5, 0.5, -30, dt)
+    
+    // Group 2: Base Hue
+    this._drawWaveGroup(3, 0.5, 0.6, 0.07, 2.0, 0.7, 0, dt)
+    
+    // Group 3: Hue + 30
+    this._drawWaveGroup(3, 0.2, 0.4, 0.09, 1.0, 0.5, 30, dt)
 
     ctx.globalCompositeOperation = "source-over"
-    requestAnimationFrame(() => this._animate())
   }
 }
