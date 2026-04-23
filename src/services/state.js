@@ -163,6 +163,7 @@ const defaultSettings = {
   flashlightSize: 150,
   flashlightOpacity: 0.9,
   gridScanColor: "#00ffcc",
+
   plantGrowthColor: "#4caf50",
   oceanFishColor: "#ff7f50",
   floatingLinesColor: "#ffffff",

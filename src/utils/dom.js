@@ -601,6 +601,7 @@ export const pixelRunColorPicker = document.getElementById(
 export const pixelRunColorSetting = document.getElementById(
   "pixel-run-color-setting",
 )
+
 export const nintendoPixelColorPicker = document.getElementById(
   "nintendo-pixel-color-picker",
 )

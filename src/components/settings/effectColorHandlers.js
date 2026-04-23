@@ -403,6 +403,8 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.pixelRunEffect.color = DOM.pixelRunColorPicker.value
   })
 
+
+
   DOM.nintendoPixelColorPicker.addEventListener("input", () => {
     updateSetting("nintendoPixelColor", DOM.nintendoPixelColorPicker.value)
     saveSettings()

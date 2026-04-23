@@ -62,6 +62,7 @@ const EFFECT_KEY_MAP = {
   tetFireworks: "tetFireworksEffect",
   skyLanterns: "skyLanternsEffect",
   pixelRun: "pixelRunEffect",
+
   nintendoPixel: "nintendoPixelEffect",
   retroGame: "retroGameEffect",
   crtScanlines: "crtScanlinesEffect",
@@ -1708,6 +1709,7 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.effect === "pixelRun" ? "block" : "none"
     if (DOM.pixelRunColorPicker)
       DOM.pixelRunColorPicker.value = settings.pixelRunColor || "#00e5ff"
+
     if (DOM.nintendoPixelColorSetting)
       DOM.nintendoPixelColorSetting.style.display =
         settings.effect === "nintendoPixel" ? "block" : "none"

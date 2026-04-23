@@ -242,6 +242,7 @@ export function initSettings() {
       "effect-canvas",
       settings.pixelRunColor || "#00e5ff",
     ),
+
     nintendoPixelEffect: new NintendoPixelEffect(
       "effect-canvas",
       settings.nintendoPixelColor || "#63f5ff",
