@@ -60,6 +60,7 @@ const EFFECT_KEY_MAP = {
   shiny: "shinyEffect",
   lineShiny: "lineShinyEffect",
   tetFireworks: "tetFireworksEffect",
+  reunificationDay: "reunificationDayEffect",
   skyLanterns: "skyLanternsEffect",
   pixelRun: "pixelRunEffect",
 

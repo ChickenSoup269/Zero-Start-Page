@@ -99,6 +99,7 @@ import { PixelWeatherEffect } from "../animations/pixelWeather.js"
 import { ShinyEffect } from "../animations/shiny.js"
 import { LineShinyEffect } from "../animations/lineShiny.js"
 import { TetFireworksEffect } from "../animations/tetFireworks.js"
+import { ReunificationDayEffect } from "../animations/reunificationDay.js"
 import { SkyLanternsEffect } from "../animations/skyLanterns.js"
 import { PixelRunEffect } from "../animations/pixelRun.js"
 import { NintendoPixelEffect } from "../animations/nintendoPixel.js"
@@ -242,6 +243,7 @@ export function initSettings() {
       settings.lineShinyColor || "#ffffff",
     ),
     tetFireworksEffect: new TetFireworksEffect("effect-canvas", {}),
+    reunificationDayEffect: new ReunificationDayEffect("effect-canvas", {}),
     skyLanternsEffect: new SkyLanternsEffect("effect-canvas", {
       type: settings.skyLanternsType || "lantern",
     }),
