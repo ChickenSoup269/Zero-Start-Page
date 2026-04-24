@@ -698,6 +698,11 @@
   "theme_cyberpunk": "Cyberpunk",
   "theme_ocean": "Ocean",
   "theme_sakura": "Sakura",
+  "theme_space": "Space",
   "theme_halloween": "Halloween",
+  "theme_twilight": "Twilight",
+  "theme_neon": "Neon Night",
+  "theme_nordic": "Nordic",
+  "theme_nature": "Nature",
   "settings_extra_colors": "Extra Colors"
 }

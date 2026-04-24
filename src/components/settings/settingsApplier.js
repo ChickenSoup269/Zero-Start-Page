@@ -573,6 +573,11 @@ function createApplySettings(effectInstances) {
       "date-clock-style-round",
       "date-clock-style-square",
       "date-clock-style-analog",
+      "date-clock-style-cool",
+      "date-clock-style-jp-style",
+      "date-clock-style-sidestyle",
+      "date-clock-style-sidebar",
+      "date-clock-style-weekday",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 

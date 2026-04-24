@@ -16,6 +16,7 @@ const THEMES = {
     effect: "none",
     font: "'Outfit', sans-serif",
     clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "default",
     clockColor: "#ffffff",
     dateColor: "#ffffff"
   },
@@ -27,6 +28,8 @@ const THEMES = {
     glassBorder: "rgba(255, 100, 100, 0.15)",
     glassEdge: "rgba(255, 150, 150, 0.25)",
     effect: "snowfallHD",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
     clockColor: "#ffffff",
     dateColor: "#ffcccc"
   },
@@ -38,6 +41,8 @@ const THEMES = {
     glassBorder: "rgba(255, 215, 0, 0.2)",
     glassEdge: "rgba(255, 215, 0, 0.3)",
     effect: "tetFireworks",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "default",
     clockColor: "#ffd700",
     dateColor: "#ffffff"
   },
@@ -48,6 +53,8 @@ const THEMES = {
     glassBg: "rgba(255, 255, 255, 0.05)",
     glassBorder: "rgba(255, 215, 0, 0.2)",
     effect: "reunificationDay",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
     clockColor: "#ffffff",
     dateColor: "#ffd700"
   },
@@ -61,6 +68,7 @@ const THEMES = {
     effect: "matrix",
     font: "'GohuFont', monospace",
     clockFont: "'Electroharmonix', sans-serif",
+    dateClockStyle: "minimal",
     clockColor: "#00ff73",
     dateColor: "#00ff73"
   },
@@ -72,6 +80,8 @@ const THEMES = {
     glassBorder: "rgba(0, 212, 255, 0.15)",
     glassEdge: "rgba(0, 212, 255, 0.2)",
     effect: "oceanWave",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
     clockColor: "#ffffff",
     dateColor: "#e0f7fa"
   },
@@ -83,8 +93,24 @@ const THEMES = {
     glassBorder: "rgba(255, 183, 197, 0.2)",
     glassEdge: "rgba(255, 183, 197, 0.3)",
     effect: "sakura",
+    clockFont: "'Electroharmonix', sans-serif",
+    dateClockStyle: "jp-style",
     clockColor: "#ffffff",
     dateColor: "#ffebf0"
+  },
+  space: {
+    accentColor: "#a8c0ff",
+    sidebarBg: "rgba(10, 10, 20, 0.95)",
+    panelBg: "rgba(20, 20, 40, 0.8)",
+    glassBg: "rgba(168, 192, 255, 0.05)",
+    glassBorder: "rgba(168, 192, 255, 0.15)",
+    glassEdge: "rgba(168, 192, 255, 0.25)",
+    effect: "meteor",
+    clockFont: "'Anurati', sans-serif",
+    dateClockStyle: "sidestyle",
+    sidestyleAlign: "center",
+    clockColor: "#ffffff",
+    dateColor: "#a8c0ff"
   },
   halloween: {
     accentColor: "#ff6600",
@@ -94,7 +120,61 @@ const THEMES = {
     glassBorder: "rgba(255, 102, 0, 0.2)",
     glassEdge: "rgba(255, 102, 0, 0.3)",
     effect: "halloween",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
     clockColor: "#ff6600",
+    dateColor: "#ffffff"
+  },
+  twilight: {
+    accentColor: "#ff8c00",
+    sidebarBg: "rgba(30, 10, 30, 0.9)",
+    panelBg: "rgba(50, 20, 50, 0.8)",
+    glassBg: "rgba(255, 140, 0, 0.05)",
+    glassBorder: "rgba(255, 140, 0, 0.15)",
+    glassEdge: "rgba(255, 140, 0, 0.25)",
+    effect: "sunbeam",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
+    clockColor: "#ff8c00",
+    dateColor: "#ffffff"
+  },
+  neon: {
+    accentColor: "#00f2ff",
+    sidebarBg: "rgba(5, 5, 15, 0.95)",
+    panelBg: "rgba(10, 10, 30, 0.85)",
+    glassBg: "rgba(0, 242, 255, 0.03)",
+    glassBorder: "rgba(0, 242, 255, 0.15)",
+    glassEdge: "rgba(0, 242, 255, 0.25)",
+    effect: "floatingLines",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "cool",
+    clockColor: "#ffffff",
+    dateColor: "#ffffff"
+  },
+  nordic: {
+    accentColor: "#81a1c1",
+    sidebarBg: "rgba(46, 52, 64, 0.92)",
+    panelBg: "rgba(59, 66, 82, 0.8)",
+    glassBg: "rgba(236, 239, 244, 0.05)",
+    glassBorder: "rgba(236, 239, 244, 0.1)",
+    glassEdge: "rgba(236, 239, 244, 0.2)",
+    effect: "northernLights",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
+    clockColor: "#eceff4",
+    dateColor: "#81a1c1"
+  },
+  nature: {
+    accentColor: "#a3be8c",
+    sidebarBg: "rgba(20, 30, 20, 0.92)",
+    panelBg: "rgba(30, 45, 30, 0.8)",
+    glassBg: "rgba(163, 190, 140, 0.05)",
+    glassBorder: "rgba(163, 190, 140, 0.1)",
+    glassEdge: "rgba(163, 190, 140, 0.2)",
+    effect: "fireflies",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "minimal",
+    clockColor: "#a3be8c",
     dateColor: "#ffffff"
   },
 }

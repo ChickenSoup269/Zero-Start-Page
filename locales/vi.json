@@ -263,7 +263,6 @@
   "sky_lanterns_type_lantern": "Đèn lồng truyền thống",
   "sky_lanterns_type_dots": "Chấm sáng (Sao)",
   "effect_pixel_run": "Pixel chạy (Mario style)",
-
   "effect_nintendo_pixel": "Màn hình Retro (CRT)",
   "effect_crt_scanlines": "Đường quét CRT (80s/90s)",
   "effect_retro_game": "Trò chơi Retro (Space Invaders)",
@@ -406,7 +405,6 @@
   "style_pixel_rain": "Mưa",
   "style_pixel_wind": "Gió",
   "style_pixel_storm": "Bão",
-
   "style_spotify": "Spotify",
   "style_neon": "Neon",
   "style_minimal": "Tối giản",
@@ -701,6 +699,11 @@
   "theme_cyberpunk": "Công nghệ (Matrix)",
   "theme_ocean": "Đại dương",
   "theme_sakura": "Hoa anh đào",
+  "theme_space": "Vũ trụ (Space)",
   "theme_halloween": "Halloween",
+  "theme_twilight": "Hoàng hôn (Twilight)",
+  "theme_neon": "Neon rực rỡ",
+  "theme_nordic": "Bắc Âu (Nordic)",
+  "theme_nature": "Thiên nhiên",
   "settings_extra_colors": "Màu bổ sung"
 }
