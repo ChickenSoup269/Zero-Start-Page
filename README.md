@@ -193,27 +193,35 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 </tr>
 </table>
 
-### Visual Effects (32 Animations + SVG Wave Generator)
+### Visual Effects (48 Animations + SVG Wave Generator)
 
-Select from 32 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
+Select from 48 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Effect                 | Effect                 | Effect            | Effect             |
-| ---------------------- | ---------------------- | ----------------- | ------------------ |
-| 1. Rain                | 9. Snowfall            | 17. Cloud Drift   | 25. Sky Lanterns   |
-| 2. Fireflies           | 10. Snowfall HD        | 18. Autumn Leaves | 26. Pixel Run      |
-| 3. Network             | 11. Aurora Wave        | 19. Green Leaves  | 27. Retro Terminal |
-| 4. Matrix Rain         | 12. Bubbles            | 20. Sunbeam       | 28. Retro Game     |
-| 5. Gradients Aura      | 13. Rain on Glass      | 21. Shiny         | 29. Meteor Shower  |
-| 6. Anime Wind          | 14. Rain HD            | 22. Line Shiny    | 30. Wavy Pattern   |
-| 7. Hacker              | 15. Rainbow Background | 23. Tết Fireworks | 31. Angled Pattern |
-| 8. Sakura              | 16. Wavy Lines         | 24. Rain Galaxy   | 32. Fireflies HD   |
-| **SVG Wave Generator** |                        |                   |                    |
+| Nature & Space | Digital & Tech | Weather & Seasons | Abstract & Patterns |
+| :--- | :--- | :--- | :--- |
+| • Rain / Rain HD | • Network | • Snowfall / HD | • Gradients Aura |
+| • Fireflies / HD | • Matrix Rain | • Aurora Wave | • Bubbles |
+| • Meteor Shower | • Hacker | • Northern Lights | • Wavy Lines |
+| • Sunbeam | • Pixel Cubes | • Autumn Leaves | • Wavy Pattern |
+| • Light Pillars | • Pixel Run | • Green Leaves | • Angled Pattern |
+| • Sky Lanterns | • Pixel Blast | • Sakura | • Floating Lines |
+| • Ocean Wave / Fish | • Hyperspace | • Wind | • Shiny / Line Shiny |
+| • Cloud Drift | • Nintendo Pixel | • Pixel Weather | • Tet Fireworks |
+| • Plant Growth | • Retro Terminal | • Storm Rain | • CRT Scanlines |
+| • Jellyfish | • Retro Game | • Falling Leaves | • Cursor Trail |
 
 ### SVG Wave Generator
 
 - Fully configurable wave backgrounds: line count, amplitude X/Y, offset, angle, smoothness, fill toggle
 - HSL color gradient (start → end)
 - Save custom waves to a personal gallery
+
+### Advanced Personalization
+
+- **Custom Floating Title** — add your own text, move it anywhere (Free Move), and customize everything: font, size, letter spacing, shadow (X/Y/Blur/Color), and border.
+- **Multi-color System** — dynamically change UI accent colors with multiple modes (Gradient, Cycle, or Sync with background).
+- **Layout Controls Popup (LCP)** — a quick-access mini menu to toggle component visibility and adjust layout settings (Width, Positions) directly without opening full settings.
+- **Glassmorphism UI** — consistent, high-quality frosted glass aesthetics across all widgets and modals.
 
 ### Settings & Personalization
 
@@ -224,6 +232,9 @@ Select from 32 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Language**: English and Vietnamese (i18n)
 - Per-component **visibility toggles**: Clock, Search, Bookmarks, Bookmark Groups, Todo, Timer, Notepad, Calendar, Lunar Calendar, Music Player, Quick Access
 - **Ghost mode** for side controls
+- **Cloud Sync** — backup and restore settings (excluding media) using your Chrome account sync storage
+- **Font Management** — use predefined fonts, Google Fonts, or **browse and use fonts installed on your computer** (Local Font Access API)
+- **Bookmark Layouts** — choose between Default Grid, Sidebar, and multiple Taskbar modes (**Bottom Center, Top Center, Bottom Left**)
 - **Export / Import** settings as a JSON file
 - Reset all settings to defaults
 - Draggable component position persistence with reset option
@@ -245,9 +256,11 @@ Select from 32 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Vanilla JavaScript** — no frameworks, no build step
 - Chrome Extension **Manifest V3**
 - Canvas API for animations and visualizer
-- LocalStorage for all persistence
+- LocalStorage & IndexedDB for media and configuration
 - Chrome Bookmarks API for browser import
 - Chrome Media Session API for music detection
+- Chrome Storage Sync for cross-device synchronization
+- Local Font Access API for system font integration
 
 ---
 
