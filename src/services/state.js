@@ -318,6 +318,91 @@ export function updateSetting(key, value) {
   settingsState[key] = value
 }
 
+export function updateAllSettings(newSettings) {
+  settingsState = { ...settingsState, ...newSettings }
+}
+
+/**
+ * Backup settings to Chrome Sync Storage.
+ * Excludes local images/videos to stay within storage limits.
+ */
+export async function backupToCloud() {
+  const currentSettings = { ...getSettings() }
+
+  // Strip local media to avoid quota limits
+  delete currentSettings.userBackgrounds
+  delete currentSettings.userVideos
+  delete currentSettings.userImages
+  delete currentSettings.userAccentColors
+  delete currentSettings.userGradients
+  delete currentSettings.userMultiColors
+  delete currentSettings.userSvgWaves
+
+  const settingsStr = JSON.stringify(currentSettings)
+
+  return new Promise((resolve, reject) => {
+    if (!window.chrome || !chrome.storage || !chrome.storage.sync) {
+      reject(new Error("Chrome Sync Storage is not available."))
+      return
+    }
+
+    chrome.storage.sync.set({ cloudSettings: settingsStr }, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+/**
+ * Restore settings from Chrome Sync Storage.
+ * Merges with current local media if they exist.
+ */
+export async function restoreFromCloud() {
+  return new Promise((resolve, reject) => {
+    if (!window.chrome || !chrome.storage || !chrome.storage.sync) {
+      reject(new Error("Chrome Sync Storage is not available."))
+      return
+    }
+
+    chrome.storage.sync.get(["cloudSettings"], (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError)
+      } else if (result.cloudSettings) {
+        try {
+          const restored = JSON.parse(result.cloudSettings)
+          const current = getSettings()
+
+          // Preserve local media if they exist locally
+          const mediaKeys = [
+            "userBackgrounds",
+            "userVideos",
+            "userImages",
+            "userAccentColors",
+            "userGradients",
+            "userMultiColors",
+            "userSvgWaves",
+          ]
+
+          mediaKeys.forEach((key) => {
+            if (current[key]) restored[key] = current[key]
+          })
+
+          updateAllSettings(restored)
+          saveSettings(true)
+          resolve(true)
+        } catch (e) {
+          reject(new Error("Failed to parse cloud data."))
+        }
+      } else {
+        resolve(false) // No data found
+      }
+    })
+  })
+}
+
 export function resetSettingsState() {
   const settings = getSettings()
   

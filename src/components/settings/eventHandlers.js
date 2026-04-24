@@ -8,6 +8,8 @@ import {
   updateSetting,
   saveSettings,
   resetSettingsState,
+  backupToCloud,
+  restoreFromCloud,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -2684,6 +2686,38 @@ export function setupGeneralEventHandlers(
     } catch (err) {
       console.error("Import error:", err)
       showAlert("Import failed.")
+    }
+  })
+
+  // Cloud Sync Logic
+  const syncToCloudBtn = document.getElementById("sync-to-cloud-btn")
+  const syncFromCloudBtn = document.getElementById("sync-from-cloud-btn")
+
+  syncToCloudBtn?.addEventListener("click", async () => {
+    try {
+      await backupToCloud()
+      await showAlert(
+        `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning}`,
+      )
+    } catch (e) {
+      showAlert(`Backup failed: ${e.message}`)
+    }
+  })
+
+  syncFromCloudBtn?.addEventListener("click", async () => {
+    try {
+      const confirm = await showConfirm(i18n.sync_restore_confirm)
+      if (confirm) {
+        const success = await restoreFromCloud()
+        if (success) {
+          await showAlert(i18n.sync_restore_success)
+          window.location.reload()
+        } else {
+          showAlert(i18n.sync_restore_no_data)
+        }
+      }
+    } catch (e) {
+      showAlert(`Restore failed: ${e.message}`)
     }
   })
 
