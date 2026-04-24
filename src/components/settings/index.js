@@ -100,6 +100,7 @@ import { ShinyEffect } from "../animations/shiny.js"
 import { LineShinyEffect } from "../animations/lineShiny.js"
 import { TetFireworksEffect } from "../animations/tetFireworks.js"
 import { ReunificationDayEffect } from "../animations/reunificationDay.js"
+import { HalloweenEffect } from "../animations/halloween.js"
 import { SkyLanternsEffect } from "../animations/skyLanterns.js"
 import { PixelRunEffect } from "../animations/pixelRun.js"
 import { NintendoPixelEffect } from "../animations/nintendoPixel.js"
@@ -244,6 +245,7 @@ export function initSettings() {
     ),
     tetFireworksEffect: new TetFireworksEffect("effect-canvas", {}),
     reunificationDayEffect: new ReunificationDayEffect("effect-canvas", {}),
+    halloweenEffect: new HalloweenEffect("effect-canvas", {}),
     skyLanternsEffect: new SkyLanternsEffect("effect-canvas", {
       type: settings.skyLanternsType || "lantern",
     }),

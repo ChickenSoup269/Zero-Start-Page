@@ -34,7 +34,11 @@ export class ReunificationDayEffect {
       "Việt Nam muôn năm",
       "Độc lập - Tự do",
       "Hòa bình",
-      "51 năm thống nhất đất nước"
+      "51 năm thống nhất đất nước",
+      "Đại thắng mùa Xuân 1975",
+      "Thống nhất non sông",
+      "Bắc Nam sum họp",
+      "Ngày toàn thắng"
     ]
     
     this.fps = 60
