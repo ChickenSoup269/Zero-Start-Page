@@ -94,8 +94,11 @@ function initFont() {
       const savedFonts = settings.userSavedFonts || []
       const fontDef = PREDEFINED_FONTS.find(f => f.label === fontName)
       
+      const savedFontObj = savedFonts.find(f => (typeof f === 'string' ? f : f.label) === fontName)
+      const isLocal = savedFontObj && typeof savedFontObj === 'object' && savedFontObj.isLocal
+
       const isGoogleFont = (fontDef && fontDef.google) || 
-                          savedFonts.some(f => (typeof f === 'string' ? f : f.label) === fontName);
+                          (savedFontObj && !isLocal);
 
       // Pre-loaded fonts in index.html don't need to be reloaded
       const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
@@ -142,12 +145,14 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
     }).map((f, index) => {
         const label = typeof f === 'string' ? f : f.label;
         const isFavorite = typeof f === 'string' ? false : !!f.isFavorite;
+        const isLocal = typeof f === 'object' && f.isLocal;
         // Find original index in userSavedFonts for context menu
         const originalIndex = savedFonts.findIndex(sf => (typeof sf === 'string' ? sf : sf.label) === label);
         return {
             label: label,
-            value: `'${label}', sans-serif`,
-            custom: true,
+            value: typeof f === 'object' && f.value ? f.value : `'${label}', sans-serif`,
+            custom: !isLocal,
+            isLocal: isLocal,
             isFavorite: isFavorite,
             originalIndex: originalIndex,
             type: "saved"
@@ -176,7 +181,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       fontGrid.appendChild(sep)
 
       section.fonts.forEach((fontObj) => {
-        const { label, value, tag, custom, google, isFavorite, originalIndex, type } = fontObj
+        const { label, value, tag, custom, google, isFavorite, originalIndex, type, isLocal } = fontObj
         const card = document.createElement("div")
         
         const isActive = (type === "clock") ? (value === settings.clockFont) : (value === settings.font)
@@ -193,7 +198,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         name.className = "font-item-name"
         
         let displayTag = tag;
-        if (type === "saved") displayTag = "Saved Font";
+        if (type === "saved") displayTag = isLocal ? "Local Font" : "Saved Font";
         
         name.textContent = label + (displayTag ? ` (${displayTag})` : "")
 
@@ -220,7 +225,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
         card.addEventListener("contextmenu", (e) => {
             e.preventDefault()
-            if (custom) {
+            if (custom || isLocal) {
                 showContextMenu(e.clientX, e.clientY, originalIndex, "userFont")
             } else {
                 // For predefined fonts, pass type and label as ID
@@ -237,10 +242,123 @@ function renderSavedFonts() {
   // Saved fonts are now shown directly in the font grid; this is a no-op.
 }
 
+async function setupLocalFonts(updateSettingCallback) {
+  const browseBtn = document.getElementById("browse-local-fonts-btn")
+  const modal = document.getElementById("local-fonts-modal")
+  const closeBtn = document.getElementById("close-local-fonts-modal-btn")
+  const searchInput = document.getElementById("local-fonts-search")
+  const fontsList = document.getElementById("local-fonts-list")
+
+  if (!browseBtn || !modal) return
+
+  browseBtn.addEventListener("click", async () => {
+    if (!("queryLocalFonts" in window)) {
+      showAlert(geti18n().alert_local_fonts_not_supported)
+      return
+    }
+
+    try {
+      const fonts = await window.queryLocalFonts()
+      modal.style.display = "block"
+      renderLocalFontsList(fonts, "")
+    } catch (err) {
+      console.error(err)
+      showAlert(geti18n().alert_local_fonts_not_supported)
+    }
+  })
+
+  if (closeBtn) {
+    closeBtn.onclick = () => (modal.style.display = "none")
+  }
+  
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) modal.style.display = "none"
+  })
+
+  searchInput.addEventListener("input", async () => {
+    if (!("queryLocalFonts" in window)) return
+    const fonts = await window.queryLocalFonts()
+    renderLocalFontsList(fonts, searchInput.value)
+  })
+
+  function renderLocalFontsList(fonts, filter) {
+    fontsList.innerHTML = ""
+    const lowerFilter = filter.toLowerCase()
+    
+    // Group by family to avoid duplicates (different styles)
+    const uniqueFamilies = new Map()
+    fonts.forEach(f => {
+      if (f.family.toLowerCase().includes(lowerFilter)) {
+        if (!uniqueFamilies.has(f.family)) {
+          uniqueFamilies.set(f.family, f)
+        }
+      }
+    })
+
+    uniqueFamilies.forEach((font, family) => {
+      const card = document.createElement("div")
+      card.className = "font-item"
+      card.style.flexDirection = "column"
+      card.style.alignItems = "center"
+      card.style.textAlign = "center"
+      card.style.height = "auto"
+      card.style.padding = "10px"
+      card.style.cursor = "pointer"
+
+      const preview = document.createElement("span")
+      preview.className = "font-item-preview"
+      preview.textContent = "Aa"
+      preview.style.fontFamily = `"${family}"`
+      preview.style.fontSize = "1.5rem"
+      preview.style.marginBottom = "5px"
+
+      const name = document.createElement("span")
+      name.className = "font-item-name"
+      name.textContent = family
+      name.style.fontSize = "0.7rem"
+      name.style.whiteSpace = "nowrap"
+      name.style.overflow = "hidden"
+      name.style.textOverflow = "ellipsis"
+      name.style.width = "100%"
+
+      card.appendChild(preview)
+      card.appendChild(name)
+
+      card.onclick = () => {
+        const settings = getSettings()
+        const savedFonts = settings.userSavedFonts || []
+        
+        // Add if not already saved
+        const exists = savedFonts.some(f => (typeof f === 'string' ? f : f.label) === family)
+        if (!exists) {
+          savedFonts.push({
+            label: family,
+            value: `"${family}", sans-serif`,
+            isLocal: true
+          })
+          updateSetting("userSavedFonts", savedFonts)
+          saveSettings()
+          
+          // Re-render the main font grid
+          const mainGrid = document.getElementById("font-grid")
+          if (mainGrid) {
+            renderFontGrid(mainGrid, updateSettingCallback)
+          }
+        }
+        
+        modal.style.display = "none"
+      }
+
+      fontsList.appendChild(card)
+    })
+  }
+}
+
 export {
   PREDEFINED_FONTS,
   loadGoogleFont,
   initFont,
   renderFontGrid,
   renderSavedFonts,
+  setupLocalFonts,
 }

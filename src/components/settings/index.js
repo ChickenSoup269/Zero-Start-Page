@@ -29,7 +29,12 @@ import {
   applyTabIcon,
   renderTabIconPreview,
 } from "./tabIcon.js"
-import { loadGoogleFont, renderFontGrid, initFont } from "./fontManager.js"
+import {
+  loadGoogleFont,
+  renderFontGrid,
+  initFont,
+  setupLocalFonts,
+} from "./fontManager.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   populateUnsplashCollections,
@@ -463,6 +468,7 @@ export function initSettings() {
   // Restore font
   initFont()
   renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
+  setupLocalFonts(handleSettingUpdate)
 
   // Setup all event handlers
   setupGeneralEventHandlers(

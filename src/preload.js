@@ -18,6 +18,8 @@
 
       if (layout === "sidebar") body.classList.add("bookmark-sidebar-mode")
       else if (layout === "taskbar") body.classList.add("bookmark-taskbar-mode")
+      else if (layout === "taskbar-top")
+        body.classList.add("bookmark-taskbar-top-mode")
       else if (layout === "taskbar-left")
         body.classList.add("bookmark-taskbar-left-mode")
 

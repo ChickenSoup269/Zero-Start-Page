@@ -434,6 +434,7 @@
                     <option value="default" data-i18n="layout_default">Default</option>
                     <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
                     <option value="taskbar" data-i18n="layout_taskbar">Taskbar (C)</option>
+                    <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (T)</option>
                     <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (L)</option>
                 </select>
             </div>
@@ -1699,19 +1700,23 @@
                                 <label for="northern-lights-color-picker"
                                     data-i18n="setting_northern_lights_color">Aurora
                                     Color</label>
-                                <input type="color" id="northern-lights-color-picker" value="#00ffcc" style="margin-bottom: 15px;"/>
+                                <input type="color" id="northern-lights-color-picker" value="#00ffcc"
+                                    style="margin-bottom: 15px;" />
 
-                                <label for="northern-lights-style-select" data-i18n="settings_northern_lights_style">Aurora Style</label>
+                                <label for="northern-lights-style-select"
+                                    data-i18n="settings_northern_lights_style">Aurora Style</label>
                                 <select id="northern-lights-style-select" style="width: 100%; margin-bottom: 15px;">
                                     <option value="classic" data-i18n="aurora_style_classic">Classic (Old)</option>
                                     <option value="hd" data-i18n="aurora_style_hd">HD Cinematic</option>
                                 </select>
 
-                                <label for="northern-lights-brightness-slider" style="display: flex; justify-content: space-between;">
+                                <label for="northern-lights-brightness-slider"
+                                    style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_aurora_brightness">Brightness</span>
                                     <span id="northern-lights-brightness-val">0.8</span>
                                 </label>
-                                <input type="range" id="northern-lights-brightness-slider" min="0.2" max="1.5" step="0.1" value="0.8">
+                                <input type="range" id="northern-lights-brightness-slider" min="0.2" max="1.5"
+                                    step="0.1" value="0.8">
                             </div>
 
                             <!-- Pixel Cubes Color -->
@@ -1777,9 +1782,11 @@
 
                             <!-- Sky Lanterns Settings -->
                             <div id="sky-lanterns-setting" class="setting-item" style="display: none;">
-                                <label for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern Type</label>
+                                <label for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
+                                    Type</label>
                                 <select id="sky-lanterns-type-select" style="width: 100%;">
-                                    <option value="lantern" data-i18n="sky_lanterns_type_lantern">Traditional Lantern</option>
+                                    <option value="lantern" data-i18n="sky_lanterns_type_lantern">Traditional Lantern
+                                    </option>
                                     <option value="dots" data-i18n="sky_lanterns_type_dots">Light Dots (Stars)</option>
                                 </select>
                             </div>
@@ -2111,7 +2118,8 @@
 
                             <!-- Flashlight Settings -->
                             <div id="flashlight-color-setting" class="setting-item" style="display: none;">
-                                <label for="flashlight-color-picker" data-i18n="setting_flashlight_color">Overlay Color</label>
+                                <label for="flashlight-color-picker" data-i18n="setting_flashlight_color">Overlay
+                                    Color</label>
                                 <input type="color" id="flashlight-color-picker" value="#000000" />
                             </div>
 
@@ -2120,7 +2128,8 @@
                                     <span data-i18n="setting_flashlight_size">Flashlight Size</span>:
                                     <span id="flashlight-size-val">150</span>px
                                 </label>
-                                <input type="range" id="flashlight-size-slider" min="50" max="500" step="5" value="150" />
+                                <input type="range" id="flashlight-size-slider" min="50" max="500" step="5"
+                                    value="150" />
                             </div>
 
                             <div id="flashlight-opacity-setting" class="setting-item" style="display: none;">
@@ -2128,7 +2137,8 @@
                                     <span data-i18n="setting_flashlight_opacity">Darkness Level</span>:
                                     <span id="flashlight-opacity-val">0.90</span>
                                 </label>
-                                <input type="range" id="flashlight-opacity-slider" min="0" max="1" step="0.05" value="0.90" />
+                                <input type="range" id="flashlight-opacity-slider" min="0" max="1" step="0.05"
+                                    value="0.90" />
                             </div>
 
                             <!-- Plant Growth Setting -->
@@ -2246,6 +2256,7 @@
                         </small>
                     </div>
 
+
                     <div class="setting-group">
                         <label data-i18n="settings_custom_font" for="custom-font-input"><i class="fa-solid fa-font"></i>
                             Custom Google
@@ -2277,6 +2288,20 @@
                             </a>
                         </small>
                     </div>
+
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-laptop-code"></i> <span
+                                data-i18n="settings_local_fonts">Browse Local Fonts</span></div>
+                        <button id="browse-local-fonts-btn" data-i18n="settings_local_fonts"
+                            style="width: 100%; padding: 0.75rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.1)); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text-color); cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease;">
+                            <i class="fa-solid fa-laptop-code"></i> Browse Local Fonts
+                        </button>
+                        <p class="setting-hint" data-i18n="settings_local_fonts_hint"
+                            style="font-size: 0.75rem; opacity: 0.7; margin-top: 8px;">Use fonts installed on your
+                            computer</p>
+                    </div>
+
+
                 </div>
             </div>
 
@@ -2848,6 +2873,8 @@
                                     <option value="default" data-i18n="layout_default">Default Grid</option>
                                     <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
                                     <option value="taskbar" data-i18n="layout_taskbar">Taskbar (Bottom Center)</option>
+                                    <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)
+                                    </option>
                                     <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
                                     </option>
                                 </select>
@@ -3236,7 +3263,8 @@
                         <i class="fa-solid fa-rotate-left"></i> <span data-i18n="settings_reset">Reset All</span>
                     </button>
                     <button id="reset-layout" class="footer-btn reset-btn">
-                        <i class="fa-solid fa-arrows-to-dot"></i> <span data-i18n="settings_reset_layout">Reset Layout</span>
+                        <i class="fa-solid fa-arrows-to-dot"></i> <span data-i18n="settings_reset_layout">Reset
+                            Layout</span>
                     </button>
                 </div>
                 <div class="sidebar-footer-hint" data-i18n="settings_reset_layout_hint">
@@ -3477,6 +3505,26 @@
                         <span data-i18n="modal_import_selected">Import Selected</span>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="local-fonts-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 data-i18n="modal_local_fonts_title">Select Local Font</h2>
+                <span id="close-local-fonts-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-input-group">
+                <i class="fa-solid fa-magnifying-glass modal-input-icon"></i>
+                <input type="text" id="local-fonts-search" data-i18n-placeholder="modal_local_fonts_search"
+                    placeholder="Search installed fonts...">
+            </div>
+            <div id="local-fonts-list" class="font-grid"
+                style="max-height: 400px; overflow-y: auto; margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 5px;">
+                <!-- Local fonts will be injected here -->
+            </div>
+            <div class="modal-footer" style="margin-top: 20px; text-align: right; opacity: 0.7; font-size: 0.8rem;">
+                <p data-i18n="settings_local_fonts_hint">Use fonts installed on your computer</p>
             </div>
         </div>
     </div>

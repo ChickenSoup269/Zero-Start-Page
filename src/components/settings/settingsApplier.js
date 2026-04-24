@@ -116,6 +116,7 @@ function createApplySettings(effectInstances) {
       "bg-image-active",
       "bookmark-sidebar-mode",
       "bookmark-taskbar-mode",
+      "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
       "bookmark-layout-bg-hidden",
       "bookmark-layout-bg-white",
@@ -508,12 +509,15 @@ function createApplySettings(effectInstances) {
     document.body.classList.remove(
       "bookmark-sidebar-mode",
       "bookmark-taskbar-mode",
+      "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
     )
     if (layout === "sidebar")
       document.body.classList.add("bookmark-sidebar-mode")
     else if (layout === "taskbar")
       document.body.classList.add("bookmark-taskbar-mode")
+    else if (layout === "taskbar-top")
+      document.body.classList.add("bookmark-taskbar-top-mode")
     else if (layout === "taskbar-left")
       document.body.classList.add("bookmark-taskbar-left-mode")
 
@@ -523,6 +527,7 @@ function createApplySettings(effectInstances) {
 
     document.body.classList.remove(
       "bookmark-layout-bg-hidden",
+      "bookmark-layout-bg-white",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
     )

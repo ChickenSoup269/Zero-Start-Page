@@ -47,6 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (layout === "sidebar") document.body.classList.add("bookmark-sidebar-mode")
   else if (layout === "taskbar")
     document.body.classList.add("bookmark-taskbar-mode")
+  else if (layout === "taskbar-top")
+    document.body.classList.add("bookmark-taskbar-top-mode")
   else if (layout === "taskbar-left")
     document.body.classList.add("bookmark-taskbar-left-mode")
 

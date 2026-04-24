@@ -314,9 +314,12 @@ export function renderBookmarks() {
       if (icon) {
         if (isHidden) {
           const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+          const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
           if (isSidebar) {
             const isFlipped = document.body.classList.contains("flip-layout")
             icon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+          } else if (isTaskbarTop) {
+            icon.className = "fa-solid fa-chevron-down"
           } else {
             icon.className = "fa-solid fa-chevron-up"
           }
@@ -438,7 +441,7 @@ export function updateOverflowBookmarks() {
   if (!container) return
 
   const isMinimalModeMatch = document.body.className.match(
-    /bookmark-(sidebar|taskbar|taskbar-left)-mode/,
+    /bookmark-(sidebar|taskbar|taskbar-top|taskbar-left)-mode/,
   )
 
   // Cleanup previously hidden items and indicator
@@ -470,7 +473,10 @@ export function updateOverflowBookmarks() {
   }
 
   container.style.overflow = "hidden"
-  const isSidebar = isMinimalModeMatch[1] === "sidebar"
+  const mode = isMinimalModeMatch[1]
+  const isSidebar = mode === "sidebar"
+  const isTaskbarTop = mode === "taskbar-top"
+
   const checkOverflow = () => {
     let visibleCount = 0
     for (let j = 0; j < children.length - 1; j++) {
@@ -637,9 +643,13 @@ export function updateOverflowBookmarks() {
       } else {
         popup.style.right = window.innerWidth - rect.left + 15 + "px" // Expand to left
       }
+    } else if (isTaskbarTop) {
+      popup.style.top = rect.bottom + 15 + "px"
+      popup.style.left =
+        Math.max(20, rect.left - popupRect.width / 2 + rect.width / 2) + "px"
     } else {
-      // Taskbar cases
-      const isTaskbarLeft = isMinimalModeMatch[1] === "taskbar-left"
+      // Taskbar cases (bottom)
+      const isTaskbarLeft = mode === "taskbar-left"
       popup.style.bottom = window.innerHeight - rect.top + 15 + "px"
 
       if (isTaskbarLeft) {
