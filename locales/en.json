@@ -690,5 +690,14 @@
   "menu_select": "Select",
   "bookmark_selected": "Selected",
   "bookmark_delete_selected_confirm": "Delete {count} selected bookmarks?",
+  "settings_themes": "Themes",
+  "theme_default": "Default",
+  "theme_christmas": "Christmas",
+  "theme_tet": "Lunar New Year",
+  "theme_reunification": "Reunification Day",
+  "theme_cyberpunk": "Cyberpunk",
+  "theme_ocean": "Ocean",
+  "theme_sakura": "Sakura",
+  "theme_halloween": "Halloween",
   "settings_extra_colors": "Extra Colors"
 }

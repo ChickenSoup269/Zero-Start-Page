@@ -1197,3 +1197,5 @@ export const svgWaveDeleteSelectedBtn = document.getElementById(
 export const svgWaveSelectCancelBtn = document.getElementById(
   "svg-wave-select-cancel-btn",
 )
+
+export const themesGrid = document.getElementById("themes-grid")

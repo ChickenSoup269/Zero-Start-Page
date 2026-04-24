@@ -693,5 +693,14 @@
   "menu_select": "Chọn",
   "bookmark_selected": "Đã chọn",
   "bookmark_delete_selected_confirm": "Xóa {count} dấu trang đã chọn?",
+  "settings_themes": "Chủ đề",
+  "theme_default": "Mặc định",
+  "theme_christmas": "Giáng sinh",
+  "theme_tet": "Tết Nguyên Đán",
+  "theme_reunification": "Giải phóng 30/04",
+  "theme_cyberpunk": "Công nghệ (Matrix)",
+  "theme_ocean": "Đại dương",
+  "theme_sakura": "Hoa anh đào",
+  "theme_halloween": "Halloween",
   "settings_extra_colors": "Màu bổ sung"
 }

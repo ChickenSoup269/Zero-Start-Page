@@ -641,6 +641,24 @@ function createApplySettings(effectInstances) {
 
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
     document.documentElement.style.setProperty("--date-color", finalDateColor)
+
+    // Theme Surface Colors
+    if (settings.sidebarBg) {
+      document.documentElement.style.setProperty("--sidebar-bg", settings.sidebarBg)
+    }
+    if (settings.panelBg) {
+      document.documentElement.style.setProperty("--panel-bg", settings.panelBg)
+    }
+    if (settings.glassBg) {
+      document.documentElement.style.setProperty("--glass-bg", settings.glassBg)
+    }
+    if (settings.glassBorder) {
+      document.documentElement.style.setProperty("--glass-border", settings.glassBorder)
+    }
+    if (settings.glassEdge) {
+      document.documentElement.style.setProperty("--glass-edge", settings.glassEdge)
+    }
+
     if (settings.accentColor) {
       document.documentElement.style.setProperty(
         "--accent-color",

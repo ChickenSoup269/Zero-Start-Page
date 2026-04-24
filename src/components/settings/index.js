@@ -35,6 +35,7 @@ import {
   initFont,
   setupLocalFonts,
 } from "./fontManager.js"
+import { initThemeManager } from "./themeManager.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   populateUnsplashCollections,
@@ -455,6 +456,7 @@ export function initSettings() {
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)
   renderUserColors(DOM_EXPORTS)
   renderUserAccentColors(DOM_EXPORTS)
+  initThemeManager(DOM_EXPORTS, handleSettingUpdate, updateSettingsInputs)
 
   // Restore Unsplash credit
   const lastCredit = settings.unsplashLastCredit
