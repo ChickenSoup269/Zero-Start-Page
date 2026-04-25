@@ -132,7 +132,9 @@ function createApplySettings(effectInstances) {
     // Quick Access White Mode (light-mode)
     const sideControls = document.querySelector(".side-controls")
     if (sideControls) {
-      sideControls.classList.toggle("light-mode", settings.showQuickAccessBg === true)
+      const isWhiteMode = settings.showQuickAccessBg === true
+      sideControls.classList.toggle("light-mode", isWhiteMode)
+      document.body.classList.toggle("quick-access-white", isWhiteMode)
     }
 
     // Apply Widget Skins

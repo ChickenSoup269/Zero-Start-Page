@@ -627,34 +627,128 @@ body.ghost-controls .side-controls:hover {
 /* === LIGHT MODE (White Background) === */
 .side-controls.light-mode #settings-toggle,
 .side-controls.light-mode .quick-access-bar {
-  background: rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(25px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
   border-color: rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Chỉ đổi màu đen cho các nút KHÔNG active */
-.side-controls.light-mode .quick-btn:not(.active),
-.side-controls.light-mode #settings-toggle:not(.active) i,
+/* Đổi màu đen cho các nút và icon */
+.side-controls.light-mode .quick-btn,
+.side-controls.light-mode #settings-toggle i,
 .side-controls.light-mode .collapse-btn i {
   color: #000000 !important;
 }
 
-/* Đảm bảo các nút Active vẫn ưu tiên dùng màu từ logic cũ (Accent color) */
+/* Đảm bảo nút Active cũng dùng màu đen trắng thay vì accent color */
 .side-controls.light-mode .quick-btn.active {
-  color: var(--accent-color) !important;
-  background: var(--accent-contrast-color, #ffffff) !important;
-  box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.4);
+  color: #ffffff !important;
+  background: #000000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 12px;
 }
 
 .side-controls.light-mode .quick-btn:hover:not(.active),
 .side-controls.light-mode #settings-toggle:hover {
   background: rgba(0, 0, 0, 0.08) !important;
+  color: #000000 !important;
 }
 
 .side-controls.light-mode .quick-access-divider {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Layout Controls Popup Light Mode */
+.side-controls.light-mode .layout-controls-popup {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-title {
+  color: #000 !important;
+  opacity: 0.5;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .lcp-row:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.side-controls.light-mode .lcp-icon {
+  color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-label {
+  color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-select {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.5)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3C/svg%3E") !important;
+}
+
+.side-controls.light-mode .lcp-select:focus {
+  border-color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-select option {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-slider-row input[type="range"] {
+  background: rgba(0, 0, 0, 0.1) !important;
+  accent-color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-slider-row input[type="range"]::-webkit-slider-thumb {
+  background: #000 !important;
+}
+
+.side-controls.light-mode .lcp-slider {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider {
+  background: #000 !important;
+}
+
+.side-controls.light-mode .lcp-switch input:checked + .lcp-slider::before {
+  background: #fff !important;
+}
+
+/* Group Tabs White Mode Sync */
+body.quick-access-white .bookmark-group-tab {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+body.quick-access-white .bookmark-group-tab:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  color: #000 !important;
+}
+
+body.quick-access-white .bookmark-group-tab.active {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.quick-access-white .bookmark-group-tab.add-group-tab {
+  border-style: dashed !important;
+  background: rgba(0, 0, 0, 0.02) !important;
 }
 
 #image-preview-thumb {

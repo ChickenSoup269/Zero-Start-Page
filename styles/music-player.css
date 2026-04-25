@@ -47,11 +47,11 @@
 
 /* GIAO DIỆN TRẮNG BLUR TRONG SUỐT */
 .music-player-wrapper.skin-white-blur {
-  background: rgba(255, 255, 255, 0.5) !important;
-  backdrop-filter: blur(25px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(160%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
 }
 
 .music-player-wrapper.skin-white-blur h3,
@@ -60,32 +60,57 @@
 .music-player-wrapper.skin-white-blur p,
 .music-player-wrapper.skin-white-blur p *,
 .music-player-wrapper.skin-white-blur span {
-  color: #000 !important;
+  color: #000000 !important;
   text-shadow: none !important;
 }
 
 .music-player-wrapper.skin-white-blur .player-btn {
-  color: rgba(0, 0, 0, 0.6) !important;
+  color: #333333 !important;
   background: rgba(0, 0, 0, 0.05) !important;
 }
 
 .music-player-wrapper.skin-white-blur .player-btn:hover {
   color: #000 !important;
   background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 .music-player-wrapper.skin-white-blur .play-pause-btn {
-  background: #000 !important;
-  color: #fff !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 .music-player-wrapper.skin-white-blur .progress-bar-track {
   background: rgba(0, 0, 0, 0.1) !important;
 }
-/* Giữ nguyên màu accent của thanh nhạc */
-/* .music-player-wrapper.skin-white-blur .visualizer-bar {
-  
-} */
+
+.music-player-wrapper.skin-white-blur .progress-bar-fill {
+  background: #000000 !important;
+}
+
+.music-player-wrapper.skin-white-blur .progress-bar-thumb {
+  background: #000000 !important;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.music-player-wrapper.skin-white-blur .visualizer-bar {
+  background: #000000 !important;
+  box-shadow: none !important;
+  border-color: #000000 !important;
+}
+
+.music-player-wrapper.skin-white-blur .visualizer-bar::before,
+.music-player-wrapper.skin-white-blur .visualizer-bar::after {
+  background: #000000 !important;
+}
+
+/* Ensure individual bar animations and colors are also overridden */
+.music-player-wrapper.skin-white-blur .visualizer-bar:nth-child(n) {
+  background: #000000 !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
 
 /* White Blur Skin overrides for specific styles */
 .music-style-soundcloud .music-player-wrapper.skin-white-blur .player-info h3,
@@ -502,6 +527,27 @@
   text-transform: uppercase;
   font-weight: bold;
   color: var(--accent-color);
+}
+
+/* White Blur Override for Pixel Style */
+.music-style-pixel .music-player-wrapper.skin-white-blur {
+  border-color: #000000 !important;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-pixel .music-player-wrapper.skin-white-blur .player-info h3 {
+  color: #000000 !important;
+}
+
+.music-style-pixel .music-player-wrapper.skin-white-blur .disc-container {
+  border-color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.music-style-pixel .music-player-wrapper.skin-white-blur .player-btn {
+  border-color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
 }
 
 .music-style-pixel .player-info p {

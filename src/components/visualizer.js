@@ -193,12 +193,13 @@ class MusicVisualizer {
     }
 
     const time = Date.now() * 0.002
+    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur")
     
     // Vẽ 3 lớp sóng biển
     const drawWave = (offsetY, amplitude, freq, speed, color, alpha) => {
         ctx.save()
-        ctx.fillStyle = color
-        ctx.globalAlpha = alpha
+        ctx.fillStyle = isWhiteBlur ? "#000000" : color
+        ctx.globalAlpha = isWhiteBlur ? alpha * 0.5 : alpha
         ctx.beginPath()
         ctx.moveTo(0, H)
         
@@ -213,7 +214,7 @@ class MusicVisualizer {
         
         // Vẽ bọt biển trắng ở đỉnh sóng
         if (norm > 0.2) {
-            ctx.fillStyle = "#fff"
+            ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.2)" : "#fff"
             ctx.globalAlpha = norm * 0.5
             for (let x = 0; x <= W; x += 20) {
                 const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
@@ -673,10 +674,13 @@ class MusicVisualizer {
     if (canvas.height !== H) canvas.height = H
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, W, H)
-    const accent =
+    
+    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur")
+    const accent = isWhiteBlur ? "#000000" :
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent-color")
         .trim() || "#a8c0ff"
+    
     const gap = 3
     const barW = Math.max(
       5,
@@ -724,7 +728,7 @@ class MusicVisualizer {
       if (this.peakIdx[i] > 0) {
         const py = H - this.peakIdx[i] * segStep
         if (py >= 0) {
-          ctx.fillStyle = "rgba(255,255,255,0.95)"
+          ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.95)"
           ctx.fillRect(x, py, barW, segH)
         }
       }
