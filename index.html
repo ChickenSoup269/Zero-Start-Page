@@ -3374,6 +3374,9 @@
         <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
+        <button id="bug-report-btn" class="sidebar-bug-btn" title="Report Bug / Get Config">
+            <i class="fa-solid fa-bug"></i>
+        </button>
     </div>
 
     <div class="main-container">
@@ -3523,11 +3526,13 @@
                         width: 350px;
                         height: auto;
                         border-radius: 10px;
-                        margin-bottom: 15px;">
+                        margin-bottom: 15px;
+                        image-rendering: -webkit-optimize-contrast;
+                        image-rendering: crisp-edges;">
             </div>
-            <div style="margin-top: 20px;">
+            <div style="margin-top: 30px; padding: 0 5px;">
                 <button type="button" class="secondary-btn" id="close-donate-modal"
-                    style="width: 100%; justify-content: center;" data-i18n="cancel">Close</button>
+                    style="width: 100%; justify-content: center; height: 42px; border-radius: 10px;" data-i18n="cancel">Close</button>
             </div>
         </div>
     </div>
@@ -3647,6 +3652,32 @@
                 style="flex: 2; text-decoration: none; text-align: center; justify-content: center; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
             </a>
+        </div>
+    </div>
+    <!-- Bug Report / Config Modal -->
+    <div id="bug-report-modal" class="bug-modal">
+        <div class="bug-modal-content">
+            <div class="bug-modal-header">
+                <h2 data-i18n="bug_report_title">System Information & Bug Report</h2>
+                <span id="close-bug-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <p class="bug-report-intro" data-i18n="bug_report_desc">
+                    If you encounter issues, please copy the configuration below and send it to the developer.
+                </p>
+                <div class="bug-config-container">
+                    <label class="bug-config-label" data-i18n="system_config">System Config (Auto-generated):</label>
+                    <textarea id="bug-config-data" readonly spellcheck="false"></textarea>
+                </div>
+            </div>
+            <div class="bug-modal-footer">
+                <button id="copy-bug-config-btn" class="bug-secondary-btn">
+                    <i class="fa-solid fa-copy"></i> <span data-i18n="copy">Copy Config</span>
+                </button>
+                <a href="https://www.facebook.com/tran.phuoc.thien.522405/" target="_blank" class="bug-primary-btn">
+                    <i class="fa-brands fa-facebook-messenger"></i> <span data-i18n="send_to_fb">Send to Developer</span>
+                </a>
+            </div>
         </div>
     </div>
 </body>

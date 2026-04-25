@@ -470,7 +470,7 @@
 .sidebar-scroll-top-btn {
   position: absolute;
   right: 14px;
-  bottom: 80px;
+  bottom: 90px;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -497,6 +497,35 @@
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+.sidebar-bug-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 40px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.sidebar-bug-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-scroll-top-btn:hover {

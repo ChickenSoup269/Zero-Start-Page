@@ -216,13 +216,13 @@ export function setupGeneralEventHandlers(
 
   if (btnDonate) {
     btnDonate.addEventListener("click", () => {
-      if (modDonate) modDonate.classList.add("show")
+      if (modDonate) modDonate.classList.add("open")
       if (momoQr) momoQr.style.display = "none"
     })
   }
   if (closeDonate) {
     closeDonate.addEventListener("click", () => {
-      if (modDonate) modDonate.classList.remove("show")
+      if (modDonate) modDonate.classList.remove("open")
     })
   }
   if (showMomo) {
@@ -234,7 +234,7 @@ export function setupGeneralEventHandlers(
   }
   window.addEventListener("click", (e) => {
     if (modDonate && e.target === modDonate) {
-      modDonate.classList.remove("show")
+      modDonate.classList.remove("open")
     }
   })
   document.addEventListener("click", (e) => {
@@ -301,6 +301,75 @@ export function setupGeneralEventHandlers(
   sidebarScrollTopBtn.addEventListener("click", () => {
     sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
   })
+
+  // Bug Report / Config Logic
+  const bugReportBtn = document.getElementById("bug-report-btn")
+  const bugModal = document.getElementById("bug-report-modal")
+  const closeBugBtn = document.getElementById("close-bug-modal-btn")
+  const bugTextarea = document.getElementById("bug-config-data")
+  const copyBugBtn = document.getElementById("copy-bug-config-btn")
+
+  if (bugReportBtn && bugModal) {
+    bugReportBtn.addEventListener("click", () => {
+      // Use getSettings() if available to get live data, otherwise fallback to localStorage
+      let rawSettings = {}
+      try {
+        rawSettings = typeof getSettings === "function" ? getSettings() : JSON.parse(localStorage.getItem("pageSettings") || "{}")
+      } catch (e) {
+        rawSettings = JSON.parse(localStorage.getItem("pageSettings") || "{}")
+      }
+      
+      const filteredSettings = { ...rawSettings }
+
+      // Remove sensitive/large keys
+      const sensitiveKeys = [
+        "unsplashAccessKey",
+        "userBackgrounds",
+        "userVideos",
+        "userImages",
+        "userColors",
+        "userAccentColors",
+        "userGradients",
+        "userMultiColors",
+        "userSvgWaves",
+        "userSavedFonts",
+        "background" 
+      ]
+
+      sensitiveKeys.forEach(key => delete filteredSettings[key])
+
+      // Add basic system info
+      const info = {
+        version: document.querySelector(".settings-version")?.textContent || "Unknown",
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        screenSize: `${window.innerWidth}x${window.innerHeight}`,
+        timestamp: new Date().toISOString(),
+        settings: filteredSettings
+      }
+
+      bugTextarea.value = JSON.stringify(info, null, 2)
+      bugModal.classList.add("open")
+    })
+
+    closeBugBtn?.addEventListener("click", () => bugModal.classList.remove("open"))
+    
+    // Close on click outside
+    window.addEventListener("click", (e) => {
+      if (bugModal && e.target === bugModal) bugModal.classList.remove("open")
+    })
+
+    copyBugBtn?.addEventListener("click", () => {
+      bugTextarea.select()
+      navigator.clipboard.writeText(bugTextarea.value).then(() => {
+        const originalText = copyBugBtn.innerHTML
+        copyBugBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Copied!</span>'
+        setTimeout(() => {
+          copyBugBtn.innerHTML = originalText
+        }, 2000)
+      })
+    })
+  }
 
   // Table of Contents (ToC) Logic
   const initSidebarToC = () => {

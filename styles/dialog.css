@@ -11,196 +11,157 @@
   align-items: center;
   justify-content: center;
   z-index: 10000;
+}
+
+.modal.open {
+  display: flex !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
 }
 
-.custom-dialog-overlay.active {
-  opacity: 1;
-  visibility: visible;
+/* Bug Report Modal - Specialized Styles */
+.bug-modal {
+  display: none;
+  position: fixed;
+  z-index: 10002;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
-.custom-dialog {
-  background: rgba(25, 28, 35, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.bug-modal.open {
+  display: flex !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.bug-modal-content {
+  background: rgba(15, 15, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  min-width: 360px;
-  max-width: 480px;
-  animation: dialogSlideIn 0.3s ease;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  width: 90%;
+  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
   overflow: hidden;
 }
 
-@keyframes dialogSlideIn {
-  from {
-    transform: scale(0.9) translateY(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-}
-
-.dialog-header {
-  padding: 20px 24px 16px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--accent-color);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.dialog-body {
-  padding: 24px;
+.bug-modal-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
-.dialog-icon {
-  font-size: 3rem;
-  margin-bottom: 8px;
-}
-
-.custom-alert .dialog-icon {
-  color: #4a9eff;
-}
-
-.custom-confirm .dialog-icon {
-  color: #ffa94d;
-}
-
-.custom-prompt .dialog-icon {
-  color: #a78bfa;
-}
-
-.custom-checklist .dialog-icon {
-  color: #4ade80;
-}
-
-.custom-checklist .dialog-body {
-  align-items: stretch;
-}
-
-.dialog-checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.dialog-check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.dialog-check-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.dialog-check-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--accent-color);
-}
-
-.dialog-check-item input[type="checkbox"][disabled] + span {
-  opacity: 0.55;
-}
-
-.dialog-message {
-  text-align: center;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.6;
-  font-size: 0.95rem;
+.bug-modal-header h2 {
   margin: 0;
-}
-
-.dialog-input {
-  width: 100%;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: #fff;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.2s ease;
 }
 
-.dialog-input:focus {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+.bug-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
-.dialog-footer {
-  padding: 16px 24px 20px;
+.bug-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.bug-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.bug-modal-footer {
+  padding: 20px 24px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 16px;
+  flex-shrink: 0;
 }
 
-.dialog-btn {
-  padding: 10px 24px;
-  border-radius: 8px;
+.bug-report-intro {
   font-size: 0.9rem;
-  font-weight: 500;
+  color: #fff;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+#bug-config-data {
+  width: 100%;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-family: monospace;
+  padding: 16px;
+  resize: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.bug-primary-btn {
+  flex: 1;
+  height: 44px;
+  background: #fff;
+  color: #000;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.bug-secondary-btn {
+  flex: 1;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  outline: none;
-}
-
-.dialog-btn-primary {
-  background: var(--accent-color);
-  color: var(--accent-contrast-color, #fff);
-}
-
-.dialog-btn-primary:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-}
-
-.dialog-btn-primary:active {
-  transform: translateY(0);
-}
-
-.dialog-btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.dialog-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.dialog-btn-secondary:active {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .custom-dialog {
-    min-width: 90%;
-    max-width: 90%;
-  }
-
-  .dialog-body {
-    padding: 20px;
-  }
-
-  .dialog-footer {
-    padding: 12px 20px 16px;
-  }
 }
