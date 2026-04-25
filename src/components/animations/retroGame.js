@@ -405,6 +405,7 @@ export class RetroGameEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return; this.rafId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
     const elapsed = currentTime - this.lastDrawTime; if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval); this.update(); this.draw()
   }

@@ -208,6 +208,8 @@ export class PixelWeatherEffect {
     if (!this.active) return
     this.rafId = requestAnimationFrame((t) => this.animate(t))
 
+    if (document.visibilityState === "hidden") return
+
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
@@ -219,8 +221,9 @@ export class PixelWeatherEffect {
     ctx.clearRect(0, 0, W, H)
 
     // Logic Sức gió trong bão (Thay đổi theo thời gian)
+    const timeSec = currentTime * 0.001
     if (this.mode === "storm") {
-        const gustFactor = Math.sin(currentTime * 0.0005) * Math.cos(currentTime * 0.0003);
+        const gustFactor = Math.sin(timeSec * 0.5) * Math.cos(timeSec * 0.3);
         this.stormWind = gustFactor * 12; // Gió thổi mạnh lên đến 12px/frame
     }
 
@@ -246,28 +249,35 @@ export class PixelWeatherEffect {
     }
 
     // Mây
+    const cloudSpeedBase = this.mode === "storm" ? this.stormWind * 0.2 : 0
     this.clouds.forEach(c => {
-      c.x -= (c.speed + (this.mode === "storm" ? this.stormWind * 0.2 : 0)) * this.speedMul
+      c.x -= (c.speed + cloudSpeedBase) * this.speedMul
       if (c.x + c.w < 0) c.x = W + 100
       this._drawPixelCloud(ctx, c)
     })
 
     // Splash hiệu ứng khi hạt mưa chạm đất
+    const splashWind = this.mode === "storm" ? this.stormWind * 0.5 : 0
     for (let i = this.splashes.length - 1; i >= 0; i--) {
       const s = this.splashes[i]
-      s.x += s.vx + (this.mode === "storm" ? this.stormWind * 0.5 : 0)
+      s.x += s.vx + splashWind
       s.y += s.vy; s.vy += 0.5; s.life -= s.decay
       if (s.life <= 0) { this.splashes.splice(i, 1); continue }
       ctx.fillStyle = `rgba(255, 255, 255, ${s.life * 0.6})`
       ctx.fillRect(Math.floor(s.x), Math.floor(s.y), 2, 2)
     }
 
+    const resFactor = this.resFactor
+    const sizeMul = this.sizeMul
+    const speedMul = this.speedMul
+    const isRainOrStormOrWind = this.mode === "rain" || this.mode === "storm" || this.mode === "wind"
+
     this.particles.forEach((p) => {
       // Áp dụng sức gió vào vận tốc ngang
       const currentVx = p.vx + (this.mode === "storm" ? this.stormWind : 0);
       
-      p.x += currentVx * this.speedMul
-      p.y += p.vy * this.speedMul
+      p.x += currentVx * speedMul
+      p.y += p.vy * speedMul
 
       if (p.y > H - 10 && (this.mode === "rain" || this.mode === "storm")) {
         if (Math.random() < 0.3) {
@@ -289,16 +299,16 @@ export class PixelWeatherEffect {
           }
       }
 
-      const drawSize = Math.max(1, Math.floor(p.size * this.resFactor * this.sizeMul))
-      const drawX = Math.floor(p.x / this.resFactor) * this.resFactor
-      const drawY = Math.floor(p.y / this.resFactor) * this.resFactor
+      const drawSize = Math.max(1, Math.floor(p.size * resFactor * sizeMul))
+      const drawX = Math.floor(p.x / resFactor) * resFactor
+      const drawY = Math.floor(p.y / resFactor) * resFactor
 
       if (p.type === "bubble") {
         ctx.strokeStyle = `rgba(255, 255, 255, ${p.alpha})`
         ctx.strokeRect(drawX, drawY, drawSize, drawSize)
-      } else if (this.mode === "rain" || this.mode === "storm" || this.mode === "wind") {
+      } else if (isRainOrStormOrWind) {
         ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`
-        const drawLength = Math.max(2, Math.floor((p.length || 1) * this.resFactor * this.sizeMul))
+        const drawLength = Math.max(2, Math.floor((p.length || 1) * resFactor * sizeMul))
         ctx.save()
         ctx.translate(drawX, drawY)
         // Xoay hạt mưa theo vector vận tốc thực tế (kể cả gió)

@@ -50,14 +50,22 @@ export class FloatingLinesEffect {
     this.hsl = { h: h * 360, s: 95, l: 75 }
   }
 
-  updateColor(hex) { this.color = hex; this._updateHsl(hex); }
+  updateColor(hex) { this.color = hex; this._updateHsl(hex); this._updateColorCache(); }
   setAngle(deg) { this.angle = Number(deg) || 0 }
+
+  _updateColorCache() {
+    this._colorCache = [-30, 0, 30].map(hueOffset => {
+      const h = (this.hsl.h + hueOffset + 360) % 360
+      return `hsla(${h}, ${this.hsl.s}%, ${this.hsl.l}%,`
+    })
+  }
   
   resize() {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
     this._initStars()
+    this._updateColorCache()
   }
 
   _initStars() {
@@ -90,20 +98,15 @@ export class FloatingLinesEffect {
   stop() {
     this.active = false
     if (this._animId) cancelAnimationFrame(this._animId)
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
 
-  _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, hueOffset = 0, dt = 1) {
+  _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, colorBase, cosR, sinR) {
     const ctx = this.ctx
     const W = this.canvas.width, H = this.canvas.height
     const time = this.time
     
-    const h = (this.hsl.h + hueOffset + 360) % 360
-    const s = this.hsl.s
-    const l = this.hsl.l
-    
-    const rad = (this.angle * Math.PI) / 180
-    const cosR = Math.cos(rad), sinR = Math.sin(rad)
     const range = Math.sqrt(W*W + H*H) * 1.2
     const step = this.config.step
     
@@ -131,15 +134,15 @@ export class FloatingLinesEffect {
     ctx.lineJoin = "round"
 
     // Ultra Bright Rendering
-    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.15})`
+    ctx.strokeStyle = `${colorBase} ${opacity * 0.15})`
     ctx.lineWidth = 22
     ctx.stroke(path)
 
-    ctx.strokeStyle = `hsla(${h}, ${s}%, ${l}%, ${opacity * 0.45})`
+    ctx.strokeStyle = `${colorBase} ${opacity * 0.45})`
     ctx.lineWidth = 8
     ctx.stroke(path)
 
-    ctx.strokeStyle = `hsla(${h}, ${s}%, 95%, ${opacity * 0.85})`
+    ctx.strokeStyle = `${colorBase.replace(`${this.hsl.l}%`, '95%')} ${opacity * 0.85})`
     ctx.lineWidth = 3
     ctx.stroke(path)
 
@@ -151,6 +154,7 @@ export class FloatingLinesEffect {
   _animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this._animate(t))
+    if (document.visibilityState === 'hidden') return
     
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < 1) return 
@@ -166,7 +170,6 @@ export class FloatingLinesEffect {
     ctx.fillRect(0, 0, W, H)
 
     // Drifting & Twinkling Stars
-    ctx.fillStyle = "white"
     this.stars.forEach(s => {
       // Smooth movement
       s.x += s.vx * dt
@@ -192,14 +195,17 @@ export class FloatingLinesEffect {
 
     ctx.globalCompositeOperation = "lighter"
     
+    const rad = (this.angle * Math.PI) / 180
+    const cosR = Math.cos(rad), sinR = Math.sin(rad)
+
     // Group 1: Hue - 30
-    this._drawWaveGroup(3, 0.8, 0.4, 0.05, 1.5, 0.5, -30, dt)
+    this._drawWaveGroup(3, 0.8, 0.4, 0.05, 1.5, 0.5, this._colorCache[0], cosR, sinR)
     
     // Group 2: Base Hue
-    this._drawWaveGroup(3, 0.5, 0.6, 0.07, 2.0, 0.7, 0, dt)
+    this._drawWaveGroup(3, 0.5, 0.6, 0.07, 2.0, 0.7, this._colorCache[1], cosR, sinR)
     
     // Group 3: Hue + 30
-    this._drawWaveGroup(3, 0.2, 0.4, 0.09, 1.0, 0.5, 30, dt)
+    this._drawWaveGroup(3, 0.2, 0.4, 0.09, 1.0, 0.5, this._colorCache[2], cosR, sinR)
 
     ctx.globalCompositeOperation = "source-over"
   }

@@ -128,10 +128,12 @@ export class RainbowBackground {
 
   stop() {
     this.active = false
-    if (this._animId) cancelAnimationFrame(this._animId)
-    if (this.animationFrame) cancelAnimationFrame(this.animationFrame)
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
+    if (this.animationFrame) { cancelAnimationFrame(this.animationFrame); this.animationFrame = null; }
+    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+    this.beams = []
+    this.particles = []
   }
 
   animate() {
@@ -139,6 +141,7 @@ export class RainbowBackground {
     this.animationFrame = this._animId = requestAnimationFrame(() =>
       this.animate(),
     )
+    if (document.visibilityState === "hidden") return
 
     const ctx = this.ctx
     const W = this.canvas.width
@@ -148,10 +151,14 @@ export class RainbowBackground {
     ctx.globalCompositeOperation = "lighter"
     this.time += 1
 
+    const time = this.time
+    const sinTime1 = Math.sin(time * 0.01)
+    const sinTime3 = Math.sin(time * 0.03)
+
     // 1. Vẽ hạt bụi sao (Optimization: dùng fillStyle một lần nếu cùng màu, nhưng ở đây nhiều màu nên giữ nguyên)
     for (const p of this.particles) {
       p.x +=
-        this.sinA * p.speed + Math.sin(this.time * 0.01 + p.wobblePhase) * 0.4
+        this.sinA * p.speed + Math.sin(time * 0.01 + p.wobblePhase) * 0.4
       p.y += this.cosA * p.speed
 
       if (p.y > H + 50 || p.x > W + 50) {
@@ -160,7 +167,7 @@ export class RainbowBackground {
       }
 
       const currentOpacity =
-        p.baseOpacity + Math.sin(this.time * 0.03 + p.wobblePhase) * 0.3
+        p.baseOpacity + Math.sin(time * 0.03 + p.wobblePhase) * 0.3
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
       ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${Math.max(0.01, currentOpacity)})`
@@ -179,7 +186,7 @@ export class RainbowBackground {
 
       const currentOpacity = b.opacity + pulseFactor * 0.12
       const currentWidth = b.width + pulseFactor * 5
-      const xWobble = Math.sin(this.time * 0.005 + b.pulsePhase) * 15
+      const xWobble = Math.sin(time * 0.005 + b.pulsePhase) * 15
 
       const startX = b.x + xWobble
       const startY = b.yBase

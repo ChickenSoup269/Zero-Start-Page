@@ -582,6 +582,7 @@ export class FallingLeavesSettledEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps

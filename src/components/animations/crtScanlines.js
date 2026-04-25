@@ -26,11 +26,13 @@ export class CrtScanlinesEffect {
 
   updateScanColor(hex) {
     this.color = hex
+    this._rgb = hexToRgb(this.color)
   }
 
   start() {
     if (this.active) return
     this.active = true
+    this._rgb = hexToRgb(this.color)
     this.canvas.style.display = "block"
     this.animate()
   }
@@ -45,6 +47,7 @@ export class CrtScanlinesEffect {
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())
+    if (document.visibilityState === 'hidden') return
     this.time += 0.01
     this._draw()
   }
@@ -53,7 +56,8 @@ export class CrtScanlinesEffect {
     const ctx = this.ctx
     const W = this.canvas.width
     const H = this.canvas.height
-    const rgb = hexToRgb(this.color)
+    if (!this._rgb) this._rgb = hexToRgb(this.color)
+    const rgb = this._rgb
 
     // Clear canvas for transparency
     ctx.clearRect(0, 0, W, H)

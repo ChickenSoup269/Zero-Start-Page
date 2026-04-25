@@ -179,12 +179,14 @@ export class BubblesEffect {
 
   updateColor(newColor) {
     this.color = newColor
+    this._rgb = this.hexToRgb(this.color)
   }
 
   animate(currentTime = 0) {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -192,7 +194,8 @@ export class BubblesEffect {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-    const rgb = this.hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this.hexToRgb(this.color)
+    const rgb = this._rgb
 
     this.bubbles.forEach((bubble, i) => {
       // Update position: rise upward

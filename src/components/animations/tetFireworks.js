@@ -249,6 +249,7 @@ export class TetFireworksEffect {
   animate(timestamp) {
     if (!this.active) return
     this._animId = requestAnimationFrame((ts) => this.animate(ts))
+    if (document.visibilityState === "hidden") return
 
     const elapsed = timestamp - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -263,7 +264,9 @@ export class TetFireworksEffect {
 
     if (Math.random() < 0.02) this.launchFirework()
     if (Math.random() < 0.002) {
-        for(let i=0; i<2; i++) setTimeout(() => this.launchFirework(), i * 300)
+        for(let i=0; i<2; i++) setTimeout(() => {
+          if (this.active) this.launchFirework()
+        }, i * 300)
     }
 
     this.fireworks = this.fireworks.filter((fw) => {

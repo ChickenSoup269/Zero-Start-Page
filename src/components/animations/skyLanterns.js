@@ -219,6 +219,7 @@ export class SkyLanternsEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -226,10 +227,13 @@ export class SkyLanternsEffect {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
+    const timeSec = currentTime * 0.001
+    const cosTime = Math.cos(timeSec) * 0.2
+
     this.lanterns.forEach((lantern) => {
       // Drift upward with wind-like swaying
       lantern.swingOffset += lantern.swing
-      lantern.x += Math.sin(lantern.swingOffset) * 0.5 + Math.cos(currentTime * 0.001) * 0.2
+      lantern.x += Math.sin(lantern.swingOffset) * 0.5 + cosTime
       lantern.y -= lantern.speedY
       lantern.rotation += lantern.rotationSpeed
 

@@ -56,6 +56,7 @@ export class MatrixRain {
 
     // Yêu cầu khung hình tiếp theo luôn được gọi
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     // Tính toán thời gian trôi qua
     const elapsed = currentTime - this.lastDrawTime

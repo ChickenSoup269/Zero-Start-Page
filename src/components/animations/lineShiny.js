@@ -159,16 +159,18 @@ export class LineShinyEffect {
     const x1 = cx + Math.cos(perpA) * hw
     const y1 = cy + Math.sin(perpA) * hw
 
-    const hue = (this.tintH + beam.hueShift + 360) % 360
-    const sat = this.tintS
-    const lit = this.tintL
+    if (!beam._colorBase) {
+      const hue = (this.tintH + beam.hueShift + 360) % 360
+      beam._colorBase = `hsla(${hue}, ${this.tintS}%, ${this.tintL}%, `
+    }
+    const color = beam._colorBase
 
     const grad = ctx.createLinearGradient(x0, y0, x1, y1)
-    grad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
-    grad.addColorStop(0.3, `hsla(${hue}, ${sat}%, ${lit}%, ${beam.alpha * 0.3})`)
-    grad.addColorStop(0.5, `hsla(${hue}, ${sat}%, ${lit}%, ${beam.alpha})`)
-    grad.addColorStop(0.7, `hsla(${hue}, ${sat}%, ${lit}%, ${beam.alpha * 0.3})`)
-    grad.addColorStop(1, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
+    grad.addColorStop(0, `${color}0)`)
+    grad.addColorStop(0.3, `${color}${beam.alpha * 0.3})`)
+    grad.addColorStop(0.5, `${color}${beam.alpha})`)
+    grad.addColorStop(0.7, `${color}${beam.alpha * 0.3})`)
+    grad.addColorStop(1, `${color}0)`)
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
@@ -221,14 +223,18 @@ export class LineShinyEffect {
     const x1 = cx + Math.cos(perpA) * hw
     const y1 = cy + Math.sin(perpA) * hw
 
-    const hue = (this.tintH + streak.hueShift + 360) % 360
-    const sat = Math.min(this.tintS + 20, 100)
-    const lit = Math.min(this.tintL + 15, 100)
+    if (!streak._colorBase) {
+      const hue = (this.tintH + streak.hueShift + 360) % 360
+      const sat = Math.min(this.tintS + 20, 100)
+      const lit = Math.min(this.tintL + 15, 100)
+      streak._colorBase = `hsla(${hue}, ${sat}%, ${lit}%, `
+    }
+    const color = streak._colorBase
 
     const streakGrad = ctx.createLinearGradient(x0, y0, x1, y1)
-    streakGrad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
-    streakGrad.addColorStop(0.5, `hsla(${hue}, ${sat}%, ${lit}%, ${drawAlpha})`)
-    streakGrad.addColorStop(1, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
+    streakGrad.addColorStop(0, `${color}0)`)
+    streakGrad.addColorStop(0.5, `${color}${drawAlpha})`)
+    streakGrad.addColorStop(1, `${color}0)`)
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
@@ -262,6 +268,8 @@ export class LineShinyEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
+
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)

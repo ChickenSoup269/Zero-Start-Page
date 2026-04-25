@@ -236,6 +236,7 @@ export class SvgWaveGenerator {
       el.style.backgroundImage = ""
     })
     this._activeLayer = 0
+    document.body.classList.remove("bg-image-active")
     // Background will be reset by applySettings
   }
 

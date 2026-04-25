@@ -144,6 +144,7 @@ export class HalloweenEffect {
   animate(currentTime) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     if (!this.lastTime) this.lastTime = currentTime
     const deltaTime = currentTime - this.lastTime

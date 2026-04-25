@@ -126,7 +126,10 @@ export class LightPillarsEffect {
     const gradientBottom = pillar.yOffset + pillar.height / 2
 
     const grad = ctx.createLinearGradient(0, gradientTop, 0, gradientBottom)
-    const color = `hsla(${pillar.hue}, ${pillar.sat}%, ${pillar.light}%, `
+    if (!pillar._colorBase) {
+      pillar._colorBase = `hsla(${pillar.hue}, ${pillar.sat}%, ${pillar.light}%, `
+    }
+    const color = pillar._colorBase
 
     grad.addColorStop(0, `${color}0)`)
     grad.addColorStop(0.3, `${color}${currentAlpha * 0.5})`)
@@ -196,6 +199,7 @@ export class LightPillarsEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

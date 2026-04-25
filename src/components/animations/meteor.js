@@ -208,6 +208,9 @@ export class MeteorEffect {
       vy: sinA * speed,
       ax: cosA * (0.008 + Math.random() * 0.012),
       ay: sinA * (0.008 + Math.random() * 0.012),
+      cosA,
+      sinA,
+      angle,
       len: len,
       size: 0.8 + Math.random() * 1.8,
       life: 1,
@@ -241,6 +244,9 @@ export class MeteorEffect {
       y,
       vx: cosA * speed,
       vy: sinA * speed,
+      cosA,
+      sinA,
+      angle,
       len: 280 + Math.random() * 120,
       size: 2.2 + Math.random() * 0.8,
       life: 1,
@@ -294,6 +300,14 @@ export class MeteorEffect {
       m.x += m.vx * s
       m.y += m.vy * s
       m.life -= m.fadeSpeed * s
+      
+      // Update orientation if accelerating
+      if (m.ax !== 0 || m.ay !== 0) {
+        m.angle = Math.atan2(m.vy, m.vx)
+        m.cosA = Math.cos(m.angle)
+        m.sinA = Math.sin(m.angle)
+      }
+
       if (m.life <= 0.12 && !m.burst) {
         m.burst = true
         this._spawnBurst(m.x, m.y, m.color)
@@ -323,10 +337,10 @@ export class MeteorEffect {
 
   _drawStars(t) {
     const ctx = this.ctx
-    // Đảm bảo luôn có ít nhất một màu để vẽ, nếu không có lấy mặc định trắng
+    // Cache default color if possible, but here we check every frame for theme changes
     const color = (this.colors && this.colors.length > 0) 
       ? this.colors[0] 
-      : this._parseHex("#ffffff");
+      : { r: 255, g: 255, b: 255 };
     
     const { r, g, b } = color
     
@@ -344,28 +358,27 @@ export class MeteorEffect {
   _drawStreak(m, alpha) {
     const ctx = this.ctx
     const { r, g, b } = m.color
-    const angle = Math.atan2(m.vy, m.vx)
-    const tailX = m.x - Math.cos(angle) * m.len
-    const tailY = m.y - Math.sin(angle) * m.len
+    const tailX = m.x - m.cosA * m.len
+    const tailY = m.y - m.sinA * m.len
 
     ctx.save()
 
     // Gradient streak
     const gr = ctx.createLinearGradient(tailX, tailY, m.x, m.y)
-    gr.addColorStop(0, this._rgba(r, g, b, 0))
+    gr.addColorStop(0, `rgba(${r},${g},${b},0)`)
     
     if (this.fullColor && this.colors.length >= 2) {
       // Đa sắc cho đuôi
       const color2 = this.colors[1 % this.colors.length]
-      gr.addColorStop(0.3, this._rgba(color2.r, color2.g, color2.b, 0.2 * alpha))
+      gr.addColorStop(0.3, `rgba(${color2.r},${color2.g},${color2.b},${0.2 * alpha})`)
       const color3 = this.colors[2 % this.colors.length]
-      gr.addColorStop(0.6, this._rgba(color3.r, color3.g, color3.b, 0.4 * alpha))
+      gr.addColorStop(0.6, `rgba(${color3.r},${color3.g},${color3.b},${0.4 * alpha})`)
     } else {
-      gr.addColorStop(0.55, this._rgba(r, g, b, 0.38 * alpha))
+      gr.addColorStop(0.55, `rgba(${r},${g},${b},${0.38 * alpha})`)
     }
 
-    gr.addColorStop(0.85, this._rgba(255, 255, 255, 0.65 * alpha))
-    gr.addColorStop(1, this._rgba(255, 255, 255, 0.95 * alpha))
+    gr.addColorStop(0.85, `rgba(255, 255, 255, ${0.65 * alpha})`)
+    gr.addColorStop(1, `rgba(255, 255, 255, ${0.95 * alpha})`)
     
     ctx.strokeStyle = gr
     ctx.lineWidth = m.size
@@ -378,16 +391,16 @@ export class MeteorEffect {
     // Glow halo at head
     const haloR = m.size * 5
     const halo = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, haloR * alpha)
-    halo.addColorStop(0, this._rgba(255, 255, 255, 0.5 * alpha))
-    halo.addColorStop(0.4, this._rgba(r, g, b, 0.2 * alpha))
-    halo.addColorStop(1, this._rgba(r, g, b, 0))
+    halo.addColorStop(0, `rgba(255, 255, 255, ${0.5 * alpha})`)
+    halo.addColorStop(0.4, `rgba(${r},${g},${b},${0.2 * alpha})`)
+    halo.addColorStop(1, `rgba(${r},${g},${b},0)`)
     ctx.fillStyle = halo
     ctx.beginPath()
     ctx.arc(m.x, m.y, haloR, 0, Math.PI * 2)
     ctx.fill()
 
     // Solid head dot
-    ctx.fillStyle = this._rgba(255, 255, 255, 0.95 * alpha)
+    ctx.fillStyle = `rgba(255, 255, 255, ${0.95 * alpha})`
     ctx.beginPath()
     ctx.arc(m.x, m.y, m.size * 1.15, 0, Math.PI * 2)
     ctx.fill()
@@ -436,11 +449,13 @@ export class MeteorEffect {
 
   _loop(now) {
     if (!this.active) return
+    this._animId = requestAnimationFrame((t) => this._loop(t))
+    if (document.visibilityState === 'hidden') return
+
     const dt = Math.min(now - this._lastT, 50)
     this._lastT = now
     this._update(dt)
     this._draw(now)
-    requestAnimationFrame((t) => this._loop(t))
   }
 }
 

@@ -90,6 +90,8 @@ export class SunbeamEffect {
 
   _animate() {
     if (!this.active) return
+    this._animId = requestAnimationFrame(() => this._animate())
+    if (document.visibilityState === "hidden") return
     this.time += 0.006
     const ctx = this.ctx
     const W = this.canvas.width
@@ -100,8 +102,10 @@ export class SunbeamEffect {
     ctx.save()
     ctx.globalCompositeOperation = "screen"
 
-    const rgb = this._hexToRgb(this.color)
-    const baseColor = (a) => `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`
+    if (!this.rgb) this.rgb = this._hexToRgb(this.color)
+    const rgb = this.rgb
+    const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
+    const baseColor = (a) => `rgba(${rgbStr}, ${a})`
 
     const sourceX = W / 2
     const sourceY = -H * 0.5 // Higher source for massive pillar feel

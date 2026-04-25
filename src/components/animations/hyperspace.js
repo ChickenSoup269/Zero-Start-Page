@@ -37,11 +37,17 @@ export class HyperspaceEffect {
 
   updateColor(color) {
     this.color = color
+    this._rgb = {
+      r: parseInt(this.color.slice(1, 3), 16),
+      g: parseInt(this.color.slice(3, 5), 16),
+      b: parseInt(this.color.slice(5, 7), 16)
+    }
   }
 
   start() {
     if (this.active) return
     this.active = true
+    if (!this._rgb) this.updateColor(this.color)
     this.resize()
     this.canvas.style.display = "block"
     this.animate()
@@ -59,6 +65,7 @@ export class HyperspaceEffect {
   animate() {
     if (!this.active) return
     this.animationId = requestAnimationFrame(() => this.animate())
+    if (document.visibilityState === 'hidden') return
 
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height)
@@ -66,9 +73,7 @@ export class HyperspaceEffect {
     // Draw "road" or "tunnel" lines
     this.drawRoad()
 
-    const r = parseInt(this.color.slice(1, 3), 16)
-    const g = parseInt(this.color.slice(3, 5), 16)
-    const b = parseInt(this.color.slice(5, 7), 16)
+    const { r, g, b } = this._rgb
 
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i]
@@ -100,9 +105,7 @@ export class HyperspaceEffect {
 
   drawRoad() {
     const time = Date.now() * 0.001
-    const r = parseInt(this.color.slice(1, 3), 16)
-    const g = parseInt(this.color.slice(3, 5), 16)
-    const b = parseInt(this.color.slice(5, 7), 16)
+    const { r, g, b } = this._rgb
 
     this.ctx.lineWidth = 2
     

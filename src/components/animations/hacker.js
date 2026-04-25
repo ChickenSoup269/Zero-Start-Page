@@ -96,7 +96,8 @@ class TerminalBlock {
     ctx.font = "16px 'Courier New', monospace"
 
     // Glow effect
-    const rgb = this.hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this.hexToRgb(this.color)
+    const rgb = this._rgb
     ctx.shadowBlur = 5
     ctx.shadowColor = this.color
 
@@ -139,6 +140,7 @@ export class HackerEffect {
     if (!this.canvas) return
     this.ctx = this.canvas.getContext("2d")
     this.color = color
+    this._rgb = this.hexToRgb(this.color)
     this.blocks = []
     this.animationFrameId = null
     this.currentState = STATES.TYPING
@@ -218,7 +220,8 @@ export class HackerEffect {
   }
 
   drawParticles(deltaTime) {
-    const rgb = this.hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this.hexToRgb(this.color)
+    const rgb = this._rgb
     this.particles.forEach((p) => {
       p.y += p.speed * deltaTime * 0.05
       if (p.y > this.height) {
@@ -254,7 +257,8 @@ export class HackerEffect {
     const x = (this.width - barWidth) / 2
     const y = this.height - 150 // Bottom center position
 
-    const rgb = this.hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this.hexToRgb(this.color)
+    const rgb = this._rgb
 
     // Background glow
     this.ctx.shadowBlur = 30
@@ -339,7 +343,8 @@ export class HackerEffect {
 
     this.ctx.save()
     this.ctx.font = `${this.fontSize}px monospace`
-    const rgb = this.hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this.hexToRgb(this.color)
+    const rgb = this._rgb
     this.ctx.fillStyle = this.color
     this.ctx.shadowBlur = 15
     this.ctx.shadowColor = this.color
@@ -391,6 +396,8 @@ export class HackerEffect {
 
   animate() {
     if (!this.animationFrameId) return
+    this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
+    if (document.visibilityState === 'hidden') return
 
     const now = Date.now()
     const deltaTime = now - this.lastTime
@@ -427,19 +434,19 @@ export class HackerEffect {
     } else if (this.currentState === STATES.FLOOD) {
       this.drawFlood(deltaTime)
     }
-
-    this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
   }
 
   start() {
     if (!this.animationFrameId) {
       this.canvas.style.display = "block"
       this.lastTime = Date.now()
+      this._rgb = this.hexToRgb(this.color)
       this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
     }
   }
 
   stop() {
+    this.active = false
     if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId)
@@ -451,6 +458,7 @@ export class HackerEffect {
 
   updateColor(color) {
     this.color = color
+    this._rgb = this.hexToRgb(this.color)
     this.blocks.forEach((b) => (b.color = color))
   }
 

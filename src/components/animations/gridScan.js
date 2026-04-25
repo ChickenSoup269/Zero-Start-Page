@@ -37,10 +37,6 @@ export class GridScanEffect {
     }
   }
 
-  updateColor(color) {
-    this.color = color
-  }
-
   resize() {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
@@ -75,9 +71,15 @@ export class GridScanEffect {
     ctx.restore()
   }
 
+  updateColor(color) {
+    this.color = color
+    this._rgb = hexToRgb(this.color)
+  }
+
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())
+    if (document.visibilityState === 'hidden') return
     this.time += 0.01
 
     const W = this.canvas.width
@@ -85,7 +87,8 @@ export class GridScanEffect {
     const ctx = this.ctx
     ctx.clearRect(0, 0, W, H)
 
-    const rgb = hexToRgb(this.color)
+    if (!this._rgb) this._rgb = hexToRgb(this.color)
+    const rgb = this._rgb
     const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
     
     const focalLength = 800

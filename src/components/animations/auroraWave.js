@@ -131,6 +131,7 @@ export class AuroraWaveEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < 16) return // Giới hạn ~60fps
@@ -154,6 +155,7 @@ export class AuroraWaveEffect {
 
     // Vẽ hạt sáng Cinematic
     ctx.globalCompositeOperation = "screen"
+    ctx.fillStyle = "white"
     this._particles.forEach((p, i) => {
       p.phase += p.speed
       p.x += p.vx * this.speed
@@ -164,13 +166,14 @@ export class AuroraWaveEffect {
       const opacity = (Math.sin(p.phase) * 0.5 + 0.5) * 0.6 * this.brightness
       const pSize = p.size * (0.8 + 0.4 * Math.sin(p.phase * 0.7))
       
-      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
+      ctx.globalAlpha = Math.max(0, Math.min(1, opacity))
       ctx.beginPath(); ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2); ctx.fill()
       
       // Quầng sáng mờ cho hạt
-      ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.2})`
+      ctx.globalAlpha = Math.max(0, Math.min(1, opacity * 0.2))
       ctx.beginPath(); ctx.arc(p.x, p.y, pSize * 3, 0, Math.PI * 2); ctx.fill()
     })
+    ctx.globalAlpha = 1
 
     // Vẽ các dải sóng Aurora
     ctx.globalCompositeOperation = "lighter"

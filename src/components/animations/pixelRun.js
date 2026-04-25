@@ -501,6 +501,8 @@ export class PixelRunEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame(t => this.animate(t))
+    if (document.visibilityState === "hidden") return
+
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
@@ -509,14 +511,16 @@ export class PixelRunEffect {
 
   start() {
     if (this.active) return
-    this.active = true; this._initScene(); this.animate(0); this.canvas.style.display = "block"
+    this.active = true; this._initScene(); this.animate(performance.now()); this.canvas.style.display = "block"
     window.addEventListener("keydown", this._keydownHandler); window.addEventListener("keyup", this._keyupHandler)
   }
 
   stop() {
-    this.active = false; if (this._animId) cancelAnimationFrame(this._animId)
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.canvas.style.display = "none"
+    this.active = false; if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null }
+    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.canvas.style.display = "none"
     window.removeEventListener("keydown", this._keydownHandler); window.removeEventListener("keyup", this._keyupHandler)
+    window.removeEventListener("resize", this._resizeHandler)
     this.keys = { up: false, down: false, left: false, right: false, shoot: false, sword: false, shield: false, shotgun: false }
+    this.heroes = []; this.enemies = []; this.allies = []; this.particles = []; this.arrows = []; this.bossProjectiles = []
   }
 }

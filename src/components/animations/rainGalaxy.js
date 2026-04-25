@@ -55,6 +55,8 @@ export class StarFall {
 
     this.animationFrame = this._animId = requestAnimationFrame((t) => this.animate(t))
 
+    if (document.visibilityState === "hidden") return
+
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime - (elapsed % this.fpsInterval)
@@ -64,6 +66,7 @@ export class StarFall {
     const r = this._r
     const g = this._g
     const b = this._b
+    const rgb = `${r}, ${g}, ${b}`
 
     // Batch all stars into two passes by opacity bucket (bright / dim)
     // to minimize state changes and stroke() calls
@@ -71,7 +74,7 @@ export class StarFall {
 
     // Pass 1: dim stars (opacity 0.3-0.5)
     this.ctx.beginPath()
-    this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`
+    this.ctx.strokeStyle = `rgba(${rgb}, 0.35)`
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i]
       if (star.opacity < 0.55) {
@@ -83,7 +86,7 @@ export class StarFall {
 
     // Pass 2: bright stars (opacity 0.55-0.8)
     this.ctx.beginPath()
-    this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.75)`
+    this.ctx.strokeStyle = `rgba(${rgb}, 0.75)`
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i]
       if (star.opacity >= 0.55) {

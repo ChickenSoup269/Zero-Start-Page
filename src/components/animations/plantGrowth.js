@@ -92,18 +92,26 @@ export class PlantGrowthEffect {
 
     const animateLoop = (t) => {
       if (!this.active) return
+      this._animId = requestAnimationFrame(animateLoop)
+      if (document.visibilityState === "hidden") return
       this.time = t / 1000
       this.update()
       this.draw()
-      this._animId = requestAnimationFrame(animateLoop)
     }
     this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
     this.active = false
-    if (this._animId) cancelAnimationFrame(this._animId)
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
+    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+    this.plants = []
+    this.grass = []
+    this.particles = []
   }
 
   update() {
@@ -177,6 +185,7 @@ export class PlantGrowthEffect {
     this.plants.forEach(updateBranch)
 
     if (Math.random() < 0.03) this.spawnPetal()
+    const sinTimeY = Math.sin(this.time) * 0.4
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i]
       p.x += p.vx + Math.sin(this.time + p.y * 0.01) * 0.4
@@ -202,7 +211,8 @@ export class PlantGrowthEffect {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    const rgb = hexToRgb(this.baseColor)
+    if (!this.rgb) this.rgb = hexToRgb(this.baseColor)
+    const rgb = this.rgb
     
     this.drawGrassLayer(rgb)
 
@@ -211,8 +221,10 @@ export class PlantGrowthEffect {
       const spiral = (b.isVine || b.isTopDown) ? Math.sin(this.time * 2 + b.phase) * 0.1 * b.spiralDir : 0
       const currentAngle = b.angle + wind + spiral
       
-      const endX = b.x + Math.cos(currentAngle) * b.length
-      const endY = b.y + Math.sin(currentAngle) * b.length
+      const cosA = Math.cos(currentAngle)
+      const sinA = Math.sin(currentAngle)
+      const endX = b.x + cosA * b.length
+      const endY = b.y + sinA * b.length
 
       this.ctx.beginPath()
       this.ctx.lineWidth = Math.max(0.5, b.size)
@@ -236,8 +248,8 @@ export class PlantGrowthEffect {
       })
 
       b.leaves.forEach(l => {
-        const lx = b.x + Math.cos(currentAngle) * (b.length * l.p)
-        const ly = b.y + Math.sin(currentAngle) * (b.length * l.p)
+        const lx = b.x + cosA * (b.length * l.p)
+        const ly = b.y + sinA * (b.length * l.p)
         this.drawLeaf(lx, ly, currentAngle + (Math.PI/2) * l.side + l.angle, l.size, (b.isVine || b.isTopDown), rgb)
       })
 

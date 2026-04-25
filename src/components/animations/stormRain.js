@@ -88,6 +88,11 @@ export class StormRainEffect {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.canvas.style.display = "none"
     }
+    this.drops = []
+    this.ripples = []
+    this.fogParts = []
+    this.clouds = []
+    this.currentLightningBolts = null
   }
 
   destroy() {
@@ -516,29 +521,31 @@ export class StormRainEffect {
 
   _animate(now) {
     if (!this.active) return
+    this._animId = requestAnimationFrame((t) => this._animate(t))
+    if (document.visibilityState === "hidden") return
 
     const dt = Math.min(now - this._lastTime, 50)
     this._lastTime = now
     this._time += dt
 
-    // Wind logic
-    if (this._manualWind !== null) {
-      this._windTarget = this._manualWind
-    } else if (this.autoWind) {
-      this._windTarget = Math.sin(this._time * 0.00022) * 1.2 + 0.5
+    if (this.autoWind) {
+      this._windTarget += (Math.random() - 0.5) * 0.05
+      this._windTarget = Math.max(-2.5, Math.min(2.5, this._windTarget))
+      this.windX += (this._windTarget - this.windX) * 0.01
     }
-    this.windX += (this._windTarget - this.windX) * 0.015
 
-    const ctx = this.ctx
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     this._drawClouds(dt)
     this._drawLightning(dt)
     this._drawFog()
-    this._drawRain(dt)
     this._drawGround()
+    this._drawRain(dt)
     this._drawRipples(dt)
+  }
 
-    requestAnimationFrame((t) => this._animate(t))
+  updateColor(color) {
+    this.rainColor = color
+    this._parseRainColor(color)
   }
 }

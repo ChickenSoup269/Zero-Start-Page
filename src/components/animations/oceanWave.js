@@ -49,6 +49,7 @@ export class OceanWaveEffect {
     this.active = true
     this.lastDrawTime = 0
     this.time = 0
+    this.rgb = this._hexToRgb(this.color)
     this.canvas.style.display = "block"
     this.animate(0)
   }
@@ -63,6 +64,7 @@ export class OceanWaveEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -70,11 +72,12 @@ export class OceanWaveEffect {
 
     const W = this.canvas.width
     const H = this.canvas.height
+    const ctx = this.ctx
 
-    this.ctx.clearRect(0, 0, W, H)
+    ctx.clearRect(0, 0, W, H)
     this.time += 0.012
 
-    const rgb = this._hexToRgb(this.color)
+    const rgb = this.rgb || this._hexToRgb(this.color)
     const isTop = this.position === "top"
 
     // Draw from back layer to front layer
@@ -103,55 +106,62 @@ export class OceanWaveEffect {
 
       // Slight color shift: back layers a bit darker
       const lumFactor = 0.5 + t * 0.5
+      const r = Math.round(rgb.r * lumFactor)
+      const g = Math.round(rgb.g * lumFactor)
+      const b = Math.round(rgb.b * lumFactor)
 
-      this.ctx.beginPath()
+      const timeSpeedPhase = this.time * speed + phaseOffset
+      const timeSpeedPhase2 = this.time * speed * 0.7 + phaseOffset
+
+      ctx.beginPath()
 
       // Build the wave path
       for (let xi = 0; xi <= W; xi += 3) {
         const y =
           baseY +
-          Math.sin(xi * freq + this.time * speed + phaseOffset) * amplitude +
-          Math.sin(xi * freq * 2.3 + this.time * speed * 0.7 + phaseOffset) *
+          Math.sin(xi * freq + timeSpeedPhase) * amplitude +
+          Math.sin(xi * freq * 2.3 + timeSpeedPhase2) *
             (amplitude * 0.3)
 
         if (xi === 0) {
-          this.ctx.moveTo(xi, y)
+          ctx.moveTo(xi, y)
         } else {
-          this.ctx.lineTo(xi, y)
+          ctx.lineTo(xi, y)
         }
       }
 
       // Close path to the edge (bottom or top)
       if (isTop) {
-        this.ctx.lineTo(W, 0)
-        this.ctx.lineTo(0, 0)
+        ctx.lineTo(W, 0)
+        ctx.lineTo(0, 0)
       } else {
-        this.ctx.lineTo(W, H)
-        this.ctx.lineTo(0, H)
+        ctx.lineTo(W, H)
+        ctx.lineTo(0, H)
       }
-      this.ctx.closePath()
+      ctx.closePath()
 
-      this.ctx.fillStyle = `rgba(${Math.round(rgb.r * lumFactor)},${Math.round(rgb.g * lumFactor)},${Math.round(rgb.b * lumFactor)},${alpha})`
-      this.ctx.fill()
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`
+      ctx.fill()
 
       // Draw a subtle bright crest line on top of each wave
-      this.ctx.beginPath()
+      ctx.beginPath()
       for (let xi = 0; xi <= W; xi += 3) {
         const y =
           baseY +
-          Math.sin(xi * freq + this.time * speed + phaseOffset) * amplitude +
-          Math.sin(xi * freq * 2.3 + this.time * speed * 0.7 + phaseOffset) *
+          Math.sin(xi * freq + timeSpeedPhase) * amplitude +
+          Math.sin(xi * freq * 2.3 + timeSpeedPhase2) *
             (amplitude * 0.3)
 
         if (xi === 0) {
-          this.ctx.moveTo(xi, y)
+          ctx.moveTo(xi, y)
         } else {
-          this.ctx.lineTo(xi, y)
+          ctx.lineTo(xi, y)
         }
       }
-      this.ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha + 0.15})`
-      this.ctx.lineWidth = 1.5
-      this.ctx.stroke()
+      ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha + 0.15})`
+      ctx.lineWidth = 1.5
+      ctx.stroke()
     }
   }
+
 }

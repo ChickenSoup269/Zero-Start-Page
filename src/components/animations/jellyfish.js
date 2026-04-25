@@ -77,6 +77,7 @@ export class Jellyfish {
 
   updateColor(color) {
     this.color = color
+    this._hue = this._getHue()
   }
 
   updateType(type) {
@@ -97,6 +98,8 @@ export class Jellyfish {
 
   animate() {
     if (!this.running) return
+    this.animationId = this._animId = requestAnimationFrame(this.animate)
+    if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -159,8 +162,6 @@ export class Jellyfish {
       this._drawTentacles()
       this._drawBell(ctx, cx, cy, bellW, bellH, pulse)
     }
-
-    this.animationId = this._animId = requestAnimationFrame(this.animate)
   }
 
   _drawBubbles() {

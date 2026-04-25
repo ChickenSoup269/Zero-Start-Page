@@ -10,10 +10,21 @@ export class PixelCubes {
     this.shape = shape || "cube"
     this.angleY = 0
     this.angleX = 0
+    this.active = false
   }
 
   updateColor(color) {
     this.color = color
+    this._cacheColor()
+  }
+
+  _cacheColor() {
+    this.rgb = { r: 0, g: 255, b: 115 }
+    if (this.color && this.color.startsWith("#") && this.color.length === 7) {
+      this.rgb.r = parseInt(this.color.substring(1, 3), 16)
+      this.rgb.g = parseInt(this.color.substring(3, 5), 16)
+      this.rgb.b = parseInt(this.color.substring(5, 7), 16)
+    }
   }
 
   updateShape(shape) {
@@ -29,6 +40,7 @@ export class PixelCubes {
   }
 
   initCubes() {
+    this._cacheColor()
     this.cubes = []
     const count = Math.min(Math.floor((this.width * this.height) / 30000), 60)
     for (let i = 0; i < count; i++) {
@@ -53,13 +65,17 @@ export class PixelCubes {
     this.resize()
     this.then = performance.now()
     const animate = (time) => {
+      if (!this.active) return
       this.animationId = requestAnimationFrame(animate)
+      if (document.visibilityState === "hidden") return
+
       const elapsed = time - this.then
       if (elapsed > 1000 / 60) {
         this.then = time - (elapsed % (1000 / 60))
         this.draw()
       }
     }
+    this.active = true
     animate(performance.now())
   }
 
@@ -68,15 +84,9 @@ export class PixelCubes {
     this.angleY += 0.002
     this.angleX += 0.001
 
-    // Parse color
-    let r = 0,
-      g = 255,
-      b = 115
-    if (this.color.startsWith("#") && this.color.length === 7) {
-      r = parseInt(this.color.substring(1, 3), 16)
-      g = parseInt(this.color.substring(3, 5), 16)
-      b = parseInt(this.color.substring(5, 7), 16)
-    }
+    const { r, g, b } = this.rgb
+    const cx = Math.cos(this.angleX), sx = Math.sin(this.angleX)
+    const cy = Math.cos(this.angleY), sy = Math.sin(this.angleY)
 
     this.ctx.lineWidth = 1.5
 
@@ -84,11 +94,6 @@ export class PixelCubes {
       c.rX += c.sX
       c.rY += c.sY
       c.rZ += c.sZ
-
-      let cx = Math.cos(this.angleX),
-        sx = Math.sin(this.angleX)
-      let cy = Math.cos(this.angleY),
-        sy = Math.sin(this.angleY)
 
       let tx = c.x * cy - c.z * sy
       let tz = c.x * sy + c.z * cy
@@ -106,12 +111,9 @@ export class PixelCubes {
         this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`
 
         let s = c.size * scale
-        let crx = Math.cos(c.rX),
-          srx = Math.sin(c.rX)
-        let cry = Math.cos(c.rY),
-          sry = Math.sin(c.rY)
-        let crz = Math.cos(c.rZ),
-          srz = Math.sin(c.rZ)
+        let crx = Math.cos(c.rX), srx = Math.sin(c.rX)
+        let cry = Math.cos(c.rY), sry = Math.sin(c.rY)
+        let crz = Math.cos(c.rZ), srz = Math.sin(c.rZ)
 
         if (this.shape === "circle") {
           // 3D Wireframe Sphere (3 perpendicular rings)
@@ -224,11 +226,13 @@ export class PixelCubes {
   }
 
   stop() {
+    this.active = false
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)
       this.animationId = null
     }
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+    this.cubes = []
   }
 }

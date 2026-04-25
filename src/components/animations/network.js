@@ -44,6 +44,8 @@ export class NetworkEffect {
     if (this.active) return
     this.active = true
     this.lastDrawTime = 0
+    this.rgb = this.hexToRgb(this.color)
+    this.rgbStr = `${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}`
     this.createParticles()
     window.addEventListener("mousemove", this.handleMouseMove)
     window.addEventListener("mouseout", this.handleMouseOut)
@@ -81,6 +83,7 @@ export class NetworkEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -89,8 +92,8 @@ export class NetworkEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.pulseTime += 0.05
 
-    const rgb = this.hexToRgb(this.color)
-    const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
+    const rgbStr = this.rgbStr
+    const mouseRingPulse = 12 + Math.sin(this.pulseTime * 2) * 4
 
     // Update and draw connections first (background layer)
     this.ctx.lineWidth = 1
@@ -115,8 +118,9 @@ export class NetworkEffect {
             const midY = (p1.y + p2.y) / 2
             const mdx = this.mouse.x - midX
             const mdy = this.mouse.y - midY
-            const mDist = Math.sqrt(mdx * mdx + mdy * mdy)
-            if (mDist < 100) {
+            const mDistSq = mdx * mdx + mdy * mdy
+            if (mDistSq < 10000) {
+              const mDist = Math.sqrt(mDistSq)
               opacity *= (1 + (1 - mDist / 100) * 1.5)
             }
           }
@@ -155,9 +159,9 @@ export class NetworkEffect {
         const dx = this.mouse.x - p.x
         const dy = this.mouse.y - p.y
         const distSq = dx * dx + dy * dy
-        const dist = Math.sqrt(distSq)
         
-        if (dist < this.mouseDistance) {
+        if (distSq < this.mouseDistance * this.mouseDistance) {
+          const dist = Math.sqrt(distSq)
           const proximity = 1 - dist / this.mouseDistance
           p.x += dx * proximity * this.mouseForce * 0.1
           p.y += dy * proximity * this.mouseForce * 0.1
@@ -201,12 +205,13 @@ export class NetworkEffect {
       this.ctx.fill()
       
       this.ctx.beginPath()
-      this.ctx.arc(this.mouse.x, this.mouse.y, 12 + Math.sin(this.pulseTime * 2) * 4, 0, Math.PI * 2)
+      this.ctx.arc(this.mouse.x, this.mouse.y, mouseRingPulse, 0, Math.PI * 2)
       this.ctx.strokeStyle = `rgba(${rgbStr}, 0.3)`
       this.ctx.lineWidth = 1
       this.ctx.stroke()
     }
   }
+
 
   hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)

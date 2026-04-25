@@ -114,9 +114,12 @@ export class WavyPatternEffect {
   }
 
   stop() {
-    if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
     this._outer.style.display = "none"
+    this._outer.style.removeProperty("--s")
+    this._outer.style.removeProperty("--c1")
+    this._outer.style.removeProperty("--c2")
+    this._outer.style.removeProperty("--dur")
   }
 
   setColors(color1, color2) {

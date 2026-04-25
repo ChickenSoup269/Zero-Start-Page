@@ -223,10 +223,11 @@ export class NintendoPixelEffect {
 
   updateAccentColor(color) {
     this.color = color
+    this._cachedRGB = this._parseHex(color)
   }
 
-  rgba(hex, alpha) {
-    const normalized = (hex || this.color).replace("#", "")
+  _parseHex(hex) {
+    const normalized = (hex || "#63f5ff").replace("#", "")
     const value =
       normalized.length === 3
         ? normalized
@@ -234,10 +235,22 @@ export class NintendoPixelEffect {
             .map((part) => part + part)
             .join("")
         : normalized
-    const r = parseInt(value.slice(0, 2), 16)
-    const g = parseInt(value.slice(2, 4), 16)
-    const b = parseInt(value.slice(4, 6), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    return {
+      r: parseInt(value.slice(0, 2), 16),
+      g: parseInt(value.slice(2, 4), 16),
+      b: parseInt(value.slice(4, 6), 16)
+    }
+  }
+
+  rgba(hex, alpha) {
+    let rgb
+    if (hex === this.color && this._cachedRGB) {
+      rgb = this._cachedRGB
+    } else {
+      rgb = this._parseHex(hex)
+      if (hex === this.color) this._cachedRGB = rgb
+    }
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`
   }
 
   roundRect(x, y, width, height, radius) {
@@ -1425,6 +1438,7 @@ export class NintendoPixelEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((time) => this.animate(time))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

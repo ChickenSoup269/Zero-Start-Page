@@ -217,6 +217,7 @@ export class SnowfallHDEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

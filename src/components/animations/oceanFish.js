@@ -136,12 +136,12 @@ export class OceanFishEffect {
     this.canvas.style.display = "block"
 
     const animateLoop = (t) => {
+      if (!this.active) return
+      this._animId = requestAnimationFrame(animateLoop)
+      if (document.visibilityState === 'hidden') return
       this.animate(t)
-      if (this.active) {
-        requestAnimationFrame(animateLoop)
-      }
     }
-    requestAnimationFrame(animateLoop)
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
@@ -167,16 +167,17 @@ export class OceanFishEffect {
       })
     }
 
-    this.ctx.fillStyle = "rgba(255, 255, 255, 0.3)"
+    const ctx = this.ctx
+    ctx.fillStyle = "rgba(255, 255, 255, 0.3)"
     for (let i = this.bubbles.length - 1; i >= 0; i--) {
       let b = this.bubbles[i]
       b.y -= b.speed
       b.wobble += b.wobbleSpeed
       const hoverX = b.x + Math.sin(b.wobble) * 20
 
-      this.ctx.beginPath()
-      this.ctx.arc(hoverX, b.y, b.size, 0, Math.PI * 2)
-      this.ctx.fill()
+      ctx.beginPath()
+      ctx.arc(hoverX, b.y, b.size, 0, Math.PI * 2)
+      ctx.fill()
 
       if (b.y < -20) {
         this.bubbles.splice(i, 1)
@@ -224,29 +225,29 @@ export class OceanFishEffect {
       const angle = Math.atan2(fish.vy, fish.vx)
       fish.finOffset += fish.finSpeed
 
-      this.ctx.save()
-      this.ctx.translate(fish.x, fish.y)
-      this.ctx.rotate(angle)
+      ctx.save()
+      ctx.translate(fish.x, fish.y)
+      ctx.rotate(angle)
 
-      this.ctx.shadowColor = "rgba(0,0,0,0.2)"
-      this.ctx.shadowBlur = 10
-      this.ctx.shadowOffsetX = 0
-      this.ctx.shadowOffsetY = 8
+      ctx.shadowColor = "rgba(0,0,0,0.2)"
+      ctx.shadowBlur = 10
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 8
 
-      this.ctx.fillStyle = fish.color
+      ctx.fillStyle = fish.color
 
       // Tail
       const tailWobble = Math.sin(fish.finOffset) * (fish.size / 2.5)
-      this.ctx.beginPath()
-      this.ctx.moveTo(-fish.size / 1.5, 0)
-      this.ctx.lineTo(-fish.size * 1.8, -fish.size / 1.5 + tailWobble)
-      this.ctx.lineTo(-fish.size * 1.8, fish.size / 1.5 + tailWobble)
-      this.ctx.fill()
+      ctx.beginPath()
+      ctx.moveTo(-fish.size / 1.5, 0)
+      ctx.lineTo(-fish.size * 1.8, -fish.size / 1.5 + tailWobble)
+      ctx.lineTo(-fish.size * 1.8, fish.size / 1.5 + tailWobble)
+      ctx.fill()
 
       // Top Fin
-      this.ctx.beginPath()
-      this.ctx.moveTo(-fish.size / 3, -fish.size / 2)
-      this.ctx.bezierCurveTo(
+      ctx.beginPath()
+      ctx.moveTo(-fish.size / 3, -fish.size / 2)
+      ctx.bezierCurveTo(
         0,
         -fish.size * 1.2,
         fish.size / 2,
@@ -254,18 +255,18 @@ export class OceanFishEffect {
         fish.size / 3,
         -fish.size / 2,
       )
-      this.ctx.fill()
+      ctx.fill()
 
       // Body
-      this.ctx.beginPath()
-      this.ctx.ellipse(0, 0, fish.size, fish.size / 2, 0, 0, Math.PI * 2)
-      this.ctx.fill()
+      ctx.beginPath()
+      ctx.ellipse(0, 0, fish.size, fish.size / 2, 0, 0, Math.PI * 2)
+      ctx.fill()
 
       // Pectoral Fin
-      this.ctx.fillStyle = "rgba(255,255,255,0.4)"
-      this.ctx.beginPath()
+      ctx.fillStyle = "rgba(255,255,255,0.4)"
+      ctx.beginPath()
       const pctWobble = Math.sin(fish.finOffset - Math.PI / 4) * (fish.size / 4)
-      this.ctx.ellipse(
+      ctx.ellipse(
         -fish.size / 8,
         fish.size / 4,
         fish.size / 2.5,
@@ -274,26 +275,26 @@ export class OceanFishEffect {
         0,
         Math.PI * 2,
       )
-      this.ctx.fill()
+      ctx.fill()
 
       // Eye
-      this.ctx.shadowBlur = 0
-      this.ctx.fillStyle = "rgba(255,255,255,0.9)"
-      this.ctx.beginPath()
-      this.ctx.arc(fish.size / 2, -fish.size / 5, fish.size / 5, 0, Math.PI * 2)
-      this.ctx.fill()
-      this.ctx.fillStyle = "#111"
-      this.ctx.beginPath()
-      this.ctx.arc(
+      ctx.shadowBlur = 0
+      ctx.fillStyle = "rgba(255,255,255,0.9)"
+      ctx.beginPath()
+      ctx.arc(fish.size / 2, -fish.size / 5, fish.size / 5, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = "#111"
+      ctx.beginPath()
+      ctx.arc(
         fish.size / 2 + 1,
         -fish.size / 5,
         fish.size / 8,
         0,
         Math.PI * 2,
       )
-      this.ctx.fill()
+      ctx.fill()
 
-      this.ctx.restore()
+      ctx.restore()
     })
   }
 
@@ -307,9 +308,7 @@ export class OceanFishEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
     // Call modular drawing functions
-    
-    
     this.drawFishesAndBubbles()
-    
   }
+
 }

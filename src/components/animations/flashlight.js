@@ -41,6 +41,7 @@ export class FlashlightEffect {
   start() {
     if (this.active) return
     this.active = true
+    this._rgb = this._hexToRgb(this.color)
     this._onResize()
     window.addEventListener("resize", this._resizeHandler)
     window.addEventListener("mousemove", this._mouseMoveHandler)
@@ -71,6 +72,7 @@ export class FlashlightEffect {
   _draw() {
     if (!this.active) return
     this.animationId = requestAnimationFrame(() => this._draw())
+    if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
     const W = this.canvas.width
@@ -80,7 +82,8 @@ export class FlashlightEffect {
     ctx.globalCompositeOperation = "source-over"
     ctx.clearRect(0, 0, W, H)
     
-    const rgb = this._hexToRgb(this.color)
+    if (!this._rgb) this._rgb = this._hexToRgb(this.color)
+    const rgb = this._rgb
     ctx.fillStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.opacity})`
     ctx.fillRect(0, 0, W, H)
 

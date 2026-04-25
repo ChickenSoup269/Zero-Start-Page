@@ -152,6 +152,7 @@ export class NorthernLightsEffect {
   _draw(currentTime) {
     if (!this.active) return
     this.animationId = requestAnimationFrame((t) => this._draw(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -187,12 +188,13 @@ export class NorthernLightsEffect {
         ctx.fillRect(x, y, 1.2, 1.2)
     }
 
+    const brightness = this.brightness
     this.particles.forEach(p => {
         p.twinklePhase += p.twinkleSpeed
         p.x += p.vx; p.y += p.vy
         if (p.x < 0) p.x = W; if (p.x > W) p.x = 0
         if (p.y < 0) p.y = H; if (p.y > H) p.y = 0
-        const op = (Math.sin(p.twinklePhase) * 0.5 + 0.5) * this.brightness * 0.6
+        const op = (Math.sin(p.twinklePhase) * 0.5 + 0.5) * brightness * 0.6
         ctx.fillStyle = `rgba(255, 255, 255, ${op})`
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill()
     })
@@ -202,8 +204,9 @@ export class NorthernLightsEffect {
       const step = W / curtain.segments
       for (let i = 0; i < curtain.segments; i++) {
         const x = i * step
-        const yOff = Math.sin(x * 0.002 + curtain.phase) * 40
-        const opacity = (Math.sin(i * 0.5 + curtain.phase * 5) * 0.5 + 0.5) * curtain.opacity * this.brightness
+        const phaseVal = x * 0.002 + curtain.phase
+        const yOff = Math.sin(phaseVal) * 40
+        const opacity = (Math.sin(i * 0.5 + curtain.phase * 5) * 0.5 + 0.5) * curtain.opacity * brightness
         const hue = (curtain.baseHue + Math.sin(i * 0.1 + curtain.phase) * 15) % 360
         const grad = ctx.createLinearGradient(x, curtain.y + yOff, x, curtain.y + yOff + curtain.height)
         grad.addColorStop(0, `hsla(${hue}, 80%, 50%, 0)`)
@@ -216,19 +219,22 @@ export class NorthernLightsEffect {
   }
 
   _renderClassic(ctx, W, H) {
-    const { h: baseH, s: baseS, l: baseL } = this._hexToHsl(this.color)
+    if (!this._cachedHsl) this._cachedHsl = this._hexToHsl(this.color)
+    const { h: baseH, s: baseS, l: baseL } = this._cachedHsl
     const ss = Math.max(baseS, 50)
     const ll = Math.max(32, Math.min(baseL, 68))
+    const brightness = this.brightness
     
     ctx.globalCompositeOperation = "lighter"
 
     // Rays (Pulsing Rays)
     for (const ray of this.rays) {
       ray.phase += ray.speed * 0.5
-      const xShift = Math.sin(ray.phase) * 30
+      const sinPhase = Math.sin(ray.phase)
+      const xShift = sinPhase * 30
       const pulse = Math.sin(ray.phase * 1.2) * 0.5 + 0.5
       const hue = baseH + Math.sin(ray.phase * 0.5) * 25
-      const a = ray.alpha * (0.3 + 0.7 * pulse) * this.brightness
+      const a = ray.alpha * (0.3 + 0.7 * pulse) * brightness
       const rW = ray.width * (0.8 + 0.4 * pulse)
 
       const rg = ctx.createLinearGradient(ray.x + xShift, ray.yStart, ray.x + xShift, ray.yEnd)
@@ -245,9 +251,10 @@ export class NorthernLightsEffect {
       pl.phase += pl.speed * 0.015
       const bandY = H * 0.25 + (pi / (this.planes.length - 1)) * H * 0.45
       const pts = this._buildWavePtsClassic(W, H, bandY, pl.phase, pl.amp)
-      const hue = baseH + pl.hueOff + Math.sin(pl.phase * 0.2) * 20
+      const sinPhasePl = Math.sin(pl.phase * 0.2)
+      const hue = baseH + pl.hueOff + sinPhasePl * 20
       const hue2 = (hue + 40) % 360
-      const alp = pl.alpha * this.brightness
+      const alp = pl.alpha * brightness
 
       // Lớp phát sáng rộng (Wide Glow)
       ctx.beginPath()
@@ -281,14 +288,15 @@ export class NorthernLightsEffect {
     })
 
     // Cinematic Particles
+    const timeVal = this.time
     this.particles.forEach((p, i) => {
-      p.x += p.vx + Math.sin(this.time * 15 + p.x * 0.01) * 0.3
+      p.x += p.vx + Math.sin(timeVal * 15 + p.x * 0.01) * 0.3
       p.y += p.vy; p.life -= 0.0025
       if (p.life <= 0 || p.y < -20) this.particles[i] = this._newParticleClassic(false)
-      const opacity = p.life * 0.6 * this.brightness
+      const opacity = p.life * 0.6 * brightness
       if (opacity > 0.02) {
           const hue = baseH + p.hueOff
-          const pSize = p.size * (0.8 + 0.4 * Math.sin(this.time * 5 + i))
+          const pSize = p.size * (0.8 + 0.4 * Math.sin(timeVal * 5 + i))
           ctx.fillStyle = `hsla(${hue},${ss}%,${ll + 20}%,${opacity})`
           ctx.beginPath(); ctx.arc(p.x, p.y, pSize, 0, Math.PI * 2); ctx.fill()
           // Thêm halo nhẹ cho hạt sáng
@@ -298,10 +306,12 @@ export class NorthernLightsEffect {
     })
   }
 
+
   start() {
     if (this.active) return
     this.active = true
     this.lastDrawTime = performance.now()
+    this._cachedHsl = this._hexToHsl(this.color)
     this.canvas.style.display = "block"
     this.animationId = requestAnimationFrame((t) => this._draw(t))
   }
@@ -316,6 +326,7 @@ export class NorthernLightsEffect {
   setOptions(opts = {}) {
     if (opts.color !== undefined) {
         this.color = opts.color
+        this._cachedHsl = this._hexToHsl(this.color)
         if (this.style === "hd") this._initHD()
     }
     if (opts.style !== undefined && opts.style !== this.style) {

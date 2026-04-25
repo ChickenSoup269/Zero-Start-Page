@@ -82,6 +82,7 @@ export class WavyLinesEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -95,7 +96,8 @@ export class WavyLinesEffect {
 
     this.time += 0.016
 
-    const rgb = this._hexToRgb(this.color)
+    if (!this.rgb) this.rgb = this._hexToRgb(this.color)
+    const rgb = this.rgb
 
     for (const wave of this.waves) {
       this.ctx.beginPath()

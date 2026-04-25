@@ -37,8 +37,12 @@ export class FirefliesEffect {
   }
 
   stop() {
-    if (this._animId) cancelAnimationFrame(this._animId)
     this.active = false
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
 
@@ -63,6 +67,7 @@ export class FirefliesEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime
@@ -101,18 +106,35 @@ export class FirefliesEffect {
       fly.trail.push({ x: fly.x, y: fly.y })
       if (fly.trail.length > 6) fly.trail.shift()
       
-      // Loop
-      if (fly.x < -10) fly.x = this.canvas.width + 10
-      if (fly.x > this.canvas.width + 10) fly.x = -10
-      if (fly.y < -10) fly.y = this.canvas.height + 10
-      if (fly.y > this.canvas.height + 10) fly.y = -10
+      // Loop (Screen Wrap)
+      if (fly.x < -20) {
+        fly.x = this.canvas.width + 20
+        fly.trail = [] // Clear trail to prevent long lines
+      } else if (fly.x > this.canvas.width + 20) {
+        fly.x = -20
+        fly.trail = []
+      }
+      
+      if (fly.y < -20) {
+        fly.y = this.canvas.height + 20
+        fly.trail = []
+      } else if (fly.y > this.canvas.height + 20) {
+        fly.y = -20
+        fly.trail = []
+      }
 
       // Draw Trail
       if (fly.trail.length > 1) {
         this.ctx.beginPath()
         this.ctx.moveTo(fly.trail[0].x, fly.trail[0].y)
         for(let i=1; i < fly.trail.length; i++) {
-            this.ctx.lineTo(fly.trail[i].x, fly.trail[i].y)
+            // Only draw if points are close enough (not a screen wrap jump)
+            const dist = Math.abs(fly.trail[i].x - fly.trail[i-1].x) + Math.abs(fly.trail[i].y - fly.trail[i-1].y)
+            if (dist < 100) {
+              this.ctx.lineTo(fly.trail[i].x, fly.trail[i].y)
+            } else {
+              this.ctx.moveTo(fly.trail[i].x, fly.trail[i].y)
+            }
         }
         this.ctx.strokeStyle = `rgba(255, 230, 150, 0.05)` // Fainter trail
         this.ctx.lineWidth = 0.5

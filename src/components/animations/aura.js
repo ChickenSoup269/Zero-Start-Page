@@ -36,6 +36,7 @@ class Blob {
     
     // Tạo biến thể màu nhẹ nhàng từ màu gốc
     this.hue = (baseHue + (Math.random() - 0.5) * 40 + 360) % 360
+    this._updateColors()
     
     // Chuyển động chậm và mượt
     this.vx = (Math.random() - 0.5) * 0.8
@@ -43,6 +44,13 @@ class Blob {
     
     this.sinPhase = Math.random() * Math.PI * 2
     this.sinSpeed = 0.005 + Math.random() * 0.01
+  }
+
+  _updateColors() {
+    const baseAlpha = 0.4
+    this.color0 = `hsla(${this.hue}, 80%, 60%, ${baseAlpha})`
+    this.color05 = `hsla(${this.hue}, 70%, 50%, ${baseAlpha * 0.4})`
+    this.color1 = `hsla(${this.hue}, 60%, 40%, 0)`
   }
 
   update(width, height) {
@@ -68,10 +76,9 @@ class Blob {
       this.x, this.y, this.radius
     )
     
-    const baseAlpha = 0.4
-    gradient.addColorStop(0, `hsla(${this.hue}, 80%, 60%, ${baseAlpha})`)
-    gradient.addColorStop(0.5, `hsla(${this.hue}, 70%, 50%, ${baseAlpha * 0.4})`)
-    gradient.addColorStop(1, `hsla(${this.hue}, 60%, 40%, 0)`)
+    gradient.addColorStop(0, this.color0)
+    gradient.addColorStop(0.5, this.color05)
+    gradient.addColorStop(1, this.color1)
 
     ctx.fillStyle = gradient
     ctx.beginPath()
@@ -125,6 +132,7 @@ export class AuraEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.animationFrameId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -172,6 +180,7 @@ export class AuraEffect {
     const hsl = hexToHsl(this.color)
     this.blobs.forEach((blob) => {
       blob.hue = (hsl.h + (Math.random() - 0.5) * 40 + 360) % 360
+      blob._updateColors()
     })
   }
 

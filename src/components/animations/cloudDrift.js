@@ -68,6 +68,9 @@ export class CloudDriftEffect {
 
     const animateLoop = (now) => {
       if (!this.active) return
+      this._animId = requestAnimationFrame(animateLoop)
+      if (document.visibilityState === 'hidden') return
+      
       const deltaTime = (now - this.lastTime) / 1000 // Chuyển sang giây
       this.lastTime = now
 
@@ -76,7 +79,6 @@ export class CloudDriftEffect {
       
       this.update(limitedDelta, now / 1000)
       this.draw()
-      this._animId = requestAnimationFrame(animateLoop)
     }
     this._animId = requestAnimationFrame(animateLoop)
   }
@@ -97,7 +99,7 @@ export class CloudDriftEffect {
         p.currentR = p.r + Math.sin(time * p.speed + p.phase) * (p.r * 0.06)
       }
 
-      // Wrap around mượt mà
+      // Wrap around mượt mờ
       if (c.x > this.canvas.width + 400) {
         c.x = -400
         c.y = Math.random() * (this.canvas.height * 0.5)
@@ -105,9 +107,14 @@ export class CloudDriftEffect {
     }
   }
 
+  _updateColorCache() {
+    this._rgb = hexToRgb(this.baseColor)
+  }
+
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    const rgb = hexToRgb(this.baseColor)
+    if (!this._rgb) this._updateColorCache()
+    const rgb = this._rgb
 
     for (const c of this.clouds) {
       this.ctx.save()

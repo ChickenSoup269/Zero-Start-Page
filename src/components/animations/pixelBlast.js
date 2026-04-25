@@ -139,15 +139,21 @@ export class PixelBlastEffect {
     window.removeEventListener("mousedown", this.handleMouseDown);
     if (this.canvas) {
       this.canvas.style.display = "none";
+      const ctx = this.canvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     if (this._animId) {
       cancelAnimationFrame(this._animId);
+      this._animId = null;
     }
+    this.ripples = [];
   }
 
   animate(now) {
     if (!this.active) return;
     this._animId = requestAnimationFrame((t) => this.animate(t));
+
+    if (document.visibilityState === 'hidden') return;
 
     const dt = (now - this.lastTime) / 1000;
     this.lastTime = now;

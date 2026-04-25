@@ -234,6 +234,7 @@ export class RainHDEffect {
   animate(t = 0) {
     if (!this.active) return
     this.animationFrame = this._animId = requestAnimationFrame((t2) => this.animate(t2))
+    if (document.visibilityState === "hidden") return
     const elapsed = t - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = t - (elapsed % this.fpsInterval)
@@ -347,13 +348,14 @@ export class RainHDEffect {
     const r = this._r,
       g = this._g,
       b = this._b
+    const rgb = `${r},${g},${b}`
 
     ctx.clearRect(0, 0, W, H)
 
     // ── 1. Rain mist veil — subtle atmospheric haze ──────────────────────
     const mist = ctx.createLinearGradient(0, 0, 0, H * 0.35)
-    mist.addColorStop(0, `rgba(${r},${g},${b},0.055)`)
-    mist.addColorStop(1, `rgba(${r},${g},${b},0)`)
+    mist.addColorStop(0, `rgba(${rgb},0.055)`)
+    mist.addColorStop(1, `rgba(${rgb},0)`)
     ctx.fillStyle = mist
     ctx.fillRect(0, 0, W, H)
 
@@ -364,7 +366,7 @@ export class RainHDEffect {
       const fade = 1 - p.r / p.maxR
       ctx.beginPath()
       ctx.ellipse(p.x, groundY, p.r, p.r * 0.26, 0, 0, Math.PI * 2)
-      ctx.strokeStyle = `rgba(${r},${g},${b},${fade * p.baseOp})`
+      ctx.strokeStyle = `rgba(${rgb},${fade * p.baseOp})`
       ctx.lineWidth = 0.9
       ctx.stroke()
     }
@@ -376,9 +378,9 @@ export class RainHDEffect {
       const tx = d.x - Math.cos(angle) * d.len
       const ty = d.y - Math.sin(angle) * d.len
       const lg = ctx.createLinearGradient(tx, ty, d.x, d.y)
-      lg.addColorStop(0, `rgba(${r},${g},${b},0)`)
-      lg.addColorStop(0.45, `rgba(${r},${g},${b},${d.op * 0.38})`)
-      lg.addColorStop(1, `rgba(${r},${g},${b},${d.op})`)
+      lg.addColorStop(0, `rgba(${rgb},0)`)
+      lg.addColorStop(0.45, `rgba(${rgb},${d.op * 0.38})`)
+      lg.addColorStop(1, `rgba(${rgb},${d.op})`)
       ctx.beginPath()
       ctx.moveTo(tx, ty)
       ctx.lineTo(d.x, d.y)
@@ -394,23 +396,23 @@ export class RainHDEffect {
         const fade = 1 - s.r / s.maxR
         ctx.beginPath()
         ctx.ellipse(s.x, H - 5, s.r, s.r * 0.28, 0, 0, Math.PI * 2)
-        ctx.strokeStyle = `rgba(${r},${g},${b},${fade * s.baseOp})`
+        ctx.strokeStyle = `rgba(${rgb},${fade * s.baseOp})`
         ctx.lineWidth = 1.2
         ctx.stroke()
       } else {
         // Bounce droplet
         ctx.beginPath()
         ctx.arc(s.x, s.y, Math.max(0.3, s.r), 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${r},${g},${b},${s.op})`
+        ctx.fillStyle = `rgba(${rgb},${s.op})`
         ctx.fill()
       }
     }
 
     // ── 5. Ground glistening strip ────────────────────────────────────────
     const ground = ctx.createLinearGradient(0, H - 20, 0, H)
-    ground.addColorStop(0, `rgba(${r},${g},${b},0)`)
-    ground.addColorStop(0.5, `rgba(${r},${g},${b},0.06)`)
-    ground.addColorStop(1, `rgba(${r},${g},${b},0.13)`)
+    ground.addColorStop(0, `rgba(${rgb},0)`)
+    ground.addColorStop(0.5, `rgba(${rgb},0.06)`)
+    ground.addColorStop(1, `rgba(${rgb},0.13)`)
     ctx.fillStyle = ground
     ctx.fillRect(0, H - 20, W, 20)
 

@@ -104,6 +104,7 @@ export class SakuraEffect {
     if (!this.active) return
 
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     const deltaTime = elapsed / (1000 / 60) // Normalize to 60fps
@@ -111,7 +112,8 @@ export class SakuraEffect {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-    const rgb = this.hexToRgb(this.color)
+    if (!this.rgb) this.rgb = this.hexToRgb(this.color)
+    const rgb = this.rgb
 
     this.petals.forEach((petal) => {
       // Update position

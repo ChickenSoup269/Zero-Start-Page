@@ -128,12 +128,17 @@ export class FirefliesHD {
     
     ctx.globalCompositeOperation = "lighter"
 
+    // Cache HSLA base strings if not already present
+    if (!fly._hsla) {
+      fly._hsla = `hsla(${hue}, 100%,`
+    }
+
     // 1. Atmospheric Bloom (Very wide, very faint)
     const airGlowSize = size * (28 + z * 28)
     const airGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, airGlowSize)
-    airGrad.addColorStop(0, `hsla(${hue}, 100%, 50%, ${opacity * 0.12})`)
-    airGrad.addColorStop(0.6, `hsla(${hue}, 100%, 30%, ${opacity * 0.04})`)
-    airGrad.addColorStop(1, `hsla(${hue}, 100%, 20%, 0)`)
+    airGrad.addColorStop(0, `${fly._hsla} 50%, ${opacity * 0.12})`)
+    airGrad.addColorStop(0.6, `${fly._hsla} 30%, ${opacity * 0.04})`)
+    airGrad.addColorStop(1, `${fly._hsla} 20%, 0)`)
     
     ctx.fillStyle = airGrad
     ctx.beginPath()
@@ -143,9 +148,9 @@ export class FirefliesHD {
     // 2. Core Bioluminescence
     const mainGlowSize = size * (10 + z * 10)
     const mainGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, mainGlowSize)
-    mainGrad.addColorStop(0, `hsla(${hue}, 100%, 75%, ${opacity * 0.85})`)
-    mainGrad.addColorStop(0.4, `hsla(${hue}, 100%, 55%, ${opacity * 0.35})`)
-    mainGrad.addColorStop(1, `hsla(${hue}, 100%, 45%, 0)`)
+    mainGrad.addColorStop(0, `${fly._hsla} 75%, ${opacity * 0.85})`)
+    mainGrad.addColorStop(0.4, `${fly._hsla} 55%, ${opacity * 0.35})`)
+    mainGrad.addColorStop(1, `${fly._hsla} 45%, 0)`)
     
     ctx.fillStyle = mainGrad
     ctx.beginPath()
@@ -156,8 +161,8 @@ export class FirefliesHD {
     const coreSize = size * (1.8 + z) * (0.85 + opacity * 0.15)
     const coreGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, coreSize)
     coreGrad.addColorStop(0, `rgba(255, 255, 245, ${opacity})`)
-    coreGrad.addColorStop(0.5, `hsla(${hue}, 100%, 90%, ${opacity * 0.95})`)
-    coreGrad.addColorStop(1, `hsla(${hue}, 100%, 75%, 0)`)
+    coreGrad.addColorStop(0.5, `${fly._hsla} 90%, ${opacity * 0.95})`)
+    coreGrad.addColorStop(1, `${fly._hsla} 75%, 0)`)
     
     ctx.fillStyle = coreGrad
     ctx.beginPath()
@@ -170,9 +175,9 @@ export class FirefliesHD {
   animate(currentTime) {
     if (!this.active) return
     this._animId = requestAnimationFrame((t) => this.animate(t))
+    if (document.visibilityState === 'hidden') return
 
     const dt = currentTime - this.lastDrawTime
-    if (dt < 1) return
     this.lastDrawTime = currentTime
 
     const W = this.canvas.width

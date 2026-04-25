@@ -191,12 +191,12 @@ export class CursorTrailEffect {
     this.canvas.style.display = "block"
 
     const animateLoop = (t) => {
+      if (!this.active) return
+      this._animId = requestAnimationFrame(animateLoop)
+      if (document.visibilityState === 'hidden') return
       this.animate(t)
-      if (this.active) {
-        this._animId = requestAnimationFrame(animateLoop)
-      }
     }
-    requestAnimationFrame(animateLoop)
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
@@ -230,6 +230,9 @@ export class CursorTrailEffect {
     } else {
       this.ctx.globalCompositeOperation = "source-over"
     }
+
+    const staticRgb = this.cachedColor
+    const rgbStringPart1 = `rgba(`
 
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i]
