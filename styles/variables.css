@@ -33,6 +33,15 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "SAIBA-45";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/SAIBA-45.ttf")
+    format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-gradient-start: #0a1f11;
   --bg-gradient-end: #1d472c;

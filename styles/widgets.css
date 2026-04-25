@@ -640,7 +640,7 @@ body.ghost-controls .side-controls:hover {
 
 .quick-access-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--sidebar-border);
   margin: 4px 5px;
   flex-shrink: 0;
   transition: all 0.3s ease;

@@ -56,6 +56,11 @@ const PREDEFINED_FONTS = [
     tag: "Clock/Date",
   },
   {
+    label: "SAIBA-45",
+    value: "'SAIBA-45', sans-serif",
+    tag: "Clock/Date",
+  },
+  {
     label: "GohuFont",
     value: "'GohuFont', sans-serif",
     tag: "Pixel",
@@ -76,41 +81,44 @@ function loadGoogleFont(fontName) {
  */
 function initFont() {
   const settings = getSettings()
-  
+
   const fontsToLoad = [
-      settings.font || "'Outfit', sans-serif",
-      settings.clockFont || "'Outfit', sans-serif"
+    settings.font || "'Outfit', sans-serif",
+    settings.clockFont || "'Outfit', sans-serif",
   ]
 
-  fontsToLoad.forEach(currentFontValue => {
-      // Extract font name from value like "'Outfit', sans-serif" -> "Outfit"
-      const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
+  fontsToLoad.forEach((currentFontValue) => {
+    // Extract font name from value like "'Outfit', sans-serif" -> "Outfit"
+    const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
 
-      // Check if it's a predefined Google font or a user-saved font
-      const isPredefinedGoogle = PREDEFINED_FONTS.some(
-        (f) => f.google && f.label === fontName,
-      )
-      
-      const savedFonts = settings.userSavedFonts || []
-      const fontDef = PREDEFINED_FONTS.find(f => f.label === fontName)
-      
-      const savedFontObj = savedFonts.find(f => (typeof f === 'string' ? f : f.label) === fontName)
-      const isLocal = savedFontObj && typeof savedFontObj === 'object' && savedFontObj.isLocal
+    // Check if it's a predefined Google font or a user-saved font
+    const isPredefinedGoogle = PREDEFINED_FONTS.some(
+      (f) => f.google && f.label === fontName,
+    )
 
-      const isGoogleFont = (fontDef && fontDef.google) || 
-                          (savedFontObj && !isLocal);
+    const savedFonts = settings.userSavedFonts || []
+    const fontDef = PREDEFINED_FONTS.find((f) => f.label === fontName)
 
-      // Pre-loaded fonts in index.html don't need to be reloaded
-      const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
+    const savedFontObj = savedFonts.find(
+      (f) => (typeof f === "string" ? f : f.label) === fontName,
+    )
+    const isLocal =
+      savedFontObj && typeof savedFontObj === "object" && savedFontObj.isLocal
 
-      if (isGoogleFont && !isPreloaded) {
-        // Double check if it's a known non-google predefined font
-        if (fontDef && !fontDef.google) {
-           // Skip
-        } else {
-           loadGoogleFont(fontName)
-        }
+    const isGoogleFont =
+      (fontDef && fontDef.google) || (savedFontObj && !isLocal)
+
+    // Pre-loaded fonts in index.html don't need to be reloaded
+    const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
+
+    if (isGoogleFont && !isPreloaded) {
+      // Double check if it's a known non-google predefined font
+      if (fontDef && !fontDef.google) {
+        // Skip
+      } else {
+        loadGoogleFont(fontName)
       }
+    }
   })
 }
 
@@ -123,118 +131,142 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
   fontGrid.innerHTML = ""
 
   // Build a map of favorites from userSavedFonts
-  const favoritesMap = new Map();
-  savedFonts.forEach(f => {
-      if (typeof f === 'object' && f.isFavorite) {
-          favoritesMap.set(f.label, f);
-      }
-  });
+  const favoritesMap = new Map()
+  savedFonts.forEach((f) => {
+    if (typeof f === "object" && f.isFavorite) {
+      favoritesMap.set(f.label, f)
+    }
+  })
 
   const allFonts = [
-    ...PREDEFINED_FONTS.map(f => {
-        const fav = favoritesMap.get(f.label);
-        return { 
-            ...f, 
-            type: f.tag === "Clock/Date" ? "clock" : "general",
-            isFavorite: !!fav
-        };
+    ...PREDEFINED_FONTS.map((f) => {
+      const fav = favoritesMap.get(f.label)
+      return {
+        ...f,
+        type: f.tag === "Clock/Date" ? "clock" : "general",
+        isFavorite: !!fav,
+      }
     }),
-    ...savedFonts.filter(f => {
-        const label = typeof f === 'string' ? f : f.label;
-        return !PREDEFINED_FONTS.some(pf => pf.label === label);
-    }).map((f, index) => {
-        const label = typeof f === 'string' ? f : f.label;
-        const isFavorite = typeof f === 'string' ? false : !!f.isFavorite;
-        const isLocal = typeof f === 'object' && f.isLocal;
+    ...savedFonts
+      .filter((f) => {
+        const label = typeof f === "string" ? f : f.label
+        return !PREDEFINED_FONTS.some((pf) => pf.label === label)
+      })
+      .map((f, index) => {
+        const label = typeof f === "string" ? f : f.label
+        const isFavorite = typeof f === "string" ? false : !!f.isFavorite
+        const isLocal = typeof f === "object" && f.isLocal
         // Find original index in userSavedFonts for context menu
-        const originalIndex = savedFonts.findIndex(sf => (typeof sf === 'string' ? sf : sf.label) === label);
+        const originalIndex = savedFonts.findIndex(
+          (sf) => (typeof sf === "string" ? sf : sf.label) === label,
+        )
         return {
-            label: label,
-            value: typeof f === 'object' && f.value ? f.value : `'${label}', sans-serif`,
-            custom: !isLocal,
-            isLocal: isLocal,
-            isFavorite: isFavorite,
-            originalIndex: originalIndex,
-            type: "saved"
+          label: label,
+          value:
+            typeof f === "object" && f.value
+              ? f.value
+              : `'${label}', sans-serif`,
+          custom: !isLocal,
+          isLocal: isLocal,
+          isFavorite: isFavorite,
+          originalIndex: originalIndex,
+          type: "saved",
         }
-    }),
+      }),
   ]
 
-  const favoriteFonts = allFonts.filter(f => f.isFavorite)
-  const generalFonts = allFonts.filter(f => !f.isFavorite && f.type === "general")
-  const clockFonts = allFonts.filter(f => !f.isFavorite && f.type === "clock")
-  const savedFontsList = allFonts.filter(f => !f.isFavorite && f.type === "saved")
+  const favoriteFonts = allFonts.filter((f) => f.isFavorite)
+  const generalFonts = allFonts.filter(
+    (f) => !f.isFavorite && f.type === "general",
+  )
+  const clockFonts = allFonts.filter((f) => !f.isFavorite && f.type === "clock")
+  const savedFontsList = allFonts.filter(
+    (f) => !f.isFavorite && f.type === "saved",
+  )
 
   const sections = [
-      { label: "--- Favorite ---", fonts: favoriteFonts },
-      { label: "--- General Fonts ---", fonts: generalFonts },
-      { label: "--- Clock Fonts ---", fonts: clockFonts },
-      { label: "--- Saved Fonts ---", fonts: savedFontsList }
+    { label: "--- Favorite ---", fonts: favoriteFonts },
+    { label: "--- General Fonts ---", fonts: generalFonts },
+    { label: "--- Clock Fonts ---", fonts: clockFonts },
+    { label: "--- Saved Fonts ---", fonts: savedFontsList },
   ]
 
-  sections.forEach(section => {
-      if (section.fonts.length === 0) return;
+  sections.forEach((section) => {
+    if (section.fonts.length === 0) return
 
-      const sep = document.createElement("div")
-      sep.className = "font-grid-separator"
-      sep.textContent = section.label
-      fontGrid.appendChild(sep)
+    const sep = document.createElement("div")
+    sep.className = "font-grid-separator"
+    sep.textContent = section.label
+    fontGrid.appendChild(sep)
 
-      section.fonts.forEach((fontObj) => {
-        const { label, value, tag, custom, google, isFavorite, originalIndex, type, isLocal } = fontObj
-        const card = document.createElement("div")
-        
-        const isActive = (type === "clock") ? (value === settings.clockFont) : (value === settings.font)
-        card.className = "font-item" + (isActive ? " active" : "")
-        if (isFavorite) card.classList.add("is-favorite")
-        card.dataset.fontValue = value
+    section.fonts.forEach((fontObj) => {
+      const {
+        label,
+        value,
+        tag,
+        custom,
+        google,
+        isFavorite,
+        originalIndex,
+        type,
+        isLocal,
+      } = fontObj
+      const card = document.createElement("div")
 
-        const preview = document.createElement("span")
-        preview.className = "font-item-preview"
-        preview.textContent = "Aa"
-        preview.style.fontFamily = value
+      const isActive =
+        type === "clock"
+          ? value === settings.clockFont
+          : value === settings.font
+      card.className = "font-item" + (isActive ? " active" : "")
+      if (isFavorite) card.classList.add("is-favorite")
+      card.dataset.fontValue = value
 
-        const name = document.createElement("span")
-        name.className = "font-item-name"
-        
-        let displayTag = tag;
-        if (type === "saved") displayTag = isLocal ? "Local Font" : "Saved Font";
-        
-        name.textContent = label + (displayTag ? ` (${displayTag})` : "")
+      const preview = document.createElement("span")
+      preview.className = "font-item-preview"
+      preview.textContent = "Aa"
+      preview.style.fontFamily = value
 
-        if (isFavorite) {
-            const favIcon = document.createElement("i")
-            favIcon.className = "fa-solid fa-star favorite-star"
-            card.appendChild(favIcon)
+      const name = document.createElement("span")
+      name.className = "font-item-name"
+
+      let displayTag = tag
+      if (type === "saved") displayTag = isLocal ? "Local Font" : "Saved Font"
+
+      name.textContent = label + (displayTag ? ` (${displayTag})` : "")
+
+      if (isFavorite) {
+        const favIcon = document.createElement("i")
+        favIcon.className = "fa-solid fa-star favorite-star"
+        card.appendChild(favIcon)
+      }
+
+      card.appendChild(preview)
+      card.appendChild(name)
+
+      card.addEventListener("click", () => {
+        if (custom || google) loadGoogleFont(label)
+
+        if (type === "clock") {
+          updateSettingCallback("clockFont", value)
+        } else {
+          updateSettingCallback("font", value)
+          updateSettingCallback("clockFont", value)
         }
-
-        card.appendChild(preview)
-        card.appendChild(name)
-
-        card.addEventListener("click", () => {
-          if (custom || google) loadGoogleFont(label)
-          
-          if (type === "clock") {
-              updateSettingCallback("clockFont", value)
-          } else {
-              updateSettingCallback("font", value)
-              updateSettingCallback("clockFont", value)
-          }
-          renderFontGrid(fontGrid, updateSettingCallback)
-        })
-
-        card.addEventListener("contextmenu", (e) => {
-            e.preventDefault()
-            if (custom || isLocal) {
-                showContextMenu(e.clientX, e.clientY, originalIndex, "userFont")
-            } else {
-                // For predefined fonts, pass type and label as ID
-                showContextMenu(e.clientX, e.clientY, -1, "predefinedFont", label)
-            }
-        })
-
-        fontGrid.appendChild(card)
+        renderFontGrid(fontGrid, updateSettingCallback)
       })
+
+      card.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        if (custom || isLocal) {
+          showContextMenu(e.clientX, e.clientY, originalIndex, "userFont")
+        } else {
+          // For predefined fonts, pass type and label as ID
+          showContextMenu(e.clientX, e.clientY, -1, "predefinedFont", label)
+        }
+      })
+
+      fontGrid.appendChild(card)
+    })
   })
 }
 
@@ -270,7 +302,7 @@ async function setupLocalFonts(updateSettingCallback) {
   if (closeBtn) {
     closeBtn.onclick = () => (modal.style.display = "none")
   }
-  
+
   window.addEventListener("click", (event) => {
     if (event.target === modal) modal.style.display = "none"
   })
@@ -284,10 +316,10 @@ async function setupLocalFonts(updateSettingCallback) {
   function renderLocalFontsList(fonts, filter) {
     fontsList.innerHTML = ""
     const lowerFilter = filter.toLowerCase()
-    
+
     // Group by family to avoid duplicates (different styles)
     const uniqueFamilies = new Map()
-    fonts.forEach(f => {
+    fonts.forEach((f) => {
       if (f.family.toLowerCase().includes(lowerFilter)) {
         if (!uniqueFamilies.has(f.family)) {
           uniqueFamilies.set(f.family, f)
@@ -327,25 +359,27 @@ async function setupLocalFonts(updateSettingCallback) {
       card.onclick = () => {
         const settings = getSettings()
         const savedFonts = settings.userSavedFonts || []
-        
+
         // Add if not already saved
-        const exists = savedFonts.some(f => (typeof f === 'string' ? f : f.label) === family)
+        const exists = savedFonts.some(
+          (f) => (typeof f === "string" ? f : f.label) === family,
+        )
         if (!exists) {
           savedFonts.push({
             label: family,
             value: `"${family}", sans-serif`,
-            isLocal: true
+            isLocal: true,
           })
           updateSetting("userSavedFonts", savedFonts)
           saveSettings()
-          
+
           // Re-render the main font grid
           const mainGrid = document.getElementById("font-grid")
           if (mainGrid) {
             renderFontGrid(mainGrid, updateSettingCallback)
           }
         }
-        
+
         modal.style.display = "none"
       }
 

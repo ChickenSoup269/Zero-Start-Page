@@ -791,6 +791,30 @@ function createApplySettings(effectInstances) {
     }
 
     if (
+      effectToStart === "hacker" &&
+      selectedEffect &&
+      selectedEffect.updateColor
+    ) {
+      selectedEffect.updateColor(settings.hackerColor || "#00FF00")
+    }
+
+    if (
+      effectToStart === "oceanWave" &&
+      selectedEffect
+    ) {
+      selectedEffect.color = settings.oceanWaveColor || "#0077b6"
+      selectedEffect.position = settings.oceanWavePosition || "bottom"
+    }
+
+    if (
+      effectToStart === "bubbles" &&
+      selectedEffect &&
+      selectedEffect.updateColor
+    ) {
+      selectedEffect.updateColor(settings.bubblesColor || "#60c8ff")
+    }
+
+    if (
       effectToStart === "pixelBlast" &&
       selectedEffect &&
       selectedEffect.setOptions

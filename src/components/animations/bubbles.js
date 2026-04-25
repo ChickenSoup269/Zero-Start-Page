@@ -177,6 +177,10 @@ export class BubblesEffect {
     ctx.restore()
   }
 
+  updateColor(newColor) {
+    this.color = newColor
+  }
+
   animate(currentTime = 0) {
     if (!this.active) return
 
