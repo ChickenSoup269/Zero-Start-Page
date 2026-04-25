@@ -14,6 +14,8 @@ import {
   isIdbVideo,
   getBlobUrlSync,
   getImageUrl,
+  getThumbnailUrl,
+  saveThumbnail,
   deleteImage,
   saveImage,
   saveVideo,
@@ -197,7 +199,66 @@ function extractUnsplashId(url) {
   return match ? match[1] : null
 }
 
-let _repairingMetadata = false
+/** Helper to generate and save a thumbnail from a Blob (Image or Video) */
+async function _ensureThumbnail(id, blobOrUrl, isVideo) {
+    // Try to get existing thumbnail first
+    const existing = await getThumbnailUrl(id)
+    if (existing) return existing
+
+    return new Promise((resolve) => {
+        const MAX_THUMB = 240 // Optimized size for gallery
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+
+        const createThumbFromElement = (element, w, h) => {
+            if (w === 0 || h === 0) return resolve(null)
+            if (w > h) {
+                canvas.width = MAX_THUMB
+                canvas.height = Math.round((h * MAX_THUMB) / w)
+            } else {
+                canvas.height = MAX_THUMB
+                canvas.width = Math.round((w * MAX_THUMB) / h)
+            }
+            ctx.drawImage(element, 0, 0, canvas.width, canvas.height)
+            canvas.toBlob(async (thumbBlob) => {
+                if (thumbBlob) {
+                    await saveThumbnail(id, thumbBlob)
+                    resolve(URL.createObjectURL(thumbBlob))
+                } else resolve(null)
+            }, "image/jpeg", 0.7) // Good balance of quality/size
+        }
+
+        if (isVideo) {
+            const vid = document.createElement("video")
+            vid.muted = true
+            vid.preload = "metadata"
+            vid.src = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
+            
+            vid.addEventListener("loadedmetadata", () => { 
+                vid.currentTime = vid.duration > 0 ? vid.duration / 2 : 1.0
+            }, { once: true })
+            
+            vid.addEventListener("seeked", () => {
+                setTimeout(() => {
+                    if (vid.videoWidth > 0) createThumbFromElement(vid, vid.videoWidth, vid.videoHeight)
+                    else resolve(null)
+                    if (typeof blobOrUrl !== 'string') URL.revokeObjectURL(vid.src)
+                    vid.removeAttribute("src"); vid.load()
+                }, 150)
+            }, { once: true })
+            
+            vid.addEventListener("error", () => resolve(null))
+        } else {
+            const img = new Image()
+            img.src = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
+            img.onload = () => {
+                createThumbFromElement(img, img.width, img.height)
+                if (typeof blobOrUrl !== 'string') URL.revokeObjectURL(img.src)
+            }
+            img.onerror = () => resolve(null)
+        }
+    })
+}
 
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
@@ -219,46 +280,6 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
   if (imagesGallery) imagesGallery.appendChild(randomItem)
 
-  // Repair metadata logic (unchanged)
-  if (!_repairingMetadata && Array.isArray(settings.userBackgrounds)) {
-    const oldUnsplashBgs = settings.userBackgrounds.filter(bg => {
-        return typeof bg === 'string' && (bg.includes('unsplash.com') || bg.includes('unsplash-'))
-    })
-    
-    if (oldUnsplashBgs.length > 0 && settings.unsplashAccessKey) {
-        _repairingMetadata = true
-        Promise.all(oldUnsplashBgs.map(async (bgUrl) => {
-            const indexInArray = () => settings.userBackgrounds.indexOf(bgUrl)
-            try {
-                const photoId = extractUnsplashId(bgUrl)
-                if (!photoId) {
-                    const idx = indexInArray()
-                    if (idx !== -1) settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
-                    return
-                }
-                
-                const data = await fetchUnsplashPhotoById(settings.unsplashAccessKey, photoId)
-                const idx = indexInArray()
-                if (idx !== -1) {
-                    settings.userBackgrounds[idx] = {
-                        id: bgUrl,
-                        authorName: data.user?.name || "Unsplash Author",
-                        authorUrl: data.user?.links?.html || "",
-                        photoUrl: data.links?.html || ""
-                    }
-                }
-            } catch (err) {
-                const idx = indexInArray()
-                if (idx !== -1) settings.userBackgrounds[idx] = { id: bgUrl, repairFailed: true }
-            }
-        })).then(() => {
-            saveSettings()
-            _repairingMetadata = false
-            renderLocalBackgrounds(DOM, handleSettingUpdate)
-        })
-    }
-  }
-
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgData, index) => {
@@ -271,15 +292,13 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       item.className = "local-bg-item user-uploaded"
       item.dataset.bgId = bgId
 
-      // Icon badge for source type (Video/Image/Unsplash)
+      // Icon badge for source type
       const typeIcon = document.createElement("div")
       typeIcon.className = "video-thumb-badge"
       
       if (authorName) {
           typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
-          typeIcon.title = `Photo by ${authorName} on Unsplash`
           item.appendChild(typeIcon)
-
           const authorTag = document.createElement("div")
           authorTag.className = "unsplash-author-tag"
           authorTag.textContent = authorName
@@ -287,12 +306,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       } else if (isVideo) {
           typeIcon.innerHTML = '<i class="fa-solid fa-video"></i> <span>VIDEO</span>'
           typeIcon.classList.add("is-video")
-          typeIcon.title = "Local Video"
           item.appendChild(typeIcon)
       } else if (isIdbImage(bgId)) {
           typeIcon.innerHTML = '<i class="fa-solid fa-image"></i> <span>IMAGE</span>'
           typeIcon.classList.add("is-image")
-          typeIcon.title = "Local Image"
           item.appendChild(typeIcon)
       }
 
@@ -302,82 +319,26 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         item.appendChild(star)
       }
 
-      const applyThumb = (url) => {
-          if (!url) return;
-          if (isVideo) {
-              if (_videoThumbCache.has(bgId)) {
-                  item.style.backgroundImage = `url('${_videoThumbCache.get(bgId)}')`
-                  const placeholder = item.querySelector("i.fa-film")
-                  if (placeholder) placeholder.remove()
-              } else {
-                  const vid = document.createElement("video")
-                  vid.src = url
-                  vid.muted = true
-                  vid.crossOrigin = "anonymous"
-                  vid.preload = "metadata"
-                  vid.addEventListener("loadedmetadata", () => { 
-                      const midTime = vid.duration > 0 ? vid.duration / 2 : 1.0;
-                      vid.currentTime = midTime;
-                  }, { once: true })
-                  vid.addEventListener("seeked", () => {
-                      setTimeout(() => {
-                          const vW = vid.videoWidth
-                          const vH = vid.videoHeight
-                          if (vW === 0 || vH === 0) return;
-
-                          const canvas = document.createElement("canvas")
-                          const MAX_THUMB = 480
-                          if (vW > vH) {
-                              canvas.width = MAX_THUMB
-                              canvas.height = (vH * MAX_THUMB) / vW
-                          } else {
-                              canvas.height = MAX_THUMB
-                              canvas.width = (vW * MAX_THUMB) / vH
-                          }
-
-                          const ctx = canvas.getContext("2d")
-                          ctx.drawImage(vid, 0, 0, canvas.width, canvas.height)
-
-                          try {
-                              const dataUrl = canvas.toDataURL("image/jpeg", 0.85)
-                              _videoThumbCache.set(bgId, dataUrl)
-                              item.style.backgroundImage = `url('${dataUrl}')`
-                              item.style.backgroundSize = "cover"
-                              item.style.backgroundPosition = "center"
-                              const placeholder = item.querySelector("i.fa-film")
-                              if (placeholder) placeholder.remove()
-                          } catch (e) {
-                              console.warn("Failed to generate video thumb:", e)
-                          }
-                          vid.removeAttribute("src")
-                          vid.load()
-                      }, 150)
-                  }, { once: true })
-              }
-          } else {
-              item.style.backgroundImage = `url('${url}')`
-          }
-      }
-
+      // Performance Optimization: Always try to use small thumbnail for gallery
       if (isIdbMedia(bgId)) {
-        const cached = getBlobUrlSync(bgId)
-        if (cached) {
-            applyThumb(cached)
-        } else {
-            getImageUrl(bgId).then(url => {
-                if (url) applyThumb(url)
-            })
-        }
+          getThumbnailUrl(bgId).then(async (thumbUrl) => {
+              if (thumbUrl) {
+                  item.style.backgroundImage = `url('${thumbUrl}')`
+              } else {
+                  // If no thumb exists, generate it from the original blob (once)
+                  const originalUrl = await getImageUrl(bgId)
+                  if (originalUrl) {
+                      const newThumb = await _ensureThumbnail(bgId, originalUrl, isVideo)
+                      if (newThumb) item.style.backgroundImage = `url('${newThumb}')`
+                      else item.style.backgroundImage = `url('${originalUrl}')`
+                  }
+              }
+          })
       } else if (bgId) {
-        item.style.backgroundImage = `url('${bgId}')`
+          item.style.backgroundImage = `url('${bgId}')`
       }
 
-      if (isVideo) {
-        item.classList.add("video-bg-item")
-        if (!item.style.backgroundImage) {
-            item.innerHTML = '<i class="fa-solid fa-film"></i>'
-        }
-      }
+      if (isVideo) item.classList.add("video-bg-item")
       item.title = `User ${isVideo ? "Video" : "Image"} ${index + 1}`
 
       item.addEventListener("contextmenu", (e) => {
@@ -412,7 +373,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       })
       item.appendChild(removeBtn)
 
-      // Drag and drop for reordering (unchanged logic)
+      // Drag and drop logic (unchanged)
       const enableDrag = settings.bookmarkEnableDrag === true
       if (enableDrag) {
         item.draggable = true
@@ -442,7 +403,6 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         })
       }
 
-      // Append to correct gallery
       if (isVideo) {
           if (videosGallery) videosGallery.appendChild(item)
       } else {
