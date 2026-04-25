@@ -60,17 +60,26 @@ export class DailyQuotes {
     if (this.isLocked) this.container.classList.add("is-locked");
 
     this.container.innerHTML = `
+      <div id="cb-result-overlay" style="display: none;">
+          <div class="cb-result-text"></div>
+      </div>
       <div class="quotes-content-wrap">
         <div class="quote-content">
           <div class="quote-text"></div>
-          <div class="quote-author"></div>
+          <div class="quote-footer">
+            <div class="quote-author"></div>
+            <div class="quotes-actions">
+              <div class="quote-refresh-btn" title="Refresh Quote"><i class="fa-solid fa-rotate"></i></div>
+              <div class="crystal-ball-trigger" title="Crystal Ball"><i class="fa-solid fa-chevron-up"></i></div>
+            </div>
+          </div>
         </div>
 
         <div class="crystal-ball-ui" style="display: none;">
             <div class="cb-input-group">
                 <input type="text" id="cb-work-input" spellcheck="false" autocomplete="off">
-                <div class="cb-priority-wrapper">
-                    <span id="cb-priority-label">Priority:</span>
+                <div class="cb-priority-row">
+                    <span id="cb-priority-label" class="cb-prio-label-inline"></span>
                     <div class="cb-priority-buttons">
                         <button type="button" class="cb-prio-btn" data-level="1">1</button>
                         <button type="button" class="cb-prio-btn" data-level="2">2</button>
@@ -82,23 +91,13 @@ export class DailyQuotes {
                 </div>
                 <button id="cb-ask-btn">Ask</button>
             </div>
-            <div id="cb-result-overlay" style="display: none;">
-                <div class="cb-result-content">
-                    <div class="cb-result-text"></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="quotes-actions">
-          <div class="quote-refresh-btn" title="Refresh Quote"><i class="fa-solid fa-rotate"></i></div>
-          <div class="crystal-ball-trigger" title="Crystal Ball"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
         </div>
       </div>
     `;
     document.body.appendChild(this.container);
     this.applySkin();
     this.updateQuote();
-    this.updatePriorityUI(); // Đảm bảo nút số hiển thị đúng ban đầu
+    this.updatePriorityUI();
   }
 
   updatePriorityUI() {
@@ -186,8 +185,11 @@ export class DailyQuotes {
     refreshBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
       this.updateQuote(true);
-      refreshBtn.style.opacity = "0.5";
-      setTimeout(() => refreshBtn.style.opacity = "1", 300);
+      const icon = refreshBtn.querySelector("i");
+      if (icon) {
+        icon.classList.add("fa-spin");
+        setTimeout(() => icon.classList.remove("fa-spin"), 600);
+      }
     });
 
     this.container.querySelectorAll(".cb-prio-btn").forEach(btn => {
@@ -220,6 +222,9 @@ export class DailyQuotes {
       if (e.detail.key === "showQuotes") {
         this.applySettings();
       }
+      if (e.detail.key === "quotesSkin") {
+        this.applySkin();
+      }
     });
   }
 
@@ -237,13 +242,20 @@ export class DailyQuotes {
     const answers = CRYSTAL_BALL_ANSWERS[lang];
     let answer = this.questionCount >= 3 ? answers.spam[Math.floor(Math.random() * answers.spam.length)] : this.generateAnswer(this.currentPriority);
 
+    const triggerBtnIcon = this.container.querySelector(".crystal-ball-trigger i");
+    if (triggerBtnIcon) triggerBtnIcon.classList.add("icon-up-down");
+
     this.container.classList.add("shaking");
     setTimeout(() => {
       this.container.classList.remove("shaking");
+      if (triggerBtnIcon) triggerBtnIcon.classList.remove("icon-up-down");
+      
       if (resText) resText.textContent = answer;
-      if (overlay) overlay.style.display = "flex";
-      setTimeout(() => { if (overlay) overlay.style.display = "none"; }, 3000);
-    }, 500);
+      if (overlay) {
+          overlay.style.display = "flex";
+          setTimeout(() => { overlay.style.display = "none"; }, 3500);
+      }
+    }, 600);
   }
 
   generateAnswer(priority) {

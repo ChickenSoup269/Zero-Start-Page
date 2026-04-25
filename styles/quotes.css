@@ -1,4 +1,4 @@
-/* Daily Quotes Component */
+/* Daily Quotes - Balanced & Symmetrical Layout */
 .quotes-container {
     position: absolute;
     top: 85%;
@@ -6,17 +6,19 @@
     transform: translate(-50%, -50%);
     z-index: 100;
     text-align: center;
-    padding: 12px 20px;
+    padding: 18px 25px;
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
-    max-width: 450px;
-    min-width: 250px;
-    cursor: default !important;
-    user-select: none;
-    transition: background 0.3s, border 0.3s;
+    width: 420px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
 }
 
 .quotes-container:hover {
@@ -25,18 +27,35 @@
 }
 
 .quotes-content-wrap {
-    position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Quote Section */
+.quote-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .quote-text {
     font-size: 1.05rem;
     font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 6px;
+    line-height: 1.5;
     font-style: italic;
+    margin: 0;
+}
+
+.quote-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 5px;
 }
 
 .quote-author {
@@ -46,32 +65,22 @@
     opacity: 0.8;
 }
 
+/* Actions Row - Integrated with Author */
 .quotes-actions {
-    position: absolute;
-    bottom: -8px;
-    right: -10px;
     display: flex;
     gap: 12px;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.quotes-container:hover .quotes-actions {
-    opacity: 1;
+    align-items: center;
 }
 
 .crystal-ball-trigger,
 .quote-refresh-btn {
     cursor: pointer !important;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease;
-    width: 28px;
-    height: 28px;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
 }
 
 .crystal-ball-trigger:hover,
@@ -80,77 +89,141 @@
     color: var(--accent-color, #4caf50);
 }
 
-.quote-text, .quote-author {
-    transition: opacity 0.2s ease-in-out;
-}
-
-/* Crystal Ball UI */
+/* Crystal Ball Section - Centered and Neat */
 .crystal-ball-ui {
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: left;
+    width: 100%;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .cb-input-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    width: 100%;
 }
 
 #cb-work-input {
     width: 100%;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(0, 0, 0, 0.2);
     color: white;
     font-size: 0.9rem;
     outline: none;
-    box-sizing: border-box;
+    text-align: center;
+    box-sizing: border-box; /* Ensure padding doesn't shift the element */
 }
 
-.cb-priority-wrapper {
+/* Animations */
+.icon-up-down {
+    animation: bouncyPress 0.6s infinite cubic-bezier(0.36, 0, 0.66, -0.56);
+}
+
+@keyframes bouncyPress {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px) scaleY(0.9); }
+}
+
+/* Button Click Effect */
+.crystal-ball-trigger:active,
+.quote-refresh-btn:active,
+.cb-prio-btn:active,
+#cb-ask-btn:active {
+    transform: scale(0.92);
+    opacity: 0.8;
+}
+
+.shaking {
+    animation: centered-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes centered-shake {
+    0% { transform: translate(-50%, -50%); }
+    10%, 90% { transform: translate(-50.5%, -50%); }
+    20%, 80% { transform: translate(-49.5%, -50%); }
+    30%, 50%, 70% { transform: translate(-51%, -50%); }
+    40%, 60% { transform: translate(-49%, -50%); }
+    100% { transform: translate(-50%, -50%); }
+}
+
+.cb-priority-row {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
 }
 
-#cb-priority-label {
+.cb-prio-label-inline {
     font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     opacity: 0.6;
+    white-space: nowrap;
 }
 
 .cb-priority-buttons {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
 .cb-prio-btn {
-    flex: 1;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     color: white;
-    padding: 4px 0;
-    font-size: 0.8rem;
     cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.2s;
 }
 
 .cb-prio-btn.active {
-    background: var(--accent-color);
+    background: var(--accent-color, #4caf50);
     color: black;
+    font-weight: bold;
+}
+
+.cb-priority-desc {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-style: italic;
+    min-width: 80px;
+    text-align: left;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    padding-left: 10px;
+    line-height: 1.2;
+}
+
+.crystal-ball-trigger i {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.crystal-ball-trigger.active i {
+    transform: rotate(180deg);
 }
 
 #cb-ask-btn {
     width: 100%;
-    padding: 8px;
-    border-radius: 6px;
+    padding: 10px;
+    border-radius: 8px;
     border: none;
-    background: var(--accent-color);
+    background: var(--accent-color, #4caf50);
     color: black;
     font-weight: 700;
     cursor: pointer !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Result Overlay */
@@ -162,63 +235,65 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 20;
+    z-index: 50;
 }
 
 .cb-result-text {
+    color: var(--accent-color, #4caf50);
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--accent-color);
-    padding: 15px;
-}
-
-.cb-priority-desc {
-    font-size: 0.7rem;
-    opacity: 0.5;
-    font-style: italic;
-    text-align: center;
-}
-
-/* Animations */
-@keyframes shake {
-    10%, 90% { transform: translate3d(-1px, 0, 0); }
-    20%, 80% { transform: translate3d(2px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-    40%, 60% { transform: translate3d(4px, 0, 0); }
-}
-
-.shaking {
-    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    padding: 20px;
 }
 
 /* White Blur Skin */
 .skin-white-blur.quotes-container {
     background: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(15px) !important;
     border-color: rgba(255, 255, 255, 0.4) !important;
     color: black !important;
 }
 
 .skin-white-blur .quote-text,
-.skin-white-blur .quote-author {
+.skin-white-blur .quote-author,
+.skin-white-blur .cb-priority-desc {
     color: black !important;
 }
 
-.skin-white-blur .cb-prio-btn.active {
-    background: var(--accent-color, #4caf50) !important;
-    color: white !important;
-    border-color: var(--accent-color, #4caf50) !important;
-    box-shadow: 0 0 8px var(--accent-color, rgba(76, 175, 80, 0.4));
+.skin-white-blur .crystal-ball-trigger,
+.skin-white-blur .quote-refresh-btn {
+    color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.skin-white-blur .crystal-ball-trigger.active,
+.skin-white-blur .quote-refresh-btn:hover {
+    color: black !important;
+}
+
+.skin-white-blur #cb-work-input {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: black;
 }
 
 .skin-white-blur .cb-prio-btn {
     background: rgba(0, 0, 0, 0.05);
     color: black;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.skin-white-blur #cb-work-input {
-    background: rgba(0, 0, 0, 0.05);
-    color: black;
-    border-color: rgba(0, 0, 0, 0.1);
+.skin-white-blur .cb-prio-btn.active {
+    background: black !important;
+    color: white !important;
+}
+
+.skin-white-blur #cb-ask-btn {
+    background: black !important;
+    color: white !important;
+}
+
+.skin-white-blur #cb-result-overlay {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.skin-white-blur .cb-result-text {
+    color: black !important;
 }
