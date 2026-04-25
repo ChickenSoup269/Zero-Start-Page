@@ -28,7 +28,10 @@
 
 </head>
 
-<body>
+<body class="loading-state">
+    <!-- Startup Overlay to prevent any white flashes -->
+    <div id="startup-overlay" style="position: fixed; inset: 0; background: #000; z-index: 999999; transition: opacity 0.6s ease, visibility 0.6s ease;"></div>
+    
     <script src="src/preload.js"></script>
     <div id="bg-layer"></div>
     <div id="bg-dim-overlay"

@@ -333,9 +333,12 @@ export function renderBookmarks() {
     const initialIcon = bookmarkGroupsToggle.querySelector("i")
     if (initialIcon && settings.groupsHidden) {
        const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+       const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
        if (isSidebar) {
          const isFlipped = document.body.classList.contains("flip-layout")
          initialIcon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+       } else if (isTaskbarTop) {
+         initialIcon.className = "fa-solid fa-chevron-down"
        } else {
          initialIcon.className = "fa-solid fa-chevron-up"
        }
