@@ -311,23 +311,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     syncQuickButtons()
 
     // Smooth reveal: wait for critical components and then fade out overlay
-    requestAnimationFrame(() => {
-      // First reveal main-container (it's behind the overlay)
+    // Increased delay to ensure heavy components like Bookmarks have settled
+    const revealApp = () => {
       const mainContainer = document.querySelector(".main-container")
       if (mainContainer) mainContainer.classList.add("ready")
       
-      // Then fade out and remove overlay
       setTimeout(() => {
         const overlay = document.getElementById("startup-overlay")
         if (overlay) {
           overlay.style.opacity = "0"
           overlay.style.visibility = "hidden"
-          // Fully remove from DOM after transition to save resources
-          setTimeout(() => overlay.remove(), 600)
+          setTimeout(() => overlay.remove(), 800)
         }
         document.body.classList.remove("loading-state")
-      }, 100)
-    })
+      }, 400) // Increased settling time for layouts
+    }
+
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(revealApp)
+    } else {
+      setTimeout(revealApp, 300)
+    }
 
     // Sync Quick Access active state when settings change
     window.addEventListener("layoutUpdated", (e) => {

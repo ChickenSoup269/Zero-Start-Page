@@ -30,7 +30,17 @@
 
 <body class="loading-state">
     <!-- Startup Overlay to prevent any white flashes -->
-    <div id="startup-overlay" style="position: fixed; inset: 0; background: #000; z-index: 999999; transition: opacity 0.6s ease, visibility 0.6s ease;"></div>
+    <div id="startup-overlay" style="position: fixed; inset: 0; background: #000; z-index: 999999; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
+        <div style="color: #fff; font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; animation: startupPulse 2s infinite ease-in-out; opacity: 0.8;">Zero Startpage</div>
+        <style>
+            @keyframes startupPulse {
+                0%, 100% { opacity: 0.3; transform: scale(0.98); }
+                50% { opacity: 0.8; transform: scale(1); }
+            }
+            .main-container { transform: scale(0.96); transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s !important; }
+            .main-container.ready { transform: scale(1); opacity: 1 !important; }
+        </style>
+    </div>
     
     <script src="src/preload.js"></script>
     <div id="bg-layer"></div>
