@@ -593,10 +593,18 @@ function handleLock() {
     saveSettings()
 
     // Optionally update UI for visual feedback
-    let widgetId = contextMenuTargetId
-    if (contextMenuTargetId === "clock") widgetId = "clock-date-wrap"
-    if (contextMenuTargetId === "customTitle") widgetId = "custom-title-display"
+    const widgetIdMap = {
+      clock: "clock-date-wrap",
+      customTitle: "custom-title-display",
+      calendar: "full-calendar-container",
+      todo: "todo-container",
+      timer: "timer-component",
+      music: "music-player-container",
+      notepad: "notepad-container",
+      "daily-quotes": "daily-quotes",
+    }
 
+    const widgetId = widgetIdMap[contextMenuTargetId] || contextMenuTargetId
     const widget = document.getElementById(widgetId)
     if (widget) {
       if (!isLocked) {

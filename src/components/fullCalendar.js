@@ -334,13 +334,22 @@ export class FullCalendar {
   render() {
     if (!this.container) return
 
+    // Preserve current position/display if container already exists
+    const currentStyle = this.container.style.cssText
+    this.container.innerHTML = ""
+    this.container.style.cssText = currentStyle
+
     const i18n = geti18n()
     const year = this.viewDate.getFullYear()
     const month = this.viewDate.getMonth()
     const now = new Date()
 
-    this.container.innerHTML = ""
-    this.container.className = `calendar-card glass-panel drag-handle${this.showLunar ? " with-lunar" : ""}`
+    this.container.classList.add("calendar-card", "glass-panel", "drag-handle")
+    if (this.showLunar) {
+      this.container.classList.add("with-lunar")
+    } else {
+      this.container.classList.remove("with-lunar")
+    }
 
     const monthName = this.viewDate.toLocaleString("default", {
       month: "long",

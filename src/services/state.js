@@ -444,8 +444,9 @@ export function saveBookmarks() {
 
 export const saveComponentPosition = (componentId, position) => {
   const settings = getSettings()
+  if (!settings.componentPositions) settings.componentPositions = {}
   settings.componentPositions[componentId] = position
-  saveSettings()
+  saveSettings(true)
 }
 
 export const resetComponentPositions = (options = {}) => {

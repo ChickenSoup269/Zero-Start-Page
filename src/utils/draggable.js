@@ -7,122 +7,90 @@ export function makeDraggable(
   onDragEndCallback = null,
   handleSelector = ".drag-handle",
 ) {
-  let pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0
+  if (!element) return
+
+  let offsetX = 0, offsetY = 0, magicOffsetX = 0, magicOffsetY = 0, initialWidth = 0, initialHeight = 0
   const settings = getSettings()
   const savedPos = settings.componentPositions?.[componentId]
 
-  if (
-    (componentId === "clock" && !settings.freeMoveClock) ||
-    (componentId === "customTitle" && !settings.freeMoveCustomTitle)
-  ) {
-    element.style.position = ""
-    element.style.top = ""
-    element.style.left = ""
-    element.style.bottom = ""
-    element.style.right = ""
-    element.style.transform = ""
-    element.style.margin = ""
-  } else if (savedPos) {
-    element.style.top = savedPos.top
-    element.style.left = savedPos.left
-    element.style.bottom = "auto"
-    element.style.right = "auto"
-    element.style.margin = savedPos.margin || "0"
-    if (savedPos.transform) element.style.transform = savedPos.transform
-  } else if (componentId === "clock" && settings.freeMoveClock) {
-    element.style.top = "35%"
-    element.style.left = "50%"
-    element.style.transform = "translate(-50%, -50%)"
-  } else if (componentId === "customTitle" && settings.freeMoveCustomTitle) {
-    element.style.top = "45%"
-    element.style.left = "50%"
-    element.style.transform = "translate(-50%, 0)"
+  // Apply initial position
+  if (savedPos && savedPos.top && savedPos.left) {
+    const isClockOrTitle = componentId === "clock" || componentId === "customTitle"
+    const isFreeMoveEnabled = (componentId === "clock" && settings.freeMoveClock) || 
+                             (componentId === "customTitle" && settings.freeMoveCustomTitle)
+    
+    if (!isClockOrTitle || isFreeMoveEnabled) {
+      element.style.position = (window.getComputedStyle(element).position === 'fixed') ? 'fixed' : 'absolute'
+      element.style.top = savedPos.top
+      element.style.left = savedPos.left
+      element.style.bottom = "auto"
+      element.style.right = "auto"
+      element.style.margin = "0"
+      if (savedPos.transform) element.style.transform = savedPos.transform
+    }
   }
 
-  // Also check if locked and add class
   element.classList.remove("is-locked")
-  if (settings.lockedWidgets && settings.lockedWidgets[componentId]) {
+  if (settings.lockedWidgets?.[componentId]) {
     element.classList.add("is-locked")
   }
 
-  // Use the provided handleSelector or default to the entire element
   const handle = element.querySelector(handleSelector) || element
-  handle.style.cursor = "default" // Set default cursor for handle
-
-  // Attach mousedown listener to the handle
   handle.onmousedown = dragMouseDown
 
-  // Attach contextmenu listener to the element and handle
-  handle.addEventListener("contextmenu", (e) => {
+  const onContextMenu = (e) => {
     const currentSettings = getSettings()
-    if (componentId === "clock" && !currentSettings.freeMoveClock) {
-      return // Don't show context menu for clock if free move is disabled
-    }
-    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) {
-      return // Don't show context menu for custom title if free move is disabled
-    }
+    if (componentId === "clock" && !currentSettings.freeMoveClock) return
+    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
     e.preventDefault()
     e.stopPropagation()
     showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
-  })
+  }
+  handle.removeEventListener("contextmenu", handle._draggableContextMenu)
+  handle._draggableContextMenu = onContextMenu
+  handle.addEventListener("contextmenu", onContextMenu)
 
   function dragMouseDown(e) {
-    e = e || window.event
-
-    // Check if locked
     const currentSettings = getSettings()
-    if (
-      currentSettings.lockedWidgets &&
-      currentSettings.lockedWidgets[componentId]
-    ) {
-      return // Cannot drag if locked
-    }
+    if (currentSettings.lockedWidgets?.[componentId]) return
+    if (componentId === "clock" && !currentSettings.freeMoveClock) return
+    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
 
-    // Check if free move is enabled for clock
-    if (componentId === "clock" && !currentSettings.freeMoveClock) {
-      return // Cannot drag clock unless free move is explicitly enabled
-    }
-    if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) {
-      return // Cannot drag custom title unless free move is explicitly enabled
-    }
-    // If the click target is an interactive element (button, input, etc.)
-    // and it's not explicitly the 'drag-handle' icon itself, prevent dragging.
-    // This is to allow interaction with buttons/inputs within the header/handle.
-    const targetTagName = e.target.tagName
-    const isInteractiveElement = [
-      "INPUT",
-      "BUTTON",
-      "A",
-      "SELECT",
-      "OPTION",
-      "TEXTAREA",
-    ].includes(targetTagName)
-    const isCloseButton =
-      e.target.classList.contains("close") || e.target.closest(".close")
+    const isInteractive = ["INPUT", "BUTTON", "A", "SELECT", "OPTION", "TEXTAREA"].includes(e.target.tagName)
+    const isDragHandleIcon = e.target.classList.contains("drag-handle") || e.target.closest(".drag-handle") === handle
+    if (isInteractive && !isDragHandleIcon) return
 
-    // Allow dragging on the specific .drag-handle icon always
-    // If the element clicked is interactive and not the specific drag-handle or close button, prevent drag
-    if (
-      isInteractiveElement &&
-      !e.target.classList.contains("drag-handle") &&
-      !isCloseButton
-    ) {
-      return
-    }
-
-    e.preventDefault() // Prevent default text selection, etc.
-    pos3 = e.clientX
-    pos4 = e.clientY
-
-    // Avoid visual jumping when element is dragged by converting its transformed/margined rect into explicit inline top/left.
+    e.preventDefault()
+    
     const rect = element.getBoundingClientRect()
-    element.style.margin = "0"
+    initialWidth = rect.width
+    initialHeight = rect.height
+    offsetX = e.clientX - rect.left
+    offsetY = e.clientY - rect.top
+
+    // MAGIC OFFSET: Determine where (0,0) style lands on the screen
+    const originalLeft = element.style.left
+    const originalTop = element.style.top
+    const originalTransform = element.style.transform
+    const originalMargin = element.style.margin
+    const originalTransition = element.style.transition
+    const style = window.getComputedStyle(element)
+    const isFixed = style.position === "fixed"
+
+    element.style.transition = "none"
     element.style.transform = "none"
-    element.style.top = rect.top + window.scrollY + "px"
-    element.style.left = rect.left + window.scrollX + "px"
+    element.style.margin = "0"
+    element.style.left = "0px"
+    element.style.top = "0px"
+
+    const zeroRect = element.getBoundingClientRect()
+    magicOffsetX = zeroRect.left
+    magicOffsetY = zeroRect.top
+
+    // Set to actual current position in style pixels
+    element.style.left = (rect.left - magicOffsetX) + "px"
+    element.style.top = (rect.top - magicOffsetY) + "px"
+    element.style.position = isFixed ? "fixed" : "absolute"
     element.style.bottom = "auto"
     element.style.right = "auto"
 
@@ -132,43 +100,43 @@ export function makeDraggable(
   }
 
   function elementDrag(e) {
-    e = e || window.event
     e.preventDefault()
-    pos1 = pos3 - e.clientX
-    pos2 = pos4 - e.clientY
-    pos3 = e.clientX
-    pos4 = e.clientY
+    
+    let targetScreenLeft = e.clientX - offsetX
+    let targetScreenTop = e.clientY - offsetY
 
-    let newTop = element.offsetTop - pos2
-    let newLeft = element.offsetLeft - pos1
+    const vw = window.innerWidth
+    const vh = window.innerHeight
 
-    // Keep within bounds
-    const bounds = {
-      maxTop: window.innerHeight - element.offsetHeight,
-      maxLeft: window.innerWidth - element.offsetWidth,
+    // Smart clamping for both small and large widgets
+    if (initialWidth <= vw) {
+        targetScreenLeft = Math.max(0, Math.min(targetScreenLeft, vw - initialWidth))
+    } else {
+        targetScreenLeft = Math.max(vw - initialWidth, Math.min(targetScreenLeft, 0))
     }
 
-    newTop = Math.max(0, Math.min(newTop, bounds.maxTop))
-    newLeft = Math.max(0, Math.min(newLeft, bounds.maxLeft))
+    if (initialHeight <= vh) {
+        targetScreenTop = Math.max(0, Math.min(targetScreenTop, vh - initialHeight))
+    } else {
+        targetScreenTop = Math.max(vh - initialHeight, Math.min(targetScreenTop, 0))
+    }
 
-    element.style.top = newTop + "px"
-    element.style.left = newLeft + "px"
+    element.style.left = (targetScreenLeft - magicOffsetX) + "px"
+    element.style.top = (targetScreenTop - magicOffsetY) + "px"
   }
 
   function closeDragElement() {
     document.onmouseup = null
     document.onmousemove = null
     element.classList.remove("dragging")
+    element.style.transition = ""
 
-    // Save position
     saveComponentPosition(componentId, {
       top: element.style.top,
       left: element.style.left,
       transform: element.style.transform,
     })
 
-    if (onDragEndCallback) {
-      onDragEndCallback(element)
-    }
+    if (onDragEndCallback) onDragEndCallback(element)
   }
 }

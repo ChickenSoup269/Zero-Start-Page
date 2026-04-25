@@ -335,7 +335,7 @@ const CRYSTAL_BALL_ANSWERS = {
 export class DailyQuotes {
   constructor() {
     this.container = null
-    this.isLocked = getSettings().quotesLocked || false
+    this.isLocked = getSettings().lockedWidgets?.["daily-quotes"] || false
     this.showQuotes = getSettings().showQuotes === true
     this.crystalBallVisible = false
     this.currentPriority = 3
@@ -346,7 +346,6 @@ export class DailyQuotes {
 
   init() {
     this.render()
-    this.updateQuote()
     this.applySettings()
     this.setupEventListeners()
     this.updateCrystalBallUI()
@@ -355,7 +354,10 @@ export class DailyQuotes {
   render() {
     this.container = document.createElement("div")
     this.container.id = "daily-quotes"
-    this.container.className = `quotes-container ${this.isLocked ? "locked" : ""}`
+    this.container.classList.add("quotes-container")
+    if (this.isLocked) {
+      this.container.classList.add("locked", "is-locked")
+    }
 
     this.container.innerHTML = `
             <div class="quote-content">
@@ -392,17 +394,7 @@ export class DailyQuotes {
         `
 
     document.body.appendChild(this.container)
-
-    const pos = getSettings().componentPositions?.["daily-quotes"]
-    if (pos) {
-      this.container.style.top = pos.top
-      this.container.style.left = pos.left
-      this.container.style.transform = "none"
-    }
-
-    if (!this.isLocked) {
-      this.enableDraggable()
-    }
+    this.updateQuote()
   }
 
   updateQuote() {
@@ -432,10 +424,10 @@ export class DailyQuotes {
     const priorityLabel = this.container.querySelector("#cb-priority-label")
     const trigger = this.container.querySelector(".crystal-ball-trigger")
 
-    input.placeholder = isVietnamese ? "Bạn muốn làm gì?" : "What do you want to do?"
-    askBtn.textContent = isVietnamese ? "Hỏi cầu pha lê 🔮" : "Ask the Crystal Ball 🔮"
-    priorityLabel.textContent = isVietnamese ? "Mức độ quan trọng:" : "Priority Level:"
-    trigger.title = isVietnamese ? "Hỏi cầu pha lê" : "Ask the Crystal Ball"
+    if (input) input.placeholder = isVietnamese ? "Bạn muốn làm gì?" : "What do you want to do?"
+    if (askBtn) askBtn.textContent = isVietnamese ? "Hỏi cầu pha lê 🔮" : "Ask the Crystal Ball 🔮"
+    if (priorityLabel) priorityLabel.textContent = isVietnamese ? "Mức độ quan trọng:" : "Priority Level:"
+    if (trigger) trigger.title = isVietnamese ? "Hỏi cầu pha lê" : "Ask the Crystal Ball"
     
     this.updatePriorityDescription(this.currentPriority)
   }
@@ -444,8 +436,7 @@ export class DailyQuotes {
     const isVietnamese = getSettings().language === "vi"
     const lang = isVietnamese ? "vi" : "en"
     const descEl = this.container.querySelector("#cb-priority-desc")
-    
-    descEl.textContent = CRYSTAL_BALL_ANSWERS[lang].levels[parseInt(val)]
+    if (descEl) descEl.textContent = CRYSTAL_BALL_ANSWERS[lang].levels[parseInt(val)]
   }
 
   setupEventListeners() {
@@ -460,19 +451,13 @@ export class DailyQuotes {
     const askBtn = this.container.querySelector("#cb-ask-btn")
     const input = this.container.querySelector("#cb-work-input")
 
-    trigger.addEventListener("click", () => {
-      this.crystalBallVisible = !this.crystalBallVisible
-      ui.style.display = this.crystalBallVisible ? "block" : "none"
-      trigger.classList.toggle("active", this.crystalBallVisible)
-      
-      if (this.crystalBallVisible) {
-          trigger.style.bottom = "auto"
-          trigger.style.top = "5px"
-      } else {
-          trigger.style.bottom = "5px"
-          trigger.style.top = "auto"
-      }
-    })
+    if (trigger && ui) {
+      trigger.addEventListener("click", () => {
+        this.crystalBallVisible = !this.crystalBallVisible
+        ui.style.display = this.crystalBallVisible ? "block" : "none"
+        trigger.classList.toggle("active", this.crystalBallVisible)
+      })
+    }
 
     prioBtns.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -484,10 +469,12 @@ export class DailyQuotes {
         })
     })
 
-    askBtn.addEventListener("click", () => this.askCrystalBall())
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") this.askCrystalBall()
-    })
+    if (askBtn) askBtn.addEventListener("click", () => this.askCrystalBall())
+    if (input) {
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") this.askCrystalBall()
+      })
+    }
   }
 
   askCrystalBall() {
@@ -495,13 +482,13 @@ export class DailyQuotes {
     const resultOverlay = this.container.querySelector("#cb-result-overlay")
     const resultText = this.container.querySelector(".cb-result-text")
 
+    if (!input) return
     const currentQuestion = input.value.trim().toLowerCase()
     if (!currentQuestion) {
       input.focus()
       return
     }
 
-    // Logic Easter Egg: Check spam
     if (currentQuestion === this.lastQuestion) {
       this.questionCount++
     } else {
@@ -523,12 +510,12 @@ export class DailyQuotes {
 
     setTimeout(() => {
       this.container.classList.remove("shaking")
-      resultText.textContent = answer
-      resultOverlay.style.display = "flex"
+      if (resultText) resultText.textContent = answer
+      if (resultOverlay) resultOverlay.style.display = "flex"
 
       setTimeout(() => {
-        resultOverlay.style.display = "none"
-      }, 3500) // Tăng thời gian hiển thị một chút để đọc câu dài
+        if (resultOverlay) resultOverlay.style.display = "none"
+      }, 3500)
     }, 500)
   }
 
@@ -542,7 +529,6 @@ export class DailyQuotes {
       if (random < 70) pool = answers.no
       else pool = answers.maybe
     } else if (priority === 3) {
-      // 30% Yes, 30% Maybe, 25% Wait, 15% No
       if (random < 30) pool = answers.yes
       else if (random < 60) pool = answers.maybe
       else if (random < 85) pool = answers.wait
@@ -554,39 +540,13 @@ export class DailyQuotes {
       pool = answers.ironic
     }
 
-    return pool[Math.floor(Math.random() * pool.length)]
+    return pool[Math.floor(Math.random() * pool.length)] || answers.maybe[0]
   }
-
-  toggleLock() {
-    this.isLocked = !this.isLocked
-    updateSetting("quotesLocked", this.isLocked)
-    saveSettings()
-
-    if (this.isLocked) {
-      this.container.classList.add("locked")
-      this.disableDraggable()
-    } else {
-      this.container.classList.remove("locked")
-      this.enableDraggable()
-    }
-  }
-
-  enableDraggable() {
-    makeDraggable(this.container, {
-      handle: this.container,
-      onStop: (pos) => {
-        const positions = getSettings().componentPositions || {}
-        positions["daily-quotes"] = pos
-        updateSetting("componentPositions", positions)
-        saveSettings()
-      },
-    })
-  }
-
-  disableDraggable() {}
 
   applySettings() {
-    this.container.style.display = this.showQuotes ? "block" : "none"
+    const settings = getSettings()
+    this.isVisible = settings.showQuotes === true
+    this.container.style.display = this.isVisible ? "block" : "none"
   }
 
   setVisibility(visible) {

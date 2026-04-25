@@ -168,6 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     makeDraggable(timer.container, "timer")
     makeDraggable(music.container, "music")
     makeDraggable(calendar.container, "calendar")
+    makeDraggable(dailyQuotes.container, "daily-quotes")
     makeDraggable(notepad.container, "notepad", null, ".notepad-header")
     makeDraggable(document.getElementById("clock-date-wrap"), "clock")
 
