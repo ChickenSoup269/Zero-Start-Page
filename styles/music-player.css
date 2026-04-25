@@ -47,7 +47,7 @@
 
 /* GIAO DIỆN TRẮNG BLUR TRONG SUỐT */
 .music-player-wrapper.skin-white-blur {
-  background: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
   backdrop-filter: blur(25px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(25px) saturate(160%) !important;
   border: 1px solid rgba(255, 255, 255, 0.4) !important;
@@ -2473,7 +2473,7 @@
   border: 2px solid var(--accent-color);
   border-radius: 4px;
   padding: 15px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.2);
   position: relative;
   overflow: hidden;
@@ -2488,9 +2488,18 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06)
+    );
   z-index: 10;
-  background-size: 100% 2px, 3px 100%;
+  background-size:
+    100% 2px,
+    3px 100%;
   pointer-events: none;
 }
 
@@ -2559,13 +2568,13 @@
 
 .music-style-terminal .progress-time {
   color: var(--accent-color);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 /* Robot Voice Visualizer */
 .music-style-terminal .music-visualizer {
   height: 40px;
-  align-items: center; 
+  align-items: center;
   gap: 2px;
 }
 
@@ -2592,25 +2601,20 @@
 }
 
 .music-style-terminal .visualizer-bar:nth-child(even) {
-    animation-duration: 0.3s;
+  animation-duration: 0.3s;
 }
 
 .music-style-terminal .visualizer-bar:nth-child(3n) {
-    animation-duration: 0.5s;
+  animation-duration: 0.5s;
 }
 
 /* =========================================
    STYLE: FOREST (R?NG XANH)
 ========================================= */
 .music-style-forest .music-player-wrapper {
-  background: linear-gradient(
-    135deg,
-    #1b3022 0%,
-    #2c5d33 40%,
-    #1b3022 100%
-  );
+  background: linear-gradient(135deg, #1b3022 0%, #2c5d33 40%, #1b3022 100%);
   border: 1px solid rgba(126, 217, 87, 0.3);
-  box-shadow: 
+  box-shadow:
     0 15px 35px rgba(0, 0, 0, 0.4),
     inset 0 0 20px rgba(0, 0, 0, 0.2);
   overflow: hidden !important;
@@ -2637,8 +2641,12 @@
 }
 
 @keyframes forestLight {
-  from { transform: translate(-5%, -5%) rotate(0deg); }
-  to { transform: translate(5%, 5%) rotate(5deg); }
+  from {
+    transform: translate(-5%, -5%) rotate(0deg);
+  }
+  to {
+    transform: translate(5%, 5%) rotate(5deg);
+  }
 }
 
 .music-style-forest .player-info h3 {
@@ -2681,25 +2689,24 @@
   z-index: 2;
 }
 
-
 /* S?a l?i Visualizer che m?t n�t di?u khi?n */
 .music-style-beach .music-player-wrapper,
 .music-style-forest .music-player-wrapper {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .music-style-beach .music-visualizer,
 .music-style-forest .music-visualizer {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    pointer-events: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
 }
 
 .music-style-beach .music-disc-container,
@@ -2710,12 +2717,11 @@
 .music-style-forest .player-info,
 .music-style-forest .player-controls,
 .music-style-forest .music-player-controls {
-    position: relative !important;
-    z-index: 10 !important;
+  position: relative !important;
+  z-index: 10 !important;
 }
 
 .music-style-beach .player-controls,
 .music-style-forest .player-controls {
-    pointer-events: auto !important;
+  pointer-events: auto !important;
 }
-

@@ -620,6 +620,39 @@ body.ghost-controls .side-controls:hover {
   position: relative;
 }
 
+/* === LIGHT MODE (White Background) === */
+.side-controls.light-mode #settings-toggle,
+.side-controls.light-mode .quick-access-bar {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Chỉ đổi màu đen cho các nút KHÔNG active */
+.side-controls.light-mode .quick-btn:not(.active),
+.side-controls.light-mode #settings-toggle:not(.active) i,
+.side-controls.light-mode .collapse-btn i {
+  color: #000000 !important;
+}
+
+/* Đảm bảo các nút Active vẫn ưu tiên dùng màu từ logic cũ (Accent color) */
+.side-controls.light-mode .quick-btn.active {
+  color: var(--accent-color) !important;
+  background: var(--accent-contrast-color, #ffffff) !important;
+  box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.4);
+}
+
+.side-controls.light-mode .quick-btn:hover:not(.active),
+.side-controls.light-mode #settings-toggle:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+.side-controls.light-mode .quick-access-divider {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 #image-preview-thumb {
   height: 100px;
   width: auto;

@@ -119,6 +119,7 @@ const defaultSettings = {
   bookmarkItemStyle: "default",
   bookmarkTextColor: null,
   showTopRightControls: true,
+  showQuickAccessBg: false,
   bookmarkShadowColor: "#000000",
   bookmarkShadowOpacity: 24,
   bookmarkShadowBlur: 8,

@@ -2234,6 +2234,13 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
+  setupLayoutCheckbox(DOM.showQuickAccessBgCheckbox, "showQuickAccessBg", {
+    lcp: DOM.lcpQuickAccessBg,
+  })
+  setupLayoutCheckbox(DOM.lcpQuickAccessBg, "showQuickAccessBg", {
+    sidebar: DOM.showQuickAccessBgCheckbox,
+  })
+
   DOM.contextMenuStyleSelect.addEventListener("change", () =>
     handleSettingUpdate("contextMenuStyle", DOM.contextMenuStyleSelect.value),
   )
@@ -2258,18 +2265,6 @@ export function setupGeneralEventHandlers(
         detail: {
           key: "showQuotes",
           value: DOM.showQuotesCheckbox.checked,
-        },
-      }),
-    )
-  })
-
-  DOM.lcpQuotes.addEventListener("change", () => {
-    handleSettingUpdate("showQuotes", DOM.lcpQuotes.checked)
-    window.dispatchEvent(
-      new CustomEvent("settingsUpdated", {
-        detail: {
-          key: "showQuotes",
-          value: DOM.lcpQuotes.checked,
         },
       }),
     )
@@ -2917,6 +2912,8 @@ export function setupGeneralEventHandlers(
       DOM.lcpSearchBar.checked = value
     if (key === "showBookmarks" && DOM.lcpBookmarks)
       DOM.lcpBookmarks.checked = value
+    if (key === "showQuickAccessBg" && DOM.lcpQuickAccessBg)
+      DOM.lcpQuickAccessBg.checked = value
     if (key === "showContextMenuBg" && DOM.lcpContextMenuBg)
       DOM.lcpContextMenuBg.checked = value
     if (key === "showBookmarkGroups" && DOM.lcpBookmarkGroups)

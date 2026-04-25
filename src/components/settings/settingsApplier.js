@@ -128,6 +128,12 @@ function createApplySettings(effectInstances) {
       "hide-bookmark-bg",
       "flip-layout",
     )
+
+    // Quick Access White Mode (light-mode)
+    const sideControls = document.querySelector(".side-controls")
+    if (sideControls) {
+      sideControls.classList.toggle("light-mode", settings.showQuickAccessBg === true)
+    }
     document.body.className.split(" ").forEach((cls) => {
       if (cls.startsWith("date-clock-style-"))
         document.body.classList.remove(cls)
@@ -1964,6 +1970,12 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
+    if (DOM.showQuickAccessBgCheckbox) {
+      DOM.showQuickAccessBgCheckbox.checked = settings.showQuickAccessBg === true
+    }
+    if (DOM.lcpQuickAccessBg) {
+      DOM.lcpQuickAccessBg.checked = settings.showQuickAccessBg === true
+    }
     if (DOM.showContextMenuBgCheckbox) {
       DOM.showContextMenuBgCheckbox.checked =
         settings.showContextMenuBg !== false

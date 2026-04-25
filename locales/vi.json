@@ -710,5 +710,6 @@
   "bug_report_desc": "Nếu bạn gặp lỗi, vui lòng sao chép cấu hình bên dưới và gửi cho nhà phát triển.",
   "system_config": "Cấu hình hệ thống (Tự động tạo):",
   "copy": "Sao chép cấu hình",
-  "send_to_fb": "Gửi cho nhà phát triển"
+  "send_to_fb": "Gửi cho nhà phát triển",
+  "settings_show_quick_access_bg": "Chế độ Quick Access Trắng"
 }

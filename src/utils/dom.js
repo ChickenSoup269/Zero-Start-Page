@@ -975,6 +975,9 @@ export const searchContainer = document.getElementById("search-container")
 export const showBookmarksCheckbox = document.getElementById(
   "show-bookmarks-checkbox",
 )
+export const showQuickAccessBgCheckbox = document.getElementById(
+  "show-quick-access-bg-checkbox",
+)
 export const contextMenuStyleSelect = document.getElementById(
   "context-menu-style-select",
 )
@@ -1006,7 +1009,7 @@ export const lcpBookmarks = document.getElementById("lcp-bookmarks")
 export const lcpContextMenuBg = document.getElementById("lcp-context-menu-bg")
 export const lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export const lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
-export const lcpQuotes = document.getElementById("lcp-quotes")
+export const lcpQuickAccessBg = document.getElementById("lcp-quick-access-bg")
 export const lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export const lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
