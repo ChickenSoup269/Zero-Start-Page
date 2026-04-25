@@ -75,6 +75,39 @@ export function showContextMenu(
       lockText.textContent = i18n.menu_lock || "Lock Position"
     }
 
+    // THÊM TÙY CHỌN SKIN CHO CÁC WIDGET
+    const skinnableWidgets = ["todo", "timer", "calendar", "notepad", "daily-quotes"]
+    if (skinnableWidgets.includes(id)) {
+        const skinKey = `${id === 'daily-quotes' ? 'quotes' : id}Skin`
+        const currentSkin = settings[skinKey] || "default"
+        const isWhiteBlur = currentSkin === "white-blur"
+        
+        const skinBtn = document.createElement("div")
+        skinBtn.className = "context-menu-item custom-music-item"
+        skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? (i18n.skin_default || "Giao diện Mặc định") : (i18n.skin_white_blur || "Nền Trắng Blur")}</span>`
+        skinBtn.onclick = () => {
+            const newVal = isWhiteBlur ? "default" : "white-blur"
+            updateSetting(skinKey, newVal)
+            saveSettings(true)
+            
+            const widgetIdMap = {
+                todo: "todo-container",
+                timer: "timer-component",
+                calendar: "full-calendar-container",
+                notepad: "notepad-container",
+                "daily-quotes": "daily-quotes"
+            }
+            const el = document.getElementById(widgetIdMap[id] || id)
+            if (el) el.classList.toggle("skin-white-blur", newVal === "white-blur")
+            hideContextMenu()
+        }
+        contextMenu.insertBefore(skinBtn, menuLock)
+
+        const separator = document.createElement("div")
+        separator.className = "context-menu-divider custom-music-item"
+        contextMenu.insertBefore(separator, skinBtn)
+    }
+
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
     if (id === "music") {
       const musicStyle = settings.music_bar_style || settings.musicBarStyle

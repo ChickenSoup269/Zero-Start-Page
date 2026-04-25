@@ -134,6 +134,25 @@ function createApplySettings(effectInstances) {
     if (sideControls) {
       sideControls.classList.toggle("light-mode", settings.showQuickAccessBg === true)
     }
+
+    // Apply Widget Skins
+    const widgetSkinsMap = {
+      todo: "todo-container",
+      timer: "timer-component",
+      calendar: "full-calendar-container",
+      notepad: "notepad-container",
+      quotes: "daily-quotes",
+      musicPlayer: "music-player-container"
+    }
+
+    Object.entries(widgetSkinsMap).forEach(([key, id]) => {
+      const el = document.getElementById(id)
+      if (el) {
+        const skin = settings[`${key}Skin`]
+        el.classList.toggle("skin-white-blur", skin === "white-blur")
+      }
+    })
+
     document.body.className.split(" ").forEach((cls) => {
       if (cls.startsWith("date-clock-style-"))
         document.body.classList.remove(cls)

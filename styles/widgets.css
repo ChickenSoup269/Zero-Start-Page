@@ -959,7 +959,7 @@ body.ghost-controls .side-controls:hover {
 }
 
 .drag-handle {
-  cursor: move;
+  cursor: default;
 }
 
 .todo-header {
@@ -1948,6 +1948,76 @@ body.context-menu-none .context-menu-item:hover {
   transition: none !important;
 }
 
+/* === WHITE BLUR SKIN FOR WIDGETS === */
+.todo-container.skin-white-blur,
+.timer-container.skin-white-blur,
+.calendar-card.skin-white-blur,
+.notepad-container.skin-white-blur,
+.quotes-container.skin-white-blur {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+}
+
+.skin-white-blur h3, 
+.skin-white-blur h4, 
+.skin-white-blur .month-title,
+.skin-white-blur .day-number,
+.skin-white-blur .timer-display,
+.skin-white-blur .quote-text,
+.skin-white-blur .quote-author,
+.skin-white-blur .todo-text {
+  color: #000000 !important;
+  text-shadow: none !important;
+}
+
+.skin-white-blur .icon-btn,
+.skin-white-blur .note-action-btn,
+.skin-white-blur .toolbar-btn {
+  color: #333 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.skin-white-blur .icon-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.skin-white-blur input,
+.skin-white-blur textarea,
+.skin-white-blur .note-editor,
+.skin-white-blur .floating-note-content {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.skin-white-blur .todo-item {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+.skin-white-blur .weekday-header {
+  color: #000 !important;
+  opacity: 0.6;
+}
+
+.skin-white-blur .day-item:not(.today) {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.skin-white-blur .context-menu-divider,
+.skin-white-blur .quick-access-divider {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Specific fix for Notepad header in white-blur */
+.notepad-container.skin-white-blur .notepad-header h3 {
+  background: none !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
 /* Search Engine Selector */
 .search-engine-selector {
   position: relative;
@@ -2159,7 +2229,7 @@ body.context-menu-none .context-menu-item:hover {
   margin-bottom: 1rem;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: move;
+  cursor: default;
 }
 
 .notepad-header .drag-handle-icon {
@@ -2190,7 +2260,7 @@ body.context-menu-none .context-menu-item:hover {
   border: none;
   padding: 8px 12px;
   border-radius: 8px;
-  cursor: move;
+  cursor: default;
   transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
 }
@@ -2626,7 +2696,7 @@ body.context-menu-none .context-menu-item:hover {
   gap: 8px;
   padding: 12px 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: move;
+  cursor: default;
   user-select: none;
   transition: all 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
