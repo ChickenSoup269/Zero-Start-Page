@@ -870,8 +870,8 @@ body.ghost-controls .side-controls:hover {
 }
 
 .lcp-select option {
-  background: #1a1a2e;
-  color: #fff;
+  background: var(--accent-contrast-color);
+  color: var(--accent-color);
 }
 
 /* Toggle switch */
