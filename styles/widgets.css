@@ -1726,7 +1726,7 @@ body.ghost-controls .side-controls:hover {
   position: fixed;
   padding: 5px;
   min-width: 200px;
-  z-index: 10000;
+  z-index: 20000; /* Higher than hidden-bookmarks-popup (10000) and modals */
   border-radius: 6px; /* Reduced bo góc chuẩn MacOS */
   animation: contextMenuFadeIn 0.12s ease-out;
   transition:
@@ -3841,6 +3841,15 @@ body.bookmark-macos-hover .bookmark {
     transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
     background 0.2s,
     box-shadow 0.2s;
+  background: transparent !important; /* Ensure no background in MacOS mode */
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
+}
+
+body.bookmark-macos-hover .bookmark:hover {
+  background: transparent !important; /* Force transparent hover bg in MacOS mode */
+  box-shadow: none !important;
 }
 
 /* Dynamic origins based on layout */

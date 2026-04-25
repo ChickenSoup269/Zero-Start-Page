@@ -387,7 +387,7 @@
   height: 50px;
   border-radius: 50%;
   background: var(--accent-color);
-  color: #1a1a2e;
+  color: var(--accent-contrast-color, #1a1a2e);
   border: none;
   cursor: pointer;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
@@ -2466,7 +2466,7 @@
 }
 
 /* =========================================
-   STYLE: TERMINAL (C? ÐI?N)
+   STYLE: TERMINAL (C? ï¿½I?N)
 ========================================= */
 .music-style-terminal .music-player-wrapper {
   background: #0c0c0c;
@@ -2617,7 +2617,7 @@
   position: relative;
 }
 
-/* Hi?u ?ng suong mù và tia sáng r?ng */
+/* Hi?u ?ng suong mï¿½ vï¿½ tia sï¿½ng r?ng */
 .music-style-forest .music-player-wrapper::before {
   content: "";
   position: absolute;
@@ -2682,7 +2682,7 @@
 }
 
 
-/* S?a l?i Visualizer che m?t nút di?u khi?n */
+/* S?a l?i Visualizer che m?t nï¿½t di?u khi?n */
 .music-style-beach .music-player-wrapper,
 .music-style-forest .music-player-wrapper {
     position: relative;
