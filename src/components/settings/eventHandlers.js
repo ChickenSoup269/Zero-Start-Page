@@ -226,15 +226,30 @@ export function setupGeneralEventHandlers(
     })
   }
   if (showMomo) {
-    showMomo.addEventListener("click", () => {
+    showMomo.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (momoQr)
         momoQr.style.display =
           momoQr.style.display === "none" ? "block" : "none"
     })
   }
+
+  // Handle closing of various popups/modals
   window.addEventListener("click", (e) => {
+    // Close Donate Modal
     if (modDonate && e.target === modDonate) {
       modDonate.classList.remove("open")
+    }
+    
+    // Close MoMo QR if clicking outside or on the QR itself
+    if (momoQr && momoQr.style.display === "block") {
+      momoQr.style.display = "none"
+    }
+
+    // Close Bug Report Modal
+    const bugModal = document.getElementById("bug-report-modal")
+    if (bugModal && e.target === bugModal) {
+      bugModal.classList.remove("open")
     }
   })
   document.addEventListener("click", (e) => {
