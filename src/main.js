@@ -29,6 +29,7 @@ import {
   clockDisplaySelect,
   showGregorianCheckbox,
   showNotepadCheckbox,
+  showQuotesCheckbox,
 } from "./utils/dom.js"
 
 // --- Initialization ---
@@ -282,8 +283,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             checkbox = showGregorianCheckbox
             break
           case "quotes":
-            dailyQuotes.setVisibility(!dailyQuotes.showQuotes)
-            syncQuickButtons()
+            if (showQuotesCheckbox) showQuotesCheckbox.click()
             break
           }
         if (key && checkbox) {

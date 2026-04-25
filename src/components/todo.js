@@ -17,6 +17,15 @@ export class TodoList {
     this.render()
     this.setupEventListeners()
     this.updateVisibility()
+    this.applySkin()
+  }
+
+  applySkin() {
+    const skin = getSettings().todoSkin || "default"
+    this.container.classList.remove("skin-white-blur")
+    if (skin === "white-blur") {
+      this.container.classList.add("skin-white-blur")
+    }
   }
 
   createElements() {

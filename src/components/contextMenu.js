@@ -90,6 +90,12 @@ export function showContextMenu(
             updateSetting(skinKey, newVal)
             saveSettings(true)
             
+            window.dispatchEvent(
+                new CustomEvent("layoutUpdated", {
+                    detail: { key: skinKey, value: newVal },
+                }),
+            )
+            
             const widgetIdMap = {
                 todo: "todo-container",
                 timer: "timer-component",

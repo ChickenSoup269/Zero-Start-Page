@@ -771,9 +771,16 @@ export function setupGeneralEventHandlers(
       DOM.accentColorPicker.value = color
       updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
+      
+      // Clear active from presets
       document
         .querySelectorAll(".accent-color-preset")
         .forEach((b) => b.classList.remove("active"))
+        
+      // Update active in user gallery
+      document.querySelectorAll("#user-accent-colors-gallery .user-color-item").forEach(el => {
+        el.classList.toggle("active", el.dataset.bgId === color)
+      })
     }
   })
 
@@ -2261,7 +2268,7 @@ export function setupGeneralEventHandlers(
   DOM.showQuotesCheckbox.addEventListener("change", () => {
     handleSettingUpdate("showQuotes", DOM.showQuotesCheckbox.checked)
     window.dispatchEvent(
-      new CustomEvent("settingsUpdated", {
+      new CustomEvent("layoutUpdated", {
         detail: {
           key: "showQuotes",
           value: DOM.showQuotesCheckbox.checked,

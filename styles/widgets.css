@@ -16,7 +16,11 @@
   width: 100%;
   max-width: var(--search-bar-width, 600px);
   box-shadow: var(--glass-shadow);
-  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: 
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 50;
 }
 

@@ -36,6 +36,7 @@ function renderUserColors(DOM) {
 
       const el = document.createElement("div")
       el.className = "user-color-item"
+      if (settings.background === color) el.classList.add("active")
       el.dataset.bgId = color
       el.style.background = color
       el.title = `Color ${index + 1}`
@@ -117,6 +118,7 @@ function renderUserAccentColors(DOM) {
 
       const el = document.createElement("div")
       el.className = "user-color-item accent-preset-item"
+      if (settings.accentColor === color) el.classList.add("active")
       el.dataset.bgId = color
       el.style.background = color
       el.title = `Accent Color: ${color}`

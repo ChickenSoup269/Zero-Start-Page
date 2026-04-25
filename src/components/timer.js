@@ -23,6 +23,7 @@ export class Timer {
     this.createElements()
     this.setupEventListeners()
     this.updateVisibility()
+    this.applySkin()
 
     // Resume logic
     if (this.isRunning && this.endTime > Date.now()) {
@@ -132,6 +133,9 @@ export class Timer {
       if (e.detail.key === "showTimer") {
         this.isVisible = e.detail.value
         this.updateVisibility()
+      }
+      if (e.detail.key === "timerSkin") {
+        this.applySkin()
       }
     })
 
@@ -359,6 +363,14 @@ export class Timer {
     } else {
       // Show just SS if there are only seconds
       element.textContent = short ? s.toString() : s.toString().padStart(2, "0")
+    }
+  }
+
+  applySkin() {
+    const skin = getSettings().timerSkin || "default"
+    this.container.classList.remove("skin-white-blur")
+    if (skin === "white-blur") {
+      this.container.classList.add("skin-white-blur")
     }
   }
 }

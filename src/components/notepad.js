@@ -31,6 +31,7 @@ export class Notepad {
     this.render()
     this.setupEventListeners()
     this.updateVisibility()
+    this.applySkin()
     this.renderDetachedNotes()
 
     // Close dropdowns when clicking outside
@@ -67,7 +68,18 @@ export class Notepad {
         this.isVisible = e.detail.value
         this.updateVisibility()
       }
+      if (e.detail.key === "notepadSkin") {
+        this.applySkin()
+      }
     })
+  }
+
+  applySkin() {
+    const skin = getSettings().notepadSkin || "default"
+    this.container.classList.remove("skin-white-blur")
+    if (skin === "white-blur") {
+      this.container.classList.add("skin-white-blur")
+    }
   }
 
   addNote() {

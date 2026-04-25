@@ -62,35 +62,42 @@ export function makeDraggable(
 
     e.preventDefault()
     
-    const rect = element.getBoundingClientRect()
-    initialWidth = rect.width
-    initialHeight = rect.height
-    offsetX = e.clientX - rect.left
-    offsetY = e.clientY - rect.top
-
-    // MAGIC OFFSET: Determine where (0,0) style lands on the screen
+    // 1. Prepare element: Disable laggy transitions and centering transforms
+    const originalTransition = element.style.transition
+    element.style.transition = "none"
+    
+    // 2. Measure parent offset by temporarily placing at 0,0 style
     const originalLeft = element.style.left
     const originalTop = element.style.top
     const originalTransform = element.style.transform
     const originalMargin = element.style.margin
-    const originalTransition = element.style.transition
     const style = window.getComputedStyle(element)
     const isFixed = style.position === "fixed"
 
-    element.style.transition = "none"
+    // To measure exactly where style (0,0) lands on screen
     element.style.transform = "none"
     element.style.margin = "0"
+    
+    // Capture current screen rect WITHOUT transforms
+    const currentRect = element.getBoundingClientRect()
+    
     element.style.left = "0px"
     element.style.top = "0px"
-
     const zeroRect = element.getBoundingClientRect()
+    
     magicOffsetX = zeroRect.left
     magicOffsetY = zeroRect.top
 
-    // Set to actual current position in style pixels
-    element.style.left = (rect.left - magicOffsetX) + "px"
-    element.style.top = (rect.top - magicOffsetY) + "px"
+    // 3. Set mouse offsets relative to the element's actual top-left corner
+    offsetX = e.clientX - currentRect.left
+    offsetY = e.clientY - currentRect.top
+    initialWidth = currentRect.width
+    initialHeight = currentRect.height
+
+    // 4. Re-position element to its screen location using pixels
     element.style.position = isFixed ? "fixed" : "absolute"
+    element.style.left = (currentRect.left - magicOffsetX) + "px"
+    element.style.top = (currentRect.top - magicOffsetY) + "px"
     element.style.bottom = "auto"
     element.style.right = "auto"
 
