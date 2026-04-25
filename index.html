@@ -30,12 +30,72 @@
 
 <body class="loading-state">
     <!-- Startup Overlay to prevent any white flashes -->
-    <div id="startup-overlay" style="position: fixed; inset: 0; background: #000; z-index: 999999; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
-        <div style="color: #fff; font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; animation: startupPulse 2s infinite ease-in-out; opacity: 0.8;">Zero Startpage</div>
+    <div id="startup-overlay">
+        <div class="startup-content">
+            <div class="startup-logo">Zero Startpage</div>
+            <div class="startup-loader">
+                <div class="loader-bar"></div>
+            </div>
+            <div id="startup-version" class="startup-version">v0.0.0</div>
+        </div>
         <style>
-            @keyframes startupPulse {
-                0%, 100% { opacity: 0.3; transform: scale(0.98); }
-                50% { opacity: 0.8; transform: scale(1); }
+            #startup-overlay {
+                position: fixed;
+                inset: 0;
+                background: #0a0a0a;
+                z-index: 999999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+            }
+            .startup-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+                animation: startupFadeIn 1s ease-out;
+            }
+            .startup-logo {
+                color: #fff;
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.5rem;
+                font-weight: 300;
+                letter-spacing: 8px;
+                text-transform: uppercase;
+                opacity: 0.9;
+            }
+            .startup-loader {
+                width: 200px;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+                overflow: hidden;
+                position: relative;
+            }
+            .loader-bar {
+                position: absolute;
+                width: 40%;
+                height: 100%;
+                background: #fff;
+                border-radius: 4px;
+                animation: loaderSlide 2s infinite ease-in-out;
+            }
+            .startup-version {
+                color: rgba(255, 255, 255, 0.3);
+                font-family: 'Outfit', sans-serif;
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                margin-top: 10px;
+            }
+            @keyframes startupFadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes loaderSlide {
+                0% { left: -40%; }
+                50% { left: 100%; }
+                100% { left: -40%; }
             }
             .main-container { transform: scale(0.96); transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.8s !important; }
             .main-container.ready { transform: scale(1); opacity: 1 !important; }

@@ -211,6 +211,7 @@ export function setupGeneralEventHandlers(
   const btnDonate = document.getElementById("donate-trigger-btn")
   const modDonate = document.getElementById("donate-modal")
   const closeDonate = document.getElementById("close-donate-modal")
+  const closeDonateBtn = document.getElementById("close-donate-modal-btn")
   const showMomo = document.getElementById("show-momo-qr-btn")
   const momoQr = document.getElementById("momo-qr-container")
 
@@ -220,11 +221,11 @@ export function setupGeneralEventHandlers(
       if (momoQr) momoQr.style.display = "none"
     })
   }
-  if (closeDonate) {
-    closeDonate.addEventListener("click", () => {
-      if (modDonate) modDonate.classList.remove("open")
-    })
+  const handleCloseDonate = () => {
+    if (modDonate) modDonate.classList.remove("open")
   }
+  if (closeDonate) closeDonate.addEventListener("click", handleCloseDonate)
+  if (closeDonateBtn) closeDonateBtn.addEventListener("click", handleCloseDonate)
   if (showMomo) {
     showMomo.addEventListener("click", (e) => {
       e.stopPropagation()

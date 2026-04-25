@@ -33,6 +33,20 @@ import {
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
+  // Update version in startup overlay and settings sidebar immediately
+  try {
+    const manifest = window.chrome?.runtime?.getManifest?.()
+    if (manifest && manifest.version) {
+      const startupVersion = document.getElementById("startup-version")
+      if (startupVersion) startupVersion.textContent = `v${manifest.version}`
+      
+      const settingsVersion = document.getElementById("settings-version")
+      if (settingsVersion) settingsVersion.textContent = `v${manifest.version}`
+    }
+  } catch (e) {
+    console.warn("Could not get manifest version")
+  }
+
   const currentSettings = getSettings()
 
   // 1. Setup UI fast to prevent layout shifts
@@ -204,7 +218,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const hasSelection = Object.values(selection).some(v => v === true)
         if (!hasSelection) return
 
-        showAlert(i18n.alert_resetting || "Restoring settings...")
+        // Show startup overlay again for better feedback
+        const overlay = document.getElementById("startup-overlay")
+        if (overlay) {
+          overlay.style.visibility = "visible"
+          overlay.style.opacity = "1"
+        }
+        
         setTimeout(() => {
           resetComponentPositions(selection)
         }, 1000)
@@ -321,7 +341,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (overlay) {
           overlay.style.opacity = "0"
           overlay.style.visibility = "hidden"
-          setTimeout(() => overlay.remove(), 800)
+          // Don't remove it from DOM so we can reuse it for reset
+          // setTimeout(() => overlay.remove(), 800)
         }
         document.body.classList.remove("loading-state")
       }, 400) // Increased settling time for layouts

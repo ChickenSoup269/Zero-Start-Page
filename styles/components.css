@@ -170,7 +170,7 @@
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  margin-bottom: 0 !important; /* Force remove any margin */
+  margin-bottom: 0; /* Remove !important to allow specific margins */
 }
 
 .modal-header h2 {
@@ -220,7 +220,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 
 .modal-header-left {
@@ -341,8 +341,8 @@
 .import-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 15px;
 }
 
 .import-search-wrap {
