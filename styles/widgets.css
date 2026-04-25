@@ -11,8 +11,8 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 24px; /* Upgraded to a modern pill shape */
-  padding: 10px 20px;
+  border-radius: 10px;
+  padding: 8px;
   width: 100%;
   max-width: var(--search-bar-width, 600px);
   box-shadow: var(--glass-shadow);
@@ -197,7 +197,7 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
   padding: 8px 4px 16px;
-  box-shadow: 
+  box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   display: none;
@@ -713,7 +713,7 @@ body.ghost-controls .side-controls:hover {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 
+  box-shadow:
     0 15px 40px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   z-index: 3000;
@@ -897,14 +897,14 @@ body.ghost-controls .side-controls:hover {
   border-radius: 20px;
   padding: 1.5rem;
   color: white;
-  box-shadow: 
+  box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-panel:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 60px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   border-color: rgba(255, 255, 255, 0.18);
