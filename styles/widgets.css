@@ -1458,8 +1458,7 @@ body.ghost-controls .side-controls:hover {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: fit-content;
-  min-width: 280px;
+  width: 320px;
   max-width: min(420px, 95vw);
   z-index: 100;
   padding: 1.2rem;
@@ -1469,8 +1468,7 @@ body.ghost-controls .side-controls:hover {
 }
 
 .calendar-card.with-lunar {
-  width: fit-content;
-  min-width: 320px;
+  width: 380px;
 }
 
 .lunar-month-title {
@@ -1987,6 +1985,8 @@ body.context-menu-none .context-menu-item:hover {
 
 .skin-white-blur .icon-btn:hover {
   background: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 .skin-white-blur input,
@@ -1998,8 +1998,29 @@ body.context-menu-none .context-menu-item:hover {
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+.skin-white-blur input:focus {
+  border-color: #000 !important;
+}
+
 .skin-white-blur .todo-item {
   background: rgba(0, 0, 0, 0.03) !important;
+}
+
+.skin-white-blur .todo-item.completed .toggle-btn i {
+  color: #000 !important;
+}
+
+.skin-white-blur .todo-section-header {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-left-color: #000 !important;
+}
+
+.skin-white-blur .todo-section-header .section-title {
+  color: #000 !important;
+}
+
+.skin-white-blur .todo-checkbox {
+  accent-color: #000 !important;
 }
 
 .skin-white-blur .weekday-header {
@@ -2009,6 +2030,50 @@ body.context-menu-none .context-menu-item:hover {
 
 .skin-white-blur .day-item:not(.today) {
   background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.skin-white-blur .day-item.today {
+  background: #000 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.skin-white-blur .day-item.today .day-number,
+.skin-white-blur .day-item.today .lunar-date,
+.skin-white-blur .day-item.today .holiday-name {
+  color: #fff !important;
+}
+
+.skin-white-blur .day-item.selected {
+  outline-color: #000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.skin-white-blur .lunar-month-title,
+.skin-white-blur .lunar-date {
+  color: #000 !important;
+  opacity: 0.5;
+}
+
+.skin-white-blur .event-dot {
+  background: #000 !important;
+}
+
+.skin-white-blur .calendar-event {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-left-color: #000 !important;
+  color: #000 !important;
+}
+
+.skin-white-blur .calendar-event:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.skin-white-blur #alarm-control-container .primary-btn,
+.skin-white-blur .timer-input-actions .primary-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
 }
 
 .skin-white-blur .context-menu-divider,

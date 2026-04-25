@@ -25,6 +25,7 @@ export class FullCalendar {
 
   init() {
     this.render()
+    this.applySkin()
     this.setupEventListeners()
     this.updateVisibility()
   }
@@ -38,6 +39,9 @@ export class FullCalendar {
       if (e.detail.key === "showLunarCalendar") {
         this.showLunar = e.detail.value
         this.render()
+      }
+      if (e.detail.key === "calendarSkin") {
+        this.applySkin()
       }
     })
 
@@ -255,6 +259,14 @@ export class FullCalendar {
   updateVisibility() {
     if (this.container) {
       this.container.style.display = this.isVisible ? "block" : "none"
+    }
+  }
+
+  applySkin() {
+    const skin = getSettings().calendarSkin || "default"
+    this.container.classList.remove("skin-white-blur")
+    if (skin === "white-blur") {
+      this.container.classList.add("skin-white-blur")
     }
   }
 

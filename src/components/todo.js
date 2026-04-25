@@ -138,6 +138,9 @@ export class TodoList {
       if (e.detail.key === "todoShowCheckboxes") {
         this.updateVisibility()
       }
+      if (e.detail.key === "todoSkin") {
+        this.applySkin()
+      }
     })
   }
 
