@@ -75,11 +75,11 @@ export class Notepad {
   }
 
   applySkin() {
-    const skin = getSettings().notepadSkin || "default"
-    this.container.classList.remove("skin-white-blur")
-    if (skin === "white-blur") {
-      this.container.classList.add("skin-white-blur")
-    }
+    const settings = getSettings()
+    const isWhiteMode = settings.showQuickAccessBg === true
+    const skin = isWhiteMode ? "white-blur" : (settings.notepadSkin || "default")
+    
+    this.container.classList.toggle("skin-white-blur", skin === "white-blur")
   }
 
   addNote() {

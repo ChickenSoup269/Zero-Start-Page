@@ -130,7 +130,8 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.modal.show, .modal.open {
+.modal.show,
+.modal.open {
   display: flex !important;
   opacity: 1;
 }
@@ -142,7 +143,7 @@
   border-radius: 20px;
   width: 480px;
   max-width: 92vw;
-  box-shadow: 
+  box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -158,7 +159,8 @@
   overflow: hidden;
 }
 
-.modal.show .modal-content, .modal.open .modal-content {
+.modal.show .modal-content,
+.modal.open .modal-content {
   transform: scale(1) translateY(0);
 }
 
@@ -499,10 +501,12 @@
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
   z-index: 5;
   pointer-events: none;
-  filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
-.user-color-item, .local-bg-item, .user-gradient-item {
+.user-color-item,
+.local-bg-item,
+.user-gradient-item {
   position: relative;
 }
 
@@ -698,8 +702,8 @@
 }
 
 .bookmark.selected::after {
-  content: '\f058';
-  font-family: 'Font Awesome 6 Free';
+  content: "\f058";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
   top: 5px;
@@ -715,7 +719,9 @@
   background: rgba(255, 255, 255, 0.8) !important;
   color: #000 !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
 }
 
 .quick-access-white .modal-header,
@@ -747,15 +753,15 @@
 }
 
 .quick-access-white .modal-input-icon {
-    color: rgba(0, 0, 0, 0.35) !important;
+  color: rgba(0, 0, 0, 0.35) !important;
 }
 
 .quick-access-white .modal-back-btn {
-    background: rgba(0, 0, 0, 0.08) !important;
-    border: 1px solid rgba(0, 0, 0, 0.12) !important;
-    color: #000 !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  color: #000 !important;
 }
 
 .quick-access-white .modal-back-btn:hover {
-    background: rgba(0, 0, 0, 0.16) !important;
+  background: rgba(0, 0, 0, 0.16) !important;
 }

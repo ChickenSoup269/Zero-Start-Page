@@ -151,14 +151,15 @@ function createApplySettings(effectInstances) {
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
       const el = document.getElementById(id)
       if (el) {
-        // Force white-blur if isWhiteMode is active, otherwise use saved setting
-        const skin = isWhiteMode ? "white-blur" : settings[`${key}Skin`]
+        const skin = settings[`${key}Skin`]
         el.classList.toggle("skin-white-blur", skin === "white-blur")
         
-        // Special handling for music player wrapper
+        // Special handling for music player wrapper inside its container
         if (key === "musicPlayer") {
           const wrapper = el.querySelector(".music-player-wrapper")
-          if (wrapper) wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
+          if (wrapper) {
+            wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
+          }
         }
       }
     })

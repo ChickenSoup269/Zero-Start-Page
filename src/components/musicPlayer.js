@@ -46,19 +46,25 @@ export class MusicPlayer {
   }
 
   applySkin(skin) {
-    const wrapper = this.container.querySelector(".music-player-wrapper")
+    const wrapper = this.container ? this.container.querySelector(".music-player-wrapper") : document.querySelector("#music-player-container .music-player-wrapper")
     if (!wrapper) return
+
+    const settings = getSettings()
     
+    // If no skin provided, get from settings
+    if (!skin) skin = settings.musicPlayerSkin || "default"
+
     // Xóa tất cả skin classes cũ
     wrapper.classList.remove("skin-gameboy", "skin-white-blur")
-    
+    if (this.container) this.container.classList.remove("skin-white-blur")
+
     if (skin === "gameboy") {
       wrapper.classList.add("skin-gameboy")
     } else if (skin === "white-blur") {
       wrapper.classList.add("skin-white-blur")
+      if (this.container) this.container.classList.add("skin-white-blur")
     }
   }
-
   applyNoShaking(disabled) {
     const wrapper = this.container.querySelector(".music-player-wrapper")
     if (!wrapper) return
@@ -186,7 +192,7 @@ export class MusicPlayer {
         this.applyMusicStyle(this.currentStyle)
       }
       // Cập nhật ngay lập tức các tùy chọn của style Nhịp Tim
-      if (key === "musicPlayerSkin") {
+      if (key === "musicPlayerSkin" || key === "showQuickAccessBg") {
         this.applySkin(value)
       }
       if (key === "musicPlayerNoShaking") {

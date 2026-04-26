@@ -16,7 +16,7 @@
   width: 100%;
   max-width: var(--search-bar-width, 600px);
   box-shadow: var(--glass-shadow);
-  transition: 
+  transition:
     background 0.35s ease,
     box-shadow 0.35s ease,
     border-color 0.35s ease,
@@ -631,7 +631,9 @@ body.ghost-controls .side-controls:hover {
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Đổi màu đen cho các nút và icon */
@@ -708,7 +710,9 @@ body.ghost-controls .side-controls:hover {
   accent-color: #000 !important;
 }
 
-.side-controls.light-mode .lcp-slider-row input[type="range"]::-webkit-slider-thumb {
+.side-controls.light-mode
+  .lcp-slider-row
+  input[type="range"]::-webkit-slider-thumb {
   background: #000 !important;
 }
 
@@ -829,7 +833,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .quick-btn.active {
   color: var(--accent-color);
   background: var(--accent-contrast-color, #1a1a2e);
-  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
+  /* box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3); */
 }
 
 /* Layout Controls Popup */
@@ -2055,8 +2059,8 @@ body.context-menu-none .context-menu-item:hover {
   color: #000000 !important;
 }
 
-.skin-white-blur h3, 
-.skin-white-blur h4, 
+.skin-white-blur h3,
+.skin-white-blur h4,
 .skin-white-blur .month-title,
 .skin-white-blur .day-number,
 .skin-white-blur .timer-display,

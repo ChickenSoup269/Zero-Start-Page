@@ -60,6 +60,9 @@
 .quick-access-white .music-player-container.skin-white-blur .progress {
     background: #000 !important;
 }
+
+/* GIAO DIỆN TRẮNG BLUR TRONG SUỐT */
+.music-player-wrapper.skin-white-blur {
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;

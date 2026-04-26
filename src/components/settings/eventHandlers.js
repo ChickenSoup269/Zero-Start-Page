@@ -2241,12 +2241,46 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.showBookmarksCheckbox, "showBookmarks", {})
-  setupLayoutCheckbox(DOM.showQuickAccessBgCheckbox, "showQuickAccessBg", {
-    lcp: DOM.lcpQuickAccessBg,
-  })
-  setupLayoutCheckbox(DOM.lcpQuickAccessBg, "showQuickAccessBg", {
-    sidebar: DOM.showQuickAccessBgCheckbox,
-  })
+  // Quick Access White Mode logic
+  const handleWhiteModeChange = (checked) => {
+    handleSettingUpdate("showQuickAccessBg", checked)
+    
+    const widgets = ["todo", "timer", "calendar", "notepad", "quotes", "musicPlayer"]
+    const settings = getSettings()
+
+    if (checked) {
+      // ON: Switch to white-blur if it's currently default
+      widgets.forEach(w => {
+        const currentSkin = settings[`${w}Skin`] || "default"
+        if (currentSkin === "default") {
+          handleSettingUpdate(`${w}Skin`, "white-blur")
+        }
+      })
+    } else {
+      // OFF: Revert to default if it's currently white-blur
+      widgets.forEach(w => {
+        const currentSkin = settings[`${w}Skin`]
+        if (currentSkin === "white-blur") {
+          handleSettingUpdate(`${w}Skin`, "default")
+        }
+      })
+    }
+
+    // Sync checkboxes
+    if (DOM.showQuickAccessBgCheckbox) DOM.showQuickAccessBgCheckbox.checked = checked
+    if (DOM.lcpQuickAccessBg) DOM.lcpQuickAccessBg.checked = checked
+    
+    // Refresh UI
+    applySettings()
+    updateSettingsInputs() // Ensure dropdowns in settings sidebar also update
+  }
+
+  if (DOM.showQuickAccessBgCheckbox) {
+    DOM.showQuickAccessBgCheckbox.addEventListener("change", (e) => handleWhiteModeChange(e.target.checked))
+  }
+  if (DOM.lcpQuickAccessBg) {
+    DOM.lcpQuickAccessBg.addEventListener("change", (e) => handleWhiteModeChange(e.target.checked))
+  }
 
   DOM.contextMenuStyleSelect.addEventListener("change", () =>
     handleSettingUpdate("contextMenuStyle", DOM.contextMenuStyleSelect.value),
