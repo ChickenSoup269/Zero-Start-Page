@@ -1,5 +1,6 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { makeDraggable } from "../utils/draggable.js"
+import { fadeToggle } from "../utils/dom.js"
 
 const QUOTES_DATA = [
   // 1. Giá trị cuộc sống
@@ -608,8 +609,7 @@ export class DailyQuotes {
 
   applySettings() {
     const settings = getSettings()
-    this.container.style.display =
-      settings.showQuotes !== false ? "block" : "none"
+    fadeToggle(this.container, settings.showQuotes !== false, "block")
   }
 
   get showQuotes() {

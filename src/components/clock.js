@@ -1,4 +1,4 @@
-import { clockElement, dateElement } from "../utils/dom.js"
+import { clockElement, dateElement, fadeToggle } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
@@ -824,10 +824,10 @@ export function updateCustomTitle() {
   if (!el) return
 
   if (settings.showCustomTitle === false) {
-    el.style.display = "none"
+    fadeToggle(el, false, "block")
     return
   } else {
-    el.style.display = ""
+    fadeToggle(el, true, "block")
   }
 
   const text = settings.customTitleText || ""

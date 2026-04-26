@@ -1,5 +1,6 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import MusicVisualizer from "./visualizer.js"
+import { fadeToggle } from "../utils/dom.js"
 import { geti18n } from "../services/i18n.js"
 
 export class MusicPlayer {
@@ -484,10 +485,6 @@ export class MusicPlayer {
 
   updateVisibility() {
     // This handles whether the feature is enabled at all
-    if (!this.showPlayer) {
-      this.container.style.display = "none"
-    } else {
-      this.container.style.display = "block"
-    }
+    fadeToggle(this.container, this.showPlayer, "block")
   }
 }

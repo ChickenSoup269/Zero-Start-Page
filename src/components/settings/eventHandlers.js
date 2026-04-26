@@ -2335,17 +2335,19 @@ export function setupGeneralEventHandlers(
 
   // Layout controls popup
   const closeLcp = () => {
-    DOM.layoutControlsPopup.style.display = "none"
+    DOM.fadeToggle(DOM.layoutControlsPopup, false, "block")
     DOM.layoutControlsBtn.classList.remove("active")
   }
 
   DOM.layoutControlsBtn.addEventListener("click", (e) => {
     e.stopPropagation()
-    const isVisible = DOM.layoutControlsPopup.style.display !== "none"
-    isVisible
-      ? closeLcp()
-      : ((DOM.layoutControlsPopup.style.display = "block"),
-        DOM.layoutControlsBtn.classList.add("active"))
+    const isVisible = DOM.layoutControlsPopup.style.display !== "none" && DOM.layoutControlsPopup.style.opacity !== "0"
+    if (isVisible) {
+      closeLcp()
+    } else {
+      DOM.fadeToggle(DOM.layoutControlsPopup, true, "block")
+      DOM.layoutControlsBtn.classList.add("active")
+    }
   })
 
   document.addEventListener("click", (e) => {

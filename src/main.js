@@ -1,4 +1,5 @@
 import { initI18n, geti18n } from "./services/i18n.js"
+import { fadeToggle } from "./utils/dom.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks } from "./components/bookmarks.js"
@@ -360,11 +361,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       syncQuickButtons()
       if (e.detail.key === "showSearchBar") {
         const el = document.getElementById("search-container")
-        if (el) el.style.display = e.detail.value ? "" : "none"
+        if (el) fadeToggle(el, e.detail.value, "")
       }
       if (e.detail.key === "showSearchAIIcon") {
         const el = document.getElementById("search-ai-btn")
-        if (el) el.style.display = e.detail.value ? "" : "none"
+        if (el) fadeToggle(el, e.detail.value, "")
       }
       if (e.detail.key === "searchBarWidth") {
         document.documentElement.style.setProperty(
@@ -374,11 +375,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (e.detail.key === "showBookmarks") {
         const el = document.getElementById("bookmarks-container")
-        if (el) el.style.display = e.detail.value ? "" : "none"
+        if (el) fadeToggle(el, e.detail.value, "")
       }
       if (e.detail.key === "showBookmarkGroups") {
         const el = document.getElementById("bookmark-groups-container")
-        if (el) el.style.display = e.detail.value ? "" : "none"
+        if (el) fadeToggle(el, e.detail.value, "")
       }
       if (e.detail.key === "freeMoveCustomTitle") {
         document.body.classList.toggle(
@@ -524,17 +525,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           if (popup && verLabel) {
             verLabel.textContent = `v${currentVersion}`
-            popup.style.display = "block"
+            fadeToggle(popup, true, "block")
 
             document
               .getElementById("close-update-popup")
               ?.addEventListener("click", () => {
-                popup.style.display = "none"
+                fadeToggle(popup, false, "block")
               })
           }
 
           if (sidebarLink) {
-            sidebarLink.style.display = "flex"
+            fadeToggle(sidebarLink, true, "flex")
           }
         }
       } catch (e) {

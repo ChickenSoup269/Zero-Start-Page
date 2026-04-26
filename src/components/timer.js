@@ -1,4 +1,5 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
+import { fadeToggle } from "../utils/dom.js"
 
 export class Timer {
   constructor() {
@@ -170,7 +171,7 @@ export class Timer {
   }
 
   updateVisibility() {
-    this.container.style.display = this.isVisible ? "flex" : "none"
+    fadeToggle(this.container, this.isVisible, "flex")
     this._updateMiniIndicatorVisibility()
   }
 

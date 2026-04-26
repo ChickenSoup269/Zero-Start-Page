@@ -2,6 +2,7 @@ import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
 import { showPrompt } from "../utils/dialog.js"
+import { fadeToggle } from "../utils/dom.js"
 
 export class Notepad {
   // 8 Default colors for notes
@@ -145,8 +146,7 @@ export class Notepad {
   }
 
   updateVisibility() {
-    this.container.style.display = this.isVisible ? "flex" : "none"
-  }
+    fadeToggle(this.container, this.isVisible, "flex")  }
 
   detachNote(noteId) {
     this.detachedNotes[noteId] = true

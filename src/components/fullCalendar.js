@@ -5,6 +5,7 @@ import {
   updateCalendarEvent,
   deleteCalendarEvent,
 } from "../services/state.js"
+import { fadeToggle } from "../utils/dom.js"
 import { showPrompt, showConfirm, showAlert } from "../utils/dialog.js"
 import { geti18n } from "../services/i18n.js"
 import {
@@ -258,7 +259,7 @@ export class FullCalendar {
 
   updateVisibility() {
     if (this.container) {
-      this.container.style.display = this.isVisible ? "block" : "none"
+      fadeToggle(this.container, this.isVisible, "block")
     }
   }
 

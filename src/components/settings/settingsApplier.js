@@ -11,6 +11,7 @@ import {
 import { initMacosHoverForBookmarks } from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
 import { getContrastYIQ, hexToRgb } from "../../utils/colors.js"
+import { fadeToggle } from "../../utils/dom.js"
 import {
   isIdbImage,
   isIdbVideo,
@@ -651,11 +652,13 @@ function createApplySettings(effectInstances) {
     const dateEl = document.getElementById("date")
 
     if (clockEl) {
-      clockEl.style.display = displayMode === "hide" || displayMode === "weekday" ? "none" : "block"
+      const showClock = displayMode !== "hide" && displayMode !== "weekday"
+      fadeToggle(clockEl, showClock, "block")
     }
 
     if (dateEl) {
-      dateEl.style.display = displayMode === "hide" ? "none" : "block"
+      const showDate = displayMode !== "hide"
+      fadeToggle(dateEl, showDate, "block")
       dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
     }
 

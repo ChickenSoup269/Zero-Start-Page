@@ -2,6 +2,7 @@ import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { showContextMenu } from "./contextMenu.js"
 import { geti18n } from "../services/i18n.js"
 import { showConfirm, showPrompt } from "../utils/dialog.js"
+import { fadeToggle } from "../utils/dom.js"
 
 export class TodoList {
   constructor() {
@@ -189,7 +190,7 @@ export class TodoList {
   updateVisibility() {
     const settings = getSettings()
     this.isVisible = settings.showTodoList !== false
-    this.container.style.display = this.isVisible ? "flex" : "none"
+    fadeToggle(this.container, this.isVisible, "flex")
 
     const toggleBulkBtn = this.container.querySelector("#todo-toggle-bulk-btn")
     if (settings.todoShowCheckboxes === true) {

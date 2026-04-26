@@ -1202,3 +1202,18 @@ export const svgWaveSelectCancelBtn = document.getElementById(
 )
 
 export const themesGrid = document.getElementById("themes-grid")
+
+export function fadeToggle(el, show, displayStyle = 'flex') {
+  if (!el) return;
+  if (show) {
+    if (el.style.display !== 'none') return;
+    el.style.opacity = 0;
+    el.style.display = displayStyle;
+    const anim = el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-out' });
+    anim.onfinish = () => { el.style.opacity = ''; };
+  } else {
+    if (el.style.display === 'none') return;
+    const anim = el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in' });
+    anim.onfinish = () => { el.style.display = 'none'; el.style.opacity = ''; };
+  }
+}
