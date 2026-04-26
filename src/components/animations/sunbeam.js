@@ -21,6 +21,11 @@ export class SunbeamEffect {
 
     this.time = 0
     this.rays = []
+    this.rgb = null
+    this.rgbStr = ""
+    this.cachedGradOuter = null
+    this.cachedGradCore = null
+    this.cachedBloom = null
     
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
@@ -55,10 +60,22 @@ export class SunbeamEffect {
     if (!this.canvas) return
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
+    this._resetGradients()
+  }
+
+  _resetGradients() {
+    this.cachedGradOuter = null
+    this.cachedGradCore = null
+    this.cachedBloom = null
   }
 
   updateColor(color) {
     this.color = color
+    this.rgb = this._hexToRgb(color)
+    if (this.rgb) {
+      this.rgbStr = `${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}`
+    }
+    this._resetGradients()
   }
 
   setAngle(deg) {
@@ -74,6 +91,10 @@ export class SunbeamEffect {
 
   stop() {
     this.active = false
+    if (this._animId) {
+      cancelAnimationFrame(this._animId)
+      this._animId = null
+    }
     if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
@@ -91,6 +112,7 @@ export class SunbeamEffect {
   _animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this._animate())
+    
     if (document.visibilityState === "hidden") return
     this.time += 0.006
     const ctx = this.ctx
@@ -102,13 +124,32 @@ export class SunbeamEffect {
     ctx.save()
     ctx.globalCompositeOperation = "screen"
 
-    if (!this.rgb) this.rgb = this._hexToRgb(this.color)
-    const rgb = this.rgb
-    const rgbStr = `${rgb.r}, ${rgb.g}, ${rgb.b}`
+    if (!this.rgb) {
+      this.rgb = this._hexToRgb(this.color)
+      this.rgbStr = `${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}`
+    }
+    
+    const rgbStr = this.rgbStr
     const baseColor = (a) => `rgba(${rgbStr}, ${a})`
 
     const sourceX = W / 2
-    const sourceY = -H * 0.5 // Higher source for massive pillar feel
+    const sourceY = -H * 0.5
+
+    // Cache gradients
+    if (!this.cachedGradOuter) {
+      const g = ctx.createLinearGradient(sourceX, 0, sourceX, H)
+      g.addColorStop(0, baseColor(0.5))
+      g.addColorStop(0.5, baseColor(0.2))
+      g.addColorStop(1, baseColor(0))
+      this.cachedGradOuter = g
+    }
+    if (!this.cachedGradCore) {
+      const g = ctx.createLinearGradient(sourceX, 0, sourceX, H)
+      g.addColorStop(0, baseColor(1))
+      g.addColorStop(0.4, baseColor(0.4))
+      g.addColorStop(0.8, baseColor(0))
+      this.cachedGradCore = g
+    }
 
     const pillarSwing = Math.sin(this.time * 0.3) * 0.02
 
@@ -124,31 +165,23 @@ export class SunbeamEffect {
 
         const alpha = ray.maxOpacity * (0.85 + 0.15 * breathing)
         
-        // Vertical Gradient: Brightest top-center, fading out naturally
-        const gradOuter = ctx.createLinearGradient(sourceX, 0, sourceX, H)
-        gradOuter.addColorStop(0, baseColor(alpha * 0.5))
-        gradOuter.addColorStop(0.5, baseColor(alpha * 0.2))
-        gradOuter.addColorStop(1, baseColor(0))
-
-        ctx.fillStyle = gradOuter
+        ctx.globalAlpha = alpha
+        ctx.fillStyle = this.cachedGradOuter
         const rayWidth = (ray.width || 500) * (1 + Math.abs(ray.spreadOffset) * 2.5)
         this._drawRayPath(ctx, sourceX, sourceY, endX, endY, rayWidth)
         ctx.fill()
 
-        // Inner core for the central rays (increased core count for width)
         if (i < 4) {
-            const gradCore = ctx.createLinearGradient(sourceX, 0, sourceX, H)
-            gradCore.addColorStop(0, baseColor(alpha))
-            gradCore.addColorStop(0.4, baseColor(alpha * 0.4))
-            gradCore.addColorStop(0.8, baseColor(0))
-
-            ctx.fillStyle = gradCore
+            ctx.fillStyle = this.cachedGradCore
             this._drawRayPath(ctx, sourceX, sourceY, endX, endY, rayWidth * 0.35)
             ctx.fill()
         }
     })
 
-    // Atmospheric Motes (Widely distributed around the large pillar)
+    // Reset globalAlpha for motes and bloom
+    ctx.globalAlpha = 1
+
+    // Atmospheric Motes
     for (let i = 0; i < 40; i++) {
         const x = (W / 2) + (Math.sin(i * 123 + this.time * 0.1) * W * 0.35)
         const y = ((i * 456 + this.time * 15) % H)
@@ -161,15 +194,17 @@ export class SunbeamEffect {
         ctx.fill()
     }
 
-    // Top Source Glow (Large horizontal soft bloom)
-    const bloom = ctx.createLinearGradient(0, 0, 0, H * 0.7)
-    bloom.addColorStop(0, baseColor(0.25))
-    bloom.addColorStop(1, baseColor(0))
-    ctx.fillStyle = bloom
+    // Top Source Glow
+    if (!this.cachedBloom) {
+      const bloom = ctx.createLinearGradient(0, 0, 0, H * 0.7)
+      bloom.addColorStop(0, baseColor(0.25))
+      bloom.addColorStop(1, baseColor(0))
+      this.cachedBloom = bloom
+    }
+    ctx.fillStyle = this.cachedBloom
     ctx.fillRect(0, 0, W, H * 0.7)
 
     ctx.restore()
-    requestAnimationFrame(() => this._animate())
   }
 
   _drawRayPath(ctx, x1, y1, x2, y2, width) {
