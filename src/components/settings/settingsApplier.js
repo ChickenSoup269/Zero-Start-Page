@@ -131,8 +131,8 @@ function createApplySettings(effectInstances) {
 
     // Quick Access White Mode (light-mode)
     const sideControls = document.querySelector(".side-controls")
+    const isWhiteMode = settings.showQuickAccessBg === true
     if (sideControls) {
-      const isWhiteMode = settings.showQuickAccessBg === true
       sideControls.classList.toggle("light-mode", isWhiteMode)
       document.body.classList.toggle("quick-access-white", isWhiteMode)
     }
@@ -144,14 +144,22 @@ function createApplySettings(effectInstances) {
       calendar: "full-calendar-container",
       notepad: "notepad-container",
       quotes: "daily-quotes",
-      musicPlayer: "music-player-container"
+      musicPlayer: "music-player-container",
+      visualizer: "visualizer-container"
     }
 
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
       const el = document.getElementById(id)
       if (el) {
-        const skin = settings[`${key}Skin`]
+        // Force white-blur if isWhiteMode is active, otherwise use saved setting
+        const skin = isWhiteMode ? "white-blur" : settings[`${key}Skin`]
         el.classList.toggle("skin-white-blur", skin === "white-blur")
+        
+        // Special handling for music player wrapper
+        if (key === "musicPlayer") {
+          const wrapper = el.querySelector(".music-player-wrapper")
+          if (wrapper) wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
+        }
       }
     })
 

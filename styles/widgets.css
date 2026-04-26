@@ -1928,16 +1928,13 @@ body.context-menu-light .menu-item i {
 
 body.context-menu-light .context-menu-item:hover,
 body.context-menu-light .menu-item:hover {
-  background: var(
-    --accent-color,
-    #007aff
-  ) !important; /* Hover xanh chuẩn Mac */
-  color: var(--accent-contrast-color, #fff) !important;
+  background: #000 !important;
+  color: #fff !important;
 }
 
 body.context-menu-light .context-menu-item:hover i,
 body.context-menu-light .menu-item:hover i {
-  color: var(--accent-contrast-color, #fff) !important;
+  color: #fff !important;
   opacity: 1;
 }
 

@@ -45,8 +45,21 @@
     border-radius 0.3s ease;
 }
 
-/* GIAO DIỆN TRẮNG BLUR TRONG SUỐT */
-.music-player-wrapper.skin-white-blur {
+/* White Mode Overrides for Music Player */
+.quick-access-white .music-player-container.skin-white-blur .music-info h3,
+.quick-access-white .music-player-container.skin-white-blur .music-info p,
+.quick-access-white .music-player-container.skin-white-blur .time-display span,
+.quick-access-white .music-player-container.skin-white-blur .control-btn {
+    color: #000 !important;
+}
+
+.quick-access-white .music-player-container.skin-white-blur .progress-bar {
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .music-player-container.skin-white-blur .progress {
+    background: #000 !important;
+}
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
