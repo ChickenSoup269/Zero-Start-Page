@@ -710,3 +710,52 @@
   border-radius: 50%;
   line-height: 1;
 }
+
+.quick-access-white .modal-content {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.quick-access-white .modal-header,
+.quick-access-white .modal-footer {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-header h2 {
+  color: #000 !important;
+}
+
+.quick-access-white .close {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.quick-access-white .close:hover {
+  color: #000 !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-content input {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+}
+
+.quick-access-white .modal-content input::placeholder {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.quick-access-white .modal-input-icon {
+    color: rgba(0, 0, 0, 0.35) !important;
+}
+
+.quick-access-white .modal-back-btn {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    color: #000 !important;
+}
+
+.quick-access-white .modal-back-btn:hover {
+    background: rgba(0, 0, 0, 0.16) !important;
+}

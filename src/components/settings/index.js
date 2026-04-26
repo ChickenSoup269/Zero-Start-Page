@@ -469,7 +469,7 @@ export function initSettings() {
       : lastCredit.authorName
     DOM_EXPORTS.unsplashCredit.innerHTML = `📷 ${photoLink}${photoLink && lastCredit.authorName ? " &bull; " : ""}${authorLink}`
     DOM_EXPORTS.unsplashCredit.style.display = "block"
-  }
+    }
 
   // Restore font
   initFont()

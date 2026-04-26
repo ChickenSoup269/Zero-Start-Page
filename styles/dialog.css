@@ -355,3 +355,278 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
 }
+
+/* White Mode for Modals - Including UI parts of Import Mode */
+.quick-access-white .modal-content {
+  background: rgba(255, 255, 255, 0.8) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.quick-access-white .modal-header,
+.quick-access-white .modal-footer {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-header h2 {
+  color: #000 !important;
+}
+
+/* Specific UI parts for Import Modal to be Black & White */
+.quick-access-white .import-toolbar,
+.quick-access-white .import-footer {
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .import-search-wrap {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .import-search-wrap i,
+.quick-access-white .import-search-input {
+  color: #000 !important;
+}
+
+.quick-access-white .import-select-all-label,
+.quick-access-white .import-count-label {
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+.quick-access-white .import-select-all-label span {
+  color: #000 !important;
+}
+
+/* High contrast buttons for Dark Modals in White Mode */
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn,
+.quick-access-white .bug-modal-content .bug-primary-btn {
+  background: #fff !important;
+  border: 1px solid #fff !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn *,
+.quick-access-white .bug-modal-content .bug-primary-btn * {
+  color: #000 !important;
+}
+
+.quick-access-white .modal-content.import-mode .primary-btn#confirm-import-btn:hover,
+.quick-access-white .bug-modal-content .bug-primary-btn:hover {
+  background: #e0e0e0 !important;
+  transform: translateY(-2px);
+}
+
+/* Ensure Bug Report remains dark */
+.quick-access-white .bug-modal-content,
+.quick-access-white .bug-modal-content *:not(.bug-primary-btn):not(.bug-primary-btn *) {
+  background: rgba(15, 15, 20, 0.95) !important;
+  color: #fff !important;
+}
+
+/* Black background for bookmark selection in Import modal */
+.quick-access-white .bookmark-tree-container {
+  background: #000 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px;
+}
+
+.quick-access-white .bookmark-tree-container * {
+  color: #fff !important;
+}
+
+.quick-access-white .bookmark-tree-container i.fa-folder {
+  color: #fbbf24 !important;
+}
+
+.quick-access-white .import-search-input:focus {
+  border-color: #000 !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .import-select-all-label input[type="checkbox"] {
+  accent-color: #000 !important;
+}
+
+.quick-access-white .bookmark-tree-item input[type="checkbox"] {
+  accent-color: #fff !important;
+}
+
+.quick-access-white .close:not(#close-bug-modal-btn) {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.quick-access-white .close:not(#close-bug-modal-btn):hover {
+  color: #000 !important;
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-content:not(.import-mode) input {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+}
+
+.quick-access-white .modal-content:not(.import-mode) input::placeholder {
+  color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.quick-access-white .modal-content input:focus {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: #000 !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+  outline: none !important;
+}
+
+.quick-access-white .modal-input-group:focus-within .modal-input-icon {
+  color: #000 !important;
+}
+
+.quick-access-white .modal-input-icon {
+    color: rgba(0, 0, 0, 0.35) !important;
+}
+
+.quick-access-white .modal-back-btn {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    color: #000 !important;
+}
+
+.quick-access-white .modal-back-btn:hover {
+    background: rgba(0, 0, 0, 0.16) !important;
+}
+
+/* White Mode for Custom Dialog (Prompt, Alert, Confirm) */
+.quick-access-white .custom-dialog {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2) !important;
+}
+
+.quick-access-white .dialog-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+}
+
+.quick-access-white .dialog-icon {
+  color: #000 !important;
+  filter: none !important;
+}
+
+.quick-access-white .dialog-message {
+  color: #000 !important;
+}
+
+.quick-access-white .dialog-input {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+}
+
+.quick-access-white .dialog-input:focus {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: #000 !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .dialog-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.quick-access-white .dialog-btn-primary {
+  background: #000 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .dialog-btn-primary:hover {
+  background: #333 !important;
+  transform: translateY(-2px);
+}
+
+.quick-access-white .dialog-btn-secondary {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .dialog-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* White Mode for Checklist Items */
+.quick-access-white .dialog-check-item {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.quick-access-white .dialog-check-item:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.quick-access-white .dialog-check-item span {
+  color: #000 !important;
+}
+
+.quick-access-white .dialog-check-item input[type='checkbox'] {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.quick-access-white .dialog-check-item input[type='checkbox']:checked {
+  background: #000 !important;
+  border-color: #000 !important;
+}
+
+.quick-access-white .dialog-check-item input[type='checkbox']:checked::after {
+  color: #fff !important;
+}
+
+/* Button Overrides in White Mode - Limited to Modals/Dialogs */
+.quick-access-white .modal-content:not(.import-mode) .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not([href*="ko-fi"]):not([style*="background"]):not([style*="background-color"]),
+.quick-access-white .custom-dialog .primary-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-content:not(.import-mode) .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not([href*="ko-fi"]):not([style*="background"]):not([style*="background-color"]):hover,
+.quick-access-white .custom-dialog .primary-btn:hover {
+  background: #333 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Donate Modal Overrides in White Mode */
+.quick-access-white #donate-modal .modal-body p {
+  color: #000 !important;
+}
+
+.quick-access-white #close-donate-modal {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+}
+
+.quick-access-white #close-donate-modal:hover {
+  background: #333 !important;
+}
+
+.quick-access-white .modal-content:not(.import-mode) .secondary-btn:not(#close-update-popup):not(#close-donate-modal),
+.quick-access-white .custom-dialog .secondary-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.quick-access-white .modal-content:not(.import-mode) .secondary-btn:not(#close-update-popup):hover,
+.quick-access-white .custom-dialog .secondary-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
