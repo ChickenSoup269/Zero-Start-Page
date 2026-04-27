@@ -4,13 +4,7 @@
   "version": "1.4.0",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
-  "permissions": [
-    "bookmarks",
-    "scripting",
-    "tabs",
-    "storage",
-    "unlimitedStorage"
-  ],
+  "permissions": ["bookmarks", "scripting", "tabs", "storage"],
   "icons": {
     "128": "icon/logo.png"
   },
