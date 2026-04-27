@@ -17,6 +17,15 @@ export class PlantGrowthEffect {
     this.resize()
   }
 
+  get color() {
+    return this.baseColor;
+  }
+
+  set color(value) {
+    this.baseColor = value;
+    this.rgb = hexToRgb(value);
+  }
+
   resize() {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight

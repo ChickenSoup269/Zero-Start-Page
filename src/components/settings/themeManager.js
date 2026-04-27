@@ -143,6 +143,22 @@ const THEMES = {
     clockColor: "#ffffff",
     dateColor: "#ffffff"
   },
+  nature: {
+    accentColor: "#ccff00",
+    sidebarBg: "rgba(20, 30, 20, 0.85)",
+    panelBg: "rgba(25, 40, 25, 0.7)",
+    glassBg: "rgba(204, 255, 0, 0.05)",
+    glassBorder: "rgba(204, 255, 0, 0.15)",
+    glassEdge: "rgba(204, 255, 0, 0.25)",
+    effect: "plantGrowth",
+    plantGrowthColor: "#ccff00",
+    hueTextMode: "off",
+    font: "'Outfit', sans-serif",
+    clockFont: "'Anurati', sans-serif",
+    dateClockStyle: "sidebar",
+    clockColor: "#ffffff",
+    dateColor: "#ccff00"
+  },
 }
 
 // List of settings that themes are allowed to modify.
@@ -150,7 +166,7 @@ const THEMEABLE_KEYS = [
   "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
   "effect", "hueTextMode", "font", "clockFont", "dateClockStyle", 
   "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",
-  "hackerColor", "oceanWaveColor", "sakuraColor", "bubblesColor", "lightPillarsColor",
+  "hackerColor", "oceanWaveColor", "sakuraColor", "bubblesColor", "lightPillarsColor", "plantGrowthColor",
   "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
   "snowfallColor", "sunbeamColor", "bubbleColor", "rainHDColor", "stormRainColor",
   "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor"
