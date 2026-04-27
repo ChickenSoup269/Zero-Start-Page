@@ -1,4 +1,4 @@
-import { updateAllSettings, saveSettings, getSettings, defaultSettings } from "../../services/state.js"
+import { updateAllSettings, saveSettings, getSettings, defaultSettings, updateSetting } from "../../services/state.js"
 
 const THEMES = {
   default: {
@@ -165,7 +165,7 @@ const THEMES = {
 }
 
 // List of settings that themes are allowed to modify.
-const THEMEABLE_KEYS = [
+export const THEMEABLE_KEYS = [
   "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
   "effect", "hueTextMode", "font", "clockFont", "clockFontTarget", "dateClockStyle", 
   "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",
@@ -182,6 +182,7 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
   if (!DOM.themesGrid) return
 
   const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
+  const currentTheme = getSettings().theme
 
   const updateActiveUI = (selectedTheme) => {
     themeItems.forEach((item) => {
@@ -193,6 +194,11 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
     })
   }
 
+  // Set initial active UI based on saved theme setting
+  if (currentTheme) {
+    updateActiveUI(currentTheme)
+  }
+
   themeItems.forEach((item) => {
     item.addEventListener("click", () => {
       const themeKey = item.dataset.theme
@@ -200,6 +206,7 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
       // If clicking the ALREADY active theme, treat it as "deselect" and restore original
       if (item.classList.contains("active")) {
         updateActiveUI(null)
+        updateSetting("theme", null)
         restoreUserOriginalSettings(updateSettingsInputs)
         return
       }
@@ -210,6 +217,7 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
         captureUserSnapshot();
         
         updateActiveUI(themeKey)
+        updateSetting("theme", themeKey)
         applyTheme(themeData, updateSettingsInputs)
       }
     })

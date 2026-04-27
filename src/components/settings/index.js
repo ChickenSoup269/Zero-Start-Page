@@ -35,7 +35,7 @@ import {
   initFont,
   setupLocalFonts,
 } from "./fontManager.js"
-import { initThemeManager } from "./themeManager.js"
+import { initThemeManager, THEMEABLE_KEYS } from "./themeManager.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   populateUnsplashCollections,
@@ -373,6 +373,15 @@ export function initSettings() {
           }
         }
       }
+    }
+
+    // Clear active theme if a themeable setting is changed manually
+    const currentSettings = getSettings()
+    if (currentSettings.theme && key !== "theme" && (isGradient || THEMEABLE_KEYS.includes(key))) {
+      updateSetting("theme", null)
+      // We need to update UI as well
+      const themeItems = document.querySelectorAll("#themes-grid .theme-item")
+      themeItems.forEach(item => item.classList.remove("active"))
     }
 
     if (!skipSave) {

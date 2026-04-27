@@ -207,6 +207,7 @@ export const defaultSettings = {
   flipLayout: false,
   showDonateButton: true,
   showBookmarks: true,
+  theme: null,
   contextMenuStyle: "dark",
   todoSkin: "default",
   timerSkin: "default",
@@ -512,7 +513,7 @@ export const resetComponentPositions = (options = {}) => {
 
     if (styles) {
       const styleKeys = [
-        "accentColor", "font", "clockFont", "clockSize", "dateSize", 
+        "accentColor", "theme", "font", "clockFont", "clockSize", "dateSize", 
         "clockColor", "dateColor", "customTitleColor", "customTitleFontSize",
         "bookmarkBgColor", "bookmarkTextColor", "bookmarkGroupBgColor", "bookmarkGroupTextColor",
         "clockDateStrokeColor", "clockDateStrokeWidth"

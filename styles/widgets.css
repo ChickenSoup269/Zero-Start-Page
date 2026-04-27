@@ -846,6 +846,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   color: var(--accent-contrast-color);
   background: var(--accent-color, #1a1a2e);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
 }
 
 /* Layout Controls Popup */

@@ -1321,8 +1321,8 @@
   background: rgba(0, 0, 0, 0.6) !important;
   color: white;
   z-index: 4;
-  width: 22px;
-  height: 22px;
+  width: 12px;
+  height: 14px;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -2527,6 +2527,74 @@
 .clock-style-card.active .clock-style-name {
   color: #fff;
   opacity: 1;
+}
+
+/* Themes Grid & Items */
+.themes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+  padding: 2px;
+}
+
+.theme-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.theme-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.theme-item.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow:
+    0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
+    inset 0 0 0 1px var(--accent-color, #a8c0ff);
+}
+
+.theme-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.theme-preview i {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+.theme-item:hover .theme-preview {
+  transform: scale(1.03);
+}
+
+.theme-item.active .theme-preview i {
+  transform: scale(1.1);
 }
 
 /* Universal Active Indicator (Checkmark) */
