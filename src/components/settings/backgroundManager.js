@@ -36,7 +36,8 @@ function renderUserColors(DOM) {
 
       const el = document.createElement("div")
       el.className = "user-color-item"
-      if (settings.background === color && !settings.svgWaveActive) el.classList.add("active")
+      if (settings.background === color && !settings.svgWaveActive)
+        el.classList.add("active")
       el.dataset.bgId = color
       el.style.background = color
       el.title = `Color ${index + 1}`
@@ -218,72 +219,92 @@ function extractUnsplashId(url) {
 
 /** Helper to generate and save a thumbnail from a Blob (Image or Video) */
 async function _ensureThumbnail(id, blobOrUrl, isVideo) {
-    // Try to get existing thumbnail first
-    const existing = await getThumbnailUrl(id)
-    if (existing) return existing
+  // Try to get existing thumbnail first
+  const existing = await getThumbnailUrl(id)
+  if (existing) return existing
 
-    return new Promise((resolve) => {
-        const MAX_THUMB = 240 // Optimized size for gallery
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")
+  return new Promise((resolve) => {
+    const MAX_THUMB = 240 // Optimized size for gallery
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
 
-        const createThumbFromElement = (element, w, h) => {
-            if (w === 0 || h === 0) return resolve(null)
-            if (w > h) {
-                canvas.width = MAX_THUMB
-                canvas.height = Math.round((h * MAX_THUMB) / w)
-            } else {
-                canvas.height = MAX_THUMB
-                canvas.width = Math.round((w * MAX_THUMB) / h)
-            }
-            ctx.drawImage(element, 0, 0, canvas.width, canvas.height)
-            canvas.toBlob(async (thumbBlob) => {
-                if (thumbBlob) {
-                    await saveThumbnail(id, thumbBlob)
-                    resolve(URL.createObjectURL(thumbBlob))
-                } else resolve(null)
-            }, "image/jpeg", 0.7) // Good balance of quality/size
-        }
+    const createThumbFromElement = (element, w, h) => {
+      if (w === 0 || h === 0) return resolve(null)
+      if (w > h) {
+        canvas.width = MAX_THUMB
+        canvas.height = Math.round((h * MAX_THUMB) / w)
+      } else {
+        canvas.height = MAX_THUMB
+        canvas.width = Math.round((w * MAX_THUMB) / h)
+      }
+      ctx.drawImage(element, 0, 0, canvas.width, canvas.height)
+      canvas.toBlob(
+        async (thumbBlob) => {
+          if (thumbBlob) {
+            await saveThumbnail(id, thumbBlob)
+            resolve(URL.createObjectURL(thumbBlob))
+          } else resolve(null)
+        },
+        "image/jpeg",
+        0.7,
+      ) // Good balance of quality/size
+    }
 
-        if (isVideo) {
-            const vid = document.createElement("video")
-            vid.muted = true
-            vid.preload = "metadata"
-            vid.src = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
-            
-            vid.addEventListener("loadedmetadata", () => { 
-                vid.currentTime = vid.duration > 0 ? vid.duration / 2 : 1.0
-            }, { once: true })
-            
-            vid.addEventListener("seeked", () => {
-                setTimeout(() => {
-                    if (vid.videoWidth > 0) createThumbFromElement(vid, vid.videoWidth, vid.videoHeight)
-                    else resolve(null)
-                    if (typeof blobOrUrl !== 'string') URL.revokeObjectURL(vid.src)
-                    vid.removeAttribute("src"); vid.load()
-                }, 150)
-            }, { once: true })
-            
-            vid.addEventListener("error", () => resolve(null))
-        } else {
-            const img = new Image()
-            img.src = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
-            img.onload = () => {
-                createThumbFromElement(img, img.width, img.height)
-                if (typeof blobOrUrl !== 'string') URL.revokeObjectURL(img.src)
-            }
-            img.onerror = () => resolve(null)
-        }
-    })
+    if (isVideo) {
+      const vid = document.createElement("video")
+      vid.muted = true
+      vid.preload = "metadata"
+      vid.src =
+        typeof blobOrUrl === "string"
+          ? blobOrUrl
+          : URL.createObjectURL(blobOrUrl)
+
+      vid.addEventListener(
+        "loadedmetadata",
+        () => {
+          vid.currentTime = vid.duration > 0 ? vid.duration / 2 : 1.0
+        },
+        { once: true },
+      )
+
+      vid.addEventListener(
+        "seeked",
+        () => {
+          setTimeout(() => {
+            if (vid.videoWidth > 0)
+              createThumbFromElement(vid, vid.videoWidth, vid.videoHeight)
+            else resolve(null)
+            if (typeof blobOrUrl !== "string") URL.revokeObjectURL(vid.src)
+            vid.removeAttribute("src")
+            vid.load()
+          }, 150)
+        },
+        { once: true },
+      )
+
+      vid.addEventListener("error", () => resolve(null))
+    } else {
+      const img = new Image()
+      img.src =
+        typeof blobOrUrl === "string"
+          ? blobOrUrl
+          : URL.createObjectURL(blobOrUrl)
+      img.onload = () => {
+        createThumbFromElement(img, img.width, img.height)
+        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(img.src)
+      }
+      img.onerror = () => resolve(null)
+    }
+  })
 }
 
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
-  
+
   // Clear all galleries
   if (DOM.localBackgroundGallery) DOM.localBackgroundGallery.innerHTML = ""
-  
+
   const imagesGallery = document.getElementById("local-images-gallery")
   const videosGallery = document.getElementById("local-videos-gallery")
   if (imagesGallery) imagesGallery.innerHTML = ""
@@ -307,31 +328,32 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
       const authorName = typeof bgData === "object" ? bgData.authorName : null
       const isVideo = isIdbVideo(bgId)
-      
+
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
-      if (settings.background === bgId && !settings.svgWaveActive) item.classList.add("active")
+      if (settings.background === bgId && !settings.svgWaveActive)
+        item.classList.add("active")
       item.dataset.bgId = bgId
 
       // Icon badge for source type
       const typeIcon = document.createElement("div")
       typeIcon.className = "video-thumb-badge"
-      
+
       if (authorName) {
-          typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
-          item.appendChild(typeIcon)
-          const authorTag = document.createElement("div")
-          authorTag.className = "unsplash-author-tag"
-          authorTag.textContent = authorName
-          item.appendChild(authorTag)
+        typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
+        item.appendChild(typeIcon)
+        const authorTag = document.createElement("div")
+        authorTag.className = "unsplash-author-tag"
+        authorTag.textContent = authorName
+        item.appendChild(authorTag)
       } else if (isVideo) {
-          typeIcon.innerHTML = '<i class="fa-solid fa-video"></i> <span>VIDEO</span>'
-          typeIcon.classList.add("is-video")
-          item.appendChild(typeIcon)
+        typeIcon.innerHTML = '<i class="fa-solid fa-video"></i>'
+        typeIcon.classList.add("is-video")
+        item.appendChild(typeIcon)
       } else if (isIdbImage(bgId)) {
-          typeIcon.innerHTML = '<i class="fa-solid fa-image"></i> <span>IMAGE</span>'
-          typeIcon.classList.add("is-image")
-          item.appendChild(typeIcon)
+        typeIcon.innerHTML = '<i class="fa-solid fa-image"></i>'
+        typeIcon.classList.add("is-image")
+        item.appendChild(typeIcon)
       }
 
       if (isFavorite) {
@@ -342,21 +364,25 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       // Performance Optimization: Always try to use small thumbnail for gallery
       if (isIdbMedia(bgId)) {
-          getThumbnailUrl(bgId).then(async (thumbUrl) => {
-              if (thumbUrl) {
-                  item.style.backgroundImage = `url('${thumbUrl}')`
-              } else {
-                  // If no thumb exists, generate it from the original blob (once)
-                  const originalUrl = await getImageUrl(bgId)
-                  if (originalUrl) {
-                      const newThumb = await _ensureThumbnail(bgId, originalUrl, isVideo)
-                      if (newThumb) item.style.backgroundImage = `url('${newThumb}')`
-                      else item.style.backgroundImage = `url('${originalUrl}')`
-                  }
-              }
-          })
+        getThumbnailUrl(bgId).then(async (thumbUrl) => {
+          if (thumbUrl) {
+            item.style.backgroundImage = `url('${thumbUrl}')`
+          } else {
+            // If no thumb exists, generate it from the original blob (once)
+            const originalUrl = await getImageUrl(bgId)
+            if (originalUrl) {
+              const newThumb = await _ensureThumbnail(
+                bgId,
+                originalUrl,
+                isVideo,
+              )
+              if (newThumb) item.style.backgroundImage = `url('${newThumb}')`
+              else item.style.backgroundImage = `url('${originalUrl}')`
+            }
+          }
+        })
       } else if (bgId) {
-          item.style.backgroundImage = `url('${bgId}')`
+        item.style.backgroundImage = `url('${bgId}')`
       }
 
       if (isVideo) item.classList.add("video-bg-item")
@@ -413,8 +439,12 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           e.dataTransfer.dropEffect = "move"
           item.classList.add("drag-over")
         })
-        item.addEventListener("dragleave", () => item.classList.remove("drag-over"))
-        item.addEventListener("dragend", () => item.classList.remove("dragging"))
+        item.addEventListener("dragleave", () =>
+          item.classList.remove("drag-over"),
+        )
+        item.addEventListener("dragend", () =>
+          item.classList.remove("dragging"),
+        )
         item.addEventListener("drop", (e) => {
           e.preventDefault()
           item.classList.remove("drag-over")
@@ -430,29 +460,38 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       }
 
       if (isVideo) {
-          if (videosGallery) videosGallery.appendChild(item)
+        if (videosGallery) videosGallery.appendChild(item)
       } else {
-          if (imagesGallery) imagesGallery.appendChild(item)
+        if (imagesGallery) imagesGallery.appendChild(item)
       }
     })
   }
-  
+
   // Show/hide sections based on content
   if (imagesGallery && videosGallery) {
-      const hasVideos = !!settings.userBackgrounds?.some(bg => isIdbVideo(typeof bg === 'object' ? bg.id : bg))
-      document.getElementById("local-videos-section").style.display = hasVideos ? "block" : "none"
+    const hasVideos = !!settings.userBackgrounds?.some((bg) =>
+      isIdbVideo(typeof bg === "object" ? bg.id : bg),
+    )
+    document.getElementById("local-videos-section").style.display = hasVideos
+      ? "block"
+      : "none"
   }
 
   const bgCountSpan = document.getElementById("count-bg")
   if (bgCountSpan) {
-    const total = 1 + (Array.isArray(settings.userBackgrounds) ? settings.userBackgrounds.length : 0)
+    const total =
+      1 +
+      (Array.isArray(settings.userBackgrounds)
+        ? settings.userBackgrounds.length
+        : 0)
     bgCountSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`
   }
 }
 
 function setupMultiSelectMode(DOM, handleSettingUpdate) {
-  if (DOM.localBackgroundGallery.dataset.eventsAttached) return { enterBgSelectMode: () => {}, exitBgSelectMode: () => {} };
-  DOM.localBackgroundGallery.dataset.eventsAttached = "true";
+  if (DOM.localBackgroundGallery.dataset.eventsAttached)
+    return { enterBgSelectMode: () => {}, exitBgSelectMode: () => {} }
+  DOM.localBackgroundGallery.dataset.eventsAttached = "true"
 
   let bgSelectMode = false
   const bgSelectedIds = new Set()
@@ -466,17 +505,17 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function enterBgSelectMode() {
     bgSelectMode = true
     bgSelectedIds.clear()
-    
+
     // Apply select mode class to all relevant gallery containers
     const containers = [
       DOM.localBackgroundGallery,
       document.getElementById("local-images-gallery"),
       document.getElementById("local-videos-gallery"),
-      document.getElementById("user-colors-gallery")
-    ].filter(Boolean);
-    
-    containers.forEach(c => c.classList.add("bg-select-mode"));
-    
+      document.getElementById("user-colors-gallery"),
+    ].filter(Boolean)
+
+    containers.forEach((c) => c.classList.add("bg-select-mode"))
+
     bgSelectToolbar.style.display = "flex"
     bgSelectModeBtn.style.opacity = "0.4"
     updateBgSelectCount()
@@ -485,18 +524,20 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function exitBgSelectMode() {
     bgSelectMode = false
     bgSelectedIds.clear()
-    
+
     const containers = [
       DOM.localBackgroundGallery,
       document.getElementById("local-images-gallery"),
       document.getElementById("local-videos-gallery"),
-      document.getElementById("user-colors-gallery")
-    ].filter(Boolean);
-    
-    containers.forEach(c => {
-      c.classList.remove("bg-select-mode");
-      c.querySelectorAll(".bg-selected").forEach((el) => el.classList.remove("bg-selected"));
-    });
+      document.getElementById("user-colors-gallery"),
+    ].filter(Boolean)
+
+    containers.forEach((c) => {
+      c.classList.remove("bg-select-mode")
+      c.querySelectorAll(".bg-selected").forEach((el) =>
+        el.classList.remove("bg-selected"),
+      )
+    })
 
     bgSelectToolbar.style.display = "none"
     bgSelectModeBtn.style.opacity = ""
@@ -516,17 +557,26 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
   bgSelectAllBtn.addEventListener("click", () => {
     const settings = getSettings()
-    const allUserIds = settings.userBackgrounds || []
-    if (bgSelectedIds.size === allUserIds.length) {
+    const allUserIds = (settings.userBackgrounds || []).map(bg => typeof bg === 'object' ? bg.id : bg)
+    
+    // Find all user-uploaded items in all galleries
+    const galleries = [
+      document.getElementById("local-images-gallery"),
+      document.getElementById("local-videos-gallery")
+    ].filter(Boolean)
+    
+    const allItems = []
+    galleries.forEach(g => {
+      allItems.push(...g.querySelectorAll(".local-bg-item.user-uploaded"))
+    })
+
+    if (bgSelectedIds.size === allUserIds.length && allUserIds.length > 0) {
       bgSelectedIds.clear()
-      DOM.localBackgroundGallery
-        .querySelectorAll(".local-bg-item.user-uploaded")
-        .forEach((el) => el.classList.remove("bg-selected"))
+      allItems.forEach((el) => el.classList.remove("bg-selected"))
     } else {
+      bgSelectedIds.clear() // Clear first to avoid duplicates if any
       allUserIds.forEach((id) => bgSelectedIds.add(id))
-      DOM.localBackgroundGallery
-        .querySelectorAll(".local-bg-item.user-uploaded")
-        .forEach((el) => el.classList.add("bg-selected"))
+      allItems.forEach((el) => el.classList.add("bg-selected"))
     }
     updateBgSelectCount()
   })
@@ -560,8 +610,8 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   const galleries = [
     document.getElementById("local-images-gallery"),
     document.getElementById("local-videos-gallery"),
-    DOM.localBackgroundGallery // Keep original for compatibility
-  ].filter(Boolean);
+    DOM.localBackgroundGallery, // Keep original for compatibility
+  ].filter(Boolean)
 
   const handleClick = (e) => {
     const item = e.target.closest(".local-bg-item")
@@ -569,10 +619,10 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     if (bgSelectMode) {
       if (!item.classList.contains("user-uploaded")) return
-      
+
       const id = item.dataset.bgId
       const isSelected = item.classList.contains("bg-selected")
-      
+
       if (isSelected) {
         bgSelectedIds.delete(id)
         item.classList.remove("bg-selected")
@@ -580,7 +630,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
         bgSelectedIds.add(id)
         item.classList.add("bg-selected")
       }
-      
+
       updateBgSelectCount()
       return
     }
@@ -595,11 +645,11 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     }
 
     // handleSettingUpdate will call applySettings and refresh all galleries
-  };
+  }
 
-  galleries.forEach(gallery => {
-    gallery.addEventListener("click", handleClick);
-  });
+  galleries.forEach((gallery) => {
+    gallery.addEventListener("click", handleClick)
+  })
 
   return { enterBgSelectMode, exitBgSelectMode }
 }
@@ -625,13 +675,15 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       return
     }
     try {
-        const id = await saveVideo(file)
-        getSettings().userBackgrounds.push(id)
-        handleSettingUpdate("background", id)
-        renderLocalBackgrounds(DOM, handleSettingUpdate)
+      const id = await saveVideo(file)
+      getSettings().userBackgrounds.push(id)
+      handleSettingUpdate("background", id)
+      renderLocalBackgrounds(DOM, handleSettingUpdate)
     } catch (err) {
-        console.error("Failed to save video:", err)
-        showAlert("Failed to save video. It might be too large or storage is full.")
+      console.error("Failed to save video:", err)
+      showAlert(
+        "Failed to save video. It might be too large or storage is full.",
+      )
     }
     e.target.value = null
   })
@@ -643,21 +695,23 @@ function setupFileUploads(DOM, handleSettingUpdate) {
       const MAX_UPLOADS = 35
       if (getSettings().userBackgrounds.length >= MAX_UPLOADS) {
         showAlert(
-            geti18n().alert_upload_limit ||
+          geti18n().alert_upload_limit ||
             `You can only upload up to ${MAX_UPLOADS} custom backgrounds.`,
         )
         return
       }
 
       if (file.type === "image/gif") {
-        saveImage(file).then((id) => {
-          getSettings().userBackgrounds.push(id)
-          handleSettingUpdate("background", id)
-          renderLocalBackgrounds(DOM, handleSettingUpdate)
-        }).catch(err => {
+        saveImage(file)
+          .then((id) => {
+            getSettings().userBackgrounds.push(id)
+            handleSettingUpdate("background", id)
+            renderLocalBackgrounds(DOM, handleSettingUpdate)
+          })
+          .catch((err) => {
             console.error("Failed to save GIF:", err)
             showAlert("Failed to save GIF image.")
-        })
+          })
         return
       }
 
@@ -685,14 +739,16 @@ function setupFileUploads(DOM, handleSettingUpdate) {
           canvas.getContext("2d").drawImage(img, 0, 0, width, height)
           canvas.toBlob(
             (blob) => {
-              saveImage(blob).then((id) => {
-                getSettings().userBackgrounds.push(id)
-                handleSettingUpdate("background", id)
-                renderLocalBackgrounds(DOM, handleSettingUpdate)
-              }).catch(err => {
-                console.error("Failed to save image blob:", err)
-                showAlert("Failed to save processed image.")
-              })
+              saveImage(blob)
+                .then((id) => {
+                  getSettings().userBackgrounds.push(id)
+                  handleSettingUpdate("background", id)
+                  renderLocalBackgrounds(DOM, handleSettingUpdate)
+                })
+                .catch((err) => {
+                  console.error("Failed to save image blob:", err)
+                  showAlert("Failed to save processed image.")
+                })
             },
             "image/jpeg",
             0.85,
@@ -700,7 +756,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
         }
       }
       reader.onerror = () => {
-          showAlert("Failed to read the selected file.")
+        showAlert("Failed to read the selected file.")
       }
       reader.readAsDataURL(file)
     }

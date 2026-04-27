@@ -653,7 +653,7 @@ body.ghost-controls .side-controls:hover {
 
 .side-controls.light-mode .quick-btn:hover:not(.active),
 .side-controls.light-mode #settings-toggle:hover {
-  color: #000000 !important;
+  color: #ffffff !important;
 }
 
 .side-controls.light-mode .quick-access-divider {

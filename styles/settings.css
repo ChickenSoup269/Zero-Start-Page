@@ -1437,6 +1437,7 @@
   background-size: cover;
   background-position: center;
   background-color: rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
 }
 
 .local-bg-item:hover {
@@ -1533,7 +1534,7 @@
 
 .bg-select-check {
   position: absolute;
-  inset: 0;
+  inset: -2px;
   background: rgba(var(--accent-color-rgb), 0.35);
   display: none;
   align-items: center;
@@ -1550,6 +1551,14 @@
 .bg-select-mode .user-gradient-item.bg-selected .bg-select-check,
 .bg-select-mode .user-svg-wave-item.bg-selected .bg-select-check {
   display: flex;
+}
+
+.bg-select-mode .local-bg-item.user-uploaded.bg-selected,
+.bg-select-mode .user-color-item.bg-selected,
+.bg-select-mode .user-gradient-item.bg-selected,
+.bg-select-mode .user-svg-wave-item.bg-selected {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.5) !important;
 }
 
 .bg-select-toolbar {
@@ -2110,6 +2119,7 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
 }
 
 .user-color-item {
