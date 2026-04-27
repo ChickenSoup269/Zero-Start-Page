@@ -580,6 +580,7 @@
   "settings_clock_font_target_clock": "Chỉ đồng hồ",
   "settings_clock_font_target_date": "Chỉ ngày tháng",
   "settings_clock_font_target_weekday": "Chỉ thứ trong tuần",
+  "settings_clock_font_weekday_only": "Font đồng hồ chỉ áp dụng cho Thứ",
   "settings_custom_title": "Tiêu đề tùy chỉnh",
   "settings_custom_title_text": "Nội dung tiêu đề",
   "settings_custom_title_multicolor": "Màu cầu vồng từng chữ cái",

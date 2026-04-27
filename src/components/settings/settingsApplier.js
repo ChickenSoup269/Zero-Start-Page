@@ -369,7 +369,7 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    const clockFontTarget = settings.clockFontTarget || "both"
+    // 1. Identify primary and clock fonts
     const rawFont = settings.font || "'Outfit', sans-serif"
     const rawClockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
 
@@ -378,40 +378,45 @@ function createApplySettings(effectInstances) {
         f.includes("Anurati") ||
         f.includes("E1234")
 
-    // General font (primary) should never be a restricted clock font
-    const primaryFont = isRestrictedFont(rawFont)
-      ? "'Outfit', sans-serif"
-      : rawFont
-      
-    // Clock font can be restricted
+    const primaryFont = isRestrictedFont(rawFont) ? "'Outfit', sans-serif" : rawFont
     const clockFont = rawClockFont
 
     document.documentElement.style.setProperty("--font-primary", primaryFont)
 
+    // Helper to set multiple font variables
     const applyToTargets = (targets, font) => {
         targets.forEach(t => {
             document.documentElement.style.setProperty(`--font-${t}`, font)
         })
     }
 
-    // Default everything to primary then override based on target
-    applyToTargets(["clock-date", "clock", "date", "weekday"], primaryFont)
+    // 2. Default all clock-related font variables to primary font
+    const allClockTargets = ["clock-date", "clock", "date", "weekday", "jp-time", "jp-date", "jp-weekday"]
+    applyToTargets(allClockTargets, primaryFont)
 
-    if (clockFontTarget === "both") {
-        applyToTargets(["clock-date", "clock", "date", "weekday"], clockFont)
-    } else if (clockFontTarget === "clock") {
-        applyToTargets(["clock", "clock-date"], clockFont)
-    } else if (clockFontTarget === "date") {
-        applyToTargets(["date"], clockFont)
-    } else if (clockFontTarget === "weekday") {
-        applyToTargets(["weekday"], clockFont)
+    // 3. Determine which elements should use the clock font
+    const target = settings.clockFontTarget || "both"
+
+    if (target === "weekday") {
+        // Only weekday gets clockFont, others get primaryFont
+        applyToTargets(["weekday", "jp-weekday"], clockFont)
+        
+        // Handle cool-style specifically
+        if (settings.dateClockStyle === "cool") {
+            document.documentElement.style.setProperty("--font-date", clockFont)
+            document.documentElement.style.setProperty("--font-clock", primaryFont)
+        }
+    } else {
+        // NORMAL MODE: Apply based on target selection
+        if (target === "both") {
+            applyToTargets(["clock-date", "clock", "date", "weekday", "jp-time", "jp-date", "jp-weekday"], clockFont)
+        } else if (target === "clock") {
+            applyToTargets(["clock", "clock-date", "jp-time"], clockFont)
+        } else if (target === "date") {
+            applyToTargets(["date", "jp-date"], clockFont)
+        }
     }
 
-    // Special handling for JP style font inheritance if needed
-    // JP style elements use --font-clock by default in CSS, but we might want more granular
-    document.documentElement.style.setProperty("--font-jp-time", (clockFontTarget === "both" || clockFontTarget === "clock") ? clockFont : primaryFont)
-    document.documentElement.style.setProperty("--font-jp-date", (clockFontTarget === "both" || clockFontTarget === "date") ? clockFont : primaryFont)
-    document.documentElement.style.setProperty("--font-jp-weekday", (clockFontTarget === "both" || clockFontTarget === "weekday") ? clockFont : primaryFont)
 
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)

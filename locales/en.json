@@ -581,6 +581,7 @@
   "settings_clock_font_target_clock": "Clock only",
   "settings_clock_font_target_date": "Date only",
   "settings_clock_font_target_weekday": "Weekday only",
+  "settings_clock_font_weekday_only": "Clock Font Applies To weekday only",
   "settings_custom_title": "Custom Title",
   "settings_custom_title_text": "Title text",
   "settings_custom_title_multicolor": "Rainbow colors per letter",

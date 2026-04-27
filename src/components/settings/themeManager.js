@@ -43,6 +43,7 @@ const THEMES = {
     hueTextMode: "off",
     font: "'GohuFont', monospace",
     clockFont: "'SAIBA-45', sans-serif",
+    clockFontTarget: "weekday",
     dateClockStyle: "cool",
     clockColor: "#ffffff",
     dateColor: "#ffffff"
@@ -75,6 +76,7 @@ const THEMES = {
     hueTextMode: "off",
     font: "'Outfit', sans-serif",
     clockFont: "'Electroharmonix', sans-serif",
+    clockFontTarget: "weekday",
     dateClockStyle: "jp-style",
     clockColor: "#ffffff",
     dateColor: "#ffebf0"
@@ -90,6 +92,7 @@ const THEMES = {
     hueTextMode: "off",
     font: "'Outfit', sans-serif",
     clockFont: "'Anurati', sans-serif",
+    clockFontTarget: "weekday",
     dateClockStyle: "sidestyle",
     sidestyleAlign: "center",
     clockColor: "#ffffff",
@@ -164,7 +167,7 @@ const THEMES = {
 // List of settings that themes are allowed to modify.
 const THEMEABLE_KEYS = [
   "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
-  "effect", "hueTextMode", "font", "clockFont", "dateClockStyle", 
+  "effect", "hueTextMode", "font", "clockFont", "clockFontTarget", "dateClockStyle", 
   "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",
   "hackerColor", "oceanWaveColor", "sakuraColor", "bubblesColor", "lightPillarsColor", "plantGrowthColor",
   "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
