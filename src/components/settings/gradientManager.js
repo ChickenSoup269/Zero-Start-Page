@@ -289,8 +289,33 @@ function renderUserGradients(DOM) {
       item.dataset.customColors = gradient.customColors || ""
       item.dataset.position = gradient.position || "center"
       item.dataset.radialShape = gradient.radialShape || "circle"
-      item.style.background = buildGradientCss(gradient)
+      
+      const gradientCss = buildGradientCss(gradient)
+      item.style.background = gradientCss
       item.title = `Gradient ${index + 1}`
+
+      // Improved active detection
+      const currentBg = settings.background || ""
+      let isCurrentActive = !settings.svgWaveActive && (currentBg === gradientCss || 
+                             (currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, "")))
+      
+      // Fallback: Check if individual settings match (when background is null but this gradient is current)
+      if (!isCurrentActive && !settings.background && !settings.svgWaveActive) {
+          isCurrentActive = 
+            settings.gradientStart === gradient.start &&
+            settings.gradientEnd === gradient.end &&
+            Number(settings.gradientAngle) === Number(gradient.angle) &&
+            (settings.gradientType || "linear") === (gradient.type || "linear") &&
+            (settings.gradientRepeating === true) === (gradient.repeating === true) &&
+            Number(settings.gradientExtraColorCount || 2) === Number(gradient.extraColorCount || 2) &&
+            (settings.gradientCustomColors || "") === (gradient.customColors || "") &&
+            (settings.gradientPosition || "center") === (gradient.position || "center") &&
+            (settings.gradientRadialShape || "circle") === (gradient.radialShape || "circle");
+      }
+      
+      if (isCurrentActive) {
+        item.classList.add("active")
+      }
 
       if (gradient.isFavorite) {
         const star = document.createElement("i")
@@ -323,6 +348,19 @@ function renderUserGradients(DOM) {
       checkBadge.className = "bg-select-check"
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       item.appendChild(checkBadge)
+
+      const activeIndicator = document.createElement("div")
+      activeIndicator.className = "active-indicator"
+      activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(activeIndicator)
+
+      item.addEventListener("click", () => {
+        if (gradientSelectMode) return
+        
+        if (window.appHandleSettingUpdate) {
+            window.appHandleSettingUpdate("background", gradientCss);
+        }
+      })
 
       // Drag and drop for reordering
       const enableDrag = settings.bookmarkEnableDrag === true

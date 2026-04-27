@@ -36,7 +36,7 @@ function renderUserColors(DOM) {
 
       const el = document.createElement("div")
       el.className = "user-color-item"
-      if (settings.background === color) el.classList.add("active")
+      if (settings.background === color && !settings.svgWaveActive) el.classList.add("active")
       el.dataset.bgId = color
       el.style.background = color
       el.title = `Color ${index + 1}`
@@ -46,6 +46,16 @@ function renderUserColors(DOM) {
         star.className = "fa-solid fa-star favorite-star-badge"
         el.appendChild(star)
       }
+
+      const checkBadge = document.createElement("span")
+      checkBadge.className = "bg-select-check"
+      checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
+      el.appendChild(checkBadge)
+
+      const activeIndicator = document.createElement("div")
+      activeIndicator.className = "active-indicator"
+      activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+      el.appendChild(activeIndicator)
 
       el.addEventListener("contextmenu", (e) => {
         e.preventDefault()
@@ -128,6 +138,11 @@ function renderUserAccentColors(DOM) {
         star.className = "fa-solid fa-star favorite-star-badge"
         el.appendChild(star)
       }
+
+      const activeIndicator = document.createElement("div")
+      activeIndicator.className = "active-indicator"
+      activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+      el.appendChild(activeIndicator)
 
       el.addEventListener("click", () => {
         DOM.accentColorPicker.value = color
@@ -277,6 +292,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   // Add Random Color Swatch to Images Gallery
   const randomItem = document.createElement("div")
   randomItem.className = "local-bg-item random-color-item"
+  if (!settings.svgWaveActive && settings.background?.startsWith("#")) {
+    randomItem.classList.add("active")
+  }
   randomItem.dataset.bgId = "random-color"
   randomItem.title = "Random Color"
   randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
@@ -292,6 +310,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
+      if (settings.background === bgId && !settings.svgWaveActive) item.classList.add("active")
       item.dataset.bgId = bgId
 
       // Icon badge for source type
@@ -354,6 +373,11 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       checkBadge.className = "bg-select-check"
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       item.appendChild(checkBadge)
+
+      const activeIndicator = document.createElement("div")
+      activeIndicator.className = "active-indicator"
+      activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(activeIndicator)
 
       const removeBtn = document.createElement("button")
       removeBtn.className = "remove-bg-btn"
@@ -442,7 +466,17 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function enterBgSelectMode() {
     bgSelectMode = true
     bgSelectedIds.clear()
-    DOM.localBackgroundGallery.classList.add("bg-select-mode")
+    
+    // Apply select mode class to all relevant gallery containers
+    const containers = [
+      DOM.localBackgroundGallery,
+      document.getElementById("local-images-gallery"),
+      document.getElementById("local-videos-gallery"),
+      document.getElementById("user-colors-gallery")
+    ].filter(Boolean);
+    
+    containers.forEach(c => c.classList.add("bg-select-mode"));
+    
     bgSelectToolbar.style.display = "flex"
     bgSelectModeBtn.style.opacity = "0.4"
     updateBgSelectCount()
@@ -451,12 +485,21 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   function exitBgSelectMode() {
     bgSelectMode = false
     bgSelectedIds.clear()
-    DOM.localBackgroundGallery.classList.remove("bg-select-mode")
+    
+    const containers = [
+      DOM.localBackgroundGallery,
+      document.getElementById("local-images-gallery"),
+      document.getElementById("local-videos-gallery"),
+      document.getElementById("user-colors-gallery")
+    ].filter(Boolean);
+    
+    containers.forEach(c => {
+      c.classList.remove("bg-select-mode");
+      c.querySelectorAll(".bg-selected").forEach((el) => el.classList.remove("bg-selected"));
+    });
+
     bgSelectToolbar.style.display = "none"
     bgSelectModeBtn.style.opacity = ""
-    DOM.localBackgroundGallery
-      .querySelectorAll(".bg-selected")
-      .forEach((el) => el.classList.remove("bg-selected"))
   }
 
   function updateBgSelectCount() {
@@ -526,14 +569,18 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     if (bgSelectMode) {
       if (!item.classList.contains("user-uploaded")) return
+      
       const id = item.dataset.bgId
-      if (bgSelectedIds.has(id)) {
+      const isSelected = item.classList.contains("bg-selected")
+      
+      if (isSelected) {
         bgSelectedIds.delete(id)
         item.classList.remove("bg-selected")
       } else {
         bgSelectedIds.add(id)
         item.classList.add("bg-selected")
       }
+      
       updateBgSelectCount()
       return
     }
@@ -544,15 +591,10 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
         .padStart(6, "0")}`
       handleSettingUpdate("background", randomColor)
     } else {
-      // Clear Unsplash credit if switching to a non-Unsplash local image
-      updateSetting("unsplashLastCredit", null)
-      saveSettings()
-      if (DOM.unsplashCredit) {
-        DOM.unsplashCredit.style.display = "none"
-        DOM.unsplashCredit.innerHTML = ""
-      }
       handleSettingUpdate("background", item.dataset.bgId)
     }
+
+    // handleSettingUpdate will call applySettings and refresh all galleries
   };
 
   galleries.forEach(gallery => {

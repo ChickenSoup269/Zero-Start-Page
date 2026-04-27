@@ -132,6 +132,19 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
     item.style.backgroundSize = "cover"
 
+    // Check if this wave is currently active
+    const isActive = settings.svgWaveActive && !settings.background &&
+                     Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
+                     Number(settings.svgWaveAmplitudeX ?? 200) === Number(wave.amplitudeX ?? 200) &&
+                     Number(settings.svgWaveAmplitudeY ?? 80) === Number(wave.amplitudeY ?? 80) &&
+                     Number(settings.svgWaveStartHue ?? 200) === Number(wave.startHue ?? 200) &&
+                     Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
+                     Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0);
+    
+    if (isActive) {
+      item.classList.add("active");
+    }
+
     if (wave.isFavorite) {
       const star = document.createElement("i")
       star.className = "fa-solid fa-star favorite-star-badge"
@@ -165,6 +178,11 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
     item.appendChild(checkBadge)
 
+    const activeIndicator = document.createElement("div")
+    activeIndicator.className = "active-indicator"
+    activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+    item.appendChild(activeIndicator)
+
     // Drag and drop for reordering
     const enableDrag = settings.bookmarkEnableDrag === true
     if (enableDrag) {
@@ -197,6 +215,8 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
 
     item.addEventListener("click", () => {
       if (svgWaveSelectMode) return
+      
+      // Update individual settings directly (synchronous)
       updateSetting("svgWaveLines", wave.lines)
       updateSetting("svgWaveAmplitudeX", wave.amplitudeX)
       updateSetting("svgWaveAmplitudeY", wave.amplitudeY)
@@ -211,11 +231,12 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       updateSetting("svgWaveEndHue", wave.endHue)
       updateSetting("svgWaveEndSaturation", wave.endSaturation)
       updateSetting("svgWaveEndLightness", wave.endLightness)
-      updateSetting("svgWaveActive", true)
       updateSetting("background", null)
-      saveSettings()
-
-      if (onActivate) onActivate()
+      
+      // Trigger global refresh via a single handleSettingUpdate call
+      if (window.appHandleSettingUpdate) {
+          window.appHandleSettingUpdate("svgWaveActive", true);
+      }
     })
 
     DOM.userSvgWavesGallery.appendChild(item)

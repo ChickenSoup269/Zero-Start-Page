@@ -653,7 +653,6 @@ body.ghost-controls .side-controls:hover {
 
 .side-controls.light-mode .quick-btn:hover:not(.active),
 .side-controls.light-mode #settings-toggle:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
   color: #000000 !important;
 }
 

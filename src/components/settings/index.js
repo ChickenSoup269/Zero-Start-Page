@@ -333,7 +333,7 @@ export function initSettings() {
     i18n: geti18n(),
   }
 
-  function handleSettingUpdate(
+  async function handleSettingUpdate(
     key,
     value,
     isGradient = false,
@@ -385,6 +385,11 @@ export function initSettings() {
     if (shouldRefreshBackgroundGalleries) {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
+      renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+        handleSettingUpdate("svgWaveActive", true)
+      })
+      const { renderSavedMultiColors } = await import("./multiColorManager.js")
+      renderSavedMultiColors(DOM_EXPORTS)
     }
 
     applySettings()

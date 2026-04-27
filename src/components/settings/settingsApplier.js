@@ -1946,14 +1946,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.svgWaveEndLight.value = settings.svgWaveEndLightness ?? 30
     DOM.svgWaveEndLightValue.textContent = DOM.svgWaveEndLight.value
     effectInstances.updateWaveColorPreviews(settings)
-    renderUserSvgWaves(effectInstances.DOM, effectInstances.svgWaveEffect, () =>
-      effectInstances.handleSettingUpdate("svgWaveActive", true),
-    )
-    renderLocalBackgrounds(
-      effectInstances.DOM,
-      effectInstances.handleSettingUpdate,
-    )
-    renderUserGradients(effectInstances.DOM)
+
     DOM.showTodoCheckbox.checked = settings.showTodoList !== false
     if (DOM.todoShowCheckboxesToggle) {
       DOM.todoShowCheckboxesToggle.checked =
@@ -2143,35 +2136,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
     }
-
-    // Highlight active background
-    document.querySelectorAll(".local-bg-item").forEach((item) => {
-      item.classList.toggle("active", item.dataset.bgId === settings.background)
-    })
-    document.querySelectorAll(".user-color-item").forEach((item) => {
-      item.classList.toggle("active", item.dataset.bgId === settings.background)
-    })
-    document.querySelectorAll(".user-gradient-item").forEach((item) => {
-      if (item.classList.contains("user-svg-wave-item")) {
-        const isActive =
-          settings.svgWaveActive &&
-          !settings.background &&
-          item.dataset.lines == settings.svgWaveLines &&
-          item.dataset.ampx == settings.svgWaveAmplitudeX &&
-          item.dataset.ampy == settings.svgWaveAmplitudeY &&
-          item.dataset.startHue == settings.svgWaveStartHue &&
-          item.dataset.endHue == settings.svgWaveEndHue
-        item.classList.toggle("active", isActive)
-      } else {
-        const isActive =
-          !settings.background &&
-          !settings.svgWaveActive &&
-          item.dataset.start === settings.gradientStart &&
-          item.dataset.end === settings.gradientEnd &&
-          item.dataset.angle === settings.gradientAngle
-        item.classList.toggle("active", isActive)
-      }
-    })
   }
 }
 

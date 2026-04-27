@@ -168,8 +168,9 @@ export function renderSavedMultiColors(DOM_REFS) {
         lineAngles: Array.isArray(preset.lineAngles) ? preset.lineAngles : [],
       }
 
+      let generatedBg = ""
       if (preset.mode === "blocks") {
-        item.style.background = generateSolidBlocksCSS(
+        generatedBg = generateSolidBlocksCSS(
           preset.gradientStops,
           preset.angle,
           dividerConfig,
@@ -202,7 +203,34 @@ export function renderSavedMultiColors(DOM_REFS) {
             return `${color} ${percent}%`
           })
           .join(", ")
-        item.style.background = `${prefix}(${typeParams}${stops})`
+        generatedBg = `${prefix}(${typeParams}${stops})`
+      }
+      
+      item.style.background = generatedBg
+      const currentBg = settings.background || ""
+      let isCurrentActive = !settings.svgWaveActive && 
+                             (currentBg === generatedBg || 
+                              currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
+      
+      // Fallback: Check if individual parameters match (when background is null but this preset is current)
+      if (!isCurrentActive && !settings.background && !settings.svgWaveActive) {
+          isCurrentActive = 
+            (preset.mode || "gradient") === (settings.multiColorMode || "smooth") &&
+            JSON.stringify(preset.gradientStops) === JSON.stringify(settings.multiColors || []) &&
+            Number(preset.angle) === Number(settings.multiGradientAngle) &&
+            (preset.multiColorType || "linear") === (settings.multiColorType || "linear") &&
+            (preset.multiColorRepeating === true) === (settings.multiColorRepeating === true) &&
+            (preset.multiColorPosition || "center") === (settings.multiColorPosition || "center") &&
+            (preset.multiColorRadialShape || "circle") === (settings.multiColorRadialShape || "circle") &&
+            (preset.showDividers === undefined ? true : preset.showDividers) === (settings.multiColorDividers !== false) &&
+            (preset.dividerColor || "#FFFFFF") === (settings.multiColorDividerColor || "#FFFFFF") &&
+            Number(preset.dividerWidth || 1.2) === Number(settings.multiColorDividerWidth || 1.2) &&
+            Boolean(preset.freeLineAngles) === Boolean(settings.multiColorFreeLineAngles) &&
+            JSON.stringify(preset.lineAngles || []) === JSON.stringify(settings.multiColorLineAngles || []);
+      }
+      
+      if (isCurrentActive) {
+        item.classList.add("active")
       }
 
       if (preset.isFavorite) {
@@ -210,6 +238,11 @@ export function renderSavedMultiColors(DOM_REFS) {
         star.className = "fa-solid fa-star favorite-star-badge"
         item.appendChild(star)
       }
+
+      const activeIndicator = document.createElement("div")
+      activeIndicator.className = "active-indicator"
+      activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(activeIndicator)
 
       item.addEventListener("contextmenu", (e) => {
         e.preventDefault()
@@ -1043,7 +1076,13 @@ export function setupMultiColorManager(applySettings) {
     updateDividerControlsVisibility()
     updateTypeControlsVisibility()
     updateMultiColorPreview()
+    
+    // Custom active state logic for multi-color
+    updateSetting("svgWaveActive", false)
     saveSettings()
+    if (window.appApplySettings) window.appApplySettings()
+    
+    renderSavedMultiColors(DOM)
   })
 
   window.addEventListener("multiColor:sync", syncFromSettings)
