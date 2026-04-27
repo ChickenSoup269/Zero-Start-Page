@@ -193,13 +193,14 @@ class MusicVisualizer {
     }
 
     const time = Date.now() * 0.002
-    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur")
+    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
+                       document.body.classList.contains("quick-access-white");
     
     // Vẽ 3 lớp sóng biển
     const drawWave = (offsetY, amplitude, freq, speed, color, alpha) => {
         ctx.save()
         ctx.fillStyle = isWhiteBlur ? "#000000" : color
-        ctx.globalAlpha = isWhiteBlur ? alpha * 0.5 : alpha
+        ctx.globalAlpha = isWhiteBlur ? alpha * 0.4 : alpha
         ctx.beginPath()
         ctx.moveTo(0, H)
         
@@ -212,9 +213,9 @@ class MusicVisualizer {
         ctx.lineTo(0, H)
         ctx.fill()
         
-        // Vẽ bọt biển trắng ở đỉnh sóng
+        // Vẽ bọt biển ở đỉnh sóng
         if (norm > 0.2) {
-            ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.2)" : "#fff"
+            ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.3)" : "#fff"
             ctx.globalAlpha = norm * 0.5
             for (let x = 0; x <= W; x += 20) {
                 const y = offsetY + Math.sin(x * freq + time * speed) * (amplitude + norm * 15)
@@ -348,15 +349,18 @@ class MusicVisualizer {
       norm = 0.15
     }
 
+    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
+                       document.body.classList.contains("quick-access-white");
+
     // 1. Vẽ mạng lưới Dây leo nền (Background Vines)
     ctx.save()
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     this.forestVines.forEach((v, idx) => {
       ctx.beginPath()
-      ctx.strokeStyle = v.color
+      ctx.strokeStyle = isWhiteBlur ? "#000000" : v.color
       ctx.lineWidth = v.thickness * (1 + norm * 0.5)
-      ctx.globalAlpha = 0.25 + norm * 0.3
+      ctx.globalAlpha = isWhiteBlur ? (0.15 + norm * 0.2) : (0.25 + norm * 0.3)
 
       const time = Date.now() * 0.001 * v.speed
       // Chuyển động đung đưa (Swaying)
@@ -385,7 +389,7 @@ class MusicVisualizer {
           ctx.save()
           ctx.translate(lx, ly)
           ctx.rotate(Math.sin(time + lIdx) * 0.5)
-          ctx.fillStyle = v.color
+          ctx.fillStyle = isWhiteBlur ? "#000000" : v.color
           const lSize = (2 + v.thickness) * (1 + norm)
           
           ctx.beginPath()
@@ -410,8 +414,8 @@ class MusicVisualizer {
     for (let i = 0; i < grassCount; i++) {
       const x = (i / (grassCount - 1)) * W
       const h = (15 + Math.sin(i + Date.now() * 0.003) * 5) * (1 + norm)
-      ctx.fillStyle = i % 2 === 0 ? "#1b5e20" : "#2e7d32"
-      ctx.globalAlpha = 0.5 + norm * 0.3
+      ctx.fillStyle = isWhiteBlur ? "#000000" : (i % 2 === 0 ? "#1b5e20" : "#2e7d32")
+      ctx.globalAlpha = isWhiteBlur ? (0.2 + norm * 0.2) : (0.5 + norm * 0.3)
       ctx.beginPath()
       ctx.moveTo(x - 5, H)
       ctx.quadraticCurveTo(x, H - h, x + 5, H)
@@ -431,8 +435,8 @@ class MusicVisualizer {
       ctx.save()
       ctx.translate(p.x * (W / 300), p.y * (H / 60))
       ctx.rotate(p.rotation)
-      ctx.fillStyle = p.color
-      ctx.globalAlpha = 0.7 + norm * 0.3
+      ctx.fillStyle = isWhiteBlur ? "#000000" : p.color
+      ctx.globalAlpha = isWhiteBlur ? (0.4 + norm * 0.3) : (0.7 + norm * 0.3)
 
       const pulse = 1 + norm * (p.type === "flower" ? 1.5 : 0.5)
 
@@ -449,7 +453,7 @@ class MusicVisualizer {
           ctx.arc(p.size * 0.8 * pulse, 0, p.size * 0.5 * pulse, 0, Math.PI * 2)
           ctx.fill()
         }
-        ctx.fillStyle = "#fff"
+        ctx.fillStyle = isWhiteBlur ? "rgba(0,0,0,0.5)" : "#fff"
         ctx.beginPath()
         ctx.arc(0, 0, p.size * 0.3 * pulse, 0, Math.PI * 2)
         ctx.fill()
@@ -520,8 +524,19 @@ class MusicVisualizer {
     ctx.scale(2, 2)
 
     const rootStyle = getComputedStyle(document.documentElement)
-    const accent =
-      rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
+    
+    // Detection for white mode (Quick Access White Mode or Widget Skin)
+    const isWhiteMode = document.body.classList.contains("quick-access-white") || 
+                       this.container?.closest(".skin-white-blur") !== null ||
+                       this.container?.classList.contains("skin-white-blur") ||
+                       document.querySelector(".side-controls")?.classList.contains("light-mode");
+
+    let accent = rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
+    
+    // If in white mode, force black color for high contrast
+    if (isWhiteMode) {
+      accent = "#000000"
+    }
 
     let norm = 0
     let active = false
@@ -800,7 +815,10 @@ class MusicVisualizer {
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    const accent =
+    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
+                       document.body.classList.contains("quick-access-white");
+
+    const accent = isWhiteBlur ? "#000000" :
       getComputedStyle(document.documentElement)
         .getPropertyValue("--accent-color")
         .trim() || "#a8c0ff"

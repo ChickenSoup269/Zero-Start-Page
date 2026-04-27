@@ -1064,12 +1064,38 @@
     0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
+.music-style-neon .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15) !important;
+}
+
+.music-style-neon .music-player-wrapper.skin-white-blur .visualizer-bar {
+  background: #000000 !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+.music-style-neon .music-player-wrapper.skin-white-blur .play-pause-btn {
+  color: #fff !important;
+  background: #000 !important;
+  text-shadow: none !important;
+}
+
 .music-style-neon .vinyl-disc {
   box-shadow: 0 0 18px rgba(var(--accent-color-rgb, 0, 240, 255), 0.45);
 }
 
+.music-style-neon .music-player-wrapper.skin-white-blur .vinyl-disc {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+}
+
 .music-style-neon .player-btn {
   color: #e0f7ff;
+}
+
+.music-style-neon .music-player-wrapper.skin-white-blur .player-btn {
+  color: #333 !important;
+  background: transparent !important;
 }
 
 .music-style-neon .play-pause-btn {
@@ -1791,6 +1817,40 @@
   box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.2);
 }
 
+.music-style-pill .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .player-info h3 {
+  color: #000 !important;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .player-btn {
+  color: #333 !important;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .play-pause-btn {
+  background: #000 !important;
+  color: #fff !important;
+  border-radius: 50%;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .progress-bar-fill {
+  background: #000 !important;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .music-visualizer {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.music-style-pill .music-player-wrapper.skin-white-blur .visualizer-bar {
+  background: #000 !important;
+  box-shadow: none !important;
+}
+
 @keyframes pillPulse {
   0%,
   100% {
@@ -2265,6 +2325,23 @@
   position: relative;
 }
 
+.music-style-moon8 .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-moon8 .music-player-wrapper.skin-white-blur .player-info h3 {
+  color: #000 !important;
+  text-shadow: none !important;
+}
+
+.music-style-moon8 .music-player-wrapper.skin-white-blur .play-pause-btn {
+  color: #fff !important;
+  background: #000 !important;
+  filter: none !important;
+}
+
 /* Hiệu ứng bầu trời sao */
 .music-style-moon8 .music-player-wrapper::before {
   content: "";
@@ -2539,6 +2616,44 @@
   box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.2);
   position: relative;
   overflow: hidden;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: #000 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .player-info h3,
+.music-style-terminal .music-player-wrapper.skin-white-blur .player-info p,
+.music-style-terminal .music-player-wrapper.skin-white-blur .progress-time {
+  color: #000 !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .player-btn {
+  color: #000 !important;
+  border-color: #000 !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .play-pause-btn {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .disc-container,
+.music-style-terminal .music-player-wrapper.skin-white-blur .progress-bar-track {
+  border-color: #000 !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .progress-bar-fill,
+.music-style-terminal .music-player-wrapper.skin-white-blur .visualizer-bar {
+  background: #000 !important;
+  box-shadow: none !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-white-blur .player-btn:hover {
+  background: #000 !important;
+  color: #fff !important;
 }
 
 /* CRT Scanlines Effect */
