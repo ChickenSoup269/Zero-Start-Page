@@ -284,8 +284,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             checkbox = showGregorianCheckbox
             break
           case "quotes":
-            if (showQuotesCheckbox) showQuotesCheckbox.click()
-            break
+            const currentQuotes = getSettings().showQuotes !== false
+            const nextQuotes = !currentQuotes
+            updateSetting("showQuotes", nextQuotes)
+            saveSettings()
+            if (showQuotesCheckbox) showQuotesCheckbox.checked = nextQuotes
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "showQuotes", value: nextQuotes },
+              }),
+            )
+            break;
           }
         if (key && checkbox) {
           checkbox.click()

@@ -793,7 +793,10 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   background: var(--sidebar-border);
   margin: 4px 5px;
   flex-shrink: 0;
-  transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    height 0.3s ease,
+    margin 0.3s ease;
 }
 
 #quick-access-collapse i {
@@ -810,7 +813,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease, padding 0.3s ease, background 0.2s ease, color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -826,18 +829,24 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .quick-btn:hover {
   color: var(--accent-color);
-  background: var(--accent-contrast-color, rgba(255, 255, 255, 0.1));
+  background: var(--accent-contrast-color, rgba(255, 255, 255, 0.15));
+  transform: scale(1.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.quick-btn:hover i {
   transform: scale(1.1);
 }
 
 .quick-btn.active {
   color: var(--accent-color);
   background: var(--accent-contrast-color, #1a1a2e);
-  /* box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3); */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Layout Controls Popup */
