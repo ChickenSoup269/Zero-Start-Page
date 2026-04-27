@@ -707,6 +707,8 @@
   "theme_neon": "Neon rực rỡ",
   "theme_nordic": "Bắc Âu (Nordic)",
   "theme_nature": "Thiên nhiên",
+  "theme_monochrome": "Trắng Đen (Monochrome)",
+  "theme_reset": "Đặt lại giao diện",
   "settings_extra_colors": "Màu bổ sung",
   "bug_report_title": "Thông tin hệ thống & Báo lỗi",
   "bug_report_desc": "Nếu bạn gặp lỗi, vui lòng sao chép cấu hình bên dưới và gửi cho nhà phát triển.",

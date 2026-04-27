@@ -19,7 +19,7 @@ const _GRADIENT_PRESETS = [
 const _initialGradient =
   _GRADIENT_PRESETS[Math.floor(Math.random() * _GRADIENT_PRESETS.length)]
 
-const defaultSettings = {
+export const defaultSettings = {
   background: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",

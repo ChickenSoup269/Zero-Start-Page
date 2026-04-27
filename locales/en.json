@@ -708,6 +708,8 @@
   "theme_neon": "Neon Night",
   "theme_nordic": "Nordic",
   "theme_nature": "Nature",
+  "theme_monochrome": "Monochrome (B&W)",
+  "theme_reset": "Reset Style",
   "settings_extra_colors": "Extra Colors",
   "bug_report_title": "System Information & Bug Report",
   "bug_report_desc": "If you encounter issues, please copy the configuration below and send it to the developer.",

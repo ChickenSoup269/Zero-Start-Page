@@ -1,9 +1,4 @@
-/**
- * Theme Manager
- * Handles predefined themes that set accent color, effects, and surface colors
- */
-
-import { updateAllSettings, saveSettings } from "../../services/state.js"
+import { updateAllSettings, saveSettings, getSettings, defaultSettings } from "../../services/state.js"
 
 const THEMES = {
   default: {
@@ -131,14 +126,44 @@ const THEMES = {
     clockColor: "#ffffff",
     dateColor: "#ffffff"
   },
+  monochrome: {
+    accentColor: "#ffffff",
+    sidebarBg: "rgba(0, 0, 0, 0.95)",
+    panelBg: "rgba(10, 10, 10, 0.85)",
+    glassBg: "rgba(255, 255, 255, 0.05)",
+    glassBorder: "rgba(255, 255, 255, 0.1)",
+    glassEdge: "rgba(255, 255, 255, 0.15)",
+    effect: "lightPillars",
+    lightPillarsColor: "#ffffff",
+    hueTextMode: "off",
+    font: "'Outfit', sans-serif",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "analog",
+    analogMarkerMode: "full",
+    clockColor: "#ffffff",
+    dateColor: "#ffffff"
+  },
 }
+
+// List of settings that themes are allowed to modify.
+const THEMEABLE_KEYS = [
+  "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
+  "effect", "hueTextMode", "font", "clockFont", "dateClockStyle", 
+  "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",
+  "hackerColor", "oceanWaveColor", "sakuraColor", "bubblesColor", "lightPillarsColor",
+  "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
+  "snowfallColor", "sunbeamColor", "bubbleColor", "rainHDColor", "stormRainColor",
+  "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor"
+];
+
+// Variable to store user's manual settings before a theme was applied
+let preThemeSnapshot = null;
 
 export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs) {
   if (!DOM.themesGrid) return
 
   const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
 
-  // Function to update active class in UI
   const updateActiveUI = (selectedTheme) => {
     themeItems.forEach((item) => {
       if (item.dataset.theme === selectedTheme) {
@@ -152,34 +177,64 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
   themeItems.forEach((item) => {
     item.addEventListener("click", () => {
       const themeKey = item.dataset.theme
-      const themeData = THEMES[themeKey]
+      
+      // If clicking the ALREADY active theme, treat it as "deselect" and restore original
+      if (item.classList.contains("active")) {
+        updateActiveUI(null)
+        restoreUserOriginalSettings(updateSettingsInputs)
+        return
+      }
 
+      const themeData = THEMES[themeKey]
       if (themeData) {
+        // Before applying the very first theme in a sequence, take a snapshot of current settings
+        captureUserSnapshot();
+        
         updateActiveUI(themeKey)
-        applyTheme(themeData, handleSettingUpdate, updateSettingsInputs)
+        applyTheme(themeData, updateSettingsInputs)
       }
     })
   })
-
-  // Set initial active state based on current settings if possible
-  // Note: This is tricky since themes are presets, not a single state.
-  // We could try to match current accent color/effect to a theme key.
 }
 
-function applyTheme(themeData, handleSettingUpdate, updateSettingsInputs) {
-  // Use updateAllSettings to batch update the state
-  updateAllSettings(themeData)
+function captureUserSnapshot() {
+  if (preThemeSnapshot !== null) return;
+  
+  const currentSettings = getSettings();
+  preThemeSnapshot = {};
+  
+  THEMEABLE_KEYS.forEach(key => {
+    if (currentSettings[key] !== undefined) {
+      preThemeSnapshot[key] = currentSettings[key];
+    }
+  });
+}
 
-  // Update UI inputs to reflect programmatic changes
-  if (updateSettingsInputs) {
-    updateSettingsInputs()
-  }
+function restoreUserOriginalSettings(updateSettingsInputs) {
+  if (!preThemeSnapshot) return;
 
-  // Save settings
-  saveSettings(true) // immediate save
+  updateAllSettings(preThemeSnapshot);
+  preThemeSnapshot = null; // Clear so next theme click takes a fresh snapshot
 
-  // Re-apply all settings to the page
-  if (window.appApplySettings) {
-    window.appApplySettings()
-  }
+  if (updateSettingsInputs) updateSettingsInputs();
+  saveSettings(true);
+  if (window.appApplySettings) window.appApplySettings();
+}
+
+function applyTheme(themeData, updateSettingsInputs) {
+  const resetData = {};
+
+  // Reset to default first
+  THEMEABLE_KEYS.forEach(key => {
+    if (defaultSettings[key] !== undefined) {
+      resetData[key] = defaultSettings[key];
+    }
+  });
+
+  const finalData = { ...resetData, ...themeData };
+  updateAllSettings(finalData);
+
+  if (updateSettingsInputs) updateSettingsInputs();
+  saveSettings(true);
+  if (window.appApplySettings) window.appApplySettings();
 }
