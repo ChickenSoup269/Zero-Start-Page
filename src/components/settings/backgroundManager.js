@@ -326,7 +326,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     settings.userBackgrounds.forEach((bgData, index) => {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
-      const authorName = typeof bgData === "object" ? bgData.authorName : null
+      const authorName = typeof bgData === "object" ? (bgData.authorName || bgData.author) : null
       const isVideo = isIdbVideo(bgId)
 
       const item = document.createElement("div")

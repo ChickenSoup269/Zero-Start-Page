@@ -704,9 +704,7 @@
                             <div id="unsplash-credit" class="full-row unsplash-credit-text"></div>
                             <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color">Save
                                 Color</button>
-                            <button id="save-current-bg-btn" class="secondary-btn" data-i18n="settings_save_bg_btn">Save
-                                Theme</button>
-                            <button id="remove-bg-btn" class="secondary-btn full-row"
+                            <button id="remove-bg-btn" class="secondary-btn"
                                 data-i18n="settings_remove_bg_btn"><i class="fa-solid fa-trash"></i> Reset
                                 Background</button>
                         </div>
@@ -728,7 +726,12 @@
                                 <i class="fa-solid fa-shuffle"></i>
                             </button>
                         </div>
-                        <select id="unsplash-category-select" class="full-width"></select>
+                        <select id="unsplash-category-select" class="full-width" style="margin-bottom: 12px;"></select>
+                        
+                        <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled>
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_save_bg">Save Background</span>
+                        </button>
+
                         <div class="unsplash-links">
                             <a href="https://unsplash.com/developers" target="_blank" class="unsplash-link-item">
                                 <i class="fa-solid fa-key"></i> <span data-i18n="settings_unsplash_api_info">Get free

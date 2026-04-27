@@ -566,26 +566,70 @@ export function setupGeneralEventHandlers(
   })
 
   // Unsplash
-  DOM.unsplashRandomBtn.addEventListener("click", () =>
-    setUnsplashRandomBackground(
+  let lastUnsplashPhoto = null
+  const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
+
+  DOM.unsplashRandomBtn.addEventListener("click", async () => {
+    lastUnsplashPhoto = await setUnsplashRandomBackground(
       DOM.unsplashRandomBtn,
       DOM.unsplashCategorySelect,
       DOM.unsplashCredit,
       handleSettingUpdate,
-    ),
-  )
+    )
+    if (lastUnsplashPhoto && unsplashSaveBtn) {
+      unsplashSaveBtn.disabled = false
+    }
+  })
 
-  DOM.unsplashRandomBtn.addEventListener("keydown", (e) => {
+  DOM.unsplashRandomBtn.addEventListener("keydown", async (e) => {
     if (e.code === "Space") {
       e.preventDefault()
-      setUnsplashRandomBackground(
+      lastUnsplashPhoto = await setUnsplashRandomBackground(
         DOM.unsplashRandomBtn,
         DOM.unsplashCategorySelect,
         DOM.unsplashCredit,
         handleSettingUpdate,
       )
+      if (lastUnsplashPhoto && unsplashSaveBtn) {
+        unsplashSaveBtn.disabled = false
+      }
     }
   })
+
+  if (unsplashSaveBtn) {
+    unsplashSaveBtn.addEventListener("click", () => {
+      const settings = getSettings()
+      const currentBg = settings.background
+      
+      if (!currentBg || !currentBg.startsWith('idb-img-unsplash')) {
+        showAlert("No Unsplash background to save!")
+        return
+      }
+
+      // currentBg is already an idb-img-unsplash-... ID string from setUnsplashRandomBackground
+      const authorName = lastUnsplashPhoto?.user?.name || "Unsplash"
+      const newBg = {
+        id: currentBg, // Use the actual ID stored in IndexedDB
+        authorName: authorName,
+        type: "image",
+        date: new Date().toISOString(),
+      }
+
+      settings.userBackgrounds = settings.userBackgrounds || []
+      
+      // Check if already in gallery
+      if (settings.userBackgrounds.some(bg => (typeof bg === 'string' ? bg : bg.id) === currentBg)) {
+        showAlert(geti18n().alert_bg_already_saved || "Background already saved!")
+        return
+      }
+
+      settings.userBackgrounds.push(newBg)
+      saveSettings()
+      renderLocalBackgrounds(DOM, handleSettingUpdate)
+      showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
+      unsplashSaveBtn.disabled = true
+    })
+  }
 
   DOM.unsplashCategorySelect.addEventListener("change", () => {
     handleSettingUpdate("unsplashCategory", DOM.unsplashCategorySelect.value)
@@ -621,6 +665,12 @@ export function setupGeneralEventHandlers(
   DOM.saveColorBtn.addEventListener("click", () => {
     const settings = getSettings()
     const color = DOM.bgInput.value.trim()
+    
+    if (!color) {
+      showAlert("Please select or enter a color first!")
+      return
+    }
+
     if (color.match(/^#([0-9a-f]{3}){1,2}$/i)) {
       if (!settings.userColors.includes(color)) {
         if (settings.userColors.length >= 10) {
@@ -643,46 +693,6 @@ export function setupGeneralEventHandlers(
     updateSetting("unsplashLastCredit", null)
     saveSettings()
     if (DOM.unsplashCredit) DOM.unsplashCredit.style.display = "none"
-  })
-
-  // Save current background
-  DOM.saveCurrentBgBtn.addEventListener("click", () => {
-    const settings = getSettings()
-    const bg = settings.background
-    if (!bg) return
-
-    const isAlreadySaved = settings.userBackgrounds.some((b) => {
-      const id = typeof b === "string" ? b : b.id
-      return id === bg
-    })
-
-    if (isAlreadySaved) {
-      showAlert(
-        geti18n().alert_bg_already_saved || "This background is already saved.",
-      )
-      return
-    }
-
-    if (settings.userBackgrounds.length >= 35) {
-      showAlert(
-        geti18n().alert_bg_gallery_full ||
-          "Gallery full! Please remove some backgrounds before saving more.",
-      )
-      return
-    }
-
-    const unsplashCredit = settings.unsplashLastCredit
-    const bgData = unsplashCredit ? {
-      id: bg,
-      authorName: unsplashCredit.authorName,
-      authorUrl: unsplashCredit.authorUrl,
-      photoUrl: unsplashCredit.photoUrl
-    } : bg
-
-    settings.userBackgrounds.push(bgData)
-    saveSettings()
-    renderLocalBackgrounds(DOM, handleSettingUpdate)
-    showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
   })
 
   // Accent color

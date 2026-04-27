@@ -278,6 +278,7 @@ async function setUnsplashRandomBackground(
     handleSettingUpdateCallback("background", finalBgValue)
     btn.disabled = false
     btn.innerHTML = originalHtml
+    return photo
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
     if (unsplashCredit) unsplashCredit.style.display = "none"
