@@ -44,9 +44,13 @@ export class Timer {
   }
 
   createElements() {
-    this.container = document.createElement("div")
-    this.container.className = "timer-container glass-panel drag-handle"
-    this.container.id = "timer-component"
+    this.container = document.getElementById("timer-component")
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.className = "timer-container glass-panel drag-handle"
+      this.container.id = "timer-component"
+      document.body.appendChild(this.container)
+    }
 
     this.container.innerHTML = `
             <div class="timer-main-view">
@@ -74,7 +78,6 @@ export class Timer {
             </div>
         `
 
-    document.body.appendChild(this.container)
     this.display = this.container.querySelector("#timer-display")
     
     // Create the mini clock indicator if it doesn't exist

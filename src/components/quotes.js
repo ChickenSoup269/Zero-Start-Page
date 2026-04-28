@@ -363,10 +363,14 @@ export class DailyQuotes {
   }
 
   render() {
-    this.container = document.createElement("div")
-    this.container.id = "daily-quotes"
-    this.container.className = "quotes-container"
-    if (this.isLocked) this.container.classList.add("is-locked")
+    this.container = document.getElementById("daily-quotes")
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.id = "daily-quotes"
+      this.container.className = "quotes-container"
+      if (this.isLocked) this.container.classList.add("is-locked")
+      document.body.appendChild(this.container)
+    }
 
     this.container.innerHTML = `
       <div id="cb-result-overlay" style="display: none;">
@@ -403,7 +407,6 @@ export class DailyQuotes {
         </div>
       </div>
     `
-    document.body.appendChild(this.container)
     this.applySkin()
     this.updateQuote()
     this.updatePriorityUI()

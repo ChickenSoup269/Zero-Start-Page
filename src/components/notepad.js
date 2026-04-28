@@ -44,9 +44,14 @@ export class Notepad {
   }
 
   createElements() {
-    this.container = document.createElement("div")
-    this.container.id = "notepad-container"
-    this.container.className = "notepad-container"
+    this.container = document.getElementById("notepad-container")
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.id = "notepad-container"
+      this.container.className = "notepad-container"
+      document.body.appendChild(this.container)
+    }
+    
     this.container.innerHTML = `
       <div class="notepad-header drag-handle">
         <i class="fa-solid fa-grip-vertical drag-handle-icon"></i>
@@ -57,7 +62,6 @@ export class Notepad {
         <div class="notes-list"></div>
       </div>
     `
-    document.body.appendChild(this.container)
   }
 
   setupEventListeners() {

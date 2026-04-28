@@ -115,34 +115,252 @@ document.addEventListener("DOMContentLoaded", async () => {
     `${currentSettings.searchBarWidth || 600}px`,
   )
 
-  // Initialize essential visual components immediately to fix LCP/CLS issues
+  // Initialize all UI components immediately to prevent layout shifts
   initClock()
   initBookmarks()
   initSearch()
   initContextMenu()
   initModal()
 
-  // Wait for rendering and layout to stabilize, then fade in main-container
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const mc = document.querySelector(".main-container")
-      if (mc) mc.classList.add("ready")
+  // Initialize heavy widgets immediately but keep hidden if not enabled
+  const notepad = new Notepad()
+  const todo = new TodoList()
+  const timer = new Timer()
+  const music = new MusicPlayer()
+  const calendar = new FullCalendar()
+  const dailyQuotes = new DailyQuotes()
+
+  // Setup interactions
+  makeDraggable(todo.container, "todo")
+  makeDraggable(timer.container, "timer")
+  makeDraggable(music.container, "music")
+  makeDraggable(calendar.container, "calendar")
+  makeDraggable(dailyQuotes.container, "daily-quotes")
+  makeDraggable(notepad.container, "notepad", null, ".notepad-header")
+  makeDraggable(document.getElementById("clock-date-wrap"), "clock")
+
+  // Helper to sync quick buttons
+  const quickBtns = document.querySelectorAll(".quick-btn")
+  function syncQuickButtons() {
+    const settings = getSettings()
+    quickBtns.forEach((btn) => {
+      const type = btn.dataset.toggle
+      if (!type) return
+      let isActive = false
+      switch (type) {
+        case "todo":
+          isActive = settings.showTodoList !== false
+          break
+        case "notepad":
+          isActive = settings.showNotepad !== false
+          break
+        case "timer":
+          isActive = settings.showTimer === true
+          break
+        case "calendar":
+          isActive = settings.showFullCalendar === true
+          break
+        case "music":
+          isActive = settings.musicPlayerEnabled === true
+          break
+        case "clock":
+          isActive = settings.clockDisplayMode !== "hide"
+          break
+        case "gregorian":
+          isActive = settings.showGregorian !== false
+          break
+        case "quotes":
+          isActive = settings.showQuotes !== false
+          break
+      }
+      btn.classList.toggle("active", isActive)
+    })
+  }
+
+  // Initial sync
+  syncQuickButtons()
+
+  // Quick Access Bar Logic
+  quickBtns.forEach((btn) => {
+    const type = btn.dataset.toggle
+    if (!type) return
+
+    btn.addEventListener("click", () => {
+      let key, checkbox
+      switch (type) {
+        case "todo":
+          key = "showTodoList"
+          checkbox = showTodoCheckbox
+          break
+        case "notepad":
+          key = "showNotepad"
+          checkbox = showNotepadCheckbox
+          break
+        case "timer":
+          key = "showTimer"
+          checkbox = showTimerCheckbox
+          break
+        case "calendar":
+          key = "showFullCalendar"
+          checkbox = showFullCalendarCheckbox
+          break
+        case "music":
+          key = "musicPlayerEnabled"
+          checkbox = showMusicCheckbox
+          break
+        case "clock":
+          const currentMode = getSettings().clockDisplayMode || "all"
+          const nextMode = currentMode === "hide" ? "all" : "hide"
+          updateSetting("clockDisplayMode", nextMode)
+          if (clockDisplaySelect) clockDisplaySelect.value = nextMode
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "clockDisplayMode", value: nextMode },
+            }),
+          )
+          break
+        case "gregorian":
+          key = "showGregorian"
+          checkbox = showGregorianCheckbox
+          break
+        case "quotes":
+          const currentQuotes = getSettings().showQuotes !== false
+          const nextQuotes = !currentQuotes
+          updateSetting("showQuotes", nextQuotes)
+          saveSettings()
+          if (showQuotesCheckbox) showQuotesCheckbox.checked = nextQuotes
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "showQuotes", value: nextQuotes },
+            }),
+          )
+          break
+      }
+      if (key && checkbox) {
+        checkbox.click()
+      }
     })
   })
+
+  // Smooth reveal: wait for critical components and then fade out overlay
+  const revealApp = () => {
+    const mainContainer = document.querySelector(".main-container")
+    if (mainContainer) mainContainer.classList.add("ready")
+    
+    const hideOverlay = () => {
+      const overlay = document.getElementById("startup-overlay")
+      if (overlay) {
+        overlay.style.opacity = "0"
+        overlay.style.visibility = "hidden"
+      }
+      document.body.classList.remove("loading-state")
+    }
+
+    // Wait for bookmarks-grid, taskbar, sidebar to be stable
+    const onBookmarksReady = () => {
+      setTimeout(hideOverlay, 300)
+      window.removeEventListener("bookmarksReady", onBookmarksReady)
+    }
+    window.addEventListener("bookmarksReady", onBookmarksReady)
+
+    // Safety timeout: if bookmarksReady never fires, show app anyway
+    setTimeout(hideOverlay, 1500)
+  }
 
   // Load language as other heavy/modal components depend on it translations
   await initI18n()
 
   const { isIdbMedia, getImageUrl, preloadImages } = await import("./services/imageStore.js")
   if (isIdbMedia(currentSettings.background)) {
-    // Kích hoạt nạp trước cho ảnh nền hiện tại
     await getImageUrl(currentSettings.background).catch(() => {})
   }
 
   // Initialize Settings (Applies background & heavy canvas effects)
   initSettings()
 
-  // DEFER HEAVY INITIALIZATIONS: Database migrations, image preloads, unused non-critical UI
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(revealApp)
+  } else {
+    setTimeout(revealApp, 200)
+  }
+
+  // Sync Quick Access active state when settings change
+  window.addEventListener("layoutUpdated", (e) => {
+    syncQuickButtons()
+    if (e.detail.key === "showSearchBar") {
+      const el = document.getElementById("search-container")
+      if (el) fadeToggle(el, e.detail.value, "")
+    }
+    if (e.detail.key === "showSearchAIIcon") {
+      const el = document.getElementById("search-ai-btn")
+      if (el) fadeToggle(el, e.detail.value, "")
+    }
+    if (e.detail.key === "searchBarWidth") {
+      document.documentElement.style.setProperty(
+        "--search-bar-width",
+        `${e.detail.value}px`,
+      )
+    }
+    if (e.detail.key === "showBookmarks") {
+      const el = document.getElementById("bookmarks-container")
+      if (el) fadeToggle(el, e.detail.value, "")
+    }
+    if (e.detail.key === "showBookmarkGroups") {
+      const el = document.getElementById("bookmark-groups-container")
+      if (el) fadeToggle(el, e.detail.value, "")
+    }
+    if (e.detail.key === "freeMoveCustomTitle") {
+      document.body.classList.toggle(
+        "free-move-custom-title",
+        e.detail.value === true,
+      )
+      const titleWrap = document.getElementById("custom-title-display")
+      if (titleWrap) {
+        if (e.detail.value === true) {
+          if (!titleWrap.style.top) {
+            titleWrap.style.top = "45%"
+            titleWrap.style.left = "50%"
+            titleWrap.style.transform = "translate(-50%, 0)"
+          }
+        } else {
+          titleWrap.style.position = ""
+          titleWrap.style.top = ""
+          titleWrap.style.left = ""
+          titleWrap.style.bottom = ""
+          titleWrap.style.right = ""
+          titleWrap.style.transform = ""
+          titleWrap.style.margin = ""
+        }
+      }
+    }
+
+    if (e.detail.key === "freeMoveClock") {
+      document.body.classList.toggle(
+        "free-move-clock",
+        e.detail.value === true,
+      )
+      const clockWrap = document.getElementById("clock-date-wrap")
+      if (clockWrap) {
+        if (e.detail.value === true) {
+          if (!clockWrap.style.top) {
+            clockWrap.style.top = "35%"
+            clockWrap.style.left = "50%"
+            clockWrap.style.transform = "translate(-50%, -50%)"
+          }
+        } else {
+          clockWrap.style.position = ""
+          clockWrap.style.top = ""
+          clockWrap.style.left = ""
+          clockWrap.style.bottom = ""
+          clockWrap.style.right = ""
+          clockWrap.style.transform = ""
+          clockWrap.style.margin = ""
+        }
+      }
+    }
+  })
+
+  // DEFER NON-CRITICAL HEAVY TASKS
   setTimeout(async () => {
     const { migrated, changed } = await migrateDataUrls(
       getSettings().userBackgrounds,
@@ -151,53 +369,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateSetting("userBackgrounds", migrated)
       saveSettings()
     }
-    // Nạp trước toàn bộ ảnh trong bộ sưu tập để dùng ngay
     await preloadImages(getSettings().userBackgrounds)
 
-    // Re-apply background settings if an IDB local background is active,
-    // now that it has been preloaded and the sync URL is available.
     if (typeof window.appApplySettings === "function") {
       window.appApplySettings()
     }
-    const notepad = new Notepad()
-    const todo = new TodoList()
-    const timer = new Timer()
-    const music = new MusicPlayer()
-    const calendar = new FullCalendar()
-    const dailyQuotes = new DailyQuotes()
-
-    makeDraggable(todo.container, "todo")
-    makeDraggable(timer.container, "timer")
-    makeDraggable(music.container, "music")
-    makeDraggable(calendar.container, "calendar")
-    makeDraggable(dailyQuotes.container, "daily-quotes")
-    makeDraggable(notepad.container, "notepad", null, ".notepad-header")
-    makeDraggable(document.getElementById("clock-date-wrap"), "clock")
-
-    // Initial Visibility: Search Bar, Bookmarks, Bookmark Groups
-    const searchContainer = document.getElementById("search-container")
-    const bookmarksContainer = document.getElementById("bookmarks-container")
-    const bookmarkGroupsContainer = document.getElementById(
-      "bookmark-groups-container",
-    )
-    const settings0 = getSettings()
-    if (searchContainer)
-      searchContainer.style.display =
-        settings0.showSearchBar !== false ? "" : "none"
-    const searchAiBtn = document.getElementById("search-ai-btn")
-    if (searchAiBtn)
-      searchAiBtn.style.display =
-        settings0.showSearchAIIcon !== false ? "" : "none"
-    document.documentElement.style.setProperty(
-      "--search-bar-width",
-      `${settings0.searchBarWidth || 600}px`,
-    )
-    if (bookmarksContainer)
-      bookmarksContainer.style.display =
-        settings0.showBookmarks !== false ? "" : "none"
-    if (bookmarkGroupsContainer)
-      bookmarkGroupsContainer.style.display =
-        settings0.showBookmarkGroups !== false ? "" : "none"
 
     const resetLayoutBtn = document.getElementById("reset-layout")
     const resetLayoutQuick = document.getElementById("reset-layout-quick")
@@ -217,11 +393,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
       
       if (selection) {
-        // Kiểm tra xem có mục nào được chọn không
         const hasSelection = Object.values(selection).some(v => v === true)
         if (!hasSelection) return
 
-        // Show startup overlay again for better feedback
         const overlay = document.getElementById("startup-overlay")
         if (overlay) {
           overlay.style.visibility = "visible"
@@ -238,209 +412,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (resetLayoutQuick)
       resetLayoutQuick.addEventListener("click", handleReset)
 
-    // Quick Access Bar Logic
-    const quickBtns = document.querySelectorAll(".quick-btn")
-    quickBtns.forEach((btn) => {
-      const type = btn.dataset.toggle
-      if (!type) return
-
-      btn.addEventListener("click", () => {
-        let key, value, checkbox
-        switch (type) {
-          case "todo":
-            key = "showTodoList"
-            checkbox = showTodoCheckbox
-            break
-          case "notepad":
-            key = "showNotepad"
-            checkbox = showNotepadCheckbox
-            break
-          case "timer":
-            key = "showTimer"
-            checkbox = showTimerCheckbox
-            break
-          case "calendar":
-            key = "showFullCalendar"
-            checkbox = showFullCalendarCheckbox
-            break
-          case "music":
-            key = "musicPlayerEnabled"
-            checkbox = showMusicCheckbox
-            break
-          case "clock":
-            // Special handling for select instead of checkbox
-            const currentMode = getSettings().clockDisplayMode || "all"
-            const nextMode = currentMode === "hide" ? "all" : "hide"
-            updateSetting("clockDisplayMode", nextMode)
-            if (clockDisplaySelect) clockDisplaySelect.value = nextMode
-            window.dispatchEvent(
-              new CustomEvent("layoutUpdated", {
-                detail: { key: "clockDisplayMode", value: nextMode },
-              }),
-            )
-            break
-          case "gregorian":
-            key = "showGregorian"
-            checkbox = showGregorianCheckbox
-            break
-          case "quotes":
-            const currentQuotes = getSettings().showQuotes !== false
-            const nextQuotes = !currentQuotes
-            updateSetting("showQuotes", nextQuotes)
-            saveSettings()
-            if (showQuotesCheckbox) showQuotesCheckbox.checked = nextQuotes
-            window.dispatchEvent(
-              new CustomEvent("layoutUpdated", {
-                detail: { key: "showQuotes", value: nextQuotes },
-              }),
-            )
-            break;
-          }
-        if (key && checkbox) {
-          checkbox.click()
-        }
-      })
-    })
-
-    // Helper to sync quick buttons
-    function syncQuickButtons() {
-      const settings = getSettings()
-      quickBtns.forEach((btn) => {
-        const type = btn.dataset.toggle
-        if (!type) return // Added this to skip buttons without data-toggle
-        let isActive = false
-        switch (type) {
-          case "todo":
-            isActive = settings.showTodoList !== false
-            break
-          case "notepad":
-            isActive = settings.showNotepad !== false
-            break
-          case "timer":
-            isActive = settings.showTimer === true
-            break
-          case "calendar":
-            isActive = settings.showFullCalendar === true
-            break
-          case "music":
-            isActive = settings.musicPlayerEnabled === true
-            break
-          case "clock":
-            isActive = settings.clockDisplayMode !== "hide"
-            break
-          case "gregorian":
-            isActive = settings.showGregorian !== false
-            break
-          case "quotes":
-            isActive = settings.showQuotes !== false
-            break
-          }        btn.classList.toggle("active", isActive)
-      })
-    }
-
-    // Final sync and reveal
-    syncQuickButtons()
-
-    // Smooth reveal: wait for critical components and then fade out overlay
-    // Increased delay to ensure heavy components like Bookmarks have settled
-    const revealApp = () => {
-      const mainContainer = document.querySelector(".main-container")
-      if (mainContainer) mainContainer.classList.add("ready")
-      
-      setTimeout(() => {
-        const overlay = document.getElementById("startup-overlay")
-        if (overlay) {
-          overlay.style.opacity = "0"
-          overlay.style.visibility = "hidden"
-          // Don't remove it from DOM so we can reuse it for reset
-          // setTimeout(() => overlay.remove(), 800)
-        }
-        document.body.classList.remove("loading-state")
-      }, 400) // Increased settling time for layouts
-    }
-
-    if (window.requestIdleCallback) {
-      window.requestIdleCallback(revealApp)
-    } else {
-      setTimeout(revealApp, 300)
-    }
-
-    // Sync Quick Access active state when settings change
-    window.addEventListener("layoutUpdated", (e) => {
-      syncQuickButtons()
-      if (e.detail.key === "showSearchBar") {
-        const el = document.getElementById("search-container")
-        if (el) fadeToggle(el, e.detail.value, "")
-      }
-      if (e.detail.key === "showSearchAIIcon") {
-        const el = document.getElementById("search-ai-btn")
-        if (el) fadeToggle(el, e.detail.value, "")
-      }
-      if (e.detail.key === "searchBarWidth") {
-        document.documentElement.style.setProperty(
-          "--search-bar-width",
-          `${e.detail.value}px`,
-        )
-      }
-      if (e.detail.key === "showBookmarks") {
-        const el = document.getElementById("bookmarks-container")
-        if (el) fadeToggle(el, e.detail.value, "")
-      }
-      if (e.detail.key === "showBookmarkGroups") {
-        const el = document.getElementById("bookmark-groups-container")
-        if (el) fadeToggle(el, e.detail.value, "")
-      }
-      if (e.detail.key === "freeMoveCustomTitle") {
-        document.body.classList.toggle(
-          "free-move-custom-title",
-          e.detail.value === true,
-        )
-        const titleWrap = document.getElementById("custom-title-display")
-        if (titleWrap) {
-          if (e.detail.value === true) {
-            if (!titleWrap.style.top) {
-              titleWrap.style.top = "45%"
-              titleWrap.style.left = "50%"
-              titleWrap.style.transform = "translate(-50%, 0)"
-            }
-          } else {
-            titleWrap.style.position = ""
-            titleWrap.style.top = ""
-            titleWrap.style.left = ""
-            titleWrap.style.bottom = ""
-            titleWrap.style.right = ""
-            titleWrap.style.transform = ""
-            titleWrap.style.margin = ""
-          }
-        }
-      }
-
-      if (e.detail.key === "freeMoveClock") {
-        document.body.classList.toggle(
-          "free-move-clock",
-          e.detail.value === true,
-        )
-        const clockWrap = document.getElementById("clock-date-wrap")
-        if (clockWrap) {
-          if (e.detail.value === true) {
-            if (!clockWrap.style.top) {
-              clockWrap.style.top = "35%"
-              clockWrap.style.left = "50%"
-              clockWrap.style.transform = "translate(-50%, -50%)"
-            }
-          } else {
-            clockWrap.style.position = ""
-            clockWrap.style.top = ""
-            clockWrap.style.left = ""
-            clockWrap.style.bottom = ""
-            clockWrap.style.right = ""
-            clockWrap.style.transform = ""
-            clockWrap.style.margin = ""
-          }
-        }
-      }
-    })
-
     window.addEventListener("settingsUpdated", (e) => {
       if (
         e.detail.key === "music_player_enabled" ||
@@ -450,14 +421,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     })
 
-    // Initial Sync
-    syncQuickButtons()
-
     // Collapse functionality
     const quickAccessBar = document.querySelector(".quick-access-bar")
     const collapseBtn = document.getElementById("quick-access-collapse")
     if (collapseBtn && quickAccessBar) {
-      // Initial State
       const settings = getSettings()
       if (settings.quickAccessCollapsed) {
         quickAccessBar.classList.add("collapsed")
@@ -476,7 +443,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         saveSettings()
       })
 
-      // Set initial title
       collapseBtn.title = settings.quickAccessCollapsed
         ? settings.language === "vi"
           ? "Mở rộng"
@@ -493,7 +459,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (manifest && manifest.version) {
           const currentVersion = manifest.version
 
-          // Use chrome.storage.local if available, fallback to localStorage
           if (window.chrome?.storage?.local) {
             chrome.storage.local.get(["lastVersion"], (result) => {
               const lastVersion = result.lastVersion
@@ -502,7 +467,6 @@ document.addEventListener("DOMContentLoaded", async () => {
               })
             })
           } else {
-            // Fallback for non-extension environments or missing permissions
             const lastVersion = localStorage.getItem("lastVersion")
             handleVersionCheck(lastVersion, currentVersion, (ver) => {
               localStorage.setItem("lastVersion", ver)
@@ -519,7 +483,6 @@ document.addEventListener("DOMContentLoaded", async () => {
               saveFn(currentVersion)
             }
           } else {
-            // If it's not a fresh install, it's an update from an older version without tracking
             if (!isFreshInstall) {
               showUpdateUI(currentVersion)
             }
@@ -550,8 +513,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       } catch (e) {
         console.warn("Update check failed:", e)
       }
-    }, 10)
-
-    // Close the deferred heavy initializations setTimeout
+    }, 100)
   }, 10)
 })

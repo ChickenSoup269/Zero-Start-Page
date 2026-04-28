@@ -985,8 +985,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .lcp-select option {
-  background: var(--accent-contrast-color);
-  color: var(--accent-color);
+  background: var(--accent-color);
+  color: var(--accent-contrast-color);
 }
 
 /* Toggle switch */
@@ -1068,9 +1068,10 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   display: flex;
   flex-direction: column;
   z-index: 100;
+  contain: layout style;
   transition:
     box-shadow 0.3s ease,
-    border 0.3s ease;
+    border-color 0.3s ease;
 }
 
 .drag-handle {
@@ -1533,7 +1534,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   cursor: pointer;
   backdrop-filter: blur(8px);
   transition: all 0.2s;
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -3257,7 +3258,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
   flex-direction: row-reverse; /* Reverses order: bookmarks on outside, groups inside */
   align-items: center; /* Nằm giữa (Center) */
   gap: 8px; /* Gần hơn (Closer) */
-  z-index: 100;
+  z-index: 1000;
 }
 
 body.bookmark-sidebar-mode .bookmarks-grid {
@@ -3302,7 +3303,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
   flex-direction: column-reverse; /* Icons bottom, groups above */
   align-items: center;
   gap: 8px;
-  z-index: 10;
+  z-index: 1000;
   contain: layout;
 }
 
@@ -3349,7 +3350,7 @@ body.bookmark-taskbar-left-mode .bookmark-widget {
   flex-direction: column-reverse;
   align-items: flex-start;
   gap: 8px;
-  z-index: 100;
+  z-index: 1000;
   contain: layout;
 }
 
@@ -3664,10 +3665,12 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   transform: scale(0.5) !important;
   max-width: 0 !important;
   max-height: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Taskbar Bottom mode: Tab sticking to the top edge of widget when hidden */
-body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle {
+body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
+body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
   width: 70px !important;
   height: 14px !important;
   border-radius: 12px 12px 0 0 !important;

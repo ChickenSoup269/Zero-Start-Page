@@ -78,9 +78,16 @@ export class MusicPlayer {
 
   createElements() {
     const i18n = geti18n()
-    this.container = document.createElement("div")
-    this.container.id = "music-player-container"
-    this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`
+    this.container = document.getElementById("music-player-container")
+    
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.id = "music-player-container"
+      this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`
+      document.body.appendChild(this.container)
+    } else {
+      this.container.className = `music-player-container minimized drag-handle music-style-${this.currentStyle}`
+    }
 
     this.container.innerHTML = `
             <div class="music-player-wrapper">
@@ -113,7 +120,6 @@ export class MusicPlayer {
             </div>
         `
 
-    document.body.appendChild(this.container)
     this.disc = this.container.querySelector("#vinyl-disc")
     this.sourceIcon = this.container.querySelector("#source-icon-overlay")
     this.titleElement = this.container.querySelector("#music-title")

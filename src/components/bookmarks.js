@@ -180,6 +180,8 @@ async function getBestIcon(bookmark) {
 
 function createBookmarkIcon(bookmark) {
   const img = document.createElement("img")
+  img.width = 24
+  img.height = 24
 
   // Use a 1x1 transparent Base64 GIF to initialize layout and avoid CLS
   img.src =
@@ -683,7 +685,12 @@ export function updateOverflowBookmarks() {
   if (bw && bw.classList.contains("no-transition")) {
     setTimeout(() => {
       bw.classList.remove("no-transition")
+      // Signal that layout is stable
+      window.dispatchEvent(new CustomEvent("bookmarksReady"))
     }, 250) // Slightly longer delay to ensure everything is ready
+  } else {
+    // If already initialized, still signal readiness
+    window.dispatchEvent(new CustomEvent("bookmarksReady"))
   }
 }
 

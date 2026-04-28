@@ -14,6 +14,8 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
     width: 420px;
+    min-height: 100px;
+    contain: layout style;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;

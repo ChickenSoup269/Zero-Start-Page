@@ -30,12 +30,20 @@ export class TodoList {
   }
 
   createElements() {
-    this.container = document.createElement("div")
-    this.container.id = "todo-container"
+    this.container = document.getElementById("todo-container")
     const settings = getSettings()
     const checkboxClass =
       settings.todoShowCheckboxes === true ? " show-checkboxes-always" : ""
-    this.container.className = `todo-container glass-panel drag-handle${checkboxClass}`
+    
+    if (!this.container) {
+      this.container = document.createElement("div")
+      this.container.id = "todo-container"
+      this.container.className = `todo-container glass-panel drag-handle${checkboxClass}`
+      document.body.appendChild(this.container)
+    } else {
+      this.container.className = `todo-container glass-panel drag-handle${checkboxClass}`
+    }
+
     this.container.innerHTML = `
             <div class="todo-header">
                 <div class="todo-header-left">
@@ -56,7 +64,6 @@ export class TodoList {
             </div>
             <ul id="todo-list" class="todo-list"></ul>
         `
-    document.body.appendChild(this.container)
   }
 
   setupEventListeners() {
