@@ -843,6 +843,18 @@ function createApplySettings(effectInstances) {
     }
 
     if (
+      effectToStart === "northernLights" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        color: settings.northernLightsColor || "#00ff88",
+        style: settings.northernLightsStyle || "hd",
+        brightness: settings.northernLightsBrightness ?? 0.8,
+      })
+    }
+
+    if (
       effectToStart === "oceanWave" &&
       selectedEffect
     ) {

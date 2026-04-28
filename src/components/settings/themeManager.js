@@ -162,6 +162,24 @@ const THEMES = {
     clockColor: "#ffffff",
     dateColor: "#ccff00"
   },
+  aurora: {
+    accentColor: "#ccff00",
+    sidebarBg: "rgba(10, 20, 15, 0.9)",
+    panelBg: "rgba(15, 30, 25, 0.75)",
+    glassBg: "rgba(204, 255, 0, 0.03)",
+    glassBorder: "rgba(204, 255, 0, 0.12)",
+    glassEdge: "rgba(204, 255, 0, 0.2)",
+    effect: "northernLights",
+    northernLightsColor: "#ccff00",
+    northernLightsStyle: "hd",
+    northernLightsBrightness: 0.9,
+    hueTextMode: "off",
+    font: "'Outfit', sans-serif",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "round",
+    clockColor: "#ffffff",
+    dateColor: "#ffffff"
+  },
 }
 
 // List of settings that themes are allowed to modify.
@@ -172,7 +190,8 @@ export const THEMEABLE_KEYS = [
   "hackerColor", "oceanWaveColor", "sakuraColor", "bubblesColor", "lightPillarsColor", "plantGrowthColor",
   "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
   "snowfallColor", "sunbeamColor", "bubbleColor", "rainHDColor", "stormRainColor",
-  "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor"
+  "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor",
+  "northernLightsStyle", "northernLightsBrightness"
 ];
 
 // Variable to store user's manual settings before a theme was applied

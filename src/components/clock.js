@@ -265,6 +265,10 @@ export function updateTime() {
 
   clockElement.classList.toggle("is-hidden", shouldHideClock)
 
+  if (!isFramedClockStyle) {
+    document.body.classList.remove("framed-theme-light", "framed-theme-dark")
+  }
+
   if (dateClockStyle === "analog") {
     let tDate = now
     if (tz) {

@@ -401,7 +401,7 @@ body.date-clock-style-round .clock-date-wrap:hover .round-clock-notch {
 .round-clock-bottom-info {
   width: 65%;
   display: flex;
-  justify(content): center;
+  justify-content: center;
   padding-top: 18px;
   margin-top: 8px;
   position: relative;
@@ -488,68 +488,71 @@ body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
 }
 
 .sq-date-val {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #fff;
-  letter-spacing: 2px;
-  opacity: 0.95;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  letter-spacing: 3px;
+  opacity: 0.9;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  border-left: 3px solid var(--accent-color);
+  padding-left: 12px;
 }
 
 .sq-main-row {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .sq-time-hhmm {
-  font-size: clamp(4.5rem, 16vw, 6.5rem);
+  font-size: clamp(4rem, 15vw, 6rem);
   font-weight: 900;
   color: #fff;
-  line-height: 1;
-  letter-spacing: -4px;
+  line-height: 0.9;
+  letter-spacing: -3px;
   text-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(var(--accent-color-rgb), 0.2);
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(var(--accent-color-rgb), 0.15);
 }
 
 .sq-side-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   text-align: left;
 }
 
 .sq-ampm {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--accent-color, #fff);
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
 }
 
 .sq-ss {
-  font-size: 1.8rem;
-  font-weight: 200;
+  font-size: 1.5rem;
+  font-weight: 300;
   font-family: 'JetBrains Mono', monospace;
   color: #fff;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .sq-bottom-row {
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
 }
 
 .sq-full-date {
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 3px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
   color: #fff;
-  opacity: 0.5;
+  opacity: 0.45;
+  text-transform: uppercase;
 }
 
 body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
