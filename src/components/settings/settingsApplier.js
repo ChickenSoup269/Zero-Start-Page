@@ -962,9 +962,10 @@ function updateMainBgCredit() {
   const settings = getSettings()
   const creditEl = document.getElementById("main-bg-credit")
   const settingsCreditEl = document.getElementById("unsplash-credit")
-  
+
   const bg = settings.background
-  let info = settings.unsplashPhotoInfo
+  // Changed from unsplashPhotoInfo to unsplashLastCredit
+  let info = settings.unsplashLastCredit
 
   // If not Unsplash or missing info, try to find metadata in userBackgrounds
   if (!info || !info.authorName) {
@@ -977,34 +978,34 @@ function updateMainBgCredit() {
   }
 
   const isUnsplash = info && info.authorName && (
-      (bg && (bg.includes("unsplash.com") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com"))) ||
-      (info.photoUrl && info.photoUrl.includes("unsplash.com"))
+      (bg && (bg.includes("unsplash") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com"))) ||
+      (info.photoUrl && info.photoUrl.includes("unsplash.com")) ||
+      (info.authorUrl && info.authorUrl.includes("unsplash.com"))
   )
   const isLocalMedia = isIdbMedia(bg)
-  
+
   if (info && info.authorName) {
     const authorLink = info.authorUrl ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>` : info.authorName
     const photoLink = info.photoUrl ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${isUnsplash ? "Unsplash" : "Source"}</a>` : (isUnsplash ? "Unsplash" : "Local")
-    
+
     const iconClass = isUnsplash ? "fa-brands fa-unsplash credit-logo-unsplash" : (isIdbVideo(bg) ? "fa-solid fa-video credit-logo-local" : "fa-solid fa-image credit-logo-local")
-    
+
     const html = `
       <i class="${iconClass}"></i>
       <span>${photoLink} &bull; ${authorLink}</span>
     `
-    
+
     if (creditEl) {
         creditEl.innerHTML = html
         creditEl.style.display = "flex"
     }
-    
+
     if (settingsCreditEl) {
         settingsCreditEl.innerHTML = html
         settingsCreditEl.style.display = "flex"
     }
     return
   }
-
   // Hide settings credit if no info
   if (settingsCreditEl) {
       settingsCreditEl.style.display = "none"

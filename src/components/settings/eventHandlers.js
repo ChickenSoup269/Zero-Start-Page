@@ -573,7 +573,6 @@ export function setupGeneralEventHandlers(
     lastUnsplashPhoto = await setUnsplashRandomBackground(
       DOM.unsplashRandomBtn,
       DOM.unsplashCategorySelect,
-      DOM.unsplashCredit,
       handleSettingUpdate,
     )
     if (lastUnsplashPhoto && unsplashSaveBtn) {
@@ -587,7 +586,6 @@ export function setupGeneralEventHandlers(
       lastUnsplashPhoto = await setUnsplashRandomBackground(
         DOM.unsplashRandomBtn,
         DOM.unsplashCategorySelect,
-        DOM.unsplashCredit,
         handleSettingUpdate,
       )
       if (lastUnsplashPhoto && unsplashSaveBtn) {

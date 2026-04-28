@@ -472,19 +472,6 @@ export function initSettings() {
   renderUserAccentColors(DOM_EXPORTS)
   initThemeManager(DOM_EXPORTS, handleSettingUpdate, updateSettingsInputs)
 
-  // Restore Unsplash credit
-  const lastCredit = settings.unsplashLastCredit
-  if (lastCredit && DOM_EXPORTS.unsplashCredit) {
-    const photoLink = lastCredit.photoUrl
-      ? `<a href="${lastCredit.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">View on Unsplash</a>`
-      : ""
-    const authorLink = lastCredit.authorUrl
-      ? `<a href="${lastCredit.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">${lastCredit.authorName}</a>`
-      : lastCredit.authorName
-    DOM_EXPORTS.unsplashCredit.innerHTML = `📷 ${photoLink}${photoLink && lastCredit.authorName ? " &bull; " : ""}${authorLink}`
-    DOM_EXPORTS.unsplashCredit.style.display = "block"
-    }
-
   // Restore font
   initFont()
   renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)

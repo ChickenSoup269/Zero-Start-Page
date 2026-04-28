@@ -177,7 +177,6 @@ function populateUnsplashCollections(unsplashCategorySelect, i18n) {
 async function setUnsplashRandomBackground(
   unsplashRandomBtn,
   unsplashCategorySelect,
-  unsplashCredit,
   handleSettingUpdateCallback,
 ) {
   const settings = getSettings()
@@ -255,36 +254,68 @@ async function setUnsplashRandomBackground(
 
     if (bgLayer) bgLayer.style.transition = ""
 
-    // Show photo credit
-    if (unsplashCredit) {
-      const photoLink = photo.links?.html
-        ? `<a href="${photo.links.html}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">View on Unsplash</a>`
-        : ""
-      const authorName = photo.user?.name || ""
-      const authorLink = photo.user?.links?.html
-        ? `<a href="${photo.user.links.html}?utm_source=startpage&utm_medium=referral" target="_blank" rel="noopener" style="color:inherit;">${authorName}</a>`
-        : authorName
-      unsplashCredit.innerHTML = `📷 ${photoLink}${photoLink && authorName ? " &bull; " : ""}${authorLink}`
-      unsplashCredit.style.display = "block"
-    }
-    // Persist credit so it survives page refresh
-    updateSetting("unsplashLastCredit", {
+    // Prepare metadata
+    const photoInfo = {
+      id: finalBgValue,
       photoUrl: photo.links?.html || "",
       authorName: photo.user?.name || "",
       authorUrl: photo.user?.links?.html || "",
+      isFavorite: false
+    }
+
+    // Persist credit so it survives page refresh
+    updateSetting("unsplashLastCredit", {
+      photoUrl: photoInfo.photoUrl,
+      authorName: photoInfo.authorName,
+      authorUrl: photoInfo.authorUrl,
     })
+
+    // Also add to userBackgrounds so it appears in the gallery with metadata
+    const userBackgrounds = settings.userBackgrounds || []
+    // Add to gallery if not already there (limit to 35 as per backgroundManager)
+    if (!userBackgrounds.some(bg => (typeof bg === 'object' ? bg.id : bg) === finalBgValue)) {
+      if (userBackgrounds.length >= 35) {
+        userBackgrounds.shift() // Remove oldest if limit reached
+      }
+      userBackgrounds.push(photoInfo)
+      updateSetting("userBackgrounds", userBackgrounds)
+    }
+
     saveSettings()
 
-    handleSettingUpdateCallback("background", finalBgValue)
+    // Disable the save button since we just auto-saved it
+    const saveBtn = document.getElementById("unsplash-save-bg-btn")
+    if (saveBtn) {
+      saveBtn.disabled = true
+      // Optionally update text to show it's saved
+      const i18n = (typeof geti18n === 'function') ? geti18n() : null
+      if (i18n && i18n.saved) {
+          saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n.saved}`
+      }
+    }
+
+    const updateFn = typeof handleSettingUpdateCallback === 'function' 
+      ? handleSettingUpdateCallback 
+      : (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
+
+    if (typeof updateFn === 'function') {
+      updateFn("background", finalBgValue)
+    }
+    
     btn.disabled = false
     btn.innerHTML = originalHtml
     return photo
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
-    if (unsplashCredit) unsplashCredit.style.display = "none"
+
+    const updateFn = typeof handleSettingUpdateCallback === 'function' 
+      ? handleSettingUpdateCallback 
+      : (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
 
     // Restore previous background if loading fails after black-screen state.
-    handleSettingUpdateCallback("background", previousBackground)
+    if (typeof updateFn === 'function') {
+      updateFn("background", previousBackground)
+    }
 
     btn.disabled = false
     btn.innerHTML = originalHtml
