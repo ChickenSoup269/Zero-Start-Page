@@ -2558,15 +2558,13 @@
                     </div>
 
                     <!-- Style Selection -->
-                    <div class="setting-group collapsible-group" style="margin-bottom: 20px;">
-                        <div class="setting-label group-toggle"
-                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <i class="fa-solid fa-swatchbook"></i> <span data-i18n="settings_clock_date_style">Clock
-                                Style</span>
-                            <i class="fa-solid fa-chevron-down toggle-icon"
-                                style="margin-left: auto; font-size: 0.7rem; opacity: 0.5;"></i>
+                    <div class="setting-group collapsible-group" id="clock-style-setting-group" style="margin-bottom: 20px;">
+                        <div class="group-header">
+                            <i class="fa-solid fa-swatchbook group-icon"></i>
+                            <span data-i18n="settings_clock_date_style">Clock Style</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
                         </div>
-                        <div class="collapsible-content">
+                        <div class="group-body">
                             <div id="clock-style-grid" class="clock-style-grid">
                                 <div class="clock-style-card" data-value="default">
                                     <i class="fa-solid fa-clock"></i>

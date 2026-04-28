@@ -1959,20 +1959,7 @@ export function setupGeneralEventHandlers(
     })
   })
 
-  // Collapsible logic for sub-groups like Clock Style
-  const subGroupToggles = document.querySelectorAll(".setting-group.collapsible-group .group-toggle")
-  subGroupToggles.forEach(toggle => {
-    toggle.addEventListener("click", (e) => {
-      e.stopPropagation() // Prevent event bubbling
-      const group = toggle.closest(".collapsible-group")
-      group.classList.toggle("collapsed")
-      const icon = toggle.querySelector(".toggle-icon")
-      if (icon) {
-        icon.classList.toggle("fa-chevron-down", group.classList.contains("collapsed"))
-        icon.classList.toggle("fa-chevron-up", !group.classList.contains("collapsed"))
-      }
-    })
-  })
+  // Initialization logic for other components...
 
   DOM.clockDateStyleSelect?.addEventListener("change", () => {
     handleSettingUpdate("dateClockStyle", DOM.clockDateStyleSelect.value)

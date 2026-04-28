@@ -620,10 +620,9 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.section-toggle i {
-  color: var(--accent-color);
-  width: 20px;
-  text-align: center;
+.section-toggle i,
+.section-toggle span {
+  pointer-events: none;
 }
 
 .section-toggle::after {
@@ -2605,7 +2604,7 @@
   width: 22px;
   height: 22px;
   background: var(--accent-color);
-  color: var(--accent-contrast-color, #000);
+  color: var(--accent-contrast-color, #1a1a2e);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2617,6 +2616,15 @@
   z-index: 10;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   pointer-events: none;
+}
+
+.active-indicator i {
+  color: inherit !important;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .theme-item.active .active-indicator,

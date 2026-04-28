@@ -591,13 +591,20 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     const settings = getSettings()
     const toDelete = Array.from(bgSelectedIds)
-    settings.userBackgrounds = (settings.userBackgrounds || []).filter(
-      (id) => !bgSelectedIds.has(id),
-    )
+    
+    // Fix: Handle both string IDs and objects in userBackgrounds
+    settings.userBackgrounds = (settings.userBackgrounds || []).filter(bg => {
+      const bgId = typeof bg === 'object' ? bg.id : bg
+      return !bgSelectedIds.has(bgId)
+    })
+
     for (const id of toDelete) {
       if (isIdbMedia(id)) deleteImage(id).catch(() => {})
     }
-    if (bgSelectedIds.has(settings.background)) {
+
+    // Fix: Correctly check if the current background was deleted
+    const currentBgId = settings.background
+    if (bgSelectedIds.has(currentBgId)) {
       handleSettingUpdate("background", null)
     } else {
       saveSettings()

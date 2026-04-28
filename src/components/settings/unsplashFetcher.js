@@ -271,27 +271,27 @@ async function setUnsplashRandomBackground(
     })
 
     // Also add to userBackgrounds so it appears in the gallery with metadata
+    // REMOVED AUTO-SAVE TO GALLERY
+    /*
     const userBackgrounds = settings.userBackgrounds || []
-    // Add to gallery if not already there (limit to 35 as per backgroundManager)
     if (!userBackgrounds.some(bg => (typeof bg === 'object' ? bg.id : bg) === finalBgValue)) {
       if (userBackgrounds.length >= 35) {
-        userBackgrounds.shift() // Remove oldest if limit reached
+        userBackgrounds.shift()
       }
       userBackgrounds.push(photoInfo)
       updateSetting("userBackgrounds", userBackgrounds)
     }
+    */
 
     saveSettings()
 
-    // Disable the save button since we just auto-saved it
+    // Enable the save button for manual saving
     const saveBtn = document.getElementById("unsplash-save-bg-btn")
     if (saveBtn) {
-      saveBtn.disabled = true
-      // Optionally update text to show it's saved
+      saveBtn.disabled = false
+      // Reset save button state
       const i18n = (typeof geti18n === 'function') ? geti18n() : null
-      if (i18n && i18n.saved) {
-          saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${i18n.saved}`
-      }
+      saveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>${i18n?.settings_unsplash_save || "Save to Gallery"}</span>`
     }
 
     const updateFn = typeof handleSettingUpdateCallback === 'function' 
