@@ -2018,6 +2018,19 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.fliqloTransparentCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate("fliqloTransparent", DOM.fliqloTransparentCheckbox.checked)
+    
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "fliqloTransparent",
+          value: DOM.fliqloTransparentCheckbox.checked,
+        },
+      }),
+    )
+  })
+
   DOM.sidestyleAlignSelect?.addEventListener("change", () => {
     handleSettingUpdate("sidestyleAlign", DOM.sidestyleAlignSelect.value)
     window.dispatchEvent(

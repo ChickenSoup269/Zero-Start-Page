@@ -1293,6 +1293,42 @@ body.date-clock-style-fliqlo.fliqlo-zen-mode #notepad-container {
   pointer-events: none !important;
 }
 
+/* --- TRANSPARENT BACKGROUND --- */
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card-flip-bottom {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card::after {
+  background: rgba(255, 255, 255, 0.2) !important;
+  height: 1.5px !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light.fliqlo-transparent .fliqlo-card::after {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Visibility sync for transparent mode to prevent overlapping digits during animation */
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card.fliqlo-flip .fliqlo-card-top {
+  opacity: 0;
+  animation: fliqloTransparentFadeIn 0s 0.25s forwards;
+}
+
+body.date-clock-style-fliqlo.fliqlo-transparent .fliqlo-card.fliqlo-flip .fliqlo-card-bottom {
+  opacity: 1;
+  animation: fliqloTransparentFadeOut 0s 0.25s forwards;
+}
+
+@keyframes fliqloTransparentFadeIn {
+  to { opacity: 1; }
+}
+@keyframes fliqloTransparentFadeOut {
+  to { opacity: 0; }
+}
+
 body.date-clock-style-fliqlo.fliqlo-zen-mode #top-right-controls,
 body.date-clock-style-fliqlo.fliqlo-zen-mode #settings-sidebar,
 body.date-clock-style-fliqlo.fliqlo-zen-mode .side-controls {

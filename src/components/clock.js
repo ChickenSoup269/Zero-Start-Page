@@ -725,6 +725,11 @@ export function updateTime() {
       document.body.classList.remove("fliqlo-zen-mode")
     }
 
+    document.body.classList.toggle(
+      "fliqlo-transparent",
+      settings.fliqloTransparent === true,
+    )
+
     const fliqloTimeOptions = settings.hideSeconds
       ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
       : {
@@ -916,7 +921,10 @@ export function initClock() {
       e.detail.key === "analogMarkerMode" ||
       e.detail.key === "hueTextMode" ||
       e.detail.key === "sidestyleAlign" ||
-      e.detail.key === "sidestyleNoBorder"
+      e.detail.key === "sidestyleNoBorder" ||
+      e.detail.key === "fliqloZenMode" ||
+      e.detail.key === "fliqloTransparent" ||
+      e.detail.key === "fliqloTheme"
     ) {
       updateTime()
     }

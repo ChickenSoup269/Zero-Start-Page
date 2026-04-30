@@ -1177,6 +1177,9 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.fliqloZenCheckbox) {
         DOM.fliqloZenCheckbox.checked = settings.fliqloZenMode === true
       }
+      if (DOM.fliqloTransparentCheckbox) {
+        DOM.fliqloTransparentCheckbox.checked = settings.fliqloTransparent === true
+      }
     }
 
     if (DOM.analogBlurBgCheckbox)

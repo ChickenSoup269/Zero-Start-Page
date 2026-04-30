@@ -98,6 +98,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (currentSettings.fliqloZenMode) {
     document.body.classList.add("fliqlo-zen-mode")
   }
+  if (currentSettings.fliqloTransparent) {
+    document.body.classList.add("fliqlo-transparent")
+  }
 
   const searchContainer = document.getElementById("search-container")
   if (searchContainer)

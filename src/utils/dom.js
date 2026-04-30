@@ -767,6 +767,9 @@ export const fliqloThemeSelect = document.getElementById(
 export const fliqloZenCheckbox = document.getElementById(
   "fliqlo-zen-checkbox",
 )
+export const fliqloTransparentCheckbox = document.getElementById(
+  "fliqlo-transparent-checkbox",
+)
 export const clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )

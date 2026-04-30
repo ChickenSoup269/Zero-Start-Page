@@ -30,6 +30,7 @@ export const defaultSettings = {
   framedClockTheme: "light",
   fliqloTheme: "dark",
   fliqloZenMode: false,
+  fliqloTransparent: false,
   sidestyleAlign: "left",  sidestyleNoBorder: false,
   sidebarClockFlip: false,
   clockFontTarget: "both",
