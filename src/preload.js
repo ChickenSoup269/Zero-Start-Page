@@ -46,6 +46,13 @@
       const dateClockStyle = settings.dateClockStyle || "default"
       body.classList.add(`date-clock-style-${dateClockStyle}`)
 
+      const fliqloTheme = settings.fliqloTheme || "dark"
+      body.classList.add(`fliqlo-theme-${fliqloTheme}`)
+
+      if (settings.fliqloZenMode) {
+        body.classList.add("fliqlo-zen-mode")
+      }
+
       const styleEl = document.createElement("style")
       let css = ""
 

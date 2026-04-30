@@ -1094,6 +1094,285 @@ body.date-clock-style-sidebar .clock-sidebar-date {
   text-align: center;
 }
 
+/* ──── Fliqlo (Flip Clock) Style ──── */
+body.date-clock-style-fliqlo .fliqlo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--clock-size, 6rem) * 0.18);
+}
+
+body.date-clock-style-fliqlo .fliqlo-time {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--clock-size, 6rem) * 0.08);
+}
+
+body.date-clock-style-fliqlo .fliqlo-group {
+  display: flex;
+  gap: calc(var(--clock-size, 6rem) * 0.04);
+}
+
+body.date-clock-style-fliqlo .fliqlo-card {
+  --card-w: calc(var(--clock-size, 6rem) * 0.72);
+  --card-h: calc(var(--clock-size, 6rem) * 1.05);
+  --card-radius: calc(var(--clock-size, 6rem) * 0.08);
+  --card-font: calc(var(--clock-size, 6rem) * 0.85);
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  perspective: 600px;
+}
+
+body.date-clock-style-fliqlo .fliqlo-group-ss .fliqlo-card {
+  --card-w: calc(var(--clock-size, 6rem) * 0.46);
+  --card-h: calc(var(--clock-size, 6rem) * 0.68);
+  --card-font: calc(var(--clock-size, 6rem) * 0.52);
+}
+
+/* Shared card half styling */
+body.date-clock-style-fliqlo .fliqlo-card-top,
+body.date-clock-style-fliqlo .fliqlo-card-bottom,
+body.date-clock-style-fliqlo .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo .fliqlo-card-flip-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  text-align: center;
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  font-weight: 700;
+  font-size: var(--card-font);
+  color: var(--clock-color, #f0f0f0);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+/* Spans inside each half: line-height = full card height so text is centered across both halves */
+body.date-clock-style-fliqlo .fliqlo-card-top span,
+body.date-clock-style-fliqlo .fliqlo-card-bottom span,
+body.date-clock-style-fliqlo .fliqlo-card-flip-top span,
+body.date-clock-style-fliqlo .fliqlo-card-flip-bottom span {
+  display: block;
+  line-height: var(--card-h);
+}
+
+/* Top half — shows upper portion of digit (lower portion clipped by overflow:hidden) */
+body.date-clock-style-fliqlo .fliqlo-card-top {
+  top: 0;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  background: linear-gradient(180deg, #333 0%, #2a2a2a 100%);
+  z-index: 1;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Bottom half — shows lower portion of digit (upper portion shifted out and clipped) */
+body.date-clock-style-fliqlo .fliqlo-card-bottom {
+  bottom: 0;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  background: linear-gradient(180deg, #1c1c1c 0%, #262626 100%);
+  z-index: 1;
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+body.date-clock-style-fliqlo .fliqlo-card-bottom span,
+body.date-clock-style-fliqlo .fliqlo-card-flip-bottom span {
+  /* Shift text up by half of full card height (= one half-container) to show bottom portion */
+  margin-top: calc(var(--card-h) * -0.5);
+}
+
+/* Center divider line */
+body.date-clock-style-fliqlo .fliqlo-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Flip top — old digit, flips down */
+body.date-clock-style-fliqlo .fliqlo-card-flip-top {
+  top: 0;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  background: linear-gradient(180deg, #333 0%, #2a2a2a 100%);
+  z-index: 5;
+  transform-origin: bottom center;
+  backface-visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Flip bottom — new digit, revealed from behind */
+body.date-clock-style-fliqlo .fliqlo-card-flip-bottom {
+  bottom: 0;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  background: linear-gradient(180deg, #1c1c1c 0%, #262626 100%);
+  z-index: 4;
+  transform-origin: top center;
+  transform: rotateX(90deg);
+  backface-visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- LIGHT THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-bottom {
+  color: #000000; /* Force black text on light cards */
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-top {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-bottom {
+  background: linear-gradient(180deg, #e8e8e8 0%, #ffffff 100%);
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card::after {
+  background: rgba(0, 0, 0, 0.15); /* Lighter divider line */
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-colon {
+  color: var(--clock-color, #f0f0f0);
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-ampm {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--clock-color, #f0f0f0);
+}
+
+/* --- ZEN MODE (FULL SCREEN) --- */
+body.date-clock-style-fliqlo.fliqlo-zen-mode {
+  --clock-size: min(22vw, 35vh) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-zen-mode::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: #000000;
+  z-index: 8999;
+}
+
+body.date-clock-style-fliqlo.fliqlo-zen-mode .main-container {
+  position: relative;
+  z-index: 9000;
+}
+
+body.date-clock-style-fliqlo.fliqlo-zen-mode #clock-date-wrap {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9000 !important;
+  margin: 0 !important;
+  width: auto !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-zen-mode #bookmark-widget,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #search-container,
+body.date-clock-style-fliqlo.fliqlo-zen-mode .widget-container,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #custom-title-display,
+body.date-clock-style-fliqlo.fliqlo-zen-mode .music-player-container,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #daily-quotes,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #timer-component,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #todo-container,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #full-calendar-container,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #notepad-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-zen-mode #top-right-controls,
+body.date-clock-style-fliqlo.fliqlo-zen-mode #settings-sidebar,
+body.date-clock-style-fliqlo.fliqlo-zen-mode .side-controls {
+  z-index: 9999 !important;
+}
+
+/* Animation when digit changes */
+body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-top {
+  opacity: 1;
+  animation: fliqloFlipTop 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-bottom {
+  opacity: 1;
+  animation: fliqloFlipBottom 0.25s 0.25s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes fliqloFlipTop {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes fliqloFlipBottom {
+  0% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* Colon separator */
+body.date-clock-style-fliqlo .fliqlo-colon {
+  font-size: calc(var(--clock-size, 6rem) * 0.65);
+  font-weight: 700;
+  color: var(--clock-color, #f0f0f0);
+  opacity: 0.65;
+  line-height: 1;
+  padding: 0 calc(var(--clock-size, 6rem) * 0.02);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  align-self: center;
+}
+
+/* AM/PM badge */
+body.date-clock-style-fliqlo .fliqlo-ampm {
+  font-size: calc(var(--clock-size, 6rem) * 0.18);
+  font-weight: 700;
+  color: var(--clock-color, #f0f0f0);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  align-self: flex-end;
+  margin-bottom: calc(var(--clock-size, 6rem) * 0.08);
+  margin-left: calc(var(--clock-size, 6rem) * 0.04);
+}
+
+/* Date below */
+body.date-clock-style-fliqlo .fliqlo-date {
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: calc(var(--clock-size, 6rem) * 0.2);
+  color: var(--date-color, rgba(255, 255, 255, 0.7));
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-top,
+  body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-bottom {
+    animation: none;
+  }
+}
+
 /* Free Mode Clock */
 body.free-move-clock .clock-date-wrap {
   position: absolute !important;

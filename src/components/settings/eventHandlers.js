@@ -605,12 +605,14 @@ export function setupGeneralEventHandlers(
       }
 
       // currentBg is already an idb-img-unsplash-... ID string from setUnsplashRandomBackground
-      const authorName = lastUnsplashPhoto?.user?.name || "Unsplash"
+      const authorName = lastUnsplashPhoto?.user?.name || settings.unsplashLastCredit?.authorName || "Unsplash"
       const newBg = {
         id: currentBg, // Use the actual ID stored in IndexedDB
         authorName: authorName,
         type: "image",
         date: new Date().toISOString(),
+        photoUrl: lastUnsplashPhoto?.links?.html || settings.unsplashLastCredit?.photoUrl || "",
+        authorUrl: lastUnsplashPhoto?.user?.links?.html || settings.unsplashLastCredit?.authorUrl || ""
       }
 
       settings.userBackgrounds = settings.userBackgrounds || []
@@ -625,7 +627,10 @@ export function setupGeneralEventHandlers(
       saveSettings()
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
+      
       unsplashSaveBtn.disabled = true
+      const i18n = geti18n()
+      unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
     })
   }
 
@@ -1982,6 +1987,32 @@ export function setupGeneralEventHandlers(
         detail: {
           key: "framedClockTheme",
           value: DOM.framedClockThemeSelect.value,
+        },
+      }),
+    )
+  })
+
+  DOM.fliqloThemeSelect?.addEventListener("change", () => {
+    handleSettingUpdate("fliqloTheme", DOM.fliqloThemeSelect.value)
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "fliqloTheme",
+          value: DOM.fliqloThemeSelect.value,
+        },
+      }),
+    )
+  })
+
+  DOM.fliqloZenCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate("fliqloZenMode", DOM.fliqloZenCheckbox.checked)
+    
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "fliqloZenMode",
+          value: DOM.fliqloZenCheckbox.checked,
         },
       }),
     )

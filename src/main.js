@@ -92,6 +92,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dateClockStyle = currentSettings.dateClockStyle || "default"
   document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
+  const fliqloTheme = currentSettings.fliqloTheme || "dark"
+  document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
+
+  if (currentSettings.fliqloZenMode) {
+    document.body.classList.add("fliqlo-zen-mode")
+  }
+
   const searchContainer = document.getElementById("search-container")
   if (searchContainer)
     searchContainer.style.display =

@@ -620,6 +620,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-sidestyle",
       "date-clock-style-sidebar",
       "date-clock-style-weekday",
+      "date-clock-style-fliqlo",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -1134,6 +1135,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "sidebar",
       "round",
       "square",
+      "fliqlo",
     ].includes(style)
     if (DOM.styleSpecificCustomization) {
       DOM.styleSpecificCustomization.style.display = styleHasExtras
@@ -1163,6 +1165,17 @@ function createUpdateSettingsInputs(effectInstances) {
         (style === "round" || style === "square") ? "block" : "none"
       if (DOM.framedClockThemeSelect) {
         DOM.framedClockThemeSelect.value = settings.framedClockTheme || "light"
+      }
+    }
+
+    if (DOM.fliqloThemeSetting) {
+      DOM.fliqloThemeSetting.style.display =
+        style === "fliqlo" ? "block" : "none"
+      if (DOM.fliqloThemeSelect) {
+        DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
+      }
+      if (DOM.fliqloZenCheckbox) {
+        DOM.fliqloZenCheckbox.checked = settings.fliqloZenMode === true
       }
     }
 
@@ -1327,6 +1340,24 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.unsplashCategory || "spring-wallpapers"
     if (DOM.unsplashAccessKeyInput)
       DOM.unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
+
+    const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
+    if (unsplashSaveBtn) {
+      if (settings.background && settings.background.startsWith("idb-img-unsplash-")) {
+        const userBackgrounds = settings.userBackgrounds || []
+        const isSaved = userBackgrounds.some(bg => (typeof bg === 'string' ? bg : bg.id) === settings.background)
+        unsplashSaveBtn.disabled = isSaved
+        
+        const i18n = (typeof geti18n === 'function') ? geti18n() : null
+        if (isSaved) {
+           unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n?.settings_unsplash_saved || "Saved"}</span>`
+        } else {
+           unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>${i18n?.settings_unsplash_save || "Save Background"}</span>`
+        }
+      } else {
+        unsplashSaveBtn.disabled = true
+      }
+    }
 
     const isImageBg =
       settings.background &&

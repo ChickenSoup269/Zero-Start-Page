@@ -758,6 +758,15 @@ export const framedClockThemeSetting = document.getElementById(
 export const framedClockThemeSelect = document.getElementById(
   "framed-clock-theme-select",
 )
+export const fliqloThemeSetting = document.getElementById(
+  "fliqlo-theme-setting",
+)
+export const fliqloThemeSelect = document.getElementById(
+  "fliqlo-theme-select",
+)
+export const fliqloZenCheckbox = document.getElementById(
+  "fliqlo-zen-checkbox",
+)
 export const clockFontTargetSelect = document.getElementById(
   "clock-font-target-select",
 )

@@ -28,6 +28,8 @@ export const defaultSettings = {
   timezone: "local",
   dateClockStyle: "default",
   framedClockTheme: "light",
+  fliqloTheme: "dark",
+  fliqloZenMode: false,
   sidestyleAlign: "left",  sidestyleNoBorder: false,
   sidebarClockFlip: false,
   clockFontTarget: "both",

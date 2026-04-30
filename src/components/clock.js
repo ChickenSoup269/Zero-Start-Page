@@ -89,6 +89,8 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".clock-jp-time"))
     } else if (style === "sidebar") {
       clockTargets.push(clockElement.querySelector(".clock-sidebar-time"))
+    } else if (style === "fliqlo") {
+      clockTargets.push(clockElement.querySelector(".fliqlo-time"))
     }
   }
 
@@ -119,6 +121,8 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".clock-jp-date"))
       } else if (style === "sidebar") {
         dateTargets.push(clockElement.querySelector(".clock-sidebar-date"))
+      } else if (style === "fliqlo") {
+        dateTargets.push(clockElement.querySelector(".fliqlo-date"))
       }
     }
   }
@@ -564,6 +568,10 @@ export function updateTime() {
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
     document.body.classList.add(`framed-theme-${theme}`)
 
+    const fliqloTheme = settings.fliqloTheme || "dark"
+    document.body.classList.remove("fliqlo-theme-light", "fliqlo-theme-dark")
+    document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
+
     clockElement.innerHTML = `
       <div class="round-clock-new-layout">
         <div class="round-clock-notch">
@@ -617,6 +625,10 @@ export function updateTime() {
     const theme = settings.framedClockTheme || "light"
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
     document.body.classList.add(`framed-theme-${theme}`)
+
+    const fliqloTheme = settings.fliqloTheme || "dark"
+    document.body.classList.remove("fliqlo-theme-light", "fliqlo-theme-dark")
+    document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
 
     clockElement.innerHTML = `
       <div class="square-clock-bold-layout">
@@ -702,6 +714,103 @@ export function updateTime() {
         </div>
       `
     }
+  } else if (dateClockStyle === "fliqlo") {
+    const fliqloTheme = settings.fliqloTheme || "dark"
+    document.body.classList.remove("fliqlo-theme-light", "fliqlo-theme-dark")
+    document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
+
+    if (settings.fliqloZenMode) {
+      document.body.classList.add("fliqlo-zen-mode")
+    } else {
+      document.body.classList.remove("fliqlo-zen-mode")
+    }
+
+    const fliqloTimeOptions = settings.hideSeconds
+      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
+      : {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: use12Hour,
+          timeZone: tz,
+        }
+    const timeParts = new Intl.DateTimeFormat(langCode, fliqloTimeOptions)
+      .formatToParts(now)
+      .filter((part) => part.type !== "literal")
+
+    const hhPart = timeParts.find((part) => part.type === "hour")
+    const mmPart = timeParts.find((part) => part.type === "minute")
+    const ssPart = timeParts.find((part) => part.type === "second")
+    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
+
+    const hh = hhPart ? hhPart.value : "00"
+    const mm = mmPart ? mmPart.value : "00"
+    const ss = ssPart ? ssPart.value : ""
+    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
+
+    // Build flip cards for each digit
+    const buildFlipCard = (digit, label) => {
+      // Check if digit changed to trigger animation
+      const prevKey = `_fliqlo_prev_${label}`
+      const prev = clockElement[prevKey]
+      clockElement[prevKey] = digit
+      const changed = prev !== undefined && prev !== digit
+      const animClass = changed ? " fliqlo-flip" : ""
+      const oldDigit = prev !== undefined ? prev : digit
+      return `
+        <div class="fliqlo-card${animClass}" data-digit="${label}">
+          <div class="fliqlo-card-top">
+            <span>${digit}</span>
+          </div>
+          <div class="fliqlo-card-bottom">
+            <span>${oldDigit}</span>
+          </div>
+          <div class="fliqlo-card-flip-top">
+            <span>${oldDigit}</span>
+          </div>
+          <div class="fliqlo-card-flip-bottom">
+            <span>${digit}</span>
+          </div>
+        </div>
+      `
+    }
+
+    const hhCards = hh.split("").map((d, i) => buildFlipCard(d, `h${i}`)).join("")
+    const mmCards = mm.split("").map((d, i) => buildFlipCard(d, `m${i}`)).join("")
+    let ssHtml = ""
+    if (ss) {
+      ssHtml = `
+        <span class="fliqlo-colon">:</span>
+        <div class="fliqlo-group fliqlo-group-ss">
+          ${ss.split("").map((d, i) => buildFlipCard(d, `s${i}`)).join("")}
+        </div>
+      `
+    }
+    let ampmHtml = ""
+    if (ampm) {
+      ampmHtml = `<span class="fliqlo-ampm">${ampm}</span>`
+    }
+
+    const dateStr = shouldShowDate
+      ? `<div class="fliqlo-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
+      : ""
+
+    clockElement.innerHTML = `
+      <div class="fliqlo-wrapper">
+        <div class="fliqlo-time">
+          <div class="fliqlo-group">
+            ${hhCards}
+          </div>
+          <span class="fliqlo-colon">:</span>
+          <div class="fliqlo-group">
+            ${mmCards}
+          </div>
+          ${ssHtml}
+          ${ampmHtml}
+        </div>
+        ${dateStr}
+      </div>
+    `
   } else {
     clockElement.textContent = timeString
   }
@@ -736,6 +845,7 @@ export function updateTime() {
     "jp-style",
     "sidebar",
     "weekday-style",
+    "fliqlo",
   ].includes(dateClockStyle)
 
   dateElement.classList.toggle(

@@ -737,7 +737,7 @@
                         <select id="unsplash-category-select" class="full-width" style="margin-bottom: 12px;"></select>
                         
                         <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled>
-                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_save_bg">Save Background</span>
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_unsplash_save">Save Background</span>
                         </button>
 
                         <div class="unsplash-links">
@@ -2638,6 +2638,12 @@
                                         data-i18n="settings_clock_date_style_weekday">Weekday</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="fliqlo">
+                                    <i class="fa-solid fa-repeat"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_fliqlo">Fliqlo</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                             </div>
                         </div>
                         <select id="clock-date-style-select" style="display: none;">
@@ -2653,6 +2659,7 @@
                             <option value="analog">Analog Clock</option>
                             <option value="sidebar">Sidebar</option>
                             <option value="weekday-style">Weekday Style</option>
+                            <option value="fliqlo">Fliqlo (Flip Clock)</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -2696,6 +2703,21 @@
                                 <option value="dark" data-i18n="settings_framed_clock_theme_dark">Dark Glass (Deep)
                                 </option>
                             </select>
+                        </div>
+
+                        <div id="fliqlo-theme-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="fliqlo-theme-select" data-i18n="settings_fliqlo_theme">Fliqlo
+                                Theme</label>
+                            <select id="fliqlo-theme-select">
+                                <option value="dark" data-i18n="settings_fliqlo_theme_dark">Dark
+                                </option>
+                                <option value="light" data-i18n="settings_fliqlo_theme_light">Light
+                                </option>
+                            </select>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="fliqlo-zen-checkbox" data-i18n="settings_fliqlo_zen">Zen Mode (Full Screen)</label>
+                                <input type="checkbox" id="fliqlo-zen-checkbox">
+                            </div>
                         </div>
 
                         <div id="jp-style-language-setting" class="setting-item no-margin-top" style="display: none;">
