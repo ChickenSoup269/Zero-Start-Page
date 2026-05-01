@@ -180,6 +180,23 @@ const THEMES = {
     clockColor: "#ffffff",
     dateColor: "#ffffff"
   },
+  arctic: {
+    accentColor: "#ffffff",
+    sidebarBg: "rgba(10, 10, 15, 0.9)",
+    panelBg: "rgba(255, 255, 255, 0.85)",
+    glassBg: "rgba(255, 255, 255, 0.15)",
+    glassBorder: "rgba(255, 255, 255, 0.3)",
+    glassEdge: "rgba(255, 255, 255, 0.4)",
+    effect: "none",
+    hueTextMode: "off",
+    font: "'Outfit', sans-serif",
+    clockFont: "'Outfit', sans-serif",
+    dateClockStyle: "fliqlo",
+    fliqloTheme: "light",
+    clockColor: "#1a1a2e",
+    dateColor: "#444444",
+    contextMenuStyle: "light"
+  },
 }
 
 // List of settings that themes are allowed to modify.
@@ -191,7 +208,7 @@ export const THEMEABLE_KEYS = [
   "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
   "snowfallColor", "sunbeamColor", "bubbleColor", "rainHDColor", "stormRainColor",
   "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor",
-  "northernLightsStyle", "northernLightsBrightness"
+  "northernLightsStyle", "northernLightsBrightness", "fliqloTheme", "contextMenuStyle"
 ];
 
 // Variable to store user's manual settings before a theme was applied

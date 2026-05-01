@@ -1756,7 +1756,7 @@
   justify-content: center;
   border-radius: 12px !important;
   background: var(--accent-color) !important;
-  color: #000 !important;
+  color: var(--accent-contrast-color, #1a1a2e) !important;
   border: none !important;
   font-size: 1.2rem !important;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
@@ -2662,4 +2662,501 @@
 .theme-item:hover .theme-name,
 .theme-item.active .theme-name {
   color: #fff;
+}
+
+/* Sidebar Light Mode (High Contrast for Dark Accents) */
+body.sidebar-light .settings-sidebar {
+  --text-color: #000000;
+  --input-bg: rgba(0, 0, 0, 0.06);
+  --input-border: rgba(0, 0, 0, 0.15);
+  --glass-bg: rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-edge: rgba(0, 0, 0, 0.08);
+  --sidebar-border: rgba(0, 0, 0, 0.12);
+  --sidebar-shadow: 10px 0 40px rgba(0, 0, 0, 0.15);
+  
+  color: var(--text-color);
+  box-shadow: var(--sidebar-shadow);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+body.sidebar-light .sidebar-header {
+  border-bottom: 1px solid var(--sidebar-border);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.sidebar-light .sidebar-header h2 {
+  background: linear-gradient(to right, #000, var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+body.sidebar-light .settings-version {
+  color: #000;
+  opacity: 0.6;
+}
+
+body.sidebar-light .close-sidebar {
+  color: #000;
+  opacity: 0.5;
+}
+
+body.sidebar-light .close-sidebar:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.sidebar-light .sidebar-toc-btn {
+  color: #000;
+  opacity: 0.6;
+}
+
+body.sidebar-light .sidebar-toc-btn:hover,
+body.sidebar-light .sidebar-toc-btn.active {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+body.sidebar-light .setting-group label,
+body.sidebar-light .setting-item-row label,
+body.sidebar-light .setting-item-row .setting-label,
+body.sidebar-light .lcp-label {
+  color: #000 !important;
+  font-weight: 500;
+}
+
+body.sidebar-light .setting-group h4 {
+  color: var(--accent-color);
+  opacity: 1;
+  font-weight: 700;
+}
+
+body.sidebar-light .setting-item-row {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-edge);
+  box-shadow: none;
+}
+
+body.sidebar-light .setting-item-row::after {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.01) 20%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.01) 80%, transparent);
+}
+
+body.sidebar-light .setting-item-row:hover {
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.theme-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.theme-item.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  border-color: var(--accent-color, #a8c0ff);
+  box-shadow:
+    0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
+    inset 0 0 0 1px var(--accent-color, #a8c0ff);
+}
+
+.theme-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.theme-preview i {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+.theme-item:hover .theme-preview {
+  transform: scale(1.03);
+}
+
+.theme-item.active .theme-preview i {
+  transform: scale(1.1);
+}
+
+/* Universal Active Indicator (Checkmark) */
+.active-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, #1a1a2e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  opacity: 0;
+  transform: scale(0.5) rotate(-45deg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.active-indicator i {
+  color: inherit !important;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-item.active .active-indicator,
+.local-bg-item.active .active-indicator,
+.user-color-item.active .active-indicator,
+.user-gradient-item.active .active-indicator,
+.user-svg-wave-item.active .active-indicator,
+.clock-style-card.active .active-indicator {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+}
+
+.theme-item .active-indicator {
+  z-index: 3;
+}
+
+.bg-select-mode .active-indicator {
+  display: none !important;
+}
+
+.clock-style-card.active .clock-style-name {
+  color: #fff;
+  opacity: 1;
+}
+
+/* Theme name styling */
+.theme-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.theme-item:hover .theme-name,
+.theme-item.active .theme-name {
+  color: #fff;
+}
+
+/* Sidebar Light Mode (High Contrast for Dark Accents) */
+body.sidebar-light .settings-sidebar {
+  --text-color: #000000;
+  --input-bg: rgba(0, 0, 0, 0.06);
+  --input-border: rgba(0, 0, 0, 0.15);
+  --glass-bg: rgba(0, 0, 0, 0.04);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-edge: rgba(0, 0, 0, 0.08);
+  --sidebar-border: rgba(0, 0, 0, 0.12);
+  --sidebar-shadow: 10px 0 40px rgba(0, 0, 0, 0.15);
+  
+  color: var(--text-color);
+  box-shadow: var(--sidebar-shadow);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+body.sidebar-light .sidebar-header {
+  border-bottom: 1px solid var(--sidebar-border);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.sidebar-light .sidebar-header h2 {
+  background: linear-gradient(to right, #000, var(--accent-color));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+body.sidebar-light .settings-version {
+  color: #000;
+  opacity: 0.6;
+}
+
+body.sidebar-light .close-sidebar {
+  color: #000;
+  opacity: 0.5;
+}
+
+body.sidebar-light .close-sidebar:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.sidebar-light .sidebar-toc-btn {
+  color: #000;
+  opacity: 0.6;
+}
+
+body.sidebar-light .sidebar-toc-btn:hover,
+body.sidebar-light .sidebar-toc-btn.active {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+body.sidebar-light .setting-group label,
+body.sidebar-light .setting-item-row label,
+body.sidebar-light .setting-item-row .setting-label,
+body.sidebar-light .lcp-label {
+  color: #000 !important;
+  font-weight: 500;
+}
+
+body.sidebar-light .setting-group h4 {
+  color: var(--accent-color);
+  opacity: 1;
+  font-weight: 700;
+}
+
+body.sidebar-light .setting-item-row {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-edge);
+  box-shadow: none;
+}
+
+body.sidebar-light .setting-item-row::after {
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.01) 20%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.01) 80%, transparent);
+}
+
+body.sidebar-light .setting-item-row:hover {
+  background: rgba(0, 0, 0, 0.07);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.sidebar-light select,
+body.sidebar-light input[type="text"],
+body.sidebar-light input:not([type="range"]):not([type="checkbox"]),
+body.sidebar-light textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: #000;
+  font-weight: 500;
+}
+
+body.sidebar-light .sidebar-toc-menu {
+  background: rgba(255, 255, 255, 0.99);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+body.sidebar-light .toc-item {
+  color: #000;
+  font-weight: 500;
+}
+
+body.sidebar-light .toc-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--accent-color);
+}
+
+body.sidebar-light .sidebar-footer {
+  border-top: 1px solid var(--sidebar-border);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+body.sidebar-light .sidebar-footer-toggle {
+  color: #000;
+  opacity: 0.6;
+}
+
+body.sidebar-light .sidebar-footer-toggle:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.sidebar-light .footer-btn {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+}
+
+body.sidebar-light .footer-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+body.sidebar-light .sidebar-copyright,
+body.sidebar-light .sidebar-footer-hint,
+body.sidebar-light small {
+  color: #000 !important;
+  opacity: 0.7 !important;
+}
+
+body.sidebar-light .sidebar-update-link {
+  color: #d35400;
+}
+
+body.sidebar-light .setting-group label i {
+  color: #000;
+  opacity: 0.8;
+}
+
+/* Fix theme items in sidebar light */
+body.sidebar-light .theme-item {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.sidebar-light .theme-name {
+  color: #000;
+  font-weight: 600;
+}
+
+body.sidebar-light .theme-item.active .theme-name {
+  color: var(--accent-color);
+}
+
+body.sidebar-light .theme-item:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Dropdown Arrows for Sidebar Selects */
+body.sidebar-light .settings-sidebar select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 12px !important;
+  padding-right: 30px !important;
+}
+
+/* Wallpaper & Gallery Sections */
+body.sidebar-light .gallery-subtitle {
+  color: #000 !important;
+  border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light .local-bg-item {
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.sidebar-light .local-bg-item.active {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px var(--accent-color) !important;
+}
+
+/* Setting Group Prominence */
+body.sidebar-light .setting-group {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+body.sidebar-light .setting-group h4 {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-left: -12px;
+  margin-right: -12px;
+  color: var(--accent-color) !important;
+  font-weight: 700 !important;
+}
+
+/* Force dark text on all spans, labels, and small text in light sidebar */
+body.sidebar-light .settings-sidebar span:not(.active-indicator i),
+body.sidebar-light .settings-sidebar small,
+body.sidebar-light .clock-style-name,
+body.sidebar-light .font-name,
+body.sidebar-light .effect-item span,
+body.sidebar-light .lcp-label {
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+/* Specific subtext opacity */
+body.sidebar-light .setting-group small,
+body.sidebar-light .sidebar-footer-hint,
+body.sidebar-light .settings-sidebar .hint-text {
+  opacity: 0.65 !important;
+}
+
+/* Clock Style Icons & Cards */
+body.sidebar-light .clock-style-card {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .clock-style-card i {
+  color: #000 !important;
+  opacity: 0.7 !important;
+}
+
+body.sidebar-light .clock-style-card.active {
+  background: color-mix(in srgb, var(--accent-color) 15%, transparent) !important;
+  border-color: var(--accent-color) !important;
+}
+
+body.sidebar-light .clock-style-card.active .clock-style-name {
+  color: var(--accent-color) !important;
+  font-weight: 700;
+}
+
+body.sidebar-light .clock-style-card.active i {
+  color: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+/* Buttons Contrast (Saved Gradients, etc) */
+body.sidebar-light .settings-sidebar .secondary-btn,
+body.sidebar-light .settings-sidebar .btn-group button,
+body.sidebar-light .settings-sidebar .full-width-btn {
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.sidebar-light .settings-sidebar .secondary-btn i {
+  color: #000 !important;
+}
+
+/* Items Prominence & Cards */
+body.sidebar-light .setting-item-row {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) !important;
+}
+
+body.sidebar-light .setting-item-row:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Force dark color on all sidebar icons (chevrons, etc) */
+body.sidebar-light .settings-sidebar i {
+  color: #000 !important;
+  opacity: 0.7 !important;
+}
+
+body.sidebar-light .settings-sidebar .group-chevron,
+body.sidebar-light .settings-sidebar .fa-chevron-down,
+body.sidebar-light .settings-sidebar .fa-chevron-right {
+  color: #000 !important;
+  opacity: 0.8 !important;
+}
+
+body.sidebar-light .settings-sidebar .setting-group h4 i {
+  color: var(--accent-color) !important;
+  opacity: 1 !important;
 }

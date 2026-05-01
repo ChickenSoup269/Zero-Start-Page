@@ -640,6 +640,11 @@ function createApplySettings(effectInstances) {
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
+
+    // Fliqlo Theme
+    document.body.classList.remove("fliqlo-theme-dark", "fliqlo-theme-light")
+    document.body.classList.add(`fliqlo-theme-${settings.fliqloTheme || "dark"}`)
+
     // Context Menu Style
     document.body.classList.remove(
       "context-menu-dark",
@@ -728,6 +733,35 @@ function createApplySettings(effectInstances) {
           "--accent-color-rgb",
           `${rgb.r}, ${rgb.g}, ${rgb.b}`,
         )
+      }
+
+      // Sidebar Dynamic Color & Monochrome Logic
+      const forceLightSidebar = settings.showQuickAccessBg === true
+
+      if (forceLightSidebar) {
+        // Sidebar becomes Off-White
+        document.documentElement.style.setProperty("--sidebar-bg", "rgba(240, 240, 245, 0.98)")
+        document.body.classList.add("sidebar-light")
+        
+        // Force PURE BLACK accent for a clean Black & White look
+        document.documentElement.style.setProperty("--accent-color", "#000000")
+        document.documentElement.style.setProperty("--accent-color-rgb", "0, 0, 0")
+        document.documentElement.style.setProperty("--accent-contrast-color", "#ffffff")
+      } else {
+        // Restore actual accent color from settings
+        document.documentElement.style.setProperty("--accent-color", settings.accentColor)
+        const rgb = hexToRgb(settings.accentColor)
+        if (rgb) {
+          document.documentElement.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+        }
+        const contrastColor = getContrastYIQ(settings.accentColor) === "black" ? "#1a1a2e" : "#ffffff"
+        document.documentElement.style.setProperty("--accent-contrast-color", contrastColor)
+
+        // Default sidebar color from theme/settings
+        if (settings.sidebarBg) {
+          document.documentElement.style.setProperty("--sidebar-bg", settings.sidebarBg)
+        }
+        document.body.classList.remove("sidebar-light")
       }
 
       // Ensure Unsplash random button icon has contrast
@@ -2182,6 +2216,17 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
+    }
+
+    // Sync Theme-specific UI
+    if (DOM.fliqloThemeSelect) {
+      DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
+    }
+    if (DOM.contextMenuStyleSelect) {
+      DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
+    }
+    if (DOM.clockDateStyleSelect) {
+      DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     }
   }
 }
