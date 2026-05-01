@@ -1225,7 +1225,7 @@ body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-top,
 body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-bottom,
 body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-top,
 body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-flip-bottom {
-  color: #000000; /* Force black text on light cards */
+  color: var(--clock-color, #000000); /* Allow custom colors, default to black */
 }
 
 body.date-clock-style-fliqlo.fliqlo-theme-light .fliqlo-card-top,

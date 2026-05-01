@@ -678,7 +678,13 @@ function createApplySettings(effectInstances) {
 
     if (!finalClockColor || !finalDateColor) {
       let fallbackColor = "#ffffff"
-      if (
+      
+      // If Fliqlo is active and theme is light, fallback to black
+      const isFliqloLight = (settings.dateClockStyle === "fliqlo" && settings.fliqloTheme === "light")
+      
+      if (isFliqloLight) {
+        fallbackColor = "#000000"
+      } else if (
         isPredefinedLocalBg ||
         isUserUploadedBg ||
         (bg && bg.match(/^https?:\/\//))
