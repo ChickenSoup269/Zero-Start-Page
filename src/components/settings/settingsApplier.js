@@ -550,20 +550,23 @@ function createApplySettings(effectInstances) {
     }
     if (layout === "sidebar-left") layout = "sidebar"
 
-    document.body.classList.remove(
+    const layoutClasses = [
       "bookmark-sidebar-mode",
       "bookmark-taskbar-mode",
       "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
-    )
-    if (layout === "sidebar")
-      document.body.classList.add("bookmark-sidebar-mode")
-    else if (layout === "taskbar")
-      document.body.classList.add("bookmark-taskbar-mode")
-    else if (layout === "taskbar-top")
-      document.body.classList.add("bookmark-taskbar-top-mode")
-    else if (layout === "taskbar-left")
-      document.body.classList.add("bookmark-taskbar-left-mode")
+    ]
+    const targetClass = layout === "default" ? null : `bookmark-${layout}-mode`
+    
+    // JITTER-PROOF: Only update classes if the layout has actually changed
+    if (targetClass === null) {
+      if (layoutClasses.some(c => document.body.classList.contains(c))) {
+        document.body.classList.remove(...layoutClasses)
+      }
+    } else if (!document.body.classList.contains(targetClass)) {
+      document.body.classList.remove(...layoutClasses)
+      document.body.classList.add(targetClass)
+    }
 
     let bgStyle = settings.bookmarkLayoutBgStyle || "default"
     let bgColor = settings.bookmarkLayoutBgColor || ""

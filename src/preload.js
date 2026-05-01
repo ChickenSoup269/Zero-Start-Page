@@ -56,9 +56,26 @@
       const styleEl = document.createElement("style")
       let css = ""
 
-      // Prevent CLS by applying widths and display nones immediately
+      // Inject accent color and other theme variables for loading screen
+      const accentColor = settings.accentColor || "#818cf8"
+      const hexToRgb = (hex) => {
+        const r = parseInt(hex.slice(1, 3), 16)
+        const g = parseInt(hex.slice(3, 5), 16)
+        const b = parseInt(hex.slice(5, 7), 16)
+        return `${r}, ${g}, ${b}`
+      }
+      const accentRgb = hexToRgb(accentColor)
+
       const searchBarWidth = settings.searchBarWidth || 600
-      css += `:root { --search-bar-width: ${searchBarWidth}px; }\n`
+      css += `:root { 
+        --accent-color: ${accentColor};
+        --accent-color-rgb: ${accentRgb};
+        --search-bar-width: ${searchBarWidth}px;
+        --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
+        --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
+        --bookmark-gap: ${settings.bookmarkGap ?? 8}px;
+        --bookmark-border-radius: ${settings.bookmarkBorderRadius ?? 12}px;
+      }\n`
 
       if (settings.showSearchBar === false) {
         css += `#search-container { display: none !important; }\n`

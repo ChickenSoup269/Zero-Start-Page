@@ -35,6 +35,7 @@ import {
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
+  document.body.classList.add("is-booting")
   // Update version in startup overlay and settings sidebar immediately
   try {
     const manifest = window.chrome?.runtime?.getManifest?.()
@@ -125,7 +126,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     `${currentSettings.searchBarWidth || 600}px`,
   )
 
-  // Initialize all UI components immediately to prevent layout shifts
+  // Initialize Settings (Applies background & heavy canvas effects)
+  // CRITICAL: Must happen BEFORE bookmarks so CSS variables are ready
+  initSettings()
+  
   initClock()
   initBookmarks()
   initSearch()
@@ -255,7 +259,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Smooth reveal: wait for critical components and then fade out overlay
   const revealApp = () => {
     const mainContainer = document.querySelector(".main-container")
-    if (mainContainer) mainContainer.classList.add("ready")
     
     const hideOverlay = () => {
       const overlay = document.getElementById("startup-overlay")
@@ -264,17 +267,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         overlay.style.visibility = "hidden"
       }
       document.body.classList.remove("loading-state")
+      document.body.classList.remove("is-booting")
     }
 
     // Wait for bookmarks-grid, taskbar, sidebar to be stable
     const onBookmarksReady = () => {
+      if (mainContainer) mainContainer.classList.add("ready")
       setTimeout(hideOverlay, 300)
       window.removeEventListener("bookmarksReady", onBookmarksReady)
     }
     window.addEventListener("bookmarksReady", onBookmarksReady)
 
     // Safety timeout: if bookmarksReady never fires, show app anyway
-    setTimeout(hideOverlay, 1500)
+    setTimeout(() => {
+      if (mainContainer) mainContainer.classList.add("ready")
+      hideOverlay()
+    }, 1500)
   }
 
   // Load language as other heavy/modal components depend on it translations
@@ -285,8 +293,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await getImageUrl(currentSettings.background).catch(() => {})
   }
 
-  // Initialize Settings (Applies background & heavy canvas effects)
-  initSettings()
+  // initSettings() moved up to prevent CLS
 
   if (window.requestIdleCallback) {
     window.requestIdleCallback(revealApp)

@@ -3244,14 +3244,17 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
 }
 
 /* Initial Load Fix (FOUC & CLS) */
-body .bookmark-widget.no-transition {
-  transition: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
+body.is-booting *:not(#startup-overlay):not(#startup-overlay *),
+body.loading-state *:not(#startup-overlay):not(#startup-overlay *),
+body .bookmark-widget.no-transition,
 body .bookmark-widget.no-transition * {
   transition: none !important;
+  animation: none !important;
+}
+
+body .bookmark-widget.no-transition {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 /* 1. Sidebar Mode (Right) */

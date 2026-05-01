@@ -472,7 +472,9 @@ export function updateOverflowBookmarks() {
     // Show widget for default grid too
     const bw = document.getElementById("bookmark-widget")
     if (bw && bw.classList.contains("no-transition")) {
-      setTimeout(() => bw.classList.remove("no-transition"), 150)
+      requestAnimationFrame(() => {
+        bw.classList.remove("no-transition")
+      })
     }
     return
   }
@@ -497,7 +499,9 @@ export function updateOverflowBookmarks() {
     container.style.overflow = ""
     const bw = document.getElementById("bookmark-widget")
     if (bw && bw.classList.contains("no-transition")) {
-      setTimeout(() => bw.classList.remove("no-transition"), 150)
+      requestAnimationFrame(() => {
+        bw.classList.remove("no-transition")
+      })
     }
     return
   }
@@ -683,11 +687,14 @@ export function updateOverflowBookmarks() {
   // Finally show the widget after calculations (prevent FOUC and jumpy positioning)
   const bw = document.getElementById("bookmark-widget")
   if (bw && bw.classList.contains("no-transition")) {
-    setTimeout(() => {
-      bw.classList.remove("no-transition")
-      // Signal that layout is stable
-      window.dispatchEvent(new CustomEvent("bookmarksReady"))
-    }, 250) // Slightly longer delay to ensure everything is ready
+    // Double requestAnimationFrame ensures that the styles are applied and the layout is calculated
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        bw.classList.remove("no-transition")
+        // Signal that layout is stable
+        window.dispatchEvent(new CustomEvent("bookmarksReady"))
+      })
+    })
   } else {
     // If already initialized, still signal readiness
     window.dispatchEvent(new CustomEvent("bookmarksReady"))
