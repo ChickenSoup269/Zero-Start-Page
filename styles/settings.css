@@ -357,6 +357,7 @@
   color: #888;
   font-size: 1.2rem;
   cursor: pointer;
+  border-radius: 5px;
   padding: 5px;
   transition: all 0.2s;
   display: flex;
@@ -2674,7 +2675,7 @@ body.sidebar-light .settings-sidebar {
   --glass-edge: rgba(0, 0, 0, 0.08);
   --sidebar-border: rgba(0, 0, 0, 0.12);
   --sidebar-shadow: 10px 0 40px rgba(0, 0, 0, 0.15);
-  
+
   color: var(--text-color);
   box-shadow: var(--sidebar-shadow);
   border-right: 1px solid var(--sidebar-border);
@@ -2741,7 +2742,14 @@ body.sidebar-light .setting-item-row {
 }
 
 body.sidebar-light .setting-item-row::after {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.01) 20%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.01) 80%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.01) 20%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0.01) 80%,
+    transparent
+  );
 }
 
 body.sidebar-light .setting-item-row:hover {
@@ -2869,7 +2877,7 @@ body.sidebar-light .settings-sidebar {
   --glass-edge: rgba(0, 0, 0, 0.08);
   --sidebar-border: rgba(0, 0, 0, 0.12);
   --sidebar-shadow: 10px 0 40px rgba(0, 0, 0, 0.15);
-  
+
   color: var(--text-color);
   box-shadow: var(--sidebar-shadow);
   border-right: 1px solid var(--sidebar-border);
@@ -2936,7 +2944,14 @@ body.sidebar-light .setting-item-row {
 }
 
 body.sidebar-light .setting-item-row::after {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.01) 20%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0.01) 80%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.01) 20%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0.01) 80%,
+    transparent
+  );
 }
 
 body.sidebar-light .setting-item-row:hover {
@@ -2994,7 +3009,7 @@ body.sidebar-light .footer-btn {
 
 body.sidebar-light .footer-btn:hover {
   background: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 body.sidebar-light .sidebar-copyright,
@@ -3105,7 +3120,11 @@ body.sidebar-light .clock-style-card i {
 }
 
 body.sidebar-light .clock-style-card.active {
-  background: color-mix(in srgb, var(--accent-color) 15%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--accent-color) 15%,
+    transparent
+  ) !important;
   border-color: var(--accent-color) !important;
 }
 
@@ -3160,3 +3179,504 @@ body.sidebar-light .settings-sidebar .setting-group h4 i {
   color: var(--accent-color) !important;
   opacity: 1 !important;
 }
+
+/* ─── Refined Arctic Theme Contrast & Aesthetics ─── */
+body.sidebar-light .bg-control-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+body.sidebar-light .bg-control-title {
+  color: #000 !important;
+  opacity: 0.85;
+  font-weight: 700;
+}
+
+body.sidebar-light .video-thumb-badge,
+body.sidebar-light .unsplash-credit-badge {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light .video-thumb-badge i,
+body.sidebar-light .unsplash-credit-badge i {
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light .sidebar-scroll-top-btn {
+  background: #000 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.sidebar-light .sidebar-scroll-top-btn i {
+  color: #fff !important;
+}
+
+body.sidebar-light .settings-section {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+body.sidebar-light .section-toggle {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+  font-weight: 700;
+}
+
+body.sidebar-light .section-toggle:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.sidebar-light .section-toggle i {
+  color: var(--accent-color) !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light .section-toggle::after {
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-size: 0.8rem;
+}
+
+body.sidebar-light .section-content {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Ensure all setting group icons and chevrons are dark */
+body.sidebar-light .setting-group label i,
+body.sidebar-light .setting-group .setting-label i,
+body.sidebar-light .group-icon,
+body.sidebar-light .group-chevron {
+  color: #000 !important;
+  opacity: 0.85 !important;
+}
+
+/* Input focus refinement for light mode */
+body.sidebar-light input[type="text"]:focus,
+body.sidebar-light select:focus {
+  background: #fff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* More Background Cards for Arctic Theme */
+body.sidebar-light .gradient-config-card,
+body.sidebar-light .setting-group.card-mode,
+body.sidebar-light .bg-control-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  color: #000 !important;
+}
+
+body.sidebar-light .gradient-swatch label,
+body.sidebar-light .setting-item label,
+body.sidebar-light .lcp-label,
+body.sidebar-light .bg-slider-label {
+  color: #000 !important;
+  opacity: 0.8 !important;
+}
+
+body.sidebar-light .bg-slider-value,
+body.sidebar-light .gradient-angle-value {
+  color: #000 !important;
+  font-weight: 600;
+}
+
+body.sidebar-light .gradient-extra-pickers-container {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .modern-gradient-hint {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ─── Arctic Theme Fixes (Icons, Cards, Search) ─── */
+
+
+
+/* 2. Star Icons (Yellow) & Check Icons (White) */
+body.sidebar-light .settings-sidebar i.favorite-star-badge,
+body.sidebar-light .settings-sidebar .fa-star {
+  color: #ffca28 !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light .settings-sidebar .active-indicator i {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 3. Cards Prominence (Accent Color, Multi-Color, Gradient) */
+body.sidebar-light .accent-color-selector,
+body.sidebar-light #multi-color-settings-body,
+body.sidebar-light #gradient-settings-body,
+body.sidebar-light .gradient-config-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 18px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+}
+
+/* 4. Primary Button Text (White) */
+body.sidebar-light .settings-sidebar .primary-btn,
+body.sidebar-light .settings-sidebar #save-gradient-btn,
+body.sidebar-light .settings-sidebar #save-multi-color-btn,
+body.sidebar-light .settings-sidebar #save-accent-color-btn {
+  color: #ffffff !important;
+}
+
+/* ─── Final Arctic Theme Refinements ─── */
+
+/* 1. Global Sidebar Buttons: Black background, White text */
+body.sidebar-light .settings-sidebar .secondary-btn,
+body.sidebar-light .settings-sidebar .primary-btn,
+body.sidebar-light
+  .settings-sidebar
+  button:not(.accent-color-preset):not(.icon-btn):not(.toggle-password-btn):not(
+    .btn-group-item
+  ) {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light .settings-sidebar .secondary-btn i,
+body.sidebar-light .settings-sidebar .primary-btn i {
+  color: #ffffff !important;
+}
+
+body.sidebar-light .settings-sidebar .secondary-btn:hover,
+body.sidebar-light .settings-sidebar .primary-btn:hover {
+  background: #333333 !important;
+  border-color: #333333 !important;
+}
+
+/* 2. Cards & Groups: Black borders, White background */
+body.sidebar-light .bg-control-card,
+body.sidebar-light .gradient-config-card,
+body.sidebar-light .accent-color-selector,
+body.sidebar-light #multi-color-settings-body,
+body.sidebar-light #gradient-settings-body,
+body.sidebar-light .setting-group.card-mode {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Ensure the parent setting-group also stands out */
+body.sidebar-light .setting-group {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+}
+
+/* 3. Custom Color Input: Black text */
+body.sidebar-light .custom-color-input-group input,
+body.sidebar-light #accent-color-hex-input {
+  color: #000000 !important;
+}
+
+/* 4. Delete / Danger actions: Red text */
+body.sidebar-light .danger-btn,
+body.sidebar-light .danger,
+body.sidebar-light .menu-item.danger,
+body.sidebar-light #bg-delete-selected-btn,
+body.sidebar-light #gradient-delete-selected-btn,
+body.sidebar-light #multi-color-delete-selected-btn,
+body.sidebar-light .bg-delete-btn i {
+  color: #ff4b4b !important;
+}
+
+/* 5. Unsplash & Specific Icons */
+body.sidebar-light #unsplash-random-btn i,
+body.sidebar-light #unsplash-save-bg-btn i,
+body.sidebar-light .unsplash-random-btn i,
+body.sidebar-light .unsplash-save-btn i {
+  color: #ffffff !important;
+}
+
+/* 6. Hover states for removal icons */
+body.sidebar-light .preview-remove-btn:hover i,
+body.sidebar-light .bg-delete-btn:hover i {
+  color: #ffffff !important;
+}
+
+/* Fix: Ensure spans inside black buttons in Arctic theme are white */
+body.sidebar-light .settings-sidebar .secondary-btn span,
+body.sidebar-light .settings-sidebar .primary-btn span,
+body.sidebar-light .settings-sidebar button span {
+  color: #ffffff !important;
+}
+
+/* Fix: Invisible icons in black buttons and TOC refinement */
+body.sidebar-light .settings-sidebar button i {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Bug report button prominence in light mode */
+body.sidebar-light .sidebar-bug-btn {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 1px solid #000000 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.sidebar-light .sidebar-bug-btn i {
+  color: #ffffff !important;
+}
+
+/* TOC and Group Icon visibility */
+body.sidebar-light .settings-sidebar .group-icon,
+body.sidebar-light .settings-sidebar .setting-label i,
+body.sidebar-light .settings-sidebar .section-toggle i {
+  color: #000000 !important;
+  opacity: 0.8 !important;
+}
+
+/* Ensure the hide/show buttons are forced to black background */
+body.sidebar-light #accent-color-toggle-btn,
+body.sidebar-light #gradient-toggle-btn,
+body.sidebar-light #multi-color-toggle-btn {
+  background: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* 1. Unsplash External Links (Get Key / Video) - Black borders */
+body.sidebar-light .unsplash-links a.secondary-btn,
+body.sidebar-light .unsplash-external-link,
+body.sidebar-light a[href*="unsplash.com/oauth/applications"] {
+  border: 1px solid #000000 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* 2. Hover X button: Show ONLY on hover */
+body.sidebar-light .bg-delete-btn,
+body.sidebar-light .preview-remove-btn {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+body.sidebar-light .local-bg-item:hover .bg-delete-btn,
+body.sidebar-light .user-color-item:hover .bg-delete-btn,
+body.sidebar-light .user-gradient-item:hover .bg-delete-btn,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 3. Accent Color Presets: Black background, white text */
+body.sidebar-light .accent-presets {
+  background: #000000 !important;
+  padding: 15px !important;
+  border-radius: 12px !important;
+}
+
+body.sidebar-light .accent-presets label,
+body.sidebar-light .accent-presets span {
+  color: #ffffff !important;
+}
+
+/* 4. Section Buttons: Ensure white text */
+body.sidebar-light .settings-sidebar .primary-btn,
+body.sidebar-light .settings-sidebar .secondary-btn,
+body.sidebar-light #unsplash-settings-body .primary-btn,
+body.sidebar-light #accent-color-settings-body .primary-btn,
+body.sidebar-light #gradient-settings-body .primary-btn,
+body.sidebar-light #multi-color-settings-body .primary-btn,
+body.sidebar-light #svg-wave-settings-body .primary-btn,
+body.sidebar-light #donate-modal .primary-btn,
+body.sidebar-light #donate-modal .secondary-btn {
+  color: #ffffff !important;
+}
+
+body.sidebar-light #donate-modal .primary-btn span,
+body.sidebar-light #donate-modal .secondary-btn span {
+  color: #ffffff !important;
+}
+
+/* ─── ULTIMATE BUTTON TEXT COLOR FIX ─── */
+/* Force all text, spans, and icons inside buttons to be white */
+body.sidebar-light
+  .settings-sidebar
+  button:not(.accent-color-preset):not(.icon-btn),
+body.sidebar-light
+  .settings-sidebar
+  button:not(.accent-color-preset):not(.icon-btn)
+  *,
+body.sidebar-light .settings-sidebar .primary-btn,
+body.sidebar-light .settings-sidebar .primary-btn *,
+body.sidebar-light .settings-sidebar .secondary-btn,
+body.sidebar-light .settings-sidebar .secondary-btn *,
+body.sidebar-light .modal .primary-btn *,
+body.sidebar-light .modal .secondary-btn * {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Ensure the hover X icon follows the same logic if needed */
+body.sidebar-light .local-bg-item:hover .bg-delete-btn i,
+body.sidebar-light .user-color-item:hover .bg-delete-btn i,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn i {
+  color: #ffffff !important;
+}
+
+/* 1. Fix: Scope input focus to sidebar only (avoids breaking main search bar) */
+body.sidebar-light input[type="text"]:focus,
+body.sidebar-light select:focus {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+body.sidebar-light .settings-sidebar input[type="text"]:focus,
+body.sidebar-light .settings-sidebar select:focus {
+  background: #ffffff !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
+}
+
+/* 2. Accent Color Palette: Ivory background, Black text */
+body.sidebar-light .accent-presets {
+  background: #fdfbf7 !important; /* Ivory / Trắng ngà */
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02) !important;
+}
+
+body.sidebar-light .accent-presets label,
+body.sidebar-light .accent-presets span,
+body.sidebar-light .accent-presets .preset-label {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* 3. Hover X Icon Visibility Fix */
+body.sidebar-light .bg-delete-btn,
+body.sidebar-light .preview-remove-btn {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease !important;
+}
+
+body.sidebar-light .local-bg-item:hover .bg-delete-btn,
+body.sidebar-light .user-color-item:hover .bg-delete-btn,
+body.sidebar-light .user-gradient-item:hover .bg-delete-btn,
+body.sidebar-light .user-multi-color-item:hover .bg-delete-btn,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure X icon itself is red or clear */
+body.sidebar-light .bg-delete-btn i,
+body.sidebar-light .preview-remove-btn i {
+  color: #ff4b4b !important;
+}
+
+/* 1. Final Fix for Delete Icons: Force Hide except on Hover */
+body.sidebar-light .bg-delete-btn,
+body.sidebar-light .preview-remove-btn,
+body.sidebar-light .user-color-item .bg-delete-btn,
+body.sidebar-light .local-bg-item .bg-delete-btn,
+body.sidebar-light .user-gradient-item .bg-delete-btn,
+body.sidebar-light .user-multi-color-item .bg-delete-btn {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.sidebar-light .local-bg-item:hover .bg-delete-btn,
+body.sidebar-light .user-color-item:hover .bg-delete-btn,
+body.sidebar-light .user-gradient-item:hover .bg-delete-btn,
+body.sidebar-light .user-multi-color-item:hover .bg-delete-btn,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body.sidebar-light .analog-clock {
+  border-color: var(--accent-color) !important;
+}
+
+body.sidebar-light .analog-marker,
+body.sidebar-light .analog-marker-full {
+  color: var(--accent-color) !important;
+}
+
+/* ─── Final Polish: Clock Accent Color & Delete Icons ─── */
+
+/* 2. Absolute Hide for Delete Icons in Arctic Mode */
+body.sidebar-light .bg-delete-btn,
+body.sidebar-light .preview-remove-btn {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+body.sidebar-light .local-bg-item:hover .bg-delete-btn,
+body.sidebar-light .user-color-item:hover .bg-delete-btn,
+body.sidebar-light .user-gradient-item:hover .bg-delete-btn,
+body.sidebar-light .user-multi-color-item:hover .bg-delete-btn,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure X icon itself is red */
+body.sidebar-light .bg-delete-btn i,
+body.sidebar-light .preview-remove-btn i {
+  color: #ff4b4b !important;
+}
+
+/* ─── Final Arctic Refinements: Delete Icons & Clock Sync ─── */
+
+/* 2. Absolute Hide for ALL Delete/Remove Icons in Arctic Mode */
+body.sidebar-light .remove-bg-btn,
+body.sidebar-light .bg-delete-btn,
+body.sidebar-light .preview-remove-btn {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+body.sidebar-light .local-bg-item:hover .remove-bg-btn,
+body.sidebar-light .local-bg-item:hover .bg-delete-btn,
+body.sidebar-light .user-color-item:hover .remove-bg-btn,
+body.sidebar-light .user-color-item:hover .bg-delete-btn,
+body.sidebar-light .user-accent-color-item:hover .remove-bg-btn,
+body.sidebar-light .accent-preset-item:hover .remove-bg-btn,
+body.sidebar-light .user-gradient-item:hover .remove-bg-btn,
+body.sidebar-light .user-multi-color-item:hover .remove-bg-btn,
+body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 4. Ensure Delete Icon inside .remove-bg-btn is Red */
+body.sidebar-light .remove-bg-btn i {
+  color: #ff4b4b !important;
+}
+body.sidebar-light .remove-bg-btn:hover i {
+  color: #ffffff !important;
+}
+
+

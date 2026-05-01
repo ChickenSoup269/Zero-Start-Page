@@ -651,9 +651,13 @@ body.ghost-controls .side-controls:hover {
   border-radius: 12px;
 }
 
-.side-controls.light-mode .quick-btn:hover:not(.active),
-.side-controls.light-mode #settings-toggle:hover {
+.side-controls.light-mode .quick-btn:hover:not(.active) {
   color: #ffffff !important;
+  background: rgb(0, 0, 0) !important;
+}
+
+.side-controls.light-mode #settings-toggle:hover {
+  background: white;
 }
 
 .side-controls.light-mode .quick-access-divider {

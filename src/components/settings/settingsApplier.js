@@ -739,14 +739,9 @@ function createApplySettings(effectInstances) {
       const forceLightSidebar = settings.showQuickAccessBg === true
 
       if (forceLightSidebar) {
-        // Sidebar becomes Off-White
+        // Force sidebar color but keep accent color independent
         document.documentElement.style.setProperty("--sidebar-bg", "rgba(240, 240, 245, 0.98)")
         document.body.classList.add("sidebar-light")
-        
-        // Force PURE BLACK accent for a clean Black & White look
-        document.documentElement.style.setProperty("--accent-color", "#000000")
-        document.documentElement.style.setProperty("--accent-color-rgb", "0, 0, 0")
-        document.documentElement.style.setProperty("--accent-contrast-color", "#ffffff")
       } else {
         // Restore actual accent color from settings
         document.documentElement.style.setProperty("--accent-color", settings.accentColor)

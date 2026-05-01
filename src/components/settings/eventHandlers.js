@@ -2077,7 +2077,7 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)
   })
 
-  DOM.framedClockThemeSelect?.addEventListener("change", () => {
+  DOM.jpStyleLanguageSelect?.addEventListener("change", () => {
     handleSettingUpdate("jpStyleLanguage", DOM.jpStyleLanguageSelect.value)
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
