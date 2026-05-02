@@ -128,12 +128,18 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   margin-bottom: 5px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   color: var(--clock-color);
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 0.18s ease,
-    visibility 0.18s ease;
+  color: var(--clock-color);
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+.clock-fade-wrapper,
+.date-fade-wrapper {
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: fit-content;
+  margin: 0 auto;
 }
 
 #date {
@@ -141,12 +147,7 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   font-weight: 300;
   font-family: var(--font-date);
   margin-bottom: 40px;
-  opacity: 0.9;
   color: var(--date-color);
-  visibility: visible;
-  transition:
-    opacity 0.18s ease,
-    visibility 0.18s ease;
   -webkit-text-stroke: var(--date-text-stroke, 0px transparent);
 }
 
@@ -159,10 +160,11 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   font-weight: 500;
 }
 
-#clock.is-hidden,
-#date.is-hidden {
+.clock-fade-wrapper.is-hidden,
+.date-fade-wrapper.is-hidden {
   opacity: 0;
   visibility: hidden;
+  transform: scale(0.96);
   pointer-events: none;
 }
 

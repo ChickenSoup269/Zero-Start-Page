@@ -664,16 +664,18 @@ function createApplySettings(effectInstances) {
     // 3.1 Clock & Date Visibility & Contrast
     const clockEl = document.getElementById("clock")
     const dateEl = document.getElementById("date")
+    const clockFadeWrap = document.getElementById("clock-fade-wrap")
+    const dateFadeWrap = document.getElementById("date-fade-wrap")
 
-    if (clockEl) {
+    if (clockFadeWrap) {
       const showClock = displayMode !== "hide" && displayMode !== "weekday"
-      fadeToggle(clockEl, showClock, "block")
+      clockFadeWrap.classList.toggle("is-hidden", !showClock)
     }
 
-    if (dateEl) {
+    if (dateFadeWrap) {
       const showDate = displayMode !== "hide"
-      fadeToggle(dateEl, showDate, "block")
-      dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
+      dateFadeWrap.classList.toggle("is-hidden", !showDate)
+      if (dateEl) dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
     }
 
     let finalClockColor = settings.clockColor

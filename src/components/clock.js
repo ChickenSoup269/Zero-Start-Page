@@ -267,7 +267,10 @@ export function updateTime() {
   const shouldHideClock = displayMode === "hide" || displayMode === "weekday"
   const keepOnlyWeekday = displayMode === "weekday"
 
-  clockElement.classList.toggle("is-hidden", shouldHideClock)
+  const clockFadeWrap = document.getElementById("clock-fade-wrap")
+  if (clockFadeWrap) {
+    clockFadeWrap.classList.toggle("is-hidden", shouldHideClock)
+  }
 
   if (!isFramedClockStyle) {
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
@@ -853,10 +856,13 @@ export function updateTime() {
     "fliqlo",
   ].includes(dateClockStyle)
 
-  dateElement.classList.toggle(
-    "is-hidden",
-    !finalShouldShowDate || (isSpecialStyle && !keepOnlyWeekday),
-  )
+  const dateFadeWrap = document.getElementById("date-fade-wrap")
+  if (dateFadeWrap) {
+    dateFadeWrap.classList.toggle(
+      "is-hidden",
+      !finalShouldShowDate || (isSpecialStyle && !keepOnlyWeekday),
+    )
+  }
 
   if (keepOnlyWeekday || dateClockStyle === "weekday-style") {
     // FORCE ONLY WEEKDAY for ALL styles including special ones
@@ -883,21 +889,19 @@ export function updateTime() {
 
   applyHueMode(settings)
 
-  const mainContainer = clockElement.parentElement
   document.body.classList.remove("time-priority-none", "time-priority-date")
   document.body.classList.add(`time-priority-${priority}`)
 
-  if (mainContainer) {
+  const outerContainer = document.getElementById("clock-date-wrap")
+  if (outerContainer && clockFadeWrap && dateFadeWrap) {
     const isHiddenTimerRunning =
       settings.timerIsRunning === true && settings.showTimer !== true
-    mainContainer.classList.toggle("timer-running-hidden", isHiddenTimerRunning)
+    outerContainer.classList.toggle("timer-running-hidden", isHiddenTimerRunning)
 
-    if (isFramedClockStyle) {
-      mainContainer.insertBefore(dateElement, clockElement)
-    } else if (priority === "date") {
-      mainContainer.insertBefore(dateElement, clockElement)
+    if (isFramedClockStyle || priority === "date") {
+      outerContainer.insertBefore(dateFadeWrap, clockFadeWrap)
     } else {
-      mainContainer.insertBefore(clockElement, dateElement)
+      outerContainer.insertBefore(clockFadeWrap, dateFadeWrap)
     }
   }
 }
