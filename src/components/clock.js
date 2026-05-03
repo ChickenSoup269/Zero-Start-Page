@@ -819,6 +819,73 @@ export function updateTime() {
         ${dateStr}
       </div>
     `
+  } else if (dateClockStyle === "cyber-pulse") {
+    const cyberTimeOptions = settings.hideSeconds
+      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
+      : {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: use12Hour,
+          timeZone: tz,
+        }
+    const timeParts = new Intl.DateTimeFormat(langCode, cyberTimeOptions)
+      .formatToParts(now)
+      .filter((part) => part.type !== "literal")
+
+    const hh = timeParts.find((part) => part.type === "hour")?.value || "00"
+    const mm = timeParts.find((part) => part.type === "minute")?.value || "00"
+    const ss = timeParts.find((part) => part.type === "second")?.value || ""
+    const ampm = timeParts.find((part) => part.type === "dayPeriod")?.value || ""
+
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+
+    // Use persistent DOM update to prevent animation reset
+    let cyberRoot = clockElement.querySelector(".cyber-pulse-clock");
+    if (!cyberRoot) {
+      clockElement.innerHTML = `
+        <div class="cyber-pulse-clock">
+          <div class="cyber-time-wrap">
+            <span class="cyber-hh">${hh}</span>
+            <div class="cyber-divider">
+              <div class="cyber-pulse-line"></div>
+            </div>
+            <span class="cyber-mm">${mm}</span>
+            <span class="cyber-ss">${ss}</span>
+            <span class="cyber-ampm">${ampm}</span>
+          </div>
+          <div class="cyber-date">${dateStr}</div>
+        </div>
+      `;
+      cyberRoot = clockElement.querySelector(".cyber-pulse-clock");
+    }
+
+    // Update text nodes only
+    const hhEl = cyberRoot.querySelector(".cyber-hh");
+    if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh;
+    
+    const mmEl = cyberRoot.querySelector(".cyber-mm");
+    if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm;
+    
+    const ssEl = cyberRoot.querySelector(".cyber-ss");
+    if (ssEl) {
+      if (ssEl.textContent !== ss) ssEl.textContent = ss;
+      ssEl.style.display = ss ? "inline-block" : "none";
+    }
+    
+    const ampmEl = cyberRoot.querySelector(".cyber-ampm");
+    if (ampmEl) {
+      if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm;
+      ampmEl.style.display = ampm ? "inline-block" : "none";
+    }
+    
+    const dateEl = cyberRoot.querySelector(".cyber-date");
+    if (dateEl) {
+      if (dateEl.innerHTML !== dateStr) dateEl.innerHTML = dateStr;
+      dateEl.style.display = dateStr ? "block" : "none";
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -854,6 +921,7 @@ export function updateTime() {
     "sidebar",
     "weekday-style",
     "fliqlo",
+    "cyber-pulse",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
@@ -899,9 +967,13 @@ export function updateTime() {
     outerContainer.classList.toggle("timer-running-hidden", isHiddenTimerRunning)
 
     if (isFramedClockStyle || priority === "date") {
-      outerContainer.insertBefore(dateFadeWrap, clockFadeWrap)
+      if (outerContainer.firstElementChild !== dateFadeWrap) {
+        outerContainer.insertBefore(dateFadeWrap, clockFadeWrap)
+      }
     } else {
-      outerContainer.insertBefore(clockFadeWrap, dateFadeWrap)
+      if (outerContainer.firstElementChild !== clockFadeWrap) {
+        outerContainer.insertBefore(clockFadeWrap, dateFadeWrap)
+      }
     }
   }
 }
