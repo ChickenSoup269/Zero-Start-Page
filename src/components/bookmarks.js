@@ -298,6 +298,42 @@ function handleDragEnd(e) {
 
 let toggleListenerAdded = false
 
+/**
+ * Returns the correct chevron icon class based on layout + collapsed state.
+ * Arrow points toward the direction the groups will appear when revealed.
+ * - Sidebar right: ← (groups on left side) / → when flipped
+ * - Taskbar Top: ↑ (groups open downward → show ↓, hide ↑)
+ * - Taskbar Bottom/Left: ↓ (groups open upward → show ↑, hide ↓)
+ */
+function getToggleIconClass(isHidden) {
+  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+  const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
+  const isTaskbarMode =
+    document.body.classList.contains("bookmark-taskbar-mode") ||
+    document.body.classList.contains("bookmark-taskbar-left-mode")
+
+  if (isSidebar) {
+    const isFlipped = document.body.classList.contains("flip-layout")
+    // When groups hidden: arrow points outward (away from bar) to reveal
+    // When groups shown: arrow points inward (toward bar) to collapse
+    return isFlipped
+      ? isHidden ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+      : isHidden ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
+  } else if (isTaskbarTop) {
+    // Groups appear below the top bar
+    // When shown: ↑ (click to collapse upward)
+    // When hidden: ↓ (click to reveal downward)
+    return isHidden ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up"
+  } else if (isTaskbarMode) {
+    // Groups appear above the bottom bar
+    // When shown: ↓ (click to collapse downward)
+    // When hidden: ↑ (click to reveal upward)
+    return isHidden ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"
+  }
+  // Default / no minimal mode
+  return "fa-solid fa-layer-group"
+}
+
 export function renderBookmarks() {
   const settings = getSettings()
   
@@ -307,6 +343,12 @@ export function renderBookmarks() {
       document.body.classList.add("groups-hidden")
     }
 
+    // Set initial icon
+    const initialIcon = bookmarkGroupsToggle.querySelector("i")
+    if (initialIcon) {
+      initialIcon.className = getToggleIconClass(!!settings.groupsHidden)
+    }
+
     bookmarkGroupsToggle.addEventListener("click", () => {
       const isHidden = document.body.classList.toggle("groups-hidden")
       updateSetting("groupsHidden", isHidden)
@@ -314,37 +356,9 @@ export function renderBookmarks() {
       
       const icon = bookmarkGroupsToggle.querySelector("i")
       if (icon) {
-        if (isHidden) {
-          const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
-          const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
-          if (isSidebar) {
-            const isFlipped = document.body.classList.contains("flip-layout")
-            icon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
-          } else if (isTaskbarTop) {
-            icon.className = "fa-solid fa-chevron-down"
-          } else {
-            icon.className = "fa-solid fa-chevron-up"
-          }
-        } else {
-          icon.className = "fa-solid fa-layer-group"
-        }
+        icon.className = getToggleIconClass(isHidden)
       }
     })
-    
-    // Initial icon state
-    const initialIcon = bookmarkGroupsToggle.querySelector("i")
-    if (initialIcon && settings.groupsHidden) {
-       const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
-       const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
-       if (isSidebar) {
-         const isFlipped = document.body.classList.contains("flip-layout")
-         initialIcon.className = isFlipped ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
-       } else if (isTaskbarTop) {
-         initialIcon.className = "fa-solid fa-chevron-down"
-       } else {
-         initialIcon.className = "fa-solid fa-chevron-up"
-       }
-    }
     
     toggleListenerAdded = true
   }

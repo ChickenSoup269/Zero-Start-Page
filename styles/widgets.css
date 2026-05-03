@@ -3395,42 +3395,48 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   transform: translateY(20px) scale(0.9);
 }
 
-/* 4. Taskbar Mode (Top Center) */
+/* 4. Taskbar Mode (Top Center) - Sát đỉnh màn hình */
 body.bookmark-taskbar-top-mode .bookmark-widget {
   position: fixed !important;
-  top: 20px !important;
+  top: 0 !important;
   left: 50% !important;
   bottom: auto !important;
   right: auto !important;
   transform: translateX(-50%) !important;
   display: flex;
-  flex-direction: column; /* Icons top, groups below */
-  align-items: center;
-  gap: 8px;
+  flex-direction: column !important; /* Grid trên, Groups bên dưới */
+  align-items: center !important;
+  gap: 0 !important;
   z-index: 1000;
-  contain: layout;
 }
 
 body.bookmark-taskbar-top-mode .bookmarks-grid {
   display: flex;
   flex-direction: row;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.3) !important;
-  padding: 10px 15px;
-  border-radius: 16px;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.35) !important;
+  padding: 8px 14px;
+  /* Góc dưới bo tròn, trên vuông để dính vào màn hình */
+  border-radius: 0 0 18px 18px !important;
+  backdrop-filter: blur(14px) saturate(1.5) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: none !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
   max-width: 90vw;
   overflow: visible;
-  min-height: 50px;
+  min-height: 48px;
+  align-items: center;
 }
 
 body.bookmark-taskbar-top-mode .bookmark-groups-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   max-width: 80vw;
+  gap: 4px;
+  padding: 0 6px 4px;
 }
 
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle {
@@ -3444,11 +3450,6 @@ body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-container {
 }
 
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle {
-  width: 70px !important;
-  height: 14px !important;
-  border-radius: 0 0 12px 12px !important;
-  margin: 0 !important;
-  padding: 0 !important;
   border-top: none !important;
   position: relative;
   top: -1px; /* Overlap slightly to be flush */
@@ -3474,6 +3475,15 @@ body.bookmark-taskbar-mode .main-container,
 body.bookmark-taskbar-top-mode .main-container,
 body.bookmark-taskbar-left-mode .main-container {
   transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+body.bookmark-sidebar-mode .main-container.ready > *:not(.bookmark-widget),
+body.bookmark-taskbar-mode .main-container.ready > *:not(.bookmark-widget),
+body.bookmark-taskbar-top-mode .main-container.ready > *:not(.bookmark-widget),
+body.bookmark-taskbar-left-mode .main-container.ready > *:not(.bookmark-widget) {
+  animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 body.bookmark-sidebar-mode .clock-date-wrap,
 body.bookmark-sidebar-mode .search-container,
@@ -3575,25 +3585,35 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
   align-items: flex-end !important;
 }
 
-/* Toggle Button Nicer Styling */
+/* Toggle Button Nicer Styling - Đồng bộ tất cả layouts */
 body.bookmark-sidebar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
-  position: static !important; /* Fit into the flex container instead of absolute floating */
-  margin: 5px;
+  position: static !important;
+  margin: 4px;
   align-self: center;
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: none !important;
-  width: 32px !important;
-  height: 32px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
   transform: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11px !important;
+  backdrop-filter: blur(8px);
 }
 body.bookmark-sidebar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.28) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #fff;
 }
 
 /* Specific position adjustments for Toggle Button flow */
@@ -3679,63 +3699,108 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   pointer-events: none !important;
 }
 
-/* Taskbar Bottom mode: Tab sticking to the top edge of widget when hidden */
+/* Sidebar: Khi ẩn groups - toggle thu nhỏ thành pill dọc dính vào cạnh ngoài grid */
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
+  width: 12px !important;
+  height: 56px !important;
+  border-radius: 12px 0px 0px 12px !important; /* Bo tròn cạnh ngoài (phải), vuông cạnh sát grid */
+  margin: 0 !important;
+  padding: 0 !important;
+  border-left: none !important;
+  border-right: 1px solid rgba(255,255,255,0.15) !important;
+  border-top: 1px solid rgba(255,255,255,0.15) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+  position: relative;
+  left: -1px; /* Overlap vào grid để dính liền */
+  backdrop-filter: blur(10px);
+}
+
+/* Sidebar flip: pill ở cạnh trái */
+body.flip-layout.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
+  border-radius: 12px 0 0 12px !important; /* Bo tròn cạnh trái (ngoài) */
+  border-right: none !important;
+  border-left: 1px solid rgba(255,255,255,0.15) !important;
+  left: auto;
+  right: -1px;
+}
+
+/* Taskbar Bottom/Left: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía trên grid */
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
-  width: 70px !important;
-  height: 14px !important;
+  width: 56px !important;
+  height: 12px !important;
   border-radius: 12px 12px 0 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   border-bottom: none !important;
+  border-left: 1px solid rgba(255,255,255,0.15) !important;
+  border-right: 1px solid rgba(255,255,255,0.15) !important;
+  border-top: 1px solid rgba(255,255,255,0.15) !important;
   position: relative;
-  bottom: -1px; /* Overlap slightly to be flush */
+  bottom: -1px;
+  backdrop-filter: blur(10px);
 }
 
-/* Taskbar Top mode: Tab sticking to the bottom edge of widget */
+/* Taskbar Top: Khi ẩn groups - toggle thu nhỏ thành viên nằm phía dưới grid */
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle {
-  width: 70px !important;
-  height: 14px !important;
+  width: 56px !important;
+  height: 12px !important;
   border-radius: 0 0 12px 12px !important;
   margin: 0 !important;
   padding: 0 !important;
   border-top: none !important;
+  border-left: 1px solid rgba(255,255,255,0.15) !important;
+  border-right: 1px solid rgba(255,255,255,0.15) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.15) !important;
   position: relative;
-  top: -1px; /* Overlap slightly to be flush */
+  top: -1px;
+  backdrop-filter: blur(10px);
 }
 
-body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
+/* Hover khi đang ẩn groups: taskbar expand ngang, sidebar expand dọc */
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1 !important;
-  background: var(--accent-color) !important;
-  color: var(--accent-contrast-color, #1a1a2e) !important;
+  background: var(--accent-color, rgba(100,180,255,0.3)) !important;
+  border-color: var(--accent-color, rgba(100,180,255,0.5)) !important;
+  color: var(--accent-contrast-color, #fff) !important;
+  width: 80px !important;
+}
+
+body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover {
+  opacity: 1 !important;
+  background: var(--accent-color, rgba(100,180,255,0.3)) !important;
+  border-color: var(--accent-color, rgba(100,180,255,0.5)) !important;
+  color: var(--accent-contrast-color, #fff) !important;
+  height: 80px !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container {
-  max-width: 0 !important; /* Collapses horizontally, Toggle slides Right */
+  max-width: 0 !important;
 }
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
-  max-height: 0 !important; /* Collapses vertically, Toggle slides Down */
+  max-height: 0 !important;
 }
 
-/* Beautiful Toggle Icon Animation */
+/* Beautiful Toggle Animation */
 .bookmark-groups-toggle {
   transition:
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     background 0.3s ease,
-    opacity 0.3s ease !important;
+    opacity 0.3s ease,
+    border-color 0.3s ease !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
-  opacity: 0.3 !important;
-  /* Removed transform: rotate(180deg) to let JS handle arrow direction */
-  background: rgba(255, 255, 255, 0.2) !important;
+  opacity: 0.5 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* MacOS Dock Hover Effect for Bookmarks - Sidebar Position Fix */
@@ -3762,12 +3827,6 @@ body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover
   .bookmark:hover
   > span {
   left: calc(100% + 25px) !important;
-}
-
-body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
-  opacity: 1 !important;
 }
 
 /* Hide Bookmark Background Settings */
@@ -4058,6 +4117,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
 }
 
 body.bookmark-taskbar-mode .bookmark-widget,
+body.bookmark-taskbar-top-mode .bookmark-widget,
 body.bookmark-taskbar-left-mode .bookmark-widget {
   transition:
     opacity 0.5s ease,
