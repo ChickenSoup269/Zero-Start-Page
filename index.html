@@ -715,6 +715,11 @@
             <div class="settings-section" data-section-id="themes">
                 <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
                 <div class="section-content">
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                        <button id="save-current-theme-btn" class="primary-btn" style="flex: 1; height: 44px; justify-content: center; border-radius: 12px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create Custom Theme</span>
+                        </button>
+                    </div>
                     <div class="themes-grid" id="themes-grid">
                         <!-- Default -->
                         <div class="theme-item" data-theme="default">
@@ -2891,6 +2896,7 @@
                                 Background (Analog)</label>
                             <input type="checkbox" id="analog-blur-bg-checkbox">
                         </div>
+
                     </div>
 
                     <!-- Appearance, Colors & Sizing -->
@@ -3977,6 +3983,55 @@
         </div>
     </div>
     <!-- Bug Report / Config Modal -->
+    <!-- Save Theme Modal -->
+    <div id="save-theme-modal" class="bug-modal">
+        <div class="bug-modal-content" style="max-width: 400px;">
+            <div class="bug-modal-header">
+                <h2 data-i18n="save_theme_title">Save Custom Theme</h2>
+                <span id="close-save-theme-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <div class="setting-item">
+                    <label><i class="fa-solid fa-tag" style="margin-right: 8px; color: var(--accent-color);"></i> <span data-i18n="theme_name_label">Theme Name</span></label>
+                    <div class="modal-input-group" style="margin-top: 8px;">
+                        <i class="fa-solid fa-pen-nib modal-input-icon"></i>
+                        <input type="text" id="custom-theme-name-input" placeholder="My Awesome Theme" class="full-width" style="margin: 0;">
+                    </div>
+                </div>
+                <div class="setting-item" style="margin-top: 20px;">
+                    <label><i class="fa-solid fa-icons" style="margin-right: 8px; color: var(--accent-color);"></i> <span data-i18n="theme_icon_label">Theme Icon</span></label>
+                    <div id="theme-icon-grid" class="theme-icon-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; padding: 5px;">
+                        <div class="icon-option active" data-icon="fa-house-chimney"><i class="fa-solid fa-house-chimney"></i></div>
+                        <div class="icon-option" data-icon="fa-star"><i class="fa-solid fa-star"></i></div>
+                        <div class="icon-option" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></div>
+                        <div class="icon-option" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="icon-option" data-icon="fa-fire"><i class="fa-solid fa-fire"></i></div>
+                        <div class="icon-option" data-icon="fa-water"><i class="fa-solid fa-water"></i></div>
+                        <div class="icon-option" data-icon="fa-leaf"><i class="fa-solid fa-leaf"></i></div>
+                        <div class="icon-option" data-icon="fa-snowflake"><i class="fa-solid fa-snowflake"></i></div>
+                        <div class="icon-option" data-icon="fa-moon"><i class="fa-solid fa-moon"></i></div>
+                        <div class="icon-option" data-icon="fa-sun"><i class="fa-solid fa-sun"></i></div>
+                        <div class="icon-option" data-icon="fa-cloud"><i class="fa-solid fa-cloud"></i></div>
+                        <div class="icon-option" data-icon="fa-ghost"><i class="fa-solid fa-ghost"></i></div>
+                        <div class="icon-option" data-icon="fa-robot"><i class="fa-solid fa-robot"></i></div>
+                        <div class="icon-option" data-icon="fa-rocket"><i class="fa-solid fa-rocket"></i></div>
+                        <div class="icon-option" data-icon="fa-palette"><i class="fa-solid fa-palette"></i></div>
+                        <div class="icon-option" data-icon="fa-wand-magic-sparkles"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <div class="icon-option" data-icon="fa-terminal"><i class="fa-solid fa-terminal"></i></div>
+                        <div class="icon-option" data-icon="fa-code"><i class="fa-solid fa-code"></i></div>
+                        <div class="icon-option" data-icon="fa-gem"><i class="fa-solid fa-gem"></i></div>
+                        <div class="icon-option" data-icon="fa-music"><i class="fa-solid fa-music"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bug-modal-footer">
+                <button id="confirm-save-theme-btn" class="bug-primary-btn" style="width: 100%; height: 44px; border-radius: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="save_theme_confirm">Save Theme Snapshot</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="bug-report-modal" class="bug-modal">
         <div class="bug-modal-content">
             <div class="bug-modal-header">

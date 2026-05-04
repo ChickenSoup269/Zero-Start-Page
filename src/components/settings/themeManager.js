@@ -1,4 +1,5 @@
 import { updateAllSettings, saveSettings, getSettings, defaultSettings, updateSetting } from "../../services/state.js"
+import { showAlert } from "../../utils/dialog.js"
 
 const THEMES = {
   default: {
@@ -208,7 +209,8 @@ export const THEMEABLE_KEYS = [
   "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
   "snowfallColor", "sunbeamColor", "bubbleColor", "rainHDColor", "stormRainColor",
   "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor",
-  "northernLightsStyle", "northernLightsBrightness", "fliqloTheme", "contextMenuStyle"
+  "northernLightsStyle", "northernLightsBrightness", "fliqloTheme", "contextMenuStyle",
+  "sidebarClockFlip", "analogBlurBackground"
 ];
 
 // Variable to store user's manual settings before a theme was applied
@@ -217,11 +219,16 @@ let preThemeSnapshot = null;
 export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs) {
   if (!DOM.themesGrid) return
 
+  // Load and render user themes
+  renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
+
   const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
   const currentTheme = getSettings().theme
 
   const updateActiveUI = (selectedTheme) => {
-    themeItems.forEach((item) => {
+    // Refresh items as they might have changed after rendering user themes
+    const allItems = DOM.themesGrid.querySelectorAll(".theme-item")
+    allItems.forEach((item) => {
       if (item.dataset.theme === selectedTheme) {
         item.classList.add("active")
       } else {
@@ -235,29 +242,187 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
     updateActiveUI(currentTheme)
   }
 
-  themeItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      const themeKey = item.dataset.theme
-      
-      // If clicking the ALREADY active theme, treat it as "deselect" and restore original
-      if (item.classList.contains("active")) {
-        updateActiveUI(null)
-        updateSetting("theme", null)
-        restoreUserOriginalSettings(updateSettingsInputs)
-        return
-      }
+  // Use event delegation for themes grid to handle dynamic user themes
+  DOM.themesGrid.addEventListener("click", (e) => {
+    const themeItem = e.target.closest(".theme-item");
+    if (!themeItem) return;
 
-      const themeData = THEMES[themeKey]
-      if (themeData) {
-        // Before applying the very first theme in a sequence, take a snapshot of current settings
-        captureUserSnapshot();
-        
-        updateActiveUI(themeKey)
-        updateSetting("theme", themeKey)
-        applyTheme(themeData, updateSettingsInputs)
+    // Handle delete button
+    if (e.target.closest(".delete-theme-btn")) {
+        const themeKey = themeItem.dataset.theme;
+        if (themeKey.startsWith("user-")) {
+            deleteUserTheme(themeKey, DOM, handleSettingUpdate, updateSettingsInputs);
+        }
+        return;
+    }
+
+    const themeKey = themeItem.dataset.theme;
+    
+    // If clicking the ALREADY active theme, treat it as "deselect" and restore original
+    if (themeItem.classList.contains("active")) {
+      updateActiveUI(null)
+      updateSetting("theme", null)
+      restoreUserOriginalSettings(updateSettingsInputs)
+      return
+    }
+
+    let themeData = THEMES[themeKey];
+    if (!themeData && themeKey.startsWith("user-")) {
+        const userThemes = getSettings().userThemes || [];
+        const userTheme = userThemes.find(t => t.id === themeKey);
+        if (userTheme) themeData = userTheme.snapshot;
+    }
+
+    if (themeData) {
+      // Before applying the very first theme in a sequence, take a snapshot of current settings
+      captureUserSnapshot();
+      
+      updateActiveUI(themeKey)
+      updateSetting("theme", themeKey)
+      applyTheme(themeData, updateSettingsInputs)
+    }
+  });
+
+  // Save current theme button
+  if (DOM.saveCurrentThemeBtn) {
+      DOM.saveCurrentThemeBtn.addEventListener("click", () => {
+          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.add("open");
+      });
+  }
+
+  // Icon selection in modal
+  if (DOM.themeIconGrid) {
+      const icons = DOM.themeIconGrid.querySelectorAll(".icon-option");
+      icons.forEach(icon => {
+          icon.addEventListener("click", () => {
+              icons.forEach(i => i.classList.remove("active"));
+              icon.classList.add("active");
+          });
+      });
+  }
+
+  // Close modal
+  if (DOM.closeSaveThemeModalBtn) {
+      DOM.closeSaveThemeModalBtn.addEventListener("click", () => {
+          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open");
+      });
+  }
+
+  // Confirm save logic
+  const handleConfirmSave = () => {
+      const name = DOM.customThemeNameInput.value.trim() || "My Theme";
+      const activeIcon = DOM.themeIconGrid.querySelector(".icon-option.active");
+      const icon = activeIcon ? activeIcon.dataset.icon : "fa-palette";
+      
+      const success = saveUserTheme(name, icon, DOM, handleSettingUpdate, updateSettingsInputs);
+      
+      if (success) {
+          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open");
+          DOM.customThemeNameInput.value = "";
       }
-    })
-  })
+  };
+
+  if (DOM.confirmSaveThemeBtn) {
+      DOM.confirmSaveThemeBtn.addEventListener("click", handleConfirmSave);
+  }
+
+  // Enter key support
+  if (DOM.customThemeNameInput) {
+      DOM.customThemeNameInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+              handleConfirmSave();
+          }
+      });
+  }
+
+  // Click outside to close
+  if (DOM.saveThemeModal) {
+      DOM.saveThemeModal.addEventListener("click", (e) => {
+          if (e.target === DOM.saveThemeModal) {
+              DOM.saveThemeModal.classList.remove("open");
+          }
+      });
+  }
+}
+
+function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
+    if (!DOM.themesGrid) return;
+    
+    // Clear existing user themes (keep default themes)
+    const existingUserThemes = DOM.themesGrid.querySelectorAll(".theme-item[data-theme^='user-']");
+    existingUserThemes.forEach(el => el.remove());
+    
+    const userThemes = getSettings().userThemes || [];
+    userThemes.forEach(theme => {
+        const item = document.createElement("div");
+        item.className = "theme-item";
+        item.dataset.theme = theme.id;
+        
+        // Use a preview color from the snapshot if available
+        const previewColor = theme.snapshot.accentColor || "#ffffff";
+        
+        item.innerHTML = `
+            <div class="theme-preview" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                <i class="fa-solid ${theme.icon}" style="color: ${previewColor};"></i>
+            </div>
+            <span class="theme-name">${theme.name}</span>
+            <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+            <button class="delete-theme-btn" title="Delete Theme"><i class="fa-solid fa-trash-can"></i></button>
+        `;
+        
+        DOM.themesGrid.appendChild(item);
+    });
+}
+
+function saveUserTheme(name, icon, DOM, handleSettingUpdate, updateSettingsInputs) {
+    const currentSettings = getSettings();
+    const userThemes = currentSettings.userThemes || [];
+    
+    // Check for duplicates
+    const isDuplicate = userThemes.some(t => t.name.toLowerCase() === name.toLowerCase());
+    if (isDuplicate) {
+        showAlert("A theme with this name already exists. Please choose a different name.");
+        return false;
+    }
+
+    const snapshot = {};
+    
+    THEMEABLE_KEYS.forEach(key => {
+        if (currentSettings[key] !== undefined) {
+            snapshot[key] = currentSettings[key];
+        }
+    });
+    
+    const newTheme = {
+        id: "user-" + Date.now(),
+        name: name,
+        icon: icon,
+        snapshot: snapshot
+    };
+    
+    userThemes.push(newTheme);
+    updateSetting("userThemes", userThemes);
+    saveSettings(true);
+    
+    renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
+    return true;
+}
+
+function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInputs) {
+    const currentSettings = getSettings();
+    let userThemes = currentSettings.userThemes || [];
+    userThemes = userThemes.filter(t => t.id !== id);
+    
+    updateSetting("userThemes", userThemes);
+    
+    // If the deleted theme was active, reset to default
+    if (currentSettings.theme === id) {
+        updateSetting("theme", null);
+        restoreUserOriginalSettings(updateSettingsInputs);
+    }
+    
+    saveSettings(true);
+    renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
 }
 
 function captureUserSnapshot() {

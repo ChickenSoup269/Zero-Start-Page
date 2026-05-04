@@ -240,6 +240,7 @@ export const defaultSettings = {
   svgWaveEndLightness: 30,
   userSvgWaves: [],
   userSavedFonts: [],
+  userThemes: [],
 }
 
 // Bookmarks State Migration
@@ -335,7 +336,7 @@ export function updateSetting(key, value) {
 }
 
 export function updateAllSettings(newSettings) {
-  settingsState = { ...settingsState, ...newSettings }
+  Object.assign(settingsState, newSettings)
 }
 
 /**

@@ -21,7 +21,18 @@ export const unsplashRandomBtn = document.getElementById("unsplash-random-btn")
 export const unsplashCredit = document.getElementById("unsplash-credit")
 export const saveColorBtn = document.getElementById("save-color-btn")
 export const removeBgBtn = document.getElementById("remove-bg-btn")
-export const saveCurrentBgBtn = document.getElementById("save-current-bg-btn")
+export const saveBgBtn = document.getElementById("save-bg-btn")
+export const bugConfigData = document.getElementById("bug-config-data")
+export const copyBugConfigBtn = document.getElementById("copy-bug-config-btn")
+
+// Theme Manager
+export const themesGrid = document.getElementById("themes-grid")
+export const saveCurrentThemeBtn = document.getElementById("save-current-theme-btn")
+export const saveThemeModal = document.getElementById("save-theme-modal")
+export const closeSaveThemeModalBtn = document.getElementById("close-save-theme-modal-btn")
+export const customThemeNameInput = document.getElementById("custom-theme-name-input")
+export const themeIconGrid = document.getElementById("theme-icon-grid")
+export const confirmSaveThemeBtn = document.getElementById("confirm-save-theme-btn")
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
 export const bgBlurInput = document.getElementById("bg-blur-input")
@@ -1212,8 +1223,6 @@ export const svgWaveDeleteSelectedBtn = document.getElementById(
 export const svgWaveSelectCancelBtn = document.getElementById(
   "svg-wave-select-cancel-btn",
 )
-
-export const themesGrid = document.getElementById("themes-grid")
 
 export function fadeToggle(el, show, displayStyle = 'flex') {
   if (!el) return;

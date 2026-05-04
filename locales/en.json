@@ -728,5 +728,11 @@
   "system_config": "System Config (Auto-generated):",
   "copy": "Copy Config",
   "send_to_fb": "Send to Developer",
-  "settings_show_quick_access_bg": "White Quick Access Mode"
+  "settings_show_quick_access_bg": "White Quick Access Mode",
+  "save_current_theme": "Save Current Settings as Theme",
+  "save_theme_title": "Save Custom Theme",
+  "theme_name_label": "Theme Name",
+  "theme_icon_label": "Theme Icon",
+  "save_theme_confirm": "Save Theme",
+  "setting_cyber_pulse_color": "Cyber Pulse Color"
 }

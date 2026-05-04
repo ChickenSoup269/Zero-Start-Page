@@ -727,5 +727,11 @@
   "system_config": "Cấu hình hệ thống (Tự động tạo):",
   "copy": "Sao chép cấu hình",
   "send_to_fb": "Gửi cho nhà phát triển",
-  "settings_show_quick_access_bg": "Chế độ Quick Access Trắng"
+  "settings_show_quick_access_bg": "Chế độ Quick Access Trắng",
+  "save_current_theme": "Lưu cài đặt hiện tại thành Chủ đề",
+  "save_theme_title": "Lưu Chủ đề Tùy chỉnh",
+  "theme_name_label": "Tên Chủ đề",
+  "theme_icon_label": "Biểu tượng Chủ đề",
+  "save_theme_confirm": "Lưu Chủ đề",
+  "setting_cyber_pulse_color": "Màu sắc Cyber Pulse"
 }

@@ -129,6 +129,29 @@
   box-sizing: border-box; /* Fix overflow */
   display: block;
 }
+
+.bug-modal input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.bug-modal .modal-input-group input[type="text"] {
+  padding-left: 42px;
+}
+
+.bug-modal input[type="text"]:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
 .bug-primary-btn {
   flex: 1;
   height: 44px;

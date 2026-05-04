@@ -18,6 +18,8 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  gap: 10px;
+  border: none;
 }
 
 .primary-btn:hover {
@@ -82,7 +84,8 @@
   font-size: 0.9rem;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  transition: all 0.2s ease;
 }
 
 .text-btn:hover {
@@ -187,6 +190,7 @@
 .modal-body {
   padding: 0 24px 24px; /* Top padding set to 0 to sit tight against header */
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   scrollbar-width: thin;
 }
@@ -283,6 +287,8 @@
 .modal-input-group {
   position: relative;
   margin: 12px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .modal-input-icon {
@@ -325,7 +331,8 @@
 .modal-content input:focus {
   border-color: var(--accent-color);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+  transform: translateY(-1px);
 }
 
 .modal-actions {

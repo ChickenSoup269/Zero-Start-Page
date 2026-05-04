@@ -708,6 +708,11 @@ function createApplySettings(effectInstances) {
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
     document.documentElement.style.setProperty("--date-color", finalDateColor)
 
+    const clockRgb = hexToRgb(finalClockColor)
+    if (clockRgb) {
+      document.documentElement.style.setProperty("--clock-color-rgb", `${clockRgb.r}, ${clockRgb.g}, ${clockRgb.b}`)
+    }
+
     // Theme Surface Colors
     if (settings.sidebarBg) {
       document.documentElement.style.setProperty("--sidebar-bg", settings.sidebarBg)
@@ -2234,6 +2239,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     }
+
   }
 }
 

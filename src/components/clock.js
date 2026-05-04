@@ -3,6 +3,15 @@ import { getSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
 
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
 function applyHuePerCharacter(target, seed = 0) {
   if (!target) return
 
@@ -861,6 +870,7 @@ export function updateTime() {
       `;
       cyberRoot = clockElement.querySelector(".cyber-pulse-clock");
     }
+
 
     // Update text nodes only
     const hhEl = cyberRoot.querySelector(".cyber-hh");

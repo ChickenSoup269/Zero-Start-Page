@@ -1415,7 +1415,7 @@ body.date-clock-style-fliqlo .fliqlo-date {
   align-items: center;
   gap: 1.5rem;
   font-family: 'Inter', sans-serif;
-  text-shadow: 0 0 20px rgba(var(--accent-color-rgb, 100, 180, 255), 0.3);
+  text-shadow: 0 0 20px rgba(var(--clock-color-rgb, 100, 180, 255), 0.3);
 }
 
 .cyber-time-wrap {
@@ -1428,7 +1428,7 @@ body.date-clock-style-fliqlo .fliqlo-date {
   font-size: calc(var(--clock-size, 6rem) * 1.2);
   font-weight: 800;
   letter-spacing: -0.05em;
-  color: #fff;
+  color: var(--clock-color, #fff);
   line-height: 1;
 }
 
@@ -1439,7 +1439,7 @@ body.date-clock-style-fliqlo .fliqlo-date {
 .cyber-ss {
   font-size: calc(var(--clock-size, 6rem) * 0.4);
   font-weight: 300;
-  color: var(--accent-color, #64b4ff);
+  color: var(--clock-color, #64b4ff);
   margin-top: auto;
   margin-bottom: calc(var(--clock-size, 6rem) * 0.1);
   margin-left: 0.5rem;
@@ -1449,10 +1449,10 @@ body.date-clock-style-fliqlo .fliqlo-date {
   font-size: calc(var(--clock-size, 6rem) * 0.25);
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--accent-color, #64b4ff);
+  color: var(--clock-color, #64b4ff);
   letter-spacing: 0.1em;
   margin-left: 0.5rem;
-  background: rgba(var(--accent-color-rgb, 100, 180, 255), 0.1);
+  background: rgba(var(--clock-color-rgb, 100, 180, 255), 0.1);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -1472,10 +1472,10 @@ body.date-clock-style-fliqlo .fliqlo-date {
   left: 0;
   width: 100%;
   height: 25%;
-  background: var(--accent-color, #64b4ff);
+  background: var(--clock-color, #64b4ff);
   box-shadow: 
-    0 0 15px var(--accent-color, #64b4ff),
-    0 0 30px var(--accent-color, rgba(100, 180, 255, 0.5));
+    0 0 15px var(--clock-color, #64b4ff),
+    0 0 30px rgba(var(--clock-color-rgb, 100, 180, 255), 0.5);
   border-radius: 4px;
   animation: cyberPulseAnim 3s infinite cubic-bezier(0.45, 0, 0.55, 1);
   will-change: top, opacity;
@@ -1599,6 +1599,65 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
 
 .main-bg-credit i {
   font-size: 1.1rem;
+}
+
+/* User Themes & Icon Grid */
+.theme-icon-grid .icon-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.theme-icon-grid .icon-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.theme-icon-grid .icon-option.active {
+    background: var(--accent-color);
+    color: var(--accent-contrast-color, #1a1a2e);
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+.theme-item .delete-theme-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 75, 75, 0.8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 5;
+    border: none;
+    cursor: pointer;
+}
+
+.theme-item:hover .delete-theme-btn {
+    opacity: 1;
+}
+
+.theme-item .delete-theme-btn:hover {
+    background: #ff4b4b;
+    transform: scale(1.1);
 }
 
 .main-bg-credit .credit-logo-unsplash {

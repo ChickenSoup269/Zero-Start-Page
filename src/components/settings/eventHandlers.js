@@ -735,6 +735,7 @@ export function setupGeneralEventHandlers(
     })
   }
 
+
   document.querySelectorAll(".accent-color-preset").forEach((btn) => {
     btn.addEventListener("click", () => {
       const color = btn.dataset.color
@@ -1961,6 +1962,8 @@ export function setupGeneralEventHandlers(
           detail: { key: "dateClockStyle", value: val },
         }),
       )
+
+      updateSettingsInputs()
     })
   })
 
@@ -1977,6 +1980,8 @@ export function setupGeneralEventHandlers(
         },
       }),
     )
+
+    updateSettingsInputs()
   })
 
   DOM.framedClockThemeSelect?.addEventListener("change", () => {
