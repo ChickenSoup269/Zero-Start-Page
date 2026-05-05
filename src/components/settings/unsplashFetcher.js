@@ -11,6 +11,7 @@ import {
 } from "../../services/state.js"
 import { showAlert } from "../../utils/dialog.js"
 import { saveImage } from "../../services/imageStore.js"
+import { geti18n } from "../../services/i18n.js"
 
 function firstPhoto(payload) {
   return Array.isArray(payload) ? payload[0] : payload
@@ -340,9 +341,210 @@ async function fetchUnsplashPhotoById(accessKey, photoId) {
   return await response.json()
 }
 
+/**
+ * Search Unsplash photos
+ */
+async function searchUnsplashPhotos(accessKey, query, page = 1, perPage = 20) {
+  const params = new URLSearchParams({
+    query,
+    page: String(page),
+    per_page: String(perPage),
+    orientation: "landscape",
+    content_filter: "high",
+    client_id: accessKey,
+  })
+  const res = await fetch(`https://api.unsplash.com/search/photos?${params.toString()}`)
+  if (!res.ok) throw new Error(`Search failed: ${res.status}`)
+  return await res.json()
+}
+
+/**
+ * List Unsplash photos (latest, popular, oldest)
+ */
+async function listUnsplashPhotos(accessKey, orderBy = "latest", page = 1, perPage = 20) {
+  const params = new URLSearchParams({
+    order_by: orderBy,
+    page: String(page),
+    per_page: String(perPage),
+    client_id: accessKey,
+  })
+  const res = await fetch(`https://api.unsplash.com/photos?${params.toString()}`)
+  if (!res.ok) throw new Error(`List failed: ${res.status}`)
+  return await res.json()
+}
+
+/**
+ * Open Unsplash Explorer Modal
+ */
+let explorerPage = 1
+let explorerType = "latest" // "latest", "popular", "search"
+let explorerQuery = ""
+
+async function openUnsplashExplorer(type = "latest", query = "") {
+  const modal = document.getElementById("unsplash-explorer-modal")
+  if (!modal) return
+
+  explorerType = type
+  explorerQuery = query
+  explorerPage = 1
+
+  const titleEl = modal.querySelector(".modal-title-text")
+  const i18n = (typeof geti18n === 'function') ? geti18n() : {}
+  
+  if (type === "search") {
+    titleEl.textContent = `${i18n.settings_unsplash_search || "Search"}: ${query}`
+  } else if (type === "popular") {
+    titleEl.textContent = i18n.settings_unsplash_popular || "Popular Photos"
+  } else {
+    titleEl.textContent = i18n.settings_unsplash_latest || "Latest Photos"
+  }
+
+  const grid = document.getElementById("unsplash-explorer-grid")
+  if (grid) grid.innerHTML = '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
+
+  modal.classList.add("open")
+  await loadExplorerResults()
+}
+
+async function loadExplorerResults(append = false) {
+  const settings = getSettings()
+  const accessKey = settings.unsplashAccessKey
+  if (!accessKey) return
+
+  const grid = document.getElementById("unsplash-explorer-grid")
+  const loadMoreBtn = document.getElementById("unsplash-explorer-load-more")
+  const perPage = 20
+
+  if (loadMoreBtn) {
+    loadMoreBtn.disabled = true
+    const originalText = loadMoreBtn.innerHTML
+    loadMoreBtn.dataset.originalHtml = originalText
+    loadMoreBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
+  }
+
+  try {
+    let data = []
+    if (explorerType === "search") {
+      const result = await searchUnsplashPhotos(accessKey, explorerQuery, explorerPage, perPage)
+      data = result.results || []
+      // Optional: Check total_pages to hide button
+      if (result.total_pages && explorerPage >= result.total_pages) {
+        if (loadMoreBtn) loadMoreBtn.style.display = "none"
+      }
+    } else {
+      data = await listUnsplashPhotos(accessKey, explorerType, explorerPage, perPage)
+    }
+
+    if (!append && grid) grid.innerHTML = ""
+
+    if (data && data.length > 0) {
+      data.forEach(photo => {
+        const item = document.createElement("div")
+        item.className = "explorer-photo-item"
+        item.style.backgroundImage = `url(${photo.urls.small})`
+        item.title = `By ${photo.user.name}`
+
+        item.addEventListener("click", () => {
+          applyUnsplashPhoto(photo)
+          document.getElementById("unsplash-explorer-modal").classList.remove("open")
+        })
+
+        grid.appendChild(item)
+      })
+
+      // If we got fewer results than requested, there are likely no more pages
+      if (loadMoreBtn) {
+        if (data.length < perPage) {
+          loadMoreBtn.style.display = "none"
+        } else {
+          loadMoreBtn.style.display = "inline-flex"
+          loadMoreBtn.innerHTML = loadMoreBtn.dataset.originalHtml || '<i class="fa-solid fa-plus"></i> Load More'
+          loadMoreBtn.disabled = false
+        }
+      }
+    } else {
+      if (!append && grid) {
+        grid.innerHTML = '<div class="explorer-no-results">No photos found.</div>'
+      }
+      if (loadMoreBtn) loadMoreBtn.style.display = "none"
+    }
+  } catch (err) {
+    console.error("Explorer load failed:", err)
+    if (grid && !append) {
+      grid.innerHTML = `<div class="explorer-error">Error: ${err.message}</div>`
+    } else {
+      showAlert(`Load failed: ${err.message}`)
+    }
+    if (loadMoreBtn) {
+      loadMoreBtn.innerHTML = loadMoreBtn.dataset.originalHtml || '<i class="fa-solid fa-plus"></i> Load More'
+      loadMoreBtn.disabled = false
+    }
+  }
+}
+
+async function applyUnsplashPhoto(photo) {
+  const dpr = window.devicePixelRatio || 1
+  const width = Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr)
+  const height = Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr)
+  
+  const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
+  const separator = baseUrl.includes("?") ? "&" : "?"
+  const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
+
+  // Show loading state on background
+  const bgLayer = document.getElementById("bg-layer")
+  if (bgLayer) {
+    bgLayer.style.opacity = "0.5"
+  }
+
+  try {
+    // Tải ảnh và lưu vào IndexedDB
+    let finalBgValue = imageUrl
+    const imgRes = await fetch(imageUrl)
+    if (imgRes.ok) {
+      const blob = await imgRes.blob()
+      finalBgValue = await saveImage(blob, `idb-img-unsplash-${Date.now()}`)
+    }
+
+    // Persist credit
+    updateSetting("unsplashLastCredit", {
+      photoUrl: photo.links?.html || "",
+      authorName: photo.user?.name || "",
+      authorUrl: photo.user?.links?.html || "",
+    })
+
+    // Update settings and apply
+    const updateFn = (typeof window !== 'undefined' ? window.appHandleSettingUpdate : null)
+    if (typeof updateFn === 'function') {
+      updateFn("background", finalBgValue)
+    }
+
+    // Enable save button
+    const saveBtn = document.getElementById("unsplash-save-bg-btn")
+    if (saveBtn) {
+      saveBtn.disabled = false
+    }
+
+    saveSettings()
+  } catch (err) {
+    console.error("Failed to apply photo:", err)
+    showAlert("Failed to apply Unsplash photo.")
+  }
+}
+
+async function loadMoreExplorer() {
+  explorerPage++
+  await loadExplorerResults(true)
+}
+
 export {
   fetchBestUnsplashPhoto,
   fetchUnsplashPhotoById,
   populateUnsplashCollections,
   setUnsplashRandomBackground,
+  searchUnsplashPhotos,
+  listUnsplashPhotos,
+  openUnsplashExplorer,
+  loadExplorerResults,
+  loadMoreExplorer,
 }

@@ -3725,3 +3725,258 @@ body.sidebar-light .remove-bg-btn:hover i {
 }
 
 
+
+/* Unsplash Explorer Modal */
+.unsplash-explorer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 5px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.explorer-photo-item {
+  aspect-ratio: 16 / 10;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.explorer-photo-item:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-color);
+}
+
+.explorer-loading, .explorer-no-results, .explorer-error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Unsplash Search & Shortcuts UI */
+.unsplash-search-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.unsplash-search-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.unsplash-search-wrapper .search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  color: var(--text-color);
+}
+
+.unsplash-search-input {
+  width: 100%;
+  padding: 8px 10px 8px 30px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.unsplash-action-btn {
+  width: 40px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, #000);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.unsplash-action-btn:hover {
+  transform: scale(1.05);
+}
+
+.unsplash-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+
+.unsplash-search-row-premium {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.unsplash-premium-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.unsplash-premium-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(var(--accent-color-rgb), 0.1);
+}
+
+.unsplash-premium-search-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, #000);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.1rem;
+}
+
+.unsplash-premium-search-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+  box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.unsplash-shortcut-btn {
+  padding: 12px 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.unsplash-shortcut-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.unsplash-shortcut-btn:hover i {
+  animation: rotate 0.6s ease-in-out;
+}
+
+.unsplash-shortcut-btn i {
+  font-size: 1.1rem;
+  color: #fff;
+  transition: transform 0.3s;
+}
+
+.unsplash-shortcut-btn.highlight {
+  background: var(--accent-color);
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.unsplash-shortcut-btn.highlight i {
+  color: var(--accent-contrast-color, #000) !important;
+}
+
+.unsplash-shortcut-btn.highlight span {
+  color: var(--accent-contrast-color, #000) !important;
+}
+
+#unsplash-popular-btn i {
+  color: #ff5722 !important; /* Fiery Orange-Red */
+}
+
+#unsplash-latest-btn i {
+  color: #03a9f4 !important; /* Cool Sky Blue */
+}
+
+/* Premium Unsplash Styles */
+.unsplash-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.unsplash-link-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: all 0.2s;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.unsplash-link-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.unsplash-premium-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: gold;
+  color: #000;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 2;
+}
+
+.unsplash-category-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  margin: 2px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.unsplash-category-pill:hover {
+  background: var(--accent-color);
+  color: #000;
+}
+
+

@@ -847,7 +847,7 @@
                     <!-- Unsplash Card -->
                     <div class="bg-control-card">
                         <div class="bg-control-title"><i class="fa-brands fa-unsplash"></i> Unsplash Integration</div>
-                        <div class="unsplash-input-wrapper">
+                        <div class="unsplash-input-wrapper" style="margin-bottom: 20px;">
                             <div class="unsplash-key-wrapper">
                                 <input type="password" id="unsplash-access-key-input" placeholder="Access Key"
                                     class="unsplash-key-input" />
@@ -856,13 +856,35 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </div>
-                            <button id="unsplash-random-btn" class="unsplash-random-btn" title="Random (Space)">
-                                <i class="fa-solid fa-shuffle"></i>
+                        </div>
+
+                        <div class="unsplash-search-row-premium">
+                            <input type="text" id="unsplash-search-input" data-i18n-placeholder="settings_unsplash_search_placeholder" placeholder="Search photos..."
+                                class="unsplash-premium-input" />
+                            <button id="unsplash-search-btn" class="unsplash-premium-search-btn" title="Search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
                         </div>
-                        <select id="unsplash-category-select" class="full-width" style="margin-bottom: 12px;"></select>
 
-                        <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled>
+                        <div class="unsplash-shortcuts-label" style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;" data-i18n="settings_unsplash_quick_shortcuts">Quick Shortcuts</div>
+                        <div class="unsplash-shortcuts">
+                            <button id="unsplash-latest-btn" class="unsplash-shortcut-btn">
+                                <i class="fa-solid fa-clock"></i> <span data-i18n="settings_unsplash_latest">Latest</span>
+                            </button>
+                            <button id="unsplash-popular-btn" class="unsplash-shortcut-btn">
+                                <i class="fa-solid fa-fire"></i> <span data-i18n="settings_unsplash_popular">Popular</span>
+                            </button>
+                            <button id="unsplash-random-btn" class="unsplash-shortcut-btn highlight" title="Random (Space)">
+                                <i class="fa-solid fa-shuffle"></i> <span data-i18n="settings_unsplash_random">Random</span>
+                            </button>
+                        </div>
+
+                        <div class="setting-item" style="margin-bottom: 15px;">
+                            <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;" data-i18n="settings_unsplash_category">Browse Categories</label>
+                            <select id="unsplash-category-select" class="full-width"></select>
+                        </div>
+
+                        <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled style="margin-top: 10px;">
                             <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_unsplash_save">Save
                                 Background</span>
                         </button>
@@ -989,9 +1011,6 @@
                                     data-i18n="settings_local_videos">Videos</span></h5>
                             <div id="local-videos-gallery" class="local-bg-gallery"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="setting-group">
                 <div class="setting-label"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent
@@ -3611,6 +3630,10 @@
             </div>
 
         </div>
+    </div>
+</div>
+</div>
+
         <div class="sidebar-footer">
             <button id="sidebar-footer-toggle" class="sidebar-footer-toggle" title="Toggle panel">
                 <i class="fa-solid fa-chevron-down"></i>
@@ -4057,6 +4080,24 @@
                     <i class="fa-brands fa-facebook-messenger"></i> <span data-i18n="send_to_fb">Send to
                         Developer</span>
                 </a>
+            </div>
+        </div>
+    </div>
+    <div id="unsplash-explorer-modal" class="bug-modal">
+        <div class="bug-modal-content" style="max-width: 900px; width: 90%;">
+            <div class="bug-modal-header">
+                <h2 class="modal-title-text">Unsplash Explorer</h2>
+                <span id="close-unsplash-explorer-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <div id="unsplash-explorer-grid" class="unsplash-explorer-grid">
+                    <!-- Photos will be injected here -->
+                </div>
+                <div class="explorer-footer" style="text-align: center; margin-top: 20px;">
+                    <button id="unsplash-explorer-load-more" class="primary-btn" style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

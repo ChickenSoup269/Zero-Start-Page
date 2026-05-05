@@ -34,6 +34,9 @@ import { getGoogleProfile } from "../../services/googleIdentity.js"
 import {
   setUnsplashRandomBackground,
   populateUnsplashCollections,
+  openUnsplashExplorer,
+  loadExplorerResults,
+  loadMoreExplorer,
 } from "./unsplashFetcher.js"
 import {
   renderUserColors,
@@ -662,6 +665,57 @@ export function setupGeneralEventHandlers(
         }
       })
     }
+  }
+
+  // Unsplash Search & Shortcuts
+  const unsplashSearchBtn = document.getElementById("unsplash-search-btn")
+  const unsplashSearchInput = document.getElementById("unsplash-search-input")
+  const unsplashLatestBtn = document.getElementById("unsplash-latest-btn")
+  const unsplashPopularBtn = document.getElementById("unsplash-popular-btn")
+
+  if (unsplashSearchBtn && unsplashSearchInput) {
+    const handleSearch = () => {
+      const query = unsplashSearchInput.value.trim()
+      if (query) {
+        openUnsplashExplorer("search", query)
+      } else {
+        showAlert(i18n.alert_missing_fields || "Please enter a search query.")
+      }
+    }
+
+    unsplashSearchBtn.addEventListener("click", handleSearch)
+    unsplashSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleSearch()
+    })
+  }
+
+  if (unsplashLatestBtn) {
+    unsplashLatestBtn.addEventListener("click", () => openUnsplashExplorer("latest"))
+  }
+
+  if (unsplashPopularBtn) {
+    unsplashPopularBtn.addEventListener("click", () => openUnsplashExplorer("popular"))
+  }
+
+  // Unsplash Explorer Modal
+  const explorerModal = document.getElementById("unsplash-explorer-modal")
+  const closeExplorerBtn = document.getElementById("close-unsplash-explorer-btn")
+  const loadMoreExplorerBtn = document.getElementById("unsplash-explorer-load-more")
+
+  if (closeExplorerBtn) {
+    closeExplorerBtn.addEventListener("click", () => explorerModal.classList.remove("open"))
+  }
+
+  if (loadMoreExplorerBtn) {
+    loadMoreExplorerBtn.addEventListener("click", () => {
+      loadMoreExplorer()
+    })
+  }
+
+  if (explorerModal) {
+    window.addEventListener("click", (e) => {
+      if (e.target === explorerModal) explorerModal.classList.remove("open")
+    })
   }
 
   // Save custom color
