@@ -193,9 +193,9 @@ const THEMES = {
     font: "'Outfit', sans-serif",
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "fliqlo",
-    fliqloTheme: "light",
-    clockColor: "#1a1a2e",
-    dateColor: "#444444",
+    fliqloTheme: "dark",
+    clockColor: "#ffffff",
+    dateColor: "#ffffff",
     contextMenuStyle: "light"
   },
 }
