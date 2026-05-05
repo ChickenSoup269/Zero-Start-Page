@@ -136,8 +136,10 @@ export class WindEffect {
     }
 
     animate() {
-        if (this._animId) this._animId = requestAnimationFrame(() => this.animate());
-        if (document.visibilityState === "hidden") return
+        if (!this._animId) return;
+        this._animId = requestAnimationFrame(() => this.animate());
+        
+        if (document.visibilityState === "hidden") return;
 
         this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -154,6 +156,10 @@ export class WindEffect {
     start() {
         if (!this._animId) {
             this.canvas.style.display = "block";
+            this.handleResize(); // Ensure correct size on start
+            if (this.lines.length === 0) {
+                this.createLines();
+            }
             this._animId = requestAnimationFrame(() => this.animate());
         }
     }
@@ -163,7 +169,9 @@ export class WindEffect {
             cancelAnimationFrame(this._animId);
             this._animId = null;
         }
-        if (this.ctx) this.ctx.clearRect(0, 0, this.width, this.height);
+        if (this.ctx) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
         this.canvas.style.display = "none";
         this.lines = [];
     }

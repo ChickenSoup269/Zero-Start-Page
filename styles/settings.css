@@ -3090,12 +3090,57 @@ body.sidebar-light .setting-group h4 {
   font-weight: 700 !important;
 }
 
+body.sidebar-light #effect-grid .effect-item,
+body.quick-access-white #effect-grid .effect-item {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light #effect-grid .effect-item i,
+body.quick-access-white #effect-grid .effect-item i,
+body.sidebar-light #effect-grid .effect-item span,
+body.quick-access-white #effect-grid .effect-item span {
+  color: #000000 !important;
+  opacity: 1 !important;
+}
+
+body.sidebar-light #effect-grid .effect-item.active,
+body.quick-access-white #effect-grid .effect-item.active {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  background-image: none !important;
+  border-color: #000000 !important;
+}
+
+body.sidebar-light #effect-grid .effect-item.active i,
+body.quick-access-white #effect-grid .effect-item.active i,
+body.sidebar-light #effect-grid .effect-item.active span,
+body.quick-access-white #effect-grid .effect-item.active span {
+  color: #ffffff !important;
+}
+
+body.sidebar-light #effect-grid .effect-item:hover:not(.active),
+body.quick-access-white #effect-grid .effect-item:hover:not(.active) {
+  background: #f0f0f0 !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.sidebar-light .effect-category-header,
+body.quick-access-white .effect-category-header {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
+  border-left-color: #000000 !important;
+}
+
 /* Force dark text on all spans, labels, and small text in light sidebar */
 body.sidebar-light .settings-sidebar span:not(.active-indicator i),
 body.sidebar-light .settings-sidebar small,
 body.sidebar-light .clock-style-name,
 body.sidebar-light .font-name,
-body.sidebar-light .effect-item span,
 body.sidebar-light .lcp-label {
   color: #000 !important;
   opacity: 1 !important;
