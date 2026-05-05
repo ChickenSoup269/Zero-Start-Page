@@ -716,8 +716,10 @@
                 <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
                 <div class="section-content">
                     <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-                        <button id="save-current-theme-btn" class="primary-btn" style="flex: 1; height: 44px; justify-content: center; border-radius: 12px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create Custom Theme</span>
+                        <button id="save-current-theme-btn" class="primary-btn"
+                            style="flex: 1; height: 44px; justify-content: center; border-radius: 12px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
+                                Custom Theme</span>
                         </button>
                     </div>
                     <div class="themes-grid" id="themes-grid">
@@ -859,28 +861,36 @@
                         </div>
 
                         <div class="unsplash-search-row-premium">
-                            <input type="text" id="unsplash-search-input" data-i18n-placeholder="settings_unsplash_search_placeholder" placeholder="Search photos..."
-                                class="unsplash-premium-input" />
+                            <input type="text" id="unsplash-search-input"
+                                data-i18n-placeholder="settings_unsplash_search_placeholder"
+                                placeholder="Search photos..." class="unsplash-premium-input" />
                             <button id="unsplash-search-btn" class="unsplash-premium-search-btn" title="Search">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
                         </div>
 
-                        <div class="unsplash-shortcuts-label" style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;" data-i18n="settings_unsplash_quick_shortcuts">Quick Shortcuts</div>
+                        <div class="unsplash-shortcuts-label"
+                            style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;"
+                            data-i18n="settings_unsplash_quick_shortcuts">Quick Shortcuts</div>
                         <div class="unsplash-shortcuts">
                             <button id="unsplash-latest-btn" class="unsplash-shortcut-btn">
-                                <i class="fa-solid fa-clock"></i> <span data-i18n="settings_unsplash_latest">Latest</span>
+                                <i class="fa-solid fa-clock"></i> <span
+                                    data-i18n="settings_unsplash_latest">Latest</span>
                             </button>
                             <button id="unsplash-popular-btn" class="unsplash-shortcut-btn">
-                                <i class="fa-solid fa-fire"></i> <span data-i18n="settings_unsplash_popular">Popular</span>
+                                <i class="fa-solid fa-fire"></i> <span
+                                    data-i18n="settings_unsplash_popular">Popular</span>
                             </button>
-                            <button id="unsplash-random-btn" class="unsplash-shortcut-btn highlight" title="Random (Space)">
-                                <i class="fa-solid fa-shuffle"></i> <span data-i18n="settings_unsplash_random">Random</span>
+                            <button id="unsplash-random-btn" class="unsplash-shortcut-btn highlight"
+                                title="Random (Space)">
+                                <i class="fa-solid fa-shuffle"></i> <span
+                                    data-i18n="settings_unsplash_random">Random</span>
                             </button>
                         </div>
 
                         <div class="setting-item" style="margin-bottom: 15px;">
-                            <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;" data-i18n="settings_unsplash_category">Browse Categories</label>
+                            <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;"
+                                data-i18n="settings_unsplash_category">Browse Categories</label>
                             <select id="unsplash-category-select" class="full-width"></select>
                         </div>
 
@@ -1011,6 +1021,9 @@
                                     data-i18n="settings_local_videos">Videos</span></h5>
                             <div id="local-videos-gallery" class="local-bg-gallery"></div>
                         </div>
+                    </div> <!-- Close bg-control-card -->
+                </div> <!-- Close section-content -->
+            </div> <!-- Close settings-section (Background) -->
 
             <div class="setting-group">
                 <div class="setting-label"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent
@@ -3630,9 +3643,6 @@
             </div>
 
         </div>
-    </div>
-</div>
-</div>
 
         <div class="sidebar-footer">
             <button id="sidebar-footer-toggle" class="sidebar-footer-toggle" title="Toggle panel">
@@ -4015,16 +4025,21 @@
             </div>
             <div class="bug-modal-body">
                 <div class="setting-item">
-                    <label><i class="fa-solid fa-tag" style="margin-right: 8px; color: var(--accent-color);"></i> <span data-i18n="theme_name_label">Theme Name</span></label>
+                    <label><i class="fa-solid fa-tag" style="margin-right: 8px; color: var(--accent-color);"></i> <span
+                            data-i18n="theme_name_label">Theme Name</span></label>
                     <div class="modal-input-group" style="margin-top: 8px;">
                         <i class="fa-solid fa-pen-nib modal-input-icon"></i>
-                        <input type="text" id="custom-theme-name-input" placeholder="My Awesome Theme" class="full-width" style="margin: 0;">
+                        <input type="text" id="custom-theme-name-input" placeholder="My Awesome Theme"
+                            class="full-width" style="margin: 0;">
                     </div>
                 </div>
                 <div class="setting-item" style="margin-top: 20px;">
-                    <label><i class="fa-solid fa-icons" style="margin-right: 8px; color: var(--accent-color);"></i> <span data-i18n="theme_icon_label">Theme Icon</span></label>
-                    <div id="theme-icon-grid" class="theme-icon-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; padding: 5px;">
-                        <div class="icon-option active" data-icon="fa-house-chimney"><i class="fa-solid fa-house-chimney"></i></div>
+                    <label><i class="fa-solid fa-icons" style="margin-right: 8px; color: var(--accent-color);"></i>
+                        <span data-i18n="theme_icon_label">Theme Icon</span></label>
+                    <div id="theme-icon-grid" class="theme-icon-grid"
+                        style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; max-height: 200px; overflow-y: auto; padding: 5px;">
+                        <div class="icon-option active" data-icon="fa-house-chimney"><i
+                                class="fa-solid fa-house-chimney"></i></div>
                         <div class="icon-option" data-icon="fa-star"><i class="fa-solid fa-star"></i></div>
                         <div class="icon-option" data-icon="fa-heart"><i class="fa-solid fa-heart"></i></div>
                         <div class="icon-option" data-icon="fa-bolt"><i class="fa-solid fa-bolt"></i></div>
@@ -4039,7 +4054,8 @@
                         <div class="icon-option" data-icon="fa-robot"><i class="fa-solid fa-robot"></i></div>
                         <div class="icon-option" data-icon="fa-rocket"><i class="fa-solid fa-rocket"></i></div>
                         <div class="icon-option" data-icon="fa-palette"><i class="fa-solid fa-palette"></i></div>
-                        <div class="icon-option" data-icon="fa-wand-magic-sparkles"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <div class="icon-option" data-icon="fa-wand-magic-sparkles"><i
+                                class="fa-solid fa-wand-magic-sparkles"></i></div>
                         <div class="icon-option" data-icon="fa-terminal"><i class="fa-solid fa-terminal"></i></div>
                         <div class="icon-option" data-icon="fa-code"><i class="fa-solid fa-code"></i></div>
                         <div class="icon-option" data-icon="fa-gem"><i class="fa-solid fa-gem"></i></div>
@@ -4048,8 +4064,10 @@
                 </div>
             </div>
             <div class="bug-modal-footer">
-                <button id="confirm-save-theme-btn" class="bug-primary-btn" style="width: 100%; height: 44px; border-radius: 12px;">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="save_theme_confirm">Save Theme Snapshot</span>
+                <button id="confirm-save-theme-btn" class="bug-primary-btn"
+                    style="width: 100%; height: 44px; border-radius: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="save_theme_confirm">Save Theme
+                        Snapshot</span>
                 </button>
             </div>
         </div>
@@ -4094,7 +4112,8 @@
                     <!-- Photos will be injected here -->
                 </div>
                 <div class="explorer-footer" style="text-align: center; margin-top: 20px;">
-                    <button id="unsplash-explorer-load-more" class="primary-btn" style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
+                    <button id="unsplash-explorer-load-more" class="primary-btn"
+                        style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
                         <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
                     </button>
                 </div>
