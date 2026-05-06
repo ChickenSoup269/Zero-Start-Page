@@ -218,8 +218,8 @@ export class MusicPlayer {
     this.container.classList.add(`music-style-${this.currentStyle}`)
 
     // Determine accent color
-    let accentColor = ""
     if (this.useDefaultColor) {
+      let accentColor = ""
       switch (styleName) {
         case "spotify":
           accentColor = "#1DB954"
@@ -254,30 +254,32 @@ export class MusicPlayer {
         default:
           accentColor = "rgba(30, 215, 96, 0.8)" // Default vinyl/greenish
       }
-    } else {
-      accentColor = getSettings().accentColor || "#00ff73"
-    }
 
-    if (accentColor) {
-      this.container.style.setProperty("--accent-color", accentColor)
-      // Also set RGB version for semi-transparent uses if needed
-      // Handle hex, rgb, or rgba
-      let r = 30,
-        g = 215,
-        b = 96
-      if (accentColor.startsWith("#")) {
-        r = parseInt(accentColor.slice(1, 3), 16) || 0
-        g = parseInt(accentColor.slice(3, 5), 16) || 0
-        b = parseInt(accentColor.slice(5, 7), 16) || 0
-      } else if (accentColor.startsWith("rgb")) {
-        const matches = accentColor.match(/\d+/g)
-        if (matches) {
-          r = matches[0]
-          g = matches[1]
-          b = matches[2]
+      if (accentColor) {
+        this.container.style.setProperty("--accent-color", accentColor)
+        // Also set RGB version for semi-transparent uses if needed
+        // Handle hex, rgb, or rgba
+        let r = 30,
+          g = 215,
+          b = 96
+        if (accentColor.startsWith("#")) {
+          r = parseInt(accentColor.slice(1, 3), 16) || 0
+          g = parseInt(accentColor.slice(3, 5), 16) || 0
+          b = parseInt(accentColor.slice(5, 7), 16) || 0
+        } else if (accentColor.startsWith("rgb")) {
+          const matches = accentColor.match(/\d+/g)
+          if (matches) {
+            r = matches[0]
+            g = matches[1]
+            b = matches[2]
+          }
         }
+        this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
       }
-      this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
+    } else {
+      // Remove local overrides so it inherits the dynamically updating global accent color
+      this.container.style.removeProperty("--accent-color")
+      this.container.style.removeProperty("--accent-color-rgb")
     }
 
     // Update visualizer style

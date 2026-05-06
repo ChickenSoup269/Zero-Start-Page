@@ -452,9 +452,12 @@ function restoreUserOriginalSettings(updateSettingsInputs) {
 function applyTheme(themeData, updateSettingsInputs) {
   const resetData = {};
 
-  // Reset to default first
+  // Reset to user's original state (or default if not set) first
+  // This ensures we don't overwrite custom effect colors not specified by the theme
   THEMEABLE_KEYS.forEach(key => {
-    if (defaultSettings[key] !== undefined) {
+    if (preThemeSnapshot && preThemeSnapshot[key] !== undefined) {
+      resetData[key] = preThemeSnapshot[key];
+    } else if (defaultSettings[key] !== undefined) {
       resetData[key] = defaultSettings[key];
     }
   });
