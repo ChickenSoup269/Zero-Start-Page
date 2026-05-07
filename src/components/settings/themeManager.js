@@ -182,7 +182,7 @@ const THEMES = {
     dateColor: "#ffffff"
   },
   arctic: {
-    accentColor: "#1a1a1a",
+    accentColor: "#ffffff",
     sidebarBg: "rgba(10, 10, 15, 0.9)",
     panelBg: "rgba(255, 255, 255, 0.85)",
     glassBg: "rgba(255, 255, 255, 0.15)",
@@ -194,8 +194,8 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "fliqlo",
     fliqloTheme: "dark",
-    clockColor: "#000000",
-    dateColor: "#000000",
+    clockColor: "#ffffff",
+    dateColor: "#ffffff",
     contextMenuStyle: "light"
   },
 }

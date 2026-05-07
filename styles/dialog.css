@@ -297,7 +297,9 @@
 }
 
 .dialog-btn-primary:hover {
+  background: var(--accent-color);
   filter: brightness(1.1);
+  color: var(--accent-contrast-color, #1a1a2e);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.35);
 }
