@@ -1037,6 +1037,9 @@ export const lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export const lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
 )
+export const lcpHideChromeBookmarksRow = document.getElementById(
+  "lcp-hide-chrome-bookmarks-row",
+)
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
 export const lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",

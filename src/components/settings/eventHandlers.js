@@ -20,6 +20,7 @@ import {
   showAlert,
   showConfirm,
   showChecklistConfirm,
+  showBookmarkHideInstructions,
 } from "../../utils/dialog.js"
 import {
   getImageBlob,
@@ -2551,6 +2552,12 @@ export function setupGeneralEventHandlers(
       if (topRightControls) {
         topRightControls.classList.toggle("hidden", !isVisible)
       }
+    })
+  }
+
+  if (DOM.lcpHideChromeBookmarksRow) {
+    DOM.lcpHideChromeBookmarksRow.addEventListener("click", () => {
+      showBookmarkHideInstructions()
     })
   }
 

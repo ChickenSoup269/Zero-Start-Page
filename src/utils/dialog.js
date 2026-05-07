@@ -34,7 +34,7 @@ function closeDialog() {
   }
 }
 
-// Custom Alertnature
+// Custom Alert
 export function showAlert(message, title = null) {
   return new Promise((resolve) => {
     const container = createDialogContainer()
@@ -45,7 +45,7 @@ export function showAlert(message, title = null) {
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-circle-info dialog-icon"></i>
-          <p class="dialog-message">${message}</p>
+          <div class="dialog-message">${message}</div>
         </div>
         <div class="dialog-footer">
           <button class="dialog-btn dialog-btn-primary" id="alert-ok">
@@ -94,7 +94,7 @@ export function showConfirm(message, title = null) {
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-circle-question dialog-icon"></i>
-          <p class="dialog-message">${message}</p>
+          <div class="dialog-message">${message}</div>
         </div>
         <div class="dialog-footer">
           <button class="dialog-btn dialog-btn-secondary" id="confirm-cancel">
@@ -153,7 +153,7 @@ export function showPrompt(message, defaultValue = "", title = null) {
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-pen-to-square dialog-icon"></i>
-          <p class="dialog-message">${message}</p>
+          <div class="dialog-message">${message}</div>
           <input type="text" class="dialog-input" id="prompt-input" value="${defaultValue}" />
         </div>
         <div class="dialog-footer">
@@ -245,7 +245,7 @@ export function showChecklistConfirm(options, title = null, message = null) {
         ${title ? `<div class="dialog-header">${title}</div>` : ""}
         <div class="dialog-body">
           <i class="fa-solid fa-list-check dialog-icon"></i>
-          ${message ? `<p class="dialog-message">${message}</p>` : ""}
+          ${message ? `<div class="dialog-message">${message}</div>` : ""}
           <div class="dialog-checklist">${checklistHtml}</div>
         </div>
         <div class="dialog-footer">
@@ -300,3 +300,70 @@ export function showChecklistConfirm(options, title = null, message = null) {
     document.addEventListener("keydown", escHandler)
   })
 }
+
+/**
+ * Shows a specialized modal with instructions on how to hide the Chrome Bookmark Bar
+ */
+export function showBookmarkHideInstructions() {
+  const i18n = geti18n()
+  const title = i18n.hide_bookmark_modal_title || "Hide Chrome Bookmark Bar"
+  const step1 = i18n.hide_bookmark_step1 || "1. Open CMD (Command Prompt) as Administrator."
+  const step2 = i18n.hide_bookmark_step2 || "2. Copy and run the command below:"
+  const copyText = i18n.hide_bookmark_copy || "Copy Command"
+  const copiedText = i18n.hide_bookmark_copied || "Command Copied!"
+  const policyLink = i18n.hide_bookmark_policy_link || "View status at chrome://policy/"
+  const linkHint = i18n.hide_bookmark_link_hint || "(Copy and paste the link if it doesn't open)"
+  const tip = i18n.hide_bookmark_tip || "Tip: To show the bookmark bar again, run the same command but change /d 0 to /d 1."
+
+  const command =
+    'reg add "HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Google\\Chrome" /v BookmarkBarEnabled /t REG_DWORD /d 0 /f'
+
+  const content = `
+    <div class="bookmark-hide-instructions" style="text-align: left; font-family: inherit;">
+      <p style="margin-bottom: 12px; font-size: 0.95rem;">${step1}</p>
+      <p style="margin-bottom: 8px; font-size: 0.95rem;">${step2}</p>
+      
+      <div class="command-box" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; position: relative; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);">
+        <code id="reg-command" style="display: block; word-break: break-all; font-family: 'Consolas', monospace; font-size: 0.85rem; color: var(--accent-color); margin-bottom: 12px; padding: 4px; background: rgba(0,0,0,0.3); border-radius: 4px;">${command}</code>
+        <button id="copy-reg-command" style="background: var(--accent-color); color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; font-family: inherit; margin: 0 auto;">
+          <i class="fa-solid fa-copy"></i> <span>${copyText}</span>
+        </button>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <a href="chrome://policy/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-external-link" style="font-size: 0.8rem;"></i> ${policyLink}
+        </a>
+        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: 4px;">${linkHint}</p>
+      </div>
+
+      <div style="background: rgba(var(--accent-color-rgb), 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">
+          <i class="fa-solid fa-lightbulb" style="color: var(--accent-color); margin-right: 4px;"></i> ${tip}
+        </p>
+      </div>
+    </div>
+  `
+
+  showAlert(content, title)
+
+  // Wait for the dialog to be rendered
+  setTimeout(() => {
+    const copyBtn = document.getElementById("copy-reg-command")
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(command).then(() => {
+          const originalContent = copyBtn.innerHTML
+          copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${copiedText}</span>`
+          const originalBg = copyBtn.style.background
+          copyBtn.style.background = "#28a745"
+          setTimeout(() => {
+            copyBtn.innerHTML = originalContent
+            copyBtn.style.background = originalBg
+          }, 2000)
+        })
+      }
+    }
+  }, 100)
+}
+
