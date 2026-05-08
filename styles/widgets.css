@@ -1452,6 +1452,17 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .timer-controls .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-color);
+}
+
+.timer-controls .icon-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-contrast-color, #1a1a2e);
+}
+
+.timer-controls .icon-btn:hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
   border-color: var(--accent-color);
   transform: translateY(-2px);

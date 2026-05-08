@@ -251,15 +251,40 @@ export function updateTime() {
   const now = new Date()
   const langCode = settings.language === "vi" ? "vi-VN" : "en-US"
   const dateClockStyle = settings.dateClockStyle || "default"
+
+  // TIMER MODE LOGIC
+  let isTimer = false
+  let timerH = 0, timerM = 0, timerS = 0
+  let timerString = ""
+  
+  if (settings.clockTimerMode && window.activeTimer) {
+    isTimer = true
+    const timeLeft = window.activeTimer.timeLeft
+    timerH = Math.floor(timeLeft / 3600)
+    timerM = Math.floor((timeLeft % 3600) / 60)
+    timerS = timeLeft % 60
+    
+    const hhT = timerH.toString().padStart(2, '0')
+    const mmT = timerM.toString().padStart(2, '0')
+    const ssT = timerS.toString().padStart(2, '0')
+    
+    if (timerH > 0) {
+      timerString = `${hhT}:${mmT}:${ssT}`
+    } else {
+      timerString = `${mmT}:${ssT}`
+    }
+  }
+
   const isFramedClockStyle =
     dateClockStyle === "round" || dateClockStyle === "square"
   const shouldShowDate =
-    settings.showDate !== false && settings.showGregorian !== false
+    settings.showDate !== false && settings.showGregorian !== false && !isTimer
   const use12Hour = settings.timeFormat === "12h"
   const tz =
     settings.timezone && settings.timezone !== "local"
       ? settings.timezone
       : undefined
+  
   const timeOptions = settings.hideSeconds
     ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
     : {
@@ -269,7 +294,23 @@ export function updateTime() {
         second: "2-digit",
         timeZone: tz,
       }
-  const timeString = now.toLocaleTimeString(langCode, timeOptions)
+  
+  const timeString = isTimer ? timerString : now.toLocaleTimeString(langCode, timeOptions)
+
+  // Extract time parts for styles that need them
+  let hh, mm, ss, ampm = ""
+  if (isTimer) {
+    hh = timerH.toString().padStart(2, '0')
+    mm = timerM.toString().padStart(2, '0')
+    ss = timerS.toString().padStart(2, '0')
+    ampm = ""
+  } else {
+    const parts = new Intl.DateTimeFormat(langCode, timeOptions).formatToParts(now)
+    hh = parts.find(p => p.type === 'hour')?.value || "00"
+    mm = parts.find(p => p.type === 'minute')?.value || "00"
+    ss = parts.find(p => p.type === 'second')?.value || ""
+    ampm = parts.find(p => p.type === 'dayPeriod')?.value || ""
+  }
 
   // Keep layout stable by toggling visibility class instead of display.
   const displayMode = settings.clockDisplayMode || "all"
@@ -286,13 +327,9 @@ export function updateTime() {
   }
 
   if (dateClockStyle === "analog") {
-    let tDate = now
-    if (tz) {
-      tDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
-    }
-    const hours = tDate.getHours() % 12
-    const minutes = tDate.getMinutes()
-    const seconds = tDate.getSeconds()
+    const hours = isTimer ? (timerH % 12) : (parseInt(hh) % 12)
+    const minutes = isTimer ? timerM : parseInt(mm)
+    const seconds = isTimer ? timerS : (parseInt(ss) || 0)
     const markerMode = settings.analogMarkerMode || "quarters"
     const hourRotation = hours * 30 + minutes * 0.5
     const minuteRotation = minutes * 6 + seconds * 0.1
@@ -348,26 +385,14 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "cool") {
-    let tDate = now
-    if (tz) {
-      tDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
-    }
-    const hour24 = tDate.getHours()
+    const hour24 = isTimer ? timerH : now.getHours()
 
     let greetingKey = "greeting_evening"
     if (hour24 < 12) greetingKey = "greeting_morning"
     else if (hour24 < 18) greetingKey = "greeting_afternoon"
 
     const i18n = geti18n()
-    const greeting = i18n[greetingKey] || "Hello"
-
-    const timeOptions = {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: tz,
-    }
-    const timeStr = now.toLocaleTimeString(langCode, timeOptions)
+    const greeting = isTimer ? (geti18n()["quick_access_timer"] || "Timer") : (i18n[greetingKey] || "Hello")
 
     const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
     const format = settings.dateFormat || "full"
@@ -398,27 +423,16 @@ export function updateTime() {
         `
             : ""
         }
-        <div class="cool-time">${timeStr}</div>
+        <div class="cool-time">${timeString}</div>
         <div class="cool-bar">|</div>
       </div>
     `
   } else if (dateClockStyle === "sidestyle") {
-    const timeOptions = settings.hideSeconds
-      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
-      : {
-          hour12: use12Hour,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: tz,
-        }
-    let timeStr = now.toLocaleTimeString(langCode, timeOptions)
+    let finalTimeStr = timeString
     if (settings.sidestyleAlign === "center" && settings.sidestyleNoBorder) {
-      timeStr = `- ${timeStr} -`
+      finalTimeStr = `- ${timeString} -`
     }
 
-    // Get short weekday as VI strings are long, e.g. "THỨ BẢY" instead of "SATURDAY".
-    // but the test style has SATURDAY. Let's use getSafeWeekday to get long weekday for EN.
     const dayName = getSafeWeekday(
       now,
       langCode,
@@ -426,85 +440,30 @@ export function updateTime() {
       tz,
     ).toUpperCase()
 
-    const enMonths = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ]
-    let dateStr = ""
-    if (langCode === "vi-VN") {
-      dateStr = now.toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        timeZone: tz,
-      })
-    } else {
-      dateStr = `${now.getDate()} ${enMonths[now.getMonth()]} ${now.getFullYear()}`
-    }
-
     clockElement.innerHTML = `
       <div class="clock-sidestyle">
-        <div class="clock-sidestyle-day">${dayName}</div>
+        <div class="clock-sidestyle-day">${isTimer ? "COUNTDOWN" : dayName}</div>
         ${shouldShowDate ? _buildSidestyleDateStr(now, langCode, tz, settings) : ""}
-        <div class="clock-sidestyle-time">${timeStr}</div>
+        <div class="clock-sidestyle-time">${finalTimeStr}</div>
       </div>
     `
   } else if (dateClockStyle === "jp-style") {
-    const timeOptions = settings.hideSeconds
-      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
-      : {
-          hour12: use12Hour,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: tz,
-        }
-
-    // Choose actual language based on jpStyleLanguage option (auto vs ja)
     const jpLangOption = settings.jpStyleLanguage || "auto"
     const displayLang = jpLangOption === "ja" ? "ja-JP" : langCode
-    const timeStr = now.toLocaleTimeString(displayLang, timeOptions)
-
+    
     let dayName = ""
-    if (jpLangOption === "ja") {
-      const jpDays = [
-        "日曜日",
-        "月曜日",
-        "火曜日",
-        "水曜日",
-        "木曜日",
-        "金曜日",
-        "土曜日",
-      ]
-      // Try to abbreviate JP days if shortWeekday is true
-      if (settings.shortWeekday) {
-        dayName = jpDays[now.getDay()].replace("曜日", "")
-      } else {
-        dayName = jpDays[now.getDay()]
-      }
+    if (isTimer) {
+      dayName = "TIMER"
+    } else if (jpLangOption === "ja") {
+      const jpDays = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"]
+      dayName = settings.shortWeekday ? jpDays[now.getDay()].replace("曜日", "") : jpDays[now.getDay()]
     } else {
-      dayName = getSafeWeekday(
-        now,
-        displayLang,
-        settings.shortWeekday,
-        tz,
-      ).toUpperCase()
+      dayName = getSafeWeekday(now, displayLang, settings.shortWeekday, tz).toUpperCase()
     }
 
     const month = (now.getMonth() + 1).toString().padStart(2, "0")
     const dayNum = now.getDate().toString().padStart(2, "0")
 
-    // Use symbols based on lang
     const format = settings.dateFormat || "full"
     let dateHtml = ""
 
@@ -514,20 +473,7 @@ export function updateTime() {
       } else if (displayLang === "vi-VN") {
         dateHtml = `<span class="clock-jp-daynum" style="margin-right: 0.5em;">Ngày ${dayNum}</span><span class="clock-jp-month">Thg ${month}</span>`
       } else {
-        const enMonths = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ]
+        const enMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         dateHtml = `<span class="clock-jp-month">${enMonths[now.getMonth()]}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
       }
     } else {
@@ -539,190 +485,98 @@ export function updateTime() {
         <div class="clock-jp-row">
             <span class="clock-jp-day-left">${dayName}</span>
             <div class="clock-jp-col">
-                <span class="clock-jp-time">${timeStr}</span>
+                <span class="clock-jp-time">${timeString}</span>
                 ${shouldShowDate ? `<span class="clock-jp-date">${dateHtml}</span>` : ""}
             </div>
         </div>
       </div>
     `
   } else if (dateClockStyle === "round") {
-    const roundTimeOptions = settings.hideSeconds
-      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
-      : {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: use12Hour,
-          timeZone: tz,
-        }
-    const timeParts = new Intl.DateTimeFormat(langCode, roundTimeOptions)
-      .formatToParts(now)
-      .filter((part) => part.type !== "literal")
-
-    const hhPart = timeParts.find((part) => part.type === "hour")
-    const mmPart = timeParts.find((part) => part.type === "minute")
-    const ssPart = timeParts.find((part) => part.type === "second")
-    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
-
-    const hh = hhPart ? hhPart.value : "00"
-    const mm = mmPart ? mmPart.value : "00"
-    const ss = ssPart ? ssPart.value : "00"
-    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
-
     const day = now.getDate().toString().padStart(2, "0")
     const month = (now.getMonth() + 1).toString().padStart(2, "0")
-    const year = new Date(
-      now.toLocaleString("en-US", { timeZone: tz }),
-    ).getFullYear()
+    const year = new Date(now.toLocaleString("en-US", { timeZone: tz })).getFullYear()
     const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
 
     const theme = settings.framedClockTheme || "light"
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
     document.body.classList.add(`framed-theme-${theme}`)
 
-    const fliqloTheme = settings.fliqloTheme || "dark"
-    document.body.classList.remove("fliqlo-theme-light", "fliqlo-theme-dark")
-    document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
-
     clockElement.innerHTML = `
       <div class="round-clock-new-layout">
         <div class="round-clock-notch">
-          <span class="round-clock-date-top">${day}/${month}</span>
+          <span class="round-clock-date-top">${isTimer ? "TIMER" : `${day}/${month}`}</span>
         </div>
         <div class="round-clock-center">
           <div class="round-clock-time-row">
             <span class="round-clock-hhmm">${hh}:${mm}</span>
             <div class="round-clock-side-meta">
               <span class="round-clock-ampm-top">${ampm}</span>
-              ${!settings.hideSeconds ? `<span class="round-clock-ss-bottom">${ss}</span>` : ""}
+              ${ss ? `<span class="round-clock-ss-bottom">${ss}</span>` : ""}
             </div>
           </div>
           <div class="round-clock-bottom-info">
-            <span class="round-clock-footer-text">${year} - ${weekday}</span>
+            <span class="round-clock-footer-text">${isTimer ? "COUNTDOWN" : `${year} - ${weekday}`}</span>
           </div>
         </div>
       </div>
     `
   } else if (dateClockStyle === "square") {
-    const roundTimeOptions = settings.hideSeconds
-      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
-      : {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: use12Hour,
-          timeZone: tz,
-        }
-    const timeParts = new Intl.DateTimeFormat(langCode, roundTimeOptions)
-      .formatToParts(now)
-      .filter((part) => part.type !== "literal")
-
-    const hhPart = timeParts.find((part) => part.type === "hour")
-    const mmPart = timeParts.find((part) => part.type === "minute")
-    const ssPart = timeParts.find((part) => part.type === "second")
-    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
-
-    const hh = hhPart ? hhPart.value : "00"
-    const mm = mmPart ? mmPart.value : "00"
-    const ss = ssPart ? ssPart.value : "00"
-    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
-
     const day = now.getDate().toString().padStart(2, "0")
     const month = (now.getMonth() + 1).toString().padStart(2, "0")
-    const year = new Date(
-      now.toLocaleString("en-US", { timeZone: tz }),
-    ).getFullYear()
+    const year = new Date(now.toLocaleString("en-US", { timeZone: tz })).getFullYear()
     const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
 
     const theme = settings.framedClockTheme || "light"
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
     document.body.classList.add(`framed-theme-${theme}`)
 
-    const fliqloTheme = settings.fliqloTheme || "dark"
-    document.body.classList.remove("fliqlo-theme-light", "fliqlo-theme-dark")
-    document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
-
     clockElement.innerHTML = `
       <div class="square-clock-bold-layout">
         <div class="sq-top-row">
-          <span class="sq-date-val">${day} / ${month}</span>
+          <span class="sq-date-val">${isTimer ? "TIMER" : `${day} / ${month}`}</span>
         </div>
         <div class="sq-main-row">
           <span class="sq-time-hhmm">${hh}:${mm}</span>
           <div class="sq-side-info">
             <span class="sq-ampm">${ampm}</span>
-            ${!settings.hideSeconds ? `<span class="sq-ss">${ss}</span>` : ""}
+            ${ss ? `<span class="sq-ss">${ss}</span>` : ""}
           </div>
         </div>
         <div class="sq-bottom-row">
-          <span class="sq-full-date">${weekday.toUpperCase()} - ${year}</span>
+          <span class="sq-full-date">${isTimer ? "COUNTDOWN" : `${weekday.toUpperCase()} - ${year}`}</span>
         </div>
       </div>
     `
-  } else if (isFramedClockStyle) {  } else if (dateClockStyle === "sidebar") {
-    const timeOptions = settings.hideSeconds
-      ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
-      : {
-          hour12: use12Hour,
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          timeZone: tz,
-        }
-    const timeParts = new Intl.DateTimeFormat("en-US", timeOptions)
-      .formatToParts(now)
-      .filter((part) => part.type !== "literal")
-
-    const hhPart = timeParts.find((part) => part.type === "hour")
-    const mmPart = timeParts.find((part) => part.type === "minute")
-    const ssPart = timeParts.find((part) => part.type === "second")
-    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
-
-    const hh = hhPart ? hhPart.value : "00"
-    const mm = mmPart ? mmPart.value : "00"
-
+  } else if (dateClockStyle === "sidebar") {
     if (settings.sidebarClockFlip) {
-      // Date is vertical, time is horizontal below
-      // Extract date units:
-      const dateParts = new Intl.DateTimeFormat(langCode, {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        timeZone: tz,
-      })
-        .formatToParts(now)
-        .filter((p) => p.type !== "literal")
-
-      const day = dateParts.find((p) => p.type === "day")?.value || ""
-      const month = dateParts.find((p) => p.type === "month")?.value || ""
-      const year = dateParts.find((p) => p.type === "year")?.value || ""
-
-      const timeHtml = `<div class="clock-sidebar-date">${timeString}</div>`
+      const dateParts = new Intl.DateTimeFormat(langCode, { day: "numeric", month: "short", year: "numeric", timeZone: tz }).formatToParts(now).filter(p => p.type !== 'literal')
+      const dVal = dateParts.find(p => p.type === 'day')?.value || ""
+      const mVal = dateParts.find(p => p.type === 'month')?.value || ""
+      const yVal = dateParts.find(p => p.type === 'year')?.value || ""
 
       clockElement.innerHTML = `
         <div class="clock-sidebar-style is-flipped">
           <div class="clock-sidebar-time">
-            ${day ? `<div class="clock-sidebar-unit">${day}</div>` : ""}
-            ${month ? `<div class="clock-sidebar-unit" style="font-size: 0.6em; text-transform: uppercase;">${month}</div>` : ""}
-            ${year ? `<div class="clock-sidebar-unit" style="font-size: 0.5em; opacity: 0.6;">${year}</div>` : ""}
+            ${isTimer ? `<div class="clock-sidebar-unit">TMR</div>` : `
+              ${dVal ? `<div class="clock-sidebar-unit">${dVal}</div>` : ""}
+              ${mVal ? `<div class="clock-sidebar-unit" style="font-size: 0.6em; text-transform: uppercase;">${mVal}</div>` : ""}
+              ${yVal ? `<div class="clock-sidebar-unit" style="font-size: 0.5em; opacity: 0.6;">${yVal}</div>` : ""}
+            `}
           </div>
-          ${timeHtml}
+          <div class="clock-sidebar-date">${timeString}</div>
         </div>
       `
     } else {
-      const dateHtml = shouldShowDate
-        ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
-        : ""
-
+      const dateHtml = shouldShowDate ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>` : ""
       clockElement.innerHTML = `
         <div class="clock-sidebar-style">
           <div class="clock-sidebar-time">
             <div class="clock-sidebar-unit clock-sidebar-hour">${hh}</div>
             <div class="clock-sidebar-unit clock-sidebar-minute">${mm}</div>
-            ${!settings.hideSeconds && ssPart ? `<div class="clock-sidebar-unit clock-sidebar-second">${ssPart.value}</div>` : ""}
-            ${dayPeriodPart ? `<div class="clock-sidebar-unit clock-sidebar-ampm">${dayPeriodPart.value}</div>` : ""}
+            ${ss ? `<div class="clock-sidebar-unit clock-sidebar-second">${ss}</div>` : ""}
+            ${ampm ? `<div class="clock-sidebar-unit clock-sidebar-ampm">${ampm}</div>` : ""}
           </div>
-          ${dateHtml}
+          ${isTimer ? `<div class="clock-sidebar-date">COUNTDOWN</div>` : dateHtml}
         </div>
       `
     }
@@ -742,32 +596,8 @@ export function updateTime() {
       settings.fliqloTransparent === true,
     )
 
-    const fliqloTimeOptions = settings.hideSeconds
-      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
-      : {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: use12Hour,
-          timeZone: tz,
-        }
-    const timeParts = new Intl.DateTimeFormat(langCode, fliqloTimeOptions)
-      .formatToParts(now)
-      .filter((part) => part.type !== "literal")
-
-    const hhPart = timeParts.find((part) => part.type === "hour")
-    const mmPart = timeParts.find((part) => part.type === "minute")
-    const ssPart = timeParts.find((part) => part.type === "second")
-    const dayPeriodPart = timeParts.find((part) => part.type === "dayPeriod")
-
-    const hh = hhPart ? hhPart.value : "00"
-    const mm = mmPart ? mmPart.value : "00"
-    const ss = ssPart ? ssPart.value : ""
-    const ampm = dayPeriodPart ? dayPeriodPart.value : ""
-
     // Build flip cards for each digit
     const buildFlipCard = (digit, label) => {
-      // Check if digit changed to trigger animation
       const prevKey = `_fliqlo_prev_${label}`
       const prev = clockElement[prevKey]
       clockElement[prevKey] = digit
@@ -776,18 +606,10 @@ export function updateTime() {
       const oldDigit = prev !== undefined ? prev : digit
       return `
         <div class="fliqlo-card${animClass}" data-digit="${label}">
-          <div class="fliqlo-card-top">
-            <span>${digit}</span>
-          </div>
-          <div class="fliqlo-card-bottom">
-            <span>${oldDigit}</span>
-          </div>
-          <div class="fliqlo-card-flip-top">
-            <span>${oldDigit}</span>
-          </div>
-          <div class="fliqlo-card-flip-bottom">
-            <span>${digit}</span>
-          </div>
+          <div class="fliqlo-card-top"><span>${digit}</span></div>
+          <div class="fliqlo-card-bottom"><span>${oldDigit}</span></div>
+          <div class="fliqlo-card-flip-top"><span>${oldDigit}</span></div>
+          <div class="fliqlo-card-flip-bottom"><span>${digit}</span></div>
         </div>
       `
     }
@@ -803,98 +625,60 @@ export function updateTime() {
         </div>
       `
     }
-    let ampmHtml = ""
-    if (ampm) {
-      ampmHtml = `<span class="fliqlo-ampm">${ampm}</span>`
-    }
+    let ampmHtml = ampm ? `<span class="fliqlo-ampm">${ampm}</span>` : ""
 
-    const dateStr = shouldShowDate
-      ? `<div class="fliqlo-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
-      : ""
+    const dateStr = shouldShowDate ? `<div class="fliqlo-date">${getCustomDateString(now, langCode, tz, settings)}</div>` : ""
 
     clockElement.innerHTML = `
       <div class="fliqlo-wrapper">
         <div class="fliqlo-time">
-          <div class="fliqlo-group">
-            ${hhCards}
-          </div>
+          <div class="fliqlo-group">${hhCards}</div>
           <span class="fliqlo-colon">:</span>
-          <div class="fliqlo-group">
-            ${mmCards}
-          </div>
+          <div class="fliqlo-group">${mmCards}</div>
           ${ssHtml}
           ${ampmHtml}
         </div>
-        ${dateStr}
+        ${isTimer ? `<div class="fliqlo-date">COUNTDOWN</div>` : dateStr}
       </div>
     `
   } else if (dateClockStyle === "cyber-pulse") {
-    const cyberTimeOptions = settings.hideSeconds
-      ? { hour: "2-digit", minute: "2-digit", hour12: use12Hour, timeZone: tz }
-      : {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: use12Hour,
-          timeZone: tz,
-        }
-    const timeParts = new Intl.DateTimeFormat(langCode, cyberTimeOptions)
-      .formatToParts(now)
-      .filter((part) => part.type !== "literal")
-
-    const hh = timeParts.find((part) => part.type === "hour")?.value || "00"
-    const mm = timeParts.find((part) => part.type === "minute")?.value || "00"
-    const ss = timeParts.find((part) => part.type === "second")?.value || ""
-    const ampm = timeParts.find((part) => part.type === "dayPeriod")?.value || ""
-
-    const dateStr = shouldShowDate
-      ? getCustomDateString(now, langCode, tz, settings)
-      : ""
-
-    // Use persistent DOM update to prevent animation reset
-    let cyberRoot = clockElement.querySelector(".cyber-pulse-clock");
+    const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
+    let cyberRoot = clockElement.querySelector(".cyber-pulse-clock")
     if (!cyberRoot) {
       clockElement.innerHTML = `
         <div class="cyber-pulse-clock">
           <div class="cyber-time-wrap">
             <span class="cyber-hh">${hh}</span>
-            <div class="cyber-divider">
-              <div class="cyber-pulse-line"></div>
-            </div>
+            <div class="cyber-divider"><div class="cyber-pulse-line"></div></div>
             <span class="cyber-mm">${mm}</span>
             <span class="cyber-ss">${ss}</span>
             <span class="cyber-ampm">${ampm}</span>
           </div>
-          <div class="cyber-date">${dateStr}</div>
+          <div class="cyber-date">${isTimer ? "COUNTDOWN" : dateStr}</div>
         </div>
-      `;
-      cyberRoot = clockElement.querySelector(".cyber-pulse-clock");
+      `
+      cyberRoot = clockElement.querySelector(".cyber-pulse-clock")
     }
 
-
-    // Update text nodes only
-    const hhEl = cyberRoot.querySelector(".cyber-hh");
-    if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh;
-    
-    const mmEl = cyberRoot.querySelector(".cyber-mm");
-    if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm;
-    
-    const ssEl = cyberRoot.querySelector(".cyber-ss");
+    const hhEl = cyberRoot.querySelector(".cyber-hh")
+    if (hhEl && hhEl.textContent !== hh) hhEl.textContent = hh
+    const mmEl = cyberRoot.querySelector(".cyber-mm")
+    if (mmEl && mmEl.textContent !== mm) mmEl.textContent = mm
+    const ssEl = cyberRoot.querySelector(".cyber-ss")
     if (ssEl) {
-      if (ssEl.textContent !== ss) ssEl.textContent = ss;
-      ssEl.style.display = ss ? "inline-block" : "none";
+      if (ssEl.textContent !== ss) ssEl.textContent = ss
+      ssEl.style.display = ss ? "inline-block" : "none"
     }
-    
-    const ampmEl = cyberRoot.querySelector(".cyber-ampm");
+    const ampmEl = cyberRoot.querySelector(".cyber-ampm")
     if (ampmEl) {
-      if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm;
-      ampmEl.style.display = ampm ? "inline-block" : "none";
+      if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+      ampmEl.style.display = ampm ? "inline-block" : "none"
     }
-    
-    const dateEl = cyberRoot.querySelector(".cyber-date");
+    const dateEl = cyberRoot.querySelector(".cyber-date")
     if (dateEl) {
-      if (dateEl.innerHTML !== dateStr) dateEl.innerHTML = dateStr;
-      dateEl.style.display = dateStr ? "block" : "none";
+      const dTxt = isTimer ? "COUNTDOWN" : dateStr
+      if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
+      dateEl.style.display = dTxt ? "block" : "none"
     }
   } else {
     clockElement.textContent = timeString
@@ -973,7 +757,9 @@ export function updateTime() {
   const outerContainer = document.getElementById("clock-date-wrap")
   if (outerContainer && clockFadeWrap && dateFadeWrap) {
     const isHiddenTimerRunning =
-      settings.timerIsRunning === true && settings.showTimer !== true
+      settings.timerIsRunning === true && 
+      settings.showTimer !== true && 
+      settings.clockTimerMode !== true
     outerContainer.classList.toggle("timer-running-hidden", isHiddenTimerRunning)
 
     if (isFramedClockStyle || priority === "date") {
@@ -997,6 +783,7 @@ export function initClock() {
     if (
       e.detail.key === "showGregorian" ||
       e.detail.key === "clockDisplayMode" ||
+      e.detail.key === "clockTimerMode" ||
       e.detail.key === "hideSeconds" ||
       e.detail.key === "showTimer" ||
       e.detail.key === "timerIsRunning" ||

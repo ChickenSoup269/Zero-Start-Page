@@ -3,10 +3,12 @@
 #### 🇻🇳 Tiếng Việt (Vietnamese)
 
 - **Chủ đề (Themes):** Đổi tên chủ đề "Arctic" thành "Style Flip cổ điển" và mặc định thêm hiệu ứng mưa (Rain).
+- **Đồng hồ (Clock):** Thêm chế độ **Đếm ngược (Countdown Mode)** cho đồng hồ chính. Cho phép hiển thị thời gian đếm ngược của Timer trực tiếp trên phong cách đồng hồ đang sử dụng (Fliqlo, Analog, Cyber Pulse, v.v.).
 
 #### 🇺🇸 English
 
 - **Themes:** Renamed "Arctic" theme to "Flip Classic Style" and added a default rain effect (Rain).
+- **Clock:** Added **Countdown Mode** for the main clock. Allows displaying the Timer's countdown directly on whatever clock style you are using (Fliqlo, Analog, Cyber Pulse, etc.).
 
 ### [1.1.1] - 2026-04-04
 

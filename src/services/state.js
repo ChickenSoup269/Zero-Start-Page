@@ -191,6 +191,7 @@ export const defaultSettings = {
   todoShowCheckboxes: true,
   showTimer: false,
   showGregorian: true,
+  clockTimerMode: false,
   showFullCalendar: false,
   showLunarCalendar: false,
   clockDisplayMode: "all",

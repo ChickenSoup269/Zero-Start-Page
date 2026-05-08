@@ -140,6 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const notepad = new Notepad()
   const todo = new TodoList()
   const timer = new Timer()
+  window.activeTimer = timer
   const music = new MusicPlayer()
   const calendar = new FullCalendar()
   const dailyQuotes = new DailyQuotes()

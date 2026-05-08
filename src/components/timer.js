@@ -25,6 +25,7 @@ export class Timer {
     this.setupEventListeners()
     this.updateVisibility()
     this.applySkin()
+    this.updateClockModeBtn()
 
     // Resume logic
     if (this.isRunning && this.endTime > Date.now()) {
@@ -59,6 +60,7 @@ export class Timer {
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
                     <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
                     <button id="timer-edit" class="icon-btn" title="Set Time"><i class="fa-solid fa-keyboard"></i></button>
+                    <button id="timer-clock-mode" class="icon-btn" title="Countdown to Main Clock"><i class="fa-solid fa-hourglass-start"></i></button>
                     <button id="timer-minimize" class="icon-btn" title="Minimize to Clock"><i class="fa-solid fa-compress"></i></button>
                 </div>
             </div>
@@ -133,6 +135,10 @@ export class Timer {
       .querySelector("#stop-alarm-btn")
       .addEventListener("click", () => this.stopAlarm())
 
+    this.container
+      .querySelector("#timer-clock-mode")
+      .addEventListener("click", () => this.toggleClockTimerMode())
+
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showTimer") {
         this.isVisible = e.detail.value
@@ -140,6 +146,9 @@ export class Timer {
       }
       if (e.detail.key === "timerSkin") {
         this.applySkin()
+      }
+      if (e.detail.key === "clockTimerMode") {
+        this.updateClockModeBtn()
       }
     })
 
@@ -181,7 +190,9 @@ export class Timer {
   _updateMiniIndicatorVisibility() {
     const mini = document.getElementById("mini-timer-indicator")
     if (mini) {
-      const shouldShowMini = !this.isVisible && this.isRunning
+      const settings = getSettings()
+      const isClockTimerMode = settings.clockTimerMode === true
+      const shouldShowMini = !this.isVisible && this.isRunning && !isClockTimerMode
       mini.style.display = shouldShowMini ? "flex" : "none"
       if (shouldShowMini) this.render()
     }
@@ -376,5 +387,40 @@ export class Timer {
     const skin = isWhiteMode ? "white-blur" : (settings.timerSkin || "default")
     
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+  }
+
+  toggleClockTimerMode() {
+    const current = getSettings().clockTimerMode === true
+    const next = !current
+    updateSetting("clockTimerMode", next)
+    saveSettings()
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "clockTimerMode", value: next },
+      }),
+    )
+
+    // Automatically hide timer if countdown mode is enabled
+    if (next) {
+      updateSetting("showTimer", false)
+      saveSettings()
+      this.isVisible = false
+      this.updateVisibility()
+      
+      // Sync the quick access button state
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "showTimer", value: false },
+        }),
+      )
+    }
+  }
+
+  updateClockModeBtn() {
+    const btn = this.container.querySelector("#timer-clock-mode")
+    if (btn) {
+      const active = getSettings().clockTimerMode === true
+      btn.classList.toggle("active", active)
+    }
   }
 }
