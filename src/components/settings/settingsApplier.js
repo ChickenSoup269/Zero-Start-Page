@@ -743,6 +743,15 @@ function createApplySettings(effectInstances) {
         contrastColor,
       )
 
+      // Safe accent for light backgrounds (darken if too light)
+      const isLightAccent = getContrastYIQ(settings.accentColor) === "black";
+      document.documentElement.style.setProperty(
+        "--safe-accent",
+        isLightAccent 
+          ? `color-mix(in srgb, ${settings.accentColor}, black 25%)`
+          : settings.accentColor
+      );
+
       const rgb = hexToRgb(settings.accentColor)
       if (rgb) {
         document.documentElement.style.setProperty(

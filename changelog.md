@@ -1,3 +1,13 @@
+### [1.1.2] - 2026-05-08
+
+#### 🇻🇳 Tiếng Việt (Vietnamese)
+
+- **Chủ đề (Themes):** Đổi tên chủ đề "Arctic" thành "Style Flip cổ điển" và mặc định thêm hiệu ứng mưa (Rain).
+
+#### 🇺🇸 English
+
+- **Themes:** Renamed "Arctic" theme to "Flip Classic Style" and added a default rain effect (Rain).
+
 ### [1.1.1] - 2026-04-04
 
 #### 🇻🇳 Tiếng Việt (Vietnamese)

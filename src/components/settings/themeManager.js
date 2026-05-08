@@ -188,7 +188,7 @@ const THEMES = {
     glassBg: "rgba(255, 255, 255, 0.15)",
     glassBorder: "rgba(255, 255, 255, 0.3)",
     glassEdge: "rgba(255, 255, 255, 0.4)",
-    effect: "none",
+    effect: "galaxy",
     hueTextMode: "off",
     font: "'Outfit', sans-serif",
     clockFont: "'Outfit', sans-serif",

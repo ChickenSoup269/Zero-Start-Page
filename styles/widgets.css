@@ -643,21 +643,22 @@ body.ghost-controls .side-controls:hover {
   color: #000000 !important;
 }
 
-/* Đảm bảo nút Active cũng dùng màu đen trắng thay vì accent color */
+/* Đảm bảo nút Active cũng dùng màu accent color tương phản */
 .side-controls.light-mode .quick-btn.active {
-  color: #ffffff !important;
-  background: #000000 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  color: var(--accent-contrast-color) !important;
+  background: var(--safe-accent) !important;
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3) !important;
   border-radius: 12px;
 }
 
 .side-controls.light-mode .quick-btn:hover:not(.active) {
   color: #ffffff !important;
-  background: rgb(0, 0, 0) !important;
+  background: var(--safe-accent) !important;
 }
 
 .side-controls.light-mode #settings-toggle:hover {
   background: white;
+  color: var(--safe-accent) !important;
 }
 
 .side-controls.light-mode .quick-access-divider {
@@ -2129,7 +2130,7 @@ body.context-menu-none .context-menu-item:hover {
 
 .skin-white-blur .todo-section-header {
   background: rgba(0, 0, 0, 0.08) !important;
-  border-left-color: #000 !important;
+  border-left-color: var(--safe-accent) !important;
 }
 
 .skin-white-blur .todo-section-header .section-title {
@@ -2137,7 +2138,7 @@ body.context-menu-none .context-menu-item:hover {
 }
 
 .skin-white-blur .todo-checkbox {
-  accent-color: #000 !important;
+  accent-color: var(--safe-accent) !important;
 }
 
 .skin-white-blur .weekday-header {
@@ -2150,20 +2151,20 @@ body.context-menu-none .context-menu-item:hover {
 }
 
 .skin-white-blur .day-item.today {
-  background: #000 !important;
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  background: var(--safe-accent) !important;
+  color: var(--accent-contrast-color) !important;
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3) !important;
 }
 
 .skin-white-blur .day-item.today .day-number,
 .skin-white-blur .day-item.today .lunar-date,
 .skin-white-blur .day-item.today .holiday-name {
-  color: #fff !important;
+  color: var(--accent-contrast-color) !important;
 }
 
 .skin-white-blur .day-item.selected {
-  outline-color: #000 !important;
-  background: rgba(0, 0, 0, 0.05) !important;
+  outline-color: var(--safe-accent) !important;
+  background: rgba(var(--accent-color-rgb), 0.05) !important;
 }
 
 .skin-white-blur .lunar-month-title,
@@ -2173,24 +2174,24 @@ body.context-menu-none .context-menu-item:hover {
 }
 
 .skin-white-blur .event-dot {
-  background: #000 !important;
+  background: var(--safe-accent) !important;
 }
 
 .skin-white-blur .calendar-event {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border-left-color: #000 !important;
+  background: rgba(var(--accent-color-rgb), 0.05) !important;
+  border-left-color: var(--safe-accent) !important;
   color: #000 !important;
 }
 
 .skin-white-blur .calendar-event:hover {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(var(--accent-color-rgb), 0.1) !important;
 }
 
 .skin-white-blur #alarm-control-container .primary-btn,
 .skin-white-blur .timer-input-actions .primary-btn {
-  background: #000 !important;
-  color: #fff !important;
-  border-color: #000 !important;
+  background: var(--safe-accent) !important;
+  color: var(--accent-contrast-color) !important;
+  border-color: var(--safe-accent) !important;
 }
 
 .skin-white-blur .context-menu-divider,

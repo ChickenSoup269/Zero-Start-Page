@@ -405,6 +405,7 @@ export function setupGeneralEventHandlers(
         "#effect-setting-group",
         "#page-title-input",
         "#date-format-select",
+        "#language-select",
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
