@@ -152,8 +152,16 @@ export function getContrastYIQ(hexcolor) {
 }
 
 export function hexToRgb(hex) {
-  if (!hex || typeof hex !== "string" || hex.charAt(0) !== "#") {
-    return { r: 0, g: 0, b: 0 } // Return black for invalid input
+  if (!hex || typeof hex !== "string") {
+    return { r: 0, g: 0, b: 0 }
+  }
+
+  // Handle CSS names commonly used as fallbacks
+  if (hex.toLowerCase() === "white") return { r: 255, g: 255, b: 255 }
+  if (hex.toLowerCase() === "black") return { r: 0, g: 0, b: 0 }
+
+  if (hex.charAt(0) !== "#") {
+    return { r: 0, g: 0, b: 0 } // Return black for other invalid input
   }
   hex = hex.slice(1)
 
@@ -162,7 +170,7 @@ export function hexToRgb(hex) {
   }
 
   if (hex.length !== 6) {
-    return { r: 0, g: 0, b: 0 } // Return black for invalid input
+    return { r: 0, g: 0, b: 0 } // Return black for invalid length
   }
 
   const r = parseInt(hex.substring(0, 2), 16)

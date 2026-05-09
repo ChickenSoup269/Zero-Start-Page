@@ -369,6 +369,16 @@ export function setupGeneralEventHandlers(
       }
 
       bugTextarea.value = JSON.stringify(info, null, 2)
+      
+      // Update bug report form link based on language
+      const bugLink = document.getElementById("bug-report-link")
+      if (bugLink) {
+        const currentLang = filteredSettings.language || "en"
+        const viForm = "https://docs.google.com/forms/d/e/1FAIpQLSeQnSKZycijyQds73GWCo4FT4tV78Hk4-fhkfcsHoI4LAqTww/viewform?usp=publish-editor"
+        const enForm = "https://docs.google.com/forms/d/e/1FAIpQLSfnnh8zLc76qvb_eSzA73a3DYBSv72OCQ34qLZLFZogSMd8fA/viewform?usp=publish-editor"
+        bugLink.href = currentLang === "vi" ? viForm : enForm
+      }
+
       bugModal.classList.add("open")
     })
 

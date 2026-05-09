@@ -705,12 +705,28 @@ function createApplySettings(effectInstances) {
       if (!finalDateColor) finalDateColor = fallbackColor
     }
 
+    // Ensure hex format (convert "black"/"white" names if they come from getContrastYIQ)
+    if (finalClockColor === "black") finalClockColor = "#000000"
+    if (finalClockColor === "white") finalClockColor = "#ffffff"
+    if (finalDateColor === "black") finalDateColor = "#000000"
+    if (finalDateColor === "white") finalDateColor = "#ffffff"
+
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
     document.documentElement.style.setProperty("--date-color", finalDateColor)
 
     const clockRgb = hexToRgb(finalClockColor)
     if (clockRgb) {
-      document.documentElement.style.setProperty("--clock-color-rgb", `${clockRgb.r}, ${clockRgb.g}, ${clockRgb.b}`)
+      document.documentElement.style.setProperty(
+        "--clock-color-rgb",
+        `${clockRgb.r}, ${clockRgb.g}, ${clockRgb.b}`,
+      )
+    }
+    const dateRgb = hexToRgb(finalDateColor)
+    if (dateRgb) {
+      document.documentElement.style.setProperty(
+        "--date-color-rgb",
+        `${dateRgb.r}, ${dateRgb.g}, ${dateRgb.b}`,
+      )
     }
 
     // Theme Surface Colors
@@ -1116,7 +1132,49 @@ function createUpdateSettingsInputs(effectInstances) {
       (b) => b.id === settings.background,
     )
     const isUserUploadedBg =
-      settings.background && settings.background.startsWith("data:image")
+      settings.background &&
+      (settings.background.startsWith("data:image") ||
+        settings.background.startsWith("data:video") ||
+        settings.background.startsWith("blob:") ||
+        isIdbImage(settings.background) ||
+        isIdbVideo(settings.background))
+
+    // Calculate current applied colors for pickers
+    let currentClockColor = settings.clockColor
+    let currentDateColor = settings.dateColor
+
+    if (!currentClockColor || !currentDateColor) {
+      let fallbackColor = "#ffffff"
+      const isFliqloLight =
+        settings.dateClockStyle === "fliqlo" && settings.fliqloTheme === "light"
+      const bg = settings.background
+
+      if (isFliqloLight) {
+        fallbackColor = "#000000"
+      } else if (
+        isPredefinedLocalBg ||
+        isUserUploadedBg ||
+        (bg && String(bg).match(/^https?:\/\//))
+      ) {
+        fallbackColor = "#ffffff"
+      } else if (bg) {
+        const contrast = getContrastYIQ(bg)
+        fallbackColor = contrast === "black" ? "#000000" : "#ffffff"
+      } else {
+        const contrast = getContrastYIQ(settings.gradientStart)
+        fallbackColor = contrast === "black" ? "#000000" : "#ffffff"
+      }
+
+      if (!currentClockColor) currentClockColor = fallbackColor
+      if (!currentDateColor) currentDateColor = fallbackColor
+    }
+
+    // Ensure hex format for picker
+    if (currentClockColor === "black") currentClockColor = "#000000"
+    if (currentClockColor === "white") currentClockColor = "#ffffff"
+    if (currentDateColor === "black") currentDateColor = "#000000"
+    if (currentDateColor === "white") currentDateColor = "#ffffff"
+
     const rawDateSize = Number(settings.dateSize)
     const baseDateSize = Number.isFinite(rawDateSize)
       ? Math.min(10, Math.max(0.8, rawDateSize))
@@ -1266,7 +1324,7 @@ function createUpdateSettingsInputs(effectInstances) {
           (isOpen ? "Hide Controls" : "Show Controls")
       }
     }
-    DOM.clockColorPicker.value = settings.clockColor || "#ffffff"
+    DOM.clockColorPicker.value = currentClockColor
     if (DOM.clockDateStrokeWidthInput) {
       DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0
       if (DOM.clockDateStrokeWidthValue) {
@@ -1281,7 +1339,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.clockDateStrokeTargetSelect.value =
         settings.clockDateStrokeTarget || "both"
     }
-    DOM.dateColorPicker.value = settings.dateColor || "#ffffff"
+    DOM.dateColorPicker.value = currentDateColor
 
     // Custom Bookmark Inputs
     if (DOM.bookmarkFontSizeInput) {
