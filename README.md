@@ -4,26 +4,19 @@
 
 Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
-<div style="display: flex; justify-content: center; align-items: center; gap: 4px;">
-  
-  <!-- Left -->
+<p align="center">
   <a href="https://unikorn.vn/p/zero-startpage?ref=embed-zero-startpage" target="_blank">
     <img src="https://unikorn.vn/api/widgets/badge/zero-startpage?theme=light" height="56" />
   </a>
-
-  <!-- Center (Chrome - bigger & higher) -->
+  &nbsp;
   <a href="https://chromewebstore.google.com/detail/ogdbkgoionmjnlinbmmjncnhafhaenck?utm_source=item-share-cb" target="_blank">
-    <img 
-      src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png"
-      height="56"/>
+    <img src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png" height="56"/>
   </a>
-
-  <!-- Right -->
+  &nbsp;
   <a href="https://launch.j2team.dev/products/zero-startpage-newtab-replacement?utm_source=badge-launched&utm_medium=badge&utm_campaign=badge-zero-startpage-newtab-replacement" target="_blank">
     <img src="https://launch.j2team.dev/badge/zero-startpage-newtab-replacement/light" height="56" />
   </a>
-
-</div>
+</p>
 
 ---
 
