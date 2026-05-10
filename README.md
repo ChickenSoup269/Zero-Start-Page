@@ -4,7 +4,7 @@
 
 Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
-<div class="center">
+<div style="display: flex; justify-content: center; align-items: center; gap: 4px;">
   
   <!-- Left -->
   <a href="https://unikorn.vn/p/zero-startpage?ref=embed-zero-startpage" target="_blank">
@@ -15,10 +15,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
   <a href="https://chromewebstore.google.com/detail/ogdbkgoionmjnlinbmmjncnhafhaenck?utm_source=item-share-cb" target="_blank">
     <img 
       src="https://github.com/ChickenSoup269/imagesForRepo/raw/main/img_repo_extension_bookmarks/use_offline_img/available_chrome_web.png"
-      height="56"
-
-    />
-
+      height="56"/>
   </a>
 
   <!-- Right -->
