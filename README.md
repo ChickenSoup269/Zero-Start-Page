@@ -1,3 +1,5 @@
+<img src="https://github.com/ChickenSoup269/imagesForRepo/blob/main/zero_extension/zero%20colab.png?raw=true" width="1200px" />
+
 # <img src="./icon/logo.png" width="50px" /> Startpage - Your Personalized Browser Startpage
 
 Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
