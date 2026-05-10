@@ -51,6 +51,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 - Real-time clock with second-level updates
 - Multiple date formats: Full, Short (DD/MM/YYYY), US (MM/DD/YYYY), ISO (YYYY-MM-DD)
+- **Countdown Mode** — display your Timer's countdown directly on any clock style (Fliqlo, Analog, etc.)
 - Option to hide seconds display
 - Adjustable clock size and custom color picker
 - Separate visibility toggles for clock, date, and Gregorian calendar
@@ -61,6 +62,8 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 <td>
 
 - Google text search with real-time suggestions (up to 6, with favicons)
+- **Google Apps Integration** — quick access dropdown for Google services
+- **Google Lens** support for visual search via image upload or URL
 - Google Images and Google Lens search support
 - Image search via file upload, clipboard paste, or image URL
 - Switchable search engine selector with persistent preference
@@ -83,6 +86,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 - Add, edit, delete, and reorder bookmarks
 - **Bookmark Groups** — create multiple tabs, rename, reorder, and delete groups
+- **Independent Styling** — customize background color, text color, and font size for each group
 - Auto favicon fetching via Google Favicon API with fallback
 - Import bookmarks directly from Chrome's browser bookmarks
 - Right-click context menu for quick actions
@@ -113,6 +117,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 <td>
 
 - Add, complete, and delete tasks
+- **Checkbox Toggle** — hide checkboxes for a minimalist list view
 - Inline editing via right-click context menu
 - Auto-saved to localStorage
 
@@ -133,7 +138,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 <table align="center">
 <tr>
-<th> Clock Timer</th>
+<th> Clock Timer & Notifications</th>
 <th> Music Player</th>
 </tr>
 
@@ -143,6 +148,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 - Countdown timer with Start / Pause / Reset controls
 - **Smart input parser**: type `30` → 30 s · `130` → 1:30 · `13000` → 1:30:00
+- **Persistent Update Notifications** — get notified about new features with a persistent popup and sidebar badge
 - Audio alarm on completion with stop button
 - Persists running state across page reloads (auto-resumes)
 
@@ -153,6 +159,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - Detects media playing in **any Chrome tab** via the Media Session API
 - Displays track title, artist, album art, and platform (YouTube / Spotify / SoundCloud)
 - Play / Pause / Previous / Next controls
+- **Multiple Visual Styles** — choose from various rendering themes for the player
 - Draggable, collapsible mini-player with vinyl disc animation
 
 </td>
@@ -184,6 +191,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 - **Image upload** stored locally (no cloud)
 - **Unsplash integration** — browse 10+ category feeds with your own API key
 - **Background video** support (MP4, WebM, MOV)
+- **Background Visibility** — hide or dim the background for better widget focus
 - Gradient builder with start color, end color, and angle controls
 - Save custom gradients to a personal gallery
 - Background position (X/Y offset) and size controls
@@ -193,22 +201,23 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 </tr>
 </table>
 
-### Visual Effects (48 Animations + SVG Wave Generator)
+### Visual Effects (51 Animations + SVG Wave Generator)
 
-Select from 48 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
+Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Nature & Space | Digital & Tech | Weather & Seasons | Abstract & Patterns |
-| :--- | :--- | :--- | :--- |
-| • Rain / Rain HD | • Network | • Snowfall / HD | • Gradients Aura |
-| • Fireflies / HD | • Matrix Rain | • Aurora Wave | • Bubbles |
-| • Meteor Shower | • Hacker | • Northern Lights | • Wavy Lines |
-| • Sunbeam | • Pixel Cubes | • Autumn Leaves | • Wavy Pattern |
-| • Light Pillars | • Pixel Run | • Green Leaves | • Angled Pattern |
-| • Sky Lanterns | • Pixel Blast | • Sakura | • Floating Lines |
-| • Ocean Wave / Fish | • Hyperspace | • Wind | • Shiny / Line Shiny |
-| • Cloud Drift | • Nintendo Pixel | • Pixel Weather | • Tet Fireworks |
-| • Plant Growth | • Retro Terminal | • Storm Rain | • CRT Scanlines |
-| • Jellyfish | • Retro Game | • Falling Leaves | • Cursor Trail |
+| Nature & Space      | Digital & Tech   | Weather & Seasons | Abstract & Patterns  |
+| :------------------ | :--------------- | :---------------- | :------------------- |
+| • Rain / Rain HD    | • Network        | • Snowfall / HD   | • Gradients Aura     |
+| • Fireflies / HD    | • Matrix Rain    | • Aurora Wave     | • Bubbles            |
+| • Meteor Shower     | • Hacker         | • Northern Lights | • Wavy Lines         |
+| • Sunbeam           | • Pixel Cubes    | • Autumn Leaves   | • Wavy Pattern       |
+| • Light Pillars     | • Pixel Run      | • Green Leaves    | • Angled Pattern     |
+| • Sky Lanterns      | • Pixel Blast    | • Sakura          | • Floating Lines     |
+| • Ocean Wave / Fish | • Hyperspace     | • Wind            | • Shiny / Line Shiny |
+| • Cloud Drift       | • Nintendo Pixel | • Pixel Weather   | • Tet Fireworks      |
+| • Plant Growth      | • Retro Terminal | • Storm Rain / HD | • CRT Scanlines      |
+| • Jellyfish         | • Retro Game     | • Falling Leaves  | • Cursor Trail       |
+| • Ocean Fish        |                  |                   |                      |
 
 ### SVG Wave Generator
 
@@ -221,6 +230,7 @@ Select from 48 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Custom Floating Title** — add your own text, move it anywhere (Free Move), and customize everything: font, size, letter spacing, shadow (X/Y/Blur/Color), and border.
 - **Multi-color System** — dynamically change UI accent colors with multiple modes (Gradient, Cycle, or Sync with background).
 - **Layout Controls Popup (LCP)** — a quick-access mini menu to toggle component visibility and adjust layout settings (Width, Positions) directly without opening full settings.
+- **Lock Widgets** — pin all draggable components in place to prevent accidental movement.
 - **Glassmorphism UI** — consistent, high-quality frosted glass aesthetics across all widgets and modals.
 
 ### Settings & Personalization
@@ -236,6 +246,7 @@ Select from 48 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Font Management** — use predefined fonts, Google Fonts, or **browse and use fonts installed on your computer** (Local Font Access API)
 - **Bookmark Layouts** — choose between Default Grid, Sidebar, and multiple Taskbar modes (**Bottom Center, Top Center, Bottom Left**)
 - **Export / Import** settings as a JSON file
+- **Table of Contents** — navigate long settings panels easily with a built-in TOC
 - Reset all settings to defaults
 - Draggable component position persistence with reset option
 
