@@ -645,15 +645,15 @@ body.ghost-controls .side-controls:hover {
 
 /* Đảm bảo nút Active cũng dùng màu accent color tương phản */
 .side-controls.light-mode .quick-btn.active {
-  color: var(--accent-contrast-color) !important;
-  background: var(--safe-accent) !important;
+  color: white !important;
+  background: black !important;
   box-shadow: 0 4px 12px rgba(var(--accent-color-rgb), 0.3) !important;
   border-radius: 12px;
 }
 
 .side-controls.light-mode .quick-btn:hover:not(.active) {
-  color: #ffffff !important;
-  background: var(--safe-accent) !important;
+  color: white !important;
+  background: black !important;
 }
 
 .side-controls.light-mode #settings-toggle:hover {
@@ -994,8 +994,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .lcp-select option {
-  background: var(--accent-color);
-  color: var(--accent-contrast-color);
+  background-color: var(--accent-contrast-color, #1a1a2e);
+  color: var(--accent-color);
 }
 
 /* Toggle switch */
@@ -3494,7 +3494,9 @@ body.bookmark-taskbar-left-mode .main-container {
 body.bookmark-sidebar-mode .main-container.ready > *:not(.bookmark-widget),
 body.bookmark-taskbar-mode .main-container.ready > *:not(.bookmark-widget),
 body.bookmark-taskbar-top-mode .main-container.ready > *:not(.bookmark-widget),
-body.bookmark-taskbar-left-mode .main-container.ready > *:not(.bookmark-widget) {
+body.bookmark-taskbar-left-mode
+  .main-container.ready
+  > *:not(.bookmark-widget) {
   animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 body.bookmark-sidebar-mode .clock-date-wrap,
@@ -3719,9 +3721,9 @@ body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
   margin: 0 !important;
   padding: 0 !important;
   border-left: none !important;
-  border-right: 1px solid rgba(255,255,255,0.15) !important;
-  border-top: 1px solid rgba(255,255,255,0.15) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
   position: relative;
   left: -1px; /* Overlap vào grid để dính liền */
   backdrop-filter: blur(10px);
@@ -3731,7 +3733,7 @@ body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
 body.flip-layout.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle {
   border-radius: 12px 0 0 12px !important; /* Bo tròn cạnh trái (ngoài) */
   border-right: none !important;
-  border-left: 1px solid rgba(255,255,255,0.15) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
   left: auto;
   right: -1px;
 }
@@ -3745,9 +3747,9 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle {
   margin: 0 !important;
   padding: 0 !important;
   border-bottom: none !important;
-  border-left: 1px solid rgba(255,255,255,0.15) !important;
-  border-right: 1px solid rgba(255,255,255,0.15) !important;
-  border-top: 1px solid rgba(255,255,255,0.15) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
   position: relative;
   bottom: -1px;
   backdrop-filter: blur(10px);
@@ -3761,9 +3763,9 @@ body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle {
   margin: 0 !important;
   padding: 0 !important;
   border-top: none !important;
-  border-left: 1px solid rgba(255,255,255,0.15) !important;
-  border-right: 1px solid rgba(255,255,255,0.15) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
   position: relative;
   top: -1px;
   backdrop-filter: blur(10px);
@@ -3774,16 +3776,16 @@ body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle:hover,
 body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1 !important;
-  background: var(--accent-color, rgba(100,180,255,0.3)) !important;
-  border-color: var(--accent-color, rgba(100,180,255,0.5)) !important;
+  background: var(--accent-color, rgba(100, 180, 255, 0.3)) !important;
+  border-color: var(--accent-color, rgba(100, 180, 255, 0.5)) !important;
   color: var(--accent-contrast-color, #fff) !important;
   width: 80px !important;
 }
 
 body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1 !important;
-  background: var(--accent-color, rgba(100,180,255,0.3)) !important;
-  border-color: var(--accent-color, rgba(100,180,255,0.5)) !important;
+  background: var(--accent-color, rgba(100, 180, 255, 0.3)) !important;
+  border-color: var(--accent-color, rgba(100, 180, 255, 0.5)) !important;
   color: var(--accent-contrast-color, #fff) !important;
   height: 80px !important;
 }

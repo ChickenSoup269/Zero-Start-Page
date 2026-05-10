@@ -476,55 +476,88 @@ document.addEventListener("DOMContentLoaded", async () => {
         const manifest = window.chrome?.runtime?.getManifest?.()
         if (manifest && manifest.version) {
           const currentVersion = manifest.version
-
-          if (window.chrome?.storage?.local) {
-            chrome.storage.local.get(["lastVersion"], (result) => {
-              const lastVersion = result.lastVersion
-              handleVersionCheck(lastVersion, currentVersion, (ver) => {
-                chrome.storage.local.set({ lastVersion: ver })
+          const storage = window.chrome?.storage?.local || {
+            get: (keys, cb) => {
+              const res = {}
+              keys.forEach(k => {
+                const val = localStorage.getItem(k)
+                res[k] = val === "true" ? true : val === "false" ? false : val
               })
-            })
-          } else {
-            const lastVersion = localStorage.getItem("lastVersion")
-            handleVersionCheck(lastVersion, currentVersion, (ver) => {
-              localStorage.setItem("lastVersion", ver)
-            })
+              cb(res)
+            },
+            set: (obj) => {
+              Object.keys(obj).forEach(k => localStorage.setItem(k, obj[k]))
+            }
           }
+
+          storage.get(["lastVersion", "updateModalAcknowledged", "updateArrowTimestamp"], (result) => {
+            let { lastVersion, updateModalAcknowledged, updateArrowTimestamp } = result
+            
+            if (typeof updateArrowTimestamp === 'string') updateArrowTimestamp = parseInt(updateArrowTimestamp)
+
+            const isFreshInstall = !lastVersion && !localStorage.getItem("pageSettings") && !localStorage.getItem("bookmarks")
+
+            if (isFreshInstall) {
+              storage.set({ 
+                lastVersion: currentVersion, 
+                updateModalAcknowledged: true, 
+                updateArrowTimestamp: 0 
+              })
+              return
+            }
+
+            // Version changed or first time tracking
+            if (!lastVersion || lastVersion !== currentVersion) {
+              updateModalAcknowledged = false
+              updateArrowTimestamp = Date.now()
+              storage.set({ 
+                lastVersion: currentVersion, 
+                updateModalAcknowledged, 
+                updateArrowTimestamp 
+              })
+            }
+
+            const showModal = updateModalAcknowledged !== true
+            const now = Date.now()
+            const hour = 3600000
+            const showArrow = updateArrowTimestamp && (now - updateArrowTimestamp < hour)
+
+            if (showModal || showArrow) {
+              showUpdateUI(currentVersion, showModal, showArrow)
+            }
+            
+            if (showArrow) {
+                const timeLeft = hour - (now - updateArrowTimestamp)
+                setTimeout(() => {
+                    const sidebarLink = document.getElementById("sidebar-update-link")
+                    if (sidebarLink) fadeToggle(sidebarLink, false, "flex")
+                }, timeLeft)
+            }
+          })
         }
 
-        function handleVersionCheck(lastVersion, currentVersion, saveFn) {
-          const isFreshInstall = !lastVersion && !localStorage.getItem("pageSettings") && !localStorage.getItem("bookmarks")
-
-          if (lastVersion) {
-            if (lastVersion !== currentVersion) {
-              showUpdateUI(currentVersion)
-              saveFn(currentVersion)
-            }
-          } else {
-            if (!isFreshInstall) {
-              showUpdateUI(currentVersion)
-            }
-            saveFn(currentVersion)
-          }
-        }
-
-        function showUpdateUI(currentVersion) {
+        function showUpdateUI(currentVersion, showModal, showArrow) {
           const popup = document.getElementById("update-notification-popup")
           const verLabel = document.getElementById("update-version-label")
           const sidebarLink = document.getElementById("sidebar-update-link")
 
-          if (popup && verLabel) {
+          const acknowledgeUpdate = () => {
+            if (popup) fadeToggle(popup, false, "block")
+            const storage = window.chrome?.storage?.local || {
+              set: (obj) => Object.keys(obj).forEach(k => localStorage.setItem(k, obj[k]))
+            }
+            storage.set({ updateModalAcknowledged: true })
+          }
+
+          if (showModal && popup && verLabel) {
             verLabel.textContent = `v${currentVersion}`
             fadeToggle(popup, true, "block")
 
-            document
-              .getElementById("close-update-popup")
-              ?.addEventListener("click", () => {
-                fadeToggle(popup, false, "block")
-              })
+            document.getElementById("close-update-popup")?.addEventListener("click", acknowledgeUpdate)
+            document.getElementById("github-update-link")?.addEventListener("click", acknowledgeUpdate)
           }
 
-          if (sidebarLink) {
+          if (showArrow && sidebarLink) {
             fadeToggle(sidebarLink, true, "flex")
           }
         }
