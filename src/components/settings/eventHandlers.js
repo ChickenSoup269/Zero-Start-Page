@@ -9,6 +9,7 @@ import {
   saveSettings,
   resetSettingsState,
   backupToCloud,
+  clearCloudBackup,
   restoreFromCloud,
 } from "../../services/state.js"
 import {
@@ -28,6 +29,7 @@ import {
   isIdbVideo,
   saveImage,
   saveVideo,
+  clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import { getRandomHexColor } from "../../utils/colors.js"
@@ -2279,14 +2281,68 @@ export function setupGeneralEventHandlers(
 
   // Reset all settings
   DOM.resetSettingsBtn?.addEventListener("click", async () => {
-    if (await showConfirm(i18n.alert_reset)) {
-      resetSettingsState()
-      applySettings()
-      renderLocalBackgrounds(DOM, handleSettingUpdate)
-      renderUserColors(DOM)
-      renderUserAccentColors(DOM)
-      renderUserGradients(DOM)
-      window.dispatchEvent(new CustomEvent("multiColor:sync"))
+    const selected = await showChecklistConfirm(
+      [
+        {
+          key: "all",
+          label: i18n.reset_opt_all || "Entire Settings",
+          checked: true,
+        },
+        {
+          key: "positions",
+          label: i18n.reset_opt_positions || "Widget Positions",
+          checked: false,
+        },
+        {
+          key: "effects",
+          label: i18n.reset_opt_effects || "Effect Customization",
+          checked: false,
+        },
+        {
+          key: "styles",
+          label: i18n.reset_opt_styles || "Colors & Fonts",
+          checked: false,
+        },
+        {
+          key: "media",
+          label: i18n.reset_opt_media || "Delete all uploaded Images & Videos (IndexedDB)",
+          checked: false,
+        },
+        {
+          key: "cloud",
+          label: i18n.reset_opt_cloud || "Delete Cloud Sync backup from Google Account",
+          checked: false,
+        },
+      ],
+      geti18n().settings_reset || "Reset Settings",
+      i18n.alert_reset_layout_confirm || "Select items to reset:",
+    )
+
+    if (!selected) return
+
+    showAlert(i18n.alert_resetting || "Resetting...")
+
+    if (selected.media) {
+      await clearAllMedia()
+    }
+
+    if (selected.cloud) {
+      await clearCloudBackup()
+    }
+
+    // Logic for standard settings reset
+    if (selected.all || selected.positions || selected.effects || selected.styles) {
+      const { resetComponentPositions } = await import("../../services/state.js")
+      resetComponentPositions({
+        all: selected.all,
+        positions: selected.positions,
+        effectColors: selected.effects,
+        styles: selected.styles,
+      })
+      // resetComponentPositions calls reload()
+    } else if (selected.media || selected.cloud) {
+      // If only media or cloud was cleared, we still reload to ensure clean state
+      window.location.reload()
     }
   })
 

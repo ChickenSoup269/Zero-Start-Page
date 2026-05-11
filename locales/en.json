@@ -401,6 +401,8 @@
   "reset_opt_positions": "Widget Positions (Layout)",
   "reset_opt_effects": "Effect Colors & Customization",
   "reset_opt_styles": "Colors & Fonts (Styles)",
+  "reset_opt_media": "Delete all uploaded Images & Videos (IndexedDB)",
+  "reset_opt_cloud": "Delete Cloud Sync backup from Google Account",
   "alert_resetting": "Restoring default settings...",
   "quick_access_todo": "Toggle Todo List",
   "quick_access_timer": "Toggle Timer",

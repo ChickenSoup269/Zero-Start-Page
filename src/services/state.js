@@ -383,6 +383,26 @@ export async function backupToCloud() {
 }
 
 /**
+ * Clear the Chrome Sync backup for this extension.
+ */
+export async function clearCloudBackup() {
+  return new Promise((resolve, reject) => {
+    if (!window.chrome || !chrome.storage || !chrome.storage.sync) {
+      resolve() // Treat as success if not available
+      return
+    }
+
+    chrome.storage.sync.remove(["cloudSettings"], () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+/**
  * Restore settings from Chrome Sync Storage.
  * Merges with current local media if they exist.
  */

@@ -1,6 +1,7 @@
 import { searchInput, clearBtn } from "../utils/dom.js"
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
+import { showAlert } from "../utils/dialog.js"
 
 const SEARCH_ENGINES = {
   google: {
@@ -230,15 +231,48 @@ function submitSearch() {
 }
 
 async function uploadImageToGoogle(file) {
-  // Mở trang Google search by image - user tự upload ảnh trên đó
-  window.open("https://images.google.com/", "_blank")
-  clearImagePreview()
-  searchInput.disabled = false
+  // modern Google Lens upload is more effective
   const i18n = geti18n()
-  searchInput.placeholder = i18n.search_placeholder_images || "Search Google Images..."
+  showAlert(i18n.alert_uploading_lens || "Uploading to Google Lens...")
+  
+  try {
+    const formData = new FormData()
+    formData.append("encoded_image", file)
+    
+    // We use a hidden form for the actual submission because cross-origin 
+    // fetch to lens.google.com will be blocked by CORS.
+    const form = document.createElement("form")
+    form.method = "POST"
+    form.action = "https://lens.google.com/v3/upload"
+    form.enctype = "multipart/form-data"
+    form.target = "_blank"
+    
+    const fileInput = document.createElement("input")
+    fileInput.type = "file"
+    fileInput.name = "encoded_image"
+    
+    // To send the file we already have, we need a DataTransfer object
+    const dataTransfer = new DataTransfer()
+    dataTransfer.items.add(file)
+    fileInput.files = dataTransfer.files
+    
+    form.appendChild(fileInput)
+    document.body.appendChild(form)
+    form.submit()
+    document.body.removeChild(form)
+    
+    clearImagePreview()
+    searchInput.disabled = false
+    searchInput.placeholder = i18n[SEARCH_ENGINES[currentEngine].placeholderKey] || SEARCH_ENGINES[currentEngine].name
+  } catch (err) {
+    console.error("Lens upload error:", err)
+    window.open("https://lens.google.com/", "_blank")
+  }
 }
 
 function handleImageSelection(file) {
+  if (!file || !file.type.startsWith("image/")) return
+  
   pendingImageFile = file
 
   // Show Preview
@@ -246,12 +280,16 @@ function handleImageSelection(file) {
   reader.onload = (e) => {
     previewThumb.src = e.target.result
     previewContainer.style.display = "flex"
-    // Hide camera btn temporarily or keep it? Keep it.
-    // Update placeholder to indicate readiness
+    
+    // Update UI for image mode
     const i18n = geti18n()
     searchInput.placeholder = i18n.search_press_enter_image || "Press Enter to Search Image..."
-    searchInput.value = "" // Clear text if any? Or keep it? Clearing is safer to avoid ambiguity
+    searchInput.value = "" 
     searchInput.focus()
+    
+    // Ensure search button/divider are visible
+    searchDivider.style.display = "block"
+    clearBtn.style.display = "block"
   }
   reader.readAsDataURL(file)
 }
@@ -391,15 +429,18 @@ function initSearch() {
 
   // Paste Event
   document.addEventListener("paste", (e) => {
-    if (currentEngine !== "google-image") {
-      return
-    }
-
     const items = (e.clipboardData || e.originalEvent.clipboardData).items
     for (let index in items) {
       const item = items[index]
       if (item.kind === "file" && item.type.startsWith("image/")) {
         const blob = item.getAsFile()
+        
+        // If not in image engine, switch to it automatically to show correct context
+        if (currentEngine !== "google-image" && currentEngine !== "google-lens") {
+          const imageOption = [...engineOptions].find(o => o.dataset.value === "google-image")
+          if (imageOption) imageOption.click()
+        }
+        
         handleImageSelection(blob)
         e.preventDefault()
         return
@@ -429,6 +470,13 @@ function initSearch() {
   })
 
   searchInput.addEventListener("keydown", (e) => {
+    // If Enter is pressed and we have a pending image, submit immediately
+    if (e.key === "Enter" && pendingImageFile) {
+      e.preventDefault()
+      submitSearch()
+      return
+    }
+
     if (
       suggestionsContainer.style.display === "none" ||
       currentSuggestions.length === 0

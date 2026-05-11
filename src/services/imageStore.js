@@ -126,6 +126,27 @@ export async function deleteImage(id) {
   })
 }
 
+/** Clear everything: delete the entire IndexedDB database */
+export async function clearAllMedia() {
+  // 1. Revoke all object URLs in cache to free memory
+  for (const url of _urlCache.values()) URL.revokeObjectURL(url)
+  for (const url of _thumbCache.values()) URL.revokeObjectURL(url)
+  _urlCache.clear()
+  _thumbCache.clear()
+
+  // 2. Delete the database
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.deleteDatabase(DB_NAME)
+    req.onsuccess = () => resolve()
+    req.onerror = () => reject(new Error("Failed to delete media database"))
+    req.onblocked = () => {
+      // If blocked, we might need to reload or tell user to close tabs
+      console.warn("Database deletion blocked. Please close other tabs of this extension.")
+      resolve() 
+    }
+  })
+}
+
 /** Preload blob URLs cho tất cả IDB IDs (gọi khi khởi động) */
 export async function preloadImages(ids) {
   for (const id of ids) {
