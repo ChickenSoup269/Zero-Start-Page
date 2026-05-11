@@ -347,14 +347,22 @@ export function updateAllSettings(newSettings) {
 export async function backupToCloud() {
   const currentSettings = { ...getSettings() }
 
-  // Strip local media to avoid quota limits
-  delete currentSettings.userBackgrounds
-  delete currentSettings.userVideos
-  delete currentSettings.userImages
-  delete currentSettings.userAccentColors
-  delete currentSettings.userGradients
-  delete currentSettings.userMultiColors
-  delete currentSettings.userSvgWaves
+  // Strictly remove all heavy, non-text, or sensitive data
+  const keysToRemove = [
+    "background",
+    "userBackgrounds",
+    "userVideos",
+    "userImages",
+    "userThemes",
+    "userSavedFonts",
+    "userSvgWaves",
+    "unsplashAccessKey",
+    "unsplashLastCredit",
+    "componentPositions",
+    "lockedWidgets",
+  ]
+
+  keysToRemove.forEach((key) => delete currentSettings[key])
 
   const settingsStr = JSON.stringify(currentSettings)
 

@@ -62,7 +62,9 @@ export function setupGeneralEventHandlers(
   updateSettingsInputs,
 ) {
   const DOM = ctx.DOM
-  const i18n = ctx.i18n
+  const i18n = new Proxy({}, {
+    get: (target, prop) => geti18n()[prop]
+  })
   const effects = ctx.effects
 
   const throttledUpdates = {}
@@ -2711,6 +2713,7 @@ export function setupGeneralEventHandlers(
       }
 
       const exportData = {
+        source: "zero-startpage",
         version: 2,
         exportedAt: new Date().toISOString(),
       }
@@ -2813,6 +2816,21 @@ export function setupGeneralEventHandlers(
       const text = await file.text()
       const data = JSON.parse(text)
 
+      // Signature & structure check
+      const isStartpageFile =
+        data.source === "zero-startpage" ||
+        (data.version !== undefined &&
+          (data.settings ||
+            data.bookmarks ||
+            data.todos ||
+            data.notepad ||
+            data.calendarEvents))
+
+      if (!isStartpageFile) {
+        showAlert(i18n.alert_import_error || "Invalid settings file.")
+        return
+      }
+
       const hasSettings = data.settings && typeof data.settings === "object"
       const hasBookmarks = data.bookmarks && typeof data.bookmarks === "object"
       const hasTodos = Array.isArray(data.todos)
@@ -2835,10 +2853,72 @@ export function setupGeneralEventHandlers(
         return
       }
 
+      const selected = await showChecklistConfirm(
+        [
+          {
+            key: "clear",
+            label: i18n.import_clear_existing || "Clear existing data before importing (WARNING: This will delete current settings, bookmarks, and todos)",
+            checked: false,
+          },
+          {
+            key: "settings",
+            label: i18n.export_option_settings || "Settings",
+            checked: hasSettings,
+            disabled: !hasSettings,
+          },
+          {
+            key: "bookmarks",
+            label: i18n.export_option_bookmarks || "Bookmarks",
+            checked: hasBookmarks,
+            disabled: !hasBookmarks,
+          },
+          {
+            key: "todos",
+            label: i18n.export_option_todos || "Todo Items",
+            checked: hasTodos,
+            disabled: !hasTodos,
+          },
+          {
+            key: "notepad",
+            label: i18n.export_option_notepad || "Notepad Notes",
+            checked: hasNotepad,
+            disabled: !hasNotepad,
+          },
+          {
+            key: "calendarEvents",
+            label: i18n.export_option_calendar || "Calendar Events",
+            checked: hasCalendarEvents,
+            disabled: !hasCalendarEvents,
+          },
+          {
+            key: "localMedia",
+            label: i18n.export_option_local_media || "Local Images/Videos",
+            checked: hasMedia,
+            disabled: !hasMedia,
+          },
+        ],
+        i18n.settings_import || "Import Settings",
+        i18n.export_select_sections || "Select data to include in JSON export.",
+      )
+
+      if (!selected) return
+
       showAlert(i18n.alert_importing || "Importing...")
 
+      if (selected.clear) {
+        resetSettingsState()
+        localStorage.removeItem("bookmarks")
+        localStorage.removeItem("todoItems")
+        localStorage.removeItem("notepadNotes")
+        localStorage.removeItem("detachedNotes")
+        localStorage.removeItem("hiddenNotes")
+        localStorage.removeItem("calendarEvents")
+        // Note: IndexedDB is not fully cleared here to avoid breaking concurrent operations, 
+        // but new IDs will be generated for imported media anyway.
+      }
+
       const mediaIdMap = {}
-      if (hasMedia) {
+      if (hasMedia && selected.localMedia) {
         for (const [oldId, payload] of Object.entries(data.media)) {
           try {
             if (!payload || typeof payload.dataUrl !== "string") continue
@@ -2857,7 +2937,7 @@ export function setupGeneralEventHandlers(
         }
       }
 
-      if (hasSettings) {
+      if (hasSettings && selected.settings) {
         const importedSettings = JSON.parse(JSON.stringify(data.settings))
 
         if (Object.keys(mediaIdMap).length > 0) {
@@ -2882,17 +2962,17 @@ export function setupGeneralEventHandlers(
 
       let requiresReload = false
 
-      if (hasBookmarks) {
+      if (hasBookmarks && selected.bookmarks) {
         localStorage.setItem("bookmarks", JSON.stringify(data.bookmarks))
         requiresReload = true
       }
 
-      if (hasTodos) {
+      if (hasTodos && selected.todos) {
         localStorage.setItem("todoItems", JSON.stringify(data.todos))
         requiresReload = true
       }
 
-      if (hasNotepad) {
+      if (hasNotepad && selected.notepad) {
         localStorage.setItem(
           "notepadNotes",
           JSON.stringify(data.notepad.notes || []),
@@ -2908,7 +2988,7 @@ export function setupGeneralEventHandlers(
         requiresReload = true
       }
 
-      if (hasCalendarEvents) {
+      if (hasCalendarEvents && selected.calendarEvents) {
         localStorage.setItem(
           "calendarEvents",
           JSON.stringify(data.calendarEvents),
@@ -2933,16 +3013,19 @@ export function setupGeneralEventHandlers(
   const syncFromCloudBtn = document.getElementById("sync-from-cloud-btn")
 
   syncToCloudBtn?.addEventListener("click", async () => {
-    try {
-      await backupToCloud()
-      await showAlert(
-        `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning}`,
-      )
-    } catch (e) {
-      showAlert(`Backup failed: ${e.message}`)
-    }
+   try {
+     await backupToCloud()
+     await showAlert(
+       `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning}`,
+     )
+   } catch (e) {
+     if (e.message?.includes("quota") || e.message?.includes("kQuotaBytesPerItem")) {
+       showAlert(i18n.sync_error_quota || `Backup failed: ${e.message}`)
+     } else {
+       showAlert(`Backup failed: ${e.message}`)
+     }
+   }
   })
-
   syncFromCloudBtn?.addEventListener("click", async () => {
     try {
       const confirm = await showConfirm(i18n.sync_restore_confirm)

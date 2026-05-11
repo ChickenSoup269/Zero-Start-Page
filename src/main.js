@@ -36,6 +36,10 @@ import {
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", async () => {
   document.body.classList.add("is-booting")
+
+  // Load language first so all other components have translations
+  await initI18n()
+
   // Update version in startup overlay and settings sidebar immediately
   try {
     const manifest = window.chrome?.runtime?.getManifest?.()
