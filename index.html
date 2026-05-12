@@ -221,6 +221,7 @@
     </div>
     <canvas id="effect-canvas"></canvas>
     <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; display: none;"></canvas>
+    <canvas id="pixel-snow-hq-canvas" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -2037,7 +2038,12 @@
                             data-search="pixel snow rain wind square block weather weather">
                             <span class="effect-icon"><i class="fa-brands fa-joomla"></i></span>
                             <span class="effect-name" data-i18n="effect_pixelWeather">Pixel Weather</span>
-                        </button>
+                            </button>
+
+                            <button class="effect-item" data-value="pixelSnowHQ">
+                                <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixel_snow_hq">Pixel Snow HQ</span>
+                            </button>
                         <button class="effect-item" data-value="snowfallHD"
                             data-search="snow snowfall hd high quality accumulate pile">
                             <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
@@ -2389,8 +2395,7 @@
                             </div>
 
                             <!-- Sky Lanterns Settings -->
-                            <div id="sky-lanterns-setting" class="setting-item" style="display: none;">
-                                <label for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
+                            <div id="sky-lanterns-setting" class="setting-item" style="display: none;">                                <label for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
                                     Type</label>
                                 <select id="sky-lanterns-type-select" style="width: 100%;">
                                     <option value="lantern" data-i18n="sky_lanterns_type_lantern">Traditional Lantern
@@ -2844,6 +2849,83 @@
                                 <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray
                                     Color</label>
                                 <input type="color" id="line-shiny-color-picker" value="#ffffff" />
+                            </div>
+
+                            <!-- Pixel Snow HQ Settings -->
+                            <div id="pixel-snow-hq-settings" style="display: none;">
+                                <div class="setting-item no-margin-top">
+                                    <label data-i18n="settings_clock_color">Snow Color</label>
+                                    <input type="color" id="pixel-snow-hq-color-picker" value="#ffffff" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label for="pixel-snow-hq-variant-select" data-i18n="setting_pixel_blast_variant">Snow Shape</label>
+                                    <select id="pixel-snow-hq-variant-select" class="full-width">
+                                        <option value="square" data-i18n="pixel_blast_square">Square</option>
+                                        <option value="circle" data-i18n="pixel_cubes_circle">Circle</option>
+                                        <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake (HQ)</option>
+                                    </select>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_pixel_snow_hq_density">Density</span>
+                                            <span id="pixel-snow-hq-density-val" style="color: var(--accent-color);">0.3</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-density-slider" min="0.05" max="1.0" step="0.05" value="0.3">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_pixel_weather_speed">Speed</span>
+                                            <span id="pixel-snow-hq-speed-val" style="color: var(--accent-color);">1.25</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-speed-slider" min="0.1" max="5.0" step="0.1" value="1.25">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_pixel_snow_hq_direction">Wind</span>
+                                            <span id="pixel-snow-hq-direction-val" style="color: var(--accent-color);">125°</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-direction-slider" min="0" max="360" step="1" value="125">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_pixel_snow_hq_pixel_res">Pixelation</span>
+                                            <span id="pixel-snow-hq-pixel-res-val" style="color: var(--accent-color);">200</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-pixel-res-slider" min="50" max="600" step="10" value="200">
+                                    </div>
+                                    
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                            <span data-i18n="settings_pixel_snow_hq_flake_size">Base Size</span>
+                                            <span id="pixel-snow-hq-flake-size-val">0.01</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-flake-size-slider" min="0.001" max="0.05" step="0.001" value="0.01">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                            <span data-i18n="settings_pixel_snow_hq_min_flake_size">Min Size</span>
+                                            <span id="pixel-snow-hq-min-flake-size-val">1.25</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-min-flake-size-slider" min="0.1" max="5.0" step="0.05" value="1.25">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                            <span data-i18n="settings_pixel_snow_hq_depth_fade">Fade</span>
+                                            <span id="pixel-snow-hq-depth-fade-val">8</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-depth-fade-slider" min="1" max="25" step="0.5" value="8">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                            <span data-i18n="settings_pixel_snow_hq_brightness">Glow</span>
+                                            <span id="pixel-snow-hq-brightness-val">1.0</span>
+                                        </label>
+                                        <input type="range" id="pixel-snow-hq-brightness-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

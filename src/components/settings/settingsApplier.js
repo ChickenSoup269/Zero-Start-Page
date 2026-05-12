@@ -58,6 +58,7 @@ const EFFECT_KEY_MAP = {
   sunbeam: "sunbeamEffect",
   lightPillars: "lightPillarsEffect",
   pixelWeather: "pixelWeatherEffect",
+  pixelSnowHQ: "pixelSnowHQEffect",
   shiny: "shinyEffect",
   lineShiny: "lineShinyEffect",
   tetFireworks: "tetFireworksEffect",
@@ -883,6 +884,22 @@ function createApplySettings(effectInstances) {
     }
 
     const effectCanvas = document.getElementById("effect-canvas")
+    const pixelSnowCanvas = document.getElementById("pixel-snow-hq-canvas")
+    const gradientCanvas = document.getElementById("gradient-v2-canvas")
+
+    // Show/hide dedicated canvases
+    if (pixelSnowCanvas) {
+        pixelSnowCanvas.style.display = effectToStart === "pixelSnowHQ" ? "block" : "none"
+    }
+    if (gradientCanvas) {
+        gradientCanvas.style.display = shouldUseGradientV2 ? "block" : "none"
+    }
+    if (effectCanvas) {
+      const isDedicated = ["pixelSnowHQ", "gradientV2"].includes(effectToStart)
+      const shouldShowMain = effectToStart && effectToStart !== "none" && !isDedicated
+      effectCanvas.style.display = shouldShowMain ? "block" : "none"
+    }
+
     if (
       effectToStart === "pixelWeather" &&
       selectedEffect
@@ -896,6 +913,28 @@ function createApplySettings(effectInstances) {
           resolution: settings.pixelWeatherResolution || 1,
           speed: settings.pixelWeatherSpeed || 1.0,
           size: settings.pixelWeatherSize || 1.0,
+        })
+      }
+    }
+
+    if (
+      effectToStart === "pixelSnowHQ" &&
+      selectedEffect
+    ) {
+      if (selectedEffect.setOptions) {
+        selectedEffect.setOptions({
+          color: settings.pixelSnowHQColor ?? "#ffffff",
+          flakeSize: settings.pixelSnowHQFlakeSize ?? 0.01,
+          minFlakeSize: settings.pixelSnowHQMinFlakeSize ?? 1.25,
+          pixelResolution: settings.pixelSnowHQPixelResolution ?? 200,
+          speed: settings.pixelSnowHQSpeed ?? 1.25,
+          depthFade: settings.pixelSnowHQDepthFade ?? 8,
+          farPlane: settings.pixelSnowHQFarPlane ?? 20,
+          brightness: settings.pixelSnowHQBrightness ?? 1.0,
+          gamma: settings.pixelSnowHQGamma ?? 0.4545,
+          density: settings.pixelSnowHQDensity ?? 0.3,
+          variant: settings.pixelSnowHQVariant ?? "square",
+          direction: settings.pixelSnowHQDirection ?? 125,
         })
       }
     }
@@ -1014,6 +1053,11 @@ function createApplySettings(effectInstances) {
         const ctx = effectCanvas.getContext("2d")
         ctx.clearRect(0, 0, effectCanvas.width, effectCanvas.height)
         effectCanvas.style.display = "none"
+      }
+      
+      const pixelSnowCanvas = document.getElementById("pixel-snow-hq-canvas")
+      if (pixelSnowCanvas) {
+        pixelSnowCanvas.style.display = effectToStart === "pixelSnowHQ" ? "block" : "none"
       }
 
       // 5. Start selected effect immediately (no artificial delay/flicker).
@@ -1667,6 +1711,56 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.pixelWeatherStyleSection.style.display =
         settings.effect === "pixelWeather" ? "block" : "none"
     }
+    if (DOM.pixelSnowHQSettings) {
+      DOM.pixelSnowHQSettings.style.display =
+        settings.effect === "pixelSnowHQ" ? "block" : "none"
+      
+      if (DOM.pixelSnowHQColorPicker) DOM.pixelSnowHQColorPicker.value = settings.pixelSnowHQColor || "#ffffff"
+      
+      if (DOM.pixelSnowHQFlakeSizeSlider) {
+        DOM.pixelSnowHQFlakeSizeSlider.value = settings.pixelSnowHQFlakeSize || 0.01
+        if (DOM.pixelSnowHQFlakeSizeVal) DOM.pixelSnowHQFlakeSizeVal.textContent = (settings.pixelSnowHQFlakeSize || 0.01).toFixed(3)
+      }
+      if (DOM.pixelSnowHQDensitySlider) {
+        DOM.pixelSnowHQDensitySlider.value = settings.pixelSnowHQDensity || 0.3
+        if (DOM.pixelSnowHQDensityVal) DOM.pixelSnowHQDensityVal.textContent = (settings.pixelSnowHQDensity || 0.3).toFixed(2)
+      }
+      if (DOM.pixelSnowHQSpeedSlider) {
+        DOM.pixelSnowHQSpeedSlider.value = settings.pixelSnowHQSpeed || 1.25
+        if (DOM.pixelSnowHQSpeedVal) DOM.pixelSnowHQSpeedVal.textContent = (settings.pixelSnowHQSpeed || 1.25).toFixed(2)
+      }
+      if (DOM.pixelSnowHQPixelResSlider) {
+        DOM.pixelSnowHQPixelResSlider.value = settings.pixelSnowHQPixelResolution || 200
+        if (DOM.pixelSnowHQPixelResVal) DOM.pixelSnowHQPixelResVal.textContent = settings.pixelSnowHQPixelResolution || 200
+      }
+      if (DOM.pixelSnowHQMinFlakeSizeSlider) {
+        DOM.pixelSnowHQMinFlakeSizeSlider.value = settings.pixelSnowHQMinFlakeSize || 1.25
+        if (DOM.pixelSnowHQMinFlakeSizeVal) DOM.pixelSnowHQMinFlakeSizeVal.textContent = (settings.pixelSnowHQMinFlakeSize || 1.25).toFixed(2)
+      }
+      if (DOM.pixelSnowHQVariantSelect) {
+        DOM.pixelSnowHQVariantSelect.value = settings.pixelSnowHQVariant || "square"
+      }
+      if (DOM.pixelSnowHQDepthFadeSlider) {
+        DOM.pixelSnowHQDepthFadeSlider.value = settings.pixelSnowHQDepthFade || 8
+        if (DOM.pixelSnowHQDepthFadeVal) DOM.pixelSnowHQDepthFadeVal.textContent = settings.pixelSnowHQDepthFade || 8
+      }
+      if (DOM.pixelSnowHQDirectionSlider) {
+        DOM.pixelSnowHQDirectionSlider.value = settings.pixelSnowHQDirection || 125
+        if (DOM.pixelSnowHQDirectionVal) DOM.pixelSnowHQDirectionVal.textContent = `${settings.pixelSnowHQDirection || 125}°`
+      }
+      if (DOM.pixelSnowHQBrightnessSlider) {
+        DOM.pixelSnowHQBrightnessSlider.value = settings.pixelSnowHQBrightness || 1.0
+        if (DOM.pixelSnowHQBrightnessVal) DOM.pixelSnowHQBrightnessVal.textContent = (settings.pixelSnowHQBrightness || 1.0).toFixed(1)
+      }
+      if (DOM.pixelSnowHQGammaSlider) {
+        DOM.pixelSnowHQGammaSlider.value = settings.pixelSnowHQGamma || 0.4545
+        if (DOM.pixelSnowHQGammaVal) DOM.pixelSnowHQGammaVal.textContent = (settings.pixelSnowHQGamma || 0.4545).toFixed(2)
+      }
+      if (DOM.pixelSnowHQFarPlaneSlider) {
+        DOM.pixelSnowHQFarPlaneSlider.value = settings.pixelSnowHQFarPlane || 20
+        if (DOM.pixelSnowHQFarPlaneVal) DOM.pixelSnowHQFarPlaneVal.textContent = settings.pixelSnowHQFarPlane || 20
+      }
+    }
     if (DOM.skyLanternsSetting) {
       DOM.skyLanternsSetting.style.display =
         settings.effect === "skyLanterns" ? "block" : "none"
@@ -1975,6 +2069,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "sunbeam",
         "lightPillars",
         "tetFireworks",
+        "pixelSnowHQ",
         "skyLanterns",
         "jellyfish",
         "sakura",

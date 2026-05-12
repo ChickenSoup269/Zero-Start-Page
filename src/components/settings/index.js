@@ -120,6 +120,7 @@ import { FloatingLinesEffect } from "../animations/floatingLines.js"
 import { PixelBlastEffect } from "../animations/pixelBlast.js"
 import { HyperspaceEffect } from "../animations/hyperspace.js"
 import { GradientV2Effect } from "../animations/gradientV2.js"
+import { PixelSnowEffect } from "../animations/pixelSnow.js"
 
 function getExtensionVersion() {
   try {
@@ -327,6 +328,20 @@ export function initSettings() {
       "effect-canvas",
       settings.accentColor,
     ),
+    pixelSnowHQEffect: new PixelSnowEffect("pixel-snow-hq-canvas", {
+      color: settings.pixelSnowHQColor,
+      flakeSize: settings.pixelSnowHQFlakeSize,
+      minFlakeSize: settings.pixelSnowHQMinFlakeSize,
+      pixelResolution: settings.pixelSnowHQPixelResolution,
+      speed: settings.pixelSnowHQSpeed,
+      depthFade: settings.pixelSnowHQDepthFade,
+      farPlane: settings.pixelSnowHQFarPlane,
+      brightness: settings.pixelSnowHQBrightness,
+      gamma: settings.pixelSnowHQGamma,
+      density: settings.pixelSnowHQDensity,
+      variant: settings.pixelSnowHQVariant,
+      direction: settings.pixelSnowHQDirection,
+    }),
     gradientV2Effect: new GradientV2Effect("gradient-v2-canvas", {
       color1: settings.gradientV2Color1,
       color2: settings.gradientV2Color2,
@@ -519,6 +534,59 @@ export function initSettings() {
         })
       }
     })
+
+  // Pixel Snow HQ
+  if (DOM_EXPORTS.pixelSnowHQColorPicker) {
+    DOM_EXPORTS.pixelSnowHQColorPicker.addEventListener("change", (e) => {
+      handleSettingUpdate("pixelSnowHQColor", e.target.value)
+    })
+  }
+  
+  const hqSnowProps = [
+    { id: "pixelSnowHQFlakeSize", dom: DOM_EXPORTS.pixelSnowHQFlakeSizeSlider, val: DOM_EXPORTS.pixelSnowHQFlakeSizeVal, type: "float" },
+    { id: "pixelSnowHQMinFlakeSize", dom: DOM_EXPORTS.pixelSnowHQMinFlakeSizeSlider, val: DOM_EXPORTS.pixelSnowHQMinFlakeSizeVal, type: "float" },
+    { id: "pixelSnowHQDensity", dom: DOM_EXPORTS.pixelSnowHQDensitySlider, val: DOM_EXPORTS.pixelSnowHQDensityVal, type: "float" },
+    { id: "pixelSnowHQSpeed", dom: DOM_EXPORTS.pixelSnowHQSpeedSlider, val: DOM_EXPORTS.pixelSnowHQSpeedVal, type: "float" },
+    { id: "pixelSnowHQPixelResolution", dom: DOM_EXPORTS.pixelSnowHQPixelResSlider, val: DOM_EXPORTS.pixelSnowHQPixelResVal, type: "int" },
+    { id: "pixelSnowHQDepthFade", dom: DOM_EXPORTS.pixelSnowHQDepthFadeSlider, val: DOM_EXPORTS.pixelSnowHQDepthFadeVal, type: "float" },
+    { id: "pixelSnowHQFarPlane", dom: DOM_EXPORTS.pixelSnowHQFarPlaneSlider, val: DOM_EXPORTS.pixelSnowHQFarPlaneVal, type: "int" },
+    { id: "pixelSnowHQBrightness", dom: DOM_EXPORTS.pixelSnowHQBrightnessSlider, val: DOM_EXPORTS.pixelSnowHQBrightnessVal, type: "float" },
+    { id: "pixelSnowHQGamma", dom: DOM_EXPORTS.pixelSnowHQGammaSlider, val: DOM_EXPORTS.pixelSnowHQGammaVal, type: "float" },
+    { id: "pixelSnowHQDirection", dom: DOM_EXPORTS.pixelSnowHQDirectionSlider, val: DOM_EXPORTS.pixelSnowHQDirectionVal, type: "int", suffix: "°" },
+  ]
+
+  hqSnowProps.forEach(prop => {
+    if (prop.dom) {
+      prop.dom.addEventListener("input", (e) => {
+        const val = prop.type === "float" ? parseFloat(e.target.value) : parseInt(e.target.value)
+        if (prop.val) prop.val.textContent = prop.type === "float" ? val.toFixed(prop.id.includes("Size") ? 3 : 2) : val + (prop.suffix || "")
+        updateSetting(prop.id, val)
+        
+        // Live update for performance (avoid full applySettings)
+        if (settings.effect === "pixelSnowHQ" && effects.pixelSnowHQEffect) {
+          const optKey = prop.id.replace("pixelSnowHQ", "").charAt(0).toLowerCase() + prop.id.replace("pixelSnowHQ", "").slice(1)
+          effects.pixelSnowHQEffect.setOptions({ [optKey]: val })
+        }
+      })
+      // Save only on mouse up/change to reduce disk/storage IO
+      prop.dom.addEventListener("change", () => saveSettings())
+    }
+  })
+
+  if (DOM_EXPORTS.pixelSnowHQVariantSelect) {
+    DOM_EXPORTS.pixelSnowHQVariantSelect.addEventListener("change", (e) => {
+      const val = e.target.value
+      handleSettingUpdate("pixelSnowHQVariant", val)
+      if (effects.pixelSnowHQEffect) {
+        effects.pixelSnowHQEffect.setOptions({ variant: val })
+      }
+    })
+  }
+
+  // Effect resolution sync fix
+  if (settings.effect === "pixelSnowHQ") {
+    handleSettingUpdate("pixelSnowHQPixelResolution", settings.pixelSnowHQPixelResolution || 200, false, true)
+  }
 
   // Initialize data and renderers
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)

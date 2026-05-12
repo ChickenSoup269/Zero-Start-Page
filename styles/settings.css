@@ -1584,34 +1584,34 @@
 
 /* New Control Groups */
 .bg-control-card {
-  background: rgba(20, 20, 30, 0.45);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 20px;
-  border-radius: 18px;
+  padding: 18px;
+  border-radius: 16px;
   margin-bottom: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-top: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.12));
+  box-shadow: var(--inner-glow, inset 0 1px 1px rgba(255, 255, 255, 0.1));
   transition:
     transform 0.3s ease,
     border-color 0.3s ease;
 }
 
 .bg-control-card:hover {
-  border-color: rgba(var(--accent-color-rgb), 0.2);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
 }
 
 .bg-control-title {
-  font-size: 0.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 18px;
   color: var(--accent-color);
-  opacity: 0.9;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .bg-control-title i {
@@ -2387,17 +2387,19 @@
 #active-effect-settings-body .setting-item {
   margin-bottom: 0;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--input-border, rgba(255, 255, 255, 0.1));
   transition:
     transform 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 #active-effect-settings-body .setting-item:hover {
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
+  transform: translateY(-2px);
 }
 
 #active-effect-settings-body .setting-item label {
@@ -3981,4 +3983,88 @@ body.sidebar-light .remove-bg-btn:hover i {
 }
 
 
-`n.gradient-v2-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px; margin-top: 10px; } .gradient-v2-section-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 8px; color: var(--accent-color); } .gradient-v2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .gradient-v2-grid-full { grid-column: 1 / -1; } .user-gradientV2-item { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); } .user-gradientV2-item:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); } .user-gradientV2-item.selected { border: 2px solid var(--accent-color); box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4); }
+.snow-preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+.snow-preset-btn:hover {
+  background: rgba(var(--accent-color-rgb), 0.2);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.snow-preset-btn.active {
+  background: var(--accent-color);
+  color: #000;
+  border-color: transparent;
+}
+
+#pixel-snow-hq-settings input[type="range"] {
+  height: 4px;
+  border-radius: 2px;
+}
+
+#pixel-snow-hq-settings input[type="range"]::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent-color);
+  border: 2px solid #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.gradient-v2-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.gradient-v2-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-color);
+}
+
+.gradient-v2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.gradient-v2-grid-full {
+  grid-column: 1 / -1;
+}
+
+.user-gradientV2-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-gradientV2-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.user-gradientV2-item.selected {
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4);
+}
+
