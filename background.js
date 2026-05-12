@@ -1,5 +1,19 @@
 console.log("Background script loaded") // For debugging
 
+// Set the uninstall URL
+chrome.runtime.onInstalled.addListener(() => {
+  // User feedback form link
+  const uninstallUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd2unrzbLeLRI3vNpU-XrHY4rLfP1M0busmjKALAU2nMMXVTg/viewform?usp=sf_link";
+  
+  chrome.runtime.setUninstallURL(uninstallUrl, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting uninstall URL:", chrome.runtime.lastError);
+    } else {
+      console.log("Uninstall URL set successfully:", uninstallUrl);
+    }
+  });
+});
+
 // Version update check is now handled in main.js for better reliability
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
