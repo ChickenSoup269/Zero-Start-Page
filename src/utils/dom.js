@@ -1164,6 +1164,7 @@ export const gradientV2ZoomValue = document.getElementById("gradientV2-zoom-valu
 export const gradientV2RandomizeBtn = document.getElementById("gradientV2-randomize-btn")
 export const gradientV2SaveBtn = document.getElementById("gradientV2-save-btn")
 export const userGradientV2sGallery = document.getElementById("user-gradientV2s-gallery")
+export const gradientV2GalleryWrap = document.getElementById("user-gradientV2s-gallery-wrap")
 
 // Pixel Snow HQ Controls
 export const pixelSnowHQSettings = document.getElementById("pixel-snow-hq-settings")

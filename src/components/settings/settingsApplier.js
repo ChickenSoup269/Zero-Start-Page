@@ -193,18 +193,13 @@ function createApplySettings(effectInstances) {
       if (cachedUrl) {
         bg = cachedUrl
       } else {
-        // Not in sync cache yet, fetch it async and re-apply
         import("../../services/imageStore.js").then((m) => {
           m.getImageUrl(settings.background).then((url) => {
-            // Check if the background setting is still the same one we started fetching
             if (url && getSettings().background === bg) {
               applySettings()
             }
           })
         })
-        // If it's a video, we MUST NOT let it proceed with bg as an ID string
-        // because bg.startsWith("data:video") will be false and it might fall through.
-        // We set a flag or keep the ID but handle it carefully below.
       }
     }
     const isPredefinedLocalBg = effectInstances.localBackgrounds.some(
@@ -219,85 +214,13 @@ function createApplySettings(effectInstances) {
         isIdbVideo(bg))
     const bgVideoElement = document.getElementById("bg-video")
 
-    // Track if a video was assigned this render to clean up unused videos
     let activeVideoSource = null
-
-    // Hide video by default, we'll show it if it's active
     if (bgVideoElement) bgVideoElement.style.display = "none"
 
-    if (isPredefinedLocalBg) {
-      if (bgLayer) bgLayer.classList.add(bg)
-      document.body.classList.add("bg-layer-active")
-      document.documentElement.style.setProperty("--text-color", "#ffffff")
-    } else if (isUserUploadedBg) {
-      document.body.classList.add("bg-image-active")
-      if (bg.startsWith("data:video") || isVideoId) {
-        if (bgVideoElement) {
-          activeVideoSource = bg
-          if (isIdbMedia(bg)) {
-              const url = getBlobUrlSync(bg)
-              if (url) {
-                  activeVideoSource = url
-                  if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-                    bgVideoElement.src = activeVideoSource
-                  }
-                  bgVideoElement.style.display = "block"
-                  bgVideoElement.style.opacity = "1"
-              } else {
-                  // Keep activeVideoSource = ID so it's NOT cleared below
-                  bgVideoElement.style.display = "block"
-              }
-          } else {
-              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-                bgVideoElement.src = activeVideoSource
-              }
-              bgVideoElement.style.display = "block"
-              bgVideoElement.style.opacity = "1"
-          }
-        }
-      } else {
-        if (bgLayer) {
-          let imageUrl = bg
-          if (isIdbMedia(bg)) {
-              imageUrl = getBlobUrlSync(bg)
-          }
-          if (imageUrl) {
-            bgLayer.style.backgroundImage = `url('${imageUrl}')`
-            bgLayer.style.backgroundSize = settings.bgSize || "cover"
-          }
-        }
-      }
-      document.body.style.backgroundSize = settings.bgSize || "cover"
-      document.documentElement.style.setProperty("--text-color", "#ffffff")
-    } else if (bg) {
-      document.body.classList.add("bg-image-active")
-      const isVideoUrl =
-        bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
-      if (isVideoUrl) {
-        if (bgVideoElement) {
-          activeVideoSource = bg
-          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-            bgVideoElement.src = activeVideoSource
-          }
-          bgVideoElement.style.display = "block"
-        }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else if (bg.match(/^https?:\/\//)) {
-        if (bgLayer) {
-          bgLayer.style.backgroundImage = `url('${bg}')`
-          bgLayer.style.backgroundSize = settings.bgSize || "cover"
-        }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else {
-        if (bgLayer) bgLayer.style.background = bg
-        document.body.classList.add("bg-layer-active")
-        document.documentElement.style.setProperty(
-          "--text-color",
-          getContrastYIQ(bg),
-        )
-      }
-    } else if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
+    // Priority 1: Gradient V2 (Animated)
+    if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
       shouldUseGradientV2 = true
+      document.body.classList.add("bg-layer-active")
       if (effectInstances.gradientV2Effect.active) {
         effectInstances.gradientV2Effect.setOptions({
           color1: settings.gradientV2Color1,
@@ -326,16 +249,89 @@ function createApplySettings(effectInstances) {
       } else {
         effectInstances.gradientV2Effect.start()
       }
-    } else {
-      // If no background image/color, apply SVG wave → fallback
-      if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
-        shouldUseSvgWave = true
-        if (effectInstances.svgWaveEffect.active) {
-          effectInstances.svgWaveEffect.update(getSvgWaveParams(settings))
-        } else {
-          effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
+    } 
+    // Priority 2: SVG Wave
+    else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
+      shouldUseSvgWave = true
+      document.body.classList.add("bg-layer-active")
+      if (effectInstances.svgWaveEffect.active) {
+        effectInstances.svgWaveEffect.update(getSvgWaveParams(settings))
+      } else {
+        effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
+      }
+    }
+    // Priority 3: Predefined Theme Background
+    else if (isPredefinedLocalBg) {
+      if (bgLayer) bgLayer.classList.add(bg)
+      document.body.classList.add("bg-layer-active")
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
+    } 
+    // Priority 4: User Uploaded Image/Video
+    else if (isUserUploadedBg) {
+      document.body.classList.add("bg-image-active")
+      if (bg.startsWith("data:video") || isVideoId) {
+        if (bgVideoElement) {
+          activeVideoSource = bg
+          if (isIdbMedia(bg)) {
+              const url = getBlobUrlSync(bg)
+              if (url) {
+                  activeVideoSource = url
+                  if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                    bgVideoElement.src = activeVideoSource
+                  }
+                  bgVideoElement.style.display = "block"
+                  bgVideoElement.style.opacity = "1"
+              } else {
+                  bgVideoElement.style.display = "block"
+              }
+          } else {
+              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                bgVideoElement.src = activeVideoSource
+              }
+              bgVideoElement.style.display = "block"
+              bgVideoElement.style.opacity = "1"
+          }
         }
       } else {
+        if (bgLayer) {
+          let imageUrl = bg
+          if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
+          if (imageUrl) {
+            bgLayer.style.backgroundImage = `url('${imageUrl}')`
+            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          }
+        }
+      }
+      document.body.style.backgroundSize = settings.bgSize || "cover"
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
+    } 
+    // Priority 5: Remote URL or Solid Color or Legacy Gradient
+    else if (bg) {
+      document.body.classList.add("bg-image-active")
+      const isVideoUrl = bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
+      if (isVideoUrl) {
+        if (bgVideoElement) {
+          activeVideoSource = bg
+          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+            bgVideoElement.src = activeVideoSource
+          }
+          bgVideoElement.style.display = "block"
+        }
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+      } else if (bg.match(/^https?:\/\//)) {
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = `url('${bg}')`
+          bgLayer.style.backgroundSize = settings.bgSize || "cover"
+        }
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+      } else {
+        if (bgLayer) bgLayer.style.background = bg
+        document.body.classList.add("bg-layer-active")
+        document.documentElement.style.setProperty("--text-color", getContrastYIQ(bg))
+      }
+    } 
+    // Fallback: Default Gradient
+    else {
         if (bgLayer) {
           bgLayer.style.background = buildGradientCss({
             start: settings.gradientStart,
@@ -350,18 +346,12 @@ function createApplySettings(effectInstances) {
           })
         }
         document.body.classList.add("bg-layer-active")
-      }
     }
 
-    if (
-      !activeVideoSource &&
-      bgVideoElement &&
-      bgVideoElement.getAttribute("src")
-    ) {
-      bgVideoElement.removeAttribute("src")
-      bgVideoElement.load()
+    // Cleanup: Stop unused background effects
+    if (!shouldUseGradientV2 && effectInstances.gradientV2Effect?.active) {
+      effectInstances.gradientV2Effect.stop()
     }
-
     if (!shouldUseSvgWave && effectInstances.svgWaveEffect?.active) {
       effectInstances.svgWaveEffect.stop()
     }

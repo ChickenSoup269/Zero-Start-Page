@@ -37,7 +37,7 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       "data-i18n",
       isHidden ? "settings_gradientV2_close" : "settings_gradientV2_open"
     )
-    // Update labels via i18n
+    // Update labels via i18n helper
     if (window.updateI18n) window.updateI18n()
   })
 
@@ -196,13 +196,19 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
 function renderUserGradientV2s(dom) {
   const { userGradientV2s } = getSettings()
   const gallery = dom.userGradientV2sGallery
+  const galleryWrap = dom.gradientV2GalleryWrap
+  
+  if (!gallery) return
+
   gallery.innerHTML = ""
 
   if (!userGradientV2s || userGradientV2s.length === 0) {
-    gallery.innerHTML = '<div class="no-items" style="grid-column: 1/-1; opacity: 0.5; font-size: 0.8rem; text-align: center; padding: 20px;">No saved gradients yet.</div>'
+    if (galleryWrap) galleryWrap.style.display = "none"
     updateCount(dom)
     return
   }
+
+  if (galleryWrap) galleryWrap.style.display = "block"
 
   userGradientV2s.forEach((preset, index) => {
     const item = document.createElement("div")

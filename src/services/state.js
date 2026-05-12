@@ -379,27 +379,72 @@ export function updateAllSettings(newSettings) {
 
 /**
  * Backup settings to Chrome Sync Storage.
- * Excludes local images/videos to stay within storage limits.
+ * Excludes heavy media data but keeps essential UI state.
  */
-export async function backupToCloud() {
+export async function backupToCloud(options = {}) {
   const currentSettings = { ...getSettings() }
 
-  // Strictly remove all heavy, non-text, or sensitive data
-  const keysToRemove = [
-    "background",
+  // 1. Mandatory Exclusions (Security/Heavy Media)
+  const mandatoryExclusions = [
+    "unsplashAccessKey",
     "userBackgrounds",
     "userVideos",
     "userImages",
-    "userThemes",
-    "userSavedFonts",
-    "userSvgWaves",
-    "unsplashAccessKey",
-    "unsplashLastCredit",
-    "componentPositions",
-    "lockedWidgets",
+    "background",
   ]
+  mandatoryExclusions.forEach((key) => delete currentSettings[key])
 
-  keysToRemove.forEach((key) => delete currentSettings[key])
+  // 2. User-selected Exclusions
+  if (!options.includeThemes) {
+    delete currentSettings.userThemes
+    delete currentSettings.userGradients
+    delete currentSettings.userMultiColors
+  }
+
+  if (!options.includeStyles) {
+    const styleKeys = [
+      "accentColor",
+      "font",
+      "userColors",
+      "userAccentColors",
+      "userSavedFonts",
+      "clockColor",
+      "dateColor",
+      "bookmarkBgColor",
+      "bookmarkTextColor",
+      "bookmarkShadowColor",
+      "bookmarkLayoutBgColor",
+    ]
+    styleKeys.forEach((key) => delete currentSettings[key])
+  }
+
+  if (!options.includeEffects) {
+    const effectKeys = Object.keys(currentSettings).filter(
+      (k) =>
+        k.startsWith("pixel") ||
+        k.startsWith("svgWave") ||
+        k.startsWith("rain") ||
+        k.startsWith("snow") ||
+        k.includes("Effect") ||
+        k.includes("Color"),
+    )
+    effectKeys.forEach((key) => delete currentSettings[key])
+  }
+
+  if (!options.includePositions) {
+    delete currentSettings.componentPositions
+    delete currentSettings.lockedWidgets
+  }
+
+  // Final check for heavy data strings
+  Object.keys(currentSettings).forEach((key) => {
+    if (
+      typeof currentSettings[key] === "string" &&
+      currentSettings[key].length > 10000
+    ) {
+      delete currentSettings[key]
+    }
+  })
 
   const settingsStr = JSON.stringify(currentSettings)
 
@@ -411,7 +456,7 @@ export async function backupToCloud() {
 
     chrome.storage.sync.set({ cloudSettings: settingsStr }, () => {
       if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError)
+        reject(new Error(chrome.runtime.lastError.message))
       } else {
         resolve()
       }
@@ -425,13 +470,13 @@ export async function backupToCloud() {
 export async function clearCloudBackup() {
   return new Promise((resolve, reject) => {
     if (!window.chrome || !chrome.storage || !chrome.storage.sync) {
-      resolve() // Treat as success if not available
+      resolve()
       return
     }
 
     chrome.storage.sync.remove(["cloudSettings"], () => {
       if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError)
+        reject(new Error(chrome.runtime.lastError.message))
       } else {
         resolve()
       }
@@ -441,7 +486,7 @@ export async function clearCloudBackup() {
 
 /**
  * Restore settings from Chrome Sync Storage.
- * Merges with current local media if they exist.
+ * Merges cloud settings with current local media gallery.
  */
 export async function restoreFromCloud() {
   return new Promise((resolve, reject) => {
@@ -452,13 +497,13 @@ export async function restoreFromCloud() {
 
     chrome.storage.sync.get(["cloudSettings"], (result) => {
       if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError)
+        reject(new Error(chrome.runtime.lastError.message))
       } else if (result.cloudSettings) {
         try {
           const restored = JSON.parse(result.cloudSettings)
           const current = getSettings()
 
-          // Preserve local media if they exist locally
+          // IMPORTANT: Re-merge local media galleries that were not synced
           const mediaKeys = [
             "userBackgrounds",
             "userVideos",
@@ -467,17 +512,27 @@ export async function restoreFromCloud() {
             "userGradients",
             "userMultiColors",
             "userSvgWaves",
+            "userSavedFonts",
+            "userThemes",
+            "unsplashAccessKey",
           ]
 
           mediaKeys.forEach((key) => {
-            if (current[key]) restored[key] = current[key]
+            if (current[key] && current[key].length > 0) {
+              restored[key] = current[key]
+            } else if (current[key] && typeof current[key] === 'string') {
+              restored[key] = current[key]
+            }
           })
+
+          // If the restored background is a local ID but we don't have it locally,
+          // it might cause a broken background. We'll handle this in applySettings.
 
           updateAllSettings(restored)
           saveSettings(true)
           resolve(true)
         } catch (e) {
-          reject(new Error("Failed to parse cloud data."))
+          reject(new Error("Failed to parse cloud data: " + e.message))
         }
       } else {
         resolve(false) // No data found

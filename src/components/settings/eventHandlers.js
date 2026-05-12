@@ -201,7 +201,8 @@ export function setupGeneralEventHandlers(
       ids.add(settingsSnapshot.background)
     }
     if (Array.isArray(settingsSnapshot.userBackgrounds)) {
-      settingsSnapshot.userBackgrounds.forEach((id) => {
+      settingsSnapshot.userBackgrounds.forEach((entry) => {
+        const id = typeof entry === "object" ? entry.id : entry
         if (isIdbMedia(id)) ids.add(id)
       })
     }
@@ -3005,9 +3006,17 @@ export function setupGeneralEventHandlers(
             importedSettings.background =
               mediaIdMap[importedSettings.background]
           }
+          
           if (Array.isArray(importedSettings.userBackgrounds)) {
-            importedSettings.userBackgrounds =
-              importedSettings.userBackgrounds.map((id) => mediaIdMap[id] || id)
+            importedSettings.userBackgrounds = importedSettings.userBackgrounds.map((entry) => {
+              if (typeof entry === "object") {
+                if (mediaIdMap[entry.id]) {
+                  entry.id = mediaIdMap[entry.id]
+                }
+                return entry
+              }
+              return mediaIdMap[entry] || entry
+            })
           }
         }
 
@@ -3070,18 +3079,53 @@ export function setupGeneralEventHandlers(
   const syncFromCloudBtn = document.getElementById("sync-from-cloud-btn")
 
   syncToCloudBtn?.addEventListener("click", async () => {
-   try {
-     await backupToCloud()
-     await showAlert(
-       `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning}`,
-     )
-   } catch (e) {
-     if (e.message?.includes("quota") || e.message?.includes("kQuotaBytesPerItem")) {
-       showAlert(i18n.sync_error_quota || `Backup failed: ${e.message}`)
-     } else {
-       showAlert(`Backup failed: ${e.message}`)
-     }
-   }
+    try {
+      const selected = await showChecklistConfirm(
+        [
+          {
+            key: "includeWidgets",
+            label: i18n.sync_opt_widgets || "Widget Visibility & Data",
+            checked: true,
+          },
+          {
+            key: "includePositions",
+            label: i18n.sync_opt_positions || "Widget Positions & Layout",
+            checked: true,
+          },
+          {
+            key: "includeThemes",
+            label: i18n.sync_opt_themes || "Custom Themes & Gradients",
+            checked: false,
+          },
+          {
+            key: "includeStyles",
+            label: i18n.sync_opt_styles || "Colors & Fonts",
+            checked: false,
+          },
+          {
+            key: "includeEffects",
+            label: i18n.sync_opt_effects || "Visual Effects Settings",
+            checked: false,
+          },
+        ],
+        i18n.settings_sync_to_cloud || "Sync to Cloud",
+        i18n.sync_select_data || "Select what to sync to your Google account:",
+      )
+
+      if (!selected) return
+
+      showAlert(i18n.sync_backing_up || "Backing up to cloud...")
+      await backupToCloud(selected)
+      await showAlert(
+        `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning || "Images/Videos are not included in cloud sync."}`,
+      )
+    } catch (e) {
+      if (e.message?.includes("quota") || e.message?.includes("kQuotaBytesPerItem")) {
+        showAlert(i18n.sync_error_quota || `Backup failed: Limit exceeded (100KB). Try selecting fewer items.`)
+      } else {
+        showAlert(`Backup failed: ${e.message}`)
+      }
+    }
   })
   syncFromCloudBtn?.addEventListener("click", async () => {
     try {
