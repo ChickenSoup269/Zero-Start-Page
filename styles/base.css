@@ -71,15 +71,15 @@ i {
 }
 
 #gradient-v2-canvas {
-  z-index: -8;
+  z-index: -1;
 }
 
 #pixel-snow-hq-canvas {
-  z-index: -7;
+  z-index: -1;
 }
 
 #effect-canvas {
-  z-index: -6;
+  z-index: -1;
 }
 
   display: none;

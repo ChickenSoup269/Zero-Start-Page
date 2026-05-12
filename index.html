@@ -217,11 +217,13 @@
 
     <div id="bg-layer"></div>
     <div id="bg-dim-overlay"
-        style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -2; pointer-events: none;">
+        style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -4; pointer-events: none;">
     </div>
-    <canvas id="effect-canvas"></canvas>
-    <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; display: none;"></canvas>
-    <canvas id="pixel-snow-hq-canvas" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; display: none; background: transparent;"></canvas>
+    
+    <!-- Background Effect Canvases (Above dim overlay and background, below UI) -->
+    <canvas id="effect-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none;"></canvas>
+    <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none;"></canvas>
+    <canvas id="pixel-snow-hq-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">

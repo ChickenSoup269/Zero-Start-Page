@@ -159,13 +159,14 @@ void main() {
     pos = mix(pos + ray * nextStep, floor(pos + ray * nextStep + 0.5), sel);
   }
 
-  // Improved transparency and color logic
-  // Background is transparent (alpha = 0), snow particles are opaque (alpha = 1)
-  float alpha = step(0.001, max(finalCol.r, max(finalCol.g, finalCol.b)));
+  // Final color logic: Force white/gray-white for a clean cinematic look
+  // Even if uColor is changed, we keep it very bright
+  vec3 brightSnow = mix(vec3(1.0), uColor, 0.2); // Only 20% of custom color, 80% pure white
+  vec3 finalSnowCol = finalCol * brightSnow;
   
-  // Mix with a base gray-white if the result is too dark but should be snow
-  vec3 whiteGraySnow = mix(vec3(0.95), uColor, 0.5); 
-  fragColor = vec4(finalCol * whiteGraySnow, alpha);
+  // Ensure background transparency and sharp particle edges
+  float alpha = step(0.001, max(finalSnowCol.r, max(finalSnowCol.g, finalSnowCol.b)));
+  fragColor = vec4(finalSnowCol, alpha);
 }
 `;
 

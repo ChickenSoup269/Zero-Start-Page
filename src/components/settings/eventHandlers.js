@@ -617,41 +617,42 @@ export function setupGeneralEventHandlers(
     unsplashSaveBtn.addEventListener("click", () => {
       const settings = getSettings()
       const currentBg = settings.background
-      
+
       if (!currentBg || !currentBg.startsWith('idb-img-unsplash')) {
         showAlert("No Unsplash background to save!")
         return
       }
 
-      // currentBg is already an idb-img-unsplash-... ID string from setUnsplashRandomBackground
       const authorName = lastUnsplashPhoto?.user?.name || settings.unsplashLastCredit?.authorName || "Unsplash"
       const newBg = {
-        id: currentBg, // Use the actual ID stored in IndexedDB
+        uid: "bg-" + Date.now(), // Unique entry ID
+        id: currentBg, // Source image ID
         authorName: authorName,
         type: "image",
         date: new Date().toISOString(),
         photoUrl: lastUnsplashPhoto?.links?.html || settings.unsplashLastCredit?.photoUrl || "",
-        authorUrl: lastUnsplashPhoto?.user?.links?.html || settings.unsplashLastCredit?.authorUrl || ""
+        authorUrl: lastUnsplashPhoto?.user?.links?.html || settings.unsplashLastCredit?.authorUrl || "",
+        // Capture current visual settings
+        settings: {
+          bgBlur: settings.bgBlur,
+          bgBrightness: settings.bgBrightness,
+          bgFadeIn: settings.bgFadeIn
+        }
       }
 
       settings.userBackgrounds = settings.userBackgrounds || []
-      
-      // Check if already in gallery
-      if (settings.userBackgrounds.some(bg => (typeof bg === 'string' ? bg : bg.id) === currentBg)) {
-        showAlert(geti18n().alert_bg_already_saved || "Background already saved!")
-        return
-      }
-
       settings.userBackgrounds.push(newBg)
       saveSettings()
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
-      
-      unsplashSaveBtn.disabled = true
+
+      // Allow saving again (e.g. if they change blur/brightness)
       const i18n = geti18n()
       unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
-    })
-  }
+      setTimeout(() => {
+        unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>${i18n.settings_unsplash_save || "Save Background"}</span>`
+      }, 2000)
+    })  }
 
   DOM.unsplashCategorySelect.addEventListener("change", () => {
     handleSettingUpdate("unsplashCategory", DOM.unsplashCategorySelect.value)

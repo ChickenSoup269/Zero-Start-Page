@@ -325,15 +325,21 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgData, index) => {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
+      const bgUid = typeof bgData === "object" ? bgData.uid || bgId : bgId
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
       const authorName = typeof bgData === "object" ? (bgData.authorName || bgData.author) : null
       const isVideo = isIdbVideo(bgId)
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
-      if (settings.background === bgId && !settings.svgWaveActive)
+      
+      // Match active state by UID if possible, otherwise by ID
+      const isActive = settings.activeBgUid === bgUid || (settings.background === bgId && !settings.activeBgUid)
+      if (isActive && !settings.svgWaveActive)
         item.classList.add("active")
+      
       item.dataset.bgId = bgId
+      item.dataset.bgUid = bgUid
 
       // Icon badge for source type
       const typeIcon = document.createElement("div")
@@ -368,7 +374,6 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           if (thumbUrl) {
             item.style.backgroundImage = `url('${thumbUrl}')`
           } else {
-            // If no thumb exists, generate it from the original blob (once)
             const originalUrl = await getImageUrl(bgId)
             if (originalUrl) {
               const newThumb = await _ensureThumbnail(
@@ -413,9 +418,12 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         if (await showConfirm(i18n.alert_delete_bg_confirm)) {
           settings.userBackgrounds.splice(index, 1)
           if (isIdbMedia(bgId)) {
-            deleteImage(bgId).catch(() => {})
+            // Only delete from IndexedDB if no other entries use this ID
+            const count = settings.userBackgrounds.filter(b => (typeof b === 'object' ? b.id : b) === bgId).length
+            if (count === 0) deleteImage(bgId).catch(() => {})
           }
-          if (settings.background === bgId) {
+          if (settings.activeBgUid === bgUid) {
+            updateSetting("activeBgUid", null)
             handleSettingUpdate("background", null)
           } else {
             saveSettings()
@@ -425,7 +433,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       })
       item.appendChild(removeBtn)
 
-      // Drag and drop logic (unchanged)
+      // Drag and drop logic
       const enableDrag = settings.bookmarkEnableDrag === true
       if (enableDrag) {
         item.draggable = true
@@ -627,7 +635,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     if (bgSelectMode) {
       if (!item.classList.contains("user-uploaded")) return
 
-      const id = item.dataset.bgId
+      const id = item.dataset.bgUid || item.dataset.bgId
       const isSelected = item.classList.contains("bg-selected")
 
       if (isSelected) {
@@ -646,9 +654,27 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
       const randomColor = `#${Math.floor(Math.random() * 16777215)
         .toString(16)
         .padStart(6, "0")}`
+      updateSetting("activeBgUid", null)
       handleSettingUpdate("background", randomColor)
     } else {
-      handleSettingUpdate("background", item.dataset.bgId)
+      const settings = getSettings()
+      const bgUid = item.dataset.bgUid
+      const bgId = item.dataset.bgId
+      
+      // Find the specific entry in userBackgrounds
+      const bgData = (settings.userBackgrounds || []).find(bg => 
+        (typeof bg === 'object' ? (bg.uid || bg.id) : bg) === bgUid
+      )
+
+      if (typeof bgData === 'object' && bgData.settings) {
+        // Apply stored settings for this specific background preset
+        Object.entries(bgData.settings).forEach(([key, val]) => {
+          updateSetting(key, val)
+        })
+      }
+      
+      updateSetting("activeBgUid", bgUid)
+      handleSettingUpdate("background", bgId)
     }
 
     // handleSettingUpdate will call applySettings and refresh all galleries

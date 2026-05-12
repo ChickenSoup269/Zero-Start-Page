@@ -21,6 +21,7 @@ const _initialGradient =
 
 export const defaultSettings = {
   background: null,
+  activeBgUid: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",
   shortWeekday: false,
