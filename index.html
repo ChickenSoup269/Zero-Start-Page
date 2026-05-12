@@ -224,6 +224,7 @@
     <canvas id="effect-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none;"></canvas>
     <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none;"></canvas>
     <canvas id="pixel-snow-hq-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="soft-aurora-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -2144,6 +2145,10 @@
                             <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
                             <span class="effect-name" data-i18n="effect_aura">Aura</span>
                         </button>
+                        <button class="effect-item" data-value="softAurora" data-search="soft aurora silk curtains glow cinematic">
+                            <span class="effect-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                            <span class="effect-name" data-i18n="effect_soft_aurora">Soft Aurora</span>
+                        </button>
                         <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
                             <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
                             <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
@@ -2927,6 +2932,116 @@
                                         </label>
                                         <input type="range" id="pixel-snow-hq-brightness-slider" min="0.1" max="5.0" step="0.1" value="1.0">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Soft Aurora Settings -->
+                            <div id="soft-aurora-settings" style="display: none;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color1">Color 1</label>
+                                        <input type="color" id="soft-aurora-color1-picker" value="#74ebd5" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color2">Color 2</label>
+                                        <input type="color" id="soft-aurora-color2-picker" value="#e100ff" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
+                                            <span id="soft-aurora-speed-val" style="color: var(--accent-color);">0.6</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-speed-slider" min="0.1" max="2.0" step="0.1" value="0.6">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_zoom">Scale</span>
+                                            <span id="soft-aurora-scale-val" style="color: var(--accent-color);">1.5</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-scale-slider" min="0.5" max="4.0" step="0.1" value="1.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="setting_aurora_wave_brightness">Brightness</span>
+                                            <span id="soft-aurora-brightness-val" style="color: var(--accent-color);">1.0</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-brightness-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpFrequency">Warp</span>
+                                            <span id="soft-aurora-noise-freq-val" style="color: var(--accent-color);">2.5</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-noise-freq-slider" min="0.5" max="10.0" step="0.1" value="2.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="setting_aurora_wave_amplitude">Height</span>
+                                            <span id="soft-aurora-band-height-val" style="color: var(--accent-color);">0.5</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-band-height-slider" min="0.0" max="1.0" step="0.05" value="0.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
+                                            <span id="soft-aurora-band-spread-val" style="color: var(--accent-color);">1.0</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-band-spread-slider" min="0.5" max="10.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
+                                            <span id="soft-aurora-noise-amp-val" style="color: var(--accent-color);">1.0</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-noise-amp-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Octave Decay</span>
+                                            <span id="soft-aurora-octave-decay-val" style="color: var(--accent-color);">0.1</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-octave-decay-slider" min="0.01" max="1.0" step="0.01" value="0.1">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Layer Offset</span>
+                                            <span id="soft-aurora-layer-offset-val" style="color: var(--accent-color);">0.0</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-layer-offset-slider" min="0.0" max="10.0" step="0.1" value="0.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Color Speed</span>
+                                            <span id="soft-aurora-color-speed-val" style="color: var(--accent-color);">1.0</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-color-speed-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Mouse Scale</span>
+                                            <span id="soft-aurora-mouse-influence-val" style="color: var(--accent-color);">0.25</span>
+                                        </label>
+                                        <input type="range" id="soft-aurora-mouse-influence-slider" min="0.0" max="2.0" step="0.05" value="0.25">
+                                    </div>
+                                </div>
+
+                                <div class="setting-item" style="margin-top: 15px;">
+                                    <div class="setting-item-row no-margin">
+                                        <label for="soft-aurora-transparent-checkbox">Transparent Background</label>
+                                        <input type="checkbox" id="soft-aurora-transparent-checkbox" checked>
+                                    </div>
+                                    <div id="soft-aurora-bg-color-container" style="margin-top: 10px; display: none;">
+                                        <label>Custom Background Color</label>
+                                        <input type="color" id="soft-aurora-bg-color-picker" value="#000000" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                    </div>
+                                </div>
+
+                                <div class="setting-item-row" style="margin-top: 10px;">
+                                    <label for="soft-aurora-mouse-checkbox" data-i18n="settings_cursor_trail_click">Mouse Interaction</label>
+                                    <input type="checkbox" id="soft-aurora-mouse-checkbox" checked>
                                 </div>
                             </div>
                         </div>

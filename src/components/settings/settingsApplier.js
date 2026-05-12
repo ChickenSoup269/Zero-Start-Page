@@ -66,6 +66,7 @@ const EFFECT_KEY_MAP = {
   halloween: "halloweenEffect",
   skyLanterns: "skyLanternsEffect",
   pixelRun: "pixelRunEffect",
+  softAurora: "softAuroraEffect",
 
   nintendoPixel: "nintendoPixelEffect",
   retroGame: "retroGameEffect",
@@ -876,6 +877,7 @@ function createApplySettings(effectInstances) {
     const effectCanvas = document.getElementById("effect-canvas")
     const pixelSnowCanvas = document.getElementById("pixel-snow-hq-canvas")
     const gradientCanvas = document.getElementById("gradient-v2-canvas")
+    const softAuroraCanvas = document.getElementById("soft-aurora-canvas")
 
     // Show/hide dedicated canvases
     if (pixelSnowCanvas) {
@@ -884,8 +886,11 @@ function createApplySettings(effectInstances) {
     if (gradientCanvas) {
         gradientCanvas.style.display = shouldUseGradientV2 ? "block" : "none"
     }
+    if (softAuroraCanvas) {
+        softAuroraCanvas.style.display = effectToStart === "softAurora" ? "block" : "none"
+    }
     if (effectCanvas) {
-      const isDedicated = ["pixelSnowHQ", "gradientV2"].includes(effectToStart)
+      const isDedicated = ["pixelSnowHQ", "gradientV2", "softAurora"].includes(effectToStart)
       const shouldShowMain = effectToStart && effectToStart !== "none" && !isDedicated
       effectCanvas.style.display = shouldShowMain ? "block" : "none"
     }
@@ -999,6 +1004,31 @@ function createApplySettings(effectInstances) {
       selectedEffect.updateColor
     ) {
       selectedEffect.updateColor(settings.bubblesColor || "#60c8ff")
+    }
+
+    if (
+      effectToStart === "softAurora" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        speed: settings.softAuroraSpeed,
+        scale: settings.softAuroraScale,
+        brightness: settings.softAuroraBrightness,
+        color1: settings.softAuroraColor1,
+        color2: settings.softAuroraColor2,
+        noiseFrequency: settings.softAuroraNoiseFreq,
+        noiseAmplitude: settings.softAuroraNoiseAmp,
+        bandHeight: settings.softAuroraBandHeight,
+        bandSpread: settings.softAuroraBandSpread,
+        octaveDecay: settings.softAuroraOctaveDecay,
+        layerOffset: settings.softAuroraLayerOffset,
+        colorSpeed: settings.softAuroraColorSpeed,
+        enableMouseInteraction: settings.softAuroraEnableMouse,
+        mouseInfluence: settings.softAuroraMouseInfluence,
+        transparent: settings.softAuroraTransparent,
+        backgroundColor: settings.softAuroraBackgroundColor,
+      })
     }
 
     if (
@@ -1751,6 +1781,40 @@ function createUpdateSettingsInputs(effectInstances) {
         if (DOM.pixelSnowHQFarPlaneVal) DOM.pixelSnowHQFarPlaneVal.textContent = settings.pixelSnowHQFarPlane || 20
       }
     }
+
+    if (DOM.softAuroraSettings) {
+      DOM.softAuroraSettings.style.display = settings.effect === "softAurora" ? "block" : "none"
+      if (DOM.softAuroraColor1Picker) DOM.softAuroraColor1Picker.value = settings.softAuroraColor1 || "#74ebd5"
+      if (DOM.softAuroraColor2Picker) DOM.softAuroraColor2Picker.value = settings.softAuroraColor2 || "#e100ff"
+      if (DOM.softAuroraSpeedSlider) {
+        DOM.softAuroraSpeedSlider.value = settings.softAuroraSpeed || 0.6
+        if (DOM.softAuroraSpeedVal) DOM.softAuroraSpeedVal.textContent = (settings.softAuroraSpeed || 0.6).toFixed(1)
+      }
+      if (DOM.softAuroraScaleSlider) {
+        DOM.softAuroraScaleSlider.value = settings.softAuroraScale || 1.5
+        if (DOM.softAuroraScaleVal) DOM.softAuroraScaleVal.textContent = (settings.softAuroraScale || 1.5).toFixed(1)
+      }
+      if (DOM.softAuroraBrightnessSlider) {
+        DOM.softAuroraBrightnessSlider.value = settings.softAuroraBrightness || 1.0
+        if (DOM.softAuroraBrightnessVal) DOM.softAuroraBrightnessVal.textContent = (settings.softAuroraBrightness || 1.0).toFixed(1)
+      }
+      if (DOM.softAuroraNoiseFreqSlider) {
+        DOM.softAuroraNoiseFreqSlider.value = settings.softAuroraNoiseFreq || 2.5
+        if (DOM.softAuroraNoiseFreqVal) DOM.softAuroraNoiseFreqVal.textContent = (settings.softAuroraNoiseFreq || 2.5).toFixed(1)
+      }
+      if (DOM.softAuroraBandHeightSlider) {
+        DOM.softAuroraBandHeightSlider.value = settings.softAuroraBandHeight || 0.5
+        if (DOM.softAuroraBandHeightVal) DOM.softAuroraBandHeightVal.textContent = (settings.softAuroraBandHeight || 0.5).toFixed(2)
+      }
+      if (DOM.softAuroraBandSpreadSlider) {
+        DOM.softAuroraBandSpreadSlider.value = settings.softAuroraBandSpread || 2.5
+        if (DOM.softAuroraBandSpreadVal) DOM.softAuroraBandSpreadVal.textContent = (settings.softAuroraBandSpread || 2.5).toFixed(1)
+      }
+      if (DOM.softAuroraMouseCheckbox) {
+        DOM.softAuroraMouseCheckbox.checked = settings.softAuroraEnableMouse !== false
+      }
+    }
+
     if (DOM.skyLanternsSetting) {
       DOM.skyLanternsSetting.style.display =
         settings.effect === "skyLanterns" ? "block" : "none"

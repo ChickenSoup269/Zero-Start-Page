@@ -121,6 +121,7 @@ import { PixelBlastEffect } from "../animations/pixelBlast.js"
 import { HyperspaceEffect } from "../animations/hyperspace.js"
 import { GradientV2Effect } from "../animations/gradientV2.js"
 import { PixelSnowEffect } from "../animations/pixelSnow.js"
+import { SoftAuroraEffect } from "../animations/softAurora.js"
 
 function getExtensionVersion() {
   try {
@@ -366,6 +367,17 @@ export function initSettings() {
       centerY: settings.gradientV2CenterY,
       zoom: settings.gradientV2Zoom,
     }),
+    softAuroraEffect: new SoftAuroraEffect("soft-aurora-canvas", {
+      speed: settings.softAuroraSpeed,
+      scale: settings.softAuroraScale,
+      brightness: settings.softAuroraBrightness,
+      color1: settings.softAuroraColor1,
+      color2: settings.softAuroraColor2,
+      noiseFrequency: settings.softAuroraNoiseFreq,
+      bandHeight: settings.softAuroraBandHeight,
+      bandSpread: settings.softAuroraBandSpread,
+      enableMouseInteraction: settings.softAuroraEnableMouse,
+    }),
     svgWaveEffect: new SvgWaveGenerator(),
   }
 
@@ -580,6 +592,100 @@ export function initSettings() {
       if (effects.pixelSnowHQEffect) {
         effects.pixelSnowHQEffect.setOptions({ variant: val })
       }
+    })
+  }
+
+  // Soft Aurora
+  if (DOM_EXPORTS.softAuroraColor1Picker) {
+    DOM_EXPORTS.softAuroraColor1Picker.addEventListener("change", (e) => {
+      handleSettingUpdate("softAuroraColor1", e.target.value)
+      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ color1: e.target.value })
+    })
+  }
+  if (DOM_EXPORTS.softAuroraColor2Picker) {
+    DOM_EXPORTS.softAuroraColor2Picker.addEventListener("change", (e) => {
+      handleSettingUpdate("softAuroraColor2", e.target.value)
+      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ color2: e.target.value })
+    })
+  }
+  
+  const softAuroraProps = [
+    { id: "softAuroraSpeed", dom: DOM_EXPORTS.softAuroraSpeedSlider, val: DOM_EXPORTS.softAuroraSpeedVal, type: "float" },
+    { id: "softAuroraScale", dom: DOM_EXPORTS.softAuroraScaleSlider, val: DOM_EXPORTS.softAuroraScaleVal, type: "float" },
+    { id: "softAuroraBrightness", dom: DOM_EXPORTS.softAuroraBrightnessSlider, val: DOM_EXPORTS.softAuroraBrightnessVal, type: "float" },
+    { id: "softAuroraNoiseFreq", dom: DOM_EXPORTS.softAuroraNoiseFreqSlider, val: DOM_EXPORTS.softAuroraNoiseFreqVal, type: "float" },
+    { id: "softAuroraBandHeight", dom: DOM_EXPORTS.softAuroraBandHeightSlider, val: DOM_EXPORTS.softAuroraBandHeightVal, type: "float" },
+    { id: "softAuroraBandSpread", dom: DOM_EXPORTS.softAuroraBandSpreadSlider, val: DOM_EXPORTS.softAuroraBandSpreadVal, type: "float" },
+  ]
+
+  softAuroraProps.forEach(prop => {
+    if (prop.dom) {
+      prop.dom.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value)
+        if (prop.val) prop.val.textContent = val.toFixed(prop.id.includes("Height") || prop.id.includes("Decay") ? 2 : 1)
+        updateSetting(prop.id, val)
+        
+        if (settings.effect === "softAurora" && effects.softAuroraEffect) {
+          const optKey = prop.id.replace("softAurora", "").charAt(0).toLowerCase() + prop.id.replace("softAurora", "").slice(1)
+          let mappedKey = optKey
+          if (optKey === "noiseFreq") mappedKey = "noiseFrequency"
+          if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
+          effects.softAuroraEffect.setOptions({ [mappedKey]: val })
+        }
+      })
+      prop.dom.addEventListener("change", () => saveSettings())
+    }
+  })
+
+  // Add the remaining new props (Octave, Layer, ColorSpeed, MouseInfluence)
+  const softAuroraExtraProps = [
+    { id: "softAuroraNoiseAmp", dom: DOM_EXPORTS.softAuroraNoiseAmpSlider, val: DOM_EXPORTS.softAuroraNoiseAmpVal, type: "float" },
+    { id: "softAuroraOctaveDecay", dom: DOM_EXPORTS.softAuroraOctaveDecaySlider, val: DOM_EXPORTS.softAuroraOctaveDecayVal, type: "float" },
+    { id: "softAuroraLayerOffset", dom: DOM_EXPORTS.softAuroraLayerOffsetSlider, val: DOM_EXPORTS.softAuroraLayerOffsetVal, type: "float" },
+    { id: "softAuroraColorSpeed", dom: DOM_EXPORTS.softAuroraColorSpeedSlider, val: DOM_EXPORTS.softAuroraColorSpeedVal, type: "float" },
+    { id: "softAuroraMouseInfluence", dom: DOM_EXPORTS.softAuroraMouseInfluenceSlider, val: DOM_EXPORTS.softAuroraMouseInfluenceVal, type: "float" },
+  ]
+
+  softAuroraExtraProps.forEach(prop => {
+    if (prop.dom) {
+      prop.dom.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value)
+        if (prop.val) prop.val.textContent = val.toFixed(prop.id.includes("Decay") ? 2 : 1)
+        updateSetting(prop.id, val)
+        
+        if (settings.effect === "softAurora" && effects.softAuroraEffect) {
+          const optKey = prop.id.replace("softAurora", "").charAt(0).toLowerCase() + prop.id.replace("softAurora", "").slice(1)
+          let mappedKey = optKey
+          if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
+          effects.softAuroraEffect.setOptions({ [mappedKey]: val })
+        }
+      })
+      prop.dom.addEventListener("change", () => saveSettings())
+    }
+  })
+
+  if (DOM_EXPORTS.softAuroraMouseCheckbox) {
+    DOM_EXPORTS.softAuroraMouseCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("softAuroraEnableMouse", e.target.checked)
+      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ enableMouseInteraction: e.target.checked })
+    })
+  }
+
+  if (DOM_EXPORTS.softAuroraTransparentCheckbox) {
+    DOM_EXPORTS.softAuroraTransparentCheckbox.addEventListener("change", (e) => {
+      const isTransparent = e.target.checked
+      handleSettingUpdate("softAuroraTransparent", isTransparent)
+      if (DOM_EXPORTS.softAuroraBgColorContainer) {
+        DOM_EXPORTS.softAuroraBgColorContainer.style.display = isTransparent ? "none" : "block"
+      }
+      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ transparent: isTransparent })
+    })
+  }
+
+  if (DOM_EXPORTS.softAuroraBgColorPicker) {
+    DOM_EXPORTS.softAuroraBgColorPicker.addEventListener("change", (e) => {
+      handleSettingUpdate("softAuroraBackgroundColor", e.target.value)
+      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ backgroundColor: e.target.value })
     })
   }
 
