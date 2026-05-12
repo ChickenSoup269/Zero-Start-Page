@@ -220,6 +220,7 @@
         style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -2; pointer-events: none;">
     </div>
     <canvas id="effect-canvas"></canvas>
+    <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; display: none;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -1722,6 +1723,255 @@
                         </div>
                     </div>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
+                </div>
+            </div>
+
+            <!-- Gradient V2 (Animated) Section -->
+            <div class="setting-group" id="gradientV2-group">
+                <div class="setting-label"><i class="fa-solid fa-brush"></i> <span
+                        data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span></div>
+                
+                <div class="setting-item-row"
+                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                    <label for="gradientV2-active" data-i18n="settings_gradientV2_active"
+                        style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i> Active</label>
+                    <input type="checkbox" id="gradientV2-active">
+                </div>
+
+                <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="gradientV2-toggle-label" data-i18n="settings_gradientV2_open">Open Gradient V2</span>
+                </button>
+                <div id="gradientV2-settings" style="display: none; margin-top: 12px;">
+
+                    <!-- Colors -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-palette"></i> Colors</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_gradientV2_color1">Color 1</label>
+                                <input type="color" id="gradientV2-color1" value="#FF9FFC" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_gradientV2_color2">Color 2</label>
+                                <input type="color" id="gradientV2-color2" value="#5227FF" style="width: 100%;">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_gradientV2_color3">Color 3</label>
+                                <input type="color" id="gradientV2-color3" value="#B497CF" style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Animation Controls -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-play"></i> Animation</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
+                                    <span id="gradientV2-time-speed-value" style="opacity: 0.8;">0.25</span>
+                                </label>
+                                <input type="range" id="gradientV2-time-speed" min="0" max="2" step="0.05" value="0.25">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_colorBalance">Balance</span>
+                                    <span id="gradientV2-color-balance-value" style="opacity: 0.8;">0.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-color-balance" min="-1" max="1" step="0.1" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distortion / Warp -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp & Distortion</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_warpStrength">Strength</span>
+                                    <span id="gradientV2-warp-strength-value" style="opacity: 0.8;">1.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-warp-strength" min="0" max="5" step="0.1" value="1.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_warpFrequency">Frequency</span>
+                                    <span id="gradientV2-warp-frequency-value" style="opacity: 0.8;">5.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-warp-frequency" min="0" max="20" step="0.5" value="5.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_warpSpeed">Warp Speed</span>
+                                    <span id="gradientV2-warp-speed-value" style="opacity: 0.8;">2.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-warp-speed" min="0" max="10" step="0.5" value="2.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
+                                    <span id="gradientV2-warp-amplitude-value" style="opacity: 0.8;">50.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-warp-amplitude" min="0" max="200" step="5" value="50.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blend & Noise -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend & Noise</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_blendAngle">Angle</span>
+                                    <span id="gradientV2-blend-angle-value" style="opacity: 0.8;">0°</span>
+                                </label>
+                                <input type="range" id="gradientV2-blend-angle" min="0" max="360" value="0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
+                                    <span id="gradientV2-blend-softness-value" style="opacity: 0.8;">0.05</span>
+                                </label>
+                                <input type="range" id="gradientV2-blend-softness" min="0" max="1" step="0.01" value="0.05">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_rotationAmount">Rotation</span>
+                                    <span id="gradientV2-rotation-amount-value" style="opacity: 0.8;">500</span>
+                                </label>
+                                <input type="range" id="gradientV2-rotation-amount" min="0" max="2000" step="10" value="500">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_noiseScale">Noise Scale</span>
+                                    <span id="gradientV2-noise-scale-value" style="opacity: 0.8;">2.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-noise-scale" min="0.1" max="10" step="0.1" value="2.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Film Grain -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film Grain</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_grainAmount">Amount</span>
+                                    <span id="gradientV2-grain-amount-value" style="opacity: 0.8;">0.1</span>
+                                </label>
+                                <input type="range" id="gradientV2-grain-amount" min="0" max="1" step="0.01" value="0.1">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_grainScale">Scale</span>
+                                    <span id="gradientV2-grain-scale-value" style="opacity: 0.8;">2.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-grain-scale" min="0.1" max="10" step="0.1" value="2.0">
+                            </div>
+                        </div>
+                        <div class="setting-item-row" style="margin-top: 8px;">
+                            <label for="gradientV2-grain-animated" data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
+                            <input type="checkbox" id="gradientV2-grain-animated">
+                        </div>
+                    </div>
+
+                    <!-- Post-Processing -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image Adjustment</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_contrast">Contrast</span>
+                                    <span id="gradientV2-contrast-value" style="opacity: 0.8;">1.5</span>
+                                </label>
+                                <input type="range" id="gradientV2-contrast" min="0.5" max="3" step="0.1" value="1.5">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_gamma">Gamma</span>
+                                    <span id="gradientV2-gamma-value" style="opacity: 0.8;">1.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-gamma" min="0.1" max="3" step="0.1" value="1.0">
+                            </div>
+                            <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_saturation">Saturation</span>
+                                    <span id="gradientV2-saturation-value" style="opacity: 0.8;">1.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-saturation" min="0" max="3" step="0.1" value="1.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layout & View -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i> Layout & Zoom</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_centerX">Center X</span>
+                                    <span id="gradientV2-center-x-value" style="opacity: 0.8;">0.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-center" min="-1" max="1" step="0.05" value="0.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_centerY">Center Y</span>
+                                    <span id="gradientV2-center-y-value" style="opacity: 0.8;">0.0</span>
+                                </label>
+                                <input type="range" id="gradientV2-center-y" min="-1" max="1" step="0.05" value="0.0">
+                            </div>
+                            <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_gradientV2_zoom">Zoom</span>
+                                    <span id="gradientV2-zoom-value" style="opacity: 0.8;">0.9</span>
+                                </label>
+                                <input type="range" id="gradientV2-zoom" min="0.1" max="5" step="0.1" value="0.9">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <button id="gradientV2-randomize-btn" class="secondary-btn" title="Randomize">
+                            <i class="fa-solid fa-dice"></i> <span
+                                data-i18n="settings_gradientV2_randomize">Randomize</span>
+                        </button>
+                        <button id="gradientV2-save-btn" class="primary-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_gradientV2_save">Save
+                                Gradient</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Saved Gradients Gallery -->
+                <div id="user-gradientV2s-gallery-wrap" style="margin-top:10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <label data-i18n="settings_gradientV2_saved_label"
+                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Gradient V2s</label>
+                        <span id="count-gradientV2"></span>
+                        <button id="gradientV2-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                            data-i18n="bg_select_mode"
+                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                    </div>
+                    <div id="gradientV2-select-toolbar" class="bg-select-toolbar"
+                        style="display:none; margin-bottom: 10px;">
+                        <span id="gradientV2-select-count" class="bg-select-count">0 selected</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="gradientV2-select-all-btn" class="icon-btn" title="Select All"><i
+                                    class="fa-solid fa-check-double"></i></button>
+                            <button id="gradientV2-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                    class="fa-solid fa-trash"></i></button>
+                            <button id="gradientV2-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                    class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div id="user-gradientV2s-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 

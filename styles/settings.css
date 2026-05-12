@@ -1984,7 +1984,8 @@
 
 .local-bg-item.user-uploaded,
 .user-gradient-item,
-.user-svg-wave-item {
+.user-svg-wave-item,
+.user-gradientV2-item {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -3980,3 +3981,4 @@ body.sidebar-light .remove-bg-btn:hover i {
 }
 
 
+`n.gradient-v2-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px; margin-top: 10px; } .gradient-v2-section-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 8px; color: var(--accent-color); } .gradient-v2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .gradient-v2-grid-full { grid-column: 1 / -1; } .user-gradientV2-item { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); } .user-gradientV2-item:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); } .user-gradientV2-item.selected { border: 2px solid var(--accent-color); box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4); }

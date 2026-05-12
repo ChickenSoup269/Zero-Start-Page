@@ -94,6 +94,7 @@ function createApplySettings(effectInstances) {
     const bgChanged = settings.background !== _prevBg
     _prevBg = settings.background
     let shouldUseSvgWave = false
+    let shouldUseGradientV2 = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -293,6 +294,36 @@ function createApplySettings(effectInstances) {
           "--text-color",
           getContrastYIQ(bg),
         )
+      }
+    } else if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
+      shouldUseGradientV2 = true
+      if (effectInstances.gradientV2Effect.active) {
+        effectInstances.gradientV2Effect.setOptions({
+          color1: settings.gradientV2Color1,
+          color2: settings.gradientV2Color2,
+          color3: settings.gradientV2Color3,
+          timeSpeed: settings.gradientV2TimeSpeed,
+          colorBalance: settings.gradientV2ColorBalance,
+          warpStrength: settings.gradientV2WarpStrength,
+          warpFrequency: settings.gradientV2WarpFrequency,
+          warpSpeed: settings.gradientV2WarpSpeed,
+          warpAmplitude: settings.gradientV2WarpAmplitude,
+          blendAngle: settings.gradientV2BlendAngle,
+          blendSoftness: settings.gradientV2BlendSoftness,
+          rotationAmount: settings.gradientV2RotationAmount,
+          noiseScale: settings.gradientV2NoiseScale,
+          grainAmount: settings.gradientV2GrainAmount,
+          grainScale: settings.gradientV2GrainScale,
+          grainAnimated: settings.gradientV2GrainAnimated,
+          contrast: settings.gradientV2Contrast,
+          gamma: settings.gradientV2Gamma,
+          saturation: settings.gradientV2Saturation,
+          centerX: settings.gradientV2CenterX,
+          centerY: settings.gradientV2CenterY,
+          zoom: settings.gradientV2Zoom,
+        })
+      } else {
+        effectInstances.gradientV2Effect.start()
       }
     } else {
       // If no background image/color, apply SVG wave → fallback

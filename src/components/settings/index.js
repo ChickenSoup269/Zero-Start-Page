@@ -36,6 +36,10 @@ import {
   setupLocalFonts,
 } from "./fontManager.js"
 import { initThemeManager, THEMEABLE_KEYS } from "./themeManager.js"
+import {
+  initGradientV2Manager,
+  renderUserGradientV2s,
+} from "./gradientV2Manager.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
 import {
   populateUnsplashCollections,
@@ -115,6 +119,7 @@ import { OceanFishEffect } from "../animations/oceanFish.js"
 import { FloatingLinesEffect } from "../animations/floatingLines.js"
 import { PixelBlastEffect } from "../animations/pixelBlast.js"
 import { HyperspaceEffect } from "../animations/hyperspace.js"
+import { GradientV2Effect } from "../animations/gradientV2.js"
 
 function getExtensionVersion() {
   try {
@@ -322,6 +327,30 @@ export function initSettings() {
       "effect-canvas",
       settings.accentColor,
     ),
+    gradientV2Effect: new GradientV2Effect("gradient-v2-canvas", {
+      color1: settings.gradientV2Color1,
+      color2: settings.gradientV2Color2,
+      color3: settings.gradientV2Color3,
+      timeSpeed: settings.gradientV2TimeSpeed,
+      colorBalance: settings.gradientV2ColorBalance,
+      warpStrength: settings.gradientV2WarpStrength,
+      warpFrequency: settings.gradientV2WarpFrequency,
+      warpSpeed: settings.gradientV2WarpSpeed,
+      warpAmplitude: settings.gradientV2WarpAmplitude,
+      blendAngle: settings.gradientV2BlendAngle,
+      blendSoftness: settings.gradientV2BlendSoftness,
+      rotationAmount: settings.gradientV2RotationAmount,
+      noiseScale: settings.gradientV2NoiseScale,
+      grainAmount: settings.gradientV2GrainAmount,
+      grainScale: settings.gradientV2GrainScale,
+      grainAnimated: settings.gradientV2GrainAnimated,
+      contrast: settings.gradientV2Contrast,
+      gamma: settings.gradientV2Gamma,
+      saturation: settings.gradientV2Saturation,
+      centerX: settings.gradientV2CenterX,
+      centerY: settings.gradientV2CenterY,
+      zoom: settings.gradientV2Zoom,
+    }),
     svgWaveEffect: new SvgWaveGenerator(),
   }
 
@@ -357,11 +386,13 @@ export function initSettings() {
       updateSetting("gradientRadialShape", value.radialShape || "circle")
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
+      updateSetting("gradientV2Active", false)
     } else {
       updateSetting(key, value)
       if (key === "background") {
         if (value != null) {
           updateSetting("svgWaveActive", false)
+          updateSetting("gradientV2Active", false)
         }
         // Clear Unsplash credit if we switch to a different background
         // that isn't an Unsplash image (managed in unsplashFetcher.js)
@@ -390,15 +421,33 @@ export function initSettings() {
 
     // Avoid expensive gallery rerenders for unrelated toggles (e.g. clock/date).
     const shouldRefreshBackgroundGalleries =
-      isGradient || key === "background" || key === "svgWaveActive"
+      isGradient ||
+      key === "background" ||
+      key === "svgWaveActive" ||
+      key === "gradientV2Active"
     if (shouldRefreshBackgroundGalleries) {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
       renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
         handleSettingUpdate("svgWaveActive", true)
       })
+      renderUserGradientV2s(DOM_EXPORTS)
       const { renderSavedMultiColors } = await import("./multiColorManager.js")
       renderSavedMultiColors(DOM_EXPORTS)
+    }
+
+    // Mutual exclusivity
+    if (key === "gradientV2Active" && value === true) {
+      updateSetting("background", null)
+      updateSetting("svgWaveActive", false)
+      // Update SVG checkbox if it exists
+      const svgCheckbox = document.getElementById("svg-wave-active")
+      if (svgCheckbox) svgCheckbox.checked = false
+    }
+    if (key === "svgWaveActive" && value === true) {
+      updateSetting("background", null)
+      updateSetting("gradientV2Active", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
     }
 
     applySettings()
@@ -424,6 +473,11 @@ export function initSettings() {
       DOM_EXPORTS.svgWaveStartPreview,
       DOM_EXPORTS.svgWaveEndPreview,
     )
+
+  // Initialize Gradient V2 Manager
+  initGradientV2Manager(DOM_EXPORTS, effects.gradientV2Effect, (k, v) => {
+    handleSettingUpdate(k, v)
+  })
 
   // Create core functions
   const applySettings = createApplySettings(effects)
@@ -499,5 +553,6 @@ export function initSettings() {
   renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
     handleSettingUpdate("svgWaveActive", true)
   })
+  renderUserGradientV2s(DOM_EXPORTS)
   applySettings()
 }
