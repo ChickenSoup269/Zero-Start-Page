@@ -9,6 +9,7 @@ import {
   saveSettings,
 } from "../../services/state.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
+import { geti18n, applyTranslations } from "../../services/i18n.js"
 
 let gradientV2Instance = null
 let handleUpdateCallback = null
@@ -38,7 +39,7 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       isHidden ? "settings_gradientV2_close" : "settings_gradientV2_open"
     )
     // Update labels via i18n helper
-    if (window.updateI18n) window.updateI18n()
+    applyTranslations()
   })
 
   // Hook up the Active checkbox
@@ -272,18 +273,22 @@ function applyPreset(preset, dom) {
 
 function setupMultiSelect(dom) {
   dom.gradientV2SelectModeBtn.addEventListener("click", () => {
+    const i18n = geti18n()
     gradientV2SelectMode = !gradientV2SelectMode
     gradientV2SelectedIndices.clear()
     dom.gradientV2SelectToolbar.style.display = gradientV2SelectMode ? "flex" : "none"
-    dom.gradientV2SelectModeBtn.textContent = gradientV2SelectMode ? "Cancel" : "Select"
+    dom.gradientV2SelectModeBtn.textContent = gradientV2SelectMode 
+      ? (i18n.cancel || "Cancel") 
+      : (i18n.bg_select_mode || "Select")
     renderUserGradientV2s(dom)
   })
 
   dom.gradientV2SelectCancelBtn.addEventListener("click", () => {
+    const i18n = geti18n()
     gradientV2SelectMode = false
     gradientV2SelectedIndices.clear()
     dom.gradientV2SelectToolbar.style.display = "none"
-    dom.gradientV2SelectModeBtn.textContent = "Select"
+    dom.gradientV2SelectModeBtn.textContent = i18n.bg_select_mode || "Select"
     renderUserGradientV2s(dom)
   })
 
@@ -301,7 +306,9 @@ function setupMultiSelect(dom) {
   dom.gradientV2DeleteSelectedBtn.addEventListener("click", async () => {
     if (gradientV2SelectedIndices.size === 0) return
     
-    const confirmed = await showConfirm(`Delete ${gradientV2SelectedIndices.size} saved gradients?`)
+    const i18n = geti18n()
+    const confirmMsg = i18n.alert_delete_bg_confirm || `Delete ${gradientV2SelectedIndices.size} saved gradients?`
+    const confirmed = await showConfirm(confirmMsg)
     if (confirmed) {
       const { userGradientV2s } = getSettings()
       const newList = userGradientV2s.filter((_, i) => !gradientV2SelectedIndices.has(i))

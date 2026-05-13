@@ -321,6 +321,7 @@ export function showBookmarkHideInstructions() {
   const policyLink = i18n.hide_bookmark_policy_link || "View status at chrome://policy/"
   const linkHint = i18n.hide_bookmark_link_hint || "(Copy and paste the link if it doesn't open)"
   const tip = i18n[`hide_bookmark_tip_${os}`] || i18n.hide_bookmark_tip
+  const note = i18n.hide_bookmark_note || ""
 
   let command = ""
   if (os === "win") {
@@ -361,11 +362,23 @@ export function showBookmarkHideInstructions() {
         <p style="font-size: 0.75rem; opacity: 0.6; margin-top: -4px;">${linkHint}</p>
       </div>
 
-      <div style="background: rgba(var(--accent-color-rgb), 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color);">
+      <div style="background: rgba(var(--accent-color-rgb), 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color); margin-bottom: 12px;">
         <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">
           <i class="fa-solid fa-lightbulb" style="color: var(--accent-color); margin-right: 4px;"></i> ${tip}
         </p>
       </div>
+
+      ${
+        note
+          ? `
+      <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 6px; border-left: 3px solid #ffc107;">
+        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">
+          <i class="fa-solid fa-circle-exclamation" style="color: #ffc107; margin-right: 4px;"></i> ${note}
+        </p>
+      </div>
+      `
+          : ""
+      }
     </div>
   `
 
