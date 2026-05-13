@@ -93,32 +93,32 @@ export class LightPillarEffect {
 
     this.qualitySettings = {
       low: {
-        iterations: 6,
-        waveIterations: 1,
-        pixelRatio: 0.35,
-        stepMultiplier: 3.0,
-        precision: "mediump",
-      },
-      medium: {
         iterations: 12,
         waveIterations: 1,
         pixelRatio: 0.5,
         stepMultiplier: 2.2,
         precision: "mediump",
       },
-      high: {
-        iterations: 20,
+      medium: {
+        iterations: 24,
         waveIterations: 1,
-        pixelRatio: 0.65,
+        pixelRatio: 0.7,
         stepMultiplier: 1.8,
         precision: "highp",
       },
+      high: {
+        iterations: 36,
+        waveIterations: 1,
+        pixelRatio: 0.85,
+        stepMultiplier: 1.4,
+        precision: "highp",
+      },
     }[effectiveQuality] || {
-      iterations: 12,
+      iterations: 24,
       waveIterations: 1,
-      pixelRatio: 0.5,
-      stepMultiplier: 2.2,
-      precision: "mediump",
+      pixelRatio: 0.7,
+      stepMultiplier: 1.8,
+      precision: "highp",
     }
 
     this._resizeHandler = () => this.resize()
@@ -231,8 +231,8 @@ export class LightPillarEffect {
         // Pre-rotate UV for pillar tilt
         uv = vec2(uPillarRotCos * uv.x - uPillarRotSin * uv.y, uPillarRotSin * uv.x + uPillarRotCos * uv.y);
 
-        vec3 ro = vec3(0.0, 0.0, -10.0);
-        vec3 rd = normalize(vec3(uv, 1.0));
+        vec3 ro = vec3(0.0, 0.0, -12.0);
+        vec3 rd = normalize(vec3(uv, 1.2));
 
         float rotC = uRotCos;
         float rotS = uRotSin;
@@ -245,6 +245,8 @@ export class LightPillarEffect {
         vec3 col = vec3(0.0);
         float t = 0.5;
         
+        float shimmer = sin(uTime * 1.5) * 0.05 + 0.95;
+        
         for(int i = 0; i < MAX_ITER; i++) {
           vec3 p = ro + rd * t;
           
@@ -254,45 +256,44 @@ export class LightPillarEffect {
           vec3 pRot = vec3(px, p.y, pz);
 
           vec3 q = pRot;
-          q.y = pRot.y * uPillarHeight + uTime;
+          q.y = pRot.y * uPillarHeight + uTime * 0.5;
           
-          // Simplified wave calculation - hardcoded wave rotation for speed
-          q.x = 0.92 * q.x - 0.39 * q.z; 
-          q.z = 0.39 * q.x + 0.92 * q.z;
-          q += cos(q.zxy - uTime);
+          // Improved wave calculation
+          q.x += sin(q.z * 0.5 + uTime * 0.2) * 0.2;
+          q.z += cos(q.x * 0.5 - uTime * 0.2) * 0.2;
           
-          float d = length(cos(q.xz)) - 0.2;
+          float d = length(cos(q.xz)) - 0.15;
           float bound = length(pRot.xz) - uPillarWidth;
           
-          // Fast smooth union
-          float k = 4.0;
+          // Smooth union
+          float k = 5.0;
           float h = max(k - abs(d - bound), 0.0);
           d = max(d, bound) + h * h * 0.0625 / k;
-          d = abs(d) * 0.2 + 0.02;
+          d = abs(d) * 0.15 + 0.015;
 
-          float grad = clamp((15.0 - p.y) / 30.0, 0.0, 1.0);
-          col += mix(uBottomColor, uTopColor, grad) / d;
+          float grad = clamp((18.0 - p.y) / 36.0, 0.0, 1.0);
+          vec3 layerCol = mix(uBottomColor, uTopColor, grad);
+          
+          // Add some internal "dust" or particles
+          float noise = fract(sin(dot(q.xz, vec2(12.9898, 78.233))) * 43758.5453);
+          layerCol *= 1.0 + noise * 0.1 * uNoiseIntensity;
+          
+          col += layerCol * shimmer / d;
 
           t += d * STEP_MULT;
-          // More aggressive early exit
-          if(t > 35.0 || col.g > 10.0) break;
+          if(t > 40.0 || col.g > 12.0) break;
         }
 
-        float widthNorm = uPillarWidth / 3.0;
-        #ifdef GL_ES
-        #if __VERSION__ == 300
-        col = tanh(col * uGlowAmount / widthNorm);
-        #else
-        col = tanh_approx(col * uGlowAmount / widthNorm);
-        #endif
-        #else
-        col = tanh_approx(col * uGlowAmount / widthNorm);
-        #endif
+        float widthNorm = uPillarWidth / 2.5;
+        col *= uGlowAmount / widthNorm;
+        
+        // Better tone mapping
+        col = col / (1.0 + col);
         
         // Faster noise - one-liner
-        col -= fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453) * 0.04 * uNoiseIntensity;
+        col -= fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453) * 0.03 * uNoiseIntensity;
         
-        fragColor = vec4(col * uIntensity, 1.0);
+        fragColor = vec4(col * uIntensity * 1.5, 1.0);
       }
     `
 

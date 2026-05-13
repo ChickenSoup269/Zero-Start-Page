@@ -916,6 +916,55 @@ export function initSettings() {
     })
   }
 
+  if (DOM_EXPORTS.silkRandomBtn) {
+    DOM_EXPORTS.silkRandomBtn.addEventListener("click", () => {
+      const randomHex = () =>
+        "#" +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")
+      const randomSpeed = parseFloat((Math.random() * 15 + 1).toFixed(1))
+      const randomScale = parseFloat((Math.random() * 3 + 0.5).toFixed(1))
+      const randomNoise = parseFloat((Math.random() * 4 + 0.5).toFixed(1))
+      const randomRotation = Math.floor(Math.random() * 360)
+
+      handleSettingUpdate("silkColor", randomHex())
+      handleSettingUpdate("silkSpeed", randomSpeed)
+      handleSettingUpdate("silkScale", randomScale)
+      handleSettingUpdate("silkNoise", randomNoise)
+      handleSettingUpdate("silkRotation", randomRotation)
+
+      if (DOM_EXPORTS.silkColor)
+        DOM_EXPORTS.silkColor.value = getSettings().silkColor
+      if (DOM_EXPORTS.silkSpeed) {
+        DOM_EXPORTS.silkSpeed.value = randomSpeed
+        DOM_EXPORTS.silkSpeedValue.textContent = randomSpeed.toFixed(1)
+      }
+      if (DOM_EXPORTS.silkScale) {
+        DOM_EXPORTS.silkScale.value = randomScale
+        DOM_EXPORTS.silkScaleValue.textContent = randomScale.toFixed(1)
+      }
+      if (DOM_EXPORTS.silkNoise) {
+        DOM_EXPORTS.silkNoise.value = randomNoise
+        DOM_EXPORTS.silkNoiseValue.textContent = randomNoise.toFixed(1)
+      }
+      if (DOM_EXPORTS.silkRotation) {
+        DOM_EXPORTS.silkRotation.value = randomRotation
+        DOM_EXPORTS.silkRotationValue.textContent = randomRotation
+      }
+
+      if (effects.silkEffect) {
+        effects.silkEffect.setOptions({
+          color: getSettings().silkColor,
+          speed: randomSpeed,
+          scale: randomScale,
+          noise: randomNoise,
+          rotation: randomRotation,
+        })
+      }
+    })
+  }
+
   if (DOM_EXPORTS.silkActive) {
     // Sync initial state
     DOM_EXPORTS.silkActive.checked = settings.silkActive === true
@@ -987,6 +1036,114 @@ export function initSettings() {
       DOM_EXPORTS.lightPillarToggleLabel.textContent = isHidden
         ? "Close Light Pillar"
         : "Open Light Pillar"
+    })
+  }
+
+  if (DOM_EXPORTS.lightPillarRandomBtn) {
+    DOM_EXPORTS.lightPillarRandomBtn.addEventListener("click", () => {
+      const palette = [
+        "#FF0055",
+        "#00FF66",
+        "#00AAFF",
+        "#0055FF",
+        "#5500FF",
+        "#AA00FF",
+        "#FF00AA",
+        "#FF0000",
+        "#FF5500",
+        "#FFAA00",
+        "#00FFCC",
+        "#00FFAA",
+        "#0000FF",
+        "#00FFFF",
+        "#FF00FF",
+        "#FFFF00",
+        "#FF2288",
+        "#22FF88",
+        "#2288FF",
+        "#FF22FF",
+        "#FFFF22",
+        "#22FFFF",
+        "#FF9FFC",
+        "#5227FF",
+      ]
+      const randomHex = () =>
+        palette[Math.floor(Math.random() * palette.length)]
+
+      const randomIntensity = parseFloat((Math.random() * 1.5 + 0.5).toFixed(1)) // 0.5 to 2.0
+      const randomRotSpeed = parseFloat((Math.random() * 0.8 + 0.1).toFixed(2)) // 0.1 to 0.9
+      const randomGlow = parseFloat((Math.random() * 0.012 + 0.002).toFixed(4)) // 0.002 to 0.014
+      const randomWidth = parseFloat((Math.random() * 4.0 + 1.0).toFixed(1)) // 1.0 to 5.0
+      const randomHeight = parseFloat((Math.random() * 0.4 + 0.2).toFixed(2)) // 0.2 to 0.6
+      const randomNoise = parseFloat((Math.random() * 0.7 + 0.1).toFixed(2)) // 0.1 to 0.8
+      const randomPillarRot = Math.floor(Math.random() * 360)
+
+      const topCol = randomHex()
+      let bottomCol = randomHex()
+      // ensure different color
+      while (bottomCol === topCol) {
+        bottomCol = randomHex()
+      }
+
+      handleSettingUpdate("lightPillarTopColor", topCol)
+      handleSettingUpdate("lightPillarBottomColor", bottomCol)
+      handleSettingUpdate("lightPillarIntensity", randomIntensity)
+      handleSettingUpdate("lightPillarRotationSpeed", randomRotSpeed)
+      handleSettingUpdate("lightPillarGlowAmount", randomGlow)
+      handleSettingUpdate("lightPillarWidth", randomWidth)
+      handleSettingUpdate("lightPillarHeight", randomHeight)
+      handleSettingUpdate("lightPillarNoiseIntensity", randomNoise)
+      handleSettingUpdate("lightPillarRotation", randomPillarRot)
+
+      if (DOM_EXPORTS.lightPillarTopColor)
+        DOM_EXPORTS.lightPillarTopColor.value = topCol
+      if (DOM_EXPORTS.lightPillarBottomColor)
+        DOM_EXPORTS.lightPillarBottomColor.value = bottomCol
+
+      if (DOM_EXPORTS.lightPillarIntensity) {
+        DOM_EXPORTS.lightPillarIntensity.value = randomIntensity
+        DOM_EXPORTS.lightPillarIntensityValue.textContent =
+          randomIntensity.toFixed(2)
+      }
+      if (DOM_EXPORTS.lightPillarRotationSpeed) {
+        DOM_EXPORTS.lightPillarRotationSpeed.value = randomRotSpeed
+        DOM_EXPORTS.lightPillarRotationSpeedValue.textContent =
+          randomRotSpeed.toFixed(2)
+      }
+      if (DOM_EXPORTS.lightPillarGlow) {
+        DOM_EXPORTS.lightPillarGlow.value = randomGlow
+        DOM_EXPORTS.lightPillarGlowValue.textContent = randomGlow.toFixed(4)
+      }
+      if (DOM_EXPORTS.lightPillarWidth) {
+        DOM_EXPORTS.lightPillarWidth.value = randomWidth
+        DOM_EXPORTS.lightPillarWidthValue.textContent = randomWidth.toFixed(2)
+      }
+      if (DOM_EXPORTS.lightPillarHeight) {
+        DOM_EXPORTS.lightPillarHeight.value = randomHeight
+        DOM_EXPORTS.lightPillarHeightValue.textContent = randomHeight.toFixed(2)
+      }
+      if (DOM_EXPORTS.lightPillarNoise) {
+        DOM_EXPORTS.lightPillarNoise.value = randomNoise
+        DOM_EXPORTS.lightPillarNoiseValue.textContent = randomNoise.toFixed(2)
+      }
+      if (DOM_EXPORTS.lightPillarRotation) {
+        DOM_EXPORTS.lightPillarRotation.value = randomPillarRot
+        DOM_EXPORTS.lightPillarRotationValue.textContent = randomPillarRot + "°"
+      }
+
+      if (effects.lightPillarEffect) {
+        effects.lightPillarEffect.setOptions({
+          topColor: topCol,
+          bottomColor: bottomCol,
+          intensity: randomIntensity,
+          rotationSpeed: randomRotSpeed,
+          glowAmount: randomGlow,
+          pillarWidth: randomWidth,
+          pillarHeight: randomHeight,
+          noiseIntensity: randomNoise,
+          pillarRotation: randomPillarRot,
+        })
+      }
     })
   }
 

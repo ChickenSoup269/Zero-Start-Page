@@ -1182,7 +1182,12 @@ function createApplySettings(effectInstances) {
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
+        // Protect background effects that are currently active
+        if (shouldUseGradientV2 && effect === effectInstances.gradientV2Effect) return
+        if (shouldUseSilk && effect === effectInstances.silkEffect) return
+        if (shouldUseLightPillar && effect === effectInstances.lightPillarEffect) return
         if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
+
         if (effect && typeof effect.stop === "function") {
           effect.stop()
         }

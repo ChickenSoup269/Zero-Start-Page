@@ -1354,6 +1354,7 @@ export const silkNoise = document.getElementById("silk-noise")
 export const silkNoiseValue = document.getElementById("silk-noise-value")
 export const silkRotation = document.getElementById("silk-rotation")
 export const silkRotationValue = document.getElementById("silk-rotation-value")
+export const silkRandomBtn = document.getElementById("silk-random-btn")
 
 // Light Pillar Effect
 export const lightPillarToggleBtn = document.getElementById(
@@ -1366,6 +1367,9 @@ export const lightPillarSettings = document.getElementById(
   "light-pillar-settings",
 )
 export const lightPillarActive = document.getElementById("light-pillar-active")
+export const lightPillarRandomBtn = document.getElementById(
+  "light-pillar-random-btn",
+)
 export const lightPillarTopColor = document.getElementById(
   "light-pillar-top-color",
 )
