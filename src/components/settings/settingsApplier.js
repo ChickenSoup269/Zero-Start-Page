@@ -83,6 +83,7 @@ const EFFECT_KEY_MAP = {
   oceanFish: "oceanFishEffect",
   floatingLines: "floatingLinesEffect",
   hyperspace: "hyperspaceEffect",
+  liquidEther: "liquidEtherEffect",
 }
 
 function setEffectActive(effectGrid, value) {
@@ -100,6 +101,7 @@ function createApplySettings(effectInstances) {
     let shouldUseGradientV2 = false
     let shouldUseSilk = false
     let shouldUseLightPillar = false
+    let shouldUseLiquidEther = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -302,6 +304,31 @@ function createApplySettings(effectInstances) {
         })
       }
     }
+    // Priority 1.7: Liquid Ether (Animated)
+    else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
+      shouldUseLiquidEther = true
+      document.body.classList.add("bg-layer-active")
+      if (effectInstances.liquidEtherEffect.active) {
+        effectInstances.liquidEtherEffect.updateSettings({
+          colors: [
+            settings.liquidEtherColor1 || "#5227FF",
+            settings.liquidEtherColor2 || "#FF9FFC",
+            settings.liquidEtherColor3 || "#B497CF",
+          ],
+          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
+        })
+      } else {
+        effectInstances.liquidEtherEffect.start()
+        effectInstances.liquidEtherEffect.updateSettings({
+          colors: [
+            settings.liquidEtherColor1 || "#5227FF",
+            settings.liquidEtherColor2 || "#FF9FFC",
+            settings.liquidEtherColor3 || "#B497CF",
+          ],
+          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
+        })
+      }
+    }
 
     // Priority 2: SVG Wave
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
@@ -417,6 +444,12 @@ function createApplySettings(effectInstances) {
     }
     if (!shouldUseLightPillar && effectInstances.lightPillarEffect?.active) {
       effectInstances.lightPillarEffect.stop()
+    }
+    if (!shouldUseLiquidEther && effectInstances.liquidEtherEffect?.active) {
+      effectInstances.liquidEtherEffect.stop()
+    }
+    if (!shouldUseLiquidEther && effectInstances.liquidEtherEffect?.active) {
+      effectInstances.liquidEtherEffect.stop()
     }
 
     // 2.1 Background Position
@@ -554,7 +587,7 @@ function createApplySettings(effectInstances) {
       "--search-bar-width",
       `${settings.searchBarWidth || 600}px`,
     )
-    
+
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
       "--bookmark-font-size",
@@ -1188,9 +1221,14 @@ function createApplySettings(effectInstances) {
       // Stop previous effects only when effect selection actually changes.
       Object.values(effectInstances).forEach((effect) => {
         // Protect background effects that are currently active
-        if (shouldUseGradientV2 && effect === effectInstances.gradientV2Effect) return
+        if (shouldUseGradientV2 && effect === effectInstances.gradientV2Effect)
+          return
         if (shouldUseSilk && effect === effectInstances.silkEffect) return
-        if (shouldUseLightPillar && effect === effectInstances.lightPillarEffect) return
+        if (
+          shouldUseLightPillar &&
+          effect === effectInstances.lightPillarEffect
+        )
+          return
         if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
 
         if (effect && typeof effect.stop === "function") {
@@ -1530,6 +1568,27 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.fliqloTransparentCheckbox) {
         DOM.fliqloTransparentCheckbox.checked =
           settings.fliqloTransparent === true
+      }
+    }
+
+    // Liquid Ether Inputs
+    if (DOM.liquidEtherActive) {
+      DOM.liquidEtherActive.checked = settings.liquidEtherActive === true
+    }
+    if (DOM.liquidEtherColor1) {
+      DOM.liquidEtherColor1.value = settings.liquidEtherColor1 || "#5227FF"
+    }
+    if (DOM.liquidEtherColor2) {
+      DOM.liquidEtherColor2.value = settings.liquidEtherColor2 || "#FF9FFC"
+    }
+    if (DOM.liquidEtherColor3) {
+      DOM.liquidEtherColor3.value = settings.liquidEtherColor3 || "#B497CF"
+    }
+    if (DOM.liquidEtherGlowWidth) {
+      const gw = settings.liquidEtherGlowWidth ?? 5.5
+      DOM.liquidEtherGlowWidth.value = gw
+      if (DOM.liquidEtherGlowWidthValue) {
+        DOM.liquidEtherGlowWidthValue.textContent = gw.toFixed(1)
       }
     }
 

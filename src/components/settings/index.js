@@ -115,6 +115,7 @@ import { WavyPatternEffect } from "../animations/wavyPattern.js"
 import { AngledPatternEffect } from "../animations/angledPattern.js"
 import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
 import { PlantGrowthEffect } from "../animations/plantGrowth.js"
+import { LiquidEther } from "../animations/liquidEther.js"
 import { OceanFishEffect } from "../animations/oceanFish.js"
 import { FloatingLinesEffect } from "../animations/floatingLines.js"
 import { PixelBlastEffect } from "../animations/pixelBlast.js"
@@ -292,6 +293,7 @@ export function initSettings() {
       "effect-canvas",
       settings.plantGrowthColor || "#4caf50",
     ),
+    liquidEtherEffect: new LiquidEther("effect-canvas"),
     oceanFishEffect: new OceanFishEffect(
       "effect-canvas",
       settings.oceanFishColor || "#ff7f50",
@@ -390,6 +392,7 @@ export function initSettings() {
       noise: settings.silkNoise,
       rotation: settings.silkRotation,
     }),
+    liquidEtherEffect: new LiquidEther("liquid-ether-canvas"),
     lightPillarEffect: new LightPillarEffect("light-pillar-canvas", {
       topColor: settings.lightPillarTopColor,
       bottomColor: settings.lightPillarBottomColor,
@@ -530,11 +533,28 @@ export function initSettings() {
       updateSetting("gradientV2Active", false)
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
+      updateSetting("liquidEtherActive", false)
       if (DOM_EXPORTS.gradientV2Active)
         DOM_EXPORTS.gradientV2Active.checked = false
       const svgCheckbox = document.getElementById("svg-wave-active")
       if (svgCheckbox) svgCheckbox.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+    }
+    if (key === "liquidEtherActive" && value === true) {
+      updateSetting("background", null)
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
+      const svgCheckbox = document.getElementById("svg-wave-active")
+      if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
@@ -545,6 +565,9 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       if (DOM_EXPORTS.lightPillarActive)
         DOM_EXPORTS.lightPillarActive.checked = false
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
     }
 
     applySettings()
@@ -1062,7 +1085,11 @@ export function initSettings() {
       removeBtn.addEventListener("click", async (e) => {
         e.stopPropagation()
         const i18n = geti18n()
-        if (await showConfirm(i18n.alert_delete_bg_confirm || "Delete this preset?")) {
+        if (
+          await showConfirm(
+            i18n.alert_delete_bg_confirm || "Delete this preset?",
+          )
+        ) {
           const s = getSettings()
           s.userSilks.splice(index, 1)
           saveSettings()
@@ -1074,7 +1101,13 @@ export function initSettings() {
       item.addEventListener("click", () => {
         // Apply preset
         const s = getSettings()
-        ;["silkColor", "silkSpeed", "silkScale", "silkNoise", "silkRotation"].forEach((k) => {
+        ;[
+          "silkColor",
+          "silkSpeed",
+          "silkScale",
+          "silkNoise",
+          "silkRotation",
+        ].forEach((k) => {
           if (preset[k.replace("silk", "").toLowerCase()] !== undefined) {
             updateSetting(k, preset[k.replace("silk", "").toLowerCase()])
           } else if (preset[k] !== undefined) {
@@ -1092,19 +1125,31 @@ export function initSettings() {
         if (DOM_EXPORTS.silkColor) DOM_EXPORTS.silkColor.value = preset.color
         if (DOM_EXPORTS.silkSpeed) {
           DOM_EXPORTS.silkSpeed.value = preset.speed
-          if (DOM_EXPORTS.silkSpeedValue) DOM_EXPORTS.silkSpeedValue.textContent = parseFloat(preset.speed).toFixed(1)
+          if (DOM_EXPORTS.silkSpeedValue)
+            DOM_EXPORTS.silkSpeedValue.textContent = parseFloat(
+              preset.speed,
+            ).toFixed(1)
         }
         if (DOM_EXPORTS.silkScale) {
           DOM_EXPORTS.silkScale.value = preset.scale
-          if (DOM_EXPORTS.silkScaleValue) DOM_EXPORTS.silkScaleValue.textContent = parseFloat(preset.scale).toFixed(1)
+          if (DOM_EXPORTS.silkScaleValue)
+            DOM_EXPORTS.silkScaleValue.textContent = parseFloat(
+              preset.scale,
+            ).toFixed(1)
         }
         if (DOM_EXPORTS.silkNoise) {
           DOM_EXPORTS.silkNoise.value = preset.noise
-          if (DOM_EXPORTS.silkNoiseValue) DOM_EXPORTS.silkNoiseValue.textContent = parseFloat(preset.noise).toFixed(1)
+          if (DOM_EXPORTS.silkNoiseValue)
+            DOM_EXPORTS.silkNoiseValue.textContent = parseFloat(
+              preset.noise,
+            ).toFixed(1)
         }
         if (DOM_EXPORTS.silkRotation) {
           DOM_EXPORTS.silkRotation.value = preset.rotation
-          if (DOM_EXPORTS.silkRotationValue) DOM_EXPORTS.silkRotationValue.textContent = parseFloat(preset.rotation).toFixed(1)
+          if (DOM_EXPORTS.silkRotationValue)
+            DOM_EXPORTS.silkRotationValue.textContent = parseFloat(
+              preset.rotation,
+            ).toFixed(1)
         }
         if (effects.silkEffect) {
           effects.silkEffect.setOptions({
@@ -1149,7 +1194,9 @@ export function initSettings() {
     const toolbar = document.getElementById("silk-select-toolbar")
     const countEl = document.getElementById("silk-select-count")
     const selectAllBtn = document.getElementById("silk-select-all-btn")
-    const deleteSelectedBtn = document.getElementById("silk-delete-selected-btn")
+    const deleteSelectedBtn = document.getElementById(
+      "silk-delete-selected-btn",
+    )
     const cancelBtn = document.getElementById("silk-select-cancel-btn")
     if (!selectModeBtn) return
     let selectMode = false
@@ -1159,24 +1206,33 @@ export function initSettings() {
       selectedIds.clear()
       if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
     })
-    if (cancelBtn) cancelBtn.addEventListener("click", () => {
-      selectMode = false
-      selectedIds.clear()
-      if (toolbar) toolbar.style.display = "none"
-    })
-    if (deleteSelectedBtn) deleteSelectedBtn.addEventListener("click", async () => {
-      if (selectedIds.size === 0) return
-      const i18n = geti18n()
-      if (await showConfirm(i18n.alert_delete_bg_confirm || `Delete ${selectedIds.size} preset(s)?`)) {
-        const s = getSettings()
-        s.userSilks = (s.userSilks || []).filter((_, i) => !selectedIds.has(i))
-        saveSettings()
-        selectedIds.clear()
+    if (cancelBtn)
+      cancelBtn.addEventListener("click", () => {
         selectMode = false
+        selectedIds.clear()
         if (toolbar) toolbar.style.display = "none"
-        renderUserSilks()
-      }
-    })
+      })
+    if (deleteSelectedBtn)
+      deleteSelectedBtn.addEventListener("click", async () => {
+        if (selectedIds.size === 0) return
+        const i18n = geti18n()
+        if (
+          await showConfirm(
+            i18n.alert_delete_bg_confirm ||
+              `Delete ${selectedIds.size} preset(s)?`,
+          )
+        ) {
+          const s = getSettings()
+          s.userSilks = (s.userSilks || []).filter(
+            (_, i) => !selectedIds.has(i),
+          )
+          saveSettings()
+          selectedIds.clear()
+          selectMode = false
+          if (toolbar) toolbar.style.display = "none"
+          renderUserSilks()
+        }
+      })
   })()
 
   // Light Pillar Effect setup
@@ -1408,7 +1464,9 @@ export function initSettings() {
   // ── Light Pillar: Save BG handler ──────────────────────────────────
   function renderUserLightPillars() {
     const gallery = document.getElementById("user-light-pillars-gallery")
-    const galleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
+    const galleryWrap = document.getElementById(
+      "user-light-pillars-gallery-wrap",
+    )
     if (!gallery) return
     const { userLightPillars } = getSettings()
     gallery.innerHTML = ""
@@ -1441,7 +1499,11 @@ export function initSettings() {
       removeBtn.addEventListener("click", async (e) => {
         e.stopPropagation()
         const i18n = geti18n()
-        if (await showConfirm(i18n.alert_delete_bg_confirm || "Delete this preset?")) {
+        if (
+          await showConfirm(
+            i18n.alert_delete_bg_confirm || "Delete this preset?",
+          )
+        ) {
           const s = getSettings()
           s.userLightPillars.splice(index, 1)
           saveSettings()
@@ -1466,9 +1528,12 @@ export function initSettings() {
           if (preset[pk] !== undefined) updateSetting(sk, preset[pk])
         })
         updateSetting("lightPillarActive", true)
-        if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = true
-        if (DOM_EXPORTS.lightPillarTopColor) DOM_EXPORTS.lightPillarTopColor.value = preset.topColor
-        if (DOM_EXPORTS.lightPillarBottomColor) DOM_EXPORTS.lightPillarBottomColor.value = preset.bottomColor
+        if (DOM_EXPORTS.lightPillarActive)
+          DOM_EXPORTS.lightPillarActive.checked = true
+        if (DOM_EXPORTS.lightPillarTopColor)
+          DOM_EXPORTS.lightPillarTopColor.value = preset.topColor
+        if (DOM_EXPORTS.lightPillarBottomColor)
+          DOM_EXPORTS.lightPillarBottomColor.value = preset.bottomColor
 
         if (effects.lightPillarEffect) {
           effects.lightPillarEffect.setOptions({
@@ -1517,9 +1582,13 @@ export function initSettings() {
 
   // ── Light Pillar multi-select toolbar wiring ──────────────────────
   ;(function setupLightPillarMultiSelect() {
-    const selectModeBtn = document.getElementById("light-pillar-select-mode-btn")
+    const selectModeBtn = document.getElementById(
+      "light-pillar-select-mode-btn",
+    )
     const toolbar = document.getElementById("light-pillar-select-toolbar")
-    const deleteSelectedBtn = document.getElementById("light-pillar-delete-selected-btn")
+    const deleteSelectedBtn = document.getElementById(
+      "light-pillar-delete-selected-btn",
+    )
     const cancelBtn = document.getElementById("light-pillar-select-cancel-btn")
     if (!selectModeBtn) return
     let selectMode = false
@@ -1529,24 +1598,33 @@ export function initSettings() {
       selectedIds.clear()
       if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
     })
-    if (cancelBtn) cancelBtn.addEventListener("click", () => {
-      selectMode = false
-      selectedIds.clear()
-      if (toolbar) toolbar.style.display = "none"
-    })
-    if (deleteSelectedBtn) deleteSelectedBtn.addEventListener("click", async () => {
-      if (selectedIds.size === 0) return
-      const i18n = geti18n()
-      if (await showConfirm(i18n.alert_delete_bg_confirm || `Delete ${selectedIds.size} preset(s)?`)) {
-        const s = getSettings()
-        s.userLightPillars = (s.userLightPillars || []).filter((_, i) => !selectedIds.has(i))
-        saveSettings()
-        selectedIds.clear()
+    if (cancelBtn)
+      cancelBtn.addEventListener("click", () => {
         selectMode = false
+        selectedIds.clear()
         if (toolbar) toolbar.style.display = "none"
-        renderUserLightPillars()
-      }
-    })
+      })
+    if (deleteSelectedBtn)
+      deleteSelectedBtn.addEventListener("click", async () => {
+        if (selectedIds.size === 0) return
+        const i18n = geti18n()
+        if (
+          await showConfirm(
+            i18n.alert_delete_bg_confirm ||
+              `Delete ${selectedIds.size} preset(s)?`,
+          )
+        ) {
+          const s = getSettings()
+          s.userLightPillars = (s.userLightPillars || []).filter(
+            (_, i) => !selectedIds.has(i),
+          )
+          saveSettings()
+          selectedIds.clear()
+          selectMode = false
+          if (toolbar) toolbar.style.display = "none"
+          renderUserLightPillars()
+        }
+      })
   })()
 
   // Initialize data and renderers
@@ -1585,5 +1663,204 @@ export function initSettings() {
   renderUserGradientV2s(DOM_EXPORTS)
   renderUserSilks()
   renderUserLightPillars()
+
+  // ── Liquid Ether Effect setup ──
+  if (DOM_EXPORTS.liquidEtherToggleBtn) {
+    DOM_EXPORTS.liquidEtherToggleBtn.addEventListener("click", () => {
+      const isHidden = DOM_EXPORTS.liquidEtherSettings.style.display === "none"
+      DOM_EXPORTS.liquidEtherSettings.style.display = isHidden ? "block" : "none"
+      DOM_EXPORTS.liquidEtherToggleBtn.classList.toggle("active", isHidden)
+      DOM_EXPORTS.liquidEtherToggleLabel.textContent = isHidden
+        ? "Close Liquid Ether"
+        : "Open Liquid Ether"
+    })
+  }
+
+  if (DOM_EXPORTS.liquidEtherActive) {
+    DOM_EXPORTS.liquidEtherActive.checked = settings.liquidEtherActive === true
+    DOM_EXPORTS.liquidEtherActive.addEventListener("change", (e) => {
+      handleSettingUpdate("liquidEtherActive", e.target.checked)
+    })
+  }
+
+  const updateLiquidEtherFromUI = () => {
+    if (effects.liquidEtherEffect) {
+      effects.liquidEtherEffect.updateSettings({
+        colors: [
+          DOM_EXPORTS.liquidEtherColor1.value,
+          DOM_EXPORTS.liquidEtherColor2.value,
+          DOM_EXPORTS.liquidEtherColor3.value,
+        ],
+        glowWidth: parseFloat(DOM_EXPORTS.liquidEtherGlowWidth.value),
+      })
+    }
+  }
+
+  if (DOM_EXPORTS.liquidEtherColor1) {
+    DOM_EXPORTS.liquidEtherColor1.value = settings.liquidEtherColor1 || "#5227FF"
+    DOM_EXPORTS.liquidEtherColor1.addEventListener("input", (e) => {
+      updateSetting("liquidEtherColor1", e.target.value)
+      updateLiquidEtherFromUI()
+      saveSettings()
+    })
+  }
+  if (DOM_EXPORTS.liquidEtherColor2) {
+    DOM_EXPORTS.liquidEtherColor2.value = settings.liquidEtherColor2 || "#FF9FFC"
+    DOM_EXPORTS.liquidEtherColor2.addEventListener("input", (e) => {
+      updateSetting("liquidEtherColor2", e.target.value)
+      updateLiquidEtherFromUI()
+      saveSettings()
+    })
+  }
+  if (DOM_EXPORTS.liquidEtherColor3) {
+    DOM_EXPORTS.liquidEtherColor3.value = settings.liquidEtherColor3 || "#B497CF"
+    DOM_EXPORTS.liquidEtherColor3.addEventListener("input", (e) => {
+      updateSetting("liquidEtherColor3", e.target.value)
+      updateLiquidEtherFromUI()
+      saveSettings()
+    })
+  }
+
+  if (DOM_EXPORTS.liquidEtherGlowWidth) {
+    const gw = settings.liquidEtherGlowWidth ?? 5.5
+    DOM_EXPORTS.liquidEtherGlowWidth.value = gw
+    if (DOM_EXPORTS.liquidEtherGlowWidthValue) {
+      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = gw.toFixed(1)
+    }
+    DOM_EXPORTS.liquidEtherGlowWidth.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value)
+      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = val.toFixed(1)
+      updateSetting("liquidEtherGlowWidth", val)
+      updateLiquidEtherFromUI()
+      saveSettings()
+    })
+  }
+
+  if (DOM_EXPORTS.liquidEtherRandomBtn) {
+    DOM_EXPORTS.liquidEtherRandomBtn.addEventListener("click", () => {
+      const palette = [
+        "#FF0055", "#00FF66", "#00AAFF", "#0055FF", "#5500FF",
+        "#AA00FF", "#FF00AA", "#FF0000", "#FF5500", "#FFAA00",
+        "#00FFCC", "#00FFAA", "#0000FF", "#00FFFF", "#FF00FF",
+        "#FFFF00", "#FF2288", "#22FF88", "#2288FF", "#FF22FF",
+        "#FFFF22", "#22FFFF", "#FF9FFC", "#5227FF", "#B497CF"
+      ]
+      const randomHex = () => palette[Math.floor(Math.random() * palette.length)]
+      
+      const c1 = randomHex()
+      const c2 = randomHex()
+      const c3 = randomHex()
+      const gw = parseFloat((Math.random() * 8.0 + 1.0).toFixed(1))
+
+      DOM_EXPORTS.liquidEtherColor1.value = c1
+      DOM_EXPORTS.liquidEtherColor2.value = c2
+      DOM_EXPORTS.liquidEtherColor3.value = c3
+      DOM_EXPORTS.liquidEtherGlowWidth.value = gw
+      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = gw.toFixed(1)
+
+      handleSettingUpdate("liquidEtherColor1", c1, false, true)
+      handleSettingUpdate("liquidEtherColor2", c2, false, true)
+      handleSettingUpdate("liquidEtherColor3", c3, false, true)
+      handleSettingUpdate("liquidEtherGlowWidth", gw)
+      
+      updateLiquidEtherFromUI()
+    })
+  }
+
+  function renderUserLiquidEthers() {
+    const gallery = DOM_EXPORTS.userLiquidEthersGallery
+    const galleryWrap = DOM_EXPORTS.userLiquidEthersGalleryWrap
+    if (!gallery) return
+    const { userLiquidEthers } = getSettings()
+    gallery.innerHTML = ""
+    const countSpan = document.getElementById("count-liquid-ether")
+
+    if (!userLiquidEthers || userLiquidEthers.length === 0) {
+      if (galleryWrap) galleryWrap.style.display = "none"
+      if (countSpan) countSpan.innerHTML = ""
+      return
+    }
+    if (galleryWrap) galleryWrap.style.display = "block"
+    if (countSpan)
+      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userLiquidEthers.length})</span>`
+
+    userLiquidEthers.forEach((preset, index) => {
+      const item = document.createElement("div")
+      item.className = "local-bg-item user-liquid-ether-item"
+      item.title = `Liquid Ether Preset #${index + 1}`
+      item.style.background = `linear-gradient(45deg, ${preset.color1 || "#5227FF"}, ${preset.color2 || "#FF9FFC"}, ${preset.color3 || "#B497CF"})`
+      item.style.position = "relative"
+
+      const overlay = document.createElement("div")
+      overlay.className = "bg-item-overlay"
+      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
+      item.appendChild(overlay)
+
+      const removeBtn = document.createElement("button")
+      removeBtn.className = "remove-bg-btn"
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+      removeBtn.addEventListener("click", async (e) => {
+        e.stopPropagation()
+        const i18n = geti18n()
+        if (
+          await showConfirm(
+            i18n.alert_delete_bg_confirm || "Delete this preset?",
+          )
+        ) {
+          const s = getSettings()
+          s.userLiquidEthers.splice(index, 1)
+          saveSettings()
+          renderUserLiquidEthers()
+        }
+      })
+      item.appendChild(removeBtn)
+
+      item.addEventListener("click", () => {
+        handleSettingUpdate("liquidEtherColor1", preset.color1, false, true)
+        handleSettingUpdate("liquidEtherColor2", preset.color2, false, true)
+        handleSettingUpdate("liquidEtherColor3", preset.color3, false, true)
+        handleSettingUpdate("liquidEtherGlowWidth", preset.glowWidth, false, true)
+        handleSettingUpdate("liquidEtherActive", true)
+
+        if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = true
+        if (DOM_EXPORTS.liquidEtherColor1) DOM_EXPORTS.liquidEtherColor1.value = preset.color1
+        if (DOM_EXPORTS.liquidEtherColor2) DOM_EXPORTS.liquidEtherColor2.value = preset.color2
+        if (DOM_EXPORTS.liquidEtherColor3) DOM_EXPORTS.liquidEtherColor3.value = preset.color3
+        if (DOM_EXPORTS.liquidEtherGlowWidth) {
+          DOM_EXPORTS.liquidEtherGlowWidth.value = preset.glowWidth
+          if (DOM_EXPORTS.liquidEtherGlowWidthValue)
+            DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = parseFloat(
+              preset.glowWidth,
+            ).toFixed(1)
+        }
+        
+        updateLiquidEtherFromUI()
+      })
+
+      gallery.appendChild(item)
+    })
+  }
+
+  if (DOM_EXPORTS.liquidEtherSaveBtn) {
+    DOM_EXPORTS.liquidEtherSaveBtn.addEventListener("click", () => {
+      const s = getSettings()
+      const newPreset = {
+        id: Date.now(),
+        color1: s.liquidEtherColor1 || "#5227FF",
+        color2: s.liquidEtherColor2 || "#FF9FFC",
+        color3: s.liquidEtherColor3 || "#B497CF",
+        glowWidth: s.liquidEtherGlowWidth ?? 5.5,
+      }
+      const saved = s.userLiquidEthers || []
+      updateSetting("userLiquidEthers", [...saved, newPreset])
+      saveSettings()
+      renderUserLiquidEthers()
+      showAlert("Liquid Ether BG saved!")
+    })
+  }
+
+  // Initial render for Liquid Ether gallery
+  renderUserLiquidEthers()
+
   applySettings()
 }

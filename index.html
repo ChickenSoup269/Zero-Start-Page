@@ -1750,7 +1750,8 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                        lag when used</span>
                 </div>
 
                 <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
@@ -2014,7 +2015,8 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                        lag when used</span>
                 </div>
 
                 <button id="silk-toggle-btn" class="secondary-btn full-width">
@@ -2068,7 +2070,8 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
                         <button id="silk-random-btn" class="secondary-btn" title="Randomize Silk">
                             <i class="fa-solid fa-dice"></i> Randomize
                         </button>
@@ -2088,8 +2091,7 @@
                             data-i18n="bg_select_mode"
                             style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
                     </div>
-                    <div id="silk-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
+                    <div id="silk-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
                         <span id="silk-select-count" class="bg-select-count">0 selected</span>
                         <div style="display: flex; gap: 6px;">
                             <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
@@ -2118,7 +2120,8 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                        lag when used</span>
                 </div>
 
                 <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
@@ -2200,7 +2203,8 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
                         <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize Light Pillar">
                             <i class="fa-solid fa-dice"></i> Randomize
                         </button>
@@ -2215,7 +2219,8 @@
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
                         <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Pillars</label>
                         <span id="count-light-pillar"></span>
-                        <button id="light-pillar-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                        <button id="light-pillar-select-mode-btn" class="secondary-btn"
+                            title="Select multiple to delete"
                             style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
                     </div>
                     <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
@@ -2231,6 +2236,94 @@
                         </div>
                     </div>
                     <div id="user-light-pillars-gallery" class="local-bg-gallery"></div>
+                </div>
+            </div>
+
+            <div class="setting-group" id="liquid-ether-group">
+                <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid Ether
+                            (Animated)</span></span>
+                </div>
+
+                <div class="setting-item-row"
+                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                    <label for="liquid-ether-active" style="margin: 0; font-weight: 600;"><i
+                            class="fa-solid fa-power-off"></i>
+                        <span data-i18n="settings_liquid_ether_active">Active</span></label>
+                    <input type="checkbox" id="liquid-ether-active">
+                </div>
+
+                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                        lag when used</span>
+                </div>
+
+                <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Liquid Ether</span>
+                </button>
+                <div id="liquid-ether-settings" style="display: none; margin-top: 12px;">
+
+                    <!-- Colors -->
+                    <div class="setting-item">
+                        <label data-i18n="settings_liquid_ether_colors">Colors</label>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                            <input type="color" id="liquid-ether-color1" value="#5227FF" style="width: 100%;">
+                            <input type="color" id="liquid-ether-color2" value="#FF9FFC" style="width: 100%;">
+                            <input type="color" id="liquid-ether-color3" value="#B497CF" style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> <span
+                                data-i18n="settings_gradientV2_controls">Controls</span></div>
+                        <div class="setting-item no-margin-top">
+                            <label style="display: flex; justify-content: space-between;">
+                                <span data-i18n="settings_liquid_ether_glow_width">Glow Width</span>
+                                <span id="liquid-ether-glow-width-value" style="opacity: 0.8;">5.5</span>
+                            </label>
+                            <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1" value="5.5">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                        <button id="liquid-ether-random-btn" class="secondary-btn">
+                            <i class="fa-solid fa-dice"></i> <span
+                                data-i18n="settings_liquid_ether_randomize">Randomize</span>
+                        </button>
+                        <button id="liquid-ether-save-btn" class="primary-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_liquid_ether_save">Save
+                                BG</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Saved Liquid Ether Gallery -->
+                <div id="user-liquid-ethers-gallery-wrap" style="margin-top:10px; display: none;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;"
+                            data-i18n="settings_saved_gallery">Saved Gallery</label>
+                        <span id="count-liquid-ether"></span>
+                        <button id="liquid-ether-select-mode-btn" class="secondary-btn"
+                            title="Select multiple to delete" data-i18n="bg_select_mode"
+                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                    </div>
+                    <div id="liquid-ether-select-toolbar" class="bg-select-toolbar"
+                        style="display:none; margin-bottom: 10px;">
+                        <span id="liquid-ether-select-count" class="bg-select-count">0 selected</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="liquid-ether-select-all-btn" class="icon-btn" title="Select All"><i
+                                    class="fa-solid fa-check-double"></i></button>
+                            <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                    class="fa-solid fa-trash"></i></button>
+                            <button id="liquid-ether-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                    class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div id="user-liquid-ethers-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 
@@ -4885,6 +4978,19 @@
             </div>
         </div>
     </div>
+</body>
+
+</html>
+</div>
+<div class="explorer-footer" style="text-align: center; margin-top: 20px;">
+    <button id="unsplash-explorer-load-more" class="primary-btn"
+        style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
+        <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
+    </button>
+</div>
+</div>
+</div>
+</div>
 </body>
 
 </html>

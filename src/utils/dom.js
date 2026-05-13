@@ -1417,6 +1417,21 @@ export const lightPillarSaveBtn = document.getElementById("light-pillar-save-btn
 export const userLightPillarsGallery = document.getElementById("user-light-pillars-gallery")
 export const userLightPillarsGalleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
 
+// Liquid Ether Effect
+export const liquidEtherToggleBtn = document.getElementById("liquid-ether-toggle-btn")
+export const liquidEtherToggleLabel = document.getElementById("liquid-ether-toggle-label")
+export const liquidEtherSettings = document.getElementById("liquid-ether-settings")
+export const liquidEtherActive = document.getElementById("liquid-ether-active")
+export const liquidEtherRandomBtn = document.getElementById("liquid-ether-random-btn")
+export const liquidEtherColor1 = document.getElementById("liquid-ether-color1")
+export const liquidEtherColor2 = document.getElementById("liquid-ether-color2")
+export const liquidEtherColor3 = document.getElementById("liquid-ether-color3")
+export const liquidEtherGlowWidth = document.getElementById("liquid-ether-glow-width")
+export const liquidEtherGlowWidthValue = document.getElementById("liquid-ether-glow-width-value")
+export const liquidEtherSaveBtn = document.getElementById("liquid-ether-save-btn")
+export const userLiquidEthersGallery = document.getElementById("user-liquid-ethers-gallery")
+export const userLiquidEthersGalleryWrap = document.getElementById("user-liquid-ethers-gallery-wrap")
+
 export const softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",
 )

@@ -259,6 +259,14 @@ export const defaultSettings = {
   lightPillarHeight: 0.4,
   lightPillarNoiseIntensity: 0.5,
   lightPillarRotation: 0,
+  userLightPillars: [],
+
+  liquidEtherActive: false,
+  liquidEtherColor1: "#5227FF",
+  liquidEtherColor2: "#FF9FFC",
+  liquidEtherColor3: "#B497CF",
+  liquidEtherGlowWidth: 5.5,
+  userLiquidEthers: [],
 
   gradientV2Active: false,
   gradientV2Color1: "#FF9FFC",
