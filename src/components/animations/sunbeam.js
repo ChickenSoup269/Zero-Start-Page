@@ -1,91 +1,272 @@
 /**
- * SunbeamEffect (Pro Light Ray - Spreading Edition)
- * A stunning god-ray effect with sharp cores and soft volumetric falloff.
- * Originate from the center and slowly spread out.
+ * SunbeamEffect (WebGL Port of Pro Light Rays)
  */
 export class SunbeamEffect {
   constructor(canvasId, options = {}) {
-    this.canvas = document.getElementById(canvasId)
-    if (!this.canvas) return
-    this.ctx = this.canvas.getContext("2d", { alpha: true })
+    // Generate a new WebGL canvas to avoid interfering with 2d context on effect-canvas
+    const origCanvas = document.getElementById(canvasId)
+    this.canvasWrapper = origCanvas ? origCanvas.parentElement : document.body
+
+    const existing = document.querySelector(".sunbeam-webgl-canvas")
+    if (existing) existing.remove()
+
+    this.canvas = document.createElement("canvas")
+    this.canvas.className = "sunbeam-webgl-canvas"
+    this.canvas.style.position = "fixed"
+    this.canvas.style.inset = "0"
+    this.canvas.style.zIndex = "-3"
+    this.canvas.style.pointerEvents = "none"
+    this.canvas.style.display = "none"
+    this.canvasWrapper.appendChild(this.canvas)
+
+    this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl")
     this.active = false
-    
-    // Handle both cases: options as string (old) or object (new)
-    if (typeof options === 'string') {
+
+    if (typeof options === "string") {
       this.color = options
-      this.angle = 0
     } else {
       this.color = options.color || "#ffffff"
-      this.angle = options.angle || 0
     }
 
+    // Default configuration
+    this.raysSpeed = 1
+    this.lightSpread = 1
+    this.rayLength = 2
+    this.pulsating = 0.0 // boolean as float
+    this.fadeDistance = 1.0
+    this.saturation = 1.0
+    this.mouseInfluence = 0.1
+    this.noiseAmount = 0.0
+    this.distortion = 0.0
+    this.raysOrigin = "top-center" // could be top-left, left, etc.
+    this.followMouse = true
+
+    this.mouseX = 0.5
+    this.mouseY = 0.5
+    this.smoothMouseX = 0.5
+    this.smoothMouseY = 0.5
     this.time = 0
-    this.rays = []
-    this.rgb = null
-    this.rgbStr = ""
-    this.cachedGradOuter = null
-    this.cachedGradCore = null
-    this.cachedBloom = null
-    
+
     this._resizeHandler = () => this.resize()
     window.addEventListener("resize", this._resizeHandler)
+
+    this._mouseHandler = (e) => {
+      this.mouseX = e.clientX / window.innerWidth
+      this.mouseY = e.clientY / window.innerHeight
+    }
+    window.addEventListener("mousemove", this._mouseHandler)
+
+    this._initWebGL()
     this.resize()
-    this._initRays()
   }
 
-  _initRays() {
-    this.rays = []
-    const count = 12 // More rays for better layering
-    for (let i = 0; i < count; i++) {
-      // Structure: 0 is center, then 1L, 2R, 3L, 4R...
-      const level = Math.floor(i / 2)
-      const side = i % 2 === 0 ? 1 : -1
-      const offsetFactor = i === 0 ? 0 : side * level
+  _hexToRgbForm(hex) {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return m
+      ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255]
+      : [1, 1, 1]
+  }
 
-      this.rays.push({
-        id: i,
-        // Large base width for a powerful look
-        width: 400 + Math.random() * 300,
-        // Balanced spread for a massive pillar
-        spreadOffset: offsetFactor * 0.08, 
-        phase: Math.random() * Math.PI * 2,
-        speed: 0.001 + Math.random() * 0.003,
-        // Intensity drops for outer layers
-        maxOpacity: i === 0 ? 0.35 : 0.25 / (1 + level * 0.6),
-      })
+  _getAnchorAndDir(origin, w, h) {
+    const outside = 0.2
+    switch (origin) {
+      case "top-left":
+        return { anchor: [0, -outside * h], dir: [0, 1] }
+      case "top-right":
+        return { anchor: [w, -outside * h], dir: [0, 1] }
+      case "left":
+        return { anchor: [-outside * w, 0.5 * h], dir: [1, 0] }
+      case "right":
+        return { anchor: [(1 + outside) * w, 0.5 * h], dir: [-1, 0] }
+      case "bottom-left":
+        return { anchor: [0, (1 + outside) * h], dir: [0, -1] }
+      case "bottom-center":
+        return { anchor: [0.5 * w, (1 + outside) * h], dir: [0, -1] }
+      case "bottom-right":
+        return { anchor: [w, (1 + outside) * h], dir: [0, -1] }
+      default: // "top-center"
+        return { anchor: [0.5 * w, -outside * h], dir: [0, 1] }
+    }
+  }
+
+  _initWebGL() {
+    if (!this.gl) return
+    const gl = this.gl
+
+    const vert = `
+      attribute vec2 position;
+      void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+      }
+    `
+
+    const frag = `
+      precision highp float;
+
+      uniform float iTime;
+      uniform vec2  iResolution;
+
+      uniform vec2  rayPos;
+      uniform vec2  rayDir;
+      uniform vec3  raysColor;
+      uniform float raysSpeed;
+      uniform float lightSpread;
+      uniform float rayLength;
+      uniform float pulsating;
+      uniform float fadeDistance;
+      uniform float saturation;
+      uniform vec2  mousePos;
+      uniform float mouseInfluence;
+      uniform float noiseAmount;
+      uniform float distortion;
+
+      float noise(vec2 st) {
+        return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+      }
+
+      float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord, float seedA, float seedB, float speed) {
+        vec2 sourceToCoord = coord - raySource;
+        vec2 dirNorm = normalize(sourceToCoord);
+        float cosAngle = dot(dirNorm, rayRefDirection);
+
+        float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2;
+
+        float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
+
+        float distance = length(sourceToCoord);
+        float maxDistance = iResolution.x * rayLength;
+        float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0);
+
+        float fadeFalloff = clamp((iResolution.x * fadeDistance - distance) / (iResolution.x * fadeDistance), 0.5, 1.0);
+        float pulse = pulsating > 0.5 ? (0.8 + 0.2 * sin(iTime * speed * 3.0)) : 1.0;
+
+        float baseStrength = clamp(
+          (0.45 + 0.15 * sin(distortedAngle * seedA + iTime * speed)) +
+          (0.3 + 0.2 * cos(-distortedAngle * seedB + iTime * speed)),
+          0.0, 1.0
+        );
+
+        return baseStrength * lengthFalloff * fadeFalloff * spreadFactor * pulse;
+      }
+
+      void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+        vec2 coord = vec2(fragCoord.x, iResolution.y - fragCoord.y);
+
+        vec2 finalRayDir = rayDir;
+        if (mouseInfluence > 0.0) {
+          vec2 mouseScreenPos = mousePos * iResolution.xy;
+          vec2 mouseDirection = normalize(mouseScreenPos - rayPos);
+          finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence));
+        }
+
+        vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed);
+        vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed);
+
+        fragColor = rays1 * 0.5 + rays2 * 0.4;
+
+        if (noiseAmount > 0.0) {
+          float n = noise(coord * 0.01 + iTime * 0.1);
+          fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n);
+        }
+
+        float brightness = 1.0 - (coord.y / iResolution.y);
+        fragColor.x *= 0.1 + brightness * 0.8;
+        fragColor.y *= 0.3 + brightness * 0.6;
+        fragColor.z *= 0.5 + brightness * 0.5;
+
+        if (saturation != 1.0) {
+          float gray = dot(fragColor.rgb, vec3(0.299, 0.587, 0.114));
+          fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation);
+        }
+
+        fragColor.rgb *= raysColor;
+      }
+
+      void main() {
+        vec4 color;
+        mainImage(color, gl_FragCoord.xy);
+        gl_FragColor = color;
+      }
+    `
+
+    const createShader = (type, source) => {
+      const shader = gl.createShader(type)
+      gl.shaderSource(shader, source)
+      gl.compileShader(shader)
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader))
+        gl.deleteShader(shader)
+        return null
+      }
+      return shader
+    }
+
+    const vertShader = createShader(gl.VERTEX_SHADER, vert)
+    const fragShader = createShader(gl.FRAGMENT_SHADER, frag)
+
+    this.program = gl.createProgram()
+    gl.attachShader(this.program, vertShader)
+    gl.attachShader(this.program, fragShader)
+    gl.linkProgram(this.program)
+
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(this.program))
+      return
+    }
+
+    const buffer = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1, -1, 1, -1, -1, 1,
+        -1, 1, 1, -1, 1, 1,
+      ]),
+      gl.STATIC_DRAW,
+    )
+
+    this.positionLocation = gl.getAttribLocation(this.program, "position")
+
+    this.uniforms = {
+      iTime: gl.getUniformLocation(this.program, "iTime"),
+      iResolution: gl.getUniformLocation(this.program, "iResolution"),
+      rayPos: gl.getUniformLocation(this.program, "rayPos"),
+      rayDir: gl.getUniformLocation(this.program, "rayDir"),
+      raysColor: gl.getUniformLocation(this.program, "raysColor"),
+      raysSpeed: gl.getUniformLocation(this.program, "raysSpeed"),
+      lightSpread: gl.getUniformLocation(this.program, "lightSpread"),
+      rayLength: gl.getUniformLocation(this.program, "rayLength"),
+      pulsating: gl.getUniformLocation(this.program, "pulsating"),
+      fadeDistance: gl.getUniformLocation(this.program, "fadeDistance"),
+      saturation: gl.getUniformLocation(this.program, "saturation"),
+      mousePos: gl.getUniformLocation(this.program, "mousePos"),
+      mouseInfluence: gl.getUniformLocation(this.program, "mouseInfluence"),
+      noiseAmount: gl.getUniformLocation(this.program, "noiseAmount"),
+      distortion: gl.getUniformLocation(this.program, "distortion"),
     }
   }
 
   resize() {
-    if (!this.canvas) return
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
-    this._resetGradients()
-  }
-
-  _resetGradients() {
-    this.cachedGradOuter = null
-    this.cachedGradCore = null
-    this.cachedBloom = null
+    if (!this.canvas || !this.gl) return
+    const dpr = Math.min(window.devicePixelRatio, 2) || 1
+    this.canvas.width = window.innerWidth * dpr
+    this.canvas.height = window.innerHeight * dpr
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
   }
 
   updateColor(color) {
     this.color = color
-    this.rgb = this._hexToRgb(color)
-    if (this.rgb) {
-      this.rgbStr = `${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}`
-    }
-    this._resetGradients()
   }
 
   setAngle(deg) {
-    this.angle = deg
+    // For compatibility with previous API
   }
 
   start() {
     if (this.active) return
     this.active = true
     this.canvas.style.display = "block"
+    this.lastTime = performance.now()
     this._animate()
   }
 
@@ -95,130 +276,60 @@ export class SunbeamEffect {
       cancelAnimationFrame(this._animId)
       this._animId = null
     }
-    if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
   }
 
-  _hexToRgb(hex) {
-    if (typeof hex !== 'string') return { r: 255, g: 255, b: 255 }
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : { r: 255, g: 255, b: 255 }
-  }
-
   _animate() {
-    if (!this.active) return
+    if (!this.active || !this.gl) return
     this._animId = requestAnimationFrame(() => this._animate())
-    
+
     if (document.visibilityState === "hidden") return
-    this.time += 0.006
-    const ctx = this.ctx
-    const W = this.canvas.width
-    const H = this.canvas.height
 
-    ctx.clearRect(0, 0, W, H)
+    const now = performance.now()
+    const dt = now - this.lastTime
+    this.lastTime = now
+    this.time += dt
 
-    ctx.save()
-    ctx.globalCompositeOperation = "screen"
+    const gl = this.gl
+    gl.clearColor(0, 0, 0, 0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
 
-    if (!this.rgb) {
-      this.rgb = this._hexToRgb(this.color)
-      this.rgbStr = `${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}`
-    }
-    
-    const rgbStr = this.rgbStr
-    const baseColor = (a) => `rgba(${rgbStr}, ${a})`
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
 
-    const sourceX = W / 2
-    const sourceY = -H * 0.5
+    gl.useProgram(this.program)
+    gl.enableVertexAttribArray(this.positionLocation)
+    gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0)
 
-    // Cache gradients
-    if (!this.cachedGradOuter) {
-      const g = ctx.createLinearGradient(sourceX, 0, sourceX, H)
-      g.addColorStop(0, baseColor(0.5))
-      g.addColorStop(0.5, baseColor(0.2))
-      g.addColorStop(1, baseColor(0))
-      this.cachedGradOuter = g
-    }
-    if (!this.cachedGradCore) {
-      const g = ctx.createLinearGradient(sourceX, 0, sourceX, H)
-      g.addColorStop(0, baseColor(1))
-      g.addColorStop(0.4, baseColor(0.4))
-      g.addColorStop(0.8, baseColor(0))
-      this.cachedGradCore = g
-    }
+    gl.uniform1f(this.uniforms.iTime, this.time * 0.001)
+    gl.uniform2f(this.uniforms.iResolution, this.canvas.width, this.canvas.height)
 
-    const pillarSwing = Math.sin(this.time * 0.3) * 0.02
+    const colorRGB = this._hexToRgbForm(this.color)
+    gl.uniform3f(this.uniforms.raysColor, colorRGB[0], colorRGB[1], colorRGB[2])
+    gl.uniform1f(this.uniforms.raysSpeed, this.raysSpeed)
+    gl.uniform1f(this.uniforms.lightSpread, this.lightSpread)
+    gl.uniform1f(this.uniforms.rayLength, this.rayLength)
+    gl.uniform1f(this.uniforms.pulsating, this.pulsating)
+    gl.uniform1f(this.uniforms.fadeDistance, this.fadeDistance)
+    gl.uniform1f(this.uniforms.saturation, this.saturation)
+    gl.uniform1f(this.uniforms.mouseInfluence, this.mouseInfluence)
+    gl.uniform1f(this.uniforms.noiseAmount, this.noiseAmount)
+    gl.uniform1f(this.uniforms.distortion, this.distortion)
 
-    this.rays.forEach((ray, i) => {
-        const breathing = Math.sin(this.time + ray.phase)
-        const currentAngle = (this.angle * Math.PI / 180) + 
-                           ray.spreadOffset + 
-                           pillarSwing + (breathing * 0.005)
-        
-        const rayLen = H * 2.8
-        const endX = sourceX + Math.sin(currentAngle) * rayLen
-        const endY = sourceY + Math.cos(currentAngle) * rayLen
+    const { anchor, dir } = this._getAnchorAndDir(this.raysOrigin, this.canvas.width, this.canvas.height)
+    gl.uniform2f(this.uniforms.rayPos, anchor[0], anchor[1])
+    gl.uniform2f(this.uniforms.rayDir, dir[0], dir[1])
 
-        const alpha = ray.maxOpacity * (0.85 + 0.15 * breathing)
-        
-        ctx.globalAlpha = alpha
-        ctx.fillStyle = this.cachedGradOuter
-        const rayWidth = (ray.width || 500) * (1 + Math.abs(ray.spreadOffset) * 2.5)
-        this._drawRayPath(ctx, sourceX, sourceY, endX, endY, rayWidth)
-        ctx.fill()
-
-        if (i < 4) {
-            ctx.fillStyle = this.cachedGradCore
-            this._drawRayPath(ctx, sourceX, sourceY, endX, endY, rayWidth * 0.35)
-            ctx.fill()
-        }
-    })
-
-    // Reset globalAlpha for motes and bloom
-    ctx.globalAlpha = 1
-
-    // Atmospheric Motes
-    for (let i = 0; i < 40; i++) {
-        const x = (W / 2) + (Math.sin(i * 123 + this.time * 0.1) * W * 0.35)
-        const y = ((i * 456 + this.time * 15) % H)
-        const size = 0.5 + Math.random() * 2.0
-        const pAlpha = (0.12 * (1 - y/H)) * (0.5 + 0.5 * Math.sin(this.time + i))
-        
-        ctx.fillStyle = baseColor(pAlpha)
-        ctx.beginPath()
-        ctx.arc(x, y, size, 0, Math.PI * 2)
-        ctx.fill()
+    if (this.followMouse && this.mouseInfluence > 0.0) {
+      const smoothing = 0.92
+      this.smoothMouseX = this.smoothMouseX * smoothing + this.mouseX * (1 - smoothing)
+      this.smoothMouseY = this.smoothMouseY * smoothing + this.mouseY * (1 - smoothing)
+      gl.uniform2f(this.uniforms.mousePos, this.smoothMouseX, this.smoothMouseY)
+    } else {
+      gl.uniform2f(this.uniforms.mousePos, 0.5, 0.5)
     }
 
-    // Top Source Glow
-    if (!this.cachedBloom) {
-      const bloom = ctx.createLinearGradient(0, 0, 0, H * 0.7)
-      bloom.addColorStop(0, baseColor(0.25))
-      bloom.addColorStop(1, baseColor(0))
-      this.cachedBloom = bloom
-    }
-    ctx.fillStyle = this.cachedBloom
-    ctx.fillRect(0, 0, W, H * 0.7)
-
-    ctx.restore()
-  }
-
-  _drawRayPath(ctx, x1, y1, x2, y2, width) {
-    ctx.beginPath()
-    const angle = Math.atan2(y2 - y1, x2 - x1)
-    const perp = angle + Math.PI / 2
-    
-    const wTop = 4
-    const wBottom = width
-
-    ctx.moveTo(x1 - Math.cos(perp) * wTop, y1 - Math.sin(perp) * wTop)
-    ctx.lineTo(x1 + Math.cos(perp) * wTop, y1 + Math.sin(perp) * wTop)
-    ctx.lineTo(x2 + Math.cos(perp) * wBottom, y2 + Math.sin(perp) * wBottom)
-    ctx.lineTo(x2 - Math.cos(perp) * wBottom, y2 - Math.sin(perp) * wBottom)
-    ctx.closePath()
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 }
+

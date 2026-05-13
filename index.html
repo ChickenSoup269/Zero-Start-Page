@@ -219,12 +219,15 @@
     <div id="bg-dim-overlay"
         style="position: fixed; inset: 0; background: rgba(0, 0, 0, var(--bg-dim, 0)); z-index: -4; pointer-events: none;">
     </div>
-    
+
     <!-- Background Effect Canvases (Above dim overlay and background, below UI) -->
     <canvas id="effect-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none;"></canvas>
-    <canvas id="gradient-v2-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none;"></canvas>
-    <canvas id="pixel-snow-hq-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
-    <canvas id="soft-aurora-canvas" style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="gradient-v2-canvas"
+        style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none;"></canvas>
+    <canvas id="pixel-snow-hq-canvas"
+        style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="soft-aurora-canvas"
+        style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -1734,14 +1737,14 @@
             <div class="setting-group" id="gradientV2-group">
                 <div class="setting-label"><i class="fa-solid fa-brush"></i> <span
                         data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span></div>
-                
+
                 <div class="setting-item-row"
                     style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
                     <label for="gradientV2-active" data-i18n="settings_gradientV2_active"
                         style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i> Active</label>
                     <input type="checkbox" id="gradientV2-active">
                 </div>
-                
+
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
                     <i class="fa-solid fa-circle-info"></i> Auto-disabled if an Overlay Effect is active.
                 </div>
@@ -1787,7 +1790,8 @@
                                     <span data-i18n="settings_gradientV2_colorBalance">Balance</span>
                                     <span id="gradientV2-color-balance-value" style="opacity: 0.8;">0.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-color-balance" min="-1" max="1" step="0.1" value="0.0">
+                                <input type="range" id="gradientV2-color-balance" min="-1" max="1" step="0.1"
+                                    value="0.0">
                             </div>
                         </div>
                     </div>
@@ -1801,14 +1805,16 @@
                                     <span data-i18n="settings_gradientV2_warpStrength">Strength</span>
                                     <span id="gradientV2-warp-strength-value" style="opacity: 0.8;">1.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-warp-strength" min="0" max="5" step="0.1" value="1.0">
+                                <input type="range" id="gradientV2-warp-strength" min="0" max="5" step="0.1"
+                                    value="1.0">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_gradientV2_warpFrequency">Frequency</span>
                                     <span id="gradientV2-warp-frequency-value" style="opacity: 0.8;">5.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-warp-frequency" min="0" max="20" step="0.5" value="5.0">
+                                <input type="range" id="gradientV2-warp-frequency" min="0" max="20" step="0.5"
+                                    value="5.0">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
@@ -1822,14 +1828,16 @@
                                     <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
                                     <span id="gradientV2-warp-amplitude-value" style="opacity: 0.8;">50.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-warp-amplitude" min="0" max="200" step="5" value="50.0">
+                                <input type="range" id="gradientV2-warp-amplitude" min="0" max="200" step="5"
+                                    value="50.0">
                             </div>
                         </div>
                     </div>
 
                     <!-- Blend & Noise -->
                     <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend & Noise</div>
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend & Noise
+                        </div>
                         <div class="gradient-v2-grid">
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
@@ -1843,21 +1851,24 @@
                                     <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
                                     <span id="gradientV2-blend-softness-value" style="opacity: 0.8;">0.05</span>
                                 </label>
-                                <input type="range" id="gradientV2-blend-softness" min="0" max="1" step="0.01" value="0.05">
+                                <input type="range" id="gradientV2-blend-softness" min="0" max="1" step="0.01"
+                                    value="0.05">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_gradientV2_rotationAmount">Rotation</span>
                                     <span id="gradientV2-rotation-amount-value" style="opacity: 0.8;">500</span>
                                 </label>
-                                <input type="range" id="gradientV2-rotation-amount" min="0" max="2000" step="10" value="500">
+                                <input type="range" id="gradientV2-rotation-amount" min="0" max="2000" step="10"
+                                    value="500">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_gradientV2_noiseScale">Noise Scale</span>
                                     <span id="gradientV2-noise-scale-value" style="opacity: 0.8;">2.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-noise-scale" min="0.1" max="10" step="0.1" value="2.0">
+                                <input type="range" id="gradientV2-noise-scale" min="0.1" max="10" step="0.1"
+                                    value="2.0">
                             </div>
                         </div>
                     </div>
@@ -1871,18 +1882,21 @@
                                     <span data-i18n="settings_gradientV2_grainAmount">Amount</span>
                                     <span id="gradientV2-grain-amount-value" style="opacity: 0.8;">0.1</span>
                                 </label>
-                                <input type="range" id="gradientV2-grain-amount" min="0" max="1" step="0.01" value="0.1">
+                                <input type="range" id="gradientV2-grain-amount" min="0" max="1" step="0.01"
+                                    value="0.1">
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
                                     <span data-i18n="settings_gradientV2_grainScale">Scale</span>
                                     <span id="gradientV2-grain-scale-value" style="opacity: 0.8;">2.0</span>
                                 </label>
-                                <input type="range" id="gradientV2-grain-scale" min="0.1" max="10" step="0.1" value="2.0">
+                                <input type="range" id="gradientV2-grain-scale" min="0.1" max="10" step="0.1"
+                                    value="2.0">
                             </div>
                         </div>
                         <div class="setting-item-row" style="margin-top: 8px;">
-                            <label for="gradientV2-grain-animated" data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
+                            <label for="gradientV2-grain-animated"
+                                data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
                             <input type="checkbox" id="gradientV2-grain-animated">
                         </div>
                     </div>
@@ -1917,7 +1931,8 @@
 
                     <!-- Layout & View -->
                     <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i> Layout & Zoom</div>
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i> Layout
+                            & Zoom</div>
                         <div class="gradient-v2-grid">
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
@@ -2045,12 +2060,12 @@
                             data-search="pixel snow rain wind square block weather weather">
                             <span class="effect-icon"><i class="fa-brands fa-joomla"></i></span>
                             <span class="effect-name" data-i18n="effect_pixelWeather">Pixel Weather</span>
-                            </button>
+                        </button>
 
-                            <button class="effect-item" data-value="pixelSnowHQ">
-                                <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
-                                <span class="effect-name" data-i18n="effect_pixel_snow_hq">Pixel Snow HQ</span>
-                            </button>
+                        <button class="effect-item" data-value="pixelSnowHQ">
+                            <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                            <span class="effect-name" data-i18n="effect_pixel_snow_hq">Pixel Snow HQ</span>
+                        </button>
                         <button class="effect-item" data-value="snowfallHD"
                             data-search="snow snowfall hd high quality accumulate pile">
                             <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
@@ -2149,10 +2164,6 @@
                             <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
                             <span class="effect-name" data-i18n="effect_aura">Aura</span>
                         </button>
-                        <button class="effect-item" data-value="softAurora" data-search="soft aurora silk curtains glow cinematic">
-                            <span class="effect-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-                            <span class="effect-name" data-i18n="effect_soft_aurora">Soft Aurora</span>
-                        </button>
                         <button class="effect-item" data-value="pixelCubes" data-search="pixel cubes 3d rotate green">
                             <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
                             <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
@@ -2208,7 +2219,8 @@
                             <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
                             <span class="effect-name" data-i18n="effect_aurora_wave">Aurora Wave</span>
                         </button>
-                        <button class="effect-item" data-value="softAurora" data-search="soft aurora silk curtains glow cinematic">
+                        <button class="effect-item" data-value="softAurora"
+                            data-search="soft aurora silk curtains glow cinematic">
                             <span class="effect-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
                             <span class="effect-name" data-i18n="effect_soft_aurora">Soft Aurora</span>
                         </button>
@@ -2410,7 +2422,8 @@
                             </div>
 
                             <!-- Sky Lanterns Settings -->
-                            <div id="sky-lanterns-setting" class="setting-item" style="display: none;">                                <label for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
+                            <div id="sky-lanterns-setting" class="setting-item" style="display: none;"> <label
+                                    for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
                                     Type</label>
                                 <select id="sky-lanterns-type-select" style="width: 100%;">
                                     <option value="lantern" data-i18n="sky_lanterns_type_lantern">Traditional Lantern
@@ -2870,75 +2883,95 @@
                             <div id="pixel-snow-hq-settings" style="display: none;">
                                 <div class="setting-item no-margin-top">
                                     <label data-i18n="settings_clock_color">Snow Color</label>
-                                    <input type="color" id="pixel-snow-hq-color-picker" value="#ffffff" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                    <input type="color" id="pixel-snow-hq-color-picker" value="#ffffff"
+                                        style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
                                 </div>
 
                                 <div class="setting-item">
-                                    <label for="pixel-snow-hq-variant-select" data-i18n="setting_pixel_blast_variant">Snow Shape</label>
+                                    <label for="pixel-snow-hq-variant-select"
+                                        data-i18n="setting_pixel_blast_variant">Snow Shape</label>
                                     <select id="pixel-snow-hq-variant-select" class="full-width">
                                         <option value="square" data-i18n="pixel_blast_square">Square</option>
                                         <option value="circle" data-i18n="pixel_cubes_circle">Circle</option>
-                                        <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake (HQ)</option>
+                                        <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake
+                                            (HQ)</option>
                                     </select>
                                 </div>
 
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                <div
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_pixel_snow_hq_density">Density</span>
-                                            <span id="pixel-snow-hq-density-val" style="color: var(--accent-color);">0.3</span>
+                                            <span id="pixel-snow-hq-density-val"
+                                                style="color: var(--accent-color);">0.3</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-density-slider" min="0.05" max="1.0" step="0.05" value="0.3">
+                                        <input type="range" id="pixel-snow-hq-density-slider" min="0.05" max="1.0"
+                                            step="0.05" value="0.3">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_pixel_weather_speed">Speed</span>
-                                            <span id="pixel-snow-hq-speed-val" style="color: var(--accent-color);">1.25</span>
+                                            <span id="pixel-snow-hq-speed-val"
+                                                style="color: var(--accent-color);">1.25</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-speed-slider" min="0.1" max="5.0" step="0.1" value="1.25">
+                                        <input type="range" id="pixel-snow-hq-speed-slider" min="0.1" max="5.0"
+                                            step="0.1" value="1.25">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_pixel_snow_hq_direction">Wind</span>
-                                            <span id="pixel-snow-hq-direction-val" style="color: var(--accent-color);">125°</span>
+                                            <span id="pixel-snow-hq-direction-val"
+                                                style="color: var(--accent-color);">125°</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-direction-slider" min="0" max="360" step="1" value="125">
+                                        <input type="range" id="pixel-snow-hq-direction-slider" min="0" max="360"
+                                            step="1" value="125">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_pixel_snow_hq_pixel_res">Pixelation</span>
-                                            <span id="pixel-snow-hq-pixel-res-val" style="color: var(--accent-color);">200</span>
+                                            <span id="pixel-snow-hq-pixel-res-val"
+                                                style="color: var(--accent-color);">200</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-pixel-res-slider" min="50" max="600" step="10" value="200">
+                                        <input type="range" id="pixel-snow-hq-pixel-res-slider" min="50" max="600"
+                                            step="10" value="200">
                                     </div>
-                                    
+
                                     <div class="setting-item no-margin-top">
-                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <label
+                                            style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                             <span data-i18n="settings_pixel_snow_hq_flake_size">Base Size</span>
                                             <span id="pixel-snow-hq-flake-size-val">0.01</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-flake-size-slider" min="0.001" max="0.05" step="0.001" value="0.01">
+                                        <input type="range" id="pixel-snow-hq-flake-size-slider" min="0.001" max="0.05"
+                                            step="0.001" value="0.01">
                                     </div>
                                     <div class="setting-item no-margin-top">
-                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <label
+                                            style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                             <span data-i18n="settings_pixel_snow_hq_min_flake_size">Min Size</span>
                                             <span id="pixel-snow-hq-min-flake-size-val">1.25</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-min-flake-size-slider" min="0.1" max="5.0" step="0.05" value="1.25">
+                                        <input type="range" id="pixel-snow-hq-min-flake-size-slider" min="0.1" max="5.0"
+                                            step="0.05" value="1.25">
                                     </div>
                                     <div class="setting-item no-margin-top">
-                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <label
+                                            style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                             <span data-i18n="settings_pixel_snow_hq_depth_fade">Fade</span>
                                             <span id="pixel-snow-hq-depth-fade-val">8</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-depth-fade-slider" min="1" max="25" step="0.5" value="8">
+                                        <input type="range" id="pixel-snow-hq-depth-fade-slider" min="1" max="25"
+                                            step="0.5" value="8">
                                     </div>
                                     <div class="setting-item no-margin-top">
-                                        <label style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                        <label
+                                            style="display: flex; justify-content: space-between; font-size: 0.8rem;">
                                             <span data-i18n="settings_pixel_snow_hq_brightness">Glow</span>
                                             <span id="pixel-snow-hq-brightness-val">1.0</span>
                                         </label>
-                                        <input type="range" id="pixel-snow-hq-brightness-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                        <input type="range" id="pixel-snow-hq-brightness-slider" min="0.1" max="5.0"
+                                            step="0.1" value="1.0">
                                     </div>
                                 </div>
                             </div>
@@ -2948,91 +2981,116 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                     <div class="setting-item no-margin-top">
                                         <label data-i18n="settings_gradientV2_color1">Color 1</label>
-                                        <input type="color" id="soft-aurora-color1-picker" value="#74ebd5" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        <input type="color" id="soft-aurora-color1-picker" value="#74ebd5"
+                                            style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label data-i18n="settings_gradientV2_color2">Color 2</label>
-                                        <input type="color" id="soft-aurora-color2-picker" value="#e100ff" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        <input type="color" id="soft-aurora-color2-picker" value="#e100ff"
+                                            style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
                                     </div>
                                 </div>
 
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                <div
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
-                                            <span id="soft-aurora-speed-val" style="color: var(--accent-color);">0.6</span>
+                                            <span id="soft-aurora-speed-val"
+                                                style="color: var(--accent-color);">0.6</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-speed-slider" min="0.1" max="2.0" step="0.1" value="0.6">
+                                        <input type="range" id="soft-aurora-speed-slider" min="0.1" max="2.0" step="0.1"
+                                            value="0.6">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_gradientV2_zoom">Scale</span>
-                                            <span id="soft-aurora-scale-val" style="color: var(--accent-color);">1.5</span>
+                                            <span id="soft-aurora-scale-val"
+                                                style="color: var(--accent-color);">1.5</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-scale-slider" min="0.5" max="4.0" step="0.1" value="1.5">
+                                        <input type="range" id="soft-aurora-scale-slider" min="0.5" max="4.0" step="0.1"
+                                            value="1.5">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="setting_aurora_wave_brightness">Brightness</span>
-                                            <span id="soft-aurora-brightness-val" style="color: var(--accent-color);">1.0</span>
+                                            <span id="soft-aurora-brightness-val"
+                                                style="color: var(--accent-color);">1.0</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-brightness-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+                                        <input type="range" id="soft-aurora-brightness-slider" min="0.1" max="3.0"
+                                            step="0.1" value="1.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_gradientV2_warpFrequency">Warp</span>
-                                            <span id="soft-aurora-noise-freq-val" style="color: var(--accent-color);">2.5</span>
+                                            <span id="soft-aurora-noise-freq-val"
+                                                style="color: var(--accent-color);">2.5</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-noise-freq-slider" min="0.5" max="10.0" step="0.1" value="2.5">
+                                        <input type="range" id="soft-aurora-noise-freq-slider" min="0.5" max="10.0"
+                                            step="0.1" value="2.5">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="setting_aurora_wave_amplitude">Height</span>
-                                            <span id="soft-aurora-band-height-val" style="color: var(--accent-color);">0.5</span>
+                                            <span id="soft-aurora-band-height-val"
+                                                style="color: var(--accent-color);">0.5</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-band-height-slider" min="0.0" max="1.0" step="0.05" value="0.5">
+                                        <input type="range" id="soft-aurora-band-height-slider" min="0.0" max="1.0"
+                                            step="0.05" value="0.5">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
-                                            <span id="soft-aurora-band-spread-val" style="color: var(--accent-color);">1.0</span>
+                                            <span id="soft-aurora-band-spread-val"
+                                                style="color: var(--accent-color);">1.0</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-band-spread-slider" min="0.5" max="10.0" step="0.1" value="1.0">
+                                        <input type="range" id="soft-aurora-band-spread-slider" min="0.5" max="10.0"
+                                            step="0.1" value="1.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
-                                            <span id="soft-aurora-noise-amp-val" style="color: var(--accent-color);">1.0</span>
+                                            <span id="soft-aurora-noise-amp-val"
+                                                style="color: var(--accent-color);">1.0</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-noise-amp-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                        <input type="range" id="soft-aurora-noise-amp-slider" min="0.1" max="5.0"
+                                            step="0.1" value="1.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Octave Decay</span>
-                                            <span id="soft-aurora-octave-decay-val" style="color: var(--accent-color);">0.1</span>
+                                            <span id="soft-aurora-octave-decay-val"
+                                                style="color: var(--accent-color);">0.1</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-octave-decay-slider" min="0.01" max="1.0" step="0.01" value="0.1">
+                                        <input type="range" id="soft-aurora-octave-decay-slider" min="0.01" max="1.0"
+                                            step="0.01" value="0.1">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Layer Offset</span>
-                                            <span id="soft-aurora-layer-offset-val" style="color: var(--accent-color);">0.0</span>
+                                            <span id="soft-aurora-layer-offset-val"
+                                                style="color: var(--accent-color);">0.0</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-layer-offset-slider" min="0.0" max="10.0" step="0.1" value="0.0">
+                                        <input type="range" id="soft-aurora-layer-offset-slider" min="0.0" max="10.0"
+                                            step="0.1" value="0.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Color Speed</span>
-                                            <span id="soft-aurora-color-speed-val" style="color: var(--accent-color);">1.0</span>
+                                            <span id="soft-aurora-color-speed-val"
+                                                style="color: var(--accent-color);">1.0</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-color-speed-slider" min="0.1" max="5.0" step="0.1" value="1.0">
+                                        <input type="range" id="soft-aurora-color-speed-slider" min="0.1" max="5.0"
+                                            step="0.1" value="1.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Mouse Scale</span>
-                                            <span id="soft-aurora-mouse-influence-val" style="color: var(--accent-color);">0.25</span>
+                                            <span id="soft-aurora-mouse-influence-val"
+                                                style="color: var(--accent-color);">0.25</span>
                                         </label>
-                                        <input type="range" id="soft-aurora-mouse-influence-slider" min="0.0" max="2.0" step="0.05" value="0.25">
+                                        <input type="range" id="soft-aurora-mouse-influence-slider" min="0.0" max="2.0"
+                                            step="0.05" value="0.25">
                                     </div>
                                 </div>
 
@@ -3043,12 +3101,14 @@
                                     </div>
                                     <div id="soft-aurora-bg-color-container" style="margin-top: 10px; display: none;">
                                         <label>Custom Background Color</label>
-                                        <input type="color" id="soft-aurora-bg-color-picker" value="#000000" style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        <input type="color" id="soft-aurora-bg-color-picker" value="#000000"
+                                            style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
                                     </div>
                                 </div>
 
                                 <div class="setting-item-row" style="margin-top: 10px;">
-                                    <label for="soft-aurora-mouse-checkbox" data-i18n="settings_cursor_trail_click">Mouse Interaction</label>
+                                    <label for="soft-aurora-mouse-checkbox"
+                                        data-i18n="settings_cursor_trail_click">Mouse Interaction</label>
                                     <input type="checkbox" id="soft-aurora-mouse-checkbox" checked>
                                 </div>
                             </div>
