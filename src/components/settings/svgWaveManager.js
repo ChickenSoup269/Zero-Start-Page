@@ -137,6 +137,7 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       settings.svgWaveActive &&
       !settings.gradientV2Active &&
       !settings.silkActive &&
+      !settings.lightPillarActive &&
       !settings.background &&
       Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
       Number(settings.svgWaveAmplitudeX ?? 200) ===

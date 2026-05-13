@@ -3351,8 +3351,6 @@ body.sidebar-light .modern-gradient-hint {
 
 /* ─── Arctic Theme Fixes (Icons, Cards, Search) ─── */
 
-
-
 /* 2. Star Icons (Yellow) & Check Icons (White) */
 body.sidebar-light .settings-sidebar i.favorite-star-badge,
 body.sidebar-light .settings-sidebar .fa-star {
@@ -3727,8 +3725,6 @@ body.sidebar-light .remove-bg-btn:hover i {
   color: #ffffff !important;
 }
 
-
-
 /* Unsplash Explorer Modal */
 .unsplash-explorer-grid {
   display: grid;
@@ -3745,7 +3741,10 @@ body.sidebar-light .remove-bg-btn:hover i {
   background-position: center;
   border-radius: 12px;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
   border: 2px solid transparent;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -3758,7 +3757,9 @@ body.sidebar-light .remove-bg-btn:hover i {
   border-color: var(--accent-color);
 }
 
-.explorer-loading, .explorer-no-results, .explorer-error {
+.explorer-loading,
+.explorer-no-results,
+.explorer-error {
   grid-column: 1 / -1;
   text-align: center;
   padding: 40px;
@@ -3823,7 +3824,6 @@ body.sidebar-light .remove-bg-btn:hover i {
   gap: 6px;
   margin-bottom: 12px;
 }
-
 
 .unsplash-search-row-premium {
   display: flex;
@@ -3982,7 +3982,6 @@ body.sidebar-light .remove-bg-btn:hover i {
   color: #000;
 }
 
-
 .snow-preset-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -4016,7 +4015,7 @@ body.sidebar-light .remove-bg-btn:hover i {
   height: 14px;
   background: var(--accent-color);
   border: 2px solid #fff;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .gradient-v2-panel {
@@ -4054,7 +4053,9 @@ body.sidebar-light .remove-bg-btn:hover i {
   overflow: hidden;
   aspect-ratio: 16/9;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -4068,3 +4069,31 @@ body.sidebar-light .remove-bg-btn:hover i {
   box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4);
 }
 
+/* Light Pillar Styling - Reset to match standard theme */
+#light-pillar-group .group-icon {
+  color: var(--accent-color);
+}
+
+#light-pillar-settings {
+  animation: slideDown 0.3s ease-out;
+}
+
+#light-pillar-top-color,
+#light-pillar-bottom-color {
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

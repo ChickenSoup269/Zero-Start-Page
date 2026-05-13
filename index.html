@@ -230,6 +230,8 @@
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
     <canvas id="silk-canvas"
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="light-pillar-canvas"
+        style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -2058,6 +2060,99 @@
                                     <span id="silk-rotation-value" style="opacity: 0.8;">0.0</span>
                                 </label>
                                 <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-group" id="light-pillar-group">
+                <div class="setting-label"><i class="fa-solid fa-lightbulb"></i> Light Pillar (Animated)</div>
+
+                <div class="setting-item-row"
+                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                    <label for="light-pillar-active" style="margin: 0; font-weight: 600;"><i
+                            class="fa-solid fa-power-off"></i>
+                        Active</label>
+                    <input type="checkbox" id="light-pillar-active">
+                </div>
+
+                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                    <i class="fa-solid fa-circle-info"></i> Auto-disabled if an Overlay Effect is active.
+                </div>
+
+                <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span id="light-pillar-toggle-label">Open Light Pillar</span>
+                </button>
+                <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
+
+                    <!-- Top Color -->
+                    <div class="setting-item">
+                        <label>Top Color</label>
+                        <input type="color" id="light-pillar-top-color" value="#5227FF" style="width: 100%;">
+                    </div>
+
+                    <!-- Bottom Color -->
+                    <div class="setting-item">
+                        <label>Bottom Color</label>
+                        <input type="color" id="light-pillar-bottom-color" value="#FF9FFC" style="width: 100%;">
+                    </div>
+
+                    <!-- Animation Controls -->
+                    <div class="gradient-v2-panel">
+                        <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
+                        <div class="gradient-v2-grid">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Intensity</span>
+                                    <span id="light-pillar-intensity-value" style="opacity: 0.8;">1.0</span>
+                                </label>
+                                <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1" value="1.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Rotation Speed</span>
+                                    <span id="light-pillar-rotation-speed-value" style="opacity: 0.8;">0.3</span>
+                                </label>
+                                <input type="range" id="light-pillar-rotation-speed" min="0" max="2" step="0.1"
+                                    value="0.3">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Glow Amount</span>
+                                    <span id="light-pillar-glow-value" style="opacity: 0.8;">0.005</span>
+                                </label>
+                                <input type="range" id="light-pillar-glow" min="0" max="0.05" step="0.001"
+                                    value="0.005">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Pillar Width</span>
+                                    <span id="light-pillar-width-value" style="opacity: 0.8;">3.0</span>
+                                </label>
+                                <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5" value="3.0">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Pillar Height</span>
+                                    <span id="light-pillar-height-value" style="opacity: 0.8;">0.4</span>
+                                </label>
+                                <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1" value="0.4">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Noise Intensity</span>
+                                    <span id="light-pillar-noise-value" style="opacity: 0.8;">0.5</span>
+                                </label>
+                                <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1" value="0.5">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span>Pillar Rotation</span>
+                                    <span id="light-pillar-rotation-value" style="opacity: 0.8;">0°</span>
+                                </label>
+                                <input type="range" id="light-pillar-rotation" min="0" max="360" step="1" value="0">
                             </div>
                         </div>
                     </div>

@@ -48,11 +48,11 @@ export class LightPillarsEffect {
     // Pillars are scattered horizontally
     const x = Math.random() * W
     // Some are wide, some are narrow
-    const width = 20 + Math.random() * 60
+    const width = 30 + Math.random() * 80
     // Height varies
-    const height = 300 + Math.random() * 600
+    const height = 400 + Math.random() * 800
     // Vertical position (some start lower, some higher)
-    const yOffset = -200 + Math.random() * (this.canvas.height + 200)
+    const yOffset = -100 + Math.random() * (this.canvas.height + 200)
 
     // Hue: Mostly cool colors (blues, purples, cyans) with occasional warm colors
     const hue =
@@ -61,7 +61,7 @@ export class LightPillarsEffect {
           ? 10 + Math.random() * 40
           : 320 + Math.random() * 40
         : 180 + Math.random() * 60
-    const sat = 50 + Math.random() * 50
+    const sat = 60 + Math.random() * 40
     const light = 50 + Math.random() * 30
 
     return {
@@ -71,11 +71,11 @@ export class LightPillarsEffect {
       width,
       height,
       yOffset,
-      alpha: 0.1 + Math.random() * 0.4,
+      alpha: 0.2 + Math.random() * 0.5,
       shimmerPhase: Math.random() * Math.PI * 2,
-      shimmerSpeed: 0.005 + Math.random() * 0.02,
+      shimmerSpeed: 0.01 + Math.random() * 0.03,
       driftPhase: Math.random() * Math.PI * 2,
-      driftSpeed: 0.0005 + Math.random() * 0.001,
+      driftSpeed: 0.002 + Math.random() * 0.005,
       hue,
       sat,
       light,
@@ -86,8 +86,8 @@ export class LightPillarsEffect {
     this.crystals = []
     const W = this.canvas.width
     const H = this.canvas.height
-    // 50-100 ice crystals
-    const count = 50 + Math.floor(Math.random() * 50)
+    // 60-120 ice crystals
+    const count = 60 + Math.floor(Math.random() * 60)
     for (let i = 0; i < count; i++) {
       this.crystals.push(this._makeCrystal(W, H))
     }
@@ -97,12 +97,12 @@ export class LightPillarsEffect {
     return {
       x: Math.random() * W,
       y: Math.random() * H,
-      size: 0.5 + Math.random() * 2,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.5 - 0.2, // slow upward trend or slow float
-      alpha: 0.1 + Math.random() * 0.8,
+      size: 0.8 + Math.random() * 2.5,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.8 - 0.3, // slow upward trend or slow float
+      alpha: 0.2 + Math.random() * 0.7,
       twinklePhase: Math.random() * Math.PI * 2,
-      twinkleSpeed: 0.01 + Math.random() * 0.05,
+      twinkleSpeed: 0.02 + Math.random() * 0.08,
     }
   }
 
@@ -114,11 +114,11 @@ export class LightPillarsEffect {
     pillar.shimmerPhase += pillar.shimmerSpeed
     pillar.driftPhase += pillar.driftSpeed
 
-    // Very subtle horizontal drift
-    pillar.x = pillar.baseX + Math.sin(pillar.driftPhase) * 20
+    // Subtle horizontal sway
+    pillar.x = pillar.baseX + Math.sin(pillar.driftPhase) * 40
 
     // Shimmer effect (opacity pulsing)
-    const shimmer = 0.6 + 0.4 * Math.sin(pillar.shimmerPhase)
+    const shimmer = 0.7 + 0.3 * Math.sin(pillar.shimmerPhase)
     const currentAlpha = pillar.alpha * shimmer
 
     // We want the pillar to fade out at top and bottom
@@ -132,9 +132,9 @@ export class LightPillarsEffect {
     const color = pillar._colorBase
 
     grad.addColorStop(0, `${color}0)`)
-    grad.addColorStop(0.3, `${color}${currentAlpha * 0.5})`)
+    grad.addColorStop(0.2, `${color}${currentAlpha * 0.4})`)
     grad.addColorStop(0.5, `${color}${currentAlpha})`)
-    grad.addColorStop(0.7, `${color}${currentAlpha * 0.5})`)
+    grad.addColorStop(0.8, `${color}${currentAlpha * 0.4})`)
     grad.addColorStop(1, `${color}0)`)
 
     ctx.save()
@@ -156,9 +156,9 @@ export class LightPillarsEffect {
     crystal.y += crystal.vy
     crystal.twinklePhase += crystal.twinkleSpeed
 
-    if (crystal.y < -10) crystal.y = H + 10
-    if (crystal.x < -10) crystal.x = W + 10
-    if (crystal.x > W + 10) crystal.x = -10
+    if (crystal.y < -20) crystal.y = H + 20
+    if (crystal.x < -20) crystal.x = W + 20
+    if (crystal.x > W + 20) crystal.x = -20
 
     const t = 0.5 + 0.5 * Math.sin(crystal.twinklePhase)
     const alpha = crystal.alpha * t
@@ -176,17 +176,13 @@ export class LightPillarsEffect {
   start() {
     if (this.active) return
     this.active = true
-    this.lastDrawTime = 0
+    this.lastDrawTime = performance.now()
     this.resize()
-    this.animate(0)
+    this.animate(this.lastDrawTime)
     this.canvas.style.display = "block"
   }
 
   stop() {
-    if (this._animId) {
-      cancelAnimationFrame(this._animId)
-      this._animId = null
-    }
     this.active = false
     if (this.rafId) {
       cancelAnimationFrame(this.rafId)
@@ -198,7 +194,7 @@ export class LightPillarsEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
@@ -212,7 +208,7 @@ export class LightPillarsEffect {
     ctx.clearRect(0, 0, W, H)
     ctx.globalCompositeOperation = "source-over"
 
-    // Draw pillars (sort by alpha if we wanted to, but screen composite makes order less important)
+    // Draw pillars
     this.pillars.forEach((p) => this._drawPillar(p))
 
     // Draw crystals

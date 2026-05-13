@@ -1354,6 +1354,59 @@ export const silkNoise = document.getElementById("silk-noise")
 export const silkNoiseValue = document.getElementById("silk-noise-value")
 export const silkRotation = document.getElementById("silk-rotation")
 export const silkRotationValue = document.getElementById("silk-rotation-value")
+
+// Light Pillar Effect
+export const lightPillarToggleBtn = document.getElementById(
+  "light-pillar-toggle-btn",
+)
+export const lightPillarToggleLabel = document.getElementById(
+  "light-pillar-toggle-label",
+)
+export const lightPillarSettings = document.getElementById(
+  "light-pillar-settings",
+)
+export const lightPillarActive = document.getElementById("light-pillar-active")
+export const lightPillarTopColor = document.getElementById(
+  "light-pillar-top-color",
+)
+export const lightPillarBottomColor = document.getElementById(
+  "light-pillar-bottom-color",
+)
+export const lightPillarIntensity = document.getElementById(
+  "light-pillar-intensity",
+)
+export const lightPillarIntensityValue = document.getElementById(
+  "light-pillar-intensity-value",
+)
+export const lightPillarRotationSpeed = document.getElementById(
+  "light-pillar-rotation-speed",
+)
+export const lightPillarRotationSpeedValue = document.getElementById(
+  "light-pillar-rotation-speed-value",
+)
+export const lightPillarGlow = document.getElementById("light-pillar-glow")
+export const lightPillarGlowValue = document.getElementById(
+  "light-pillar-glow-value",
+)
+export const lightPillarWidth = document.getElementById("light-pillar-width")
+export const lightPillarWidthValue = document.getElementById(
+  "light-pillar-width-value",
+)
+export const lightPillarHeight = document.getElementById("light-pillar-height")
+export const lightPillarHeightValue = document.getElementById(
+  "light-pillar-height-value",
+)
+export const lightPillarNoise = document.getElementById("light-pillar-noise")
+export const lightPillarNoiseValue = document.getElementById(
+  "light-pillar-noise-value",
+)
+export const lightPillarRotation = document.getElementById(
+  "light-pillar-rotation",
+)
+export const lightPillarRotationValue = document.getElementById(
+  "light-pillar-rotation-value",
+)
+
 export const softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",
 )

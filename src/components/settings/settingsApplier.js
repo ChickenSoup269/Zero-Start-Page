@@ -99,6 +99,7 @@ function createApplySettings(effectInstances) {
     let shouldUseSvgWave = false
     let shouldUseGradientV2 = false
     let shouldUseSilk = false
+    let shouldUseLightPillar = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -269,6 +270,39 @@ function createApplySettings(effectInstances) {
         effectInstances.silkEffect.start()
       }
     }
+    // Priority 1.6: Light Pillar (Animated)
+    else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
+      shouldUseLightPillar = true
+      document.body.classList.add("bg-layer-active")
+      if (effectInstances.lightPillarEffect.active) {
+        effectInstances.lightPillarEffect.setOptions({
+          topColor: settings.lightPillarTopColor,
+          bottomColor: settings.lightPillarBottomColor,
+          intensity: settings.lightPillarIntensity,
+          rotationSpeed: settings.lightPillarRotationSpeed,
+          glowAmount: settings.lightPillarGlowAmount,
+          pillarWidth: settings.lightPillarWidth,
+          pillarHeight: settings.lightPillarHeight,
+          noiseIntensity: settings.lightPillarNoiseIntensity,
+          pillarRotation: settings.lightPillarRotation,
+        })
+      } else {
+        effectInstances.lightPillarEffect.start()
+        // Ensure options are applied immediately after start
+        effectInstances.lightPillarEffect.setOptions({
+          topColor: settings.lightPillarTopColor,
+          bottomColor: settings.lightPillarBottomColor,
+          intensity: settings.lightPillarIntensity,
+          rotationSpeed: settings.lightPillarRotationSpeed,
+          glowAmount: settings.lightPillarGlowAmount,
+          pillarWidth: settings.lightPillarWidth,
+          pillarHeight: settings.lightPillarHeight,
+          noiseIntensity: settings.lightPillarNoiseIntensity,
+          pillarRotation: settings.lightPillarRotation,
+        })
+      }
+    }
+
     // Priority 2: SVG Wave
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
       shouldUseSvgWave = true
@@ -380,6 +414,9 @@ function createApplySettings(effectInstances) {
     }
     if (!shouldUseSilk && effectInstances.silkEffect?.active) {
       effectInstances.silkEffect.stop()
+    }
+    if (!shouldUseLightPillar && effectInstances.lightPillarEffect?.active) {
+      effectInstances.lightPillarEffect.stop()
     }
 
     // 2.1 Background Position

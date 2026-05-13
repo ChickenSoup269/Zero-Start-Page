@@ -249,6 +249,17 @@ export const defaultSettings = {
   silkNoise: 1.5,
   silkRotation: 0.0,
 
+  lightPillarActive: false,
+  lightPillarTopColor: "#5227FF",
+  lightPillarBottomColor: "#FF9FFC",
+  lightPillarIntensity: 1.0,
+  lightPillarRotationSpeed: 0.3,
+  lightPillarGlowAmount: 0.005,
+  lightPillarWidth: 3.0,
+  lightPillarHeight: 0.4,
+  lightPillarNoiseIntensity: 0.5,
+  lightPillarRotation: 0,
+
   gradientV2Active: false,
   gradientV2Color1: "#FF9FFC",
   gradientV2Color2: "#5227FF",

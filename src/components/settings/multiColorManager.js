@@ -214,6 +214,7 @@ export function renderSavedMultiColors(DOM_REFS) {
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
         !settings.silkActive &&
+        !settings.lightPillarActive &&
         (currentBg === generatedBg ||
           currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
 
@@ -223,7 +224,8 @@ export function renderSavedMultiColors(DOM_REFS) {
         !settings.background &&
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
-        !settings.silkActive
+        !settings.silkActive &&
+        !settings.lightPillarActive
       ) {
         isCurrentActive =
           (preset.mode || "gradient") ===

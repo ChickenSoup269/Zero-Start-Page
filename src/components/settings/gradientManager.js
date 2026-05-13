@@ -305,6 +305,7 @@ function renderUserGradients(DOM) {
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
         !settings.silkActive &&
+        !settings.lightPillarActive &&
         (currentBg === gradientCss ||
           currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
 
@@ -314,7 +315,8 @@ function renderUserGradients(DOM) {
         !settings.background &&
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
-        !settings.silkActive
+        !settings.silkActive &&
+        !settings.lightPillarActive
       ) {
         isCurrentActive =
           settings.gradientStart === gradient.start &&

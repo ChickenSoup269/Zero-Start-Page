@@ -123,6 +123,7 @@ import { GradientV2Effect } from "../animations/gradientV2.js"
 import { PixelSnowEffect } from "../animations/pixelSnow.js"
 import { SoftAuroraEffect } from "../animations/softAurora.js"
 import { SilkEffect } from "../animations/silk.js"
+import { LightPillarEffect } from "../animations/lightPillar.js"
 
 function getExtensionVersion() {
   try {
@@ -389,6 +390,17 @@ export function initSettings() {
       noise: settings.silkNoise,
       rotation: settings.silkRotation,
     }),
+    lightPillarEffect: new LightPillarEffect("light-pillar-canvas", {
+      topColor: settings.lightPillarTopColor,
+      bottomColor: settings.lightPillarBottomColor,
+      intensity: settings.lightPillarIntensity,
+      rotationSpeed: settings.lightPillarRotationSpeed,
+      glowAmount: settings.lightPillarGlowAmount,
+      pillarWidth: settings.lightPillarWidth,
+      pillarHeight: settings.lightPillarHeight,
+      noiseIntensity: settings.lightPillarNoiseIntensity,
+      pillarRotation: settings.lightPillarRotation,
+    }),
     svgWaveEffect: new SvgWaveGenerator(),
   }
 
@@ -494,18 +506,35 @@ export function initSettings() {
       updateSetting("background", null)
       updateSetting("gradientV2Active", false)
       updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
       if (DOM_EXPORTS.gradientV2Active)
         DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
     }
     if (key === "silkActive" && value === true) {
       updateSetting("background", null)
       updateSetting("gradientV2Active", false)
       updateSetting("svgWaveActive", false)
+      updateSetting("lightPillarActive", false)
       if (DOM_EXPORTS.gradientV2Active)
         DOM_EXPORTS.gradientV2Active.checked = false
       const svgCheckbox = document.getElementById("svg-wave-active")
       if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+    }
+    if (key === "lightPillarActive" && value === true) {
+      updateSetting("background", null)
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      updateSetting("silkActive", false)
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
+      const svgCheckbox = document.getElementById("svg-wave-active")
+      if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
@@ -513,6 +542,9 @@ export function initSettings() {
         DOM_EXPORTS.gradientV2Active.checked = false
       updateSetting("silkActive", false)
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      updateSetting("lightPillarActive", false)
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
     }
 
     applySettings()
@@ -877,6 +909,7 @@ export function initSettings() {
     DOM_EXPORTS.silkToggleBtn.addEventListener("click", () => {
       const isHidden = DOM_EXPORTS.silkSettings.style.display === "none"
       DOM_EXPORTS.silkSettings.style.display = isHidden ? "block" : "none"
+      DOM_EXPORTS.silkToggleBtn.classList.toggle("active", isHidden)
       DOM_EXPORTS.silkToggleLabel.textContent = isHidden
         ? "Close Silk"
         : "Open Silk"
@@ -937,6 +970,124 @@ export function initSettings() {
         if (effects.silkEffect) {
           const optKey = prop.id.replace("silk", "").toLowerCase()
           effects.silkEffect.setOptions({ [optKey]: val })
+        }
+      })
+      prop.dom.addEventListener("change", () => saveSettings())
+    }
+  })
+
+  // Light Pillar Effect setup
+  if (DOM_EXPORTS.lightPillarToggleBtn) {
+    DOM_EXPORTS.lightPillarToggleBtn.addEventListener("click", () => {
+      const isHidden = DOM_EXPORTS.lightPillarSettings.style.display === "none"
+      DOM_EXPORTS.lightPillarSettings.style.display = isHidden
+        ? "block"
+        : "none"
+      DOM_EXPORTS.lightPillarToggleBtn.classList.toggle("active", isHidden)
+      DOM_EXPORTS.lightPillarToggleLabel.textContent = isHidden
+        ? "Close Light Pillar"
+        : "Open Light Pillar"
+    })
+  }
+
+  if (DOM_EXPORTS.lightPillarActive) {
+    // Sync initial state
+    DOM_EXPORTS.lightPillarActive.checked = settings.lightPillarActive === true
+    DOM_EXPORTS.lightPillarActive.addEventListener("change", (e) => {
+      handleSettingUpdate("lightPillarActive", e.target.checked)
+    })
+  }
+
+  if (DOM_EXPORTS.lightPillarTopColor) {
+    DOM_EXPORTS.lightPillarTopColor.value =
+      settings.lightPillarTopColor || "#5227FF"
+    DOM_EXPORTS.lightPillarTopColor.addEventListener("change", (e) => {
+      handleSettingUpdate("lightPillarTopColor", e.target.value)
+      if (effects.lightPillarEffect)
+        effects.lightPillarEffect.setOptions({ topColor: e.target.value })
+    })
+  }
+
+  if (DOM_EXPORTS.lightPillarBottomColor) {
+    DOM_EXPORTS.lightPillarBottomColor.value =
+      settings.lightPillarBottomColor || "#FF9FFC"
+    DOM_EXPORTS.lightPillarBottomColor.addEventListener("change", (e) => {
+      handleSettingUpdate("lightPillarBottomColor", e.target.value)
+      if (effects.lightPillarEffect)
+        effects.lightPillarEffect.setOptions({ bottomColor: e.target.value })
+    })
+  }
+
+  const lightPillarProps = [
+    {
+      id: "lightPillarIntensity",
+      dom: DOM_EXPORTS.lightPillarIntensity,
+      val: DOM_EXPORTS.lightPillarIntensityValue,
+      optKey: "intensity",
+    },
+    {
+      id: "lightPillarRotationSpeed",
+      dom: DOM_EXPORTS.lightPillarRotationSpeed,
+      val: DOM_EXPORTS.lightPillarRotationSpeedValue,
+      optKey: "rotationSpeed",
+    },
+    {
+      id: "lightPillarGlowAmount",
+      dom: DOM_EXPORTS.lightPillarGlow,
+      val: DOM_EXPORTS.lightPillarGlowValue,
+      optKey: "glowAmount",
+    },
+    {
+      id: "lightPillarWidth",
+      dom: DOM_EXPORTS.lightPillarWidth,
+      val: DOM_EXPORTS.lightPillarWidthValue,
+      optKey: "pillarWidth",
+    },
+    {
+      id: "lightPillarHeight",
+      dom: DOM_EXPORTS.lightPillarHeight,
+      val: DOM_EXPORTS.lightPillarHeightValue,
+      optKey: "pillarHeight",
+    },
+    {
+      id: "lightPillarNoiseIntensity",
+      dom: DOM_EXPORTS.lightPillarNoise,
+      val: DOM_EXPORTS.lightPillarNoiseValue,
+      optKey: "noiseIntensity",
+    },
+    {
+      id: "lightPillarRotation",
+      dom: DOM_EXPORTS.lightPillarRotation,
+      val: DOM_EXPORTS.lightPillarRotationValue,
+      optKey: "pillarRotation",
+      isAngle: true,
+    },
+  ]
+
+  lightPillarProps.forEach((prop) => {
+    if (prop.dom) {
+      if (settings[prop.id] !== undefined) {
+        prop.dom.value = settings[prop.id]
+        if (prop.val) {
+          if (prop.isAngle) {
+            prop.val.textContent = Math.round(settings[prop.id]) + "°"
+          } else {
+            prop.val.textContent = parseFloat(settings[prop.id]).toFixed(2)
+          }
+        }
+      }
+      prop.dom.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value)
+        if (prop.val) {
+          if (prop.isAngle) {
+            prop.val.textContent = Math.round(val) + "°"
+          } else {
+            prop.val.textContent = val.toFixed(2)
+          }
+        }
+        updateSetting(prop.id, val)
+        if (effects.lightPillarEffect) {
+          effects.lightPillarEffect.setOptions({ [prop.optKey]: val })
         }
       })
       prop.dom.addEventListener("change", () => saveSettings())

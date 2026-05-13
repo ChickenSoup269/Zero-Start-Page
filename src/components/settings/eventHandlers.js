@@ -1644,6 +1644,8 @@ export function setupGeneralEventHandlers(
     const nowOpen = !isCurrentlyOpen
     localStorage.setItem("startpage_svgWaveGeneratorOpen", nowOpen ? "1" : "0")
 
+    DOM.svgWaveToggleBtn.classList.toggle("active", nowOpen)
+
     const settings = getSettings()
     // Mở ra thì tự động bật sóng nếu chưa bật
     if (nowOpen && !settings.svgWaveActive) {

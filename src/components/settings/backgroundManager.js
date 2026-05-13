@@ -317,6 +317,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     !settings.svgWaveActive &&
     !settings.gradientV2Active &&
     !settings.silkActive &&
+    !settings.lightPillarActive &&
     settings.background?.startsWith("#")
   ) {
     randomItem.classList.add("active")
