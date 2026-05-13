@@ -1522,6 +1522,31 @@
   display: flex;
 }
 
+.bg-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+  color: white;
+  pointer-events: none; /* Tránh cản trở click vào item cha */
+}
+
+.local-bg-item:hover .bg-item-overlay {
+  opacity: 1;
+}
+
+.bg-item-overlay i {
+  font-size: 1.4rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  display: block;
+}
+
 .remove-bg-btn:hover {
   background: #ef4444;
   transform: scale(1.1);
