@@ -10,7 +10,7 @@ export class SilkEffect {
     this.canvas.className = "silk-webgl-canvas"
     this.canvas.style.position = "fixed"
     this.canvas.style.inset = "0"
-    this.canvas.style.zIndex = "-3"
+    this.canvas.style.zIndex = "-4"
     this.canvas.style.pointerEvents = "none"
     this.canvas.style.display = "none"
     this.canvasWrapper.appendChild(this.canvas)
@@ -61,7 +61,7 @@ export class SilkEffect {
     `
 
     const frag = `
-      precision highp float;
+      precision mediump float;
 
       varying vec2 vUv;
 
@@ -72,38 +72,25 @@ export class SilkEffect {
       uniform float uRotation;
       uniform float uNoiseIntensity;
 
-      const float e = 2.71828182845904523536;
-
-      float noise(vec2 texCoord) {
-        float G = e;
-        vec2  r = (G * sin(G * texCoord));
-        return fract(r.x * r.y * (1.0 + texCoord.x));
-      }
-
-      vec2 rotateUvs(vec2 uv, float angle) {
-        float c = cos(angle);
-        float s = sin(angle);
-        mat2  rot = mat2(c, -s, s, c);
-        return rot * uv;
+      float noise(vec2 p) {
+        return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
       }
 
       void main() {
-        float rnd = noise(gl_FragCoord.xy);
-        vec2  uv = rotateUvs(vUv * uScale, uRotation);
-        vec2  tex = uv * uScale;
-        float tOffset = uSpeed * uTime;
+        float c = cos(uRotation);
+        float s = sin(uRotation);
+        vec2 uv = (vUv * 0.5 + 0.25) * uScale;
+        uv = vec2(c * uv.x - s * uv.y, s * uv.x + c * uv.y);
+        
+        float t = uTime * uSpeed * 0.2;
+        uv.y += 0.03 * sin(uv.x * 5.0 - t);
 
-        tex.y += 0.03 * sin(8.0 * tex.x - tOffset);
-
-        float pattern = 0.6 +
-                        0.4 * sin(5.0 * (tex.x + tex.y +
-                                         cos(3.0 * tex.x + 5.0 * tex.y) +
-                                         0.02 * tOffset) +
-                                 sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));
-
-        vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;
-        col.a = 1.0;
-        gl_FragColor = col;
+        float pattern = 0.6 + 0.4 * sin(4.0 * (uv.x + uv.y + cos(uv.x * 2.0 + uv.y * 3.0) + t * 0.1));
+        
+        vec3 col = uColor * pattern;
+        col -= noise(gl_FragCoord.xy) * 0.05 * uNoiseIntensity;
+        
+        gl_FragColor = vec4(col, 1.0);
       }
     `
 
@@ -154,7 +141,7 @@ export class SilkEffect {
 
   resize() {
     if (!this.canvas || !this.gl) return
-    const dpr = Math.min(window.devicePixelRatio, 2) || 1
+    const dpr = Math.min(window.devicePixelRatio, 1.2) || 1
     this.canvas.width = window.innerWidth * dpr
     this.canvas.height = window.innerHeight * dpr
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
@@ -199,6 +186,7 @@ export class SilkEffect {
 
     const now = performance.now()
     const dt = now - this.lastTime
+    if (dt < 16) return // Cap at ~60fps
     this.lastTime = now
     this.time += dt
 

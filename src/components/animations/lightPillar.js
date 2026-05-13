@@ -10,7 +10,7 @@ export class LightPillarEffect {
       // Ensure base styles are applied
       this.canvas.style.position = this.canvas.style.position || "fixed"
       this.canvas.style.inset = this.canvas.style.inset || "0"
-      this.canvas.style.zIndex = this.canvas.style.zIndex || "-3"
+      this.canvas.style.zIndex = this.canvas.style.zIndex || "-4"
       this.canvas.style.pointerEvents =
         this.canvas.style.pointerEvents || "none"
       this.canvas.style.display = this.canvas.style.display || "none"
@@ -93,28 +93,32 @@ export class LightPillarEffect {
 
     this.qualitySettings = {
       low: {
+        iterations: 6,
+        waveIterations: 1,
+        pixelRatio: 0.35,
+        stepMultiplier: 3.0,
+        precision: "mediump",
+      },
+      medium: {
         iterations: 12,
         waveIterations: 1,
         pixelRatio: 0.5,
-        stepMultiplier: 2.0,
-      },
-      medium: {
-        iterations: 24,
-        waveIterations: 1,
-        pixelRatio: 0.7,
-        stepMultiplier: 1.6,
+        stepMultiplier: 2.2,
+        precision: "mediump",
       },
       high: {
-        iterations: 36,
-        waveIterations: 2,
-        pixelRatio: Math.min(window.devicePixelRatio, 1.1),
-        stepMultiplier: 1.4,
+        iterations: 20,
+        waveIterations: 1,
+        pixelRatio: 0.65,
+        stepMultiplier: 1.8,
+        precision: "highp",
       },
     }[effectiveQuality] || {
-      iterations: 24,
+      iterations: 12,
       waveIterations: 1,
-      pixelRatio: 0.7,
-      stepMultiplier: 1.6,
+      pixelRatio: 0.5,
+      stepMultiplier: 2.2,
+      precision: "mediump",
     }
 
     this._resizeHandler = () => this.resize()
@@ -168,17 +172,19 @@ export class LightPillarEffect {
       }
     `
 
-    // Choose fragment shader precision
-    let fragPrecision = "precision highp float;"
-    try {
-      const highp = gl.getShaderPrecisionFormat(
-        gl.FRAGMENT_SHADER,
-        gl.HIGH_FLOAT,
-      )
-      if (!highp || highp.precision === 0)
+    // Choose fragment shader precision based on quality
+    let fragPrecision = `precision ${this.qualitySettings.precision} float;`
+    if (this.qualitySettings.precision === "highp") {
+      try {
+        const highp = gl.getShaderPrecisionFormat(
+          gl.FRAGMENT_SHADER,
+          gl.HIGH_FLOAT,
+        )
+        if (!highp || highp.precision === 0)
+          fragPrecision = "precision mediump float;"
+      } catch (e) {
         fragPrecision = "precision mediump float;"
-    } catch (e) {
-      fragPrecision = "precision mediump float;"
+      }
     }
 
     const frag =
@@ -193,12 +199,11 @@ export class LightPillarEffect {
       varying vec2 vUv;
       #define fragColor gl_FragColor
       
-      float tanh(float x) {
-        float e2x = exp(2.0 * x);
-        return (e2x - 1.0) / (e2x + 1.0);
+      float tanh_approx(float x) {
+        return x / (1.0 + abs(x));
       }
-      vec3 tanh(vec3 x) {
-        return vec3(tanh(x.x), tanh(x.y), tanh(x.z));
+      vec3 tanh_approx(vec3 x) {
+        return x / (1.0 + abs(x));
       }
     `) +
       `
@@ -217,15 +222,13 @@ export class LightPillarEffect {
       uniform float uRotSin;
       uniform float uPillarRotCos;
       uniform float uPillarRotSin;
-      uniform float uWaveSin;
-      uniform float uWaveCos;
 
       const float STEP_MULT = ${this.qualitySettings.stepMultiplier.toFixed(1)};
       const int MAX_ITER = ${this.qualitySettings.iterations};
-      const int WAVE_ITER = ${this.qualitySettings.waveIterations};
 
       void main() {
         vec2 uv = (vUv * 2.0 - 1.0) * vec2(uResolution.x / uResolution.y, 1.0);
+        // Pre-rotate UV for pillar tilt
         uv = vec2(uPillarRotCos * uv.x - uPillarRotSin * uv.y, uPillarRotSin * uv.x + uPillarRotCos * uv.y);
 
         vec3 ro = vec3(0.0, 0.0, -10.0);
@@ -240,42 +243,54 @@ export class LightPillarEffect {
         }
 
         vec3 col = vec3(0.0);
-        float t = 0.1;
+        float t = 0.5;
         
         for(int i = 0; i < MAX_ITER; i++) {
           vec3 p = ro + rd * t;
-          p.xz = vec2(rotC * p.x - rotS * p.z, rotS * p.x + rotC * p.z);
-
-          vec3 q = p;
-          q.y = p.y * uPillarHeight + uTime;
           
-          float freq = 1.0;
-          float amp = 1.0;
-          for(int j = 0; j < WAVE_ITER; j++) {
-            q.xz = vec2(uWaveCos * q.x - uWaveSin * q.z, uWaveSin * q.x + uWaveCos * q.z);
-            q += cos(q.zxy * freq - uTime * float(j) * 2.0) * amp;
-            freq *= 2.0;
-            amp *= 0.5;
-          }
+          // Rotation around Y
+          float px = rotC * p.x - rotS * p.z;
+          float pz = rotS * p.x + rotC * p.z;
+          vec3 pRot = vec3(px, p.y, pz);
+
+          vec3 q = pRot;
+          q.y = pRot.y * uPillarHeight + uTime;
+          
+          // Simplified wave calculation - hardcoded wave rotation for speed
+          q.x = 0.92 * q.x - 0.39 * q.z; 
+          q.z = 0.39 * q.x + 0.92 * q.z;
+          q += cos(q.zxy - uTime);
           
           float d = length(cos(q.xz)) - 0.2;
-          float bound = length(p.xz) - uPillarWidth;
+          float bound = length(pRot.xz) - uPillarWidth;
+          
+          // Fast smooth union
           float k = 4.0;
           float h = max(k - abs(d - bound), 0.0);
           d = max(d, bound) + h * h * 0.0625 / k;
-          d = abs(d) * 0.15 + 0.01;
+          d = abs(d) * 0.2 + 0.02;
 
           float grad = clamp((15.0 - p.y) / 30.0, 0.0, 1.0);
           col += mix(uBottomColor, uTopColor, grad) / d;
 
           t += d * STEP_MULT;
-          if(t > 50.0) break;
+          // More aggressive early exit
+          if(t > 35.0 || col.g > 10.0) break;
         }
 
         float widthNorm = uPillarWidth / 3.0;
+        #ifdef GL_ES
+        #if __VERSION__ == 300
         col = tanh(col * uGlowAmount / widthNorm);
+        #else
+        col = tanh_approx(col * uGlowAmount / widthNorm);
+        #endif
+        #else
+        col = tanh_approx(col * uGlowAmount / widthNorm);
+        #endif
         
-        col -= fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453) / 15.0 * uNoiseIntensity;
+        // Faster noise - one-liner
+        col -= fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453) * 0.04 * uNoiseIntensity;
         
         fragColor = vec4(col * uIntensity, 1.0);
       }
@@ -332,8 +347,6 @@ export class LightPillarEffect {
       uRotSin: gl.getUniformLocation(program, "uRotSin"),
       uPillarRotCos: gl.getUniformLocation(program, "uPillarRotCos"),
       uPillarRotSin: gl.getUniformLocation(program, "uPillarRotSin"),
-      uWaveSin: gl.getUniformLocation(program, "uWaveSin"),
-      uWaveCos: gl.getUniformLocation(program, "uWaveCos"),
     }
 
     gl.clearColor(0, 0, 0, 0)
@@ -363,8 +376,6 @@ export class LightPillarEffect {
       bottomRgb[1],
       bottomRgb[2],
     )
-    gl.uniform1f(this.uniforms.uWaveSin, Math.sin(0.4))
-    gl.uniform1f(this.uniforms.uWaveCos, Math.cos(0.4))
   }
 
   resize() {

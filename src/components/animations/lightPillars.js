@@ -99,7 +99,7 @@ export class LightPillarsEffect {
       y: Math.random() * H,
       size: 0.8 + Math.random() * 2.5,
       vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.8 - 0.3, // slow upward trend or slow float
+      vy: (Math.random() - 0.5) * 0.8 - 0.4, // slow upward trend or slow float
       alpha: 0.2 + Math.random() * 0.7,
       twinklePhase: Math.random() * Math.PI * 2,
       twinkleSpeed: 0.02 + Math.random() * 0.08,
@@ -131,14 +131,17 @@ export class LightPillarsEffect {
     }
     const color = pillar._colorBase
 
-    grad.addColorStop(0, `${color}0)`)
-    grad.addColorStop(0.2, `${color}${currentAlpha * 0.4})`)
-    grad.addColorStop(0.5, `${color}${currentAlpha})`)
-    grad.addColorStop(0.8, `${color}${currentAlpha * 0.4})`)
-    grad.addColorStop(1, `${color}0)`)
+    // Optimization: avoid complex string concatenation in every frame where possible
+    const alpha0 = "0)"
+    const alpha4 = (currentAlpha * 0.4).toFixed(2) + ")"
+    const alpha10 = currentAlpha.toFixed(2) + ")"
 
-    ctx.save()
-    ctx.globalCompositeOperation = "screen"
+    grad.addColorStop(0, color + alpha0)
+    grad.addColorStop(0.2, color + alpha4)
+    grad.addColorStop(0.5, color + alpha10)
+    grad.addColorStop(0.8, color + alpha4)
+    grad.addColorStop(1, color + alpha0)
+
     ctx.fillStyle = grad
     ctx.fillRect(
       pillar.x - pillar.width / 2,
@@ -146,7 +149,6 @@ export class LightPillarsEffect {
       pillar.width,
       pillar.height,
     )
-    ctx.restore()
   }
 
   _drawCrystal(crystal, W, H) {
@@ -163,14 +165,11 @@ export class LightPillarsEffect {
     const t = 0.5 + 0.5 * Math.sin(crystal.twinklePhase)
     const alpha = crystal.alpha * t
 
-    ctx.save()
     ctx.globalAlpha = alpha
-    ctx.globalCompositeOperation = "screen"
     ctx.fillStyle = "#ffffff"
     ctx.beginPath()
     ctx.arc(crystal.x, crystal.y, crystal.size, 0, Math.PI * 2)
     ctx.fill()
-    ctx.restore()
   }
 
   start() {
@@ -195,7 +194,7 @@ export class LightPillarsEffect {
   animate(currentTime = 0) {
     if (!this.active) return
     this.rafId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
+    if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -206,12 +205,18 @@ export class LightPillarsEffect {
     const ctx = this.ctx
 
     ctx.clearRect(0, 0, W, H)
-    ctx.globalCompositeOperation = "source-over"
+
+    // Set composite operation once for all elements if possible
+    ctx.globalCompositeOperation = "screen"
 
     // Draw pillars
     this.pillars.forEach((p) => this._drawPillar(p))
 
     // Draw crystals
     this.crystals.forEach((c) => this._drawCrystal(c, W, H))
+
+    // Reset state
+    ctx.globalAlpha = 1.0
+    ctx.globalCompositeOperation = "source-over"
   }
 }
