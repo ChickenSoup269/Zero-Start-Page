@@ -2149,6 +2149,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "wavyPattern",
         "angledPattern",
         "floatingLines",
+        "softAurora",
       ]
       const hasSettings = effectsWithSettings.includes(settings.effect)
       DOM.activeEffectSettingsContainer.style.display = hasSettings

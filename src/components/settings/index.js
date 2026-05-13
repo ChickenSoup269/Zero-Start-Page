@@ -476,6 +476,10 @@ export function initSettings() {
       updateSetting("gradientV2Active", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
     }
+    if (key === "effect" && value !== "none") {
+      updateSetting("gradientV2Active", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+    }
 
     applySettings()
   }
