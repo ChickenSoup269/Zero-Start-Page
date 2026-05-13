@@ -2400,9 +2400,9 @@ export function setupGeneralEventHandlers(
     DOM.searchBarWidthSlider.addEventListener("input", (e) => {
       const width = e.target.value
       if (DOM.searchBarWidthVal)
-        DOM.searchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
+        DOM.searchBarWidthVal.textContent = `${width}px`
       if (DOM.lcpSearchBarWidthVal)
-        DOM.lcpSearchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
+        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
       if (DOM.lcpSearchBarWidth) DOM.lcpSearchBarWidth.value = width
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(
@@ -2551,9 +2551,9 @@ export function setupGeneralEventHandlers(
     DOM.lcpSearchBarWidth.addEventListener("input", (e) => {
       const width = e.target.value
       if (DOM.lcpSearchBarWidthVal)
-        DOM.lcpSearchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
+        DOM.lcpSearchBarWidthVal.textContent = `${width}px`
       if (DOM.searchBarWidthVal)
-        DOM.searchBarWidthVal.textContent = `${width}${DOM.bookmarkGroupFontSizeInput.value}px`
+        DOM.searchBarWidthVal.textContent = `${width}px`
       if (DOM.searchBarWidthSlider) DOM.searchBarWidthSlider.value = width
       handleSettingUpdate("searchBarWidth", parseInt(width))
       window.dispatchEvent(

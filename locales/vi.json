@@ -831,5 +831,6 @@
   "theme_name_label": "Tên Chủ đề",
   "theme_icon_label": "Biểu tượng Chủ đề",
   "save_theme_confirm": "Lưu Chủ đề",
-  "setting_cyber_pulse_color": "Màu sắc Cyber Pulse"
+  "setting_cyber_pulse_color": "Màu sắc Cyber Pulse",
+  "settings_performance_warning": "Cẩn thận lag khi sử dụng"
 }

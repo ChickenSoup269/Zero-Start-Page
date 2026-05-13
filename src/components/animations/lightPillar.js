@@ -297,7 +297,7 @@ export class LightPillarEffect {
       }
     `
 
-    console.log("LightPillarEffect: init WebGL", this.isWebGL2 ? "2.0" : "1.0")
+    // console.log("LightPillarEffect: init WebGL", this.isWebGL2 ? "2.0" : "1.0")
 
     const vertShader = gl.createShader(gl.VERTEX_SHADER)
     gl.shaderSource(vertShader, vert)

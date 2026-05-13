@@ -550,6 +550,11 @@ function createApplySettings(effectInstances) {
       `${computedDateSize}rem`,
     )
 
+    document.documentElement.style.setProperty(
+      "--search-bar-width",
+      `${settings.searchBarWidth || 600}px`,
+    )
+    
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
       "--bookmark-font-size",

@@ -832,5 +832,6 @@
   "theme_name_label": "Theme Name",
   "theme_icon_label": "Theme Icon",
   "save_theme_confirm": "Save Theme",
-  "setting_cyber_pulse_color": "Cyber Pulse Color"
+  "setting_cyber_pulse_color": "Cyber Pulse Color",
+  "settings_performance_warning": "Careful: may lag when used"
 }

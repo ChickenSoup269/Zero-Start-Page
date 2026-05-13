@@ -91,7 +91,7 @@ i {
   text-align: center;
   align-items: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   visibility: hidden;
@@ -455,6 +455,7 @@ body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer-text {
   align-items: center;
   justify-content: center;
   min-height: 45vh;
+  width: 100%;
 }
 
 /* Hide original elements for this style */

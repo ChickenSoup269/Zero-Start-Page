@@ -1750,7 +1750,7 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> Auto-disabled if an Overlay Effect is active.
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                 </div>
 
                 <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
@@ -2014,7 +2014,7 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> Auto-disabled if an Overlay Effect is active.
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                 </div>
 
                 <button id="silk-toggle-btn" class="secondary-btn full-width">
@@ -2024,10 +2024,7 @@
 
                 <div id="silk-settings" style="display: none; margin-top: 12px;">
 
-                    <button id="silk-random-btn" class="secondary-btn full-width" title="Randomize Silk"
-                        style="margin-bottom: 12px;">
-                        <i class="fa-solid fa-dice"></i> Randomize
-                    </button>
+
 
                     <!-- Color -->
                     <div class="setting-item">
@@ -2069,6 +2066,41 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                        <button id="silk-random-btn" class="secondary-btn" title="Randomize Silk">
+                            <i class="fa-solid fa-dice"></i> Randomize
+                        </button>
+                        <button id="silk-save-btn" class="primary-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_silk_save">Save BG</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Saved Silks Gallery -->
+                <div id="user-silks-gallery-wrap" style="margin-top:10px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <label data-i18n="settings_silk_saved_label"
+                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Silks</label>
+                        <span id="count-silk"></span>
+                        <button id="silk-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                            data-i18n="bg_select_mode"
+                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                    </div>
+                    <div id="silk-select-toolbar" class="bg-select-toolbar"
+                        style="display:none; margin-bottom: 10px;">
+                        <span id="silk-select-count" class="bg-select-count">0 selected</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
+                                    class="fa-solid fa-check-double"></i></button>
+                            <button id="silk-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                    class="fa-solid fa-trash"></i></button>
+                            <button id="silk-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                    class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div id="user-silks-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 
@@ -2086,7 +2118,7 @@
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> Auto-disabled if an Overlay Effect is active.
+                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                 </div>
 
                 <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
@@ -2095,10 +2127,7 @@
                 </button>
                 <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
 
-                    <button id="light-pillar-random-btn" class="secondary-btn full-width" title="Randomize Light Pillar"
-                        style="margin-bottom: 15px; color: #ff9ffc; border: 1px solid rgba(255,159,252,0.3); background: rgba(255,159,252,0.05); font-weight: 500; transition: all 0.3s ease;">
-                        <i class="fa-solid fa-dice" style="margin-right: 5px;"></i> Randomize Colors & Settings
-                    </button>
+
 
                     <!-- Top Color -->
                     <div class="setting-item">
@@ -2169,6 +2198,39 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                        <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize Light Pillar">
+                            <i class="fa-solid fa-dice"></i> Randomize
+                        </button>
+                        <button id="light-pillar-save-btn" class="primary-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> <span>Save BG</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Saved Light Pillars Gallery -->
+                <div id="user-light-pillars-gallery-wrap" style="margin-top:10px; display: none;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Pillars</label>
+                        <span id="count-light-pillar"></span>
+                        <button id="light-pillar-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                    </div>
+                    <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
+                        style="display:none; margin-bottom: 10px;">
+                        <span id="light-pillar-select-count" class="bg-select-count">0 selected</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="light-pillar-select-all-btn" class="icon-btn" title="Select All"><i
+                                    class="fa-solid fa-check-double"></i></button>
+                            <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                    class="fa-solid fa-trash"></i></button>
+                            <button id="light-pillar-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                    class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+                    <div id="user-light-pillars-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 

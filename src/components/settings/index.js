@@ -1025,6 +1025,160 @@ export function initSettings() {
     }
   })
 
+  // ── Silk: Save BG handler ──────────────────────────────────────────
+  function renderUserSilks() {
+    const gallery = document.getElementById("user-silks-gallery")
+    const galleryWrap = document.getElementById("user-silks-gallery-wrap")
+    if (!gallery) return
+    const { userSilks } = getSettings()
+    gallery.innerHTML = ""
+    const countSpan = document.getElementById("count-silk")
+
+    if (!userSilks || userSilks.length === 0) {
+      if (galleryWrap) galleryWrap.style.display = "none"
+      if (countSpan) countSpan.innerHTML = ""
+      return
+    }
+    if (galleryWrap) galleryWrap.style.display = "block"
+    if (countSpan)
+      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userSilks.length})</span>`
+
+    userSilks.forEach((preset, index) => {
+      const item = document.createElement("div")
+      item.className = "local-bg-item user-silk-item"
+      item.title = `Silk Preset #${index + 1}`
+      // Visual preview: solid color swatch
+      item.style.background = preset.color || "#7B7481"
+      item.style.position = "relative"
+
+      const overlay = document.createElement("div")
+      overlay.className = "bg-item-overlay"
+      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
+      item.appendChild(overlay)
+
+      const removeBtn = document.createElement("button")
+      removeBtn.className = "remove-bg-btn"
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+      removeBtn.addEventListener("click", async (e) => {
+        e.stopPropagation()
+        const i18n = geti18n()
+        if (await showConfirm(i18n.alert_delete_bg_confirm || "Delete this preset?")) {
+          const s = getSettings()
+          s.userSilks.splice(index, 1)
+          saveSettings()
+          renderUserSilks()
+        }
+      })
+      item.appendChild(removeBtn)
+
+      item.addEventListener("click", () => {
+        // Apply preset
+        const s = getSettings()
+        ;["silkColor", "silkSpeed", "silkScale", "silkNoise", "silkRotation"].forEach((k) => {
+          if (preset[k.replace("silk", "").toLowerCase()] !== undefined) {
+            updateSetting(k, preset[k.replace("silk", "").toLowerCase()])
+          } else if (preset[k] !== undefined) {
+            updateSetting(k, preset[k])
+          }
+        })
+        // Map keys
+        updateSetting("silkColor", preset.color)
+        updateSetting("silkSpeed", preset.speed)
+        updateSetting("silkScale", preset.scale)
+        updateSetting("silkNoise", preset.noise)
+        updateSetting("silkRotation", preset.rotation)
+        updateSetting("silkActive", true)
+        if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = true
+        if (DOM_EXPORTS.silkColor) DOM_EXPORTS.silkColor.value = preset.color
+        if (DOM_EXPORTS.silkSpeed) {
+          DOM_EXPORTS.silkSpeed.value = preset.speed
+          if (DOM_EXPORTS.silkSpeedValue) DOM_EXPORTS.silkSpeedValue.textContent = parseFloat(preset.speed).toFixed(1)
+        }
+        if (DOM_EXPORTS.silkScale) {
+          DOM_EXPORTS.silkScale.value = preset.scale
+          if (DOM_EXPORTS.silkScaleValue) DOM_EXPORTS.silkScaleValue.textContent = parseFloat(preset.scale).toFixed(1)
+        }
+        if (DOM_EXPORTS.silkNoise) {
+          DOM_EXPORTS.silkNoise.value = preset.noise
+          if (DOM_EXPORTS.silkNoiseValue) DOM_EXPORTS.silkNoiseValue.textContent = parseFloat(preset.noise).toFixed(1)
+        }
+        if (DOM_EXPORTS.silkRotation) {
+          DOM_EXPORTS.silkRotation.value = preset.rotation
+          if (DOM_EXPORTS.silkRotationValue) DOM_EXPORTS.silkRotationValue.textContent = parseFloat(preset.rotation).toFixed(1)
+        }
+        if (effects.silkEffect) {
+          effects.silkEffect.setOptions({
+            color: preset.color,
+            speed: preset.speed,
+            scale: preset.scale,
+            noise: preset.noise,
+            rotation: preset.rotation,
+          })
+        }
+        handleSettingUpdate("silkActive", true)
+        saveSettings()
+      })
+
+      gallery.appendChild(item)
+    })
+  }
+
+  const silkSaveEl = document.getElementById("silk-save-btn")
+  if (silkSaveEl) {
+    silkSaveEl.addEventListener("click", () => {
+      const s = getSettings()
+      const newPreset = {
+        id: Date.now(),
+        color: s.silkColor,
+        speed: s.silkSpeed,
+        scale: s.silkScale,
+        noise: s.silkNoise,
+        rotation: s.silkRotation,
+      }
+      const saved = s.userSilks || []
+      updateSetting("userSilks", [...saved, newPreset])
+      saveSettings()
+      renderUserSilks()
+      showAlert("Silk BG saved!")
+    })
+  }
+
+  // ── Silk multi-select toolbar wiring (reuse existing HTML elements) ──
+  ;(function setupSilkMultiSelect() {
+    const selectModeBtn = document.getElementById("silk-select-mode-btn")
+    const toolbar = document.getElementById("silk-select-toolbar")
+    const countEl = document.getElementById("silk-select-count")
+    const selectAllBtn = document.getElementById("silk-select-all-btn")
+    const deleteSelectedBtn = document.getElementById("silk-delete-selected-btn")
+    const cancelBtn = document.getElementById("silk-select-cancel-btn")
+    if (!selectModeBtn) return
+    let selectMode = false
+    const selectedIds = new Set()
+    selectModeBtn.addEventListener("click", () => {
+      selectMode = !selectMode
+      selectedIds.clear()
+      if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
+    })
+    if (cancelBtn) cancelBtn.addEventListener("click", () => {
+      selectMode = false
+      selectedIds.clear()
+      if (toolbar) toolbar.style.display = "none"
+    })
+    if (deleteSelectedBtn) deleteSelectedBtn.addEventListener("click", async () => {
+      if (selectedIds.size === 0) return
+      const i18n = geti18n()
+      if (await showConfirm(i18n.alert_delete_bg_confirm || `Delete ${selectedIds.size} preset(s)?`)) {
+        const s = getSettings()
+        s.userSilks = (s.userSilks || []).filter((_, i) => !selectedIds.has(i))
+        saveSettings()
+        selectedIds.clear()
+        selectMode = false
+        if (toolbar) toolbar.style.display = "none"
+        renderUserSilks()
+      }
+    })
+  })()
+
   // Light Pillar Effect setup
   if (DOM_EXPORTS.lightPillarToggleBtn) {
     DOM_EXPORTS.lightPillarToggleBtn.addEventListener("click", () => {
@@ -1251,6 +1405,150 @@ export function initSettings() {
     }
   })
 
+  // ── Light Pillar: Save BG handler ──────────────────────────────────
+  function renderUserLightPillars() {
+    const gallery = document.getElementById("user-light-pillars-gallery")
+    const galleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
+    if (!gallery) return
+    const { userLightPillars } = getSettings()
+    gallery.innerHTML = ""
+    const countSpan = document.getElementById("count-light-pillar")
+
+    if (!userLightPillars || userLightPillars.length === 0) {
+      if (galleryWrap) galleryWrap.style.display = "none"
+      if (countSpan) countSpan.innerHTML = ""
+      return
+    }
+    if (galleryWrap) galleryWrap.style.display = "block"
+    if (countSpan)
+      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userLightPillars.length})</span>`
+
+    userLightPillars.forEach((preset, index) => {
+      const item = document.createElement("div")
+      item.className = "local-bg-item user-light-pillar-item"
+      item.title = `Light Pillar Preset #${index + 1}`
+      item.style.background = `linear-gradient(to bottom, ${preset.topColor || "#5227FF"}, ${preset.bottomColor || "#FF9FFC"})`
+      item.style.position = "relative"
+
+      const overlay = document.createElement("div")
+      overlay.className = "bg-item-overlay"
+      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
+      item.appendChild(overlay)
+
+      const removeBtn = document.createElement("button")
+      removeBtn.className = "remove-bg-btn"
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+      removeBtn.addEventListener("click", async (e) => {
+        e.stopPropagation()
+        const i18n = geti18n()
+        if (await showConfirm(i18n.alert_delete_bg_confirm || "Delete this preset?")) {
+          const s = getSettings()
+          s.userLightPillars.splice(index, 1)
+          saveSettings()
+          renderUserLightPillars()
+        }
+      })
+      item.appendChild(removeBtn)
+
+      item.addEventListener("click", () => {
+        const keyMap = {
+          topColor: "lightPillarTopColor",
+          bottomColor: "lightPillarBottomColor",
+          intensity: "lightPillarIntensity",
+          rotationSpeed: "lightPillarRotationSpeed",
+          glowAmount: "lightPillarGlowAmount",
+          width: "lightPillarWidth",
+          height: "lightPillarHeight",
+          noiseIntensity: "lightPillarNoiseIntensity",
+          rotation: "lightPillarRotation",
+        }
+        Object.entries(keyMap).forEach(([pk, sk]) => {
+          if (preset[pk] !== undefined) updateSetting(sk, preset[pk])
+        })
+        updateSetting("lightPillarActive", true)
+        if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = true
+        if (DOM_EXPORTS.lightPillarTopColor) DOM_EXPORTS.lightPillarTopColor.value = preset.topColor
+        if (DOM_EXPORTS.lightPillarBottomColor) DOM_EXPORTS.lightPillarBottomColor.value = preset.bottomColor
+
+        if (effects.lightPillarEffect) {
+          effects.lightPillarEffect.setOptions({
+            topColor: preset.topColor,
+            bottomColor: preset.bottomColor,
+            intensity: preset.intensity,
+            rotationSpeed: preset.rotationSpeed,
+            glowAmount: preset.glowAmount,
+            pillarWidth: preset.width,
+            pillarHeight: preset.height,
+            noiseIntensity: preset.noiseIntensity,
+            pillarRotation: preset.rotation,
+          })
+        }
+        handleSettingUpdate("lightPillarActive", true)
+        saveSettings()
+      })
+
+      gallery.appendChild(item)
+    })
+  }
+
+  const lightPillarSaveEl = document.getElementById("light-pillar-save-btn")
+  if (lightPillarSaveEl) {
+    lightPillarSaveEl.addEventListener("click", () => {
+      const s = getSettings()
+      const newPreset = {
+        id: Date.now(),
+        topColor: s.lightPillarTopColor,
+        bottomColor: s.lightPillarBottomColor,
+        intensity: s.lightPillarIntensity,
+        rotationSpeed: s.lightPillarRotationSpeed,
+        glowAmount: s.lightPillarGlowAmount,
+        width: s.lightPillarWidth,
+        height: s.lightPillarHeight,
+        noiseIntensity: s.lightPillarNoiseIntensity,
+        rotation: s.lightPillarRotation,
+      }
+      const saved = s.userLightPillars || []
+      updateSetting("userLightPillars", [...saved, newPreset])
+      saveSettings()
+      renderUserLightPillars()
+      showAlert("Light Pillar BG saved!")
+    })
+  }
+
+  // ── Light Pillar multi-select toolbar wiring ──────────────────────
+  ;(function setupLightPillarMultiSelect() {
+    const selectModeBtn = document.getElementById("light-pillar-select-mode-btn")
+    const toolbar = document.getElementById("light-pillar-select-toolbar")
+    const deleteSelectedBtn = document.getElementById("light-pillar-delete-selected-btn")
+    const cancelBtn = document.getElementById("light-pillar-select-cancel-btn")
+    if (!selectModeBtn) return
+    let selectMode = false
+    const selectedIds = new Set()
+    selectModeBtn.addEventListener("click", () => {
+      selectMode = !selectMode
+      selectedIds.clear()
+      if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
+    })
+    if (cancelBtn) cancelBtn.addEventListener("click", () => {
+      selectMode = false
+      selectedIds.clear()
+      if (toolbar) toolbar.style.display = "none"
+    })
+    if (deleteSelectedBtn) deleteSelectedBtn.addEventListener("click", async () => {
+      if (selectedIds.size === 0) return
+      const i18n = geti18n()
+      if (await showConfirm(i18n.alert_delete_bg_confirm || `Delete ${selectedIds.size} preset(s)?`)) {
+        const s = getSettings()
+        s.userLightPillars = (s.userLightPillars || []).filter((_, i) => !selectedIds.has(i))
+        saveSettings()
+        selectedIds.clear()
+        selectMode = false
+        if (toolbar) toolbar.style.display = "none"
+        renderUserLightPillars()
+      }
+    })
+  })()
+
   // Initialize data and renderers
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)
   renderUserColors(DOM_EXPORTS)
@@ -1285,5 +1583,7 @@ export function initSettings() {
     handleSettingUpdate("svgWaveActive", true)
   })
   renderUserGradientV2s(DOM_EXPORTS)
+  renderUserSilks()
+  renderUserLightPillars()
   applySettings()
 }

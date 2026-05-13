@@ -1355,6 +1355,9 @@ export const silkNoiseValue = document.getElementById("silk-noise-value")
 export const silkRotation = document.getElementById("silk-rotation")
 export const silkRotationValue = document.getElementById("silk-rotation-value")
 export const silkRandomBtn = document.getElementById("silk-random-btn")
+export const silkSaveBtn = document.getElementById("silk-save-btn")
+export const userSilksGallery = document.getElementById("user-silks-gallery")
+export const userSilksGalleryWrap = document.getElementById("user-silks-gallery-wrap")
 
 // Light Pillar Effect
 export const lightPillarToggleBtn = document.getElementById(
@@ -1410,6 +1413,9 @@ export const lightPillarRotation = document.getElementById(
 export const lightPillarRotationValue = document.getElementById(
   "light-pillar-rotation-value",
 )
+export const lightPillarSaveBtn = document.getElementById("light-pillar-save-btn")
+export const userLightPillarsGallery = document.getElementById("user-light-pillars-gallery")
+export const userLightPillarsGalleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
 
 export const softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",

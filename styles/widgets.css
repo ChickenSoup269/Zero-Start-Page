@@ -3500,17 +3500,9 @@ body.bookmark-taskbar-left-mode
   animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 body.bookmark-sidebar-mode .clock-date-wrap,
-body.bookmark-sidebar-mode .search-container,
-body.bookmark-sidebar-mode #custom-title-display,
 body.bookmark-taskbar-mode .clock-date-wrap,
-body.bookmark-taskbar-mode .search-container,
-body.bookmark-taskbar-mode #custom-title-display,
 body.bookmark-taskbar-top-mode .clock-date-wrap,
-body.bookmark-taskbar-top-mode .search-container,
-body.bookmark-taskbar-top-mode #custom-title-display,
-body.bookmark-taskbar-left-mode .clock-date-wrap,
-body.bookmark-taskbar-left-mode .search-container,
-body.bookmark-taskbar-left-mode #custom-title-display {
+body.bookmark-taskbar-left-mode .clock-date-wrap {
   transform: scale(var(--clock-scale, 1));
 }
 
