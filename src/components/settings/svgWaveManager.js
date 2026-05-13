@@ -133,16 +133,23 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.style.backgroundSize = "cover"
 
     // Check if this wave is currently active
-    const isActive = settings.svgWaveActive && !settings.background &&
-                     Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
-                     Number(settings.svgWaveAmplitudeX ?? 200) === Number(wave.amplitudeX ?? 200) &&
-                     Number(settings.svgWaveAmplitudeY ?? 80) === Number(wave.amplitudeY ?? 80) &&
-                     Number(settings.svgWaveStartHue ?? 200) === Number(wave.startHue ?? 200) &&
-                     Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
-                     Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0);
-    
+    const isActive =
+      settings.svgWaveActive &&
+      !settings.gradientV2Active &&
+      !settings.silkActive &&
+      !settings.background &&
+      Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
+      Number(settings.svgWaveAmplitudeX ?? 200) ===
+        Number(wave.amplitudeX ?? 200) &&
+      Number(settings.svgWaveAmplitudeY ?? 80) ===
+        Number(wave.amplitudeY ?? 80) &&
+      Number(settings.svgWaveStartHue ?? 200) ===
+        Number(wave.startHue ?? 200) &&
+      Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
+      Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0)
+
     if (isActive) {
-      item.classList.add("active");
+      item.classList.add("active")
     }
 
     if (wave.isFavorite) {
@@ -197,7 +204,9 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
         e.dataTransfer.dropEffect = "move"
         item.classList.add("drag-over")
       })
-      item.addEventListener("dragleave", () => item.classList.remove("drag-over"))
+      item.addEventListener("dragleave", () =>
+        item.classList.remove("drag-over"),
+      )
       item.addEventListener("dragend", () => item.classList.remove("dragging"))
       item.addEventListener("drop", (e) => {
         e.preventDefault()
@@ -215,7 +224,7 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
 
     item.addEventListener("click", () => {
       if (svgWaveSelectMode) return
-      
+
       // Update individual settings directly (synchronous)
       updateSetting("svgWaveLines", wave.lines)
       updateSetting("svgWaveAmplitudeX", wave.amplitudeX)
@@ -232,10 +241,10 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       updateSetting("svgWaveEndSaturation", wave.endSaturation)
       updateSetting("svgWaveEndLightness", wave.endLightness)
       updateSetting("background", null)
-      
+
       // Trigger global refresh via a single handleSettingUpdate call
       if (window.appHandleSettingUpdate) {
-          window.appHandleSettingUpdate("svgWaveActive", true);
+        window.appHandleSettingUpdate("svgWaveActive", true)
       }
     })
 

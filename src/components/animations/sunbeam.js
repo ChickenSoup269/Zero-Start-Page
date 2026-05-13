@@ -19,7 +19,9 @@ export class SunbeamEffect {
     this.canvas.style.display = "none"
     this.canvasWrapper.appendChild(this.canvas)
 
-    this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl")
+    this.gl =
+      this.canvas.getContext("webgl") ||
+      this.canvas.getContext("experimental-webgl")
     this.active = false
 
     if (typeof options === "string") {
@@ -39,7 +41,8 @@ export class SunbeamEffect {
     this.noiseAmount = 0.0
     this.distortion = 0.0
     this.raysOrigin = "top-center" // could be top-left, left, etc.
-    this.followMouse = true
+    this.followMouse = false
+    this.angle = options.angle || 0
 
     this.mouseX = 0.5
     this.mouseY = 0.5
@@ -63,7 +66,11 @@ export class SunbeamEffect {
   _hexToRgbForm(hex) {
     const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return m
-      ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255]
+      ? [
+          parseInt(m[1], 16) / 255,
+          parseInt(m[2], 16) / 255,
+          parseInt(m[3], 16) / 255,
+        ]
       : [1, 1, 1]
   }
 
@@ -218,10 +225,7 @@ export class SunbeamEffect {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
-        -1, -1, 1, -1, -1, 1,
-        -1, 1, 1, -1, 1, 1,
-      ]),
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
       gl.STATIC_DRAW,
     )
 
@@ -259,7 +263,7 @@ export class SunbeamEffect {
   }
 
   setAngle(deg) {
-    // For compatibility with previous API
+    this.angle = deg
   }
 
   start() {
@@ -302,7 +306,11 @@ export class SunbeamEffect {
     gl.vertexAttribPointer(this.positionLocation, 2, gl.FLOAT, false, 0, 0)
 
     gl.uniform1f(this.uniforms.iTime, this.time * 0.001)
-    gl.uniform2f(this.uniforms.iResolution, this.canvas.width, this.canvas.height)
+    gl.uniform2f(
+      this.uniforms.iResolution,
+      this.canvas.width,
+      this.canvas.height,
+    )
 
     const colorRGB = this._hexToRgbForm(this.color)
     gl.uniform3f(this.uniforms.raysColor, colorRGB[0], colorRGB[1], colorRGB[2])
@@ -316,14 +324,29 @@ export class SunbeamEffect {
     gl.uniform1f(this.uniforms.noiseAmount, this.noiseAmount)
     gl.uniform1f(this.uniforms.distortion, this.distortion)
 
-    const { anchor, dir } = this._getAnchorAndDir(this.raysOrigin, this.canvas.width, this.canvas.height)
+    const { anchor, dir } = this._getAnchorAndDir(
+      this.raysOrigin,
+      this.canvas.width,
+      this.canvas.height,
+    )
+
+    // Apply angle to direction
+    const angleRad = ((this.angle || 0) * Math.PI) / 180
+    // Rotating the base direction (0, 1 for top-center) by angle
+    const c = Math.cos(angleRad)
+    const s = Math.sin(-angleRad)
+    const rotatedDirX = dir[0] * c - dir[1] * s
+    const rotatedDirY = dir[0] * s + dir[1] * c
+
     gl.uniform2f(this.uniforms.rayPos, anchor[0], anchor[1])
-    gl.uniform2f(this.uniforms.rayDir, dir[0], dir[1])
+    gl.uniform2f(this.uniforms.rayDir, rotatedDirX, rotatedDirY)
 
     if (this.followMouse && this.mouseInfluence > 0.0) {
       const smoothing = 0.92
-      this.smoothMouseX = this.smoothMouseX * smoothing + this.mouseX * (1 - smoothing)
-      this.smoothMouseY = this.smoothMouseY * smoothing + this.mouseY * (1 - smoothing)
+      this.smoothMouseX =
+        this.smoothMouseX * smoothing + this.mouseX * (1 - smoothing)
+      this.smoothMouseY =
+        this.smoothMouseY * smoothing + this.mouseY * (1 - smoothing)
       gl.uniform2f(this.uniforms.mousePos, this.smoothMouseX, this.smoothMouseY)
     } else {
       gl.uniform2f(this.uniforms.mousePos, 0.5, 0.5)
@@ -332,4 +355,3 @@ export class SunbeamEffect {
     gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 }
-

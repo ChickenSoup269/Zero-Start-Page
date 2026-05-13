@@ -313,7 +313,12 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   // Add Random Color Swatch to Images Gallery
   const randomItem = document.createElement("div")
   randomItem.className = "local-bg-item random-color-item"
-  if (!settings.svgWaveActive && settings.background?.startsWith("#")) {
+  if (
+    !settings.svgWaveActive &&
+    !settings.gradientV2Active &&
+    !settings.silkActive &&
+    settings.background?.startsWith("#")
+  ) {
     randomItem.classList.add("active")
   }
   randomItem.dataset.bgId = "random-color"
@@ -327,17 +332,25 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       const bgId = typeof bgData === "object" ? bgData.id : bgData
       const bgUid = typeof bgData === "object" ? bgData.uid || bgId : bgId
       const isFavorite = typeof bgData === "object" ? bgData.isFavorite : false
-      const authorName = typeof bgData === "object" ? (bgData.authorName || bgData.author) : null
+      const authorName =
+        typeof bgData === "object" ? bgData.authorName || bgData.author : null
       const isVideo = isIdbVideo(bgId)
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
-      
+
       // Match active state by UID if possible, otherwise by ID
-      const isActive = settings.activeBgUid === bgUid || (settings.background === bgId && !settings.activeBgUid)
-      if (isActive && !settings.svgWaveActive)
+      const isActive =
+        settings.activeBgUid === bgUid ||
+        (settings.background === bgId && !settings.activeBgUid)
+      if (
+        isActive &&
+        !settings.svgWaveActive &&
+        !settings.gradientV2Active &&
+        !settings.silkActive
+      )
         item.classList.add("active")
-      
+
       item.dataset.bgId = bgId
       item.dataset.bgUid = bgUid
 
@@ -419,7 +432,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           settings.userBackgrounds.splice(index, 1)
           if (isIdbMedia(bgId)) {
             // Only delete from IndexedDB if no other entries use this ID
-            const count = settings.userBackgrounds.filter(b => (typeof b === 'object' ? b.id : b) === bgId).length
+            const count = settings.userBackgrounds.filter(
+              (b) => (typeof b === "object" ? b.id : b) === bgId,
+            ).length
             if (count === 0) deleteImage(bgId).catch(() => {})
           }
           if (settings.activeBgUid === bgUid) {
@@ -565,16 +580,18 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
   bgSelectAllBtn.addEventListener("click", () => {
     const settings = getSettings()
-    const allUserIds = (settings.userBackgrounds || []).map(bg => typeof bg === 'object' ? bg.id : bg)
-    
+    const allUserIds = (settings.userBackgrounds || []).map((bg) =>
+      typeof bg === "object" ? bg.id : bg,
+    )
+
     // Find all user-uploaded items in all galleries
     const galleries = [
       document.getElementById("local-images-gallery"),
-      document.getElementById("local-videos-gallery")
+      document.getElementById("local-videos-gallery"),
     ].filter(Boolean)
-    
+
     const allItems = []
-    galleries.forEach(g => {
+    galleries.forEach((g) => {
       allItems.push(...g.querySelectorAll(".local-bg-item.user-uploaded"))
     })
 
@@ -599,10 +616,10 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     const settings = getSettings()
     const toDelete = Array.from(bgSelectedIds)
-    
+
     // Fix: Handle both string IDs and objects in userBackgrounds
-    settings.userBackgrounds = (settings.userBackgrounds || []).filter(bg => {
-      const bgId = typeof bg === 'object' ? bg.id : bg
+    settings.userBackgrounds = (settings.userBackgrounds || []).filter((bg) => {
+      const bgId = typeof bg === "object" ? bg.id : bg
       return !bgSelectedIds.has(bgId)
     })
 
@@ -660,19 +677,19 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
       const settings = getSettings()
       const bgUid = item.dataset.bgUid
       const bgId = item.dataset.bgId
-      
+
       // Find the specific entry in userBackgrounds
-      const bgData = (settings.userBackgrounds || []).find(bg => 
-        (typeof bg === 'object' ? (bg.uid || bg.id) : bg) === bgUid
+      const bgData = (settings.userBackgrounds || []).find(
+        (bg) => (typeof bg === "object" ? bg.uid || bg.id : bg) === bgUid,
       )
 
-      if (typeof bgData === 'object' && bgData.settings) {
+      if (typeof bgData === "object" && bgData.settings) {
         // Apply stored settings for this specific background preset
         Object.entries(bgData.settings).forEach(([key, val]) => {
           updateSetting(key, val)
         })
       }
-      
+
       updateSetting("activeBgUid", bgUid)
       handleSettingUpdate("background", bgId)
     }

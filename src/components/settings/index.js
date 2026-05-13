@@ -122,6 +122,7 @@ import { HyperspaceEffect } from "../animations/hyperspace.js"
 import { GradientV2Effect } from "../animations/gradientV2.js"
 import { PixelSnowEffect } from "../animations/pixelSnow.js"
 import { SoftAuroraEffect } from "../animations/softAurora.js"
+import { SilkEffect } from "../animations/silk.js"
 
 function getExtensionVersion() {
   try {
@@ -175,7 +176,10 @@ export function initSettings() {
       settings.snowfallColor || "#ffffff",
     ),
     snowfallHDEffect: new SnowfallHDEffect("effect-canvas"),
-    auroraWaveEffect: new AuroraWaveEffect("effect-canvas", settings.auroraWaveColor || "#00bcd4"),
+    auroraWaveEffect: new AuroraWaveEffect(
+      "effect-canvas",
+      settings.auroraWaveColor || "#00bcd4",
+    ),
     northernLightsEffect: new NorthernLightsEffect("effect-canvas", {
       color: settings.northernLightsColor || "#00ff88",
       style: settings.northernLightsStyle || "hd",
@@ -378,6 +382,13 @@ export function initSettings() {
       bandSpread: settings.softAuroraBandSpread,
       enableMouseInteraction: settings.softAuroraEnableMouse,
     }),
+    silkEffect: new SilkEffect("silk-canvas", {
+      color: settings.silkColor,
+      speed: settings.silkSpeed,
+      scale: settings.silkScale,
+      noise: settings.silkNoise,
+      rotation: settings.silkRotation,
+    }),
     svgWaveEffect: new SvgWaveGenerator(),
   }
 
@@ -414,12 +425,14 @@ export function initSettings() {
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
       updateSetting("gradientV2Active", false)
+      updateSetting("silkActive", false)
     } else {
       updateSetting(key, value)
       if (key === "background") {
         if (value != null) {
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
+          updateSetting("silkActive", false)
         }
         // Clear Unsplash credit if we switch to a different background
         // that isn't an Unsplash image (managed in unsplashFetcher.js)
@@ -435,11 +448,15 @@ export function initSettings() {
 
     // Clear active theme if a themeable setting is changed manually
     const currentSettings = getSettings()
-    if (currentSettings.theme && key !== "theme" && (isGradient || THEMEABLE_KEYS.includes(key))) {
+    if (
+      currentSettings.theme &&
+      key !== "theme" &&
+      (isGradient || THEMEABLE_KEYS.includes(key))
+    ) {
       updateSetting("theme", null)
       // We need to update UI as well
       const themeItems = document.querySelectorAll("#themes-grid .theme-item")
-      themeItems.forEach(item => item.classList.remove("active"))
+      themeItems.forEach((item) => item.classList.remove("active"))
     }
 
     if (!skipSave) {
@@ -451,7 +468,8 @@ export function initSettings() {
       isGradient ||
       key === "background" ||
       key === "svgWaveActive" ||
-      key === "gradientV2Active"
+      key === "gradientV2Active" ||
+      key === "silkActive"
     if (shouldRefreshBackgroundGalleries) {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
@@ -467,18 +485,34 @@ export function initSettings() {
     if (key === "gradientV2Active" && value === true) {
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
-      // Update SVG checkbox if it exists
+      updateSetting("silkActive", false)
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       const svgCheckbox = document.getElementById("svg-wave-active")
       if (svgCheckbox) svgCheckbox.checked = false
     }
     if (key === "svgWaveActive" && value === true) {
       updateSetting("background", null)
       updateSetting("gradientV2Active", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      updateSetting("silkActive", false)
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+    }
+    if (key === "silkActive" && value === true) {
+      updateSetting("background", null)
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
+      const svgCheckbox = document.getElementById("svg-wave-active")
+      if (svgCheckbox) svgCheckbox.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
+      updateSetting("silkActive", false)
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
     }
 
     applySettings()
@@ -557,30 +591,90 @@ export function initSettings() {
       handleSettingUpdate("pixelSnowHQColor", e.target.value)
     })
   }
-  
+
   const hqSnowProps = [
-    { id: "pixelSnowHQFlakeSize", dom: DOM_EXPORTS.pixelSnowHQFlakeSizeSlider, val: DOM_EXPORTS.pixelSnowHQFlakeSizeVal, type: "float" },
-    { id: "pixelSnowHQMinFlakeSize", dom: DOM_EXPORTS.pixelSnowHQMinFlakeSizeSlider, val: DOM_EXPORTS.pixelSnowHQMinFlakeSizeVal, type: "float" },
-    { id: "pixelSnowHQDensity", dom: DOM_EXPORTS.pixelSnowHQDensitySlider, val: DOM_EXPORTS.pixelSnowHQDensityVal, type: "float" },
-    { id: "pixelSnowHQSpeed", dom: DOM_EXPORTS.pixelSnowHQSpeedSlider, val: DOM_EXPORTS.pixelSnowHQSpeedVal, type: "float" },
-    { id: "pixelSnowHQPixelResolution", dom: DOM_EXPORTS.pixelSnowHQPixelResSlider, val: DOM_EXPORTS.pixelSnowHQPixelResVal, type: "int" },
-    { id: "pixelSnowHQDepthFade", dom: DOM_EXPORTS.pixelSnowHQDepthFadeSlider, val: DOM_EXPORTS.pixelSnowHQDepthFadeVal, type: "float" },
-    { id: "pixelSnowHQFarPlane", dom: DOM_EXPORTS.pixelSnowHQFarPlaneSlider, val: DOM_EXPORTS.pixelSnowHQFarPlaneVal, type: "int" },
-    { id: "pixelSnowHQBrightness", dom: DOM_EXPORTS.pixelSnowHQBrightnessSlider, val: DOM_EXPORTS.pixelSnowHQBrightnessVal, type: "float" },
-    { id: "pixelSnowHQGamma", dom: DOM_EXPORTS.pixelSnowHQGammaSlider, val: DOM_EXPORTS.pixelSnowHQGammaVal, type: "float" },
-    { id: "pixelSnowHQDirection", dom: DOM_EXPORTS.pixelSnowHQDirectionSlider, val: DOM_EXPORTS.pixelSnowHQDirectionVal, type: "int", suffix: "°" },
+    {
+      id: "pixelSnowHQFlakeSize",
+      dom: DOM_EXPORTS.pixelSnowHQFlakeSizeSlider,
+      val: DOM_EXPORTS.pixelSnowHQFlakeSizeVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQMinFlakeSize",
+      dom: DOM_EXPORTS.pixelSnowHQMinFlakeSizeSlider,
+      val: DOM_EXPORTS.pixelSnowHQMinFlakeSizeVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQDensity",
+      dom: DOM_EXPORTS.pixelSnowHQDensitySlider,
+      val: DOM_EXPORTS.pixelSnowHQDensityVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQSpeed",
+      dom: DOM_EXPORTS.pixelSnowHQSpeedSlider,
+      val: DOM_EXPORTS.pixelSnowHQSpeedVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQPixelResolution",
+      dom: DOM_EXPORTS.pixelSnowHQPixelResSlider,
+      val: DOM_EXPORTS.pixelSnowHQPixelResVal,
+      type: "int",
+    },
+    {
+      id: "pixelSnowHQDepthFade",
+      dom: DOM_EXPORTS.pixelSnowHQDepthFadeSlider,
+      val: DOM_EXPORTS.pixelSnowHQDepthFadeVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQFarPlane",
+      dom: DOM_EXPORTS.pixelSnowHQFarPlaneSlider,
+      val: DOM_EXPORTS.pixelSnowHQFarPlaneVal,
+      type: "int",
+    },
+    {
+      id: "pixelSnowHQBrightness",
+      dom: DOM_EXPORTS.pixelSnowHQBrightnessSlider,
+      val: DOM_EXPORTS.pixelSnowHQBrightnessVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQGamma",
+      dom: DOM_EXPORTS.pixelSnowHQGammaSlider,
+      val: DOM_EXPORTS.pixelSnowHQGammaVal,
+      type: "float",
+    },
+    {
+      id: "pixelSnowHQDirection",
+      dom: DOM_EXPORTS.pixelSnowHQDirectionSlider,
+      val: DOM_EXPORTS.pixelSnowHQDirectionVal,
+      type: "int",
+      suffix: "°",
+    },
   ]
 
-  hqSnowProps.forEach(prop => {
+  hqSnowProps.forEach((prop) => {
     if (prop.dom) {
       prop.dom.addEventListener("input", (e) => {
-        const val = prop.type === "float" ? parseFloat(e.target.value) : parseInt(e.target.value)
-        if (prop.val) prop.val.textContent = prop.type === "float" ? val.toFixed(prop.id.includes("Size") ? 3 : 2) : val + (prop.suffix || "")
+        const val =
+          prop.type === "float"
+            ? parseFloat(e.target.value)
+            : parseInt(e.target.value)
+        if (prop.val)
+          prop.val.textContent =
+            prop.type === "float"
+              ? val.toFixed(prop.id.includes("Size") ? 3 : 2)
+              : val + (prop.suffix || "")
         updateSetting(prop.id, val)
-        
+
         // Live update for performance (avoid full applySettings)
         if (settings.effect === "pixelSnowHQ" && effects.pixelSnowHQEffect) {
-          const optKey = prop.id.replace("pixelSnowHQ", "").charAt(0).toLowerCase() + prop.id.replace("pixelSnowHQ", "").slice(1)
+          const optKey =
+            prop.id.replace("pixelSnowHQ", "").charAt(0).toLowerCase() +
+            prop.id.replace("pixelSnowHQ", "").slice(1)
           effects.pixelSnowHQEffect.setOptions({ [optKey]: val })
         }
       })
@@ -603,34 +697,71 @@ export function initSettings() {
   if (DOM_EXPORTS.softAuroraColor1Picker) {
     DOM_EXPORTS.softAuroraColor1Picker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraColor1", e.target.value)
-      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ color1: e.target.value })
+      if (effects.softAuroraEffect)
+        effects.softAuroraEffect.setOptions({ color1: e.target.value })
     })
   }
   if (DOM_EXPORTS.softAuroraColor2Picker) {
     DOM_EXPORTS.softAuroraColor2Picker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraColor2", e.target.value)
-      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ color2: e.target.value })
+      if (effects.softAuroraEffect)
+        effects.softAuroraEffect.setOptions({ color2: e.target.value })
     })
   }
-  
+
   const softAuroraProps = [
-    { id: "softAuroraSpeed", dom: DOM_EXPORTS.softAuroraSpeedSlider, val: DOM_EXPORTS.softAuroraSpeedVal, type: "float" },
-    { id: "softAuroraScale", dom: DOM_EXPORTS.softAuroraScaleSlider, val: DOM_EXPORTS.softAuroraScaleVal, type: "float" },
-    { id: "softAuroraBrightness", dom: DOM_EXPORTS.softAuroraBrightnessSlider, val: DOM_EXPORTS.softAuroraBrightnessVal, type: "float" },
-    { id: "softAuroraNoiseFreq", dom: DOM_EXPORTS.softAuroraNoiseFreqSlider, val: DOM_EXPORTS.softAuroraNoiseFreqVal, type: "float" },
-    { id: "softAuroraBandHeight", dom: DOM_EXPORTS.softAuroraBandHeightSlider, val: DOM_EXPORTS.softAuroraBandHeightVal, type: "float" },
-    { id: "softAuroraBandSpread", dom: DOM_EXPORTS.softAuroraBandSpreadSlider, val: DOM_EXPORTS.softAuroraBandSpreadVal, type: "float" },
+    {
+      id: "softAuroraSpeed",
+      dom: DOM_EXPORTS.softAuroraSpeedSlider,
+      val: DOM_EXPORTS.softAuroraSpeedVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraScale",
+      dom: DOM_EXPORTS.softAuroraScaleSlider,
+      val: DOM_EXPORTS.softAuroraScaleVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraBrightness",
+      dom: DOM_EXPORTS.softAuroraBrightnessSlider,
+      val: DOM_EXPORTS.softAuroraBrightnessVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraNoiseFreq",
+      dom: DOM_EXPORTS.softAuroraNoiseFreqSlider,
+      val: DOM_EXPORTS.softAuroraNoiseFreqVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraBandHeight",
+      dom: DOM_EXPORTS.softAuroraBandHeightSlider,
+      val: DOM_EXPORTS.softAuroraBandHeightVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraBandSpread",
+      dom: DOM_EXPORTS.softAuroraBandSpreadSlider,
+      val: DOM_EXPORTS.softAuroraBandSpreadVal,
+      type: "float",
+    },
   ]
 
-  softAuroraProps.forEach(prop => {
+  softAuroraProps.forEach((prop) => {
     if (prop.dom) {
       prop.dom.addEventListener("input", (e) => {
         const val = parseFloat(e.target.value)
-        if (prop.val) prop.val.textContent = val.toFixed(prop.id.includes("Height") || prop.id.includes("Decay") ? 2 : 1)
+        if (prop.val)
+          prop.val.textContent = val.toFixed(
+            prop.id.includes("Height") || prop.id.includes("Decay") ? 2 : 1,
+          )
         updateSetting(prop.id, val)
-        
+
         if (settings.effect === "softAurora" && effects.softAuroraEffect) {
-          const optKey = prop.id.replace("softAurora", "").charAt(0).toLowerCase() + prop.id.replace("softAurora", "").slice(1)
+          const optKey =
+            prop.id.replace("softAurora", "").charAt(0).toLowerCase() +
+            prop.id.replace("softAurora", "").slice(1)
           let mappedKey = optKey
           if (optKey === "noiseFreq") mappedKey = "noiseFrequency"
           if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
@@ -643,22 +774,50 @@ export function initSettings() {
 
   // Add the remaining new props (Octave, Layer, ColorSpeed, MouseInfluence)
   const softAuroraExtraProps = [
-    { id: "softAuroraNoiseAmp", dom: DOM_EXPORTS.softAuroraNoiseAmpSlider, val: DOM_EXPORTS.softAuroraNoiseAmpVal, type: "float" },
-    { id: "softAuroraOctaveDecay", dom: DOM_EXPORTS.softAuroraOctaveDecaySlider, val: DOM_EXPORTS.softAuroraOctaveDecayVal, type: "float" },
-    { id: "softAuroraLayerOffset", dom: DOM_EXPORTS.softAuroraLayerOffsetSlider, val: DOM_EXPORTS.softAuroraLayerOffsetVal, type: "float" },
-    { id: "softAuroraColorSpeed", dom: DOM_EXPORTS.softAuroraColorSpeedSlider, val: DOM_EXPORTS.softAuroraColorSpeedVal, type: "float" },
-    { id: "softAuroraMouseInfluence", dom: DOM_EXPORTS.softAuroraMouseInfluenceSlider, val: DOM_EXPORTS.softAuroraMouseInfluenceVal, type: "float" },
+    {
+      id: "softAuroraNoiseAmp",
+      dom: DOM_EXPORTS.softAuroraNoiseAmpSlider,
+      val: DOM_EXPORTS.softAuroraNoiseAmpVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraOctaveDecay",
+      dom: DOM_EXPORTS.softAuroraOctaveDecaySlider,
+      val: DOM_EXPORTS.softAuroraOctaveDecayVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraLayerOffset",
+      dom: DOM_EXPORTS.softAuroraLayerOffsetSlider,
+      val: DOM_EXPORTS.softAuroraLayerOffsetVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraColorSpeed",
+      dom: DOM_EXPORTS.softAuroraColorSpeedSlider,
+      val: DOM_EXPORTS.softAuroraColorSpeedVal,
+      type: "float",
+    },
+    {
+      id: "softAuroraMouseInfluence",
+      dom: DOM_EXPORTS.softAuroraMouseInfluenceSlider,
+      val: DOM_EXPORTS.softAuroraMouseInfluenceVal,
+      type: "float",
+    },
   ]
 
-  softAuroraExtraProps.forEach(prop => {
+  softAuroraExtraProps.forEach((prop) => {
     if (prop.dom) {
       prop.dom.addEventListener("input", (e) => {
         const val = parseFloat(e.target.value)
-        if (prop.val) prop.val.textContent = val.toFixed(prop.id.includes("Decay") ? 2 : 1)
+        if (prop.val)
+          prop.val.textContent = val.toFixed(prop.id.includes("Decay") ? 2 : 1)
         updateSetting(prop.id, val)
-        
+
         if (settings.effect === "softAurora" && effects.softAuroraEffect) {
-          const optKey = prop.id.replace("softAurora", "").charAt(0).toLowerCase() + prop.id.replace("softAurora", "").slice(1)
+          const optKey =
+            prop.id.replace("softAurora", "").charAt(0).toLowerCase() +
+            prop.id.replace("softAurora", "").slice(1)
           let mappedKey = optKey
           if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
           effects.softAuroraEffect.setOptions({ [mappedKey]: val })
@@ -671,32 +830,118 @@ export function initSettings() {
   if (DOM_EXPORTS.softAuroraMouseCheckbox) {
     DOM_EXPORTS.softAuroraMouseCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraEnableMouse", e.target.checked)
-      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ enableMouseInteraction: e.target.checked })
+      if (effects.softAuroraEffect)
+        effects.softAuroraEffect.setOptions({
+          enableMouseInteraction: e.target.checked,
+        })
     })
   }
 
   if (DOM_EXPORTS.softAuroraTransparentCheckbox) {
-    DOM_EXPORTS.softAuroraTransparentCheckbox.addEventListener("change", (e) => {
-      const isTransparent = e.target.checked
-      handleSettingUpdate("softAuroraTransparent", isTransparent)
-      if (DOM_EXPORTS.softAuroraBgColorContainer) {
-        DOM_EXPORTS.softAuroraBgColorContainer.style.display = isTransparent ? "none" : "block"
-      }
-      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ transparent: isTransparent })
-    })
+    DOM_EXPORTS.softAuroraTransparentCheckbox.addEventListener(
+      "change",
+      (e) => {
+        const isTransparent = e.target.checked
+        handleSettingUpdate("softAuroraTransparent", isTransparent)
+        if (DOM_EXPORTS.softAuroraBgColorContainer) {
+          DOM_EXPORTS.softAuroraBgColorContainer.style.display = isTransparent
+            ? "none"
+            : "block"
+        }
+        if (effects.softAuroraEffect)
+          effects.softAuroraEffect.setOptions({ transparent: isTransparent })
+      },
+    )
   }
 
   if (DOM_EXPORTS.softAuroraBgColorPicker) {
     DOM_EXPORTS.softAuroraBgColorPicker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraBackgroundColor", e.target.value)
-      if (effects.softAuroraEffect) effects.softAuroraEffect.setOptions({ backgroundColor: e.target.value })
+      if (effects.softAuroraEffect)
+        effects.softAuroraEffect.setOptions({ backgroundColor: e.target.value })
     })
   }
 
   // Effect resolution sync fix
   if (settings.effect === "pixelSnowHQ") {
-    handleSettingUpdate("pixelSnowHQPixelResolution", settings.pixelSnowHQPixelResolution || 200, false, true)
+    handleSettingUpdate(
+      "pixelSnowHQPixelResolution",
+      settings.pixelSnowHQPixelResolution || 200,
+      false,
+      true,
+    )
   }
+
+  // Silk Effect setup
+  if (DOM_EXPORTS.silkToggleBtn) {
+    DOM_EXPORTS.silkToggleBtn.addEventListener("click", () => {
+      const isHidden = DOM_EXPORTS.silkSettings.style.display === "none"
+      DOM_EXPORTS.silkSettings.style.display = isHidden ? "block" : "none"
+      DOM_EXPORTS.silkToggleLabel.textContent = isHidden
+        ? "Close Silk"
+        : "Open Silk"
+    })
+  }
+
+  if (DOM_EXPORTS.silkActive) {
+    // Sync initial state
+    DOM_EXPORTS.silkActive.checked = settings.silkActive === true
+    DOM_EXPORTS.silkActive.addEventListener("change", (e) => {
+      handleSettingUpdate("silkActive", e.target.checked)
+    })
+  }
+
+  if (DOM_EXPORTS.silkColor) {
+    DOM_EXPORTS.silkColor.value = settings.silkColor || "#7B7481"
+    DOM_EXPORTS.silkColor.addEventListener("change", (e) => {
+      handleSettingUpdate("silkColor", e.target.value)
+      if (effects.silkEffect)
+        effects.silkEffect.setOptions({ color: e.target.value })
+    })
+  }
+
+  const silkProps = [
+    {
+      id: "silkSpeed",
+      dom: DOM_EXPORTS.silkSpeed,
+      val: DOM_EXPORTS.silkSpeedValue,
+    },
+    {
+      id: "silkScale",
+      dom: DOM_EXPORTS.silkScale,
+      val: DOM_EXPORTS.silkScaleValue,
+    },
+    {
+      id: "silkNoise",
+      dom: DOM_EXPORTS.silkNoise,
+      val: DOM_EXPORTS.silkNoiseValue,
+    },
+    {
+      id: "silkRotation",
+      dom: DOM_EXPORTS.silkRotation,
+      val: DOM_EXPORTS.silkRotationValue,
+    },
+  ]
+
+  silkProps.forEach((prop) => {
+    if (prop.dom) {
+      if (settings[prop.id] !== undefined) {
+        prop.dom.value = settings[prop.id]
+        if (prop.val)
+          prop.val.textContent = parseFloat(settings[prop.id]).toFixed(1)
+      }
+      prop.dom.addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value)
+        if (prop.val) prop.val.textContent = val.toFixed(1)
+        updateSetting(prop.id, val)
+        if (effects.silkEffect) {
+          const optKey = prop.id.replace("silk", "").toLowerCase()
+          effects.silkEffect.setOptions({ [optKey]: val })
+        }
+      })
+      prop.dom.addEventListener("change", () => saveSettings())
+    }
+  })
 
   // Initialize data and renderers
   populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)

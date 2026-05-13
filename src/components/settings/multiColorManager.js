@@ -187,7 +187,9 @@ export function renderSavedMultiColors(DOM_REFS) {
         const radialShape = preset.multiColorRadialShape || "circle"
         const angle = preset.angle
 
-        const prefix = repeating ? `repeating-${type}-gradient` : `${type}-gradient`
+        const prefix = repeating
+          ? `repeating-${type}-gradient`
+          : `${type}-gradient`
         let typeParams = ""
         if (type === "linear") {
           typeParams = `${angle}deg, `
@@ -205,30 +207,50 @@ export function renderSavedMultiColors(DOM_REFS) {
           .join(", ")
         generatedBg = `${prefix}(${typeParams}${stops})`
       }
-      
+
       item.style.background = generatedBg
       const currentBg = settings.background || ""
-      let isCurrentActive = !settings.svgWaveActive && 
-                             (currentBg === generatedBg || 
-                              currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
-      
+      let isCurrentActive =
+        !settings.svgWaveActive &&
+        !settings.gradientV2Active &&
+        !settings.silkActive &&
+        (currentBg === generatedBg ||
+          currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
+
       // Fallback: Check if individual parameters match (when background is null but this preset is current)
-      if (!isCurrentActive && !settings.background && !settings.svgWaveActive) {
-          isCurrentActive = 
-            (preset.mode || "gradient") === (settings.multiColorMode || "smooth") &&
-            JSON.stringify(preset.gradientStops) === JSON.stringify(settings.multiColors || []) &&
-            Number(preset.angle) === Number(settings.multiGradientAngle) &&
-            (preset.multiColorType || "linear") === (settings.multiColorType || "linear") &&
-            (preset.multiColorRepeating === true) === (settings.multiColorRepeating === true) &&
-            (preset.multiColorPosition || "center") === (settings.multiColorPosition || "center") &&
-            (preset.multiColorRadialShape || "circle") === (settings.multiColorRadialShape || "circle") &&
-            (preset.showDividers === undefined ? true : preset.showDividers) === (settings.multiColorDividers !== false) &&
-            (preset.dividerColor || "#FFFFFF") === (settings.multiColorDividerColor || "#FFFFFF") &&
-            Number(preset.dividerWidth || 1.2) === Number(settings.multiColorDividerWidth || 1.2) &&
-            Boolean(preset.freeLineAngles) === Boolean(settings.multiColorFreeLineAngles) &&
-            JSON.stringify(preset.lineAngles || []) === JSON.stringify(settings.multiColorLineAngles || []);
+      if (
+        !isCurrentActive &&
+        !settings.background &&
+        !settings.svgWaveActive &&
+        !settings.gradientV2Active &&
+        !settings.silkActive
+      ) {
+        isCurrentActive =
+          (preset.mode || "gradient") ===
+            (settings.multiColorMode || "smooth") &&
+          JSON.stringify(preset.gradientStops) ===
+            JSON.stringify(settings.multiColors || []) &&
+          Number(preset.angle) === Number(settings.multiGradientAngle) &&
+          (preset.multiColorType || "linear") ===
+            (settings.multiColorType || "linear") &&
+          (preset.multiColorRepeating === true) ===
+            (settings.multiColorRepeating === true) &&
+          (preset.multiColorPosition || "center") ===
+            (settings.multiColorPosition || "center") &&
+          (preset.multiColorRadialShape || "circle") ===
+            (settings.multiColorRadialShape || "circle") &&
+          (preset.showDividers === undefined ? true : preset.showDividers) ===
+            (settings.multiColorDividers !== false) &&
+          (preset.dividerColor || "#FFFFFF") ===
+            (settings.multiColorDividerColor || "#FFFFFF") &&
+          Number(preset.dividerWidth || 1.2) ===
+            Number(settings.multiColorDividerWidth || 1.2) &&
+          Boolean(preset.freeLineAngles) ===
+            Boolean(settings.multiColorFreeLineAngles) &&
+          JSON.stringify(preset.lineAngles || []) ===
+            JSON.stringify(settings.multiColorLineAngles || [])
       }
-      
+
       if (isCurrentActive) {
         item.classList.add("active")
       }
@@ -365,7 +387,9 @@ export function setupMultiColorManager(applySettings) {
       )
     } else {
       // Smooth gradient mode
-      const prefix = repeating ? `repeating-${type}-gradient` : `${type}-gradient`
+      const prefix = repeating
+        ? `repeating-${type}-gradient`
+        : `${type}-gradient`
       let typeParams = ""
       if (type === "linear") {
         typeParams = `${angle}deg, `
@@ -641,7 +665,10 @@ export function setupMultiColorManager(applySettings) {
   })
 
   DOM.multiColorRadialShapeSelect.addEventListener("change", () => {
-    updateSetting("multiColorRadialShape", DOM.multiColorRadialShapeSelect.value)
+    updateSetting(
+      "multiColorRadialShape",
+      DOM.multiColorRadialShapeSelect.value,
+    )
     saveSettings()
     updateMultiColorPreview()
   })
@@ -874,7 +901,9 @@ export function setupMultiColorManager(applySettings) {
         repeating,
       )
     } else {
-      const prefix = repeating ? `repeating-${type}-gradient` : `${type}-gradient`
+      const prefix = repeating
+        ? `repeating-${type}-gradient`
+        : `${type}-gradient`
       let typeParams = ""
       if (type === "linear") {
         typeParams = `${angle}deg, `
@@ -1071,17 +1100,20 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("multiColorType", DOM.multiColorTypeSelect.value)
     updateSetting("multiColorRepeating", DOM.multiColorRepeatingToggle.checked)
     updateSetting("multiColorPosition", DOM.multiColorPositionSelect.value)
-    updateSetting("multiColorRadialShape", DOM.multiColorRadialShapeSelect.value)
+    updateSetting(
+      "multiColorRadialShape",
+      DOM.multiColorRadialShapeSelect.value,
+    )
 
     updateDividerControlsVisibility()
     updateTypeControlsVisibility()
     updateMultiColorPreview()
-    
+
     // Custom active state logic for multi-color
     updateSetting("svgWaveActive", false)
     saveSettings()
     if (window.appApplySettings) window.appApplySettings()
-    
+
     renderSavedMultiColors(DOM)
   })
 
@@ -1090,4 +1122,3 @@ export function setupMultiColorManager(applySettings) {
   // Initialize on load
   syncFromSettings()
 }
-

@@ -25,7 +25,12 @@ function normalizeGradient(gradient) {
     repeating,
     extraColorCount: Math.min(
       5,
-      Math.max(0, gradient?.extraColorCount !== undefined ? Number(gradient.extraColorCount) : 2),
+      Math.max(
+        0,
+        gradient?.extraColorCount !== undefined
+          ? Number(gradient.extraColorCount)
+          : 2,
+      ),
     ),
     customColors:
       typeof gradient?.customColors === "string" ? gradient.customColors : "",
@@ -289,30 +294,45 @@ function renderUserGradients(DOM) {
       item.dataset.customColors = gradient.customColors || ""
       item.dataset.position = gradient.position || "center"
       item.dataset.radialShape = gradient.radialShape || "circle"
-      
+
       const gradientCss = buildGradientCss(gradient)
       item.style.background = gradientCss
       item.title = `Gradient ${index + 1}`
 
       // Improved active detection
       const currentBg = settings.background || ""
-      let isCurrentActive = !settings.svgWaveActive && (currentBg === gradientCss || 
-                             (currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, "")))
-      
+      let isCurrentActive =
+        !settings.svgWaveActive &&
+        !settings.gradientV2Active &&
+        !settings.silkActive &&
+        (currentBg === gradientCss ||
+          currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
+
       // Fallback: Check if individual settings match (when background is null but this gradient is current)
-      if (!isCurrentActive && !settings.background && !settings.svgWaveActive) {
-          isCurrentActive = 
-            settings.gradientStart === gradient.start &&
-            settings.gradientEnd === gradient.end &&
-            Number(settings.gradientAngle) === Number(gradient.angle) &&
-            (settings.gradientType || "linear") === (gradient.type || "linear") &&
-            (settings.gradientRepeating === true) === (gradient.repeating === true) &&
-            Number(settings.gradientExtraColorCount || 2) === Number(gradient.extraColorCount || 2) &&
-            (settings.gradientCustomColors || "") === (gradient.customColors || "") &&
-            (settings.gradientPosition || "center") === (gradient.position || "center") &&
-            (settings.gradientRadialShape || "circle") === (gradient.radialShape || "circle");
+      if (
+        !isCurrentActive &&
+        !settings.background &&
+        !settings.svgWaveActive &&
+        !settings.gradientV2Active &&
+        !settings.silkActive
+      ) {
+        isCurrentActive =
+          settings.gradientStart === gradient.start &&
+          settings.gradientEnd === gradient.end &&
+          Number(settings.gradientAngle) === Number(gradient.angle) &&
+          (settings.gradientType || "linear") === (gradient.type || "linear") &&
+          (settings.gradientRepeating === true) ===
+            (gradient.repeating === true) &&
+          Number(settings.gradientExtraColorCount || 2) ===
+            Number(gradient.extraColorCount || 2) &&
+          (settings.gradientCustomColors || "") ===
+            (gradient.customColors || "") &&
+          (settings.gradientPosition || "center") ===
+            (gradient.position || "center") &&
+          (settings.gradientRadialShape || "circle") ===
+            (gradient.radialShape || "circle")
       }
-      
+
       if (isCurrentActive) {
         item.classList.add("active")
       }
@@ -356,9 +376,9 @@ function renderUserGradients(DOM) {
 
       item.addEventListener("click", () => {
         if (gradientSelectMode) return
-        
+
         if (window.appHandleSettingUpdate) {
-            window.appHandleSettingUpdate("background", gradientCss);
+          window.appHandleSettingUpdate("background", gradientCss)
         }
       })
 
@@ -379,7 +399,9 @@ function renderUserGradients(DOM) {
         item.addEventListener("dragleave", () =>
           item.classList.remove("drag-over"),
         )
-        item.addEventListener("dragend", () => item.classList.remove("dragging"))
+        item.addEventListener("dragend", () =>
+          item.classList.remove("dragging"),
+        )
         item.addEventListener("drop", (e) => {
           e.preventDefault()
           item.classList.remove("drag-over")

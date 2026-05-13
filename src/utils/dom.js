@@ -27,12 +27,20 @@ export const copyBugConfigBtn = document.getElementById("copy-bug-config-btn")
 
 // Theme Manager
 export const themesGrid = document.getElementById("themes-grid")
-export const saveCurrentThemeBtn = document.getElementById("save-current-theme-btn")
+export const saveCurrentThemeBtn = document.getElementById(
+  "save-current-theme-btn",
+)
 export const saveThemeModal = document.getElementById("save-theme-modal")
-export const closeSaveThemeModalBtn = document.getElementById("close-save-theme-modal-btn")
-export const customThemeNameInput = document.getElementById("custom-theme-name-input")
+export const closeSaveThemeModalBtn = document.getElementById(
+  "close-save-theme-modal-btn",
+)
+export const customThemeNameInput = document.getElementById(
+  "custom-theme-name-input",
+)
 export const themeIconGrid = document.getElementById("theme-icon-grid")
-export const confirmSaveThemeBtn = document.getElementById("confirm-save-theme-btn")
+export const confirmSaveThemeBtn = document.getElementById(
+  "confirm-save-theme-btn",
+)
 
 export const bgPositionSetting = document.getElementById("bg-position-setting")
 export const bgBlurInput = document.getElementById("bg-blur-input")
@@ -48,10 +56,18 @@ export const bgPosYInput = document.getElementById("bg-pos-y-input")
 export const bgPosYValue = document.getElementById("bg-pos-y-value")
 
 export const accentColorPicker = document.getElementById("accent-color-picker")
-export const accentColorHexInput = document.getElementById("accent-color-hex-input")
-export const accentColorToggleBtn = document.getElementById("accent-color-toggle-btn")
-export const accentColorToggleLabel = document.getElementById("accent-color-toggle-label")
-export const accentColorSettingsBody = document.getElementById("accent-color-settings-body")
+export const accentColorHexInput = document.getElementById(
+  "accent-color-hex-input",
+)
+export const accentColorToggleBtn = document.getElementById(
+  "accent-color-toggle-btn",
+)
+export const accentColorToggleLabel = document.getElementById(
+  "accent-color-toggle-label",
+)
+export const accentColorSettingsBody = document.getElementById(
+  "accent-color-settings-body",
+)
 export const randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )
@@ -63,7 +79,9 @@ export const userAccentColorsGallery = document.getElementById(
 )
 export const fontGrid = document.getElementById("font-grid")
 export const clockFontGrid = document.getElementById("clock-font-grid")
-export const fontTargetGeneralBtn = document.getElementById("font-target-general")
+export const fontTargetGeneralBtn = document.getElementById(
+  "font-target-general",
+)
 export const fontTargetClockBtn = document.getElementById("font-target-clock")
 export const customFontInput = document.getElementById("custom-font-input")
 export const loadCustomFontBtn = document.getElementById("load-custom-font-btn")
@@ -405,9 +423,8 @@ export const pixelBlastVariantSetting = document.getElementById(
 export const pixelBlastSizeSetting = document.getElementById(
   "pixel-blast-size-setting",
 )
-export const pixelBlastLiquidCheckbox = document.getElementById(
-  "pixel-blast-liquid",
-)
+export const pixelBlastLiquidCheckbox =
+  document.getElementById("pixel-blast-liquid")
 export const pixelBlastLiquidStrengthSlider = document.getElementById(
   "pixel-blast-liquid-strength-slider",
 )
@@ -641,12 +658,8 @@ export const crtScanFrequencyValue = document.getElementById(
 export const crtScanFrequencySetting = document.getElementById(
   "crt-scan-frequency-setting",
 )
-export const crtScanAngleInput = document.getElementById(
-  "crt-scan-angle-input",
-)
-export const crtScanAngleValue = document.getElementById(
-  "crt-scan-angle-value",
-)
+export const crtScanAngleInput = document.getElementById("crt-scan-angle-input")
+export const crtScanAngleValue = document.getElementById("crt-scan-angle-value")
 export const crtScanAngleSetting = document.getElementById(
   "crt-scan-angle-setting",
 )
@@ -772,12 +785,8 @@ export const framedClockThemeSelect = document.getElementById(
 export const fliqloThemeSetting = document.getElementById(
   "fliqlo-theme-setting",
 )
-export const fliqloThemeSelect = document.getElementById(
-  "fliqlo-theme-select",
-)
-export const fliqloZenCheckbox = document.getElementById(
-  "fliqlo-zen-checkbox",
-)
+export const fliqloThemeSelect = document.getElementById("fliqlo-theme-select")
+export const fliqloZenCheckbox = document.getElementById("fliqlo-zen-checkbox")
 export const fliqloTransparentCheckbox = document.getElementById(
   "fliqlo-transparent-checkbox",
 )
@@ -927,9 +936,7 @@ export const bookmarkGroupFontSizeValue = document.getElementById(
 export const enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",
 )
-export const bookmarkLimit20 = document.getElementById(
-  "bookmark-limit-20",
-)
+export const bookmarkLimit20 = document.getElementById("bookmark-limit-20")
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export const bookmarkMacosHover = document.getElementById(
@@ -959,12 +966,16 @@ export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )
-export const showQuotesCheckbox = document.getElementById("show-quotes-checkbox")
+export const showQuotesCheckbox = document.getElementById(
+  "show-quotes-checkbox",
+)
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",
 )
-export const clockDisplaySelect = document.getElementById("clock-display-select")
+export const clockDisplaySelect = document.getElementById(
+  "clock-display-select",
+)
 export const showFullCalendarCheckbox = document.getElementById(
   "show-full-calendar-checkbox",
 )
@@ -1118,117 +1129,320 @@ export const userSvgWavesGallery = document.getElementById(
 
 // Gradient V2 Controls
 export const gradientV2Active = document.getElementById("gradientV2-active")
-export const gradientV2ToggleBtn = document.getElementById("gradientV2-toggle-btn")
-export const gradientV2ToggleLabel = document.getElementById("gradientV2-toggle-label")
+export const gradientV2ToggleBtn = document.getElementById(
+  "gradientV2-toggle-btn",
+)
+export const gradientV2ToggleLabel = document.getElementById(
+  "gradientV2-toggle-label",
+)
 export const gradientV2Settings = document.getElementById("gradientV2-settings")
 export const gradientV2Color1 = document.getElementById("gradientV2-color1")
 export const gradientV2Color2 = document.getElementById("gradientV2-color2")
 export const gradientV2Color3 = document.getElementById("gradientV2-color3")
-export const gradientV2TimeSpeed = document.getElementById("gradientV2-time-speed")
-export const gradientV2TimeSpeedValue = document.getElementById("gradientV2-time-speed-value")
-export const gradientV2ColorBalance = document.getElementById("gradientV2-color-balance")
-export const gradientV2ColorBalanceValue = document.getElementById("gradientV2-color-balance-value")
-export const gradientV2WarpStrength = document.getElementById("gradientV2-warp-strength")
-export const gradientV2WarpStrengthValue = document.getElementById("gradientV2-warp-strength-value")
-export const gradientV2WarpFrequency = document.getElementById("gradientV2-warp-frequency")
-export const gradientV2WarpFrequencyValue = document.getElementById("gradientV2-warp-frequency-value")
-export const gradientV2WarpSpeed = document.getElementById("gradientV2-warp-speed")
-export const gradientV2WarpSpeedValue = document.getElementById("gradientV2-warp-speed-value")
-export const gradientV2WarpAmplitude = document.getElementById("gradientV2-warp-amplitude")
-export const gradientV2WarpAmplitudeValue = document.getElementById("gradientV2-warp-amplitude-value")
-export const gradientV2BlendAngle = document.getElementById("gradientV2-blend-angle")
-export const gradientV2BlendAngleValue = document.getElementById("gradientV2-blend-angle-value")
-export const gradientV2BlendSoftness = document.getElementById("gradientV2-blend-softness")
-export const gradientV2BlendSoftnessValue = document.getElementById("gradientV2-blend-softness-value")
-export const gradientV2RotationAmount = document.getElementById("gradientV2-rotation-amount")
-export const gradientV2RotationAmountValue = document.getElementById("gradientV2-rotation-amount-value")
-export const gradientV2NoiseScale = document.getElementById("gradientV2-noise-scale")
-export const gradientV2NoiseScaleValue = document.getElementById("gradientV2-noise-scale-value")
-export const gradientV2GrainAmount = document.getElementById("gradientV2-grain-amount")
-export const gradientV2GrainAmountValue = document.getElementById("gradientV2-grain-amount-value")
-export const gradientV2GrainScale = document.getElementById("gradientV2-grain-scale")
-export const gradientV2GrainScaleValue = document.getElementById("gradientV2-grain-scale-value")
-export const gradientV2GrainAnimated = document.getElementById("gradientV2-grain-animated")
+export const gradientV2TimeSpeed = document.getElementById(
+  "gradientV2-time-speed",
+)
+export const gradientV2TimeSpeedValue = document.getElementById(
+  "gradientV2-time-speed-value",
+)
+export const gradientV2ColorBalance = document.getElementById(
+  "gradientV2-color-balance",
+)
+export const gradientV2ColorBalanceValue = document.getElementById(
+  "gradientV2-color-balance-value",
+)
+export const gradientV2WarpStrength = document.getElementById(
+  "gradientV2-warp-strength",
+)
+export const gradientV2WarpStrengthValue = document.getElementById(
+  "gradientV2-warp-strength-value",
+)
+export const gradientV2WarpFrequency = document.getElementById(
+  "gradientV2-warp-frequency",
+)
+export const gradientV2WarpFrequencyValue = document.getElementById(
+  "gradientV2-warp-frequency-value",
+)
+export const gradientV2WarpSpeed = document.getElementById(
+  "gradientV2-warp-speed",
+)
+export const gradientV2WarpSpeedValue = document.getElementById(
+  "gradientV2-warp-speed-value",
+)
+export const gradientV2WarpAmplitude = document.getElementById(
+  "gradientV2-warp-amplitude",
+)
+export const gradientV2WarpAmplitudeValue = document.getElementById(
+  "gradientV2-warp-amplitude-value",
+)
+export const gradientV2BlendAngle = document.getElementById(
+  "gradientV2-blend-angle",
+)
+export const gradientV2BlendAngleValue = document.getElementById(
+  "gradientV2-blend-angle-value",
+)
+export const gradientV2BlendSoftness = document.getElementById(
+  "gradientV2-blend-softness",
+)
+export const gradientV2BlendSoftnessValue = document.getElementById(
+  "gradientV2-blend-softness-value",
+)
+export const gradientV2RotationAmount = document.getElementById(
+  "gradientV2-rotation-amount",
+)
+export const gradientV2RotationAmountValue = document.getElementById(
+  "gradientV2-rotation-amount-value",
+)
+export const gradientV2NoiseScale = document.getElementById(
+  "gradientV2-noise-scale",
+)
+export const gradientV2NoiseScaleValue = document.getElementById(
+  "gradientV2-noise-scale-value",
+)
+export const gradientV2GrainAmount = document.getElementById(
+  "gradientV2-grain-amount",
+)
+export const gradientV2GrainAmountValue = document.getElementById(
+  "gradientV2-grain-amount-value",
+)
+export const gradientV2GrainScale = document.getElementById(
+  "gradientV2-grain-scale",
+)
+export const gradientV2GrainScaleValue = document.getElementById(
+  "gradientV2-grain-scale-value",
+)
+export const gradientV2GrainAnimated = document.getElementById(
+  "gradientV2-grain-animated",
+)
 export const gradientV2Contrast = document.getElementById("gradientV2-contrast")
-export const gradientV2ContrastValue = document.getElementById("gradientV2-contrast-value")
+export const gradientV2ContrastValue = document.getElementById(
+  "gradientV2-contrast-value",
+)
 export const gradientV2Gamma = document.getElementById("gradientV2-gamma")
-export const gradientV2GammaValue = document.getElementById("gradientV2-gamma-value")
-export const gradientV2Saturation = document.getElementById("gradientV2-saturation")
-export const gradientV2SaturationValue = document.getElementById("gradientV2-saturation-value")
+export const gradientV2GammaValue = document.getElementById(
+  "gradientV2-gamma-value",
+)
+export const gradientV2Saturation = document.getElementById(
+  "gradientV2-saturation",
+)
+export const gradientV2SaturationValue = document.getElementById(
+  "gradientV2-saturation-value",
+)
 export const gradientV2CenterX = document.getElementById("gradientV2-center-x")
-export const gradientV2CenterXValue = document.getElementById("gradientV2-center-x-value")
+export const gradientV2CenterXValue = document.getElementById(
+  "gradientV2-center-x-value",
+)
 export const gradientV2CenterY = document.getElementById("gradientV2-center-y")
-export const gradientV2CenterYValue = document.getElementById("gradientV2-center-y-value")
+export const gradientV2CenterYValue = document.getElementById(
+  "gradientV2-center-y-value",
+)
 export const gradientV2Zoom = document.getElementById("gradientV2-zoom")
-export const gradientV2ZoomValue = document.getElementById("gradientV2-zoom-value")
-export const gradientV2RandomizeBtn = document.getElementById("gradientV2-randomize-btn")
+export const gradientV2ZoomValue = document.getElementById(
+  "gradientV2-zoom-value",
+)
+export const gradientV2RandomizeBtn = document.getElementById(
+  "gradientV2-randomize-btn",
+)
 export const gradientV2SaveBtn = document.getElementById("gradientV2-save-btn")
-export const userGradientV2sGallery = document.getElementById("user-gradientV2s-gallery")
-export const gradientV2GalleryWrap = document.getElementById("user-gradientV2s-gallery-wrap")
+export const userGradientV2sGallery = document.getElementById(
+  "user-gradientV2s-gallery",
+)
+export const gradientV2GalleryWrap = document.getElementById(
+  "user-gradientV2s-gallery-wrap",
+)
 
 // Pixel Snow HQ Controls
-export const pixelSnowHQSettings = document.getElementById("pixel-snow-hq-settings")
-export const pixelSnowHQColorPicker = document.getElementById("pixel-snow-hq-color-picker")
-export const pixelSnowHQVariantSelect = document.getElementById("pixel-snow-hq-variant-select")
-export const pixelSnowHQDensitySlider = document.getElementById("pixel-snow-hq-density-slider")
-export const pixelSnowHQDensityVal = document.getElementById("pixel-snow-hq-density-val")
-export const pixelSnowHQSpeedSlider = document.getElementById("pixel-snow-hq-speed-slider")
-export const pixelSnowHQSpeedVal = document.getElementById("pixel-snow-hq-speed-val")
-export const pixelSnowHQDirectionSlider = document.getElementById("pixel-snow-hq-direction-slider")
-export const pixelSnowHQDirectionVal = document.getElementById("pixel-snow-hq-direction-val")
-export const pixelSnowHQPixelResSlider = document.getElementById("pixel-snow-hq-pixel-res-slider")
-export const pixelSnowHQPixelResVal = document.getElementById("pixel-snow-hq-pixel-res-val")
-export const pixelSnowHQFlakeSizeSlider = document.getElementById("pixel-snow-hq-flake-size-slider")
-export const pixelSnowHQFlakeSizeVal = document.getElementById("pixel-snow-hq-flake-size-val")
-export const pixelSnowHQMinFlakeSizeSlider = document.getElementById("pixel-snow-hq-min-flake-size-slider")
-export const pixelSnowHQMinFlakeSizeVal = document.getElementById("pixel-snow-hq-min-flake-size-val")
-export const pixelSnowHQDepthFadeSlider = document.getElementById("pixel-snow-hq-depth-fade-slider")
-export const pixelSnowHQDepthFadeVal = document.getElementById("pixel-snow-hq-depth-fade-val")
-export const pixelSnowHQFarPlaneSlider = document.getElementById("pixel-snow-hq-far-plane-slider")
-export const pixelSnowHQFarPlaneVal = document.getElementById("pixel-snow-hq-far-plane-val")
-export const pixelSnowHQBrightnessSlider = document.getElementById("pixel-snow-hq-brightness-slider")
-export const pixelSnowHQBrightnessVal = document.getElementById("pixel-snow-hq-brightness-val")
-export const pixelSnowHQGammaSlider = document.getElementById("pixel-snow-hq-gamma-slider")
-export const pixelSnowHQGammaVal = document.getElementById("pixel-snow-hq-gamma-val")
+export const pixelSnowHQSettings = document.getElementById(
+  "pixel-snow-hq-settings",
+)
+export const pixelSnowHQColorPicker = document.getElementById(
+  "pixel-snow-hq-color-picker",
+)
+export const pixelSnowHQVariantSelect = document.getElementById(
+  "pixel-snow-hq-variant-select",
+)
+export const pixelSnowHQDensitySlider = document.getElementById(
+  "pixel-snow-hq-density-slider",
+)
+export const pixelSnowHQDensityVal = document.getElementById(
+  "pixel-snow-hq-density-val",
+)
+export const pixelSnowHQSpeedSlider = document.getElementById(
+  "pixel-snow-hq-speed-slider",
+)
+export const pixelSnowHQSpeedVal = document.getElementById(
+  "pixel-snow-hq-speed-val",
+)
+export const pixelSnowHQDirectionSlider = document.getElementById(
+  "pixel-snow-hq-direction-slider",
+)
+export const pixelSnowHQDirectionVal = document.getElementById(
+  "pixel-snow-hq-direction-val",
+)
+export const pixelSnowHQPixelResSlider = document.getElementById(
+  "pixel-snow-hq-pixel-res-slider",
+)
+export const pixelSnowHQPixelResVal = document.getElementById(
+  "pixel-snow-hq-pixel-res-val",
+)
+export const pixelSnowHQFlakeSizeSlider = document.getElementById(
+  "pixel-snow-hq-flake-size-slider",
+)
+export const pixelSnowHQFlakeSizeVal = document.getElementById(
+  "pixel-snow-hq-flake-size-val",
+)
+export const pixelSnowHQMinFlakeSizeSlider = document.getElementById(
+  "pixel-snow-hq-min-flake-size-slider",
+)
+export const pixelSnowHQMinFlakeSizeVal = document.getElementById(
+  "pixel-snow-hq-min-flake-size-val",
+)
+export const pixelSnowHQDepthFadeSlider = document.getElementById(
+  "pixel-snow-hq-depth-fade-slider",
+)
+export const pixelSnowHQDepthFadeVal = document.getElementById(
+  "pixel-snow-hq-depth-fade-val",
+)
+export const pixelSnowHQFarPlaneSlider = document.getElementById(
+  "pixel-snow-hq-far-plane-slider",
+)
+export const pixelSnowHQFarPlaneVal = document.getElementById(
+  "pixel-snow-hq-far-plane-val",
+)
+export const pixelSnowHQBrightnessSlider = document.getElementById(
+  "pixel-snow-hq-brightness-slider",
+)
+export const pixelSnowHQBrightnessVal = document.getElementById(
+  "pixel-snow-hq-brightness-val",
+)
+export const pixelSnowHQGammaSlider = document.getElementById(
+  "pixel-snow-hq-gamma-slider",
+)
+export const pixelSnowHQGammaVal = document.getElementById(
+  "pixel-snow-hq-gamma-val",
+)
 
 // Soft Aurora
 export const softAuroraCanvas = document.getElementById("soft-aurora-canvas")
-export const softAuroraSettings = document.getElementById("soft-aurora-settings")
-export const softAuroraColor1Picker = document.getElementById("soft-aurora-color1-picker")
-export const softAuroraColor2Picker = document.getElementById("soft-aurora-color2-picker")
-export const softAuroraSpeedSlider = document.getElementById("soft-aurora-speed-slider")
-export const softAuroraSpeedVal = document.getElementById("soft-aurora-speed-val")
-export const softAuroraScaleSlider = document.getElementById("soft-aurora-scale-slider")
-export const softAuroraScaleVal = document.getElementById("soft-aurora-scale-val")
-export const softAuroraBrightnessSlider = document.getElementById("soft-aurora-brightness-slider")
-export const softAuroraBrightnessVal = document.getElementById("soft-aurora-brightness-val")
-export const softAuroraNoiseFreqSlider = document.getElementById("soft-aurora-noise-freq-slider")
-export const softAuroraNoiseFreqVal = document.getElementById("soft-aurora-noise-freq-val")
-export const softAuroraBandHeightSlider = document.getElementById("soft-aurora-band-height-slider")
-export const softAuroraBandHeightVal = document.getElementById("soft-aurora-band-height-val")
-export const softAuroraBandSpreadSlider = document.getElementById("soft-aurora-band-spread-slider")
-export const softAuroraBandSpreadVal = document.getElementById("soft-aurora-band-spread-val")
-export const softAuroraNoiseAmpSlider = document.getElementById("soft-aurora-noise-amp-slider")
-export const softAuroraNoiseAmpVal = document.getElementById("soft-aurora-noise-amp-val")
-export const softAuroraOctaveDecaySlider = document.getElementById("soft-aurora-octave-decay-slider")
-export const softAuroraOctaveDecayVal = document.getElementById("soft-aurora-octave-decay-val")
-export const softAuroraLayerOffsetSlider = document.getElementById("soft-aurora-layer-offset-slider")
-export const softAuroraLayerOffsetVal = document.getElementById("soft-aurora-layer-offset-val")
-export const softAuroraColorSpeedSlider = document.getElementById("soft-aurora-color-speed-slider")
-export const softAuroraColorSpeedVal = document.getElementById("soft-aurora-color-speed-val")
-export const softAuroraMouseInfluenceSlider = document.getElementById("soft-aurora-mouse-influence-slider")
-export const softAuroraMouseInfluenceVal = document.getElementById("soft-aurora-mouse-influence-val")
-export const softAuroraMouseCheckbox = document.getElementById("soft-aurora-mouse-checkbox")
-export const softAuroraTransparentCheckbox = document.getElementById("soft-aurora-transparent-checkbox")
-export const softAuroraBgColorPicker = document.getElementById("soft-aurora-bg-color-picker")
+export const softAuroraSettings = document.getElementById(
+  "soft-aurora-settings",
+)
+export const softAuroraColor1Picker = document.getElementById(
+  "soft-aurora-color1-picker",
+)
+export const softAuroraColor2Picker = document.getElementById(
+  "soft-aurora-color2-picker",
+)
+export const softAuroraSpeedSlider = document.getElementById(
+  "soft-aurora-speed-slider",
+)
+export const softAuroraSpeedVal = document.getElementById(
+  "soft-aurora-speed-val",
+)
+
+// Silk Effect Controls
+export const silkToggleBtn = document.getElementById("silk-toggle-btn")
+export const silkToggleLabel = document.getElementById("silk-toggle-label")
+export const silkSettings = document.getElementById("silk-settings")
+export const silkActive = document.getElementById("silk-active")
+export const silkColor = document.getElementById("silk-color")
+export const silkSpeed = document.getElementById("silk-speed")
+export const silkSpeedValue = document.getElementById("silk-speed-value")
+export const silkScale = document.getElementById("silk-scale")
+export const silkScaleValue = document.getElementById("silk-scale-value")
+export const silkNoise = document.getElementById("silk-noise")
+export const silkNoiseValue = document.getElementById("silk-noise-value")
+export const silkRotation = document.getElementById("silk-rotation")
+export const silkRotationValue = document.getElementById("silk-rotation-value")
+export const softAuroraScaleSlider = document.getElementById(
+  "soft-aurora-scale-slider",
+)
+export const softAuroraScaleVal = document.getElementById(
+  "soft-aurora-scale-val",
+)
+export const softAuroraBrightnessSlider = document.getElementById(
+  "soft-aurora-brightness-slider",
+)
+export const softAuroraBrightnessVal = document.getElementById(
+  "soft-aurora-brightness-val",
+)
+export const softAuroraNoiseFreqSlider = document.getElementById(
+  "soft-aurora-noise-freq-slider",
+)
+export const softAuroraNoiseFreqVal = document.getElementById(
+  "soft-aurora-noise-freq-val",
+)
+export const softAuroraBandHeightSlider = document.getElementById(
+  "soft-aurora-band-height-slider",
+)
+export const softAuroraBandHeightVal = document.getElementById(
+  "soft-aurora-band-height-val",
+)
+export const softAuroraBandSpreadSlider = document.getElementById(
+  "soft-aurora-band-spread-slider",
+)
+export const softAuroraBandSpreadVal = document.getElementById(
+  "soft-aurora-band-spread-val",
+)
+export const softAuroraNoiseAmpSlider = document.getElementById(
+  "soft-aurora-noise-amp-slider",
+)
+export const softAuroraNoiseAmpVal = document.getElementById(
+  "soft-aurora-noise-amp-val",
+)
+export const softAuroraOctaveDecaySlider = document.getElementById(
+  "soft-aurora-octave-decay-slider",
+)
+export const softAuroraOctaveDecayVal = document.getElementById(
+  "soft-aurora-octave-decay-val",
+)
+export const softAuroraLayerOffsetSlider = document.getElementById(
+  "soft-aurora-layer-offset-slider",
+)
+export const softAuroraLayerOffsetVal = document.getElementById(
+  "soft-aurora-layer-offset-val",
+)
+export const softAuroraColorSpeedSlider = document.getElementById(
+  "soft-aurora-color-speed-slider",
+)
+export const softAuroraColorSpeedVal = document.getElementById(
+  "soft-aurora-color-speed-val",
+)
+export const softAuroraMouseInfluenceSlider = document.getElementById(
+  "soft-aurora-mouse-influence-slider",
+)
+export const softAuroraMouseInfluenceVal = document.getElementById(
+  "soft-aurora-mouse-influence-val",
+)
+export const softAuroraMouseCheckbox = document.getElementById(
+  "soft-aurora-mouse-checkbox",
+)
+export const softAuroraTransparentCheckbox = document.getElementById(
+  "soft-aurora-transparent-checkbox",
+)
+export const softAuroraBgColorPicker = document.getElementById(
+  "soft-aurora-bg-color-picker",
+)
 
 // Multi-select for Gradient V2
-export const gradientV2SelectModeBtn = document.getElementById("gradientV2-select-mode-btn")
-export const gradientV2SelectToolbar = document.getElementById("gradientV2-select-toolbar")
-export const gradientV2SelectCount = document.getElementById("gradientV2-select-count")
-export const gradientV2SelectAllBtn = document.getElementById("gradientV2-select-all-btn")
-export const gradientV2DeleteSelectedBtn = document.getElementById("gradientV2-delete-selected-btn")
-export const gradientV2SelectCancelBtn = document.getElementById("gradientV2-select-cancel-btn")
+export const gradientV2SelectModeBtn = document.getElementById(
+  "gradientV2-select-mode-btn",
+)
+export const gradientV2SelectToolbar = document.getElementById(
+  "gradientV2-select-toolbar",
+)
+export const gradientV2SelectCount = document.getElementById(
+  "gradientV2-select-count",
+)
+export const gradientV2SelectAllBtn = document.getElementById(
+  "gradientV2-select-all-btn",
+)
+export const gradientV2DeleteSelectedBtn = document.getElementById(
+  "gradientV2-delete-selected-btn",
+)
+export const gradientV2SelectCancelBtn = document.getElementById(
+  "gradientV2-select-cancel-btn",
+)
 
 // Donate Modal
 export const donateTriggerBtn = document.getElementById("donate-trigger-btn")
@@ -1341,17 +1555,28 @@ export const svgWaveSelectCancelBtn = document.getElementById(
   "svg-wave-select-cancel-btn",
 )
 
-export function fadeToggle(el, show, displayStyle = 'flex') {
-  if (!el) return;
+export function fadeToggle(el, show, displayStyle = "flex") {
+  if (!el) return
   if (show) {
-    if (el.style.display !== 'none') return;
-    el.style.opacity = 0;
-    el.style.display = displayStyle;
-    const anim = el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, easing: 'ease-out' });
-    anim.onfinish = () => { el.style.opacity = ''; };
+    if (el.style.display !== "none") return
+    el.style.opacity = 0
+    el.style.display = displayStyle
+    const anim = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 300,
+      easing: "ease-out",
+    })
+    anim.onfinish = () => {
+      el.style.opacity = ""
+    }
   } else {
-    if (el.style.display === 'none') return;
-    const anim = el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in' });
-    anim.onfinish = () => { el.style.display = 'none'; el.style.opacity = ''; };
+    if (el.style.display === "none") return
+    const anim = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 300,
+      easing: "ease-in",
+    })
+    anim.onfinish = () => {
+      el.style.display = "none"
+      el.style.opacity = ""
+    }
   }
 }

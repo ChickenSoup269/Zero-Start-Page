@@ -67,6 +67,7 @@ const EFFECT_KEY_MAP = {
   skyLanterns: "skyLanternsEffect",
   pixelRun: "pixelRunEffect",
   softAurora: "softAuroraEffect",
+  silk: "silkEffect",
 
   nintendoPixel: "nintendoPixelEffect",
   retroGame: "retroGameEffect",
@@ -97,6 +98,7 @@ function createApplySettings(effectInstances) {
     _prevBg = settings.background
     let shouldUseSvgWave = false
     let shouldUseGradientV2 = false
+    let shouldUseSilk = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -149,7 +151,7 @@ function createApplySettings(effectInstances) {
       notepad: "notepad-container",
       quotes: "daily-quotes",
       musicPlayer: "music-player-container",
-      visualizer: "visualizer-container"
+      visualizer: "visualizer-container",
     }
 
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
@@ -157,7 +159,7 @@ function createApplySettings(effectInstances) {
       if (el) {
         const skin = settings[`${key}Skin`]
         el.classList.toggle("skin-white-blur", skin === "white-blur")
-        
+
         // Special handling for music player wrapper inside its container
         if (key === "musicPlayer") {
           const wrapper = el.querySelector(".music-player-wrapper")
@@ -250,7 +252,23 @@ function createApplySettings(effectInstances) {
       } else {
         effectInstances.gradientV2Effect.start()
       }
-    } 
+    }
+    // Priority 1.5: Silk (Animated)
+    else if (settings.silkActive && effectInstances.silkEffect) {
+      shouldUseSilk = true
+      document.body.classList.add("bg-layer-active")
+      if (effectInstances.silkEffect.active) {
+        effectInstances.silkEffect.setOptions({
+          color: settings.silkColor,
+          speed: settings.silkSpeed,
+          scale: settings.silkScale,
+          noise: settings.silkNoise,
+          rotation: settings.silkRotation,
+        })
+      } else {
+        effectInstances.silkEffect.start()
+      }
+    }
     // Priority 2: SVG Wave
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
       shouldUseSvgWave = true
@@ -266,7 +284,7 @@ function createApplySettings(effectInstances) {
       if (bgLayer) bgLayer.classList.add(bg)
       document.body.classList.add("bg-layer-active")
       document.documentElement.style.setProperty("--text-color", "#ffffff")
-    } 
+    }
     // Priority 4: User Uploaded Image/Video
     else if (isUserUploadedBg) {
       document.body.classList.add("bg-image-active")
@@ -274,23 +292,23 @@ function createApplySettings(effectInstances) {
         if (bgVideoElement) {
           activeVideoSource = bg
           if (isIdbMedia(bg)) {
-              const url = getBlobUrlSync(bg)
-              if (url) {
-                  activeVideoSource = url
-                  if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-                    bgVideoElement.src = activeVideoSource
-                  }
-                  bgVideoElement.style.display = "block"
-                  bgVideoElement.style.opacity = "1"
-              } else {
-                  bgVideoElement.style.display = "block"
-              }
-          } else {
+            const url = getBlobUrlSync(bg)
+            if (url) {
+              activeVideoSource = url
               if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
                 bgVideoElement.src = activeVideoSource
               }
               bgVideoElement.style.display = "block"
               bgVideoElement.style.opacity = "1"
+            } else {
+              bgVideoElement.style.display = "block"
+            }
+          } else {
+            if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+              bgVideoElement.src = activeVideoSource
+            }
+            bgVideoElement.style.display = "block"
+            bgVideoElement.style.opacity = "1"
           }
         }
       } else {
@@ -305,11 +323,12 @@ function createApplySettings(effectInstances) {
       }
       document.body.style.backgroundSize = settings.bgSize || "cover"
       document.documentElement.style.setProperty("--text-color", "#ffffff")
-    } 
+    }
     // Priority 5: Remote URL or Solid Color or Legacy Gradient
     else if (bg) {
       document.body.classList.add("bg-image-active")
-      const isVideoUrl = bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
+      const isVideoUrl =
+        bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
       if (isVideoUrl) {
         if (bgVideoElement) {
           activeVideoSource = bg
@@ -328,25 +347,28 @@ function createApplySettings(effectInstances) {
       } else {
         if (bgLayer) bgLayer.style.background = bg
         document.body.classList.add("bg-layer-active")
-        document.documentElement.style.setProperty("--text-color", getContrastYIQ(bg))
+        document.documentElement.style.setProperty(
+          "--text-color",
+          getContrastYIQ(bg),
+        )
       }
-    } 
+    }
     // Fallback: Default Gradient
     else {
-        if (bgLayer) {
-          bgLayer.style.background = buildGradientCss({
-            start: settings.gradientStart,
-            end: settings.gradientEnd,
-            angle: settings.gradientAngle,
-            type: settings.gradientType,
-            repeating: settings.gradientRepeating,
-            extraColorCount: settings.gradientExtraColorCount,
-            customColors: settings.gradientCustomColors,
-            position: settings.gradientPosition,
-            radialShape: settings.gradientRadialShape,
-          })
-        }
-        document.body.classList.add("bg-layer-active")
+      if (bgLayer) {
+        bgLayer.style.background = buildGradientCss({
+          start: settings.gradientStart,
+          end: settings.gradientEnd,
+          angle: settings.gradientAngle,
+          type: settings.gradientType,
+          repeating: settings.gradientRepeating,
+          extraColorCount: settings.gradientExtraColorCount,
+          customColors: settings.gradientCustomColors,
+          position: settings.gradientPosition,
+          radialShape: settings.gradientRadialShape,
+        })
+      }
+      document.body.classList.add("bg-layer-active")
     }
 
     // Cleanup: Stop unused background effects
@@ -355,6 +377,9 @@ function createApplySettings(effectInstances) {
     }
     if (!shouldUseSvgWave && effectInstances.svgWaveEffect?.active) {
       effectInstances.svgWaveEffect.stop()
+    }
+    if (!shouldUseSilk && effectInstances.silkEffect?.active) {
+      effectInstances.silkEffect.stop()
     }
 
     // 2.1 Background Position
@@ -394,52 +419,73 @@ function createApplySettings(effectInstances) {
 
     // 1. Identify primary and clock fonts
     const rawFont = settings.font || "'Outfit', sans-serif"
-    const rawClockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
+    const rawClockFont =
+      settings.clockFont || settings.font || "'Outfit', sans-serif"
 
     const isRestrictedFont = (f) =>
-        f.includes("Electroharmonix") ||
-        f.includes("Anurati") ||
-        f.includes("E1234")
+      f.includes("Electroharmonix") ||
+      f.includes("Anurati") ||
+      f.includes("E1234")
 
-    const primaryFont = isRestrictedFont(rawFont) ? "'Outfit', sans-serif" : rawFont
+    const primaryFont = isRestrictedFont(rawFont)
+      ? "'Outfit', sans-serif"
+      : rawFont
     const clockFont = rawClockFont
 
     document.documentElement.style.setProperty("--font-primary", primaryFont)
 
     // Helper to set multiple font variables
     const applyToTargets = (targets, font) => {
-        targets.forEach(t => {
-            document.documentElement.style.setProperty(`--font-${t}`, font)
-        })
+      targets.forEach((t) => {
+        document.documentElement.style.setProperty(`--font-${t}`, font)
+      })
     }
 
     // 2. Default all clock-related font variables to primary font
-    const allClockTargets = ["clock-date", "clock", "date", "weekday", "jp-time", "jp-date", "jp-weekday"]
+    const allClockTargets = [
+      "clock-date",
+      "clock",
+      "date",
+      "weekday",
+      "jp-time",
+      "jp-date",
+      "jp-weekday",
+    ]
     applyToTargets(allClockTargets, primaryFont)
 
     // 3. Determine which elements should use the clock font
     const target = settings.clockFontTarget || "both"
 
     if (target === "weekday") {
-        // Only weekday gets clockFont, others get primaryFont
-        applyToTargets(["weekday", "jp-weekday"], clockFont)
-        
-        // Handle cool-style specifically
-        if (settings.dateClockStyle === "cool") {
-            document.documentElement.style.setProperty("--font-date", clockFont)
-            document.documentElement.style.setProperty("--font-clock", primaryFont)
-        }
-    } else {
-        // NORMAL MODE: Apply based on target selection
-        if (target === "both") {
-            applyToTargets(["clock-date", "clock", "date", "weekday", "jp-time", "jp-date", "jp-weekday"], clockFont)
-        } else if (target === "clock") {
-            applyToTargets(["clock", "clock-date", "jp-time"], clockFont)
-        } else if (target === "date") {
-            applyToTargets(["date", "jp-date"], clockFont)
-        }
-    }
+      // Only weekday gets clockFont, others get primaryFont
+      applyToTargets(["weekday", "jp-weekday"], clockFont)
 
+      // Handle cool-style specifically
+      if (settings.dateClockStyle === "cool") {
+        document.documentElement.style.setProperty("--font-date", clockFont)
+        document.documentElement.style.setProperty("--font-clock", primaryFont)
+      }
+    } else {
+      // NORMAL MODE: Apply based on target selection
+      if (target === "both") {
+        applyToTargets(
+          [
+            "clock-date",
+            "clock",
+            "date",
+            "weekday",
+            "jp-time",
+            "jp-date",
+            "jp-weekday",
+          ],
+          clockFont,
+        )
+      } else if (target === "clock") {
+        applyToTargets(["clock", "clock-date", "jp-time"], clockFont)
+      } else if (target === "date") {
+        applyToTargets(["date", "jp-date"], clockFont)
+      }
+    }
 
     const baseClockSize = Number(settings.clockSize) || 6
     const rawDateSize = Number(settings.dateSize)
@@ -452,7 +498,7 @@ function createApplySettings(effectInstances) {
     let computedDateSize = baseDateSize
 
     if (priority === "date" || displayMode === "weekday") {
-      // In date-priority mode OR Weekday-only mode, the date/weekday 
+      // In date-priority mode OR Weekday-only mode, the date/weekday
       // should take the prominent size (clock size).
       computedClockSize = baseDateSize
       computedDateSize = baseClockSize
@@ -580,10 +626,10 @@ function createApplySettings(effectInstances) {
       "bookmark-taskbar-left-mode",
     ]
     const targetClass = layout === "default" ? null : `bookmark-${layout}-mode`
-    
+
     // JITTER-PROOF: Only update classes if the layout has actually changed
     if (targetClass === null) {
-      if (layoutClasses.some(c => document.body.classList.contains(c))) {
+      if (layoutClasses.some((c) => document.body.classList.contains(c))) {
         document.body.classList.remove(...layoutClasses)
       }
     } else if (!document.body.classList.contains(targetClass)) {
@@ -669,7 +715,9 @@ function createApplySettings(effectInstances) {
 
     // Fliqlo Theme
     document.body.classList.remove("fliqlo-theme-dark", "fliqlo-theme-light")
-    document.body.classList.add(`fliqlo-theme-${settings.fliqloTheme || "dark"}`)
+    document.body.classList.add(
+      `fliqlo-theme-${settings.fliqloTheme || "dark"}`,
+    )
 
     // Context Menu Style
     document.body.classList.remove(
@@ -677,7 +725,9 @@ function createApplySettings(effectInstances) {
       "context-menu-light",
       "context-menu-none",
     )
-    document.body.classList.add(`context-menu-${settings.contextMenuStyle || "dark"}`)
+    document.body.classList.add(
+      `context-menu-${settings.contextMenuStyle || "dark"}`,
+    )
 
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
@@ -698,7 +748,8 @@ function createApplySettings(effectInstances) {
     if (dateFadeWrap) {
       const showDate = displayMode !== "hide"
       dateFadeWrap.classList.toggle("is-hidden", !showDate)
-      if (dateEl) dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
+      if (dateEl)
+        dateEl.classList.toggle("only-weekday-mode", displayMode === "weekday")
     }
 
     let finalClockColor = settings.clockColor
@@ -706,10 +757,11 @@ function createApplySettings(effectInstances) {
 
     if (!finalClockColor || !finalDateColor) {
       let fallbackColor = "#ffffff"
-      
+
       // If Fliqlo is active and theme is light, fallback to black
-      const isFliqloLight = (settings.dateClockStyle === "fliqlo" && settings.fliqloTheme === "light")
-      
+      const isFliqloLight =
+        settings.dateClockStyle === "fliqlo" && settings.fliqloTheme === "light"
+
       if (isFliqloLight) {
         fallbackColor = "#000000"
       } else if (
@@ -754,7 +806,10 @@ function createApplySettings(effectInstances) {
 
     // Theme Surface Colors
     if (settings.sidebarBg) {
-      document.documentElement.style.setProperty("--sidebar-bg", settings.sidebarBg)
+      document.documentElement.style.setProperty(
+        "--sidebar-bg",
+        settings.sidebarBg,
+      )
     }
     if (settings.panelBg) {
       document.documentElement.style.setProperty("--panel-bg", settings.panelBg)
@@ -763,10 +818,16 @@ function createApplySettings(effectInstances) {
       document.documentElement.style.setProperty("--glass-bg", settings.glassBg)
     }
     if (settings.glassBorder) {
-      document.documentElement.style.setProperty("--glass-border", settings.glassBorder)
+      document.documentElement.style.setProperty(
+        "--glass-border",
+        settings.glassBorder,
+      )
     }
     if (settings.glassEdge) {
-      document.documentElement.style.setProperty("--glass-edge", settings.glassEdge)
+      document.documentElement.style.setProperty(
+        "--glass-edge",
+        settings.glassEdge,
+      )
     }
 
     if (settings.accentColor) {
@@ -783,13 +844,13 @@ function createApplySettings(effectInstances) {
       )
 
       // Safe accent for light backgrounds (darken if too light)
-      const isLightAccent = getContrastYIQ(settings.accentColor) === "black";
+      const isLightAccent = getContrastYIQ(settings.accentColor) === "black"
       document.documentElement.style.setProperty(
         "--safe-accent",
-        isLightAccent 
+        isLightAccent
           ? `color-mix(in srgb, ${settings.accentColor}, black 25%)`
-          : settings.accentColor
-      );
+          : settings.accentColor,
+      )
 
       const rgb = hexToRgb(settings.accentColor)
       if (rgb) {
@@ -804,21 +865,39 @@ function createApplySettings(effectInstances) {
 
       if (forceLightSidebar) {
         // Force sidebar color but keep accent color independent
-        document.documentElement.style.setProperty("--sidebar-bg", "rgba(240, 240, 245, 0.98)")
+        document.documentElement.style.setProperty(
+          "--sidebar-bg",
+          "rgba(240, 240, 245, 0.98)",
+        )
         document.body.classList.add("sidebar-light")
       } else {
         // Restore actual accent color from settings
-        document.documentElement.style.setProperty("--accent-color", settings.accentColor)
+        document.documentElement.style.setProperty(
+          "--accent-color",
+          settings.accentColor,
+        )
         const rgb = hexToRgb(settings.accentColor)
         if (rgb) {
-          document.documentElement.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+          document.documentElement.style.setProperty(
+            "--accent-color-rgb",
+            `${rgb.r}, ${rgb.g}, ${rgb.b}`,
+          )
         }
-        const contrastColor = getContrastYIQ(settings.accentColor) === "black" ? "#1a1a2e" : "#ffffff"
-        document.documentElement.style.setProperty("--accent-contrast-color", contrastColor)
+        const contrastColor =
+          getContrastYIQ(settings.accentColor) === "black"
+            ? "#1a1a2e"
+            : "#ffffff"
+        document.documentElement.style.setProperty(
+          "--accent-contrast-color",
+          contrastColor,
+        )
 
         // Default sidebar color from theme/settings
         if (settings.sidebarBg) {
-          document.documentElement.style.setProperty("--sidebar-bg", settings.sidebarBg)
+          document.documentElement.style.setProperty(
+            "--sidebar-bg",
+            settings.sidebarBg,
+          )
         }
         document.body.classList.remove("sidebar-light")
       }
@@ -828,7 +907,10 @@ function createApplySettings(effectInstances) {
       if (unsplashRandomBtn) {
         const icon = unsplashRandomBtn.querySelector("i")
         if (icon) {
-          icon.style.color = getContrastYIQ(settings.accentColor) === "black" ? "rgba(0,0,0,0.8)" : "#ffffff"
+          icon.style.color =
+            getContrastYIQ(settings.accentColor) === "black"
+              ? "rgba(0,0,0,0.8)"
+              : "#ffffff"
         }
       }
     }
@@ -870,7 +952,11 @@ function createApplySettings(effectInstances) {
     const effectChanged = effectToStart !== _prevEffect
 
     // Update Hyperspace color if active
-    if (effectToStart === "hyperspace" && selectedEffect && selectedEffect.updateColor) {
+    if (
+      effectToStart === "hyperspace" &&
+      selectedEffect &&
+      selectedEffect.updateColor
+    ) {
       selectedEffect.updateColor(settings.accentColor)
     }
 
@@ -881,24 +967,26 @@ function createApplySettings(effectInstances) {
 
     // Show/hide dedicated canvases
     if (pixelSnowCanvas) {
-        pixelSnowCanvas.style.display = effectToStart === "pixelSnowHQ" ? "block" : "none"
+      pixelSnowCanvas.style.display =
+        effectToStart === "pixelSnowHQ" ? "block" : "none"
     }
     if (gradientCanvas) {
-        gradientCanvas.style.display = shouldUseGradientV2 ? "block" : "none"
+      gradientCanvas.style.display = shouldUseGradientV2 ? "block" : "none"
     }
     if (softAuroraCanvas) {
-        softAuroraCanvas.style.display = effectToStart === "softAurora" ? "block" : "none"
+      softAuroraCanvas.style.display =
+        effectToStart === "softAurora" ? "block" : "none"
     }
     if (effectCanvas) {
-      const isDedicated = ["pixelSnowHQ", "gradientV2", "softAurora"].includes(effectToStart)
-      const shouldShowMain = effectToStart && effectToStart !== "none" && !isDedicated
+      const isDedicated = ["pixelSnowHQ", "gradientV2", "softAurora"].includes(
+        effectToStart,
+      )
+      const shouldShowMain =
+        effectToStart && effectToStart !== "none" && !isDedicated
       effectCanvas.style.display = shouldShowMain ? "block" : "none"
     }
 
-    if (
-      effectToStart === "pixelWeather" &&
-      selectedEffect
-    ) {
+    if (effectToStart === "pixelWeather" && selectedEffect) {
       if (selectedEffect.setMode) {
         selectedEffect.setMode(settings.pixelWeatherStyle || "snow")
       }
@@ -912,10 +1000,7 @@ function createApplySettings(effectInstances) {
       }
     }
 
-    if (
-      effectToStart === "pixelSnowHQ" &&
-      selectedEffect
-    ) {
+    if (effectToStart === "pixelSnowHQ" && selectedEffect) {
       if (selectedEffect.setOptions) {
         selectedEffect.setOptions({
           color: settings.pixelSnowHQColor ?? "#ffffff",
@@ -950,7 +1035,7 @@ function createApplySettings(effectInstances) {
       selectedEffect.setOptions({
         speed: settings.pixelWeatherSpeed || 1.0,
         spacing: settings.gridSpacing || 50,
-        perspective: settings.gridPerspective !== false
+        perspective: settings.gridPerspective !== false,
       })
     }
 
@@ -990,10 +1075,7 @@ function createApplySettings(effectInstances) {
       })
     }
 
-    if (
-      effectToStart === "oceanWave" &&
-      selectedEffect
-    ) {
+    if (effectToStart === "oceanWave" && selectedEffect) {
       selectedEffect.color = settings.oceanWaveColor || "#0077b6"
       selectedEffect.position = settings.oceanWavePosition || "bottom"
     }
@@ -1074,10 +1156,11 @@ function createApplySettings(effectInstances) {
         ctx.clearRect(0, 0, effectCanvas.width, effectCanvas.height)
         effectCanvas.style.display = "none"
       }
-      
+
       const pixelSnowCanvas = document.getElementById("pixel-snow-hq-canvas")
       if (pixelSnowCanvas) {
-        pixelSnowCanvas.style.display = effectToStart === "pixelSnowHQ" ? "block" : "none"
+        pixelSnowCanvas.style.display =
+          effectToStart === "pixelSnowHQ" ? "block" : "none"
       }
 
       // 5. Start selected effect immediately (no artificial delay/flicker).
@@ -1147,26 +1230,40 @@ function updateMainBgCredit() {
 
   // If not Unsplash or missing info, try to find metadata in userBackgrounds
   if (!info || !info.authorName) {
-      const localEntry = (settings.userBackgrounds || []).find(item => 
-          (typeof item === 'object' && item.id === bg) || item === bg
-      )
-      if (localEntry && typeof localEntry === 'object') {
-          info = localEntry
-      }
+    const localEntry = (settings.userBackgrounds || []).find(
+      (item) => (typeof item === "object" && item.id === bg) || item === bg,
+    )
+    if (localEntry && typeof localEntry === "object") {
+      info = localEntry
+    }
   }
 
-  const isUnsplash = info && info.authorName && (
-      (bg && (bg.includes("unsplash") || bg.includes("images.unsplash.com") || bg.includes("api.unsplash.com"))) ||
+  const isUnsplash =
+    info &&
+    info.authorName &&
+    ((bg &&
+      (bg.includes("unsplash") ||
+        bg.includes("images.unsplash.com") ||
+        bg.includes("api.unsplash.com"))) ||
       (info.photoUrl && info.photoUrl.includes("unsplash.com")) ||
-      (info.authorUrl && info.authorUrl.includes("unsplash.com"))
-  )
+      (info.authorUrl && info.authorUrl.includes("unsplash.com")))
   const isLocalMedia = isIdbMedia(bg)
 
   if (info && info.authorName) {
-    const authorLink = info.authorUrl ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>` : info.authorName
-    const photoLink = info.photoUrl ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${isUnsplash ? "Unsplash" : "Source"}</a>` : (isUnsplash ? "Unsplash" : "Local")
+    const authorLink = info.authorUrl
+      ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>`
+      : info.authorName
+    const photoLink = info.photoUrl
+      ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${isUnsplash ? "Unsplash" : "Source"}</a>`
+      : isUnsplash
+        ? "Unsplash"
+        : "Local"
 
-    const iconClass = isUnsplash ? "fa-brands fa-unsplash credit-logo-unsplash" : (isIdbVideo(bg) ? "fa-solid fa-video credit-logo-local" : "fa-solid fa-image credit-logo-local")
+    const iconClass = isUnsplash
+      ? "fa-brands fa-unsplash credit-logo-unsplash"
+      : isIdbVideo(bg)
+        ? "fa-solid fa-video credit-logo-local"
+        : "fa-solid fa-image credit-logo-local"
 
     const html = `
       <i class="${iconClass}"></i>
@@ -1174,41 +1271,41 @@ function updateMainBgCredit() {
     `
 
     if (creditEl) {
-        creditEl.innerHTML = html
-        creditEl.style.display = "flex"
+      creditEl.innerHTML = html
+      creditEl.style.display = "flex"
     }
 
     if (settingsCreditEl) {
-        settingsCreditEl.innerHTML = html
-        settingsCreditEl.style.display = "flex"
+      settingsCreditEl.innerHTML = html
+      settingsCreditEl.style.display = "flex"
     }
     return
   }
   // Hide settings credit if no info
   if (settingsCreditEl) {
-      settingsCreditEl.style.display = "none"
-      settingsCreditEl.innerHTML = ""
+    settingsCreditEl.style.display = "none"
+    settingsCreditEl.innerHTML = ""
   }
 
   // Fallback for local media without metadata
   if (isIdbVideo(bg)) {
     if (creditEl) {
-        creditEl.innerHTML = `
+      creditEl.innerHTML = `
           <i class="fa-solid fa-video credit-logo-local"></i>
           <span data-i18n="credit_local_video">Local Video</span>
         `
-        creditEl.style.display = "flex"
+      creditEl.style.display = "flex"
     }
     return
   }
 
   if (isIdbImage(bg)) {
     if (creditEl) {
-        creditEl.innerHTML = `
+      creditEl.innerHTML = `
           <i class="fa-solid fa-image credit-logo-local"></i>
           <span data-i18n="credit_local_image">Local Image</span>
         `
-        creditEl.style.display = "flex"
+      creditEl.style.display = "flex"
     }
     return
   }
@@ -1326,8 +1423,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.sidestyleNoBorderCheckbox.checked =
         settings.sidestyleNoBorder === true
     if (DOM.sidebarClockFlipCheckbox)
-      DOM.sidebarClockFlipCheckbox.checked =
-        settings.sidebarClockFlip === true
+      DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
@@ -1369,7 +1465,7 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.framedClockThemeSetting) {
       DOM.framedClockThemeSetting.style.display =
-        (style === "round" || style === "square") ? "block" : "none"
+        style === "round" || style === "square" ? "block" : "none"
       if (DOM.framedClockThemeSelect) {
         DOM.framedClockThemeSelect.value = settings.framedClockTheme || "light"
       }
@@ -1385,14 +1481,16 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.fliqloZenCheckbox.checked = settings.fliqloZenMode === true
       }
       if (DOM.fliqloTransparentCheckbox) {
-        DOM.fliqloTransparentCheckbox.checked = settings.fliqloTransparent === true
+        DOM.fliqloTransparentCheckbox.checked =
+          settings.fliqloTransparent === true
       }
     }
 
     if (DOM.analogBlurBgCheckbox)
       DOM.analogBlurBgCheckbox.checked = settings.analogBlurBackground === true
 
-    if (DOM.pageTitleInput) DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
+    if (DOM.pageTitleInput)
+      DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
     if (DOM.tabIconInput) DOM.tabIconInput.value = settings.tabIcon || ""
     effectInstances.renderTabIconPreview(settings.tabIcon || "")
 
@@ -1404,9 +1502,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
 
     if (DOM.languageSelect) DOM.languageSelect.value = settings.language || "en"
-    if (DOM.accentColorPicker) DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
+    if (DOM.accentColorPicker)
+      DOM.accentColorPicker.value = settings.accentColor || "#a8c0ff"
     if (DOM.accentColorHexInput) {
-      DOM.accentColorHexInput.value = (settings.accentColor || "#a8c0ff").toUpperCase()
+      DOM.accentColorHexInput.value = (
+        settings.accentColor || "#a8c0ff"
+      ).toUpperCase()
     }
     if (DOM.accentColorSettingsBody) {
       const isOpen = settings.accentControlsOpen !== false
@@ -1438,15 +1539,18 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // Custom Bookmark Inputs
     if (DOM.bookmarkFontSizeInput) {
-      if (DOM.bookmarkFontSizeInput) DOM.bookmarkFontSizeInput.value = settings.bookmarkFontSize ?? 16
+      if (DOM.bookmarkFontSizeInput)
+        DOM.bookmarkFontSizeInput.value = settings.bookmarkFontSize ?? 16
       if (DOM.bookmarkFontSizeValue && DOM.bookmarkFontSizeInput)
         DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
 
-      if (DOM.bookmarkIconSizeInput) DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42
+      if (DOM.bookmarkIconSizeInput)
+        DOM.bookmarkIconSizeInput.value = settings.bookmarkIconSize ?? 42
       if (DOM.bookmarkIconSizeValue && DOM.bookmarkIconSizeInput)
         DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
 
-      if (DOM.bookmarkGapInput) DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
+      if (DOM.bookmarkGapInput)
+        DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
       if (DOM.bookmarkGapValue && DOM.bookmarkGapInput)
         DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
 
@@ -1553,16 +1657,21 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
     if (unsplashSaveBtn) {
-      if (settings.background && settings.background.startsWith("idb-img-unsplash-")) {
+      if (
+        settings.background &&
+        settings.background.startsWith("idb-img-unsplash-")
+      ) {
         const userBackgrounds = settings.userBackgrounds || []
-        const isSaved = userBackgrounds.some(bg => (typeof bg === 'string' ? bg : bg.id) === settings.background)
+        const isSaved = userBackgrounds.some(
+          (bg) => (typeof bg === "string" ? bg : bg.id) === settings.background,
+        )
         unsplashSaveBtn.disabled = isSaved
-        
-        const i18n = (typeof geti18n === 'function') ? geti18n() : null
+
+        const i18n = typeof geti18n === "function" ? geti18n() : null
         if (isSaved) {
-           unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n?.settings_unsplash_saved || "Saved"}</span>`
+          unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n?.settings_unsplash_saved || "Saved"}</span>`
         } else {
-           unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>${i18n?.settings_unsplash_save || "Save Background"}</span>`
+          unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>${i18n?.settings_unsplash_save || "Save Background"}</span>`
         }
       } else {
         unsplashSaveBtn.disabled = true
@@ -1670,12 +1779,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.flashlightOpacitySlider) {
       DOM.flashlightOpacitySlider.value = settings.flashlightOpacity ?? 0.9
       if (DOM.flashlightOpacityVal) {
-        DOM.flashlightOpacityVal.textContent = (settings.flashlightOpacity ?? 0.9).toFixed(2)
+        DOM.flashlightOpacityVal.textContent = (
+          settings.flashlightOpacity ?? 0.9
+        ).toFixed(2)
       }
     }
     DOM.plantGrowthColorPicker.value = settings.plantGrowthColor || "#4caf50"
     DOM.oceanFishColorPicker.value = settings.oceanFishColor || "#ff7f50"
-    DOM.floatingLinesColorPicker.value = settings.floatingLinesColor || "#ffffff"
+    DOM.floatingLinesColorPicker.value =
+      settings.floatingLinesColor || "#ffffff"
     DOM.floatingLinesAngleInput.value = settings.floatingLinesAngle || 0
     DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
 
@@ -1734,84 +1846,146 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.pixelSnowHQSettings) {
       DOM.pixelSnowHQSettings.style.display =
         settings.effect === "pixelSnowHQ" ? "block" : "none"
-      
-      if (DOM.pixelSnowHQColorPicker) DOM.pixelSnowHQColorPicker.value = settings.pixelSnowHQColor || "#ffffff"
-      
+
+      if (DOM.pixelSnowHQColorPicker)
+        DOM.pixelSnowHQColorPicker.value =
+          settings.pixelSnowHQColor || "#ffffff"
+
       if (DOM.pixelSnowHQFlakeSizeSlider) {
-        DOM.pixelSnowHQFlakeSizeSlider.value = settings.pixelSnowHQFlakeSize || 0.01
-        if (DOM.pixelSnowHQFlakeSizeVal) DOM.pixelSnowHQFlakeSizeVal.textContent = (settings.pixelSnowHQFlakeSize || 0.01).toFixed(3)
+        DOM.pixelSnowHQFlakeSizeSlider.value =
+          settings.pixelSnowHQFlakeSize || 0.01
+        if (DOM.pixelSnowHQFlakeSizeVal)
+          DOM.pixelSnowHQFlakeSizeVal.textContent = (
+            settings.pixelSnowHQFlakeSize || 0.01
+          ).toFixed(3)
       }
       if (DOM.pixelSnowHQDensitySlider) {
         DOM.pixelSnowHQDensitySlider.value = settings.pixelSnowHQDensity || 0.3
-        if (DOM.pixelSnowHQDensityVal) DOM.pixelSnowHQDensityVal.textContent = (settings.pixelSnowHQDensity || 0.3).toFixed(2)
+        if (DOM.pixelSnowHQDensityVal)
+          DOM.pixelSnowHQDensityVal.textContent = (
+            settings.pixelSnowHQDensity || 0.3
+          ).toFixed(2)
       }
       if (DOM.pixelSnowHQSpeedSlider) {
         DOM.pixelSnowHQSpeedSlider.value = settings.pixelSnowHQSpeed || 1.25
-        if (DOM.pixelSnowHQSpeedVal) DOM.pixelSnowHQSpeedVal.textContent = (settings.pixelSnowHQSpeed || 1.25).toFixed(2)
+        if (DOM.pixelSnowHQSpeedVal)
+          DOM.pixelSnowHQSpeedVal.textContent = (
+            settings.pixelSnowHQSpeed || 1.25
+          ).toFixed(2)
       }
       if (DOM.pixelSnowHQPixelResSlider) {
-        DOM.pixelSnowHQPixelResSlider.value = settings.pixelSnowHQPixelResolution || 200
-        if (DOM.pixelSnowHQPixelResVal) DOM.pixelSnowHQPixelResVal.textContent = settings.pixelSnowHQPixelResolution || 200
+        DOM.pixelSnowHQPixelResSlider.value =
+          settings.pixelSnowHQPixelResolution || 200
+        if (DOM.pixelSnowHQPixelResVal)
+          DOM.pixelSnowHQPixelResVal.textContent =
+            settings.pixelSnowHQPixelResolution || 200
       }
       if (DOM.pixelSnowHQMinFlakeSizeSlider) {
-        DOM.pixelSnowHQMinFlakeSizeSlider.value = settings.pixelSnowHQMinFlakeSize || 1.25
-        if (DOM.pixelSnowHQMinFlakeSizeVal) DOM.pixelSnowHQMinFlakeSizeVal.textContent = (settings.pixelSnowHQMinFlakeSize || 1.25).toFixed(2)
+        DOM.pixelSnowHQMinFlakeSizeSlider.value =
+          settings.pixelSnowHQMinFlakeSize || 1.25
+        if (DOM.pixelSnowHQMinFlakeSizeVal)
+          DOM.pixelSnowHQMinFlakeSizeVal.textContent = (
+            settings.pixelSnowHQMinFlakeSize || 1.25
+          ).toFixed(2)
       }
       if (DOM.pixelSnowHQVariantSelect) {
-        DOM.pixelSnowHQVariantSelect.value = settings.pixelSnowHQVariant || "square"
+        DOM.pixelSnowHQVariantSelect.value =
+          settings.pixelSnowHQVariant || "square"
       }
       if (DOM.pixelSnowHQDepthFadeSlider) {
-        DOM.pixelSnowHQDepthFadeSlider.value = settings.pixelSnowHQDepthFade || 8
-        if (DOM.pixelSnowHQDepthFadeVal) DOM.pixelSnowHQDepthFadeVal.textContent = settings.pixelSnowHQDepthFade || 8
+        DOM.pixelSnowHQDepthFadeSlider.value =
+          settings.pixelSnowHQDepthFade || 8
+        if (DOM.pixelSnowHQDepthFadeVal)
+          DOM.pixelSnowHQDepthFadeVal.textContent =
+            settings.pixelSnowHQDepthFade || 8
       }
       if (DOM.pixelSnowHQDirectionSlider) {
-        DOM.pixelSnowHQDirectionSlider.value = settings.pixelSnowHQDirection || 125
-        if (DOM.pixelSnowHQDirectionVal) DOM.pixelSnowHQDirectionVal.textContent = `${settings.pixelSnowHQDirection || 125}°`
+        DOM.pixelSnowHQDirectionSlider.value =
+          settings.pixelSnowHQDirection || 125
+        if (DOM.pixelSnowHQDirectionVal)
+          DOM.pixelSnowHQDirectionVal.textContent = `${settings.pixelSnowHQDirection || 125}°`
       }
       if (DOM.pixelSnowHQBrightnessSlider) {
-        DOM.pixelSnowHQBrightnessSlider.value = settings.pixelSnowHQBrightness || 1.0
-        if (DOM.pixelSnowHQBrightnessVal) DOM.pixelSnowHQBrightnessVal.textContent = (settings.pixelSnowHQBrightness || 1.0).toFixed(1)
+        DOM.pixelSnowHQBrightnessSlider.value =
+          settings.pixelSnowHQBrightness || 1.0
+        if (DOM.pixelSnowHQBrightnessVal)
+          DOM.pixelSnowHQBrightnessVal.textContent = (
+            settings.pixelSnowHQBrightness || 1.0
+          ).toFixed(1)
       }
       if (DOM.pixelSnowHQGammaSlider) {
         DOM.pixelSnowHQGammaSlider.value = settings.pixelSnowHQGamma || 0.4545
-        if (DOM.pixelSnowHQGammaVal) DOM.pixelSnowHQGammaVal.textContent = (settings.pixelSnowHQGamma || 0.4545).toFixed(2)
+        if (DOM.pixelSnowHQGammaVal)
+          DOM.pixelSnowHQGammaVal.textContent = (
+            settings.pixelSnowHQGamma || 0.4545
+          ).toFixed(2)
       }
       if (DOM.pixelSnowHQFarPlaneSlider) {
         DOM.pixelSnowHQFarPlaneSlider.value = settings.pixelSnowHQFarPlane || 20
-        if (DOM.pixelSnowHQFarPlaneVal) DOM.pixelSnowHQFarPlaneVal.textContent = settings.pixelSnowHQFarPlane || 20
+        if (DOM.pixelSnowHQFarPlaneVal)
+          DOM.pixelSnowHQFarPlaneVal.textContent =
+            settings.pixelSnowHQFarPlane || 20
       }
     }
 
     if (DOM.softAuroraSettings) {
-      DOM.softAuroraSettings.style.display = settings.effect === "softAurora" ? "block" : "none"
-      if (DOM.softAuroraColor1Picker) DOM.softAuroraColor1Picker.value = settings.softAuroraColor1 || "#74ebd5"
-      if (DOM.softAuroraColor2Picker) DOM.softAuroraColor2Picker.value = settings.softAuroraColor2 || "#e100ff"
+      DOM.softAuroraSettings.style.display =
+        settings.effect === "softAurora" ? "block" : "none"
+      if (DOM.softAuroraColor1Picker)
+        DOM.softAuroraColor1Picker.value =
+          settings.softAuroraColor1 || "#74ebd5"
+      if (DOM.softAuroraColor2Picker)
+        DOM.softAuroraColor2Picker.value =
+          settings.softAuroraColor2 || "#e100ff"
       if (DOM.softAuroraSpeedSlider) {
         DOM.softAuroraSpeedSlider.value = settings.softAuroraSpeed || 0.6
-        if (DOM.softAuroraSpeedVal) DOM.softAuroraSpeedVal.textContent = (settings.softAuroraSpeed || 0.6).toFixed(1)
+        if (DOM.softAuroraSpeedVal)
+          DOM.softAuroraSpeedVal.textContent = (
+            settings.softAuroraSpeed || 0.6
+          ).toFixed(1)
       }
       if (DOM.softAuroraScaleSlider) {
         DOM.softAuroraScaleSlider.value = settings.softAuroraScale || 1.5
-        if (DOM.softAuroraScaleVal) DOM.softAuroraScaleVal.textContent = (settings.softAuroraScale || 1.5).toFixed(1)
+        if (DOM.softAuroraScaleVal)
+          DOM.softAuroraScaleVal.textContent = (
+            settings.softAuroraScale || 1.5
+          ).toFixed(1)
       }
       if (DOM.softAuroraBrightnessSlider) {
-        DOM.softAuroraBrightnessSlider.value = settings.softAuroraBrightness || 1.0
-        if (DOM.softAuroraBrightnessVal) DOM.softAuroraBrightnessVal.textContent = (settings.softAuroraBrightness || 1.0).toFixed(1)
+        DOM.softAuroraBrightnessSlider.value =
+          settings.softAuroraBrightness || 1.0
+        if (DOM.softAuroraBrightnessVal)
+          DOM.softAuroraBrightnessVal.textContent = (
+            settings.softAuroraBrightness || 1.0
+          ).toFixed(1)
       }
       if (DOM.softAuroraNoiseFreqSlider) {
-        DOM.softAuroraNoiseFreqSlider.value = settings.softAuroraNoiseFreq || 2.5
-        if (DOM.softAuroraNoiseFreqVal) DOM.softAuroraNoiseFreqVal.textContent = (settings.softAuroraNoiseFreq || 2.5).toFixed(1)
+        DOM.softAuroraNoiseFreqSlider.value =
+          settings.softAuroraNoiseFreq || 2.5
+        if (DOM.softAuroraNoiseFreqVal)
+          DOM.softAuroraNoiseFreqVal.textContent = (
+            settings.softAuroraNoiseFreq || 2.5
+          ).toFixed(1)
       }
       if (DOM.softAuroraBandHeightSlider) {
-        DOM.softAuroraBandHeightSlider.value = settings.softAuroraBandHeight || 0.5
-        if (DOM.softAuroraBandHeightVal) DOM.softAuroraBandHeightVal.textContent = (settings.softAuroraBandHeight || 0.5).toFixed(2)
+        DOM.softAuroraBandHeightSlider.value =
+          settings.softAuroraBandHeight || 0.5
+        if (DOM.softAuroraBandHeightVal)
+          DOM.softAuroraBandHeightVal.textContent = (
+            settings.softAuroraBandHeight || 0.5
+          ).toFixed(2)
       }
       if (DOM.softAuroraBandSpreadSlider) {
-        DOM.softAuroraBandSpreadSlider.value = settings.softAuroraBandSpread || 2.5
-        if (DOM.softAuroraBandSpreadVal) DOM.softAuroraBandSpreadVal.textContent = (settings.softAuroraBandSpread || 2.5).toFixed(1)
+        DOM.softAuroraBandSpreadSlider.value =
+          settings.softAuroraBandSpread || 2.5
+        if (DOM.softAuroraBandSpreadVal)
+          DOM.softAuroraBandSpreadVal.textContent = (
+            settings.softAuroraBandSpread || 2.5
+          ).toFixed(1)
       }
       if (DOM.softAuroraMouseCheckbox) {
-        DOM.softAuroraMouseCheckbox.checked = settings.softAuroraEnableMouse !== false
+        DOM.softAuroraMouseCheckbox.checked =
+          settings.softAuroraEnableMouse !== false
       }
     }
 
@@ -1906,12 +2080,14 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     if (DOM.auroraWaveBgColorPicker) {
-      DOM.auroraWaveBgColorPicker.value = settings.auroraWaveBgColor || "#000000"
+      DOM.auroraWaveBgColorPicker.value =
+        settings.auroraWaveBgColor || "#000000"
     }
     if (DOM.auroraWaveBgOpacitySlider) {
       const op = settings.auroraWaveBgOpacity ?? 0.15
       DOM.auroraWaveBgOpacitySlider.value = op
-      if (DOM.auroraWaveBgOpacityVal) DOM.auroraWaveBgOpacityVal.textContent = op
+      if (DOM.auroraWaveBgOpacityVal)
+        DOM.auroraWaveBgOpacityVal.textContent = op
     }
     if (DOM.auroraWaveBrightnessSlider) {
       const b = settings.auroraWaveBrightness || 0.65
@@ -1922,7 +2098,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.auroraWaveSpeedSlider) {
       const s = settings.auroraWaveSpeed || 1.0
       DOM.auroraWaveSpeedSlider.value = s
-      if (DOM.auroraWaveSpeedVal) DOM.auroraWaveSpeedVal.textContent = s.toFixed(1)
+      if (DOM.auroraWaveSpeedVal)
+        DOM.auroraWaveSpeedVal.textContent = s.toFixed(1)
     }
     if (DOM.auroraWaveAmplitudeSlider) {
       const a = settings.auroraWaveAmplitude || 70
@@ -1992,13 +2169,16 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     if (DOM.pixelBlastCursorRadiusSlider) {
-      DOM.pixelBlastCursorRadiusSlider.value = settings.pixelBlastCursorRadius || 150
+      DOM.pixelBlastCursorRadiusSlider.value =
+        settings.pixelBlastCursorRadius || 150
       if (DOM.pixelBlastCursorRadiusVal) {
-        DOM.pixelBlastCursorRadiusVal.textContent = settings.pixelBlastCursorRadius || 150
+        DOM.pixelBlastCursorRadiusVal.textContent =
+          settings.pixelBlastCursorRadius || 150
       }
     }
     if (DOM.pixelBlastRippleCheckbox) {
-      DOM.pixelBlastRippleCheckbox.checked = settings.pixelBlastRipples !== false
+      DOM.pixelBlastRippleCheckbox.checked =
+        settings.pixelBlastRipples !== false
     }
     if (DOM.pixelBlastTransparentCheckbox) {
       DOM.pixelBlastTransparentCheckbox.checked =
@@ -2009,7 +2189,8 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.pixelBlastTransparent !== false ? "none" : "block"
     }
     if (DOM.pixelBlastBgColorPicker) {
-      DOM.pixelBlastBgColorPicker.value = settings.pixelBlastBgColor || "#0a0a0a"
+      DOM.pixelBlastBgColorPicker.value =
+        settings.pixelBlastBgColor || "#0a0a0a"
     }
 
     // Sunbeam
@@ -2229,9 +2410,11 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.wavyPatternColor2Setting.style.display =
         settings.effect === "wavyPattern" ? "block" : "none"
     if (DOM.wavyPatternColor1Picker)
-      DOM.wavyPatternColor1Picker.value = settings.wavyPatternColor1 || "#AB3E5B"
+      DOM.wavyPatternColor1Picker.value =
+        settings.wavyPatternColor1 || "#AB3E5B"
     if (DOM.wavyPatternColor2Picker)
-      DOM.wavyPatternColor2Picker.value = settings.wavyPatternColor2 || "#FFBE40"
+      DOM.wavyPatternColor2Picker.value =
+        settings.wavyPatternColor2 || "#FFBE40"
     if (DOM.angledPatternColor1Setting)
       DOM.angledPatternColor1Setting.style.display =
         settings.effect === "angledPattern" ? "block" : "none"
@@ -2342,7 +2525,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     if (DOM.showQuickAccessBgCheckbox) {
-      DOM.showQuickAccessBgCheckbox.checked = settings.showQuickAccessBg === true
+      DOM.showQuickAccessBgCheckbox.checked =
+        settings.showQuickAccessBg === true
     }
     if (DOM.lcpQuickAccessBg) {
       DOM.lcpQuickAccessBg.checked = settings.showQuickAccessBg === true
@@ -2487,7 +2671,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     }
-
   }
 }
 

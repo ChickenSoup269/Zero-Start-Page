@@ -32,7 +32,8 @@ export const defaultSettings = {
   fliqloTheme: "dark",
   fliqloZenMode: false,
   fliqloTransparent: false,
-  sidestyleAlign: "left",  sidestyleNoBorder: false,
+  sidestyleAlign: "left",
+  sidestyleNoBorder: false,
   sidebarClockFlip: false,
   clockFontTarget: "both",
   clockFont: "'Outfit', sans-serif",
@@ -240,6 +241,14 @@ export const defaultSettings = {
   svgWaveEndHue: 280,
   svgWaveEndSaturation: 70,
   svgWaveEndLightness: 30,
+
+  silkActive: false,
+  silkColor: "#7B7481",
+  silkSpeed: 5.0,
+  silkScale: 1.0,
+  silkNoise: 1.5,
+  silkRotation: 0.0,
+
   gradientV2Active: false,
   gradientV2Color1: "#FF9FFC",
   gradientV2Color2: "#5227FF",
@@ -538,7 +547,7 @@ export async function restoreFromCloud() {
           mediaKeys.forEach((key) => {
             if (current[key] && current[key].length > 0) {
               restored[key] = current[key]
-            } else if (current[key] && typeof current[key] === 'string') {
+            } else if (current[key] && typeof current[key] === "string") {
               restored[key] = current[key]
             }
           })
@@ -561,7 +570,7 @@ export async function restoreFromCloud() {
 
 export function resetSettingsState() {
   const settings = getSettings()
-  
+
   // Preserve user-saved data and current background selection
   const preserved = {
     background: settings.background,
@@ -582,7 +591,7 @@ export function resetSettingsState() {
     componentPositions: {},
     lockedWidgets: {},
   }
-  
+
   settingsState = newSettings
   saveSettings()
   return newSettings
@@ -601,21 +610,28 @@ export const saveComponentPosition = (componentId, position) => {
 
 export const resetComponentPositions = (options = {}) => {
   const currentSettings = settingsState
-  
+
   // Default to all false if no options provided
   const {
     all = false,
     positions = false,
     effectColors = false,
-    styles = false
+    styles = false,
   } = options
 
   // Danh sách các khóa cần giữ lại (Dữ liệu người dùng đã lưu)
   // Luôn giữ lại những thứ này trừ khi reset hoàn toàn (nhưng ở đây ta chọn giữ lại để an toàn)
   const preservedKeys = [
-    "userBackgrounds", "userColors", "userAccentColors", "userGradients", 
-    "userMultiColors", "userSvgWaves", "userSavedFonts", 
-    "unsplashAccessKey", "unsplashLastCredit", "background"
+    "userBackgrounds",
+    "userColors",
+    "userAccentColors",
+    "userGradients",
+    "userMultiColors",
+    "userSvgWaves",
+    "userSavedFonts",
+    "unsplashAccessKey",
+    "unsplashLastCredit",
+    "background",
   ]
 
   let newSettings = { ...currentSettings }
@@ -623,7 +639,7 @@ export const resetComponentPositions = (options = {}) => {
   if (all) {
     newSettings = { ...defaultSettings }
     // Khôi phục các dữ liệu cần bảo tồn
-    preservedKeys.forEach(key => {
+    preservedKeys.forEach((key) => {
       if (currentSettings[key] !== undefined) {
         newSettings[key] = currentSettings[key]
       }
@@ -639,15 +655,40 @@ export const resetComponentPositions = (options = {}) => {
 
     if (effectColors) {
       const effectColorKeys = [
-        "starColor", "meteorColor", "auraColor", "northernLightsColor", "hackerColor",
-        "pixelCubesColor", "sakuraColor", "snowfallColor", "sunbeamColor", "bubbleColor",
-        "rainHDColor", "stormRainColor", "wavyLinesColor", "oceanWaveColor", "cloudDriftColor",
-        "shinyColor", "lineShinyColor", "nintendoPixelColor", "crtScanColor", "crtBackgroundColor",
-        "retroGameColor", "wavyPatternColor1", "wavyPatternColor2", "angledPatternColor1",
-        "angledPatternColor2", "cursorTrailColor", "flashlightColor", "gridScanColor", "plantGrowthColor",
-        "oceanFishColor", "floatingLinesColor", "auroraWaveColor"
+        "starColor",
+        "meteorColor",
+        "auraColor",
+        "northernLightsColor",
+        "hackerColor",
+        "pixelCubesColor",
+        "sakuraColor",
+        "snowfallColor",
+        "sunbeamColor",
+        "bubbleColor",
+        "rainHDColor",
+        "stormRainColor",
+        "wavyLinesColor",
+        "oceanWaveColor",
+        "cloudDriftColor",
+        "shinyColor",
+        "lineShinyColor",
+        "nintendoPixelColor",
+        "crtScanColor",
+        "crtBackgroundColor",
+        "retroGameColor",
+        "wavyPatternColor1",
+        "wavyPatternColor2",
+        "angledPatternColor1",
+        "angledPatternColor2",
+        "cursorTrailColor",
+        "flashlightColor",
+        "gridScanColor",
+        "plantGrowthColor",
+        "oceanFishColor",
+        "floatingLinesColor",
+        "auroraWaveColor",
       ]
-      effectColorKeys.forEach(key => {
+      effectColorKeys.forEach((key) => {
         if (defaultSettings[key] !== undefined) {
           newSettings[key] = defaultSettings[key]
         }
@@ -656,12 +697,24 @@ export const resetComponentPositions = (options = {}) => {
 
     if (styles) {
       const styleKeys = [
-        "accentColor", "theme", "font", "clockFont", "clockSize", "dateSize", 
-        "clockColor", "dateColor", "customTitleColor", "customTitleFontSize",
-        "bookmarkBgColor", "bookmarkTextColor", "bookmarkGroupBgColor", "bookmarkGroupTextColor",
-        "clockDateStrokeColor", "clockDateStrokeWidth"
+        "accentColor",
+        "theme",
+        "font",
+        "clockFont",
+        "clockSize",
+        "dateSize",
+        "clockColor",
+        "dateColor",
+        "customTitleColor",
+        "customTitleFontSize",
+        "bookmarkBgColor",
+        "bookmarkTextColor",
+        "bookmarkGroupBgColor",
+        "bookmarkGroupTextColor",
+        "clockDateStrokeColor",
+        "clockDateStrokeWidth",
       ]
-      styleKeys.forEach(key => {
+      styleKeys.forEach((key) => {
         if (defaultSettings[key] !== undefined) {
           newSettings[key] = defaultSettings[key]
         }
