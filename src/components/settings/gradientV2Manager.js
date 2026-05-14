@@ -127,23 +127,67 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   const randomizeBtn = dom.gradientV2RandomizeBtn || document.getElementById("gradientV2-randomize-btn")
   if (randomizeBtn) {
     randomizeBtn.addEventListener("click", () => {
-      const randomHex = () => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      const themes = [
+        {
+          name: "Deep Aurora",
+          palettes: [["#00c6ff", "#0072ff", "#12c2e9"], ["#0f0c29", "#302b63", "#24243e"]],
+          warp: [0.8, 1.5], freq: [4, 9], zoom: [0.8, 1.2], speed: [0.2, 0.4]
+        },
+        {
+          name: "Cosmic Nebula",
+          palettes: [["#fc00ff", "#00dbde", "#191919"], ["#7028e4", "#e5b2ca", "#121212"]],
+          warp: [1.2, 2.5], freq: [8, 15], zoom: [0.5, 0.9], speed: [0.1, 0.3]
+        },
+        {
+          name: "Golden Sunset",
+          palettes: [["#ff5f6d", "#ffc371", "#ffffff"], ["#f7971e", "#ffd200", "#ff4e50"]],
+          warp: [0.3, 0.8], freq: [2, 5], zoom: [1.2, 2.0], speed: [0.05, 0.2]
+        },
+        {
+          name: "Oceanic Wave",
+          palettes: [["#2af598", "#009efd", "#000000"], ["#4facfe", "#00f2fe", "#ffffff"]],
+          warp: [0.5, 1.2], freq: [3, 7], zoom: [1.0, 1.5], speed: [0.15, 0.4]
+        },
+        {
+          name: "Cyber Grid",
+          palettes: [["#00ff00", "#000000", "#333333"], ["#ff00ff", "#000000", "#111111"]],
+          warp: [2.0, 4.0], freq: [12, 25], zoom: [0.3, 0.7], speed: [0.5, 1.0]
+        },
+        {
+          name: "Pastel Dream",
+          palettes: [["#ff9a9e", "#fecfef", "#a1c4fd"], ["#fdfcfb", "#e2d1c3", "#cfd9df"]],
+          warp: [0.2, 0.5], freq: [1, 4], zoom: [1.5, 3.0], speed: [0.05, 0.15]
+        }
+      ]
       
+      const theme = themes[Math.floor(Math.random() * themes.length)]
+      const palette = theme.palettes[Math.floor(Math.random() * theme.palettes.length)]
+      
+      const rand = (range) => parseFloat((Math.random() * (range[1] - range[0]) + range[0]).toFixed(2))
+
       const randomProps = {
-        gradientV2Color1: randomHex(),
-        gradientV2Color2: randomHex(),
-        gradientV2Color3: randomHex(),
-        gradientV2TimeSpeed: parseFloat((Math.random() * 0.5 + 0.1).toFixed(2)),
-        gradientV2WarpStrength: parseFloat((Math.random() * 2 + 0.5).toFixed(1)),
-        gradientV2WarpFrequency: parseFloat((Math.random() * 10 + 2).toFixed(1)),
+        gradientV2Color1: palette[0],
+        gradientV2Color2: palette[1],
+        gradientV2Color3: palette[2],
+        gradientV2TimeSpeed: rand(theme.speed),
+        gradientV2WarpStrength: rand(theme.warp),
+        gradientV2WarpFrequency: rand(theme.freq),
+        gradientV2WarpSpeed: rand([1.0, 3.0]),
         gradientV2BlendAngle: Math.floor(Math.random() * 360),
+        gradientV2Zoom: rand(theme.zoom),
+        gradientV2Contrast: rand([1.2, 1.8]),
+        gradientV2Saturation: rand([0.8, 1.5]),
+        gradientV2NoiseScale: rand([1.0, 5.0]),
+        gradientV2ColorBalance: rand([0.1, 0.6]),
+        gradientV2BlendSoftness: rand([0.01, 0.1])
       }
 
       Object.entries(randomProps).forEach(([id, val]) => {
         updateSetting(id, val)
         const propConfig = propsMap.find(p => p.id === id)
         if (propConfig && propConfig.dom) {
-          propConfig.dom.value = val
+          if (propConfig.type === "checkbox") propConfig.dom.checked = val
+          else propConfig.dom.value = val
           if (propConfig.val) propConfig.val.textContent = val + (propConfig.suffix || "")
         }
         if (handleUpdateCallback) handleUpdateCallback(id, val)
