@@ -421,6 +421,9 @@ export function setupGeneralEventHandlers(
         "#page-title-input",
         "#date-format-select",
         "#language-select",
+        "#accent-color-group",
+        "#svg-wave-group",
+        "#animated-backgrounds-group",
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(

@@ -769,6 +769,7 @@
   "hide_bookmark_note": "Lưu ý: Chỉ thực hiện khi bạn thực sự muốn và hãy thử Ctrl+Shift+B ở trang New Tab nếu không được thì hãy dùng lệnh.",
   "settings_flip_layout": "Đảo ngược bố cục",
   "settings_custom_color_label": "Màu tùy chỉnh",
+  "settings_gradient_multi_title": "Gradient & Đa màu sắc",
   "settings_gradient_title": "Dải màu nền",
   "settings_gradient_angle": "Góc xoay",
   "settings_bg_reset": "Đặt lại hình nền",

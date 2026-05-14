@@ -772,6 +772,7 @@
   "hide_bookmark_note": "Note: Only perform this if you really want to. Try (Ctrl+Shift+B) on Chrome's default New Tab page if methods don't work use cmd.",
   "settings_flip_layout": "Flip Interface Layout",
   "settings_custom_color_label": "Custom Color",
+  "settings_gradient_multi_title": "Gradient & Multi-Color",
   "settings_gradient_title": "Background Gradient",
   "settings_gradient_angle": "Angle",
   "settings_bg_reset": "Reset Background",

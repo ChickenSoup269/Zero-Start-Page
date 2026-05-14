@@ -679,6 +679,13 @@ export function initSettings() {
   setupSvgWaveMultiSelect(DOM_EXPORTS, effects.svgWaveEffect)
   setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
 
+  // Initialize Effect Color Handlers
+  effects.getSettings = getSettings
+  setupEffectColorHandlers(DOM_EXPORTS, effects)
+
+  // Initialize Theme Manager
+  initThemeManager(DOM_EXPORTS, handleSettingUpdate, updateSettingsInputs)
+
   // Initialize all general event handlers
   setupGeneralEventHandlers(
     ctx,

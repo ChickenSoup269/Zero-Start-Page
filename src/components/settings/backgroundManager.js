@@ -584,7 +584,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   bgSelectAllBtn.addEventListener("click", () => {
     const settings = getSettings()
     const allUserIds = (settings.userBackgrounds || []).map((bg) =>
-      typeof bg === "object" ? bg.id : bg,
+      typeof bg === "object" ? bg.uid || bg.id : bg,
     )
 
     // Find all user-uploaded items in all galleries
@@ -620,10 +620,11 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     const settings = getSettings()
     const toDelete = Array.from(bgSelectedIds)
 
-    // Fix: Handle both string IDs and objects in userBackgrounds
+    // Fix: Handle both string IDs and objects in userBackgrounds, checking both id and uid
     settings.userBackgrounds = (settings.userBackgrounds || []).filter((bg) => {
       const bgId = typeof bg === "object" ? bg.id : bg
-      return !bgSelectedIds.has(bgId)
+      const bgUid = typeof bg === "object" ? bg.uid || bg.id : bg
+      return !bgSelectedIds.has(bgId) && !bgSelectedIds.has(bgUid)
     })
 
     for (const id of toDelete) {
@@ -632,7 +633,9 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     // Fix: Correctly check if the current background was deleted
     const currentBgId = settings.background
-    if (bgSelectedIds.has(currentBgId)) {
+    const currentBgUid = settings.activeBgUid
+    if (bgSelectedIds.has(currentBgId) || (currentBgUid && bgSelectedIds.has(currentBgUid))) {
+      updateSetting("activeBgUid", null)
       handleSettingUpdate("background", null)
     } else {
       saveSettings()
