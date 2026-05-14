@@ -1187,321 +1187,6 @@
                 </div>
             </div>
 
-            <!-- Gradient & Multi-Color Section -->
-            <div class="settings-section" data-section-id="gradient-multi-color">
-                <h3 class="section-toggle">
-                    <i class="fa-solid fa-fill-drip"></i>
-                    <span data-i18n="settings_gradient_multi_title">Gradient & Multi-Color</span>
-                </h3>
-                <div class="section-content">
-                    <div class="setting-group">
-                <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
-                        data-i18n="settings_gradient_title">Background Gradient</span></div>
-                <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
-                    <i class="fa-solid fa-eye-slash"></i>
-                    <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
-                </button>
-                <div id="gradient-settings-body">
-                    <div class="gradient-config-card">
-                        <div class="gradient-swatch-grid">
-                            <div class="gradient-swatch">
-                                <label data-i18n="gradient_start_color">Start Color</label>
-                                <input type="color" id="gradient-start-picker" value="#a8c0ff"
-                                    title="Pick a start color">
-                            </div>
-                            <div class="gradient-swatch">
-                                <label data-i18n="gradient_end_color">End Color</label>
-                                <input type="color" id="gradient-end-picker" value="#3f2b96" title="Pick an end color">
-                            </div>
-                        </div>
-
-                        <div class="bg-control-grid" style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top">
-                                <label for="gradient-type-select" data-i18n="settings_gradient_type"
-                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient Type</label>
-                                <select id="gradient-type-select" style="width: 100%;">
-                                    <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
-                                    <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
-                                    <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
-                                </select>
-                            </div>
-
-                            <div id="gradient-angle-group" class="setting-item no-margin-top">
-                                <div class="flex-space-between" style="margin-bottom: 8px;">
-                                    <label data-i18n="settings_gradient_angle" style="font-weight: 600;">Angle</label>
-                                    <span id="gradient-angle-value" class="bg-slider-value">135°</span>
-                                </div>
-                                <input type="range" id="gradient-angle-input" min="0" max="360" value="135"
-                                    style="width: 100%;">
-                            </div>
-
-                            <div id="gradient-position-group" class="setting-item no-margin-top"
-                                style="display: none; flex-direction: column;">
-                                <label data-i18n="settings_gradient_position"
-                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
-                                <select id="gradient-position-select" style="width: 100%;">
-                                    <option value="center" data-i18n="settings_center">Center</option>
-                                    <option value="top" data-i18n="settings_top">Top</option>
-                                    <option value="bottom" data-i18n="settings_bottom">Bottom</option>
-                                    <option value="left" data-i18n="settings_left">Left</option>
-                                    <option value="right" data-i18n="settings_right">Right</option>
-                                    <option value="top left" data-i18n="settings_top_left">Top Left</option>
-                                    <option value="top right" data-i18n="settings_top_right">Top Right</option>
-                                    <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left</option>
-                                    <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right</option>
-                                </select>
-                            </div>
-
-                            <div id="gradient-radial-shape-group" class="setting-item no-margin-top"
-                                style="display: none; flex-direction: column;">
-                                <label data-i18n="settings_gradient_radial_shape"
-                                    style="display: block; margin-bottom: 8px; font-weight: 600;">Radial Shape</label>
-                                <select id="gradient-radial-shape-select" style="width: 100%;">
-                                    <option value="circle" data-i18n="settings_circle">Circle</option>
-                                    <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item-row" style="margin-top: 15px;">
-                            <label for="gradient-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
-                                Gradient</label>
-                            <input type="checkbox" id="gradient-repeating-toggle">
-                        </div>
-
-                        <div class="setting-item"
-                            style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
-                            <label
-                                style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;"
-                                data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
-                            <select id="gradient-extra-color-count"
-                                style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                            <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container"></div>
-                            <input type="text" id="gradient-custom-colors" style="display: none;">
-                        </div>
-
-                        <div class="background-inputs-grid"
-                            style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-                            <button id="random-gradient-colors-btn" class="secondary-btn" title="Randomize Colors"
-                                data-i18n-title="settings_accent_random" style="width: 100%;">
-                                <i class="fa-solid fa-shuffle"></i> <span
-                                    data-i18n="settings_gradient_random_colors">Random Colors</span>
-                            </button>
-                            <button id="generate-modern-gradient-btn" class="secondary-btn" style="width: 100%;">
-                                <i class="fa-solid fa-sparkles"></i> <span
-                                    data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
-                            </button>
-                            <button id="save-gradient-btn" class="primary-btn"
-                                style="width: 100%; height: 44px; justify-content: center; gap: 10px; font-weight: 600;">
-                                <i class="fa-solid fa-floppy-disk"></i>
-                                <span data-i18n="settings_save_gradient">Save Gradient</span>
-                            </button>
-                        </div>
-                        <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets' for
-                            professionally picked color combinations!</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="setting-group">
-                <div class="setting-label">
-                    <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved
-                        Gallery</span>
-                    <span id="count-gradient"></span>
-                </div>
-                <div id="gradient-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
-                    <span id="gradient-select-count" class="bg-select-count">0 selected</span>
-                    <div style="display: flex; gap: 6px;">
-                        <button id="gradient-select-all-btn" class="secondary-btn"
-                            style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="bg_select_all">Select All</button>
-                        <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"
-                            style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;"
-                            data-i18n="menu_delete">Delete</button>
-                        <button id="gradient-select-cancel-btn" class="secondary-btn"
-                            style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="cancel">Cancel</button>
-                    </div>
-                </div>
-                <button id="gradient-select-mode-btn" class="secondary-btn full-width" style="margin-bottom: 12px;"
-                    data-i18n="bg_select_mode">
-                    <i class="fa-solid fa-check-double"></i> Select to Delete
-                </button>
-                <div id="user-gradients-gallery" class="local-bg-gallery"></div>
-            </div>
-
-            <!-- Multi-Color Split Background -->
-            <div class="setting-group">
-                <div class="setting-label"><i class="fa-solid fa-palette"></i> <span
-                        data-i18n="settings_multi_color_title">Split Background
-                        (Multi-Color)</span></div>
-                <button id="multi-color-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 10px;">
-                    <i class="fa-solid fa-eye-slash"></i>
-                    <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide Controls</span>
-                </button>
-                <div id="multi-color-settings-body">
-                    <div class="setting-item" style="margin-bottom: 12px;">
-                        <label for="multi-color-count-select" style="font-size: 0.9rem;"
-                            data-i18n="settings_multi_color_count">Number of Colors:</label>
-                        <select id="multi-color-count-select" style="width: 100%; margin-top: 6px;">
-                            <option value="2" data-i18n="settings_colors_count_2">2 Colors</option>
-                            <option value="3" data-i18n="settings_colors_count_3">3 Colors</option>
-                            <option value="4" data-i18n="settings_colors_count_4">4 Colors</option>
-                            <option value="5" data-i18n="settings_colors_count_5">5 Colors</option>
-                            <option value="6" data-i18n="settings_colors_count_6">6 Colors</option>
-                        </select>
-                    </div>
-
-                    <div class="setting-item" style="margin-bottom: 12px;">
-                        <label data-i18n="settings_multi_color_mode">Mode:</label>
-                        <div class="btn-group" style="margin-top: 8px;">
-                            <button type="button" class="btn-group-item multi-color-mode-btn active" data-mode="smooth"
-                                data-i18n="settings_multi_color_smooth">Smooth</button>
-                            <button type="button" class="btn-group-item multi-color-mode-btn" data-mode="blocks"
-                                data-i18n="settings_multi_color_blocks">Blocks</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item" style="margin-bottom: 12px;">
-                        <label style="font-size: 0.85rem;" data-i18n="settings_gradient_type">Type:</label>
-                        <select id="multi-color-type-select" style="width: 100%; margin-top: 6px;">
-                            <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
-                            <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
-                            <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
-                        </select>
-                    </div>
-
-                    <div id="multi-color-radial-conic-controls"
-                        style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-                        <div class="setting-item">
-                            <label style="font-size: 0.85rem;" data-i18n="settings_gradient_position">Position:</label>
-                            <select id="multi-color-position-select" style="width: 100%; margin-top: 6px;">
-                                <option value="center" data-i18n="settings_center">Center</option>
-                                <option value="top" data-i18n="settings_top">Top</option>
-                                <option value="bottom" data-i18n="settings_bottom">Bottom</option>
-                                <option value="left" data-i18n="settings_left">Left</option>
-                                <option value="right" data-i18n="settings_right">Right</option>
-                                <option value="top left" data-i18n="settings_top_left">Top Left</option>
-                                <option value="top right" data-i18n="settings_top_right">Top Right</option>
-                                <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left</option>
-                                <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right</option>
-                            </select>
-                        </div>
-                        <div id="multi-color-radial-shape-group" class="setting-item">
-                            <label style="font-size: 0.85rem;" data-i18n="settings_gradient_radial_shape">Shape:</label>
-                            <select id="multi-color-radial-shape-select" style="width: 100%; margin-top: 6px;">
-                                <option value="circle" data-i18n="settings_circle">Circle</option>
-                                <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="setting-item-row" style="margin-bottom: 12px;">
-                        <label for="multi-color-repeating-toggle" data-i18n="settings_gradient_repeating">Repeating
-                            Gradient</label>
-                        <input type="checkbox" id="multi-color-repeating-toggle">
-                    </div>
-
-                    <div id="multi-color-pickers-container"
-                        style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                        <!-- Color pickers will be generated here -->
-                    </div>
-
-                    <div id="multi-color-divider-settings" style="margin-bottom: 12px; display: none;">
-                        <div class="setting-item-row" style="margin-bottom: 10px;">
-                            <label for="multi-color-dividers-toggle" data-i18n="settings_multi_color_dividers">Show
-                                Divider Lines</label>
-                            <input type="checkbox" id="multi-color-dividers-toggle" checked>
-                        </div>
-
-                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
-                            <label for="multi-color-line-color" style="font-size: 0.85rem;"
-                                data-i18n="settings_multi_color_line_color">Line Color:</label>
-                            <input type="color" id="multi-color-line-color" value="#ffffff"
-                                style="flex: 1; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: none; cursor: pointer;">
-                        </div>
-
-                        <div class="setting-item" style="margin-bottom: 10px;">
-                            <div class="setting-label" style="display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_multi_color_line_width">Line Width:</span>
-                                <span><span id="multi-color-line-width-value">1.2</span>%</span>
-                            </div>
-                            <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1" value="1.2"
-                                style="width: 100%; margin-top: 6px;">
-                        </div>
-
-                        <div style="margin-top: 10px;">
-                            <div class="setting-item-row" style="margin-bottom: 10px;">
-                                <label for="multi-color-free-line-angles"
-                                    data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
-                                    line)</label>
-                                <input type="checkbox" id="multi-color-free-line-angles">
-                            </div>
-                            <div id="multi-color-line-angles-container"
-                                style="display: none; flex-direction: column; gap: 10px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item" style="margin-bottom: 12px;">
-                        <div class="setting-label" style="display: flex; justify-content: space-between;">
-                            <span data-i18n="settings_multi_color_angle">Angle:</span>
-                            <span><span id="multi-gradient-angle-value">135</span>deg</span>
-                        </div>
-                        <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135"
-                            style="width: 100%; margin-top: 6px;">
-                    </div>
-                    <div id="multi-gradient-preview"
-                        style="width: 100%; height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
-                    </div>
-                    <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
-                        <button id="random-multi-color-hue-btn" class="secondary-btn" style="flex: 1; min-width: 120px;"
-                            data-i18n="settings_multi_color_random_hue"><i class="fa-solid fa-shuffle"></i> Random
-                            HUE</button>
-                        <button id="random-multi-color-crazy-btn" class="secondary-btn"
-                            style="flex: 1; min-width: 120px;" data-i18n="settings_multi_color_random_crazy">Crazy
-                            Random</button>
-                        <button id="apply-multi-color-btn" class="secondary-btn" style="flex: 1; min-width: 120px;"
-                            data-i18n="settings_multi_color_apply">Apply</button>
-                    </div>
-                    <button id="save-multi-color-btn" class="secondary-btn full-width"
-                        data-i18n="settings_multi_color_save">Save Preset</button>
-
-                    <!-- Saved Multi-Color Presets -->
-                    <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                            <label style="font-size: 0.9rem; margin-bottom: 0;"
-                                data-i18n="settings_multi_color_saved_presets" for="svg-wave-lines">Saved
-                                Presets</label>
-                            <span id="count-multi-color"></span>
-                            <button id="multi-color-select-mode-btn" class="secondary-btn"
-                                title="Select multiple to delete" data-i18n="bg_select_mode"
-                                style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                        </div>
-                        <div id="multi-color-select-toolbar" class="bg-select-toolbar"
-                            style="display:none; margin-bottom: 10px;">
-                            <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
-                            <div style="display: flex; gap: 6px;">
-                                <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i
-                                        class="fa-solid fa-check-double"></i></button>
-                                <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn"
-                                    title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                        class="fa-solid fa-xmark"></i></button>
-                            </div>
-                        </div>
-                        <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </div>
-
-
             <!-- SVG Gradient Wave Generator -->
             <div class="setting-group" id="svg-wave-group">
                 <div class="setting-label"><i class="fa-solid fa-water"></i> <span
@@ -1748,33 +1433,371 @@
                 </div>
             </div>
 
-            <!-- Animated Backgrounds Collapsible Group -->
-            <div class="setting-group collapsible-group" id="animated-backgrounds-group">
-                <div class="group-header" id="animated-backgrounds-header">
-                    <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
-                    <span data-i18n="settings_animated_backgrounds_title">Background Animations</span>
-                    <i class="fa-solid fa-chevron-down group-chevron"></i>
-                </div>
 
-                <div class="group-body" id="animated-backgrounds-body">
+            <!-- Gradient & Multi-Color Section -->
+            <div class="settings-section" data-section-id="gradient-multi-color">
+                <h3 class="section-toggle">
+                    <i class="fa-solid fa-fill-drip"></i>
+                    <span data-i18n="settings_gradient_multi_title">Gradient & Multi-Color</span>
+                </h3>
+                <div class="section-content">
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
+                                data-i18n="settings_gradient_title">Background Gradient</span></div>
+                        <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
+                            <i class="fa-solid fa-eye-slash"></i>
+                            <span id="gradient-toggle-label" data-i18n="settings_gradient_close">Hide Controls</span>
+                        </button>
+                        <div id="gradient-settings-body">
+                            <div class="gradient-config-card">
+                                <div class="gradient-swatch-grid">
+                                    <div class="gradient-swatch">
+                                        <label data-i18n="gradient_start_color">Start Color</label>
+                                        <input type="color" id="gradient-start-picker" value="#a8c0ff"
+                                            title="Pick a start color">
+                                    </div>
+                                    <div class="gradient-swatch">
+                                        <label data-i18n="gradient_end_color">End Color</label>
+                                        <input type="color" id="gradient-end-picker" value="#3f2b96"
+                                            title="Pick an end color">
+                                    </div>
+                                </div>
+
+                                <div class="bg-control-grid" style="display: flex; flex-direction: column; gap: 15px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label for="gradient-type-select" data-i18n="settings_gradient_type"
+                                            style="display: block; margin-bottom: 8px; font-weight: 600;">Gradient
+                                            Type</label>
+                                        <select id="gradient-type-select" style="width: 100%;">
+                                            <option value="linear" data-i18n="settings_gradient_type_linear">Linear
+                                            </option>
+                                            <option value="radial" data-i18n="settings_gradient_type_radial">Radial
+                                            </option>
+                                            <option value="conic" data-i18n="settings_gradient_type_conic">Conic
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div id="gradient-angle-group" class="setting-item no-margin-top">
+                                        <div class="flex-space-between" style="margin-bottom: 8px;">
+                                            <label data-i18n="settings_gradient_angle"
+                                                style="font-weight: 600;">Angle</label>
+                                            <span id="gradient-angle-value" class="bg-slider-value">135°</span>
+                                        </div>
+                                        <input type="range" id="gradient-angle-input" min="0" max="360" value="135"
+                                            style="width: 100%;">
+                                    </div>
+
+                                    <div id="gradient-position-group" class="setting-item no-margin-top"
+                                        style="display: none; flex-direction: column;">
+                                        <label data-i18n="settings_gradient_position"
+                                            style="display: block; margin-bottom: 8px; font-weight: 600;">Position</label>
+                                        <select id="gradient-position-select" style="width: 100%;">
+                                            <option value="center" data-i18n="settings_center">Center</option>
+                                            <option value="top" data-i18n="settings_top">Top</option>
+                                            <option value="bottom" data-i18n="settings_bottom">Bottom</option>
+                                            <option value="left" data-i18n="settings_left">Left</option>
+                                            <option value="right" data-i18n="settings_right">Right</option>
+                                            <option value="top left" data-i18n="settings_top_left">Top Left</option>
+                                            <option value="top right" data-i18n="settings_top_right">Top Right</option>
+                                            <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left
+                                            </option>
+                                            <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div id="gradient-radial-shape-group" class="setting-item no-margin-top"
+                                        style="display: none; flex-direction: column;">
+                                        <label data-i18n="settings_gradient_radial_shape"
+                                            style="display: block; margin-bottom: 8px; font-weight: 600;">Radial
+                                            Shape</label>
+                                        <select id="gradient-radial-shape-select" style="width: 100%;">
+                                            <option value="circle" data-i18n="settings_circle">Circle</option>
+                                            <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-item-row" style="margin-top: 15px;">
+                                    <label for="gradient-repeating-toggle"
+                                        data-i18n="settings_gradient_repeating">Repeating
+                                        Gradient</label>
+                                    <input type="checkbox" id="gradient-repeating-toggle">
+                                </div>
+
+                                <div class="setting-item"
+                                    style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 15px;">
+                                    <label
+                                        style="font-weight: 700; color: var(--accent-color); font-size: 0.75rem; display: block; margin-bottom: 8px;"
+                                        data-i18n="settings_gradient_extra_color_count">EXTRA COLORS</label>
+                                    <select id="gradient-extra-color-count"
+                                        style="width: 100%; padding: 6px 10px; margin-bottom: 10px;">
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                    <div id="gradient-extra-color-pickers" class="gradient-extra-pickers-container">
+                                    </div>
+                                    <input type="text" id="gradient-custom-colors" style="display: none;">
+                                </div>
+
+                                <div class="background-inputs-grid"
+                                    style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                                    <button id="random-gradient-colors-btn" class="secondary-btn"
+                                        title="Randomize Colors" data-i18n-title="settings_accent_random"
+                                        style="width: 100%;">
+                                        <i class="fa-solid fa-shuffle"></i> <span
+                                            data-i18n="settings_gradient_random_colors">Random Colors</span>
+                                    </button>
+                                    <button id="generate-modern-gradient-btn" class="secondary-btn"
+                                        style="width: 100%;">
+                                        <i class="fa-solid fa-sparkles"></i> <span
+                                            data-i18n="settings_gradient_generate_modern">AI Presets Combinations</span>
+                                    </button>
+                                    <button id="save-gradient-btn" class="primary-btn"
+                                        style="width: 100%; height: 44px; justify-content: center; gap: 10px; font-weight: 600;">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                        <span data-i18n="settings_save_gradient">Save Gradient</span>
+                                    </button>
+                                </div>
+                                <div class="modern-gradient-hint" data-i18n="modern_gradient_hint">Tip: Try 'AI Presets'
+                                    for
+                                    professionally picked color combinations!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-layer-group"></i> <span data-i18n="settings_saved_gradients">Saved
+                                Gallery</span>
+                            <span id="count-gradient"></span>
+                        </div>
+                        <div id="gradient-select-toolbar" class="bg-select-toolbar"
+                            style="display:none; margin-bottom: 10px;">
+                            <span id="gradient-select-count" class="bg-select-count">0 selected</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button id="gradient-select-all-btn" class="secondary-btn"
+                                    style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="bg_select_all">Select
+                                    All</button>
+                                <button id="gradient-delete-selected-btn" class="secondary-btn danger-btn"
+                                    style="padding: 4px 10px; font-size: 0.75rem; color: #ff4b4b;"
+                                    data-i18n="menu_delete">Delete</button>
+                                <button id="gradient-select-cancel-btn" class="secondary-btn"
+                                    style="padding: 4px 10px; font-size: 0.75rem;" data-i18n="cancel">Cancel</button>
+                            </div>
+                        </div>
+                        <button id="gradient-select-mode-btn" class="secondary-btn full-width"
+                            style="margin-bottom: 12px;" data-i18n="bg_select_mode">
+                            <i class="fa-solid fa-check-double"></i> Select to Delete
+                        </button>
+                        <div id="user-gradients-gallery" class="local-bg-gallery"></div>
+                    </div>
+
+
+                    <!-- Multi-Color Split Background -->
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-palette"></i> <span
+                                data-i18n="settings_multi_color_title">Split Background
+                                (Multi-Color)</span></div>
+                        <button id="multi-color-toggle-btn" class="secondary-btn full-width"
+                            style="margin-bottom: 10px;">
+                            <i class="fa-solid fa-eye-slash"></i>
+                            <span id="multi-color-toggle-label" data-i18n="settings_multi_color_close">Hide
+                                Controls</span>
+                        </button>
+                        <div id="multi-color-settings-body">
+                            <div class="setting-item" style="margin-bottom: 12px;">
+                                <label for="multi-color-count-select" style="font-size: 0.9rem;"
+                                    data-i18n="settings_multi_color_count">Number of Colors:</label>
+                                <select id="multi-color-count-select" style="width: 100%; margin-top: 6px;">
+                                    <option value="2" data-i18n="settings_colors_count_2">2 Colors</option>
+                                    <option value="3" data-i18n="settings_colors_count_3">3 Colors</option>
+                                    <option value="4" data-i18n="settings_colors_count_4">4 Colors</option>
+                                    <option value="5" data-i18n="settings_colors_count_5">5 Colors</option>
+                                    <option value="6" data-i18n="settings_colors_count_6">6 Colors</option>
+                                </select>
+                            </div>
+
+                            <div class="setting-item" style="margin-bottom: 12px;">
+                                <label data-i18n="settings_multi_color_mode">Mode:</label>
+                                <div class="btn-group" style="margin-top: 8px;">
+                                    <button type="button" class="btn-group-item multi-color-mode-btn active"
+                                        data-mode="smooth" data-i18n="settings_multi_color_smooth">Smooth</button>
+                                    <button type="button" class="btn-group-item multi-color-mode-btn" data-mode="blocks"
+                                        data-i18n="settings_multi_color_blocks">Blocks</button>
+                                </div>
+                            </div>
+
+                            <div class="setting-item" style="margin-bottom: 12px;">
+                                <label style="font-size: 0.85rem;" data-i18n="settings_gradient_type">Type:</label>
+                                <select id="multi-color-type-select" style="width: 100%; margin-top: 6px;">
+                                    <option value="linear" data-i18n="settings_gradient_type_linear">Linear</option>
+                                    <option value="radial" data-i18n="settings_gradient_type_radial">Radial</option>
+                                    <option value="conic" data-i18n="settings_gradient_type_conic">Conic</option>
+                                </select>
+                            </div>
+
+                            <div id="multi-color-radial-conic-controls"
+                                style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                <div class="setting-item">
+                                    <label style="font-size: 0.85rem;"
+                                        data-i18n="settings_gradient_position">Position:</label>
+                                    <select id="multi-color-position-select" style="width: 100%; margin-top: 6px;">
+                                        <option value="center" data-i18n="settings_center">Center</option>
+                                        <option value="top" data-i18n="settings_top">Top</option>
+                                        <option value="bottom" data-i18n="settings_bottom">Bottom</option>
+                                        <option value="left" data-i18n="settings_left">Left</option>
+                                        <option value="right" data-i18n="settings_right">Right</option>
+                                        <option value="top left" data-i18n="settings_top_left">Top Left</option>
+                                        <option value="top right" data-i18n="settings_top_right">Top Right</option>
+                                        <option value="bottom left" data-i18n="settings_bottom_left">Bottom Left
+                                        </option>
+                                        <option value="bottom right" data-i18n="settings_bottom_right">Bottom Right
+                                        </option>
+                                    </select>
+                                </div>
+                                <div id="multi-color-radial-shape-group" class="setting-item">
+                                    <label style="font-size: 0.85rem;"
+                                        data-i18n="settings_gradient_radial_shape">Shape:</label>
+                                    <select id="multi-color-radial-shape-select" style="width: 100%; margin-top: 6px;">
+                                        <option value="circle" data-i18n="settings_circle">Circle</option>
+                                        <option value="ellipse" data-i18n="settings_ellipse">Ellipse</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item-row" style="margin-bottom: 12px;">
+                                <label for="multi-color-repeating-toggle"
+                                    data-i18n="settings_gradient_repeating">Repeating
+                                    Gradient</label>
+                                <input type="checkbox" id="multi-color-repeating-toggle">
+                            </div>
+
+                            <div id="multi-color-pickers-container"
+                                style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                                <!-- Color pickers will be generated here -->
+                            </div>
+
+                            <div id="multi-color-divider-settings" style="margin-bottom: 12px; display: none;">
+                                <div class="setting-item-row" style="margin-bottom: 10px;">
+                                    <label for="multi-color-dividers-toggle"
+                                        data-i18n="settings_multi_color_dividers">Show
+                                        Divider Lines</label>
+                                    <input type="checkbox" id="multi-color-dividers-toggle" checked>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                                    <label for="multi-color-line-color" style="font-size: 0.85rem;"
+                                        data-i18n="settings_multi_color_line_color">Line Color:</label>
+                                    <input type="color" id="multi-color-line-color" value="#ffffff"
+                                        style="flex: 1; height: 32px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: none; cursor: pointer;">
+                                </div>
+
+                                <div class="setting-item" style="margin-bottom: 10px;">
+                                    <div class="setting-label" style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_multi_color_line_width">Line Width:</span>
+                                        <span><span id="multi-color-line-width-value">1.2</span>%</span>
+                                    </div>
+                                    <input type="range" id="multi-color-line-width" min="0.2" max="3" step="0.1"
+                                        value="1.2" style="width: 100%; margin-top: 6px;">
+                                </div>
+
+                                <div style="margin-top: 10px;">
+                                    <div class="setting-item-row" style="margin-bottom: 10px;">
+                                        <label for="multi-color-free-line-angles"
+                                            data-i18n="settings_multi_color_free_line_angles">Free divider angles (per
+                                            line)</label>
+                                        <input type="checkbox" id="multi-color-free-line-angles">
+                                    </div>
+                                    <div id="multi-color-line-angles-container"
+                                        style="display: none; flex-direction: column; gap: 10px;"></div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item" style="margin-bottom: 12px;">
+                                <div class="setting-label" style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_multi_color_angle">Angle:</span>
+                                    <span><span id="multi-gradient-angle-value">135</span>deg</span>
+                                </div>
+                                <input type="range" id="multi-gradient-angle-input" min="0" max="360" value="135"
+                                    style="width: 100%; margin-top: 6px;">
+                            </div>
+                            <div id="multi-gradient-preview"
+                                style="width: 100%; height: 60px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 12px; background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">
+                            </div>
+                            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+                                <button id="random-multi-color-hue-btn" class="secondary-btn"
+                                    style="flex: 1; min-width: 120px;" data-i18n="settings_multi_color_random_hue"><i
+                                        class="fa-solid fa-shuffle"></i> Random
+                                    HUE</button>
+                                <button id="random-multi-color-crazy-btn" class="secondary-btn"
+                                    style="flex: 1; min-width: 120px;"
+                                    data-i18n="settings_multi_color_random_crazy">Crazy
+                                    Random</button>
+                                <button id="apply-multi-color-btn" class="secondary-btn"
+                                    style="flex: 1; min-width: 120px;"
+                                    data-i18n="settings_multi_color_apply">Apply</button>
+                            </div>
+                            <button id="save-multi-color-btn" class="secondary-btn full-width"
+                                data-i18n="settings_multi_color_save">Save Preset</button>
+
+                            <!-- Saved Multi-Color Presets -->
+                            <div style="margin-top: 12px;" id="saved-multi-color-presets-group">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                    <label style="font-size: 0.9rem; margin-bottom: 0;"
+                                        data-i18n="settings_multi_color_saved_presets" for="svg-wave-lines">Saved
+                                        Presets</label>
+                                    <span id="count-multi-color"></span>
+                                    <button id="multi-color-select-mode-btn" class="secondary-btn"
+                                        title="Select multiple to delete" data-i18n="bg_select_mode"
+                                        style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                                </div>
+                                <div id="multi-color-select-toolbar" class="bg-select-toolbar"
+                                    style="display:none; margin-bottom: 10px;">
+                                    <span id="multi-color-select-count" class="bg-select-count">0 selected</span>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button id="multi-color-select-all-btn" class="icon-btn" title="Select All"><i
+                                                class="fa-solid fa-check-double"></i></button>
+                                        <button id="multi-color-delete-selected-btn" class="icon-btn danger-btn"
+                                            title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                        <button id="multi-color-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                                class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                </div>
+                                <div id="saved-multi-color-presets" class="local-bg-gallery"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            <!-- Animated Backgrounds Section -->
+            <div class="settings-section" data-section-id="animated-backgrounds">
+                <h3 class="section-toggle" id="animated-backgrounds-header">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="settings_animated_backgrounds_title">Background Animations</span>
+                </h3>
+                <div class="section-content" id="animated-backgrounds-body">
                     <!-- Gradient V2 (Animated) Section -->
                     <div class="setting-group" id="gradientV2-group"
-                        style="margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        style="border: 1px solid rgba(255,255,255,0.05);">
                         <div class="setting-label"><i class="fa-solid fa-brush"></i> <span
                                 data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span></div>
 
                         <div class="setting-item-row"
                             style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
                             <label for="gradientV2-active" data-i18n="settings_gradientV2_active"
-                                style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i> Active</label>
+                                style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i>
+                                Active</label>
                             <input type="checkbox" id="gradientV2-active">
                         </div>
 
-                        <div
-                            style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful:
-                                may
-                                lag when used</span>
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                         </div>
 
                         <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
@@ -1827,7 +1850,8 @@
 
                             <!-- Distortion / Warp -->
                             <div class="gradient-v2-panel">
-                                <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp & Distortion
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp &
+                                    Distortion
                                 </div>
                                 <div class="gradient-v2-grid">
                                     <div class="setting-item no-margin-top">
@@ -1907,7 +1931,8 @@
 
                             <!-- Film Grain -->
                             <div class="gradient-v2-panel">
-                                <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film Grain
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film
+                                    Grain
                                 </div>
                                 <div class="gradient-v2-grid">
                                     <div class="setting-item no-margin-top">
@@ -1936,7 +1961,8 @@
 
                             <!-- Post-Processing -->
                             <div class="gradient-v2-panel">
-                                <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image Adjustment
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image
+                                    Adjustment
                                 </div>
                                 <div class="gradient-v2-grid">
                                     <div class="setting-item no-margin-top">
@@ -2014,15 +2040,15 @@
                             </div>
                         </div>
 
-                        <!-- Saved Gradients Gallery -->
-                        <div id="user-gradientV2s-gallery-wrap" style="margin-top:10px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <label data-i18n="settings_gradientV2_saved_label"
-                                    style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Gradient V2s</label>
-                                <span id="count-gradientV2"></span>
-                                <button id="gradientV2-select-mode-btn" class="secondary-btn"
-                                    title="Select multiple to delete" data-i18n="bg_select_mode"
-                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                        <div id="user-gradientV2s-gallery-wrap" class="saved-gallery-container" style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_gradientV2_saved_label">Saved Gradient V2s</span>
+                                    <span id="count-gradientV2" class="gallery-count"></span>
+                                </label>
+                                <button id="gradientV2-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
                             </div>
                             <div id="gradientV2-select-toolbar" class="bg-select-toolbar"
                                 style="display:none; margin-bottom: 10px;">
@@ -2041,19 +2067,23 @@
                     </div>
 
                     <!-- Silk Background Section -->
-                    <div class="setting-group" id="silk-group" style="margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                        <div class="setting-label"><i class="fa-solid fa-water"></i> Silk (Animated)</div>
+                    <div class="setting-group" id="silk-group"
+                        style="border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-water"></i>
+                            <span data-i18n="settings_silk_title">Silk (Animated)</span>
+                        </div>
 
-                        <div class="setting-item-row"
-                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                            <label for="silk-active" style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i>
-                                Active</label>
+                        <div class="setting-item-row">
+                            <label for="silk-active" data-i18n="settings_silk_active">
+                                <i class="fa-solid fa-power-off"></i> Active
+                            </label>
                             <input type="checkbox" id="silk-active">
                         </div>
 
-                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                                lag when used</span>
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                         </div>
 
                         <button id="silk-toggle-btn" class="secondary-btn full-width">
@@ -2071,7 +2101,8 @@
 
                             <!-- Animation Controls -->
                             <div class="gradient-v2-panel">
-                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls
+                                </div>
                                 <div class="gradient-v2-grid">
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
@@ -2099,7 +2130,8 @@
                                             <span>Rotation</span>
                                             <span id="silk-rotation-value" style="opacity: 0.8;">0.0</span>
                                         </label>
-                                        <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1" value="0.0">
+                                        <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1"
+                                            value="0.0">
                                     </div>
                                 </div>
                             </div>
@@ -2107,26 +2139,29 @@
                             <!-- Action Buttons -->
                             <div
                                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
-                                <button id="silk-random-btn" class="secondary-btn" title="Randomize Silk">
-                                    <i class="fa-solid fa-dice"></i> Randomize
+                                <button id="silk-random-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span data-i18n="settings_silk_randomize">Randomize</span>
                                 </button>
                                 <button id="silk-save-btn" class="primary-btn">
-                                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_silk_save">Save BG</span>
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span data-i18n="settings_silk_save">Save BG</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Saved Silks Gallery -->
-                        <div id="user-silks-gallery-wrap" style="margin-top:10px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <label data-i18n="settings_silk_saved_label"
-                                    style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Silks</label>
-                                <span id="count-silk"></span>
-                                <button id="silk-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                                    data-i18n="bg_select_mode"
-                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                        <div id="user-silks-gallery-wrap" class="saved-gallery-container" style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_silk_saved_label">Saved Silks</span>
+                                    <span id="count-silk" class="gallery-count"></span>
+                                </label>
+                                <button id="silk-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
                             </div>
-                            <div id="silk-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                            <div id="silk-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
                                 <span id="silk-select-count" class="bg-select-count">0 selected</span>
                                 <div style="display: flex; gap: 6px;">
                                     <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
@@ -2142,27 +2177,28 @@
                     </div>
 
                     <!-- Light Pillar Section -->
-                    <div class="setting-group" id="light-pillar-group" style="border: 1px solid rgba(255,255,255,0.05);">
-                        <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span><i class="fa-solid fa-lightbulb"></i> Light Pillar (Animated)</span>
+                    <div class="setting-group" id="light-pillar-group"
+                        style="border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span data-i18n="settings_lightPillar_title">Light Pillar (Animated)</span>
                         </div>
 
-                        <div class="setting-item-row"
-                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                            <label for="light-pillar-active" style="margin: 0; font-weight: 600;"><i
-                                    class="fa-solid fa-power-off"></i>
-                                Active</label>
+                        <div class="setting-item-row">
+                            <label for="light-pillar-active" data-i18n="settings_lightPillar_active">
+                                <i class="fa-solid fa-power-off"></i> Active
+                            </label>
                             <input type="checkbox" id="light-pillar-active">
                         </div>
 
-                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                                lag when used</span>
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                         </div>
 
                         <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
                             <i class="fa-solid fa-sliders"></i>
-                            <span id="light-pillar-toggle-label">Open Light Pillar</span>
+                            <span id="light-pillar-toggle-label" data-i18n="settings_lightPillar_open">Open Light Pillar</span>
                         </button>
                         <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
 
@@ -2180,19 +2216,22 @@
 
                             <!-- Animation Controls -->
                             <div class="gradient-v2-panel">
-                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls
+                                </div>
                                 <div class="gradient-v2-grid">
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Intensity</span>
                                             <span id="light-pillar-intensity-value" style="opacity: 0.8;">1.0</span>
                                         </label>
-                                        <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1" value="1.0">
+                                        <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1"
+                                            value="1.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Rotation Speed</span>
-                                            <span id="light-pillar-rotation-speed-value" style="opacity: 0.8;">0.3</span>
+                                            <span id="light-pillar-rotation-speed-value"
+                                                style="opacity: 0.8;">0.3</span>
                                         </label>
                                         <input type="range" id="light-pillar-rotation-speed" min="0" max="2" step="0.1"
                                             value="0.3">
@@ -2210,28 +2249,32 @@
                                             <span>Pillar Width</span>
                                             <span id="light-pillar-width-value" style="opacity: 0.8;">3.0</span>
                                         </label>
-                                        <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5" value="3.0">
+                                        <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5"
+                                            value="3.0">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Pillar Height</span>
                                             <span id="light-pillar-height-value" style="opacity: 0.8;">0.4</span>
                                         </label>
-                                        <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1" value="0.4">
+                                        <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1"
+                                            value="0.4">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Noise Intensity</span>
                                             <span id="light-pillar-noise-value" style="opacity: 0.8;">0.5</span>
                                         </label>
-                                        <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1" value="0.5">
+                                        <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1"
+                                            value="0.5">
                                     </div>
                                     <div class="setting-item no-margin-top">
                                         <label style="display: flex; justify-content: space-between;">
                                             <span>Pillar Rotation</span>
                                             <span id="light-pillar-rotation-value" style="opacity: 0.8;">0°</span>
                                         </label>
-                                        <input type="range" id="light-pillar-rotation" min="0" max="360" step="1" value="0">
+                                        <input type="range" id="light-pillar-rotation" min="0" max="360" step="1"
+                                            value="0">
                                     </div>
                                 </div>
                             </div>
@@ -2239,23 +2282,26 @@
                             <!-- Action Buttons -->
                             <div
                                 style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
-                                <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize Light Pillar">
-                                    <i class="fa-solid fa-dice"></i> Randomize
+                                <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span data-i18n="settings_lightPillar_randomize">Randomize</span>
                                 </button>
                                 <button id="light-pillar-save-btn" class="primary-btn">
-                                    <i class="fa-solid fa-floppy-disk"></i> <span>Save BG</span>
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span data-i18n="settings_lightPillar_save">Save BG</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Saved Light Pillars Gallery -->
-                        <div id="user-light-pillars-gallery-wrap" style="margin-top:10px; display: none;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Pillars</label>
-                                <span id="count-light-pillar"></span>
-                                <button id="light-pillar-select-mode-btn" class="secondary-btn"
-                                    title="Select multiple to delete"
-                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                        <div id="user-light-pillars-gallery-wrap" class="saved-gallery-container" style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_light_pillar_saved_label">Saved Light Pillars</span>
+                                    <span id="count-light-pillar" class="gallery-count"></span>
+                                </label>
+                                <button id="light-pillar-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
                             </div>
                             <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
                                 style="display:none; margin-bottom: 10px;">
@@ -2263,8 +2309,8 @@
                                 <div style="display: flex; gap: 6px;">
                                     <button id="light-pillar-select-all-btn" class="icon-btn" title="Select All"><i
                                             class="fa-solid fa-check-double"></i></button>
-                                    <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
                                     <button id="light-pillar-select-cancel-btn" class="icon-btn" title="Cancel"><i
                                             class="fa-solid fa-xmark"></i></button>
                                 </div>
@@ -2274,9 +2320,12 @@
                     </div>
 
                     <!-- Liquid Ether Section -->
-                    <div class="setting-group" id="liquid-ether-group" style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 0;">
-                        <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
-                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid Ether
+                    <div class="setting-group" id="liquid-ether-group"
+                        style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 0;">
+                        <div class="setting-label"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid
+                                    Ether
                                     (Animated)</span></span>
                         </div>
 
@@ -2288,9 +2337,9 @@
                             <input type="checkbox" id="liquid-ether-active">
                         </div>
 
-                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                                lag when used</span>
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
                         </div>
 
                         <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
@@ -2318,7 +2367,8 @@
                                         <span data-i18n="settings_liquid_ether_glow_width">Glow Width</span>
                                         <span id="liquid-ether-glow-width-value" style="opacity: 0.8;">5.5</span>
                                     </label>
-                                    <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1" value="5.5">
+                                    <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1"
+                                        value="5.5">
                                 </div>
                             </div>
 
@@ -2330,21 +2380,22 @@
                                         data-i18n="settings_liquid_ether_randomize">Randomize</span>
                                 </button>
                                 <button id="liquid-ether-save-btn" class="primary-btn">
-                                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_liquid_ether_save">Save
+                                    <i class="fa-solid fa-floppy-disk"></i> <span
+                                        data-i18n="settings_liquid_ether_save">Save
                                         BG</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Saved Liquid Ether Gallery -->
-                        <div id="user-liquid-ethers-gallery-wrap" style="margin-top:10px; display: none;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;"
-                                    data-i18n="settings_saved_gallery">Saved Gallery</label>
-                                <span id="count-liquid-ether"></span>
-                                <button id="liquid-ether-select-mode-btn" class="secondary-btn"
-                                    title="Select multiple to delete" data-i18n="bg_select_mode"
-                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                        <div id="user-liquid-ethers-gallery-wrap" class="saved-gallery-container" style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_liquid_ether_saved_label">Saved Liquid Ethers</span>
+                                    <span id="count-liquid-ether" class="gallery-count"></span>
+                                </label>
+                                <button id="liquid-ether-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
                             </div>
                             <div id="liquid-ether-select-toolbar" class="bg-select-toolbar"
                                 style="display:none; margin-bottom: 10px;">
@@ -2352,8 +2403,8 @@
                                 <div style="display: flex; gap: 6px;">
                                     <button id="liquid-ether-select-all-btn" class="icon-btn" title="Select All"><i
                                             class="fa-solid fa-check-double"></i></button>
-                                    <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
                                     <button id="liquid-ether-select-cancel-btn" class="icon-btn" title="Cancel"><i
                                             class="fa-solid fa-xmark"></i></button>
                                 </div>

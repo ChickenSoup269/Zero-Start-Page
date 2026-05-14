@@ -6,6 +6,9 @@ import {
 import { geti18n } from "../../services/i18n.js"
 import * as DOM from "../../utils/dom.js"
 
+let multiColorSelectMode = false
+let multiColorSelectedIndices = new Set()
+
 function t(key, fallback) {
   const i18n = geti18n()
   return i18n?.[key] || fallback
@@ -262,6 +265,12 @@ export function renderSavedMultiColors(DOM_REFS) {
         star.className = "fa-solid fa-star favorite-star-badge"
         item.appendChild(star)
       }
+
+      const isSelected = multiColorSelectedIndices.has(index)
+      const checkBadge = document.createElement("div")
+      checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
+      checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
+      item.appendChild(checkBadge)
 
       const activeIndicator = document.createElement("div")
       activeIndicator.className = "active-indicator"
@@ -740,8 +749,6 @@ export function setupMultiColorManager(applySettings) {
     applyRandomizedColors(generateCrazyColors(count))
   })
 
-  let multiColorSelectMode = false
-  let multiColorSelectedIndices = new Set()
 
   function setupMultiSelect() {
     const updateMultiColorSelectCount = () => {
@@ -767,7 +774,7 @@ export function setupMultiColorManager(applySettings) {
       DOM.multiColorSelectModeBtn.style.display = "block"
       DOM.savedMultiColorPresets
         .querySelectorAll(".user-gradient-item")
-        .forEach((el) => el.classList.remove("bg-selected"))
+        .forEach((el) => el.classList.remove("selected"))
     }
 
     DOM.multiColorSelectModeBtn.addEventListener("click", () => {
@@ -792,12 +799,12 @@ export function setupMultiColorManager(applySettings) {
         multiColorSelectedIndices.clear()
         DOM.savedMultiColorPresets
           .querySelectorAll(".user-gradient-item")
-          .forEach((el) => el.classList.remove("bg-selected"))
+          .forEach((el) => el.classList.remove("selected"))
       } else {
         multiColorIndices.forEach((i) => multiColorSelectedIndices.add(i))
         DOM.savedMultiColorPresets
           .querySelectorAll(".user-gradient-item")
-          .forEach((el) => el.classList.add("bg-selected"))
+          .forEach((el) => el.classList.add("selected"))
       }
       updateMultiColorSelectCount()
     })
@@ -829,12 +836,15 @@ export function setupMultiColorManager(applySettings) {
       if (!item) return
 
       const index = parseInt(item.dataset.index)
+      const checkbox = item.querySelector(".bg-item-checkbox")
       if (multiColorSelectedIndices.has(index)) {
         multiColorSelectedIndices.delete(index)
-        item.classList.remove("bg-selected")
+        item.classList.remove("selected")
+        if (checkbox) checkbox.classList.remove("checked")
       } else {
         multiColorSelectedIndices.add(index)
-        item.classList.add("bg-selected")
+        item.classList.add("selected")
+        if (checkbox) checkbox.classList.add("checked")
       }
       updateMultiColorSelectCount()
     })

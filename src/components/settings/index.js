@@ -1034,27 +1034,26 @@ export function initSettings() {
 
   // Animated Backgrounds Collapsible Group
   const animatedBgHeader = document.getElementById("animated-backgrounds-header")
-  const animatedBgBody = document.getElementById("animated-backgrounds-body")
-  if (animatedBgHeader && animatedBgBody) {
+  if (animatedBgHeader) {
     animatedBgHeader.addEventListener("click", () => {
-      const isExpanded = animatedBgBody.style.display !== "none"
-      animatedBgBody.style.display = isExpanded ? "none" : "block"
-      animatedBgHeader.classList.toggle("active", !isExpanded)
-      
-      // Fix bug: Re-render galleries when section is expanded to ensure correct canvas/gradient previews
-      if (!isExpanded) {
+      const section = animatedBgHeader.parentElement
+      setTimeout(() => {
+        const isExpanded = !section.classList.contains("collapsed")
+        if (isExpanded) {
           renderUserGradientV2s(DOM_EXPORTS)
           renderUserSilks()
           renderUserLightPillars()
           renderUserLiquidEthers()
-      }
+        }
+      }, 50)
     })
     
     // Auto-expand if any effect within this group is active
     const isAnyActive = settings.silkActive || settings.lightPillarActive || settings.liquidEtherActive || settings.gradientV2Active
     if (isAnyActive) {
-        animatedBgBody.style.display = "block"
-        animatedBgHeader.classList.add("active")
+        const section = animatedBgHeader.parentElement
+        section.classList.remove("collapsed")
+        
         // Initial render for active state
         setTimeout(() => {
             renderUserGradientV2s(DOM_EXPORTS)
@@ -1062,8 +1061,6 @@ export function initSettings() {
             renderUserLightPillars()
             renderUserLiquidEthers()
         }, 100)
-    } else {
-        animatedBgBody.style.display = "none"
     }
   }
 

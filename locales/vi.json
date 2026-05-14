@@ -520,7 +520,7 @@
   "settings_svg_wave_saved_label": "Mẫu sóng đã lưu",
   "settings_svg_wave_crazy": "Chế độ điên cuồng!",
   "settings_gradientV2_title": "Dải màu động (V2)",
-  "settings_gradientV2_active": "Hiện nền Gradient V2",
+  "settings_gradientV2_active": "Kích hoạt",
   "settings_gradientV2_open": "Mở bảng điều khiển",
   "settings_gradientV2_close": "Ẩn bảng điều khiển",
   "settings_gradientV2_color1": "Màu 1",
@@ -842,5 +842,10 @@
   "theme_icon_label": "Biểu tượng Chủ đề",
   "save_theme_confirm": "Lưu Chủ đề",
   "setting_cyber_pulse_color": "Màu sắc Cyber Pulse",
-  "settings_performance_warning": "Cẩn thận lag khi sử dụng"
+  "settings_performance_warning": "Lưu ý: Có thể gây lag khi sử dụng",
+  "settings_silk_save": "Lưu hình nền",
+  "settings_silk_saved_label": "Lụa đã lưu",
+  "settings_lightPillar_save": "Lưu hình nền",
+  "settings_light_pillar_saved_label": "Cột sáng đã lưu",
+  "settings_liquid_ether_saved_label": "Chất lỏng đã lưu"
 }

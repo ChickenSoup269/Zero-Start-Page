@@ -9,6 +9,7 @@ import {
   saveSettings,
 } from "../../services/state.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
+import { geti18n } from "../../services/i18n.js"
 
 // Multi-select state
 let silkSelectMode = false
@@ -403,16 +404,24 @@ export function renderUserSilks() {
     item.style.background = preset.color || "#7B7481"
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
-      ${silkSelectMode ? `<div class="bg-item-checkbox ${silkSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>` : ""}
+      <div class="bg-item-checkbox ${silkSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
     item.addEventListener("click", () => {
       if (silkSelectMode) {
-        if (silkSelectedIndices.has(index)) silkSelectedIndices.delete(index)
-        else silkSelectedIndices.add(index)
+        const checkbox = item.querySelector(".bg-item-checkbox")
+        if (silkSelectedIndices.has(index)) {
+          silkSelectedIndices.delete(index)
+          item.classList.remove("selected")
+          if (checkbox) checkbox.classList.remove("checked")
+        } else {
+          silkSelectedIndices.add(index)
+          item.classList.add("selected")
+          if (checkbox) checkbox.classList.add("checked")
+        }
         const countEl = document.getElementById("silk-select-count")
-        if (countEl) countEl.textContent = `${silkSelectedIndices.size} selected`
-        renderUserSilks()
+        const i18n = geti18n()
+        if (countEl) countEl.textContent = `${silkSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
         return
       }
       applySilkPreset(preset)
@@ -466,16 +475,24 @@ export function renderUserLightPillars() {
     item.style.background = `linear-gradient(to bottom, ${preset.topColor || '#5227FF'}, ${preset.bottomColor || '#FF9FFC'})`
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
-      ${lightPillarSelectMode ? `<div class="bg-item-checkbox ${lightPillarSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>` : ""}
+      <div class="bg-item-checkbox ${lightPillarSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
     item.addEventListener("click", () => {
       if (lightPillarSelectMode) {
-        if (lightPillarSelectedIndices.has(index)) lightPillarSelectedIndices.delete(index)
-        else lightPillarSelectedIndices.add(index)
+        const checkbox = item.querySelector(".bg-item-checkbox")
+        if (lightPillarSelectedIndices.has(index)) {
+          lightPillarSelectedIndices.delete(index)
+          item.classList.remove("selected")
+          if (checkbox) checkbox.classList.remove("checked")
+        } else {
+          lightPillarSelectedIndices.add(index)
+          item.classList.add("selected")
+          if (checkbox) checkbox.classList.add("checked")
+        }
         const countEl = document.getElementById("light-pillar-select-count")
-        if (countEl) countEl.textContent = `${lightPillarSelectedIndices.size} selected`
-        renderUserLightPillars()
+        const i18n = geti18n()
+        if (countEl) countEl.textContent = `${lightPillarSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
         return
       }
       applyLightPillarPreset(preset)
@@ -535,16 +552,24 @@ export function renderUserLiquidEthers() {
     item.style.background = `linear-gradient(135deg, ${colors[0]}, ${colors[1]}, ${colors[2]})`
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
-      ${liquidEtherSelectMode ? `<div class="bg-item-checkbox ${liquidEtherSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>` : ""}
+      <div class="bg-item-checkbox ${liquidEtherSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
     item.addEventListener("click", () => {
       if (liquidEtherSelectMode) {
-        if (liquidEtherSelectedIndices.has(index)) liquidEtherSelectedIndices.delete(index)
-        else liquidEtherSelectedIndices.add(index)
+        const checkbox = item.querySelector(".bg-item-checkbox")
+        if (liquidEtherSelectedIndices.has(index)) {
+          liquidEtherSelectedIndices.delete(index)
+          item.classList.remove("selected")
+          if (checkbox) checkbox.classList.remove("checked")
+        } else {
+          liquidEtherSelectedIndices.add(index)
+          item.classList.add("selected")
+          if (checkbox) checkbox.classList.add("checked")
+        }
         const countEl = document.getElementById("liquid-ether-select-count")
-        if (countEl) countEl.textContent = `${liquidEtherSelectedIndices.size} selected`
-        renderUserLiquidEthers()
+        const i18n = geti18n()
+        if (countEl) countEl.textContent = `${liquidEtherSelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
         return
       }
       applyLiquidEtherPreset(preset)
@@ -579,10 +604,14 @@ function setupEffectMultiSelect(type, handleSettingUpdate) {
       else if (type === 'light-pillar') { lightPillarSelectMode = !lightPillarSelectMode; lightPillarSelectedIndices.clear() }
       else if (type === 'liquid-ether') { liquidEtherSelectMode = !liquidEtherSelectMode; liquidEtherSelectedIndices.clear() }
       
+      const i18n = geti18n()
       const isMode = type === 'silk' ? silkSelectMode : (type === 'light-pillar' ? lightPillarSelectMode : liquidEtherSelectMode)
       if (toolbar) toolbar.style.display = isMode ? "flex" : "none"
-      selectModeBtn.textContent = isMode ? "Cancel" : "Select"
-      if (countEl) countEl.textContent = "0 selected"
+      selectModeBtn.textContent = isMode 
+        ? (i18n.cancel || "Cancel") 
+        : (i18n.bg_select_mode || "Select")
+      
+      if (countEl) countEl.textContent = `0 ${i18n.bookmark_selected || 'selected'}`
       
       if (type === 'silk') renderUserSilks()
       else if (type === 'light-pillar') renderUserLightPillars()
@@ -592,12 +621,13 @@ function setupEffectMultiSelect(type, handleSettingUpdate) {
 
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
+      const i18n = geti18n()
       if (type === 'silk') silkSelectMode = false
       else if (type === 'light-pillar') lightPillarSelectMode = false
       else if (type === 'liquid-ether') liquidEtherSelectMode = false
       
       if (toolbar) toolbar.style.display = "none"
-      if (selectModeBtn) selectModeBtn.textContent = "Select"
+      if (selectModeBtn) selectModeBtn.textContent = i18n.bg_select_mode || "Select"
       
       if (type === 'silk') renderUserSilks()
       else if (type === 'light-pillar') renderUserLightPillars()
@@ -611,22 +641,36 @@ function setupEffectMultiSelect(type, handleSettingUpdate) {
       const items = getSettings()[key] || []
       let indicesSet = type === 'silk' ? silkSelectedIndices : (type === 'light-pillar' ? lightPillarSelectedIndices : liquidEtherSelectedIndices)
       
-      if (indicesSet.size === items.length) indicesSet.clear()
-      else items.forEach((_, i) => indicesSet.add(i))
+      const itemElements = document.querySelectorAll(`.user-${type}-item`)
+      if (indicesSet.size === items.length) {
+        indicesSet.clear()
+        itemElements.forEach(el => {
+          el.classList.remove("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
+      } else {
+        items.forEach((_, i) => indicesSet.add(i))
+        itemElements.forEach(el => {
+          el.classList.add("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.add("checked")
+        })
+      }
       
-      if (countEl) countEl.textContent = `${indicesSet.size} selected`
-      if (type === 'silk') renderUserSilks()
-      else if (type === 'light-pillar') renderUserLightPillars()
-      else if (type === 'liquid-ether') renderUserLiquidEthers()
+      const i18n = geti18n()
+      if (countEl) countEl.textContent = `${indicesSet.size} ${i18n.bookmark_selected || 'selected'}`
     })
   }
 
   if (deleteBtn) {
     deleteBtn.addEventListener("click", async () => {
+      const i18n = geti18n()
       let indicesSet = type === 'silk' ? silkSelectedIndices : (type === 'light-pillar' ? lightPillarSelectedIndices : liquidEtherSelectedIndices)
       if (indicesSet.size === 0) return
       
-      const confirmed = await showConfirm(`Delete ${indicesSet.size} saved items?`)
+      const confirmMsg = i18n.alert_delete_bg_confirm || `Delete ${indicesSet.size} saved items?`
+      const confirmed = await showConfirm(confirmMsg)
       if (confirmed) {
         const key = type === 'silk' ? 'userSilks' : (type === 'light-pillar' ? 'userLightPillars' : 'userLiquidEthers')
         const items = getSettings()[key] || []
@@ -634,7 +678,7 @@ function setupEffectMultiSelect(type, handleSettingUpdate) {
         updateSetting(key, newList)
         saveSettings()
         indicesSet.clear()
-        if (countEl) countEl.textContent = "0 selected"
+        if (countEl) countEl.textContent = `0 ${i18n.bookmark_selected || 'selected'}`
         if (type === 'silk') renderUserSilks()
         else if (type === 'light-pillar') renderUserLightPillars()
         else if (type === 'liquid-ether') renderUserLiquidEthers()

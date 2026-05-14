@@ -42,7 +42,7 @@ function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
     DOM.svgWaveSelectModeBtn.style.display = "block"
     DOM.userSvgWavesGallery
       .querySelectorAll(".user-svg-wave-item")
-      .forEach((el) => el.classList.remove("bg-selected"))
+      .forEach((el) => el.classList.remove("selected"))
   }
 
   DOM.svgWaveSelectModeBtn.addEventListener("click", () => {
@@ -60,12 +60,12 @@ function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
       svgWaveSelectedIndices.clear()
       DOM.userSvgWavesGallery
         .querySelectorAll(".user-svg-wave-item")
-        .forEach((el) => el.classList.remove("bg-selected"))
+        .forEach((el) => el.classList.remove("selected"))
     } else {
       allWaves.forEach((_, i) => svgWaveSelectedIndices.add(i))
       DOM.userSvgWavesGallery
         .querySelectorAll(".user-svg-wave-item")
-        .forEach((el) => el.classList.add("bg-selected"))
+        .forEach((el) => el.classList.add("selected"))
     }
     updateSvgWaveSelectCount()
   })
@@ -96,12 +96,15 @@ function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
     if (!item) return
 
     const index = parseInt(item.dataset.index)
+    const checkbox = item.querySelector(".bg-item-checkbox")
     if (svgWaveSelectedIndices.has(index)) {
       svgWaveSelectedIndices.delete(index)
-      item.classList.remove("bg-selected")
+      item.classList.remove("selected")
+      if (checkbox) checkbox.classList.remove("checked")
     } else {
       svgWaveSelectedIndices.add(index)
-      item.classList.add("bg-selected")
+      item.classList.add("selected")
+      if (checkbox) checkbox.classList.add("checked")
     }
     updateSvgWaveSelectCount()
   })
@@ -182,8 +185,9 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
 
     item.appendChild(removeBtn)
 
-    const checkBadge = document.createElement("span")
-    checkBadge.className = "bg-select-check"
+    const isSelected = svgWaveSelectedIndices.has(index)
+    const checkBadge = document.createElement("div")
+    checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
     checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
     item.appendChild(checkBadge)
 

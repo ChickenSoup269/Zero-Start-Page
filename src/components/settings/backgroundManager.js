@@ -24,6 +24,9 @@ import { geti18n, applyTranslations } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 
+let bgSelectMode = false
+const bgSelectedIds = new Set()
+
 function renderUserColors(DOM) {
   const settings = getSettings()
   const userColorsGallery = document.getElementById("user-colors-gallery")
@@ -49,8 +52,9 @@ function renderUserColors(DOM) {
         el.appendChild(star)
       }
 
-      const checkBadge = document.createElement("span")
-      checkBadge.className = "bg-select-check"
+      const isSelected = bgSelectedIds.has(color)
+      const checkBadge = document.createElement("div")
+      checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       el.appendChild(checkBadge)
 
@@ -416,8 +420,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         })
       })
 
-      const checkBadge = document.createElement("span")
-      checkBadge.className = "bg-select-check"
+      const isSelected = bgSelectedIds.has(bgUid) || bgSelectedIds.has(bgId)
+      
+      const checkBadge = document.createElement("div")
+      checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       item.appendChild(checkBadge)
 
@@ -519,8 +525,6 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     return { enterBgSelectMode: () => {}, exitBgSelectMode: () => {} }
   DOM.localBackgroundGallery.dataset.eventsAttached = "true"
 
-  let bgSelectMode = false
-  const bgSelectedIds = new Set()
   const bgSelectModeBtn = document.getElementById("bg-select-mode-btn")
   const bgSelectToolbar = document.getElementById("bg-select-toolbar")
   const bgSelectCount = document.getElementById("bg-select-count")
@@ -560,8 +564,8 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     containers.forEach((c) => {
       c.classList.remove("bg-select-mode")
-      c.querySelectorAll(".bg-selected").forEach((el) =>
-        el.classList.remove("bg-selected"),
+      c.querySelectorAll(".selected").forEach((el) =>
+        el.classList.remove("selected"),
       )
     })
 
@@ -600,11 +604,11 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
     if (bgSelectedIds.size === allUserIds.length && allUserIds.length > 0) {
       bgSelectedIds.clear()
-      allItems.forEach((el) => el.classList.remove("bg-selected"))
+      allItems.forEach((el) => el.classList.remove("selected"))
     } else {
-      bgSelectedIds.clear() // Clear first to avoid duplicates if any
+      bgSelectedIds.clear()
       allUserIds.forEach((id) => bgSelectedIds.add(id))
-      allItems.forEach((el) => el.classList.add("bg-selected"))
+      allItems.forEach((el) => el.classList.add("selected"))
     }
     updateBgSelectCount()
   })
@@ -659,14 +663,17 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
       if (!item.classList.contains("user-uploaded")) return
 
       const id = item.dataset.bgUid || item.dataset.bgId
-      const isSelected = item.classList.contains("bg-selected")
+      const isSelected = item.classList.contains("selected")
+      const checkbox = item.querySelector(".bg-item-checkbox")
 
       if (isSelected) {
         bgSelectedIds.delete(id)
-        item.classList.remove("bg-selected")
+        item.classList.remove("selected")
+        if (checkbox) checkbox.classList.remove("checked")
       } else {
         bgSelectedIds.add(id)
-        item.classList.add("bg-selected")
+        item.classList.add("selected")
+        if (checkbox) checkbox.classList.add("checked")
       }
 
       updateBgSelectCount()

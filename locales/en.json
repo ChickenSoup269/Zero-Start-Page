@@ -548,7 +548,7 @@
   "settings_gradientV2_centerX": "Center X",
   "settings_gradientV2_centerY": "Center Y",
   "settings_gradientV2_zoom": "Zoom",
-  "settings_gradientV2_save": "Save BG",
+  "settings_gradientV2_save": "Save Background",
   "settings_gradientV2_randomize": "Randomize",
   "settings_silk_title": "Silk (Animated)",
   "settings_silk_active": "Active",
@@ -582,7 +582,7 @@
   "settings_liquid_ether_colors": "Colors",
   "settings_liquid_ether_glow_width": "Glow Width",
   "settings_liquid_ether_randomize": "Randomize",
-  "settings_liquid_ether_save": "Save BG",
+  "settings_liquid_ether_save": "Save Background",
   "settings_saved_gallery": "Saved Gallery",
   "settings_gradientV2_saved_label": "Saved Gradient V2s",
   "effect_pixel_snow_hq": "Pixel Snow HQ",
@@ -845,5 +845,10 @@
   "theme_icon_label": "Theme Icon",
   "save_theme_confirm": "Save Theme",
   "setting_cyber_pulse_color": "Cyber Pulse Color",
-  "settings_performance_warning": "Careful: may lag when used"
+  "settings_performance_warning": "Careful: may lag when used",
+  "settings_silk_save": "Save Background",
+  "settings_silk_saved_label": "Saved Silks",
+  "settings_lightPillar_save": "Save Background",
+  "settings_light_pillar_saved_label": "Saved Light Pillars",
+  "settings_liquid_ether_saved_label": "Saved Liquid Ethers"
 }

@@ -250,7 +250,7 @@ function renderUserGradientV2s(dom) {
       <div class="bg-item-overlay">
         <i class="fa-solid fa-play"></i>
       </div>
-      ${gradientV2SelectMode ? `<div class="bg-item-checkbox ${gradientV2SelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>` : ""}
+      <div class="bg-item-checkbox ${gradientV2SelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
     `
 
     item.addEventListener("click", (e) => {
@@ -297,6 +297,21 @@ function applyPreset(preset, dom) {
   }
 }
 
+function toggleItemSelection(index, item, dom) {
+  const isSelected = gradientV2SelectedIndices.has(index)
+  const checkbox = item.querySelector(".bg-item-checkbox")
+  if (isSelected) {
+    gradientV2SelectedIndices.delete(index)
+    item.classList.remove("selected")
+    if (checkbox) checkbox.classList.remove("checked")
+  } else {
+    gradientV2SelectedIndices.add(index)
+    item.classList.add("selected")
+    if (checkbox) checkbox.classList.add("checked")
+  }
+  updateSelectionUI(dom)
+}
+
 function setupMultiSelect(dom) {
   const selectModeBtn = dom.gradientV2SelectModeBtn || document.getElementById("gradientV2-select-mode-btn")
   const toolbar = dom.gradientV2SelectToolbar || document.getElementById("gradientV2-select-toolbar")
@@ -331,13 +346,25 @@ function setupMultiSelect(dom) {
   if (selectAllBtn) {
     selectAllBtn.addEventListener("click", () => {
       const { userGradientV2s } = getSettings()
-      if (gradientV2SelectedIndices.size === userGradientV2s.length) {
+      const items = document.querySelectorAll(".user-gradientV2-item")
+      const allIndices = userGradientV2s.map((_, i) => i)
+      
+      if (gradientV2SelectedIndices.size === allIndices.length) {
         gradientV2SelectedIndices.clear()
+        items.forEach((item) => {
+          item.classList.remove("selected")
+          const cb = item.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
       } else {
-        userGradientV2s.forEach((_, i) => gradientV2SelectedIndices.add(i))
+        allIndices.forEach((i) => gradientV2SelectedIndices.add(i))
+        items.forEach((item) => {
+          item.classList.add("selected")
+          const cb = item.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.add("checked")
+        })
       }
       updateSelectionUI(dom)
-      renderUserGradientV2s(dom)
     })
   }
 
@@ -364,7 +391,8 @@ function setupMultiSelect(dom) {
 function updateSelectionUI(dom) {
   const countEl = dom.gradientV2SelectCount || document.getElementById("gradientV2-select-count")
   if (countEl) {
-    countEl.textContent = `${gradientV2SelectedIndices.size} selected`
+    const i18n = geti18n()
+    countEl.textContent = `${gradientV2SelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
   }
 }
 
