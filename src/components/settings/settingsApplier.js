@@ -461,14 +461,20 @@ function createApplySettings(effectInstances) {
       "--bg-pos-y",
       `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
     )
-    document.documentElement.style.setProperty(
-      "--bg-blur",
-      `${settings.bgBlur ?? 0}px`,
-    )
-    document.documentElement.style.setProperty(
-      "--bg-brightness",
-      `${settings.bgBrightness ?? 100}%`,
-    )
+    const filters = [
+      `blur(${settings.bgBlur ?? 0}px)`,
+      `brightness(${settings.bgBrightness ?? 100}%)`,
+      `contrast(${settings.bgContrast ?? 100}%)`,
+      `saturate(${settings.bgSaturation ?? 100}%)`
+    ].join(" ")
+
+    document.documentElement.style.setProperty("--bg-filter", filters)
+    
+    // Fallback for legacy support if needed
+    document.documentElement.style.setProperty("--bg-blur", `${settings.bgBlur ?? 0}px`)
+    document.documentElement.style.setProperty("--bg-brightness", `${settings.bgBrightness ?? 100}%`)
+    document.documentElement.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
+    document.documentElement.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
     document.documentElement.style.setProperty(
       "--bg-fade-in",
       `${settings.bgFadeIn ?? 0.5}s`,
@@ -1763,6 +1769,16 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100
     DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
+    
+    if (DOM.bgContrastInput) {
+      DOM.bgContrastInput.value = settings.bgContrast ?? 100
+      if (DOM.bgContrastValue) DOM.bgContrastValue.textContent = `${settings.bgContrast ?? 100}%`
+    }
+    if (DOM.bgSaturationInput) {
+      DOM.bgSaturationInput.value = settings.bgSaturation ?? 100
+      if (DOM.bgSaturationValue) DOM.bgSaturationValue.textContent = `${settings.bgSaturation ?? 100}%`
+    }
+
     DOM.bgFadeInInput.value = settings.bgFadeIn ?? 0.5
     DOM.bgFadeInValue.textContent = `${settings.bgFadeIn ?? 0.5}s`
     DOM.bgPosXInput.value = settings.bgPositionX || 50

@@ -37,8 +37,8 @@ i {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: var(--bg-pos-x) var(--bg-pos-y);
-  filter: blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));
-  transition: opacity var(--bg-fade-in, 0.5s) ease;
+  filter: var(--bg-filter, blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%)) contrast(var(--bg-contrast, 100%)) saturate(var(--bg-saturation, 100%)));
+  transition: opacity var(--bg-fade-in, 0.5s) ease, filter 0.2s ease;
   pointer-events: none;
 }
 
@@ -50,8 +50,8 @@ i {
   object-fit: cover;
   object-position: var(--bg-pos-x) var(--bg-pos-y);
   z-index: -9;
-  filter: blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));
-  transition: opacity var(--bg-fade-in, 0.5s) ease;
+  filter: var(--bg-filter, blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%)) contrast(var(--bg-contrast, 100%)) saturate(var(--bg-saturation, 100%)));
+  transition: opacity var(--bg-fade-in, 0.5s) ease, filter 0.2s ease;
   display: none;
   pointer-events: none;
   image-rendering: high-quality;
@@ -82,8 +82,9 @@ i {
   z-index: -1;
 }
 
-  display: none;
-  will-change: transform;
+#bg-layer,
+#bg-video {
+  will-change: transform, filter;
   transform: translateZ(0);
 }
 

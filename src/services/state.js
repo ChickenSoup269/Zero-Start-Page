@@ -184,6 +184,8 @@ export const defaultSettings = {
   bgSize: "cover",
   bgBlur: 0,
   bgBrightness: 100,
+  bgContrast: 100,
+  bgSaturation: 100,
   bgFadeIn: 0.5,
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",

@@ -445,8 +445,9 @@ async function loadExplorerResults(append = false) {
         item.title = `By ${photo.user.name}`
 
         item.addEventListener("click", () => {
-          applyUnsplashPhoto(photo)
-          document.getElementById("unsplash-explorer-modal").classList.remove("open")
+          applyUnsplashPhoto(photo, item)
+          // Removed auto-close as per user request to allow manual closing
+          // document.getElementById("unsplash-explorer-modal").classList.remove("open")
         })
 
         grid.appendChild(item)
@@ -482,7 +483,11 @@ async function loadExplorerResults(append = false) {
   }
 }
 
-async function applyUnsplashPhoto(photo) {
+async function applyUnsplashPhoto(photo, element = null) {
+  if (element) {
+    element.classList.add("applying")
+  }
+
   const dpr = window.devicePixelRatio || 1
   const width = Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr)
   const height = Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr)
@@ -529,6 +534,10 @@ async function applyUnsplashPhoto(photo) {
   } catch (err) {
     console.error("Failed to apply photo:", err)
     showAlert("Failed to apply Unsplash photo.")
+  } finally {
+    if (element) {
+      element.classList.remove("applying")
+    }
   }
 }
 

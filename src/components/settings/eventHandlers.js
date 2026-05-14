@@ -920,9 +920,23 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.bgBlurInput.addEventListener("input", () => {
-    DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
+    DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}px`
     handleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
   })
+
+  if (DOM.bgContrastInput) {
+    DOM.bgContrastInput.addEventListener("input", () => {
+      DOM.bgContrastValue.textContent = `${DOM.bgContrastInput.value}%`
+      handleSettingUpdate("bgContrast", Number(DOM.bgContrastInput.value))
+    })
+  }
+
+  if (DOM.bgSaturationInput) {
+    DOM.bgSaturationInput.addEventListener("input", () => {
+      DOM.bgSaturationValue.textContent = `${DOM.bgSaturationInput.value}%`
+      handleSettingUpdate("bgSaturation", Number(DOM.bgSaturationInput.value))
+    })
+  }
 
   DOM.bgBrightnessInput.addEventListener("input", () => {
     DOM.bgBrightnessValue.textContent = `${DOM.bgBrightnessInput.value}%`

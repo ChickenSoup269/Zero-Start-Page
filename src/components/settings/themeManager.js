@@ -363,8 +363,11 @@ function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
         const previewColor = theme.snapshot.accentColor || "#ffffff";
         
         item.innerHTML = `
-            <div class="theme-preview" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                <i class="fa-solid ${theme.icon}" style="color: ${previewColor};"></i>
+            <div class="theme-preview">
+                <div class="preview-sidebar"></div>
+                <div class="preview-content"></div>
+                <div class="preview-accent" style="color: ${previewColor};"></div>
+                <i class="fa-solid ${theme.icon} preview-icon"></i>
             </div>
             <span class="theme-name">${theme.name}</span>
             <div class="active-indicator"><i class="fa-solid fa-check"></i></div>

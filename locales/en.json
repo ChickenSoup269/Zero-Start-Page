@@ -19,6 +19,8 @@
   "settings_bg_placeholder": "URL or Color (e.g. #333)",
   "settings_bg_blur": "Blur",
   "settings_bg_brightness": "Brightness",
+  "settings_bg_contrast": "Contrast",
+  "settings_bg_saturation": "Saturation",
   "settings_bg_dim": "Dim Background",
   "settings_bg_fadein": "Fade-in Time",
   "settings_bg_fit": "Image Fit",

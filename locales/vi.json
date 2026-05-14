@@ -19,6 +19,8 @@
   "settings_bg_placeholder": "URL hoặc Màu (VD: #333)",
   "settings_bg_blur": "Độ mờ (Blur)",
   "settings_bg_brightness": "Độ sáng",
+  "settings_bg_contrast": "Độ tương phản",
+  "settings_bg_saturation": "Độ bão hòa",
   "settings_bg_dim": "Làm tối nền",
   "settings_bg_fadein": "Thời gian hiện nền",
   "settings_bg_fit": "Căn chỉnh ảnh",
