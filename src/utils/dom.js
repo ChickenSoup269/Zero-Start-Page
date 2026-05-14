@@ -1123,6 +1123,7 @@ export const svgWaveRandomizeBtn = document.getElementById(
 export const svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
 export const svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
 export const svgWaveCrazyBtn = document.getElementById("svg-wave-crazy-btn")
+export const svgWaveActive = document.getElementById("svg-wave-active")
 export const userSvgWavesGallery = document.getElementById(
   "user-svg-waves-gallery",
 )

@@ -152,7 +152,7 @@ export function renderSavedMultiColors(DOM_REFS) {
       if (preset.type !== "multi-color") return
 
       const item = document.createElement("div")
-      item.className = "user-gradient-item"
+      item.className = "user-gradient-item local-bg-item"
       item.dataset.index = index
       item.style.cursor = "pointer"
       item.title = `${preset.mode === "blocks" ? "Blocks" : "Gradient"} - ${preset.gradientStops.length} colors (${preset.multiColorType || "linear"})`

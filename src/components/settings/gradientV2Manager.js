@@ -30,22 +30,31 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   
   const settings = getSettings()
   
-  // Toggle UI visibility
-  dom.gradientV2ToggleBtn.addEventListener("click", () => {
-    const isHidden = dom.gradientV2Settings.style.display === "none"
-    dom.gradientV2Settings.style.display = isHidden ? "block" : "none"
-    dom.gradientV2ToggleLabel.setAttribute(
-      "data-i18n",
-      isHidden ? "settings_gradientV2_close" : "settings_gradientV2_open"
-    )
-    // Update labels via i18n helper
-    applyTranslations()
-  })
+  // Toggle UI visibility with safety checks
+  const toggleBtn = dom.gradientV2ToggleBtn || document.getElementById("gradientV2-toggle-btn")
+  const settingsPanel = dom.gradientV2Settings || document.getElementById("gradientV2-settings")
+  const toggleLabel = dom.gradientV2ToggleLabel || document.getElementById("gradientV2-toggle-label")
+
+  if (toggleBtn && settingsPanel) {
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = settingsPanel.style.display === "none"
+      settingsPanel.style.display = isHidden ? "block" : "none"
+      if (toggleLabel) {
+        toggleLabel.setAttribute(
+          "data-i18n",
+          isHidden ? "settings_gradientV2_close" : "settings_gradientV2_open"
+        )
+      }
+      // Update labels via i18n helper
+      applyTranslations()
+    })
+  }
 
   // Hook up the Active checkbox
-  if (dom.gradientV2Active) {
-    dom.gradientV2Active.checked = settings.gradientV2Active
-    dom.gradientV2Active.addEventListener("change", (e) => {
+  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradientV2-active")
+  if (activeCheckbox) {
+    activeCheckbox.checked = settings.gradientV2Active
+    activeCheckbox.addEventListener("change", (e) => {
       const active = e.target.checked
       updateSetting("gradientV2Active", active)
       if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", active)
@@ -60,28 +69,28 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
 
   // Hook up all property sliders and inputs
   const propsMap = [
-    { id: "gradientV2Color1", dom: dom.gradientV2Color1, type: "color" },
-    { id: "gradientV2Color2", dom: dom.gradientV2Color2, type: "color" },
-    { id: "gradientV2Color3", dom: dom.gradientV2Color3, type: "color" },
-    { id: "gradientV2TimeSpeed", dom: dom.gradientV2TimeSpeed, val: dom.gradientV2TimeSpeedValue, type: "range" },
-    { id: "gradientV2ColorBalance", dom: dom.gradientV2ColorBalance, val: dom.gradientV2ColorBalanceValue, type: "range" },
-    { id: "gradientV2WarpStrength", dom: dom.gradientV2WarpStrength, val: dom.gradientV2WarpStrengthValue, type: "range" },
-    { id: "gradientV2WarpFrequency", dom: dom.gradientV2WarpFrequency, val: dom.gradientV2WarpFrequencyValue, type: "range" },
-    { id: "gradientV2WarpSpeed", dom: dom.gradientV2WarpSpeed, val: dom.gradientV2WarpSpeedValue, type: "range" },
-    { id: "gradientV2WarpAmplitude", dom: dom.gradientV2WarpAmplitude, val: dom.gradientV2WarpAmplitudeValue, type: "range" },
-    { id: "gradientV2BlendAngle", dom: dom.gradientV2BlendAngle, val: dom.gradientV2BlendAngleValue, type: "range", suffix: "°" },
-    { id: "gradientV2BlendSoftness", dom: dom.gradientV2BlendSoftness, val: dom.gradientV2BlendSoftnessValue, type: "range" },
-    { id: "gradientV2RotationAmount", dom: dom.gradientV2RotationAmount, val: dom.gradientV2RotationAmountValue, type: "range" },
-    { id: "gradientV2NoiseScale", dom: dom.gradientV2NoiseScale, val: dom.gradientV2NoiseScaleValue, type: "range" },
-    { id: "gradientV2GrainAmount", dom: dom.gradientV2GrainAmount, val: dom.gradientV2GrainAmountValue, type: "range" },
-    { id: "gradientV2GrainScale", dom: dom.gradientV2GrainScale, val: dom.gradientV2GrainScaleValue, type: "range" },
-    { id: "gradientV2GrainAnimated", dom: dom.gradientV2GrainAnimated, type: "checkbox" },
-    { id: "gradientV2Contrast", dom: dom.gradientV2Contrast, val: dom.gradientV2ContrastValue, type: "range" },
-    { id: "gradientV2Gamma", dom: dom.gradientV2Gamma, val: dom.gradientV2GammaValue, type: "range" },
-    { id: "gradientV2Saturation", dom: dom.gradientV2Saturation, val: dom.gradientV2SaturationValue, type: "range" },
-    { id: "gradientV2CenterX", dom: dom.gradientV2CenterX, val: dom.gradientV2CenterXValue, type: "range" },
-    { id: "gradientV2CenterY", dom: dom.gradientV2CenterY, val: dom.gradientV2CenterYValue, type: "range" },
-    { id: "gradientV2Zoom", dom: dom.gradientV2Zoom, val: dom.gradientV2ZoomValue, type: "range" },
+    { id: "gradientV2Color1", dom: dom.gradientV2Color1 || document.getElementById("gradientV2-color1"), type: "color" },
+    { id: "gradientV2Color2", dom: dom.gradientV2Color2 || document.getElementById("gradientV2-color2"), type: "color" },
+    { id: "gradientV2Color3", dom: dom.gradientV2Color3 || document.getElementById("gradientV2-color3"), type: "color" },
+    { id: "gradientV2TimeSpeed", dom: dom.gradientV2TimeSpeed || document.getElementById("gradientV2-time-speed"), val: dom.gradientV2TimeSpeedValue || document.getElementById("gradientV2-time-speed-value"), type: "range" },
+    { id: "gradientV2ColorBalance", dom: dom.gradientV2ColorBalance || document.getElementById("gradientV2-color-balance"), val: dom.gradientV2ColorBalanceValue || document.getElementById("gradientV2-color-balance-value"), type: "range" },
+    { id: "gradientV2WarpStrength", dom: dom.gradientV2WarpStrength || document.getElementById("gradientV2-warp-strength"), val: dom.gradientV2WarpStrengthValue || document.getElementById("gradientV2-warp-strength-value"), type: "range" },
+    { id: "gradientV2WarpFrequency", dom: dom.gradientV2WarpFrequency || document.getElementById("gradientV2-warp-frequency"), val: dom.gradientV2WarpFrequencyValue || document.getElementById("gradientV2-warp-frequency-value"), type: "range" },
+    { id: "gradientV2WarpSpeed", dom: dom.gradientV2WarpSpeed || document.getElementById("gradientV2-warp-speed"), val: dom.gradientV2WarpSpeedValue || document.getElementById("gradientV2-warp-speed-value"), type: "range" },
+    { id: "gradientV2WarpAmplitude", dom: dom.gradientV2WarpAmplitude || document.getElementById("gradientV2-warp-amplitude"), val: dom.gradientV2WarpAmplitudeValue || document.getElementById("gradientV2-warp-amplitude-value"), type: "range" },
+    { id: "gradientV2BlendAngle", dom: dom.gradientV2BlendAngle || document.getElementById("gradientV2-blend-angle"), val: dom.gradientV2BlendAngleValue || document.getElementById("gradientV2-blend-angle-value"), type: "range", suffix: "°" },
+    { id: "gradientV2BlendSoftness", dom: dom.gradientV2BlendSoftness || document.getElementById("gradientV2-blend-softness"), val: dom.gradientV2BlendSoftnessValue || document.getElementById("gradientV2-blend-softness-value"), type: "range" },
+    { id: "gradientV2RotationAmount", dom: dom.gradientV2RotationAmount || document.getElementById("gradientV2-rotation-amount"), val: dom.gradientV2RotationAmountValue || document.getElementById("gradientV2-rotation-amount-value"), type: "range" },
+    { id: "gradientV2NoiseScale", dom: dom.gradientV2NoiseScale || document.getElementById("gradientV2-noise-scale"), val: dom.gradientV2NoiseScaleValue || document.getElementById("gradientV2-noise-scale-value"), type: "range" },
+    { id: "gradientV2GrainAmount", dom: dom.gradientV2GrainAmount || document.getElementById("gradientV2-grain-amount"), val: dom.gradientV2GrainAmountValue || document.getElementById("gradientV2-grain-amount-value"), type: "range" },
+    { id: "gradientV2GrainScale", dom: dom.gradientV2GrainScale || document.getElementById("gradientV2-grain-scale"), val: dom.gradientV2GrainScaleValue || document.getElementById("gradientV2-grain-scale-value"), type: "range" },
+    { id: "gradientV2GrainAnimated", dom: dom.gradientV2GrainAnimated || document.getElementById("gradientV2-grain-animated"), type: "checkbox" },
+    { id: "gradientV2Contrast", dom: dom.gradientV2Contrast || document.getElementById("gradientV2-contrast"), val: dom.gradientV2ContrastValue || document.getElementById("gradientV2-contrast-value"), type: "range" },
+    { id: "gradientV2Gamma", dom: dom.gradientV2Gamma || document.getElementById("gradientV2-gamma"), val: dom.gradientV2GammaValue || document.getElementById("gradientV2-gamma-value"), type: "range" },
+    { id: "gradientV2Saturation", dom: dom.gradientV2Saturation || document.getElementById("gradientV2-saturation"), val: dom.gradientV2SaturationValue || document.getElementById("gradientV2-saturation-value"), type: "range" },
+    { id: "gradientV2CenterX", dom: dom.gradientV2CenterX || document.getElementById("gradientV2-center"), val: dom.gradientV2CenterXValue || document.getElementById("gradientV2-center-x-value"), type: "range" },
+    { id: "gradientV2CenterY", dom: dom.gradientV2CenterY || document.getElementById("gradientV2-center-y"), val: dom.gradientV2CenterYValue || document.getElementById("gradientV2-center-y-value"), type: "range" },
+    { id: "gradientV2Zoom", dom: dom.gradientV2Zoom || document.getElementById("gradientV2-zoom"), val: dom.gradientV2ZoomValue || document.getElementById("gradientV2-zoom-value"), type: "range" },
   ]
 
   propsMap.forEach(prop => {
@@ -115,75 +124,81 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   })
 
   // Randomize button
-  dom.gradientV2RandomizeBtn.addEventListener("click", () => {
-    const randomHex = () => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
-    
-    const randomProps = {
-      gradientV2Color1: randomHex(),
-      gradientV2Color2: randomHex(),
-      gradientV2Color3: randomHex(),
-      gradientV2TimeSpeed: parseFloat((Math.random() * 0.5 + 0.1).toFixed(2)),
-      gradientV2WarpStrength: parseFloat((Math.random() * 2 + 0.5).toFixed(1)),
-      gradientV2WarpFrequency: parseFloat((Math.random() * 10 + 2).toFixed(1)),
-      gradientV2BlendAngle: Math.floor(Math.random() * 360),
-    }
-
-    Object.entries(randomProps).forEach(([id, val]) => {
-      updateSetting(id, val)
-      const propConfig = propsMap.find(p => p.id === id)
-      if (propConfig && propConfig.dom) {
-        propConfig.dom.value = val
-        if (propConfig.val) propConfig.val.textContent = val + (propConfig.suffix || "")
+  const randomizeBtn = dom.gradientV2RandomizeBtn || document.getElementById("gradientV2-randomize-btn")
+  if (randomizeBtn) {
+    randomizeBtn.addEventListener("click", () => {
+      const randomHex = () => "#" + Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")
+      
+      const randomProps = {
+        gradientV2Color1: randomHex(),
+        gradientV2Color2: randomHex(),
+        gradientV2Color3: randomHex(),
+        gradientV2TimeSpeed: parseFloat((Math.random() * 0.5 + 0.1).toFixed(2)),
+        gradientV2WarpStrength: parseFloat((Math.random() * 2 + 0.5).toFixed(1)),
+        gradientV2WarpFrequency: parseFloat((Math.random() * 10 + 2).toFixed(1)),
+        gradientV2BlendAngle: Math.floor(Math.random() * 360),
       }
-      if (handleUpdateCallback) handleUpdateCallback(id, val)
-    })
 
-    // Update effect
-    if (gradientV2Instance) {
-        const options = {}
-        Object.entries(randomProps).forEach(([id, val]) => {
-            const optionKey = id.replace("gradientV2", "").charAt(0).toLowerCase() + id.replace("gradientV2", "").slice(1)
-            options[optionKey] = val
-        })
-        gradientV2Instance.setOptions(options)
-    }
-  })
+      Object.entries(randomProps).forEach(([id, val]) => {
+        updateSetting(id, val)
+        const propConfig = propsMap.find(p => p.id === id)
+        if (propConfig && propConfig.dom) {
+          propConfig.dom.value = val
+          if (propConfig.val) propConfig.val.textContent = val + (propConfig.suffix || "")
+        }
+        if (handleUpdateCallback) handleUpdateCallback(id, val)
+      })
+
+      // Update effect
+      if (gradientV2Instance) {
+          const options = {}
+          Object.entries(randomProps).forEach(([id, val]) => {
+              const optionKey = id.replace("gradientV2", "").charAt(0).toLowerCase() + id.replace("gradientV2", "").slice(1)
+              options[optionKey] = val
+          })
+          gradientV2Instance.setOptions(options)
+      }
+    })
+  }
 
   // Save button
-  dom.gradientV2SaveBtn.addEventListener("click", () => {
-    const currentSettings = getSettings()
-    const newPreset = {
-      id: Date.now(),
-      color1: currentSettings.gradientV2Color1,
-      color2: currentSettings.gradientV2Color2,
-      color3: currentSettings.gradientV2Color3,
-      timeSpeed: currentSettings.gradientV2TimeSpeed,
-      colorBalance: currentSettings.gradientV2ColorBalance,
-      warpStrength: currentSettings.gradientV2WarpStrength,
-      warpFrequency: currentSettings.gradientV2WarpFrequency,
-      warpSpeed: currentSettings.gradientV2WarpSpeed,
-      warpAmplitude: currentSettings.gradientV2WarpAmplitude,
-      blendAngle: currentSettings.gradientV2BlendAngle,
-      blendSoftness: currentSettings.gradientV2BlendSoftness,
-      rotationAmount: currentSettings.gradientV2RotationAmount,
-      noiseScale: currentSettings.gradientV2NoiseScale,
-      grainAmount: currentSettings.gradientV2GrainAmount,
-      grainScale: currentSettings.gradientV2GrainScale,
-      grainAnimated: currentSettings.gradientV2GrainAnimated,
-      contrast: currentSettings.gradientV2Contrast,
-      gamma: currentSettings.gradientV2Gamma,
-      saturation: currentSettings.gradientV2Saturation,
-      centerX: currentSettings.gradientV2CenterX,
-      centerY: currentSettings.gradientV2CenterY,
-      zoom: currentSettings.gradientV2Zoom,
-    }
+  const saveBtn = dom.gradientV2SaveBtn || document.getElementById("gradientV2-save-btn")
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const currentSettings = getSettings()
+      const newPreset = {
+        id: Date.now(),
+        color1: currentSettings.gradientV2Color1,
+        color2: currentSettings.gradientV2Color2,
+        color3: currentSettings.gradientV2Color3,
+        timeSpeed: currentSettings.gradientV2TimeSpeed,
+        colorBalance: currentSettings.gradientV2ColorBalance,
+        warpStrength: currentSettings.gradientV2WarpStrength,
+        warpFrequency: currentSettings.gradientV2WarpFrequency,
+        warpSpeed: currentSettings.gradientV2WarpSpeed,
+        warpAmplitude: currentSettings.gradientV2WarpAmplitude,
+        blendAngle: currentSettings.gradientV2BlendAngle,
+        blendSoftness: currentSettings.gradientV2BlendSoftness,
+        rotationAmount: currentSettings.gradientV2RotationAmount,
+        noiseScale: currentSettings.gradientV2NoiseScale,
+        grainAmount: currentSettings.gradientV2GrainAmount,
+        grainScale: currentSettings.gradientV2GrainScale,
+        grainAnimated: currentSettings.gradientV2GrainAnimated,
+        contrast: currentSettings.gradientV2Contrast,
+        gamma: currentSettings.gradientV2Gamma,
+        saturation: currentSettings.gradientV2Saturation,
+        centerX: currentSettings.gradientV2CenterX,
+        centerY: currentSettings.gradientV2CenterY,
+        zoom: currentSettings.gradientV2Zoom,
+      }
 
-    const saved = currentSettings.userGradientV2s || []
-    updateSetting("userGradientV2s", [...saved, newPreset])
-    saveSettings()
-    renderUserGradientV2s(dom)
-    showAlert("Gradient V2 saved successfully!")
-  })
+      const saved = currentSettings.userGradientV2s || []
+      updateSetting("userGradientV2s", [...saved, newPreset])
+      saveSettings()
+      renderUserGradientV2s(dom)
+      showAlert("Gradient V2 saved successfully!")
+    })
+  }
 
   // Multi-select events
   setupMultiSelect(dom)
@@ -196,8 +211,8 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
  */
 function renderUserGradientV2s(dom) {
   const { userGradientV2s } = getSettings()
-  const gallery = dom.userGradientV2sGallery
-  const galleryWrap = dom.gradientV2GalleryWrap
+  const gallery = dom.userGradientV2sGallery || document.getElementById("user-gradientV2s-gallery")
+  const galleryWrap = dom.gradientV2GalleryWrap || document.getElementById("user-gradientV2s-gallery-wrap")
   
   if (!gallery) return
 
@@ -211,11 +226,21 @@ function renderUserGradientV2s(dom) {
 
   if (galleryWrap) galleryWrap.style.display = "block"
 
-  userGradientV2s.forEach((preset, index) => {
-    const item = document.createElement("div")
-    item.className = "local-bg-item user-gradientV2-item"
-    if (gradientV2SelectedIndices.has(index)) item.classList.add("selected")
-    item.dataset.index = index
+    userGradientV2s.forEach((preset, index) => {
+      const item = document.createElement("div")
+      item.className = "local-bg-item user-gradientV2-item"
+      
+      const settings = getSettings()
+      const isActive =
+        settings.gradientV2Active &&
+        !settings.background &&
+        settings.gradientV2Color1 === preset.color1 &&
+        settings.gradientV2Color2 === preset.color2 &&
+        settings.gradientV2Color3 === preset.color3
+
+      if (isActive) item.classList.add("active")
+      if (gradientV2SelectedIndices.has(index)) item.classList.add("selected")
+      item.dataset.index = index
     
     // Preview uses a CSS linear gradient as a simple representation
     const previewCss = `linear-gradient(${preset.blendAngle}deg, ${preset.color1}, ${preset.color2}, ${preset.color3})`
@@ -263,7 +288,8 @@ function applyPreset(preset, dom) {
   // Activate and update instance
   updateSetting("gradientV2Active", true)
   if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", true)
-  if (dom.gradientV2Active) dom.gradientV2Active.checked = true
+  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradientV2-active")
+  if (activeCheckbox) activeCheckbox.checked = true
   
   if (gradientV2Instance) {
     gradientV2Instance.setOptions(preset)
@@ -272,73 +298,74 @@ function applyPreset(preset, dom) {
 }
 
 function setupMultiSelect(dom) {
-  dom.gradientV2SelectModeBtn.addEventListener("click", () => {
-    const i18n = geti18n()
-    gradientV2SelectMode = !gradientV2SelectMode
-    gradientV2SelectedIndices.clear()
-    dom.gradientV2SelectToolbar.style.display = gradientV2SelectMode ? "flex" : "none"
-    dom.gradientV2SelectModeBtn.textContent = gradientV2SelectMode 
-      ? (i18n.cancel || "Cancel") 
-      : (i18n.bg_select_mode || "Select")
-    renderUserGradientV2s(dom)
-  })
+  const selectModeBtn = dom.gradientV2SelectModeBtn || document.getElementById("gradientV2-select-mode-btn")
+  const toolbar = dom.gradientV2SelectToolbar || document.getElementById("gradientV2-select-toolbar")
+  const cancelBtn = dom.gradientV2SelectCancelBtn || document.getElementById("gradientV2-select-cancel-btn")
+  const selectAllBtn = dom.gradientV2SelectAllBtn || document.getElementById("gradientV2-select-all-btn")
+  const deleteBtn = dom.gradientV2DeleteSelectedBtn || document.getElementById("gradientV2-delete-selected-btn")
 
-  dom.gradientV2SelectCancelBtn.addEventListener("click", () => {
-    const i18n = geti18n()
-    gradientV2SelectMode = false
-    gradientV2SelectedIndices.clear()
-    dom.gradientV2SelectToolbar.style.display = "none"
-    dom.gradientV2SelectModeBtn.textContent = i18n.bg_select_mode || "Select"
-    renderUserGradientV2s(dom)
-  })
-
-  dom.gradientV2SelectAllBtn.addEventListener("click", () => {
-    const { userGradientV2s } = getSettings()
-    if (gradientV2SelectedIndices.size === userGradientV2s.length) {
+  if (selectModeBtn) {
+    selectModeBtn.addEventListener("click", () => {
+      const i18n = geti18n()
+      gradientV2SelectMode = !gradientV2SelectMode
       gradientV2SelectedIndices.clear()
-    } else {
-      userGradientV2s.forEach((_, i) => gradientV2SelectedIndices.add(i))
-    }
-    updateSelectionUI(dom)
-    renderUserGradientV2s(dom)
-  })
+      if (toolbar) toolbar.style.display = gradientV2SelectMode ? "flex" : "none"
+      selectModeBtn.textContent = gradientV2SelectMode 
+        ? (i18n.cancel || "Cancel") 
+        : (i18n.bg_select_mode || "Select")
+      renderUserGradientV2s(dom)
+    })
+  }
 
-  dom.gradientV2DeleteSelectedBtn.addEventListener("click", async () => {
-    if (gradientV2SelectedIndices.size === 0) return
-    
-    const i18n = geti18n()
-    const confirmMsg = i18n.alert_delete_bg_confirm || `Delete ${gradientV2SelectedIndices.size} saved gradients?`
-    const confirmed = await showConfirm(confirmMsg)
-    if (confirmed) {
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      const i18n = geti18n()
+      gradientV2SelectMode = false
+      gradientV2SelectedIndices.clear()
+      if (toolbar) toolbar.style.display = "none"
+      if (selectModeBtn) selectModeBtn.textContent = i18n.bg_select_mode || "Select"
+      renderUserGradientV2s(dom)
+    })
+  }
+
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener("click", () => {
       const { userGradientV2s } = getSettings()
-      const newList = userGradientV2s.filter((_, i) => !gradientV2SelectedIndices.has(i))
-      updateSetting("userGradientV2s", newList)
-      saveSettings()
-      gradientV2SelectedIndices.clear()
+      if (gradientV2SelectedIndices.size === userGradientV2s.length) {
+        gradientV2SelectedIndices.clear()
+      } else {
+        userGradientV2s.forEach((_, i) => gradientV2SelectedIndices.add(i))
+      }
       updateSelectionUI(dom)
       renderUserGradientV2s(dom)
-    }
-  })
-}
-
-function toggleItemSelection(index, el, dom) {
-  if (gradientV2SelectedIndices.has(index)) {
-    gradientV2SelectedIndices.delete(index)
-    el.classList.remove("selected")
-  } else {
-    gradientV2SelectedIndices.add(index)
-    el.classList.add("selected")
+    })
   }
-  updateSelectionUI(dom)
-  // Just update the checkbox without full re-render for performance
-  const checkbox = el.querySelector(".bg-item-checkbox")
-  if (checkbox) {
-    checkbox.classList.toggle("checked", gradientV2SelectedIndices.has(index))
+
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", async () => {
+      if (gradientV2SelectedIndices.size === 0) return
+      
+      const i18n = geti18n()
+      const confirmMsg = i18n.alert_delete_bg_confirm || `Delete ${gradientV2SelectedIndices.size} saved gradients?`
+      const confirmed = await showConfirm(confirmMsg)
+      if (confirmed) {
+        const { userGradientV2s } = getSettings()
+        const newList = userGradientV2s.filter((_, i) => !gradientV2SelectedIndices.has(i))
+        updateSetting("userGradientV2s", newList)
+        saveSettings()
+        gradientV2SelectedIndices.clear()
+        updateSelectionUI(dom)
+        renderUserGradientV2s(dom)
+      }
+    })
   }
 }
 
 function updateSelectionUI(dom) {
-  dom.gradientV2SelectCount.textContent = `${gradientV2SelectedIndices.size} selected`
+  const countEl = dom.gradientV2SelectCount || document.getElementById("gradientV2-select-count")
+  if (countEl) {
+    countEl.textContent = `${gradientV2SelectedIndices.size} selected`
+  }
 }
 
 function updateCount(dom) {

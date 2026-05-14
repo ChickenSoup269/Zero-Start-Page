@@ -64,8 +64,17 @@ import {
   renderUserSvgWaves,
   setupSvgWaveMultiSelect,
 } from "./svgWaveManager.js"
+import {
+  initSpecialEffectsManager,
+  renderUserSilks,
+  renderUserLightPillars,
+  renderUserLiquidEthers,
+} from "./specialEffectsManager.js"
 import { setupEffectColorHandlers } from "./effectColorHandlers.js"
-import { setupMultiColorManager } from "./multiColorManager.js"
+import {
+  setupMultiColorManager,
+  renderSavedMultiColors,
+} from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
 
 // Import animation effects
@@ -293,7 +302,6 @@ export function initSettings() {
       "effect-canvas",
       settings.plantGrowthColor || "#4caf50",
     ),
-    liquidEtherEffect: new LiquidEther("effect-canvas"),
     oceanFishEffect: new OceanFishEffect(
       "effect-canvas",
       settings.oceanFishColor || "#ff7f50",
@@ -441,6 +449,8 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("gradientV2Active", false)
       updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
     } else {
       updateSetting(key, value)
       if (key === "background") {
@@ -448,6 +458,8 @@ export function initSettings() {
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
           updateSetting("silkActive", false)
+          updateSetting("lightPillarActive", false)
+          updateSetting("liquidEtherActive", false)
         }
         // Clear Unsplash credit if we switch to a different background
         // that isn't an Unsplash image (managed in unsplashFetcher.js)
@@ -484,7 +496,9 @@ export function initSettings() {
       key === "background" ||
       key === "svgWaveActive" ||
       key === "gradientV2Active" ||
-      key === "silkActive"
+      key === "silkActive" ||
+      key === "lightPillarActive" ||
+      key === "liquidEtherActive"
     if (shouldRefreshBackgroundGalleries) {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
@@ -492,7 +506,9 @@ export function initSettings() {
         handleSettingUpdate("svgWaveActive", true)
       })
       renderUserGradientV2s(DOM_EXPORTS)
-      const { renderSavedMultiColors } = await import("./multiColorManager.js")
+      renderUserSilks()
+      renderUserLightPillars()
+      renderUserLiquidEthers()
       renderSavedMultiColors(DOM_EXPORTS)
     }
 
@@ -501,32 +517,34 @@ export function initSettings() {
       updateSetting("background", null)
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      const svgCheckbox = document.getElementById("svg-wave-active")
-      if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "svgWaveActive" && value === true) {
       updateSetting("background", null)
       updateSetting("gradientV2Active", false)
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
-      if (DOM_EXPORTS.gradientV2Active)
-        DOM_EXPORTS.gradientV2Active.checked = false
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive)
-        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "silkActive" && value === true) {
       updateSetting("background", null)
       updateSetting("gradientV2Active", false)
       updateSetting("svgWaveActive", false)
       updateSetting("lightPillarActive", false)
-      if (DOM_EXPORTS.gradientV2Active)
-        DOM_EXPORTS.gradientV2Active.checked = false
-      const svgCheckbox = document.getElementById("svg-wave-active")
-      if (svgCheckbox) svgCheckbox.checked = false
-      if (DOM_EXPORTS.lightPillarActive)
-        DOM_EXPORTS.lightPillarActive.checked = false
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "lightPillarActive" && value === true) {
       updateSetting("background", null)
@@ -534,13 +552,10 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
       updateSetting("liquidEtherActive", false)
-      if (DOM_EXPORTS.gradientV2Active)
-        DOM_EXPORTS.gradientV2Active.checked = false
-      const svgCheckbox = document.getElementById("svg-wave-active")
-      if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive)
-        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "liquidEtherActive" && value === true) {
       updateSetting("background", null)
@@ -548,13 +563,34 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
-      if (DOM_EXPORTS.gradientV2Active)
-        DOM_EXPORTS.gradientV2Active.checked = false
-      const svgCheckbox = document.getElementById("svg-wave-active")
-      if (svgCheckbox) svgCheckbox.checked = false
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive)
-        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+    }
+    if (key === "background" && value != null) {
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+    }
+    if (isGradient) {
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
@@ -594,11 +630,6 @@ export function initSettings() {
       DOM_EXPORTS.svgWaveEndPreview,
     )
 
-  // Initialize Gradient V2 Manager
-  initGradientV2Manager(DOM_EXPORTS, effects.gradientV2Effect, (k, v) => {
-    handleSettingUpdate(k, v)
-  })
-
   // Create core functions
   const applySettings = createApplySettings(effects)
   const updateSettingsInputs = createUpdateSettingsInputs(effects)
@@ -607,8 +638,75 @@ export function initSettings() {
   ctx.applySettings = applySettings
   ctx.updateSettingsInputs = updateSettingsInputs
 
+  // Initialize Gradient V2 Manager
+  initGradientV2Manager(DOM_EXPORTS, effects.gradientV2Effect, (k, v) => {
+    handleSettingUpdate(k, v)
+  })
+
+  // Initialize Special Effects Manager (Silk, Light Pillar, Liquid Ether)
+  initSpecialEffectsManager(ctx, handleSettingUpdate)
+
+  // Initialize Multi-Color Manager
+  setupMultiColorManager(applySettings)
+
+  // Handle special effect preset application
+  window.addEventListener("specialEffectPresetApplied", (e) => {
+    const { type } = e.detail
+    if (type === "silk") handleSettingUpdate("silkActive", true)
+    else if (type === "light-pillar")
+      handleSettingUpdate("lightPillarActive", true)
+    else if (type === "liquid-ether")
+      handleSettingUpdate("liquidEtherActive", true)
+  })
+
+  // Initial rendering for all background galleries
+  renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
+  renderUserColors(DOM_EXPORTS)
+  renderUserGradients(DOM_EXPORTS)
+  renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+    handleSettingUpdate("svgWaveActive", true)
+  })
+  renderUserGradientV2s(DOM_EXPORTS)
+  renderUserSilks()
+  renderUserLightPillars()
+  renderUserLiquidEthers()
+  renderSavedMultiColors(DOM_EXPORTS)
+  populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, settings)
+
+  // Initialize multi-select modes and file uploads
+  setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
+  setupGradientMultiSelect(DOM_EXPORTS)
+  setupSvgWaveMultiSelect(DOM_EXPORTS, effects.svgWaveEffect)
+  setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
+
+  // Initialize all general event handlers
+  setupGeneralEventHandlers(
+    ctx,
+    handleSettingUpdate,
+    applySettings,
+    updateSettingsInputs,
+  )
+
   // Expose applySettings globally so it can be re-run after heavy async ops like preloadImages
-  window.appApplySettings = applySettings
+  window.appApplySettings = () => {
+    applySettings()
+    refreshBackgroundGalleries()
+  }
+
+  function refreshBackgroundGalleries() {
+    renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
+    renderUserColors(DOM_EXPORTS)
+    renderUserGradients(DOM_EXPORTS)
+    renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+      handleSettingUpdate("svgWaveActive", true)
+    })
+    renderUserGradientV2s(DOM_EXPORTS)
+    renderUserSilks()
+    renderUserLightPillars()
+    renderUserLiquidEthers()
+    renderSavedMultiColors(DOM_EXPORTS)
+  }
+
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
   document
     .querySelectorAll(".setting-group.collapsible-group")
@@ -927,936 +1025,39 @@ export function initSettings() {
     )
   }
 
-  // Silk Effect setup
-  if (DOM_EXPORTS.silkToggleBtn) {
-    DOM_EXPORTS.silkToggleBtn.addEventListener("click", () => {
-      const isHidden = DOM_EXPORTS.silkSettings.style.display === "none"
-      DOM_EXPORTS.silkSettings.style.display = isHidden ? "block" : "none"
-      DOM_EXPORTS.silkToggleBtn.classList.toggle("active", isHidden)
-      DOM_EXPORTS.silkToggleLabel.textContent = isHidden
-        ? "Close Silk"
-        : "Open Silk"
-    })
-  }
-
-  if (DOM_EXPORTS.silkRandomBtn) {
-    DOM_EXPORTS.silkRandomBtn.addEventListener("click", () => {
-      const randomHex = () =>
-        "#" +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, "0")
-      const randomSpeed = parseFloat((Math.random() * 15 + 1).toFixed(1))
-      const randomScale = parseFloat((Math.random() * 3 + 0.5).toFixed(1))
-      const randomNoise = parseFloat((Math.random() * 4 + 0.5).toFixed(1))
-      const randomRotation = Math.floor(Math.random() * 360)
-
-      handleSettingUpdate("silkColor", randomHex())
-      handleSettingUpdate("silkSpeed", randomSpeed)
-      handleSettingUpdate("silkScale", randomScale)
-      handleSettingUpdate("silkNoise", randomNoise)
-      handleSettingUpdate("silkRotation", randomRotation)
-
-      if (DOM_EXPORTS.silkColor)
-        DOM_EXPORTS.silkColor.value = getSettings().silkColor
-      if (DOM_EXPORTS.silkSpeed) {
-        DOM_EXPORTS.silkSpeed.value = randomSpeed
-        DOM_EXPORTS.silkSpeedValue.textContent = randomSpeed.toFixed(1)
-      }
-      if (DOM_EXPORTS.silkScale) {
-        DOM_EXPORTS.silkScale.value = randomScale
-        DOM_EXPORTS.silkScaleValue.textContent = randomScale.toFixed(1)
-      }
-      if (DOM_EXPORTS.silkNoise) {
-        DOM_EXPORTS.silkNoise.value = randomNoise
-        DOM_EXPORTS.silkNoiseValue.textContent = randomNoise.toFixed(1)
-      }
-      if (DOM_EXPORTS.silkRotation) {
-        DOM_EXPORTS.silkRotation.value = randomRotation
-        DOM_EXPORTS.silkRotationValue.textContent = randomRotation
-      }
-
-      if (effects.silkEffect) {
-        effects.silkEffect.setOptions({
-          color: getSettings().silkColor,
-          speed: randomSpeed,
-          scale: randomScale,
-          noise: randomNoise,
-          rotation: randomRotation,
-        })
-      }
-    })
-  }
-
-  if (DOM_EXPORTS.silkActive) {
-    // Sync initial state
-    DOM_EXPORTS.silkActive.checked = settings.silkActive === true
-    DOM_EXPORTS.silkActive.addEventListener("change", (e) => {
-      handleSettingUpdate("silkActive", e.target.checked)
-    })
-  }
-
-  if (DOM_EXPORTS.silkColor) {
-    DOM_EXPORTS.silkColor.value = settings.silkColor || "#7B7481"
-    DOM_EXPORTS.silkColor.addEventListener("change", (e) => {
-      handleSettingUpdate("silkColor", e.target.value)
-      if (effects.silkEffect)
-        effects.silkEffect.setOptions({ color: e.target.value })
-    })
-  }
-
-  const silkProps = [
-    {
-      id: "silkSpeed",
-      dom: DOM_EXPORTS.silkSpeed,
-      val: DOM_EXPORTS.silkSpeedValue,
-    },
-    {
-      id: "silkScale",
-      dom: DOM_EXPORTS.silkScale,
-      val: DOM_EXPORTS.silkScaleValue,
-    },
-    {
-      id: "silkNoise",
-      dom: DOM_EXPORTS.silkNoise,
-      val: DOM_EXPORTS.silkNoiseValue,
-    },
-    {
-      id: "silkRotation",
-      dom: DOM_EXPORTS.silkRotation,
-      val: DOM_EXPORTS.silkRotationValue,
-    },
-  ]
-
-  silkProps.forEach((prop) => {
-    if (prop.dom) {
-      if (settings[prop.id] !== undefined) {
-        prop.dom.value = settings[prop.id]
-        if (prop.val)
-          prop.val.textContent = parseFloat(settings[prop.id]).toFixed(1)
-      }
-      prop.dom.addEventListener("input", (e) => {
-        const val = parseFloat(e.target.value)
-        if (prop.val) prop.val.textContent = val.toFixed(1)
-        updateSetting(prop.id, val)
-        if (effects.silkEffect) {
-          const optKey = prop.id.replace("silk", "").toLowerCase()
-          effects.silkEffect.setOptions({ [optKey]: val })
-        }
-      })
-      prop.dom.addEventListener("change", () => saveSettings())
-    }
-  })
-
-  // ── Silk: Save BG handler ──────────────────────────────────────────
-  function renderUserSilks() {
-    const gallery = document.getElementById("user-silks-gallery")
-    const galleryWrap = document.getElementById("user-silks-gallery-wrap")
-    if (!gallery) return
-    const { userSilks } = getSettings()
-    gallery.innerHTML = ""
-    const countSpan = document.getElementById("count-silk")
-
-    if (!userSilks || userSilks.length === 0) {
-      if (galleryWrap) galleryWrap.style.display = "none"
-      if (countSpan) countSpan.innerHTML = ""
-      return
-    }
-    if (galleryWrap) galleryWrap.style.display = "block"
-    if (countSpan)
-      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userSilks.length})</span>`
-
-    userSilks.forEach((preset, index) => {
-      const item = document.createElement("div")
-      item.className = "local-bg-item user-silk-item"
-      item.title = `Silk Preset #${index + 1}`
-      // Visual preview: solid color swatch
-      item.style.background = preset.color || "#7B7481"
-      item.style.position = "relative"
-
-      const overlay = document.createElement("div")
-      overlay.className = "bg-item-overlay"
-      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
-      item.appendChild(overlay)
-
-      const removeBtn = document.createElement("button")
-      removeBtn.className = "remove-bg-btn"
-      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", async (e) => {
-        e.stopPropagation()
-        const i18n = geti18n()
-        if (
-          await showConfirm(
-            i18n.alert_delete_bg_confirm || "Delete this preset?",
-          )
-        ) {
-          const s = getSettings()
-          s.userSilks.splice(index, 1)
-          saveSettings()
-          renderUserSilks()
-        }
-      })
-      item.appendChild(removeBtn)
-
-      item.addEventListener("click", () => {
-        // Apply preset
-        const s = getSettings()
-        ;[
-          "silkColor",
-          "silkSpeed",
-          "silkScale",
-          "silkNoise",
-          "silkRotation",
-        ].forEach((k) => {
-          if (preset[k.replace("silk", "").toLowerCase()] !== undefined) {
-            updateSetting(k, preset[k.replace("silk", "").toLowerCase()])
-          } else if (preset[k] !== undefined) {
-            updateSetting(k, preset[k])
-          }
-        })
-        // Map keys
-        updateSetting("silkColor", preset.color)
-        updateSetting("silkSpeed", preset.speed)
-        updateSetting("silkScale", preset.scale)
-        updateSetting("silkNoise", preset.noise)
-        updateSetting("silkRotation", preset.rotation)
-        updateSetting("silkActive", true)
-        if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = true
-        if (DOM_EXPORTS.silkColor) DOM_EXPORTS.silkColor.value = preset.color
-        if (DOM_EXPORTS.silkSpeed) {
-          DOM_EXPORTS.silkSpeed.value = preset.speed
-          if (DOM_EXPORTS.silkSpeedValue)
-            DOM_EXPORTS.silkSpeedValue.textContent = parseFloat(
-              preset.speed,
-            ).toFixed(1)
-        }
-        if (DOM_EXPORTS.silkScale) {
-          DOM_EXPORTS.silkScale.value = preset.scale
-          if (DOM_EXPORTS.silkScaleValue)
-            DOM_EXPORTS.silkScaleValue.textContent = parseFloat(
-              preset.scale,
-            ).toFixed(1)
-        }
-        if (DOM_EXPORTS.silkNoise) {
-          DOM_EXPORTS.silkNoise.value = preset.noise
-          if (DOM_EXPORTS.silkNoiseValue)
-            DOM_EXPORTS.silkNoiseValue.textContent = parseFloat(
-              preset.noise,
-            ).toFixed(1)
-        }
-        if (DOM_EXPORTS.silkRotation) {
-          DOM_EXPORTS.silkRotation.value = preset.rotation
-          if (DOM_EXPORTS.silkRotationValue)
-            DOM_EXPORTS.silkRotationValue.textContent = parseFloat(
-              preset.rotation,
-            ).toFixed(1)
-        }
-        if (effects.silkEffect) {
-          effects.silkEffect.setOptions({
-            color: preset.color,
-            speed: preset.speed,
-            scale: preset.scale,
-            noise: preset.noise,
-            rotation: preset.rotation,
-          })
-        }
-        handleSettingUpdate("silkActive", true)
-        saveSettings()
-      })
-
-      gallery.appendChild(item)
-    })
-  }
-
-  const silkSaveEl = document.getElementById("silk-save-btn")
-  if (silkSaveEl) {
-    silkSaveEl.addEventListener("click", () => {
-      const s = getSettings()
-      const newPreset = {
-        id: Date.now(),
-        color: s.silkColor,
-        speed: s.silkSpeed,
-        scale: s.silkScale,
-        noise: s.silkNoise,
-        rotation: s.silkRotation,
-      }
-      const saved = s.userSilks || []
-      updateSetting("userSilks", [...saved, newPreset])
-      saveSettings()
-      renderUserSilks()
-      showAlert("Silk BG saved!")
-    })
-  }
-
-  // ── Silk multi-select toolbar wiring (reuse existing HTML elements) ──
-  ;(function setupSilkMultiSelect() {
-    const selectModeBtn = document.getElementById("silk-select-mode-btn")
-    const toolbar = document.getElementById("silk-select-toolbar")
-    const countEl = document.getElementById("silk-select-count")
-    const selectAllBtn = document.getElementById("silk-select-all-btn")
-    const deleteSelectedBtn = document.getElementById(
-      "silk-delete-selected-btn",
-    )
-    const cancelBtn = document.getElementById("silk-select-cancel-btn")
-    if (!selectModeBtn) return
-    let selectMode = false
-    const selectedIds = new Set()
-    selectModeBtn.addEventListener("click", () => {
-      selectMode = !selectMode
-      selectedIds.clear()
-      if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
-    })
-    if (cancelBtn)
-      cancelBtn.addEventListener("click", () => {
-        selectMode = false
-        selectedIds.clear()
-        if (toolbar) toolbar.style.display = "none"
-      })
-    if (deleteSelectedBtn)
-      deleteSelectedBtn.addEventListener("click", async () => {
-        if (selectedIds.size === 0) return
-        const i18n = geti18n()
-        if (
-          await showConfirm(
-            i18n.alert_delete_bg_confirm ||
-              `Delete ${selectedIds.size} preset(s)?`,
-          )
-        ) {
-          const s = getSettings()
-          s.userSilks = (s.userSilks || []).filter(
-            (_, i) => !selectedIds.has(i),
-          )
-          saveSettings()
-          selectedIds.clear()
-          selectMode = false
-          if (toolbar) toolbar.style.display = "none"
-          renderUserSilks()
-        }
-      })
-  })()
-
-  // Light Pillar Effect setup
-  if (DOM_EXPORTS.lightPillarToggleBtn) {
-    DOM_EXPORTS.lightPillarToggleBtn.addEventListener("click", () => {
-      const isHidden = DOM_EXPORTS.lightPillarSettings.style.display === "none"
-      DOM_EXPORTS.lightPillarSettings.style.display = isHidden
-        ? "block"
-        : "none"
-      DOM_EXPORTS.lightPillarToggleBtn.classList.toggle("active", isHidden)
-      DOM_EXPORTS.lightPillarToggleLabel.textContent = isHidden
-        ? "Close Light Pillar"
-        : "Open Light Pillar"
-    })
-  }
-
-  if (DOM_EXPORTS.lightPillarRandomBtn) {
-    DOM_EXPORTS.lightPillarRandomBtn.addEventListener("click", () => {
-      const palette = [
-        "#FF0055",
-        "#00FF66",
-        "#00AAFF",
-        "#0055FF",
-        "#5500FF",
-        "#AA00FF",
-        "#FF00AA",
-        "#FF0000",
-        "#FF5500",
-        "#FFAA00",
-        "#00FFCC",
-        "#00FFAA",
-        "#0000FF",
-        "#00FFFF",
-        "#FF00FF",
-        "#FFFF00",
-        "#FF2288",
-        "#22FF88",
-        "#2288FF",
-        "#FF22FF",
-        "#FFFF22",
-        "#22FFFF",
-        "#FF9FFC",
-        "#5227FF",
-      ]
-      const randomHex = () =>
-        palette[Math.floor(Math.random() * palette.length)]
-
-      const randomIntensity = parseFloat((Math.random() * 1.5 + 0.5).toFixed(1)) // 0.5 to 2.0
-      const randomRotSpeed = parseFloat((Math.random() * 0.8 + 0.1).toFixed(2)) // 0.1 to 0.9
-      const randomGlow = parseFloat((Math.random() * 0.012 + 0.002).toFixed(4)) // 0.002 to 0.014
-      const randomWidth = parseFloat((Math.random() * 4.0 + 1.0).toFixed(1)) // 1.0 to 5.0
-      const randomHeight = parseFloat((Math.random() * 0.4 + 0.2).toFixed(2)) // 0.2 to 0.6
-      const randomNoise = parseFloat((Math.random() * 0.7 + 0.1).toFixed(2)) // 0.1 to 0.8
-      const randomPillarRot = Math.floor(Math.random() * 360)
-
-      const topCol = randomHex()
-      let bottomCol = randomHex()
-      // ensure different color
-      while (bottomCol === topCol) {
-        bottomCol = randomHex()
-      }
-
-      handleSettingUpdate("lightPillarTopColor", topCol)
-      handleSettingUpdate("lightPillarBottomColor", bottomCol)
-      handleSettingUpdate("lightPillarIntensity", randomIntensity)
-      handleSettingUpdate("lightPillarRotationSpeed", randomRotSpeed)
-      handleSettingUpdate("lightPillarGlowAmount", randomGlow)
-      handleSettingUpdate("lightPillarWidth", randomWidth)
-      handleSettingUpdate("lightPillarHeight", randomHeight)
-      handleSettingUpdate("lightPillarNoiseIntensity", randomNoise)
-      handleSettingUpdate("lightPillarRotation", randomPillarRot)
-
-      if (DOM_EXPORTS.lightPillarTopColor)
-        DOM_EXPORTS.lightPillarTopColor.value = topCol
-      if (DOM_EXPORTS.lightPillarBottomColor)
-        DOM_EXPORTS.lightPillarBottomColor.value = bottomCol
-
-      if (DOM_EXPORTS.lightPillarIntensity) {
-        DOM_EXPORTS.lightPillarIntensity.value = randomIntensity
-        DOM_EXPORTS.lightPillarIntensityValue.textContent =
-          randomIntensity.toFixed(2)
-      }
-      if (DOM_EXPORTS.lightPillarRotationSpeed) {
-        DOM_EXPORTS.lightPillarRotationSpeed.value = randomRotSpeed
-        DOM_EXPORTS.lightPillarRotationSpeedValue.textContent =
-          randomRotSpeed.toFixed(2)
-      }
-      if (DOM_EXPORTS.lightPillarGlow) {
-        DOM_EXPORTS.lightPillarGlow.value = randomGlow
-        DOM_EXPORTS.lightPillarGlowValue.textContent = randomGlow.toFixed(4)
-      }
-      if (DOM_EXPORTS.lightPillarWidth) {
-        DOM_EXPORTS.lightPillarWidth.value = randomWidth
-        DOM_EXPORTS.lightPillarWidthValue.textContent = randomWidth.toFixed(2)
-      }
-      if (DOM_EXPORTS.lightPillarHeight) {
-        DOM_EXPORTS.lightPillarHeight.value = randomHeight
-        DOM_EXPORTS.lightPillarHeightValue.textContent = randomHeight.toFixed(2)
-      }
-      if (DOM_EXPORTS.lightPillarNoise) {
-        DOM_EXPORTS.lightPillarNoise.value = randomNoise
-        DOM_EXPORTS.lightPillarNoiseValue.textContent = randomNoise.toFixed(2)
-      }
-      if (DOM_EXPORTS.lightPillarRotation) {
-        DOM_EXPORTS.lightPillarRotation.value = randomPillarRot
-        DOM_EXPORTS.lightPillarRotationValue.textContent = randomPillarRot + "°"
-      }
-
-      if (effects.lightPillarEffect) {
-        effects.lightPillarEffect.setOptions({
-          topColor: topCol,
-          bottomColor: bottomCol,
-          intensity: randomIntensity,
-          rotationSpeed: randomRotSpeed,
-          glowAmount: randomGlow,
-          pillarWidth: randomWidth,
-          pillarHeight: randomHeight,
-          noiseIntensity: randomNoise,
-          pillarRotation: randomPillarRot,
-        })
-      }
-    })
-  }
-
-  if (DOM_EXPORTS.lightPillarActive) {
-    // Sync initial state
-    DOM_EXPORTS.lightPillarActive.checked = settings.lightPillarActive === true
-    DOM_EXPORTS.lightPillarActive.addEventListener("change", (e) => {
-      handleSettingUpdate("lightPillarActive", e.target.checked)
-    })
-  }
-
-  if (DOM_EXPORTS.lightPillarTopColor) {
-    DOM_EXPORTS.lightPillarTopColor.value =
-      settings.lightPillarTopColor || "#5227FF"
-    DOM_EXPORTS.lightPillarTopColor.addEventListener("change", (e) => {
-      handleSettingUpdate("lightPillarTopColor", e.target.value)
-      if (effects.lightPillarEffect)
-        effects.lightPillarEffect.setOptions({ topColor: e.target.value })
-    })
-  }
-
-  if (DOM_EXPORTS.lightPillarBottomColor) {
-    DOM_EXPORTS.lightPillarBottomColor.value =
-      settings.lightPillarBottomColor || "#FF9FFC"
-    DOM_EXPORTS.lightPillarBottomColor.addEventListener("change", (e) => {
-      handleSettingUpdate("lightPillarBottomColor", e.target.value)
-      if (effects.lightPillarEffect)
-        effects.lightPillarEffect.setOptions({ bottomColor: e.target.value })
-    })
-  }
-
-  const lightPillarProps = [
-    {
-      id: "lightPillarIntensity",
-      dom: DOM_EXPORTS.lightPillarIntensity,
-      val: DOM_EXPORTS.lightPillarIntensityValue,
-      optKey: "intensity",
-    },
-    {
-      id: "lightPillarRotationSpeed",
-      dom: DOM_EXPORTS.lightPillarRotationSpeed,
-      val: DOM_EXPORTS.lightPillarRotationSpeedValue,
-      optKey: "rotationSpeed",
-    },
-    {
-      id: "lightPillarGlowAmount",
-      dom: DOM_EXPORTS.lightPillarGlow,
-      val: DOM_EXPORTS.lightPillarGlowValue,
-      optKey: "glowAmount",
-    },
-    {
-      id: "lightPillarWidth",
-      dom: DOM_EXPORTS.lightPillarWidth,
-      val: DOM_EXPORTS.lightPillarWidthValue,
-      optKey: "pillarWidth",
-    },
-    {
-      id: "lightPillarHeight",
-      dom: DOM_EXPORTS.lightPillarHeight,
-      val: DOM_EXPORTS.lightPillarHeightValue,
-      optKey: "pillarHeight",
-    },
-    {
-      id: "lightPillarNoiseIntensity",
-      dom: DOM_EXPORTS.lightPillarNoise,
-      val: DOM_EXPORTS.lightPillarNoiseValue,
-      optKey: "noiseIntensity",
-    },
-    {
-      id: "lightPillarRotation",
-      dom: DOM_EXPORTS.lightPillarRotation,
-      val: DOM_EXPORTS.lightPillarRotationValue,
-      optKey: "pillarRotation",
-      isAngle: true,
-    },
-  ]
-
-  lightPillarProps.forEach((prop) => {
-    if (prop.dom) {
-      if (settings[prop.id] !== undefined) {
-        prop.dom.value = settings[prop.id]
-        if (prop.val) {
-          if (prop.isAngle) {
-            prop.val.textContent = Math.round(settings[prop.id]) + "°"
-          } else {
-            prop.val.textContent = parseFloat(settings[prop.id]).toFixed(2)
-          }
-        }
-      }
-      prop.dom.addEventListener("input", (e) => {
-        const val = parseFloat(e.target.value)
-        if (prop.val) {
-          if (prop.isAngle) {
-            prop.val.textContent = Math.round(val) + "°"
-          } else {
-            prop.val.textContent = val.toFixed(2)
-          }
-        }
-        updateSetting(prop.id, val)
-        if (effects.lightPillarEffect) {
-          effects.lightPillarEffect.setOptions({ [prop.optKey]: val })
-        }
-      })
-      prop.dom.addEventListener("change", () => saveSettings())
-    }
-  })
-
-  // ── Light Pillar: Save BG handler ──────────────────────────────────
-  function renderUserLightPillars() {
-    const gallery = document.getElementById("user-light-pillars-gallery")
-    const galleryWrap = document.getElementById(
-      "user-light-pillars-gallery-wrap",
-    )
-    if (!gallery) return
-    const { userLightPillars } = getSettings()
-    gallery.innerHTML = ""
-    const countSpan = document.getElementById("count-light-pillar")
-
-    if (!userLightPillars || userLightPillars.length === 0) {
-      if (galleryWrap) galleryWrap.style.display = "none"
-      if (countSpan) countSpan.innerHTML = ""
-      return
-    }
-    if (galleryWrap) galleryWrap.style.display = "block"
-    if (countSpan)
-      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userLightPillars.length})</span>`
-
-    userLightPillars.forEach((preset, index) => {
-      const item = document.createElement("div")
-      item.className = "local-bg-item user-light-pillar-item"
-      item.title = `Light Pillar Preset #${index + 1}`
-      item.style.background = `linear-gradient(to bottom, ${preset.topColor || "#5227FF"}, ${preset.bottomColor || "#FF9FFC"})`
-      item.style.position = "relative"
-
-      const overlay = document.createElement("div")
-      overlay.className = "bg-item-overlay"
-      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
-      item.appendChild(overlay)
-
-      const removeBtn = document.createElement("button")
-      removeBtn.className = "remove-bg-btn"
-      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", async (e) => {
-        e.stopPropagation()
-        const i18n = geti18n()
-        if (
-          await showConfirm(
-            i18n.alert_delete_bg_confirm || "Delete this preset?",
-          )
-        ) {
-          const s = getSettings()
-          s.userLightPillars.splice(index, 1)
-          saveSettings()
-          renderUserLightPillars()
-        }
-      })
-      item.appendChild(removeBtn)
-
-      item.addEventListener("click", () => {
-        const keyMap = {
-          topColor: "lightPillarTopColor",
-          bottomColor: "lightPillarBottomColor",
-          intensity: "lightPillarIntensity",
-          rotationSpeed: "lightPillarRotationSpeed",
-          glowAmount: "lightPillarGlowAmount",
-          width: "lightPillarWidth",
-          height: "lightPillarHeight",
-          noiseIntensity: "lightPillarNoiseIntensity",
-          rotation: "lightPillarRotation",
-        }
-        Object.entries(keyMap).forEach(([pk, sk]) => {
-          if (preset[pk] !== undefined) updateSetting(sk, preset[pk])
-        })
-        updateSetting("lightPillarActive", true)
-        if (DOM_EXPORTS.lightPillarActive)
-          DOM_EXPORTS.lightPillarActive.checked = true
-        if (DOM_EXPORTS.lightPillarTopColor)
-          DOM_EXPORTS.lightPillarTopColor.value = preset.topColor
-        if (DOM_EXPORTS.lightPillarBottomColor)
-          DOM_EXPORTS.lightPillarBottomColor.value = preset.bottomColor
-
-        if (effects.lightPillarEffect) {
-          effects.lightPillarEffect.setOptions({
-            topColor: preset.topColor,
-            bottomColor: preset.bottomColor,
-            intensity: preset.intensity,
-            rotationSpeed: preset.rotationSpeed,
-            glowAmount: preset.glowAmount,
-            pillarWidth: preset.width,
-            pillarHeight: preset.height,
-            noiseIntensity: preset.noiseIntensity,
-            pillarRotation: preset.rotation,
-          })
-        }
-        handleSettingUpdate("lightPillarActive", true)
-        saveSettings()
-      })
-
-      gallery.appendChild(item)
-    })
-  }
-
-  const lightPillarSaveEl = document.getElementById("light-pillar-save-btn")
-  if (lightPillarSaveEl) {
-    lightPillarSaveEl.addEventListener("click", () => {
-      const s = getSettings()
-      const newPreset = {
-        id: Date.now(),
-        topColor: s.lightPillarTopColor,
-        bottomColor: s.lightPillarBottomColor,
-        intensity: s.lightPillarIntensity,
-        rotationSpeed: s.lightPillarRotationSpeed,
-        glowAmount: s.lightPillarGlowAmount,
-        width: s.lightPillarWidth,
-        height: s.lightPillarHeight,
-        noiseIntensity: s.lightPillarNoiseIntensity,
-        rotation: s.lightPillarRotation,
-      }
-      const saved = s.userLightPillars || []
-      updateSetting("userLightPillars", [...saved, newPreset])
-      saveSettings()
-      renderUserLightPillars()
-      showAlert("Light Pillar BG saved!")
-    })
-  }
-
-  // ── Light Pillar multi-select toolbar wiring ──────────────────────
-  ;(function setupLightPillarMultiSelect() {
-    const selectModeBtn = document.getElementById(
-      "light-pillar-select-mode-btn",
-    )
-    const toolbar = document.getElementById("light-pillar-select-toolbar")
-    const deleteSelectedBtn = document.getElementById(
-      "light-pillar-delete-selected-btn",
-    )
-    const cancelBtn = document.getElementById("light-pillar-select-cancel-btn")
-    if (!selectModeBtn) return
-    let selectMode = false
-    const selectedIds = new Set()
-    selectModeBtn.addEventListener("click", () => {
-      selectMode = !selectMode
-      selectedIds.clear()
-      if (toolbar) toolbar.style.display = selectMode ? "flex" : "none"
-    })
-    if (cancelBtn)
-      cancelBtn.addEventListener("click", () => {
-        selectMode = false
-        selectedIds.clear()
-        if (toolbar) toolbar.style.display = "none"
-      })
-    if (deleteSelectedBtn)
-      deleteSelectedBtn.addEventListener("click", async () => {
-        if (selectedIds.size === 0) return
-        const i18n = geti18n()
-        if (
-          await showConfirm(
-            i18n.alert_delete_bg_confirm ||
-              `Delete ${selectedIds.size} preset(s)?`,
-          )
-        ) {
-          const s = getSettings()
-          s.userLightPillars = (s.userLightPillars || []).filter(
-            (_, i) => !selectedIds.has(i),
-          )
-          saveSettings()
-          selectedIds.clear()
-          selectMode = false
-          if (toolbar) toolbar.style.display = "none"
-          renderUserLightPillars()
-        }
-      })
-  })()
-
-  // Initialize data and renderers
-  populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, ctx.i18n)
-  renderUserColors(DOM_EXPORTS)
-  renderUserAccentColors(DOM_EXPORTS)
-  initThemeManager(DOM_EXPORTS, handleSettingUpdate, updateSettingsInputs)
-
-  // Restore font
-  initFont()
-  renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
-  setupLocalFonts(handleSettingUpdate)
-
-  // Setup all event handlers
-  setupGeneralEventHandlers(
-    ctx,
-    handleSettingUpdate,
-    applySettings,
-    updateSettingsInputs,
-  )
-  setupEffectColorHandlers(DOM_EXPORTS, effects)
-  setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
-  setupGradientMultiSelect(DOM_EXPORTS)
-  setupSvgWaveMultiSelect(DOM_EXPORTS, effects.svgWaveEffect, () => {
-    handleSettingUpdate("svgWaveActive", true)
-  })
-  setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
-  setupMultiColorManager(applySettings)
-
-  // Final setup
-  renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
-  renderUserGradients(DOM_EXPORTS)
-  renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
-    handleSettingUpdate("svgWaveActive", true)
-  })
-  renderUserGradientV2s(DOM_EXPORTS)
-  renderUserSilks()
-  renderUserLightPillars()
-
-  // ── Liquid Ether Effect setup ──
-  if (DOM_EXPORTS.liquidEtherToggleBtn) {
-    DOM_EXPORTS.liquidEtherToggleBtn.addEventListener("click", () => {
-      const isHidden = DOM_EXPORTS.liquidEtherSettings.style.display === "none"
-      DOM_EXPORTS.liquidEtherSettings.style.display = isHidden ? "block" : "none"
-      DOM_EXPORTS.liquidEtherToggleBtn.classList.toggle("active", isHidden)
-      DOM_EXPORTS.liquidEtherToggleLabel.textContent = isHidden
-        ? "Close Liquid Ether"
-        : "Open Liquid Ether"
-    })
-  }
-
-  if (DOM_EXPORTS.liquidEtherActive) {
-    DOM_EXPORTS.liquidEtherActive.checked = settings.liquidEtherActive === true
-    DOM_EXPORTS.liquidEtherActive.addEventListener("change", (e) => {
-      handleSettingUpdate("liquidEtherActive", e.target.checked)
-    })
-  }
-
-  const updateLiquidEtherFromUI = () => {
-    if (effects.liquidEtherEffect) {
-      effects.liquidEtherEffect.updateSettings({
-        colors: [
-          DOM_EXPORTS.liquidEtherColor1.value,
-          DOM_EXPORTS.liquidEtherColor2.value,
-          DOM_EXPORTS.liquidEtherColor3.value,
-        ],
-        glowWidth: parseFloat(DOM_EXPORTS.liquidEtherGlowWidth.value),
-      })
-    }
-  }
-
-  if (DOM_EXPORTS.liquidEtherColor1) {
-    DOM_EXPORTS.liquidEtherColor1.value = settings.liquidEtherColor1 || "#5227FF"
-    DOM_EXPORTS.liquidEtherColor1.addEventListener("input", (e) => {
-      updateSetting("liquidEtherColor1", e.target.value)
-      updateLiquidEtherFromUI()
-      saveSettings()
-    })
-  }
-  if (DOM_EXPORTS.liquidEtherColor2) {
-    DOM_EXPORTS.liquidEtherColor2.value = settings.liquidEtherColor2 || "#FF9FFC"
-    DOM_EXPORTS.liquidEtherColor2.addEventListener("input", (e) => {
-      updateSetting("liquidEtherColor2", e.target.value)
-      updateLiquidEtherFromUI()
-      saveSettings()
-    })
-  }
-  if (DOM_EXPORTS.liquidEtherColor3) {
-    DOM_EXPORTS.liquidEtherColor3.value = settings.liquidEtherColor3 || "#B497CF"
-    DOM_EXPORTS.liquidEtherColor3.addEventListener("input", (e) => {
-      updateSetting("liquidEtherColor3", e.target.value)
-      updateLiquidEtherFromUI()
-      saveSettings()
-    })
-  }
-
-  if (DOM_EXPORTS.liquidEtherGlowWidth) {
-    const gw = settings.liquidEtherGlowWidth ?? 5.5
-    DOM_EXPORTS.liquidEtherGlowWidth.value = gw
-    if (DOM_EXPORTS.liquidEtherGlowWidthValue) {
-      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = gw.toFixed(1)
-    }
-    DOM_EXPORTS.liquidEtherGlowWidth.addEventListener("input", (e) => {
-      const val = parseFloat(e.target.value)
-      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = val.toFixed(1)
-      updateSetting("liquidEtherGlowWidth", val)
-      updateLiquidEtherFromUI()
-      saveSettings()
-    })
-  }
-
-  if (DOM_EXPORTS.liquidEtherRandomBtn) {
-    DOM_EXPORTS.liquidEtherRandomBtn.addEventListener("click", () => {
-      const palette = [
-        "#FF0055", "#00FF66", "#00AAFF", "#0055FF", "#5500FF",
-        "#AA00FF", "#FF00AA", "#FF0000", "#FF5500", "#FFAA00",
-        "#00FFCC", "#00FFAA", "#0000FF", "#00FFFF", "#FF00FF",
-        "#FFFF00", "#FF2288", "#22FF88", "#2288FF", "#FF22FF",
-        "#FFFF22", "#22FFFF", "#FF9FFC", "#5227FF", "#B497CF"
-      ]
-      const randomHex = () => palette[Math.floor(Math.random() * palette.length)]
+  // Animated Backgrounds Collapsible Group
+  const animatedBgHeader = document.getElementById("animated-backgrounds-header")
+  const animatedBgBody = document.getElementById("animated-backgrounds-body")
+  if (animatedBgHeader && animatedBgBody) {
+    animatedBgHeader.addEventListener("click", () => {
+      const isExpanded = animatedBgBody.style.display !== "none"
+      animatedBgBody.style.display = isExpanded ? "none" : "block"
+      animatedBgHeader.classList.toggle("active", !isExpanded)
       
-      const c1 = randomHex()
-      const c2 = randomHex()
-      const c3 = randomHex()
-      const gw = parseFloat((Math.random() * 8.0 + 1.0).toFixed(1))
-
-      DOM_EXPORTS.liquidEtherColor1.value = c1
-      DOM_EXPORTS.liquidEtherColor2.value = c2
-      DOM_EXPORTS.liquidEtherColor3.value = c3
-      DOM_EXPORTS.liquidEtherGlowWidth.value = gw
-      DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = gw.toFixed(1)
-
-      handleSettingUpdate("liquidEtherColor1", c1, false, true)
-      handleSettingUpdate("liquidEtherColor2", c2, false, true)
-      handleSettingUpdate("liquidEtherColor3", c3, false, true)
-      handleSettingUpdate("liquidEtherGlowWidth", gw)
-      
-      updateLiquidEtherFromUI()
-    })
-  }
-
-  function renderUserLiquidEthers() {
-    const gallery = DOM_EXPORTS.userLiquidEthersGallery
-    const galleryWrap = DOM_EXPORTS.userLiquidEthersGalleryWrap
-    if (!gallery) return
-    const { userLiquidEthers } = getSettings()
-    gallery.innerHTML = ""
-    const countSpan = document.getElementById("count-liquid-ether")
-
-    if (!userLiquidEthers || userLiquidEthers.length === 0) {
-      if (galleryWrap) galleryWrap.style.display = "none"
-      if (countSpan) countSpan.innerHTML = ""
-      return
-    }
-    if (galleryWrap) galleryWrap.style.display = "block"
-    if (countSpan)
-      countSpan.innerHTML = `<span style="font-size:0.8rem;opacity:0.6;">(${userLiquidEthers.length})</span>`
-
-    userLiquidEthers.forEach((preset, index) => {
-      const item = document.createElement("div")
-      item.className = "local-bg-item user-liquid-ether-item"
-      item.title = `Liquid Ether Preset #${index + 1}`
-      item.style.background = `linear-gradient(45deg, ${preset.color1 || "#5227FF"}, ${preset.color2 || "#FF9FFC"}, ${preset.color3 || "#B497CF"})`
-      item.style.position = "relative"
-
-      const overlay = document.createElement("div")
-      overlay.className = "bg-item-overlay"
-      overlay.innerHTML = '<i class="fa-solid fa-play"></i>'
-      item.appendChild(overlay)
-
-      const removeBtn = document.createElement("button")
-      removeBtn.className = "remove-bg-btn"
-      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-      removeBtn.addEventListener("click", async (e) => {
-        e.stopPropagation()
-        const i18n = geti18n()
-        if (
-          await showConfirm(
-            i18n.alert_delete_bg_confirm || "Delete this preset?",
-          )
-        ) {
-          const s = getSettings()
-          s.userLiquidEthers.splice(index, 1)
-          saveSettings()
+      // Fix bug: Re-render galleries when section is expanded to ensure correct canvas/gradient previews
+      if (!isExpanded) {
+          renderUserGradientV2s(DOM_EXPORTS)
+          renderUserSilks()
+          renderUserLightPillars()
           renderUserLiquidEthers()
-        }
-      })
-      item.appendChild(removeBtn)
-
-      item.addEventListener("click", () => {
-        handleSettingUpdate("liquidEtherColor1", preset.color1, false, true)
-        handleSettingUpdate("liquidEtherColor2", preset.color2, false, true)
-        handleSettingUpdate("liquidEtherColor3", preset.color3, false, true)
-        handleSettingUpdate("liquidEtherGlowWidth", preset.glowWidth, false, true)
-        handleSettingUpdate("liquidEtherActive", true)
-
-        if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = true
-        if (DOM_EXPORTS.liquidEtherColor1) DOM_EXPORTS.liquidEtherColor1.value = preset.color1
-        if (DOM_EXPORTS.liquidEtherColor2) DOM_EXPORTS.liquidEtherColor2.value = preset.color2
-        if (DOM_EXPORTS.liquidEtherColor3) DOM_EXPORTS.liquidEtherColor3.value = preset.color3
-        if (DOM_EXPORTS.liquidEtherGlowWidth) {
-          DOM_EXPORTS.liquidEtherGlowWidth.value = preset.glowWidth
-          if (DOM_EXPORTS.liquidEtherGlowWidthValue)
-            DOM_EXPORTS.liquidEtherGlowWidthValue.textContent = parseFloat(
-              preset.glowWidth,
-            ).toFixed(1)
-        }
-        
-        updateLiquidEtherFromUI()
-      })
-
-      gallery.appendChild(item)
-    })
-  }
-
-  if (DOM_EXPORTS.liquidEtherSaveBtn) {
-    DOM_EXPORTS.liquidEtherSaveBtn.addEventListener("click", () => {
-      const s = getSettings()
-      const newPreset = {
-        id: Date.now(),
-        color1: s.liquidEtherColor1 || "#5227FF",
-        color2: s.liquidEtherColor2 || "#FF9FFC",
-        color3: s.liquidEtherColor3 || "#B497CF",
-        glowWidth: s.liquidEtherGlowWidth ?? 5.5,
       }
-      const saved = s.userLiquidEthers || []
-      updateSetting("userLiquidEthers", [...saved, newPreset])
-      saveSettings()
-      renderUserLiquidEthers()
-      showAlert("Liquid Ether BG saved!")
     })
+    
+    // Auto-expand if any effect within this group is active
+    const isAnyActive = settings.silkActive || settings.lightPillarActive || settings.liquidEtherActive || settings.gradientV2Active
+    if (isAnyActive) {
+        animatedBgBody.style.display = "block"
+        animatedBgHeader.classList.add("active")
+        // Initial render for active state
+        setTimeout(() => {
+            renderUserGradientV2s(DOM_EXPORTS)
+            renderUserSilks()
+            renderUserLightPillars()
+            renderUserLiquidEthers()
+        }, 100)
+    } else {
+        animatedBgBody.style.display = "none"
+    }
   }
 
   // Initial render for Liquid Ether gallery

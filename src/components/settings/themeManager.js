@@ -202,6 +202,7 @@ const THEMES = {
 
 // List of settings that themes are allowed to modify.
 export const THEMEABLE_KEYS = [
+  "background", "activeBgUid", "unsplashLastCredit",
   "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
   "effect", "hueTextMode", "font", "clockFont", "clockFontTarget", "dateClockStyle", 
   "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",

@@ -1571,10 +1571,24 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
 
-    // Liquid Ether Inputs
+    // Special Background Effects Toggles
+    if (DOM.gradientV2Active) {
+      DOM.gradientV2Active.checked = settings.gradientV2Active === true
+    }
+    if (DOM.svgWaveActive) {
+      DOM.svgWaveActive.checked = settings.svgWaveActive === true
+    }
+    if (DOM.silkActive) {
+      DOM.silkActive.checked = settings.silkActive === true
+    }
+    if (DOM.lightPillarActive) {
+      DOM.lightPillarActive.checked = settings.lightPillarActive === true
+    }
     if (DOM.liquidEtherActive) {
       DOM.liquidEtherActive.checked = settings.liquidEtherActive === true
     }
+
+    // Liquid Ether Inputs
     if (DOM.liquidEtherColor1) {
       DOM.liquidEtherColor1.value = settings.liquidEtherColor1 || "#5227FF"
     }

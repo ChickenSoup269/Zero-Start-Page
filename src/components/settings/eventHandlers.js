@@ -642,6 +642,18 @@ export function setupGeneralEventHandlers(
       }
 
       settings.userBackgrounds = settings.userBackgrounds || []
+
+      // Check if image already exists in gallery (match by source image ID)
+      const exists = settings.userBackgrounds.some(
+        (bg) => (typeof bg === "object" ? bg.id : bg) === currentBg,
+      )
+      if (exists) {
+        showAlert(
+          geti18n().alert_bg_exists || "This background is already in your gallery!",
+        )
+        return
+      }
+
       settings.userBackgrounds.push(newBg)
       saveSettings()
       renderLocalBackgrounds(DOM, handleSettingUpdate)

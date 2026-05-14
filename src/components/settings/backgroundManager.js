@@ -22,6 +22,7 @@ import {
 } from "../../services/imageStore.js"
 import { geti18n, applyTranslations } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
+import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 
 function renderUserColors(DOM) {
   const settings = getSettings()
@@ -35,7 +36,7 @@ function renderUserColors(DOM) {
       const isFavorite = typeof item === "object" ? item.isFavorite : false
 
       const el = document.createElement("div")
-      el.className = "user-color-item"
+      el.className = "local-bg-item user-color-item"
       if (settings.background === color && !settings.svgWaveActive)
         el.classList.add("active")
       el.dataset.bgId = color
@@ -208,8 +209,6 @@ function renderUserAccentColors(DOM) {
 
 const _videoThumbCache = new Map()
 
-import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
-
 function extractUnsplashId(url) {
   if (!url || typeof url !== "string") return null
   // Match patterns like photo-1234567890 or other formats containing ID
@@ -318,6 +317,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     !settings.gradientV2Active &&
     !settings.silkActive &&
     !settings.lightPillarActive &&
+    !settings.liquidEtherActive &&
     settings.background?.startsWith("#")
   ) {
     randomItem.classList.add("active")
@@ -348,7 +348,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         isActive &&
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
-        !settings.silkActive
+        !settings.silkActive &&
+        !settings.lightPillarActive &&
+        !settings.liquidEtherActive
       )
         item.classList.add("active")
 
@@ -684,11 +686,28 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
         (bg) => (typeof bg === "object" ? bg.uid || bg.id : bg) === bgUid,
       )
 
-      if (typeof bgData === "object" && bgData.settings) {
-        // Apply stored settings for this specific background preset
-        Object.entries(bgData.settings).forEach(([key, val]) => {
-          updateSetting(key, val)
-        })
+      if (typeof bgData === "object") {
+        if (bgData.settings) {
+          // Apply stored settings for this specific background preset
+          Object.entries(bgData.settings).forEach(([key, val]) => {
+            updateSetting(key, val)
+          })
+        }
+
+        // Restore Unsplash credits if present
+        if (bgData.authorName || bgData.photoUrl) {
+          updateSetting("unsplashLastCredit", {
+            photoUrl: bgData.photoUrl,
+            authorName: bgData.authorName,
+            authorUrl: bgData.authorUrl,
+          })
+        } else {
+          // Clear credits if not an Unsplash image
+          updateSetting("unsplashLastCredit", null)
+        }
+      } else {
+        // Clear credits if clicking a default background or a simple color
+        updateSetting("unsplashLastCredit", null)
       }
 
       updateSetting("activeBgUid", bgUid)

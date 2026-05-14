@@ -232,6 +232,8 @@
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
     <canvas id="light-pillar-canvas"
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="liquid-ether-canvas"
+        style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -1737,593 +1739,619 @@
                 </div>
             </div>
 
-            <!-- Gradient V2 (Animated) Section -->
-            <div class="setting-group" id="gradientV2-group">
-                <div class="setting-label"><i class="fa-solid fa-brush"></i> <span
-                        data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span></div>
-
-                <div class="setting-item-row"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                    <label for="gradientV2-active" data-i18n="settings_gradientV2_active"
-                        style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i> Active</label>
-                    <input type="checkbox" id="gradientV2-active">
+            <!-- Animated Backgrounds Collapsible Group -->
+            <div class="setting-group collapsible-group" id="animated-backgrounds-group">
+                <div class="group-header" id="animated-backgrounds-header">
+                    <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
+                    <span data-i18n="settings_animated_backgrounds_title">Background Animations</span>
+                    <i class="fa-solid fa-chevron-down group-chevron"></i>
                 </div>
 
-                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                        lag when used</span>
-                </div>
+                <div class="group-body" id="animated-backgrounds-body">
+                    <!-- Gradient V2 (Animated) Section -->
+                    <div class="setting-group" id="gradientV2-group"
+                        style="margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="setting-label"><i class="fa-solid fa-brush"></i> <span
+                                data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span></div>
 
-                <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span id="gradientV2-toggle-label" data-i18n="settings_gradientV2_open">Open Gradient V2</span>
-                </button>
-                <div id="gradientV2-settings" style="display: none; margin-top: 12px;">
-
-                    <!-- Colors -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-palette"></i> Colors</div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                            <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_gradientV2_color1">Color 1</label>
-                                <input type="color" id="gradientV2-color1" value="#FF9FFC" style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_gradientV2_color2">Color 2</label>
-                                <input type="color" id="gradientV2-color2" value="#5227FF" style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label data-i18n="settings_gradientV2_color3">Color 3</label>
-                                <input type="color" id="gradientV2-color3" value="#B497CF" style="width: 100%;">
-                            </div>
+                        <div class="setting-item-row"
+                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                            <label for="gradientV2-active" data-i18n="settings_gradientV2_active"
+                                style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i> Active</label>
+                            <input type="checkbox" id="gradientV2-active">
                         </div>
-                    </div>
 
-                    <!-- Animation Controls -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-play"></i> Animation</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
-                                    <span id="gradientV2-time-speed-value" style="opacity: 0.8;">0.25</span>
-                                </label>
-                                <input type="range" id="gradientV2-time-speed" min="0" max="2" step="0.05" value="0.25">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_colorBalance">Balance</span>
-                                    <span id="gradientV2-color-balance-value" style="opacity: 0.8;">0.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-color-balance" min="-1" max="1" step="0.1"
-                                    value="0.0">
-                            </div>
+                        <div
+                            style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful:
+                                may
+                                lag when used</span>
                         </div>
-                    </div>
 
-                    <!-- Distortion / Warp -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp & Distortion</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_warpStrength">Strength</span>
-                                    <span id="gradientV2-warp-strength-value" style="opacity: 0.8;">1.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-warp-strength" min="0" max="5" step="0.1"
-                                    value="1.0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_warpFrequency">Frequency</span>
-                                    <span id="gradientV2-warp-frequency-value" style="opacity: 0.8;">5.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-warp-frequency" min="0" max="20" step="0.5"
-                                    value="5.0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_warpSpeed">Warp Speed</span>
-                                    <span id="gradientV2-warp-speed-value" style="opacity: 0.8;">2.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-warp-speed" min="0" max="10" step="0.5" value="2.0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
-                                    <span id="gradientV2-warp-amplitude-value" style="opacity: 0.8;">50.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-warp-amplitude" min="0" max="200" step="5"
-                                    value="50.0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Blend & Noise -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend & Noise
-                        </div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_blendAngle">Angle</span>
-                                    <span id="gradientV2-blend-angle-value" style="opacity: 0.8;">0°</span>
-                                </label>
-                                <input type="range" id="gradientV2-blend-angle" min="0" max="360" value="0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
-                                    <span id="gradientV2-blend-softness-value" style="opacity: 0.8;">0.05</span>
-                                </label>
-                                <input type="range" id="gradientV2-blend-softness" min="0" max="1" step="0.01"
-                                    value="0.05">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_rotationAmount">Rotation</span>
-                                    <span id="gradientV2-rotation-amount-value" style="opacity: 0.8;">500</span>
-                                </label>
-                                <input type="range" id="gradientV2-rotation-amount" min="0" max="2000" step="10"
-                                    value="500">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_noiseScale">Noise Scale</span>
-                                    <span id="gradientV2-noise-scale-value" style="opacity: 0.8;">2.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-noise-scale" min="0.1" max="10" step="0.1"
-                                    value="2.0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Film Grain -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film Grain</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_grainAmount">Amount</span>
-                                    <span id="gradientV2-grain-amount-value" style="opacity: 0.8;">0.1</span>
-                                </label>
-                                <input type="range" id="gradientV2-grain-amount" min="0" max="1" step="0.01"
-                                    value="0.1">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_grainScale">Scale</span>
-                                    <span id="gradientV2-grain-scale-value" style="opacity: 0.8;">2.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-grain-scale" min="0.1" max="10" step="0.1"
-                                    value="2.0">
-                            </div>
-                        </div>
-                        <div class="setting-item-row" style="margin-top: 8px;">
-                            <label for="gradientV2-grain-animated"
-                                data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
-                            <input type="checkbox" id="gradientV2-grain-animated">
-                        </div>
-                    </div>
-
-                    <!-- Post-Processing -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image Adjustment</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_contrast">Contrast</span>
-                                    <span id="gradientV2-contrast-value" style="opacity: 0.8;">1.5</span>
-                                </label>
-                                <input type="range" id="gradientV2-contrast" min="0.5" max="3" step="0.1" value="1.5">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_gamma">Gamma</span>
-                                    <span id="gradientV2-gamma-value" style="opacity: 0.8;">1.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-gamma" min="0.1" max="3" step="0.1" value="1.0">
-                            </div>
-                            <div class="setting-item no-margin-top gradient-v2-grid-full">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_saturation">Saturation</span>
-                                    <span id="gradientV2-saturation-value" style="opacity: 0.8;">1.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-saturation" min="0" max="3" step="0.1" value="1.0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Layout & View -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i> Layout
-                            & Zoom</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_centerX">Center X</span>
-                                    <span id="gradientV2-center-x-value" style="opacity: 0.8;">0.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-center" min="-1" max="1" step="0.05" value="0.0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_centerY">Center Y</span>
-                                    <span id="gradientV2-center-y-value" style="opacity: 0.8;">0.0</span>
-                                </label>
-                                <input type="range" id="gradientV2-center-y" min="-1" max="1" step="0.05" value="0.0">
-                            </div>
-                            <div class="setting-item no-margin-top gradient-v2-grid-full">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_gradientV2_zoom">Zoom</span>
-                                    <span id="gradientV2-zoom-value" style="opacity: 0.8;">0.9</span>
-                                </label>
-                                <input type="range" id="gradientV2-zoom" min="0.1" max="5" step="0.1" value="0.9">
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                        <button id="gradientV2-randomize-btn" class="secondary-btn" title="Randomize">
-                            <i class="fa-solid fa-dice"></i> <span
-                                data-i18n="settings_gradientV2_randomize">Randomize</span>
+                        <button id="gradientV2-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="gradientV2-toggle-label" data-i18n="settings_gradientV2_open">Open Gradient V2</span>
                         </button>
-                        <button id="gradientV2-save-btn" class="primary-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_gradientV2_save">Save
-                                BG</span>
+                        <div id="gradientV2-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Colors -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-palette"></i> Colors</div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color1">Color 1</label>
+                                        <input type="color" id="gradientV2-color1" value="#FF9FFC" style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color2">Color 2</label>
+                                        <input type="color" id="gradientV2-color2" value="#5227FF" style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color3">Color 3</label>
+                                        <input type="color" id="gradientV2-color3" value="#B497CF" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-play"></i> Animation</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
+                                            <span id="gradientV2-time-speed-value" style="opacity: 0.8;">0.25</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-time-speed" min="0" max="2" step="0.05"
+                                            value="0.25">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_colorBalance">Balance</span>
+                                            <span id="gradientV2-color-balance-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-color-balance" min="-1" max="1" step="0.1"
+                                            value="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Distortion / Warp -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp & Distortion
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpStrength">Strength</span>
+                                            <span id="gradientV2-warp-strength-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-warp-strength" min="0" max="5" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpFrequency">Frequency</span>
+                                            <span id="gradientV2-warp-frequency-value" style="opacity: 0.8;">5.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-warp-frequency" min="0" max="20" step="0.5"
+                                            value="5.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpSpeed">Warp Speed</span>
+                                            <span id="gradientV2-warp-speed-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-warp-speed" min="0" max="10" step="0.5"
+                                            value="2.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
+                                            <span id="gradientV2-warp-amplitude-value" style="opacity: 0.8;">50.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-warp-amplitude" min="0" max="200" step="5"
+                                            value="50.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Blend & Noise -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend &
+                                    Noise
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_blendAngle">Angle</span>
+                                            <span id="gradientV2-blend-angle-value" style="opacity: 0.8;">0°</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-blend-angle" min="0" max="360" value="0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
+                                            <span id="gradientV2-blend-softness-value" style="opacity: 0.8;">0.05</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-blend-softness" min="0" max="1" step="0.01"
+                                            value="0.05">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_rotationAmount">Rotation</span>
+                                            <span id="gradientV2-rotation-amount-value" style="opacity: 0.8;">500</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-rotation-amount" min="0" max="2000" step="10"
+                                            value="500">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_noiseScale">Noise Scale</span>
+                                            <span id="gradientV2-noise-scale-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-noise-scale" min="0.1" max="10" step="0.1"
+                                            value="2.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Film Grain -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film Grain
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_grainAmount">Amount</span>
+                                            <span id="gradientV2-grain-amount-value" style="opacity: 0.8;">0.1</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-grain-amount" min="0" max="1" step="0.01"
+                                            value="0.1">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_grainScale">Scale</span>
+                                            <span id="gradientV2-grain-scale-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-grain-scale" min="0.1" max="10" step="0.1"
+                                            value="2.0">
+                                    </div>
+                                </div>
+                                <div class="setting-item-row" style="margin-top: 8px;">
+                                    <label for="gradientV2-grain-animated"
+                                        data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
+                                    <input type="checkbox" id="gradientV2-grain-animated">
+                                </div>
+                            </div>
+
+                            <!-- Post-Processing -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image Adjustment
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_contrast">Contrast</span>
+                                            <span id="gradientV2-contrast-value" style="opacity: 0.8;">1.5</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-contrast" min="0.5" max="3" step="0.1"
+                                            value="1.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_gamma">Gamma</span>
+                                            <span id="gradientV2-gamma-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-gamma" min="0.1" max="3" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_saturation">Saturation</span>
+                                            <span id="gradientV2-saturation-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-saturation" min="0" max="3" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Layout & View -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    Layout
+                                    & Zoom</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_centerX">Center X</span>
+                                            <span id="gradientV2-center-x-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-center" min="-1" max="1" step="0.05"
+                                            value="0.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_centerY">Center Y</span>
+                                            <span id="gradientV2-center-y-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-center-y" min="-1" max="1" step="0.05"
+                                            value="0.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_zoom">Zoom</span>
+                                            <span id="gradientV2-zoom-value" style="opacity: 0.8;">0.9</span>
+                                        </label>
+                                        <input type="range" id="gradientV2-zoom" min="0.1" max="5" step="0.1"
+                                            value="0.9">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Action Buttons -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                                <button id="gradientV2-randomize-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i> <span
+                                        data-i18n="settings_gradientV2_randomize">Randomize</span>
+                                </button>
+                                <button id="gradientV2-save-btn" class="primary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span
+                                        data-i18n="settings_gradientV2_save">Save
+                                        BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Saved Gradients Gallery -->
+                        <div id="user-gradientV2s-gallery-wrap" style="margin-top:10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <label data-i18n="settings_gradientV2_saved_label"
+                                    style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Gradient V2s</label>
+                                <span id="count-gradientV2"></span>
+                                <button id="gradientV2-select-mode-btn" class="secondary-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode"
+                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                            </div>
+                            <div id="gradientV2-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="gradientV2-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="gradientV2-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="gradientV2-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="gradientV2-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-gradientV2s-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Silk Background Section -->
+                    <div class="setting-group" id="silk-group" style="margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="setting-label"><i class="fa-solid fa-water"></i> Silk (Animated)</div>
+
+                        <div class="setting-item-row"
+                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                            <label for="silk-active" style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i>
+                                Active</label>
+                            <input type="checkbox" id="silk-active">
+                        </div>
+
+                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                                lag when used</span>
+                        </div>
+
+                        <button id="silk-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="silk-toggle-label" data-i18n="settings_silk_open">Open Silk</span>
                         </button>
-                    </div>
-                </div>
 
-                <!-- Saved Gradients Gallery -->
-                <div id="user-gradientV2s-gallery-wrap" style="margin-top:10px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label data-i18n="settings_gradientV2_saved_label"
-                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Gradient V2s</label>
-                        <span id="count-gradientV2"></span>
-                        <button id="gradientV2-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                            data-i18n="bg_select_mode"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="gradientV2-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
-                        <span id="gradientV2-select-count" class="bg-select-count">0 selected</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="gradientV2-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="gradientV2-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="gradientV2-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
+                        <div id="silk-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Color -->
+                            <div class="setting-item">
+                                <label>Color</label>
+                                <input type="color" id="silk-color" value="#7B7481" style="width: 100%;">
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Speed</span>
+                                            <span id="silk-speed-value" style="opacity: 0.8;">5.0</span>
+                                        </label>
+                                        <input type="range" id="silk-speed" min="0" max="20" step="0.5" value="5.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Scale</span>
+                                            <span id="silk-scale-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="silk-scale" min="0.1" max="5.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Noise Intensity</span>
+                                            <span id="silk-noise-value" style="opacity: 0.8;">1.5</span>
+                                        </label>
+                                        <input type="range" id="silk-noise" min="0" max="5.0" step="0.1" value="1.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Rotation</span>
+                                            <span id="silk-rotation-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1" value="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="silk-random-btn" class="secondary-btn" title="Randomize Silk">
+                                    <i class="fa-solid fa-dice"></i> Randomize
+                                </button>
+                                <button id="silk-save-btn" class="primary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_silk_save">Save BG</span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div id="user-gradientV2s-gallery" class="local-bg-gallery"></div>
-                </div>
-            </div>
 
-            <!-- Silk Background Section -->
-            <div class="setting-group" id="silk-group">
-                <div class="setting-label"><i class="fa-solid fa-water"></i> Silk (Animated)</div>
-
-                <div class="setting-item-row"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                    <label for="silk-active" style="margin: 0; font-weight: 600;"><i class="fa-solid fa-power-off"></i>
-                        Active</label>
-                    <input type="checkbox" id="silk-active">
-                </div>
-
-                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                        lag when used</span>
-                </div>
-
-                <button id="silk-toggle-btn" class="secondary-btn full-width">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span id="silk-toggle-label" data-i18n="settings_silk_open">Open Silk</span>
-                </button>
-
-                <div id="silk-settings" style="display: none; margin-top: 12px;">
-
-
-
-                    <!-- Color -->
-                    <div class="setting-item">
-                        <label>Color</label>
-                        <input type="color" id="silk-color" value="#7B7481" style="width: 100%;">
-                    </div>
-
-                    <!-- Animation Controls -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Speed</span>
-                                    <span id="silk-speed-value" style="opacity: 0.8;">5.0</span>
-                                </label>
-                                <input type="range" id="silk-speed" min="0" max="20" step="0.5" value="5.0">
+                        <!-- Saved Silks Gallery -->
+                        <div id="user-silks-gallery-wrap" style="margin-top:10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <label data-i18n="settings_silk_saved_label"
+                                    style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Silks</label>
+                                <span id="count-silk"></span>
+                                <button id="silk-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
+                                    data-i18n="bg_select_mode"
+                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Scale</span>
-                                    <span id="silk-scale-value" style="opacity: 0.8;">1.0</span>
-                                </label>
-                                <input type="range" id="silk-scale" min="0.1" max="5.0" step="0.1" value="1.0">
+                            <div id="silk-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
+                                <span id="silk-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="silk-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="silk-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Noise Intensity</span>
-                                    <span id="silk-noise-value" style="opacity: 0.8;">1.5</span>
-                                </label>
-                                <input type="range" id="silk-noise" min="0" max="5.0" step="0.1" value="1.5">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Rotation</span>
-                                    <span id="silk-rotation-value" style="opacity: 0.8;">0.0</span>
-                                </label>
-                                <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1" value="0.0">
-                            </div>
+                            <div id="user-silks-gallery" class="local-bg-gallery"></div>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div
-                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
-                        <button id="silk-random-btn" class="secondary-btn" title="Randomize Silk">
-                            <i class="fa-solid fa-dice"></i> Randomize
+                    <!-- Light Pillar Section -->
+                    <div class="setting-group" id="light-pillar-group" style="border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-lightbulb"></i> Light Pillar (Animated)</span>
+                        </div>
+
+                        <div class="setting-item-row"
+                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                            <label for="light-pillar-active" style="margin: 0; font-weight: 600;"><i
+                                    class="fa-solid fa-power-off"></i>
+                                Active</label>
+                            <input type="checkbox" id="light-pillar-active">
+                        </div>
+
+                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                                lag when used</span>
+                        </div>
+
+                        <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="light-pillar-toggle-label">Open Light Pillar</span>
                         </button>
-                        <button id="silk-save-btn" class="primary-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_silk_save">Save BG</span>
+                        <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Top Color -->
+                            <div class="setting-item">
+                                <label>Top Color</label>
+                                <input type="color" id="light-pillar-top-color" value="#5227FF" style="width: 100%;">
+                            </div>
+
+                            <!-- Bottom Color -->
+                            <div class="setting-item">
+                                <label>Bottom Color</label>
+                                <input type="color" id="light-pillar-bottom-color" value="#FF9FFC" style="width: 100%;">
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Intensity</span>
+                                            <span id="light-pillar-intensity-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Rotation Speed</span>
+                                            <span id="light-pillar-rotation-speed-value" style="opacity: 0.8;">0.3</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-rotation-speed" min="0" max="2" step="0.1"
+                                            value="0.3">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Glow Amount</span>
+                                            <span id="light-pillar-glow-value" style="opacity: 0.8;">0.005</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-glow" min="0" max="0.05" step="0.001"
+                                            value="0.005">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Pillar Width</span>
+                                            <span id="light-pillar-width-value" style="opacity: 0.8;">3.0</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5" value="3.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Pillar Height</span>
+                                            <span id="light-pillar-height-value" style="opacity: 0.8;">0.4</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1" value="0.4">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Noise Intensity</span>
+                                            <span id="light-pillar-noise-value" style="opacity: 0.8;">0.5</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1" value="0.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span>Pillar Rotation</span>
+                                            <span id="light-pillar-rotation-value" style="opacity: 0.8;">0°</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-rotation" min="0" max="360" step="1" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize Light Pillar">
+                                    <i class="fa-solid fa-dice"></i> Randomize
+                                </button>
+                                <button id="light-pillar-save-btn" class="primary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span>Save BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Saved Light Pillars Gallery -->
+                        <div id="user-light-pillars-gallery-wrap" style="margin-top:10px; display: none;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Pillars</label>
+                                <span id="count-light-pillar"></span>
+                                <button id="light-pillar-select-mode-btn" class="secondary-btn"
+                                    title="Select multiple to delete"
+                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                            </div>
+                            <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="light-pillar-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="light-pillar-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="light-pillar-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-light-pillars-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Liquid Ether Section -->
+                    <div class="setting-group" id="liquid-ether-group" style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 0;">
+                        <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid Ether
+                                    (Animated)</span></span>
+                        </div>
+
+                        <div class="setting-item-row"
+                            style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                            <label for="liquid-ether-active" style="margin: 0; font-weight: 600;"><i
+                                    class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_liquid_ether_active">Active</span></label>
+                            <input type="checkbox" id="liquid-ether-active">
+                        </div>
+
+                        <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
+                            <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
+                                lag when used</span>
+                        </div>
+
+                        <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Liquid Ether</span>
                         </button>
-                    </div>
-                </div>
+                        <div id="liquid-ether-settings" style="display: none; margin-top: 12px;">
 
-                <!-- Saved Silks Gallery -->
-                <div id="user-silks-gallery-wrap" style="margin-top:10px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label data-i18n="settings_silk_saved_label"
-                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Silks</label>
-                        <span id="count-silk"></span>
-                        <button id="silk-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                            data-i18n="bg_select_mode"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="silk-select-toolbar" class="bg-select-toolbar" style="display:none; margin-bottom: 10px;">
-                        <span id="silk-select-count" class="bg-select-count">0 selected</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="silk-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="silk-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-                    <div id="user-silks-gallery" class="local-bg-gallery"></div>
-                </div>
-            </div>
-
-            <div class="setting-group" id="light-pillar-group">
-                <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span><i class="fa-solid fa-lightbulb"></i> Light Pillar (Animated)</span>
-                </div>
-
-                <div class="setting-item-row"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                    <label for="light-pillar-active" style="margin: 0; font-weight: 600;"><i
-                            class="fa-solid fa-power-off"></i>
-                        Active</label>
-                    <input type="checkbox" id="light-pillar-active">
-                </div>
-
-                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                        lag when used</span>
-                </div>
-
-                <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span id="light-pillar-toggle-label">Open Light Pillar</span>
-                </button>
-                <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
-
-
-
-                    <!-- Top Color -->
-                    <div class="setting-item">
-                        <label>Top Color</label>
-                        <input type="color" id="light-pillar-top-color" value="#5227FF" style="width: 100%;">
-                    </div>
-
-                    <!-- Bottom Color -->
-                    <div class="setting-item">
-                        <label>Bottom Color</label>
-                        <input type="color" id="light-pillar-bottom-color" value="#FF9FFC" style="width: 100%;">
-                    </div>
-
-                    <!-- Animation Controls -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls</div>
-                        <div class="gradient-v2-grid">
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Intensity</span>
-                                    <span id="light-pillar-intensity-value" style="opacity: 0.8;">1.0</span>
-                                </label>
-                                <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1" value="1.0">
+                            <!-- Colors -->
+                            <div class="setting-item">
+                                <label data-i18n="settings_liquid_ether_colors">Colors</label>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <input type="color" id="liquid-ether-color1" value="#5227FF" style="width: 100%;">
+                                    <input type="color" id="liquid-ether-color2" value="#FF9FFC" style="width: 100%;">
+                                    <input type="color" id="liquid-ether-color3" value="#B497CF" style="width: 100%;">
+                                </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Rotation Speed</span>
-                                    <span id="light-pillar-rotation-speed-value" style="opacity: 0.8;">0.3</span>
-                                </label>
-                                <input type="range" id="light-pillar-rotation-speed" min="0" max="2" step="0.1"
-                                    value="0.3">
+
+                            <!-- Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> <span
+                                        data-i18n="settings_gradientV2_controls">Controls</span></div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_liquid_ether_glow_width">Glow Width</span>
+                                        <span id="liquid-ether-glow-width-value" style="opacity: 0.8;">5.5</span>
+                                    </label>
+                                    <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1" value="5.5">
+                                </div>
                             </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Glow Amount</span>
-                                    <span id="light-pillar-glow-value" style="opacity: 0.8;">0.005</span>
-                                </label>
-                                <input type="range" id="light-pillar-glow" min="0" max="0.05" step="0.001"
-                                    value="0.005">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Pillar Width</span>
-                                    <span id="light-pillar-width-value" style="opacity: 0.8;">3.0</span>
-                                </label>
-                                <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5" value="3.0">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Pillar Height</span>
-                                    <span id="light-pillar-height-value" style="opacity: 0.8;">0.4</span>
-                                </label>
-                                <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1" value="0.4">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Noise Intensity</span>
-                                    <span id="light-pillar-noise-value" style="opacity: 0.8;">0.5</span>
-                                </label>
-                                <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1" value="0.5">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label style="display: flex; justify-content: space-between;">
-                                    <span>Pillar Rotation</span>
-                                    <span id="light-pillar-rotation-value" style="opacity: 0.8;">0°</span>
-                                </label>
-                                <input type="range" id="light-pillar-rotation" min="0" max="360" step="1" value="0">
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="liquid-ether-random-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-dice"></i> <span
+                                        data-i18n="settings_liquid_ether_randomize">Randomize</span>
+                                </button>
+                                <button id="liquid-ether-save-btn" class="primary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_liquid_ether_save">Save
+                                        BG</span>
+                                </button>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div
-                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
-                        <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize Light Pillar">
-                            <i class="fa-solid fa-dice"></i> Randomize
-                        </button>
-                        <button id="light-pillar-save-btn" class="primary-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> <span>Save BG</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Saved Light Pillars Gallery -->
-                <div id="user-light-pillars-gallery-wrap" style="margin-top:10px; display: none;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;">Saved Pillars</label>
-                        <span id="count-light-pillar"></span>
-                        <button id="light-pillar-select-mode-btn" class="secondary-btn"
-                            title="Select multiple to delete"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
-                        <span id="light-pillar-select-count" class="bg-select-count">0 selected</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="light-pillar-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="light-pillar-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
+                        <!-- Saved Liquid Ether Gallery -->
+                        <div id="user-liquid-ethers-gallery-wrap" style="margin-top:10px; display: none;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;"
+                                    data-i18n="settings_saved_gallery">Saved Gallery</label>
+                                <span id="count-liquid-ether"></span>
+                                <button id="liquid-ether-select-mode-btn" class="secondary-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode"
+                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                            </div>
+                            <div id="liquid-ether-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="liquid-ether-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="liquid-ether-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="liquid-ether-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-liquid-ethers-gallery" class="local-bg-gallery"></div>
                         </div>
                     </div>
-                    <div id="user-light-pillars-gallery" class="local-bg-gallery"></div>
-                </div>
-            </div>
-
-            <div class="setting-group" id="liquid-ether-group">
-                <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid Ether
-                            (Animated)</span></span>
-                </div>
-
-                <div class="setting-item-row"
-                    style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                    <label for="liquid-ether-active" style="margin: 0; font-weight: 600;"><i
-                            class="fa-solid fa-power-off"></i>
-                        <span data-i18n="settings_liquid_ether_active">Active</span></label>
-                    <input type="checkbox" id="liquid-ether-active">
-                </div>
-
-                <div style="font-size: 0.75rem; color: #ffb703; margin-top: -8px; margin-bottom: 12px; padding: 0 4px;">
-                    <i class="fa-solid fa-circle-info"></i> <span data-i18n="settings_performance_warning">Careful: may
-                        lag when used</span>
-                </div>
-
-                <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Liquid Ether</span>
-                </button>
-                <div id="liquid-ether-settings" style="display: none; margin-top: 12px;">
-
-                    <!-- Colors -->
-                    <div class="setting-item">
-                        <label data-i18n="settings_liquid_ether_colors">Colors</label>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                            <input type="color" id="liquid-ether-color1" value="#5227FF" style="width: 100%;">
-                            <input type="color" id="liquid-ether-color2" value="#FF9FFC" style="width: 100%;">
-                            <input type="color" id="liquid-ether-color3" value="#B497CF" style="width: 100%;">
-                        </div>
-                    </div>
-
-                    <!-- Controls -->
-                    <div class="gradient-v2-panel">
-                        <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> <span
-                                data-i18n="settings_gradientV2_controls">Controls</span></div>
-                        <div class="setting-item no-margin-top">
-                            <label style="display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_liquid_ether_glow_width">Glow Width</span>
-                                <span id="liquid-ether-glow-width-value" style="opacity: 0.8;">5.5</span>
-                            </label>
-                            <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1" value="5.5">
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div
-                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
-                        <button id="liquid-ether-random-btn" class="secondary-btn">
-                            <i class="fa-solid fa-dice"></i> <span
-                                data-i18n="settings_liquid_ether_randomize">Randomize</span>
-                        </button>
-                        <button id="liquid-ether-save-btn" class="primary-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_liquid_ether_save">Save
-                                BG</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Saved Liquid Ether Gallery -->
-                <div id="user-liquid-ethers-gallery-wrap" style="margin-top:10px; display: none;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label style="font-size:0.8rem;opacity:0.7;margin-bottom:0;"
-                            data-i18n="settings_saved_gallery">Saved Gallery</label>
-                        <span id="count-liquid-ether"></span>
-                        <button id="liquid-ether-select-mode-btn" class="secondary-btn"
-                            title="Select multiple to delete" data-i18n="bg_select_mode"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="liquid-ether-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
-                        <span id="liquid-ether-select-count" class="bg-select-count">0 selected</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="liquid-ether-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="liquid-ether-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-                    <div id="user-liquid-ethers-gallery" class="local-bg-gallery"></div>
                 </div>
             </div>
 
@@ -4978,19 +5006,6 @@
             </div>
         </div>
     </div>
-</body>
-
-</html>
-</div>
-<div class="explorer-footer" style="text-align: center; margin-top: 20px;">
-    <button id="unsplash-explorer-load-more" class="primary-btn"
-        style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
-        <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
-    </button>
-</div>
-</div>
-</div>
-</div>
 </body>
 
 </html>

@@ -283,7 +283,7 @@ function renderUserGradients(DOM) {
       if (gradient.type === "multi-color") return
 
       const item = document.createElement("div")
-      item.className = "user-gradient-item"
+      item.className = "user-gradient-item local-bg-item"
       item.dataset.index = index
       item.dataset.start = gradient.start
       item.dataset.end = gradient.end
