@@ -90,6 +90,52 @@ function generateDividerLayersCSS(
   }).filter(Boolean)
 }
 
+export function buildMultiColorCss(params) {
+  const {
+    colors,
+    angle,
+    mode,
+    type = "linear",
+    repeating = false,
+    position = "center",
+    radialShape = "circle",
+    dividerConfig,
+    lineAngleConfig,
+  } = params
+
+  if (mode === "blocks") {
+    return generateSolidBlocksCSS(
+      colors,
+      parseInt(angle),
+      dividerConfig,
+      lineAngleConfig,
+      type,
+      position,
+      radialShape,
+      repeating,
+    )
+  } else {
+    const prefix = repeating ? `repeating-${type}-gradient` : `${type}-gradient`
+    let typeParams = ""
+    if (type === "linear") {
+      typeParams = `${angle}deg, `
+    } else if (type === "radial") {
+      typeParams = `${radialShape} at ${position}, `
+    } else if (type === "conic") {
+      typeParams = `from ${angle}deg at ${position}, `
+    }
+
+    const gradientStops = colors
+      .map((color, index) => {
+        const percent = (index / (colors.length - 1)) * 100
+        return `${color} ${percent}%`
+      })
+      .join(", ")
+
+    return `${prefix}(${typeParams}${gradientStops})`
+  }
+}
+
 function generateSolidBlocksCSS(
   colors,
   angle,
@@ -212,19 +258,29 @@ export function renderSavedMultiColors(DOM_REFS) {
       }
 
       item.style.background = generatedBg
+      item.dataset.uid = preset.uid || ""
       const currentBg = settings.background || ""
-      let isCurrentActive =
-        !settings.svgWaveActive &&
-        !settings.gradientV2Active &&
-        !settings.silkActive &&
-        !settings.lightPillarActive &&
-        (currentBg === generatedBg ||
-          currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
+      const activeBgUid = settings.activeBgUid
 
-      // Fallback: Check if individual parameters match (when background is null but this preset is current)
+      let isCurrentActive = false
+
+      if (activeBgUid && preset.uid) {
+          isCurrentActive = activeBgUid === preset.uid
+      } else {
+          isCurrentActive =
+            !settings.svgWaveActive &&
+            !settings.gradientV2Active &&
+            !settings.silkActive &&
+            !settings.lightPillarActive &&
+            (currentBg === generatedBg ||
+              currentBg.replace(/\s/g, "") === generatedBg.replace(/\s/g, ""))
+      }
+
+      // Fallback: Check if individual parameters match (when background is null and no UID match)
       if (
         !isCurrentActive &&
         !settings.background &&
+        !activeBgUid &&
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
         !settings.silkActive &&
@@ -284,9 +340,8 @@ export function renderSavedMultiColors(DOM_REFS) {
         })
       })
 
-      // Click to apply
       item.addEventListener("click", () => {
-        if (typeof multiSelectMode !== "undefined" && multiSelectMode) return
+        if (typeof multiColorSelectMode !== "undefined" && multiColorSelectMode) return
         window.dispatchEvent(
           new CustomEvent("multiColor:applyPreset", { detail: preset }),
         )
@@ -352,6 +407,7 @@ export function setupMultiColorManager(applySettings) {
 
       colorPicker.addEventListener("input", () => {
         updateMultiColorPreview()
+        syncMultiColorToState()
       })
 
       wrapper.appendChild(label)
@@ -544,13 +600,12 @@ export function setupMultiColorManager(applySettings) {
       slider.value = String(angleValue)
       slider.style.width = "100%"
 
-      slider.addEventListener("input", () => {
-        const value = Number(slider.value)
-        label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${value}deg`
-        updateSetting("multiColorLineAngles", getLineAngleConfig().lineAngles)
-        saveSettings()
-        updateMultiColorPreview()
-      })
+        slider.addEventListener("input", () => {
+          const value = Number(slider.value)
+          label.textContent = `${t("settings_multi_color_line_angle", "Line Angle")} ${index + 1}: ${value}deg`
+          updateMultiColorPreview()
+          syncMultiColorToState()
+        })
 
       wrapper.appendChild(label)
       wrapper.appendChild(slider)
@@ -649,49 +704,40 @@ export function setupMultiColorManager(applySettings) {
 
     DOM.multiGradientAngleInput.value = randomAngle
     DOM.multiGradientAngleValue.textContent = randomAngle
-    updateSetting("multiGradientAngle", randomAngle)
 
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   }
 
   // Event Listeners
   DOM.multiColorTypeSelect.addEventListener("change", () => {
-    updateSetting("multiColorType", DOM.multiColorTypeSelect.value)
     updateTypeControlsVisibility()
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorRepeatingToggle.addEventListener("change", () => {
-    updateSetting("multiColorRepeating", DOM.multiColorRepeatingToggle.checked)
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorPositionSelect.addEventListener("change", () => {
-    updateSetting("multiColorPosition", DOM.multiColorPositionSelect.value)
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorRadialShapeSelect.addEventListener("change", () => {
-    updateSetting(
-      "multiColorRadialShape",
-      DOM.multiColorRadialShapeSelect.value,
-    )
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorModeBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       DOM.multiColorModeBtns.forEach((b) => b.classList.remove("active"))
       btn.classList.add("active")
-      updateSetting("multiColorMode", btn.dataset.mode)
       updateDividerControlsVisibility()
-      saveSettings()
       updateMultiColorPreview()
+      syncMultiColorToState()
     })
   })
 
@@ -703,15 +749,13 @@ export function setupMultiColorManager(applySettings) {
   })
 
   DOM.multiColorDividersToggle.addEventListener("change", () => {
-    updateSetting("multiColorDividers", DOM.multiColorDividersToggle.checked)
-    saveSettings()
     updateLineAngleControlsVisibility()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorFreeLineAngles?.addEventListener("change", () => {
     const isEnabled = DOM.multiColorFreeLineAngles.checked
-    updateSetting("multiColorFreeLineAngles", isEnabled)
 
     if (isEnabled) {
       generateLineAngleControls(
@@ -721,22 +765,20 @@ export function setupMultiColorManager(applySettings) {
     }
 
     updateLineAngleControlsVisibility()
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorLineColor.addEventListener("input", () => {
-    updateSetting("multiColorDividerColor", DOM.multiColorLineColor.value)
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.multiColorLineWidth.addEventListener("input", () => {
     const width = parseFloat(DOM.multiColorLineWidth.value)
     DOM.multiColorLineWidthValue.textContent = width.toFixed(1)
-    updateSetting("multiColorDividerWidth", width)
-    saveSettings()
     updateMultiColorPreview()
+    syncMultiColorToState()
   })
 
   DOM.randomMultiColorHueBtn?.addEventListener("click", () => {
@@ -852,28 +894,7 @@ export function setupMultiColorManager(applySettings) {
 
   setupMultiSelect()
 
-  // Handle count selector change
-  DOM.multiColorCountSelect.addEventListener("change", (e) => {
-    const count = clampCount(e.target.value)
-    DOM.multiColorCountSelect.value = String(count)
-    updateSetting("multiColorCount", count)
-    generateColorPickers(count)
-    generateLineAngleControls(count, getSettings().multiColorLineAngles)
-    updateMultiColorPreview()
-    saveSettings()
-  })
-
-  // Handle angle change
-  DOM.multiGradientAngleInput.addEventListener("input", (e) => {
-    const angle = e.target.value
-    DOM.multiGradientAngleValue.textContent = angle
-    updateSetting("multiGradientAngle", parseInt(angle))
-    updateMultiColorPreview()
-    saveSettings()
-  })
-
-  // Apply split background
-  DOM.applyMultiColorBtn.addEventListener("click", () => {
+  function syncMultiColorToState(forceApply = true) {
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     const colors = pickers.map((p) => p.value)
     const angle = DOM.multiGradientAngleInput.value
@@ -898,58 +919,57 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("multiColorRepeating", repeating)
     updateSetting("multiColorPosition", position)
     updateSetting("multiColorRadialShape", radialShape)
+    updateSetting("multiColorActive", true)
+    
+    // Crucial: Set background to null so settingsApplier uses multiColor logic
+    updateSetting("background", null)
+    updateSetting("activeBgUid", null) // Clear preset UID when modifying manually
+    
+    // Deactivate other effects
+    updateSetting("svgWaveActive", false)
+    updateSetting("gradientV2Active", false)
+    updateSetting("silkActive", false)
+    updateSetting("lightPillarActive", false)
+    updateSetting("liquidEtherActive", false)
 
-    let backgroundCSS
-
-    if (mode === "blocks") {
-      backgroundCSS = generateSolidBlocksCSS(
-        colors,
-        parseInt(angle),
-        dividerConfig,
-        lineAngleConfig,
-        type,
-        position,
-        radialShape,
-        repeating,
-      )
-    } else {
-      const prefix = repeating
-        ? `repeating-${type}-gradient`
-        : `${type}-gradient`
-      let typeParams = ""
-      if (type === "linear") {
-        typeParams = `${angle}deg, `
-      } else if (type === "radial") {
-        typeParams = `${radialShape} at ${position}, `
-      } else if (type === "conic") {
-        typeParams = `from ${angle}deg at ${position}, `
-      }
-
-      const gradientStops = colors
-        .map((color, index) => {
-          const percent = (index / (colors.length - 1)) * 100
-          return `${color} ${percent}%`
-        })
-        .join(", ")
-
-      backgroundCSS = `${prefix}(${typeParams}${gradientStops})`
-    }
-
-    // Set as background
-    updateSetting("background", backgroundCSS)
     saveSettings()
 
-    // Apply changes to the page immediately
-    if (applySettings && typeof applySettings === "function") {
+    if (forceApply && applySettings) {
       applySettings()
     }
+  }
 
+  // Handle count selector change
+  DOM.multiColorCountSelect.addEventListener("change", (e) => {
+    const count = clampCount(e.target.value)
+    DOM.multiColorCountSelect.value = String(count)
+    updateSetting("multiColorCount", count)
+    generateColorPickers(count)
+    generateLineAngleControls(count, getSettings().multiColorLineAngles)
+    updateMultiColorPreview()
+    syncMultiColorToState()
+  })
+
+  // Handle angle change
+  DOM.multiGradientAngleInput.addEventListener("input", (e) => {
+    const angle = e.target.value
+    DOM.multiGradientAngleValue.textContent = angle
+    updateMultiColorPreview()
+    syncMultiColorToState()
+  })
+
+  // Apply split background
+  DOM.applyMultiColorBtn.addEventListener("click", () => {
+    syncMultiColorToState(true)
+    
     // Brief visual feedback on button
     const originalText = DOM.applyMultiColorBtn.textContent
     DOM.applyMultiColorBtn.textContent = "✓ Applied"
     setTimeout(() => {
       DOM.applyMultiColorBtn.textContent = originalText
     }, 1500)
+    
+    showAlert(t("alert_apply_success", "Applied successfully!"))
   })
 
   // Save preset
@@ -967,6 +987,27 @@ export function setupMultiColorManager(applySettings) {
     const radialShape = DOM.multiColorRadialShapeSelect.value
 
     const settings = getSettings()
+    
+    // Check for duplicates
+    const isDuplicate = (settings.userGradients || []).some(g => {
+      if (g.type !== "multi-color") return false
+      return JSON.stringify(g.gradientStops) === JSON.stringify(colors) &&
+             g.angle === parseInt(angle) &&
+             g.mode === mode &&
+             g.multiColorType === type &&
+             g.multiColorRepeating === repeating &&
+             g.multiColorPosition === position &&
+             g.multiColorRadialShape === radialShape &&
+             g.showDividers === dividerConfig.enabled &&
+             g.dividerColor === dividerConfig.color &&
+             g.dividerWidth === dividerConfig.width
+    })
+
+    if (isDuplicate) {
+      showAlert(t("alert_duplicate_preset", "This preset is already saved!"))
+      return
+    }
+
     const newPreset = {
       id: `multi-color-${Date.now()}`,
       gradientStops: colors,
@@ -982,6 +1023,7 @@ export function setupMultiColorManager(applySettings) {
       multiColorRepeating: repeating,
       multiColorPosition: position,
       multiColorRadialShape: radialShape,
+      uid: `multi-${Date.now()}`
     }
 
     if (!settings.userGradients) {
@@ -1109,6 +1151,12 @@ export function setupMultiColorManager(applySettings) {
         preset.angle,
       ),
     )
+    updateSetting("multiColorActive", true)
+    updateSetting("activeBgUid", preset.uid || null)
+    updateSetting("multiColors", [...preset.gradientStops])
+    updateSetting("multiColorMode", preset.mode || "smooth")
+    updateSetting("multiGradientAngle", Number(preset.angle))
+
     updateSetting("multiColorType", DOM.multiColorTypeSelect.value)
     updateSetting("multiColorRepeating", DOM.multiColorRepeatingToggle.checked)
     updateSetting("multiColorPosition", DOM.multiColorPositionSelect.value)
@@ -1122,9 +1170,15 @@ export function setupMultiColorManager(applySettings) {
     updateMultiColorPreview()
 
     // Custom active state logic for multi-color
+    updateSetting("background", null)
     updateSetting("svgWaveActive", false)
+    updateSetting("gradientV2Active", false)
+    updateSetting("silkActive", false)
+    updateSetting("lightPillarActive", false)
+    updateSetting("liquidEtherActive", false)
+    
     saveSettings()
-    if (window.appApplySettings) window.appApplySettings()
+    if (applySettings) applySettings()
 
     renderSavedMultiColors(DOM)
   })

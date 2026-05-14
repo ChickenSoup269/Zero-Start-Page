@@ -25,6 +25,7 @@ import {
 } from "./backgroundManager.js"
 import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
+import { buildMultiColorCss } from "./multiColorManager.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
@@ -414,20 +415,44 @@ function createApplySettings(effectInstances) {
         )
       }
     }
-    // Fallback: Default Gradient
+    // Fallback: Multi-Color Gradient or Default Gradient
     else {
       if (bgLayer) {
-        bgLayer.style.background = buildGradientCss({
-          start: settings.gradientStart,
-          end: settings.gradientEnd,
-          angle: settings.gradientAngle,
-          type: settings.gradientType,
-          repeating: settings.gradientRepeating,
-          extraColorCount: settings.gradientExtraColorCount,
-          customColors: settings.gradientCustomColors,
-          position: settings.gradientPosition,
-          radialShape: settings.gradientRadialShape,
-        })
+        const isMultiColorActive = settings.activeBgUid?.startsWith("multi-") || 
+                                 (settings.multiColorActive === true && !settings.activeBgUid?.startsWith("grad-"));
+        
+        if (isMultiColorActive && Array.isArray(settings.multiColors) && settings.multiColors.length >= 2) {
+            bgLayer.style.background = buildMultiColorCss({
+                colors: settings.multiColors,
+                angle: settings.multiGradientAngle || 135,
+                mode: settings.multiColorMode || "smooth",
+                type: settings.multiColorType || "linear",
+                repeating: settings.multiColorRepeating || false,
+                position: settings.multiColorPosition || "center",
+                radialShape: settings.multiColorRadialShape || "circle",
+                dividerConfig: {
+                    enabled: settings.multiColorDividers !== false,
+                    color: settings.multiColorDividerColor || "#FFFFFF",
+                    width: settings.multiColorDividerWidth || 1.2
+                },
+                lineAngleConfig: {
+                    enabled: Boolean(settings.multiColorFreeLineAngles),
+                    lineAngles: Array.isArray(settings.multiColorLineAngles) ? settings.multiColorLineAngles : []
+                }
+            })
+        } else {
+            bgLayer.style.background = buildGradientCss({
+                start: settings.gradientStart,
+                end: settings.gradientEnd,
+                angle: settings.gradientAngle,
+                type: settings.gradientType,
+                repeating: settings.gradientRepeating,
+                extraColorCount: settings.gradientExtraColorCount,
+                customColors: settings.gradientCustomColors,
+                position: settings.gradientPosition,
+                radialShape: settings.gradientRadialShape,
+            })
+        }
       }
       document.body.classList.add("bg-layer-active")
     }

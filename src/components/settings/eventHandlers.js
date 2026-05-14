@@ -1572,6 +1572,7 @@ export function setupGeneralEventHandlers(
       customColors: DOM.gradientCustomColors?.value || "",
       position: DOM.gradientPositionSelect?.value || "center",
       radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
+      uid: `grad-${Date.now()}`
     }
     const alreadyExists = settings.userGradients.some(
       (g) =>
@@ -1614,6 +1615,7 @@ export function setupGeneralEventHandlers(
         customColors: item.dataset.customColors || "",
         position: item.dataset.position || "center",
         radialShape: item.dataset.radialShape || "circle",
+        uid: item.dataset.uid || null
       }
       if (DOM.gradientExtraColorCount) {
         DOM.gradientExtraColorCount.value = String(gradient.extraColorCount)
@@ -1628,6 +1630,7 @@ export function setupGeneralEventHandlers(
         DOM.gradientRadialShapeSelect.value = gradient.radialShape
       }
       renderGradientExtraColorPickers()
+      updateSetting("activeBgUid", item.dataset.uid || null)
       handleSettingUpdate(null, gradient, true)
       updateSettingsInputs()
     }

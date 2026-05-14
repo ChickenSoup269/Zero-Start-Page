@@ -294,6 +294,7 @@ function renderUserGradients(DOM) {
       item.dataset.customColors = gradient.customColors || ""
       item.dataset.position = gradient.position || "center"
       item.dataset.radialShape = gradient.radialShape || "circle"
+      item.dataset.uid = gradient.uid || ""
 
       const gradientCss = buildGradientCss(gradient)
       item.style.background = gradientCss
@@ -301,38 +302,42 @@ function renderUserGradients(DOM) {
 
       // Improved active detection
       const currentBg = settings.background || ""
-      let isCurrentActive =
-        !settings.svgWaveActive &&
-        !settings.gradientV2Active &&
-        !settings.silkActive &&
-        !settings.lightPillarActive &&
-        (currentBg === gradientCss ||
-          currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
+      const activeBgUid = settings.activeBgUid
+      
+      let isCurrentActive = false
+      
+      if (activeBgUid && gradient.uid) {
+          isCurrentActive = activeBgUid === gradient.uid
+      } else {
+          isCurrentActive =
+            !settings.svgWaveActive &&
+            !settings.gradientV2Active &&
+            !settings.silkActive &&
+            !settings.lightPillarActive &&
+            (currentBg === gradientCss ||
+              currentBg.replace(/\s/g, "") === gradientCss.replace(/\s/g, ""))
+      }
 
-      // Fallback: Check if individual settings match (when background is null but this gradient is current)
+      // Fallback: Check if individual settings match (when background is null and no UID match)
       if (
         !isCurrentActive &&
         !settings.background &&
+        !activeBgUid &&
         !settings.svgWaveActive &&
         !settings.gradientV2Active &&
         !settings.silkActive &&
         !settings.lightPillarActive
       ) {
         isCurrentActive =
-          settings.gradientStart === gradient.start &&
-          settings.gradientEnd === gradient.end &&
+          String(settings.gradientStart || "").toLowerCase() === String(gradient.start || "").toLowerCase() &&
+          String(settings.gradientEnd || "").toLowerCase() === String(gradient.end || "").toLowerCase() &&
           Number(settings.gradientAngle) === Number(gradient.angle) &&
           (settings.gradientType || "linear") === (gradient.type || "linear") &&
-          (settings.gradientRepeating === true) ===
-            (gradient.repeating === true) &&
-          Number(settings.gradientExtraColorCount || 2) ===
-            Number(gradient.extraColorCount || 2) &&
-          (settings.gradientCustomColors || "") ===
-            (gradient.customColors || "") &&
-          (settings.gradientPosition || "center") ===
-            (gradient.position || "center") &&
-          (settings.gradientRadialShape || "circle") ===
-            (gradient.radialShape || "circle")
+          (settings.gradientRepeating === true) === (gradient.repeating === true) &&
+          Number(settings.gradientExtraColorCount || 2) === Number(gradient.extraColorCount || 2) &&
+          (settings.gradientCustomColors || "") === (gradient.customColors || "") &&
+          (settings.gradientPosition || "center") === (gradient.position || "center") &&
+          (settings.gradientRadialShape || "circle") === (gradient.radialShape || "circle")
       }
 
       if (isCurrentActive) {
@@ -366,8 +371,9 @@ function renderUserGradients(DOM) {
       })
       item.appendChild(removeBtn)
 
-      const checkBadge = document.createElement("span")
-      checkBadge.className = "bg-select-check"
+      const isSelected = gradientSelectedIndices.has(index)
+      const checkBadge = document.createElement("div")
+      checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       item.appendChild(checkBadge)
 
@@ -375,14 +381,6 @@ function renderUserGradients(DOM) {
       activeIndicator.className = "active-indicator"
       activeIndicator.innerHTML = '<i class="fa-solid fa-check"></i>'
       item.appendChild(activeIndicator)
-
-      item.addEventListener("click", () => {
-        if (gradientSelectMode) return
-
-        if (window.appHandleSettingUpdate) {
-          window.appHandleSettingUpdate("background", gradientCss)
-        }
-      })
 
       // Drag and drop for reordering
       const enableDrag = settings.bookmarkEnableDrag === true

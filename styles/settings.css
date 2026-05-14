@@ -993,12 +993,12 @@
   cursor: pointer;
   width: 100%;
   padding: 10px 36px 10px 14px;
-  background-color: rgba(255, 255, 255, 0.06);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3C/svg%3E");
+  background-color: rgba(255, 255, 255, 0.08);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 10 12 15 17 10'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   color: #fff;
   font-family: inherit;
@@ -1024,13 +1024,23 @@
   outline: none;
   border-color: var(--accent-color);
   background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.2);
+  box-shadow: 
+    0 0 0 3px rgba(var(--accent-color-rgb), 0.15),
+    0 0 15px rgba(var(--accent-color-rgb), 0.25);
+  transform: translateY(-1px);
+}
+
+.setting-group select:active,
+.settings-sidebar select:active,
+.bg-control-card select:active {
+  transform: translateY(0);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .setting-group select:focus-visible,
 .settings-sidebar select:focus-visible,
 .bg-control-card select:focus-visible {
-  outline: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
@@ -2782,8 +2792,8 @@
 /* Universal Active Indicator (Checkmark) */
 .active-indicator {
   position: absolute;
-  top: 6px;
-  left: 6px;
+  bottom: 8px;
+  right: 8px;
   width: 20px;
   height: 20px;
   background: var(--accent-color);

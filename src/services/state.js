@@ -95,6 +95,7 @@ export const defaultSettings = {
   multiColorDividerWidth: 1.2,
   multiColorFreeLineAngles: false,
   multiColorLineAngles: [],
+  multiColorActive: false,
   userBackgrounds: [],
   userColors: [],
   userAccentColors: [],

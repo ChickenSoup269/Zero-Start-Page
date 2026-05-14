@@ -148,7 +148,6 @@ function getExtensionVersion() {
 
 export function initSettings() {
   const settings = getSettings()
-
   if (DOM_EXPORTS.settingsVersion) {
     const version = getExtensionVersion()
     DOM_EXPORTS.settingsVersion.textContent = version ? `v${version}` : ""
@@ -445,7 +444,9 @@ export function initSettings() {
       )
       updateSetting("gradientPosition", value.position || "center")
       updateSetting("gradientRadialShape", value.radialShape || "circle")
+      updateSetting("activeBgUid", value.uid || null)
       updateSetting("background", null)
+      updateSetting("multiColorActive", false)
       updateSetting("svgWaveActive", false)
       updateSetting("gradientV2Active", false)
       updateSetting("silkActive", false)
@@ -455,6 +456,7 @@ export function initSettings() {
       updateSetting(key, value)
       if (key === "background") {
         if (value != null) {
+          updateSetting("activeBgUid", null)
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
           updateSetting("silkActive", false)
@@ -472,6 +474,13 @@ export function initSettings() {
         }
       }
     }
+
+    // Trigger re-renders for galleries to show active state
+    setTimeout(() => {
+      renderUserGradients(DOM_EXPORTS)
+      renderSavedMultiColors(DOM_EXPORTS)
+      renderLocalBackgrounds(DOM_EXPORTS)
+    }, 0)
 
     // Clear active theme if a themeable setting is changed manually
     const currentSettings = getSettings()
