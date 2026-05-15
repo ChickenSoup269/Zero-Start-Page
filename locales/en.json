@@ -852,5 +852,22 @@
   "settings_silk_saved_label": "Saved Silks",
   "settings_lightPillar_save": "Save Background",
   "settings_light_pillar_saved_label": "Saved Light Pillars",
-  "settings_liquid_ether_saved_label": "Saved Liquid Ethers"
+  "settings_liquid_ether_saved_label": "Saved Liquid Ethers",
+  "settings_splash_cursor_title": "Splash Cursor",
+  "settings_splash_cursor_active": "Active",
+  "settings_splash_cursor_open": "Open Splash Cursor",
+  "settings_splash_cursor_close": "Close Splash Cursor",
+  "settings_splash_cursor_rainbow": "Rainbow mode",
+  "settings_splash_cursor_color": "Color",
+  "settings_splash_cursor_shading": "Shading",
+  "settings_splash_cursor_splat_radius": "Splat radius",
+  "settings_splash_cursor_splat_force": "Splat force",
+  "settings_splash_cursor_curl": "Curl",
+  "settings_splash_cursor_density": "Density dissipation",
+  "settings_splash_cursor_velocity": "Velocity dissipation",
+  "settings_splash_cursor_color_speed": "Color speed",
+  "settings_splash_cursor_dye_res": "Dye resolution",
+  "settings_splash_cursor_dark_bg": "Black background",
+  "settings_splash_cursor_dark_bg_btn": "Switch to black background",
+  "settings_splash_cursor_dark_bg_on": "Black background on"
 }

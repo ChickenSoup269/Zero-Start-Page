@@ -849,5 +849,22 @@
   "settings_silk_saved_label": "Lụa đã lưu",
   "settings_lightPillar_save": "Lưu hình nền",
   "settings_light_pillar_saved_label": "Cột sáng đã lưu",
-  "settings_liquid_ether_saved_label": "Chất lỏng đã lưu"
+  "settings_liquid_ether_saved_label": "Chất lỏng đã lưu",
+  "settings_splash_cursor_title": "Splash Cursor",
+  "settings_splash_cursor_active": "Kích hoạt",
+  "settings_splash_cursor_open": "Mở Splash Cursor",
+  "settings_splash_cursor_close": "Đóng Splash Cursor",
+  "settings_splash_cursor_rainbow": "Chế độ cầu vồng",
+  "settings_splash_cursor_color": "Màu",
+  "settings_splash_cursor_shading": "Đổ bóng",
+  "settings_splash_cursor_splat_radius": "Bán kính vệt",
+  "settings_splash_cursor_splat_force": "Lực vệt",
+  "settings_splash_cursor_curl": "Xoáy (Curl)",
+  "settings_splash_cursor_density": "Tan màu",
+  "settings_splash_cursor_velocity": "Tan vận tốc",
+  "settings_splash_cursor_color_speed": "Tốc độ đổi màu",
+  "settings_splash_cursor_dye_res": "Độ phân giải màu",
+  "settings_splash_cursor_dark_bg": "Nền đen",
+  "settings_splash_cursor_dark_bg_btn": "Chuyển nền đen",
+  "settings_splash_cursor_dark_bg_on": "Đang dùng nền đen"
 }

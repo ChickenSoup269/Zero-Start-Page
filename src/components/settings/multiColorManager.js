@@ -932,6 +932,7 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("silkActive", false)
     updateSetting("lightPillarActive", false)
     updateSetting("liquidEtherActive", false)
+    updateSetting("splashCursorActive", false)
 
     saveSettings()
 
@@ -1177,6 +1178,7 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("silkActive", false)
     updateSetting("lightPillarActive", false)
     updateSetting("liquidEtherActive", false)
+    updateSetting("splashCursorActive", false)
     
     saveSettings()
     if (applySettings) applySettings()

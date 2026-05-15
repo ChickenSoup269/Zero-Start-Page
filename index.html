@@ -234,6 +234,8 @@
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
     <canvas id="liquid-ether-canvas"
         style="position: fixed; inset: 0; z-index: -3; pointer-events: none; display: none; background: transparent;"></canvas>
+    <canvas id="splash-cursor-canvas"
+        style="position: fixed; inset: 0; z-index: -2; pointer-events: none; display: none; background: transparent;"></canvas>
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
@@ -1828,7 +1830,8 @@
                         </div>
                     </div>
                 </div>
-            </div>            <!-- Animated Backgrounds Section -->
+            </div>
+            <!-- Animated Backgrounds Section -->
             <div class="settings-section" data-section-id="animated-backgrounds">
                 <h3 class="section-toggle" id="animated-backgrounds-header">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
@@ -2463,6 +2466,119 @@
                                 </div>
                             </div>
                             <div id="user-liquid-ethers-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Splash Cursor Section -->
+                    <div class="setting-group" id="splash-cursor-group"
+                        style="border: 1px solid rgba(255,255,255,0.05); margin-bottom: 0;">
+                        <div class="setting-label"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <i class="fa-solid fa-droplet"></i>
+                            <span data-i18n="settings_splash_cursor_title">Splash Cursor</span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="splash-cursor-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_splash_cursor_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="splash-cursor-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <div class="setting-item-row" style="margin-top: 8px;">
+                            <label for="splash-cursor-dark-bg">
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                                <span data-i18n="settings_splash_cursor_dark_bg">Black background</span>
+                            </label>
+                            <input type="checkbox" id="splash-cursor-dark-bg" checked>
+                        </div>
+                        <button type="button" id="splash-cursor-dark-bg-btn" class="secondary-btn full-width" style="margin-top: 6px;">
+                            <i class="fa-solid fa-moon"></i>
+                            <span data-i18n="settings_splash_cursor_dark_bg_btn">Switch to black background</span>
+                        </button>
+
+                        <button id="splash-cursor-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="splash-cursor-toggle-label" data-i18n="settings_splash_cursor_open">Open Splash Cursor</span>
+                        </button>
+                        <div id="splash-cursor-settings" style="display: none; margin-top: 12px;">
+
+                            <div class="setting-item-row" style="margin-bottom: 8px;">
+                                <label for="splash-cursor-rainbow">
+                                    <span data-i18n="settings_splash_cursor_rainbow">Rainbow mode</span>
+                                </label>
+                                <input type="checkbox" id="splash-cursor-rainbow" checked>
+                            </div>
+
+                            <div class="setting-item no-margin-top" id="splash-cursor-color-wrap">
+                                <label data-i18n="settings_splash_cursor_color">Color</label>
+                                <input type="color" id="splash-cursor-color" value="#ff0000" style="width: 100%;">
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 8px;">
+                                <label for="splash-cursor-shading">
+                                    <span data-i18n="settings_splash_cursor_shading">Shading</span>
+                                </label>
+                                <input type="checkbox" id="splash-cursor-shading" checked>
+                            </div>
+
+                            <div class="gradient-v2-grid" style="margin-top: 12px;">
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_splat_radius">Splat radius</span>
+                                        <span id="splash-cursor-splat-radius-value" style="opacity: 0.8;">0.2</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-splat-radius" min="0.05" max="1" step="0.05" value="0.2">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_splat_force">Splat force</span>
+                                        <span id="splash-cursor-splat-force-value" style="opacity: 0.8;">6000</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-splat-force" min="1000" max="12000" step="500" value="6000">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_curl">Curl</span>
+                                        <span id="splash-cursor-curl-value" style="opacity: 0.8;">3</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-curl" min="0" max="10" step="0.5" value="3">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_density">Density dissipation</span>
+                                        <span id="splash-cursor-density-value" style="opacity: 0.8;">3.5</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-density" min="0.5" max="8" step="0.1" value="3.5">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_velocity">Velocity dissipation</span>
+                                        <span id="splash-cursor-velocity-value" style="opacity: 0.8;">2</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-velocity" min="0.5" max="5" step="0.1" value="2">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_color_speed">Color speed</span>
+                                        <span id="splash-cursor-color-speed-value" style="opacity: 0.8;">10</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-color-speed" min="1" max="30" step="1" value="10">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_dye_res">Dye resolution</span>
+                                        <span id="splash-cursor-dye-res-value" style="opacity: 0.8;">512</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-dye-res" min="256" max="1440" step="128" value="512">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

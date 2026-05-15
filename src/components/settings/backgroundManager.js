@@ -322,6 +322,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
     !settings.silkActive &&
     !settings.lightPillarActive &&
     !settings.liquidEtherActive &&
+    !settings.splashCursorActive &&
     settings.background?.startsWith("#")
   ) {
     randomItem.classList.add("active")
@@ -354,7 +355,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
         !settings.gradientV2Active &&
         !settings.silkActive &&
         !settings.lightPillarActive &&
-        !settings.liquidEtherActive
+        !settings.liquidEtherActive &&
+        !settings.splashCursorActive
       )
         item.classList.add("active")
 

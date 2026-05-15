@@ -125,6 +125,10 @@ import { AngledPatternEffect } from "../animations/angledPattern.js"
 import { CrtScanlinesEffect } from "../animations/crtScanlines.js"
 import { PlantGrowthEffect } from "../animations/plantGrowth.js"
 import { LiquidEther } from "../animations/liquidEther.js"
+import {
+  SplashCursor,
+  splashCursorOptionsFromSettings,
+} from "../animations/splashCursor.js"
 import { OceanFishEffect } from "../animations/oceanFish.js"
 import { FloatingLinesEffect } from "../animations/floatingLines.js"
 import { PixelBlastEffect } from "../animations/pixelBlast.js"
@@ -400,6 +404,10 @@ export function initSettings() {
       rotation: settings.silkRotation,
     }),
     liquidEtherEffect: new LiquidEther("liquid-ether-canvas"),
+    splashCursorEffect: new SplashCursor(
+      "splash-cursor-canvas",
+      splashCursorOptionsFromSettings(settings),
+    ),
     lightPillarEffect: new LightPillarEffect("light-pillar-canvas", {
       topColor: settings.lightPillarTopColor,
       bottomColor: settings.lightPillarBottomColor,
@@ -452,6 +460,7 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
     } else {
       updateSetting(key, value)
       if (key === "background") {
@@ -462,6 +471,7 @@ export function initSettings() {
           updateSetting("silkActive", false)
           updateSetting("lightPillarActive", false)
           updateSetting("liquidEtherActive", false)
+          updateSetting("splashCursorActive", false)
         }
         // Clear Unsplash credit if we switch to a different background
         // that isn't an Unsplash image (managed in unsplashFetcher.js)
@@ -507,7 +517,8 @@ export function initSettings() {
       key === "gradientV2Active" ||
       key === "silkActive" ||
       key === "lightPillarActive" ||
-      key === "liquidEtherActive"
+      key === "liquidEtherActive" ||
+      key === "splashCursorActive"
     if (shouldRefreshBackgroundGalleries) {
       renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
       renderUserGradients(DOM_EXPORTS)
@@ -528,10 +539,12 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "svgWaveActive" && value === true) {
       updateSetting("background", null)
@@ -539,10 +552,12 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "silkActive" && value === true) {
       updateSetting("background", null)
@@ -550,10 +565,12 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "lightPillarActive" && value === true) {
       updateSetting("background", null)
@@ -561,10 +578,12 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "liquidEtherActive" && value === true) {
       updateSetting("background", null)
@@ -572,10 +591,25 @@ export function initSettings() {
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+    }
+    if (key === "splashCursorActive" && value === true) {
+      updateSetting("background", null)
+      updateSetting("gradientV2Active", false)
+      updateSetting("svgWaveActive", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
+      if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
     }
     if (key === "background" && value != null) {
       updateSetting("gradientV2Active", false)
@@ -583,11 +617,13 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (isGradient) {
       updateSetting("gradientV2Active", false)
@@ -595,11 +631,13 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
@@ -613,6 +651,9 @@ export function initSettings() {
       updateSetting("liquidEtherActive", false)
       if (DOM_EXPORTS.liquidEtherActive)
         DOM_EXPORTS.liquidEtherActive.checked = false
+      updateSetting("splashCursorActive", false)
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
 
     applySettings()
@@ -1058,7 +1099,7 @@ export function initSettings() {
     })
     
     // Auto-expand if any effect within this group is active
-    const isAnyActive = settings.silkActive || settings.lightPillarActive || settings.liquidEtherActive || settings.gradientV2Active
+    const isAnyActive = settings.silkActive || settings.lightPillarActive || settings.liquidEtherActive || settings.splashCursorActive || settings.gradientV2Active
     if (isAnyActive) {
         const section = animatedBgHeader.parentElement
         section.classList.remove("collapsed")

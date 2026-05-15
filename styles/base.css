@@ -65,13 +65,21 @@ i {
 
 #effect-canvas,
 #gradient-v2-canvas,
-#pixel-snow-hq-canvas {
+#pixel-snow-hq-canvas,
+#splash-cursor-canvas,
+#liquid-ether-canvas,
+#light-pillar-canvas,
+#silk-canvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
+}
+
+#splash-cursor-canvas {
+  z-index: -2;
 }
 
 #gradient-v2-canvas {
@@ -914,6 +922,16 @@ body.analog-bg-blur-enabled .analog-clock {
 body.bg-layer-active {
   background: transparent !important;
   animation: none !important;
+}
+
+body.splash-cursor-dark-bg #bg-layer {
+  background: #000000 !important;
+  background-image: none !important;
+  opacity: 1 !important;
+}
+
+body.splash-cursor-dark-bg {
+  --text-color: #ffffff;
 }
 
 /* Cool Style */

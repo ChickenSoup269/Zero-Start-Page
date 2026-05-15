@@ -19,6 +19,7 @@ import {
   getBlobUrlSync,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams } from "./svgWaveUtils.js"
+import { splashCursorOptionsFromSettings } from "../animations/splashCursor.js"
 import {
   renderLocalBackgrounds,
   renderUserColors,
@@ -103,6 +104,7 @@ function createApplySettings(effectInstances) {
     let shouldUseSilk = false
     let shouldUseLightPillar = false
     let shouldUseLiquidEther = false
+    let shouldUseSplashCursor = false
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
@@ -125,6 +127,7 @@ function createApplySettings(effectInstances) {
     // 2. Reset Styles
     document.body.classList.remove(
       "bg-layer-active",
+      "splash-cursor-dark-bg",
       "bg-image-active",
       "bookmark-sidebar-mode",
       "bookmark-taskbar-mode",
@@ -330,6 +333,27 @@ function createApplySettings(effectInstances) {
         })
       }
     }
+    // Priority 1.75: Splash Cursor (Animated)
+    else if (settings.splashCursorActive && effectInstances.splashCursorEffect) {
+      shouldUseSplashCursor = true
+      document.body.classList.add("bg-layer-active")
+      if (settings.splashCursorDarkBg !== false) {
+        document.body.classList.add("splash-cursor-dark-bg")
+        if (bgLayer) {
+          bgLayer.style.background = "#000000"
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.opacity = "1"
+        }
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+      }
+      const splashOpts = splashCursorOptionsFromSettings(settings)
+      if (effectInstances.splashCursorEffect.active) {
+        effectInstances.splashCursorEffect.setOptions(splashOpts)
+      } else {
+        effectInstances.splashCursorEffect.start()
+        effectInstances.splashCursorEffect.setOptions(splashOpts)
+      }
+    }
 
     // Priority 2: SVG Wave
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
@@ -473,8 +497,8 @@ function createApplySettings(effectInstances) {
     if (!shouldUseLiquidEther && effectInstances.liquidEtherEffect?.active) {
       effectInstances.liquidEtherEffect.stop()
     }
-    if (!shouldUseLiquidEther && effectInstances.liquidEtherEffect?.active) {
-      effectInstances.liquidEtherEffect.stop()
+    if (!shouldUseSplashCursor && effectInstances.splashCursorEffect?.active) {
+      effectInstances.splashCursorEffect.stop()
     }
 
     // 2.1 Background Position
@@ -1618,6 +1642,73 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.liquidEtherActive) {
       DOM.liquidEtherActive.checked = settings.liquidEtherActive === true
     }
+    if (DOM.splashCursorActive) {
+      DOM.splashCursorActive.checked = settings.splashCursorActive === true
+    }
+    if (DOM.splashCursorDarkBg) {
+      DOM.splashCursorDarkBg.checked = settings.splashCursorDarkBg !== false
+    }
+    if (DOM.splashCursorDarkBgBtn) {
+      const isDark = settings.splashCursorDarkBg !== false
+      DOM.splashCursorDarkBgBtn.classList.toggle("active", isDark)
+    }
+
+    // Splash Cursor inputs
+    if (DOM.splashCursorRainbow) {
+      DOM.splashCursorRainbow.checked = settings.splashCursorRainbowMode !== false
+    }
+    if (DOM.splashCursorColorWrap) {
+      DOM.splashCursorColorWrap.style.display =
+        settings.splashCursorRainbowMode === false ? "block" : "none"
+    }
+    if (DOM.splashCursorColor) {
+      DOM.splashCursorColor.value = settings.splashCursorColor || "#ff0000"
+    }
+    if (DOM.splashCursorShading) {
+      DOM.splashCursorShading.checked = settings.splashCursorShading !== false
+    }
+    const scRangeMap = [
+      ["splashCursorSplatRadius", "splashCursorSplatRadiusValue", 1],
+      ["splashCursorSplatForce", "splashCursorSplatForceValue", 0],
+      ["splashCursorCurl", "splashCursorCurlValue", 1],
+      ["splashCursorDensity", "splashCursorDensityValue", 1],
+      ["splashCursorVelocity", "splashCursorVelocityValue", 1],
+      ["splashCursorColorSpeed", "splashCursorColorSpeedValue", 0],
+      ["splashCursorDyeRes", "splashCursorDyeResValue", 0],
+    ]
+    const scDefaults = {
+      splashCursorSplatRadius: 0.2,
+      splashCursorSplatForce: 6000,
+      splashCursorCurl: 3,
+      splashCursorDensityDissipation: 3.5,
+      splashCursorVelocityDissipation: 2,
+      splashCursorColorUpdateSpeed: 10,
+      splashCursorDyeResolution: 512,
+    }
+    scRangeMap.forEach(([id, valId, decimals]) => {
+      const el = DOM[id]
+      const valEl = DOM[valId]
+      if (!el) return
+      const key =
+        id === "splashCursorDensity"
+          ? "splashCursorDensityDissipation"
+          : id === "splashCursorVelocity"
+            ? "splashCursorVelocityDissipation"
+            : id === "splashCursorColorSpeed"
+              ? "splashCursorColorUpdateSpeed"
+              : id === "splashCursorDyeRes"
+                ? "splashCursorDyeResolution"
+                : id === "splashCursorSplatRadius"
+                  ? "splashCursorSplatRadius"
+                  : id === "splashCursorSplatForce"
+                    ? "splashCursorSplatForce"
+                    : "splashCursorCurl"
+      const v = settings[key] ?? scDefaults[key]
+      el.value = v
+      if (valEl) {
+        valEl.textContent = decimals > 0 ? v.toFixed(decimals) : String(v)
+      }
+    })
 
     // Liquid Ether Inputs
     if (DOM.liquidEtherColor1) {

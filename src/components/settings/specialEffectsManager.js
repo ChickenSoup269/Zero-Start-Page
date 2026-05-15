@@ -359,6 +359,180 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     })
   }
 
+  // --- Splash Cursor UI Setup ---
+  const splashCursorActiveEl = document.getElementById("splash-cursor-active")
+  if (splashCursorActiveEl) {
+    splashCursorActiveEl.addEventListener("change", (e) => {
+      handleSettingUpdate("splashCursorActive", e.target.checked)
+    })
+  }
+
+  const scDarkBgCheckbox = document.getElementById("splash-cursor-dark-bg")
+  const scDarkBgBtn = document.getElementById("splash-cursor-dark-bg-btn")
+
+  const applySplashCursorDarkBg = (enabled) => {
+    if (scDarkBgCheckbox) scDarkBgCheckbox.checked = enabled
+    if (scDarkBgBtn) {
+      scDarkBgBtn.classList.toggle("active", enabled)
+      const label = scDarkBgBtn.querySelector("span")
+      if (label) {
+        const i18n = geti18n()
+        label.textContent = enabled
+          ? i18n.settings_splash_cursor_dark_bg_on || "Black background on"
+          : i18n.settings_splash_cursor_dark_bg_btn || "Switch to black background"
+      }
+    }
+    handleSettingUpdate("splashCursorDarkBg", enabled)
+  }
+
+  if (scDarkBgCheckbox) {
+    scDarkBgCheckbox.addEventListener("change", (e) => {
+      applySplashCursorDarkBg(e.target.checked)
+    })
+  }
+
+  if (scDarkBgBtn) {
+    scDarkBgBtn.addEventListener("click", () => {
+      const next = getSettings().splashCursorDarkBg === false
+      applySplashCursorDarkBg(next)
+    })
+  }
+
+  const scToggleBtn = document.getElementById("splash-cursor-toggle-btn")
+  const scSettings = document.getElementById("splash-cursor-settings")
+  const scToggleLabel = document.getElementById("splash-cursor-toggle-label")
+  if (scToggleBtn && scSettings) {
+    scToggleBtn.addEventListener("click", () => {
+      const isHidden = scSettings.style.display === "none"
+      scSettings.style.display = isHidden ? "block" : "none"
+      if (scToggleLabel) {
+        scToggleLabel.textContent = isHidden
+          ? "Close Splash Cursor"
+          : "Open Splash Cursor"
+      }
+    })
+  }
+
+  const applySplashCursorLive = () => {
+    const opts = {
+      simResolution: getSettings().splashCursorSimResolution ?? 128,
+      dyeResolution: getSettings().splashCursorDyeResolution ?? 720,
+      densityDissipation: getSettings().splashCursorDensityDissipation ?? 3.5,
+      velocityDissipation:
+        getSettings().splashCursorVelocityDissipation ?? 2,
+      curl: getSettings().splashCursorCurl ?? 3,
+      splatRadius: getSettings().splashCursorSplatRadius ?? 0.2,
+      splatForce: getSettings().splashCursorSplatForce ?? 6000,
+      shading: getSettings().splashCursorShading !== false,
+      colorUpdateSpeed: getSettings().splashCursorColorUpdateSpeed ?? 10,
+      rainbowMode: getSettings().splashCursorRainbowMode !== false,
+      color: getSettings().splashCursorColor || "#ff0000",
+    }
+    if (getSettings().splashCursorActive && effects.splashCursorEffect) {
+      const effect = effects.splashCursorEffect
+      const dyeChanged =
+        opts.dyeResolution !== effect.options.dyeResolution
+      effect.setOptions(opts)
+      if (!effect.active) {
+        effect.start()
+      } else if (dyeChanged) {
+        effect.restart()
+      }
+    }
+  }
+
+  const scRainbow = document.getElementById("splash-cursor-rainbow")
+  const scColorWrap = document.getElementById("splash-cursor-color-wrap")
+  if (scRainbow) {
+    scRainbow.addEventListener("change", (e) => {
+      updateSetting("splashCursorRainbowMode", e.target.checked)
+      if (scColorWrap) {
+        scColorWrap.style.display = e.target.checked ? "none" : "block"
+      }
+      saveSettings()
+      applySplashCursorLive()
+    })
+  }
+
+  const scColor = document.getElementById("splash-cursor-color")
+  if (scColor) {
+    scColor.addEventListener("input", (e) => {
+      updateSetting("splashCursorColor", e.target.value)
+      applySplashCursorLive()
+    })
+    scColor.addEventListener("change", () => saveSettings())
+  }
+
+  const scShading = document.getElementById("splash-cursor-shading")
+  if (scShading) {
+    scShading.addEventListener("change", (e) => {
+      updateSetting("splashCursorShading", e.target.checked)
+      saveSettings()
+      applySplashCursorLive()
+    })
+  }
+
+  const scSliders = [
+    {
+      el: "splash-cursor-splat-radius",
+      val: "splash-cursor-splat-radius-value",
+      key: "splashCursorSplatRadius",
+      decimals: 2,
+    },
+    {
+      el: "splash-cursor-splat-force",
+      val: "splash-cursor-splat-force-value",
+      key: "splashCursorSplatForce",
+      decimals: 0,
+    },
+    {
+      el: "splash-cursor-curl",
+      val: "splash-cursor-curl-value",
+      key: "splashCursorCurl",
+      decimals: 1,
+    },
+    {
+      el: "splash-cursor-density",
+      val: "splash-cursor-density-value",
+      key: "splashCursorDensityDissipation",
+      decimals: 1,
+    },
+    {
+      el: "splash-cursor-velocity",
+      val: "splash-cursor-velocity-value",
+      key: "splashCursorVelocityDissipation",
+      decimals: 1,
+    },
+    {
+      el: "splash-cursor-color-speed",
+      val: "splash-cursor-color-speed-value",
+      key: "splashCursorColorUpdateSpeed",
+      decimals: 0,
+    },
+    {
+      el: "splash-cursor-dye-res",
+      val: "splash-cursor-dye-res-value",
+      key: "splashCursorDyeResolution",
+      decimals: 0,
+    },
+  ]
+
+  scSliders.forEach(({ el, val, key, decimals }) => {
+    const slider = document.getElementById(el)
+    const valEl = document.getElementById(val)
+    if (!slider) return
+    slider.addEventListener("input", (e) => {
+      const num = parseFloat(e.target.value)
+      updateSetting(key, num)
+      if (valEl) {
+        valEl.textContent =
+          decimals > 0 ? num.toFixed(decimals) : String(num)
+      }
+      applySplashCursorLive()
+    })
+    slider.addEventListener("change", () => saveSettings())
+  })
+
   // Setup multi-select
   setupEffectMultiSelect('silk', handleSettingUpdate)
   setupEffectMultiSelect('light-pillar', handleSettingUpdate)

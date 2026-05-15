@@ -1437,6 +1437,32 @@ export const liquidEtherSaveBtn = document.getElementById("liquid-ether-save-btn
 export const userLiquidEthersGallery = document.getElementById("user-liquid-ethers-gallery")
 export const userLiquidEthersGalleryWrap = document.getElementById("user-liquid-ethers-gallery-wrap")
 
+// Splash Cursor Effect
+export const splashCursorToggleBtn = document.getElementById("splash-cursor-toggle-btn")
+export const splashCursorToggleLabel = document.getElementById("splash-cursor-toggle-label")
+export const splashCursorSettings = document.getElementById("splash-cursor-settings")
+export const splashCursorActive = document.getElementById("splash-cursor-active")
+export const splashCursorDarkBg = document.getElementById("splash-cursor-dark-bg")
+export const splashCursorDarkBgBtn = document.getElementById("splash-cursor-dark-bg-btn")
+export const splashCursorRainbow = document.getElementById("splash-cursor-rainbow")
+export const splashCursorColorWrap = document.getElementById("splash-cursor-color-wrap")
+export const splashCursorColor = document.getElementById("splash-cursor-color")
+export const splashCursorShading = document.getElementById("splash-cursor-shading")
+export const splashCursorSplatRadius = document.getElementById("splash-cursor-splat-radius")
+export const splashCursorSplatRadiusValue = document.getElementById("splash-cursor-splat-radius-value")
+export const splashCursorSplatForce = document.getElementById("splash-cursor-splat-force")
+export const splashCursorSplatForceValue = document.getElementById("splash-cursor-splat-force-value")
+export const splashCursorCurl = document.getElementById("splash-cursor-curl")
+export const splashCursorCurlValue = document.getElementById("splash-cursor-curl-value")
+export const splashCursorDensity = document.getElementById("splash-cursor-density")
+export const splashCursorDensityValue = document.getElementById("splash-cursor-density-value")
+export const splashCursorVelocity = document.getElementById("splash-cursor-velocity")
+export const splashCursorVelocityValue = document.getElementById("splash-cursor-velocity-value")
+export const splashCursorColorSpeed = document.getElementById("splash-cursor-color-speed")
+export const splashCursorColorSpeedValue = document.getElementById("splash-cursor-color-speed-value")
+export const splashCursorDyeRes = document.getElementById("splash-cursor-dye-res")
+export const splashCursorDyeResValue = document.getElementById("splash-cursor-dye-res-value")
+
 export const softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",
 )
