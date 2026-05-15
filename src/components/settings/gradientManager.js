@@ -258,6 +258,7 @@ function setupMultiSelect(DOM) {
   })
 
   DOM.userGradientsGallery.addEventListener("click", (e) => {
+    e.stopPropagation()
     if (!gradientSelectMode) return
     const item = e.target.closest(".user-gradient-item")
     if (!item) return

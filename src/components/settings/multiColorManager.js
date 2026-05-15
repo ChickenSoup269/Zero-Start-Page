@@ -340,7 +340,8 @@ export function renderSavedMultiColors(DOM_REFS) {
         })
       })
 
-      item.addEventListener("click", () => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation()
         if (typeof multiColorSelectMode !== "undefined" && multiColorSelectMode) return
         window.dispatchEvent(
           new CustomEvent("multiColor:applyPreset", { detail: preset }),

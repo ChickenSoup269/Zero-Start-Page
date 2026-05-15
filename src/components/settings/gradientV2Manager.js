@@ -298,6 +298,7 @@ function renderUserGradientV2s(dom) {
     `
 
     item.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (gradientV2SelectMode) {
         toggleItemSelection(index, item, dom)
         return

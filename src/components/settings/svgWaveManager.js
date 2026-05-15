@@ -228,7 +228,8 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       })
     }
 
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (svgWaveSelectMode) return
 
       // Update individual settings directly (synchronous)

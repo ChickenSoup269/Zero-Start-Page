@@ -1,14 +1,15 @@
 .effect-search-input {
   width: 100%;
-  padding: 6px 10px;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   color: var(--text-color);
-  font-size: 0.8rem;
-  margin-bottom: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
   box-sizing: border-box;
   outline: none;
+  transition: all 0.3s ease;
 }
 
 .effect-search-input:focus {
@@ -18,46 +19,85 @@
 .effect-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 8px;
 }
 
 .effect-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 6px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 4px;
-  border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  border-top: 1px solid var(--glass-edge);
-  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
-  cursor: pointer;
+  gap: 6px;
+  overflow: hidden;
+  user-select: none;
   color: var(--text-color);
-  font-size: 0.65rem;
-  text-align: center;
-  gap: 3px;
-  box-shadow: var(--inner-glow);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  line-height: 1.2;
 }
 
 .effect-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(var(--accent-color-rgb), 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
   transform: translateY(-2px);
 }
 
 .effect-item.active {
+  background: rgba(var(--accent-color-rgb), 0.12);
   border-color: var(--accent-color);
-  background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+}
+
+.effect-item .active-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
   color: #fff;
-  box-shadow: var(--accent-glow);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.effect-item.active .active-indicator {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .effect-icon {
   font-size: 1.3rem;
   line-height: 1;
   user-select: none;
+}
+
+.effect-name {
+  font-size: 0.65rem;
+  font-weight: 500;
+  opacity: 0.9;
+  line-height: 1.2;
+}
+
+.effect-category-header {
+  grid-column: 1 / -1;
+  margin: 12px 0 6px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.8;
 }
 
 /* Font picker grid */
@@ -2524,6 +2564,8 @@
 
 /* Active Effect Settings Card Customization */
 #active-effect-settings-container {
+  width: 100%;
+  box-sizing: border-box;
   border-left: 4px solid var(--accent-color);
   background: linear-gradient(
     135deg,
@@ -2534,12 +2576,16 @@
 }
 
 #active-effect-settings-body {
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 #active-effect-settings-body .setting-item {
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 0;
   padding: 14px;
   background: var(--glass-bg, rgba(255, 255, 255, 0.08));
@@ -2566,12 +2612,16 @@
 }
 
 #active-effect-settings-body .setting-item input[type="color"] {
+  width: 100%;
+  box-sizing: border-box;
   height: 38px;
   cursor: pointer;
   border-radius: 8px;
 }
 
 #active-effect-settings-body .setting-item select {
+  width: 100%;
+  box-sizing: border-box;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 8px 12px;
@@ -2579,6 +2629,8 @@
 }
 
 #active-effect-settings-body .setting-item-row {
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 0;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.04);
@@ -4231,6 +4283,28 @@ body.sidebar-light .remove-bg-btn:hover i {
 
 .gradient-v2-grid-full {
   grid-column: 1 / -1;
+}
+
+
+
+
+
+#active-effect-settings-body {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+#active-effect-settings-body .setting-item {
+  margin-top: 0 !important;
+  margin-bottom: 8px;
+}
+
+#active-effect-settings-body .full-width,
+#active-effect-settings-body .full-row,
+#active-effect-settings-body .bg-control-title {
+  grid-column: span 2;
 }
 
 .user-gradientV2-item {

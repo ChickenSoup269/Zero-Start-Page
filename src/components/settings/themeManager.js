@@ -245,6 +245,7 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
 
   // Use event delegation for themes grid to handle dynamic user themes
   DOM.themesGrid.addEventListener("click", (e) => {
+    e.stopPropagation()
     const themeItem = e.target.closest(".theme-item");
     if (!themeItem) return;
 

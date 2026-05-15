@@ -417,7 +417,6 @@ export function setupGeneralEventHandlers(
 
       const queryStr = [
         ".settings-section",
-        "#effect-setting-group",
         "#page-title-input",
         "#date-format-select",
         "#language-select",
@@ -1600,6 +1599,7 @@ export function setupGeneralEventHandlers(
 
   // User gradient gallery
   DOM.userGradientsGallery.addEventListener("click", (e) => {
+    e.stopPropagation()
     // Check selection mode from DOM attribute
     if (DOM.userGradientsGallery.dataset.selectMode === "true") return
 
@@ -1860,9 +1860,11 @@ export function setupGeneralEventHandlers(
     
     // Hide/show effects
     DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {
+      const searchTerms = el.dataset.search || "";
+      const name = el.querySelector(".effect-name").textContent.toLowerCase();
       el.style.display =
-        el.dataset.search.includes(q) ||
-        el.querySelector(".effect-name").textContent.toLowerCase().includes(q)
+        searchTerms.toLowerCase().includes(q) ||
+        name.includes(q)
           ? ""
           : "none"
     })

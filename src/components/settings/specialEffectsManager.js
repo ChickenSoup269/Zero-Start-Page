@@ -407,7 +407,8 @@ export function renderUserSilks() {
       <div class="bg-item-checkbox ${silkSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (silkSelectMode) {
         const checkbox = item.querySelector(".bg-item-checkbox")
         if (silkSelectedIndices.has(index)) {
@@ -478,7 +479,8 @@ export function renderUserLightPillars() {
       <div class="bg-item-checkbox ${lightPillarSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (lightPillarSelectMode) {
         const checkbox = item.querySelector(".bg-item-checkbox")
         if (lightPillarSelectedIndices.has(index)) {
@@ -555,7 +557,8 @@ export function renderUserLiquidEthers() {
       <div class="bg-item-checkbox ${liquidEtherSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
+      e.stopPropagation()
       if (liquidEtherSelectMode) {
         const checkbox = item.querySelector(".bg-item-checkbox")
         if (liquidEtherSelectedIndices.has(index)) {

@@ -656,6 +656,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   ].filter(Boolean)
 
   const handleClick = (e) => {
+    e.stopPropagation()
     const item = e.target.closest(".local-bg-item")
     if (!item) return
 
