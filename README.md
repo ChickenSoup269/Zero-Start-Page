@@ -198,19 +198,20 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Nature & Space      | Digital & Tech   | Weather & Seasons | Abstract & Patterns  |
-| :------------------ | :--------------- | :---------------- | :------------------- |
-| • Rain / Rain HD    | • Network        | • Snowfall / HD   | • Gradients Aura     |
-| • Fireflies / HD    | • Matrix Rain    | • Aurora Wave     | • Bubbles            |
-| • Meteor Shower     | • Hacker         | • Northern Lights | • Wavy Lines         |
-| • Sunbeam           | • Pixel Cubes    | • Autumn Leaves   | • Wavy Pattern       |
-| • Light Pillars     | • Pixel Run      | • Green Leaves    | • Angled Pattern     |
-| • Sky Lanterns      | • Pixel Blast    | • Sakura          | • Floating Lines     |
-| • Ocean Wave / Fish | • Hyperspace     | • Wind            | • Shiny / Line Shiny |
-| • Cloud Drift       | • Nintendo Pixel | • Pixel Weather   | • Tet Fireworks      |
-| • Plant Growth      | • Retro Terminal | • Storm Rain / HD | • CRT Scanlines      |
-| • Jellyfish         | • Retro Game     | • Falling Leaves  | • Cursor Trail       |
-| • Ocean Fish        |                  |                   |                      |
+| Nature & Space       | Digital & Tech   | Weather & Seasons    | Abstract & Patterns     |
+| :------------------- | :--------------- | :------------------- | :---------------------- |
+| • Rain / HD / Galaxy | • Network        | • Snowfall / HD      | • Gradients Aura        |
+| • Fireflies / HD     | • Matrix Rain    | • Aurora Wave / Soft | • Bubbles               |
+| • Meteor             | • Hacker         | • Northern Lights    | • Wavy Lines / Pattern  |
+| • Sunbeam            | • Pixel Cubes    | • Autumn Leaves      | • Angled Pattern        |
+| • Light Pillars      | • Pixel Run      | • Green Leaves       | • Floating Lines        |
+| • Sky Lanterns       | • Pixel Blast    | • Sakura             | • Shiny / Line Shiny    |
+| • Ocean Wave / Fish  | • Hyperspace     | • Wind               | • Tet Fireworks         |
+| • Cloud Drift        | • Nintendo Pixel | • Pixel Weather      | • CRT Scanlines         |
+| • Plant Growth       | • Retro Terminal | • Storm Rain / HD    | • Cursor Trail / Splash |
+| • Jellyfish          | • Retro Game     | • Falling Leaves     | • Rainbow Background    |
+| • Grid Scan          | • Flashlight     | • Rain Galaxy        | • Halloween             |
+|                      |                  |                      | • Reunification Day     |
 
 ### SVG Wave Generator
 
