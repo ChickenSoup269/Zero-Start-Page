@@ -31,9 +31,9 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   const settings = getSettings()
   
   // Toggle UI visibility with safety checks
-  const toggleBtn = dom.gradientV2ToggleBtn || document.getElementById("gradientV2-toggle-btn")
-  const settingsPanel = dom.gradientV2Settings || document.getElementById("gradientV2-settings")
-  const toggleLabel = dom.gradientV2ToggleLabel || document.getElementById("gradientV2-toggle-label")
+  const toggleBtn = dom.gradientV2ToggleBtn || document.getElementById("gradient-v2-toggle-btn")
+  const settingsPanel = dom.gradientV2Settings || document.getElementById("gradient-v2-settings")
+  const toggleLabel = dom.gradientV2ToggleLabel || document.getElementById("gradient-v2-toggle-label")
 
   if (toggleBtn && settingsPanel) {
     toggleBtn.addEventListener("click", () => {
@@ -51,7 +51,7 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   }
 
   // Hook up the Active checkbox
-  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradientV2-active")
+  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradient-v2-active")
   if (activeCheckbox) {
     activeCheckbox.checked = settings.gradientV2Active
     activeCheckbox.addEventListener("change", (e) => {
@@ -69,28 +69,28 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
 
   // Hook up all property sliders and inputs
   const propsMap = [
-    { id: "gradientV2Color1", dom: dom.gradientV2Color1 || document.getElementById("gradientV2-color1"), type: "color" },
-    { id: "gradientV2Color2", dom: dom.gradientV2Color2 || document.getElementById("gradientV2-color2"), type: "color" },
-    { id: "gradientV2Color3", dom: dom.gradientV2Color3 || document.getElementById("gradientV2-color3"), type: "color" },
-    { id: "gradientV2TimeSpeed", dom: dom.gradientV2TimeSpeed || document.getElementById("gradientV2-time-speed"), val: dom.gradientV2TimeSpeedValue || document.getElementById("gradientV2-time-speed-value"), type: "range" },
-    { id: "gradientV2ColorBalance", dom: dom.gradientV2ColorBalance || document.getElementById("gradientV2-color-balance"), val: dom.gradientV2ColorBalanceValue || document.getElementById("gradientV2-color-balance-value"), type: "range" },
-    { id: "gradientV2WarpStrength", dom: dom.gradientV2WarpStrength || document.getElementById("gradientV2-warp-strength"), val: dom.gradientV2WarpStrengthValue || document.getElementById("gradientV2-warp-strength-value"), type: "range" },
-    { id: "gradientV2WarpFrequency", dom: dom.gradientV2WarpFrequency || document.getElementById("gradientV2-warp-frequency"), val: dom.gradientV2WarpFrequencyValue || document.getElementById("gradientV2-warp-frequency-value"), type: "range" },
-    { id: "gradientV2WarpSpeed", dom: dom.gradientV2WarpSpeed || document.getElementById("gradientV2-warp-speed"), val: dom.gradientV2WarpSpeedValue || document.getElementById("gradientV2-warp-speed-value"), type: "range" },
-    { id: "gradientV2WarpAmplitude", dom: dom.gradientV2WarpAmplitude || document.getElementById("gradientV2-warp-amplitude"), val: dom.gradientV2WarpAmplitudeValue || document.getElementById("gradientV2-warp-amplitude-value"), type: "range" },
-    { id: "gradientV2BlendAngle", dom: dom.gradientV2BlendAngle || document.getElementById("gradientV2-blend-angle"), val: dom.gradientV2BlendAngleValue || document.getElementById("gradientV2-blend-angle-value"), type: "range", suffix: "°" },
-    { id: "gradientV2BlendSoftness", dom: dom.gradientV2BlendSoftness || document.getElementById("gradientV2-blend-softness"), val: dom.gradientV2BlendSoftnessValue || document.getElementById("gradientV2-blend-softness-value"), type: "range" },
-    { id: "gradientV2RotationAmount", dom: dom.gradientV2RotationAmount || document.getElementById("gradientV2-rotation-amount"), val: dom.gradientV2RotationAmountValue || document.getElementById("gradientV2-rotation-amount-value"), type: "range" },
-    { id: "gradientV2NoiseScale", dom: dom.gradientV2NoiseScale || document.getElementById("gradientV2-noise-scale"), val: dom.gradientV2NoiseScaleValue || document.getElementById("gradientV2-noise-scale-value"), type: "range" },
-    { id: "gradientV2GrainAmount", dom: dom.gradientV2GrainAmount || document.getElementById("gradientV2-grain-amount"), val: dom.gradientV2GrainAmountValue || document.getElementById("gradientV2-grain-amount-value"), type: "range" },
-    { id: "gradientV2GrainScale", dom: dom.gradientV2GrainScale || document.getElementById("gradientV2-grain-scale"), val: dom.gradientV2GrainScaleValue || document.getElementById("gradientV2-grain-scale-value"), type: "range" },
-    { id: "gradientV2GrainAnimated", dom: dom.gradientV2GrainAnimated || document.getElementById("gradientV2-grain-animated"), type: "checkbox" },
-    { id: "gradientV2Contrast", dom: dom.gradientV2Contrast || document.getElementById("gradientV2-contrast"), val: dom.gradientV2ContrastValue || document.getElementById("gradientV2-contrast-value"), type: "range" },
-    { id: "gradientV2Gamma", dom: dom.gradientV2Gamma || document.getElementById("gradientV2-gamma"), val: dom.gradientV2GammaValue || document.getElementById("gradientV2-gamma-value"), type: "range" },
-    { id: "gradientV2Saturation", dom: dom.gradientV2Saturation || document.getElementById("gradientV2-saturation"), val: dom.gradientV2SaturationValue || document.getElementById("gradientV2-saturation-value"), type: "range" },
-    { id: "gradientV2CenterX", dom: dom.gradientV2CenterX || document.getElementById("gradientV2-center"), val: dom.gradientV2CenterXValue || document.getElementById("gradientV2-center-x-value"), type: "range" },
-    { id: "gradientV2CenterY", dom: dom.gradientV2CenterY || document.getElementById("gradientV2-center-y"), val: dom.gradientV2CenterYValue || document.getElementById("gradientV2-center-y-value"), type: "range" },
-    { id: "gradientV2Zoom", dom: dom.gradientV2Zoom || document.getElementById("gradientV2-zoom"), val: dom.gradientV2ZoomValue || document.getElementById("gradientV2-zoom-value"), type: "range" },
+    { id: "gradientV2Color1", dom: dom.gradientV2Color1 || document.getElementById("gradient-v2-color1"), type: "color" },
+    { id: "gradientV2Color2", dom: dom.gradientV2Color2 || document.getElementById("gradient-v2-color2"), type: "color" },
+    { id: "gradientV2Color3", dom: dom.gradientV2Color3 || document.getElementById("gradient-v2-color3"), type: "color" },
+    { id: "gradientV2TimeSpeed", dom: dom.gradientV2TimeSpeed || document.getElementById("gradient-v2-time-speed"), val: dom.gradientV2TimeSpeedValue || document.getElementById("gradient-v2-time-speed-value"), type: "range" },
+    { id: "gradientV2ColorBalance", dom: dom.gradientV2ColorBalance || document.getElementById("gradient-v2-color-balance"), val: dom.gradientV2ColorBalanceValue || document.getElementById("gradient-v2-color-balance-value"), type: "range" },
+    { id: "gradientV2WarpStrength", dom: dom.gradientV2WarpStrength || document.getElementById("gradient-v2-warp-strength"), val: dom.gradientV2WarpStrengthValue || document.getElementById("gradient-v2-warp-strength-value"), type: "range" },
+    { id: "gradientV2WarpFrequency", dom: dom.gradientV2WarpFrequency || document.getElementById("gradient-v2-warp-frequency"), val: dom.gradientV2WarpFrequencyValue || document.getElementById("gradient-v2-warp-frequency-value"), type: "range" },
+    { id: "gradientV2WarpSpeed", dom: dom.gradientV2WarpSpeed || document.getElementById("gradient-v2-warp-speed"), val: dom.gradientV2WarpSpeedValue || document.getElementById("gradient-v2-warp-speed-value"), type: "range" },
+    { id: "gradientV2WarpAmplitude", dom: dom.gradientV2WarpAmplitude || document.getElementById("gradient-v2-warp-amplitude"), val: dom.gradientV2WarpAmplitudeValue || document.getElementById("gradient-v2-warp-amplitude-value"), type: "range" },
+    { id: "gradientV2BlendAngle", dom: dom.gradientV2BlendAngle || document.getElementById("gradient-v2-blend-angle"), val: dom.gradientV2BlendAngleValue || document.getElementById("gradient-v2-blend-angle-value"), type: "range", suffix: "°" },
+    { id: "gradientV2BlendSoftness", dom: dom.gradientV2BlendSoftness || document.getElementById("gradient-v2-blend-softness"), val: dom.gradientV2BlendSoftnessValue || document.getElementById("gradient-v2-blend-softness-value"), type: "range" },
+    { id: "gradientV2RotationAmount", dom: dom.gradientV2RotationAmount || document.getElementById("gradient-v2-rotation-amount"), val: dom.gradientV2RotationAmountValue || document.getElementById("gradient-v2-rotation-amount-value"), type: "range" },
+    { id: "gradientV2NoiseScale", dom: dom.gradientV2NoiseScale || document.getElementById("gradient-v2-noise-scale"), val: dom.gradientV2NoiseScaleValue || document.getElementById("gradient-v2-noise-scale-value"), type: "range" },
+    { id: "gradientV2GrainAmount", dom: dom.gradientV2GrainAmount || document.getElementById("gradient-v2-grain-amount"), val: dom.gradientV2GrainAmountValue || document.getElementById("gradient-v2-grain-amount-value"), type: "range" },
+    { id: "gradientV2GrainScale", dom: dom.gradientV2GrainScale || document.getElementById("gradient-v2-grain-scale"), val: dom.gradientV2GrainScaleValue || document.getElementById("gradient-v2-grain-scale-value"), type: "range" },
+    { id: "gradientV2GrainAnimated", dom: dom.gradientV2GrainAnimated || document.getElementById("gradient-v2-grain-animated"), type: "checkbox" },
+    { id: "gradientV2Contrast", dom: dom.gradientV2Contrast || document.getElementById("gradient-v2-contrast"), val: dom.gradientV2ContrastValue || document.getElementById("gradient-v2-contrast-value"), type: "range" },
+    { id: "gradientV2Gamma", dom: dom.gradientV2Gamma || document.getElementById("gradient-v2-gamma"), val: dom.gradientV2GammaValue || document.getElementById("gradient-v2-gamma-value"), type: "range" },
+    { id: "gradientV2Saturation", dom: dom.gradientV2Saturation || document.getElementById("gradient-v2-saturation"), val: dom.gradientV2SaturationValue || document.getElementById("gradient-v2-saturation-value"), type: "range" },
+    { id: "gradientV2CenterX", dom: dom.gradientV2CenterX || document.getElementById("gradient-v2-center"), val: dom.gradientV2CenterXValue || document.getElementById("gradient-v2-center-x-value"), type: "range" },
+    { id: "gradientV2CenterY", dom: dom.gradientV2CenterY || document.getElementById("gradient-v2-center-y"), val: dom.gradientV2CenterYValue || document.getElementById("gradient-v2-center-y-value"), type: "range" },
+    { id: "gradientV2Zoom", dom: dom.gradientV2Zoom || document.getElementById("gradient-v2-zoom"), val: dom.gradientV2ZoomValue || document.getElementById("gradient-v2-zoom-value"), type: "range" },
   ]
 
   propsMap.forEach(prop => {
@@ -124,7 +124,7 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   })
 
   // Randomize button
-  const randomizeBtn = dom.gradientV2RandomizeBtn || document.getElementById("gradientV2-randomize-btn")
+  const randomizeBtn = dom.gradientV2RandomizeBtn || document.getElementById("gradient-v2-randomize-btn")
   if (randomizeBtn) {
     randomizeBtn.addEventListener("click", () => {
       const themes = [
@@ -206,7 +206,7 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   }
 
   // Save button
-  const saveBtn = dom.gradientV2SaveBtn || document.getElementById("gradientV2-save-btn")
+  const saveBtn = dom.gradientV2SaveBtn || document.getElementById("gradient-v2-save-btn")
   if (saveBtn) {
     saveBtn.addEventListener("click", () => {
       const currentSettings = getSettings()
@@ -255,8 +255,8 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
  */
 function renderUserGradientV2s(dom) {
   const { userGradientV2s } = getSettings()
-  const gallery = dom.userGradientV2sGallery || document.getElementById("user-gradientV2s-gallery")
-  const galleryWrap = dom.gradientV2GalleryWrap || document.getElementById("user-gradientV2s-gallery-wrap")
+  const gallery = dom.userGradientV2sGallery || document.getElementById("user-gradient-v2s-gallery")
+  const galleryWrap = dom.gradientV2GalleryWrap || document.getElementById("user-gradient-v2s-gallery-wrap")
   
   if (!gallery) return
 
@@ -272,7 +272,7 @@ function renderUserGradientV2s(dom) {
 
     userGradientV2s.forEach((preset, index) => {
       const item = document.createElement("div")
-      item.className = "local-bg-item user-gradientV2-item"
+      item.className = "local-bg-item user-gradient-v2-item"
       
       const settings = getSettings()
       const isActive =
@@ -333,7 +333,7 @@ function applyPreset(preset, dom) {
   // Activate and update instance
   updateSetting("gradientV2Active", true)
   if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", true)
-  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradientV2-active")
+  const activeCheckbox = dom.gradientV2Active || document.getElementById("gradient-v2-active")
   if (activeCheckbox) activeCheckbox.checked = true
   
   if (gradientV2Instance) {
@@ -358,11 +358,11 @@ function toggleItemSelection(index, item, dom) {
 }
 
 function setupMultiSelect(dom) {
-  const selectModeBtn = dom.gradientV2SelectModeBtn || document.getElementById("gradientV2-select-mode-btn")
-  const toolbar = dom.gradientV2SelectToolbar || document.getElementById("gradientV2-select-toolbar")
-  const cancelBtn = dom.gradientV2SelectCancelBtn || document.getElementById("gradientV2-select-cancel-btn")
-  const selectAllBtn = dom.gradientV2SelectAllBtn || document.getElementById("gradientV2-select-all-btn")
-  const deleteBtn = dom.gradientV2DeleteSelectedBtn || document.getElementById("gradientV2-delete-selected-btn")
+  const selectModeBtn = dom.gradientV2SelectModeBtn || document.getElementById("gradient-v2-select-mode-btn")
+  const toolbar = dom.gradientV2SelectToolbar || document.getElementById("gradient-v2-select-toolbar")
+  const cancelBtn = dom.gradientV2SelectCancelBtn || document.getElementById("gradient-v2-select-cancel-btn")
+  const selectAllBtn = dom.gradientV2SelectAllBtn || document.getElementById("gradient-v2-select-all-btn")
+  const deleteBtn = dom.gradientV2DeleteSelectedBtn || document.getElementById("gradient-v2-delete-selected-btn")
 
   if (selectModeBtn) {
     selectModeBtn.addEventListener("click", () => {
@@ -391,7 +391,7 @@ function setupMultiSelect(dom) {
   if (selectAllBtn) {
     selectAllBtn.addEventListener("click", () => {
       const { userGradientV2s } = getSettings()
-      const items = document.querySelectorAll(".user-gradientV2-item")
+      const items = document.querySelectorAll(".user-gradient-v2-item")
       const allIndices = userGradientV2s.map((_, i) => i)
       
       if (gradientV2SelectedIndices.size === allIndices.length) {
@@ -434,7 +434,7 @@ function setupMultiSelect(dom) {
 }
 
 function updateSelectionUI(dom) {
-  const countEl = dom.gradientV2SelectCount || document.getElementById("gradientV2-select-count")
+  const countEl = dom.gradientV2SelectCount || document.getElementById("gradient-v2-select-count")
   if (countEl) {
     const i18n = geti18n()
     countEl.textContent = `${gradientV2SelectedIndices.size} ${i18n.bookmark_selected || 'selected'}`
@@ -442,7 +442,7 @@ function updateSelectionUI(dom) {
 }
 
 function updateCount(dom) {
-  const countSpan = document.getElementById("count-gradientV2")
+  const countSpan = document.getElementById("count-gradient-v2")
   if (countSpan) {
     const total = (getSettings().userGradientV2s || []).length
     countSpan.innerHTML = ` <span style="font-size:0.8rem;opacity:0.6;">(${total})</span>`

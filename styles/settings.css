@@ -2566,57 +2566,75 @@
 #active-effect-settings-container {
   width: 100%;
   box-sizing: border-box;
-  border-left: 4px solid var(--accent-color);
-  background: linear-gradient(
-    135deg,
-    rgba(var(--accent-color-rgb), 0.08) 0%,
-    rgba(20, 20, 30, 0.45) 100%
-  );
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 15px;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
+  border-top: 1px solid var(--glass-edge, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--inner-glow, inset 0 1px 1px rgba(255, 255, 255, 0.1));
+  transition: all 0.3s ease;
 }
 
 #active-effect-settings-body {
   width: 100%;
   box-sizing: border-box;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  padding: 5px 0;
 }
 
 #active-effect-settings-body .setting-item {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 0;
-  padding: 14px;
-  background: var(--glass-bg, rgba(255, 255, 255, 0.08));
-  border-radius: 14px;
-  border: 1px solid var(--input-border, rgba(255, 255, 255, 0.1));
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
 }
 
 #active-effect-settings-body .setting-item:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
   border-color: rgba(var(--accent-color-rgb), 0.3);
-  transform: translateY(-2px);
 }
 
 #active-effect-settings-body .setting-item label {
   font-weight: 600;
   color: var(--accent-color);
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 0.85rem;
 }
 
 #active-effect-settings-body .setting-item input[type="color"] {
   width: 100%;
   box-sizing: border-box;
-  height: 38px;
+  height: 42px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  transition: all 0.3s ease;
+}
+
+#active-effect-settings-body .setting-item input[type="color"]:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+#active-effect-settings-body .setting-item input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#active-effect-settings-body .setting-item input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 #active-effect-settings-body .setting-item select {
@@ -2624,8 +2642,10 @@
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
+  padding: 8px 10px;
   font-size: 0.85rem;
+  border-radius: 6px;
+  color: #fff;
 }
 
 #active-effect-settings-body .setting-item-row {
@@ -2634,11 +2654,109 @@
   margin-bottom: 0;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.04);
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 15px;
+}
+
+#active-effect-settings-body .setting-item-row label:not(.lcp-switch) {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #eee;
+  flex: 1;
+  cursor: pointer;
+}
+
+#active-effect-settings-body .setting-item-row input[type="color"] {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  background: none;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#active-effect-settings-body .setting-item-row input[type="color"]:hover {
+  transform: scale(1.15);
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4);
+}
+
+#active-effect-settings-body .setting-item-row input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+#active-effect-settings-body .setting-item-row input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input) {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 34px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input):checked {
+  background: var(--accent-color);
+}
+
+#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input)::before {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input):checked::before {
+  transform: translateX(16px);
+}
+
+#active-effect-settings-body .lcp-switch {
+  width: 34px !important;
+  height: 18px !important;
+  flex: 0 0 34px !important;
+  margin: 0;
+  cursor: pointer;
+}
+
+#active-effect-settings-body .lcp-switch input {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+}
+
+#active-effect-settings-body .lcp-slider {
+  border-radius: 18px;
+}
+
+#active-effect-settings-body .lcp-slider::before {
+  width: 12px;
+  height: 12px;
+  left: 3px;
+  top: 3px;
 }
 
 /* --- Enhanced Settings UI (New Styles) --- */
@@ -4288,24 +4406,6 @@ body.sidebar-light .remove-bg-btn:hover i {
 
 
 
-
-#active-effect-settings-body {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 10px 0;
-}
-
-#active-effect-settings-body .setting-item {
-  margin-top: 0 !important;
-  margin-bottom: 8px;
-}
-
-#active-effect-settings-body .full-width,
-#active-effect-settings-body .full-row,
-#active-effect-settings-body .bg-control-title {
-  grid-column: span 2;
-}
 
 .user-gradientV2-item {
   position: relative;

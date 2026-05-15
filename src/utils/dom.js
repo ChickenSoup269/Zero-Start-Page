@@ -1133,127 +1133,127 @@ export const userSvgWavesGallery = document.getElementById(
 )
 
 // Gradient V2 Controls
-export const gradientV2Active = document.getElementById("gradientV2-active")
+export const gradientV2Active = document.getElementById("gradient-v2-active")
 export const gradientV2ToggleBtn = document.getElementById(
-  "gradientV2-toggle-btn",
+  "gradient-v2-toggle-btn",
 )
 export const gradientV2ToggleLabel = document.getElementById(
-  "gradientV2-toggle-label",
+  "gradient-v2-toggle-label",
 )
-export const gradientV2Settings = document.getElementById("gradientV2-settings")
-export const gradientV2Color1 = document.getElementById("gradientV2-color1")
-export const gradientV2Color2 = document.getElementById("gradientV2-color2")
-export const gradientV2Color3 = document.getElementById("gradientV2-color3")
+export const gradientV2Settings = document.getElementById("gradient-v2-settings")
+export const gradientV2Color1 = document.getElementById("gradient-v2-color1")
+export const gradientV2Color2 = document.getElementById("gradient-v2-color2")
+export const gradientV2Color3 = document.getElementById("gradient-v2-color3")
 export const gradientV2TimeSpeed = document.getElementById(
-  "gradientV2-time-speed",
+  "gradient-v2-time-speed",
 )
 export const gradientV2TimeSpeedValue = document.getElementById(
-  "gradientV2-time-speed-value",
+  "gradient-v2-time-speed-value",
 )
 export const gradientV2ColorBalance = document.getElementById(
-  "gradientV2-color-balance",
+  "gradient-v2-color-balance",
 )
 export const gradientV2ColorBalanceValue = document.getElementById(
-  "gradientV2-color-balance-value",
+  "gradient-v2-color-balance-value",
 )
 export const gradientV2WarpStrength = document.getElementById(
-  "gradientV2-warp-strength",
+  "gradient-v2-warp-strength",
 )
 export const gradientV2WarpStrengthValue = document.getElementById(
-  "gradientV2-warp-strength-value",
+  "gradient-v2-warp-strength-value",
 )
 export const gradientV2WarpFrequency = document.getElementById(
-  "gradientV2-warp-frequency",
+  "gradient-v2-warp-frequency",
 )
 export const gradientV2WarpFrequencyValue = document.getElementById(
-  "gradientV2-warp-frequency-value",
+  "gradient-v2-warp-frequency-value",
 )
 export const gradientV2WarpSpeed = document.getElementById(
-  "gradientV2-warp-speed",
+  "gradient-v2-warp-speed",
 )
 export const gradientV2WarpSpeedValue = document.getElementById(
-  "gradientV2-warp-speed-value",
+  "gradient-v2-warp-speed-value",
 )
 export const gradientV2WarpAmplitude = document.getElementById(
-  "gradientV2-warp-amplitude",
+  "gradient-v2-warp-amplitude",
 )
 export const gradientV2WarpAmplitudeValue = document.getElementById(
-  "gradientV2-warp-amplitude-value",
+  "gradient-v2-warp-amplitude-value",
 )
 export const gradientV2BlendAngle = document.getElementById(
-  "gradientV2-blend-angle",
+  "gradient-v2-blend-angle",
 )
 export const gradientV2BlendAngleValue = document.getElementById(
-  "gradientV2-blend-angle-value",
+  "gradient-v2-blend-angle-value",
 )
 export const gradientV2BlendSoftness = document.getElementById(
-  "gradientV2-blend-softness",
+  "gradient-v2-blend-softness",
 )
 export const gradientV2BlendSoftnessValue = document.getElementById(
-  "gradientV2-blend-softness-value",
+  "gradient-v2-blend-softness-value",
 )
 export const gradientV2RotationAmount = document.getElementById(
-  "gradientV2-rotation-amount",
+  "gradient-v2-rotation-amount",
 )
 export const gradientV2RotationAmountValue = document.getElementById(
-  "gradientV2-rotation-amount-value",
+  "gradient-v2-rotation-amount-value",
 )
 export const gradientV2NoiseScale = document.getElementById(
-  "gradientV2-noise-scale",
+  "gradient-v2-noise-scale",
 )
 export const gradientV2NoiseScaleValue = document.getElementById(
-  "gradientV2-noise-scale-value",
+  "gradient-v2-noise-scale-value",
 )
 export const gradientV2GrainAmount = document.getElementById(
-  "gradientV2-grain-amount",
+  "gradient-v2-grain-amount",
 )
 export const gradientV2GrainAmountValue = document.getElementById(
-  "gradientV2-grain-amount-value",
+  "gradient-v2-grain-amount-value",
 )
 export const gradientV2GrainScale = document.getElementById(
-  "gradientV2-grain-scale",
+  "gradient-v2-grain-scale",
 )
 export const gradientV2GrainScaleValue = document.getElementById(
-  "gradientV2-grain-scale-value",
+  "gradient-v2-grain-scale-value",
 )
 export const gradientV2GrainAnimated = document.getElementById(
-  "gradientV2-grain-animated",
+  "gradient-v2-grain-animated",
 )
-export const gradientV2Contrast = document.getElementById("gradientV2-contrast")
+export const gradientV2Contrast = document.getElementById("gradient-v2-contrast")
 export const gradientV2ContrastValue = document.getElementById(
-  "gradientV2-contrast-value",
+  "gradient-v2-contrast-value",
 )
-export const gradientV2Gamma = document.getElementById("gradientV2-gamma")
+export const gradientV2Gamma = document.getElementById("gradient-v2-gamma")
 export const gradientV2GammaValue = document.getElementById(
-  "gradientV2-gamma-value",
+  "gradient-v2-gamma-value",
 )
 export const gradientV2Saturation = document.getElementById(
-  "gradientV2-saturation",
+  "gradient-v2-saturation",
 )
 export const gradientV2SaturationValue = document.getElementById(
-  "gradientV2-saturation-value",
+  "gradient-v2-saturation-value",
 )
-export const gradientV2CenterX = document.getElementById("gradientV2-center-x")
+export const gradientV2CenterX = document.getElementById("gradient-v2-center-x")
 export const gradientV2CenterXValue = document.getElementById(
-  "gradientV2-center-x-value",
+  "gradient-v2-center-x-value",
 )
-export const gradientV2CenterY = document.getElementById("gradientV2-center-y")
+export const gradientV2CenterY = document.getElementById("gradient-v2-center-y")
 export const gradientV2CenterYValue = document.getElementById(
-  "gradientV2-center-y-value",
+  "gradient-v2-center-y-value",
 )
-export const gradientV2Zoom = document.getElementById("gradientV2-zoom")
+export const gradientV2Zoom = document.getElementById("gradient-v2-zoom")
 export const gradientV2ZoomValue = document.getElementById(
-  "gradientV2-zoom-value",
+  "gradient-v2-zoom-value",
 )
 export const gradientV2RandomizeBtn = document.getElementById(
-  "gradientV2-randomize-btn",
+  "gradient-v2-randomize-btn",
 )
-export const gradientV2SaveBtn = document.getElementById("gradientV2-save-btn")
+export const gradientV2SaveBtn = document.getElementById("gradient-v2-save-btn")
 export const userGradientV2sGallery = document.getElementById(
-  "user-gradientV2s-gallery",
+  "user-gradient-v2s-gallery",
 )
 export const gradientV2GalleryWrap = document.getElementById(
-  "user-gradientV2s-gallery-wrap",
+  "user-gradient-v2s-gallery-wrap",
 )
 
 // Pixel Snow HQ Controls
@@ -1509,22 +1509,22 @@ export const softAuroraBgColorPicker = document.getElementById(
 
 // Multi-select for Gradient V2
 export const gradientV2SelectModeBtn = document.getElementById(
-  "gradientV2-select-mode-btn",
+  "gradient-v2-select-mode-btn",
 )
 export const gradientV2SelectToolbar = document.getElementById(
-  "gradientV2-select-toolbar",
+  "gradient-v2-select-toolbar",
 )
 export const gradientV2SelectCount = document.getElementById(
-  "gradientV2-select-count",
+  "gradient-v2-select-count",
 )
 export const gradientV2SelectAllBtn = document.getElementById(
-  "gradientV2-select-all-btn",
+  "gradient-v2-select-all-btn",
 )
 export const gradientV2DeleteSelectedBtn = document.getElementById(
-  "gradientV2-delete-selected-btn",
+  "gradient-v2-delete-selected-btn",
 )
 export const gradientV2SelectCancelBtn = document.getElementById(
-  "gradientV2-select-cancel-btn",
+  "gradient-v2-select-cancel-btn",
 )
 
 // Donate Modal
