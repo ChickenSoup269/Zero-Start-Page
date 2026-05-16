@@ -42,7 +42,11 @@ function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
     DOM.svgWaveSelectModeBtn.style.display = "block"
     DOM.userSvgWavesGallery
       .querySelectorAll(".user-svg-wave-item")
-      .forEach((el) => el.classList.remove("selected"))
+      .forEach((el) => {
+        el.classList.remove("selected")
+        const cb = el.querySelector(".bg-item-checkbox")
+        if (cb) cb.classList.remove("checked")
+      })
   }
 
   DOM.svgWaveSelectModeBtn.addEventListener("click", () => {
@@ -60,12 +64,21 @@ function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
       svgWaveSelectedIndices.clear()
       DOM.userSvgWavesGallery
         .querySelectorAll(".user-svg-wave-item")
-        .forEach((el) => el.classList.remove("selected"))
+        .forEach((el) => {
+          el.classList.remove("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
     } else {
+      svgWaveSelectedIndices.clear()
       allWaves.forEach((_, i) => svgWaveSelectedIndices.add(i))
       DOM.userSvgWavesGallery
         .querySelectorAll(".user-svg-wave-item")
-        .forEach((el) => el.classList.add("selected"))
+        .forEach((el) => {
+          el.classList.add("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.add("checked")
+        })
     }
     updateSvgWaveSelectCount()
   })
@@ -187,6 +200,10 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.appendChild(removeBtn)
 
     const isSelected = svgWaveSelectedIndices.has(index)
+    if (isSelected) {
+      item.classList.add("selected")
+    }
+
     const checkBadge = document.createElement("div")
     checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
     checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
@@ -230,8 +247,10 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     }
 
     item.addEventListener("click", (e) => {
-      e.stopPropagation()
-      if (svgWaveSelectMode) return
+      if (svgWaveSelectMode) {
+        // Multi-select is handled by the gallery listener, but we must not stop propagation
+        return
+      }
 
       // Update individual settings directly (synchronous)
       updateSetting("svgWaveLines", wave.lines)

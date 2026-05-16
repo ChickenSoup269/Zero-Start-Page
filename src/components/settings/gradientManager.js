@@ -205,7 +205,11 @@ function setupMultiSelect(DOM) {
     DOM.gradientSelectModeBtn.style.display = "block"
     DOM.userGradientsGallery
       .querySelectorAll(".user-gradient-item")
-      .forEach((el) => el.classList.remove("bg-selected"))
+      .forEach((el) => {
+        el.classList.remove("selected")
+        const cb = el.querySelector(".bg-item-checkbox")
+        if (cb) cb.classList.remove("checked")
+      })
   }
 
   DOM.gradientSelectModeBtn.addEventListener("click", () => {
@@ -227,12 +231,21 @@ function setupMultiSelect(DOM) {
       gradientSelectedIndices.clear()
       DOM.userGradientsGallery
         .querySelectorAll(".user-gradient-item")
-        .forEach((el) => el.classList.remove("bg-selected"))
+        .forEach((el) => {
+          el.classList.remove("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
     } else {
+      gradientSelectedIndices.clear()
       standardGradientsIndices.forEach((i) => gradientSelectedIndices.add(i))
       DOM.userGradientsGallery
         .querySelectorAll(".user-gradient-item")
-        .forEach((el) => el.classList.add("bg-selected"))
+        .forEach((el) => {
+          el.classList.add("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.add("checked")
+        })
     }
     updateGradientSelectCount()
   })
@@ -264,12 +277,15 @@ function setupMultiSelect(DOM) {
     if (!item) return
 
     const index = parseInt(item.dataset.index)
+    const checkbox = item.querySelector(".bg-item-checkbox")
     if (gradientSelectedIndices.has(index)) {
       gradientSelectedIndices.delete(index)
-      item.classList.remove("bg-selected")
+      item.classList.remove("selected")
+      if (checkbox) checkbox.classList.remove("checked")
     } else {
       gradientSelectedIndices.add(index)
-      item.classList.add("bg-selected")
+      item.classList.add("selected")
+      if (checkbox) checkbox.classList.add("checked")
     }
     updateGradientSelectCount()
   })
@@ -373,6 +389,10 @@ function renderUserGradients(DOM) {
       item.appendChild(removeBtn)
 
       const isSelected = gradientSelectedIndices.has(index)
+      if (isSelected) {
+        item.classList.add("selected")
+      }
+      
       const checkBadge = document.createElement("div")
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'

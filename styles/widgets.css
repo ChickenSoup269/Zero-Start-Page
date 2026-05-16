@@ -2396,8 +2396,8 @@ body.context-menu-none .context-menu-item:hover {
   position: fixed;
   top: 100px;
   left: 20px;
-  width: 800px;
-  max-height: 600px;
+  width: 450px;
+  max-height: 700px;
   display: flex;
   flex-direction: column;
   z-index: 100;
@@ -4346,4 +4346,4 @@ body.bookmark-taskbar-top-mode.bookmark-macos-hover .bookmark:hover > span {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
-} 
+}

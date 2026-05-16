@@ -205,7 +205,7 @@ export class Notepad {
             ).join("")}
           </div>
         </div>
-        <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) !== "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
+        <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
         <button class="icon-btn floating-note-close" title="Reattach"><i class="fa-solid fa-window-close"></i></button>
       </div>
       <div class="floating-note-toolbar">
@@ -490,7 +490,7 @@ export class Notepad {
             </div>
           </div>
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)">
-            <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) !== "#000000") ? "fa-sun" : "fa-moon"}"></i>
+            <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
           </button>
           <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
@@ -641,8 +641,8 @@ export class Notepad {
         if (contentDiv) {
           const contentBg =
             this.getContrastColor(newColor) === "#000000"
-              ? "#000000"
-              : "#FFFFFF"
+              ? "#FFFFFF"
+              : "#000000"
           const contentTextColor =
             contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
           contentDiv.style.backgroundColor = contentBg

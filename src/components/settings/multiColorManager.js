@@ -323,6 +323,10 @@ export function renderSavedMultiColors(DOM_REFS) {
       }
 
       const isSelected = multiColorSelectedIndices.has(index)
+      if (isSelected) {
+        item.classList.add("selected")
+      }
+      
       const checkBadge = document.createElement("div")
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
@@ -341,8 +345,11 @@ export function renderSavedMultiColors(DOM_REFS) {
       })
 
       item.addEventListener("click", (e) => {
-        e.stopPropagation()
-        if (typeof multiColorSelectMode !== "undefined" && multiColorSelectMode) return
+        if (typeof multiColorSelectMode !== "undefined" && multiColorSelectMode) {
+          // Multi-select is handled by the gallery listener, but we must not stop propagation
+          return
+        }
+        
         window.dispatchEvent(
           new CustomEvent("multiColor:applyPreset", { detail: preset }),
         )
@@ -817,7 +824,11 @@ export function setupMultiColorManager(applySettings) {
       DOM.multiColorSelectModeBtn.style.display = "block"
       DOM.savedMultiColorPresets
         .querySelectorAll(".user-gradient-item")
-        .forEach((el) => el.classList.remove("selected"))
+        .forEach((el) => {
+          el.classList.remove("selected")
+          const cb = el.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
     }
 
     DOM.multiColorSelectModeBtn.addEventListener("click", () => {
@@ -842,12 +853,21 @@ export function setupMultiColorManager(applySettings) {
         multiColorSelectedIndices.clear()
         DOM.savedMultiColorPresets
           .querySelectorAll(".user-gradient-item")
-          .forEach((el) => el.classList.remove("selected"))
+          .forEach((el) => {
+            el.classList.remove("selected")
+            const cb = el.querySelector(".bg-item-checkbox")
+            if (cb) cb.classList.remove("checked")
+          })
       } else {
+        multiColorSelectedIndices.clear()
         multiColorIndices.forEach((i) => multiColorSelectedIndices.add(i))
         DOM.savedMultiColorPresets
           .querySelectorAll(".user-gradient-item")
-          .forEach((el) => el.classList.add("selected"))
+          .forEach((el) => {
+            el.classList.add("selected")
+            const cb = el.querySelector(".bg-item-checkbox")
+            if (cb) cb.classList.add("checked")
+          })
       }
       updateMultiColorSelectCount()
     })
