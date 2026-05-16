@@ -10,6 +10,7 @@ export class Timer {
     this.initialTime = settings.timerInitialTime || 0
     this.endTime = settings.timerEndTime || 0
     this.isRunning = settings.timerIsRunning || false
+    this.isExpired = false
     this.timerId = null
     this.alarm = new Audio(
       "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/bedside_clock_alarm.mp3",
@@ -42,6 +43,7 @@ export class Timer {
       // Paused state
       this.render()
     }
+    this.updateTimerStatus()
   }
 
   createElements() {
@@ -56,6 +58,10 @@ export class Timer {
     this.container.innerHTML = `
             <div class="timer-main-view">
                 <div class="timer-display" id="timer-display">00:00:00</div>
+                <div class="timer-status" id="timer-status">
+                    <i class="fa-solid fa-circle-pause"></i>
+                    <span>Ready</span>
+                </div>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
                     <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
@@ -70,6 +76,20 @@ export class Timer {
                     <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="00h 00m 00s" maxlength="6" inputmode="numeric">
                     <div class="timer-input-hint">Enter digits (e.g. 500 for 5m)</div>
                 </div>
+                <div class="timer-keypad" aria-label="Timer keypad">
+                    <button type="button" class="timer-keypad-btn" data-key="1">1</button>
+                    <button type="button" class="timer-keypad-btn" data-key="2">2</button>
+                    <button type="button" class="timer-keypad-btn" data-key="3">3</button>
+                    <button type="button" class="timer-keypad-btn" data-key="4">4</button>
+                    <button type="button" class="timer-keypad-btn" data-key="5">5</button>
+                    <button type="button" class="timer-keypad-btn" data-key="6">6</button>
+                    <button type="button" class="timer-keypad-btn" data-key="7">7</button>
+                    <button type="button" class="timer-keypad-btn" data-key="8">8</button>
+                    <button type="button" class="timer-keypad-btn" data-key="9">9</button>
+                    <button type="button" class="timer-keypad-btn is-utility" data-action="clear">C</button>
+                    <button type="button" class="timer-keypad-btn" data-key="0">0</button>
+                    <button type="button" class="timer-keypad-btn is-utility" data-action="backspace"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
                 <div class="timer-input-actions">
                     <button id="timer-cancel-edit" class="secondary-btn">Cancel</button>
                     <button id="timer-set-confirm" class="primary-btn">Set</button>
@@ -81,6 +101,7 @@ export class Timer {
         `
 
     this.display = this.container.querySelector("#timer-display")
+    this.status = this.container.querySelector("#timer-status")
     
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
@@ -99,9 +120,14 @@ export class Timer {
       `
       mini.addEventListener("click", () => {
         updateSetting("showTimer", true)
+        updateSetting("timerMinimized", false)
         saveSettings()
         this.isVisible = true
+        this.syncTimerVisibilityControls(true)
         this.updateVisibility()
+        window.dispatchEvent(new CustomEvent("layoutUpdated", {
+          detail: { key: "showTimer", value: true },
+        }))
       })
       clockWrap.appendChild(mini)
     }
@@ -121,9 +147,19 @@ export class Timer {
       .querySelector("#timer-minimize")
       .addEventListener("click", () => {
         updateSetting("showTimer", false)
+        updateSetting("timerMinimized", true)
+        updateSetting("clockTimerMode", false)
         saveSettings()
         this.isVisible = false
+        this.syncTimerVisibilityControls(false)
+        this.updateClockModeBtn()
         this.updateVisibility()
+        window.dispatchEvent(new CustomEvent("layoutUpdated", {
+          detail: { key: "clockTimerMode", value: false },
+        }))
+        window.dispatchEvent(new CustomEvent("layoutUpdated", {
+          detail: { key: "showTimer", value: false },
+        }))
       })
     this.container
       .querySelector("#timer-cancel-edit")
@@ -142,6 +178,11 @@ export class Timer {
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showTimer") {
         this.isVisible = e.detail.value
+        if (this.isVisible) {
+          updateSetting("timerMinimized", false)
+          saveSettings()
+        }
+        this.syncTimerVisibilityControls(this.isVisible)
         this.updateVisibility()
       }
       if (e.detail.key === "timerSkin") {
@@ -157,21 +198,7 @@ export class Timer {
     smartInput.addEventListener("input", (e) => {
       let val = e.target.value.replace(/\D/g, "")
       if (val.length > 6) val = val.slice(0, 6)
-
-      // Format with colons
-      let formatted = ""
-      if (val.length > 0) {
-        if (val.length <= 2) {
-          formatted = val
-        } else if (val.length <= 4) {
-          formatted = val.slice(0, -2) + ":" + val.slice(-2)
-        } else {
-          formatted =
-            val.slice(0, -4) + ":" + val.slice(-4, -2) + ":" + val.slice(-2)
-        }
-      }
-
-      e.target.value = formatted
+      e.target.value = this.formatTimerDigits(val)
       this.updateSmartInputPreview(val)
     })
 
@@ -180,21 +207,39 @@ export class Timer {
         this.setTimer()
       }
     })
+
+    this.container.querySelectorAll(".timer-keypad-btn").forEach((btn) => {
+      btn.addEventListener("click", () => this.handleKeypadInput(btn))
+    })
   }
 
   updateVisibility() {
+    this.container.getAnimations().forEach((animation) => animation.cancel())
     fadeToggle(this.container, this.isVisible, "flex")
     this._updateMiniIndicatorVisibility()
   }
 
+  syncTimerVisibilityControls(isVisible) {
+    const showTimerCheckbox = document.getElementById("show-timer-checkbox")
+    if (showTimerCheckbox) showTimerCheckbox.checked = isVisible
+  }
+
   _updateMiniIndicatorVisibility() {
+    this._createMiniIndicator()
     const mini = document.getElementById("mini-timer-indicator")
     if (mini) {
       const settings = getSettings()
       const isClockTimerMode = settings.clockTimerMode === true
-      const shouldShowMini = !this.isVisible && this.isRunning && !isClockTimerMode
+      const isMinimized = settings.timerMinimized === true
+      const shouldShowMini =
+        !this.isVisible &&
+        !isClockTimerMode &&
+        (isMinimized || this.isRunning || this.isExpired)
       mini.style.display = shouldShowMini ? "flex" : "none"
-      if (shouldShowMini) this.render()
+      if (shouldShowMini) {
+        this.render()
+        this.updateMiniIndicatorState()
+      }
     }
   }
 
@@ -229,6 +274,9 @@ export class Timer {
   }
 
   startTimer(isResuming = false) {
+    if (this.timerId) clearInterval(this.timerId)
+    this.stopAlarm()
+
     const btn = this.container.querySelector("#timer-start-pause i")
     if (btn) btn.className = "fa-solid fa-pause"
 
@@ -238,6 +286,7 @@ export class Timer {
     }
 
     this.saveState()
+    this.updateTimerStatus()
     this._updateMiniIndicatorVisibility()
 
     this.timerId = setInterval(() => {
@@ -264,6 +313,7 @@ export class Timer {
     const btn = this.container.querySelector("#timer-start-pause i")
     if (btn) btn.className = "fa-solid fa-play"
     this.saveState()
+    this.updateTimerStatus()
     this._updateMiniIndicatorVisibility()
   }
 
@@ -274,6 +324,7 @@ export class Timer {
     this.render()
     this.stopAlarm()
     this.saveState()
+    this.updateTimerStatus()
   }
 
   updateSmartInputPreview(value) {
@@ -283,6 +334,34 @@ export class Timer {
     }
     const parsed = this.parseSmartTimerInput(value)
     this.renderTime(parsed, this.display)
+  }
+
+  formatTimerDigits(value) {
+    const digits = value.replace(/\D/g, "").slice(0, 6)
+    if (digits.length <= 2) return digits
+    if (digits.length <= 4) return `${digits.slice(0, -2)}:${digits.slice(-2)}`
+    return `${digits.slice(0, -4)}:${digits.slice(-4, -2)}:${digits.slice(-2)}`
+  }
+
+  handleKeypadInput(btn) {
+    const smartInput = this.container.querySelector("#timer-smart-input")
+    if (!smartInput) return
+
+    let digits = smartInput.value.replace(/\D/g, "")
+    const key = btn.dataset.key
+    const action = btn.dataset.action
+
+    if (key && digits.length < 6) {
+      digits += key
+    } else if (action === "backspace") {
+      digits = digits.slice(0, -1)
+    } else if (action === "clear") {
+      digits = ""
+    }
+
+    smartInput.value = this.formatTimerDigits(digits)
+    this.updateSmartInputPreview(digits)
+    smartInput.focus()
   }
 
   parseSmartTimerInput(value) {
@@ -310,15 +389,15 @@ export class Timer {
       this.hideInputView()
       return
     }
-    const wasRunning = this.isRunning
     if (this.isRunning) this.pauseTimer()
+    this.stopAlarm()
     this.initialTime = totalSeconds
     this.timeLeft = this.initialTime
-    this.isRunning = false
+    this.endTime = 0
     this.saveState()
     this.render()
+    this.updateTimerStatus("ready")
     this.hideInputView()
-    if (wasRunning) setTimeout(() => this.startTimer(), 100)
   }
 
   saveState() {
@@ -333,26 +412,71 @@ export class Timer {
   }
 
   playAlarm() {
+    this.isExpired = true
+    this._updateMiniIndicatorVisibility()
     this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
     this.container.querySelector("#alarm-control-container").style.display =
       "block"
-    const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
-    if (timerToggleBtn) timerToggleBtn.classList.add("timer-expired-blink")
-
-    // Also blink mini indicator if hidden
-    const mini = document.getElementById("mini-timer-indicator")
-    if (mini) mini.classList.add("timer-expired-blink")
+    this.updateExpiredIndicator(true)
+    this.updateTimerStatus("finished")
   }
 
   stopAlarm() {
+    this.isExpired = false
     this.alarm.pause()
     this.alarm.currentTime = 0
     this.container.querySelector("#alarm-control-container").style.display =
       "none"
+    this.updateExpiredIndicator(false)
+    this.updateTimerStatus()
+    this._updateMiniIndicatorVisibility()
+  }
+
+  updateExpiredIndicator(isExpired) {
     const timerToggleBtn = document.querySelector('button[data-toggle="timer"]')
-    if (timerToggleBtn) timerToggleBtn.classList.remove("timer-expired-blink")
+    const timerToggleIcon = timerToggleBtn?.querySelector("i")
+    if (timerToggleBtn) {
+      if (isExpired && !timerToggleBtn.dataset.timerDefaultTitle) {
+        timerToggleBtn.dataset.timerDefaultTitle = timerToggleBtn.title || ""
+      }
+      timerToggleBtn.classList.toggle("timer-expired-blink", isExpired)
+      timerToggleBtn.classList.toggle("timer-expired-attention", isExpired)
+      timerToggleBtn.title = isExpired
+        ? "Timer finished - stop alarm"
+        : timerToggleBtn.dataset.timerDefaultTitle || "Toggle Timer"
+    }
+    if (timerToggleIcon) {
+      if (isExpired && !timerToggleIcon.dataset.timerDefaultClass) {
+        timerToggleIcon.dataset.timerDefaultClass = timerToggleIcon.className
+      }
+      timerToggleIcon.className = isExpired
+        ? "fa-solid fa-bell"
+        : timerToggleIcon.dataset.timerDefaultClass || "fa-solid fa-stopwatch"
+    }
+
+    this.container.classList.toggle("timer-expired-attention", isExpired)
+    this.display?.classList.toggle("timer-expired-blink", isExpired)
+
+    const startPauseIcon = this.container.querySelector("#timer-start-pause i")
+    if (startPauseIcon && isExpired) {
+      startPauseIcon.className = "fa-solid fa-bell"
+    } else if (startPauseIcon) {
+      startPauseIcon.className = this.isRunning
+        ? "fa-solid fa-pause"
+        : "fa-solid fa-play"
+    }
+
     const mini = document.getElementById("mini-timer-indicator")
-    if (mini) mini.classList.remove("timer-expired-blink")
+    if (mini) {
+      mini.classList.toggle("timer-expired-blink", isExpired)
+      mini.classList.toggle("timer-expired-attention", isExpired)
+      const miniIcon = mini.querySelector("i")
+      if (miniIcon) {
+        miniIcon.className = isExpired
+          ? "fa-solid fa-bell"
+          : "fa-solid fa-stopwatch"
+      }
+    }
   }
 
   render() {
@@ -362,6 +486,62 @@ export class Timer {
     if (miniText) {
       this.renderTime(this.timeLeft, miniText, true)
     }
+    this.updateMiniIndicatorState()
+  }
+
+  updateMiniIndicatorState() {
+    const mini = document.getElementById("mini-timer-indicator")
+    if (!mini) return
+
+    mini.classList.toggle("is-running", this.isRunning && !this.isExpired)
+    mini.classList.toggle("is-ready", !this.isRunning && this.timeLeft > 0 && !this.isExpired)
+    mini.title = this.isExpired
+      ? "Timer finished"
+      : this.isRunning
+        ? "Timer running"
+        : this.timeLeft > 0
+          ? "Timer ready"
+          : "Timer"
+
+    const miniIcon = mini.querySelector("i")
+    if (miniIcon && !this.isExpired) {
+      miniIcon.className = this.isRunning
+        ? "fa-solid fa-hourglass-half"
+        : this.timeLeft > 0
+          ? "fa-solid fa-play"
+          : "fa-solid fa-stopwatch"
+    }
+  }
+
+  updateTimerStatus(forcedState = null) {
+    if (!this.status) return
+
+    let icon = "fa-circle-pause"
+    let label = "Ready"
+    const state =
+      forcedState ||
+      (this.isExpired
+        ? "finished"
+        : this.isRunning
+          ? "running"
+          : this.timeLeft > 0
+            ? "ready"
+            : "empty")
+
+    if (state === "running") {
+      icon = "fa-hourglass-half"
+      label = "Running"
+    } else if (state === "finished") {
+      icon = "fa-bell"
+      label = "Time's up"
+    } else if (state === "empty") {
+      icon = "fa-keyboard"
+      label = "Set time"
+    }
+
+    this.status.classList.toggle("is-running", state === "running")
+    this.status.classList.toggle("is-finished", state === "finished")
+    this.status.innerHTML = `<i class="fa-solid ${icon}"></i><span>${label}</span>`
   }
 
   renderTime(seconds, element, short = false) {
@@ -393,6 +573,7 @@ export class Timer {
     const current = getSettings().clockTimerMode === true
     const next = !current
     updateSetting("clockTimerMode", next)
+    updateSetting("timerMinimized", false)
     saveSettings()
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -402,9 +583,13 @@ export class Timer {
 
     // Automatically hide timer if countdown mode is enabled
     if (next) {
+      if (!this.timerId && this.timeLeft > 0) {
+        this.startTimer()
+      }
       updateSetting("showTimer", false)
       saveSettings()
       this.isVisible = false
+      this.syncTimerVisibilityControls(false)
       this.updateVisibility()
       
       // Sync the quick access button state

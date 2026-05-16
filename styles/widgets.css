@@ -1392,14 +1392,18 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: absolute;
   top: 100px;
   right: 20px;
-  width: 200px;
-  padding: 12px;
+  width: 224px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 1000;
-  border-radius: 16px;
+  border-radius: 18px;
   transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .timer-main-view,
@@ -1408,7 +1412,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 /* Specific button overrides for timer to fit narrow container */
@@ -1422,11 +1426,54 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 
 .timer-display {
   font-family: var(--font-clock);
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
   color: var(--text-color);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
+  letter-spacing: 0;
+  width: 100%;
+  padding: 10px 8px 8px;
+  text-align: center;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timer-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.timer-status i {
+  color: var(--accent-color);
+  font-size: 0.68rem;
+}
+
+.timer-status.is-running {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.24);
+  color: #fff;
+}
+
+.timer-status.is-finished {
+  background: rgba(255, 77, 109, 0.22);
+  border-color: rgba(255, 77, 109, 0.65);
+  color: #fff;
+}
+
+.timer-status.is-finished i {
+  color: #ff4d6d;
 }
 
 .timer-controls {
@@ -1437,8 +1484,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .timer-controls .icon-btn {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   font-size: 0.85rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1449,6 +1496,18 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.timer-controls #timer-start-pause {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-contrast-color, #1a1a2e);
+  box-shadow: 0 8px 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24);
+}
+
+.timer-controls #timer-start-pause:hover {
+  color: var(--accent-contrast-color, #1a1a2e);
+  filter: brightness(1.08);
 }
 
 .timer-controls .icon-btn:hover {
@@ -1523,6 +1582,43 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   margin-top: 5px;
 }
 
+.timer-keypad {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.timer-keypad-btn {
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.timer-keypad-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+  transform: translateY(-1px);
+}
+
+.timer-keypad-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.timer-keypad-btn.is-utility {
+  color: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.035);
+}
+
 .timer-input-actions {
   display: flex;
   gap: 8px;
@@ -1568,9 +1664,43 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   font-size: 0.8rem;
 }
 
+.mini-timer-indicator.is-ready {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.mini-timer-indicator.is-running {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+  box-shadow:
+    0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
+    0 8px 22px rgba(0, 0, 0, 0.22);
+}
+
 .timer-expired-blink {
   animation: timerBlink 0.6s ease-in-out infinite alternate !important;
   color: #fff !important;
+}
+
+.timer-container.timer-expired-attention,
+.quick-btn.timer-expired-attention,
+.mini-timer-indicator.timer-expired-attention {
+  border-color: rgba(255, 77, 109, 0.85) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 77, 109, 0.35),
+    0 0 22px rgba(255, 77, 109, 0.65) !important;
+}
+
+.quick-btn.timer-expired-attention i,
+.mini-timer-indicator.timer-expired-attention i {
+  color: #ff4d6d !important;
+}
+
+.timer-container.timer-expired-attention .timer-display {
+  color: #fff !important;
+  text-shadow:
+    0 0 8px rgba(255, 77, 109, 0.9),
+    0 0 18px rgba(255, 77, 109, 0.65);
 }
 
 @keyframes timerBlink {
@@ -4462,6 +4592,25 @@ body.bookmark-macos-hover .bookmark {
 body.bookmark-macos-hover .bookmark:hover {
   background: transparent !important; /* Force transparent hover bg in MacOS mode */
   box-shadow: none !important;
+}
+
+body.bookmark-item-card-style.bookmark-macos-hover .bookmark,
+body.bookmark-item-card-style.bookmark-macos-hover .add-bookmark-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(
+    --bookmark-box-shadow,
+    0 4px 12px rgba(0, 0, 0, 0.2)
+  ) !important;
+}
+
+body.bookmark-item-card-style.bookmark-macos-hover .bookmark:hover,
+body.bookmark-item-card-style.bookmark-macos-hover .add-bookmark-card:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Dynamic origins based on layout */

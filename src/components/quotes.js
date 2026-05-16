@@ -534,12 +534,17 @@ export class DailyQuotes {
       resultOverlay.style.display = "none"
     })
 
-    window.addEventListener("languageChanged", () => {
+    const refreshLanguage = () => {
       this.updateQuote()
       this.updateCrystalBallUI()
-    })
+    }
+
+    window.addEventListener("languageChanged", refreshLanguage)
 
     window.addEventListener("layoutUpdated", (e) => {
+      if (e.detail.key === "language") {
+        refreshLanguage()
+      }
       if (e.detail.key === "showQuotes") {
         this.applySettings()
       }
