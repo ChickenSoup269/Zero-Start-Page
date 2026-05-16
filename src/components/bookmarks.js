@@ -334,34 +334,31 @@ function getToggleIconClass(isHidden) {
   return "fa-solid fa-layer-group"
 }
 
+export function updateBookmarkGroupsToggleIcon() {
+  const icon = bookmarkGroupsToggle?.querySelector("i")
+  if (!icon) return
+  icon.className = getToggleIconClass(
+    document.body.classList.contains("groups-hidden"),
+  )
+}
+
 export function renderBookmarks() {
   const settings = getSettings()
+  document.body.classList.toggle("groups-hidden", settings.groupsHidden === true)
   
   if (!toggleListenerAdded) {
-    // Initial restoration of hidden state
-    if (settings.groupsHidden) {
-      document.body.classList.add("groups-hidden")
-    }
-
-    // Set initial icon
-    const initialIcon = bookmarkGroupsToggle.querySelector("i")
-    if (initialIcon) {
-      initialIcon.className = getToggleIconClass(!!settings.groupsHidden)
-    }
+    updateBookmarkGroupsToggleIcon()
 
     bookmarkGroupsToggle.addEventListener("click", () => {
       const isHidden = document.body.classList.toggle("groups-hidden")
       updateSetting("groupsHidden", isHidden)
       saveSettings()
-      
-      const icon = bookmarkGroupsToggle.querySelector("i")
-      if (icon) {
-        icon.className = getToggleIconClass(isHidden)
-      }
+      updateBookmarkGroupsToggleIcon()
     })
     
     toggleListenerAdded = true
   }
+  updateBookmarkGroupsToggleIcon()
   const i18n = geti18n()
 
   // 1. Render Group Tabs
@@ -859,6 +856,7 @@ export function initBookmarks() {
         e.detail.key === "bookmarkSidebarMode" ||
         e.detail.key === "bookmarkTheme")
     ) {
+      updateBookmarkGroupsToggleIcon()
       requestAnimationFrame(updateOverflowBookmarks)
     }
   })

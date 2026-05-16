@@ -863,7 +863,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: absolute;
   left: calc(100% + 12px);
   top: 0;
-  width: 260px;
+  width: 300px;
   background: rgba(15, 18, 25, 0.9);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -1831,6 +1831,80 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   margin: 4px 0;
 }
 
+.calendar-event-form-menu {
+  min-width: 260px;
+  padding: 10px;
+}
+
+.calendar-event-form {
+  display: grid;
+  gap: 10px;
+}
+
+.calendar-event-form-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-color);
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 2px 2px 4px;
+}
+
+.calendar-event-form label {
+  display: grid;
+  gap: 5px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.calendar-event-form input,
+.calendar-event-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  padding: 8px 9px;
+  font: inherit;
+  outline: none;
+}
+
+.calendar-event-form textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.calendar-event-form input:focus,
+.calendar-event-form textarea:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.18);
+}
+
+.calendar-event-form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.calendar-event-form-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.calendar-event-form-actions button[type="submit"] {
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, #fff);
+  border-color: var(--accent-color);
+}
+
 /* Responsiveness & Screen Fitting */
 @media (max-width: 500px) {
   .calendar-card {
@@ -1916,10 +1990,10 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 #context-menu,
 .calendar-context-menu {
   position: fixed;
-  padding: 5px;
-  min-width: 200px;
+  padding: 8px;
+  min-width: 220px;
   z-index: 20000; /* Higher than hidden-bookmarks-popup (10000) and modals */
-  border-radius: 6px; /* Reduced bo góc chuẩn MacOS */
+  border-radius: 9px;
   background: rgba(35, 35, 45, 0.85); /* Default dark background */
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -1980,18 +2054,33 @@ body.context-menu-light .context-menu-divider {
   background: rgba(0, 0, 0, 0.08);
 }
 
+body.context-menu-light .calendar-event-form-title {
+  color: #111;
+}
+
+body.context-menu-light .calendar-event-form label {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+body.context-menu-light .calendar-event-form input,
+body.context-menu-light .calendar-event-form textarea {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #111;
+}
+
 /* Common Item Styling */
 .context-menu-item,
 .menu-item {
-  padding: 6px 10px;
+  padding: 9px 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px; /* Kích thước chữ chuẩn Mac */
+  gap: 12px;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: background 0.1s ease;
-  margin: 1px 0;
+  margin: 2px 0;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -2026,24 +2115,72 @@ body.context-menu-dark .menu-item:hover i {
   color: #fff !important;
 }
 
-/* Transparent (None) */
+/* macOS Graphite */
+body.context-menu-macos #context-menu,
+body.context-menu-macos .calendar-context-menu,
 body.context-menu-none #context-menu,
 body.context-menu-none .calendar-context-menu {
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
+  background: rgba(242, 242, 247, 0.82) !important;
+  backdrop-filter: blur(32px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
 }
 
+body.context-menu-macos .context-menu-item,
+body.context-menu-macos .menu-item,
+body.context-menu-none .context-menu-item,
+body.context-menu-none .menu-item {
+  color: rgba(18, 18, 22, 0.92);
+  font-weight: 500;
+}
+
+body.context-menu-macos .context-menu-item i,
+body.context-menu-macos .menu-item i,
+body.context-menu-none .context-menu-item i,
+body.context-menu-none .menu-item i {
+  color: rgba(18, 18, 22, 0.7);
+}
+
+body.context-menu-macos .context-menu-divider,
 body.context-menu-none .context-menu-divider {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.08);
 }
 
-body.context-menu-none .context-menu-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+body.context-menu-macos .context-menu-item:hover,
+body.context-menu-macos .menu-item:hover,
+body.context-menu-none .context-menu-item:hover,
+body.context-menu-none .menu-item:hover {
+  background: #0066ff;
+  color: #fff;
+}
+
+body.context-menu-macos .context-menu-item:hover i,
+body.context-menu-macos .menu-item:hover i,
+body.context-menu-none .context-menu-item:hover i,
+body.context-menu-none .menu-item:hover i {
+  color: #fff;
+}
+
+body.context-menu-macos .calendar-event-form-title,
+body.context-menu-none .calendar-event-form-title {
+  color: #111;
+}
+
+body.context-menu-macos .calendar-event-form label,
+body.context-menu-none .calendar-event-form label {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+body.context-menu-macos .calendar-event-form input,
+body.context-menu-macos .calendar-event-form textarea,
+body.context-menu-none .calendar-event-form input,
+body.context-menu-none .calendar-event-form textarea {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #111;
 }
 
 .context-menu-item i,
@@ -3457,6 +3594,14 @@ body.bookmark-taskbar-top-mode .bookmark-groups-toggle {
   transform: translateX(-50%);
 }
 
+body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-toggle {
+  margin: 8px 4px 10px !important;
+}
+
+body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-container {
+  padding-top: 2px !important;
+}
+
 body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-container {
   transform: translateY(-20px) scale(0.9);
 }
@@ -3761,6 +3906,14 @@ body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle {
   position: relative;
   top: -1px;
   backdrop-filter: blur(10px);
+}
+
+body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-toggle {
+  margin: 8px 4px 10px !important;
+}
+
+body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-container {
+  padding-top: 2px !important;
 }
 
 /* Hover khi đang ẩn groups: taskbar expand ngang, sidebar expand dọc */

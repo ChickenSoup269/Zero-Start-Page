@@ -53,7 +53,11 @@ export class FullCalendar {
       } else if (e.target.closest("#next-month")) {
         this.navigateMonth(1)
       } else if (e.target.closest("#calendar-add-event")) {
-        this.openEventModal()
+        const rect = e.target.closest("#calendar-add-event").getBoundingClientRect()
+        const dateStr = this.selectedDate
+          ? this.formatDate(this.selectedDate)
+          : this.formatDate(new Date())
+        this.showEventFormMenu(rect.left, rect.bottom + 8, { dateStr })
       } else if (e.target.closest(".calendar-event")) {
         const eventId = e.target.closest(".calendar-event").dataset.eventId
         this.showEventContextMenu(e.clientX, e.clientY, eventId)
@@ -110,6 +114,10 @@ export class FullCalendar {
     })
   }
 
+  formatDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+  }
+
   selectDay(dayElement) {
     const dayNumber = dayElement.querySelector(".day-number")
     if (!dayNumber) return
@@ -135,19 +143,16 @@ export class FullCalendar {
     menu.className = "calendar-context-menu"
     menu.style.left = `${x}px`
     menu.style.top = `${y}px`
+    menu.addEventListener("click", (e) => e.stopPropagation())
 
     // Add Event option
     const addItem = document.createElement("div")
     addItem.className = "context-menu-item"
     addItem.innerHTML = `<i class="fa-solid fa-plus"></i> ${i18n.calendar_add_event || "Add Event"}`
     addItem.addEventListener("click", () => {
-      this.selectedDate = new Date(
-        this.viewDate.getFullYear(),
-        this.viewDate.getMonth(),
-        day,
-      )
-      this.openEventModal()
+      const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
       this.hideContextMenu()
+      this.showEventFormMenu(x, y, { dateStr })
     })
     menu.appendChild(addItem)
 
@@ -162,8 +167,8 @@ export class FullCalendar {
         eventItem.className = "context-menu-item event-item"
         eventItem.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${event.title}${event.time ? " - " + event.time : ""}`
         eventItem.addEventListener("click", () => {
-          this.openEventModal(event.id)
           this.hideContextMenu()
+          this.showEventFormMenu(x, y, { eventId: event.id })
         })
         menu.appendChild(eventItem)
       })
@@ -172,14 +177,7 @@ export class FullCalendar {
     document.body.appendChild(menu)
     this.currentContextMenu = menu
 
-    // Adjust position if menu goes off-screen
-    const rect = menu.getBoundingClientRect()
-    if (rect.right > window.innerWidth) {
-      menu.style.left = `${x - rect.width}px`
-    }
-    if (rect.bottom > window.innerHeight) {
-      menu.style.top = `${y - rect.height}px`
-    }
+    this.positionContextMenu(menu, x, y)
   }
 
   showEventContextMenu(x, y, eventId) {
@@ -190,13 +188,14 @@ export class FullCalendar {
     menu.className = "calendar-context-menu"
     menu.style.left = `${x}px`
     menu.style.top = `${y}px`
+    menu.addEventListener("click", (e) => e.stopPropagation())
 
     const editItem = document.createElement("div")
     editItem.className = "context-menu-item"
     editItem.innerHTML = `<i class="fa-solid fa-edit"></i> ${i18n.menu_edit || "Edit"}`
     editItem.addEventListener("click", () => {
-      this.openEventModal(eventId)
       this.hideContextMenu()
+      this.showEventFormMenu(x, y, { eventId })
     })
     menu.appendChild(editItem)
 
@@ -218,14 +217,99 @@ export class FullCalendar {
     document.body.appendChild(menu)
     this.currentContextMenu = menu
 
-    // Adjust position if menu goes off-screen
+    this.positionContextMenu(menu, x, y)
+  }
+
+  showEventFormMenu(x, y, { dateStr = null, eventId = null } = {}) {
+    const i18n = geti18n()
+    this.hideContextMenu()
+
+    const event = eventId
+      ? getCalendarEvents().find((e) => e.id === eventId)
+      : null
+    const targetDate = event?.date || dateStr || this.formatDate(new Date())
+
+    const menu = document.createElement("div")
+    menu.className = "calendar-context-menu calendar-event-form-menu"
+    menu.addEventListener("click", (e) => e.stopPropagation())
+    menu.innerHTML = `
+      <form class="calendar-event-form">
+        <div class="calendar-event-form-title">
+          <i class="fa-solid ${event ? "fa-pen" : "fa-plus"}"></i>
+          <span>${event ? i18n.calendar_edit_event || "Edit Event" : i18n.calendar_add_event || "Add Event"}</span>
+        </div>
+        <label>
+          <span>${i18n.calendar_new_event || "Event Title"}</span>
+          <input type="text" name="title" autocomplete="off" required>
+        </label>
+        <label>
+          <span>${i18n.calendar_event_time || "Time"}</span>
+          <input type="time" name="time">
+        </label>
+        <label>
+          <span>${i18n.calendar_event_desc || "Description"}</span>
+          <textarea name="description" rows="3"></textarea>
+        </label>
+        <div class="calendar-event-form-actions">
+          <button type="button" class="calendar-event-cancel">${i18n.menu_cancel || "Cancel"}</button>
+          <button type="submit">${i18n.settings_save || "Save"}</button>
+        </div>
+      </form>
+    `
+
+    const form = menu.querySelector(".calendar-event-form")
+    const titleInput = form.elements.title
+    const timeInput = form.elements.time
+    const descInput = form.elements.description
+
+    titleInput.value = event?.title || ""
+    timeInput.value = event?.time || ""
+    descInput.value = event?.description || ""
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault()
+      const title = titleInput.value.trim()
+      if (!title) {
+        titleInput.focus()
+        return
+      }
+
+      const payload = {
+        title,
+        date: targetDate,
+        time: timeInput.value.trim(),
+        description: descInput.value.trim(),
+      }
+
+      if (event) {
+        updateCalendarEvent(event.id, payload)
+      } else {
+        addCalendarEvent(payload)
+      }
+
+      this.render()
+      this.hideContextMenu()
+    })
+
+    menu.querySelector(".calendar-event-cancel")?.addEventListener("click", () => {
+      this.hideContextMenu()
+    })
+
+    document.body.appendChild(menu)
+    this.currentContextMenu = menu
+    this.positionContextMenu(menu, x, y)
+    titleInput.focus()
+    titleInput.select()
+  }
+
+  positionContextMenu(menu, x, y) {
     const rect = menu.getBoundingClientRect()
-    if (rect.right > window.innerWidth) {
-      menu.style.left = `${x - rect.width}px`
-    }
-    if (rect.bottom > window.innerHeight) {
-      menu.style.top = `${y - rect.height}px`
-    }
+    const safeX =
+      rect.right > window.innerWidth ? x - rect.width : x
+    const safeY =
+      rect.bottom > window.innerHeight ? y - rect.height : y
+    menu.style.left = `${Math.max(8, safeX)}px`
+    menu.style.top = `${Math.max(8, safeY)}px`
   }
 
   hideContextMenu() {

@@ -8,7 +8,10 @@ import {
   updateSetting,
   saveSettings,
 } from "../../services/state.js"
-import { initMacosHoverForBookmarks } from "../bookmarks.js"
+import {
+  initMacosHoverForBookmarks,
+  updateBookmarkGroupsToggleIcon,
+} from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
 import { getContrastYIQ, hexToRgb } from "../../utils/colors.js"
 import { fadeToggle } from "../../utils/dom.js"
@@ -766,6 +769,7 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove(...layoutClasses)
       document.body.classList.add(targetClass)
     }
+    updateBookmarkGroupsToggleIcon()
 
     let bgStyle = settings.bookmarkLayoutBgStyle || "default"
     let bgColor = settings.bookmarkLayoutBgColor || ""
@@ -854,9 +858,14 @@ function createApplySettings(effectInstances) {
       "context-menu-dark",
       "context-menu-light",
       "context-menu-none",
+      "context-menu-macos",
     )
+    const contextMenuStyle =
+      settings.contextMenuStyle === "none"
+        ? "macos"
+        : settings.contextMenuStyle || "dark"
     document.body.classList.add(
-      `context-menu-${settings.contextMenuStyle || "dark"}`,
+      `context-menu-${contextMenuStyle}`,
     )
 
     document.body.classList.toggle(
@@ -1525,10 +1534,14 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.timeFormatSelect.value = settings.timeFormat || "24h"
     if (DOM.timezoneSelect)
       DOM.timezoneSelect.value = settings.timezone || "local"
+    const contextMenuInputValue =
+      settings.contextMenuStyle === "none"
+        ? "macos"
+        : settings.contextMenuStyle || "dark"
     if (DOM.contextMenuStyleSelect)
-      DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
+      DOM.contextMenuStyleSelect.value = contextMenuInputValue
     if (DOM.lcpContextMenuStyle)
-      DOM.lcpContextMenuStyle.value = settings.contextMenuStyle || "dark"
+      DOM.lcpContextMenuStyle.value = contextMenuInputValue
     if (DOM.hideSecondsCheckbox)
       DOM.hideSecondsCheckbox.checked = settings.hideSeconds === true
     if (DOM.cursorTrailClickCheckbox)
@@ -2925,7 +2938,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
     }
     if (DOM.contextMenuStyleSelect) {
-      DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
+      DOM.contextMenuStyleSelect.value =
+        settings.contextMenuStyle === "none"
+          ? "macos"
+          : settings.contextMenuStyle || "dark"
     }
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
