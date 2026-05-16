@@ -50,7 +50,10 @@ export class TodoList {
                   <label class="todo-select-all-label" title="Select All" for="todo-select-all">
                     <input type="checkbox" id="todo-select-all" name="todo-select-all" class="todo-checkbox">
                   </label>
-                  <h3 data-i18n="todo_title">Tasks</h3>
+                  <div class="todo-title-wrap">
+                    <h3 data-i18n="todo_title">Tasks</h3>
+                    <div id="todo-progress-text" class="todo-progress-text">0 tasks</div>
+                  </div>
                 </div>
                 <div class="todo-header-actions">
                   <button id="todo-delete-selected-btn" class="icon-btn todo-delete-selected-btn" style="display:none;"><i class="fa-solid fa-trash-can"></i></button>
@@ -60,9 +63,20 @@ export class TodoList {
                 </div>
             </div>
             <div id="todo-input-container" class="todo-input-container" style="display: none;">
-                <input type="text" id="todo-input" placeholder="What needs to be done?">
+                <div class="todo-input-shell">
+                  <i class="fa-solid fa-pen"></i>
+                  <input type="text" id="todo-input" placeholder="What needs to be done?">
+                </div>
+                <div class="todo-input-actions">
+                  <button id="todo-cancel-input-btn" class="secondary-btn">Cancel</button>
+                  <button id="todo-confirm-input-btn" class="primary-btn">Add</button>
+                </div>
             </div>
             <ul id="todo-list" class="todo-list"></ul>
+            <div id="todo-empty-state" class="todo-empty-state" style="display: none;">
+              <i class="fa-regular fa-circle-check"></i>
+              <span data-i18n="todo_empty_state">No tasks yet</span>
+            </div>
         `
   }
 
@@ -72,6 +86,8 @@ export class TodoList {
     const toggleBulkBtn = this.container.querySelector("#todo-toggle-bulk-btn")
     const inputContainer = this.container.querySelector("#todo-input-container")
     const input = this.container.querySelector("#todo-input")
+    const confirmInputBtn = this.container.querySelector("#todo-confirm-input-btn")
+    const cancelInputBtn = this.container.querySelector("#todo-cancel-input-btn")
     const selectAllCb = this.container.querySelector("#todo-select-all")
     const deleteSelectedBtn = this.container.querySelector(
       "#todo-delete-selected-btn",
@@ -80,16 +96,18 @@ export class TodoList {
     addBtn.addEventListener("click", () => {
       this.pendingSection = false
       const isHidden = inputContainer.style.display === "none"
-      inputContainer.style.display = isHidden ? "block" : "none"
+      inputContainer.style.display = isHidden ? "flex" : "none"
       input.placeholder = geti18n().todo_input_placeholder || "What needs to be done?"
+      confirmInputBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Add</span>`
       if (isHidden) input.focus()
     })
 
     addSectionBtn.addEventListener("click", () => {
       this.pendingSection = true
       const isHidden = inputContainer.style.display === "none"
-      inputContainer.style.display = isHidden ? "block" : "none"
+      inputContainer.style.display = isHidden ? "flex" : "none"
       input.placeholder = geti18n().todo_section_placeholder || "Section name..."
+      confirmInputBtn.innerHTML = `<i class="fa-solid fa-folder-plus"></i><span>Add</span>`
       if (isHidden) input.focus()
     })
 
@@ -101,16 +119,31 @@ export class TodoList {
       this.updateVisibility()
     })
 
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter" && input.value.trim()) {
-        if (this.pendingSection) {
-          this.addSection(input.value.trim())
-        } else {
-          this.addTodo(input.value.trim())
-        }
+    const submitInput = () => {
+      if (!input.value.trim()) return
+      if (this.pendingSection) {
+        this.addSection(input.value.trim())
+      } else {
+        this.addTodo(input.value.trim())
+      }
+      input.value = ""
+      inputContainer.style.display = "none"
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        submitInput()
+      }
+      if (e.key === "Escape") {
         input.value = ""
         inputContainer.style.display = "none"
       }
+    })
+
+    confirmInputBtn.addEventListener("click", submitInput)
+    cancelInputBtn.addEventListener("click", () => {
+      input.value = ""
+      inputContainer.style.display = "none"
     })
 
     selectAllCb.addEventListener("change", () => {
@@ -241,6 +274,8 @@ export class TodoList {
 
   render() {
     const list = this.container.querySelector("#todo-list")
+    const progressText = this.container.querySelector("#todo-progress-text")
+    const emptyState = this.container.querySelector("#todo-empty-state")
     list.innerHTML = ""
 
     // Remove stale selections
@@ -249,6 +284,21 @@ export class TodoList {
       if (!validIds.has(id)) this.selectedIds.delete(id)
     })
 
+    const tasks = this.todos.filter((t) => t.type !== "section")
+    const completedCount = tasks.filter((t) => t.completed).length
+    if (progressText) {
+      const i18n = geti18n()
+      progressText.textContent =
+        tasks.length === 0
+          ? i18n.todo_progress_empty || "0 tasks"
+          : (i18n.todo_progress_done || "{done}/{total} done")
+              .replace("{done}", completedCount)
+              .replace("{total}", tasks.length)
+    }
+    if (emptyState) {
+      emptyState.style.display = this.todos.length === 0 ? "flex" : "none"
+    }
+
     this.todos.forEach((item, index) => {
       if (item.type === "section") {
         const li = document.createElement("li")
@@ -256,9 +306,9 @@ export class TodoList {
         li.draggable = true
         li.dataset.index = index
         li.innerHTML = `
-          <span class="section-title"><i class="fa-solid fa-grip-vertical drag-handle-todo" style="margin-right: 8px; opacity: 0.5; cursor: grab;"></i>${item.text}</span>
+          <span class="section-title"><i class="fa-solid fa-grip-vertical drag-handle-todo"></i>${this.escapeHtml(item.text)}</span>
           <div class="todo-actions">
-            <button class="delete-btn"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="delete-btn" title="Delete section"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         `
         this._addDragEventListeners(li)
@@ -283,11 +333,13 @@ export class TodoList {
                   <label class="todo-item-select" title="" for="todo-cb-${item.id}">
                       <input type="checkbox" id="todo-cb-${item.id}" name="todo-cb-[${item.id}]" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
                 </label>
-                <i class="fa-solid fa-grip-vertical drag-handle-todo" style="opacity: 0.3; cursor: grab; font-size: 0.8rem;"></i>
-                <span class="todo-text">${item.text}</span>
+                <button class="todo-complete-btn" title="${item.completed ? "Mark incomplete" : "Mark complete"}">
+                  <i class="${item.completed ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}"></i>
+                </button>
+                <i class="fa-solid fa-grip-vertical drag-handle-todo"></i>
+                <span class="todo-text">${this.escapeHtml(item.text)}</span>
                 <div class="todo-actions">
-                    <button class="toggle-btn" title="${item.completed ? "Mark incomplete" : "Mark complete"}"><i class="${item.completed ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}" style="${item.completed ? "color: var(--accent-color);" : ""}"></i></button>
-                    <button class="delete-btn"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="delete-btn" title="Delete task"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `
 
@@ -303,7 +355,7 @@ export class TodoList {
         this._updateSelectAllState()
       })
 
-      li.querySelector(".toggle-btn").addEventListener("click", (e) => {
+      li.querySelector(".todo-complete-btn").addEventListener("click", (e) => {
         e.stopPropagation()
         this.toggleTodo(item.id)
       })
@@ -348,6 +400,15 @@ export class TodoList {
     })
 
     this._updateSelectAllState()
+  }
+
+  escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
   }
 
   async _confirmDelete(item) {

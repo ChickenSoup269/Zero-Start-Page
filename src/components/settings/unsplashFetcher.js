@@ -26,6 +26,18 @@ function preloadImage(url) {
   })
 }
 
+function getTargetImageDimensions() {
+  const dpr = window.devicePixelRatio || 1
+  return {
+    width: Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr),
+    height: Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr),
+  }
+}
+
+function formatResolution(width, height) {
+  return width && height ? `${width} x ${height}` : "Unknown size"
+}
+
 async function fetchUnsplashPhotoByParams(accessKey, params) {
   const search = new URLSearchParams({
     ...params,
@@ -206,13 +218,7 @@ async function setUnsplashRandomBackground(
   const collection =
     UNSPLASH_COLLECTIONS.find((c) => c.key === category) ||
     UNSPLASH_COLLECTIONS[0]
-  const dpr = window.devicePixelRatio || 1
-  const width = Math.round(
-    (window.innerWidth > 0 ? window.innerWidth : 1920) * dpr,
-  )
-  const height = Math.round(
-    (window.innerHeight > 0 ? window.innerHeight : 1080) * dpr,
-  )
+  const { width, height } = getTargetImageDimensions()
 
   try {
     const photo = await fetchBestUnsplashPhoto(accessKey, collection)
@@ -442,7 +448,18 @@ async function loadExplorerResults(append = false) {
         const item = document.createElement("div")
         item.className = "explorer-photo-item"
         item.style.backgroundImage = `url(${photo.urls.small})`
-        item.title = `By ${photo.user.name}`
+        const { width, height } = getTargetImageDimensions()
+        const originalSize = formatResolution(photo.width, photo.height)
+        const screenSize = formatResolution(width, height)
+        item.title = `By ${photo.user.name} - ${originalSize}`
+
+        const meta = document.createElement("div")
+        meta.className = "explorer-photo-meta"
+        meta.innerHTML = `
+          <span><i class="fa-solid fa-up-right-and-down-left-from-center"></i>${originalSize}</span>
+          <span><i class="fa-solid fa-display"></i>${screenSize}</span>
+        `
+        item.appendChild(meta)
 
         item.addEventListener("click", () => {
           applyUnsplashPhoto(photo, item)
@@ -488,9 +505,7 @@ async function applyUnsplashPhoto(photo, element = null) {
     element.classList.add("applying")
   }
 
-  const dpr = window.devicePixelRatio || 1
-  const width = Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr)
-  const height = Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr)
+  const { width, height } = getTargetImageDimensions()
   
   const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
   const separator = baseUrl.includes("?") ? "&" : "?"

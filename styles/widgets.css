@@ -1072,12 +1072,13 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 340px;
-  max-height: 400px;
+  width: 360px;
+  max-height: 460px;
   display: flex;
   flex-direction: column;
   z-index: 100;
   contain: layout style;
+  border-radius: 18px;
   transition:
     box-shadow 0.3s ease,
     border-color 0.3s ease;
@@ -1090,22 +1091,35 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .todo-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
   gap: 10px;
 }
 
 .todo-header-left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   flex: 1;
+  min-width: 0;
+}
+
+.todo-title-wrap {
+  min-width: 0;
+}
+
+.todo-progress-text {
+  margin-top: 3px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .todo-header h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.08rem;
+  font-weight: 750;
+  line-height: 1.15;
 }
 
 .todo-header-actions {
@@ -1194,16 +1208,38 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .todo-input-container {
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
   width: 100%;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.todo-input-shell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 10px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+}
+
+.todo-input-shell i {
+  color: var(--accent-color);
+  font-size: 0.8rem;
 }
 
 .todo-input-container input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 10px 14px;
+  background: transparent;
+  border: 0;
+  padding: 10px 0;
   color: white;
   font-size: 0.9rem;
   outline: none;
@@ -1211,9 +1247,21 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   transition: all 0.2s;
 }
 
-.todo-input-container input:focus {
+.todo-input-shell:focus-within {
   border-color: var(--accent-color);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.todo-input-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.todo-input-actions button {
+  flex: 1;
+  min-height: 32px;
+  border-radius: 8px;
+  font-size: 0.8rem;
 }
 
 .todo-list {
@@ -1223,6 +1271,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   overflow-y: auto;
   overflow-x: hidden;
   flex-grow: 1;
+  min-height: 0;
 }
 
 /* Custom Scrollbar for Todo List */
@@ -1239,45 +1288,51 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 
 .todo-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 8px;
-  margin: 4px 0;
-  border-radius: 10px;
+  gap: 8px;
+  padding: 9px 8px;
+  margin: 5px 0;
+  border-radius: 12px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .todo-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.085);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
 }
 
 .todo-text {
   flex-grow: 1;
   font-size: 0.95rem;
+  line-height: 1.35;
   cursor: pointer;
   transition: color 0.2s;
-  padding: 0 10px;
+  padding: 0 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .todo-item.completed .todo-text {
   text-decoration: line-through;
-  opacity: 0.4;
+  opacity: 0.45;
 }
 
 .todo-actions {
   display: flex;
-  gap: 8px;
-  opacity: 0.6;
+  gap: 4px;
+  opacity: 0;
   transition: opacity 0.2s;
+  flex-shrink: 0;
 }
 
 .todo-item:hover .todo-actions {
   opacity: 1;
 }
 
-.todo-actions button {
+.todo-actions button,
+.todo-complete-btn {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.7);
@@ -1290,9 +1345,27 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   justify-content: center;
 }
 
-.todo-actions .toggle-btn:hover {
+.todo-complete-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.todo-complete-btn i {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.todo-item.completed .todo-complete-btn i {
   color: var(--accent-color);
-  transform: scale(1.1);
+}
+
+.todo-complete-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+}
+
+.todo-complete-btn:hover i {
+  color: var(--accent-color);
 }
 
 .todo-actions .delete-btn:hover {
@@ -1321,9 +1394,11 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 
 .drag-handle-todo {
   padding: 4px;
-  margin-right: 4px;
   color: rgba(255, 255, 255, 0.4);
   transition: color 0.2s;
+  cursor: grab;
+  font-size: 0.78rem;
+  flex-shrink: 0;
 }
 
 .todo-item:hover .drag-handle-todo {
@@ -1385,6 +1460,23 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   background: var(--accent-color);
   border-color: var(--accent-color);
   color: var(--accent-contrast-color, #1a1a2e);
+}
+
+.todo-empty-state {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 130px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 650;
+  font-size: 0.9rem;
+}
+
+.todo-empty-state i {
+  font-size: 1.8rem;
+  color: var(--accent-color);
+  opacity: 0.8;
 }
 
 /* Timer Widget */

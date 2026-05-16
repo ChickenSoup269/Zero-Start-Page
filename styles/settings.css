@@ -35,7 +35,8 @@
     transform 0.28s ease;
 }
 
-.settings-section[data-section-id="special-effects"].collapsed #effect-section-body {
+.settings-section[data-section-id="special-effects"].collapsed
+  #effect-section-body {
   display: block;
   max-height: 0;
   opacity: 0;
@@ -68,11 +69,14 @@
 
 .settings-section[data-section-id="themes"].collapsed > .section-content,
 .settings-section[data-section-id="background"].collapsed > .section-content,
-.settings-section[data-section-id="gradient-multi-color"].collapsed > .section-content,
-.settings-section[data-section-id="animated-backgrounds"].collapsed > .section-content,
+.settings-section[data-section-id="gradient-multi-color"].collapsed
+  > .section-content,
+.settings-section[data-section-id="animated-backgrounds"].collapsed
+  > .section-content,
 .settings-section[data-section-id="font"].collapsed > .section-content,
 .settings-section[data-section-id="date-clock"].collapsed > .section-content,
-.settings-section[data-section-id="bookmark-custom"].collapsed > .section-content,
+.settings-section[data-section-id="bookmark-custom"].collapsed
+  > .section-content,
 .settings-section[data-section-id="custom-title"].collapsed > .section-content,
 .settings-section[data-section-id="layout"].collapsed > .section-content {
   display: block;
@@ -84,76 +88,122 @@
   transform: translateY(-8px);
 }
 
-.settings-section[data-section-id="special-effects"]:not(.collapsed) .effect-search-input {
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  .effect-search-input {
   animation: effectPanelReveal 0.24s ease both;
 }
 
-.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-category-header,
-.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-item {
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  #effect-grid
+  > .effect-category-header,
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  #effect-grid
+  > .effect-item {
   animation: effectItemReveal 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n + 1) {
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  #effect-grid
+  > *:nth-child(3n + 1) {
   animation-delay: 0.03s;
 }
 
-.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n + 2) {
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  #effect-grid
+  > *:nth-child(3n + 2) {
   animation-delay: 0.06s;
 }
 
-.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n) {
+.settings-section[data-section-id="special-effects"]:not(.collapsed)
+  #effect-grid
+  > *:nth-child(3n) {
   animation-delay: 0.09s;
 }
 
 .settings-section[data-section-id="themes"]:not(.collapsed) .theme-item,
-.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card,
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .bg-control-card,
 .settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item,
-.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group,
-.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed)
+  .setting-group,
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed)
+  .setting-group,
 .settings-section[data-section-id="font"]:not(.collapsed) .setting-group,
 .settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group,
-.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group,
-.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed)
+  .setting-group,
+.settings-section[data-section-id="custom-title"]:not(.collapsed)
+  .setting-group,
 .settings-section[data-section-id="layout"]:not(.collapsed) .setting-group {
   animation: effectItemReveal 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n + 1),
-.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n + 1),
-.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n + 1),
-.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n + 1),
-.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n + 1) {
+.settings-section[data-section-id="themes"]:not(.collapsed)
+  .theme-item:nth-child(3n + 1),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .bg-control-card:nth-child(3n + 1),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .local-bg-item:nth-child(3n + 1),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="font"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="date-clock"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="custom-title"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="layout"]:not(.collapsed)
+  .setting-group:nth-child(3n + 1) {
   animation-delay: 0.03s;
 }
 
-.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n + 2),
-.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n + 2),
-.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n + 2),
-.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n + 2),
-.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n + 2) {
+.settings-section[data-section-id="themes"]:not(.collapsed)
+  .theme-item:nth-child(3n + 2),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .bg-control-card:nth-child(3n + 2),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .local-bg-item:nth-child(3n + 2),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="font"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="date-clock"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="custom-title"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="layout"]:not(.collapsed)
+  .setting-group:nth-child(3n + 2) {
   animation-delay: 0.06s;
 }
 
-.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n),
-.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n),
-.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n),
-.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n),
-.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n) {
+.settings-section[data-section-id="themes"]:not(.collapsed)
+  .theme-item:nth-child(3n),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .bg-control-card:nth-child(3n),
+.settings-section[data-section-id="background"]:not(.collapsed)
+  .local-bg-item:nth-child(3n),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="font"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="date-clock"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="custom-title"]:not(.collapsed)
+  .setting-group:nth-child(3n),
+.settings-section[data-section-id="layout"]:not(.collapsed)
+  .setting-group:nth-child(3n) {
   animation-delay: 0.09s;
 }
 
@@ -215,15 +265,18 @@
   animation: effectItemReveal 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n + 1) {
+#accent-color-settings-body:not(.is-collapsed)
+  .accent-color-preset:nth-of-type(3n + 1) {
   animation-delay: 0.03s;
 }
 
-#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n + 2) {
+#accent-color-settings-body:not(.is-collapsed)
+  .accent-color-preset:nth-of-type(3n + 2) {
   animation-delay: 0.06s;
 }
 
-#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n) {
+#accent-color-settings-body:not(.is-collapsed)
+  .accent-color-preset:nth-of-type(3n) {
   animation-delay: 0.09s;
 }
 
@@ -270,18 +323,30 @@
   #light-pillar-settings,
   #liquid-ether-settings,
   #splash-cursor-settings,
-  .settings-section[data-section-id="special-effects"]:not(.collapsed) .effect-search-input,
-  .settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-category-header,
-  .settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-item,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed)
+    .effect-search-input,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed)
+    #effect-grid
+    > .effect-category-header,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed)
+    #effect-grid
+    > .effect-item,
   .settings-section[data-section-id="themes"]:not(.collapsed) .theme-item,
-  .settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card,
-  .settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item,
-  .settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group,
-  .settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="background"]:not(.collapsed)
+    .bg-control-card,
+  .settings-section[data-section-id="background"]:not(.collapsed)
+    .local-bg-item,
+  .settings-section[data-section-id="gradient-multi-color"]:not(.collapsed)
+    .setting-group,
+  .settings-section[data-section-id="animated-backgrounds"]:not(.collapsed)
+    .setting-group,
   .settings-section[data-section-id="font"]:not(.collapsed) .setting-group,
-  .settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group,
-  .settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group,
-  .settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="date-clock"]:not(.collapsed)
+    .setting-group,
+  .settings-section[data-section-id="bookmark-custom"]:not(.collapsed)
+    .setting-group,
+  .settings-section[data-section-id="custom-title"]:not(.collapsed)
+    .setting-group,
   .settings-section[data-section-id="layout"]:not(.collapsed) .setting-group,
   #accent-color-settings-body:not(.is-collapsed) .color-group-label,
   #accent-color-settings-body:not(.is-collapsed) .accent-color-preset,
@@ -1363,7 +1428,7 @@
   outline: none;
   border-color: var(--accent-color);
   background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(var(--accent-color-rgb), 0.15),
     0 0 15px rgba(var(--accent-color-rgb), 0.25);
   transform: translateY(-1px);
@@ -1691,12 +1756,15 @@
   background: rgba(0, 0, 0, 0.6) !important;
   color: white;
   z-index: 4;
-  width: 12px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0 !important;
   display: flex !important;
   align-items: center;
   justify-content: center;
-  border-radius: 50% !important;
+  border-radius: 7px !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   bottom: 8px;
   backdrop-filter: blur(4px);
@@ -1706,6 +1774,7 @@
 
 .video-thumb-badge {
   left: 8px;
+  right: auto;
 }
 
 .unsplash-credit-badge {
@@ -1714,8 +1783,8 @@
 
 .local-bg-item:hover .video-thumb-badge,
 .local-bg-item:hover .unsplash-credit-badge {
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
+  transform: scale(1.04);
 }
 
 .unsplash-author-tag {
@@ -1810,10 +1879,62 @@
   box-sizing: border-box;
 }
 
+.local-bg-thumb {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.001);
+  opacity: 0.96;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s ease;
+  will-change: transform, opacity;
+}
+
 .local-bg-item:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  animation: localBgHoverFade 1.25s ease-in-out infinite !important;
+  transform: translateY(-4px) scale(1.045) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.52);
   border-color: rgba(255, 255, 255, 0.2);
+  filter: brightness(1.08) saturate(1.04);
+  z-index: 8;
+}
+
+.local-bg-item.user-uploaded {
+  transition:
+    transform 0.48s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.42s ease,
+    border-color 0.36s ease;
+}
+
+.local-bg-item.user-uploaded:hover {
+  animation: none !important;
+  transform: translateY(-3px) scale(1.026) !important;
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.42);
+  border-color: rgba(255, 255, 255, 0.18);
+  filter: none;
+}
+
+.local-bg-item.user-uploaded:hover .local-bg-thumb {
+  transform: scale(1.035);
+  opacity: 1;
+}
+
+@keyframes localBgHoverFade {
+  0%,
+  100% {
+    opacity: 0.94;
+    filter: brightness(1.04) saturate(1.02);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.46);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.12) saturate(1.08);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58);
+  }
 }
 
 .local-bg-item.active {
@@ -2595,17 +2716,18 @@
 }
 
 .video-thumb-badge.is-video {
-  border-right: 3px solid #ff4b4b; /* Red for video */
-  border-left: none;
+  border-right: 3px solid #ff4b4b !important; /* Red for video */
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .video-thumb-badge.is-image {
-  border-right: 3px solid #4b7bff; /* Blue for image */
-  border-left: none;
+  border-right: 3px solid #4b7bff !important; /* Blue for image */
+  border-left: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .video-thumb-badge i {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
+  line-height: 1;
 }
 
 .video-thumb-badge span {
@@ -2926,11 +3048,15 @@
   transform: translateY(-1px);
 }
 
-#active-effect-settings-body .setting-item input[type="color"]::-webkit-color-swatch-wrapper {
+#active-effect-settings-body
+  .setting-item
+  input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-#active-effect-settings-body .setting-item input[type="color"]::-webkit-color-swatch {
+#active-effect-settings-body
+  .setting-item
+  input[type="color"]::-webkit-color-swatch {
   border: none;
   border-radius: 6px;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -2989,11 +3115,15 @@
   box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.4);
 }
 
-#active-effect-settings-body .setting-item-row input[type="color"]::-webkit-color-swatch-wrapper {
+#active-effect-settings-body
+  .setting-item-row
+  input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-#active-effect-settings-body .setting-item-row input[type="color"]::-webkit-color-swatch {
+#active-effect-settings-body
+  .setting-item-row
+  input[type="color"]::-webkit-color-swatch {
   border: none;
   border-radius: 50%;
 }
@@ -3012,11 +3142,13 @@
   transition: all 0.3s ease;
 }
 
-#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input):checked {
+#active-effect-settings-body
+  input[type="checkbox"]:not(.lcp-switch input):checked {
   background: var(--accent-color);
 }
 
-#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input)::before {
+#active-effect-settings-body
+  input[type="checkbox"]:not(.lcp-switch input)::before {
   content: "";
   position: absolute;
   width: 12px;
@@ -3028,7 +3160,8 @@
   transition: transform 0.2s ease;
 }
 
-#active-effect-settings-body input[type="checkbox"]:not(.lcp-switch input):checked::before {
+#active-effect-settings-body
+  input[type="checkbox"]:not(.lcp-switch input):checked::before {
   transform: translateX(16px);
 }
 
@@ -3191,7 +3324,7 @@
 .theme-item.active {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
   border-color: var(--accent-color, #a8c0ff);
-  box-shadow: 
+  box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.25),
     inset 0 0 0 1px var(--accent-color, #a8c0ff);
 }
@@ -3303,6 +3436,29 @@
 .theme-item:hover .theme-name,
 .theme-item.active .theme-name {
   color: #fff;
+}
+
+.theme-item:hover {
+  animation: localBgHoverFade 1.25s ease-in-out infinite !important;
+  transform: translateY(-4px) scale(1.035) !important;
+  filter: brightness(1.06) saturate(1.04);
+  z-index: 8;
+}
+
+.theme-item:hover .theme-preview {
+  transform: scale(1.025);
+}
+
+.accent-color-preset:hover,
+.accent-preset-item:hover,
+#user-accent-colors-gallery .user-color-item:hover {
+  animation: localBgHoverFade 1.25s ease-in-out infinite !important;
+  transform: translateY(-3px) scale(1.14) !important;
+  filter: brightness(1.08) saturate(1.08);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.28),
+    0 0 14px currentColor !important;
+  z-index: 8;
 }
 
 /* Sidebar Light Mode (High Contrast for Dark Accents) */
@@ -3687,6 +3843,18 @@ body.sidebar-light .theme-item:hover {
   background: rgba(0, 0, 0, 0.08);
 }
 
+body.sidebar-light .theme-item:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14) !important;
+}
+
+body.sidebar-light .accent-color-preset:hover,
+body.sidebar-light .accent-preset-item:hover,
+body.sidebar-light #user-accent-colors-gallery .user-color-item:hover {
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.18),
+    0 0 12px currentColor !important;
+}
+
 /* Dropdown Arrows for Sidebar Selects */
 body.sidebar-light .settings-sidebar select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,0.6)' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
@@ -3706,6 +3874,10 @@ body.sidebar-light .gallery-subtitle {
 body.sidebar-light .local-bg-item {
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.sidebar-light .local-bg-item:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18) !important;
 }
 
 body.sidebar-light .local-bg-item.active {
@@ -3886,6 +4058,14 @@ body.sidebar-light .unsplash-credit-badge {
   color: #000 !important;
   border: 1px solid rgba(0, 0, 0, 0.15) !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.sidebar-light .video-thumb-badge.is-video {
+  border-right: 3px solid #d92d2d !important;
+}
+
+body.sidebar-light .video-thumb-badge.is-image {
+  border-right: 3px solid #245bdb !important;
 }
 
 body.sidebar-light .video-thumb-badge i,
@@ -4396,7 +4576,15 @@ body.sidebar-light .remove-bg-btn:hover i {
 
 .explorer-photo-item.applying {
   pointer-events: none;
-  filter: brightness(0.5);
+}
+
+.explorer-photo-item.applying::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(1px);
 }
 
 .explorer-photo-item.applying::after {
@@ -4406,10 +4594,54 @@ body.sidebar-light .remove-bg-btn:hover i {
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform: translate(-50%, -50%);
   color: white;
   font-size: 1.5rem;
-  animation: fa-spin 1s infinite linear;
+  transform-origin: center;
+  animation: unsplashPhotoSpin 1s infinite linear;
+}
+
+@keyframes unsplashPhotoSpin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.explorer-photo-meta {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.explorer-photo-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 20px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.58);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.24);
 }
 
 .explorer-loading,
@@ -4701,10 +4933,6 @@ body.sidebar-light .remove-bg-btn:hover i {
 .gradient-v2-grid-full {
   grid-column: 1 / -1;
 }
-
-
-
-
 
 .user-gradientV2-item {
   position: relative;

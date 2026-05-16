@@ -344,6 +344,9 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
+      const thumbLayer = document.createElement("div")
+      thumbLayer.className = "local-bg-thumb"
+      item.appendChild(thumbLayer)
 
       // Match active state by UID if possible, otherwise by ID
       const isActive =
@@ -394,7 +397,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       if (isIdbMedia(bgId)) {
         getThumbnailUrl(bgId).then(async (thumbUrl) => {
           if (thumbUrl) {
-            item.style.backgroundImage = `url('${thumbUrl}')`
+            thumbLayer.style.backgroundImage = `url('${thumbUrl}')`
           } else {
             const originalUrl = await getImageUrl(bgId)
             if (originalUrl) {
@@ -403,13 +406,16 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                 originalUrl,
                 isVideo,
               )
-              if (newThumb) item.style.backgroundImage = `url('${newThumb}')`
-              else item.style.backgroundImage = `url('${originalUrl}')`
+              if (newThumb) {
+                thumbLayer.style.backgroundImage = `url('${newThumb}')`
+              } else {
+                thumbLayer.style.backgroundImage = `url('${originalUrl}')`
+              }
             }
           }
         })
       } else if (bgId) {
-        item.style.backgroundImage = `url('${bgId}')`
+        thumbLayer.style.backgroundImage = `url('${bgId}')`
       }
 
       if (isVideo) item.classList.add("video-bg-item")
