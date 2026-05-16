@@ -465,6 +465,7 @@
   "settings_ghost_controls": "Tự động ẩn khi không dùng",
   "notepad_title": "Ghi chú",
   "notepad_empty": "Chưa có ghi chú nào. Nhấn + để thêm.",
+  "notepad_delete_confirm": "Xóa ghi chú này?",
   "settings_show_notepad": "Hiện ghi chú",
   "quick_access_notepad": "Bật/Tắt Ghi chú",
   "calendar_prev_month": "Tháng trước",

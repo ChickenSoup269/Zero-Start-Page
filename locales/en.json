@@ -468,6 +468,7 @@
   "settings_ghost_controls": "Auto-hide when not in use",
   "notepad_title": "Notepad",
   "notepad_empty": "No notes yet. Click + to add one.",
+  "notepad_delete_confirm": "Delete this note?",
   "settings_show_notepad": "Show Notepad",
   "quick_access_notepad": "Toggle Notepad",
   "calendar_prev_month": "Previous Month",

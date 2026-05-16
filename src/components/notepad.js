@@ -1,7 +1,7 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
-import { showPrompt } from "../utils/dialog.js"
+import { showConfirm, showPrompt } from "../utils/dialog.js"
 import { fadeToggle } from "../utils/dom.js"
 
 export class Notepad {
@@ -112,10 +112,20 @@ export class Notepad {
     }, 100)
   }
 
-  deleteNote(id) {
+  async deleteNote(id) {
+    const i18n = geti18n()
+    const confirmed = await showConfirm(
+      i18n.notepad_delete_confirm || "Delete this note?",
+    )
+    if (!confirmed) return
+
     this.notes = this.notes.filter((n) => n.id !== id)
     delete this.detachedNotes[id]
     delete this.hiddenNotes[id]
+    if (this.floatingNotes[id]) {
+      this.floatingNotes[id].remove()
+      delete this.floatingNotes[id]
+    }
     this.saveNotes()
     this.saveDetachedState()
     this.saveHiddenState()
@@ -395,10 +405,8 @@ export class Notepad {
           ".floating-note-content",
         )
         if (floatingContent) {
-          const contentBg =
-            this.getContrastColor(newColor) === "#000000"
-              ? "#FFFFFF"
-              : "#000000"
+          const latestNote = this.notes.find((n) => n.id === noteId) || note
+          const contentBg = this.getContentBg(latestNote)
           const contentTextColor =
             contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
           floatingContent.style.backgroundColor = contentBg
@@ -639,10 +647,8 @@ export class Notepad {
         // Update note-content background and text
         const contentDiv = noteDiv.querySelector(".note-content")
         if (contentDiv) {
-          const contentBg =
-            this.getContrastColor(newColor) === "#000000"
-              ? "#FFFFFF"
-              : "#000000"
+          const latestNote = this.notes.find((n) => n.id === note.id) || note
+          const contentBg = this.getContentBg(latestNote)
           const contentTextColor =
             contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
           contentDiv.style.backgroundColor = contentBg
@@ -701,6 +707,16 @@ export class Notepad {
     const div = document.createElement("div")
     div.textContent = text
     return div.innerHTML
+  }
+
+  getContentBg(note) {
+    if (note.contentBg === "#000000" || note.contentBg === "#FFFFFF") {
+      return note.contentBg
+    }
+
+    return this.getContrastColor(note.color) === "#000000"
+      ? "#FFFFFF"
+      : "#000000"
   }
 
   getContrastColor(hexColor) {

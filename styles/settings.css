@@ -22,6 +22,290 @@
   gap: 8px;
 }
 
+.settings-section[data-section-id="special-effects"] #effect-section-body {
+  display: block;
+  max-height: 20000px;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.22s ease,
+    padding 0.28s ease,
+    transform 0.28s ease;
+}
+
+.settings-section[data-section-id="special-effects"].collapsed #effect-section-body {
+  display: block;
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.settings-section[data-section-id="themes"] > .section-content,
+.settings-section[data-section-id="background"] > .section-content,
+.settings-section[data-section-id="gradient-multi-color"] > .section-content,
+.settings-section[data-section-id="animated-backgrounds"] > .section-content,
+.settings-section[data-section-id="font"] > .section-content,
+.settings-section[data-section-id="date-clock"] > .section-content,
+.settings-section[data-section-id="bookmark-custom"] > .section-content,
+.settings-section[data-section-id="custom-title"] > .section-content,
+.settings-section[data-section-id="layout"] > .section-content {
+  display: block;
+  max-height: 20000px;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.22s ease,
+    padding 0.28s ease,
+    transform 0.28s ease;
+}
+
+.settings-section[data-section-id="themes"].collapsed > .section-content,
+.settings-section[data-section-id="background"].collapsed > .section-content,
+.settings-section[data-section-id="gradient-multi-color"].collapsed > .section-content,
+.settings-section[data-section-id="animated-backgrounds"].collapsed > .section-content,
+.settings-section[data-section-id="font"].collapsed > .section-content,
+.settings-section[data-section-id="date-clock"].collapsed > .section-content,
+.settings-section[data-section-id="bookmark-custom"].collapsed > .section-content,
+.settings-section[data-section-id="custom-title"].collapsed > .section-content,
+.settings-section[data-section-id="layout"].collapsed > .section-content {
+  display: block;
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.settings-section[data-section-id="special-effects"]:not(.collapsed) .effect-search-input {
+  animation: effectPanelReveal 0.24s ease both;
+}
+
+.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-category-header,
+.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-item {
+  animation: effectItemReveal 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n + 1) {
+  animation-delay: 0.03s;
+}
+
+.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n + 2) {
+  animation-delay: 0.06s;
+}
+
+.settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > *:nth-child(3n) {
+  animation-delay: 0.09s;
+}
+
+.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item,
+.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card,
+.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item,
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="font"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group,
+.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group {
+  animation: effectItemReveal 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n + 1),
+.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n + 1),
+.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n + 1),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n + 1),
+.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n + 1) {
+  animation-delay: 0.03s;
+}
+
+.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n + 2),
+.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n + 2),
+.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n + 2),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n + 2),
+.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n + 2) {
+  animation-delay: 0.06s;
+}
+
+.settings-section[data-section-id="themes"]:not(.collapsed) .theme-item:nth-child(3n),
+.settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card:nth-child(3n),
+.settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item:nth-child(3n),
+.settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="font"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group:nth-child(3n),
+.settings-section[data-section-id="layout"]:not(.collapsed) .setting-group:nth-child(3n) {
+  animation-delay: 0.09s;
+}
+
+#accent-color-settings-body,
+#svg-wave-settings,
+#gradient-settings-body,
+#multi-color-settings-body,
+#gradient-v2-settings,
+#silk-settings,
+#light-pillar-settings,
+#liquid-ether-settings,
+#splash-cursor-settings {
+  display: block;
+  max-height: 12000px;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease,
+    margin 0.24s ease,
+    transform 0.24s ease;
+}
+
+#accent-color-settings-body.is-collapsed,
+#svg-wave-settings.is-collapsed,
+#gradient-settings-body.is-collapsed,
+#multi-color-settings-body.is-collapsed,
+#gradient-v2-settings.is-collapsed,
+#silk-settings.is-collapsed,
+#light-pillar-settings.is-collapsed,
+#liquid-ether-settings.is-collapsed,
+#splash-cursor-settings.is-collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+#accent-color-settings-body:not(.is-collapsed) .color-group-label,
+#accent-color-settings-body:not(.is-collapsed) .accent-color-preset,
+#accent-color-settings-body:not(.is-collapsed) .accent-color-custom-section,
+#svg-wave-settings:not(.is-collapsed) .setting-group,
+#svg-wave-settings:not(.is-collapsed) .setting-item,
+#gradient-settings-body:not(.is-collapsed) .gradient-config-card,
+#gradient-settings-body:not(.is-collapsed) .setting-item,
+#multi-color-settings-body:not(.is-collapsed) .setting-item,
+#multi-color-settings-body:not(.is-collapsed) .multi-color-picker-row,
+#gradient-v2-settings:not(.is-collapsed) .gradient-v2-panel,
+#gradient-v2-settings:not(.is-collapsed) .setting-item,
+#silk-settings:not(.is-collapsed) .setting-item,
+#light-pillar-settings:not(.is-collapsed) .gradient-v2-panel,
+#light-pillar-settings:not(.is-collapsed) .setting-item,
+#liquid-ether-settings:not(.is-collapsed) .gradient-v2-panel,
+#liquid-ether-settings:not(.is-collapsed) .setting-item,
+#splash-cursor-settings:not(.is-collapsed) .setting-item,
+#splash-cursor-settings:not(.is-collapsed) .setting-item-row {
+  animation: effectItemReveal 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n + 1) {
+  animation-delay: 0.03s;
+}
+
+#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n + 2) {
+  animation-delay: 0.06s;
+}
+
+#accent-color-settings-body:not(.is-collapsed) .accent-color-preset:nth-of-type(3n) {
+  animation-delay: 0.09s;
+}
+
+@keyframes effectPanelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes effectItemReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-section[data-section-id="special-effects"] #effect-section-body,
+  .settings-section[data-section-id="themes"] > .section-content,
+  .settings-section[data-section-id="background"] > .section-content,
+  .settings-section[data-section-id="gradient-multi-color"] > .section-content,
+  .settings-section[data-section-id="animated-backgrounds"] > .section-content,
+  .settings-section[data-section-id="font"] > .section-content,
+  .settings-section[data-section-id="date-clock"] > .section-content,
+  .settings-section[data-section-id="bookmark-custom"] > .section-content,
+  .settings-section[data-section-id="custom-title"] > .section-content,
+  .settings-section[data-section-id="layout"] > .section-content,
+  #accent-color-settings-body,
+  #svg-wave-settings,
+  #gradient-settings-body,
+  #multi-color-settings-body,
+  #gradient-v2-settings,
+  #silk-settings,
+  #light-pillar-settings,
+  #liquid-ether-settings,
+  #splash-cursor-settings,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed) .effect-search-input,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-category-header,
+  .settings-section[data-section-id="special-effects"]:not(.collapsed) #effect-grid > .effect-item,
+  .settings-section[data-section-id="themes"]:not(.collapsed) .theme-item,
+  .settings-section[data-section-id="background"]:not(.collapsed) .bg-control-card,
+  .settings-section[data-section-id="background"]:not(.collapsed) .local-bg-item,
+  .settings-section[data-section-id="gradient-multi-color"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="animated-backgrounds"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="font"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="date-clock"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="bookmark-custom"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="custom-title"]:not(.collapsed) .setting-group,
+  .settings-section[data-section-id="layout"]:not(.collapsed) .setting-group,
+  #accent-color-settings-body:not(.is-collapsed) .color-group-label,
+  #accent-color-settings-body:not(.is-collapsed) .accent-color-preset,
+  #accent-color-settings-body:not(.is-collapsed) .accent-color-custom-section,
+  #svg-wave-settings:not(.is-collapsed) .setting-group,
+  #svg-wave-settings:not(.is-collapsed) .setting-item,
+  #gradient-settings-body:not(.is-collapsed) .gradient-config-card,
+  #gradient-settings-body:not(.is-collapsed) .setting-item,
+  #multi-color-settings-body:not(.is-collapsed) .setting-item,
+  #multi-color-settings-body:not(.is-collapsed) .multi-color-picker-row,
+  #gradient-v2-settings:not(.is-collapsed) .gradient-v2-panel,
+  #gradient-v2-settings:not(.is-collapsed) .setting-item,
+  #silk-settings:not(.is-collapsed) .setting-item,
+  #light-pillar-settings:not(.is-collapsed) .gradient-v2-panel,
+  #light-pillar-settings:not(.is-collapsed) .setting-item,
+  #liquid-ether-settings:not(.is-collapsed) .gradient-v2-panel,
+  #liquid-ether-settings:not(.is-collapsed) .setting-item,
+  #splash-cursor-settings:not(.is-collapsed) .setting-item,
+  #splash-cursor-settings:not(.is-collapsed) .setting-item-row {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+
 .effect-item {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);

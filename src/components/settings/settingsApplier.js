@@ -1753,7 +1753,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.accentColorSettingsBody) {
       const isOpen = settings.accentControlsOpen !== false
-      DOM.accentColorSettingsBody.style.display = isOpen ? "block" : "none"
+      DOM.accentColorSettingsBody.style.display = "block"
+      DOM.accentColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
       DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
       if (DOM.accentColorToggleLabel) {
         const i18n = geti18n()
@@ -1965,7 +1966,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.gradientSettingsBody) {
       const isOpen = settings.gradientControlsOpen !== false
-      DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"
+      DOM.gradientSettingsBody.style.display = "block"
+      DOM.gradientSettingsBody.classList.toggle("is-collapsed", !isOpen)
       DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))
       if (DOM.gradientToggleLabel) {
         const i18n = geti18n()
@@ -2684,8 +2686,13 @@ function createUpdateSettingsInputs(effectInstances) {
     const waveActive = settings.svgWaveActive === true
     const waveGeneratorOpen =
       localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
-    if (DOM.svgWaveSettings)
-      DOM.svgWaveSettings.style.display = waveGeneratorOpen ? "block" : "none"
+    if (DOM.svgWaveSettings) {
+      DOM.svgWaveSettings.style.display = "block"
+      DOM.svgWaveSettings.classList.toggle(
+        "is-collapsed",
+        !waveGeneratorOpen,
+      )
+    }
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()
       DOM.svgWaveToggleLabel.textContent = waveGeneratorOpen

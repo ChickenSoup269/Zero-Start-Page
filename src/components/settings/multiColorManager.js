@@ -527,7 +527,8 @@ export function setupMultiColorManager(applySettings) {
   }
 
   function setMultiControlsExpanded(isOpen) {
-    DOM.multiColorSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.multiColorSettingsBody.style.display = "block"
+    DOM.multiColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
     DOM.multiColorToggleBtn.setAttribute("aria-expanded", String(isOpen))
     DOM.multiColorToggleLabel.textContent = t(
       isOpen ? "settings_multi_color_close" : "settings_multi_color_open",
@@ -750,7 +751,8 @@ export function setupMultiColorManager(applySettings) {
   })
 
   DOM.multiColorToggleBtn.addEventListener("click", () => {
-    const nextIsOpen = DOM.multiColorSettingsBody.style.display === "none"
+    const nextIsOpen =
+      DOM.multiColorSettingsBody.classList.contains("is-collapsed")
     setMultiControlsExpanded(nextIsOpen)
     updateSetting("multiColorControlsOpen", nextIsOpen)
     saveSettings()

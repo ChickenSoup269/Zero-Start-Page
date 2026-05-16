@@ -886,7 +886,8 @@ export function setupGeneralEventHandlers(
 
   const setAccentControlsExpanded = (isOpen) => {
     if (!DOM.accentColorSettingsBody || !DOM.accentColorToggleLabel) return
-    DOM.accentColorSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.accentColorSettingsBody.style.display = "block"
+    DOM.accentColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
     DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
     DOM.accentColorToggleLabel.textContent =
       geti18n()?.[
@@ -895,7 +896,8 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.accentColorToggleBtn?.addEventListener("click", () => {
-    const nextIsOpen = DOM.accentColorSettingsBody?.style.display === "none"
+    const nextIsOpen =
+      DOM.accentColorSettingsBody?.classList.contains("is-collapsed") ?? true
     setAccentControlsExpanded(nextIsOpen)
     updateSetting("accentControlsOpen", nextIsOpen)
     saveSettings()
@@ -1326,7 +1328,8 @@ export function setupGeneralEventHandlers(
 
   const setGradientControlsExpanded = (isOpen) => {
     if (!DOM.gradientSettingsBody || !DOM.gradientToggleLabel) return
-    DOM.gradientSettingsBody.style.display = isOpen ? "block" : "none"
+    DOM.gradientSettingsBody.style.display = "block"
+    DOM.gradientSettingsBody.classList.toggle("is-collapsed", !isOpen)
     DOM.gradientToggleBtn?.setAttribute("aria-expanded", String(isOpen))
     DOM.gradientToggleLabel.textContent =
       geti18n()?.[
@@ -1502,7 +1505,8 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.gradientToggleBtn?.addEventListener("click", () => {
-    const nextIsOpen = DOM.gradientSettingsBody?.style.display === "none"
+    const nextIsOpen =
+      DOM.gradientSettingsBody?.classList.contains("is-collapsed") ?? true
     setGradientControlsExpanded(nextIsOpen)
     updateSetting("gradientControlsOpen", nextIsOpen)
     saveSettings()

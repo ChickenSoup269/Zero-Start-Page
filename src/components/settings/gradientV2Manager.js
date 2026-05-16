@@ -36,9 +36,13 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
   const toggleLabel = dom.gradientV2ToggleLabel || document.getElementById("gradient-v2-toggle-label")
 
   if (toggleBtn && settingsPanel) {
+    const isInitiallyHidden = settingsPanel.style.display === "none"
+    settingsPanel.style.display = "block"
+    settingsPanel.classList.toggle("is-collapsed", isInitiallyHidden)
     toggleBtn.addEventListener("click", () => {
-      const isHidden = settingsPanel.style.display === "none"
-      settingsPanel.style.display = isHidden ? "block" : "none"
+      const isHidden = settingsPanel.classList.contains("is-collapsed")
+      settingsPanel.style.display = "block"
+      settingsPanel.classList.toggle("is-collapsed", !isHidden)
       if (toggleLabel) {
         toggleLabel.setAttribute(
           "data-i18n",
