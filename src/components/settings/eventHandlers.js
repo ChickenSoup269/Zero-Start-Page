@@ -576,6 +576,11 @@ export function setupGeneralEventHandlers(
     await loadLanguage(getSettings().language)
     applyTranslations()
     populateUnsplashCollections(DOM.unsplashCategorySelect, getSettings())
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "language", value: DOM.languageSelect.value },
+      }),
+    )
   })
 
   // Background inputs

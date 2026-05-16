@@ -2100,6 +2100,17 @@ body.context-menu-light .calendar-event-form textarea {
   color: #111;
 }
 
+body.context-menu-light .calendar-event-form-actions .calendar-event-cancel {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #111;
+}
+
+body.context-menu-light .calendar-event-form-actions .calendar-event-cancel:hover {
+  background: rgba(0, 0, 0, 0.16);
+  border-color: rgba(0, 0, 0, 0.28);
+}
+
 body.context-menu-light .calendar-event-preview-title {
   color: #111;
 }

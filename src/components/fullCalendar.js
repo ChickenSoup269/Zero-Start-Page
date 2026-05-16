@@ -44,6 +44,9 @@ export class FullCalendar {
       if (e.detail.key === "calendarSkin") {
         this.applySkin()
       }
+      if (e.detail.key === "language") {
+        this.render()
+      }
     })
 
     // Left click handlers
@@ -557,9 +560,35 @@ export class FullCalendar {
       this.container.classList.remove("with-lunar")
     }
 
-    const monthName = this.viewDate.toLocaleString("default", {
-      month: "long",
-    })
+    const monthKeys = [
+      "calendar_month_january",
+      "calendar_month_february",
+      "calendar_month_march",
+      "calendar_month_april",
+      "calendar_month_may",
+      "calendar_month_june",
+      "calendar_month_july",
+      "calendar_month_august",
+      "calendar_month_september",
+      "calendar_month_october",
+      "calendar_month_november",
+      "calendar_month_december",
+    ]
+    const monthFallbacks = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ]
+    const monthName = i18n[monthKeys[month]] || monthFallbacks[month]
 
     let lunarMonthHeader = ""
     if (this.showLunar) {
@@ -586,7 +615,15 @@ export class FullCalendar {
     daysGrid.className = "days-grid"
 
     // Weekday headers
-    const weekdays = ["S", "M", "T", "W", "T", "F", "S"]
+    const weekdays = [
+      i18n.calendar_weekday_sun || "Sun",
+      i18n.calendar_weekday_mon || "Mon",
+      i18n.calendar_weekday_tue || "Tue",
+      i18n.calendar_weekday_wed || "Wed",
+      i18n.calendar_weekday_thu || "Thu",
+      i18n.calendar_weekday_fri || "Fri",
+      i18n.calendar_weekday_sat || "Sat",
+    ]
     weekdays.forEach((wd) => {
       const wdDiv = document.createElement("div")
       wdDiv.className = "weekday-header"
