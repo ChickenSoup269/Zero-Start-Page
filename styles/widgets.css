@@ -1590,17 +1590,17 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 320px;
-  max-width: min(420px, 95vw);
+  width: 390px;
+  max-width: min(490px, 95vw);
   z-index: 100;
-  padding: 1.2rem;
+  padding: 1.25rem;
   transition: all 0.3s ease;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
 }
 
 .calendar-card.with-lunar {
-  width: 380px;
+  width: 450px;
 }
 
 .lunar-month-title {
@@ -1632,8 +1632,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px;
-  font-size: 0.8rem;
+  gap: 6px;
+  font-size: 0.84rem;
 }
 
 .weekday-header {
@@ -1646,14 +1646,14 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .day-item {
-  min-height: 52px;
+  min-height: 62px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 4px;
+  padding: 5px;
   position: relative;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.02);
@@ -1665,17 +1665,17 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   justify-content: space-between;
   align-items: baseline;
   width: 100%;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .day-item .day-number {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
 }
 
 .day-item .lunar-date {
-  font-size: 0.6rem;
+  font-size: 0.64rem;
   opacity: 0.6;
   font-weight: 500;
   color: var(--accent-color);
@@ -1688,7 +1688,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .day-item .holiday-name {
-  font-size: 0.55rem;
+  font-size: 0.58rem;
   background: rgba(255, 107, 107, 0.15);
   color: #ff6b6b;
   padding: 1px 3px;
@@ -1747,9 +1747,9 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .calendar-event {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
   border-left: 2px solid var(--accent-color);
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-size: 0.6rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.63rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1772,7 +1772,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 }
 
 .calendar-event-more {
-  font-size: 0.55rem;
+  font-size: 0.58rem;
   opacity: 0.6;
   text-align: center;
   font-weight: 600;
@@ -1903,6 +1903,37 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   background: var(--accent-color);
   color: var(--accent-contrast-color, #fff);
   border-color: var(--accent-color);
+}
+
+.calendar-event-preview {
+  max-width: 280px;
+  min-width: 220px;
+  padding: 11px 12px;
+  pointer-events: none;
+}
+
+.calendar-event-preview-title {
+  color: var(--accent-color);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.calendar-event-preview-meta {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.calendar-event-preview-desc {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* Responsiveness & Screen Fitting */
@@ -2069,6 +2100,18 @@ body.context-menu-light .calendar-event-form textarea {
   color: #111;
 }
 
+body.context-menu-light .calendar-event-preview-title {
+  color: #111;
+}
+
+body.context-menu-light .calendar-event-preview-meta {
+  color: rgba(0, 0, 0, 0.58);
+}
+
+body.context-menu-light .calendar-event-preview-desc {
+  color: rgba(0, 0, 0, 0.82);
+}
+
 /* Common Item Styling */
 .context-menu-item,
 .menu-item {
@@ -2181,6 +2224,21 @@ body.context-menu-none .calendar-event-form textarea {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(0, 0, 0, 0.14);
   color: #111;
+}
+
+body.context-menu-macos .calendar-event-preview-title,
+body.context-menu-none .calendar-event-preview-title {
+  color: #111;
+}
+
+body.context-menu-macos .calendar-event-preview-meta,
+body.context-menu-none .calendar-event-preview-meta {
+  color: rgba(0, 0, 0, 0.58);
+}
+
+body.context-menu-macos .calendar-event-preview-desc,
+body.context-menu-none .calendar-event-preview-desc {
+  color: rgba(0, 0, 0, 0.82);
 }
 
 .context-menu-item i,

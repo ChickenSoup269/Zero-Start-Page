@@ -103,6 +103,37 @@ export class FullCalendar {
       }
     })
 
+    this.container.addEventListener("mouseover", (e) => {
+      const eventEl = e.target.closest(".calendar-event")
+      if (eventEl && this.container.contains(eventEl)) {
+        this.showEventPreview(e.clientX, e.clientY, eventEl.dataset.eventId)
+        return
+      }
+
+      const holidayEl = e.target.closest(".holiday-name")
+      if (holidayEl && this.container.contains(holidayEl)) {
+        this.showHolidayPreview(e.clientX, e.clientY, holidayEl)
+      }
+    })
+
+    this.container.addEventListener("mousemove", (e) => {
+      const preview = this.currentEventPreview || this.currentHolidayPreview
+      if (!preview) return
+      this.positionContextMenu(preview, e.clientX + 12, e.clientY + 12)
+    })
+
+    this.container.addEventListener("mouseout", (e) => {
+      const eventEl = e.target.closest(".calendar-event")
+      if (eventEl && !eventEl.contains(e.relatedTarget)) {
+        this.hideEventPreview()
+      }
+
+      const holidayEl = e.target.closest(".holiday-name")
+      if (holidayEl && !holidayEl.contains(e.relatedTarget)) {
+        this.hideHolidayPreview()
+      }
+    })
+
     // Close context menu on click outside
     document.addEventListener("click", (e) => {
       if (
@@ -302,6 +333,82 @@ export class FullCalendar {
     titleInput.select()
   }
 
+  showEventPreview(x, y, eventId) {
+    const event = getCalendarEvents().find((e) => e.id === eventId)
+    if (!event) return
+
+    this.hideEventPreview()
+
+    const preview = document.createElement("div")
+    preview.className = "calendar-context-menu calendar-event-preview"
+
+    const title = document.createElement("div")
+    title.className = "calendar-event-preview-title"
+    title.textContent = event.title
+    preview.appendChild(title)
+
+    const meta = document.createElement("div")
+    meta.className = "calendar-event-preview-meta"
+    meta.textContent = [event.date, event.time].filter(Boolean).join(" | ")
+    preview.appendChild(meta)
+
+    if (event.description) {
+      const desc = document.createElement("div")
+      desc.className = "calendar-event-preview-desc"
+      desc.textContent = event.description
+      preview.appendChild(desc)
+    }
+
+    document.body.appendChild(preview)
+    this.currentEventPreview = preview
+    this.positionContextMenu(preview, x + 12, y + 12)
+  }
+
+  showHolidayPreview(x, y, holidayEl) {
+    const dayItem = holidayEl.closest(".day-item")
+    if (!dayItem) return
+
+    this.hideHolidayPreview()
+
+    const preview = document.createElement("div")
+    preview.className = "calendar-context-menu calendar-event-preview"
+
+    const title = document.createElement("div")
+    title.className = "calendar-event-preview-title"
+    title.textContent = holidayEl.textContent
+    preview.appendChild(title)
+
+    const dayNumber = dayItem.querySelector(".day-number")?.textContent || ""
+    const lunarDate = dayItem.querySelector(".lunar-date")?.textContent || ""
+    const meta = document.createElement("div")
+    meta.className = "calendar-event-preview-meta"
+    meta.textContent = [
+      dayNumber
+        ? `${dayNumber}/${this.viewDate.getMonth() + 1}/${this.viewDate.getFullYear()}`
+        : "",
+      lunarDate,
+    ].filter(Boolean).join(" | ")
+    preview.appendChild(meta)
+
+    document.body.appendChild(preview)
+    this.currentHolidayPreview = preview
+    this.positionContextMenu(preview, x + 12, y + 12)
+  }
+
+  hideEventPreview() {
+    if (this.currentEventPreview) {
+      this.currentEventPreview.remove()
+      this.currentEventPreview = null
+    }
+  }
+
+  hideHolidayPreview() {
+    if (this.currentHolidayPreview) {
+      this.currentHolidayPreview.remove()
+      this.currentHolidayPreview = null
+    }
+  }
+
   positionContextMenu(menu, x, y) {
     const rect = menu.getBoundingClientRect()
     const safeX =
@@ -430,6 +537,8 @@ export class FullCalendar {
 
   render() {
     if (!this.container) return
+    this.hideEventPreview()
+    this.hideHolidayPreview()
 
     // Preserve current position/display if container already exists
     const currentStyle = this.container.style.cssText
@@ -537,7 +646,6 @@ export class FullCalendar {
         const holiday = getVietnameseHoliday(day, month + 1, year)
         if (holiday) {
           dayDiv.classList.add("holiday")
-          dayDiv.title = holiday
           const holidayDiv = document.createElement("div")
           holidayDiv.className = "holiday-name"
           holidayDiv.textContent = holiday
@@ -556,7 +664,6 @@ export class FullCalendar {
           const eventEl = document.createElement("div")
           eventEl.className = "calendar-event"
           eventEl.dataset.eventId = event.id
-          eventEl.title = `${event.title}${event.time ? " - " + event.time : ""}${event.description ? "\n" + event.description : ""}`
           eventEl.innerHTML = `<span class="event-dot"></span><span class="event-title">${event.time ? event.time + " " : ""}${event.title}</span>`
           eventsContainer.appendChild(eventEl)
         })
