@@ -1392,7 +1392,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: absolute;
   top: 100px;
   right: 20px;
-  width: 180px;
+  width: 200px;
   padding: 12px;
   display: flex;
   flex-direction: column;
