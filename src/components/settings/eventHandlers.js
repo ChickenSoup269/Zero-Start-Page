@@ -729,18 +729,6 @@ export function setupGeneralEventHandlers(
     deleteSelectedCustomLanguage,
   )
 
-  DOM.copyEnglishLanguageBtn?.addEventListener("click", async () => {
-    try {
-      await copyTextToClipboard(await getLanguageTemplateText())
-      showAlert(
-        geti18n().language_template_copied ||
-          "English language JSON copied. Paste it into AI and translate the values only.",
-      )
-    } catch (e) {
-      showAlert(geti18n().language_copy_failed || "Could not copy JSON.")
-    }
-  })
-
   DOM.languageHelpBtn?.addEventListener("click", openLanguageModal)
   DOM.closeLanguageModalBtn?.addEventListener("click", closeLanguageModal)
   DOM.languageModal?.addEventListener("click", (event) => {

@@ -724,11 +724,7 @@
                 <div id="language-tools-panel" class="language-tools-panel is-collapsed">
                     <div class="language-tools-content">
                         <div class="language-tools">
-                            <button type="button" id="copy-english-language-btn" class="secondary-btn">
-                                <i class="fa-solid fa-copy"></i>
-                                <span data-i18n="language_copy_english_json">Copy English JSON</span>
-                            </button>
-                            <button type="button" id="language-help-btn" class="secondary-btn">
+                            <button type="button" id="language-help-btn" class="secondary-btn language-guide-btn">
                                 <i class="fa-solid fa-circle-question"></i>
                                 <span data-i18n="language_help">Quick Guide</span>
                             </button>
@@ -738,8 +734,8 @@
                                 <span data-i18n="language_delete_custom">Delete Custom Language</span>
                             </button>
                         </div>
-                        <small class="setting-hint language-tools-hint" data-i18n="language_custom_hint">Copy the English
-                            JSON, translate only the values, then paste your translated JSON in Quick Guide.</small>
+                        <small class="setting-hint language-tools-hint" data-i18n="language_custom_hint">Open Quick
+                            Guide, copy the AI prompt, then paste the translated JSON back into the modal.</small>
                     </div>
                 </div>
             </div>
@@ -2435,12 +2431,12 @@
                         </div>
                     </div>
 
-                    <!-- Liquid Ether Section -->
+                    <!-- Mist Light Streams Section -->
                     <div class="setting-group" id="liquid-ether-group">
                         <div class="setting-label"
                             style="display: flex; justify-content: space-between; align-items: center;">
-                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Liquid
-                                    Ether
+                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Mist
+                                    Light Streams
                                     (Animated)</span></span>
                         </div>
 
@@ -2459,8 +2455,8 @@
 
                         <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
                             <i class="fa-solid fa-sliders"></i>
-                            <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Liquid
-                                Ether</span>
+                            <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Mist
+                                Light Streams</span>
                         </button>
                         <div id="liquid-ether-settings" style="display: none; margin-top: 12px;">
 
@@ -2508,7 +2504,7 @@
                             <div class="gallery-header">
                                 <label class="gallery-title">
                                     <i class="fa-solid fa-bookmark"></i>
-                                    <span data-i18n="settings_liquid_ether_saved_label">Saved Liquid Ethers</span>
+                                    <span data-i18n="settings_liquid_ether_saved_label">Saved Mist Light Streams</span>
                                     <span id="count-liquid-ether" class="gallery-count"></span>
                                 </label>
                                 <button id="liquid-ether-select-mode-btn" class="secondary-btn select-mode-btn"
@@ -5270,12 +5266,12 @@
                 <span id="close-language-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="modal-body">
-                <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the English JSON, ask AI to
-                    translate the values into your language, then paste the translated JSON here.</p>
+                <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the AI prompt below, ask AI to
+                    translate the included English JSON into your language, then paste the translated JSON here.</p>
                 <div class="language-guide-box">
                     <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
                     <ol>
-                        <li data-i18n="language_modal_step_1">Copy the English JSON template.</li>
+                        <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON template.</li>
                         <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping every JSON key unchanged.</li>
                         <li data-i18n="language_modal_step_3">Paste the result below, then install it.</li>
                     </ol>

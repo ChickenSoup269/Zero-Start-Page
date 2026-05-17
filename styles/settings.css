@@ -2072,10 +2072,20 @@
   margin-top: 0;
   overflow: hidden;
   pointer-events: none;
+  max-height: 0;
+}
+
+.language-tools-panel.is-collapsed .language-tools-content {
+  max-height: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-width: 0 !important;
+  opacity: 0;
 }
 
 .language-tools-content {
   min-height: 0;
+  max-height: 360px;
   overflow: visible;
   padding: 12px;
   border-radius: 10px;
@@ -2088,7 +2098,7 @@
 
 .language-tools {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr !important;
   gap: 10px;
   overflow: visible;
   position: relative;
@@ -2124,6 +2134,10 @@
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   line-height: 1.45;
+}
+
+.language-guide-btn {
+  grid-column: 1 / -1;
 }
 
 .language-delete-btn {

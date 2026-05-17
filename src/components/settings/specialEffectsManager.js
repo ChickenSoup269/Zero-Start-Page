@@ -287,7 +287,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const isHidden = liquidEtherSettings.classList.contains("is-collapsed")
       setAnimatedPanelExpanded(liquidEtherSettings, isHidden)
       if (liquidEtherToggleLabel) {
-        liquidEtherToggleLabel.textContent = isHidden ? "Close Liquid Ether" : "Open Liquid Ether"
+        const i18n = geti18n()
+        liquidEtherToggleLabel.textContent = isHidden
+          ? i18n.settings_liquid_ether_close || "Close Mist Light Streams"
+          : i18n.settings_liquid_ether_open || "Open Mist Light Streams"
       }
     })
   }
@@ -363,7 +366,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       updateSetting("userLiquidEthers", [...saved, preset])
       saveSettings()
       renderUserLiquidEthers()
-      showAlert("Liquid Ether background saved!")
+      showAlert(geti18n().settings_liquid_ether_saved || "Mist Light Streams background saved!")
     })
   }
 
@@ -415,9 +418,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const isHidden = scSettings.classList.contains("is-collapsed")
       setAnimatedPanelExpanded(scSettings, isHidden)
       if (scToggleLabel) {
+        const i18n = geti18n()
         scToggleLabel.textContent = isHidden
-          ? "Close Splash Cursor"
-          : "Open Splash Cursor"
+          ? i18n.settings_splash_cursor_close || "Close Splash Cursor"
+          : i18n.settings_splash_cursor_open || "Open Splash Cursor"
       }
     })
   }

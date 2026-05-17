@@ -230,6 +230,117 @@ function createApplySettings(effectInstances) {
     let activeVideoSource = null
     if (bgVideoElement) bgVideoElement.style.display = "none"
 
+    const applyUserSelectedBackgroundBehindSplashCursor = () => {
+      if (isPredefinedLocalBg) {
+        if (bgLayer) bgLayer.classList.add(bg)
+        document.body.classList.add("bg-layer-active")
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+      } else if (isUserUploadedBg) {
+        document.body.classList.add("bg-image-active")
+        if (bg.startsWith("data:video") || isVideoId) {
+          if (bgVideoElement) {
+            activeVideoSource = bg
+            if (isIdbMedia(bg)) {
+              const url = getBlobUrlSync(bg)
+              if (url) activeVideoSource = url
+            }
+            if (
+              activeVideoSource &&
+              bgVideoElement.getAttribute("src") !== activeVideoSource
+            ) {
+              bgVideoElement.src = activeVideoSource
+            }
+            bgVideoElement.style.display = "block"
+            bgVideoElement.style.opacity = "1"
+          }
+        } else if (bgLayer) {
+          let imageUrl = bg
+          if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
+          if (imageUrl) {
+            bgLayer.style.backgroundImage = `url('${imageUrl}')`
+            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          }
+        }
+        document.body.style.backgroundSize = settings.bgSize || "cover"
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+      } else if (bg) {
+        document.body.classList.add("bg-image-active")
+        const isVideoUrl =
+          bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
+        if (isVideoUrl) {
+          if (bgVideoElement) {
+            activeVideoSource = bg
+            if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+              bgVideoElement.src = activeVideoSource
+            }
+            bgVideoElement.style.display = "block"
+            bgVideoElement.style.opacity = "1"
+          }
+          document.documentElement.style.setProperty("--text-color", "#ffffff")
+        } else if (bg.match(/^https?:\/\//)) {
+          if (bgLayer) {
+            bgLayer.style.backgroundImage = `url('${bg}')`
+            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          }
+          document.documentElement.style.setProperty("--text-color", "#ffffff")
+        } else {
+          if (bgLayer) bgLayer.style.background = bg
+          document.body.classList.add("bg-layer-active")
+          document.documentElement.style.setProperty(
+            "--text-color",
+            getContrastYIQ(bg),
+          )
+        }
+      } else {
+        if (bgLayer) {
+          const isMultiColorActive =
+            settings.activeBgUid?.startsWith("multi-") ||
+            (settings.multiColorActive === true &&
+              !settings.activeBgUid?.startsWith("grad-"))
+
+          if (
+            isMultiColorActive &&
+            Array.isArray(settings.multiColors) &&
+            settings.multiColors.length >= 2
+          ) {
+            bgLayer.style.background = buildMultiColorCss({
+              colors: settings.multiColors,
+              angle: settings.multiGradientAngle || 135,
+              mode: settings.multiColorMode || "smooth",
+              type: settings.multiColorType || "linear",
+              repeating: settings.multiColorRepeating || false,
+              position: settings.multiColorPosition || "center",
+              radialShape: settings.multiColorRadialShape || "circle",
+              dividerConfig: {
+                enabled: settings.multiColorDividers !== false,
+                color: settings.multiColorDividerColor || "#FFFFFF",
+                width: settings.multiColorDividerWidth || 1.2,
+              },
+              lineAngleConfig: {
+                enabled: Boolean(settings.multiColorFreeLineAngles),
+                lineAngles: Array.isArray(settings.multiColorLineAngles)
+                  ? settings.multiColorLineAngles
+                  : [],
+              },
+            })
+          } else {
+            bgLayer.style.background = buildGradientCss({
+              start: settings.gradientStart,
+              end: settings.gradientEnd,
+              angle: settings.gradientAngle,
+              type: settings.gradientType,
+              repeating: settings.gradientRepeating,
+              extraColorCount: settings.gradientExtraColorCount,
+              customColors: settings.gradientCustomColors,
+              position: settings.gradientPosition,
+              radialShape: settings.gradientRadialShape,
+            })
+          }
+        }
+        document.body.classList.add("bg-layer-active")
+      }
+    }
+
     // Priority 1: Gradient V2 (Animated)
     if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
       shouldUseGradientV2 = true
@@ -351,6 +462,8 @@ function createApplySettings(effectInstances) {
           bgLayer.style.opacity = "1"
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
+      } else {
+        applyUserSelectedBackgroundBehindSplashCursor()
       }
       const splashOpts = splashCursorOptionsFromSettings(settings)
       if (effectInstances.splashCursorEffect.active) {
