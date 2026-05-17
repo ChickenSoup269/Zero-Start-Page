@@ -38,6 +38,7 @@ Privacy & Performance
 Supported Languages
 - English
 - Tiếng Việt
+- Custom language JSON: copy the English template, translate values with AI, then paste the translated JSON in Settings.
 
 ---
 
@@ -88,6 +89,7 @@ Bảo mật & Hiệu suất
 Ngôn ngữ hỗ trợ
 - Tiếng Việt
 - Tiếng Anh
+- JSON ngôn ngữ tùy chỉnh: copy template tiếng Anh, nhờ AI dịch phần giá trị, rồi dán JSON đã dịch trong Cài đặt.
 
 ---
 

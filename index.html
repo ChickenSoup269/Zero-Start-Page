@@ -709,7 +709,7 @@
             <!-- Dynamically populated ToC items -->
         </div>
         <div class="sidebar-content">
-            <div class="setting-group">
+            <div class="setting-group language-setting-group">
                 <label data-i18n="settings_language" for="language-select"><i class="fa-solid fa-language"></i> Language
                     / Ngôn ngữ</label>
                 <select id="language-select">
@@ -722,33 +722,26 @@
                     <span data-i18n="language_tools_toggle">Custom Language Tools</span>
                 </button>
                 <div id="language-tools-panel" class="language-tools-panel is-collapsed">
-                    <div class="language-tools">
-                        <button type="button" id="copy-english-language-btn" class="secondary-btn">
-                            <i class="fa-solid fa-copy"></i>
-                            <span data-i18n="language_copy_english_json">Copy English JSON</span>
-                        </button>
-                        <button type="button" id="download-english-language-btn" class="secondary-btn">
-                            <i class="fa-solid fa-download"></i>
-                            <span data-i18n="language_download_english_json">Download JSON</span>
-                        </button>
-                        <button type="button" id="import-language-btn" class="secondary-btn">
-                            <i class="fa-solid fa-file-import"></i>
-                            <span data-i18n="language_import_json">Import Language</span>
-                        </button>
-                        <button type="button" id="language-help-btn" class="secondary-btn">
-                            <i class="fa-solid fa-circle-question"></i>
-                            <span data-i18n="language_help">Quick Guide</span>
-                        </button>
-                        <button type="button" id="delete-custom-language-btn"
-                            class="secondary-btn language-delete-btn" hidden>
-                            <i class="fa-solid fa-trash"></i>
-                            <span data-i18n="language_delete_custom">Delete Custom Language</span>
-                        </button>
+                    <div class="language-tools-content">
+                        <div class="language-tools">
+                            <button type="button" id="copy-english-language-btn" class="secondary-btn">
+                                <i class="fa-solid fa-copy"></i>
+                                <span data-i18n="language_copy_english_json">Copy English JSON</span>
+                            </button>
+                            <button type="button" id="language-help-btn" class="secondary-btn">
+                                <i class="fa-solid fa-circle-question"></i>
+                                <span data-i18n="language_help">Quick Guide</span>
+                            </button>
+                            <button type="button" id="delete-custom-language-btn"
+                                class="secondary-btn language-delete-btn" hidden>
+                                <i class="fa-solid fa-trash"></i>
+                                <span data-i18n="language_delete_custom">Delete Custom Language</span>
+                            </button>
+                        </div>
+                        <small class="setting-hint language-tools-hint" data-i18n="language_custom_hint">Copy the English
+                            JSON, translate only the values, then paste your translated JSON in Quick Guide.</small>
                     </div>
-                    <small class="setting-hint" data-i18n="language_custom_hint">Copy the English JSON, translate only
-                        the values, then import your translated JSON.</small>
                 </div>
-                <input type="file" id="language-file-input" accept="application/json,.json" hidden>
             </div>
 
             <div class="setting-group">
@@ -5278,13 +5271,13 @@
             </div>
             <div class="modal-body">
                 <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the English JSON, ask AI to
-                    translate the values into your language, then paste or import the translated JSON here.</p>
+                    translate the values into your language, then paste the translated JSON here.</p>
                 <div class="language-guide-box">
                     <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
                     <ol>
                         <li data-i18n="language_modal_step_1">Copy the English JSON template.</li>
                         <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping every JSON key unchanged.</li>
-                        <li data-i18n="language_modal_step_3">Paste the result below or import a .json file, then install it.</li>
+                        <li data-i18n="language_modal_step_3">Paste the result below, then install it.</li>
                     </ol>
                 </div>
                 <div class="language-modal-grid">

@@ -104,11 +104,6 @@ export const languageToolsPanel = document.getElementById(
 export const copyEnglishLanguageBtn = document.getElementById(
   "copy-english-language-btn",
 )
-export const downloadEnglishLanguageBtn = document.getElementById(
-  "download-english-language-btn",
-)
-export const importLanguageBtn = document.getElementById("import-language-btn")
-export const languageFileInput = document.getElementById("language-file-input")
 export const languageHelpBtn = document.getElementById("language-help-btn")
 export const deleteCustomLanguageBtn = document.getElementById(
   "delete-custom-language-btn",

@@ -233,7 +233,7 @@ Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Accent color** applied across the entire UI
 - **Page title** customization
 - **Tab icon** customization — set 2 letters or 1 emoji as the browser tab favicon
-- **Language**: English and Vietnamese (i18n)
+- **Language**: English and Vietnamese (i18n), plus custom language JSON support with a built-in English template and AI translation guide
 - Per-component **visibility toggles**: Clock, Search, Bookmarks, Bookmark Groups, Todo, Timer, Notepad, Calendar, Lunar Calendar, Music Player, Quick Access
 - **Ghost mode** for side controls
 - **Cloud Sync** — backup and restore settings (excluding media) using your Chrome account sync storage

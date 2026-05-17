@@ -104,18 +104,6 @@ export function setupGeneralEventHandlers(
   const getLanguageTemplateText = async () =>
     JSON.stringify(await getEnglishLanguageTemplate(), null, 2)
 
-  const downloadLanguageTemplate = async () => {
-    const blob = new Blob([await getLanguageTemplateText()], {
-      type: "application/json",
-    })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "startpage-language-template-en.json"
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
   const copyTextToClipboard = async (text) => {
     await navigator.clipboard.writeText(text)
   }
@@ -753,44 +741,10 @@ export function setupGeneralEventHandlers(
     }
   })
 
-  DOM.downloadEnglishLanguageBtn?.addEventListener("click", async () => {
-    try {
-      await downloadLanguageTemplate()
-    } catch (e) {
-      showAlert(geti18n().language_download_failed || "Could not download JSON.")
-    }
-  })
-
-  DOM.importLanguageBtn?.addEventListener("click", () => {
-    openLanguageModal()
-    DOM.languageFileInput?.click()
-  })
-
   DOM.languageHelpBtn?.addEventListener("click", openLanguageModal)
   DOM.closeLanguageModalBtn?.addEventListener("click", closeLanguageModal)
   DOM.languageModal?.addEventListener("click", (event) => {
     if (event.target === DOM.languageModal) closeLanguageModal()
-  })
-
-  DOM.languageFileInput?.addEventListener("change", async () => {
-    const file = DOM.languageFileInput.files?.[0]
-    if (!file) return
-    try {
-      const text = await file.text()
-      const payload = JSON.parse(text)
-      DOM.languageJsonInput.value = JSON.stringify(payload, null, 2)
-      if (payload.code || payload.language) {
-        DOM.languageCodeInput.value = normalizeLanguageCode(
-          payload.code || payload.language,
-        )
-      }
-      if (payload.name) DOM.languageNameInput.value = payload.name
-      openLanguageModal()
-    } catch (e) {
-      showAlert(geti18n().language_invalid_json || "Invalid language JSON file.")
-    } finally {
-      DOM.languageFileInput.value = ""
-    }
   })
 
   DOM.copyLanguagePromptBtn?.addEventListener("click", async () => {

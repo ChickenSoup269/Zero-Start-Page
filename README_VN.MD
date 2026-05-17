@@ -220,7 +220,7 @@ Chọn từ 51 hiệu ứng canvas, cùng với Bộ tạo sóng SVG, với bộ
 - **Màu nhấn** áp dụng trên toàn bộ giao diện
 - **Tiêu đề trang** tùy chỉnh
 - **Biểu tượng tab** tùy chỉnh — đặt 2 ký tự hoặc 1 emoji làm favicon tab trình duyệt
-- **Ngôn ngữ**: Tiếng Anh và Tiếng Việt (i18n)
+- **Ngôn ngữ**: Tiếng Anh và Tiếng Việt (i18n), hỗ trợ thêm ngôn ngữ tùy chỉnh bằng JSON với template tiếng Anh và hướng dẫn dịch nhanh bằng AI
 - **Bật/tắt từng thành phần**: Đồng hồ, Tìm kiếm, Dấu trang, Nhóm dấu trang, Công việc, Hẹn giờ, Notepad, Lịch, Âm lịch, Trình phát nhạc, Truy cập nhanh
 - **Chế độ Ghost** cho các điều khiển bên
 - **Sao lưu Đám mây (Cloud Sync)** — sao lưu và khôi phục cài đặt (không bao gồm ảnh/video) qua tài khoản Chrome của bạn
