@@ -58,6 +58,7 @@ export const defaultSettings = {
   clockSize: "6",
   dateSize: "1.5",
   language: "en",
+  customLanguages: {},
   pageTitle: "Start Page",
   tabIcon: "",
   accentColor: "#00ff73",

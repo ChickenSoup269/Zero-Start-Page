@@ -385,14 +385,43 @@ async function listUnsplashPhotos(accessKey, orderBy = "latest", page = 1, perPa
 let explorerPage = 1
 let explorerType = "latest" // "latest", "popular", "search"
 let explorerQuery = ""
+const explorerSessionState = new Map()
+
+function getExplorerStateKey(type = explorerType, query = explorerQuery) {
+  return `${type}:${query || ""}`
+}
+
+function rememberExplorerPosition() {
+  const grid = document.getElementById("unsplash-explorer-grid")
+  if (!grid) return
+
+  explorerSessionState.set(getExplorerStateKey(), {
+    page: explorerPage,
+    scrollTop: grid.scrollTop,
+  })
+}
+
+function restoreExplorerPosition() {
+  const grid = document.getElementById("unsplash-explorer-grid")
+  const saved = explorerSessionState.get(getExplorerStateKey())
+  if (!grid || !saved) return
+
+  requestAnimationFrame(() => {
+    grid.scrollTop = saved.scrollTop || 0
+  })
+}
 
 async function openUnsplashExplorer(type = "latest", query = "") {
   const modal = document.getElementById("unsplash-explorer-modal")
   if (!modal) return
 
+  rememberExplorerPosition()
+
   explorerType = type
   explorerQuery = query
   explorerPage = 1
+  const savedState = explorerSessionState.get(getExplorerStateKey(type, query))
+  const targetPage = Math.max(1, savedState?.page || 1)
 
   const titleEl = modal.querySelector(".modal-title-text")
   const i18n = (typeof geti18n === 'function') ? geti18n() : {}
@@ -409,7 +438,12 @@ async function openUnsplashExplorer(type = "latest", query = "") {
   if (grid) grid.innerHTML = '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
 
   modal.classList.add("open")
-  await loadExplorerResults()
+  for (let page = 1; page <= targetPage; page++) {
+    explorerPage = page
+    await loadExplorerResults(page > 1)
+  }
+  explorerPage = targetPage
+  restoreExplorerPosition()
 }
 
 async function loadExplorerResults(append = false) {
@@ -420,6 +454,11 @@ async function loadExplorerResults(append = false) {
   const grid = document.getElementById("unsplash-explorer-grid")
   const loadMoreBtn = document.getElementById("unsplash-explorer-load-more")
   const perPage = 20
+
+  if (grid && !grid.dataset.positionListenerAttached) {
+    grid.dataset.positionListenerAttached = "true"
+    grid.addEventListener("scroll", rememberExplorerPosition, { passive: true })
+  }
 
   if (loadMoreBtn) {
     loadMoreBtn.disabled = true
@@ -501,6 +540,8 @@ async function loadExplorerResults(append = false) {
 }
 
 async function applyUnsplashPhoto(photo, element = null) {
+  rememberExplorerPosition()
+
   if (element) {
     element.classList.add("applying")
   }
@@ -553,12 +594,15 @@ async function applyUnsplashPhoto(photo, element = null) {
     if (element) {
       element.classList.remove("applying")
     }
+    restoreExplorerPosition()
   }
 }
 
 async function loadMoreExplorer() {
+  rememberExplorerPosition()
   explorerPage++
   await loadExplorerResults(true)
+  rememberExplorerPosition()
 }
 
 export {

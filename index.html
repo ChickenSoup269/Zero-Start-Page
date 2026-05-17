@@ -716,6 +716,39 @@
                     <option value="en">English</option>
                     <option value="vi">Tiếng Việt</option>
                 </select>
+                <button type="button" id="language-tools-toggle-btn"
+                    class="secondary-btn full-width language-tools-toggle" aria-expanded="false">
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span data-i18n="language_tools_toggle">Custom Language Tools</span>
+                </button>
+                <div id="language-tools-panel" class="language-tools-panel is-collapsed">
+                    <div class="language-tools">
+                        <button type="button" id="copy-english-language-btn" class="secondary-btn">
+                            <i class="fa-solid fa-copy"></i>
+                            <span data-i18n="language_copy_english_json">Copy English JSON</span>
+                        </button>
+                        <button type="button" id="download-english-language-btn" class="secondary-btn">
+                            <i class="fa-solid fa-download"></i>
+                            <span data-i18n="language_download_english_json">Download JSON</span>
+                        </button>
+                        <button type="button" id="import-language-btn" class="secondary-btn">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span data-i18n="language_import_json">Import Language</span>
+                        </button>
+                        <button type="button" id="language-help-btn" class="secondary-btn">
+                            <i class="fa-solid fa-circle-question"></i>
+                            <span data-i18n="language_help">Quick Guide</span>
+                        </button>
+                        <button type="button" id="delete-custom-language-btn"
+                            class="secondary-btn language-delete-btn" hidden>
+                            <i class="fa-solid fa-trash"></i>
+                            <span data-i18n="language_delete_custom">Delete Custom Language</span>
+                        </button>
+                    </div>
+                    <small class="setting-hint" data-i18n="language_custom_hint">Copy the English JSON, translate only
+                        the values, then import your translated JSON.</small>
+                </div>
+                <input type="file" id="language-file-input" accept="application/json,.json" hidden>
             </div>
 
             <div class="setting-group">
@@ -1153,6 +1186,27 @@
                             title="Sky"></button>
                         <button class="accent-color-preset" data-color="#3b82f6" style="background-color: #3b82f6"
                             title="Blue"></button>
+
+                        <!-- Group: Prime -->
+                        <div class="color-group-label"
+                            style="font-size: 0.75rem; opacity: 0.7; margin-top: 4px; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;"
+                            data-i18n="settings_accent_prime">Prime</div>
+                        <button class="accent-color-preset" data-color="#00a8e1" style="background-color: #00a8e1"
+                            title="Prime Blue"></button>
+                        <button class="accent-color-preset" data-color="#00f5d4" style="background-color: #00f5d4"
+                            title="Prime Mint"></button>
+                        <button class="accent-color-preset" data-color="#38bdf8" style="background-color: #38bdf8"
+                            title="Prime Ice"></button>
+                        <button class="accent-color-preset" data-color="#7c3aed" style="background-color: #7c3aed"
+                            title="Prime Grape"></button>
+                        <button class="accent-color-preset" data-color="#ff3366" style="background-color: #ff3366"
+                            title="Prime Ruby"></button>
+                        <button class="accent-color-preset" data-color="#ffd166" style="background-color: #ffd166"
+                            title="Prime Gold"></button>
+                        <button class="accent-color-preset" data-color="#ff7a1a" style="background-color: #ff7a1a"
+                            title="Prime Ember"></button>
+                        <button class="accent-color-preset" data-color="#e2ff3d" style="background-color: #e2ff3d"
+                            title="Prime Lime"></button>
 
                         <!-- Group: Pastel & Soft -->
                         <div class="color-group-label"
@@ -3847,9 +3901,11 @@
                                 placeholder="Enter font name (e.g., Pacifico)"
                                 style="padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
                             <div style="display: flex; gap: 0.5rem;">
-                                <button id="load-custom-font-btn" data-i18n="settings_load_font"
+                                <button id="load-custom-font-btn" class="custom-font-action-btn custom-font-load-btn"
+                                    data-i18n="settings_load_font"
                                     style="flex: 1; padding: 0.5rem 1rem; background: var(--accent-color); border: none; border-radius: 8px; color: var(--accent-contrast-color, #000); cursor: pointer; font-weight: 500;">Load</button>
-                                <button id="save-font-btn" data-i18n="settings_save_font"
+                                <button id="save-font-btn" class="custom-font-action-btn custom-font-save-btn"
+                                    data-i18n="settings_save_font"
                                     style="flex: 1; padding: 0.5rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.15)); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); cursor: pointer; font-weight: 500;">Save</button>
                             </div>
                         </div>
@@ -3872,7 +3928,8 @@
                     <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-laptop-code"></i> <span
                                 data-i18n="settings_local_fonts">Browse Local Fonts</span></div>
-                        <button id="browse-local-fonts-btn" data-i18n="settings_local_fonts"
+                        <button id="browse-local-fonts-btn" class="browse-local-fonts-action-btn"
+                            data-i18n="settings_local_fonts"
                             style="width: 100%; padding: 0.75rem 1rem; background: var(--glass-bg, rgba(255,255,255,0.1)); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text-color); cursor: pointer; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease;">
                             <i class="fa-solid fa-laptop-code"></i> Browse Local Fonts
                         </button>
@@ -5210,6 +5267,51 @@
                 style="text-align: right; opacity: 0.7; font-size: 0.8rem; border-top: none; padding-top: 0;">
                 <p data-i18n="settings_local_fonts_hint" style="margin: 0; width: 100%;">Use fonts installed on your
                     computer</p>
+            </div>
+        </div>
+    </div>
+    <div id="language-modal" class="modal">
+        <div class="modal-content language-modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="language_modal_title">Add Custom Language</h2>
+                <span id="close-language-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body">
+                <p class="language-modal-lead" data-i18n="language_modal_intro">Copy the English JSON, ask AI to
+                    translate the values into your language, then paste or import the translated JSON here.</p>
+                <div class="language-guide-box">
+                    <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
+                    <ol>
+                        <li data-i18n="language_modal_step_1">Copy the English JSON template.</li>
+                        <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping every JSON key unchanged.</li>
+                        <li data-i18n="language_modal_step_3">Paste the result below or import a .json file, then install it.</li>
+                    </ol>
+                </div>
+                <div class="language-modal-grid">
+                    <label>
+                        <span data-i18n="language_code_label">Language code</span>
+                        <input type="text" id="language-code-input" placeholder="es, ja, fr, id..."
+                            data-i18n-placeholder="language_code_placeholder">
+                    </label>
+                    <label>
+                        <span data-i18n="language_name_label">Language name</span>
+                        <input type="text" id="language-name-input" placeholder="Español, 日本語..."
+                            data-i18n-placeholder="language_name_placeholder">
+                    </label>
+                </div>
+                <textarea id="language-json-input" class="language-json-input" spellcheck="false"
+                    data-i18n-placeholder="language_json_placeholder"
+                    placeholder='Paste translated JSON here. Accepted: {"code":"es","name":"Español","translations":{...}} or raw {"settings_title":"..."}'></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="copy-language-prompt-btn" class="secondary-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="language_copy_ai_prompt">Copy AI Prompt</span>
+                </button>
+                <button type="button" id="install-language-json-btn" class="primary-btn">
+                    <i class="fa-solid fa-check"></i>
+                    <span data-i18n="language_install">Install Language</span>
+                </button>
             </div>
         </div>
     </div>

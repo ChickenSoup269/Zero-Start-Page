@@ -95,6 +95,37 @@ export const savedFontsContainer = document.getElementById(
 )
 export const savedFontsList = document.getElementById("saved-fonts-list")
 export const languageSelect = document.getElementById("language-select")
+export const languageToolsToggleBtn = document.getElementById(
+  "language-tools-toggle-btn",
+)
+export const languageToolsPanel = document.getElementById(
+  "language-tools-panel",
+)
+export const copyEnglishLanguageBtn = document.getElementById(
+  "copy-english-language-btn",
+)
+export const downloadEnglishLanguageBtn = document.getElementById(
+  "download-english-language-btn",
+)
+export const importLanguageBtn = document.getElementById("import-language-btn")
+export const languageFileInput = document.getElementById("language-file-input")
+export const languageHelpBtn = document.getElementById("language-help-btn")
+export const deleteCustomLanguageBtn = document.getElementById(
+  "delete-custom-language-btn",
+)
+export const languageModal = document.getElementById("language-modal")
+export const closeLanguageModalBtn = document.getElementById(
+  "close-language-modal-btn",
+)
+export const languageCodeInput = document.getElementById("language-code-input")
+export const languageNameInput = document.getElementById("language-name-input")
+export const languageJsonInput = document.getElementById("language-json-input")
+export const installLanguageJsonBtn = document.getElementById(
+  "install-language-json-btn",
+)
+export const copyLanguagePromptBtn = document.getElementById(
+  "copy-language-prompt-btn",
+)
 export const effectGrid = document.getElementById("effect-grid")
 export const effectSearch = document.getElementById("effect-search")
 export const activeEffectSettingsContainer = document.getElementById(

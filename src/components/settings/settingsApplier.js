@@ -337,7 +337,10 @@ function createApplySettings(effectInstances) {
       }
     }
     // Priority 1.75: Splash Cursor (Animated)
-    else if (settings.splashCursorActive && effectInstances.splashCursorEffect) {
+    else if (
+      settings.splashCursorActive &&
+      effectInstances.splashCursorEffect
+    ) {
       shouldUseSplashCursor = true
       document.body.classList.add("bg-layer-active")
       if (settings.splashCursorDarkBg !== false) {
@@ -445,40 +448,48 @@ function createApplySettings(effectInstances) {
     // Fallback: Multi-Color Gradient or Default Gradient
     else {
       if (bgLayer) {
-        const isMultiColorActive = settings.activeBgUid?.startsWith("multi-") || 
-                                 (settings.multiColorActive === true && !settings.activeBgUid?.startsWith("grad-"));
-        
-        if (isMultiColorActive && Array.isArray(settings.multiColors) && settings.multiColors.length >= 2) {
-            bgLayer.style.background = buildMultiColorCss({
-                colors: settings.multiColors,
-                angle: settings.multiGradientAngle || 135,
-                mode: settings.multiColorMode || "smooth",
-                type: settings.multiColorType || "linear",
-                repeating: settings.multiColorRepeating || false,
-                position: settings.multiColorPosition || "center",
-                radialShape: settings.multiColorRadialShape || "circle",
-                dividerConfig: {
-                    enabled: settings.multiColorDividers !== false,
-                    color: settings.multiColorDividerColor || "#FFFFFF",
-                    width: settings.multiColorDividerWidth || 1.2
-                },
-                lineAngleConfig: {
-                    enabled: Boolean(settings.multiColorFreeLineAngles),
-                    lineAngles: Array.isArray(settings.multiColorLineAngles) ? settings.multiColorLineAngles : []
-                }
-            })
+        const isMultiColorActive =
+          settings.activeBgUid?.startsWith("multi-") ||
+          (settings.multiColorActive === true &&
+            !settings.activeBgUid?.startsWith("grad-"))
+
+        if (
+          isMultiColorActive &&
+          Array.isArray(settings.multiColors) &&
+          settings.multiColors.length >= 2
+        ) {
+          bgLayer.style.background = buildMultiColorCss({
+            colors: settings.multiColors,
+            angle: settings.multiGradientAngle || 135,
+            mode: settings.multiColorMode || "smooth",
+            type: settings.multiColorType || "linear",
+            repeating: settings.multiColorRepeating || false,
+            position: settings.multiColorPosition || "center",
+            radialShape: settings.multiColorRadialShape || "circle",
+            dividerConfig: {
+              enabled: settings.multiColorDividers !== false,
+              color: settings.multiColorDividerColor || "#FFFFFF",
+              width: settings.multiColorDividerWidth || 1.2,
+            },
+            lineAngleConfig: {
+              enabled: Boolean(settings.multiColorFreeLineAngles),
+              lineAngles: Array.isArray(settings.multiColorLineAngles)
+                ? settings.multiColorLineAngles
+                : [],
+            },
+          })
         } else {
-            bgLayer.style.background = buildGradientCss({
-                start: settings.gradientStart,
-                end: settings.gradientEnd,
-                angle: settings.gradientAngle,
-                type: settings.gradientType,
-                repeating: settings.gradientRepeating,
-                extraColorCount: settings.gradientExtraColorCount,
-                customColors: settings.gradientCustomColors,
-                position: settings.gradientPosition,
-                radialShape: settings.gradientRadialShape,
-            })
+          bgLayer.style.background = buildGradientCss({
+            start: settings.gradientStart,
+            end: settings.gradientEnd,
+            angle: settings.gradientAngle,
+            type: settings.gradientType,
+            repeating: settings.gradientRepeating,
+            extraColorCount: settings.gradientExtraColorCount,
+            customColors: settings.gradientCustomColors,
+            position: settings.gradientPosition,
+            radialShape: settings.gradientRadialShape,
+          })
         }
       }
       document.body.classList.add("bg-layer-active")
@@ -517,16 +528,28 @@ function createApplySettings(effectInstances) {
       `blur(${settings.bgBlur ?? 0}px)`,
       `brightness(${settings.bgBrightness ?? 100}%)`,
       `contrast(${settings.bgContrast ?? 100}%)`,
-      `saturate(${settings.bgSaturation ?? 100}%)`
+      `saturate(${settings.bgSaturation ?? 100}%)`,
     ].join(" ")
 
     document.documentElement.style.setProperty("--bg-filter", filters)
-    
+
     // Fallback for legacy support if needed
-    document.documentElement.style.setProperty("--bg-blur", `${settings.bgBlur ?? 0}px`)
-    document.documentElement.style.setProperty("--bg-brightness", `${settings.bgBrightness ?? 100}%`)
-    document.documentElement.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
-    document.documentElement.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
+    document.documentElement.style.setProperty(
+      "--bg-blur",
+      `${settings.bgBlur ?? 0}px`,
+    )
+    document.documentElement.style.setProperty(
+      "--bg-brightness",
+      `${settings.bgBrightness ?? 100}%`,
+    )
+    document.documentElement.style.setProperty(
+      "--bg-contrast",
+      `${settings.bgContrast ?? 100}%`,
+    )
+    document.documentElement.style.setProperty(
+      "--bg-saturation",
+      `${settings.bgSaturation ?? 100}%`,
+    )
     document.documentElement.style.setProperty(
       "--bg-fade-in",
       `${settings.bgFadeIn ?? 0.5}s`,
@@ -864,9 +887,7 @@ function createApplySettings(effectInstances) {
       settings.contextMenuStyle === "none"
         ? "macos"
         : settings.contextMenuStyle || "dark"
-    document.body.classList.add(
-      `context-menu-${contextMenuStyle}`,
-    )
+    document.body.classList.add(`context-menu-${contextMenuStyle}`)
 
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
@@ -1400,13 +1421,13 @@ function updateMainBgCredit() {
 
   if (info && info.authorName) {
     const authorLink = info.authorUrl
-      ? `<a href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${info.authorName}</a>`
-      : info.authorName
+      ? `<a class="unsplash-credit-chip unsplash-credit-author" href="${info.authorUrl}?utm_source=startpage&utm_medium=referral" target="_blank"><i class="fa-solid fa-user"></i><span>${info.authorName}</span></a>`
+      : `<span class="unsplash-credit-chip unsplash-credit-author"><i class="fa-solid fa-user"></i><span>${info.authorName}</span></span>`
     const photoLink = info.photoUrl
-      ? `<a href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank">${isUnsplash ? "Unsplash" : "Source"}</a>`
+      ? `<a class="unsplash-credit-chip unsplash-credit-source" href="${info.photoUrl}?utm_source=startpage&utm_medium=referral" target="_blank"><i class="${isUnsplash ? "fa-brands fa-unsplash" : "fa-solid fa-link"}"></i><span>${isUnsplash ? "Unsplash photo" : "Photo source"}</span></a>`
       : isUnsplash
-        ? "Unsplash"
-        : "Local"
+        ? `<span class="unsplash-credit-chip unsplash-credit-source"><i class="fa-brands fa-unsplash"></i><span>Unsplash photo</span></span>`
+        : `<span class="unsplash-credit-chip unsplash-credit-source"><i class="fa-solid fa-image"></i><span>Local source</span></span>`
 
     const iconClass = isUnsplash
       ? "fa-brands fa-unsplash credit-logo-unsplash"
@@ -1416,7 +1437,7 @@ function updateMainBgCredit() {
 
     const html = `
       <i class="${iconClass}"></i>
-      <span>${photoLink} &bull; ${authorLink}</span>
+      <span class="unsplash-credit-main">${photoLink}${authorLink}</span>
     `
 
     if (creditEl) {
@@ -1425,7 +1446,7 @@ function updateMainBgCredit() {
     }
 
     if (settingsCreditEl) {
-      settingsCreditEl.innerHTML = html
+      settingsCreditEl.innerHTML = `<span class="unsplash-credit-main">${photoLink}${authorLink}</span>`
       settingsCreditEl.style.display = "flex"
     }
     return
@@ -1668,7 +1689,8 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // Splash Cursor inputs
     if (DOM.splashCursorRainbow) {
-      DOM.splashCursorRainbow.checked = settings.splashCursorRainbowMode !== false
+      DOM.splashCursorRainbow.checked =
+        settings.splashCursorRainbowMode !== false
     }
     if (DOM.splashCursorColorWrap) {
       DOM.splashCursorColorWrap.style.display =
@@ -1899,14 +1921,16 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100
     DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
-    
+
     if (DOM.bgContrastInput) {
       DOM.bgContrastInput.value = settings.bgContrast ?? 100
-      if (DOM.bgContrastValue) DOM.bgContrastValue.textContent = `${settings.bgContrast ?? 100}%`
+      if (DOM.bgContrastValue)
+        DOM.bgContrastValue.textContent = `${settings.bgContrast ?? 100}%`
     }
     if (DOM.bgSaturationInput) {
       DOM.bgSaturationInput.value = settings.bgSaturation ?? 100
-      if (DOM.bgSaturationValue) DOM.bgSaturationValue.textContent = `${settings.bgSaturation ?? 100}%`
+      if (DOM.bgSaturationValue)
+        DOM.bgSaturationValue.textContent = `${settings.bgSaturation ?? 100}%`
     }
 
     DOM.bgFadeInInput.value = settings.bgFadeIn ?? 0.5
@@ -2701,10 +2725,7 @@ function createUpdateSettingsInputs(effectInstances) {
       localStorage.getItem("startpage_svgWaveGeneratorOpen") === "1"
     if (DOM.svgWaveSettings) {
       DOM.svgWaveSettings.style.display = "block"
-      DOM.svgWaveSettings.classList.toggle(
-        "is-collapsed",
-        !waveGeneratorOpen,
-      )
+      DOM.svgWaveSettings.classList.toggle("is-collapsed", !waveGeneratorOpen)
     }
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()

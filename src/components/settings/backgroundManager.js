@@ -137,6 +137,7 @@ function renderUserAccentColors(DOM) {
       if (settings.accentColor === color) el.classList.add("active")
       el.dataset.bgId = color
       el.style.background = color
+      el.style.setProperty("--accent-swatch", color)
       el.title = `Accent Color: ${color}`
 
       if (isFavorite) {
@@ -429,7 +430,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       })
 
       const isSelected = bgSelectedIds.has(bgUid) || bgSelectedIds.has(bgId)
-      
+
       const checkBadge = document.createElement("div")
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
@@ -646,7 +647,10 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     // Fix: Correctly check if the current background was deleted
     const currentBgId = settings.background
     const currentBgUid = settings.activeBgUid
-    if (bgSelectedIds.has(currentBgId) || (currentBgUid && bgSelectedIds.has(currentBgUid))) {
+    if (
+      bgSelectedIds.has(currentBgId) ||
+      (currentBgUid && bgSelectedIds.has(currentBgUid))
+    ) {
       updateSetting("activeBgUid", null)
       handleSettingUpdate("background", null)
     } else {

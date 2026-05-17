@@ -16,6 +16,9 @@ import {
   geti18n,
   loadLanguage,
   applyTranslations,
+  getEnglishLanguageTemplate,
+  normalizeLanguageCode,
+  validateCustomLanguagePayload,
 } from "../../services/i18n.js"
 import {
   showAlert,
@@ -68,6 +71,142 @@ export function setupGeneralEventHandlers(
     get: (target, prop) => geti18n()[prop]
   })
   const effects = ctx.effects
+  const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
+
+  const setLanguageToolsOpen = (isOpen) => {
+    DOM.languageToolsPanel?.classList.toggle("is-collapsed", !isOpen)
+    DOM.languageToolsToggleBtn?.setAttribute("aria-expanded", String(isOpen))
+    localStorage.setItem(LANGUAGE_TOOLS_OPEN_KEY, isOpen ? "1" : "0")
+  }
+
+  const renderCustomLanguageOptions = () => {
+    if (!DOM.languageSelect) return
+    DOM.languageSelect
+      .querySelectorAll("option[data-custom-language='true']")
+      .forEach((option) => option.remove())
+
+    const customLanguages = getSettings().customLanguages || {}
+    Object.entries(customLanguages).forEach(([code, item]) => {
+      const option = document.createElement("option")
+      option.value = code
+      option.dataset.customLanguage = "true"
+      option.textContent = item?.name ? `${item.name} (${code})` : code
+      DOM.languageSelect.appendChild(option)
+    })
+    DOM.languageSelect.value = getSettings().language || "en"
+    if (DOM.deleteCustomLanguageBtn) {
+      DOM.deleteCustomLanguageBtn.hidden = !Boolean(
+        customLanguages[DOM.languageSelect.value],
+      )
+    }
+  }
+
+  const getLanguageTemplateText = async () =>
+    JSON.stringify(await getEnglishLanguageTemplate(), null, 2)
+
+  const downloadLanguageTemplate = async () => {
+    const blob = new Blob([await getLanguageTemplateText()], {
+      type: "application/json",
+    })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "startpage-language-template-en.json"
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const copyTextToClipboard = async (text) => {
+    await navigator.clipboard.writeText(text)
+  }
+
+  const openLanguageModal = () => {
+    DOM.languageModal?.classList.add("show")
+    applyTranslations()
+  }
+
+  const closeLanguageModal = () => {
+    DOM.languageModal?.classList.remove("show")
+  }
+
+  const installCustomLanguage = async (payload) => {
+    const validation = await validateCustomLanguagePayload(payload)
+    const code = normalizeLanguageCode(
+      DOM.languageCodeInput?.value || validation.code,
+    )
+    const name =
+      DOM.languageNameInput?.value.trim() ||
+      validation.name ||
+      code.toUpperCase()
+
+    if (!code) {
+      showAlert(
+        geti18n().language_invalid_code ||
+          "Please enter a language code, such as es, ja, fr, or id.",
+      )
+      return
+    }
+
+    const customLanguages = {
+      ...(getSettings().customLanguages || {}),
+      [code]: {
+        name,
+        translations: validation.translations,
+        updatedAt: new Date().toISOString(),
+      },
+    }
+
+    updateSetting("customLanguages", customLanguages)
+    handleSettingUpdate("language", code)
+    renderCustomLanguageOptions()
+    await loadLanguage(code)
+    applyTranslations()
+    closeLanguageModal()
+
+    const missingNotice = validation.missingKeys.length
+      ? ` ${validation.missingKeys.length} missing keys were filled from English.`
+      : ""
+    showAlert(
+      `${geti18n().language_import_success || "Language installed successfully!"}${missingNotice}`,
+    )
+  }
+
+  const deleteSelectedCustomLanguage = async () => {
+    const code = DOM.languageSelect?.value
+    const customLanguages = { ...(getSettings().customLanguages || {}) }
+    const language = customLanguages[code]
+
+    if (!code || !language) return
+
+    const confirmed = await showConfirm(
+      (geti18n().language_delete_confirm ||
+        'Delete custom language "{name}"?').replace(
+        "{name}",
+        language.name || code,
+      ),
+      geti18n().language_delete_custom || "Delete Custom Language",
+    )
+    if (!confirmed) return
+
+    delete customLanguages[code]
+    handleSettingUpdate("customLanguages", customLanguages)
+    handleSettingUpdate("language", "en")
+    renderCustomLanguageOptions()
+    await loadLanguage("en")
+    applyTranslations()
+    populateUnsplashCollections(DOM.unsplashCategorySelect, getSettings())
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "language", value: "en" },
+      }),
+    )
+    showAlert(
+      geti18n().language_delete_success || "Custom language deleted.",
+    )
+  }
+
+  renderCustomLanguageOptions()
+  setLanguageToolsOpen(localStorage.getItem(LANGUAGE_TOOLS_OPEN_KEY) === "1")
 
   const throttledUpdates = {}
   const lastUpdateTimes = {}
@@ -581,6 +720,7 @@ export function setupGeneralEventHandlers(
   // Language change
   DOM.languageSelect.addEventListener("change", async () => {
     handleSettingUpdate("language", DOM.languageSelect.value)
+    renderCustomLanguageOptions()
     await loadLanguage(getSettings().language)
     applyTranslations()
     populateUnsplashCollections(DOM.unsplashCategorySelect, getSettings())
@@ -589,6 +729,107 @@ export function setupGeneralEventHandlers(
         detail: { key: "language", value: DOM.languageSelect.value },
       }),
     )
+  })
+
+  DOM.languageToolsToggleBtn?.addEventListener("click", () => {
+    const nextIsOpen = DOM.languageToolsPanel?.classList.contains("is-collapsed")
+    setLanguageToolsOpen(Boolean(nextIsOpen))
+  })
+
+  DOM.deleteCustomLanguageBtn?.addEventListener(
+    "click",
+    deleteSelectedCustomLanguage,
+  )
+
+  DOM.copyEnglishLanguageBtn?.addEventListener("click", async () => {
+    try {
+      await copyTextToClipboard(await getLanguageTemplateText())
+      showAlert(
+        geti18n().language_template_copied ||
+          "English language JSON copied. Paste it into AI and translate the values only.",
+      )
+    } catch (e) {
+      showAlert(geti18n().language_copy_failed || "Could not copy JSON.")
+    }
+  })
+
+  DOM.downloadEnglishLanguageBtn?.addEventListener("click", async () => {
+    try {
+      await downloadLanguageTemplate()
+    } catch (e) {
+      showAlert(geti18n().language_download_failed || "Could not download JSON.")
+    }
+  })
+
+  DOM.importLanguageBtn?.addEventListener("click", () => {
+    openLanguageModal()
+    DOM.languageFileInput?.click()
+  })
+
+  DOM.languageHelpBtn?.addEventListener("click", openLanguageModal)
+  DOM.closeLanguageModalBtn?.addEventListener("click", closeLanguageModal)
+  DOM.languageModal?.addEventListener("click", (event) => {
+    if (event.target === DOM.languageModal) closeLanguageModal()
+  })
+
+  DOM.languageFileInput?.addEventListener("change", async () => {
+    const file = DOM.languageFileInput.files?.[0]
+    if (!file) return
+    try {
+      const text = await file.text()
+      const payload = JSON.parse(text)
+      DOM.languageJsonInput.value = JSON.stringify(payload, null, 2)
+      if (payload.code || payload.language) {
+        DOM.languageCodeInput.value = normalizeLanguageCode(
+          payload.code || payload.language,
+        )
+      }
+      if (payload.name) DOM.languageNameInput.value = payload.name
+      openLanguageModal()
+    } catch (e) {
+      showAlert(geti18n().language_invalid_json || "Invalid language JSON file.")
+    } finally {
+      DOM.languageFileInput.value = ""
+    }
+  })
+
+  DOM.copyLanguagePromptBtn?.addEventListener("click", async () => {
+    const prompt = [
+      "Translate this Startpage language JSON into my language.",
+      "Rules:",
+      "1. Keep every JSON key exactly the same.",
+      "2. Translate string values only.",
+      "3. Keep placeholders such as {count}, {name}, URLs, HTML tags, emoji, and keyboard shortcuts unchanged.",
+      "4. Return valid JSON only, no Markdown.",
+      "5. Use this wrapper format: {\"code\":\"xx\",\"name\":\"Language Name\",\"translations\":{...}}.",
+      "",
+      await getLanguageTemplateText(),
+    ].join("\n")
+
+    try {
+      await copyTextToClipboard(prompt)
+      showAlert(
+        geti18n().language_prompt_copied ||
+          "AI translation prompt copied. Send it to AI, then paste the translated JSON here.",
+      )
+    } catch (e) {
+      showAlert(geti18n().language_copy_failed || "Could not copy prompt.")
+    }
+  })
+
+  DOM.installLanguageJsonBtn?.addEventListener("click", async () => {
+    try {
+      const text = DOM.languageJsonInput?.value.trim()
+      if (!text) {
+        showAlert(geti18n().language_empty_json || "Paste translated JSON first.")
+        return
+      }
+      await installCustomLanguage(JSON.parse(text))
+    } catch (e) {
+      showAlert(
+        `${geti18n().language_invalid_json || "Invalid language JSON."}\n${e.message || ""}`,
+      )
+    }
   })
 
   // Background inputs
@@ -836,6 +1077,10 @@ export function setupGeneralEventHandlers(
 
 
   document.querySelectorAll(".accent-color-preset").forEach((btn) => {
+    if (btn.dataset.color) {
+      btn.style.setProperty("--accent-swatch", btn.dataset.color)
+    }
+
     btn.addEventListener("click", () => {
       const color = btn.dataset.color
       DOM.accentColorPicker.value = color
