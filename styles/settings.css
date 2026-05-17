@@ -1869,7 +1869,11 @@
   border-radius: 10px;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    filter 0.28s ease;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -1877,6 +1881,10 @@
   background-position: center;
   background-color: rgba(255, 255, 255, 0.05);
   box-sizing: border-box;
+  backface-visibility: hidden;
+  contain: paint;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .local-bg-thumb {
@@ -1886,12 +1894,13 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transform: scale(1.001);
+  transform: translateZ(0) scale(1.001);
   opacity: 0.96;
   transition:
-    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.32s ease;
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s ease;
   will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .local-bg-item:hover {
@@ -1904,22 +1913,23 @@
 }
 
 .local-bg-item.user-uploaded {
+  animation: none !important;
   transition:
-    transform 0.48s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.42s ease,
-    border-color 0.36s ease;
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.34s ease,
+    box-shadow 0.34s ease;
 }
 
 .local-bg-item.user-uploaded:hover {
   animation: none !important;
-  transform: translateY(-3px) scale(1.026) !important;
-  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.42);
+  transform: translate3d(0, -2px, 0) scale(1.018) !important;
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.36);
   border-color: rgba(255, 255, 255, 0.18);
   filter: none;
 }
 
 .local-bg-item.user-uploaded:hover .local-bg-thumb {
-  transform: scale(1.035);
+  transform: translateZ(0) scale(1.024);
   opacity: 1;
 }
 
@@ -1988,6 +1998,29 @@
   font-size: 24px;
   color: white;
   background: transparent !important;
+  animation: none !important;
+  transition:
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.34s ease,
+    box-shadow 0.34s ease,
+    color 0.28s ease;
+}
+
+.random-color-item:hover {
+  animation: none !important;
+  transform: translate3d(0, -2px, 0) scale(1.018) !important;
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.36);
+  border-color: rgba(255, 255, 255, 0.18);
+  filter: none;
+}
+
+.random-color-item i {
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.random-color-item:hover i {
+  transform: rotate(12deg) scale(1.08);
 }
 
 .remove-bg-btn {
@@ -2021,7 +2054,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.28s ease;
   z-index: 2;
   color: white;
   pointer-events: none; /* Tránh cản trở click vào item cha */
@@ -3304,7 +3337,12 @@
   border-radius: 16px;
   padding: 10px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: none !important;
+  transition:
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.34s ease,
+    border-color 0.34s ease,
+    box-shadow 0.34s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3312,13 +3350,19 @@
   position: relative;
   overflow: hidden;
   user-select: none;
+  backface-visibility: hidden;
+  contain: paint;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .theme-item:hover {
   background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-4px);
+  animation: none !important;
+  transform: translate3d(0, -2px, 0) scale(1.014) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.28);
+  filter: none;
 }
 
 .theme-item.active {
@@ -3337,8 +3381,11 @@
   overflow: hidden;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .preview-sidebar {
@@ -3376,7 +3423,10 @@
   font-size: 1.2rem;
   opacity: 0.25;
   filter: blur(1px);
-  transition: all 0.4s ease;
+  transition:
+    opacity 0.34s ease,
+    filter 0.34s ease,
+    transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .theme-item:hover .preview-icon {
@@ -3428,7 +3478,7 @@
   font-size: 0.75rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   text-align: center;
   letter-spacing: 0.2px;
 }
@@ -3439,14 +3489,14 @@
 }
 
 .theme-item:hover {
-  animation: localBgHoverFade 1.25s ease-in-out infinite !important;
-  transform: translateY(-4px) scale(1.035) !important;
-  filter: brightness(1.06) saturate(1.04);
+  animation: none !important;
+  transform: translate3d(0, -2px, 0) scale(1.014) !important;
+  filter: none;
   z-index: 8;
 }
 
 .theme-item:hover .theme-preview {
-  transform: scale(1.025);
+  transform: translateZ(0) scale(1.018);
 }
 
 .accent-color-preset:hover,
@@ -3554,9 +3604,11 @@ body.sidebar-light .setting-item-row:hover {
 }
 .theme-item:hover {
   background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
+  animation: none !important;
+  transform: translate3d(0, -2px, 0) scale(1.014) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.28);
+  filter: none;
 }
 
 .theme-item.active {
@@ -3579,16 +3631,19 @@ body.sidebar-light .setting-item-row:hover {
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .theme-preview i {
-  transition: all 0.3s ease;
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
 }
 
 .theme-item:hover .theme-preview {
-  transform: scale(1.03);
+  transform: translateZ(0) scale(1.018);
 }
 
 .theme-item.active .theme-preview i {

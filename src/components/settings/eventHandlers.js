@@ -456,6 +456,7 @@ export function setupGeneralEventHandlers(
           isSubItem = true
           const header = section.querySelector(".group-header")
           const label = section.querySelector(":scope > label")
+          const settingLabel = section.querySelector(":scope > .setting-label")
 
           if (header) {
             const span = header.querySelector("span[data-i18n]")
@@ -466,6 +467,13 @@ export function setupGeneralEventHandlers(
             const span = label.querySelector("span[data-i18n]")
             title = span ? span.textContent.trim() : label.textContent.trim()
             const icon = label.querySelector("i")
+            if (icon) iconClass = icon.className
+          } else if (settingLabel) {
+            const span = settingLabel.querySelector("span[data-i18n]")
+            title = span
+              ? span.textContent.trim()
+              : settingLabel.textContent.trim()
+            const icon = settingLabel.querySelector("i")
             if (icon) iconClass = icon.className
           }
         }
