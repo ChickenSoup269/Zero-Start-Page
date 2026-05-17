@@ -21,6 +21,8 @@ const _initialGradient =
 
 export const defaultSettings = {
   background: null,
+  lastUserBackground: null,
+  lastUserActiveBgUid: null,
   activeBgUid: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",
@@ -286,7 +288,7 @@ export const defaultSettings = {
   splashCursorColorUpdateSpeed: 10,
   splashCursorRainbowMode: true,
   splashCursorColor: "#ff0000",
-  splashCursorDarkBg: true,
+  splashCursorDarkBg: false,
 
   gradientV2Active: false,
   gradientV2Color1: "#FF9FFC",

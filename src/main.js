@@ -140,22 +140,94 @@ document.addEventListener("DOMContentLoaded", async () => {
   initContextMenu()
   initModal()
 
-  // Initialize heavy widgets immediately but keep hidden if not enabled
-  const notepad = new Notepad()
-  const todo = new TodoList()
-  const timer = new Timer()
-  window.activeTimer = timer
-  const music = new MusicPlayer()
-  const calendar = new FullCalendar()
-  const dailyQuotes = new DailyQuotes()
+  const widgets = {
+    todo: null,
+    timer: null,
+    music: null,
+    calendar: null,
+    quotes: null,
+    notepad: null,
+  }
 
-  // Setup interactions
-  makeDraggable(todo.container, "todo")
-  makeDraggable(timer.container, "timer")
-  makeDraggable(music.container, "music")
-  makeDraggable(calendar.container, "calendar")
-  makeDraggable(dailyQuotes.container, "daily-quotes")
-  makeDraggable(notepad.container, "notepad", null, ".notepad-header")
+  const runWhenIdle = (callback, timeout = 1000) => {
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(callback, { timeout })
+    } else {
+      setTimeout(callback, 200)
+    }
+  }
+
+  const initWidget = (type) => {
+    if (widgets[type]) return widgets[type]
+
+    switch (type) {
+      case "todo":
+        widgets.todo = new TodoList()
+        makeDraggable(widgets.todo.container, "todo")
+        return widgets.todo
+      case "timer":
+        widgets.timer = new Timer()
+        window.activeTimer = widgets.timer
+        makeDraggable(widgets.timer.container, "timer")
+        return widgets.timer
+      case "music":
+        widgets.music = new MusicPlayer()
+        makeDraggable(widgets.music.container, "music")
+        return widgets.music
+      case "calendar":
+        widgets.calendar = new FullCalendar()
+        makeDraggable(widgets.calendar.container, "calendar")
+        return widgets.calendar
+      case "quotes":
+        widgets.quotes = new DailyQuotes()
+        makeDraggable(widgets.quotes.container, "daily-quotes")
+        return widgets.quotes
+      case "notepad":
+        widgets.notepad = new Notepad()
+        makeDraggable(widgets.notepad.container, "notepad", null, ".notepad-header")
+        return widgets.notepad
+    }
+  }
+
+  const initVisibleWidgets = () => {
+    const settings = getSettings()
+    if (settings.showTodoList !== false) initWidget("todo")
+    if (settings.showNotepad !== false) initWidget("notepad")
+    if (settings.showQuotes !== false) initWidget("quotes")
+    if (settings.showTimer === true) initWidget("timer")
+    if (settings.showFullCalendar === true) initWidget("calendar")
+    if (settings.musicPlayerEnabled === true) initWidget("music")
+  }
+
+  runWhenIdle(initVisibleWidgets, 1200)
+
+  window.addEventListener("layoutUpdated", (e) => {
+    if (!e.detail?.value) return
+    switch (e.detail.key) {
+      case "showTodoList":
+        initWidget("todo")
+        break
+      case "showNotepad":
+        initWidget("notepad")
+        break
+      case "showTimer":
+        initWidget("timer")
+        break
+      case "showFullCalendar":
+        initWidget("calendar")
+        break
+      case "showQuotes":
+        initWidget("quotes")
+        break
+    }
+  })
+
+  window.addEventListener("settingsUpdated", (e) => {
+    if (e.detail?.key === "musicPlayerEnabled" && e.detail.value === true) {
+      initWidget("music")
+    }
+  })
+
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
 
   // Helper to sync quick buttons
@@ -256,6 +328,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           break
       }
       if (key && checkbox) {
+        if (
+          (type === "todo" ||
+            type === "notepad" ||
+            type === "timer" ||
+            type === "calendar" ||
+            type === "music") &&
+          !getSettings()[key]
+        ) {
+          initWidget(type)
+        }
         checkbox.click()
       }
     })
@@ -289,9 +371,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       hideOverlay()
     }, 1500)
   }
-
-  // Load language as other heavy/modal components depend on it translations
-  await initI18n()
 
   const { isIdbMedia, getImageUrl, preloadImages } = await import("./services/imageStore.js")
   if (isIdbMedia(currentSettings.background)) {

@@ -404,7 +404,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
 
   if (scDarkBgBtn) {
     scDarkBgBtn.addEventListener("click", () => {
-      const next = getSettings().splashCursorDarkBg === false
+      const next = getSettings().splashCursorDarkBg !== true
       applySplashCursorDarkBg(next)
     })
   }

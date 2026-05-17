@@ -136,6 +136,8 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
   }
   DOM.userSvgWavesGallery.parentElement.style.display = ""
   settings.userSvgWaves.forEach((wave, index) => {
+    if (!wave.uid) wave.uid = `svg-wave-${Date.now()}-${index}`
+    const waveUid = wave.uid
     const item = document.createElement("div")
     item.className = "user-gradient-item user-svg-wave-item local-bg-item"
     item.dataset.index = index
@@ -157,15 +159,16 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       !settings.liquidEtherActive &&
       !settings.splashCursorActive &&
       !settings.background &&
-      Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
-      Number(settings.svgWaveAmplitudeX ?? 200) ===
-        Number(wave.amplitudeX ?? 200) &&
-      Number(settings.svgWaveAmplitudeY ?? 80) ===
-        Number(wave.amplitudeY ?? 80) &&
-      Number(settings.svgWaveStartHue ?? 200) ===
-        Number(wave.startHue ?? 200) &&
-      Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
-      Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0)
+      (settings.activeBgUid === waveUid ||
+        (Number(settings.svgWaveLines ?? 5) === Number(wave.lines ?? 5) &&
+          Number(settings.svgWaveAmplitudeX ?? 200) ===
+            Number(wave.amplitudeX ?? 200) &&
+          Number(settings.svgWaveAmplitudeY ?? 80) ===
+            Number(wave.amplitudeY ?? 80) &&
+          Number(settings.svgWaveStartHue ?? 200) ===
+            Number(wave.startHue ?? 200) &&
+          Number(settings.svgWaveEndHue ?? 280) === Number(wave.endHue ?? 280) &&
+          Number(settings.svgWaveAngle ?? 0) === Number(wave.angle ?? 0)))
 
     if (isActive) {
       item.classList.add("active")
@@ -268,11 +271,21 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
       updateSetting("svgWaveEndSaturation", wave.endSaturation)
       updateSetting("svgWaveEndLightness", wave.endLightness)
       updateSetting("background", null)
+      updateSetting("activeBgUid", waveUid)
+      updateSetting("svgWaveActive", true)
+      updateSetting("gradientV2Active", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
+      saveSettings()
 
       // Trigger global refresh via a single handleSettingUpdate call
       if (window.appHandleSettingUpdate) {
         window.appHandleSettingUpdate("svgWaveActive", true)
       }
+      if (typeof onActivate === "function") onActivate()
+      renderUserSvgWaves(DOM, svgWaveEffect, onActivate)
     })
 
     DOM.userSvgWavesGallery.appendChild(item)

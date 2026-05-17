@@ -1963,7 +1963,10 @@ export function setupGeneralEventHandlers(
 
   DOM.svgWaveSaveBtn.addEventListener("click", () => {
     const settings = getSettings()
-    const wave = getSvgWaveParams(settings)
+    const wave = {
+      ...getSvgWaveParams(settings),
+      uid: `svg-wave-${Date.now()}`,
+    }
     if (!Array.isArray(settings.userSvgWaves)) settings.userSvgWaves = []
     if (settings.userSvgWaves.length >= 50) {
       showAlert("You can only save up to 50 wave presets.")

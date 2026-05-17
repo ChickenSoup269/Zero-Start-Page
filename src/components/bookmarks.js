@@ -151,13 +151,8 @@ async function getBestIcon(bookmark) {
 
   const candidates = getIconCandidates(bookmark)
 
-  // load song song
-  const results = await Promise.all(candidates.map((src) => loadImage(src)))
-
-  let best = null
-  let bestScore = 0
-
-  for (const img of results) {
+  for (const src of candidates) {
+    const img = await loadImage(src, 1200)
     if (!img) continue
 
     const size = Math.min(img.width, img.height)
@@ -166,16 +161,14 @@ async function getBestIcon(bookmark) {
     if (size < 24) continue
 
     const isSquare = Math.abs(img.width - img.height) < 5
-    const score = size + (isSquare ? 20 : 0)
-
-    if (score > bestScore) {
-      bestScore = score
-      best = img.src
+    if (size >= 64 || isSquare) {
+      iconCache.set(key, img.src)
+      return img.src
     }
   }
 
-  iconCache.set(key, best)
-  return best
+  iconCache.set(key, null)
+  return null
 }
 
 function createBookmarkIcon(bookmark) {
@@ -192,8 +185,7 @@ function createBookmarkIcon(bookmark) {
   img.referrerPolicy = "no-referrer"
   img.className = "bookmark-icon"
 
-  // load icon đẹp nhất async
-  getBestIcon(bookmark).then((bestIcon) => {
+  const applyBestIcon = () => getBestIcon(bookmark).then((bestIcon) => {
     if (bestIcon) {
       img.src = bestIcon
     } else {
@@ -209,6 +201,13 @@ function createBookmarkIcon(bookmark) {
       img.parentElement?.insertBefore(fallback, img)
     }
   })
+
+  // Defer favicon probing so bookmark rendering does not compete with first paint.
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(applyBestIcon, { timeout: 1500 })
+  } else {
+    setTimeout(applyBestIcon, 150)
+  }
 
   return img
 }

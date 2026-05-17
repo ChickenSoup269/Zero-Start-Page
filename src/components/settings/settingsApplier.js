@@ -454,7 +454,7 @@ function createApplySettings(effectInstances) {
     ) {
       shouldUseSplashCursor = true
       document.body.classList.add("bg-layer-active")
-      if (settings.splashCursorDarkBg !== false) {
+      if (settings.splashCursorDarkBg === true) {
         document.body.classList.add("splash-cursor-dark-bg")
         if (bgLayer) {
           bgLayer.style.background = "#000000"
@@ -1793,10 +1793,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.splashCursorActive.checked = settings.splashCursorActive === true
     }
     if (DOM.splashCursorDarkBg) {
-      DOM.splashCursorDarkBg.checked = settings.splashCursorDarkBg !== false
+      DOM.splashCursorDarkBg.checked = settings.splashCursorDarkBg === true
     }
     if (DOM.splashCursorDarkBgBtn) {
-      const isDark = settings.splashCursorDarkBg !== false
+      const isDark = settings.splashCursorDarkBg === true
       DOM.splashCursorDarkBgBtn.classList.toggle("active", isDark)
     }
 

@@ -430,12 +430,66 @@ export function initSettings() {
     i18n: geti18n(),
   }
 
+  let settingsGalleriesRendered = false
+  const runWhenIdle = (callback, timeout = 1200) => {
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(callback, { timeout })
+    } else {
+      setTimeout(callback, 200)
+    }
+  }
+
+  function refreshBackgroundGalleries() {
+    renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
+    renderUserColors(DOM_EXPORTS)
+    renderUserGradients(DOM_EXPORTS)
+    renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+      handleSettingUpdate("svgWaveActive", true)
+    })
+    renderUserGradientV2s(DOM_EXPORTS)
+    renderUserSilks()
+    renderUserLightPillars()
+    renderUserLiquidEthers()
+    renderSavedMultiColors(DOM_EXPORTS)
+  }
+
+  function renderSettingsGalleries() {
+    if (settingsGalleriesRendered) return
+    settingsGalleriesRendered = true
+    refreshBackgroundGalleries()
+    populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, getSettings())
+  }
+
+  function scheduleSettingsGalleriesRender() {
+    runWhenIdle(renderSettingsGalleries, 600)
+  }
+
   async function handleSettingUpdate(
     key,
     value,
     isGradient = false,
     skipSave = false,
   ) {
+    const rememberCurrentBackground = () => {
+      const settings = getSettings()
+      if (settings.background != null) {
+        updateSetting("lastUserBackground", settings.background)
+        updateSetting("lastUserActiveBgUid", settings.activeBgUid || null)
+      }
+    }
+
+    const restoreRememberedBackground = () => {
+      const settings = getSettings()
+      if (settings.background == null && settings.lastUserBackground != null) {
+        updateSetting("background", settings.lastUserBackground)
+        updateSetting("activeBgUid", settings.lastUserActiveBgUid || null)
+      }
+    }
+
+    if (key !== "background") {
+      rememberCurrentBackground()
+    }
+
     if (isGradient) {
       updateSetting("gradientStart", value.start)
       updateSetting("gradientEnd", value.end)
@@ -465,6 +519,8 @@ export function initSettings() {
       updateSetting(key, value)
       if (key === "background") {
         if (value != null) {
+          updateSetting("lastUserBackground", value)
+          updateSetting("lastUserActiveBgUid", getSettings().activeBgUid || null)
           updateSetting("activeBgUid", null)
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
@@ -485,12 +541,15 @@ export function initSettings() {
       }
     }
 
-    // Trigger re-renders for galleries to show active state
-    setTimeout(() => {
-      renderUserGradients(DOM_EXPORTS)
-      renderSavedMultiColors(DOM_EXPORTS)
-      renderLocalBackgrounds(DOM_EXPORTS)
-    }, 0)
+    // Trigger re-renders for galleries to show active state after the settings
+    // sidebar has actually needed those galleries.
+    if (settingsGalleriesRendered) {
+      setTimeout(() => {
+        renderUserGradients(DOM_EXPORTS)
+        renderSavedMultiColors(DOM_EXPORTS)
+        renderLocalBackgrounds(DOM_EXPORTS)
+      }, 0)
+    }
 
     // Clear active theme if a themeable setting is changed manually
     const currentSettings = getSettings()
@@ -520,16 +579,7 @@ export function initSettings() {
       key === "liquidEtherActive" ||
       key === "splashCursorActive"
     if (shouldRefreshBackgroundGalleries) {
-      renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
-      renderUserGradients(DOM_EXPORTS)
-      renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
-        handleSettingUpdate("svgWaveActive", true)
-      })
-      renderUserGradientV2s(DOM_EXPORTS)
-      renderUserSilks()
-      renderUserLightPillars()
-      renderUserLiquidEthers()
-      renderSavedMultiColors(DOM_EXPORTS)
+      if (settingsGalleriesRendered) refreshBackgroundGalleries()
     }
 
     // Mutual exclusivity
@@ -599,7 +649,8 @@ export function initSettings() {
       if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "splashCursorActive" && value === true) {
-      updateSetting("background", null)
+      updateSetting("splashCursorDarkBg", false)
+      restoreRememberedBackground()
       updateSetting("gradientV2Active", false)
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
@@ -610,6 +661,23 @@ export function initSettings() {
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
       if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
       if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorDarkBg) DOM_EXPORTS.splashCursorDarkBg.checked = false
+      if (DOM_EXPORTS.splashCursorDarkBgBtn)
+        DOM_EXPORTS.splashCursorDarkBgBtn.classList.remove("active")
+    }
+    const animatedBackgroundKeys = [
+      "gradientV2Active",
+      "svgWaveActive",
+      "silkActive",
+      "lightPillarActive",
+      "liquidEtherActive",
+      "splashCursorActive",
+    ]
+    if (
+      (animatedBackgroundKeys.includes(key) && value === false) ||
+      (key === "splashCursorDarkBg" && value === false)
+    ) {
+      restoreRememberedBackground()
     }
     if (key === "background" && value != null) {
       updateSetting("gradientV2Active", false)
@@ -709,19 +777,14 @@ export function initSettings() {
       handleSettingUpdate("liquidEtherActive", true)
   })
 
-  // Initial rendering for all background galleries
-  renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
-  renderUserColors(DOM_EXPORTS)
-  renderUserGradients(DOM_EXPORTS)
-  renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
-    handleSettingUpdate("svgWaveActive", true)
-  })
-  renderUserGradientV2s(DOM_EXPORTS)
-  renderUserSilks()
-  renderUserLightPillars()
-  renderUserLiquidEthers()
-  renderSavedMultiColors(DOM_EXPORTS)
-  populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, settings)
+  // Settings galleries are expensive and only useful once the sidebar is opened.
+  DOM_EXPORTS.settingsToggle?.addEventListener(
+    "click",
+    scheduleSettingsGalleriesRender,
+  )
+  if (DOM_EXPORTS.settingsSidebar?.classList.contains("open")) {
+    scheduleSettingsGalleriesRender()
+  }
 
   // Initialize multi-select modes and file uploads
   setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
@@ -747,21 +810,7 @@ export function initSettings() {
   // Expose applySettings globally so it can be re-run after heavy async ops like preloadImages
   window.appApplySettings = () => {
     applySettings()
-    refreshBackgroundGalleries()
-  }
-
-  function refreshBackgroundGalleries() {
-    renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
-    renderUserColors(DOM_EXPORTS)
-    renderUserGradients(DOM_EXPORTS)
-    renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
-      handleSettingUpdate("svgWaveActive", true)
-    })
-    renderUserGradientV2s(DOM_EXPORTS)
-    renderUserSilks()
-    renderUserLightPillars()
-    renderUserLiquidEthers()
-    renderSavedMultiColors(DOM_EXPORTS)
+    if (settingsGalleriesRendered) refreshBackgroundGalleries()
   }
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
@@ -1086,10 +1135,11 @@ export function initSettings() {
   const animatedBgHeader = document.getElementById("animated-backgrounds-header")
   if (animatedBgHeader) {
     animatedBgHeader.addEventListener("click", () => {
+      scheduleSettingsGalleriesRender()
       const section = animatedBgHeader.parentElement
       setTimeout(() => {
         const isExpanded = !section.classList.contains("collapsed")
-        if (isExpanded) {
+        if (isExpanded && settingsGalleriesRendered) {
           renderUserGradientV2s(DOM_EXPORTS)
           renderUserSilks()
           renderUserLightPillars()
@@ -1103,19 +1153,8 @@ export function initSettings() {
     if (isAnyActive) {
         const section = animatedBgHeader.parentElement
         section.classList.remove("collapsed")
-        
-        // Initial render for active state
-        setTimeout(() => {
-            renderUserGradientV2s(DOM_EXPORTS)
-            renderUserSilks()
-            renderUserLightPillars()
-            renderUserLiquidEthers()
-        }, 100)
     }
   }
-
-  // Initial render for Liquid Ether gallery
-  renderUserLiquidEthers()
 
   applySettings()
 }
