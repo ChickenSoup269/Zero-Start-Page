@@ -3455,7 +3455,7 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .notepad-body {
-  overflow-y: auto;
+  overflow: auto;
   flex: 1;
   padding-right: 8px;
   margin-right: -4px;
@@ -3498,6 +3498,7 @@ body.context-menu-none .calendar-event-preview-desc {
 .notes-list {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -3509,15 +3510,27 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .note-item {
+  position: relative;
   width: 100%;
+  min-width: 260px;
+  max-width: none;
+  min-height: 128px;
   box-sizing: border-box;
   margin-bottom: 12px;
   border-radius: 12px;
   overflow: hidden;
+  resize: none;
   background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
   transition:
     transform 0.2s,
     box-shadow 0.2s;
+}
+
+.note-item.resizing,
+.floating-note-window.resizing {
+  user-select: none;
 }
 
 .note-item:hover {
@@ -3580,7 +3593,10 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .note-title-input {
-  flex: 1;
+  flex: 0 1 150px;
+  width: 150px;
+  max-width: 38%;
+  min-width: 76px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
@@ -3713,9 +3729,12 @@ body.context-menu-none .calendar-event-preview-desc {
 .note-content {
   background: var(--note-content-bg, #ffffff);
   color: var(--note-content-text, #000000);
+  min-width: 0;
   min-height: 80px;
-  max-height: 250px;
+  max-height: none;
+  flex: 1 1 auto;
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
@@ -3726,6 +3745,7 @@ body.context-menu-none .calendar-event-preview-desc {
   line-height: 1.6;
   outline: none;
   margin-top: 8px;
+  box-sizing: border-box;
   transition: all 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -3768,9 +3788,27 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .toolbar-btn:hover {
-  background: var(--note-toolbar-surface-hover, rgba(255, 255, 255, 0.15)) !important;
+  background: var(
+    --note-toolbar-surface-hover,
+    rgba(255, 255, 255, 0.15)
+  ) !important;
   color: var(--note-content-text, #ffffff) !important;
   border-color: var(--note-toolbar-border, rgba(255, 255, 255, 0.3)) !important;
+}
+
+.toolbar-btn.active {
+  background: var(
+    --note-toolbar-active-surface,
+    var(--note-content-text, #ffffff)
+  ) !important;
+  color: var(--note-content-bg, #000000) !important;
+  box-shadow: 0 0 0 2px var(--note-toolbar-border, rgba(255, 255, 255, 0.2))
+    inset;
+}
+
+.toolbar-btn.active i,
+.toolbar-btn.active svg {
+  color: var(--note-content-bg, #000000) !important;
 }
 
 .toolbar-btn:active {
@@ -3825,16 +3863,21 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .note-editor img {
-  max-width: 100%;
-  height: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  box-sizing: border-box;
   border-radius: 4px;
   margin: 8px 0;
   display: block;
+  object-fit: contain;
 }
 
+.note-content:empty:before,
 .note-editor:empty:before {
   content: "Start typing...";
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--note-placeholder-text, rgba(255, 255, 255, 0.4));
   font-style: italic;
 }
 
@@ -3884,7 +3927,7 @@ body.context-menu-none .calendar-event-preview-desc {
   right: 30px;
   overflow: hidden;
   background: transparent;
-  resize: both;
+  resize: none;
 }
 
 .floating-note-window.collapsed {
@@ -3976,6 +4019,7 @@ body.context-menu-none .calendar-event-preview-desc {
   color: var(--note-content-text, #000000);
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
@@ -4012,17 +4056,59 @@ body.context-menu-none .calendar-event-preview-desc {
   margin: 0.3rem 0;
 }
 
+.note-item img,
+.floating-note-window img,
+.note-content img,
+.note-editor img,
 .floating-note-content img {
-  max-width: 100%;
-  height: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  max-height: 100% !important;
+  box-sizing: border-box !important;
   border-radius: 4px;
   margin: 8px 0;
-  display: block;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.note-resize-handle {
+  position: absolute;
+  z-index: 20;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  background: transparent;
+}
+
+.note-resize-nw {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.note-resize-ne {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
+}
+
+.note-resize-sw {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
+}
+
+.note-resize-se {
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
 }
 
 .floating-note-content:empty:before {
   content: "Start typing...";
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--note-placeholder-text, rgba(255, 255, 255, 0.4));
   font-style: italic;
 }
 

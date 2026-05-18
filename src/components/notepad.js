@@ -25,6 +25,8 @@ export class Notepad {
       JSON.parse(localStorage.getItem("collapsedFloatingNotes")) || {} // { noteId: true }
     this.hiddenEditToolbars =
       JSON.parse(localStorage.getItem("hiddenEditToolbars")) || {} // { noteId: true }
+    this.noteDimensions =
+      JSON.parse(localStorage.getItem("notepadNoteDimensions")) || {} // { noteId: { width, height } }
     this.isVisible = getSettings().showNotepad !== false
     this.container = null
     this.floatingNotes = {} // Store floating note containers
@@ -125,6 +127,9 @@ export class Notepad {
     this.notes = this.notes.filter((n) => n.id !== id)
     delete this.detachedNotes[id]
     delete this.hiddenNotes[id]
+    delete this.hiddenEditToolbars[id]
+    delete this.collapsedFloatingNotes[id]
+    delete this.noteDimensions[id]
     if (this.floatingNotes[id]) {
       this.floatingNotes[id].remove()
       delete this.floatingNotes[id]
@@ -132,10 +137,16 @@ export class Notepad {
     this.saveNotes()
     this.saveDetachedState()
     this.saveHiddenState()
+    this.saveHiddenEditToolbarState()
+    this.saveCollapsedFloatingState()
+    this.saveNoteDimensions()
     this.render()
   }
 
   updateNote(id, updates) {
+    if (typeof updates.content === "string") {
+      updates.content = this.normalizeNoteContentHtml(updates.content)
+    }
     this.notes = this.notes.map((n) => (n.id === id ? { ...n, ...updates } : n))
     this.saveNotes()
   }
@@ -173,6 +184,13 @@ export class Notepad {
     localStorage.setItem(
       "hiddenEditToolbars",
       JSON.stringify(this.hiddenEditToolbars),
+    )
+  }
+
+  saveNoteDimensions() {
+    localStorage.setItem(
+      "notepadNoteDimensions",
+      JSON.stringify(this.noteDimensions),
     )
   }
 
@@ -261,6 +279,7 @@ export class Notepad {
         <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
       </div>
       <div class="floating-note-content" contenteditable="true">${note.content}</div>
+      ${this.getResizeHandlesHtml()}
     `
 
     document.body.appendChild(floatingContainer)
@@ -272,11 +291,16 @@ export class Notepad {
     )
     if (savedDimensions) {
       try {
-        const { width, height, top, right } = JSON.parse(savedDimensions)
+        const { width, height, top, right, left } = JSON.parse(savedDimensions)
         floatingContainer.style.width = width
         floatingContainer.style.height = height
         floatingContainer.style.top = top
-        floatingContainer.style.right = right
+        if (left) {
+          floatingContainer.style.left = left
+          floatingContainer.style.right = "auto"
+        } else {
+          floatingContainer.style.right = right
+        }
       } catch (e) {
         console.error("Error restoring floating note dimensions:", e)
       }
@@ -289,6 +313,7 @@ export class Notepad {
         height: floatingContainer.style.height || "auto",
         top: floatingContainer.style.top || "150px",
         right: floatingContainer.style.right || "30px",
+        left: floatingContainer.style.left || null,
       }
       localStorage.setItem(
         `floating-note-${noteId}-dimensions`,
@@ -312,6 +337,7 @@ export class Notepad {
       null,
       ".floating-note-header",
     )
+    this.setupManualResize(floatingContainer, noteId, true)
 
     // Setup event listeners
     const closeBtn = floatingContainer.querySelector(".floating-note-close")
@@ -423,6 +449,7 @@ export class Notepad {
 
     // Set content input listener (already initialized above with styles)
     contentDiv.addEventListener("input", () => {
+      this.normalizeEditorImages(contentDiv)
       this.updateNote(noteId, { content: contentDiv.innerHTML })
     })
 
@@ -432,40 +459,7 @@ export class Notepad {
     })
     titleSpan.contentEditable = true
 
-    // Toolbar buttons
-    floatingContainer.querySelectorAll(".toolbar-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const command = btn.dataset.command
-        const action = btn.dataset.action
-
-        if (command) {
-          document.execCommand(command, false, null)
-        } else if (action === "insert-image") {
-          showPrompt("Enter image URL:").then((url) => {
-            if (url) {
-              document.execCommand("insertImage", false, url)
-              contentDiv.focus()
-              this.updateNote(noteId, { content: contentDiv.innerHTML })
-            }
-          })
-          return
-        } else if (action === "create-link") {
-          showPrompt("Enter URL:").then((url) => {
-            if (url) {
-              document.execCommand("createLink", false, url)
-              contentDiv.focus()
-              this.updateNote(noteId, { content: contentDiv.innerHTML })
-            }
-          })
-          return
-        } else if (action === "indent" || action === "outdent") {
-          document.execCommand(action, false, null)
-        }
-
-        contentDiv.focus()
-        this.updateNote(noteId, { content: contentDiv.innerHTML })
-      })
-    })
+    this.setupEditorToolbar(floatingContainer, contentDiv, noteId)
   }
 
   renderNote(note) {
@@ -479,6 +473,12 @@ export class Notepad {
     noteDiv.className = "note-item"
     if (isEditToolbarHidden) noteDiv.classList.add("edit-toolbar-hidden")
     noteDiv.setAttribute("data-note-id", note.id)
+
+    const savedDimensions = this.noteDimensions[note.id]
+    if (savedDimensions) {
+      if (savedDimensions.width) noteDiv.style.width = savedDimensions.width
+      if (savedDimensions.height) noteDiv.style.height = savedDimensions.height
+    }
 
     noteDiv.innerHTML = `
       <div class="note-header">
@@ -540,6 +540,7 @@ export class Notepad {
             </div>
             <div class="note-content" contenteditable="true">${note.content}</div>`
       }
+      ${this.getResizeHandlesHtml()}
     `
 
     // Apply color to header
@@ -555,47 +556,17 @@ export class Notepad {
     })
 
     this.applyNoteContentTheme(note, noteDiv)
+    this.setupNoteResizeObserver(noteDiv, note.id)
+    this.setupManualResize(noteDiv, note.id, false)
 
     const contentDiv = noteDiv.querySelector(".note-content")
     if (contentDiv) {
       contentDiv.addEventListener("input", () => {
+        this.normalizeEditorImages(contentDiv)
         this.updateNote(note.id, { content: contentDiv.innerHTML })
       })
 
-      // Toolbar buttons for regular note
-      noteDiv.querySelectorAll(".toolbar-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const command = btn.dataset.command
-          const action = btn.dataset.action
-
-          if (command) {
-            document.execCommand(command, false, null)
-          } else if (action === "insert-image") {
-            showPrompt("Enter image URL:").then((url) => {
-              if (url) {
-                document.execCommand("insertImage", false, url)
-                contentDiv.focus()
-                this.updateNote(note.id, { content: contentDiv.innerHTML })
-              }
-            })
-            return
-          } else if (action === "create-link") {
-            showPrompt("Enter URL:").then((url) => {
-              if (url) {
-                document.execCommand("createLink", false, url)
-                contentDiv.focus()
-                this.updateNote(note.id, { content: contentDiv.innerHTML })
-              }
-            })
-            return
-          } else if (action === "indent" || action === "outdent") {
-            document.execCommand(action, false, null)
-          }
-
-          contentDiv.focus()
-          this.updateNote(note.id, { content: contentDiv.innerHTML })
-        })
-      })
+      this.setupEditorToolbar(noteDiv, contentDiv, note.id)
     }
 
     // Toggle background color button
@@ -744,6 +715,350 @@ export class Notepad {
     })
   }
 
+  setupNoteResizeObserver(noteDiv, noteId) {
+    if (!window.ResizeObserver) return
+
+    const observer = new ResizeObserver(() => {
+      const { width, height } = noteDiv.getBoundingClientRect()
+      if (width <= 0 || height <= 0) return
+
+      this.noteDimensions[noteId] = {
+        width: `${Math.round(width)}px`,
+        height: `${Math.round(height)}px`,
+      }
+      this.saveNoteDimensions()
+    })
+    observer.observe(noteDiv)
+  }
+
+  getResizeHandlesHtml() {
+    return `
+      <span class="note-resize-handle note-resize-nw" data-resize-corner="nw"></span>
+      <span class="note-resize-handle note-resize-ne" data-resize-corner="ne"></span>
+      <span class="note-resize-handle note-resize-sw" data-resize-corner="sw"></span>
+      <span class="note-resize-handle note-resize-se" data-resize-corner="se"></span>
+    `
+  }
+
+  setupManualResize(root, noteId, isFloating = false) {
+    const handles = root.querySelectorAll(".note-resize-handle")
+    if (handles.length === 0) return
+
+    handles.forEach((handle) => {
+      handle.addEventListener("mousedown", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        const corner = handle.dataset.resizeCorner || "se"
+        const rect = root.getBoundingClientRect()
+        const startX = e.clientX
+        const startY = e.clientY
+        const startWidth = rect.width
+        const startHeight = rect.height
+        const startLeft = rect.left
+        const startTop = rect.top
+        const minWidth = isFloating ? 300 : 260
+        const minHeight = isFloating ? 120 : 128
+
+        root.classList.add("resizing")
+        root.style.transition = "none"
+
+        if (isFloating) {
+          root.style.left = `${startLeft}px`
+          root.style.top = `${startTop}px`
+          root.style.right = "auto"
+          root.style.bottom = "auto"
+        }
+
+        const onMouseMove = (moveEvent) => {
+          moveEvent.preventDefault()
+
+          const dx = moveEvent.clientX - startX
+          const dy = moveEvent.clientY - startY
+          let nextWidth = startWidth
+          let nextHeight = startHeight
+          let nextLeft = startLeft
+          let nextTop = startTop
+
+          if (corner.includes("e")) nextWidth = startWidth + dx
+          if (corner.includes("w")) {
+            nextWidth = startWidth - dx
+            if (isFloating) nextLeft = startLeft + dx
+          }
+          if (corner.includes("s")) nextHeight = startHeight + dy
+          if (corner.includes("n")) {
+            nextHeight = startHeight - dy
+            if (isFloating) nextTop = startTop + dy
+          }
+
+          if (nextWidth < minWidth) {
+            if (isFloating && corner.includes("w")) {
+              nextLeft -= minWidth - nextWidth
+            }
+            nextWidth = minWidth
+          }
+
+          if (nextHeight < minHeight) {
+            if (isFloating && corner.includes("n")) {
+              nextTop -= minHeight - nextHeight
+            }
+            nextHeight = minHeight
+          }
+
+          root.style.width = `${Math.round(nextWidth)}px`
+          root.style.height = `${Math.round(nextHeight)}px`
+
+          if (isFloating) {
+            root.style.left = `${Math.round(nextLeft)}px`
+            root.style.top = `${Math.round(nextTop)}px`
+          }
+        }
+
+        const onMouseUp = () => {
+          document.removeEventListener("mousemove", onMouseMove)
+          document.removeEventListener("mouseup", onMouseUp)
+          root.classList.remove("resizing")
+          root.style.transition = ""
+
+          if (isFloating) {
+            const dimensions = {
+              width: root.style.width || `${Math.round(root.offsetWidth)}px`,
+              height: root.style.height || `${Math.round(root.offsetHeight)}px`,
+              top: root.style.top || `${Math.round(root.getBoundingClientRect().top)}px`,
+              right: root.style.right || "auto",
+              left: root.style.left || `${Math.round(root.getBoundingClientRect().left)}px`,
+            }
+            localStorage.setItem(
+              `floating-note-${noteId}-dimensions`,
+              JSON.stringify(dimensions),
+            )
+          } else {
+            this.noteDimensions[noteId] = {
+              width: root.style.width || `${Math.round(root.offsetWidth)}px`,
+              height: root.style.height || `${Math.round(root.offsetHeight)}px`,
+            }
+            this.saveNoteDimensions()
+          }
+        }
+
+        document.addEventListener("mousemove", onMouseMove)
+        document.addEventListener("mouseup", onMouseUp)
+      })
+    })
+  }
+
+  setupEditorToolbar(root, contentDiv, noteId) {
+    if (!contentDiv) return
+
+    let savedRange = null
+    const toolbarButtons = Array.from(root.querySelectorAll(".toolbar-btn"))
+
+    const saveRange = () => {
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0) return
+
+      const range = selection.getRangeAt(0)
+      const container = range.commonAncestorContainer
+      const selectionNode =
+        container.nodeType === Node.ELEMENT_NODE ? container : container.parentNode
+      if (selectionNode && contentDiv.contains(selectionNode)) {
+        savedRange = range.cloneRange()
+      }
+    }
+
+    const restoreRange = () => {
+      contentDiv.focus()
+      if (!savedRange) return
+
+      const selection = window.getSelection()
+      if (!selection) return
+
+      selection.removeAllRanges()
+      selection.addRange(savedRange)
+    }
+
+    const moveRangeToEnd = () => {
+      const range = document.createRange()
+      range.selectNodeContents(contentDiv)
+      range.collapse(false)
+      savedRange = range
+      restoreRange()
+    }
+
+    const persistContent = () => {
+      this.normalizeEditorImages(contentDiv)
+      this.updateNote(noteId, { content: contentDiv.innerHTML })
+      saveRange()
+      refreshToolbarState()
+    }
+
+    const getToolbarColors = () => ({
+      normalBg:
+        root.style.getPropertyValue("--note-toolbar-surface") ||
+        "rgba(255, 255, 255, 0.08)",
+      activeBg:
+        root.style.getPropertyValue("--note-toolbar-active-surface") ||
+        root.style.getPropertyValue("--note-content-text") ||
+        "#ffffff",
+      normalText: root.style.getPropertyValue("--note-content-text") || "#ffffff",
+      activeText: root.style.getPropertyValue("--note-content-bg") || "#000000",
+      border:
+        root.style.getPropertyValue("--note-toolbar-border") ||
+        "rgba(255, 255, 255, 0.1)",
+    })
+
+    const setButtonActive = (btn, isActive) => {
+      const colors = getToolbarColors()
+      btn.classList.toggle("active", isActive)
+      btn.setAttribute("aria-pressed", isActive ? "true" : "false")
+      btn.style.setProperty(
+        "background-color",
+        isActive ? colors.activeBg : colors.normalBg,
+        "important",
+      )
+      btn.style.setProperty(
+        "color",
+        isActive ? colors.activeText : colors.normalText,
+        "important",
+      )
+      btn.style.setProperty("border-color", colors.border, "important")
+      btn.querySelectorAll("i, svg").forEach((icon) => {
+        icon.style.setProperty(
+          "color",
+          isActive ? colors.activeText : colors.normalText,
+          "important",
+        )
+        icon.style.setProperty("fill", "currentColor", "important")
+      })
+    }
+
+    const selectionIsInsideEditor = () => {
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0) return false
+
+      const range = selection.getRangeAt(0)
+      const container = range.commonAncestorContainer
+      const selectionNode =
+        container.nodeType === Node.ELEMENT_NODE ? container : container.parentNode
+      return !!selectionNode && contentDiv.contains(selectionNode)
+    }
+
+    const refreshToolbarState = () => {
+      const canQuery = selectionIsInsideEditor()
+      toolbarButtons.forEach((btn) => {
+        const command = btn.dataset.command
+        if (!command || btn.dataset.action) {
+          setButtonActive(btn, false)
+          return
+        }
+
+        let isActive = false
+        if (canQuery) {
+          try {
+            isActive = document.queryCommandState(command)
+          } catch (e) {
+            isActive = false
+          }
+        }
+        setButtonActive(btn, isActive)
+      })
+    }
+
+    const insertImageFromUrl = (url) => {
+      const cleanUrl = String(url || "").trim()
+      if (!cleanUrl) return
+
+      if (!savedRange) moveRangeToEnd()
+      restoreRange()
+      document.execCommand("insertImage", false, cleanUrl)
+      persistContent()
+    }
+
+    contentDiv.addEventListener("keyup", saveRange)
+    contentDiv.addEventListener("mouseup", saveRange)
+    contentDiv.addEventListener("focus", () => {
+      saveRange()
+      refreshToolbarState()
+    })
+    contentDiv.addEventListener("keyup", refreshToolbarState)
+    contentDiv.addEventListener("mouseup", refreshToolbarState)
+    contentDiv.addEventListener("input", refreshToolbarState)
+    contentDiv.addEventListener("paste", (e) => {
+      const items = Array.from(e.clipboardData?.items || [])
+      const hasClipboardImage = items.some(
+        (item) => item.kind === "file" && item.type.startsWith("image/"),
+      )
+      const html = e.clipboardData?.getData("text/html") || ""
+      const hasHtmlImage = /<img[\s>]/i.test(html)
+
+      if (!hasClipboardImage && !hasHtmlImage) {
+        setTimeout(persistContent, 0)
+        return
+      }
+
+      e.preventDefault()
+      const text = e.clipboardData?.getData("text/plain") || ""
+      if (text) {
+        if (!savedRange) moveRangeToEnd()
+        restoreRange()
+        document.execCommand("insertText", false, text)
+        persistContent()
+      }
+    })
+
+    document.addEventListener("selectionchange", () => {
+      if (selectionIsInsideEditor()) {
+        saveRange()
+        refreshToolbarState()
+      }
+    })
+
+    toolbarButtons.forEach((btn) => {
+      btn.addEventListener("mousedown", (e) => {
+        e.preventDefault()
+        saveRange()
+      })
+
+      btn.addEventListener("click", async () => {
+        const command = btn.dataset.command
+        const action = btn.dataset.action
+
+        if (command) {
+          restoreRange()
+          document.execCommand(command, false, null)
+          persistContent()
+          return
+        }
+
+        if (action === "insert-image") {
+          const url = await showPrompt("Enter image URL:")
+          if (!url) return
+
+          insertImageFromUrl(url)
+          return
+        }
+
+        if (action === "create-link") {
+          const url = await showPrompt("Enter URL:")
+          if (!url) return
+
+          restoreRange()
+          document.execCommand("createLink", false, url.trim())
+          persistContent()
+          return
+        }
+
+        if (action === "indent" || action === "outdent") {
+          restoreRange()
+          document.execCommand(action, false, null)
+          persistContent()
+        }
+      })
+    })
+
+    refreshToolbarState()
+  }
+
   applyNoteHeaderTheme(header, noteColor) {
     const contrastColor = this.getContrastColor(noteColor)
     header.style.setProperty("--note-header-text", contrastColor)
@@ -768,11 +1083,40 @@ export class Notepad {
       )
     }
 
+    const floatingTitle = header.querySelector(".floating-note-title")
+    if (floatingTitle) {
+      floatingTitle.style.setProperty("color", contrastColor, "important")
+    }
+
     const icons = header.querySelectorAll("i, svg")
     icons.forEach((icon) => {
       icon.style.setProperty("color", contrastColor, "important")
       icon.style.setProperty("fill", "currentColor", "important")
     })
+  }
+
+  normalizeEditorImages(root) {
+    if (!root) return
+
+    root.querySelectorAll("img").forEach((img) => {
+      img.removeAttribute("width")
+      img.removeAttribute("height")
+      img.style.setProperty("display", "block", "important")
+      img.style.setProperty("width", "100%", "important")
+      img.style.setProperty("max-width", "100%", "important")
+      img.style.setProperty("min-width", "0", "important")
+      img.style.setProperty("height", "auto", "important")
+      img.style.setProperty("max-height", "100%", "important")
+      img.style.setProperty("box-sizing", "border-box", "important")
+      img.style.setProperty("object-fit", "contain", "important")
+    })
+  }
+
+  normalizeNoteContentHtml(html) {
+    const wrapper = document.createElement("div")
+    wrapper.innerHTML = html
+    this.normalizeEditorImages(wrapper)
+    return wrapper.innerHTML
   }
 
   applyNoteContentTheme(note, root) {
@@ -788,10 +1132,15 @@ export class Notepad {
     const subtleBorder = isLightContent
       ? "rgba(0, 0, 0, 0.14)"
       : "rgba(255, 255, 255, 0.18)"
+    const placeholderColor = isLightContent
+      ? "rgba(0, 0, 0, 0.42)"
+      : "rgba(255, 255, 255, 0.48)"
     root.style.setProperty("--note-content-bg", contentBg)
     root.style.setProperty("--note-content-text", contentTextColor)
+    root.style.setProperty("--note-placeholder-text", placeholderColor)
     root.style.setProperty("--note-toolbar-surface", subtleSurface)
     root.style.setProperty("--note-toolbar-surface-hover", subtleSurfaceHover)
+    root.style.setProperty("--note-toolbar-active-surface", contentTextColor)
     root.style.setProperty("--note-toolbar-border", subtleBorder)
     root.style.backgroundColor = contentBg
 
@@ -799,6 +1148,10 @@ export class Notepad {
     if (content) {
       content.style.setProperty("background-color", contentBg, "important")
       content.style.setProperty("color", contentTextColor, "important")
+      this.normalizeEditorImages(content)
+      if (note.id && content.innerHTML !== note.content) {
+        this.updateNote(note.id, { content: content.innerHTML })
+      }
     }
 
     const toolbar = root.querySelector(".note-toolbar, .floating-note-toolbar")
@@ -822,10 +1175,6 @@ export class Notepad {
       divider.style.setProperty("background", subtleBorder, "important")
     })
 
-    const floatingTitle = root.querySelector(".floating-note-title")
-    if (floatingTitle) {
-      floatingTitle.style.setProperty("color", contentTextColor, "important")
-    }
   }
 
   getContrastColor(hexColor) {
