@@ -21,6 +21,10 @@ export class Notepad {
     this.notes = JSON.parse(localStorage.getItem("notepadNotes")) || []
     this.detachedNotes = JSON.parse(localStorage.getItem("detachedNotes")) || {} // { noteId: true }
     this.hiddenNotes = JSON.parse(localStorage.getItem("hiddenNotes")) || {} // { noteId: true }
+    this.collapsedFloatingNotes =
+      JSON.parse(localStorage.getItem("collapsedFloatingNotes")) || {} // { noteId: true }
+    this.hiddenEditToolbars =
+      JSON.parse(localStorage.getItem("hiddenEditToolbars")) || {} // { noteId: true }
     this.isVisible = getSettings().showNotepad !== false
     this.container = null
     this.floatingNotes = {} // Store floating note containers
@@ -54,7 +58,6 @@ export class Notepad {
 
     this.container.innerHTML = `
       <div class="notepad-header drag-handle">
-        <i class="fa-solid fa-grip-vertical drag-handle-icon"></i>
         <h3 data-i18n="notepad_title">Notepad</h3>
         <button id="add-note-btn" class="icon-btn" title="Add Note"><i class="fa-solid fa-plus"></i></button>
       </div>
@@ -159,6 +162,20 @@ export class Notepad {
     localStorage.setItem("hiddenNotes", JSON.stringify(this.hiddenNotes))
   }
 
+  saveCollapsedFloatingState() {
+    localStorage.setItem(
+      "collapsedFloatingNotes",
+      JSON.stringify(this.collapsedFloatingNotes),
+    )
+  }
+
+  saveHiddenEditToolbarState() {
+    localStorage.setItem(
+      "hiddenEditToolbars",
+      JSON.stringify(this.hiddenEditToolbars),
+    )
+  }
+
   updateVisibility() {
     fadeToggle(this.container, this.isVisible, "flex")
   }
@@ -196,10 +213,13 @@ export class Notepad {
     const floatingContainer = document.createElement("div")
     floatingContainer.id = `floating-note-${noteId}`
     floatingContainer.className = "floating-note-window"
+    const isCollapsed = this.collapsedFloatingNotes[noteId]
+    const isEditToolbarHidden = this.hiddenEditToolbars[noteId]
+    if (isCollapsed) floatingContainer.classList.add("collapsed")
+    if (isEditToolbarHidden) floatingContainer.classList.add("edit-toolbar-hidden")
 
     floatingContainer.innerHTML = `
       <div class="floating-note-header drag-handle">
-        <i class="fa-solid fa-grip-vertical drag-handle-icon"></i>
         <span class="floating-note-title">${this.escapeHtml(note.title)}</span>
         <div class="note-color-dropdown">
           <button class="icon-btn note-color-trigger" title="Change Color">
@@ -217,6 +237,8 @@ export class Notepad {
           </div>
         </div>
         <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
+        <button class="icon-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
+        <button class="icon-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
         <button class="icon-btn floating-note-close" title="Reattach"><i class="fa-solid fa-window-close"></i></button>
       </div>
       <div class="floating-note-toolbar">
@@ -280,21 +302,7 @@ export class Notepad {
       ".floating-note-header",
     )
     if (floatingHeader) {
-      const contrastColor = this.getContrastColor(note.color)
-      floatingHeader.style.backgroundColor = note.color
-      floatingHeader.style.color = contrastColor
-
-      // Apply contrast color to all icons in header
-      const icons = floatingHeader.querySelectorAll("i")
-      icons.forEach((icon) => {
-        icon.style.color = contrastColor
-      })
-
-      // Apply contrast color to all buttons in header actions
-      const buttons = floatingHeader.querySelectorAll(".icon-btn")
-      buttons.forEach((btn) => {
-        btn.style.color = contrastColor
-      })
+      this.applyNoteHeaderTheme(floatingHeader, note.color)
     }
 
     // Make draggable
@@ -309,6 +317,31 @@ export class Notepad {
     const closeBtn = floatingContainer.querySelector(".floating-note-close")
     closeBtn.addEventListener("click", () => this.reattachNote(noteId))
 
+    const collapseBtn = floatingContainer.querySelector(
+      '[data-action="toggle-collapse"]',
+    )
+    if (collapseBtn) {
+      collapseBtn.addEventListener("click", () => {
+        const isNowCollapsed = !floatingContainer.classList.contains("collapsed")
+        floatingContainer.classList.toggle("collapsed", isNowCollapsed)
+
+        if (isNowCollapsed) {
+          this.collapsedFloatingNotes[noteId] = true
+        } else {
+          delete this.collapsedFloatingNotes[noteId]
+        }
+        this.saveCollapsedFloatingState()
+
+        const icon = collapseBtn.querySelector("i")
+        if (icon) {
+          icon.className =
+            "fa-solid " + (isNowCollapsed ? "fa-chevron-down" : "fa-chevron-up")
+        }
+      })
+    }
+
+    this.setupEditToolbarToggle(floatingContainer, noteId)
+
     // Toggle background button
     const bgToggleBtn = floatingContainer.querySelector(
       '[data-action="toggle-bg"]',
@@ -317,23 +350,7 @@ export class Notepad {
 
     // Initialize content background and text color
     if (contentDiv) {
-      const contentBg =
-        note.contentBg ||
-        (this.getContrastColor(note.color) === "#000000"
-          ? "#FFFFFF"
-          : "#000000")
-      const contentTextColor = contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-      contentDiv.style.backgroundColor = contentBg
-      contentDiv.style.color = contentTextColor
-
-      // Update floating-note-window background and title color with content background
-      floatingContainer.style.backgroundColor = contentBg
-      const floatingTitle = floatingContainer.querySelector(
-        ".floating-note-title",
-      )
-      if (floatingTitle) {
-        floatingTitle.style.color = contentTextColor
-      }
+      this.applyNoteContentTheme(note, floatingContainer)
     }
 
     if (bgToggleBtn) {
@@ -355,18 +372,7 @@ export class Notepad {
 
         // Update content styling immediately with !important
         if (contentDiv) {
-          const contentTextColor = newBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-          contentDiv.style.setProperty("background-color", newBg, "important")
-          contentDiv.style.setProperty("color", contentTextColor, "important")
-
-          // Update floating-note-window background and title color
-          floatingContainer.style.backgroundColor = newBg
-          const floatingTitle = floatingContainer.querySelector(
-            ".floating-note-title",
-          )
-          if (floatingTitle) {
-            floatingTitle.style.color = contentTextColor
-          }
+          this.applyNoteContentTheme({ ...latestNote, contentBg: newBg }, floatingContainer)
         }
       })
     }
@@ -393,20 +399,7 @@ export class Notepad {
           ".floating-note-header",
         )
         if (floatingHeader) {
-          const contrastColor = this.getContrastColor(newColor)
-          floatingHeader.style.backgroundColor = newColor
-          floatingHeader.style.color = contrastColor
-
-          // Update all icons and buttons in header
-          const icons = floatingHeader.querySelectorAll("i")
-          icons.forEach((icon) => {
-            icon.style.color = contrastColor
-          })
-
-          const buttons = floatingHeader.querySelectorAll(".icon-btn")
-          buttons.forEach((btn) => {
-            btn.style.color = contrastColor
-          })
+          this.applyNoteHeaderTheme(floatingHeader, newColor)
         }
 
         // Update floating note content background
@@ -415,20 +408,7 @@ export class Notepad {
         )
         if (floatingContent) {
           const latestNote = this.notes.find((n) => n.id === noteId) || note
-          const contentBg = this.getContentBg(latestNote)
-          const contentTextColor =
-            contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-          floatingContent.style.backgroundColor = contentBg
-          floatingContent.style.color = contentTextColor
-
-          // Update floating-note-window background and title color
-          floatingContainer.style.backgroundColor = contentBg
-          const floatingTitle = floatingContainer.querySelector(
-            ".floating-note-title",
-          )
-          if (floatingTitle) {
-            floatingTitle.style.color = contentTextColor
-          }
+          this.applyNoteContentTheme(latestNote, floatingContainer)
         }
 
         // Update active state
@@ -491,11 +471,13 @@ export class Notepad {
   renderNote(note) {
     const isHidden = this.hiddenNotes[note.id]
     const isDetached = this.detachedNotes[note.id]
+    const isEditToolbarHidden = this.hiddenEditToolbars[note.id]
 
     if (isDetached) return null // Don't render detached notes in parent
 
     const noteDiv = document.createElement("div")
     noteDiv.className = "note-item"
+    if (isEditToolbarHidden) noteDiv.classList.add("edit-toolbar-hidden")
     noteDiv.setAttribute("data-note-id", note.id)
 
     noteDiv.innerHTML = `
@@ -519,6 +501,9 @@ export class Notepad {
           </div>
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)">
             <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
+          </button>
+          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar">
+            <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i>
           </button>
           <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
@@ -560,21 +545,7 @@ export class Notepad {
     // Apply color to header
     const headerDiv = noteDiv.querySelector(".note-header")
     if (headerDiv) {
-      const contrastColor = this.getContrastColor(note.color)
-      headerDiv.style.backgroundColor = note.color
-      headerDiv.style.color = contrastColor
-
-      // Apply contrast color to all icons in header
-      const icons = headerDiv.querySelectorAll("i")
-      icons.forEach((icon) => {
-        icon.style.color = contrastColor
-      })
-
-      // Apply contrast color to all buttons in header actions
-      const buttons = headerDiv.querySelectorAll(".icon-btn, .note-action-btn")
-      buttons.forEach((btn) => {
-        btn.style.color = contrastColor
-      })
+      this.applyNoteHeaderTheme(headerDiv, note.color)
     }
 
     // Event listeners
@@ -583,26 +554,10 @@ export class Notepad {
       this.updateNote(note.id, { title: titleInput.value })
     })
 
+    this.applyNoteContentTheme(note, noteDiv)
+
     const contentDiv = noteDiv.querySelector(".note-content")
     if (contentDiv) {
-      // Set content background based on note.contentBg or auto-calculate
-      const contentBg =
-        note.contentBg ||
-        (this.getContrastColor(note.color) === "#000000"
-          ? "#FFFFFF"
-          : "#000000")
-      const contentTextColor = contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-      contentDiv.style.backgroundColor = contentBg
-      contentDiv.style.color = contentTextColor
-
-      // Update note-item background and title color with content background
-      noteDiv.style.backgroundColor = contentBg
-      const titleInput = noteDiv.querySelector(".note-title-input")
-      if (titleInput) {
-        titleInput.style.color = contentTextColor
-        titleInput.style.backgroundColor = contentBg
-      }
-
       contentDiv.addEventListener("input", () => {
         this.updateNote(note.id, { content: contentDiv.innerHTML })
       })
@@ -665,20 +620,12 @@ export class Notepad {
         // Update content styling with !important to override CSS
         const contentDiv = noteDiv.querySelector(".note-content")
         if (contentDiv) {
-          const contentTextColor = newBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-          contentDiv.style.setProperty("background-color", newBg, "important")
-          contentDiv.style.setProperty("color", contentTextColor, "important")
-
-          // Update note-item background and title color
-          noteDiv.style.backgroundColor = newBg
-          const titleInput = noteDiv.querySelector(".note-title-input")
-          if (titleInput) {
-            titleInput.style.color = contentTextColor
-            titleInput.style.backgroundColor = newBg
-          }
+          this.applyNoteContentTheme({ ...latestNote, contentBg: newBg }, noteDiv)
         }
       })
     }
+
+    this.setupEditToolbarToggle(noteDiv, note.id)
 
     // Color dropdown toggle
     const colorTrigger = noteDiv.querySelector(".note-color-trigger")
@@ -704,41 +651,14 @@ export class Notepad {
         // Update header color and icon colors
         const headerDiv = noteDiv.querySelector(".note-header")
         if (headerDiv) {
-          const contrastColor = this.getContrastColor(newColor)
-          headerDiv.style.backgroundColor = newColor
-          headerDiv.style.color = contrastColor
-
-          // Update all icons and buttons in header
-          const icons = headerDiv.querySelectorAll("i")
-          icons.forEach((icon) => {
-            icon.style.color = contrastColor
-          })
-
-          const buttons = headerDiv.querySelectorAll(
-            ".icon-btn, .note-action-btn",
-          )
-          buttons.forEach((btn) => {
-            btn.style.color = contrastColor
-          })
+          this.applyNoteHeaderTheme(headerDiv, newColor)
         }
 
         // Update note-content background and text
         const contentDiv = noteDiv.querySelector(".note-content")
         if (contentDiv) {
           const latestNote = this.notes.find((n) => n.id === note.id) || note
-          const contentBg = this.getContentBg(latestNote)
-          const contentTextColor =
-            contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
-          contentDiv.style.backgroundColor = contentBg
-          contentDiv.style.color = contentTextColor
-
-          // Update note-item background and title color
-          noteDiv.style.backgroundColor = contentBg
-          const titleInput = noteDiv.querySelector(".note-title-input")
-          if (titleInput) {
-            titleInput.style.color = contentTextColor
-            titleInput.style.backgroundColor = contentBg
-          }
+          this.applyNoteContentTheme(latestNote, noteDiv)
         }
 
         // Update active state
@@ -795,6 +715,117 @@ export class Notepad {
     return this.getContrastColor(note.color) === "#000000"
       ? "#FFFFFF"
       : "#000000"
+  }
+
+  getContentTextColor(contentBg) {
+    return contentBg === "#FFFFFF" ? "#000000" : "#FFFFFF"
+  }
+
+  setupEditToolbarToggle(root, noteId) {
+    const toggleBtn = root.querySelector('[data-action="toggle-edit-toolbar"]')
+    if (!toggleBtn) return
+
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = !root.classList.contains("edit-toolbar-hidden")
+      root.classList.toggle("edit-toolbar-hidden", isHidden)
+
+      if (isHidden) {
+        this.hiddenEditToolbars[noteId] = true
+      } else {
+        delete this.hiddenEditToolbars[noteId]
+      }
+      this.saveHiddenEditToolbarState()
+
+      const icon = toggleBtn.querySelector("i")
+      if (icon) {
+        icon.className =
+          "fa-solid " + (isHidden ? "fa-pen-to-square" : "fa-pen")
+      }
+    })
+  }
+
+  applyNoteHeaderTheme(header, noteColor) {
+    const contrastColor = this.getContrastColor(noteColor)
+    header.style.setProperty("--note-header-text", contrastColor)
+    header.style.setProperty("background-color", noteColor, "important")
+    header.style.setProperty("color", contrastColor, "important")
+
+    const buttons = header.querySelectorAll(".icon-btn, .note-action-btn")
+    buttons.forEach((btn) => {
+      btn.style.setProperty("color", contrastColor, "important")
+    })
+
+    const titleInput = header.querySelector(".note-title-input")
+    if (titleInput) {
+      titleInput.style.setProperty("color", contrastColor, "important")
+      titleInput.style.setProperty("background-color", "transparent", "important")
+      titleInput.style.setProperty(
+        "border-color",
+        contrastColor === "#000000"
+          ? "rgba(0, 0, 0, 0.22)"
+          : "rgba(255, 255, 255, 0.28)",
+        "important",
+      )
+    }
+
+    const icons = header.querySelectorAll("i, svg")
+    icons.forEach((icon) => {
+      icon.style.setProperty("color", contrastColor, "important")
+      icon.style.setProperty("fill", "currentColor", "important")
+    })
+  }
+
+  applyNoteContentTheme(note, root) {
+    const contentBg = this.getContentBg(note)
+    const contentTextColor = this.getContentTextColor(contentBg)
+    const isLightContent = contentBg === "#FFFFFF"
+    const subtleSurface = isLightContent
+      ? "rgba(0, 0, 0, 0.06)"
+      : "rgba(255, 255, 255, 0.1)"
+    const subtleSurfaceHover = isLightContent
+      ? "rgba(0, 0, 0, 0.12)"
+      : "rgba(255, 255, 255, 0.18)"
+    const subtleBorder = isLightContent
+      ? "rgba(0, 0, 0, 0.14)"
+      : "rgba(255, 255, 255, 0.18)"
+    root.style.setProperty("--note-content-bg", contentBg)
+    root.style.setProperty("--note-content-text", contentTextColor)
+    root.style.setProperty("--note-toolbar-surface", subtleSurface)
+    root.style.setProperty("--note-toolbar-surface-hover", subtleSurfaceHover)
+    root.style.setProperty("--note-toolbar-border", subtleBorder)
+    root.style.backgroundColor = contentBg
+
+    const content = root.querySelector(".note-content, .floating-note-content")
+    if (content) {
+      content.style.setProperty("background-color", contentBg, "important")
+      content.style.setProperty("color", contentTextColor, "important")
+    }
+
+    const toolbar = root.querySelector(".note-toolbar, .floating-note-toolbar")
+    if (toolbar) {
+      toolbar.style.setProperty("background-color", contentBg, "important")
+      toolbar.style.setProperty("border-color", subtleBorder, "important")
+      toolbar.style.setProperty("color", contentTextColor, "important")
+    }
+
+    root.querySelectorAll(".toolbar-btn").forEach((btn) => {
+      btn.style.setProperty("color", contentTextColor, "important")
+      btn.style.setProperty("background-color", subtleSurface, "important")
+      btn.style.setProperty("border-color", subtleBorder, "important")
+      btn.querySelectorAll("i, svg").forEach((icon) => {
+        icon.style.setProperty("color", contentTextColor, "important")
+        icon.style.setProperty("fill", "currentColor", "important")
+      })
+    })
+
+    root.querySelectorAll(".toolbar-divider").forEach((divider) => {
+      divider.style.setProperty("background", subtleBorder, "important")
+    })
+
+    const floatingTitle = root.querySelector(".floating-note-title")
+    if (floatingTitle) {
+      floatingTitle.style.setProperty("color", contentTextColor, "important")
+    }
   }
 
   getContrastColor(hexColor) {

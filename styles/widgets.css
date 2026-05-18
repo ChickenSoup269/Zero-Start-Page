@@ -3112,9 +3112,7 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .skin-white-blur input,
-.skin-white-blur textarea,
-.skin-white-blur .note-editor,
-.skin-white-blur .floating-note-content {
+.skin-white-blur textarea {
   background: rgba(0, 0, 0, 0.05) !important;
   color: #000 !important;
   border-color: rgba(0, 0, 0, 0.1) !important;
@@ -3207,6 +3205,11 @@ body.context-menu-none .calendar-event-preview-desc {
 .notepad-container.skin-white-blur .notepad-header h3 {
   background: none !important;
   -webkit-text-fill-color: #000 !important;
+}
+
+.notepad-container.skin-white-blur .notepad-header #add-note-btn,
+.notepad-container.skin-white-blur .notepad-header #add-note-btn i {
+  color: #000000 !important;
 }
 
 /* Search Engine Selector */
@@ -3423,16 +3426,6 @@ body.context-menu-none .calendar-event-preview-desc {
   cursor: default;
 }
 
-.notepad-header .drag-handle-icon {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 1rem;
-  cursor: grab;
-}
-
-.notepad-header .drag-handle-icon:active {
-  cursor: grabbing;
-}
-
 .notepad-header h3 {
   margin: 0;
   font-size: 1.3rem;
@@ -3543,8 +3536,20 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .note-header i {
+  color: var(--note-header-text, currentColor) !important;
   opacity: 0.9;
   transition: opacity 0.2s;
+}
+
+.note-header .icon-btn,
+.note-header .note-action-btn,
+.note-header .icon-btn i,
+.note-header .note-action-btn i,
+.floating-note-header .icon-btn,
+.floating-note-header .note-action-btn,
+.floating-note-header .icon-btn i,
+.floating-note-header .note-action-btn i {
+  color: var(--note-header-text, currentColor) !important;
 }
 
 .note-header .icon-btn:hover i {
@@ -3706,6 +3711,8 @@ body.context-menu-none .calendar-event-preview-desc {
 
 /* Note with hidden content - compact style */
 .note-content {
+  background: var(--note-content-bg, #ffffff);
+  color: var(--note-content-text, #000000);
   min-height: 80px;
   max-height: 250px;
   overflow-y: auto;
@@ -3731,7 +3738,7 @@ body.context-menu-none .calendar-event-preview-desc {
 .note-toolbar {
   display: flex;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 6px 6px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3739,26 +3746,31 @@ body.context-menu-none .calendar-event-preview-desc {
   flex-wrap: wrap;
 }
 
+.note-item.edit-toolbar-hidden .note-toolbar,
+.floating-note-window.edit-toolbar-hidden .floating-note-toolbar {
+  display: none;
+}
+
 .toolbar-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.75);
+  background: var(--note-toolbar-surface, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--note-toolbar-border, rgba(255, 255, 255, 0.1));
+  color: var(--note-content-text, rgba(255, 255, 255, 0.75));
   cursor: pointer;
-  padding: 8px 12px;
-  font-size: 0.95rem;
+  padding: 5px 7px;
+  font-size: 0.78rem;
   border-radius: 6px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  min-height: 36px;
+  min-width: 28px;
+  min-height: 28px;
 }
 
 .toolbar-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--note-toolbar-surface-hover, rgba(255, 255, 255, 0.15)) !important;
+  color: var(--note-content-text, #ffffff) !important;
+  border-color: var(--note-toolbar-border, rgba(255, 255, 255, 0.3)) !important;
 }
 
 .toolbar-btn:active {
@@ -3769,21 +3781,27 @@ body.context-menu-none .calendar-event-preview-desc {
 
 .toolbar-divider {
   width: 1px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--note-toolbar-border, rgba(255, 255, 255, 0.2));
   margin: 4px 6px;
 }
 
+.toolbar-btn i,
+.toolbar-btn svg {
+  color: var(--note-content-text, currentColor) !important;
+  fill: currentColor !important;
+}
+
 .note-editor {
+  background: var(--note-content-bg, #ffffff);
+  color: var(--note-content-text, #000000);
   min-height: 80px;
   max-height: 300px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46)
     rgba(255, 255, 255, 0.05);
-  background: rgba(0, 0, 0, 0.15);
   border: none;
   padding: 12px;
-  color: white;
   font-size: 0.9rem;
   line-height: 1.6;
   outline: none;
@@ -3869,6 +3887,17 @@ body.context-menu-none .calendar-event-preview-desc {
   resize: both;
 }
 
+.floating-note-window.collapsed {
+  min-height: 0;
+  height: auto !important;
+  resize: none;
+}
+
+.floating-note-window.collapsed .floating-note-toolbar,
+.floating-note-window.collapsed .floating-note-content {
+  display: none;
+}
+
 .floating-note-window:hover {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
   transform: translateY(-4px);
@@ -3900,18 +3929,6 @@ body.context-menu-none .calendar-event-preview-desc {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   padding: 4px 8px;
-}
-
-.floating-note-header .drag-handle-icon {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1rem;
-  cursor: grab;
-  transition: color 0.2s;
-}
-
-.floating-note-header .drag-handle-icon:active {
-  cursor: grabbing;
-  color: var(--accent-color);
 }
 
 .floating-note-title {
@@ -3948,13 +3965,15 @@ body.context-menu-none .calendar-event-preview-desc {
 .floating-note-toolbar {
   display: flex;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   flex-wrap: wrap;
-  background-color: black;
+  background-color: var(--note-content-bg, #000000);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .floating-note-content {
+  background: var(--note-content-bg, #ffffff);
+  color: var(--note-content-text, #000000);
   flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -3969,6 +3988,18 @@ body.context-menu-none .calendar-event-preview-desc {
   border-radius: 8px;
   margin: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.note-content *:not(img),
+.note-editor *:not(img),
+.floating-note-content *:not(img) {
+  color: inherit !important;
+}
+
+.note-content span,
+.note-editor span,
+.floating-note-content span {
+  background-color: transparent !important;
 }
 
 .floating-note-content ul,
