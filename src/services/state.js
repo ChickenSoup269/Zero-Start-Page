@@ -469,6 +469,10 @@ export async function backupToCloud(options = {}) {
     delete currentSettings.userThemes
     delete currentSettings.userGradients
     delete currentSettings.userMultiColors
+    delete currentSettings.userSvgWaves
+    delete currentSettings.userGradientV2s
+    delete currentSettings.userSilks
+    delete currentSettings.userLightPillars
   }
 
   if (!options.includeStyles) {
@@ -506,12 +510,15 @@ export async function backupToCloud(options = {}) {
     delete currentSettings.lockedWidgets
   }
 
-  // Final check for heavy data strings
+  // Final check for heavy data structures (fonts, custom languages, huge arrays)
   Object.keys(currentSettings).forEach((key) => {
-    if (
-      typeof currentSettings[key] === "string" &&
-      currentSettings[key].length > 10000
-    ) {
+    // If the size of this specific property is over 10KB, strip it
+    // because Chrome Sync has a hard overall limit of 100KB total.
+    try {
+      if (JSON.stringify(currentSettings[key]).length > 10000) {
+        delete currentSettings[key]
+      }
+    } catch (e) {
       delete currentSettings[key]
     }
   })
@@ -524,11 +531,45 @@ export async function backupToCloud(options = {}) {
       return
     }
 
-    chrome.storage.sync.set({ cloudSettings: settingsStr }, () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message))
+    // Chunking to bypass 8KB QUOTA_BYTES_PER_ITEM limit
+    const chunkSize = 7500 // safe margin below 8192
+    const totalChunks = Math.ceil(settingsStr.length / chunkSize)
+    const syncData = {
+      cloudSettings_count: totalChunks,
+    }
+
+    for (let i = 0; i < totalChunks; i++) {
+      syncData[`cloudSettings_${i}`] = settingsStr.slice(
+        i * chunkSize,
+        (i + 1) * chunkSize,
+      )
+    }
+
+    // First clear old keys to avoid leftovers
+    chrome.storage.sync.get(null, (items) => {
+      if (chrome.runtime.lastError)
+        return reject(new Error(chrome.runtime.lastError.message))
+      const keysToRemove = Object.keys(items).filter(
+        (k) =>
+          k === "cloudSettings" ||
+          k === "cloudSettings_count" ||
+          k.startsWith("cloudSettings_"),
+      )
+
+      const finishBackup = () => {
+        chrome.storage.sync.set(syncData, () => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message))
+          } else {
+            resolve()
+          }
+        })
+      }
+
+      if (keysToRemove.length > 0) {
+        chrome.storage.sync.remove(keysToRemove, finishBackup)
       } else {
-        resolve()
+        finishBackup()
       }
     })
   })
@@ -544,12 +585,25 @@ export async function clearCloudBackup() {
       return
     }
 
-    chrome.storage.sync.remove(["cloudSettings"], () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError.message))
-      } else {
-        resolve()
-      }
+    chrome.storage.sync.get(null, (items) => {
+      if (chrome.runtime.lastError)
+        return reject(new Error(chrome.runtime.lastError.message))
+
+      const keysToRemove = Object.keys(items).filter(
+        (k) =>
+          k === "cloudSettings" ||
+          k === "cloudSettings_count" ||
+          k.startsWith("cloudSettings_"),
+      )
+      if (keysToRemove.length === 0) return resolve()
+
+      chrome.storage.sync.remove(keysToRemove, () => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message))
+        } else {
+          resolve()
+        }
+      })
     })
   })
 }
@@ -565,50 +619,68 @@ export async function restoreFromCloud() {
       return
     }
 
-    chrome.storage.sync.get(["cloudSettings"], (result) => {
+    chrome.storage.sync.get(null, (result) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message))
-      } else if (result.cloudSettings) {
+      } else {
         try {
-          const restored = JSON.parse(result.cloudSettings)
-          const current = getSettings()
+          let settingsStr = null
 
-          // IMPORTANT: Re-merge local media galleries that were not synced
-          const mediaKeys = [
-            "userBackgrounds",
-            "userVideos",
-            "userImages",
-            "userAccentColors",
-            "userGradients",
-            "userMultiColors",
-            "userSvgWaves",
-            "userGradientV2s",
-            "userSilks",
-            "userLightPillars",
-            "userSavedFonts",
-            "userThemes",
-            "unsplashAccessKey",
-          ]
-
-          mediaKeys.forEach((key) => {
-            if (current[key] && current[key].length > 0) {
-              restored[key] = current[key]
-            } else if (current[key] && typeof current[key] === "string") {
-              restored[key] = current[key]
+          if (result.cloudSettings_count) {
+            // Reconstruct from chunks
+            const chunks = []
+            for (let i = 0; i < result.cloudSettings_count; i++) {
+              if (result[`cloudSettings_${i}`]) {
+                chunks.push(result[`cloudSettings_${i}`])
+              }
             }
-          })
+            settingsStr = chunks.join("")
+          } else if (result.cloudSettings) {
+            // Legacy single-string fallback
+            settingsStr = result.cloudSettings
+          }
 
-          // If the restored background is a local ID but we don't have it locally,
-          // it might cause a broken background. We'll handle this in applySettings.
+          if (settingsStr) {
+            const restored = JSON.parse(settingsStr)
+            const current = getSettings()
 
-          updateAllSettings(restored)
-          saveSettings(true)
-          resolve(true)
+            // IMPORTANT: Re-merge local media galleries that were not synced
+            const mediaKeys = [
+              "userBackgrounds",
+              "userVideos",
+              "userImages",
+              "userAccentColors",
+              "userGradients",
+              "userMultiColors",
+              "userSvgWaves",
+              "userGradientV2s",
+              "userSilks",
+              "userLightPillars",
+              "userSavedFonts",
+              "userThemes",
+              "unsplashAccessKey",
+            ]
+
+            mediaKeys.forEach((key) => {
+              if (current[key] && current[key].length > 0) {
+                restored[key] = current[key]
+              } else if (current[key] && typeof current[key] === "string") {
+                restored[key] = current[key]
+              }
+            })
+
+            // If the restored background is a local ID but we don't have it locally,
+            // it might cause a broken background. We'll handle this in applySettings.
+
+            updateAllSettings(restored)
+            saveSettings(true)
+            resolve(true)
+          } else {
+            resolve(false) // No data found
+          }
         } catch (e) {
           reject(new Error("Failed to parse cloud data: " + e.message))
         }
-      } else {
-        resolve(false) // No data found
       }
     })
   })

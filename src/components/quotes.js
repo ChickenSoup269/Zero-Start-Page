@@ -210,6 +210,92 @@ const QUOTES_DATA = [
     text: "Simplicity is the ultimate sophistication.",
     translate: "Đơn giản là đỉnh cao của tinh tế.",
   },
+  {
+    author: "John Lennon",
+    text: "Life is what happens when you're busy making other plans.",
+    translate:
+      "Cuộc sống là những gì xảy ra khi bạn đang bận rộn lên những kế hoạch khác.",
+  },
+  {
+    author: "Stephen King",
+    text: "Get busy living or get busy dying.",
+    translate: "Bận rộn sống hoặc bận rộn chết.",
+  },
+  {
+    author: "Thomas A. Edison",
+    text: "Many of life's failures are people who did not realize how close they were to success when they gave up.",
+    translate:
+      "Nhiều thất bại trong cuộc sống là do những người đã không nhận ra rằng họ đã gần với sự thành công tới mức nào trước khi họ từ bỏ.",
+  },
+  {
+    author: "Babe Ruth",
+    text: "Never let the fear of striking out keep you from playing the game.",
+    translate: "Đừng bao giờ để nỗi sợ hãi chùn bước chân.",
+  },
+  {
+    author: "Henry Ford",
+    text: "I haven't failed. I've just found 10,000 ways that won't work.",
+    translate:
+      "Tôi không thất bại. Tôi chỉ vừa tìm ra 10.000 cách không hoạt động.",
+  },
+  {
+    author: "Walt Disney",
+    text: "The way to get started is to quit talking and begin doing.",
+    translate: "Cách để bắt đầu là ngừng nói và bắt đầu làm.",
+  },
+  {
+    author: "Seneca",
+    text: "Not how long, but how well you have lived is the main thing.",
+    translate:
+      "Không phải sống bao lâu, mà sống tốt như thế nào mới là điều chính yếu.",
+  },
+  {
+    author: "John Wooden",
+    text: "Don't let yesterday take up too much of today.",
+    translate: "Đừng để ngày hôm qua chiếm quá nhiều của ngày hôm nay.",
+  },
+  {
+    author: "Vince Lombardi",
+    text: "It's not whether you get knocked down, it's whether you get up.",
+    translate:
+      "Vấn đề không phải là bạn có bị đánh ngã hay không, mà là bạn có đứng dậy được hay không.",
+  },
+  {
+    author: "Helen Keller",
+    text: "The future belongs to those who believe in the beauty of their dreams.",
+    translate:
+      "Tương lai thuộc về những ai tin vào vẻ đẹp trong những giấc mơ của họ.",
+  },
+  {
+    author: "Nelson Mandela",
+    text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+    translate:
+      "Vinh quang lớn nhất trong cuộc sống không nằm ở chỗ không bao giờ vấp ngã, mà là vươn lên mỗi khi chúng ta vấp ngã.",
+  },
+  {
+    author: "Aristotle",
+    text: "It is during our darkest moments that we must focus to see the light.",
+    translate:
+      "Trong những khoảnh khắc đen tối nhất, chúng ta phải tập trung để nhìn thấy ánh sáng.",
+  },
+  {
+    author: "Rumi",
+    text: "Do not let the behavior of others destroy your inner peace.",
+    translate:
+      "Đừng để hành vi của người khác phá hủy sự bình yên nội tâm của bạn.",
+  },
+  {
+    author: "Confucius",
+    text: "It does not matter how slowly you go as long as you do not stop.",
+    translate:
+      "Việc bạn đi chậm như thế nào không quan trọng miễn là bạn không dừng lại.",
+  },
+  {
+    author: "Maya Angelou",
+    text: "You will face many defeats in life, but never let yourself be defeated.",
+    translate:
+      "Bạn sẽ gặp nhiều thất bại trong cuộc đời, nhưng đừng bao giờ để bản thân bị đánh bại.",
+  },
 ]
 
 const CRYSTAL_BALL_ANSWERS = {
@@ -422,9 +508,10 @@ export class DailyQuotes {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = isWhiteMode ? "white-blur" : (settings.quotesSkin || "default")
-    
+    const skin = isWhiteMode ? "white-blur" : settings.quotesSkin || "default"
+
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+    this.container.classList.toggle("skin-transparent", skin === "transparent")
   }
 
   updateQuote(isManual = false) {
