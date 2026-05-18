@@ -117,6 +117,12 @@ export function setupGeneralEventHandlers(
     DOM.languageModal?.classList.remove("show")
   }
 
+  const clearLanguageModalInputs = () => {
+    if (DOM.languageCodeInput) DOM.languageCodeInput.value = ""
+    if (DOM.languageNameInput) DOM.languageNameInput.value = ""
+    if (DOM.languageJsonInput) DOM.languageJsonInput.value = ""
+  }
+
   const installCustomLanguage = async (payload) => {
     const validation = await validateCustomLanguagePayload(payload)
     const code = normalizeLanguageCode(
@@ -149,6 +155,7 @@ export function setupGeneralEventHandlers(
     renderCustomLanguageOptions()
     await loadLanguage(code)
     applyTranslations()
+    clearLanguageModalInputs()
     closeLanguageModal()
 
     const missingNotice = validation.missingKeys.length

@@ -53,6 +53,13 @@ export function makeDraggable(
   function dragMouseDown(e) {
     const currentSettings = getSettings()
     if (currentSettings.lockedWidgets?.[componentId]) return
+    if (componentId === "todo" && element.classList.contains("todo-fullscreen")) return
+    if (
+      componentId === "todo" &&
+      e.target.closest(".todo-item, .todo-section-header, .todo-detail-panel")
+    ) {
+      return
+    }
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
 

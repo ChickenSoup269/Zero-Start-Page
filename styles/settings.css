@@ -2158,6 +2158,40 @@
 
 .language-modal-content {
   max-width: 720px;
+  max-height: min(760px, calc(100vh - 36px));
+  overflow: hidden;
+}
+
+.language-modal-content .modal-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 178px);
+  padding-right: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.45) rgba(255, 255, 255, 0.06);
+}
+
+.language-modal-content .modal-body::-webkit-scrollbar,
+.language-json-input::-webkit-scrollbar {
+  width: 8px;
+}
+
+.language-modal-content .modal-body::-webkit-scrollbar-track,
+.language-json-input::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+.language-modal-content .modal-body::-webkit-scrollbar-thumb,
+.language-json-input::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-color-rgb), 0.42);
+  border-radius: 999px;
+  border: 2px solid rgba(15, 18, 25, 0.92);
+}
+
+.language-modal-content .modal-body::-webkit-scrollbar-thumb:hover,
+.language-json-input::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-color-rgb), 0.64);
 }
 
 .language-modal-lead {
@@ -2178,6 +2212,43 @@
 .language-guide-box ol {
   margin: 8px 0 0;
   padding-left: 20px;
+}
+
+.language-ai-provider-hint {
+  margin: 8px 0 10px;
+  color: var(--text-color);
+  opacity: 0.82;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.language-ai-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.language-ai-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+  border-radius: 8px;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(var(--accent-color-rgb), 0.18);
+  transition: all 0.2s ease;
+}
+
+.language-ai-links a:hover {
+  color: var(--accent-color);
+  background: rgba(var(--accent-color-rgb), 0.12);
+  border-color: rgba(var(--accent-color-rgb), 0.36);
 }
 
 .language-guide-box li {
@@ -2203,6 +2274,7 @@
 .language-json-input {
   width: 100%;
   min-height: 240px;
+  max-height: 320px;
   resize: vertical;
   padding: 12px;
   border-radius: 8px;
@@ -2213,6 +2285,7 @@
   font-size: 0.8rem;
   line-height: 1.45;
   outline: none;
+  overflow: auto;
 }
 
 .language-json-input:focus {
