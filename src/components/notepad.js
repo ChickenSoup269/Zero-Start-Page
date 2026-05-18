@@ -51,7 +51,7 @@ export class Notepad {
       this.container.className = "notepad-container"
       document.body.appendChild(this.container)
     }
-    
+
     this.container.innerHTML = `
       <div class="notepad-header drag-handle">
         <i class="fa-solid fa-grip-vertical drag-handle-icon"></i>
@@ -82,8 +82,8 @@ export class Notepad {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = isWhiteMode ? "white-blur" : (settings.notepadSkin || "default")
-    
+    const skin = isWhiteMode ? "white-blur" : settings.notepadSkin || "default"
+
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
   }
 
@@ -160,7 +160,8 @@ export class Notepad {
   }
 
   updateVisibility() {
-    fadeToggle(this.container, this.isVisible, "flex")  }
+    fadeToggle(this.container, this.isVisible, "flex")
+  }
 
   detachNote(noteId) {
     this.detachedNotes[noteId] = true
@@ -224,10 +225,18 @@ export class Notepad {
         <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
         <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
         <span class="toolbar-divider"></span>
+        <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+        <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
+        <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
+        <span class="toolbar-divider"></span>
         <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
         <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+        <button class="toolbar-btn" data-action="indent" title="Indent"><i class="fa-solid fa-indent"></i></button>
+        <button class="toolbar-btn" data-action="outdent" title="Outdent"><i class="fa-solid fa-outdent"></i></button>
         <span class="toolbar-divider"></span>
+        <button class="toolbar-btn" data-action="create-link" title="Insert Link"><i class="fa-solid fa-link"></i></button>
         <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
+        <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
       </div>
       <div class="floating-note-content" contenteditable="true">${note.content}</div>
     `
@@ -460,6 +469,17 @@ export class Notepad {
             }
           })
           return
+        } else if (action === "create-link") {
+          showPrompt("Enter URL:").then((url) => {
+            if (url) {
+              document.execCommand("createLink", false, url)
+              contentDiv.focus()
+              this.updateNote(noteId, { content: contentDiv.innerHTML })
+            }
+          })
+          return
+        } else if (action === "indent" || action === "outdent") {
+          document.execCommand(action, false, null)
         }
 
         contentDiv.focus()
@@ -511,7 +531,30 @@ export class Notepad {
           </button>
         </div>
       </div>
-      ${isHidden ? "" : `<div class="note-content" contenteditable="true">${note.content}</div>`}
+      ${
+        isHidden
+          ? ""
+          : `<div class="note-toolbar">
+              <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
+              <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
+              <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+              <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
+              <span class="toolbar-divider"></span>
+              <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
+              <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
+              <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
+              <span class="toolbar-divider"></span>
+              <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+              <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+              <button class="toolbar-btn" data-action="indent" title="Indent"><i class="fa-solid fa-indent"></i></button>
+              <button class="toolbar-btn" data-action="outdent" title="Outdent"><i class="fa-solid fa-outdent"></i></button>
+              <span class="toolbar-divider"></span>
+              <button class="toolbar-btn" data-action="create-link" title="Insert Link"><i class="fa-solid fa-link"></i></button>
+              <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
+              <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
+            </div>
+            <div class="note-content" contenteditable="true">${note.content}</div>`
+      }
     `
 
     // Apply color to header
@@ -562,6 +605,41 @@ export class Notepad {
 
       contentDiv.addEventListener("input", () => {
         this.updateNote(note.id, { content: contentDiv.innerHTML })
+      })
+
+      // Toolbar buttons for regular note
+      noteDiv.querySelectorAll(".toolbar-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const command = btn.dataset.command
+          const action = btn.dataset.action
+
+          if (command) {
+            document.execCommand(command, false, null)
+          } else if (action === "insert-image") {
+            showPrompt("Enter image URL:").then((url) => {
+              if (url) {
+                document.execCommand("insertImage", false, url)
+                contentDiv.focus()
+                this.updateNote(note.id, { content: contentDiv.innerHTML })
+              }
+            })
+            return
+          } else if (action === "create-link") {
+            showPrompt("Enter URL:").then((url) => {
+              if (url) {
+                document.execCommand("createLink", false, url)
+                contentDiv.focus()
+                this.updateNote(note.id, { content: contentDiv.innerHTML })
+              }
+            })
+            return
+          } else if (action === "indent" || action === "outdent") {
+            document.execCommand(action, false, null)
+          }
+
+          contentDiv.focus()
+          this.updateNote(note.id, { content: contentDiv.innerHTML })
+        })
       })
     }
 

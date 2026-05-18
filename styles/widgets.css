@@ -1625,7 +1625,10 @@ body.todo-fullscreen-active::before {
   border-radius: 9px;
 }
 
-.todo-container.todo-fullscreen .todo-header-actions .icon-btn .todo-action-label {
+.todo-container.todo-fullscreen
+  .todo-header-actions
+  .icon-btn
+  .todo-action-label {
   display: inline;
   font-size: 0.78rem;
   font-weight: 750;
@@ -2027,8 +2030,11 @@ body.todo-fullscreen-active::before {
   padding: 10px 8px 8px;
   text-align: center;
   border-radius: 12px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.03)
+  );
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -2885,7 +2891,9 @@ body.context-menu-light .calendar-event-form-actions .calendar-event-cancel {
   color: #111;
 }
 
-body.context-menu-light .calendar-event-form-actions .calendar-event-cancel:hover {
+body.context-menu-light
+  .calendar-event-form-actions
+  .calendar-event-cancel:hover {
   background: rgba(0, 0, 0, 0.16);
   border-color: rgba(0, 0, 0, 0.28);
 }
@@ -3722,8 +3730,8 @@ body.context-menu-none .calendar-event-preview-desc {
 
 .note-toolbar {
   display: flex;
-  gap: 4px;
-  padding: 8px;
+  gap: 6px;
+  padding: 10px 12px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 6px 6px 0 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -3734,16 +3742,17 @@ body.context-menu-none .calendar-event-preview-desc {
 .toolbar-btn {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  padding: 6px 10px;
-  font-size: 0.9rem;
-  border-radius: 4px;
-  transition: all 0.2s;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
+  min-width: 36px;
+  min-height: 36px;
 }
 
 .toolbar-btn:hover {
@@ -3761,7 +3770,7 @@ body.context-menu-none .calendar-event-preview-desc {
 .toolbar-divider {
   width: 1px;
   background: rgba(255, 255, 255, 0.2);
-  margin: 0 4px;
+  margin: 4px 6px;
 }
 
 .note-editor {
@@ -3938,8 +3947,8 @@ body.context-menu-none .calendar-event-preview-desc {
 
 .floating-note-toolbar {
   display: flex;
-  gap: 4px;
-  padding: 8px;
+  gap: 6px;
+  padding: 10px 12px;
   flex-wrap: wrap;
   background-color: black;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
