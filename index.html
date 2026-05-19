@@ -4094,6 +4094,18 @@
                                         data-i18n="settings_clock_date_style_cyber_pulse">Cyber Pulse</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="prism-stack">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_prism_stack">Prism Stack</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="metro-panel">
+                                    <i class="fa-solid fa-table-list"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_metro_panel">Metro Panel</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                             </div>
                         </div>
                         <select id="clock-date-style-select" style="display: none;">
@@ -4111,6 +4123,8 @@
                             <option value="weekday-style">Weekday Style</option>
                             <option value="fliqlo">Fliqlo (Flip Clock)</option>
                             <option value="cyber-pulse">Cyber Pulse</option>
+                            <option value="prism-stack">Prism Stack</option>
+                            <option value="metro-panel">Metro Panel</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -4153,6 +4167,16 @@
                                 </option>
                                 <option value="dark" data-i18n="settings_framed_clock_theme_dark">Dark Glass (Deep)
                                 </option>
+                            </select>
+                        </div>
+
+                        <div id="clock-style-bg-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="clock-style-bg-select" data-i18n="settings_clock_style_bg">Clock Background</label>
+                            <select id="clock-style-bg-select">
+                                <option value="default" data-i18n="settings_clock_style_bg_default">Default</option>
+                                <option value="transparent" data-i18n="settings_clock_style_bg_transparent">Transparent</option>
+                                <option value="light" data-i18n="settings_clock_style_bg_light">White</option>
+                                <option value="dark" data-i18n="settings_clock_style_bg_dark">Black</option>
                             </select>
                         </div>
 

@@ -2360,6 +2360,21 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.clockStyleBgSelect?.addEventListener("change", () => {
+    const value = DOM.clockStyleBgSelect.value
+    handleSettingUpdate("clockStyleBackground", value)
+    handleSettingUpdate("clockStyleTransparentBackground", value === "transparent")
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockStyleBackground",
+          value,
+        },
+      }),
+    )
+  })
+
   DOM.fliqloThemeSelect?.addEventListener("change", () => {
     handleSettingUpdate("fliqloTheme", DOM.fliqloThemeSelect.value)
 

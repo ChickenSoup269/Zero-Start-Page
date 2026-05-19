@@ -96,6 +96,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const dateClockStyle = currentSettings.dateClockStyle || "default"
   document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+  const clockStyleBackground = currentSettings.clockStyleTransparentBackground
+    ? "transparent"
+    : currentSettings.clockStyleBackground || "default"
+  if (clockStyleBackground === "transparent") {
+    document.body.classList.add("clock-style-transparent-bg")
+  } else if (clockStyleBackground === "light") {
+    document.body.classList.add("clock-style-bg-light")
+  } else if (clockStyleBackground === "dark") {
+    document.body.classList.add("clock-style-bg-dark")
+  }
 
   const fliqloTheme = currentSettings.fliqloTheme || "dark"
   document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)

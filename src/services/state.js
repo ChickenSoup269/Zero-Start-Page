@@ -34,6 +34,8 @@ export const defaultSettings = {
   fliqloTheme: "dark",
   fliqloZenMode: false,
   fliqloTransparent: false,
+  clockStyleBackground: "default",
+  clockStyleTransparentBackground: false,
   sidestyleAlign: "left",
   sidestyleNoBorder: false,
   sidebarClockFlip: false,

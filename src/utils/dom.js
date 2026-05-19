@@ -809,6 +809,12 @@ export const framedClockThemeSetting = document.getElementById(
 export const framedClockThemeSelect = document.getElementById(
   "framed-clock-theme-select",
 )
+export const clockStyleBgSetting = document.getElementById(
+  "clock-style-bg-setting",
+)
+export const clockStyleBgSelect = document.getElementById(
+  "clock-style-bg-select",
+)
 export const fliqloThemeSetting = document.getElementById(
   "fliqlo-theme-setting",
 )

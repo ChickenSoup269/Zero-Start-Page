@@ -45,6 +45,16 @@
 
       const dateClockStyle = settings.dateClockStyle || "default"
       body.classList.add(`date-clock-style-${dateClockStyle}`)
+      const clockStyleBackground = settings.clockStyleTransparentBackground
+        ? "transparent"
+        : settings.clockStyleBackground || "default"
+      if (clockStyleBackground === "transparent") {
+        body.classList.add("clock-style-transparent-bg")
+      } else if (clockStyleBackground === "light") {
+        body.classList.add("clock-style-bg-light")
+      } else if (clockStyleBackground === "dark") {
+        body.classList.add("clock-style-bg-dark")
+      }
 
       const fliqloTheme = settings.fliqloTheme || "dark"
       body.classList.add(`fliqlo-theme-${fliqloTheme}`)

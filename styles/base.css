@@ -224,11 +224,87 @@ body.date-clock-style-glow #date {
 body.date-clock-style-minimal #clock,
 body.date-clock-style-minimal #date {
   text-shadow: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 0;
 }
 
 body.date-clock-style-minimal #date {
   opacity: 0.78;
+}
+
+body.date-clock-style-minimal .clock-date-wrap {
+  width: fit-content;
+  min-width: min(86vw, calc(var(--clock-size) * 2.35));
+  margin: 0 auto;
+  padding:
+    clamp(10px, calc(var(--clock-size) * 0.13), 16px)
+    clamp(14px, calc(var(--clock-size) * 0.18), 22px);
+  border-radius: 8px;
+  background: rgba(8, 10, 14, 0.14);
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+body.date-clock-style-minimal .clock-fade-wrapper,
+body.date-clock-style-minimal .date-fade-wrapper {
+  width: 100%;
+}
+
+body.date-clock-style-minimal #clock {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding-bottom: clamp(7px, calc(var(--clock-size) * 0.08), 10px);
+  font-family: var(--font-clock);
+  font-weight: 650;
+  line-height: 0.96;
+  color: var(--clock-color, #ffffff);
+  border-bottom: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+}
+
+body.date-clock-style-minimal #clock::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(48px, 36%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+}
+
+body.date-clock-style-minimal #date {
+  margin: clamp(8px, calc(var(--clock-size) * 0.09), 11px) 0 0;
+  font-family: var(--font-date);
+  font-size: calc(var(--date-size) * 0.9);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--date-color, rgba(255, 255, 255, 0.78));
+}
+
+body.date-clock-style-minimal .clock-date-primary,
+body.date-clock-style-minimal .weekday-part {
+  font-family: var(--font-weekday) !important;
+  font-weight: 650;
+}
+
+body.date-clock-style-minimal.time-priority-date #clock {
+  padding-bottom: clamp(6px, calc(var(--clock-size) * 0.075), 9px);
+}
+
+body.date-clock-style-minimal.time-priority-date #date {
+  margin-bottom: clamp(8px, calc(var(--clock-size) * 0.1), 12px);
+}
+
+@media (max-width: 640px) {
+  body.date-clock-style-minimal .clock-date-wrap {
+    max-width: 88vw;
+    padding: 10px 14px 12px;
+  }
 }
 
 body.date-clock-style-glass .clock-date-wrap {
@@ -624,6 +700,320 @@ body.date-clock-style-square #clock {
   body.date-clock-style-round .clock-date-wrap::after,
   body.date-clock-style-square .clock-date-wrap::after {
     animation: none;
+  }
+}
+
+/* Round/Square Clock Refresh */
+body.date-clock-style-round .clock-date-wrap,
+body.date-clock-style-square .clock-date-wrap {
+  color: var(--clock-color, #ffffff);
+  isolation: isolate;
+  transform-origin: center;
+}
+
+body.date-clock-style-round .clock-date-wrap {
+  --frame-size: min(84vw, 330px);
+  width: var(--frame-size);
+  height: var(--frame-size);
+  padding: clamp(24px, 7vw, 36px);
+  margin: 0 auto 30px;
+  overflow: hidden;
+  animation: framedClockFloat 10s ease-in-out infinite;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+body.date-clock-style-square .clock-date-wrap {
+  width: fit-content;
+  min-width: min(82vw, 230px);
+  max-width: 88vw;
+  height: auto;
+  min-height: 0;
+  padding: clamp(10px, 2.8vw, 14px) clamp(16px, 4vw, 22px) clamp(12px, 3.2vw, 16px);
+  margin: 0 auto 30px;
+  border-radius: 22px;
+  animation: framedClockFloat 10s ease-in-out infinite;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+body.date-clock-style-round .clock-date-wrap::before,
+body.date-clock-style-square .clock-date-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body.date-clock-style-round .clock-date-wrap::before {
+  border-radius: 50%;
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.14);
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.14), transparent 34%),
+    radial-gradient(circle at 50% 70%, rgba(var(--accent-color-rgb, 168, 192, 255), 0.16), transparent 48%);
+}
+
+body.date-clock-style-square .clock-date-wrap::before {
+  border-radius: 20px;
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.12);
+  background:
+    linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.15), transparent 42%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.06), transparent);
+}
+
+body.framed-theme-light.date-clock-style-round .clock-date-wrap,
+body.framed-theme-light.date-clock-style-square .clock-date-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)),
+    rgba(24, 28, 38, 0.18) !important;
+  backdrop-filter: blur(18px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+body.framed-theme-dark.date-clock-style-round .clock-date-wrap,
+body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(5, 8, 13, 0.58) !important;
+  backdrop-filter: blur(20px) saturate(135%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(135%) !important;
+  box-shadow:
+    0 24px 58px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover,
+body.date-clock-style-square .clock-date-wrap:hover {
+  transform: translateY(-4px) scale(1.015);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42) !important;
+  box-shadow:
+    0 28px 62px rgba(0, 0, 0, 0.42),
+    0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
+}
+
+body.date-clock-style-round .round-clock-new-layout,
+body.date-clock-style-square .square-clock-bold-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+body.date-clock-style-round .round-clock-new-layout {
+  gap: clamp(10px, 3vw, 18px);
+}
+
+body.date-clock-style-round .round-clock-notch {
+  position: static;
+  transform: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(var(--clock-color-rgb, 255, 255, 255), 0.08);
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+  box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-notch {
+  top: auto;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.13);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  box-shadow: none;
+}
+
+body.date-clock-style-round .round-clock-date-top {
+  margin: 0;
+  color: var(--date-color, rgba(255, 255, 255, 0.82));
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.13), 0.96rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-shadow: none;
+}
+
+body.date-clock-style-round .round-clock-center {
+  gap: clamp(10px, 3vw, 16px);
+}
+
+body.date-clock-style-round .round-clock-time-row {
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(8px, 2.6vw, 14px);
+  margin: 0;
+}
+
+body.date-clock-style-round .round-clock-hhmm,
+body.date-clock-style-square .sq-time-hhmm {
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  color: var(--clock-color, #ffffff);
+  font-weight: 850;
+  letter-spacing: 0;
+  text-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  filter: none;
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+body.date-clock-style-round .round-clock-hhmm {
+  font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.72), 4.8rem);
+  line-height: 0.92;
+}
+
+body.date-clock-style-round .round-clock-side-meta {
+  gap: 7px;
+  margin-top: 0.26em;
+  padding-left: clamp(8px, 2.5vw, 12px);
+  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+}
+
+body.date-clock-style-round .round-clock-ampm-top,
+body.date-clock-style-square .sq-ampm {
+  color: var(--accent-color, #a8c0ff);
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.92rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+body.date-clock-style-round .round-clock-ss-bottom,
+body.date-clock-style-square .sq-ss {
+  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.62);
+  font-size: clamp(1rem, calc(var(--clock-size, 6rem) * 0.22), 1.35rem);
+  font-weight: 500;
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  line-height: 1;
+}
+
+body.date-clock-style-round .round-clock-bottom-info {
+  width: min(72%, 210px);
+  margin: 0;
+  padding-top: clamp(10px, 3vw, 14px);
+}
+
+body.date-clock-style-round .round-clock-bottom-info::before,
+body.date-clock-style-square .sq-bottom-row {
+  border-color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.14);
+}
+
+body.date-clock-style-round .round-clock-bottom-info::before {
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--clock-color-rgb, 255, 255, 255), 0.22), transparent);
+}
+
+body.date-clock-style-round .round-clock-footer-text,
+body.date-clock-style-square .sq-full-date {
+  color: var(--date-color, rgba(255, 255, 255, 0.68));
+  font-family: var(--font-weekday, var(--font-date, 'Inter', sans-serif));
+  font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.9rem);
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-align: center;
+  opacity: 0.76;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer-text,
+body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
+  color: var(--date-color, rgba(255, 255, 255, 0.86));
+  letter-spacing: 0.12em;
+  opacity: 0.92;
+}
+
+body.date-clock-style-square .square-clock-bold-layout {
+  align-items: stretch;
+  justify-content: center;
+  height: auto;
+  gap: clamp(8px, 2.4vw, 12px);
+}
+
+body.date-clock-style-square .sq-top-row,
+body.date-clock-style-square .sq-bottom-row {
+  display: flex;
+  align-items: center;
+}
+
+body.date-clock-style-square .sq-top-row {
+  justify-content: space-between;
+  min-height: 0;
+}
+
+body.date-clock-style-square .sq-date-val {
+  color: var(--date-color, rgba(255, 255, 255, 0.84));
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.13), 1rem);
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-shadow: none;
+  border-left: 0;
+  padding: 0;
+}
+
+body.date-clock-style-square .sq-date-val::before {
+  content: "";
+  display: inline-block;
+  width: 0.65em;
+  height: 0.65em;
+  margin-right: 0.55em;
+  border-radius: 2px;
+  background: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+}
+
+body.date-clock-style-square .sq-main-row {
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(8px, 2.4vw, 13px);
+  margin: -2px 0 0;
+}
+
+body.date-clock-style-square .sq-time-hhmm {
+  font-size: clamp(2.85rem, calc(var(--clock-size, 6rem) * 0.66), 4.6rem);
+  line-height: 0.92;
+}
+
+body.date-clock-style-square .sq-side-info {
+  gap: 7px;
+  margin-top: 0.34em;
+  padding-left: clamp(8px, 2.5vw, 12px);
+  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.15);
+}
+
+body.date-clock-style-square .sq-bottom-row {
+  justify-content: center;
+  padding-top: clamp(8px, 2.4vw, 12px);
+  border-top: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.13);
+}
+
+@media (max-width: 640px) {
+  body.date-clock-style-round .clock-date-wrap {
+    --frame-size: min(86vw, 300px);
+    padding: 24px;
+  }
+
+  body.date-clock-style-square .clock-date-wrap {
+    width: fit-content;
+    min-width: min(84vw, 220px);
+    max-width: 88vw;
+    padding: 10px 16px 14px;
+    border-radius: 20px;
   }
 }
 
@@ -1542,11 +1932,389 @@ body.date-clock-style-fliqlo .fliqlo-date {
   padding-top: 1rem;
 }
 
+/* Prism Stack Style */
+body.date-clock-style-prism-stack .prism-stack-clock {
+  --prism-pad: calc(var(--clock-size, 6rem) * 0.18);
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--clock-size, 6rem) * 0.08);
+  box-sizing: border-box;
+  width: min(92vw, calc(var(--clock-size, 6rem) * 3.8));
+  padding: var(--prism-pad) calc(var(--prism-pad) * 1.35);
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.22), transparent 42%),
+    rgba(8, 10, 18, 0.28);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+body.date-clock-style-prism-stack .prism-stack-clock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: translateX(-110%);
+  animation: prismStackSweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+body.date-clock-style-prism-stack .prism-stack-meta,
+body.date-clock-style-prism-stack .prism-stack-date {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.16), 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--date-color, rgba(255, 255, 255, 0.78));
+  opacity: 0.82;
+}
+
+body.date-clock-style-prism-stack .prism-stack-time {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: calc(var(--clock-size, 6rem) * 0.05);
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.98), 8.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  color: var(--clock-color, #ffffff);
+  text-shadow:
+    calc(var(--clock-size, 6rem) * 0.035) calc(var(--clock-size, 6rem) * 0.035) 0 rgba(var(--accent-color-rgb, 168, 192, 255), 0.22),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+body.date-clock-style-prism-stack .prism-stack-separator {
+  opacity: 0.64;
+  transform: translateY(-0.06em);
+}
+
+body.date-clock-style-prism-stack .prism-stack-ss {
+  align-self: flex-start;
+  margin-left: calc(var(--clock-size, 6rem) * 0.04);
+  font-size: 0.32em;
+  font-weight: 700;
+  color: var(--accent-color, #a8c0ff);
+}
+
+body.date-clock-style-prism-stack .prism-stack-ampm {
+  align-self: flex-start;
+  margin-top: 0.12em;
+  padding: 0.25em 0.5em;
+  border: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.22);
+  border-radius: 6px;
+  font-size: 0.18em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@keyframes prismStackSweep {
+  0%, 40% {
+    transform: translateX(-110%);
+  }
+  70%, 100% {
+    transform: translateX(110%);
+  }
+}
+
+/* Metro Panel Style */
+body.date-clock-style-metro-panel .metro-panel-clock {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, max-content);
+  grid-template-areas:
+    "label time"
+    "date date";
+  align-items: center;
+  gap: calc(var(--clock-size, 6rem) * 0.08) calc(var(--clock-size, 6rem) * 0.18);
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: min(92vw, calc(var(--clock-size, 6rem) * 4.8));
+  padding: calc(var(--clock-size, 6rem) * 0.14) calc(var(--clock-size, 6rem) * 0.18);
+  border-left: 5px solid var(--accent-color, #a8c0ff);
+  border-radius: 8px;
+  background: rgba(12, 14, 18, 0.44);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+body.date-clock-style-metro-panel .metro-panel-label {
+  grid-area: label;
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--clock-size, 6rem) * 0.42);
+  padding: 0 0.75em;
+  border-radius: 6px;
+  background: var(--accent-color, #a8c0ff);
+  color: #111318;
+  font-family: var(--font-weekday, 'Inter', sans-serif);
+  font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.14), 1.05rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+body.date-clock-style-metro-panel .metro-panel-time {
+  grid-area: time;
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  max-width: 100%;
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  font-size: clamp(2.8rem, calc(var(--clock-size, 6rem) * 0.78), 7rem);
+  font-weight: 800;
+  line-height: 0.95;
+  color: var(--clock-color, #ffffff);
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.38);
+  -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
+}
+
+body.date-clock-style-metro-panel .metro-panel-colon {
+  padding: 0 0.08em;
+  color: var(--accent-color, #a8c0ff);
+}
+
+body.date-clock-style-metro-panel .metro-panel-second {
+  margin-left: 0.28em;
+  font-size: 0.36em;
+  font-weight: 700;
+  color: var(--accent-color, #a8c0ff);
+}
+
+body.date-clock-style-metro-panel .metro-panel-ampm {
+  margin-left: 0.4em;
+  font-size: 0.2em;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body.date-clock-style-metro-panel .metro-panel-date {
+  grid-area: date;
+  min-width: 0;
+  max-width: 100%;
+  padding-top: calc(var(--clock-size, 6rem) * 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.16), 1.25rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--date-color, rgba(255, 255, 255, 0.78));
+  overflow-wrap: anywhere;
+  word-break: normal;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  body.date-clock-style-metro-panel .metro-panel-clock {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "time"
+      "date";
+    justify-items: start;
+  }
+
+  body.date-clock-style-prism-stack .prism-stack-time,
+  body.date-clock-style-metro-panel .metro-panel-time {
+    font-size: clamp(2.4rem, calc(var(--clock-size, 6rem) * 0.66), 4.8rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-top,
-  body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-bottom {
+  body.date-clock-style-fliqlo .fliqlo-card.fliqlo-flip .fliqlo-card-flip-bottom,
+  body.date-clock-style-prism-stack .prism-stack-clock::before {
     animation: none;
   }
+}
+
+/* Optional transparent clock backgrounds */
+body.clock-style-transparent-bg.date-clock-style-minimal .clock-date-wrap,
+body.clock-style-transparent-bg.date-clock-style-glass .clock-date-wrap,
+body.clock-style-transparent-bg.date-clock-style-round .clock-date-wrap,
+body.clock-style-transparent-bg.date-clock-style-square .clock-date-wrap,
+body.clock-style-transparent-bg.date-clock-style-prism-stack .prism-stack-clock,
+body.clock-style-transparent-bg.date-clock-style-metro-panel .metro-panel-clock {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-round .clock-date-wrap::before,
+body.clock-style-transparent-bg.date-clock-style-square .clock-date-wrap::before,
+body.clock-style-transparent-bg.date-clock-style-prism-stack .prism-stack-clock::before {
+  display: none !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-round .round-clock-notch {
+  background: transparent !important;
+  border-color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.18) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-square .sq-date-val::before {
+  box-shadow: none;
+}
+
+body.clock-style-transparent-bg.date-clock-style-metro-panel .metro-panel-clock {
+  border-left-color: var(--accent-color, #a8c0ff) !important;
+}
+
+body.clock-style-transparent-bg.date-clock-style-cyber-pulse .cyber-date,
+body.clock-style-transparent-bg.date-clock-style-metro-panel .metro-panel-date,
+body.clock-style-transparent-bg.date-clock-style-minimal #clock {
+  border-color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+}
+
+/* Optional light/dark clock backgrounds with automatic contrast */
+body.clock-style-bg-light.date-clock-style-minimal .clock-date-wrap,
+body.clock-style-bg-light.date-clock-style-glass .clock-date-wrap,
+body.clock-style-bg-light.date-clock-style-round .clock-date-wrap,
+body.clock-style-bg-light.date-clock-style-square .clock-date-wrap,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock,
+body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-clock,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-pulse-clock {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(17, 24, 39, 0.12) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(14px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-minimal .clock-date-wrap,
+body.clock-style-bg-dark.date-clock-style-glass .clock-date-wrap,
+body.clock-style-bg-dark.date-clock-style-round .clock-date-wrap,
+body.clock-style-bg-dark.date-clock-style-square .clock-date-wrap,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-clock,
+body.clock-style-bg-dark.date-clock-style-metro-panel .metro-panel-clock,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-pulse-clock {
+  background: rgba(0, 0, 0, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(14px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-pulse-clock,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-pulse-clock {
+  padding: calc(var(--clock-size, 6rem) * 0.16) calc(var(--clock-size, 6rem) * 0.22);
+  border: 1px solid;
+  border-radius: 8px;
+}
+
+body.clock-style-bg-light.date-clock-style-round .clock-date-wrap::before,
+body.clock-style-bg-light.date-clock-style-square .clock-date-wrap::before,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock::before,
+body.clock-style-bg-dark.date-clock-style-round .clock-date-wrap::before,
+body.clock-style-bg-dark.date-clock-style-square .clock-date-wrap::before,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-clock::before {
+  display: none !important;
+}
+
+body.clock-style-bg-light.date-clock-style-minimal #clock,
+body.clock-style-bg-light.date-clock-style-minimal #date,
+body.clock-style-bg-light.date-clock-style-glass #clock,
+body.clock-style-bg-light.date-clock-style-glass #date,
+body.clock-style-bg-light.date-clock-style-round .round-clock-date-top,
+body.clock-style-bg-light.date-clock-style-round .round-clock-hhmm,
+body.clock-style-bg-light.date-clock-style-round .round-clock-ampm-top,
+body.clock-style-bg-light.date-clock-style-round .round-clock-ss-bottom,
+body.clock-style-bg-light.date-clock-style-round .round-clock-footer-text,
+body.clock-style-bg-light.date-clock-style-square .sq-date-val,
+body.clock-style-bg-light.date-clock-style-square .sq-time-hhmm,
+body.clock-style-bg-light.date-clock-style-square .sq-ampm,
+body.clock-style-bg-light.date-clock-style-square .sq-ss,
+body.clock-style-bg-light.date-clock-style-square .sq-full-date,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-time,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-meta,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-date,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-ss,
+body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-ampm,
+body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-time,
+body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-date,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-hh,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-mm,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-ss,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-ampm,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-date {
+  color: #111827 !important;
+  text-shadow: none !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-minimal #clock,
+body.clock-style-bg-dark.date-clock-style-minimal #date,
+body.clock-style-bg-dark.date-clock-style-glass #clock,
+body.clock-style-bg-dark.date-clock-style-glass #date,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-date-top,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-hhmm,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-ampm-top,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-ss-bottom,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-footer-text,
+body.clock-style-bg-dark.date-clock-style-square .sq-date-val,
+body.clock-style-bg-dark.date-clock-style-square .sq-time-hhmm,
+body.clock-style-bg-dark.date-clock-style-square .sq-ampm,
+body.clock-style-bg-dark.date-clock-style-square .sq-ss,
+body.clock-style-bg-dark.date-clock-style-square .sq-full-date,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-time,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-meta,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-date,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-ss,
+body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-ampm,
+body.clock-style-bg-dark.date-clock-style-metro-panel .metro-panel-time,
+body.clock-style-bg-dark.date-clock-style-metro-panel .metro-panel-date,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-hh,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-mm,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-ss,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-ampm,
+body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-date {
+  color: #ffffff !important;
+}
+
+body.clock-style-bg-light.date-clock-style-minimal #clock,
+body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-date,
+body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-date {
+  border-color: rgba(17, 24, 39, 0.16) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-round .round-clock-notch {
+  background: rgba(17, 24, 39, 0.06) !important;
+  border-color: rgba(17, 24, 39, 0.12) !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-round .round-clock-notch {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-label {
+  color: #111827;
+}
+
+body.clock-style-bg-dark.date-clock-style-metro-panel .metro-panel-label {
+  color: #000000;
 }
 
 /* Free Mode Clock */

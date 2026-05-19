@@ -100,6 +100,10 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".clock-sidebar-time"))
     } else if (style === "fliqlo") {
       clockTargets.push(clockElement.querySelector(".fliqlo-time"))
+    } else if (style === "prism-stack") {
+      clockTargets.push(clockElement.querySelector(".prism-stack-time"))
+    } else if (style === "metro-panel") {
+      clockTargets.push(clockElement.querySelector(".metro-panel-time"))
     }
   }
 
@@ -132,6 +136,10 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".clock-sidebar-date"))
       } else if (style === "fliqlo") {
         dateTargets.push(clockElement.querySelector(".fliqlo-date"))
+      } else if (style === "prism-stack") {
+        dateTargets.push(clockElement.querySelector(".prism-stack-date"))
+      } else if (style === "metro-panel") {
+        dateTargets.push(clockElement.querySelector(".metro-panel-date"))
       }
     }
   }
@@ -680,6 +688,38 @@ export function updateTime() {
       if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
       dateEl.style.display = dTxt ? "block" : "none"
     }
+  } else if (dateClockStyle === "prism-stack") {
+    const weekday = isTimer ? "TIMER" : getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
+    clockElement.innerHTML = `
+      <div class="prism-stack-clock">
+        <div class="prism-stack-meta">${weekday}</div>
+        <div class="prism-stack-time">
+          <span>${hh}</span>
+          <span class="prism-stack-separator">:</span>
+          <span>${mm}</span>
+          ${ss ? `<span class="prism-stack-ss">${ss}</span>` : ""}
+          ${ampm ? `<span class="prism-stack-ampm">${ampm}</span>` : ""}
+        </div>
+        ${isTimer ? `<div class="prism-stack-date">COUNTDOWN</div>` : dateStr ? `<div class="prism-stack-date">${dateStr}</div>` : ""}
+      </div>
+    `
+  } else if (dateClockStyle === "metro-panel") {
+    const weekday = isTimer ? "COUNTDOWN" : getSafeWeekday(now, langCode, settings.shortWeekday, tz).toUpperCase()
+    const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
+    clockElement.innerHTML = `
+      <div class="metro-panel-clock">
+        <div class="metro-panel-label">${weekday}</div>
+        <div class="metro-panel-time">
+          <span class="metro-panel-hour">${hh}</span>
+          <span class="metro-panel-colon">:</span>
+          <span class="metro-panel-minute">${mm}</span>
+          ${ss ? `<span class="metro-panel-second">${ss}</span>` : ""}
+          ${ampm ? `<span class="metro-panel-ampm">${ampm}</span>` : ""}
+        </div>
+        ${isTimer ? `<div class="metro-panel-date">TIMER RUNNING</div>` : dateStr ? `<div class="metro-panel-date">${dateStr}</div>` : ""}
+      </div>
+    `
   } else {
     clockElement.textContent = timeString
   }
@@ -716,6 +756,8 @@ export function updateTime() {
     "weekday-style",
     "fliqlo",
     "cyber-pulse",
+    "prism-stack",
+    "metro-panel",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")

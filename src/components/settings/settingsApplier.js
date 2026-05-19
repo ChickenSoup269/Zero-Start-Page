@@ -963,6 +963,9 @@ function createApplySettings(effectInstances) {
       "date-clock-style-sidebar",
       "date-clock-style-weekday",
       "date-clock-style-fliqlo",
+      "date-clock-style-cyber-pulse",
+      "date-clock-style-prism-stack",
+      "date-clock-style-metro-panel",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -988,6 +991,10 @@ function createApplySettings(effectInstances) {
     document.body.classList.add(
       `fliqlo-theme-${settings.fliqloTheme || "dark"}`,
     )
+    document.body.classList.toggle(
+      "fliqlo-transparent",
+      settings.fliqloTransparent === true,
+    )
 
     // Context Menu Style
     document.body.classList.remove(
@@ -1005,6 +1012,19 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "analog-bg-blur-enabled",
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
+    )
+    document.body.classList.toggle(
+      "clock-style-transparent-bg",
+      (settings.clockStyleBackground || "default") === "transparent" ||
+        settings.clockStyleTransparentBackground === true,
+    )
+    document.body.classList.toggle(
+      "clock-style-bg-light",
+      (settings.clockStyleBackground || "default") === "light",
+    )
+    document.body.classList.toggle(
+      "clock-style-bg-dark",
+      (settings.clockStyleBackground || "default") === "dark",
     )
 
     // 3.1 Clock & Date Visibility & Contrast
@@ -1711,20 +1731,34 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.sidestyleNoBorder === true
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
+    if (DOM.clockStyleBgSelect) {
+      DOM.clockStyleBgSelect.value =
+        settings.clockStyleTransparentBackground === true
+          ? "transparent"
+          : settings.clockStyleBackground || "default"
+    }
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
     // Manage display of conditional settings
     const style = settings.dateClockStyle || "default"
+    const backgroundClockStyles = [
+      "minimal",
+      "glass",
+      "round",
+      "square",
+      "cyber-pulse",
+      "prism-stack",
+      "metro-panel",
+    ]
 
     // Show style-specific container if current style has special settings
     const styleHasExtras = [
+      ...backgroundClockStyles,
       "analog",
       "jp-style",
       "sidestyle",
       "sidebar",
-      "round",
-      "square",
       "fliqlo",
     ].includes(style)
     if (DOM.styleSpecificCustomization) {
@@ -1749,6 +1783,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"
+
+    if (DOM.clockStyleBgSetting)
+      DOM.clockStyleBgSetting.style.display =
+        backgroundClockStyles.includes(style) ? "block" : "none"
 
     if (DOM.framedClockThemeSetting) {
       DOM.framedClockThemeSetting.style.display =
