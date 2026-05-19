@@ -119,9 +119,12 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 <td>
 
 - Create multiple notes with custom colors (8 presets)
-- **Rich text editor**: bold, italic, underline, strikethrough, bullet & numbered lists, image insertion
+- **Rich text editor**: bold, italic, underline, strikethrough, bullet & numbered lists, link handling, and image insertion
 - **Floating/detachable windows** — pop notes out into draggable, resizable windows and reattach them
-- Light/dark content background toggle
+- Collapsible floating notes, toggleable edit toolbar, and active formatting states
+- Fixed-width note images that stay inside both floating notes and the notepad preview
+- Ctrl/Cmd-click links to open them from note content
+- Light/dark content background toggle with contrast-aware text controls
 - Full persistence of content, color, and window state
 
 </td>
@@ -198,20 +201,23 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 
 Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
 
-| Nature & Space       | Digital & Tech   | Weather & Seasons    | Abstract & Patterns     |
-| :------------------- | :--------------- | :------------------- | :---------------------- |
-| • Rain / HD / Galaxy | • Network        | • Snowfall / HD      | • Gradients Aura        |
-| • Fireflies / HD     | • Matrix Rain    | • Aurora Wave / Soft | • Bubbles               |
-| • Meteor             | • Hacker         | • Northern Lights    | • Wavy Lines / Pattern  |
-| • Sunbeam            | • Pixel Cubes    | • Autumn Leaves      | • Angled Pattern        |
-| • Light Pillars      | • Pixel Run      | • Green Leaves       | • Floating Lines        |
-| • Sky Lanterns       | • Pixel Blast    | • Sakura             | • Shiny / Line Shiny    |
-| • Ocean Wave / Fish  | • Hyperspace     | • Wind               | • Tet Fireworks         |
-| • Cloud Drift        | • Nintendo Pixel | • Pixel Weather      | • CRT Scanlines         |
-| • Plant Growth       | • Retro Terminal | • Storm Rain / HD    | • Cursor Trail / Splash |
-| • Jellyfish          | • Retro Game     | • Falling Leaves     | • Rainbow Background    |
-| • Grid Scan          | • Flashlight     | • Rain Galaxy        | • Halloween             |
-|                      |                  |                      | • Reunification Day     |
+| Nature & Space    | Digital & Tech   | Weather & Seasons    | Abstract & Patterns |
+| :---------------- | :--------------- | :------------------- | :------------------ |
+| • Fireflies / HD  | • Network        | • Rain / HD / Storm  | • Aura              |
+| • Meteor Shower   | • Matrix         | • Pixel Weather      | • Bubbles           |
+| • Sunbeam         | • Hacker         | • Pixel Snow HQ      | • Wavy Lines        |
+| • Sky Lanterns    | • Pixel Cubes    | • Snow / Snowfall HD | • Wavy Pattern      |
+| • Ocean Wave      | • Pixel Run      | • Wind               | • Angled Pattern    |
+| • Ocean Fishes    | • Pixel Blast    | • Sakura             | • Floating Lines    |
+| • Cloud Drift     | • Retro Terminal | • Autumn Leaves      | • Shiny             |
+| • Plant Growth    | • Retro Game     | • Green Leaves       | • Line Shiny        |
+| • Jellyfish       | • CRT Scanlines  | • Settling Leaves    | • Rainbow           |
+| • Aurora Wave     | • Grid Scan      | • Rain Galaxy        | • Cursor Trail      |
+| • Soft Aurora     | • Flashlight     |                      | • Halloween         |
+| • Northern Lights | • Hyperspace     |                      | • Tết Fireworks     |
+| • Light Pillars   |                  |                      | • Reunification Day |
+
+Additional animated background systems are available in the background settings, including **Gradient V2**, **Silk**, **Liquid Ether**, **Light Pillars**, multi-color backgrounds, and saved SVG waves.
 
 ### SVG Wave Generator
 
@@ -225,6 +231,7 @@ Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with 
 - **Multi-color System** — dynamically change UI accent colors with multiple modes (Gradient, Cycle, or Sync with background).
 - **Layout Controls Popup (LCP)** — a quick-access mini menu to toggle component visibility and adjust layout settings (Width, Positions) directly without opening full settings.
 - **Lock Widgets** — pin all draggable components in place to prevent accidental movement.
+- **macOS-style context menus** — compact translucent menus for quick widget and content actions.
 - **Glassmorphism UI** — consistent, high-quality frosted glass aesthetics across all widgets and modals.
 
 ### Settings & Personalization
