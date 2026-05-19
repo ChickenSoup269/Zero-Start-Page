@@ -13,6 +13,16 @@ const DB_VERSION = 2
 // In-memory cache: id -> blobUrl (revokeObjectURL khi xoá)
 const _urlCache = new Map()
 const _thumbCache = new Map()
+let _mediaIdCounter = 0
+
+function createMediaId(prefix) {
+  _mediaIdCounter = (_mediaIdCounter + 1) % 100000
+  const randomPart =
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2)
+  return `${prefix}-${Date.now()}-${_mediaIdCounter}-${randomPart}`
+}
 
 function openDb() {
   return new Promise((resolve, reject) => {
@@ -67,7 +77,7 @@ export async function getThumbnailUrl(id) {
 
 /** Lưu Blob vào IndexedDB, trả về ID */
 export async function saveImage(blob, customId) {
-  const id = customId || `idb-img-${Date.now()}`
+  const id = customId || createMediaId("idb-img")
   const db = await openDb()
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite")
@@ -173,7 +183,7 @@ export function isIdbMedia(id) {
 
 /** Lưu Video Blob vào IndexedDB, trả về ID */
 export async function saveVideo(blob) {
-  const id = `idb-video-${Date.now()}`
+  const id = createMediaId("idb-video")
   const db = await openDb()
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite")

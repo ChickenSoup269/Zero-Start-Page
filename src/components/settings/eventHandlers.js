@@ -324,23 +324,64 @@ export function setupGeneralEventHandlers(
       reader.readAsDataURL(blob)
     })
 
-  const dataUrlToBlob = async (dataUrl) => {
-    const res = await fetch(dataUrl)
-    return res.blob()
+  const dataUrlToBlob = (dataUrl) => {
+    const match = /^data:([^;,]*)(;base64)?,(.*)$/s.exec(dataUrl)
+    if (!match) {
+      throw new Error("Invalid data URL")
+    }
+
+    const mimeType = match[1] || "application/octet-stream"
+    const isBase64 = Boolean(match[2])
+    const data = match[3] || ""
+    const binary = isBase64 ? atob(data) : decodeURIComponent(data)
+    const bytes = new Uint8Array(binary.length)
+
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i)
+    }
+
+    return new Blob([bytes], { type: mimeType })
   }
 
   const collectLocalMediaIds = (settingsSnapshot) => {
     const ids = new Set()
-    if (isIdbMedia(settingsSnapshot.background)) {
-      ids.add(settingsSnapshot.background)
+
+    const visit = (value) => {
+      if (isIdbMedia(value)) {
+        ids.add(value)
+        return
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach(visit)
+        return
+      }
+
+      if (value && typeof value === "object") {
+        Object.values(value).forEach(visit)
+      }
     }
-    if (Array.isArray(settingsSnapshot.userBackgrounds)) {
-      settingsSnapshot.userBackgrounds.forEach((entry) => {
-        const id = typeof entry === "object" ? entry.id : entry
-        if (isIdbMedia(id)) ids.add(id)
+
+    visit(settingsSnapshot)
+    return [...ids]
+  }
+
+  const replaceLocalMediaIds = (value, mediaIdMap) => {
+    if (typeof value === "string") {
+      return mediaIdMap[value] || value
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) => replaceLocalMediaIds(item, mediaIdMap))
+    }
+
+    if (value && typeof value === "object") {
+      Object.entries(value).forEach(([key, child]) => {
+        value[key] = replaceLocalMediaIds(child, mediaIdMap)
       })
     }
-    return [...ids]
+
+    return value
   }
 
   // Sidebar toggle and close
@@ -3093,6 +3134,14 @@ export function setupGeneralEventHandlers(
             console.warn("Skip media export for", id, err)
           }
         }
+
+        if (Object.keys(media).length === 0) {
+          showAlert(
+            "Không đóng gói được ảnh/video cục bộ vào JSON. Hãy mở lại nền ảnh/video một lần rồi thử xuất lại.",
+          )
+          return
+        }
+
         exportData.media = media
       }
 
@@ -3200,7 +3249,9 @@ export function setupGeneralEventHandlers(
           },
           {
             key: "localMedia",
-            label: i18n.export_option_local_media || "Local Images/Videos",
+            label: hasMedia
+              ? i18n.export_option_local_media || "Local Images/Videos"
+              : `${i18n.export_option_local_media || "Local Images/Videos"} (not found in JSON)`,
             checked: hasMedia,
             disabled: !hasMedia,
           },
@@ -3249,25 +3300,7 @@ export function setupGeneralEventHandlers(
         const importedSettings = JSON.parse(JSON.stringify(data.settings))
 
         if (Object.keys(mediaIdMap).length > 0) {
-          if (
-            typeof importedSettings.background === "string" &&
-            mediaIdMap[importedSettings.background]
-          ) {
-            importedSettings.background =
-              mediaIdMap[importedSettings.background]
-          }
-          
-          if (Array.isArray(importedSettings.userBackgrounds)) {
-            importedSettings.userBackgrounds = importedSettings.userBackgrounds.map((entry) => {
-              if (typeof entry === "object") {
-                if (mediaIdMap[entry.id]) {
-                  entry.id = mediaIdMap[entry.id]
-                }
-                return entry
-              }
-              return mediaIdMap[entry] || entry
-            })
-          }
+          replaceLocalMediaIds(importedSettings, mediaIdMap)
         }
 
         Object.assign(getSettings(), importedSettings)
