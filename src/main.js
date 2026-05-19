@@ -224,7 +224,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.addEventListener("settingsUpdated", (e) => {
     if (e.detail?.key === "musicPlayerEnabled" && e.detail.value === true) {
-      initWidget("music")
+      const music = initWidget("music")
+      music.setEnabled(true)
     }
   })
 
@@ -332,8 +333,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           (type === "todo" ||
             type === "notepad" ||
             type === "timer" ||
-            type === "calendar" ||
-            type === "music") &&
+            type === "calendar") &&
           !getSettings()[key]
         ) {
           initWidget(type)

@@ -28,7 +28,11 @@ export class MusicPlayer {
     this.createElements()
     this.setupEventListeners()
     this.applyMusicStyle(this.currentStyle) 
-    this.updateVisibility()
+    if (!this.showPlayer) {
+      this.container.style.display = "none"
+    } else {
+      this.updateVisibility()
+    }
     
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
@@ -172,21 +176,7 @@ export class MusicPlayer {
     window.addEventListener("settingsUpdated", (e) => {
       const { key, value } = e.detail
       if (key === "musicPlayerEnabled") {
-        if (this.showPlayer && value === true) {
-          this.togglePlayer()
-        } else {
-          this.showPlayer = value
-          this.updateVisibility()
-          if (this.showPlayer) {
-            this.isVisible = true
-            this.container.classList.remove("minimized")
-            this.startPolling()
-            updateSetting("musicPlayerExpanded", true)
-            saveSettings()
-          } else {
-            this.stopPolling()
-          }
-        }
+        this.setEnabled(value)
       }
       if (key === "music_bar_style" || key === "musicBarStyle") {
         this.applyMusicStyle(value)
@@ -491,8 +481,31 @@ export class MusicPlayer {
     }
   }
 
+  setEnabled(enabled) {
+    this.showPlayer = enabled === true
+    this.updateVisibility()
+
+    if (this.showPlayer) {
+      this.isVisible = true
+      this.container.style.display = "block"
+      this.container.style.opacity = ""
+      this.container.classList.remove("minimized")
+      this.startPolling()
+      this.fetchMediaState()
+      updateSetting("musicPlayerExpanded", true)
+      saveSettings()
+    } else {
+      this.isVisible = false
+      this.container.classList.add("minimized")
+      this.stopPolling()
+      updateSetting("musicPlayerExpanded", false)
+      saveSettings()
+    }
+  }
+
   updateVisibility() {
     // This handles whether the feature is enabled at all
+    this.container.getAnimations().forEach((animation) => animation.cancel())
     fadeToggle(this.container, this.showPlayer, "block")
   }
 }

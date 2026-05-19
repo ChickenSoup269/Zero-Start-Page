@@ -220,7 +220,7 @@ export const defaultSettings = {
   showDonateButton: true,
   showBookmarks: true,
   theme: null,
-  contextMenuStyle: "dark",
+  contextMenuStyle: "macos",
   todoSkin: "default",
   timerSkin: "default",
   calendarSkin: "default",

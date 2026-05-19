@@ -4518,18 +4518,18 @@
                             </div>
                             <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Drag & Drop
-                                    Reorder</label>
-                                <input type="checkbox" id="enable-bookmark-drag" checked
-                                    style="transform: scale(1.1); margin: 0;">
-                            </div>
-                            <div class="setting-item-row"
-                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                 <label for="bookmark-limit-20" data-i18n="settings_bookmark_limit_20"
                                     style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Limit to 20
                                     bookmarks per group</label>
                                 <input type="checkbox" id="bookmark-limit-20" checked
+                                    style="transform: scale(1.1); margin: 0;">
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Drag & Drop
+                                    Reorder</label>
+                                <input type="checkbox" id="enable-bookmark-drag" checked
                                     style="transform: scale(1.1); margin: 0;">
                             </div>
                         </div>
@@ -5270,7 +5270,8 @@
                     translate the included English JSON into your language, then paste the translated JSON here.</p>
                 <div class="language-guide-box">
                     <strong data-i18n="language_modal_steps_title">Fast AI translation steps</strong>
-                    <p class="language-ai-provider-hint" data-i18n="language_modal_ai_hint">You can use ChatGPT or Gemini AI Studio to translate the prompt.</p>
+                    <p class="language-ai-provider-hint" data-i18n="language_modal_ai_hint">You can use ChatGPT or
+                        Gemini AI Studio to translate the prompt.</p>
                     <div class="language-ai-links">
                         <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">
                             <i class="fa-solid fa-comments"></i>
@@ -5282,8 +5283,10 @@
                         </a>
                     </div>
                     <ol>
-                        <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON template.</li>
-                        <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping every JSON key unchanged.</li>
+                        <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON
+                            template.</li>
+                        <li data-i18n="language_modal_step_2">Send it to AI and ask it to translate values only, keeping
+                            every JSON key unchanged.</li>
                         <li data-i18n="language_modal_step_3">Paste the result below, then install it.</li>
                     </ol>
                 </div>

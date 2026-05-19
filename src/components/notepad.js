@@ -465,13 +465,11 @@ export class Notepad {
   renderNote(note) {
     const isHidden = this.hiddenNotes[note.id]
     const isDetached = this.detachedNotes[note.id]
-    const isEditToolbarHidden = this.hiddenEditToolbars[note.id]
 
     if (isDetached) return null // Don't render detached notes in parent
 
     const noteDiv = document.createElement("div")
     noteDiv.className = "note-item"
-    if (isEditToolbarHidden) noteDiv.classList.add("edit-toolbar-hidden")
     noteDiv.setAttribute("data-note-id", note.id)
 
     const savedDimensions = this.noteDimensions[note.id]
@@ -502,9 +500,6 @@ export class Notepad {
           <button class="icon-btn note-action-btn" data-action="toggle-bg" title="Toggle background (White/Black)">
             <i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i>
           </button>
-          <button class="icon-btn note-action-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar">
-            <i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i>
-          </button>
           <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
           </button>
@@ -519,26 +514,7 @@ export class Notepad {
       ${
         isHidden
           ? ""
-          : `<div class="note-toolbar">
-              <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-              <button class="toolbar-btn" data-command="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-              <button class="toolbar-btn" data-command="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
-              <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
-              <span class="toolbar-divider"></span>
-              <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><i class="fa-solid fa-align-left"></i></button>
-              <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><i class="fa-solid fa-align-center"></i></button>
-              <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><i class="fa-solid fa-align-right"></i></button>
-              <span class="toolbar-divider"></span>
-              <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
-              <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
-              <button class="toolbar-btn" data-action="indent" title="Indent"><i class="fa-solid fa-indent"></i></button>
-              <button class="toolbar-btn" data-action="outdent" title="Outdent"><i class="fa-solid fa-outdent"></i></button>
-              <span class="toolbar-divider"></span>
-              <button class="toolbar-btn" data-action="create-link" title="Insert Link"><i class="fa-solid fa-link"></i></button>
-              <button class="toolbar-btn" data-action="insert-image" title="Insert Image"><i class="fa-solid fa-image"></i></button>
-              <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><i class="fa-solid fa-eraser"></i></button>
-            </div>
-            <div class="note-content" contenteditable="true">${note.content}</div>`
+          : `<div class="note-content" contenteditable="true">${note.content}</div>`
       }
       ${this.getResizeHandlesHtml()}
     `
@@ -595,8 +571,6 @@ export class Notepad {
         }
       })
     }
-
-    this.setupEditToolbarToggle(noteDiv, note.id)
 
     // Color dropdown toggle
     const colorTrigger = noteDiv.querySelector(".note-color-trigger")
@@ -892,6 +866,19 @@ export class Notepad {
       refreshToolbarState()
     }
 
+    const openEditorLink = (e) => {
+      const link = e.target.closest?.("a")
+      if (!link || !contentDiv.contains(link)) return
+      if (!e.ctrlKey && !e.metaKey) return
+
+      const href = link.href || link.getAttribute("href")
+      if (!href) return
+
+      e.preventDefault()
+      e.stopPropagation()
+      window.open(href, "_blank", "noopener")
+    }
+
     const getToolbarColors = () => ({
       normalBg:
         root.style.getPropertyValue("--note-toolbar-surface") ||
@@ -983,6 +970,7 @@ export class Notepad {
     contentDiv.addEventListener("keyup", refreshToolbarState)
     contentDiv.addEventListener("mouseup", refreshToolbarState)
     contentDiv.addEventListener("input", refreshToolbarState)
+    contentDiv.addEventListener("click", openEditorLink)
     contentDiv.addEventListener("paste", (e) => {
       const items = Array.from(e.clipboardData?.items || [])
       const hasClipboardImage = items.some(
@@ -1102,11 +1090,25 @@ export class Notepad {
       img.removeAttribute("width")
       img.removeAttribute("height")
       img.style.setProperty("display", "block", "important")
-      img.style.setProperty("width", "100%", "important")
-      img.style.setProperty("max-width", "100%", "important")
+      img.style.setProperty("width", "var(--note-image-width, 100%)", "important")
+      img.style.setProperty(
+        "max-width",
+        "var(--note-image-width, 100%)",
+        "important",
+      )
       img.style.setProperty("min-width", "0", "important")
       img.style.setProperty("height", "auto", "important")
       img.style.setProperty("max-height", "100%", "important")
+      img.style.setProperty(
+        "margin-left",
+        "var(--note-image-offset-x, 0px)",
+        "important",
+      )
+      img.style.setProperty(
+        "margin-right",
+        "var(--note-image-offset-x, 0px)",
+        "important",
+      )
       img.style.setProperty("box-sizing", "border-box", "important")
       img.style.setProperty("object-fit", "contain", "important")
     })

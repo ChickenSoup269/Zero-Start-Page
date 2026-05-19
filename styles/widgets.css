@@ -2961,48 +2961,109 @@ body.context-menu-macos #context-menu,
 body.context-menu-macos .calendar-context-menu,
 body.context-menu-none #context-menu,
 body.context-menu-none .calendar-context-menu {
-  background: rgba(242, 242, 247, 0.82) !important;
-  backdrop-filter: blur(32px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
-  border-color: rgba(0, 0, 0, 0.12) !important;
+  min-width: 232px;
+  padding: 5px;
+  border-radius: 11px;
+  background: rgba(246, 246, 248, 0.78) !important;
+  backdrop-filter: blur(38px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(38px) saturate(190%) !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.14) !important;
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+    0 0 0 0.5px rgba(255, 255, 255, 0.55) inset,
+    0 9px 28px rgba(0, 0, 0, 0.18),
+    0 30px 70px rgba(0, 0, 0, 0.18) !important;
+  color: rgba(15, 15, 18, 0.92);
 }
 
 body.context-menu-macos .context-menu-item,
 body.context-menu-macos .menu-item,
 body.context-menu-none .context-menu-item,
 body.context-menu-none .menu-item {
-  color: rgba(18, 18, 22, 0.92);
-  font-weight: 500;
+  min-height: 27px;
+  margin: 1px 0;
+  padding: 5px 10px;
+  border-radius: 6px;
+  gap: 9px;
+  color: rgba(20, 20, 24, 0.94) !important;
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: 0;
+  transition:
+    background-color 80ms ease,
+    color 80ms ease;
 }
 
 body.context-menu-macos .context-menu-item i,
 body.context-menu-macos .menu-item i,
 body.context-menu-none .context-menu-item i,
 body.context-menu-none .menu-item i {
-  color: rgba(18, 18, 22, 0.7);
+  width: 18px;
+  font-size: 12px;
+  color: rgba(20, 20, 24, 0.62) !important;
+  opacity: 1;
 }
 
 body.context-menu-macos .context-menu-divider,
-body.context-menu-none .context-menu-divider {
-  background: rgba(0, 0, 0, 0.08);
+body.context-menu-macos .context-menu-separator,
+body.context-menu-none .context-menu-divider,
+body.context-menu-none .context-menu-separator {
+  height: 1px;
+  margin: 5px 6px;
+  background: rgba(60, 60, 67, 0.18) !important;
 }
 
 body.context-menu-macos .context-menu-item:hover,
 body.context-menu-macos .menu-item:hover,
 body.context-menu-none .context-menu-item:hover,
 body.context-menu-none .menu-item:hover {
-  background: #0066ff;
-  color: #fff;
+  background: rgba(0, 122, 255, 0.92) !important;
+  color: #fff !important;
 }
 
 body.context-menu-macos .context-menu-item:hover i,
 body.context-menu-macos .menu-item:hover i,
 body.context-menu-none .context-menu-item:hover i,
 body.context-menu-none .menu-item:hover i {
-  color: #fff;
+  color: #fff !important;
+  opacity: 1;
+}
+
+body.context-menu-macos .context-menu-item.danger,
+body.context-menu-macos .menu-item.danger,
+body.context-menu-macos #menu-delete,
+body.context-menu-none .context-menu-item.danger,
+body.context-menu-none .menu-item.danger,
+body.context-menu-none #menu-delete {
+  color: #ff3b30 !important;
+}
+
+body.context-menu-macos .context-menu-item.danger i,
+body.context-menu-macos .menu-item.danger i,
+body.context-menu-macos #menu-delete i,
+body.context-menu-none .context-menu-item.danger i,
+body.context-menu-none .menu-item.danger i,
+body.context-menu-none #menu-delete i {
+  color: rgba(255, 59, 48, 0.82) !important;
+}
+
+body.context-menu-macos .context-menu-item.danger:hover,
+body.context-menu-macos .menu-item.danger:hover,
+body.context-menu-macos #menu-delete:hover,
+body.context-menu-none .context-menu-item.danger:hover,
+body.context-menu-none .menu-item.danger:hover,
+body.context-menu-none #menu-delete:hover {
+  background: #ff3b30 !important;
+  color: #fff !important;
+}
+
+body.context-menu-macos .context-menu-item.danger:hover i,
+body.context-menu-macos .menu-item.danger:hover i,
+body.context-menu-macos #menu-delete:hover i,
+body.context-menu-none .context-menu-item.danger:hover i,
+body.context-menu-none .menu-item.danger:hover i,
+body.context-menu-none #menu-delete:hover i {
+  color: #fff !important;
 }
 
 body.context-menu-macos .calendar-event-form-title,
@@ -3727,6 +3788,8 @@ body.context-menu-none .calendar-event-preview-desc {
 
 /* Note with hidden content - compact style */
 .note-content {
+  --note-image-width: calc(100% + 24px);
+  --note-image-offset-x: -12px;
   background: var(--note-content-bg, #ffffff);
   color: var(--note-content-text, #000000);
   min-width: 0;
@@ -3830,6 +3893,8 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .note-editor {
+  --note-image-width: calc(100% + 24px);
+  --note-image-offset-x: -12px;
   background: var(--note-content-bg, #ffffff);
   color: var(--note-content-text, #000000);
   min-height: 80px;
@@ -4015,6 +4080,8 @@ body.context-menu-none .calendar-event-preview-desc {
 }
 
 .floating-note-content {
+  --note-image-width: calc(100% + 28px);
+  --note-image-offset-x: -14px;
   background: var(--note-content-bg, #ffffff);
   color: var(--note-content-text, #000000);
   flex: 1;
@@ -4046,6 +4113,21 @@ body.context-menu-none .calendar-event-preview-desc {
   background-color: transparent !important;
 }
 
+.note-content a,
+.note-editor a,
+.floating-note-content a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.note-content a:hover,
+.note-editor a:hover,
+.floating-note-content a:hover {
+  opacity: 0.78;
+}
+
 .floating-note-content ul,
 .floating-note-content ol {
   margin: 0.5rem 0;
@@ -4061,14 +4143,14 @@ body.context-menu-none .calendar-event-preview-desc {
 .note-content img,
 .note-editor img,
 .floating-note-content img {
-  width: 100% !important;
-  max-width: 100% !important;
+  width: var(--note-image-width, 100%) !important;
+  max-width: var(--note-image-width, 100%) !important;
   min-width: 0 !important;
   height: auto !important;
   max-height: 100% !important;
   box-sizing: border-box !important;
   border-radius: 4px;
-  margin: 8px 0;
+  margin: 8px var(--note-image-offset-x, 0);
   display: block !important;
   object-fit: contain !important;
 }
