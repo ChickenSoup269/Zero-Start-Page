@@ -1564,6 +1564,9 @@ export const softAuroraMouseCheckbox = document.getElementById(
 export const softAuroraTransparentCheckbox = document.getElementById(
   "soft-aurora-transparent-checkbox",
 )
+export const softAuroraBgColorContainer = document.getElementById(
+  "soft-aurora-bg-color-container",
+)
 export const softAuroraBgColorPicker = document.getElementById(
   "soft-aurora-bg-color-picker",
 )

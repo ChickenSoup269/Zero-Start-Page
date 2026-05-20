@@ -162,6 +162,35 @@ function getRandomSoftAuroraPalette() {
   }
 }
 
+function randomRange(min, max, step = 0.1) {
+  const steps = Math.round((max - min) / step)
+  return Number((min + Math.floor(Math.random() * (steps + 1)) * step).toFixed(2))
+}
+
+function getRandomSoftAuroraConfig() {
+  const palette = getRandomSoftAuroraPalette()
+  const transparent = Math.random() > 0.25
+  return {
+    ...palette,
+    speed: randomRange(0.2, 1.6, 0.1),
+    scale: randomRange(0.8, 3.2, 0.1),
+    brightness: randomRange(0.7, 2.2, 0.1),
+    noiseFrequency: randomRange(1.0, 7.0, 0.1),
+    noiseAmplitude: randomRange(0.5, 3.5, 0.1),
+    bandHeight: randomRange(0.15, 0.85, 0.05),
+    bandSpread: randomRange(0.8, 6.0, 0.1),
+    octaveDecay: randomRange(0.05, 0.55, 0.01),
+    layerOffset: randomRange(0.0, 8.0, 0.1),
+    colorSpeed: randomRange(0.4, 3.0, 0.1),
+    enableMouseInteraction: Math.random() > 0.2,
+    mouseInfluence: randomRange(0.1, 1.0, 0.05),
+    transparent,
+    backgroundColor: transparent
+      ? "#000000"
+      : hslToHex(Math.floor(Math.random() * 360), 42, 8),
+  }
+}
+
 function getExtensionVersion() {
   try {
     if (typeof chrome !== "undefined" && chrome.runtime?.getManifest) {
@@ -992,20 +1021,69 @@ export function initSettings() {
   }
   if (DOM_EXPORTS.softAuroraRandomColorsBtn) {
     DOM_EXPORTS.softAuroraRandomColorsBtn.addEventListener("click", () => {
-      const palette = getRandomSoftAuroraPalette()
+      const config = getRandomSoftAuroraConfig()
       if (DOM_EXPORTS.softAuroraColor1Picker)
-        DOM_EXPORTS.softAuroraColor1Picker.value = palette.color1
+        DOM_EXPORTS.softAuroraColor1Picker.value = config.color1
       if (DOM_EXPORTS.softAuroraColor2Picker)
-        DOM_EXPORTS.softAuroraColor2Picker.value = palette.color2
+        DOM_EXPORTS.softAuroraColor2Picker.value = config.color2
 
-      updateSetting("softAuroraColor1", palette.color1)
-      updateSetting("softAuroraColor2", palette.color2)
+      const sliderUpdates = [
+        ["softAuroraSpeed", "speed", DOM_EXPORTS.softAuroraSpeedSlider, DOM_EXPORTS.softAuroraSpeedVal, 1],
+        ["softAuroraScale", "scale", DOM_EXPORTS.softAuroraScaleSlider, DOM_EXPORTS.softAuroraScaleVal, 1],
+        ["softAuroraBrightness", "brightness", DOM_EXPORTS.softAuroraBrightnessSlider, DOM_EXPORTS.softAuroraBrightnessVal, 1],
+        ["softAuroraNoiseFreq", "noiseFrequency", DOM_EXPORTS.softAuroraNoiseFreqSlider, DOM_EXPORTS.softAuroraNoiseFreqVal, 1],
+        ["softAuroraNoiseAmp", "noiseAmplitude", DOM_EXPORTS.softAuroraNoiseAmpSlider, DOM_EXPORTS.softAuroraNoiseAmpVal, 1],
+        ["softAuroraBandHeight", "bandHeight", DOM_EXPORTS.softAuroraBandHeightSlider, DOM_EXPORTS.softAuroraBandHeightVal, 2],
+        ["softAuroraBandSpread", "bandSpread", DOM_EXPORTS.softAuroraBandSpreadSlider, DOM_EXPORTS.softAuroraBandSpreadVal, 1],
+        ["softAuroraOctaveDecay", "octaveDecay", DOM_EXPORTS.softAuroraOctaveDecaySlider, DOM_EXPORTS.softAuroraOctaveDecayVal, 2],
+        ["softAuroraLayerOffset", "layerOffset", DOM_EXPORTS.softAuroraLayerOffsetSlider, DOM_EXPORTS.softAuroraLayerOffsetVal, 1],
+        ["softAuroraColorSpeed", "colorSpeed", DOM_EXPORTS.softAuroraColorSpeedSlider, DOM_EXPORTS.softAuroraColorSpeedVal, 1],
+        ["softAuroraMouseInfluence", "mouseInfluence", DOM_EXPORTS.softAuroraMouseInfluenceSlider, DOM_EXPORTS.softAuroraMouseInfluenceVal, 2],
+      ]
+
+      updateSetting("softAuroraColor1", config.color1)
+      updateSetting("softAuroraColor2", config.color2)
+      sliderUpdates.forEach(([settingKey, optionKey, input, valueLabel, digits]) => {
+        const value = config[optionKey]
+        if (input) input.value = value
+        if (valueLabel) valueLabel.textContent = value.toFixed(digits)
+        updateSetting(settingKey, value)
+      })
+      updateSetting("softAuroraEnableMouse", config.enableMouseInteraction)
+      updateSetting("softAuroraTransparent", config.transparent)
+      updateSetting("softAuroraBackgroundColor", config.backgroundColor)
+
+      if (DOM_EXPORTS.softAuroraMouseCheckbox)
+        DOM_EXPORTS.softAuroraMouseCheckbox.checked = config.enableMouseInteraction
+      if (DOM_EXPORTS.softAuroraTransparentCheckbox)
+        DOM_EXPORTS.softAuroraTransparentCheckbox.checked = config.transparent
+      if (DOM_EXPORTS.softAuroraBgColorPicker)
+        DOM_EXPORTS.softAuroraBgColorPicker.value = config.backgroundColor
+      if (DOM_EXPORTS.softAuroraBgColorContainer)
+        DOM_EXPORTS.softAuroraBgColorContainer.style.display = config.transparent
+          ? "none"
+          : "block"
+
       saveSettings()
 
       if (effects.softAuroraEffect)
         effects.softAuroraEffect.setOptions({
-          color1: palette.color1,
-          color2: palette.color2,
+          color1: config.color1,
+          color2: config.color2,
+          speed: config.speed,
+          scale: config.scale,
+          brightness: config.brightness,
+          noiseFrequency: config.noiseFrequency,
+          noiseAmplitude: config.noiseAmplitude,
+          bandHeight: config.bandHeight,
+          bandSpread: config.bandSpread,
+          octaveDecay: config.octaveDecay,
+          layerOffset: config.layerOffset,
+          colorSpeed: config.colorSpeed,
+          enableMouseInteraction: config.enableMouseInteraction,
+          mouseInfluence: config.mouseInfluence,
+          transparent: config.transparent,
+          backgroundColor: config.backgroundColor,
         })
     })
   }

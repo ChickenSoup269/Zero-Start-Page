@@ -969,7 +969,7 @@
   "setting_effect": "Effect",
   "effect_none": "None",
   "setting_aura_color": "Aura Color",
-  "settings_soft_aurora_random_colors": "Random Colors",
+  "settings_soft_aurora_random_colors": "Randomize",
   "setting_network_color": "Network Color",
   "setting_matrix_color": "Matrix Color",
   "settings_cursor_trail_click": "Click burst",
