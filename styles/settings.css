@@ -3804,6 +3804,90 @@
   top: 3px;
 }
 
+#active-effect-settings-body #soft-aurora-settings .setting-item-row {
+  flex-wrap: nowrap !important;
+}
+
+#active-effect-settings-body #soft-aurora-settings .setting-item-row label {
+  min-width: 0;
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px !important;
+  height: 22px !important;
+  min-width: 40px;
+  max-width: none !important;
+  flex: 0 0 40px !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch
+  input[type="checkbox"] {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 40px !important;
+  height: 22px !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch-track {
+  position: absolute;
+  inset: 0;
+  width: 40px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch-track::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  transition: left 0.2s ease;
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch
+  input[type="checkbox"]:checked
+  + .soft-aurora-switch-track {
+  background: var(--accent-color);
+}
+
+#active-effect-settings-body
+  #soft-aurora-settings
+  .setting-item-row
+  .soft-aurora-switch
+  input[type="checkbox"]:checked
+  + .soft-aurora-switch-track::before {
+  left: 21px;
+}
+
 /* --- Enhanced Settings UI (New Styles) --- */
 
 /* Fix cramped item rows and contain light effects */

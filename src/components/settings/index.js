@@ -169,7 +169,6 @@ function randomRange(min, max, step = 0.1) {
 
 function getRandomSoftAuroraConfig() {
   const palette = getRandomSoftAuroraPalette()
-  const transparent = Math.random() > 0.25
   return {
     ...palette,
     speed: randomRange(0.2, 1.6, 0.1),
@@ -184,10 +183,6 @@ function getRandomSoftAuroraConfig() {
     colorSpeed: randomRange(0.4, 3.0, 0.1),
     enableMouseInteraction: Math.random() > 0.2,
     mouseInfluence: randomRange(0.1, 1.0, 0.05),
-    transparent,
-    backgroundColor: transparent
-      ? "#000000"
-      : hslToHex(Math.floor(Math.random() * 360), 42, 8),
   }
 }
 
@@ -1050,19 +1045,9 @@ export function initSettings() {
         updateSetting(settingKey, value)
       })
       updateSetting("softAuroraEnableMouse", config.enableMouseInteraction)
-      updateSetting("softAuroraTransparent", config.transparent)
-      updateSetting("softAuroraBackgroundColor", config.backgroundColor)
 
       if (DOM_EXPORTS.softAuroraMouseCheckbox)
         DOM_EXPORTS.softAuroraMouseCheckbox.checked = config.enableMouseInteraction
-      if (DOM_EXPORTS.softAuroraTransparentCheckbox)
-        DOM_EXPORTS.softAuroraTransparentCheckbox.checked = config.transparent
-      if (DOM_EXPORTS.softAuroraBgColorPicker)
-        DOM_EXPORTS.softAuroraBgColorPicker.value = config.backgroundColor
-      if (DOM_EXPORTS.softAuroraBgColorContainer)
-        DOM_EXPORTS.softAuroraBgColorContainer.style.display = config.transparent
-          ? "none"
-          : "block"
 
       saveSettings()
 
@@ -1082,8 +1067,6 @@ export function initSettings() {
           colorSpeed: config.colorSpeed,
           enableMouseInteraction: config.enableMouseInteraction,
           mouseInfluence: config.mouseInfluence,
-          transparent: config.transparent,
-          backgroundColor: config.backgroundColor,
         })
     })
   }
