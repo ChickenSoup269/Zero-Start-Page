@@ -2,12 +2,12 @@ const modalText = {
   en: {
     title: "Add Custom Language",
     intro:
-      "Copy the AI prompt below, ask AI to translate the included English JSON into your language, then paste the translated JSON here.",
+      "Choose a guide language, copy the ready-made AI prompt, give it to an AI, then paste the JSON result here.",
     stepsTitle: "Fast AI translation steps",
     aiHint: "Recommended free AI options with good context for this prompt:",
-    step1: "Copy the AI prompt; it already includes the English JSON template.",
+    step1: "Choose the language you want from Guide language.",
     step2:
-      "Send it to AI and ask it to translate values only, keeping every JSON key unchanged.",
+      "Copy the ready-made AI prompt and send it to an AI. The prompt already tells AI what to translate and what to keep unchanged.",
     step3: "Paste the result below, then install it.",
     targetLabel: "Guide language",
     codeLabel: "Language code",
@@ -22,12 +22,12 @@ const modalText = {
   vi: {
     title: "Thêm ngôn ngữ tùy chỉnh",
     intro:
-      "Copy prompt AI bên dưới, nhờ AI dịch JSON tiếng Anh có sẵn trong prompt sang ngôn ngữ của bạn, rồi dán JSON đã dịch tại đây.",
+      "Chọn ngôn ngữ hướng dẫn, copy prompt AI đã tạo sẵn, đưa cho AI, rồi dán JSON AI trả về vào đây.",
     stepsTitle: "Cách dịch nhanh bằng AI",
     aiHint: "Gợi ý AI miễn phí có context tốt để dịch prompt này:",
-    step1: "Copy prompt AI; prompt đã bao gồm sẵn template JSON tiếng Anh.",
+    step1: "Chọn ngôn ngữ bạn muốn ở mục Ngôn ngữ hướng dẫn.",
     step2:
-      "Gửi cho AI và yêu cầu chỉ dịch value, giữ nguyên mọi key JSON.",
+      "Copy prompt AI đã tạo sẵn và gửi cho AI. Prompt đã tự ghi rõ cần dịch gì và cần giữ nguyên gì.",
     step3: "Dán kết quả bên dưới, sau đó cài ngôn ngữ.",
     targetLabel: "Ngôn ngữ hướng dẫn",
     codeLabel: "Mã ngôn ngữ",

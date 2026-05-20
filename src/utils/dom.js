@@ -1370,6 +1370,9 @@ export const softAuroraColor1Picker = document.getElementById(
 export const softAuroraColor2Picker = document.getElementById(
   "soft-aurora-color2-picker",
 )
+export const softAuroraRandomColorsBtn = document.getElementById(
+  "soft-aurora-random-colors-btn",
+)
 export const softAuroraSpeedSlider = document.getElementById(
   "soft-aurora-speed-slider",
 )

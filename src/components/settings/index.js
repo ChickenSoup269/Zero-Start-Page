@@ -139,6 +139,29 @@ import { SoftAuroraEffect } from "../animations/softAurora.js"
 import { SilkEffect } from "../animations/silk.js"
 import { LightPillarEffect } from "../animations/lightPillar.js"
 
+function hslToHex(h, s, l) {
+  s /= 100
+  l /= 100
+  const a = s * Math.min(l, 1 - l)
+  const f = (n) => {
+    const k = (n + h / 30) % 12
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0")
+  }
+  return `#${f(0)}${f(8)}${f(4)}`
+}
+
+function getRandomSoftAuroraPalette() {
+  const hue = Math.floor(Math.random() * 360)
+  const accentHue = (hue + 120 + Math.floor(Math.random() * 70)) % 360
+  return {
+    color1: hslToHex(hue, 58 + Math.floor(Math.random() * 18), 72),
+    color2: hslToHex(accentHue, 72 + Math.floor(Math.random() * 16), 56),
+  }
+}
+
 function getExtensionVersion() {
   try {
     if (typeof chrome !== "undefined" && chrome.runtime?.getManifest) {
@@ -965,6 +988,25 @@ export function initSettings() {
       handleSettingUpdate("softAuroraColor2", e.target.value)
       if (effects.softAuroraEffect)
         effects.softAuroraEffect.setOptions({ color2: e.target.value })
+    })
+  }
+  if (DOM_EXPORTS.softAuroraRandomColorsBtn) {
+    DOM_EXPORTS.softAuroraRandomColorsBtn.addEventListener("click", () => {
+      const palette = getRandomSoftAuroraPalette()
+      if (DOM_EXPORTS.softAuroraColor1Picker)
+        DOM_EXPORTS.softAuroraColor1Picker.value = palette.color1
+      if (DOM_EXPORTS.softAuroraColor2Picker)
+        DOM_EXPORTS.softAuroraColor2Picker.value = palette.color2
+
+      updateSetting("softAuroraColor1", palette.color1)
+      updateSetting("softAuroraColor2", palette.color2)
+      saveSettings()
+
+      if (effects.softAuroraEffect)
+        effects.softAuroraEffect.setOptions({
+          color1: palette.color1,
+          color2: palette.color2,
+        })
     })
   }
 
