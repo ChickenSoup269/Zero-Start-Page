@@ -1,6 +1,48 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
 
+const TIMER_ALARM_BASE_URL =
+  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/"
+
+const TIMER_ALARM_SOUNDS = {
+  bedside_clock_alarm: {
+    file: "bedside_clock_alarm.mp3",
+    label: "Bedside Clock Alarm",
+  },
+  among_us_sabotage: {
+    file: "alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3",
+    label: "Among Us Sabotage",
+  },
+  // Ringtone source: https://pixabay.com/users/universfield-28281460/
+  universfield_ringtone_014: {
+    file: "universfield-ringtone-014-133357.mp3",
+    label: "Ringtone 014",
+  },
+  universfield_ringtone_022: {
+    file: "universfield-ringtone-022-376904.mp3",
+    label: "Ringtone 022",
+  },
+  universfield_ringtone_025: {
+    file: "universfield-ringtone-025-376905.mp3",
+    label: "Ringtone 025",
+  },
+}
+
+function getTimerAlarmUrl(soundKey) {
+  const sound =
+    TIMER_ALARM_SOUNDS[soundKey] || TIMER_ALARM_SOUNDS.bedside_clock_alarm
+  return `${TIMER_ALARM_BASE_URL}${sound.file}`
+}
+
+function renderTimerAlarmOptions(selectedSound) {
+  return Object.entries(TIMER_ALARM_SOUNDS)
+    .map(
+      ([key, sound]) =>
+        `<option value="${key}" ${key === selectedSound ? "selected" : ""}>${sound.label}</option>`,
+    )
+    .join("")
+}
+
 export class Timer {
   constructor() {
     this.container = null
@@ -12,9 +54,8 @@ export class Timer {
     this.isRunning = settings.timerIsRunning || false
     this.isExpired = false
     this.timerId = null
-    this.alarm = new Audio(
-      "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/bedside_clock_alarm.mp3",
-    )
+    this.alarmSound = settings.timerAlarmSound || "bedside_clock_alarm"
+    this.alarm = new Audio(getTimerAlarmUrl(this.alarmSound))
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
 
@@ -62,6 +103,12 @@ export class Timer {
                     <i class="fa-solid fa-circle-pause"></i>
                     <span>Ready</span>
                 </div>
+                <label class="timer-alarm-row" for="timer-alarm-sound-widget">
+                    <i class="fa-solid fa-bell"></i>
+                    <select id="timer-alarm-sound-widget" title="Alarm Sound">
+                        ${renderTimerAlarmOptions(this.alarmSound)}
+                    </select>
+                </label>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
                     <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
@@ -102,6 +149,7 @@ export class Timer {
 
     this.display = this.container.querySelector("#timer-display")
     this.status = this.container.querySelector("#timer-status")
+    this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
     
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
@@ -170,6 +218,9 @@ export class Timer {
     this.container
       .querySelector("#stop-alarm-btn")
       .addEventListener("click", () => this.stopAlarm())
+    this.alarmSelect?.addEventListener("change", () => {
+      this.setAlarmSound(this.alarmSelect.value, true)
+    })
 
     this.container
       .querySelector("#timer-clock-mode")
@@ -193,6 +244,12 @@ export class Timer {
       }
     })
 
+    window.addEventListener("settingsUpdated", (e) => {
+      if (e.detail.key === "timerAlarmSound") {
+        this.setAlarmSound(e.detail.value)
+      }
+    })
+
     // Smart input handler
     const smartInput = this.container.querySelector("#timer-smart-input")
     smartInput.addEventListener("input", (e) => {
@@ -211,6 +268,32 @@ export class Timer {
     this.container.querySelectorAll(".timer-keypad-btn").forEach((btn) => {
       btn.addEventListener("click", () => this.handleKeypadInput(btn))
     })
+  }
+
+  setAlarmSound(soundKey, persist = false) {
+    const nextSound = TIMER_ALARM_SOUNDS[soundKey]
+      ? soundKey
+      : "bedside_clock_alarm"
+    if (nextSound === this.alarmSound) {
+      if (this.alarmSelect) this.alarmSelect.value = nextSound
+      return
+    }
+    const wasPlaying = !this.alarm.paused
+    this.alarmSound = nextSound
+    if (this.alarmSelect) this.alarmSelect.value = nextSound
+    const settingsSelect = document.getElementById("timer-alarm-sound-select")
+    if (settingsSelect) settingsSelect.value = nextSound
+    if (persist) {
+      updateSetting("timerAlarmSound", nextSound)
+      saveSettings()
+    }
+    this.alarm.pause()
+    this.alarm.src = getTimerAlarmUrl(nextSound)
+    this.alarm.currentTime = 0
+    this.alarm.loop = true
+    if (wasPlaying) {
+      this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
+    }
   }
 
   updateVisibility() {

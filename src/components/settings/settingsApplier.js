@@ -2921,6 +2921,10 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
+    if (DOM.timerAlarmSoundSelect) {
+      DOM.timerAlarmSoundSelect.value =
+        settings.timerAlarmSound || "bedside_clock_alarm"
+    }
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
     if (DOM.musicPlayerUseDefaultColorCheckbox) {

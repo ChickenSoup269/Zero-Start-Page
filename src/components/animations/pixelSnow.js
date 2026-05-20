@@ -27,6 +27,7 @@ uniform float uGamma;
 uniform float uDensity;
 uniform float uVariant;
 uniform float uDirection;
+uniform float uMaxSteps;
 
 out vec4 fragColor;
 
@@ -106,8 +107,8 @@ void main() {
 
   vec3 finalCol = vec3(0.0);
   float t = 0.0;
-  // Restore original 128 steps for maximum cinematic quality
   for (int i = 0; i < 128; i++) {
+    if (float(i) >= uMaxSteps) break;
     if (t >= uFarPlane) break;
     
     vec3 fpos = floor(pos);
@@ -190,6 +191,7 @@ export class PixelSnowEffect {
       density: 0.3,
       variant: 'square',
       direction: 125,
+      targetFps: 30,
       ...options
     }
 
@@ -249,6 +251,7 @@ export class PixelSnowEffect {
       uDensity: gl.getUniformLocation(p, "uDensity"),
       uVariant: gl.getUniformLocation(p, "uVariant"),
       uDirection: gl.getUniformLocation(p, "uDirection"),
+      uMaxSteps: gl.getUniformLocation(p, "uMaxSteps"),
     }
   }
 
@@ -259,16 +262,42 @@ export class PixelSnowEffect {
 
   handleResize() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    this.canvas.width = window.innerWidth * dpr
-    this.canvas.height = window.innerHeight * dpr
+    const cssWidth = Math.max(1, window.innerWidth)
+    const cssHeight = Math.max(1, window.innerHeight)
+    const targetWidth = Math.max(
+      120,
+      Math.min(this.options.pixelResolution || 200, cssWidth * dpr, 720),
+    )
+    const targetHeight = Math.max(
+      80,
+      Math.round(targetWidth * (cssHeight / cssWidth)),
+    )
+    this.canvas.width = Math.round(targetWidth)
+    this.canvas.height = targetHeight
+    this.canvas.style.imageRendering = "pixelated"
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
   }
 
-  setOptions(opts) { this.options = { ...this.options, ...opts } }
+  setOptions(opts) {
+    const prevPixelResolution = this.options.pixelResolution
+    this.options = { ...this.options, ...opts }
+    if (
+      opts &&
+      Object.prototype.hasOwnProperty.call(opts, "pixelResolution") &&
+      opts.pixelResolution !== prevPixelResolution
+    ) {
+      this.handleResize()
+    }
+  }
 
   animate(t = 0) {
     if (!this.active) return
     this.animationId = requestAnimationFrame((nt) => this.animate(nt))
+    if (document.visibilityState === "hidden") return
+    const targetFps = this.options.targetFps || 30
+    const frameInterval = 1000 / targetFps
+    if (this.lastRenderTime && t - this.lastRenderTime < frameInterval) return
+    this.lastRenderTime = t
     this.render(t)
   }
 
@@ -290,11 +319,13 @@ export class PixelSnowEffect {
     gl.uniform1f(u.uDensity, o.density)
     
     let variantVal = 0.0
-    if (o.variant === 'round') variantVal = 1.0
+    if (o.variant === 'round' || o.variant === 'circle') variantVal = 1.0
     if (o.variant === 'snowflake') variantVal = 2.0
     gl.uniform1f(u.uVariant, variantVal)
     
     gl.uniform1f(u.uDirection, o.direction)
+    const maxSteps = o.variant === "snowflake" ? 64 : 72
+    gl.uniform1f(u.uMaxSteps, Math.min(128, Math.max(32, o.maxSteps || maxSteps)))
     gl.drawArrays(gl.TRIANGLES, 0, 3)
   }
 
@@ -303,6 +334,8 @@ export class PixelSnowEffect {
     this.active = true
     this.canvas.style.display = "block"
     this.startTime = performance.now()
+    this.lastRenderTime = 0
+    this.handleResize()
     this.animate(this.startTime)
   }
 

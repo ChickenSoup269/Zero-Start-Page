@@ -38,6 +38,11 @@ export function makeDraggable(
   const handle = element.querySelector(handleSelector) || element
   handle.onmousedown = dragMouseDown
 
+  const isInteractiveTarget = (target) =>
+    target.closest(
+      "input, button, a, select, option, textarea, label, [contenteditable='true'], [data-no-drag]",
+    )
+
   const onContextMenu = (e) => {
     const currentSettings = getSettings()
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
@@ -63,9 +68,7 @@ export function makeDraggable(
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
 
-    const isInteractive = ["INPUT", "BUTTON", "A", "SELECT", "OPTION", "TEXTAREA"].includes(e.target.tagName)
-    const isDragHandleIcon = e.target.classList.contains("drag-handle") || e.target.closest(".drag-handle") === handle
-    if (isInteractive && !isDragHandleIcon) return
+    if (isInteractiveTarget(e.target)) return
 
     e.preventDefault()
     

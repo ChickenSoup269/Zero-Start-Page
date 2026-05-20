@@ -2767,6 +2767,19 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
+  if (DOM.timerAlarmSoundSelect) {
+    DOM.timerAlarmSoundSelect.addEventListener("change", () => {
+      handleSettingUpdate("timerAlarmSound", DOM.timerAlarmSoundSelect.value)
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: {
+            key: "timerAlarmSound",
+            value: DOM.timerAlarmSoundSelect.value,
+          },
+        }),
+      )
+    })
+  }
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})
   if (DOM.clockDisplaySelect) {
     DOM.clockDisplaySelect.addEventListener("change", () => {

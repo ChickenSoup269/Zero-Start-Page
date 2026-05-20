@@ -2074,6 +2074,40 @@ body.todo-fullscreen-active::before {
   color: #ff4d6d;
 }
 
+.timer-alarm-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.timer-alarm-row i {
+  color: var(--accent-color);
+  font-size: 0.78rem;
+  flex: 0 0 auto;
+}
+
+.timer-alarm-row select {
+  min-width: 0;
+  width: 100%;
+  height: 26px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.timer-alarm-row select option {
+  color: #111;
+}
+
 .timer-controls {
   display: flex;
   gap: 8px;
