@@ -1,5 +1,6 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
+import { getImageUrl } from "../services/imageStore.js"
 
 const TIMER_ALARM_BASE_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/"
@@ -26,7 +27,29 @@ const TIMER_ALARM_SOUNDS = {
     file: "universfield-ringtone-025-376905.mp3",
     label: "Ringtone 025",
   },
+  universfield_ringtone_046: {
+    file: "universfield-ringtone-046-494552.mp3",
+    label: "Ringtone 046",
+  },
+  universfield_ringtone_064: {
+    file: "universfield-ringtone-064-496264.mp3",
+    label: "Ringtone 064",
+  },
+  universfield_ringtone_070: {
+    file: "universfield-ringtone-070-496271.mp3",
+    label: "Ringtone 070",
+  },
+  subnautica_alterra: {
+    file: "subnautica_alterra.mp3",
+    label: "Subnautica Alterra",
+  },
+  mambo: {
+    file: "mambo.mp3",
+    label: "Mambo",
+  },
 }
+
+const CUSTOM_ALARM_SOUND_KEY = "custom_alarm_sound"
 
 function getTimerAlarmUrl(soundKey) {
   const sound =
@@ -34,13 +57,40 @@ function getTimerAlarmUrl(soundKey) {
   return `${TIMER_ALARM_BASE_URL}${sound.file}`
 }
 
-function renderTimerAlarmOptions(selectedSound) {
-  return Object.entries(TIMER_ALARM_SOUNDS)
+function getCustomAlarmLabel(settings = getSettings()) {
+  return settings.timerCustomAlarmSoundName || "Custom Sound"
+}
+
+function renderTimerAlarmOptions(selectedSound, settings = getSettings()) {
+  const customLabel = getCustomAlarmLabel(settings)
+  return [
+    ...Object.entries(TIMER_ALARM_SOUNDS).map(([key, sound]) => ({
+      key,
+      label: sound.label,
+      disabled: false,
+    })),
+    {
+      key: CUSTOM_ALARM_SOUND_KEY,
+      label: customLabel,
+      disabled: !settings.timerCustomAlarmSoundId,
+    },
+  ]
     .map(
-      ([key, sound]) =>
-        `<option value="${key}" ${key === selectedSound ? "selected" : ""}>${sound.label}</option>`,
+      ({ key, label, disabled }) =>
+        `<option value="${key}" ${key === selectedSound ? "selected" : ""} ${disabled ? "disabled" : ""}>${label}</option>`,
     )
     .join("")
+}
+
+async function resolveTimerAlarmUrl(soundKey) {
+  if (soundKey === CUSTOM_ALARM_SOUND_KEY) {
+    const customId = getSettings().timerCustomAlarmSoundId
+    if (customId) {
+      const customUrl = await getImageUrl(customId).catch(() => null)
+      if (customUrl) return customUrl
+    }
+  }
+  return getTimerAlarmUrl(soundKey)
 }
 
 export class Timer {
@@ -55,7 +105,7 @@ export class Timer {
     this.isExpired = false
     this.timerId = null
     this.alarmSound = settings.timerAlarmSound || "bedside_clock_alarm"
-    this.alarm = new Audio(getTimerAlarmUrl(this.alarmSound))
+    this.alarm = new Audio(getTimerAlarmUrl("bedside_clock_alarm"))
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
 
@@ -68,6 +118,7 @@ export class Timer {
     this.updateVisibility()
     this.applySkin()
     this.updateClockModeBtn()
+    this.setAlarmSound(this.alarmSound, false, true)
 
     // Resume logic
     if (this.isRunning && this.endTime > Date.now()) {
@@ -150,7 +201,7 @@ export class Timer {
     this.display = this.container.querySelector("#timer-display")
     this.status = this.container.querySelector("#timer-status")
     this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
-    
+
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
   }
@@ -173,9 +224,11 @@ export class Timer {
         this.isVisible = true
         this.syncTimerVisibilityControls(true)
         this.updateVisibility()
-        window.dispatchEvent(new CustomEvent("layoutUpdated", {
-          detail: { key: "showTimer", value: true },
-        }))
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showTimer", value: true },
+          }),
+        )
       })
       clockWrap.appendChild(mini)
     }
@@ -202,12 +255,16 @@ export class Timer {
         this.syncTimerVisibilityControls(false)
         this.updateClockModeBtn()
         this.updateVisibility()
-        window.dispatchEvent(new CustomEvent("layoutUpdated", {
-          detail: { key: "clockTimerMode", value: false },
-        }))
-        window.dispatchEvent(new CustomEvent("layoutUpdated", {
-          detail: { key: "showTimer", value: false },
-        }))
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "clockTimerMode", value: false },
+          }),
+        )
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showTimer", value: false },
+          }),
+        )
       })
     this.container
       .querySelector("#timer-cancel-edit")
@@ -270,16 +327,21 @@ export class Timer {
     })
   }
 
-  setAlarmSound(soundKey, persist = false) {
-    const nextSound = TIMER_ALARM_SOUNDS[soundKey]
+  async setAlarmSound(soundKey, persist = false, forceReload = false) {
+    const settings = getSettings()
+    const hasCustomSound =
+      soundKey === CUSTOM_ALARM_SOUND_KEY && settings.timerCustomAlarmSoundId
+    const nextSound = TIMER_ALARM_SOUNDS[soundKey] || hasCustomSound
       ? soundKey
       : "bedside_clock_alarm"
-    if (nextSound === this.alarmSound) {
+    if (nextSound === this.alarmSound && !forceReload) {
+      this.refreshAlarmOptions(nextSound)
       if (this.alarmSelect) this.alarmSelect.value = nextSound
       return
     }
     const wasPlaying = !this.alarm.paused
     this.alarmSound = nextSound
+    this.refreshAlarmOptions(nextSound)
     if (this.alarmSelect) this.alarmSelect.value = nextSound
     const settingsSelect = document.getElementById("timer-alarm-sound-select")
     if (settingsSelect) settingsSelect.value = nextSound
@@ -288,11 +350,31 @@ export class Timer {
       saveSettings()
     }
     this.alarm.pause()
-    this.alarm.src = getTimerAlarmUrl(nextSound)
+    this.alarm.src = await resolveTimerAlarmUrl(nextSound)
     this.alarm.currentTime = 0
     this.alarm.loop = true
     if (wasPlaying) {
       this.alarm.play().catch((e) => console.error("Alarm play failed:", e))
+    }
+  }
+
+  refreshAlarmOptions(selectedSound = this.alarmSound) {
+    const optionsHtml = renderTimerAlarmOptions(selectedSound)
+    if (this.alarmSelect) {
+      this.alarmSelect.innerHTML = optionsHtml
+      this.alarmSelect.value = selectedSound
+    }
+    const settingsSelect = document.getElementById("timer-alarm-sound-select")
+    if (settingsSelect) {
+      const settings = getSettings()
+      const customOption = settingsSelect.querySelector(
+        `option[value="${CUSTOM_ALARM_SOUND_KEY}"]`,
+      )
+      if (customOption) {
+        customOption.textContent = getCustomAlarmLabel(settings)
+        customOption.disabled = !settings.timerCustomAlarmSoundId
+      }
+      settingsSelect.value = selectedSound
     }
   }
 
@@ -330,14 +412,19 @@ export class Timer {
     this.container.querySelector(".timer-main-view").style.display = "none"
     this.container.querySelector("#timer-input-view").style.display = "flex"
     const smartInput = this.container.querySelector("#timer-smart-input")
-    
+
     const h = Math.floor(this.timeLeft / 3600)
     const m = Math.floor((this.timeLeft % 3600) / 60)
     const s = this.timeLeft % 60
-    smartInput.value = h > 0 ? 
-      h.toString().padStart(2, '0') + m.toString().padStart(2, '0') + s.toString().padStart(2, '0') :
-      (m > 0 ? m.toString().padStart(2, '0') + s.toString().padStart(2, '0') : s.toString())
-    
+    smartInput.value =
+      h > 0
+        ? h.toString().padStart(2, "0") +
+          m.toString().padStart(2, "0") +
+          s.toString().padStart(2, "0")
+        : m > 0
+          ? m.toString().padStart(2, "0") + s.toString().padStart(2, "0")
+          : s.toString()
+
     smartInput.focus()
     smartInput.select()
   }
@@ -451,7 +538,9 @@ export class Timer {
     const digits = value.replace(/\D/g, "")
     const len = digits.length
     if (len === 0) return 0
-    let hours = 0, minutes = 0, seconds = 0
+    let hours = 0,
+      minutes = 0,
+      seconds = 0
     if (len <= 2) {
       seconds = parseInt(digits)
     } else if (len <= 4) {
@@ -462,7 +551,11 @@ export class Timer {
       minutes = parseInt(digits.slice(-4, -2))
       seconds = parseInt(digits.slice(-2))
     }
-    return Math.min(hours, 23) * 3600 + Math.min(minutes, 59) * 60 + Math.min(seconds, 59)
+    return (
+      Math.min(hours, 23) * 3600 +
+      Math.min(minutes, 59) * 60 +
+      Math.min(seconds, 59)
+    )
   }
 
   setTimer() {
@@ -489,9 +582,11 @@ export class Timer {
     updateSetting("timerEndTime", this.endTime)
     updateSetting("timerIsRunning", this.isRunning)
     saveSettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", {
-      detail: { key: "timerIsRunning", value: this.isRunning },
-    }))
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "timerIsRunning", value: this.isRunning },
+      }),
+    )
   }
 
   playAlarm() {
@@ -564,8 +659,10 @@ export class Timer {
 
   render() {
     this.renderTime(this.timeLeft, this.display)
-    
-    const miniText = document.querySelector("#mini-timer-indicator .mini-timer-text")
+
+    const miniText = document.querySelector(
+      "#mini-timer-indicator .mini-timer-text",
+    )
     if (miniText) {
       this.renderTime(this.timeLeft, miniText, true)
     }
@@ -577,7 +674,10 @@ export class Timer {
     if (!mini) return
 
     mini.classList.toggle("is-running", this.isRunning && !this.isExpired)
-    mini.classList.toggle("is-ready", !this.isRunning && this.timeLeft > 0 && !this.isExpired)
+    mini.classList.toggle(
+      "is-ready",
+      !this.isRunning && this.timeLeft > 0 && !this.isExpired,
+    )
     mini.title = this.isExpired
       ? "Timer finished"
       : this.isRunning
@@ -647,8 +747,8 @@ export class Timer {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = isWhiteMode ? "white-blur" : (settings.timerSkin || "default")
-    
+    const skin = isWhiteMode ? "white-blur" : settings.timerSkin || "default"
+
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
   }
 
@@ -674,7 +774,7 @@ export class Timer {
       this.isVisible = false
       this.syncTimerVisibilityControls(false)
       this.updateVisibility()
-      
+
       // Sync the quick access button state
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {

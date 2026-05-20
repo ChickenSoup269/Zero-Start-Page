@@ -2922,8 +2922,28 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
     if (DOM.timerAlarmSoundSelect) {
+      const customOption = DOM.timerAlarmSoundSelect.querySelector(
+        'option[value="custom_alarm_sound"]',
+      )
+      if (customOption) {
+        customOption.textContent =
+          settings.timerCustomAlarmSoundName || customOption.textContent
+        customOption.disabled = !settings.timerCustomAlarmSoundId
+      }
       DOM.timerAlarmSoundSelect.value =
         settings.timerAlarmSound || "bedside_clock_alarm"
+    }
+    if (DOM.timerAlarmCustomName) {
+      const hasCustomAlarm = Boolean(settings.timerCustomAlarmSoundId)
+      DOM.timerAlarmCustomName.textContent = hasCustomAlarm
+        ? settings.timerCustomAlarmSoundName || "Custom Sound"
+        : DOM.timerAlarmCustomName.dataset.i18n
+          ? DOM.timerAlarmCustomName.textContent
+          : "No custom sound uploaded"
+      DOM.timerAlarmCustomName.classList.toggle("has-file", hasCustomAlarm)
+    }
+    if (DOM.timerAlarmSoundRemoveBtn) {
+      DOM.timerAlarmSoundRemoveBtn.disabled = !settings.timerCustomAlarmSoundId
     }
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true

@@ -176,14 +176,33 @@ export function isIdbVideo(id) {
   return typeof id === "string" && id.startsWith("idb-video-")
 }
 
-/** Kiểm tra IDB image hoặc video */
+/** Kiểm tra xem có phải IDB audio ID không */
+export function isIdbAudio(id) {
+  return typeof id === "string" && id.startsWith("idb-audio-")
+}
+
+/** Kiểm tra IDB image, video hoặc audio */
 export function isIdbMedia(id) {
-  return isIdbImage(id) || isIdbVideo(id)
+  return isIdbImage(id) || isIdbVideo(id) || isIdbAudio(id)
 }
 
 /** Lưu Video Blob vào IndexedDB, trả về ID */
 export async function saveVideo(blob) {
   const id = createMediaId("idb-video")
+  const db = await openDb()
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, "readwrite")
+    tx.objectStore(STORE_NAME).put(blob, id)
+    tx.oncomplete = resolve
+    tx.onerror = (e) => reject(e.target.error)
+  })
+  _urlCache.set(id, URL.createObjectURL(blob))
+  return id
+}
+
+/** Lưu Audio Blob vào IndexedDB, trả về ID */
+export async function saveAudio(blob) {
+  const id = createMediaId("idb-audio")
   const db = await openDb()
   await new Promise((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite")

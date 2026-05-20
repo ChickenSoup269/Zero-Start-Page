@@ -35,6 +35,8 @@ import {
   getImageBlob,
   isIdbMedia,
   isIdbVideo,
+  saveAudio,
+  deleteImage,
   saveImage,
   saveVideo,
   clearAllMedia,
@@ -77,6 +79,37 @@ export function setupGeneralEventHandlers(
   })
   const effects = ctx.effects
   const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
+  const CUSTOM_TIMER_ALARM_KEY = "custom_alarm_sound"
+  const MAX_TIMER_ALARM_SIZE = 12 * 1024 * 1024
+
+  const updateTimerAlarmCustomUi = () => {
+    const settings = getSettings()
+    const customName = settings.timerCustomAlarmSoundName || ""
+    const hasCustomSound = Boolean(settings.timerCustomAlarmSoundId)
+    const label = customName || i18n.timer_alarm_custom || "Custom Sound"
+
+    ;[DOM.timerAlarmSoundSelect, document.getElementById("timer-alarm-sound-widget")]
+      .filter(Boolean)
+      .forEach((select) => {
+        const option = select.querySelector(
+          `option[value="${CUSTOM_TIMER_ALARM_KEY}"]`,
+        )
+        if (option) {
+          option.textContent = label
+          option.disabled = !hasCustomSound
+        }
+      })
+
+    if (DOM.timerAlarmCustomName) {
+      DOM.timerAlarmCustomName.textContent = hasCustomSound
+        ? customName
+        : i18n.timer_alarm_no_custom || "No custom sound uploaded"
+      DOM.timerAlarmCustomName.classList.toggle("has-file", hasCustomSound)
+    }
+    if (DOM.timerAlarmSoundRemoveBtn) {
+      DOM.timerAlarmSoundRemoveBtn.disabled = !hasCustomSound
+    }
+  }
 
   const setLanguageToolsOpen = (isOpen) => {
     DOM.languageToolsPanel?.classList.toggle("is-collapsed", !isOpen)
@@ -2767,8 +2800,20 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
+  updateTimerAlarmCustomUi()
   if (DOM.timerAlarmSoundSelect) {
     DOM.timerAlarmSoundSelect.addEventListener("change", () => {
+      if (
+        DOM.timerAlarmSoundSelect.value === CUSTOM_TIMER_ALARM_KEY &&
+        !getSettings().timerCustomAlarmSoundId
+      ) {
+        DOM.timerAlarmSoundSelect.value = "bedside_clock_alarm"
+        showAlert(
+          i18n.timer_alarm_upload_first ||
+            "Upload a custom sound before selecting this option.",
+        )
+        return
+      }
       handleSettingUpdate("timerAlarmSound", DOM.timerAlarmSoundSelect.value)
       window.dispatchEvent(
         new CustomEvent("settingsUpdated", {
@@ -2780,6 +2825,73 @@ export function setupGeneralEventHandlers(
       )
     })
   }
+  DOM.timerAlarmSoundUploadBtn?.addEventListener("click", () => {
+    DOM.timerAlarmSoundUpload?.click()
+  })
+  DOM.timerAlarmSoundUpload?.addEventListener("change", async () => {
+    const file = DOM.timerAlarmSoundUpload.files?.[0]
+    DOM.timerAlarmSoundUpload.value = ""
+    if (!file) return
+    if (!file.type.startsWith("audio/")) {
+      showAlert(i18n.timer_alarm_invalid_file || "Please choose an audio file.")
+      return
+    }
+    if (file.size > MAX_TIMER_ALARM_SIZE) {
+      showAlert(
+        i18n.timer_alarm_file_too_large ||
+          "Please choose an audio file under 12 MB.",
+      )
+      return
+    }
+
+    const previousId = getSettings().timerCustomAlarmSoundId
+    try {
+      const soundId = await saveAudio(file)
+      updateSetting("timerCustomAlarmSoundId", soundId)
+      updateSetting("timerCustomAlarmSoundName", file.name)
+      updateSetting("timerAlarmSound", CUSTOM_TIMER_ALARM_KEY)
+      saveSettings(true)
+      if (previousId) deleteImage(previousId).catch(() => {})
+      updateTimerAlarmCustomUi()
+      if (DOM.timerAlarmSoundSelect) {
+        DOM.timerAlarmSoundSelect.value = CUSTOM_TIMER_ALARM_KEY
+      }
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: { key: "timerAlarmSound", value: CUSTOM_TIMER_ALARM_KEY },
+        }),
+      )
+    } catch (error) {
+      console.error("Failed to save custom timer alarm sound:", error)
+      showAlert(
+        i18n.timer_alarm_upload_failed ||
+          "Could not save that sound. Please try another file.",
+      )
+    }
+  })
+  DOM.timerAlarmSoundRemoveBtn?.addEventListener("click", () => {
+    const settings = getSettings()
+    const soundId = settings.timerCustomAlarmSoundId
+    if (soundId) deleteImage(soundId).catch(() => {})
+    updateSetting("timerCustomAlarmSoundId", null)
+    updateSetting("timerCustomAlarmSoundName", "")
+    if (settings.timerAlarmSound === CUSTOM_TIMER_ALARM_KEY) {
+      updateSetting("timerAlarmSound", "bedside_clock_alarm")
+    }
+    saveSettings(true)
+    updateTimerAlarmCustomUi()
+    if (DOM.timerAlarmSoundSelect) {
+      DOM.timerAlarmSoundSelect.value = getSettings().timerAlarmSound
+    }
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "timerAlarmSound",
+          value: getSettings().timerAlarmSound,
+        },
+      }),
+    )
+  })
   setupLayoutCheckbox(DOM.showGregorianCheckbox, "showGregorian", {})
   if (DOM.clockDisplaySelect) {
     DOM.clockDisplaySelect.addEventListener("change", () => {

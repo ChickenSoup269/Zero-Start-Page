@@ -2161,12 +2161,25 @@ body.todo-fullscreen-active::before {
 
 #alarm-control-container .primary-btn {
   width: 100%;
-  margin-top: 5px;
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-  color: var(--accent-contrast-color, #1a1a2e);
-  height: 36px;
+  background: rgba(255, 77, 109, 0.18);
+  border: 1px solid rgba(255, 77, 109, 0.52);
+  color: #fff;
+  height: 38px;
   font-size: 0.9rem;
+  box-shadow: 0 10px 24px rgba(255, 77, 109, 0.14);
+}
+
+#alarm-control-container {
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.22);
+}
+
+#alarm-control-container .primary-btn:hover {
+  background: rgba(255, 77, 109, 0.28);
+  border-color: rgba(255, 77, 109, 0.72);
+  transform: translateY(-1px);
 }
 
 /* Timer Input View */
@@ -3284,11 +3297,21 @@ body.context-menu-none .calendar-event-preview-desc {
   background: rgba(var(--accent-color-rgb), 0.1) !important;
 }
 
-.skin-white-blur #alarm-control-container .primary-btn,
 .skin-white-blur .timer-input-actions .primary-btn {
   background: var(--safe-accent) !important;
   color: var(--accent-contrast-color) !important;
   border-color: var(--safe-accent) !important;
+}
+
+.skin-white-blur #alarm-control-container {
+  border-top-color: rgba(0, 0, 0, 0.14);
+}
+
+.skin-white-blur #alarm-control-container .primary-btn {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #b91c1c !important;
+  border-color: rgba(220, 38, 38, 0.35) !important;
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.1);
 }
 
 .skin-white-blur .context-menu-divider,

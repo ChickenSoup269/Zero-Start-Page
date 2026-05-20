@@ -1002,6 +1002,18 @@ export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export const timerAlarmSoundSelect = document.getElementById(
   "timer-alarm-sound-select",
 )
+export const timerAlarmSoundUpload = document.getElementById(
+  "timer-alarm-sound-upload",
+)
+export const timerAlarmSoundUploadBtn = document.getElementById(
+  "timer-alarm-sound-upload-btn",
+)
+export const timerAlarmSoundRemoveBtn = document.getElementById(
+  "timer-alarm-sound-remove-btn",
+)
+export const timerAlarmCustomName = document.getElementById(
+  "timer-alarm-custom-name",
+)
 export const showGregorianCheckbox = document.getElementById(
   "show-gregorian-checkbox",
 )

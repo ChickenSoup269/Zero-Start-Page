@@ -216,6 +216,8 @@ export const defaultSettings = {
   timerEndTime: 0,
   timerIsRunning: false,
   timerAlarmSound: "bedside_clock_alarm",
+  timerCustomAlarmSoundId: null,
+  timerCustomAlarmSoundName: "",
   musicPlayerExpanded: false,
   musicPlayerUseDefaultColor: true,
   sideControlsGhostMode: false,

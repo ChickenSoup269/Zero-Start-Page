@@ -1191,6 +1191,79 @@
   font-weight: 400;
 }
 
+.timer-alarm-source {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.timer-alarm-source a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.42);
+  text-underline-offset: 3px;
+}
+
+.timer-alarm-source a:hover {
+  color: var(--accent-color);
+  text-decoration-color: var(--accent-color);
+}
+
+.timer-alarm-upload-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.timer-alarm-upload-row .secondary-btn {
+  min-height: 34px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  line-height: 1.1;
+}
+
+.timer-alarm-upload-row .secondary-btn:hover {
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+}
+
+.timer-alarm-upload-row .secondary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.timer-alarm-remove-btn {
+  color: #ffb3c1 !important;
+}
+
+.timer-alarm-custom-name {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.76rem;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timer-alarm-custom-name.has-file {
+  color: rgba(255, 255, 255, 0.86);
+}
+
 .wave-angle-header {
   display: flex;
   justify-content: space-between;

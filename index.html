@@ -4884,8 +4884,26 @@
                                 <option value="universfield_ringtone_014" data-i18n="timer_alarm_ringtone_014">Ringtone 014</option>
                                 <option value="universfield_ringtone_022" data-i18n="timer_alarm_ringtone_022">Ringtone 022</option>
                                 <option value="universfield_ringtone_025" data-i18n="timer_alarm_ringtone_025">Ringtone 025</option>
+                                <option value="universfield_ringtone_046" data-i18n="timer_alarm_ringtone_046">Ringtone 046</option>
+                                <option value="universfield_ringtone_064" data-i18n="timer_alarm_ringtone_064">Ringtone 064</option>
+                                <option value="universfield_ringtone_070" data-i18n="timer_alarm_ringtone_070">Ringtone 070</option>
+                                <option value="subnautica_alterra" data-i18n="timer_alarm_subnautica_alterra">Subnautica Alterra</option>
+                                <option value="mambo" data-i18n="timer_alarm_mambo">Mambo</option>
+                                <option value="custom_alarm_sound" data-i18n="timer_alarm_custom" disabled>Custom Sound</option>
                             </select>
-                            <small style="display: block; opacity: 0.7; margin-top: 6px; line-height: 1.4;">
+                            <div class="timer-alarm-upload-row">
+                                <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
+                                <button type="button" id="timer-alarm-sound-upload-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span data-i18n="timer_alarm_upload">Upload Sound</span>
+                                </button>
+                                <button type="button" id="timer-alarm-sound-remove-btn" class="secondary-btn timer-alarm-remove-btn" disabled>
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span data-i18n="timer_alarm_remove">Remove</span>
+                                </button>
+                            </div>
+                            <small id="timer-alarm-custom-name" class="timer-alarm-custom-name" data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
+                            <small class="timer-alarm-source">
                                 <span data-i18n="settings_timer_alarm_source">Ringtone sounds source:</span>
                                 <a href="https://pixabay.com/users/universfield-28281460/" target="_blank" rel="noopener noreferrer">Pixabay / universfield</a>
                             </small>
