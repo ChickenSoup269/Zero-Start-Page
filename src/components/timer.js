@@ -40,8 +40,8 @@ const TIMER_ALARM_SOUNDS = {
     label: "Ringtone 070",
   },
   subnautica_alterra: {
-    file: "subnautica_alterra.mp3",
-    label: "Subnautica Alterra",
+    file: "subnautica_psa_beep.mp3",
+    label: "Subnautica PSA Beep",
   },
   mambo: {
     file: "mambo.mp3",
@@ -331,9 +331,10 @@ export class Timer {
     const settings = getSettings()
     const hasCustomSound =
       soundKey === CUSTOM_ALARM_SOUND_KEY && settings.timerCustomAlarmSoundId
-    const nextSound = TIMER_ALARM_SOUNDS[soundKey] || hasCustomSound
-      ? soundKey
-      : "bedside_clock_alarm"
+    const nextSound =
+      TIMER_ALARM_SOUNDS[soundKey] || hasCustomSound
+        ? soundKey
+        : "bedside_clock_alarm"
     if (nextSound === this.alarmSound && !forceReload) {
       this.refreshAlarmOptions(nextSound)
       if (this.alarmSelect) this.alarmSelect.value = nextSound
