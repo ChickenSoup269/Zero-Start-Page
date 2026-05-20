@@ -4392,7 +4392,7 @@
                                             style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
                                     <button id="reset-bookmark-text-color-btn" class="secondary-btn"
-                                        title="Reset Default"
+                                        title="Reset Default" data-i18n-title="settings_reset_default"
                                         style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
                                             class="fa-solid fa-rotate-left"></i></button>
                                 </div>
@@ -4410,11 +4410,13 @@
                                             style="width: 100%; height: 28px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
                                     <button id="reset-bookmark-bg-btn" class="secondary-btn" title="Reset Default"
+                                        data-i18n-title="settings_reset_default"
                                         style="padding: 0; width: 38px; height: 38px; flex-shrink: 0;"><i
                                             class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
-                                    <span style="font-size: 0.8rem; opacity: 0.7;">Opacity</span>
+                                    <span style="font-size: 0.8rem; opacity: 0.7;"
+                                        data-i18n="settings_opacity">Opacity</span>
                                     <input type="range" id="bookmark-bg-opacity-input" min="0" max="100" step="1"
                                         value="100" style="flex: 1;">
                                 </div>
@@ -4437,7 +4439,7 @@
                                         style="display: flex; flex-direction: column; justify-content: center; gap: 4px;">
                                         <div
                                             style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
-                                            <span>Opacity</span>
+                                            <span data-i18n="settings_opacity">Opacity</span>
                                         </div>
                                         <input type="range" id="bookmark-shadow-opacity-input" min="0" max="100"
                                             step="1" value="24" style="width: 100%;">
@@ -4473,11 +4475,13 @@
                                             style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
                                     <button id="reset-bookmark-group-bg-btn" class="secondary-btn" title="Reset Default"
+                                        data-i18n-title="settings_reset_default"
                                         style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
                                             class="fa-solid fa-rotate-left"></i></button>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 6px;">
-                                    <span style="font-size: 0.75rem; opacity: 0.7;">Opacity</span>
+                                    <span style="font-size: 0.75rem; opacity: 0.7;"
+                                        data-i18n="settings_opacity">Opacity</span>
                                     <input type="range" id="bookmark-group-bg-opacity-input" min="0" max="100" step="1"
                                         value="0" style="flex: 1;">
                                 </div>
@@ -4494,7 +4498,7 @@
                                             style="width: 100%; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: transparent;">
                                     </div>
                                     <button id="reset-bookmark-group-text-color-btn" class="secondary-btn"
-                                        title="Reset Default"
+                                        title="Reset Default" data-i18n-title="settings_reset_default"
                                         style="padding: 0; width: 34px; height: 34px; flex-shrink: 0;"><i
                                             class="fa-solid fa-rotate-left"></i></button>
                                 </div>
@@ -4643,6 +4647,7 @@
                         <div style="display: flex; flex-direction: column; gap: 15px;">
                             <div class="setting-item no-margin-top">
                                 <input type="text" id="custom-title-text" placeholder="..."
+                                    data-i18n-placeholder="settings_custom_title_placeholder"
                                     style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 8px; font-size: 1rem;">
                             </div>
 
@@ -4685,7 +4690,7 @@
                             <div class="setting-item no-margin-top" id="custom-title-color-wrap"
                                 style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;"
-                                    data-i18n="settings_custom_title_color">Solid Color</label>
+                                    data-i18n="settings_solid_color">Solid Color</label>
                                 <div class="custom-color-input-group"
                                     style="display: flex; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px; height: 38px;">
                                     <input type="color" id="custom-title-color" value="#ffffff"
@@ -5305,6 +5310,18 @@
                             <i class="fa-solid fa-sparkles"></i>
                             <span>Gemini AI Studio</span>
                         </a>
+                        <a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-brain"></i>
+                            <span>Claude</span>
+                        </a>
+                        <a href="https://chat.qwen.ai/" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>Qwen Chat</span>
+                        </a>
+                        <a href="https://chat.deepseek.com/" target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-compass"></i>
+                            <span>DeepSeek</span>
+                        </a>
                     </div>
                     <ol>
                         <li data-i18n="language_modal_step_1">Copy the AI prompt; it already includes the English JSON
@@ -5315,6 +5332,21 @@
                     </ol>
                 </div>
                 <div class="language-modal-grid">
+                    <label>
+                        <span data-i18n="language_target_label">Guide language</span>
+                        <select id="language-guide-target-select">
+                            <option value="en">English - English</option>
+                            <option value="vi">Tiếng Việt - Vietnamese</option>
+                            <option value="ja">日本語 - Japanese</option>
+                            <option value="zh">中文 - Chinese</option>
+                            <option value="ko">한국어 - Korean</option>
+                            <option value="th">ไทย - Thai</option>
+                            <option value="ru">Русский - Russian</option>
+                            <option value="es">Español - Spanish</option>
+                            <option value="fr">Français - French</option>
+                            <option value="id">Bahasa Indonesia - Indonesian</option>
+                        </select>
+                    </label>
                     <label>
                         <span data-i18n="language_code_label">Language code</span>
                         <input type="text" id="language-code-input" placeholder="es, ja, fr, id..."

@@ -1392,7 +1392,8 @@
 .setting-group select,
 .settings-sidebar select,
 .bg-control-card select,
-.setting-item-row select {
+.setting-item-row select,
+.language-modal-grid select {
   appearance: none;
   cursor: pointer;
   width: 100%;
@@ -1416,7 +1417,8 @@
 .setting-group select:hover,
 .settings-sidebar select:hover,
 .bg-control-card select:hover,
-.setting-item-row select:hover {
+.setting-item-row select:hover,
+.language-modal-grid select:hover {
   background-color: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.25);
 }
@@ -1424,7 +1426,8 @@
 .setting-group select:focus,
 .settings-sidebar select:focus,
 .bg-control-card select:focus,
-.setting-item-row select:focus {
+.setting-item-row select:focus,
+.language-modal-grid select:focus {
   outline: none;
   border-color: var(--accent-color);
   background-color: rgba(255, 255, 255, 0.15);
@@ -1436,21 +1439,24 @@
 
 .setting-group select:active,
 .settings-sidebar select:active,
-.bg-control-card select:active {
+.bg-control-card select:active,
+.language-modal-grid select:active {
   transform: translateY(0);
   background-color: rgba(255, 255, 255, 0.2);
 }
 
 .setting-group select:focus-visible,
 .settings-sidebar select:focus-visible,
-.bg-control-card select:focus-visible {
+.bg-control-card select:focus-visible,
+.language-modal-grid select:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
 .setting-group select:disabled,
 .settings-sidebar select:disabled,
-.bg-control-card select:disabled {
+.bg-control-card select:disabled,
+.language-modal-grid select:disabled {
   cursor: not-allowed;
   opacity: 0.6;
   background: rgba(255, 255, 255, 0.03);
@@ -1458,14 +1464,16 @@
 }
 
 .setting-group select option,
-.settings-sidebar select option {
+.settings-sidebar select option,
+.language-modal-grid select option {
   background: #141427;
   color: #ffffff;
   padding: 8px;
 }
 
 .setting-group select optgroup,
-.settings-sidebar select optgroup {
+.settings-sidebar select optgroup,
+.language-modal-grid select optgroup {
   background: #1e1e3a;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 600;
@@ -2269,6 +2277,10 @@
   gap: 6px;
   font-size: 0.82rem;
   color: var(--text-color);
+}
+
+.language-modal-grid label:first-child {
+  grid-column: 1 / -1;
 }
 
 .language-json-input {

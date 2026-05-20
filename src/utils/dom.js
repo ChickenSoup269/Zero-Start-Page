@@ -109,6 +109,9 @@ export const languageModal = document.getElementById("language-modal")
 export const closeLanguageModalBtn = document.getElementById(
   "close-language-modal-btn",
 )
+export const languageGuideTargetSelect = document.getElementById(
+  "language-guide-target-select",
+)
 export const languageCodeInput = document.getElementById("language-code-input")
 export const languageNameInput = document.getElementById("language-name-input")
 export const languageJsonInput = document.getElementById("language-json-input")

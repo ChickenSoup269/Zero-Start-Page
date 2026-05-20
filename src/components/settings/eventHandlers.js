@@ -21,6 +21,11 @@ import {
   validateCustomLanguagePayload,
 } from "../../services/i18n.js"
 import {
+  getLanguageGuideOption,
+  languageGuideOptions,
+} from "../../data/languageGuides/languageGuideOptions.js"
+import { getLanguageGuideModalText } from "../../data/languageGuides/languageGuideModalText.js"
+import {
   showAlert,
   showConfirm,
   showChecklistConfirm,
@@ -101,16 +106,86 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  const getLanguageTemplateText = async () =>
-    JSON.stringify(await getEnglishLanguageTemplate(), null, 2)
+  const getSelectedLanguageGuide = () => {
+    const guide = getLanguageGuideOption(DOM.languageGuideTargetSelect?.value || "ja")
+    return {
+      ...guide,
+      code: DOM.languageCodeInput?.value.trim() || guide.code,
+      name: DOM.languageNameInput?.value.trim() || guide.name,
+    }
+  }
+
+  const syncLanguageGuideFields = () => {
+    const guide = getLanguageGuideOption(DOM.languageGuideTargetSelect?.value || "ja")
+    if (DOM.languageCodeInput && !DOM.languageCodeInput.value.trim()) {
+      DOM.languageCodeInput.value = guide.code
+    }
+    if (DOM.languageNameInput && !DOM.languageNameInput.value.trim()) {
+      DOM.languageNameInput.value = guide.name
+    }
+  }
+
+  const renderLanguageGuideOptions = () => {
+    if (!DOM.languageGuideTargetSelect) return
+    DOM.languageGuideTargetSelect.innerHTML = ""
+    languageGuideOptions.forEach((option) => {
+      const el = document.createElement("option")
+      el.value = option.code
+      el.textContent = `${option.name} - ${option.englishName}`
+      DOM.languageGuideTargetSelect.appendChild(el)
+    })
+  }
+
+  const applyLanguageGuideModalText = () => {
+    const text = getLanguageGuideModalText(
+      DOM.languageGuideTargetSelect?.value || "ja",
+    )
+    const modal = DOM.languageModal
+    if (!modal) return
+
+    const setByI18n = (key, value) => {
+      const el = modal.querySelector(`[data-i18n="${key}"]`)
+      if (el) el.textContent = value
+    }
+    const setPlaceholder = (key, value) => {
+      const el = modal.querySelector(`[data-i18n-placeholder="${key}"]`)
+      if (el) el.placeholder = value
+    }
+
+    setByI18n("language_modal_title", text.title)
+    setByI18n("language_modal_intro", text.intro)
+    setByI18n("language_modal_steps_title", text.stepsTitle)
+    setByI18n("language_modal_ai_hint", text.aiHint)
+    setByI18n("language_modal_step_1", text.step1)
+    setByI18n("language_modal_step_2", text.step2)
+    setByI18n("language_modal_step_3", text.step3)
+    setByI18n("language_target_label", text.targetLabel)
+    setByI18n("language_code_label", text.codeLabel)
+    setByI18n("language_name_label", text.nameLabel)
+    setByI18n("language_copy_ai_prompt", text.copyPrompt)
+    setByI18n("language_install", text.install)
+    setPlaceholder("language_code_placeholder", text.codePlaceholder)
+    setPlaceholder("language_name_placeholder", text.namePlaceholder)
+    setPlaceholder("language_json_placeholder", text.jsonPlaceholder)
+  }
+
+  const getLanguageTemplateText = async (guide) => {
+    const template = await getEnglishLanguageTemplate()
+    template.code = guide.code
+    template.name = guide.name
+    return JSON.stringify(template, null, 2)
+  }
 
   const copyTextToClipboard = async (text) => {
     await navigator.clipboard.writeText(text)
   }
 
   const openLanguageModal = () => {
+    renderLanguageGuideOptions()
+    syncLanguageGuideFields()
     DOM.languageModal?.classList.add("show")
     applyTranslations()
+    applyLanguageGuideModalText()
   }
 
   const closeLanguageModal = () => {
@@ -118,8 +193,9 @@ export function setupGeneralEventHandlers(
   }
 
   const clearLanguageModalInputs = () => {
-    if (DOM.languageCodeInput) DOM.languageCodeInput.value = ""
-    if (DOM.languageNameInput) DOM.languageNameInput.value = ""
+    const guide = getSelectedLanguageGuide()
+    if (DOM.languageCodeInput) DOM.languageCodeInput.value = guide.code
+    if (DOM.languageNameInput) DOM.languageNameInput.value = guide.name
     if (DOM.languageJsonInput) DOM.languageJsonInput.value = ""
   }
 
@@ -782,18 +858,26 @@ export function setupGeneralEventHandlers(
   DOM.languageModal?.addEventListener("click", (event) => {
     if (event.target === DOM.languageModal) closeLanguageModal()
   })
+  DOM.languageGuideTargetSelect?.addEventListener("change", () => {
+    const guide = getLanguageGuideOption(DOM.languageGuideTargetSelect.value)
+    if (DOM.languageCodeInput) DOM.languageCodeInput.value = guide.code
+    if (DOM.languageNameInput) DOM.languageNameInput.value = guide.name
+    applyLanguageGuideModalText()
+  })
 
   DOM.copyLanguagePromptBtn?.addEventListener("click", async () => {
+    const guide = getSelectedLanguageGuide()
     const prompt = [
-      "Translate this Startpage language JSON into my language.",
+      `Translate this Startpage language JSON into ${guide.nativePromptName}.`,
       "Rules:",
       "1. Keep every JSON key exactly the same.",
       "2. Translate string values only.",
       "3. Keep placeholders such as {count}, {name}, URLs, HTML tags, emoji, and keyboard shortcuts unchanged.",
       "4. Return valid JSON only, no Markdown.",
-      "5. Use this wrapper format: {\"code\":\"xx\",\"name\":\"Language Name\",\"translations\":{...}}.",
+      `5. Use this wrapper format: {"code":"${guide.code}","name":"${guide.name}","translations":{...}}.`,
+      "6. Translate UI text naturally for a browser extension settings page.",
       "",
-      await getLanguageTemplateText(),
+      await getLanguageTemplateText(guide),
     ].join("\n")
 
     try {

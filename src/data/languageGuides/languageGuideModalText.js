@@ -1,0 +1,198 @@
+const modalText = {
+  en: {
+    title: "Add Custom Language",
+    intro:
+      "Copy the AI prompt below, ask AI to translate the included English JSON into your language, then paste the translated JSON here.",
+    stepsTitle: "Fast AI translation steps",
+    aiHint: "Recommended free AI options with good context for this prompt:",
+    step1: "Copy the AI prompt; it already includes the English JSON template.",
+    step2:
+      "Send it to AI and ask it to translate values only, keeping every JSON key unchanged.",
+    step3: "Paste the result below, then install it.",
+    targetLabel: "Guide language",
+    codeLabel: "Language code",
+    nameLabel: "Language name",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      'Paste translated JSON here. Accepted: {"code":"es","name":"Español","translations":{...}} or raw {"settings_title":"..."}',
+    copyPrompt: "Copy AI Prompt",
+    install: "Install Language",
+  },
+  vi: {
+    title: "Thêm ngôn ngữ tùy chỉnh",
+    intro:
+      "Copy prompt AI bên dưới, nhờ AI dịch JSON tiếng Anh có sẵn trong prompt sang ngôn ngữ của bạn, rồi dán JSON đã dịch tại đây.",
+    stepsTitle: "Cách dịch nhanh bằng AI",
+    aiHint: "Gợi ý AI miễn phí có context tốt để dịch prompt này:",
+    step1: "Copy prompt AI; prompt đã bao gồm sẵn template JSON tiếng Anh.",
+    step2:
+      "Gửi cho AI và yêu cầu chỉ dịch value, giữ nguyên mọi key JSON.",
+    step3: "Dán kết quả bên dưới, sau đó cài ngôn ngữ.",
+    targetLabel: "Ngôn ngữ hướng dẫn",
+    codeLabel: "Mã ngôn ngữ",
+    nameLabel: "Tên ngôn ngữ",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      'Dán JSON đã dịch tại đây. Hỗ trợ: {"code":"es","name":"Español","translations":{...}} hoặc raw {"settings_title":"..."}',
+    copyPrompt: "Copy prompt AI",
+    install: "Cài ngôn ngữ",
+  },
+  ja: {
+    title: "カスタム言語を追加",
+    intro:
+      "下のAIプロンプトをコピーし、英語JSONを目的の言語へ翻訳してもらってから、翻訳済みJSONをここに貼り付けてください。",
+    stepsTitle: "AIで素早く翻訳する手順",
+    aiHint: "このプロンプトの翻訳におすすめの無料AI:",
+    step1: "AIプロンプトをコピーします。英語JSONテンプレートはすでに含まれています。",
+    step2: "AIに送信し、JSONキーは変更せず、文字列の値だけを翻訳するよう依頼します。",
+    step3: "結果を下に貼り付けて、言語をインストールします。",
+    targetLabel: "ガイド言語",
+    codeLabel: "言語コード",
+    nameLabel: "言語名",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "翻訳済みJSONをここに貼り付けます。対応形式: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} または raw {\"settings_title\":\"...\"}",
+    copyPrompt: "AIプロンプトをコピー",
+    install: "言語をインストール",
+  },
+  zh: {
+    title: "添加自定义语言",
+    intro:
+      "复制下面的 AI 提示词，让 AI 将其中的英文 JSON 翻译成目标语言，然后把翻译后的 JSON 粘贴到这里。",
+    stepsTitle: "使用 AI 快速翻译",
+    aiHint: "适合翻译此提示词的免费长上下文 AI:",
+    step1: "复制 AI 提示词；其中已经包含英文 JSON 模板。",
+    step2: "发送给 AI，并要求只翻译字符串值，保持所有 JSON key 不变。",
+    step3: "将结果粘贴到下方，然后安装语言。",
+    targetLabel: "指南语言",
+    codeLabel: "语言代码",
+    nameLabel: "语言名称",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "在此粘贴翻译后的 JSON。支持: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} 或 raw {\"settings_title\":\"...\"}",
+    copyPrompt: "复制 AI 提示词",
+    install: "安装语言",
+  },
+  ko: {
+    title: "사용자 지정 언어 추가",
+    intro:
+      "아래 AI 프롬프트를 복사해 영어 JSON을 원하는 언어로 번역하게 한 뒤, 번역된 JSON을 여기에 붙여넣으세요.",
+    stepsTitle: "AI로 빠르게 번역하는 방법",
+    aiHint: "이 프롬프트 번역에 추천하는 무료 장문 컨텍스트 AI:",
+    step1: "AI 프롬프트를 복사합니다. 영어 JSON 템플릿이 이미 포함되어 있습니다.",
+    step2: "AI에 보내고 JSON key는 그대로 두며 문자열 값만 번역하라고 요청합니다.",
+    step3: "결과를 아래에 붙여넣은 다음 언어를 설치합니다.",
+    targetLabel: "가이드 언어",
+    codeLabel: "언어 코드",
+    nameLabel: "언어 이름",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "번역된 JSON을 여기에 붙여넣으세요. 지원 형식: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} 또는 raw {\"settings_title\":\"...\"}",
+    copyPrompt: "AI 프롬프트 복사",
+    install: "언어 설치",
+  },
+  th: {
+    title: "เพิ่มภาษาที่กำหนดเอง",
+    intro:
+      "คัดลอกพรอมป์ AI ด้านล่าง ให้ AI แปล JSON ภาษาอังกฤษเป็นภาษาที่ต้องการ แล้ววาง JSON ที่แปลแล้วไว้ที่นี่",
+    stepsTitle: "ขั้นตอนแปลอย่างรวดเร็วด้วย AI",
+    aiHint: "AI ฟรีที่มี context ดีสำหรับแปลพรอมป์นี้:",
+    step1: "คัดลอกพรอมป์ AI ซึ่งมีเทมเพลต JSON ภาษาอังกฤษอยู่แล้ว",
+    step2: "ส่งให้ AI และขอให้แปลเฉพาะค่า string โดยคง JSON key ทุกตัวไว้เหมือนเดิม",
+    step3: "วางผลลัพธ์ด้านล่าง แล้วติดตั้งภาษา",
+    targetLabel: "ภาษาคู่มือ",
+    codeLabel: "รหัสภาษา",
+    nameLabel: "ชื่อภาษา",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "วาง JSON ที่แปลแล้วที่นี่ รองรับ: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} หรือ raw {\"settings_title\":\"...\"}",
+    copyPrompt: "คัดลอกพรอมป์ AI",
+    install: "ติดตั้งภาษา",
+  },
+  ru: {
+    title: "Добавить пользовательский язык",
+    intro:
+      "Скопируйте AI-промпт ниже, попросите AI перевести английский JSON на нужный язык, затем вставьте переведенный JSON здесь.",
+    stepsTitle: "Быстрый перевод с помощью AI",
+    aiHint: "Бесплатные AI с хорошим контекстом для этого промпта:",
+    step1: "Скопируйте AI-промпт; он уже содержит английский JSON-шаблон.",
+    step2: "Отправьте его AI и попросите переводить только строковые значения, не меняя JSON-ключи.",
+    step3: "Вставьте результат ниже и установите язык.",
+    targetLabel: "Язык подсказки",
+    codeLabel: "Код языка",
+    nameLabel: "Название языка",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "Вставьте переведенный JSON здесь. Поддерживается: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} или raw {\"settings_title\":\"...\"}",
+    copyPrompt: "Скопировать AI-промпт",
+    install: "Установить язык",
+  },
+  es: {
+    title: "Agregar idioma personalizado",
+    intro:
+      "Copia el prompt de IA de abajo, pide a la IA que traduzca el JSON en inglés a tu idioma y pega aquí el JSON traducido.",
+    stepsTitle: "Pasos rápidos para traducir con IA",
+    aiHint: "Opciones gratuitas de IA con buen contexto para este prompt:",
+    step1: "Copia el prompt de IA; ya incluye la plantilla JSON en inglés.",
+    step2: "Envíalo a la IA y pide que traduzca solo los valores de texto, sin cambiar ninguna key JSON.",
+    step3: "Pega el resultado abajo y luego instala el idioma.",
+    targetLabel: "Idioma de la guía",
+    codeLabel: "Código de idioma",
+    nameLabel: "Nombre del idioma",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "Pega aquí el JSON traducido. Se acepta: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} o raw {\"settings_title\":\"...\"}",
+    copyPrompt: "Copiar prompt de IA",
+    install: "Instalar idioma",
+  },
+  fr: {
+    title: "Ajouter une langue personnalisée",
+    intro:
+      "Copiez le prompt IA ci-dessous, demandez à l'IA de traduire le JSON anglais dans votre langue, puis collez ici le JSON traduit.",
+    stepsTitle: "Étapes rapides de traduction avec l'IA",
+    aiHint: "Options IA gratuites avec un bon contexte pour ce prompt:",
+    step1: "Copiez le prompt IA; il contient déjà le modèle JSON anglais.",
+    step2: "Envoyez-le à l'IA et demandez de traduire uniquement les valeurs texte, sans modifier les clés JSON.",
+    step3: "Collez le résultat ci-dessous, puis installez la langue.",
+    targetLabel: "Langue du guide",
+    codeLabel: "Code de langue",
+    nameLabel: "Nom de la langue",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "Collez ici le JSON traduit. Formats acceptés: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} ou raw {\"settings_title\":\"...\"}",
+    copyPrompt: "Copier le prompt IA",
+    install: "Installer la langue",
+  },
+  id: {
+    title: "Tambah Bahasa Kustom",
+    intro:
+      "Salin prompt AI di bawah, minta AI menerjemahkan JSON bahasa Inggris ke bahasa pilihanmu, lalu tempel JSON terjemahan di sini.",
+    stepsTitle: "Langkah cepat menerjemahkan dengan AI",
+    aiHint: "Pilihan AI gratis dengan konteks bagus untuk prompt ini:",
+    step1: "Salin prompt AI; template JSON bahasa Inggris sudah disertakan.",
+    step2: "Kirim ke AI dan minta hanya value string yang diterjemahkan, semua key JSON tetap sama.",
+    step3: "Tempel hasilnya di bawah, lalu instal bahasa.",
+    targetLabel: "Bahasa panduan",
+    codeLabel: "Kode bahasa",
+    nameLabel: "Nama bahasa",
+    codePlaceholder: "es, ja, fr, id...",
+    namePlaceholder: "Español, 日本語...",
+    jsonPlaceholder:
+      "Tempel JSON terjemahan di sini. Format yang didukung: {\"code\":\"es\",\"name\":\"Español\",\"translations\":{...}} atau raw {\"settings_title\":\"...\"}",
+    copyPrompt: "Salin Prompt AI",
+    install: "Instal Bahasa",
+  },
+}
+
+export function getLanguageGuideModalText(code) {
+  return modalText[code] || modalText.ja
+}

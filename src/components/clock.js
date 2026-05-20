@@ -190,6 +190,16 @@ const WEEKDAY_I18N_KEYS = [
   "calendar_weekday_sat",
 ]
 
+const WEEKDAY_FULL_I18N_KEYS = [
+  "clock_weekday_full_sun",
+  "clock_weekday_full_mon",
+  "clock_weekday_full_tue",
+  "clock_weekday_full_wed",
+  "clock_weekday_full_thu",
+  "clock_weekday_full_fri",
+  "clock_weekday_full_sat",
+]
+
 function getIntlLanguageCode(settings) {
   const language = settings.language || "en"
   if (language === "vi") return "vi-VN"
@@ -207,6 +217,11 @@ function getIntlLanguageCode(settings) {
 
 function isCustomLanguage(settings) {
   return Boolean(settings.customLanguages?.[settings.language])
+}
+
+function getCustomTranslation(settings, key) {
+  const translations = settings.customLanguages?.[settings.language]?.translations
+  return typeof translations?.[key] === "string" ? translations[key] : ""
 }
 
 function getZonedDateParts(date, tz) {
@@ -251,7 +266,13 @@ function getLocalizedMonthName(date, lang, tz, settings, style = "long") {
 function getSafeWeekday(date, lang, isShort, tz, settings = getSettings()) {
   const i18n = geti18n()
   const weekdayIndex = getZonedWeekdayIndex(date, tz)
-  const translatedWeekday = i18n[WEEKDAY_I18N_KEYS[weekdayIndex]]
+  const weekdayKey = isShort
+    ? WEEKDAY_I18N_KEYS[weekdayIndex]
+    : WEEKDAY_FULL_I18N_KEYS[weekdayIndex]
+  const translatedWeekday = isCustomLanguage(settings)
+    ? getCustomTranslation(settings, weekdayKey)
+    : i18n[weekdayKey]
+
   if (translatedWeekday && (isCustomLanguage(settings) || isShort)) {
     return `<span class="weekday-part">${translatedWeekday}</span>`
   }
