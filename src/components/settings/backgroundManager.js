@@ -314,25 +314,6 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   if (imagesGallery) imagesGallery.innerHTML = ""
   if (videosGallery) videosGallery.innerHTML = ""
 
-  // Add Random Color Swatch to Images Gallery
-  const randomItem = document.createElement("div")
-  randomItem.className = "local-bg-item random-color-item"
-  if (
-    !settings.svgWaveActive &&
-    !settings.gradientV2Active &&
-    !settings.silkActive &&
-    !settings.lightPillarActive &&
-    !settings.liquidEtherActive &&
-    !settings.splashCursorActive &&
-    settings.background?.startsWith("#")
-  ) {
-    randomItem.classList.add("active")
-  }
-  randomItem.dataset.bgId = "random-color"
-  randomItem.title = "Random Color"
-  randomItem.innerHTML = '<i class="fa-solid fa-dice"></i>'
-  if (imagesGallery) imagesGallery.appendChild(randomItem)
-
   // User Uploaded Backgrounds
   if (Array.isArray(settings.userBackgrounds)) {
     settings.userBackgrounds.forEach((bgData, index) => {

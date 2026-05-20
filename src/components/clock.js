@@ -165,7 +165,97 @@ function formatViShortWeekday(str) {
     .replace(/Chủ Nhật/gi, "CN")
 }
 
-function getSafeWeekday(date, lang, isShort, tz) {
+const MONTH_I18N_KEYS = [
+  "calendar_month_january",
+  "calendar_month_february",
+  "calendar_month_march",
+  "calendar_month_april",
+  "calendar_month_may",
+  "calendar_month_june",
+  "calendar_month_july",
+  "calendar_month_august",
+  "calendar_month_september",
+  "calendar_month_october",
+  "calendar_month_november",
+  "calendar_month_december",
+]
+
+const WEEKDAY_I18N_KEYS = [
+  "calendar_weekday_sun",
+  "calendar_weekday_mon",
+  "calendar_weekday_tue",
+  "calendar_weekday_wed",
+  "calendar_weekday_thu",
+  "calendar_weekday_fri",
+  "calendar_weekday_sat",
+]
+
+function getIntlLanguageCode(settings) {
+  const language = settings.language || "en"
+  if (language === "vi") return "vi-VN"
+  if (language === "en") return "en-US"
+
+  try {
+    const supported = Intl.DateTimeFormat.supportedLocalesOf([language])
+    if (supported.length > 0) return supported[0]
+  } catch (e) {
+    // Fall back below for custom language codes that are not valid BCP 47.
+  }
+
+  return "en-US"
+}
+
+function isCustomLanguage(settings) {
+  return Boolean(settings.customLanguages?.[settings.language])
+}
+
+function getZonedDateParts(date, tz) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: tz,
+  }).formatToParts(date)
+
+  return {
+    day: parts.find((part) => part.type === "day")?.value || "01",
+    month: parts.find((part) => part.type === "month")?.value || "01",
+    year: parts.find((part) => part.type === "year")?.value || "",
+  }
+}
+
+function getZonedWeekdayIndex(date, tz) {
+  if (!tz) return date.getDay()
+
+  const weekday = new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    timeZone: tz,
+  }).format(date)
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(weekday)
+}
+
+function getLocalizedMonthName(date, lang, tz, settings, style = "long") {
+  const i18n = geti18n()
+  const monthIndex = tz
+    ? Number(getZonedDateParts(date, tz).month) - 1
+    : date.getMonth()
+  const translatedMonth = i18n[MONTH_I18N_KEYS[monthIndex]]
+
+  if (translatedMonth && (isCustomLanguage(settings) || lang === "vi-VN")) {
+    return translatedMonth
+  }
+
+  return date.toLocaleDateString(lang, { month: style, timeZone: tz })
+}
+
+function getSafeWeekday(date, lang, isShort, tz, settings = getSettings()) {
+  const i18n = geti18n()
+  const weekdayIndex = getZonedWeekdayIndex(date, tz)
+  const translatedWeekday = i18n[WEEKDAY_I18N_KEYS[weekdayIndex]]
+  if (translatedWeekday && (isCustomLanguage(settings) || isShort)) {
+    return `<span class="weekday-part">${translatedWeekday}</span>`
+  }
+
   const format = isShort && lang !== "vi-VN" ? "short" : "long"
   let str = date.toLocaleDateString(lang, { weekday: format, timeZone: tz })
   if (isShort && lang === "vi-VN") {
@@ -191,28 +281,32 @@ function getCustomDateString(now, langCode, tz, settings, formatOverride) {
     if (tz) yearDate = new Date(now.toLocaleString("en-US", { timeZone: tz }))
     dateString = String(yearDate.getFullYear())
   } else if (format === "weekday") {
-    dateString = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    dateString = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
   } else {
     // "full"
-    const formatWeekday =
-      settings.shortWeekday && langCode !== "vi-VN" ? "short" : "long"
-    const weekdayStr = now.toLocaleDateString(langCode, {
-      weekday: formatWeekday,
-      timeZone: tz,
-    })
-    const dayMonthYear = now.toLocaleDateString(langCode, {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      timeZone: tz,
-    })
+    const weekdayStr = getSafeWeekday(
+      now,
+      langCode,
+      settings.shortWeekday,
+      tz,
+      settings,
+    ).replace(/^<span class="weekday-part">|<\/span>$/g, "")
+    let dayMonthYear = ""
 
-    let finalWeekday = weekdayStr
-    if (settings.shortWeekday && langCode === "vi-VN") {
-      finalWeekday = formatViShortWeekday(finalWeekday)
+    if (isCustomLanguage(settings)) {
+      const parts = getZonedDateParts(now, tz)
+      const monthName = getLocalizedMonthName(now, langCode, tz, settings)
+      dayMonthYear = `${parts.day} ${monthName} ${parts.year}`
+    } else {
+      dayMonthYear = now.toLocaleDateString(langCode, {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        timeZone: tz,
+      })
     }
 
-    dateString = `<span class="weekday-part"> ${finalWeekday} </span>, ${dayMonthYear}`
+    dateString = `<span class="weekday-part"> ${weekdayStr} </span>, ${dayMonthYear}`
   }
   return dateString
 }
@@ -254,11 +348,22 @@ function _buildSidestyleDateStr(now, langCode, tz, settings) {
   return `<div class="clock-sidestyle-date">${dateStr}</div>`
 }
 
+function getClockLabel(key, fallback) {
+  return geti18n()[key] || fallback
+}
+
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
-  const langCode = settings.language === "vi" ? "vi-VN" : "en-US"
+  const langCode = getIntlLanguageCode(settings)
   const dateClockStyle = settings.dateClockStyle || "default"
+  const timerLabel = getClockLabel("clock_label_timer", "TIMER")
+  const countdownLabel = getClockLabel("clock_label_countdown", "COUNTDOWN")
+  const timerRunningLabel = getClockLabel(
+    "clock_label_timer_running",
+    "TIMER RUNNING",
+  )
+  const timerShortLabel = getClockLabel("clock_label_timer_short", "TMR")
 
   // TIMER MODE LOGIC
   let isTimer = false
@@ -402,18 +507,12 @@ export function updateTime() {
     const i18n = geti18n()
     const greeting = isTimer ? (geti18n()["quick_access_timer"] || "Timer") : (i18n[greetingKey] || "Hello")
 
-    const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    const dayName = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
     const format = settings.dateFormat || "full"
     let dateHtml = ""
     if (format === "full") {
-      const day = now.toLocaleDateString(langCode, {
-        day: "2-digit",
-        timeZone: tz,
-      })
-      const monthName = now.toLocaleDateString(langCode, {
-        month: "long",
-        timeZone: tz,
-      })
+      const day = getZonedDateParts(now, tz).day
+      const monthName = getLocalizedMonthName(now, langCode, tz, settings)
       dateHtml = `${day} - ${monthName}`
     } else {
       dateHtml = getCustomDateString(now, langCode, tz, settings)
@@ -446,11 +545,12 @@ export function updateTime() {
       langCode,
       settings.shortWeekday,
       tz,
+      settings,
     ).toUpperCase()
 
     clockElement.innerHTML = `
       <div class="clock-sidestyle">
-        <div class="clock-sidestyle-day">${isTimer ? "COUNTDOWN" : dayName}</div>
+        <div class="clock-sidestyle-day">${isTimer ? countdownLabel : dayName}</div>
         ${shouldShowDate ? _buildSidestyleDateStr(now, langCode, tz, settings) : ""}
         <div class="clock-sidestyle-time">${finalTimeStr}</div>
       </div>
@@ -461,16 +561,17 @@ export function updateTime() {
     
     let dayName = ""
     if (isTimer) {
-      dayName = "TIMER"
+      dayName = timerLabel
     } else if (jpLangOption === "ja") {
       const jpDays = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"]
       dayName = settings.shortWeekday ? jpDays[now.getDay()].replace("曜日", "") : jpDays[now.getDay()]
     } else {
-      dayName = getSafeWeekday(now, displayLang, settings.shortWeekday, tz).toUpperCase()
+      dayName = getSafeWeekday(now, displayLang, settings.shortWeekday, tz, settings).toUpperCase()
     }
 
-    const month = (now.getMonth() + 1).toString().padStart(2, "0")
-    const dayNum = now.getDate().toString().padStart(2, "0")
+    const zonedParts = getZonedDateParts(now, tz)
+    const month = zonedParts.month
+    const dayNum = zonedParts.day
 
     const format = settings.dateFormat || "full"
     let dateHtml = ""
@@ -481,8 +582,8 @@ export function updateTime() {
       } else if (displayLang === "vi-VN") {
         dateHtml = `<span class="clock-jp-daynum" style="margin-right: 0.5em;">Ngày ${dayNum}</span><span class="clock-jp-month">Thg ${month}</span>`
       } else {
-        const enMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        dateHtml = `<span class="clock-jp-month">${enMonths[now.getMonth()]}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
+        const monthName = getLocalizedMonthName(now, displayLang, tz, settings)
+        dateHtml = `<span class="clock-jp-month">${monthName}</span><span class="jp-symbol"> - </span><span class="clock-jp-daynum">${dayNum}</span>`
       }
     } else {
       dateHtml = `<span class="clock-jp-month" style="font-size: 0.85em; font-weight: normal;">${getCustomDateString(now, displayLang, tz, settings)}</span>`
@@ -500,10 +601,11 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "round") {
-    const day = now.getDate().toString().padStart(2, "0")
-    const month = (now.getMonth() + 1).toString().padStart(2, "0")
-    const year = new Date(now.toLocaleString("en-US", { timeZone: tz })).getFullYear()
-    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    const parts = getZonedDateParts(now, tz)
+    const day = parts.day
+    const month = parts.month
+    const year = parts.year
+    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
 
     const theme = settings.framedClockTheme || "light"
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
@@ -512,7 +614,7 @@ export function updateTime() {
     clockElement.innerHTML = `
       <div class="round-clock-new-layout">
         <div class="round-clock-notch">
-          <span class="round-clock-date-top">${isTimer ? "TIMER" : `${day}/${month}`}</span>
+          <span class="round-clock-date-top">${isTimer ? timerLabel : `${day}/${month}`}</span>
         </div>
         <div class="round-clock-center">
           <div class="round-clock-time-row">
@@ -523,16 +625,17 @@ export function updateTime() {
             </div>
           </div>
           <div class="round-clock-bottom-info">
-            <span class="round-clock-footer-text">${isTimer ? "COUNTDOWN" : `${year} - ${weekday}`}</span>
+            <span class="round-clock-footer-text">${isTimer ? countdownLabel : `${year} - ${weekday}`}</span>
           </div>
         </div>
       </div>
     `
   } else if (dateClockStyle === "square") {
-    const day = now.getDate().toString().padStart(2, "0")
-    const month = (now.getMonth() + 1).toString().padStart(2, "0")
-    const year = new Date(now.toLocaleString("en-US", { timeZone: tz })).getFullYear()
-    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    const parts = getZonedDateParts(now, tz)
+    const day = parts.day
+    const month = parts.month
+    const year = parts.year
+    const weekday = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
 
     const theme = settings.framedClockTheme || "light"
     document.body.classList.remove("framed-theme-light", "framed-theme-dark")
@@ -541,7 +644,7 @@ export function updateTime() {
     clockElement.innerHTML = `
       <div class="square-clock-bold-layout">
         <div class="sq-top-row">
-          <span class="sq-date-val">${isTimer ? "TIMER" : `${day} / ${month}`}</span>
+          <span class="sq-date-val">${isTimer ? timerLabel : `${day} / ${month}`}</span>
         </div>
         <div class="sq-main-row">
           <span class="sq-time-hhmm">${hh}:${mm}</span>
@@ -551,21 +654,24 @@ export function updateTime() {
           </div>
         </div>
         <div class="sq-bottom-row">
-          <span class="sq-full-date">${isTimer ? "COUNTDOWN" : `${weekday.toUpperCase()} - ${year}`}</span>
+          <span class="sq-full-date">${isTimer ? countdownLabel : `${weekday.toUpperCase()} - ${year}`}</span>
         </div>
       </div>
     `
   } else if (dateClockStyle === "sidebar") {
     if (settings.sidebarClockFlip) {
       const dateParts = new Intl.DateTimeFormat(langCode, { day: "numeric", month: "short", year: "numeric", timeZone: tz }).formatToParts(now).filter(p => p.type !== 'literal')
-      const dVal = dateParts.find(p => p.type === 'day')?.value || ""
-      const mVal = dateParts.find(p => p.type === 'month')?.value || ""
-      const yVal = dateParts.find(p => p.type === 'year')?.value || ""
+      const zonedParts = getZonedDateParts(now, tz)
+      const dVal = dateParts.find(p => p.type === 'day')?.value || zonedParts.day
+      const mVal = isCustomLanguage(settings)
+        ? getLocalizedMonthName(now, langCode, tz, settings, "short")
+        : dateParts.find(p => p.type === 'month')?.value || ""
+      const yVal = dateParts.find(p => p.type === 'year')?.value || zonedParts.year
 
       clockElement.innerHTML = `
         <div class="clock-sidebar-style is-flipped">
           <div class="clock-sidebar-time">
-            ${isTimer ? `<div class="clock-sidebar-unit">TMR</div>` : `
+            ${isTimer ? `<div class="clock-sidebar-unit">${timerShortLabel}</div>` : `
               ${dVal ? `<div class="clock-sidebar-unit">${dVal}</div>` : ""}
               ${mVal ? `<div class="clock-sidebar-unit" style="font-size: 0.6em; text-transform: uppercase;">${mVal}</div>` : ""}
               ${yVal ? `<div class="clock-sidebar-unit" style="font-size: 0.5em; opacity: 0.6;">${yVal}</div>` : ""}
@@ -584,7 +690,7 @@ export function updateTime() {
             ${ss ? `<div class="clock-sidebar-unit clock-sidebar-second">${ss}</div>` : ""}
             ${ampm ? `<div class="clock-sidebar-unit clock-sidebar-ampm">${ampm}</div>` : ""}
           </div>
-          ${isTimer ? `<div class="clock-sidebar-date">COUNTDOWN</div>` : dateHtml}
+          ${isTimer ? `<div class="clock-sidebar-date">${countdownLabel}</div>` : dateHtml}
         </div>
       `
     }
@@ -646,7 +752,7 @@ export function updateTime() {
           ${ssHtml}
           ${ampmHtml}
         </div>
-        ${isTimer ? `<div class="fliqlo-date">COUNTDOWN</div>` : dateStr}
+        ${isTimer ? `<div class="fliqlo-date">${countdownLabel}</div>` : dateStr}
       </div>
     `
   } else if (dateClockStyle === "cyber-pulse") {
@@ -662,7 +768,7 @@ export function updateTime() {
             <span class="cyber-ss">${ss}</span>
             <span class="cyber-ampm">${ampm}</span>
           </div>
-          <div class="cyber-date">${isTimer ? "COUNTDOWN" : dateStr}</div>
+          <div class="cyber-date">${isTimer ? countdownLabel : dateStr}</div>
         </div>
       `
       cyberRoot = clockElement.querySelector(".cyber-pulse-clock")
@@ -684,12 +790,12 @@ export function updateTime() {
     }
     const dateEl = cyberRoot.querySelector(".cyber-date")
     if (dateEl) {
-      const dTxt = isTimer ? "COUNTDOWN" : dateStr
+      const dTxt = isTimer ? countdownLabel : dateStr
       if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
       dateEl.style.display = dTxt ? "block" : "none"
     }
   } else if (dateClockStyle === "prism-stack") {
-    const weekday = isTimer ? "TIMER" : getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    const weekday = isTimer ? timerLabel : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
     const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
     clockElement.innerHTML = `
       <div class="prism-stack-clock">
@@ -701,11 +807,11 @@ export function updateTime() {
           ${ss ? `<span class="prism-stack-ss">${ss}</span>` : ""}
           ${ampm ? `<span class="prism-stack-ampm">${ampm}</span>` : ""}
         </div>
-        ${isTimer ? `<div class="prism-stack-date">COUNTDOWN</div>` : dateStr ? `<div class="prism-stack-date">${dateStr}</div>` : ""}
+        ${isTimer ? `<div class="prism-stack-date">${countdownLabel}</div>` : dateStr ? `<div class="prism-stack-date">${dateStr}</div>` : ""}
       </div>
     `
   } else if (dateClockStyle === "metro-panel") {
-    const weekday = isTimer ? "COUNTDOWN" : getSafeWeekday(now, langCode, settings.shortWeekday, tz).toUpperCase()
+    const weekday = isTimer ? countdownLabel : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).toUpperCase()
     const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
     clockElement.innerHTML = `
       <div class="metro-panel-clock">
@@ -717,7 +823,7 @@ export function updateTime() {
           ${ss ? `<span class="metro-panel-second">${ss}</span>` : ""}
           ${ampm ? `<span class="metro-panel-ampm">${ampm}</span>` : ""}
         </div>
-        ${isTimer ? `<div class="metro-panel-date">TIMER RUNNING</div>` : dateStr ? `<div class="metro-panel-date">${dateStr}</div>` : ""}
+        ${isTimer ? `<div class="metro-panel-date">${timerRunningLabel}</div>` : dateStr ? `<div class="metro-panel-date">${dateStr}</div>` : ""}
       </div>
     `
   } else {
@@ -734,11 +840,8 @@ export function updateTime() {
 
   // Handle Date logic considering Timezone
   if (isFramedClockStyle) {
-    const dayMonth = now.toLocaleDateString(langCode, {
-      day: "2-digit",
-      month: "long",
-      timeZone: tz,
-    })
+    const parts = getZonedDateParts(now, tz)
+    const dayMonth = `${parts.day} ${getLocalizedMonthName(now, langCode, tz, settings)}`
     dateString = dayMonth
   } else {
     dateString = getCustomDateString(now, langCode, tz, settings, format)
@@ -770,7 +873,7 @@ export function updateTime() {
 
   if (keepOnlyWeekday || dateClockStyle === "weekday-style") {
     // FORCE ONLY WEEKDAY for ALL styles including special ones
-    let weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz)
+    let weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
     // For weekday-style, force uppercase
     if (dateClockStyle === "weekday-style") {
       weekdayStr = weekdayStr.toUpperCase()

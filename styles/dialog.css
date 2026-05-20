@@ -614,6 +614,66 @@
   color: #fff !important;
 }
 
+.update-popup-actions {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.85fr) minmax(180px, 1.65fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.update-popup-close-btn,
+.update-changelog-btn {
+  min-height: 44px;
+  border-radius: 12px !important;
+  padding: 0 16px !important;
+  text-decoration: none;
+  text-align: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.update-changelog-btn {
+  flex: initial;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent-color) 92%, #ffffff),
+    color-mix(in srgb, var(--accent-color) 72%, #111827)
+  );
+  color: var(--accent-contrast-color, #111827);
+  border: 1px solid rgba(var(--accent-color-rgb), 0.7);
+  box-shadow:
+    0 10px 24px rgba(var(--accent-color-rgb), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 9px;
+}
+
+.update-changelog-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 30px rgba(var(--accent-color-rgb), 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.update-changelog-btn i,
+.update-changelog-btn span {
+  color: inherit;
+}
+
+@media (max-width: 480px) {
+  #update-notification-popup {
+    right: 14px !important;
+    bottom: 14px !important;
+    width: calc(100vw - 28px) !important;
+  }
+
+  .update-popup-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Button Overrides in White Mode - Limited to Modals/Dialogs */
 .quick-access-white .modal-content:not(.import-mode) .primary-btn:not(#github-update-link):not(#show-momo-qr-btn):not([href*="ko-fi"]):not([style*="background"]):not([style*="background-color"]),
 .quick-access-white .custom-dialog .primary-btn {

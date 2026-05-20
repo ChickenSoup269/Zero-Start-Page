@@ -5368,13 +5368,11 @@
             <br>
             <strong style="color: var(--accent-color); font-size: 1rem;" id="update-version-label"></strong>
         </p>
-        <div style="display: flex; gap: 12px;">
-            <button id="close-update-popup" class="secondary-btn"
-                style="flex: 1; height: 42px; border-radius: 10px; justify-content: center;"
+        <div class="update-popup-actions">
+            <button id="close-update-popup" class="secondary-btn update-popup-close-btn"
                 data-i18n="cancel">Close</button>
             <a href="https://extension-changelogs.vercel.app/changelog?ext=Zero+Startpage+-+Newtab+Replacement"
-                target="_blank" class="primary-btn" id="github-update-link"
-                style="flex: 2; height: 18px; border-radius: 10px; text-decoration: none; text-align: center; justify-content: center; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+                target="_blank" class="primary-btn update-changelog-btn" id="github-update-link">
                 <i class="fa-brands fa-github"></i> <span data-i18n="settings_check_updates">View Changelog</span>
             </a>
         </div>
