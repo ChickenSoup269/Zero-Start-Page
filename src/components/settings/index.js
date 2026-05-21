@@ -273,7 +273,7 @@ export function initSettings() {
     ),
     stormRainEffect: new StormRainEffect(
       "effect-canvas",
-      settings.stormRainColor || "#7dd3fc",
+      { rainColor: settings.stormRainColor || "#7dd3fc" },
     ),
     rainbowEffect: new RainbowBackground(
       "effect-canvas",

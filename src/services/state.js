@@ -72,6 +72,7 @@ export const defaultSettings = {
   glassBorder: "rgba(255, 255, 255, 0.08)",
   glassEdge: "rgba(255, 255, 255, 0.2)",
   effect: "none",
+  performanceMode: "auto",
   favoriteEffects: [],
   pixelWeatherStyle: "snow",
   pixelWeatherResolution: 1,
@@ -857,6 +858,183 @@ export const resetComponentPositions = (options = {}) => {
   // Lưu và tải lại
   saveSettings(true)
   window.location.reload()
+}
+
+export function resetSettingsModules(modules = []) {
+  const selectedModules = Array.isArray(modules) ? modules : [modules]
+  if (selectedModules.length === 0) return settingsState
+
+  const resetKeys = (keys) => {
+    keys.forEach((key) => {
+      if (Object.prototype.hasOwnProperty.call(defaultSettings, key)) {
+        settingsState[key] = defaultSettings[key]
+      }
+    })
+  }
+
+  if (selectedModules.includes("background")) {
+    resetKeys([
+      "background",
+      "lastUserBackground",
+      "lastUserActiveBgUid",
+      "activeBgUid",
+      "gradientStart",
+      "gradientEnd",
+      "gradientAngle",
+      "gradientType",
+      "gradientRepeating",
+      "gradientExtraColorCount",
+      "gradientCustomColors",
+      "multiColorCount",
+      "multiColors",
+      "multiGradientAngle",
+      "multiColorType",
+      "multiColorRepeating",
+      "multiColorPosition",
+      "multiColorRadialShape",
+      "multiColorMode",
+      "multiColorDividers",
+      "multiColorDividerColor",
+      "multiColorDividerWidth",
+      "multiColorFreeLineAngles",
+      "multiColorLineAngles",
+      "multiColorActive",
+      "svgWaveActive",
+      "svgWaveLines",
+      "svgWaveAmplitudeX",
+      "svgWaveAmplitudeY",
+      "svgWaveOffsetX",
+      "svgWaveAngle",
+      "svgWaveSmoothness",
+      "svgWaveFill",
+      "svgWaveCraziness",
+      "svgWaveStartHue",
+      "svgWaveStartSaturation",
+      "svgWaveStartLightness",
+      "svgWaveEndHue",
+      "svgWaveEndSaturation",
+      "svgWaveEndLightness",
+      "gradientV2Active",
+      "silkActive",
+      "lightPillarActive",
+      "liquidEtherActive",
+      "splashCursorActive",
+      "unsplashLastCredit",
+    ])
+  }
+
+  if (selectedModules.includes("effects")) {
+    resetKeys([
+      "effect",
+      "performanceMode",
+      "favoriteEffects",
+      "starColor",
+      "meteorColor",
+      "meteorAngle",
+      "meteorFullColor",
+      "auraColor",
+      "northernLightsColor",
+      "hackerColor",
+      "pixelCubesColor",
+      "sakuraColor",
+      "snowfallColor",
+      "fallingLeavesSkin",
+      "sunbeamColor",
+      "sunbeamAngle",
+      "bubbleColor",
+      "rainHDColor",
+      "stormRainColor",
+      "wavyLinesColor",
+      "oceanWaveColor",
+      "oceanWavePosition",
+      "cloudDriftColor",
+      "shinyColor",
+      "lineShinyColor",
+      "nintendoPixelColor",
+      "crtScanColor",
+      "crtScanFrequency",
+      "crtScanAngle",
+      "crtScanDensity",
+      "crtGamma",
+      "crtBackgroundColor",
+      "retroGameType",
+      "retroGameColor",
+      "cursorTrailColor",
+      "cursorTrailStyle",
+      "cursorTrailClickExplosion",
+      "cursorTrailRandomColor",
+      "flashlightColor",
+      "flashlightSize",
+      "flashlightOpacity",
+      "gridScanColor",
+      "plantGrowthColor",
+      "oceanFishColor",
+      "floatingLinesColor",
+      "floatingLinesAngle",
+      "pixelSnowHQColor",
+      "pixelSnowHQFlakeSize",
+      "pixelSnowHQMinFlakeSize",
+      "pixelSnowHQPixelResolution",
+      "pixelSnowHQSpeed",
+      "pixelSnowHQDepthFade",
+      "pixelSnowHQFarPlane",
+      "pixelSnowHQBrightness",
+      "pixelSnowHQGamma",
+      "pixelSnowHQDensity",
+      "pixelSnowHQVariant",
+      "pixelSnowHQDirection",
+    ])
+  }
+
+  if (selectedModules.includes("widgets")) {
+    resetKeys([
+      "showTodoList",
+      "todoShowCheckboxes",
+      "showTimer",
+      "showGregorian",
+      "clockTimerMode",
+      "showFullCalendar",
+      "showLunarCalendar",
+      "clockDisplayMode",
+      "showNotepad",
+      "musicPlayerEnabled",
+      "musicPlayerExpanded",
+      "musicPlayerUseDefaultColor",
+      "showBookmarks",
+      "showBookmarkGroups",
+      "showSearchBar",
+      "showSearchAIIcon",
+      "todoSkin",
+      "timerSkin",
+      "calendarSkin",
+      "notepadSkin",
+      "quotesSkin",
+      "musicPlayerSkin",
+    ])
+  }
+
+  if (selectedModules.includes("timer")) {
+    resetKeys([
+      "showTimer",
+      "clockTimerMode",
+      "timerInitialTime",
+      "timerCurrentTime",
+      "timerEndTime",
+      "timerIsRunning",
+      "timerAlarmSound",
+      "timerSkin",
+    ])
+    settingsState.timerMinimized = false
+  }
+
+  if (selectedModules.includes("layout")) {
+    settingsState.componentPositions = {}
+    settingsState.lockedWidgets = {}
+    resetKeys(["flipLayout", "sideControlsGhostMode", "showTopRightControls"])
+  }
+
+  saveSettings(true)
+  return settingsState
 }
 
 let saveSettingsTimeout = null

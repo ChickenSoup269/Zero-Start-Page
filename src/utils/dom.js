@@ -126,6 +126,9 @@ export const effectSearch = document.getElementById("effect-search")
 export const activeEffectSettingsContainer = document.getElementById(
   "active-effect-settings-container",
 )
+export const performanceModeBtns = document.querySelectorAll(
+  ".performance-mode-btn",
+)
 export const rainbowDirectionSetting = document.getElementById(
   "rainbow-direction-setting",
 )
@@ -178,6 +181,15 @@ export const gradientCustomColors = document.getElementById(
 )
 export const gradientExtraColorPickers = document.getElementById(
   "gradient-extra-color-pickers",
+)
+export const visualPresetCopyCodeBtn = document.getElementById(
+  "visual-preset-copy-code-btn",
+)
+export const visualPresetApplyCodeBtn = document.getElementById(
+  "visual-preset-apply-code-btn",
+)
+export const visualPresetCodeInput = document.getElementById(
+  "visual-preset-code-input",
 )
 export const randomGradientColorsBtn = document.getElementById(
   "random-gradient-colors-btn",

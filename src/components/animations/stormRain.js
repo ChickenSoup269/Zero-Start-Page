@@ -40,6 +40,7 @@ export class StormRainEffect {
     this.autoWind = options.autoWind ?? true // false = gió cố định
     this.targetFps = options.targetFps ?? 42
     this.renderScale = options.renderScale ?? 0.8
+    this.densityScale = options.densityScale ?? 1
 
     this._parseRainColor(this.rainColor)
 
@@ -125,6 +126,35 @@ export class StormRainEffect {
     this.speedMult = Math.max(0.1, Math.min(5, s))
   }
 
+  setOptions(options = {}) {
+    let shouldRebuildDrops = false
+    let shouldResize = false
+
+    if (options.rainColor) {
+      this.rainColor = options.rainColor
+      this._parseRainColor(this.rainColor)
+    }
+    if (options.targetFps !== undefined) {
+      this.targetFps = Math.max(24, Math.min(60, Number(options.targetFps) || 42))
+    }
+    if (options.renderScale !== undefined) {
+      this.renderScale = Math.max(0.5, Math.min(1, Number(options.renderScale) || 0.8))
+      shouldResize = true
+    }
+    if (options.densityScale !== undefined) {
+      this.densityScale = Math.max(0.45, Math.min(1.25, Number(options.densityScale) || 1))
+      shouldRebuildDrops = true
+    }
+    if (options.speed !== undefined) this.setSpeed(options.speed)
+    if (options.density !== undefined) {
+      this.density = Math.max(10, Math.min(400, Number(options.density) || 130))
+      shouldRebuildDrops = true
+    }
+
+    if (shouldResize) this.resize()
+    if (this.active && shouldRebuildDrops) this._buildDrops()
+  }
+
   resize() {
     if (!this.canvas) return
     const W = window.innerWidth,
@@ -185,7 +215,9 @@ export class StormRainEffect {
   _buildDrops() {
     this.drops = []
     for (let li = 0; li < StormRainEffect.LAYERS.length; li++) {
-      const count = Math.round(this.density * StormRainEffect.LAYER_SHARE[li])
+      const count = Math.round(
+        this.density * this.densityScale * StormRainEffect.LAYER_SHARE[li],
+      )
       for (let i = 0; i < count; i++) this.drops.push(this._newDrop(li, true))
     }
   }

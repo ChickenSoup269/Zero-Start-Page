@@ -1556,6 +1556,25 @@
                 </h3>
                 <div class="section-content">
                     <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-share-nodes"></i> <span
+                                data-i18n="visual_preset_hub_title">Visual Preset Hub</span></div>
+                        <div class="preset-code-card preset-code-card-compact">
+                            <div class="preset-code-actions">
+                                <button id="visual-preset-copy-code-btn" class="secondary-btn" type="button">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span data-i18n="visual_preset_copy">Copy Current Visual</span>
+                                </button>
+                                <button id="visual-preset-apply-code-btn" class="secondary-btn" type="button">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="visual_preset_apply">Apply Visual Code</span>
+                                </button>
+                            </div>
+                            <textarea id="visual-preset-code-input" class="preset-code-input" rows="2"
+                                data-i18n-placeholder="visual_preset_placeholder"
+                                placeholder="Paste visual preset code here"></textarea>
+                        </div>
+                    </div>
+                    <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
                                 data-i18n="settings_gradient_title">Background Gradient</span></div>
                         <button id="gradient-toggle-btn" class="secondary-btn full-width" style="margin-bottom: 15px;">
@@ -2704,6 +2723,20 @@
                 </h3>
                 <div class="section-content" id="effect-section-body">
                     <div class="group-body">
+                        <div class="setting-item performance-mode-card">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span data-i18n="settings_performance_mode">Performance Mode</span>
+                            </div>
+                            <div class="btn-group performance-mode-group" id="performance-mode-group">
+                                <button type="button" class="btn-group-item performance-mode-btn active" data-mode="auto"
+                                    data-i18n="settings_performance_auto">Auto</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="quality"
+                                    data-i18n="settings_performance_quality">Quality</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="battery"
+                                    data-i18n="settings_performance_battery">Battery Saver</button>
+                            </div>
+                        </div>
                         <input type="text" id="effect-search" class="effect-search-input"
                             placeholder="Search effects..." autocomplete="off">
                         <div id="effect-grid" class="effect-grid">
@@ -5075,6 +5108,28 @@
                     <button id="reset-layout" class="footer-btn reset-btn">
                         <i class="fa-solid fa-arrows-to-dot"></i> <span data-i18n="settings_reset_layout">Reset
                             Layout</span>
+                    </button>
+                </div>
+                <div class="module-reset-grid" aria-label="Module reset shortcuts">
+                    <button type="button" class="module-reset-btn" data-reset-module="background">
+                        <i class="fa-solid fa-image"></i>
+                        <span data-i18n="reset_module_background">Background</span>
+                    </button>
+                    <button type="button" class="module-reset-btn" data-reset-module="effects">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span data-i18n="reset_module_effects">Effects</span>
+                    </button>
+                    <button type="button" class="module-reset-btn" data-reset-module="widgets">
+                        <i class="fa-solid fa-table-cells-large"></i>
+                        <span data-i18n="reset_module_widgets">Widgets</span>
+                    </button>
+                    <button type="button" class="module-reset-btn" data-reset-module="timer">
+                        <i class="fa-solid fa-stopwatch"></i>
+                        <span data-i18n="reset_module_timer">Timer</span>
+                    </button>
+                    <button type="button" class="module-reset-btn" data-reset-module="layout">
+                        <i class="fa-solid fa-arrows-to-dot"></i>
+                        <span data-i18n="reset_module_layout">Layout</span>
                     </button>
                 </div>
                 <div class="sidebar-footer-hint" data-i18n="settings_reset_layout_hint">

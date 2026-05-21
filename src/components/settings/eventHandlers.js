@@ -11,6 +11,7 @@ import {
   backupToCloud,
   clearCloudBackup,
   restoreFromCloud,
+  resetSettingsModules,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -1881,6 +1882,21 @@ export function setupGeneralEventHandlers(
     radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
   })
 
+  const getGradientPresetPayloadFromSettings = (settings) => ({
+    start: settings.gradientStart,
+    end: settings.gradientEnd,
+    angle: Number(settings.gradientAngle ?? 135),
+    type: settings.gradientType || "linear",
+    repeating: settings.gradientRepeating === true,
+    extraColorCount:
+      settings.gradientExtraColorCount !== undefined
+        ? Number(settings.gradientExtraColorCount)
+        : 2,
+    customColors: settings.gradientCustomColors || "",
+    position: settings.gradientPosition || "center",
+    radialShape: settings.gradientRadialShape || "circle",
+  })
+
   const applyGradientPresetPayload = (payload) => {
     DOM.gradientStartPicker.value = payload.start || "#0f0c29"
     DOM.gradientEndPicker.value = payload.end || "#302b63"
@@ -1934,6 +1950,26 @@ export function setupGeneralEventHandlers(
     }
   }
 
+  const getMultiColorPresetPayloadFromSettings = (settings) => ({
+    type: "multi-color",
+    gradientStops: Array.isArray(settings.multiColors)
+      ? [...settings.multiColors]
+      : ["#FF6B6B", "#4ECDC4"],
+    angle: Number(settings.multiGradientAngle ?? 135),
+    mode: settings.multiColorMode || "smooth",
+    showDividers: settings.multiColorDividers !== false,
+    dividerColor: settings.multiColorDividerColor || "#FFFFFF",
+    dividerWidth: Number(settings.multiColorDividerWidth ?? 1.2),
+    freeLineAngles: settings.multiColorFreeLineAngles === true,
+    lineAngles: Array.isArray(settings.multiColorLineAngles)
+      ? [...settings.multiColorLineAngles]
+      : [],
+    multiColorType: settings.multiColorType || "linear",
+    multiColorRepeating: settings.multiColorRepeating === true,
+    multiColorPosition: settings.multiColorPosition || "center",
+    multiColorRadialShape: settings.multiColorRadialShape || "circle",
+  })
+
   const applyMultiColorPresetPayload = (payload) => {
     if (!Array.isArray(payload.gradientStops) || payload.gradientStops.length < 2) {
       throw new Error("Invalid multi-color preset")
@@ -1952,6 +1988,45 @@ export function setupGeneralEventHandlers(
   const getSvgWavePresetPayload = () => ({
     ...getSvgWaveParams(getSettings()),
   })
+
+  const getVisualPresetPayload = () => {
+    const settings = getSettings()
+    if (settings.svgWaveActive === true) {
+      return {
+        mode: "svgWave",
+        data: getSvgWaveParams(settings),
+      }
+    }
+    if (
+      settings.multiColorActive === true ||
+      settings.activeBgUid?.startsWith("multi-")
+    ) {
+      return {
+        mode: "multiColor",
+        data: getMultiColorPresetPayloadFromSettings(settings),
+      }
+    }
+    return {
+      mode: "gradient",
+      data: getGradientPresetPayloadFromSettings(settings),
+    }
+  }
+
+  const applyVisualPresetPayload = (payload) => {
+    if (payload?.mode === "svgWave") {
+      applySvgWavePresetPayload(payload.data)
+      return
+    }
+    if (payload?.mode === "multiColor") {
+      applyMultiColorPresetPayload(payload.data)
+      return
+    }
+    if (payload?.mode === "gradient") {
+      applyGradientPresetPayload(payload.data)
+      return
+    }
+    throw new Error("Invalid visual preset")
+  }
 
   const applySvgWavePresetPayload = (payload) => {
     updateSetting("svgWaveLines", Number(payload.lines ?? 5))
@@ -2041,6 +2116,15 @@ export function setupGeneralEventHandlers(
   })
   DOM.gradientAngleInput.addEventListener("change", () => {
     updateCurrentGradient()
+  })
+
+  setupPresetCodeControls({
+    copyBtn: DOM.visualPresetCopyCodeBtn,
+    applyBtn: DOM.visualPresetApplyCodeBtn,
+    input: DOM.visualPresetCodeInput,
+    type: "visual",
+    getPayload: getVisualPresetPayload,
+    applyPayload: applyVisualPresetPayload,
   })
 
   setupPresetCodeControls({
@@ -2385,6 +2469,16 @@ export function setupGeneralEventHandlers(
   DOM.effectGrid.addEventListener("click", (e) => {
     const item = e.target.closest(".effect-item")
     if (item) handleSettingUpdate("effect", item.dataset.value)
+  })
+
+  DOM.performanceModeBtns?.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.mode || "auto"
+      DOM.performanceModeBtns.forEach((item) =>
+        item.classList.toggle("active", item === btn),
+      )
+      handleSettingUpdate("performanceMode", mode)
+    })
   })
 
   if (DOM.pixelWeatherStyleSelect) {
@@ -2976,6 +3070,23 @@ export function setupGeneralEventHandlers(
       // If only media or cloud was cleared, we still reload to ensure clean state
       window.location.reload()
     }
+  })
+
+  document.querySelectorAll(".module-reset-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const moduleName = btn.dataset.resetModule
+      const label = btn.textContent.trim()
+      const confirmed = await showConfirm(
+        (i18n.reset_module_confirm || "Reset this module?").replace(
+          "{module}",
+          label,
+        ),
+      )
+      if (!confirmed) return
+      resetSettingsModules([moduleName])
+      showAlert(i18n.alert_resetting || "Resetting...")
+      window.location.reload()
+    })
   })
 
   // Search input

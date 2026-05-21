@@ -972,7 +972,7 @@
 
 .sidebar-footer-content {
   padding: 14px 20px 20px;
-  max-height: 420px;
+  max-height: 520px;
   overflow: hidden;
   opacity: 1;
   display: block;
@@ -991,6 +991,53 @@
   padding-bottom: 0;
   pointer-events: none;
   transform: translateY(8px);
+}
+
+.module-reset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.module-reset-btn {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.84);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  line-height: 1.05;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.module-reset-btn span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.module-reset-btn i {
+  color: var(--accent-color);
+  font-size: 0.78rem;
+}
+
+.module-reset-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.38);
+  transform: translateY(-1px);
 }
 
 .settings-section {
@@ -1272,6 +1319,10 @@
   background: rgba(255, 255, 255, 0.035);
 }
 
+.preset-code-card-compact {
+  margin-top: 0;
+}
+
 .preset-code-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1305,6 +1356,26 @@
   outline: none;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
   box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+}
+
+.performance-mode-card {
+  margin-top: 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.performance-mode-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.performance-mode-group .btn-group-item {
+  min-width: 0;
+  padding-inline: 8px;
+  white-space: normal;
 }
 
 .wave-angle-header {

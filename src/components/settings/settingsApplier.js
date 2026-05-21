@@ -91,6 +91,58 @@ const EFFECT_KEY_MAP = {
   liquidEther: "liquidEtherEffect",
 }
 
+function getEffectPerformanceOptions(settings, effectName) {
+  const mode = settings.performanceMode || "auto"
+  const saveData = navigator.connection?.saveData === true
+  const lowCores =
+    Number.isFinite(navigator.hardwareConcurrency) &&
+    navigator.hardwareConcurrency > 0 &&
+    navigator.hardwareConcurrency <= 4
+  const smallScreen =
+    Math.min(window.innerWidth || 0, window.innerHeight || 0) <= 720
+  const shouldSave = mode === "battery" || (mode === "auto" && (saveData || lowCores || smallScreen))
+
+  if (effectName === "pixelSnowHQ") {
+    if (mode === "quality") {
+      return {
+        targetFps: 36,
+        pixelResolution: settings.pixelSnowHQPixelResolution ?? 200,
+        density: settings.pixelSnowHQDensity ?? 0.3,
+        farPlane: settings.pixelSnowHQFarPlane ?? 20,
+        maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 64 : 72,
+      }
+    }
+    if (shouldSave) {
+      return {
+        targetFps: 24,
+        pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 150),
+        density: Math.min(settings.pixelSnowHQDensity ?? 0.3, 0.22),
+        farPlane: Math.min(settings.pixelSnowHQFarPlane ?? 20, 15),
+        maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 44 : 52,
+      }
+    }
+    return {
+      targetFps: 30,
+      pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 200),
+      density: settings.pixelSnowHQDensity ?? 0.3,
+      farPlane: settings.pixelSnowHQFarPlane ?? 20,
+      maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 56 : 64,
+    }
+  }
+
+  if (effectName === "stormRain") {
+    if (mode === "quality") {
+      return { targetFps: 48, renderScale: 0.9, densityScale: 1 }
+    }
+    if (shouldSave) {
+      return { targetFps: 30, renderScale: 0.68, densityScale: 0.72 }
+    }
+    return { targetFps: 42, renderScale: 0.8, densityScale: 0.9 }
+  }
+
+  return {}
+}
+
 function setEffectActive(effectGrid, value) {
   effectGrid.querySelectorAll(".effect-item").forEach((el) => {
     el.classList.toggle("active", el.dataset.value === value)
@@ -1299,17 +1351,19 @@ function createApplySettings(effectInstances) {
           color: settings.pixelSnowHQColor ?? "#ffffff",
           flakeSize: settings.pixelSnowHQFlakeSize ?? 0.01,
           minFlakeSize: settings.pixelSnowHQMinFlakeSize ?? 1.25,
-          pixelResolution: settings.pixelSnowHQPixelResolution ?? 200,
           speed: settings.pixelSnowHQSpeed ?? 1.25,
           depthFade: settings.pixelSnowHQDepthFade ?? 8,
-          farPlane: settings.pixelSnowHQFarPlane ?? 20,
           brightness: settings.pixelSnowHQBrightness ?? 1.0,
           gamma: settings.pixelSnowHQGamma ?? 0.4545,
-          density: settings.pixelSnowHQDensity ?? 0.3,
           variant: settings.pixelSnowHQVariant ?? "square",
           direction: settings.pixelSnowHQDirection ?? 125,
+          ...getEffectPerformanceOptions(settings, "pixelSnowHQ"),
         })
       }
+    }
+
+    if (effectToStart === "stormRain" && selectedEffect?.setOptions) {
+      selectedEffect.setOptions(getEffectPerformanceOptions(settings, "stormRain"))
     }
 
     if (effectToStart === "skyLanterns" && selectedEffect) {
@@ -2133,6 +2187,12 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
     DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"
     setEffectActive(DOM.effectGrid, settings.effect)
+    DOM.performanceModeBtns?.forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.mode === (settings.performanceMode || "auto"),
+      )
+    })
 
     // Gradient Inputs
     DOM.gradientStartPicker.value = settings.gradientStart
