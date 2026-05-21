@@ -12,7 +12,7 @@
  *  - Subtle rain-mist veil and a glistening ground-water strip.
  */
 export class RainHDEffect {
-  constructor(canvasId, color = "#99ccff") {
+  constructor(canvasId, color = "#99ccff", options = {}) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
@@ -29,10 +29,13 @@ export class RainHDEffect {
     this.lightning = null // active bolt object, null when idle
     this.lightningTimer = this._nextLightningDelay()
 
-    this.fps = 60
+    this.fps = options.targetFps ?? 42
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
     this.time = 0
+    this.renderScale = options.renderScale ?? 0.82
+    this.densityScale = options.densityScale ?? 0.78
+    this.splashScale = options.splashScale ?? 0.72
 
     // Wind (horizontal velocity multiplier, leans drops to the right)
     this.windX = 1.6
@@ -61,8 +64,11 @@ export class RainHDEffect {
   static LAYER_COUNTS = [160, 120, 65]
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    const scale = Math.max(0.55, Math.min(1, this.renderScale))
+    this.canvas.width = Math.max(1, Math.round(window.innerWidth * scale))
+    this.canvas.height = Math.max(1, Math.round(window.innerHeight * scale))
+    this.canvas.style.width = "100vw"
+    this.canvas.style.height = "100vh"
     this.drops = []
     this.splashes = []
     this.puddles = []
@@ -72,12 +78,46 @@ export class RainHDEffect {
 
   _seed() {
     for (let li = 0; li < 3; li++) {
-      for (let i = 0; i < RainHDEffect.LAYER_COUNTS[li]; i++) {
+      const count = Math.round(RainHDEffect.LAYER_COUNTS[li] * this.densityScale)
+      for (let i = 0; i < count; i++) {
         this.drops.push(this._newDrop(li, true))
       }
     }
-    for (let i = 0; i < 14; i++) {
+    const puddleCount = Math.max(6, Math.round(12 * this.splashScale))
+    for (let i = 0; i < puddleCount; i++) {
       this.puddles.push(this._newPuddle(true))
+    }
+  }
+
+  setOptions(options = {}) {
+    let shouldResize = false
+    let shouldReseed = false
+
+    if (options.targetFps !== undefined) {
+      this.fps = Math.max(24, Math.min(60, Number(options.targetFps) || 42))
+      this.fpsInterval = 1000 / this.fps
+    }
+    if (options.renderScale !== undefined) {
+      this.renderScale = Math.max(0.55, Math.min(1, Number(options.renderScale) || 0.82))
+      shouldResize = true
+    }
+    if (options.densityScale !== undefined) {
+      this.densityScale = Math.max(0.42, Math.min(1.1, Number(options.densityScale) || 0.78))
+      shouldReseed = true
+    }
+    if (options.splashScale !== undefined) {
+      this.splashScale = Math.max(0.35, Math.min(1, Number(options.splashScale) || 0.72))
+    }
+
+    if (shouldResize) {
+      this.resize()
+      return
+    }
+    if (this.active && shouldReseed) {
+      this.drops = []
+      this.splashes = []
+      this.puddles = []
+      this._seed()
     }
   }
 
@@ -107,6 +147,7 @@ export class RainHDEffect {
   }
 
   _spawnSplash(x) {
+    if (this.splashes.length > 80 * this.splashScale) return
     // Primary large ring
     this.splashes.push({
       type: "ring",
@@ -128,7 +169,7 @@ export class RainHDEffect {
       delay: 4,
     })
     // Bounce droplets — arc upward then fall due to gravity
-    const count = 4 + Math.floor(Math.random() * 6)
+    const count = Math.max(2, Math.round((4 + Math.floor(Math.random() * 6)) * this.splashScale))
     for (let i = 0; i < count; i++) {
       // Spread around straight-up: angle in [-π/2 ± 0.85 rad]
       const spread = (Math.random() - 0.5) * 1.7
@@ -253,7 +294,7 @@ export class RainHDEffect {
     this.windX += (this._windTarget - this.windX) * 0.004
 
     // Spawn fresh drops across all layers (spawn 2-3 per frame for denser rain)
-    const spawnCount = Math.random() < 0.5 ? 3 : 2
+    const spawnCount = Math.max(1, Math.round((Math.random() < 0.5 ? 3 : 2) * this.densityScale))
     for (let s = 0; s < spawnCount; s++) {
       const li = Math.random() < 0.45 ? 0 : Math.random() < 0.65 ? 1 : 2
       this.drops.push(this._newDrop(li, false))
@@ -266,13 +307,13 @@ export class RainHDEffect {
       d.y += d.vy
       if (d.y > this.canvas.height + 10) {
         // Only mid + fg drops create visible splashes
-        if (d.li >= 1 && Math.random() < 0.72) this._spawnSplash(d.x)
+        if (d.li >= 1 && Math.random() < 0.72 * this.splashScale) this._spawnSplash(d.x)
         this.drops.splice(i, 1)
       }
     }
 
     // Cap drop count to prevent sluggishness
-    const MAX_DROPS = 520
+    const MAX_DROPS = Math.round(430 * this.densityScale)
     if (this.drops.length > MAX_DROPS) {
       this.drops.splice(0, this.drops.length - MAX_DROPS)
     }
@@ -312,9 +353,10 @@ export class RainHDEffect {
       if (p.r >= p.maxR) this.puddles.splice(i, 1)
     }
     // Periodically add new ambient rings
-    if (Math.random() < 0.1) this.puddles.push(this._newPuddle(false))
-    if (this.puddles.length > 55)
-      this.puddles.splice(0, this.puddles.length - 55)
+    if (Math.random() < 0.1 * this.splashScale) this.puddles.push(this._newPuddle(false))
+    const maxPuddles = Math.round(42 * this.splashScale)
+    if (this.puddles.length > maxPuddles)
+      this.puddles.splice(0, this.puddles.length - maxPuddles)
 
     // ── Lightning tick ──────────────────────────────────────────────────────
     if (!this.lightning) {

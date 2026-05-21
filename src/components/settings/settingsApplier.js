@@ -178,12 +178,37 @@ function getEffectPerformanceOptions(settings, effectName) {
 
   if (effectName === "stormRain") {
     if (mode === "quality") {
-      return { targetFps: 48, renderScale: 0.9, densityScale: 1 }
+      return { targetFps: 44, renderScale: 1, densityScale: 0.82 }
     }
     if (shouldSave) {
-      return { targetFps: 30, renderScale: 0.68, densityScale: 0.72 }
+      return { targetFps: 26, renderScale: 1, densityScale: 0.52 }
     }
-    return { targetFps: 42, renderScale: 0.8, densityScale: 0.9 }
+    return { targetFps: 34, renderScale: 1, densityScale: 0.68 }
+  }
+
+  if (effectName === "rainHD") {
+    if (mode === "quality") {
+      return {
+        targetFps: 48,
+        renderScale: 0.9,
+        densityScale: 0.9,
+        splashScale: 0.85,
+      }
+    }
+    if (shouldSave) {
+      return {
+        targetFps: 26,
+        renderScale: 0.64,
+        densityScale: 0.55,
+        splashScale: 0.45,
+      }
+    }
+    return {
+      targetFps: 36,
+      renderScale: 0.78,
+      densityScale: 0.72,
+      splashScale: 0.65,
+    }
   }
 
   return {}
@@ -1467,6 +1492,10 @@ function createApplySettings(effectInstances) {
 
     if (effectToStart === "stormRain" && selectedEffect?.setOptions) {
       selectedEffect.setOptions(getEffectPerformanceOptions(settings, "stormRain"))
+    }
+
+    if (effectToStart === "rainHD" && selectedEffect?.setOptions) {
+      selectedEffect.setOptions(getEffectPerformanceOptions(settings, "rainHD"))
     }
 
     if (effectToStart === "skyLanterns" && selectedEffect) {

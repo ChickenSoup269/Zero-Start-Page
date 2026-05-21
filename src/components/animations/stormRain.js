@@ -35,12 +35,12 @@ export class StormRainEffect {
     // Options
     this.rainColor = options.rainColor ?? "#9ecfee"
     this.cloudColor = options.cloudColor ?? "#080b14"
-    this.density = options.density ?? 130
+    this.density = options.density ?? 115
     this.speedMult = options.speed ?? 1.0
     this.autoWind = options.autoWind ?? true // false = gió cố định
-    this.targetFps = options.targetFps ?? 42
-    this.renderScale = options.renderScale ?? 0.8
-    this.densityScale = options.densityScale ?? 1
+    this.targetFps = options.targetFps ?? 36
+    this.renderScale = options.renderScale ?? 1
+    this.densityScale = options.densityScale ?? 0.85
 
     this._parseRainColor(this.rainColor)
 
@@ -138,7 +138,7 @@ export class StormRainEffect {
       this.targetFps = Math.max(24, Math.min(60, Number(options.targetFps) || 42))
     }
     if (options.renderScale !== undefined) {
-      this.renderScale = Math.max(0.5, Math.min(1, Number(options.renderScale) || 0.8))
+      this.renderScale = Math.max(0.75, Math.min(1, Number(options.renderScale) || 1))
       shouldResize = true
     }
     if (options.densityScale !== undefined) {
@@ -159,7 +159,7 @@ export class StormRainEffect {
     if (!this.canvas) return
     const W = window.innerWidth,
       H = window.innerHeight
-    const scale = Math.max(0.5, Math.min(1, this.renderScale))
+    const scale = 1
     this.canvas.width = Math.max(1, Math.round(W * scale))
     this.canvas.height = Math.max(1, Math.round(H * scale))
     this._rc.width = this.canvas.width
@@ -234,7 +234,7 @@ export class StormRainEffect {
   }
 
   _buildClouds() {
-    const count = 16 + Math.floor((this.canvas.width / 1920) * 12)
+    const count = 7 + Math.floor(this.canvas.width / 480)
     this.clouds = []
     for (let i = 0; i < count; i++) {
       this.clouds.push(this._makeCloud(false))
@@ -245,19 +245,19 @@ export class StormRainEffect {
   _makeCloud(spawnOffscreen = false) {
     const W = this.canvas.width
     const H = this.canvas.height
-    const scale = 0.5 + Math.random() * 1.5
-    const speed = 0.15 + Math.random() * 0.35
     const layer = Math.random()
-    const alpha = 0.1 + layer * 0.3 // darker storm clouds
+    const scale = 0.65 + layer * 1.05
+    const speed = 0.05 + layer * 0.12
+    const alpha = 0.11 + layer * 0.22
     const x = spawnOffscreen
       ? -(200 + Math.random() * 400) * scale
       : Math.random() * (W + 400) - 200
 
     return {
       x,
-      y: -H * 0.05 + Math.random() * H * 0.35, // higher up in the storm
+      y: -H * 0.03 + Math.random() * H * 0.32,
       scale,
-      speed: speed * (0.5 + layer * 0.8),
+      speed,
       alpha,
       layer,
       puffs: this._makePuffs(scale),
@@ -265,15 +265,16 @@ export class StormRainEffect {
   }
 
   _makePuffs(scale) {
-    const baseR = 48 * scale // bigger puffs for storm
     const puffs = []
-    const count = 4 + Math.floor(Math.random() * 5)
+    const count = 5 + Math.floor(Math.random() * 4)
     for (let i = 0; i < count; i++) {
-      const t = i / (count - 1)
+      const t = count <= 1 ? 0 : i / (count - 1)
       puffs.push({
-        ox: (t - 0.5) * 220 * scale,
-        oy: -Math.sin(t * Math.PI) * 36 * scale,
-        r: baseR * (0.6 + Math.sin(t * Math.PI) * 0.5),
+        ox: (i - count / 2) * (34 * scale),
+        oy: ((Math.random() * 18 - 9) - Math.sin(t * Math.PI) * 10) * scale,
+        r: (46 + Math.random() * 34) * scale,
+        phase: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.0012 + Math.random() * 0.0014,
       })
     }
     return puffs
@@ -307,10 +308,10 @@ export class StormRainEffect {
     const ctx = this._cctx
     const rgb = this._hexToRgb(this.cloudColor)
     this._cloudRedrawMs += dt
-    const shouldRedraw = this._cloudRedrawMs >= 80 || this.lightningFlash > 0
+    const shouldRedraw = this._cloudRedrawMs >= 150 || this.lightningFlash > 0
 
     for (const cloud of this.clouds) {
-      cloud.x += cloud.speed * (dt / 16.67) + this.windX * 0.1 * (dt / 16.67)
+      cloud.x += (cloud.speed + this.windX * 0.035) * (dt / 16.67)
 
       const maxX = cloud.puffs.reduce((m, p) => Math.max(m, p.ox + p.r), 0)
       if (cloud.x - maxX > W + 40) {
@@ -334,14 +335,16 @@ export class StormRainEffect {
       for (const p of puffs) {
         const gx = x + p.ox
         const gy = y + p.oy
+        const radius =
+          p.r + Math.sin(this._time * p.pulseSpeed + p.phase) * p.r * 0.04
 
         const grad = ctx.createRadialGradient(
           gx,
-          gy - p.r * 0.2,
+          gy - radius * 0.2,
           0,
           gx,
           gy,
-          p.r,
+          radius,
         )
         // Add lightning flash effect to clouds
         const flashInt = this.lightningFlash > 0 ? this.lightningFlash * 0.4 : 0
@@ -357,7 +360,7 @@ export class StormRainEffect {
         grad.addColorStop(1, `rgba(${rr},${gg},${bb},0)`)
 
         ctx.beginPath()
-        ctx.arc(gx, gy, p.r, 0, Math.PI * 2)
+        ctx.arc(gx, gy, radius, 0, Math.PI * 2)
         ctx.fillStyle = grad
         ctx.fill()
       }
@@ -500,7 +503,7 @@ export class StormRainEffect {
 
       // Chạm đáy → ripple + tái sinh
       if (d.y > H + d.len) {
-        if (this.ripples.length < 90 && Math.random() < 0.45)
+        if (this.ripples.length < 48 && Math.random() < 0.28)
           this._spawnRipple(d.x, H - 2 - Math.random() * 8, d.li)
         Object.assign(d, this._newDrop(d.li, false))
         continue
