@@ -811,6 +811,13 @@ export function initSettings() {
   ctx.applySettings = applySettings
   ctx.updateSettingsInputs = updateSettingsInputs
 
+  // Expose early so performance auto-tuning and local smoke tests have a stable hook
+  // even if a later optional manager is unavailable in the current runtime.
+  window.appApplySettings = () => {
+    applySettings()
+    if (settingsGalleriesRendered) refreshBackgroundGalleries()
+  }
+
   // Initialize Gradient V2 Manager
   initGradientV2Manager(DOM_EXPORTS, effects.gradientV2Effect, (k, v) => {
     handleSettingUpdate(k, v)
@@ -861,12 +868,6 @@ export function initSettings() {
     applySettings,
     updateSettingsInputs,
   )
-
-  // Expose applySettings globally so it can be re-run after heavy async ops like preloadImages
-  window.appApplySettings = () => {
-    applySettings()
-    if (settingsGalleriesRendered) refreshBackgroundGalleries()
-  }
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
   document

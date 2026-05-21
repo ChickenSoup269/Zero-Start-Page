@@ -34,7 +34,7 @@ import {
 } from "./utils/dom.js"
 
 // --- Initialization ---
-document.addEventListener("DOMContentLoaded", async () => {
+async function bootstrap() {
   document.body.classList.add("is-booting")
 
   // Load language first so all other components have translations
@@ -659,4 +659,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }, 100)
   }, 10)
-})
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootstrap, { once: true })
+} else {
+  bootstrap()
+}

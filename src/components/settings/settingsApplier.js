@@ -33,6 +33,10 @@ import { buildMultiColorCss } from "./multiColorManager.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
+let _perfMonitorStarted = false
+let _perfAvgFrameMs = 16.7
+let _perfLagging = false
+let _perfLastApply = 0
 
 const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
@@ -91,7 +95,41 @@ const EFFECT_KEY_MAP = {
   liquidEther: "liquidEtherEffect",
 }
 
-function getEffectPerformanceOptions(settings, effectName) {
+function ensurePerformanceMonitor() {
+  if (_perfMonitorStarted || typeof requestAnimationFrame !== "function") return
+  _perfMonitorStarted = true
+
+  let lastFrame = performance.now()
+  const tick = (now) => {
+    const delta = now - lastFrame
+    lastFrame = now
+
+    if (document.visibilityState === "visible" && delta > 0 && delta < 1000) {
+      _perfAvgFrameMs = _perfAvgFrameMs * 0.9 + delta * 0.1
+      const nextLagging = _perfAvgFrameMs > 34
+      if (nextLagging !== _perfLagging) {
+        _perfLagging = nextLagging
+        const settings = getSettings()
+        const nowMs = performance.now()
+        if (
+          settings.performanceMode === "auto" &&
+          nowMs - _perfLastApply > 3000 &&
+          typeof window.appApplySettings === "function"
+        ) {
+          _perfLastApply = nowMs
+          window.appApplySettings()
+        }
+      }
+    }
+
+    requestAnimationFrame(tick)
+  }
+
+  requestAnimationFrame(tick)
+}
+
+function getPerformanceProfile(settings) {
+  ensurePerformanceMonitor()
   const mode = settings.performanceMode || "auto"
   const saveData = navigator.connection?.saveData === true
   const lowCores =
@@ -100,7 +138,15 @@ function getEffectPerformanceOptions(settings, effectName) {
     navigator.hardwareConcurrency <= 4
   const smallScreen =
     Math.min(window.innerWidth || 0, window.innerHeight || 0) <= 720
-  const shouldSave = mode === "battery" || (mode === "auto" && (saveData || lowCores || smallScreen))
+  const shouldSave =
+    mode === "battery" ||
+    (mode === "auto" && (saveData || lowCores || smallScreen || _perfLagging))
+
+  return { mode, shouldSave }
+}
+
+function getEffectPerformanceOptions(settings, effectName) {
+  const { mode, shouldSave } = getPerformanceProfile(settings)
 
   if (effectName === "pixelSnowHQ") {
     if (mode === "quality") {
@@ -141,6 +187,51 @@ function getEffectPerformanceOptions(settings, effectName) {
   }
 
   return {}
+}
+
+function applyEffectPerformanceBudget(effect, settings) {
+  if (!effect) return
+
+  const { mode, shouldSave } = getPerformanceProfile(settings)
+
+  if (
+    Number.isFinite(effect.fps) &&
+    effect.fps > 0 &&
+    !Number.isFinite(effect._performanceBaseFps)
+  ) {
+    effect._performanceBaseFps = effect.fps
+  }
+
+  const baseFps = effect._performanceBaseFps
+  if (Number.isFinite(baseFps) && baseFps > 0) {
+    const nextFps =
+      mode === "battery"
+        ? Math.min(baseFps, 30)
+        : shouldSave
+          ? Math.min(baseFps, 36)
+          : baseFps
+
+    effect.fps = nextFps
+    if ("fpsInterval" in effect) effect.fpsInterval = 1000 / nextFps
+  }
+
+  if (
+    Number.isFinite(effect.targetFps) &&
+    effect.targetFps > 0 &&
+    !Number.isFinite(effect._performanceBaseTargetFps)
+  ) {
+    effect._performanceBaseTargetFps = effect.targetFps
+  }
+
+  const baseTargetFps = effect._performanceBaseTargetFps
+  if (Number.isFinite(baseTargetFps) && baseTargetFps > 0) {
+    effect.targetFps =
+      mode === "battery"
+        ? Math.min(baseTargetFps, 30)
+        : shouldSave
+          ? Math.min(baseTargetFps, 36)
+          : baseTargetFps
+  }
 }
 
 function setEffectActive(effectGrid, value) {
@@ -536,6 +627,7 @@ function createApplySettings(effectInstances) {
         effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
       }
     }
+
     // Priority 3: Predefined Theme Background
     else if (isPredefinedLocalBg) {
       if (bgLayer) bgLayer.classList.add(bg)
@@ -659,6 +751,17 @@ function createApplySettings(effectInstances) {
       }
       document.body.classList.add("bg-layer-active")
     }
+
+    ;[
+      shouldUseGradientV2 && effectInstances.gradientV2Effect,
+      shouldUseSilk && effectInstances.silkEffect,
+      shouldUseLightPillar && effectInstances.lightPillarEffect,
+      shouldUseLiquidEther && effectInstances.liquidEtherEffect,
+      shouldUseSplashCursor && effectInstances.splashCursorEffect,
+      shouldUseSvgWave && effectInstances.svgWaveEffect,
+    ]
+      .filter(Boolean)
+      .forEach((effect) => applyEffectPerformanceBudget(effect, settings))
 
     // Cleanup: Stop unused background effects
     if (!shouldUseGradientV2 && effectInstances.gradientV2Effect?.active) {
@@ -1488,6 +1591,8 @@ function createApplySettings(effectInstances) {
         opacity: settings.flashlightOpacity ?? 0.9,
       })
     }
+
+    applyEffectPerformanceBudget(selectedEffect, settings)
 
     if (effectChanged) {
       // Stop previous effects only when effect selection actually changes.

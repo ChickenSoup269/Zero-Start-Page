@@ -11,7 +11,6 @@ import {
   backupToCloud,
   clearCloudBackup,
   restoreFromCloud,
-  resetSettingsModules,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -72,6 +71,11 @@ import {
   decodePresetCode,
   encodePresetCode,
 } from "./presetCode.js"
+import {
+  pickSettings,
+  VISUAL_EFFECT_KEYS,
+  VISUAL_THEME_KEYS,
+} from "./visualPresetConfig.js"
 
 export function setupGeneralEventHandlers(
   ctx,
@@ -1991,28 +1995,54 @@ export function setupGeneralEventHandlers(
 
   const getVisualPresetPayload = () => {
     const settings = getSettings()
-    if (settings.svgWaveActive === true) {
-      return {
-        mode: "svgWave",
-        data: getSvgWaveParams(settings),
-      }
-    }
-    if (
-      settings.multiColorActive === true ||
-      settings.activeBgUid?.startsWith("multi-")
-    ) {
-      return {
-        mode: "multiColor",
-        data: getMultiColorPresetPayloadFromSettings(settings),
-      }
-    }
+    const activeMode =
+      settings.svgWaveActive === true
+        ? "svgWave"
+        : settings.multiColorActive === true ||
+            settings.activeBgUid?.startsWith("multi-")
+          ? "multiColor"
+          : "gradient"
+
     return {
-      mode: "gradient",
-      data: getGradientPresetPayloadFromSettings(settings),
+      mode: "bundle",
+      activeMode,
+      gradient: getGradientPresetPayloadFromSettings(settings),
+      multiColor: getMultiColorPresetPayloadFromSettings(settings),
+      svgWave: getSvgWaveParams(settings),
+      effects: pickSettings(settings, VISUAL_EFFECT_KEYS),
+      theme: pickSettings(settings, VISUAL_THEME_KEYS),
     }
   }
 
   const applyVisualPresetPayload = (payload) => {
+    if (payload?.mode === "bundle") {
+      if (payload.theme && typeof payload.theme === "object") {
+        Object.entries(payload.theme).forEach(([key, value]) =>
+          updateSetting(key, value),
+        )
+      }
+      if (payload.effects && typeof payload.effects === "object") {
+        Object.entries(payload.effects).forEach(([key, value]) =>
+          updateSetting(key, value),
+        )
+      }
+
+      const activeMode = payload.activeMode || "gradient"
+      if (activeMode === "svgWave") {
+        applySvgWavePresetPayload(payload.svgWave)
+      } else if (activeMode === "multiColor") {
+        applyMultiColorPresetPayload(payload.multiColor)
+      } else {
+        applyGradientPresetPayload(payload.gradient)
+      }
+
+      saveSettings()
+      applySettings()
+      updateSettingsInputs()
+      return
+    }
+
+    // Backward compatibility for the first Visual Hub codes.
     if (payload?.mode === "svgWave") {
       applySvgWavePresetPayload(payload.data)
       return
@@ -3083,6 +3113,7 @@ export function setupGeneralEventHandlers(
         ),
       )
       if (!confirmed) return
+      const { resetSettingsModules } = await import("../../services/state.js")
       resetSettingsModules([moduleName])
       showAlert(i18n.alert_resetting || "Resetting...")
       window.location.reload()
