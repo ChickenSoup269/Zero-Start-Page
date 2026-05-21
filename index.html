@@ -1286,8 +1286,15 @@
                 </div>
             </div>
 
-            <!-- SVG Gradient Wave Generator -->
-            <div class="setting-group" id="svg-wave-group">
+            <!-- Gradient & Multi-Color Section -->
+            <div class="settings-section" data-section-id="gradient-multi-color">
+                <h3 class="section-toggle">
+                    <i class="fa-solid fa-fill-drip"></i>
+                    <span data-i18n="settings_gradient_multi_title">Gradient & Multi-Color</span>
+                </h3>
+                <div class="section-content">
+                    <!-- SVG Gradient Wave Generator -->
+                    <div class="setting-group" id="svg-wave-group">
                 <div class="setting-label"><i class="fa-solid fa-water"></i> <span
                         data-i18n="settings_svg_wave_title">SVG Gradient
                         Wave</span></div>
@@ -1545,20 +1552,18 @@
                     </div>
                     <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
                 </div>
-            </div>
-
-
-            <!-- Gradient & Multi-Color Section -->
-            <div class="settings-section" data-section-id="gradient-multi-color">
-                <h3 class="section-toggle">
-                    <i class="fa-solid fa-fill-drip"></i>
-                    <span data-i18n="settings_gradient_multi_title">Gradient & Multi-Color</span>
-                </h3>
-                <div class="section-content">
+                    </div>
                     <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-share-nodes"></i> <span
                                 data-i18n="visual_preset_hub_title">Visual Preset Hub</span></div>
-                        <div class="preset-code-card preset-code-card-compact">
+                        <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
+                            <div class="preset-code-header">
+                                <div>
+                                    <strong data-i18n="visual_preset_bundle_title">Full visual bundle</strong>
+                                    <small data-i18n="visual_preset_bundle_hint">Gradient, Multi-Color, SVG Wave, Effect and Theme</small>
+                                </div>
+                                <span class="preset-code-chip">SPC1</span>
+                            </div>
                             <div class="preset-code-actions">
                                 <button id="visual-preset-copy-code-btn" class="secondary-btn" type="button">
                                     <i class="fa-solid fa-copy"></i>
@@ -1945,6 +1950,31 @@
                     <span data-i18n="settings_animated_backgrounds_title">Background Animations</span>
                 </h3>
                 <div class="section-content" id="animated-backgrounds-body">
+                    <div class="setting-group">
+                        <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
+                            <div class="preset-code-header">
+                                <div>
+                                    <strong data-i18n="background_animation_preset_share_title">Share Background Animation Code</strong>
+                                    <small data-i18n="background_animation_preset_bundle_hint">Gradient V2, Silk, Light Pillar, Mist Light Streams and Splash Cursor</small>
+                                </div>
+                                <span class="preset-code-chip">BAC1</span>
+                            </div>
+                            <div class="preset-code-actions">
+                                <button id="background-animation-copy-code-btn" class="secondary-btn small">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span data-i18n="preset_code_copy">Copy Code</span>
+                                </button>
+                                <button id="background-animation-apply-code-btn" class="secondary-btn small">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="preset_code_apply">Apply Code</span>
+                                </button>
+                            </div>
+                            <textarea id="background-animation-code-input" class="preset-code-input" rows="2"
+                                data-i18n-placeholder="preset_code_placeholder"
+                                placeholder="Paste a preset code here"></textarea>
+                        </div>
+                    </div>
+
                     <!-- Gradient V2 (Animated) Section -->
                     <div class="setting-group" id="gradient-v2-group">
                         <div class="setting-label">
@@ -2723,6 +2753,34 @@
                 </h3>
                 <div class="section-content" id="effect-section-body">
                     <div class="group-body">
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                <span data-i18n="effect_preset_share_title">Share Effect Code</span>
+                            </div>
+                            <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
+                                <div class="preset-code-header">
+                                    <div>
+                                        <strong data-i18n="effect_preset_bundle_title">Current effect config</strong>
+                                        <small data-i18n="effect_preset_bundle_hint">Effect choice, colors, performance and effect-specific settings</small>
+                                    </div>
+                                    <span class="preset-code-chip">SPC1</span>
+                                </div>
+                                <div class="preset-code-actions">
+                                    <button id="effect-preset-copy-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-copy"></i>
+                                        <span data-i18n="preset_code_copy">Copy Code</span>
+                                    </button>
+                                    <button id="effect-preset-apply-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <span data-i18n="preset_code_apply">Apply Code</span>
+                                    </button>
+                                </div>
+                                <textarea id="effect-preset-code-input" class="preset-code-input" rows="2"
+                                    data-i18n-placeholder="preset_code_placeholder"
+                                    placeholder="Paste preset code here"></textarea>
+                            </div>
+                        </div>
                         <div class="setting-item performance-mode-card">
                             <div class="setting-label">
                                 <i class="fa-solid fa-gauge-high"></i>
@@ -5660,6 +5718,20 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="unsplash-explorer-mini" class="unsplash-explorer-mini" aria-hidden="true">
+        <button type="button" id="unsplash-explorer-mini-open" class="unsplash-explorer-mini-open">
+            <i class="fa-brands fa-unsplash"></i>
+            <span>
+                <strong id="unsplash-explorer-mini-title">Unsplash</strong>
+                <small data-i18n="settings_unsplash_mini_hint">Open photo picker</small>
+            </span>
+            <i class="fa-solid fa-up-right-from-square mini-open-icon" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="unsplash-explorer-mini-close" class="unsplash-explorer-mini-close"
+            data-i18n-title="close" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
 </body>
 

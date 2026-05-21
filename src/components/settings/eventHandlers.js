@@ -50,6 +50,7 @@ import {
   openUnsplashExplorer,
   loadExplorerResults,
   loadMoreExplorer,
+  minimizeUnsplashExplorer,
 } from "./unsplashFetcher.js"
 import {
   renderUserColors,
@@ -72,6 +73,7 @@ import {
   encodePresetCode,
 } from "./presetCode.js"
 import {
+  BACKGROUND_ANIMATION_KEYS,
   pickSettings,
   VISUAL_EFFECT_KEYS,
   VISUAL_THEME_KEYS,
@@ -712,11 +714,9 @@ export function setupGeneralEventHandlers(
       const queryStr = [
         ".settings-section",
         "#page-title-input",
-        "#date-format-select",
         "#language-select",
         "#accent-color-group",
         "#svg-wave-group",
-        "#animated-backgrounds-group",
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
@@ -1106,7 +1106,7 @@ export function setupGeneralEventHandlers(
   const loadMoreExplorerBtn = document.getElementById("unsplash-explorer-load-more")
 
   if (closeExplorerBtn) {
-    closeExplorerBtn.addEventListener("click", () => explorerModal.classList.remove("open"))
+    closeExplorerBtn.addEventListener("click", () => minimizeUnsplashExplorer())
   }
 
   if (loadMoreExplorerBtn) {
@@ -1117,7 +1117,7 @@ export function setupGeneralEventHandlers(
 
   if (explorerModal) {
     window.addEventListener("click", (e) => {
-      if (e.target === explorerModal) explorerModal.classList.remove("open")
+      if (e.target === explorerModal) minimizeUnsplashExplorer()
     })
   }
 
@@ -1993,6 +1993,42 @@ export function setupGeneralEventHandlers(
     ...getSvgWaveParams(getSettings()),
   })
 
+  const getEffectPresetPayload = () => ({
+    effects: pickSettings(getSettings(), VISUAL_EFFECT_KEYS),
+  })
+
+  const getBackgroundAnimationPresetPayload = () => ({
+    backgroundAnimations: pickSettings(getSettings(), BACKGROUND_ANIMATION_KEYS),
+  })
+
+  const applyBackgroundAnimationPresetPayload = (payload) => {
+    const animationPayload = payload?.backgroundAnimations || payload
+    if (!animationPayload || typeof animationPayload !== "object") {
+      throw new Error("Invalid background animation preset")
+    }
+
+    Object.entries(animationPayload).forEach(([key, value]) =>
+      updateSetting(key, value),
+    )
+    saveSettings()
+    applySettings()
+    updateSettingsInputs()
+  }
+
+  const applyEffectPresetPayload = (payload) => {
+    const effectPayload = payload?.effects || payload
+    if (!effectPayload || typeof effectPayload !== "object") {
+      throw new Error("Invalid effect preset")
+    }
+
+    Object.entries(effectPayload).forEach(([key, value]) =>
+      updateSetting(key, value),
+    )
+    saveSettings()
+    applySettings()
+    updateSettingsInputs()
+  }
+
   const getVisualPresetPayload = () => {
     const settings = getSettings()
     const activeMode =
@@ -2155,6 +2191,24 @@ export function setupGeneralEventHandlers(
     type: "visual",
     getPayload: getVisualPresetPayload,
     applyPayload: applyVisualPresetPayload,
+  })
+
+  setupPresetCodeControls({
+    copyBtn: document.getElementById("effect-preset-copy-code-btn"),
+    applyBtn: document.getElementById("effect-preset-apply-code-btn"),
+    input: document.getElementById("effect-preset-code-input"),
+    type: "effect",
+    getPayload: getEffectPresetPayload,
+    applyPayload: applyEffectPresetPayload,
+  })
+
+  setupPresetCodeControls({
+    copyBtn: document.getElementById("background-animation-copy-code-btn"),
+    applyBtn: document.getElementById("background-animation-apply-code-btn"),
+    input: document.getElementById("background-animation-code-input"),
+    type: "backgroundAnimation",
+    getPayload: getBackgroundAnimationPresetPayload,
+    applyPayload: applyBackgroundAnimationPresetPayload,
   })
 
   setupPresetCodeControls({

@@ -386,6 +386,7 @@ let explorerPage = 1
 let explorerType = "latest" // "latest", "popular", "search"
 let explorerQuery = ""
 const explorerSessionState = new Map()
+let explorerMiniInitialized = false
 
 function getExplorerStateKey(type = explorerType, query = explorerQuery) {
   return `${type}:${query || ""}`
@@ -411,10 +412,79 @@ function restoreExplorerPosition() {
   })
 }
 
+function getExplorerDisplayTitle(type = explorerType, query = explorerQuery) {
+  const i18n = (typeof geti18n === "function") ? geti18n() : {}
+
+  if (type === "search") {
+    return `${i18n.settings_unsplash_search || "Search"}: ${query}`
+  }
+  if (type === "popular") {
+    return i18n.settings_unsplash_popular || "Popular Photos"
+  }
+  return i18n.settings_unsplash_latest || "Latest Photos"
+}
+
+function initUnsplashExplorerMini() {
+  if (explorerMiniInitialized) return
+  explorerMiniInitialized = true
+
+  const mini = document.getElementById("unsplash-explorer-mini")
+  const openBtn = document.getElementById("unsplash-explorer-mini-open")
+  const closeBtn = document.getElementById("unsplash-explorer-mini-close")
+
+  openBtn?.addEventListener("click", () => {
+    openUnsplashExplorer(explorerType, explorerQuery)
+  })
+
+  closeBtn?.addEventListener("click", (event) => {
+    event.stopPropagation()
+    dismissUnsplashExplorerMini()
+  })
+
+  if (mini) {
+    mini.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") dismissUnsplashExplorerMini()
+    })
+  }
+}
+
+function updateUnsplashExplorerMiniTitle() {
+  const title = document.getElementById("unsplash-explorer-mini-title")
+  if (title) title.textContent = getExplorerDisplayTitle()
+}
+
+function hideUnsplashExplorerMini() {
+  const mini = document.getElementById("unsplash-explorer-mini")
+  if (!mini) return
+
+  mini.classList.remove("visible")
+  mini.setAttribute("aria-hidden", "true")
+}
+
+function dismissUnsplashExplorerMini() {
+  hideUnsplashExplorerMini()
+}
+
+function minimizeUnsplashExplorer() {
+  const modal = document.getElementById("unsplash-explorer-modal")
+  const mini = document.getElementById("unsplash-explorer-mini")
+
+  rememberExplorerPosition()
+  modal?.classList.remove("open")
+  if (!mini) return
+
+  initUnsplashExplorerMini()
+  updateUnsplashExplorerMiniTitle()
+  mini.classList.add("visible")
+  mini.setAttribute("aria-hidden", "false")
+}
+
 async function openUnsplashExplorer(type = "latest", query = "") {
   const modal = document.getElementById("unsplash-explorer-modal")
   if (!modal) return
 
+  initUnsplashExplorerMini()
+  hideUnsplashExplorerMini()
   rememberExplorerPosition()
 
   explorerType = type
@@ -424,15 +494,8 @@ async function openUnsplashExplorer(type = "latest", query = "") {
   const targetPage = Math.max(1, savedState?.page || 1)
 
   const titleEl = modal.querySelector(".modal-title-text")
-  const i18n = (typeof geti18n === 'function') ? geti18n() : {}
-  
-  if (type === "search") {
-    titleEl.textContent = `${i18n.settings_unsplash_search || "Search"}: ${query}`
-  } else if (type === "popular") {
-    titleEl.textContent = i18n.settings_unsplash_popular || "Popular Photos"
-  } else {
-    titleEl.textContent = i18n.settings_unsplash_latest || "Latest Photos"
-  }
+  titleEl.textContent = getExplorerDisplayTitle(type, query)
+  updateUnsplashExplorerMiniTitle()
 
   const grid = document.getElementById("unsplash-explorer-grid")
   if (grid) grid.innerHTML = '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
@@ -587,6 +650,7 @@ async function applyUnsplashPhoto(photo, element = null) {
     }
 
     saveSettings()
+    minimizeUnsplashExplorer()
   } catch (err) {
     console.error("Failed to apply photo:", err)
     showAlert("Failed to apply Unsplash photo.")
@@ -613,6 +677,8 @@ export {
   searchUnsplashPhotos,
   listUnsplashPhotos,
   openUnsplashExplorer,
+  minimizeUnsplashExplorer,
+  dismissUnsplashExplorerMini,
   loadExplorerResults,
   loadMoreExplorer,
 }

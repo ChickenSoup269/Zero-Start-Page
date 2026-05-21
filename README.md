@@ -5,6 +5,10 @@
 Startpage is a highly customizable Chrome extension that replaces your new tab page with a clean, feature-rich, and aesthetically pleasing interface. Everything is stored locally — no accounts, no tracking.
 
 <p align="center">
+<a href="https://unikorn.vn/p/zero-startpage?ref=embed-zero-startpage" target="_blank"><img src="https://unikorn.vn/api/widgets/badge/zero-startpage/rank?theme=light&type=daily" alt="Zero Startpage - Hàng ngày" style="width: 250px; height: 64px;" width="250" height="64" /></a>
+</p>
+
+<p align="center">
   <a href="https://unikorn.vn/p/zero-startpage?ref=embed-zero-startpage" target="_blank">
     <img src="https://unikorn.vn/api/widgets/badge/zero-startpage?theme=light" height="56" />
   </a>
