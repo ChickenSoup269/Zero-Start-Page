@@ -2166,7 +2166,15 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.gradientExtraColorCount) {
       DOM.gradientExtraColorCount.value = String(
-        Math.min(5, Math.max(1, Number(settings.gradientExtraColorCount) || 2)),
+        Math.min(
+          5,
+          Math.max(
+            0,
+            settings.gradientExtraColorCount !== undefined
+              ? Number(settings.gradientExtraColorCount)
+              : 2,
+          ),
+        ),
       )
     }
     if (DOM.gradientCustomColors) {

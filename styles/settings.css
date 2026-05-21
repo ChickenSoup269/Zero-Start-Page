@@ -1264,6 +1264,49 @@
   color: rgba(255, 255, 255, 0.86);
 }
 
+.preset-code-card {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.preset-code-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.preset-code-actions .secondary-btn {
+  min-height: 34px;
+  padding: 8px 10px;
+  justify-content: center;
+  gap: 7px;
+  font-size: 0.78rem;
+}
+
+.preset-code-input {
+  width: 100%;
+  min-height: 58px;
+  resize: vertical;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.preset-code-input:focus {
+  outline: none;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+}
+
 .wave-angle-header {
   display: flex;
   justify-content: space-between;

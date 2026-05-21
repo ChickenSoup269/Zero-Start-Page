@@ -186,6 +186,15 @@ export const generateModernGradientBtn = document.getElementById(
   "generate-modern-gradient-btn",
 )
 export const saveGradientBtn = document.getElementById("save-gradient-btn")
+export const gradientCopyCodeBtn = document.getElementById(
+  "gradient-copy-code-btn",
+)
+export const gradientApplyCodeBtn = document.getElementById(
+  "gradient-apply-code-btn",
+)
+export const gradientPresetCodeInput = document.getElementById(
+  "gradient-preset-code-input",
+)
 export const userGradientsGallery = document.getElementById(
   "user-gradients-gallery",
 )
@@ -240,6 +249,15 @@ export const randomMultiColorBtn = document.getElementById(
   "random-multi-color-hue-btn",
 )
 export const saveMultiColorBtn = document.getElementById("save-multi-color-btn")
+export const multiColorCopyCodeBtn = document.getElementById(
+  "multi-color-copy-code-btn",
+)
+export const multiColorApplyCodeBtn = document.getElementById(
+  "multi-color-apply-code-btn",
+)
+export const multiColorPresetCodeInput = document.getElementById(
+  "multi-color-preset-code-input",
+)
 export const multiColorToggleBtn = document.getElementById(
   "multi-color-toggle-btn",
 )
@@ -1173,6 +1191,15 @@ export const svgWaveRandomizeBtn = document.getElementById(
 )
 export const svgWaveCloseBtn = document.getElementById("svg-wave-close-btn")
 export const svgWaveSaveBtn = document.getElementById("svg-wave-save-btn")
+export const svgWaveCopyCodeBtn = document.getElementById(
+  "svg-wave-copy-code-btn",
+)
+export const svgWaveApplyCodeBtn = document.getElementById(
+  "svg-wave-apply-code-btn",
+)
+export const svgWavePresetCodeInput = document.getElementById(
+  "svg-wave-preset-code-input",
+)
 export const svgWaveCrazyBtn = document.getElementById("svg-wave-crazy-btn")
 export const svgWaveActive = document.getElementById("svg-wave-active")
 export const userSvgWavesGallery = document.getElementById(

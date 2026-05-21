@@ -66,6 +66,11 @@ import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
 import { hexToRgb } from "../../utils/colors.js"
+import {
+  copyText,
+  decodePresetCode,
+  encodePresetCode,
+} from "./presetCode.js"
 
 export function setupGeneralEventHandlers(
   ctx,
@@ -1845,6 +1850,175 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate(null, gradientConfig, true)
   }
 
+  const showPresetCodeError = () => {
+    showAlert(
+      geti18n().preset_code_invalid ||
+        "This preset code is invalid or belongs to another preset type.",
+    )
+  }
+
+  const flashButtonLabel = (button, key, fallback) => {
+    if (!button) return
+    const original = button.innerHTML
+    button.innerHTML = `<i class="fa-solid fa-check"></i> <span>${geti18n()[key] || fallback}</span>`
+    setTimeout(() => {
+      button.innerHTML = original
+    }, 1400)
+  }
+
+  const getGradientPresetPayload = () => ({
+    start: DOM.gradientStartPicker.value,
+    end: DOM.gradientEndPicker.value,
+    angle: Number(DOM.gradientAngleInput.value),
+    type: DOM.gradientTypeSelect?.value || "linear",
+    repeating: DOM.gradientRepeatingToggle?.checked === true,
+    extraColorCount:
+      DOM.gradientExtraColorCount?.value !== undefined
+        ? Number(DOM.gradientExtraColorCount.value)
+        : 2,
+    customColors: DOM.gradientCustomColors?.value || "",
+    position: DOM.gradientPositionSelect?.value || "center",
+    radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
+  })
+
+  const applyGradientPresetPayload = (payload) => {
+    DOM.gradientStartPicker.value = payload.start || "#0f0c29"
+    DOM.gradientEndPicker.value = payload.end || "#302b63"
+    DOM.gradientAngleInput.value = Number(payload.angle ?? 135)
+    DOM.gradientAngleValue.textContent = `${DOM.gradientAngleInput.value}°`
+    if (DOM.gradientTypeSelect) DOM.gradientTypeSelect.value = payload.type || "linear"
+    if (DOM.gradientRepeatingToggle)
+      DOM.gradientRepeatingToggle.checked = payload.repeating === true
+    if (DOM.gradientExtraColorCount)
+      DOM.gradientExtraColorCount.value = String(
+        Math.min(5, Math.max(0, Number(payload.extraColorCount ?? 2))),
+      )
+    if (DOM.gradientCustomColors)
+      DOM.gradientCustomColors.value = payload.customColors || ""
+    if (DOM.gradientPositionSelect)
+      DOM.gradientPositionSelect.value = payload.position || "center"
+    if (DOM.gradientRadialShapeSelect)
+      DOM.gradientRadialShapeSelect.value = payload.radialShape || "circle"
+    renderGradientExtraColorPickers()
+    updateCurrentGradient()
+    updateSettingsInputs()
+  }
+
+  const getMultiColorPresetPayload = () => {
+    const colors = Array.from(document.querySelectorAll(".multi-color-picker"))
+      .map((picker) => picker.value)
+      .filter(Boolean)
+    const mode =
+      Array.from(DOM.multiColorModeBtns || []).find((btn) =>
+        btn.classList.contains("active"),
+      )?.dataset.mode || "smooth"
+    const lineAngles = Array.from(
+      document.querySelectorAll(".multi-color-line-angle-input"),
+    ).map((input) => Number(input.value))
+
+    return {
+      type: "multi-color",
+      gradientStops: colors,
+      angle: Number(DOM.multiGradientAngleInput?.value || 135),
+      mode,
+      showDividers: DOM.multiColorDividersToggle?.checked !== false,
+      dividerColor: DOM.multiColorLineColor?.value || "#FFFFFF",
+      dividerWidth: Number(DOM.multiColorLineWidth?.value || 1.2),
+      freeLineAngles: DOM.multiColorFreeLineAngles?.checked === true,
+      lineAngles,
+      multiColorType: DOM.multiColorTypeSelect?.value || "linear",
+      multiColorRepeating: DOM.multiColorRepeatingToggle?.checked === true,
+      multiColorPosition: DOM.multiColorPositionSelect?.value || "center",
+      multiColorRadialShape:
+        DOM.multiColorRadialShapeSelect?.value || "circle",
+    }
+  }
+
+  const applyMultiColorPresetPayload = (payload) => {
+    if (!Array.isArray(payload.gradientStops) || payload.gradientStops.length < 2) {
+      throw new Error("Invalid multi-color preset")
+    }
+    window.dispatchEvent(
+      new CustomEvent("multiColor:applyPreset", {
+        detail: {
+          ...payload,
+          type: "multi-color",
+          uid: payload.uid || `multi-code-${Date.now()}`,
+        },
+      }),
+    )
+  }
+
+  const getSvgWavePresetPayload = () => ({
+    ...getSvgWaveParams(getSettings()),
+  })
+
+  const applySvgWavePresetPayload = (payload) => {
+    updateSetting("svgWaveLines", Number(payload.lines ?? 5))
+    updateSetting("svgWaveAmplitudeX", Number(payload.amplitudeX ?? 200))
+    updateSetting("svgWaveAmplitudeY", Number(payload.amplitudeY ?? 80))
+    updateSetting("svgWaveOffsetX", Number(payload.offsetX ?? 0))
+    updateSetting("svgWaveAngle", Number(payload.angle ?? 0))
+    updateSetting("svgWaveSmoothness", Number(payload.smoothness ?? 0.5))
+    updateSetting("svgWaveFill", payload.fill !== false)
+    updateSetting("svgWaveCraziness", Number(payload.craziness ?? 30))
+    updateSetting("svgWaveStartHue", Number(payload.startHue ?? 200))
+    updateSetting(
+      "svgWaveStartSaturation",
+      Number(payload.startSaturation ?? 70),
+    )
+    updateSetting(
+      "svgWaveStartLightness",
+      Number(payload.startLightness ?? 40),
+    )
+    updateSetting("svgWaveEndHue", Number(payload.endHue ?? 280))
+    updateSetting("svgWaveEndSaturation", Number(payload.endSaturation ?? 70))
+    updateSetting("svgWaveEndLightness", Number(payload.endLightness ?? 30))
+    updateSetting("svgWaveActive", true)
+    updateSetting("background", null)
+    saveSettings()
+    updateSettingsInputs()
+    const params = getSvgWaveParams(getSettings())
+    if (effects.svgWaveEffect.active) {
+      effects.svgWaveEffect.update(params)
+    } else {
+      effects.svgWaveEffect.start(params)
+    }
+  }
+
+  const setupPresetCodeControls = ({
+    copyBtn,
+    applyBtn,
+    input,
+    type,
+    getPayload,
+    applyPayload,
+  }) => {
+    copyBtn?.addEventListener("click", async () => {
+      const code = encodePresetCode(type, getPayload())
+      if (input) input.value = code
+      try {
+        await copyText(code)
+        flashButtonLabel(copyBtn, "preset_code_copied", "Copied")
+      } catch {
+        showAlert(
+          geti18n().alert_gradient_css_copy_failed ||
+            "Unable to copy. Please copy manually.",
+        )
+      }
+    })
+
+    applyBtn?.addEventListener("click", () => {
+      try {
+        applyPayload(decodePresetCode(input?.value || "", type))
+        flashButtonLabel(applyBtn, "preset_code_applied", "Applied")
+      } catch (error) {
+        console.error("Invalid preset code:", error)
+        showPresetCodeError()
+      }
+    })
+  }
+
   DOM.gradientStartPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientEndPicker.addEventListener("input", updateCurrentGradient)
   DOM.gradientTypeSelect?.addEventListener("change", updateCurrentGradient)
@@ -1869,6 +2043,33 @@ export function setupGeneralEventHandlers(
     updateCurrentGradient()
   })
 
+  setupPresetCodeControls({
+    copyBtn: DOM.gradientCopyCodeBtn,
+    applyBtn: DOM.gradientApplyCodeBtn,
+    input: DOM.gradientPresetCodeInput,
+    type: "gradient",
+    getPayload: getGradientPresetPayload,
+    applyPayload: applyGradientPresetPayload,
+  })
+
+  setupPresetCodeControls({
+    copyBtn: DOM.multiColorCopyCodeBtn,
+    applyBtn: DOM.multiColorApplyCodeBtn,
+    input: DOM.multiColorPresetCodeInput,
+    type: "multiColor",
+    getPayload: getMultiColorPresetPayload,
+    applyPayload: applyMultiColorPresetPayload,
+  })
+
+  setupPresetCodeControls({
+    copyBtn: DOM.svgWaveCopyCodeBtn,
+    applyBtn: DOM.svgWaveApplyCodeBtn,
+    input: DOM.svgWavePresetCodeInput,
+    type: "svgWave",
+    getPayload: getSvgWavePresetPayload,
+    applyPayload: applySvgWavePresetPayload,
+  })
+
   DOM.gradientToggleBtn?.addEventListener("click", () => {
     const nextIsOpen =
       DOM.gradientSettingsBody?.classList.contains("is-collapsed") ?? true
@@ -1880,7 +2081,12 @@ export function setupGeneralEventHandlers(
   DOM.randomGradientColorsBtn?.addEventListener("click", () => {
     const extraCount = Math.min(
       5,
-      Math.max(0, Number(DOM.gradientExtraColorCount?.value || 2)),
+      Math.max(
+        0,
+        DOM.gradientExtraColorCount?.value !== undefined
+          ? Number(DOM.gradientExtraColorCount.value)
+          : 2,
+      ),
     )
     const palette = generateHarmonizedPalette(extraCount + 2)
     const [start, ...rest] = palette
@@ -1949,7 +2155,8 @@ export function setupGeneralEventHandlers(
         g.angle === newGradient.angle &&
         (g.type || "linear") === newGradient.type &&
         (g.repeating === true) === newGradient.repeating &&
-        Number(g.extraColorCount || 2) === newGradient.extraColorCount &&
+        Number(g.extraColorCount !== undefined ? g.extraColorCount : 2) ===
+          newGradient.extraColorCount &&
         (g.customColors || "") === newGradient.customColors &&
         (g.position || "center") === newGradient.position &&
         (g.radialShape || "circle") === newGradient.radialShape,

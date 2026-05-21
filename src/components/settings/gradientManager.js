@@ -307,7 +307,9 @@ function renderUserGradients(DOM) {
       item.dataset.angle = gradient.angle
       item.dataset.type = gradient.type || "linear"
       item.dataset.repeating = String(gradient.repeating === true)
-      item.dataset.extraColorCount = String(gradient.extraColorCount || 2)
+      item.dataset.extraColorCount = String(
+        gradient.extraColorCount !== undefined ? gradient.extraColorCount : 2,
+      )
       item.dataset.customColors = gradient.customColors || ""
       item.dataset.position = gradient.position || "center"
       item.dataset.radialShape = gradient.radialShape || "circle"
@@ -351,7 +353,16 @@ function renderUserGradients(DOM) {
           Number(settings.gradientAngle) === Number(gradient.angle) &&
           (settings.gradientType || "linear") === (gradient.type || "linear") &&
           (settings.gradientRepeating === true) === (gradient.repeating === true) &&
-          Number(settings.gradientExtraColorCount || 2) === Number(gradient.extraColorCount || 2) &&
+          Number(
+            settings.gradientExtraColorCount !== undefined
+              ? settings.gradientExtraColorCount
+              : 2,
+          ) ===
+            Number(
+              gradient.extraColorCount !== undefined
+                ? gradient.extraColorCount
+                : 2,
+            ) &&
           (settings.gradientCustomColors || "") === (gradient.customColors || "") &&
           (settings.gradientPosition || "center") === (gradient.position || "center") &&
           (settings.gradientRadialShape || "circle") === (gradient.radialShape || "circle")

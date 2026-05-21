@@ -545,7 +545,15 @@ export function initSettings() {
       updateSetting("gradientRepeating", value.repeating === true)
       updateSetting(
         "gradientExtraColorCount",
-        Math.min(5, Math.max(1, Number(value.extraColorCount) || 2)),
+        Math.min(
+          5,
+          Math.max(
+            0,
+            value.extraColorCount !== undefined
+              ? Number(value.extraColorCount)
+              : 2,
+          ),
+        ),
       )
       updateSetting(
         "gradientCustomColors",
