@@ -111,6 +111,11 @@ export class CloudDriftEffect {
     this._rgb = hexToRgb(this.baseColor)
   }
 
+  updateColor(color) {
+    this.baseColor = color
+    this._updateColorCache()
+  }
+
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     if (!this._rgb) this._updateColorCache()

@@ -538,6 +538,18 @@ export function initSettings() {
     }
 
     if (isGradient) {
+      const settingsBeforeGradientUpdate = getSettings()
+      const previousGradientUid = settingsBeforeGradientUpdate.activeBgUid
+      const editableGradientUid =
+        value.uid ||
+        ((settingsBeforeGradientUpdate.userGradients || []).some(
+          (gradient) =>
+            gradient.uid === previousGradientUid &&
+            gradient.type !== "multi-color",
+        )
+          ? previousGradientUid
+          : null)
+
       updateSetting("gradientStart", value.start)
       updateSetting("gradientEnd", value.end)
       updateSetting("gradientAngle", value.angle)
@@ -561,7 +573,7 @@ export function initSettings() {
       )
       updateSetting("gradientPosition", value.position || "center")
       updateSetting("gradientRadialShape", value.radialShape || "circle")
-      updateSetting("activeBgUid", value.uid || null)
+      updateSetting("activeBgUid", editableGradientUid)
       updateSetting("background", null)
       updateSetting("multiColorActive", false)
       updateSetting("svgWaveActive", false)
@@ -570,13 +582,55 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
+
+      if (editableGradientUid) {
+        updateSetting(
+          "userGradients",
+          (settingsBeforeGradientUpdate.userGradients || []).map((gradient) => {
+            if (gradient.uid !== editableGradientUid) return gradient
+            return {
+              ...gradient,
+              start: value.start,
+              end: value.end,
+              angle: value.angle,
+              type: value.type || "linear",
+              repeating: value.repeating === true,
+              extraColorCount: Math.min(
+                5,
+                Math.max(
+                  0,
+                  value.extraColorCount !== undefined
+                    ? Number(value.extraColorCount)
+                    : 2,
+                ),
+              ),
+              customColors:
+                typeof value.customColors === "string"
+                  ? value.customColors
+                  : "",
+              position: value.position || "center",
+              radialShape: value.radialShape || "circle",
+            }
+          }),
+        )
+      }
     } else {
       updateSetting(key, value)
       if (key === "background") {
         if (value != null) {
+          const settings = getSettings()
+          const activeBgUid = settings.activeBgUid || null
+          const activePreset = activeBgUid
+            ? (settings.userBackgrounds || []).find((bg) => {
+                const bgId = typeof bg === "object" ? bg.id : bg
+                const bgUid = typeof bg === "object" ? bg.uid || bg.id : bg
+                return bgUid === activeBgUid && bgId === value
+              })
+            : null
+
           updateSetting("lastUserBackground", value)
-          updateSetting("lastUserActiveBgUid", getSettings().activeBgUid || null)
-          updateSetting("activeBgUid", null)
+          updateSetting("lastUserActiveBgUid", activePreset ? activeBgUid : null)
+          if (!activePreset) updateSetting("activeBgUid", null)
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
           updateSetting("silkActive", false)
@@ -596,9 +650,54 @@ export function initSettings() {
       }
     }
 
+    const backgroundVisualKeys = new Set([
+      "bgBlur",
+      "bgBrightness",
+      "bgContrast",
+      "bgSaturation",
+      "bgFadeIn",
+      "bgPositionX",
+      "bgPositionY",
+      "bgSize",
+    ])
+
+    if (!isGradient && backgroundVisualKeys.has(key)) {
+      const settings = getSettings()
+      const userBackgrounds = settings.userBackgrounds || []
+      const activeUid = settings.activeBgUid
+      const activeBg = settings.background
+
+      const nextBackgrounds = userBackgrounds.map((bg) => {
+        const bgId = typeof bg === "object" ? bg.id : bg
+        const bgUid = typeof bg === "object" ? bg.uid || bg.id : bg
+        const isActive =
+          (activeUid && bgUid === activeUid) ||
+          (!activeUid && activeBg && bgId === activeBg)
+
+        if (!isActive) return bg
+
+        const normalized = typeof bg === "object" ? { ...bg } : { id: bg }
+        normalized.settings = {
+          ...(normalized.settings || {}),
+          [key]: value,
+        }
+        return normalized
+      })
+
+      if (nextBackgrounds.some((bg, index) => bg !== userBackgrounds[index])) {
+        updateSetting("userBackgrounds", nextBackgrounds)
+      }
+    }
+
     // Trigger re-renders for galleries to show active state after the settings
     // sidebar has actually needed those galleries.
-    if (settingsGalleriesRendered) {
+    const isSavedGradientSelection = isGradient && Boolean(value?.uid)
+
+    if (
+      settingsGalleriesRendered &&
+      !backgroundVisualKeys.has(key) &&
+      (!isGradient || isSavedGradientSelection)
+    ) {
       setTimeout(() => {
         renderUserGradients(DOM_EXPORTS)
         renderSavedMultiColors(DOM_EXPORTS)
@@ -625,7 +724,7 @@ export function initSettings() {
 
     // Avoid expensive gallery rerenders for unrelated toggles (e.g. clock/date).
     const shouldRefreshBackgroundGalleries =
-      isGradient ||
+      isSavedGradientSelection ||
       key === "background" ||
       key === "svgWaveActive" ||
       key === "gradientV2Active" ||

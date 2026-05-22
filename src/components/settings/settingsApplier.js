@@ -178,12 +178,12 @@ function getEffectPerformanceOptions(settings, effectName) {
 
   if (effectName === "stormRain") {
     if (mode === "quality") {
-      return { targetFps: 44, renderScale: 1, densityScale: 0.82 }
+      return { targetFps: 50, renderScale: 1, densityScale: 0.82 }
     }
     if (shouldSave) {
-      return { targetFps: 26, renderScale: 1, densityScale: 0.52 }
+      return { targetFps: 30, renderScale: 1, densityScale: 0.48 }
     }
-    return { targetFps: 34, renderScale: 1, densityScale: 0.68 }
+    return { targetFps: 42, renderScale: 1, densityScale: 0.62 }
   }
 
   if (effectName === "rainHD") {
@@ -1555,8 +1555,8 @@ function createApplySettings(effectInstances) {
     }
 
     if (effectToStart === "oceanWave" && selectedEffect) {
-      selectedEffect.color = settings.oceanWaveColor || "#0077b6"
-      selectedEffect.position = settings.oceanWavePosition || "bottom"
+      selectedEffect.updateColor?.(settings.oceanWaveColor || "#0077b6")
+      selectedEffect.setPosition?.(settings.oceanWavePosition || "bottom")
     }
 
     if (
@@ -1564,7 +1564,7 @@ function createApplySettings(effectInstances) {
       selectedEffect &&
       selectedEffect.updateColor
     ) {
-      selectedEffect.updateColor(settings.bubblesColor || "#60c8ff")
+      selectedEffect.updateColor(settings.bubbleColor || "#60c8ff")
     }
 
     if (

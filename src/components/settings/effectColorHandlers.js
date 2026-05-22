@@ -195,7 +195,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("bubbleColor", DOM.bubblesColorPicker.value)
     saveSettings()
     if (effectInstances.bubblesEffect)
-      effectInstances.bubblesEffect.color = DOM.bubblesColorPicker.value
+      effectInstances.bubblesEffect.updateColor(DOM.bubblesColorPicker.value)
   })
 
   DOM.gridScanColorPicker.addEventListener("input", () => {
@@ -334,10 +334,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("stormRainColor", DOM.stormRainColorPicker.value)
     saveSettings()
     if (effectInstances.stormRainEffect) {
-      effectInstances.stormRainEffect.rainColor = DOM.stormRainColorPicker.value
-      effectInstances.stormRainEffect._parseRainColor(
-        DOM.stormRainColorPicker.value,
-      )
+      effectInstances.stormRainEffect.updateColor(DOM.stormRainColorPicker.value)
     }
   })
 
@@ -352,14 +349,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("oceanWaveColor", DOM.oceanWaveColorPicker.value)
     saveSettings()
     if (effectInstances.oceanWaveEffect)
-      effectInstances.oceanWaveEffect.color = DOM.oceanWaveColorPicker.value
+      effectInstances.oceanWaveEffect.updateColor(DOM.oceanWaveColorPicker.value)
   })
 
   DOM.oceanWavePosBottomBtn.addEventListener("click", () => {
     updateSetting("oceanWavePosition", "bottom")
     saveSettings()
     if (effectInstances.oceanWaveEffect)
-      effectInstances.oceanWaveEffect.position = "bottom"
+      effectInstances.oceanWaveEffect.setPosition("bottom")
     DOM.oceanWavePosBottomBtn.classList.add("active")
     DOM.oceanWavePosTopBtn.classList.remove("active")
   })
@@ -368,7 +365,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("oceanWavePosition", "top")
     saveSettings()
     if (effectInstances.oceanWaveEffect)
-      effectInstances.oceanWaveEffect.position = "top"
+      effectInstances.oceanWaveEffect.setPosition("top")
     DOM.oceanWavePosTopBtn.classList.add("active")
     DOM.oceanWavePosBottomBtn.classList.remove("active")
   })
@@ -377,7 +374,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     updateSetting("cloudDriftColor", DOM.cloudDriftColorPicker.value)
     saveSettings()
     if (effectInstances.cloudDriftEffect)
-      effectInstances.cloudDriftEffect.color = DOM.cloudDriftColorPicker.value
+      effectInstances.cloudDriftEffect.updateColor(DOM.cloudDriftColorPicker.value)
   })
 
   DOM.shinyColorPicker.addEventListener("input", () => {

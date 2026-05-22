@@ -988,6 +988,17 @@ export function setupGeneralEventHandlers(
   })
 
   if (unsplashSaveBtn) {
+    const getBackgroundSnapshot = (settings) => ({
+      bgBlur: settings.bgBlur ?? 0,
+      bgBrightness: settings.bgBrightness ?? 100,
+      bgContrast: settings.bgContrast ?? 100,
+      bgSaturation: settings.bgSaturation ?? 100,
+      bgFadeIn: settings.bgFadeIn ?? 0.5,
+      bgPositionX: settings.bgPositionX ?? 50,
+      bgPositionY: settings.bgPositionY ?? 50,
+      bgSize: settings.bgSize || "cover",
+    })
+
     unsplashSaveBtn.addEventListener("click", () => {
       const settings = getSettings()
       const currentBg = settings.background
@@ -1006,12 +1017,7 @@ export function setupGeneralEventHandlers(
         date: new Date().toISOString(),
         photoUrl: lastUnsplashPhoto?.links?.html || settings.unsplashLastCredit?.photoUrl || "",
         authorUrl: lastUnsplashPhoto?.user?.links?.html || settings.unsplashLastCredit?.authorUrl || "",
-        // Capture current visual settings
-        settings: {
-          bgBlur: settings.bgBlur,
-          bgBrightness: settings.bgBrightness,
-          bgFadeIn: settings.bgFadeIn
-        }
+        settings: getBackgroundSnapshot(settings),
       }
 
       settings.userBackgrounds = settings.userBackgrounds || []
@@ -1281,28 +1287,72 @@ export function setupGeneralEventHandlers(
   renderUserAccentColors(DOM)
 
   // Background effects
-  DOM.bgSizeSelect.addEventListener("change", () =>
-    handleSettingUpdate("bgSize", DOM.bgSizeSelect.value),
-  )
+  const applyBackgroundVisualPreview = (next = {}) => {
+    const root = document.documentElement
+    const bgLayer = document.getElementById("bg-layer")
+    const bgVideo = document.getElementById("bg-video")
+    const current = getSettings()
+    const x = next.bgPositionX ?? current.bgPositionX ?? 50
+    const y = next.bgPositionY ?? current.bgPositionY ?? 50
+    const size = next.bgSize ?? current.bgSize ?? "cover"
+    const filters = [
+      `blur(${next.bgBlur ?? current.bgBlur ?? 0}px)`,
+      `brightness(${next.bgBrightness ?? current.bgBrightness ?? 100}%)`,
+      `contrast(${next.bgContrast ?? current.bgContrast ?? 100}%)`,
+      `saturate(${next.bgSaturation ?? current.bgSaturation ?? 100}%)`,
+    ].join(" ")
+
+    root.style.setProperty("--bg-pos-x", `${x}%`)
+    root.style.setProperty("--bg-pos-y", `${y}%`)
+    root.style.setProperty("--bg-filter", filters)
+    root.style.setProperty("--bg-blur", `${next.bgBlur ?? current.bgBlur ?? 0}px`)
+    root.style.setProperty(
+      "--bg-brightness",
+      `${next.bgBrightness ?? current.bgBrightness ?? 100}%`,
+    )
+    if (bgLayer) {
+      bgLayer.style.backgroundPosition = `${x}% ${y}%`
+      bgLayer.style.backgroundSize = size
+      bgLayer.style.filter = filters
+    }
+    document.body.style.backgroundPosition = `${x}% ${y}%`
+    document.body.style.backgroundSize = size
+    document.body.style.filter = document.body.style.filter || ""
+    if (bgVideo) {
+      bgVideo.style.objectPosition = `${x}% ${y}%`
+      bgVideo.style.filter = filters
+    }
+  }
+
+  DOM.bgSizeSelect.addEventListener("change", () => {
+    applyBackgroundVisualPreview({ bgSize: DOM.bgSizeSelect.value })
+    handleSettingUpdate("bgSize", DOM.bgSizeSelect.value)
+  })
 
   DOM.bgPosXInput.addEventListener("input", () => {
     DOM.bgPosXValue.textContent = `${DOM.bgPosXInput.value}%`
+    applyBackgroundVisualPreview({ bgPositionX: DOM.bgPosXInput.value })
     handleSettingUpdate("bgPositionX", DOM.bgPosXInput.value)
   })
 
   DOM.bgPosYInput.addEventListener("input", () => {
     DOM.bgPosYValue.textContent = `${DOM.bgPosYInput.value}%`
+    applyBackgroundVisualPreview({ bgPositionY: DOM.bgPosYInput.value })
     handleSettingUpdate("bgPositionY", DOM.bgPosYInput.value)
   })
 
   DOM.bgBlurInput.addEventListener("input", () => {
     DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}px`
+    applyBackgroundVisualPreview({ bgBlur: Number(DOM.bgBlurInput.value) })
     handleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
   })
 
   if (DOM.bgContrastInput) {
     DOM.bgContrastInput.addEventListener("input", () => {
       DOM.bgContrastValue.textContent = `${DOM.bgContrastInput.value}%`
+      applyBackgroundVisualPreview({
+        bgContrast: Number(DOM.bgContrastInput.value),
+      })
       handleSettingUpdate("bgContrast", Number(DOM.bgContrastInput.value))
     })
   }
@@ -1310,12 +1360,18 @@ export function setupGeneralEventHandlers(
   if (DOM.bgSaturationInput) {
     DOM.bgSaturationInput.addEventListener("input", () => {
       DOM.bgSaturationValue.textContent = `${DOM.bgSaturationInput.value}%`
+      applyBackgroundVisualPreview({
+        bgSaturation: Number(DOM.bgSaturationInput.value),
+      })
       handleSettingUpdate("bgSaturation", Number(DOM.bgSaturationInput.value))
     })
   }
 
   DOM.bgBrightnessInput.addEventListener("input", () => {
     DOM.bgBrightnessValue.textContent = `${DOM.bgBrightnessInput.value}%`
+    applyBackgroundVisualPreview({
+      bgBrightness: Number(DOM.bgBrightnessInput.value),
+    })
     handleSettingUpdate("bgBrightness", Number(DOM.bgBrightnessInput.value))
   })
 
@@ -1852,7 +1908,7 @@ export function setupGeneralEventHandlers(
       radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
     }
 
-    handleSettingUpdate(null, gradientConfig, true)
+    handleSettingUpdate(null, gradientConfig)
   }
 
   const showPresetCodeError = () => {
@@ -2179,8 +2235,6 @@ export function setupGeneralEventHandlers(
   })
   DOM.gradientAngleInput.addEventListener("input", () => {
     DOM.gradientAngleValue.textContent = `${DOM.gradientAngleInput.value}°`
-  })
-  DOM.gradientAngleInput.addEventListener("change", () => {
     updateCurrentGradient()
   })
 

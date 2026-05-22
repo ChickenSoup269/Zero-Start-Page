@@ -54,6 +54,15 @@ export class OceanWaveEffect {
     this.animate(0)
   }
 
+  updateColor(color) {
+    this.color = color
+    this.rgb = this._hexToRgb(color)
+  }
+
+  setPosition(position) {
+    this.position = position === "top" ? "top" : "bottom"
+  }
+
   stop() {
     if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false

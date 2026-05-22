@@ -918,6 +918,7 @@ export function setupMultiColorManager(applySettings) {
   setupMultiSelect()
 
   function syncMultiColorToState(forceApply = true) {
+    const settings = getSettings()
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     const colors = pickers.map((p) => p.value)
     const angle = DOM.multiGradientAngleInput.value
@@ -929,6 +930,13 @@ export function setupMultiColorManager(applySettings) {
     const repeating = DOM.multiColorRepeatingToggle.checked
     const position = DOM.multiColorPositionSelect.value
     const radialShape = DOM.multiColorRadialShapeSelect.value
+    const activeUid = settings.activeBgUid
+    const editableMultiUid =
+      (settings.userGradients || []).some(
+        (preset) => preset.uid === activeUid && preset.type === "multi-color",
+      )
+        ? activeUid
+        : null
 
     updateSetting("multiColors", colors)
     updateSetting("multiGradientAngle", parseInt(angle))
@@ -946,7 +954,7 @@ export function setupMultiColorManager(applySettings) {
     
     // Crucial: Set background to null so settingsApplier uses multiColor logic
     updateSetting("background", null)
-    updateSetting("activeBgUid", null) // Clear preset UID when modifying manually
+    updateSetting("activeBgUid", editableMultiUid)
     
     // Deactivate other effects
     updateSetting("svgWaveActive", false)
@@ -955,6 +963,30 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("lightPillarActive", false)
     updateSetting("liquidEtherActive", false)
     updateSetting("splashCursorActive", false)
+
+    if (editableMultiUid) {
+      updateSetting(
+        "userGradients",
+        (settings.userGradients || []).map((preset) => {
+          if (preset.uid !== editableMultiUid) return preset
+          return {
+            ...preset,
+            gradientStops: colors,
+            angle: parseInt(angle),
+            mode,
+            showDividers: dividerConfig.enabled,
+            dividerColor: dividerConfig.color,
+            dividerWidth: dividerConfig.width,
+            freeLineAngles: lineAngleConfig.enabled,
+            lineAngles: lineAngleConfig.lineAngles,
+            multiColorType: type,
+            multiColorRepeating: repeating,
+            multiColorPosition: position,
+            multiColorRadialShape: radialShape,
+          }
+        }),
+      )
+    }
 
     saveSettings()
 

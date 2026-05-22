@@ -38,7 +38,7 @@ export class StormRainEffect {
     this.density = options.density ?? 115
     this.speedMult = options.speed ?? 1.0
     this.autoWind = options.autoWind ?? true // false = gió cố định
-    this.targetFps = options.targetFps ?? 36
+    this.targetFps = options.targetFps ?? 42
     this.renderScale = options.renderScale ?? 1
     this.densityScale = options.densityScale ?? 0.85
 
@@ -485,13 +485,14 @@ export class StormRainEffect {
     const mult = this.speedMult * (dt / 16.67)
 
     // Fade trail
-    const fade = Math.min(0.48, 0.3 + Math.abs(this.windX) * 0.05)
+    const fade = Math.min(0.38, 0.22 + Math.abs(this.windX) * 0.04)
     rctx.globalCompositeOperation = "destination-out"
     rctx.fillStyle = `rgba(0,0,0,${fade})`
     rctx.fillRect(0, 0, W, H)
     rctx.globalCompositeOperation = "source-over"
     rctx.lineCap = "round"
     rctx.strokeStyle = this._rainStroke
+    const rgb = `${this._r},${this._g},${this._b}`
 
     for (let i = this.drops.length - 1; i >= 0; i--) {
       const d = this.drops[i]
@@ -517,7 +518,13 @@ export class StormRainEffect {
       const headX = d.x + d.vx * 0.04
       const headY = d.y + d.len
 
-      rctx.globalAlpha = d.op
+      const streak = rctx.createLinearGradient(tailX, tailY, headX, headY)
+      streak.addColorStop(0, `rgba(${rgb},0)`)
+      streak.addColorStop(0.48, `rgba(${rgb},${d.op * 0.55})`)
+      streak.addColorStop(1, `rgba(${rgb},${d.op})`)
+
+      rctx.globalAlpha = 1
+      rctx.strokeStyle = streak
       rctx.lineWidth = Math.max(0.4, d.width)
       rctx.beginPath()
       rctx.moveTo(tailX, tailY)
@@ -525,7 +532,7 @@ export class StormRainEffect {
       rctx.stroke()
 
       if (d.li === 2 && d.op > 0.32) {
-        rctx.globalAlpha = Math.min(0.55, d.op)
+        rctx.globalAlpha = Math.min(0.42, d.op)
         rctx.strokeStyle = this._rainHeadStroke
         rctx.beginPath()
         rctx.moveTo(headX - d.vx * 0.08, headY - d.len * 0.18)
