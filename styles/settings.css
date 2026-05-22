@@ -5546,6 +5546,8 @@ body.sidebar-light .remove-bg-btn:hover i {
   padding: 5px;
   max-height: 60vh;
   overflow-y: auto;
+  overflow-anchor: none;
+  overscroll-behavior: contain;
 }
 
 .explorer-photo-item {

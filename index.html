@@ -1293,266 +1293,7 @@
                     <span data-i18n="settings_gradient_multi_title">Gradient & Multi-Color</span>
                 </h3>
                 <div class="section-content">
-                    <!-- SVG Gradient Wave Generator -->
-                    <div class="setting-group" id="svg-wave-group">
-                <div class="setting-label"><i class="fa-solid fa-water"></i> <span
-                        data-i18n="settings_svg_wave_title">SVG Gradient
-                        Wave</span></div>
-                <button id="svg-wave-toggle-btn" class="secondary-btn full-width">
-                    <i class="fa-solid fa-wave-square"></i>
-                    <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave Generator</span>
-                </button>
-                <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
 
-                    <!-- Core Shape & Geometry -->
-                    <div class="setting-group"
-                        style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
-                                class="fa-solid fa-shapes"></i> Geometry</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-lines" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_lines">Lines</span>
-                                    <span id="svg-wave-lines-value"
-                                        style="opacity: 0.8; font-family: monospace;">5</span>
-                                </label>
-                                <input type="range" id="svg-wave-lines" min="1" max="50" value="5" style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-smoothness" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_smoothness">Smoothness</span>
-                                    <span id="svg-wave-smoothness-value"
-                                        style="opacity: 0.8; font-family: monospace;">0.5</span>
-                                </label>
-                                <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05" value="0.5"
-                                    style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-craziness" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_craziness">Craziness</span>
-                                    <span id="svg-wave-craziness-value"
-                                        style="opacity: 0.8; font-family: monospace;">30</span>
-                                </label>
-                                <input type="range" id="svg-wave-craziness" min="0" max="500" value="30"
-                                    style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-offset-x" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_offset_x">Offset X</span>
-                                    <span id="svg-wave-offset-x-value"
-                                        style="opacity: 0.8; font-family: monospace;">0</span>
-                                </label>
-                                <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0"
-                                    style="width: 100%;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Amplitude & Angle -->
-                    <div class="setting-group"
-                        style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
-                                class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-amp-x" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
-                                    <span id="svg-wave-amp-x-value"
-                                        style="opacity: 0.8; font-family: monospace;">200</span>
-                                </label>
-                                <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200"
-                                    style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top">
-                                <label for="svg-wave-amp-y" style="display: flex; justify-content: space-between;">
-                                    <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
-                                    <span id="svg-wave-amp-y-value"
-                                        style="opacity: 0.8; font-family: monospace;">80</span>
-                                </label>
-                                <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80"
-                                    style="width: 100%;">
-                            </div>
-                            <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
-                                <div class="wave-angle-header"
-                                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                    <label for="svg-wave-angle" style="margin: 0;">
-                                        <span data-i18n="settings_svg_wave_angle">Angle</span>:
-                                        <span id="svg-wave-angle-value"
-                                            style="opacity: 0.8; font-family: monospace;">0</span>°
-                                    </label>
-                                    <div class="wave-angle-presets" style="display: flex; gap: 4px;">
-                                        <button class="wave-angle-preset-btn secondary-btn"
-                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270"
-                                            title="Left"><i class="fa-solid fa-arrow-left"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn"
-                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90"
-                                            title="Right"><i class="fa-solid fa-arrow-right"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn"
-                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0" title="Top"><i
-                                                class="fa-solid fa-arrow-up"></i></button>
-                                        <button class="wave-angle-preset-btn secondary-btn"
-                                            style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180"
-                                            title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
-                                    </div>
-                                </div>
-                                <input type="range" id="svg-wave-angle" min="-360" max="360" value="0"
-                                    style="width: 100%;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item-row"
-                        style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
-                        <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill"
-                            style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill Shape</label>
-                        <input type="checkbox" id="svg-wave-fill" checked>
-                    </div>
-
-                    <!-- Colors -->
-                    <div class="setting-group"
-                        style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
-                                class="fa-solid fa-palette"></i> Colors</h4>
-
-                        <div
-                            style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <label data-i18n="settings_svg_wave_start_color"
-                                style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
-                            <div id="svg-wave-start-preview"
-                                style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <label for="svg-wave-start-hue"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
-                                        <span id="svg-wave-start-hue-value" style="opacity:0.8;">200</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200"
-                                        style="width: 100%;">
-                                </div>
-                                <div>
-                                    <label for="svg-wave-start-sat"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
-                                        <span id="svg-wave-start-sat-value" style="opacity:0.8;">70%</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70"
-                                        style="width: 100%;">
-                                </div>
-                                <div style="grid-column: 1 / -1;">
-                                    <label for="svg-wave-start-light"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_light">Light</span>
-                                        <span id="svg-wave-start-light-value" style="opacity:0.8;">40%</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-start-light" min="0" max="100" value="40"
-                                        style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label data-i18n="settings_svg_wave_end_color"
-                                style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
-                            <div id="svg-wave-end-preview"
-                                style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <label for="svg-wave-end-hue"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_hue">Hue</span>
-                                        <span id="svg-wave-end-hue-value" style="opacity:0.8;">280</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280"
-                                        style="width: 100%;">
-                                </div>
-                                <div>
-                                    <label for="svg-wave-end-sat"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_sat">Sat.</span>
-                                        <span id="svg-wave-end-sat-value" style="opacity:0.8;">70%</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70"
-                                        style="width: 100%;">
-                                </div>
-                                <div style="grid-column: 1 / -1;">
-                                    <label for="svg-wave-end-light"
-                                        style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                                        <span data-i18n="settings_svg_wave_light">Light</span>
-                                        <span id="svg-wave-end-light-value" style="opacity:0.8;">30%</span>
-                                    </label>
-                                    <input type="range" id="svg-wave-end-light" min="0" max="100" value="30"
-                                        style="width: 100%;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                        <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize">
-                            <i class="fa-solid fa-dice"></i> <span
-                                data-i18n="settings_svg_wave_randomize">Randomize</span>
-                        </button>
-                        <button id="svg-wave-crazy-btn" class="secondary-btn"
-                            style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
-                            <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy
-                                Mode!</span>
-                        </button>
-                    </div>
-                    <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px;">
-                        <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save
-                            Wave</span>
-                    </button>
-                    <div class="preset-code-card">
-                        <div class="preset-code-actions">
-                            <button id="svg-wave-copy-code-btn" class="secondary-btn" type="button">
-                                <i class="fa-solid fa-copy"></i>
-                                <span data-i18n="preset_code_copy">Copy Code</span>
-                            </button>
-                            <button id="svg-wave-apply-code-btn" class="secondary-btn" type="button">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span data-i18n="preset_code_apply">Apply Code</span>
-                            </button>
-                        </div>
-                        <textarea id="svg-wave-preset-code-input" class="preset-code-input" rows="2"
-                            data-i18n-placeholder="preset_code_placeholder"
-                            placeholder="Paste preset code here"></textarea>
-                    </div>
-                    <button id="svg-wave-close-btn" class="secondary-btn full-width">
-                        <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close
-                            Controls</span>
-                    </button>
-                </div>
-
-                <!-- Saved Waves Gallery (always visible) -->
-                <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <label data-i18n="settings_svg_wave_saved_label"
-                            style="font-size:0.8rem;opacity:0.7;margin-bottom:0;" for="aura-color-picker">Saved
-                            Waves</label>
-                        <span id="count-svg-wave"></span>
-                        <button id="svg-wave-select-mode-btn" class="secondary-btn" title="Select multiple to delete"
-                            data-i18n="bg_select_mode"
-                            style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
-                    </div>
-                    <div id="svg-wave-select-toolbar" class="bg-select-toolbar"
-                        style="display:none; margin-bottom: 10px;">
-                        <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i
-                                    class="fa-solid fa-check-double"></i></button>
-                            <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
-                                    class="fa-solid fa-trash"></i></button>
-                            <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i
-                                    class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-                    <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
-                </div>
-                    </div>
                     <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-share-nodes"></i> <span
                                 data-i18n="visual_preset_hub_title">Visual Preset Hub</span></div>
@@ -1560,7 +1301,8 @@
                             <div class="preset-code-header">
                                 <div>
                                     <strong data-i18n="visual_preset_bundle_title">Full visual bundle</strong>
-                                    <small data-i18n="visual_preset_bundle_hint">Gradient, Multi-Color, SVG Wave, Effect and Theme</small>
+                                    <small data-i18n="visual_preset_bundle_hint">Gradient, Multi-Color, SVG Wave, Effect
+                                        and Theme</small>
                                 </div>
                                 <span class="preset-code-chip">SPC1</span>
                             </div>
@@ -1579,6 +1321,277 @@
                                 placeholder="Paste visual preset code here"></textarea>
                         </div>
                     </div>
+
+                    <!-- SVG Gradient Wave Generator -->
+                    <div class="setting-group" id="svg-wave-group">
+                        <div class="setting-label"><i class="fa-solid fa-water"></i> <span
+                                data-i18n="settings_svg_wave_title">SVG Gradient
+                                Wave</span></div>
+                        <button id="svg-wave-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-wave-square"></i>
+                            <span id="svg-wave-toggle-label" data-i18n="settings_svg_wave_open">Open Wave
+                                Generator</span>
+                        </button>
+                        <div id="svg-wave-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Core Shape & Geometry -->
+                            <div class="setting-group"
+                                style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                        class="fa-solid fa-shapes"></i> Geometry</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-lines"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_lines">Lines</span>
+                                            <span id="svg-wave-lines-value"
+                                                style="opacity: 0.8; font-family: monospace;">5</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-lines" min="1" max="50" value="5"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-smoothness"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_smoothness">Smoothness</span>
+                                            <span id="svg-wave-smoothness-value"
+                                                style="opacity: 0.8; font-family: monospace;">0.5</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-smoothness" min="0" max="1" step="0.05"
+                                            value="0.5" style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-craziness"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_craziness">Craziness</span>
+                                            <span id="svg-wave-craziness-value"
+                                                style="opacity: 0.8; font-family: monospace;">30</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-craziness" min="0" max="500" value="30"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-offset-x"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_offset_x">Offset X</span>
+                                            <span id="svg-wave-offset-x-value"
+                                                style="opacity: 0.8; font-family: monospace;">0</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-offset-x" min="0" max="1000" value="0"
+                                            style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amplitude & Angle -->
+                            <div class="setting-group"
+                                style="margin-bottom: 12px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                        class="fa-solid fa-arrows-up-down-left-right"></i> Amplitude & Direction</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-amp-x"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_amp_x">Amplitude X</span>
+                                            <span id="svg-wave-amp-x-value"
+                                                style="opacity: 0.8; font-family: monospace;">200</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-amp-x" min="30" max="1000" value="200"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label for="svg-wave-amp-y"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_svg_wave_amp_y">Amplitude Y</span>
+                                            <span id="svg-wave-amp-y-value"
+                                                style="opacity: 0.8; font-family: monospace;">80</span>
+                                        </label>
+                                        <input type="range" id="svg-wave-amp-y" min="5" max="1000" value="80"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
+                                        <div class="wave-angle-header"
+                                            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                            <label for="svg-wave-angle" style="margin: 0;">
+                                                <span data-i18n="settings_svg_wave_angle">Angle</span>:
+                                                <span id="svg-wave-angle-value"
+                                                    style="opacity: 0.8; font-family: monospace;">0</span>°
+                                            </label>
+                                            <div class="wave-angle-presets" style="display: flex; gap: 4px;">
+                                                <button class="wave-angle-preset-btn secondary-btn"
+                                                    style="padding: 2px 8px; font-size: 0.8rem;" data-angle="270"
+                                                    title="Left"><i class="fa-solid fa-arrow-left"></i></button>
+                                                <button class="wave-angle-preset-btn secondary-btn"
+                                                    style="padding: 2px 8px; font-size: 0.8rem;" data-angle="90"
+                                                    title="Right"><i class="fa-solid fa-arrow-right"></i></button>
+                                                <button class="wave-angle-preset-btn secondary-btn"
+                                                    style="padding: 2px 8px; font-size: 0.8rem;" data-angle="0"
+                                                    title="Top"><i class="fa-solid fa-arrow-up"></i></button>
+                                                <button class="wave-angle-preset-btn secondary-btn"
+                                                    style="padding: 2px 8px; font-size: 0.8rem;" data-angle="180"
+                                                    title="Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+                                            </div>
+                                        </div>
+                                        <input type="range" id="svg-wave-angle" min="-360" max="360" value="0"
+                                            style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="setting-item-row"
+                                style="margin-bottom: 12px; background: rgba(255,255,255,0.03); padding: 10px 14px; border-radius: 10px;">
+                                <label for="svg-wave-fill" data-i18n="settings_svg_wave_fill"
+                                    style="margin: 0; font-weight: 600;"><i class="fa-solid fa-fill"></i> Fill
+                                    Shape</label>
+                                <input type="checkbox" id="svg-wave-fill" checked>
+                            </div>
+
+                            <!-- Colors -->
+                            <div class="setting-group"
+                                style="margin-bottom: 15px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="margin-bottom: 12px; opacity: 0.9; font-size: 0.9rem;"><i
+                                        class="fa-solid fa-palette"></i> Colors</h4>
+
+                                <div
+                                    style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <label data-i18n="settings_svg_wave_start_color"
+                                        style="display: block; margin-bottom: 8px;"><strong>Start Color</strong></label>
+                                    <div id="svg-wave-start-preview"
+                                        style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(200,70%,40%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <div>
+                                            <label for="svg-wave-start-hue"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                                <span id="svg-wave-start-hue-value" style="opacity:0.8;">200</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-start-hue" min="0" max="360" value="200"
+                                                style="width: 100%;">
+                                        </div>
+                                        <div>
+                                            <label for="svg-wave-start-sat"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                                <span id="svg-wave-start-sat-value" style="opacity:0.8;">70%</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-start-sat" min="0" max="100" value="70"
+                                                style="width: 100%;">
+                                        </div>
+                                        <div style="grid-column: 1 / -1;">
+                                            <label for="svg-wave-start-light"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_light">Light</span>
+                                                <span id="svg-wave-start-light-value" style="opacity:0.8;">40%</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-start-light" min="0" max="100" value="40"
+                                                style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label data-i18n="settings_svg_wave_end_color"
+                                        style="display: block; margin-bottom: 8px;"><strong>End Color</strong></label>
+                                    <div id="svg-wave-end-preview"
+                                        style="height:24px; border-radius:6px; margin-bottom:10px; background:hsl(280,70%,30%); transition:background 0.2s; border: 1px solid rgba(255,255,255,0.2);">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <div>
+                                            <label for="svg-wave-end-hue"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_hue">Hue</span>
+                                                <span id="svg-wave-end-hue-value" style="opacity:0.8;">280</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-end-hue" min="0" max="360" value="280"
+                                                style="width: 100%;">
+                                        </div>
+                                        <div>
+                                            <label for="svg-wave-end-sat"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_sat">Sat.</span>
+                                                <span id="svg-wave-end-sat-value" style="opacity:0.8;">70%</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-end-sat" min="0" max="100" value="70"
+                                                style="width: 100%;">
+                                        </div>
+                                        <div style="grid-column: 1 / -1;">
+                                            <label for="svg-wave-end-light"
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_svg_wave_light">Light</span>
+                                                <span id="svg-wave-end-light-value" style="opacity:0.8;">30%</span>
+                                            </label>
+                                            <input type="range" id="svg-wave-end-light" min="0" max="100" value="30"
+                                                style="width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                                <button id="svg-wave-randomize-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i> <span
+                                        data-i18n="settings_svg_wave_randomize">Randomize</span>
+                                </button>
+                                <button id="svg-wave-crazy-btn" class="secondary-btn"
+                                    style="color: #ffb703; border-color: rgba(255, 183, 3, 0.3);">
+                                    <i class="fa-solid fa-bolt"></i> <span data-i18n="settings_svg_wave_crazy">Crazy
+                                        Mode!</span>
+                                </button>
+                            </div>
+                            <button id="svg-wave-save-btn" class="secondary-btn full-width" style="margin-bottom: 8px;">
+                                <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="settings_svg_wave_save">Save
+                                    Wave</span>
+                            </button>
+                            <div class="preset-code-card">
+                                <div class="preset-code-actions">
+                                    <button id="svg-wave-copy-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-copy"></i>
+                                        <span data-i18n="preset_code_copy">Copy Code</span>
+                                    </button>
+                                    <button id="svg-wave-apply-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <span data-i18n="preset_code_apply">Apply Code</span>
+                                    </button>
+                                </div>
+                                <textarea id="svg-wave-preset-code-input" class="preset-code-input" rows="2"
+                                    data-i18n-placeholder="preset_code_placeholder"
+                                    placeholder="Paste preset code here"></textarea>
+                            </div>
+                            <button id="svg-wave-close-btn" class="secondary-btn full-width">
+                                <i class="fa-solid fa-xmark"></i> <span data-i18n="settings_svg_wave_close">Close
+                                    Controls</span>
+                            </button>
+                        </div>
+
+                        <!-- Saved Waves Gallery (always visible) -->
+                        <div id="user-svg-waves-gallery-wrap" style="margin-top:10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <label data-i18n="settings_svg_wave_saved_label"
+                                    style="font-size:0.8rem;opacity:0.7;margin-bottom:0;" for="aura-color-picker">Saved
+                                    Waves</label>
+                                <span id="count-svg-wave"></span>
+                                <button id="svg-wave-select-mode-btn" class="secondary-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode"
+                                    style="margin-left: auto; padding: 2px 8px; font-size: 0.75rem;">Select</button>
+                            </div>
+                            <div id="svg-wave-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="svg-wave-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="svg-wave-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="svg-wave-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="svg-wave-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-svg-waves-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
                     <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-fill-drip"></i> <span
                                 data-i18n="settings_gradient_title">Background Gradient</span></div>
@@ -1954,8 +1967,10 @@
                         <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
                             <div class="preset-code-header">
                                 <div>
-                                    <strong data-i18n="background_animation_preset_share_title">Share Background Animation Code</strong>
-                                    <small data-i18n="background_animation_preset_bundle_hint">Gradient V2, Silk, Light Pillar, Mist Light Streams and Splash Cursor</small>
+                                    <strong data-i18n="background_animation_preset_share_title">Share Background
+                                        Animation Code</strong>
+                                    <small data-i18n="background_animation_preset_bundle_hint">Gradient V2, Silk, Light
+                                        Pillar, Mist Light Streams and Splash Cursor</small>
                                 </div>
                                 <span class="preset-code-chip">BAC1</span>
                             </div>
@@ -2762,7 +2777,8 @@
                                 <div class="preset-code-header">
                                     <div>
                                         <strong data-i18n="effect_preset_bundle_title">Current effect config</strong>
-                                        <small data-i18n="effect_preset_bundle_hint">Effect choice, colors, performance and effect-specific settings</small>
+                                        <small data-i18n="effect_preset_bundle_hint">Effect choice, colors, performance
+                                            and effect-specific settings</small>
                                     </div>
                                     <span class="preset-code-chip">SPC1</span>
                                 </div>
@@ -2787,8 +2803,8 @@
                                 <span data-i18n="settings_performance_mode">Performance Mode</span>
                             </div>
                             <div class="btn-group performance-mode-group" id="performance-mode-group">
-                                <button type="button" class="btn-group-item performance-mode-btn active" data-mode="auto"
-                                    data-i18n="settings_performance_auto">Auto</button>
+                                <button type="button" class="btn-group-item performance-mode-btn active"
+                                    data-mode="auto" data-i18n="settings_performance_auto">Auto</button>
                                 <button type="button" class="btn-group-item performance-mode-btn" data-mode="quality"
                                     data-i18n="settings_performance_quality">Quality</button>
                                 <button type="button" class="btn-group-item performance-mode-btn" data-mode="battery"
@@ -3873,8 +3889,8 @@
                                         </div>
                                     </div>
                                     <button id="soft-aurora-random-colors-btn" class="secondary-btn full-width"
-                                        title="Randomize Soft Aurora" data-i18n-title="settings_soft_aurora_random_colors"
-                                        style="margin-top: 10px;">
+                                        title="Randomize Soft Aurora"
+                                        data-i18n-title="settings_soft_aurora_random_colors" style="margin-top: 10px;">
                                         <i class="fa-solid fa-dice"></i>
                                         <span data-i18n="settings_soft_aurora_random_colors">Randomize</span>
                                     </button>
@@ -4319,10 +4335,12 @@
                         </div>
 
                         <div id="clock-style-bg-setting" class="setting-item no-margin-top" style="display: none;">
-                            <label for="clock-style-bg-select" data-i18n="settings_clock_style_bg">Clock Background</label>
+                            <label for="clock-style-bg-select" data-i18n="settings_clock_style_bg">Clock
+                                Background</label>
                             <select id="clock-style-bg-select">
                                 <option value="default" data-i18n="settings_clock_style_bg_default">Default</option>
-                                <option value="transparent" data-i18n="settings_clock_style_bg_transparent">Transparent</option>
+                                <option value="transparent" data-i18n="settings_clock_style_bg_transparent">Transparent
+                                </option>
                                 <option value="light" data-i18n="settings_clock_style_bg_light">White</option>
                                 <option value="dark" data-i18n="settings_clock_style_bg_dark">Black</option>
                             </select>
@@ -5013,19 +5031,30 @@
                             <input type="checkbox" id="show-timer-checkbox">
                         </div>
                         <div class="setting-item">
-                            <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm Sound</label>
+                            <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm
+                                Sound</label>
                             <select id="timer-alarm-sound-select">
-                                <option value="bedside_clock_alarm" data-i18n="timer_alarm_bedside">Bedside Clock Alarm</option>
-                                <option value="among_us_sabotage" data-i18n="timer_alarm_among_us">Among Us Sabotage</option>
-                                <option value="universfield_ringtone_014" data-i18n="timer_alarm_ringtone_014">Ringtone 014</option>
-                                <option value="universfield_ringtone_022" data-i18n="timer_alarm_ringtone_022">Ringtone 022</option>
-                                <option value="universfield_ringtone_025" data-i18n="timer_alarm_ringtone_025">Ringtone 025</option>
-                                <option value="universfield_ringtone_046" data-i18n="timer_alarm_ringtone_046">Ringtone 046</option>
-                                <option value="universfield_ringtone_064" data-i18n="timer_alarm_ringtone_064">Ringtone 064</option>
-                                <option value="universfield_ringtone_070" data-i18n="timer_alarm_ringtone_070">Ringtone 070</option>
-                                <option value="subnautica_alterra" data-i18n="timer_alarm_subnautica_alterra">Subnautica Alterra</option>
+                                <option value="bedside_clock_alarm" data-i18n="timer_alarm_bedside">Bedside Clock Alarm
+                                </option>
+                                <option value="among_us_sabotage" data-i18n="timer_alarm_among_us">Among Us Sabotage
+                                </option>
+                                <option value="universfield_ringtone_014" data-i18n="timer_alarm_ringtone_014">Ringtone
+                                    014</option>
+                                <option value="universfield_ringtone_022" data-i18n="timer_alarm_ringtone_022">Ringtone
+                                    022</option>
+                                <option value="universfield_ringtone_025" data-i18n="timer_alarm_ringtone_025">Ringtone
+                                    025</option>
+                                <option value="universfield_ringtone_046" data-i18n="timer_alarm_ringtone_046">Ringtone
+                                    046</option>
+                                <option value="universfield_ringtone_064" data-i18n="timer_alarm_ringtone_064">Ringtone
+                                    064</option>
+                                <option value="universfield_ringtone_070" data-i18n="timer_alarm_ringtone_070">Ringtone
+                                    070</option>
+                                <option value="subnautica_alterra" data-i18n="timer_alarm_subnautica_alterra">Subnautica
+                                    Alterra</option>
                                 <option value="mambo" data-i18n="timer_alarm_mambo">Mambo</option>
-                                <option value="custom_alarm_sound" data-i18n="timer_alarm_custom" disabled>Custom Sound</option>
+                                <option value="custom_alarm_sound" data-i18n="timer_alarm_custom" disabled>Custom Sound
+                                </option>
                             </select>
                             <div class="timer-alarm-upload-row">
                                 <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
@@ -5033,15 +5062,18 @@
                                     <i class="fa-solid fa-upload"></i>
                                     <span data-i18n="timer_alarm_upload">Upload Sound</span>
                                 </button>
-                                <button type="button" id="timer-alarm-sound-remove-btn" class="secondary-btn timer-alarm-remove-btn" disabled>
+                                <button type="button" id="timer-alarm-sound-remove-btn"
+                                    class="secondary-btn timer-alarm-remove-btn" disabled>
                                     <i class="fa-solid fa-trash"></i>
                                     <span data-i18n="timer_alarm_remove">Remove</span>
                                 </button>
                             </div>
-                            <small id="timer-alarm-custom-name" class="timer-alarm-custom-name" data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
+                            <small id="timer-alarm-custom-name" class="timer-alarm-custom-name"
+                                data-i18n="timer_alarm_no_custom">No custom sound uploaded</small>
                             <small class="timer-alarm-source">
                                 <span data-i18n="settings_timer_alarm_source">Ringtone sounds source:</span>
-                                <a href="https://pixabay.com/users/universfield-28281460/" target="_blank" rel="noopener noreferrer">Pixabay / universfield</a>
+                                <a href="https://pixabay.com/users/universfield-28281460/" target="_blank"
+                                    rel="noopener noreferrer">Pixabay / universfield</a>
                             </small>
                         </div>
                         <div class="setting-item-row">

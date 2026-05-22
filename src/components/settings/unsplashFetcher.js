@@ -387,29 +387,110 @@ let explorerType = "latest" // "latest", "popular", "search"
 let explorerQuery = ""
 const explorerSessionState = new Map()
 let explorerMiniInitialized = false
+const EXPLORER_SCROLL_STORAGE_PREFIX = "startpage_unsplashExplorerScroll:"
+let explorerScrollCapturePaused = false
 
 function getExplorerStateKey(type = explorerType, query = explorerQuery) {
   return `${type}:${query || ""}`
 }
 
-function rememberExplorerPosition() {
-  const grid = document.getElementById("unsplash-explorer-grid")
-  if (!grid) return
+function readStoredExplorerState(stateKey) {
+  let saved = explorerSessionState.get(stateKey)
+  if (saved) return saved
 
-  explorerSessionState.set(getExplorerStateKey(), {
+  try {
+    saved = JSON.parse(
+      sessionStorage.getItem(`${EXPLORER_SCROLL_STORAGE_PREFIX}${stateKey}`) ||
+        "null",
+    )
+    if (saved) explorerSessionState.set(stateKey, saved)
+  } catch {
+    saved = null
+  }
+
+  return saved
+}
+
+function getExplorerScrollElements() {
+  const grid = document.getElementById("unsplash-explorer-grid")
+  return {
+    grid,
+    body: grid?.closest(".bug-modal-body") || null,
+  }
+}
+
+function canScrollExplorerElement(element) {
+  return Boolean(element && element.scrollHeight > element.clientHeight + 1)
+}
+
+function getExplorerScrollState() {
+  const { grid, body } = getExplorerScrollElements()
+  if (!grid) return null
+
+  const gridScrollTop = grid.scrollTop || 0
+  const bodyScrollTop = body?.scrollTop || 0
+  const bodyIsActive =
+    bodyScrollTop > 0 &&
+    bodyScrollTop >= gridScrollTop &&
+    canScrollExplorerElement(body)
+  const scrollTarget = bodyIsActive ? "body" : "grid"
+
+  return {
     page: explorerPage,
-    scrollTop: grid.scrollTop,
-  })
+    scrollTarget,
+    scrollTop: scrollTarget === "body" ? bodyScrollTop : gridScrollTop,
+    gridScrollTop,
+    bodyScrollTop,
+  }
+}
+
+function applyExplorerScrollState(state) {
+  const { grid, body } = getExplorerScrollElements()
+  if (!grid || !state) return
+
+  grid.scrollTop = state.gridScrollTop ?? state.scrollTop ?? 0
+  if (body && canScrollExplorerElement(body)) {
+    body.scrollTop = state.bodyScrollTop ?? state.scrollTop ?? 0
+  }
+}
+
+function rememberExplorerPosition(force = false, stateOverride = null) {
+  if (explorerScrollCapturePaused && !force) return
+
+  const state = stateOverride || getExplorerScrollState()
+  if (!state) return
+
+  const stateKey = getExplorerStateKey()
+
+  explorerSessionState.set(stateKey, state)
+  try {
+    sessionStorage.setItem(
+      `${EXPLORER_SCROLL_STORAGE_PREFIX}${stateKey}`,
+      JSON.stringify(state),
+    )
+  } catch {
+    // Scroll restore is a convenience; storage can be unavailable in privacy modes.
+  }
 }
 
 function restoreExplorerPosition() {
-  const grid = document.getElementById("unsplash-explorer-grid")
-  const saved = explorerSessionState.get(getExplorerStateKey())
+  const { grid } = getExplorerScrollElements()
+  const stateKey = getExplorerStateKey()
+  const saved = readStoredExplorerState(stateKey)
+
   if (!grid || !saved) return
 
-  requestAnimationFrame(() => {
-    grid.scrollTop = saved.scrollTop || 0
-  })
+  const restore = () => applyExplorerScrollState(saved)
+
+  explorerScrollCapturePaused = true
+  requestAnimationFrame(restore)
+  setTimeout(restore, 80)
+  setTimeout(restore, 200)
+  setTimeout(restore, 500)
+  setTimeout(() => {
+    restore()
+    explorerScrollCapturePaused = false
+  }, 800)
 }
 
 function getExplorerDisplayTitle(type = explorerType, query = explorerQuery) {
@@ -469,7 +550,7 @@ function minimizeUnsplashExplorer() {
   const modal = document.getElementById("unsplash-explorer-modal")
   const mini = document.getElementById("unsplash-explorer-mini")
 
-  rememberExplorerPosition()
+  rememberExplorerPosition(true)
   modal?.classList.remove("open")
   if (!mini) return
 
@@ -485,12 +566,12 @@ async function openUnsplashExplorer(type = "latest", query = "") {
 
   initUnsplashExplorerMini()
   hideUnsplashExplorerMini()
-  rememberExplorerPosition()
+  if (modal.classList.contains("open")) rememberExplorerPosition(true)
 
   explorerType = type
   explorerQuery = query
   explorerPage = 1
-  const savedState = explorerSessionState.get(getExplorerStateKey(type, query))
+  const savedState = readStoredExplorerState(getExplorerStateKey(type, query))
   const targetPage = Math.max(1, savedState?.page || 1)
 
   const titleEl = modal.querySelector(".modal-title-text")
@@ -498,6 +579,7 @@ async function openUnsplashExplorer(type = "latest", query = "") {
   updateUnsplashExplorerMiniTitle()
 
   const grid = document.getElementById("unsplash-explorer-grid")
+  explorerScrollCapturePaused = true
   if (grid) grid.innerHTML = '<div class="explorer-loading"><i class="fa-solid fa-spinner fa-spin"></i></div>'
 
   modal.classList.add("open")
@@ -507,6 +589,10 @@ async function openUnsplashExplorer(type = "latest", query = "") {
   }
   explorerPage = targetPage
   restoreExplorerPosition()
+  setTimeout(restoreExplorerPosition, 320)
+  setTimeout(() => {
+    explorerScrollCapturePaused = false
+  }, 760)
 }
 
 async function loadExplorerResults(append = false) {
@@ -521,6 +607,12 @@ async function loadExplorerResults(append = false) {
   if (grid && !grid.dataset.positionListenerAttached) {
     grid.dataset.positionListenerAttached = "true"
     grid.addEventListener("scroll", rememberExplorerPosition, { passive: true })
+  }
+
+  const body = grid?.closest(".bug-modal-body")
+  if (body && !body.dataset.unsplashPositionListenerAttached) {
+    body.dataset.unsplashPositionListenerAttached = "true"
+    body.addEventListener("scroll", rememberExplorerPosition, { passive: true })
   }
 
   if (loadMoreBtn) {
@@ -563,7 +655,9 @@ async function loadExplorerResults(append = false) {
         `
         item.appendChild(meta)
 
-        item.addEventListener("click", () => {
+        item.addEventListener("click", (event) => {
+          event.preventDefault()
+          rememberExplorerPosition(true)
           applyUnsplashPhoto(photo, item)
           // Removed auto-close as per user request to allow manual closing
           // document.getElementById("unsplash-explorer-modal").classList.remove("open")
@@ -603,7 +697,7 @@ async function loadExplorerResults(append = false) {
 }
 
 async function applyUnsplashPhoto(photo, element = null) {
-  rememberExplorerPosition()
+  rememberExplorerPosition(true)
 
   if (element) {
     element.classList.add("applying")
@@ -663,10 +757,10 @@ async function applyUnsplashPhoto(photo, element = null) {
 }
 
 async function loadMoreExplorer() {
-  rememberExplorerPosition()
+  rememberExplorerPosition(true)
   explorerPage++
   await loadExplorerResults(true)
-  rememberExplorerPosition()
+  rememberExplorerPosition(true)
 }
 
 export {
