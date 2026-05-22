@@ -104,6 +104,10 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".prism-stack-time"))
     } else if (style === "metro-panel") {
       clockTargets.push(clockElement.querySelector(".metro-panel-time"))
+    } else if (style === "aurora-ribbon") {
+      clockTargets.push(clockElement.querySelector(".aurora-ribbon-time"))
+    } else if (style === "lunar-orbit") {
+      clockTargets.push(clockElement.querySelector(".lunar-orbit-time"))
     }
   }
 
@@ -140,6 +144,12 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".prism-stack-date"))
       } else if (style === "metro-panel") {
         dateTargets.push(clockElement.querySelector(".metro-panel-date"))
+      } else if (style === "aurora-ribbon") {
+        dateTargets.push(clockElement.querySelector(".aurora-ribbon-weekday"))
+        dateTargets.push(clockElement.querySelector(".aurora-ribbon-date"))
+      } else if (style === "lunar-orbit") {
+        dateTargets.push(clockElement.querySelector(".lunar-orbit-weekday"))
+        dateTargets.push(clockElement.querySelector(".lunar-orbit-date-line"))
       }
     }
   }
@@ -847,6 +857,55 @@ export function updateTime() {
         ${isTimer ? `<div class="metro-panel-date">${timerRunningLabel}</div>` : dateStr ? `<div class="metro-panel-date">${dateStr}</div>` : ""}
       </div>
     `
+  } else if (dateClockStyle === "aurora-ribbon") {
+    const weekday = isTimer
+      ? countdownLabel
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).toUpperCase()
+    const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
+    clockElement.innerHTML = `
+      <div class="aurora-ribbon-clock">
+        <div class="aurora-ribbon-top">
+          <span class="aurora-ribbon-weekday">${weekday}</span>
+          ${ampm ? `<span class="aurora-ribbon-ampm">${ampm}</span>` : ""}
+        </div>
+        <div class="aurora-ribbon-time">
+          <span class="aurora-ribbon-hour">${hh}</span>
+          <span class="aurora-ribbon-colon">:</span>
+          <span class="aurora-ribbon-minute">${mm}</span>
+          ${ss ? `<span class="aurora-ribbon-second">${ss}</span>` : ""}
+        </div>
+        ${isTimer ? `<div class="aurora-ribbon-date">${timerRunningLabel}</div>` : dateStr ? `<div class="aurora-ribbon-date">${dateStr}</div>` : ""}
+      </div>
+    `
+  } else if (dateClockStyle === "lunar-orbit") {
+    const parts = getZonedDateParts(now, tz)
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(now, langCode, true, tz, settings).toUpperCase()
+    const dateStr = shouldShowDate ? getCustomDateString(now, langCode, tz, settings) : ""
+    const orbDay = isTimer ? (timerH > 0 ? hh : mm) : parts.day
+    const orbMonth = isTimer
+      ? (timerH > 0 ? "HR" : "MIN")
+      : getLocalizedMonthName(now, langCode, tz, settings, "short").toUpperCase()
+    clockElement.innerHTML = `
+      <div class="lunar-orbit-clock">
+        <div class="lunar-orbit-date-dial">
+          <span class="lunar-orbit-weekday">${weekday}</span>
+          <span class="lunar-orbit-day">${orbDay}</span>
+          <span class="lunar-orbit-month">${orbMonth}</span>
+        </div>
+        <div class="lunar-orbit-main">
+          <div class="lunar-orbit-time">
+            <span class="lunar-orbit-hour">${hh}</span>
+            <span class="lunar-orbit-colon">:</span>
+            <span class="lunar-orbit-minute">${mm}</span>
+            ${ss ? `<span class="lunar-orbit-second">${ss}</span>` : ""}
+            ${ampm ? `<span class="lunar-orbit-ampm">${ampm}</span>` : ""}
+          </div>
+          ${isTimer ? `<div class="lunar-orbit-date-line">${countdownLabel}</div>` : dateStr ? `<div class="lunar-orbit-date-line">${dateStr}</div>` : ""}
+        </div>
+      </div>
+    `
   } else {
     clockElement.textContent = timeString
   }
@@ -882,6 +941,8 @@ export function updateTime() {
     "cyber-pulse",
     "prism-stack",
     "metro-panel",
+    "aurora-ribbon",
+    "lunar-orbit",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")

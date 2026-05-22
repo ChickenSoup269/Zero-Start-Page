@@ -1146,6 +1146,8 @@ function createApplySettings(effectInstances) {
       "date-clock-style-cyber-pulse",
       "date-clock-style-prism-stack",
       "date-clock-style-metro-panel",
+      "date-clock-style-aurora-ribbon",
+      "date-clock-style-lunar-orbit",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -1938,6 +1940,8 @@ function createUpdateSettingsInputs(effectInstances) {
       "cyber-pulse",
       "prism-stack",
       "metro-panel",
+      "aurora-ribbon",
+      "lunar-orbit",
     ]
 
     // Show style-specific container if current style has special settings
