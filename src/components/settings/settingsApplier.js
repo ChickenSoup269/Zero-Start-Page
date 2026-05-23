@@ -3127,6 +3127,10 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
+    if (DOM.hideTimerAlarmDropdownCheckbox) {
+      DOM.hideTimerAlarmDropdownCheckbox.checked =
+        settings.hideTimerAlarmDropdown === true
+    }
     if (DOM.timerAlarmSoundSelect) {
       const customOption = DOM.timerAlarmSoundSelect.querySelector(
         'option[value="custom_alarm_sound"]',

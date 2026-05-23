@@ -1002,6 +1002,7 @@
   "setting_aura_color": "Aura Color",
   "settings_soft_aurora_random_colors": "Randomize",
   "settings_timer_alarm_sound": "Timer Alarm Sound",
+  "settings_hide_timer_alarm_dropdown": "Hide alarm dropdown in Timer",
   "settings_timer_alarm_source": "Ringtone sounds source:",
   "timer_alarm_bedside": "Bedside Clock Alarm",
   "timer_alarm_among_us": "Among Us Sabotage",

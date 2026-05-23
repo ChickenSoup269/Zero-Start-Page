@@ -1029,6 +1029,9 @@ export const todoShowCheckboxesToggle = document.getElementById(
   "todo-show-checkboxes",
 )
 export const showTimerCheckbox = document.getElementById("show-timer-checkbox")
+export const hideTimerAlarmDropdownCheckbox = document.getElementById(
+  "hide-timer-alarm-dropdown-checkbox",
+)
 export const timerAlarmSoundSelect = document.getElementById(
   "timer-alarm-sound-select",
 )

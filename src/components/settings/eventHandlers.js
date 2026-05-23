@@ -3257,6 +3257,11 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
+  setupLayoutCheckbox(
+    DOM.hideTimerAlarmDropdownCheckbox,
+    "hideTimerAlarmDropdown",
+    {},
+  )
   updateTimerAlarmCustomUi()
   if (DOM.timerAlarmSoundSelect) {
     DOM.timerAlarmSoundSelect.addEventListener("change", () => {

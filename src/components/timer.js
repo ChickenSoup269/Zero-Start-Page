@@ -201,6 +201,7 @@ export class Timer {
     this.display = this.container.querySelector("#timer-display")
     this.status = this.container.querySelector("#timer-status")
     this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
+    this.applyAlarmDropdownVisibility()
 
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
@@ -299,6 +300,9 @@ export class Timer {
       if (e.detail.key === "clockTimerMode") {
         this.updateClockModeBtn()
       }
+      if (e.detail.key === "hideTimerAlarmDropdown") {
+        this.applyAlarmDropdownVisibility()
+      }
     })
 
     window.addEventListener("settingsUpdated", (e) => {
@@ -377,6 +381,11 @@ export class Timer {
       }
       settingsSelect.value = selectedSound
     }
+  }
+
+  applyAlarmDropdownVisibility() {
+    const hideDropdown = getSettings().hideTimerAlarmDropdown === true
+    this.container?.classList.toggle("timer-hide-alarm-dropdown", hideDropdown)
   }
 
   updateVisibility() {

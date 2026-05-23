@@ -2108,6 +2108,10 @@ body.todo-fullscreen-active::before {
   color: #111;
 }
 
+.timer-container.timer-hide-alarm-dropdown .timer-alarm-row {
+  display: none;
+}
+
 .timer-controls {
   display: flex;
   gap: 8px;
