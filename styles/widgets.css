@@ -2083,6 +2083,18 @@ body.todo-fullscreen-active::before {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.045);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  max-height: 46px;
+  opacity: 1;
+  transform: translateY(0);
+  overflow: hidden;
+  transition:
+    max-height 0.28s ease,
+    opacity 0.22s ease,
+    padding 0.28s ease,
+    margin 0.28s ease,
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    transform 0.28s ease;
 }
 
 .timer-alarm-row i {
@@ -2109,7 +2121,15 @@ body.todo-fullscreen-active::before {
 }
 
 .timer-container.timer-hide-alarm-dropdown .timer-alarm-row {
-  display: none;
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin: -4px 0;
+  border-color: transparent;
+  background-color: transparent;
+  transform: translateY(-6px);
+  pointer-events: none;
 }
 
 .timer-controls {

@@ -178,36 +178,36 @@ function getEffectPerformanceOptions(settings, effectName) {
 
   if (effectName === "stormRain") {
     if (mode === "quality") {
-      return { targetFps: 50, renderScale: 1, densityScale: 0.82 }
+      return { targetFps: 44, renderScale: 0.95, densityScale: 0.72 }
     }
     if (shouldSave) {
-      return { targetFps: 30, renderScale: 1, densityScale: 0.48 }
+      return { targetFps: 28, renderScale: 0.72, densityScale: 0.44 }
     }
-    return { targetFps: 42, renderScale: 1, densityScale: 0.62 }
+    return { targetFps: 36, renderScale: 0.84, densityScale: 0.56 }
   }
 
   if (effectName === "rainHD") {
     if (mode === "quality") {
       return {
-        targetFps: 48,
-        renderScale: 0.9,
-        densityScale: 0.9,
-        splashScale: 0.85,
+        targetFps: 44,
+        renderScale: 0.86,
+        densityScale: 0.78,
+        splashScale: 0.72,
       }
     }
     if (shouldSave) {
       return {
         targetFps: 26,
-        renderScale: 0.64,
-        densityScale: 0.55,
-        splashScale: 0.45,
+        renderScale: 0.6,
+        densityScale: 0.46,
+        splashScale: 0.34,
       }
     }
     return {
-      targetFps: 36,
-      renderScale: 0.78,
-      densityScale: 0.72,
-      splashScale: 0.65,
+      targetFps: 34,
+      renderScale: 0.72,
+      densityScale: 0.6,
+      splashScale: 0.5,
     }
   }
 
