@@ -270,6 +270,7 @@ function findAudioTab(callback) {
           t.url?.includes("youtube.com") ||
           t.url?.includes("spotify.com") ||
           t.url?.includes("zingmp3.vn") ||
+          t.url?.includes("soundcloud.com") ||
           t.url?.includes("music.youtube.com"),
       )
       callback(tab || null)
@@ -282,6 +283,7 @@ function isKnownMediaTab(tab) {
     tab?.url?.includes("youtube.com") ||
     tab?.url?.includes("spotify.com") ||
     tab?.url?.includes("zingmp3.vn") ||
+    tab?.url?.includes("soundcloud.com") ||
     tab?.url?.includes("music.youtube.com")
   )
 }
@@ -318,6 +320,21 @@ function controlMediaTab(tabId, command, sendResponse) {
         const cmdName = typeof command === "string" ? command : command.name
         const isSpotify = window.location.href.includes("spotify.com")
         const isZing = window.location.href.includes("zingmp3.vn")
+        const isSoundCloud = window.location.href.includes("soundcloud.com")
+        const textFrom = (selectors) => {
+          for (const selector of selectors) {
+            const text = document.querySelector(selector)?.textContent?.trim()
+            if (text) return text
+          }
+          return ""
+        }
+        const parseTime = (value) => {
+          const text = String(value || "").trim()
+          if (!text || !text.includes(":")) return 0
+          const parts = text.split(":").map((part) => Number(part))
+          if (parts.some((part) => Number.isNaN(part))) return 0
+          return parts.reduce((total, part) => total * 60 + part, 0)
+        }
         const clickFirst = (selectors) => {
           for (const selector of selectors) {
             const el = document.querySelector(selector)
@@ -341,13 +358,22 @@ function controlMediaTab(tabId, command, sendResponse) {
             document.querySelector(".player-controls__container input[type='range']") ||
             document.querySelector(".zm-slider input[type='range']") ||
             document.querySelector(".zm-slider [role='slider']") ||
+            document.querySelector(".playbackTimeline__progressWrapper") ||
+            document.querySelector(".playbackTimeline__progressBar") ||
             document.querySelector('[aria-label*="progress" i][role="slider"]')
 
           if (!slider) return false
-          const max =
+          let max =
             Number(slider.max) ||
             Number(slider.getAttribute("aria-valuemax")) ||
-            0
+            parseTime(
+              textFrom([
+                ".playbackTimeline__duration span:last-child",
+                ".playbackTimeline__duration",
+                ".duration-bar .time.right",
+                ".time.right",
+              ]),
+            )
           if (!max) return false
 
           const value = Math.max(0, Math.min(max, max > 36000 ? time * 1000 : time))
@@ -391,7 +417,14 @@ function controlMediaTab(tabId, command, sendResponse) {
 
         switch (cmdName) {
           case "playPause":
-            if (video) {
+            if (isSoundCloud) {
+              clickFirst([
+                ".playControl",
+                ".playControls__play",
+                'button[title="Play current"]',
+                'button[title="Pause current"]',
+              ])
+            } else if (video) {
               if (video.paused) video.play()
               else video.pause()
             } else if (isSpotify || isZing) {
@@ -410,6 +443,8 @@ function controlMediaTab(tabId, command, sendResponse) {
               '[data-testid="control-button-skip-forward"]',
               ".player-controls__container .btn-next",
               ".zm-btn.btn-next",
+              ".skipControl__next",
+              ".playControls__next",
               'button[title="Tiếp theo"]',
             ])
             break
@@ -421,14 +456,16 @@ function controlMediaTab(tabId, command, sendResponse) {
               ".player-controls__container .btn-prev",
               ".zm-btn.btn-pre",
               ".zm-btn.btn-prev",
+              ".skipControl__previous",
+              ".playControls__prev",
               'button[title="Trước đó"]',
             ])
             break
           case "seekTo":
             if (typeof command.time === "number") {
-              if (video) {
+              if (video && !isSoundCloud) {
                 video.currentTime = command.time
-              } else if (isSpotify || isZing) {
+              } else if (isSpotify || isZing || isSoundCloud) {
                 seekWebSlider(command.time)
               }
             }
@@ -733,6 +770,7 @@ function getMediaFromTab(tabId, sendResponse) {
           document.querySelector("video") || document.querySelector("audio")
         const isSpotify = window.location.href.includes("spotify.com")
         const isZing = window.location.href.includes("zingmp3.vn")
+        const isSoundCloud = window.location.href.includes("soundcloud.com")
         const textFrom = (selectors) => {
           for (const selector of selectors) {
             const text = document.querySelector(selector)?.textContent?.trim()
@@ -748,7 +786,7 @@ function getMediaFromTab(tabId, sendResponse) {
           return parts.reduce((total, part) => total * 60 + part, 0)
         }
         const webPlayback = (() => {
-          if (!isSpotify && !isZing) return null
+          if (!isSpotify && !isZing && !isSoundCloud) return null
           const slider =
             document.querySelector(
               '[data-testid="playback-progressbar"] input[type="range"]',
@@ -761,6 +799,8 @@ function getMediaFromTab(tabId, sendResponse) {
             document.querySelector(".player-controls__container input[type='range']") ||
             document.querySelector(".zm-slider input[type='range']") ||
             document.querySelector(".zm-slider [role='slider']") ||
+            document.querySelector(".playbackTimeline__progressWrapper") ||
+            document.querySelector(".playbackTimeline__progressBar") ||
             document.querySelector('[aria-label*="progress" i][role="slider"]')
           let currentTime =
             Number(slider?.value) ||
@@ -771,6 +811,8 @@ function getMediaFromTab(tabId, sendResponse) {
                 ".playback-bar__progress-time:first-child",
                 ".duration-bar .time.left",
                 ".time.left",
+                ".playbackTimeline__timePassed span:last-child",
+                ".playbackTimeline__timePassed",
               ]),
             )
           let duration =
@@ -782,6 +824,8 @@ function getMediaFromTab(tabId, sendResponse) {
                 ".playback-bar__progress-time:last-child",
                 ".duration-bar .time.right",
                 ".time.right",
+                ".playbackTimeline__duration span:last-child",
+                ".playbackTimeline__duration",
               ]),
             )
           if (duration > 36000) {
@@ -796,10 +840,15 @@ function getMediaFromTab(tabId, sendResponse) {
             document
               .querySelector(".player-controls__container .btn-play")
               ?.getAttribute("aria-label")
+              ?.toLowerCase() ||
+            document
+              .querySelector(".playControl")
+              ?.getAttribute("aria-label")
               ?.toLowerCase() || ""
           const zingPlayButton = document.querySelector(
             ".player-controls__container .btn-play, .zm-btn.btn-play",
           )
+          const soundCloudPlayButton = document.querySelector(".playControl")
           const mediaState = navigator.mediaSession?.playbackState
           const paused =
             mediaState === "playing"
@@ -809,6 +858,8 @@ function getMediaFromTab(tabId, sendResponse) {
                 : isZing
                   ? !zingPlayButton?.classList.contains("is-playing") &&
                     !zingPlayButton?.classList.contains("playing")
+                  : isSoundCloud
+                    ? !soundCloudPlayButton?.classList.contains("playing")
                   : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()
@@ -852,6 +903,19 @@ function getMediaFromTab(tabId, sendResponse) {
           ".artist-names",
           ".artists",
         ])
+        const soundCloudTitle = textFrom([
+          ".playbackSoundBadge__titleLink",
+          ".playbackSoundBadge__title a",
+          ".playbackSoundBadge__title",
+          ".soundTitle__title",
+          ".soundTitle__title span",
+        ])
+        const soundCloudArtist = textFrom([
+          ".playbackSoundBadge__usernameLink",
+          ".playbackSoundBadge__lightLink",
+          ".soundTitle__username",
+          ".soundTitle__username span",
+        ])
 
         return {
           title:
@@ -859,17 +923,38 @@ function getMediaFromTab(tabId, sendResponse) {
             ytTitle ||
             spotifyTitle ||
             zingTitle ||
+            soundCloudTitle ||
             document.title.replace(/^\(\d+\)\s/, ""),
-          artist: metadata?.artist || ytArtist || spotifyArtist || zingArtist || "",
-          paused: video ? video.paused : webPlayback?.paused ?? true,
-          currentTime: video ? video.currentTime : webPlayback?.currentTime || 0,
+          artist:
+            metadata?.artist ||
+            ytArtist ||
+            spotifyArtist ||
+            zingArtist ||
+            soundCloudArtist ||
+            "",
+          paused:
+            isSoundCloud && webPlayback
+              ? webPlayback.paused
+              : video
+                ? video.paused
+                : webPlayback?.paused ?? true,
+          currentTime:
+            video && typeof video.currentTime === "number" && video.currentTime > 0
+              ? video.currentTime
+              : webPlayback?.currentTime || 0,
           duration: video
-            ? isFinite(video.duration)
+            ? isFinite(video.duration) && video.duration > 0
               ? video.duration
-              : 0
+              : webPlayback?.duration || 0
             : webPlayback?.duration || 0,
           url: window.location.href,
-          source: isSpotify ? "spotify" : isZing ? "zingmp3" : "",
+          source: isSpotify
+            ? "spotify"
+            : isZing
+              ? "zingmp3"
+              : isSoundCloud
+                ? "soundcloud"
+                : "",
           thumbnail: (() => {
             // Priority 1: MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
@@ -908,6 +993,19 @@ function getMediaFromTab(tabId, sendResponse) {
                 document.querySelector(".media-left img")?.src ||
                 document.querySelector('img[src*="zmdcdn.me"]')?.src
               if (zingThumb) return zingThumb
+            }
+
+            if (window.location.href.includes("soundcloud.com")) {
+              const styleThumb =
+                document.querySelector(".playbackSoundBadge__avatar span[style*='background-image']")?.style.backgroundImage ||
+                document.querySelector("[style*='sndcdn.com'][style*='background-image']")?.style.backgroundImage ||
+                ""
+              const soundCloudThumb =
+                document.querySelector(".playbackSoundBadge__avatar img")?.src ||
+                styleThumb.replace(/^url\(["']?/, "").replace(/["']?\)$/, "") ||
+                document.querySelector(".image__full")?.src ||
+                document.querySelector('img[src*="sndcdn.com"]')?.src
+              if (soundCloudThumb) return soundCloudThumb
             }
 
             // Priority 4: Generic OG Image

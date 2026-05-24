@@ -340,6 +340,10 @@ export class MusicPlayer {
       this.platformIcon.className = "platform-icon fa-solid fa-music"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#a855f7"
+    } else if (url.includes("soundcloud.com") || data.source === "soundcloud") {
+      this.platformIcon.className = "platform-icon fa-brands fa-soundcloud"
+      this.platformIcon.style.display = "inline"
+      this.platformIcon.style.color = "#ff5500"
     } else {
       this.platformIcon.style.display = "none"
     }
@@ -448,7 +452,7 @@ export class MusicPlayer {
       iconClass = "fa-brands fa-spotify"
     else if (url.includes("zingmp3.vn") || data.source === "zingmp3")
       iconClass = "fa-solid fa-music"
-    else if (url.includes("soundcloud.com"))
+    else if (url.includes("soundcloud.com") || data.source === "soundcloud")
       iconClass = "fa-brands fa-soundcloud"
 
     this.sourceIcon.innerHTML = `<i class="${iconClass}"></i>`

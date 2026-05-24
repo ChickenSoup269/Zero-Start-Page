@@ -479,16 +479,30 @@
   opacity: 0.5;
 }
 
+body.bookmark-dragging-active .bookmark:not(.dragging),
+body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
+  transition:
+    transform 0.16s ease,
+    filter 0.16s ease,
+    opacity 0.16s ease,
+    background 0.16s ease;
+}
+
 .bookmark.drag-over {
+  position: relative;
   border: 2px dashed var(--accent-color, #a8c0ff);
   border-radius: 10px;
   transform: translateY(-3px) scale(1.02);
   background-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 4px rgba(var(--accent-color-rgb, 168, 192, 255), 0.14),
+    0 14px 30px rgba(0, 0, 0, 0.24);
 }
 
 .bookmark.drag-over-before,
 .bookmark.drag-over-after {
   position: relative;
+  transform: translateY(-3px);
 }
 
 .bookmark.drag-over-before::before,
@@ -501,6 +515,40 @@
   border-radius: 999px;
   background: var(--accent-color, #a8c0ff);
   box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+}
+
+.bookmark.drag-over::after,
+.bookmark.drag-over-before::after,
+.bookmark.drag-over-after::after {
+  content: attr(data-drop-label);
+  position: absolute;
+  left: 50%;
+  top: -24px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  max-width: 132px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(15, 18, 25, 0.92);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+  color: var(--text-color, #fff);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.bookmark.drag-over::after {
+  background: var(--accent-color, #a8c0ff);
+  color: var(--accent-contrast-color, #10131a);
 }
 
 .bookmark.drag-over-before::before {

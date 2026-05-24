@@ -342,6 +342,7 @@ function getBookmarkDropIntent(target, event) {
 
 function clearBookmarkDropClasses(el) {
   el.classList.remove("drag-over", "drag-over-before", "drag-over-after")
+  el.removeAttribute("data-drop-label")
 }
 
 function updateBookmarkDropIntent(el, event) {
@@ -350,14 +351,25 @@ function updateBookmarkDropIntent(el, event) {
   if (el.dataset.index === String(draggedBookmarkIndex)) return
 
   const intent = getBookmarkDropIntent(el, event)
-  if (intent === "before") el.classList.add("drag-over-before")
-  else if (intent === "after") el.classList.add("drag-over-after")
-  else el.classList.add("drag-over")
+  const i18n = geti18n()
+  if (intent === "before") {
+    el.classList.add("drag-over-before")
+    el.dataset.dropLabel = i18n.bookmark_drop_move || "Move"
+  } else if (intent === "after") {
+    el.classList.add("drag-over-after")
+    el.dataset.dropLabel = i18n.bookmark_drop_move || "Move"
+  } else {
+    el.classList.add("drag-over")
+    el.dataset.dropLabel = el.classList.contains("bookmark-stack")
+      ? i18n.bookmark_drop_add_group || "Add to group"
+      : i18n.bookmark_drop_create_group || "Create group"
+  }
 }
 
 function handleDragStart(e) {
   draggedBookmarkIndex = Number(this.dataset.index)
   e.dataTransfer.effectAllowed = "move"
+  document.body.classList.add("bookmark-dragging-active")
   // The timeout ensures the drop target is visually still clear, while the dragged shadow exists
   setTimeout(() => this.classList.add("dragging"), 0)
 }
@@ -464,6 +476,7 @@ function handleDragEnd(e) {
     })
   draggedBookmarkIndex = null
   draggedGroupIndex = null
+  document.body.classList.remove("bookmark-dragging-active")
 }
 
 let toggleListenerAdded = false
