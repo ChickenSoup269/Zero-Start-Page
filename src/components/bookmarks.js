@@ -212,9 +212,148 @@ function createBookmarkIcon(bookmark) {
   return img
 }
 
+function createBookmarkStackIcon(stack) {
+  const wrap = document.createElement("div")
+  wrap.className = "bookmark-stack-icon"
+
+  stack.items.slice(0, 4).forEach((item) => {
+    const cell = document.createElement("div")
+    cell.className = "bookmark-stack-cell"
+    cell.appendChild(createBookmarkIcon(item))
+    wrap.appendChild(cell)
+  })
+
+  while (wrap.children.length < 4) {
+    const cell = document.createElement("div")
+    cell.className = "bookmark-stack-cell empty"
+    cell.innerHTML = '<i class="fa-solid fa-bookmark"></i>'
+    wrap.appendChild(cell)
+  }
+
+  const badge = document.createElement("span")
+  badge.className = "bookmark-stack-count"
+  badge.textContent = stack.items.length
+  wrap.appendChild(badge)
+
+  return wrap
+}
+
+function openBookmarkStackPopup(stack, anchor) {
+  const existing = document.getElementById("bookmark-stack-popup")
+  if (existing) existing.remove()
+
+  const popup = document.createElement("div")
+  popup.id = "bookmark-stack-popup"
+  popup.className = "bookmark-stack-popup"
+
+  const header = document.createElement("div")
+  header.className = "bookmark-stack-popup-header"
+  const title = document.createElement("span")
+  title.textContent = getBookmarkLabel(stack)
+  const count = document.createElement("small")
+  count.textContent = `${stack.items.length}`
+  header.appendChild(title)
+  header.appendChild(count)
+  popup.appendChild(header)
+
+  const grid = document.createElement("div")
+  grid.className = "bookmark-stack-popup-grid"
+  stack.items.forEach((item) => {
+    const link = document.createElement("a")
+    link.className = "bookmark bookmark-stack-popup-item"
+    link.href = item.url
+    link.target = "_blank"
+    link.rel = "noopener noreferrer"
+    link.appendChild(createBookmarkIcon(item))
+
+    const label = document.createElement("span")
+    label.textContent = item.title
+    link.appendChild(label)
+    grid.appendChild(link)
+  })
+  popup.appendChild(grid)
+
+  document.body.appendChild(popup)
+
+  const rect = anchor.getBoundingClientRect()
+  const popupRect = popup.getBoundingClientRect()
+  const left = Math.min(
+    Math.max(12, rect.left + rect.width / 2 - popupRect.width / 2),
+    window.innerWidth - popupRect.width - 12,
+  )
+  const below = rect.bottom + 12
+  const above = rect.top - popupRect.height - 12
+  popup.style.left = `${left}px`
+  popup.style.top =
+    below + popupRect.height < window.innerHeight - 12
+      ? `${below}px`
+      : `${Math.max(12, above)}px`
+
+  const closePopup = (event) => {
+    const contextMenu = document.getElementById("context-menu")
+    if (
+      !popup.contains(event.target) &&
+      !anchor.contains(event.target) &&
+      !contextMenu?.contains(event.target)
+    ) {
+      popup.remove()
+      document.removeEventListener("click", closePopup)
+    }
+  }
+  setTimeout(() => document.addEventListener("click", closePopup), 50)
+}
+
 // --- Drag and Drop State ---
 let draggedBookmarkIndex = null
 let draggedGroupIndex = null
+
+function isBookmarkStack(item) {
+  return item?.type === "stack" && Array.isArray(item.items)
+}
+
+function getStackItems(item) {
+  return isBookmarkStack(item) ? item.items : [item]
+}
+
+function getBookmarkLabel(item) {
+  return item?.title || item?.name || "Bookmark"
+}
+
+function createBookmarkStack(title, items) {
+  return {
+    type: "stack",
+    id: `stack-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    title,
+    items: items.filter((item) => item && item.url && item.title),
+  }
+}
+
+function getBookmarkDropIntent(target, event) {
+  if (!target?.classList?.contains("bookmark")) return "before"
+  if (target.classList.contains("bookmark-stack")) return "stack"
+
+  const rect = target.getBoundingClientRect()
+  if (!rect.width) return "stack"
+  const ratio = (event.clientX - rect.left) / rect.width
+  if (ratio < 0.22) return "before"
+  if (ratio > 0.78) return "after"
+  return "stack"
+}
+
+function clearBookmarkDropClasses(el) {
+  el.classList.remove("drag-over", "drag-over-before", "drag-over-after")
+}
+
+function updateBookmarkDropIntent(el, event) {
+  if (!el.classList.contains("bookmark")) return
+  clearBookmarkDropClasses(el)
+  if (el.dataset.index === String(draggedBookmarkIndex)) return
+
+  const intent = getBookmarkDropIntent(el, event)
+  if (intent === "before") el.classList.add("drag-over-before")
+  else if (intent === "after") el.classList.add("drag-over-after")
+  else el.classList.add("drag-over")
+}
 
 function handleDragStart(e) {
   draggedBookmarkIndex = Number(this.dataset.index)
@@ -232,6 +371,7 @@ function handleGroupDragStart(e) {
 function handleDragOver(e) {
   e.preventDefault()
   e.dataTransfer.dropEffect = "move"
+  updateBookmarkDropIntent(this, e)
   return false
 }
 
@@ -239,7 +379,7 @@ function handleDragEnter(e) {
   e.preventDefault()
   if (this.classList.contains("bookmark")) {
     if (this.dataset.index !== String(draggedBookmarkIndex)) {
-      this.classList.add("drag-over")
+      updateBookmarkDropIntent(this, e)
     }
   } else if (this.classList.contains("bookmark-group-tab")) {
     if (this.dataset.index !== String(draggedGroupIndex)) {
@@ -249,19 +389,47 @@ function handleDragEnter(e) {
 }
 
 function handleDragLeave(e) {
-  this.classList.remove("drag-over")
+  if (this.classList.contains("bookmark")) clearBookmarkDropClasses(this)
+  else this.classList.remove("drag-over")
 }
 
 function handleDrop(e) {
   e.stopPropagation()
   e.preventDefault() // prevent opening the link
-  this.classList.remove("drag-over")
+  clearBookmarkDropClasses(this)
   const targetIndex = Number(this.dataset.index)
 
   if (draggedBookmarkIndex !== null && draggedBookmarkIndex !== targetIndex) {
     const bookmarks = getBookmarks()
-    const [draggedItem] = bookmarks.splice(draggedBookmarkIndex, 1)
-    bookmarks.splice(targetIndex, 0, draggedItem)
+    const draggedItem = bookmarks[draggedBookmarkIndex]
+    const targetItem = bookmarks[targetIndex]
+    const intent = getBookmarkDropIntent(this, e)
+
+    if (intent === "stack") {
+      if (isBookmarkStack(targetItem)) {
+        targetItem.items.push(...getStackItems(draggedItem))
+        bookmarks.splice(draggedBookmarkIndex, 1)
+      } else {
+        const currentI18n = geti18n()
+        const stackTitle =
+          currentI18n.bookmark_stack_default_name || "Bookmark Group"
+        bookmarks[targetIndex] = createBookmarkStack(stackTitle, [
+          targetItem,
+          ...getStackItems(draggedItem),
+        ])
+        bookmarks.splice(draggedBookmarkIndex, 1)
+      }
+      setBookmarks(bookmarks)
+      saveBookmarks()
+      renderBookmarks()
+      return false
+    }
+
+    const [draggedToMove] = bookmarks.splice(draggedBookmarkIndex, 1)
+    let insertIndex = targetIndex
+    if (draggedBookmarkIndex < targetIndex) insertIndex -= 1
+    if (intent === "after") insertIndex += 1
+    bookmarks.splice(insertIndex, 0, draggedToMove)
     setBookmarks(bookmarks)
     saveBookmarks()
     renderBookmarks()
@@ -290,7 +458,10 @@ function handleDragEnd(e) {
   this.classList.remove("dragging")
   document
     .querySelectorAll(".bookmark, .bookmark-group-tab")
-    .forEach((el) => el.classList.remove("drag-over"))
+    .forEach((el) => {
+      clearBookmarkDropClasses(el)
+      el.classList.remove("drag-over")
+    })
   draggedBookmarkIndex = null
   draggedGroupIndex = null
 }
@@ -359,6 +530,7 @@ export function renderBookmarks() {
   }
   updateBookmarkGroupsToggleIcon()
   const i18n = geti18n()
+  document.getElementById("bookmark-stack-popup")?.remove()
 
   // 1. Render Group Tabs
   renderGroupTabs()
@@ -371,15 +543,26 @@ export function renderBookmarks() {
   const enableDrag = settings.bookmarkEnableDrag === true
 
   bookmarks.forEach((bookmark, index) => {
-    const bookmarkEl = document.createElement("a")
-    bookmarkEl.href = bookmark.url
+    const isStack = isBookmarkStack(bookmark)
+    const bookmarkEl = document.createElement(isStack ? "button" : "a")
+    if (isStack) {
+      bookmarkEl.type = "button"
+      bookmarkEl.setAttribute("aria-haspopup", "dialog")
+      bookmarkEl.setAttribute(
+        "aria-label",
+        `${getBookmarkLabel(bookmark)} (${bookmark.items.length})`,
+      )
+    } else {
+      bookmarkEl.href = bookmark.url
+      bookmarkEl.target = "_blank"
+    }
     bookmarkEl.classList.add("bookmark")
+    if (isStack) bookmarkEl.classList.add("bookmark-stack")
     bookmarkEl.dataset.index = index // Always set index for selection and identification
     
     if (selectedIndices.has(index)) {
       bookmarkEl.classList.add("selected")
     }
-    bookmarkEl.target = "_blank"
 
     if (enableDrag && !isSelectionMode) {
       bookmarkEl.draggable = true
@@ -392,8 +575,12 @@ export function renderBookmarks() {
     }
 
     const titleEl = document.createElement("span")
-    titleEl.textContent = bookmark.title
-    bookmarkEl.appendChild(createBookmarkIcon(bookmark))
+    titleEl.textContent = getBookmarkLabel(bookmark)
+    if (isStack) {
+      bookmarkEl.appendChild(createBookmarkStackIcon(bookmark))
+    } else {
+      bookmarkEl.appendChild(createBookmarkIcon(bookmark))
+    }
     bookmarkEl.appendChild(titleEl)
 
     bookmarkEl.addEventListener("click", (e) => {
@@ -414,13 +601,48 @@ export function renderBookmarks() {
         draggedBookmarkIndex !== null
       ) {
         e.preventDefault()
+        return
+      }
+
+      if (isStack) {
+        e.preventDefault()
+        openBookmarkStackPopup(bookmark, bookmarkEl)
       }
     })
 
     bookmarkEl.addEventListener("contextmenu", (e) => {
       e.preventDefault()
       if (isSelectionMode) return
-      showContextMenu(e.clientX, e.clientY, index)
+      if (isStack) {
+        showContextMenu(e.clientX, e.clientY, index, "bookmarkStack", bookmark.id, {
+          onEdit: async () => {
+            const currentI18n = geti18n()
+            const newName = await showPrompt(
+              currentI18n.prompt_rename_group || "Enter new group name:",
+              bookmark.title || currentI18n.bookmark_stack_default_name || "Bookmark Group",
+            )
+            if (newName && newName.trim()) {
+              bookmarks[index].title = newName.trim()
+              saveBookmarks()
+              renderBookmarks()
+            }
+          },
+          onDelete: async () => {
+            const currentI18n = geti18n()
+            const confirmed = await showConfirm(
+              `${currentI18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(bookmark)}"?`,
+            )
+            if (confirmed) {
+              bookmarks.splice(index, 1)
+              setBookmarks(bookmarks)
+              saveBookmarks()
+              renderBookmarks()
+            }
+          },
+        })
+      } else {
+        showContextMenu(e.clientX, e.clientY, index)
+      }
     })
     frag.appendChild(bookmarkEl)
   })
@@ -633,6 +855,14 @@ export function updateOverflowBookmarks() {
         updateSelectionUI()
         return false
       } else {
+        if (bookmarkEl.classList.contains("bookmark-stack")) {
+          evt.preventDefault()
+          evt.stopPropagation()
+          const original = container.querySelector(`.bookmark[data-index="${idx}"]`)
+          if (original) original.click()
+          popup.remove()
+          return false
+        }
         // Normal mode: close popup
         setTimeout(() => popup.remove(), 100)
       }

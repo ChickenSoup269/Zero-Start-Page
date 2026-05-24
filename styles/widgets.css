@@ -486,6 +486,31 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
+.bookmark.drag-over-before,
+.bookmark.drag-over-after {
+  position: relative;
+}
+
+.bookmark.drag-over-before::before,
+.bookmark.drag-over-after::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 24px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.55);
+}
+
+.bookmark.drag-over-before::before {
+  left: -8px;
+}
+
+.bookmark.drag-over-after::before {
+  right: -8px;
+}
+
 .bookmark:hover,
 .add-bookmark-card:hover {
   transform: translateY(-3px);
@@ -520,6 +545,121 @@
   color: white;
 }
 
+.bookmark-stack {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  padding: 0;
+}
+
+.bookmark-stack-icon {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  width: var(--bookmark-icon-size, 42px);
+  height: var(--bookmark-icon-size, 42px);
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 13px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
+  box-shadow: var(--bookmark-box-shadow, rgba(0, 0, 0, 0.24) 0px 3px 8px);
+  backdrop-filter: blur(10px);
+}
+
+.bookmark-stack-cell {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.bookmark-stack-cell .bookmark-icon,
+.bookmark-stack-cell .bookmark-icon-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 1px !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  font-size: 0.55rem !important;
+}
+
+.bookmark-stack-cell.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.55rem;
+}
+
+.bookmark-stack-count {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--accent-color, #a8c0ff);
+  color: var(--accent-contrast-color, #10131a);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+.bookmark-stack-popup {
+  position: fixed;
+  z-index: 10020;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(460px, calc(100vh - 24px));
+  overflow: auto;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(15, 18, 25, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+.bookmark-stack-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: var(--text-color);
+  font-weight: 800;
+}
+
+.bookmark-stack-popup-header small {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-color);
+}
+
+.bookmark-stack-popup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 12px;
+}
+
+.bookmark-stack-popup .bookmark {
+  width: 100%;
+}
+
 body.hide-bookmark-bg .bookmark img,
 body.hide-bookmark-bg .bookmark .bookmark-icon-fallback {
   background-color: transparent !important;
@@ -539,8 +679,20 @@ body.hide-bookmark-bg .bookmark .bookmark-icon-fallback {
   text-align: center;
 }
 
+.bookmark .bookmark-stack-count {
+  width: auto;
+  color: var(--accent-contrast-color, #10131a);
+  font-size: 0.68rem;
+  text-align: center;
+  overflow: visible;
+}
+
 body.hide-bookmark-text .bookmark span {
   display: none;
+}
+
+body.hide-bookmark-text .bookmark .bookmark-stack-count {
+  display: inline-flex;
 }
 
 .add-bookmark-card {
@@ -5223,6 +5375,16 @@ body.bookmark-taskbar-left-mode .bookmark-groups-container {
 
 #hidden-bookmarks-popup .bookmark:hover {
   transform: translateY(-3px) !important;
+}
+
+#hidden-bookmarks-popup .bookmark-stack-cell .bookmark-icon,
+#hidden-bookmarks-popup .bookmark-stack-cell .bookmark-icon-fallback {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 1px !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
 }
 
 /* Ensure popup bookmarks respect global hide settings */
