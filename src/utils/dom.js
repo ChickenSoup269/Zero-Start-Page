@@ -1109,6 +1109,19 @@ export const musicStyleSelect = document.getElementById("music-style-select")
 export const musicPlayerUseDefaultColorCheckbox = document.getElementById(
   "music-player-use-default-color-checkbox",
 )
+export const spotifyClientIdInput = document.getElementById(
+  "spotify-client-id-input",
+)
+export const spotifyRedirectUriOutput = document.getElementById(
+  "spotify-redirect-uri-output",
+)
+export const spotifyConnectBtn = document.getElementById("spotify-connect-btn")
+export const spotifyDisconnectBtn = document.getElementById(
+  "spotify-disconnect-btn",
+)
+export const spotifyAuthStatus = document.getElementById(
+  "spotify-auth-status",
+)
 export const musicVisualizerStyleSelect = document.getElementById(
   "music-visualizer-style-select",
 )

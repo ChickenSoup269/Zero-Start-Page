@@ -178,36 +178,36 @@ function getEffectPerformanceOptions(settings, effectName) {
 
   if (effectName === "stormRain") {
     if (mode === "quality") {
-      return { targetFps: 44, renderScale: 0.95, densityScale: 0.72 }
+      return { targetFps: 60, renderScale: 1, densityScale: 0.82 }
     }
     if (shouldSave) {
-      return { targetFps: 28, renderScale: 0.72, densityScale: 0.44 }
+      return { targetFps: 42, renderScale: 1, densityScale: 0.48 }
     }
-    return { targetFps: 36, renderScale: 0.84, densityScale: 0.56 }
+    return { targetFps: 60, renderScale: 1, densityScale: 0.62 }
   }
 
   if (effectName === "rainHD") {
     if (mode === "quality") {
       return {
-        targetFps: 44,
-        renderScale: 0.86,
-        densityScale: 0.78,
-        splashScale: 0.72,
+        targetFps: 60,
+        renderScale: 0.9,
+        densityScale: 0.9,
+        splashScale: 0.85,
       }
     }
     if (shouldSave) {
       return {
-        targetFps: 26,
-        renderScale: 0.6,
-        densityScale: 0.46,
-        splashScale: 0.34,
+        targetFps: 42,
+        renderScale: 0.64,
+        densityScale: 0.55,
+        splashScale: 0.45,
       }
     }
     return {
-      targetFps: 34,
-      renderScale: 0.72,
-      densityScale: 0.6,
-      splashScale: 0.5,
+      targetFps: 60,
+      renderScale: 0.78,
+      densityScale: 0.72,
+      splashScale: 0.65,
     }
   }
 
@@ -3160,6 +3160,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.musicPlayerUseDefaultColorCheckbox) {
       DOM.musicPlayerUseDefaultColorCheckbox.checked =
         settings.musicPlayerUseDefaultColor !== false
+    }
+    if (DOM.spotifyClientIdInput) {
+      DOM.spotifyClientIdInput.value = settings.spotifyClientId || ""
     }
     if (DOM.clockDisplaySelect) {
       DOM.clockDisplaySelect.value = settings.clockDisplayMode || "all"

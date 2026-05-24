@@ -33,91 +33,84 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true // Required for async responses
   }
 
+  if (request.action === "spotifyAuthStatus") {
+    getSpotifyAuthStatus()
+      .then((status) => sendResponse(status))
+      .catch((error) =>
+        sendResponse({
+          ok: false,
+          connected: false,
+          redirectUri: getSpotifyRedirectUri(),
+          error: error.message,
+        }),
+      )
+    return true
+  }
+
+  if (request.action === "spotifyAuth") {
+    startSpotifyAuth(request.clientId)
+      .then((result) => sendResponse(result))
+      .catch((error) =>
+        sendResponse({
+          ok: false,
+          connected: false,
+          redirectUri: getSpotifyRedirectUri(),
+          error: error.message,
+        }),
+      )
+    return true
+  }
+
+  if (request.action === "spotifyDisconnect") {
+    disconnectSpotify()
+      .then((result) => sendResponse(result))
+      .catch((error) =>
+        sendResponse({
+          ok: false,
+          connected: false,
+          redirectUri: getSpotifyRedirectUri(),
+          error: error.message,
+        }),
+      )
+    return true
+  }
+
   if (request.action === "getMediaState") {
     chrome.tabs.query({ audible: true }, (tabs) => {
-      if (tabs.length === 0) {
-        // Fallback: check all tabs for potential media sites
-        chrome.tabs.query({}, (allTabs) => {
-          const tab = allTabs.find(
-            (t) =>
-              t.url?.includes("youtube.com") ||
-              t.url?.includes("spotify.com") ||
-              t.url?.includes("music.youtube.com"),
-          )
-          if (tab) {
-            getMediaFromTab(tab.id, sendResponse)
-          } else {
-            sendResponse({ audible: false })
-          }
-        })
-      } else {
+      if (tabs.length > 0) {
         getMediaFromTab(tabs[0].id, sendResponse)
+        return
       }
+
+      getSpotifyPlayback()
+        .then((spotifyState) => {
+          if (spotifyState?.audible) {
+            sendResponse(spotifyState)
+            return
+          }
+          getMediaFromAnyKnownTab(sendResponse)
+        })
+        .catch(() => getMediaFromAnyKnownTab(sendResponse))
     })
     return true
   }
 
   if (request.action === "mediaControl") {
     chrome.tabs.query({ audible: true }, (tabs) => {
-      // Find the first audible tab or just any potential media tab
-      chrome.tabs.query({}, (allTabs) => {
-        const targetTab =
-          tabs[0] ||
-          allTabs.find(
-            (t) =>
-              t.url?.includes("youtube.com") ||
-              t.url?.includes("spotify.com") ||
-              t.url?.includes("music.youtube.com"),
-          )
-        if (targetTab) {
-          chrome.scripting.executeScript(
-            {
-              target: { tabId: targetTab.id },
-              func: (command) => {
-                const video =
-                  document.querySelector("video") ||
-                  document.querySelector("audio")
-                if (!video) return
-                const cmdName =
-                  typeof command === "string" ? command : command.name
-                switch (cmdName) {
-                  case "playPause":
-                    if (video.paused) video.play()
-                    else video.pause()
-                    break
-                  case "next":
-                    ;(
-                      document.querySelector(".ytp-next-button") ||
-                      document.querySelector(
-                        '[data-testid="control-button-skip-forward"]',
-                      )
-                    )?.click()
-                    break
-                  case "prev":
-                    ;(
-                      document.querySelector(".ytp-prev-button") ||
-                      document.querySelector(
-                        '[data-testid="control-button-skip-back"]',
-                      )
-                    )?.click()
-                    break
-                  case "seekTo":
-                    if (typeof command.time === "number") {
-                      video.currentTime = command.time
-                    }
-                    break
-                }
-              },
-              args: [request.command],
-            },
-            () => {
-              sendResponse({ ok: true })
-            },
-          )
-        } else {
-          sendResponse({ ok: false, error: "NO_TARGET_TAB" })
-        }
-      })
+      if (tabs[0]) {
+        controlMediaTab(tabs[0].id, request.command, sendResponse)
+        return
+      }
+
+      controlSpotifyPlayback(request.command)
+        .then((result) => {
+          if (result?.ok) {
+            sendResponse(result)
+            return
+          }
+          controlAnyKnownMediaTab(request.command, sendResponse)
+        })
+        .catch(() => controlAnyKnownMediaTab(request.command, sendResponse))
     })
     return true
   }
@@ -283,6 +276,432 @@ function findAudioTab(callback) {
   })
 }
 
+function isKnownMediaTab(tab) {
+  return (
+    tab?.url?.includes("youtube.com") ||
+    tab?.url?.includes("spotify.com") ||
+    tab?.url?.includes("music.youtube.com")
+  )
+}
+
+function getMediaFromAnyKnownTab(sendResponse) {
+  chrome.tabs.query({}, (allTabs) => {
+    const tab = allTabs.find(isKnownMediaTab)
+    if (tab) {
+      getMediaFromTab(tab.id, sendResponse)
+    } else {
+      sendResponse({ audible: false })
+    }
+  })
+}
+
+function controlAnyKnownMediaTab(command, sendResponse) {
+  chrome.tabs.query({}, (allTabs) => {
+    const targetTab = allTabs.find(isKnownMediaTab)
+    if (targetTab) {
+      controlMediaTab(targetTab.id, command, sendResponse)
+    } else {
+      sendResponse({ ok: false, error: "NO_TARGET_TAB" })
+    }
+  })
+}
+
+function controlMediaTab(tabId, command, sendResponse) {
+  chrome.scripting.executeScript(
+    {
+      target: { tabId },
+      func: (command) => {
+        const video =
+          document.querySelector("video") || document.querySelector("audio")
+        const cmdName = typeof command === "string" ? command : command.name
+        const isSpotify = window.location.href.includes("spotify.com")
+        const clickFirst = (selectors) => {
+          for (const selector of selectors) {
+            const el = document.querySelector(selector)
+            if (el) {
+              el.click()
+              return true
+            }
+          }
+          return false
+        }
+        const seekSpotify = (time) => {
+          const slider =
+            document.querySelector(
+              '[data-testid="playback-progressbar"] input[type="range"]',
+            ) ||
+            document.querySelector(
+              '[data-testid="playback-progressbar"] [role="slider"]',
+            ) ||
+            document.querySelector('[data-testid="playback-progressbar"]') ||
+            document.querySelector('[aria-label*="progress" i][role="slider"]')
+
+          if (!slider) return false
+          const max =
+            Number(slider.max) ||
+            Number(slider.getAttribute("aria-valuemax")) ||
+            0
+          if (!max) return false
+
+          const value = Math.max(0, Math.min(max, max > 36000 ? time * 1000 : time))
+          const clickSliderAtValue = () => {
+            const rect = slider.getBoundingClientRect()
+            if (!rect.width) return false
+            const clientX = rect.left + rect.width * (value / max)
+            const clientY = rect.top + rect.height / 2
+            ;["pointerdown", "mousedown", "mouseup", "click"].forEach((type) => {
+              slider.dispatchEvent(
+                new MouseEvent(type, {
+                  bubbles: true,
+                  cancelable: true,
+                  clientX,
+                  clientY,
+                }),
+              )
+            })
+            return true
+          }
+          if ("value" in slider) {
+            const ownSetter = Object.getOwnPropertyDescriptor(slider, "value")?.set
+            const protoSetter = Object.getOwnPropertyDescriptor(
+              Object.getPrototypeOf(slider),
+              "value",
+            )?.set
+            if (protoSetter && ownSetter !== protoSetter) {
+              protoSetter.call(slider, String(value))
+            } else if (ownSetter) {
+              ownSetter.call(slider, String(value))
+            } else {
+              slider.value = String(value)
+            }
+            slider.dispatchEvent(new Event("input", { bubbles: true }))
+            slider.dispatchEvent(new Event("change", { bubbles: true }))
+            clickSliderAtValue()
+            return true
+          }
+          return clickSliderAtValue()
+        }
+
+        switch (cmdName) {
+          case "playPause":
+            if (video) {
+              if (video.paused) video.play()
+              else video.pause()
+            } else if (isSpotify) {
+              clickFirst(['[data-testid="control-button-playpause"]'])
+            }
+            break
+          case "next":
+            clickFirst([
+              ".ytp-next-button",
+              '[data-testid="control-button-skip-forward"]',
+            ])
+            break
+          case "prev":
+            clickFirst([
+              ".ytp-prev-button",
+              '[data-testid="control-button-skip-back"]',
+            ])
+            break
+          case "seekTo":
+            if (typeof command.time === "number") {
+              if (video) {
+                video.currentTime = command.time
+              } else if (isSpotify) {
+                seekSpotify(command.time)
+              }
+            }
+            break
+        }
+      },
+      args: [command],
+    },
+    () => {
+      if (chrome.runtime.lastError) {
+        sendResponse({ ok: false, error: chrome.runtime.lastError.message })
+        return
+      }
+      sendResponse({ ok: true })
+    },
+  )
+}
+
+const SPOTIFY_AUTH_KEY = "spotify_web_api_auth"
+const SPOTIFY_SCOPES = [
+  "user-read-currently-playing",
+  "user-read-playback-state",
+  "user-modify-playback-state",
+].join(" ")
+
+function getSpotifyRedirectUri() {
+  try {
+    return chrome.identity.getRedirectURL("spotify")
+  } catch (error) {
+    return ""
+  }
+}
+
+function spotifyStorageGet() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([SPOTIFY_AUTH_KEY], (data) => {
+      resolve(data?.[SPOTIFY_AUTH_KEY] || null)
+    })
+  })
+}
+
+function spotifyStorageSet(auth) {
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [SPOTIFY_AUTH_KEY]: auth }, resolve)
+  })
+}
+
+function spotifyStorageRemove() {
+  return new Promise((resolve) => {
+    chrome.storage.local.remove([SPOTIFY_AUTH_KEY], resolve)
+  })
+}
+
+function base64UrlEncode(bytes) {
+  let binary = ""
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte)
+  })
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "")
+}
+
+function randomVerifier(size = 64) {
+  const bytes = new Uint8Array(size)
+  crypto.getRandomValues(bytes)
+  return base64UrlEncode(bytes)
+}
+
+async function createCodeChallenge(verifier) {
+  const encoded = new TextEncoder().encode(verifier)
+  const digest = await crypto.subtle.digest("SHA-256", encoded)
+  return base64UrlEncode(new Uint8Array(digest))
+}
+
+function launchSpotifyAuth(url) {
+  return new Promise((resolve, reject) => {
+    chrome.identity.launchWebAuthFlow({ url, interactive: true }, (responseUrl) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message))
+        return
+      }
+      if (!responseUrl) {
+        reject(new Error("AUTH_CANCELLED"))
+        return
+      }
+      resolve(responseUrl)
+    })
+  })
+}
+
+async function exchangeSpotifyToken(body) {
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok) {
+    throw new Error(data.error_description || data.error || "SPOTIFY_TOKEN_ERROR")
+  }
+  return data
+}
+
+async function getSpotifyAuthStatus() {
+  const auth = await spotifyStorageGet()
+  return {
+    ok: true,
+    connected: Boolean(auth?.refreshToken),
+    redirectUri: getSpotifyRedirectUri(),
+  }
+}
+
+async function startSpotifyAuth(clientId) {
+  const cleanClientId = String(clientId || "").trim()
+  if (!cleanClientId) throw new Error("MISSING_SPOTIFY_CLIENT_ID")
+
+  const redirectUri = getSpotifyRedirectUri()
+  const codeVerifier = randomVerifier()
+  const codeChallenge = await createCodeChallenge(codeVerifier)
+  const state = randomVerifier(32)
+  const authUrl = new URL("https://accounts.spotify.com/authorize")
+  authUrl.search = new URLSearchParams({
+    response_type: "code",
+    client_id: cleanClientId,
+    scope: SPOTIFY_SCOPES,
+    redirect_uri: redirectUri,
+    code_challenge_method: "S256",
+    code_challenge: codeChallenge,
+    state,
+  }).toString()
+
+  const responseUrl = await launchSpotifyAuth(authUrl.toString())
+  const callbackUrl = new URL(responseUrl)
+  const error = callbackUrl.searchParams.get("error")
+  if (error) throw new Error(error)
+  if (callbackUrl.searchParams.get("state") !== state) {
+    throw new Error("SPOTIFY_STATE_MISMATCH")
+  }
+
+  const code = callbackUrl.searchParams.get("code")
+  if (!code) throw new Error("SPOTIFY_CODE_MISSING")
+
+  const token = await exchangeSpotifyToken(
+    new URLSearchParams({
+      client_id: cleanClientId,
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectUri,
+      code_verifier: codeVerifier,
+    }),
+  )
+
+  await spotifyStorageSet({
+    clientId: cleanClientId,
+    accessToken: token.access_token,
+    refreshToken: token.refresh_token,
+    expiresAt: Date.now() + (token.expires_in || 3600) * 1000 - 30000,
+  })
+
+  return { ok: true, connected: true, redirectUri }
+}
+
+async function disconnectSpotify() {
+  await spotifyStorageRemove()
+  return { ok: true, connected: false, redirectUri: getSpotifyRedirectUri() }
+}
+
+async function getValidSpotifyToken() {
+  const auth = await spotifyStorageGet()
+  if (!auth?.refreshToken || !auth?.clientId) {
+    throw new Error("NO_SPOTIFY_AUTH")
+  }
+
+  if (auth.accessToken && auth.expiresAt > Date.now() + 60000) {
+    return auth.accessToken
+  }
+
+  const token = await exchangeSpotifyToken(
+    new URLSearchParams({
+      client_id: auth.clientId,
+      grant_type: "refresh_token",
+      refresh_token: auth.refreshToken,
+    }),
+  )
+
+  const nextAuth = {
+    ...auth,
+    accessToken: token.access_token,
+    refreshToken: token.refresh_token || auth.refreshToken,
+    expiresAt: Date.now() + (token.expires_in || 3600) * 1000 - 30000,
+  }
+  await spotifyStorageSet(nextAuth)
+  return nextAuth.accessToken
+}
+
+function pickSpotifyImage(item) {
+  const images = item?.album?.images || item?.images || item?.show?.images || []
+  if (!images.length) return ""
+  return images.reduce((best, image) => {
+    const bestSize = (best?.width || 0) * (best?.height || 0)
+    const imageSize = (image?.width || 0) * (image?.height || 0)
+    return imageSize >= bestSize ? image : best
+  }, images[0]).url || ""
+}
+
+function mapSpotifyPlayback(data) {
+  const item = data?.item
+  if (!item) return { audible: false }
+  const artist =
+    item.type === "episode"
+      ? item.show?.name || item.publisher || ""
+      : item.artists?.map((entry) => entry.name).filter(Boolean).join(", ") || ""
+
+  return {
+    audible: true,
+    title: item.name || "",
+    artist,
+    paused: data.is_playing !== true,
+    currentTime: (data.progress_ms || 0) / 1000,
+    duration: (item.duration_ms || 0) / 1000,
+    url: item.external_urls?.spotify || "spotify://desktop",
+    thumbnail: pickSpotifyImage(item),
+    source: "spotify",
+  }
+}
+
+async function getSpotifyPlayback() {
+  const token = await getValidSpotifyToken()
+  const response = await fetch(
+    "https://api.spotify.com/v1/me/player?additional_types=track,episode",
+    { headers: { Authorization: `Bearer ${token}` } },
+  )
+
+  if (response.status === 204 || response.status === 404) {
+    return { audible: false }
+  }
+  if (response.status === 401) {
+    await spotifyStorageRemove()
+    return { audible: false }
+  }
+  if (!response.ok) {
+    throw new Error(`SPOTIFY_PLAYBACK_${response.status}`)
+  }
+
+  const data = await response.json()
+  return mapSpotifyPlayback(data)
+}
+
+async function controlSpotifyPlayback(command) {
+  const token = await getValidSpotifyToken()
+  const cmdName = typeof command === "string" ? command : command?.name
+  let endpoint = ""
+  let method = "POST"
+
+  if (cmdName === "playPause") {
+    const playback = await fetch("https://api.spotify.com/v1/me/player", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (playback.status === 204 || playback.status === 404) {
+      return { ok: false, error: "NO_ACTIVE_SPOTIFY_DEVICE" }
+    }
+    const data = await playback.json().catch(() => ({}))
+    endpoint = data.is_playing
+      ? "https://api.spotify.com/v1/me/player/pause"
+      : "https://api.spotify.com/v1/me/player/play"
+    method = "PUT"
+  } else if (cmdName === "next") {
+    endpoint = "https://api.spotify.com/v1/me/player/next"
+  } else if (cmdName === "prev") {
+    endpoint = "https://api.spotify.com/v1/me/player/previous"
+  } else if (cmdName === "seekTo" && typeof command?.time === "number") {
+    const positionMs = Math.max(0, Math.round(command.time * 1000))
+    endpoint = `https://api.spotify.com/v1/me/player/seek?position_ms=${positionMs}`
+    method = "PUT"
+  } else {
+    return { ok: false, error: "UNSUPPORTED_SPOTIFY_COMMAND" }
+  }
+
+  const response = await fetch(endpoint, {
+    method,
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  if (response.status === 204 || response.status === 202) {
+    return { ok: true, source: "spotify" }
+  }
+  if (response.status === 403) {
+    return { ok: false, error: "SPOTIFY_PREMIUM_OR_DEVICE_REQUIRED" }
+  }
+  if (response.status === 404) {
+    return { ok: false, error: "NO_ACTIVE_SPOTIFY_DEVICE" }
+  }
+  return { ok: response.ok, source: "spotify", error: `SPOTIFY_CONTROL_${response.status}` }
+}
+
 function getMediaFromTab(tabId, sendResponse) {
   chrome.scripting.executeScript(
     {
@@ -291,6 +710,68 @@ function getMediaFromTab(tabId, sendResponse) {
         const metadata = navigator.mediaSession.metadata
         const video =
           document.querySelector("video") || document.querySelector("audio")
+        const isSpotify = window.location.href.includes("spotify.com")
+        const textFrom = (selectors) => {
+          for (const selector of selectors) {
+            const text = document.querySelector(selector)?.textContent?.trim()
+            if (text) return text
+          }
+          return ""
+        }
+        const parseTime = (value) => {
+          const text = String(value || "").trim()
+          if (!text || !text.includes(":")) return 0
+          const parts = text.split(":").map((part) => Number(part))
+          if (parts.some((part) => Number.isNaN(part))) return 0
+          return parts.reduce((total, part) => total * 60 + part, 0)
+        }
+        const spotifyPlayback = (() => {
+          if (!isSpotify) return null
+          const slider =
+            document.querySelector(
+              '[data-testid="playback-progressbar"] input[type="range"]',
+            ) ||
+            document.querySelector(
+              '[data-testid="playback-progressbar"] [role="slider"]',
+            ) ||
+            document.querySelector('[data-testid="playback-progressbar"]') ||
+            document.querySelector('[aria-label*="progress" i][role="slider"]')
+          let currentTime =
+            Number(slider?.value) ||
+            Number(slider?.getAttribute("aria-valuenow")) ||
+            parseTime(
+              textFrom([
+                '[data-testid="playback-position"]',
+                ".playback-bar__progress-time:first-child",
+              ]),
+            )
+          let duration =
+            Number(slider?.max) ||
+            Number(slider?.getAttribute("aria-valuemax")) ||
+            parseTime(
+              textFrom([
+                '[data-testid="playback-duration"]',
+                ".playback-bar__progress-time:last-child",
+              ]),
+            )
+          if (duration > 36000) {
+            currentTime /= 1000
+            duration /= 1000
+          }
+          const playPauseLabel =
+            document
+              .querySelector('[data-testid="control-button-playpause"]')
+              ?.getAttribute("aria-label")
+              ?.toLowerCase() || ""
+          const mediaState = navigator.mediaSession?.playbackState
+          const paused =
+            mediaState === "playing"
+              ? false
+              : mediaState === "paused"
+                ? true
+                : playPauseLabel.includes("play")
+          return { currentTime, duration, paused }
+        })()
 
         // Selectors for specific sites
         const ytTitle =
@@ -305,12 +786,15 @@ function getMediaFromTab(tabId, sendResponse) {
           document.querySelector("a.ytp-title-expanded-channel-link")
             ?.textContent
 
-        const spotifyTitle = document.querySelector(
+        const spotifyTitle = textFrom([
           '[data-testid="now-playing-widget"] [data-testid="context-item-link"]',
-        )?.textContent
-        const spotifyArtist = document.querySelector(
+          '[data-testid="context-item-info-title"]',
+          '[data-testid="now-playing-widget"] a[href*="/track/"]',
+        ])
+        const spotifyArtist = textFrom([
           '[data-testid="now-playing-widget"] [data-testid="context-item-info-subtitles"]',
-        )?.textContent
+          '[data-testid="context-item-info-subtitles"]',
+        ])
 
         return {
           title:
@@ -319,10 +803,15 @@ function getMediaFromTab(tabId, sendResponse) {
             spotifyTitle ||
             document.title.replace(/^\(\d+\)\s/, ""),
           artist: metadata?.artist || ytArtist || spotifyArtist || "",
-          paused: video ? video.paused : true,
-          currentTime: video ? video.currentTime : 0,
-          duration: video ? (isFinite(video.duration) ? video.duration : 0) : 0,
+          paused: video ? video.paused : spotifyPlayback?.paused ?? true,
+          currentTime: video ? video.currentTime : spotifyPlayback?.currentTime || 0,
+          duration: video
+            ? isFinite(video.duration)
+              ? video.duration
+              : 0
+            : spotifyPlayback?.duration || 0,
           url: window.location.href,
+          source: isSpotify ? "spotify" : "",
           thumbnail: (() => {
             // Priority 1: MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {

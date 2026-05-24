@@ -208,6 +208,19 @@
                 opacity: 0;
             }
 
+            body.skip-startup-loader #startup-overlay {
+                display: none !important;
+            }
+
+            body.skip-startup-loader .main-container {
+                transform: translateY(4px);
+                transition: transform 0.22s ease-out, opacity 0.18s ease-out !important;
+            }
+
+            body.skip-startup-loader .main-container.ready {
+                animation: none !important;
+            }
+
             .main-container.ready {
                 transform: scale(1);
                 opacity: 1 !important;
@@ -1987,6 +2000,23 @@
                             <textarea id="background-animation-code-input" class="preset-code-input" rows="2"
                                 data-i18n-placeholder="preset_code_placeholder"
                                 placeholder="Paste a preset code here"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-item performance-mode-card">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span data-i18n="settings_performance_mode">Performance Mode</span>
+                            </div>
+                            <div class="btn-group performance-mode-group" id="background-performance-mode-group">
+                                <button type="button" class="btn-group-item performance-mode-btn active"
+                                    data-mode="auto" data-i18n="settings_performance_auto">Auto</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="quality"
+                                    data-i18n="settings_performance_quality">Quality</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="battery"
+                                    data-i18n="settings_performance_battery">Battery Saver</button>
+                            </div>
                         </div>
                     </div>
 
@@ -5144,6 +5174,34 @@
                             <label for="music-player-use-default-color-checkbox"
                                 data-i18n="settings_music_use_default_color">Use Default Music Color</label>
                             <input type="checkbox" id="music-player-use-default-color-checkbox" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label for="spotify-client-id-input" data-i18n="spotify_client_id">Spotify Client ID</label>
+                            <input type="text" id="spotify-client-id-input" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                                autocomplete="off" spellcheck="false">
+                            <small class="setting-hint" data-i18n="spotify_client_hint">Create a Spotify Developer app,
+                                add the redirect URI below, then connect.</small>
+                        </div>
+                        <div class="setting-item">
+                            <label for="spotify-redirect-uri-output" data-i18n="spotify_redirect_uri">Spotify Redirect
+                                URI</label>
+                            <input type="text" id="spotify-redirect-uri-output" readonly>
+                            <small class="setting-hint" data-i18n="spotify_redirect_hint">Add this exact URI in your
+                                Spotify app settings.</small>
+                        </div>
+                        <div class="setting-item">
+                            <div class="preset-code-actions">
+                                <button type="button" id="spotify-connect-btn" class="secondary-btn">
+                                    <i class="fa-brands fa-spotify"></i>
+                                    <span data-i18n="spotify_connect">Connect Spotify</span>
+                                </button>
+                                <button type="button" id="spotify-disconnect-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-link-slash"></i>
+                                    <span data-i18n="spotify_disconnect">Disconnect</span>
+                                </button>
+                            </div>
+                            <small id="spotify-auth-status" class="setting-hint"
+                                data-i18n="spotify_status_disconnected">Spotify Desktop not connected.</small>
                         </div>
                     </div>
 

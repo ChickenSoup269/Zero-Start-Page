@@ -328,7 +328,7 @@ export class MusicPlayer {
       this.platformIcon.className = "platform-icon fa-brands fa-youtube"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#ffffff"
-    } else if (url.includes("spotify.com")) {
+    } else if (url.includes("spotify.com") || data.source === "spotify") {
       this.platformIcon.className = "platform-icon fa-brands fa-spotify"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#1DB954"
@@ -380,7 +380,7 @@ export class MusicPlayer {
       this.disc.classList.remove("has-thumb")
     }
 
-    this.updateSourceIcon(data.url)
+    this.updateSourceIcon(data)
     this._duration =
       typeof data.duration === "number" && data.duration > 0 ? data.duration : 0
     this._lastKnownTime = data.currentTime || 0
@@ -430,12 +430,14 @@ export class MusicPlayer {
     }
   }
 
-  updateSourceIcon(url) {
+  updateSourceIcon(data) {
+    const url = data?.url || ""
     if (!url) return
     let iconClass = "fa-solid fa-music"
     if (url.includes("youtube.com") || url.includes("youtu.be"))
       iconClass = "fa-brands fa-youtube"
-    else if (url.includes("spotify.com")) iconClass = "fa-brands fa-spotify"
+    else if (url.includes("spotify.com") || data.source === "spotify")
+      iconClass = "fa-brands fa-spotify"
     else if (url.includes("soundcloud.com"))
       iconClass = "fa-brands fa-soundcloud"
 

@@ -2613,7 +2613,7 @@ export function setupGeneralEventHandlers(
     btn.addEventListener("click", () => {
       const mode = btn.dataset.mode || "auto"
       DOM.performanceModeBtns.forEach((item) =>
-        item.classList.toggle("active", item === btn),
+        item.classList.toggle("active", item.dataset.mode === mode),
       )
       handleSettingUpdate("performanceMode", mode)
     })
@@ -3194,6 +3194,19 @@ export function setupGeneralEventHandlers(
       await clearCloudBackup()
     }
 
+    try {
+      localStorage.setItem("startpageShowStartupLoader", "1")
+    } catch (e) {
+      console.warn("Could not mark startup loader for reset", e)
+    }
+    document.body.classList.remove("skip-startup-loader")
+    document.body.classList.add("loading-state")
+    const startupOverlay = document.getElementById("startup-overlay")
+    if (startupOverlay) {
+      startupOverlay.style.visibility = "visible"
+      startupOverlay.style.opacity = "1"
+    }
+
     // Logic for standard settings reset
     if (selected.all || selected.positions || selected.effects || selected.styles) {
       const { resetComponentPositions } = await import("../../services/state.js")
@@ -3472,6 +3485,84 @@ export function setupGeneralEventHandlers(
       }),
     )
   })
+
+  const setSpotifyAuthUi = (connected, redirectUri = "") => {
+    if (DOM.spotifyRedirectUriOutput) {
+      DOM.spotifyRedirectUriOutput.value = redirectUri
+    }
+    if (DOM.spotifyAuthStatus) {
+      DOM.spotifyAuthStatus.textContent = connected
+        ? i18n.spotify_status_connected || "Spotify Desktop connected."
+        : i18n.spotify_status_disconnected || "Spotify Desktop not connected."
+      DOM.spotifyAuthStatus.classList.toggle("is-connected", connected)
+    }
+    if (DOM.spotifyDisconnectBtn) {
+      DOM.spotifyDisconnectBtn.disabled = !connected
+    }
+  }
+
+  const requestSpotify = (message) =>
+    new Promise((resolve) => {
+      try {
+        chrome.runtime.sendMessage(message, (response) => {
+          if (chrome.runtime.lastError) {
+            resolve({ ok: false, error: chrome.runtime.lastError.message })
+            return
+          }
+          resolve(response || { ok: false })
+        })
+      } catch (error) {
+        resolve({ ok: false, error: error.message })
+      }
+    })
+
+  const refreshSpotifyAuthStatus = async () => {
+    if (!DOM.spotifyAuthStatus && !DOM.spotifyRedirectUriOutput) return
+    const response = await requestSpotify({ action: "spotifyAuthStatus" })
+    setSpotifyAuthUi(response.connected === true, response.redirectUri || "")
+  }
+
+  DOM.spotifyClientIdInput?.addEventListener("change", () => {
+    handleSettingUpdate("spotifyClientId", DOM.spotifyClientIdInput.value.trim())
+  })
+
+  DOM.spotifyConnectBtn?.addEventListener("click", async () => {
+    const clientId = DOM.spotifyClientIdInput?.value.trim() || ""
+    if (!clientId) {
+      showAlert(i18n.spotify_client_missing || "Enter your Spotify Client ID first.")
+      return
+    }
+
+    handleSettingUpdate("spotifyClientId", clientId)
+    DOM.spotifyConnectBtn.disabled = true
+    if (DOM.spotifyAuthStatus) {
+      DOM.spotifyAuthStatus.textContent =
+        i18n.spotify_status_connecting || "Connecting Spotify..."
+    }
+
+    const response = await requestSpotify({ action: "spotifyAuth", clientId })
+    DOM.spotifyConnectBtn.disabled = false
+
+    if (response.ok) {
+      setSpotifyAuthUi(true, response.redirectUri || "")
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: { key: "spotifyClientId", value: clientId },
+        }),
+      )
+    } else {
+      setSpotifyAuthUi(false, response.redirectUri || "")
+      showAlert(response.error || i18n.spotify_auth_failed || "Could not connect Spotify.")
+    }
+  })
+
+  DOM.spotifyDisconnectBtn?.addEventListener("click", async () => {
+    const response = await requestSpotify({ action: "spotifyDisconnect" })
+    setSpotifyAuthUi(false, response.redirectUri || "")
+    showAlert(i18n.spotify_disconnected || "Spotify disconnected.")
+  })
+
+  refreshSpotifyAuthStatus()
 
   DOM.ghostControlsCheckbox.addEventListener("change", () => {
     const isGhost = DOM.ghostControlsCheckbox.checked

@@ -29,13 +29,13 @@ export class RainHDEffect {
     this.lightning = null // active bolt object, null when idle
     this.lightningTimer = this._nextLightningDelay()
 
-    this.fps = options.targetFps ?? 42
+    this.fps = options.targetFps ?? 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
     this.time = 0
-    this.renderScale = options.renderScale ?? 0.78
-    this.densityScale = options.densityScale ?? 0.68
-    this.splashScale = options.splashScale ?? 0.58
+    this.renderScale = options.renderScale ?? 0.82
+    this.densityScale = options.densityScale ?? 0.78
+    this.splashScale = options.splashScale ?? 0.72
 
     // Wind (horizontal velocity multiplier, leans drops to the right)
     this.windX = 1.6
@@ -51,25 +51,17 @@ export class RainHDEffect {
     this._r = parseInt(c.substring(0, 2), 16)
     this._g = parseInt(c.substring(2, 4), 16)
     this._b = parseInt(c.substring(4, 6), 16)
-    this._layerStroke = RainHDEffect.LAYERS.map((layer) => {
-      const alpha = ((layer[4] + layer[5]) / 2).toFixed(3)
-      return `rgba(${this._r},${this._g},${this._b},${alpha})`
-    })
-    this._layerHeadStroke = RainHDEffect.LAYERS.map((layer) => {
-      const alpha = Math.min(0.72, layer[5] * 0.95).toFixed(3)
-      return `rgba(${Math.min(255, this._r + 48)},${Math.min(255, this._g + 34)},${Math.min(255, this._b + 24)},${alpha})`
-    })
   }
 
   // ── Layer definitions ────────────────────────────────────────────────────
   // Each entry: [speedMin, speedMax, lenMin, lenMax, opMin, opMax, windFactor, lineWidth]
   static LAYERS = [
-    [7, 12, 12, 22, 0.055, 0.13, 0.35, 0.55], // 0 bg  — small, slow, faint
-    [15, 24, 24, 42, 0.16, 0.32, 0.72, 0.95], // 1 mid — medium
-    [25, 39, 38, 62, 0.32, 0.58, 1.0, 1.28], // 2 fg  — fast, bright, cleaner
+    [8, 14, 10, 20, 0.06, 0.14, 0.35, 0.7], // 0 bg  — small, slow, faint
+    [18, 29, 22, 38, 0.2, 0.38, 0.72, 1.3], // 1 mid — medium
+    [32, 54, 40, 72, 0.45, 0.8, 1.0, 1.9], // 2 fg  — large, fast, bright
   ]
 
-  static LAYER_COUNTS = [120, 92, 42]
+  static LAYER_COUNTS = [160, 120, 65]
 
   resize() {
     const scale = Math.max(0.55, Math.min(1, this.renderScale))
@@ -102,7 +94,7 @@ export class RainHDEffect {
     let shouldReseed = false
 
     if (options.targetFps !== undefined) {
-      this.fps = Math.max(24, Math.min(60, Number(options.targetFps) || 42))
+      this.fps = Math.max(24, Math.min(60, Number(options.targetFps) || 60))
       this.fpsInterval = 1000 / this.fps
     }
     if (options.renderScale !== undefined) {
@@ -110,7 +102,7 @@ export class RainHDEffect {
       shouldResize = true
     }
     if (options.densityScale !== undefined) {
-      this.densityScale = Math.max(0.42, Math.min(1, Number(options.densityScale) || 0.68))
+      this.densityScale = Math.max(0.42, Math.min(1.1, Number(options.densityScale) || 0.78))
       shouldReseed = true
     }
     if (options.splashScale !== undefined) {
@@ -155,15 +147,15 @@ export class RainHDEffect {
   }
 
   _spawnSplash(x) {
-    if (this.splashes.length > 52 * this.splashScale) return
+    if (this.splashes.length > 80 * this.splashScale) return
     // Primary large ring
     this.splashes.push({
       type: "ring",
       x,
       r: 1.5,
-      maxR: 22 + Math.random() * 18,
-      speed: 1.1 + Math.random() * 0.7,
-      baseOp: 0.32 + Math.random() * 0.16,
+      maxR: 30 + Math.random() * 20,
+      speed: 1.3 + Math.random() * 0.9,
+      baseOp: 0.42 + Math.random() * 0.22,
       delay: 0,
     })
     // Secondary smaller ring (slight delay)
@@ -171,18 +163,18 @@ export class RainHDEffect {
       type: "ring",
       x: x + (Math.random() - 0.5) * 8,
       r: 0.5,
-      maxR: 10 + Math.random() * 9,
+      maxR: 14 + Math.random() * 10,
       speed: 1.0 + Math.random() * 0.5,
       baseOp: 0.22 + Math.random() * 0.14,
       delay: 4,
     })
     // Bounce droplets — arc upward then fall due to gravity
-    const count = Math.max(1, Math.round((2 + Math.floor(Math.random() * 4)) * this.splashScale))
+    const count = Math.max(2, Math.round((4 + Math.floor(Math.random() * 6)) * this.splashScale))
     for (let i = 0; i < count; i++) {
       // Spread around straight-up: angle in [-π/2 ± 0.85 rad]
       const spread = (Math.random() - 0.5) * 1.7
       const angle = -Math.PI / 2 + spread
-      const spd = 1.2 + Math.random() * 3.4
+      const spd = 1.6 + Math.random() * 5.0
       this.splashes.push({
         type: "particle",
         x,
@@ -190,9 +182,9 @@ export class RainHDEffect {
         vx: Math.cos(angle) * spd + this.windX * 0.25,
         vy: Math.sin(angle) * spd,
         gravity: 0.17 + Math.random() * 0.12,
-        r: 0.55 + Math.random() * 1.15,
-        baseOp: 0.38 + Math.random() * 0.22,
-        op: 0.38 + Math.random() * 0.22,
+        r: 0.8 + Math.random() * 1.8,
+        baseOp: 0.5 + Math.random() * 0.3,
+        op: 0.5 + Math.random() * 0.3,
         delay: 0,
         age: 0,
         maxAge: 55,
@@ -301,6 +293,13 @@ export class RainHDEffect {
     }
     this.windX += (this._windTarget - this.windX) * 0.004
 
+    // Spawn fresh drops across all layers (spawn 2-3 per frame for denser rain)
+    const spawnCount = Math.max(1, Math.round((Math.random() < 0.5 ? 3 : 2) * this.densityScale))
+    for (let s = 0; s < spawnCount; s++) {
+      const li = Math.random() < 0.45 ? 0 : Math.random() < 0.65 ? 1 : 2
+      this.drops.push(this._newDrop(li, false))
+    }
+
     // Move drops; splash on bottom hit
     for (let i = this.drops.length - 1; i >= 0; i--) {
       const d = this.drops[i]
@@ -308,13 +307,15 @@ export class RainHDEffect {
       d.y += d.vy
       if (d.y > this.canvas.height + 10) {
         // Only mid + fg drops create visible splashes
-        if (d.li >= 1 && Math.random() < 0.5 * this.splashScale) this._spawnSplash(d.x)
-        Object.assign(d, this._newDrop(d.li, false))
-      } else if (d.x < -160) {
-        d.x = this.canvas.width + 100
-      } else if (d.x > this.canvas.width + 160) {
-        d.x = -100
+        if (d.li >= 1 && Math.random() < 0.72 * this.splashScale) this._spawnSplash(d.x)
+        this.drops.splice(i, 1)
       }
+    }
+
+    // Cap drop count to prevent sluggishness
+    const MAX_DROPS = Math.round(430 * this.densityScale)
+    if (this.drops.length > MAX_DROPS) {
+      this.drops.splice(0, this.drops.length - MAX_DROPS)
     }
 
     // Advance splash rings and particles
@@ -352,8 +353,8 @@ export class RainHDEffect {
       if (p.r >= p.maxR) this.puddles.splice(i, 1)
     }
     // Periodically add new ambient rings
-    if (Math.random() < 0.055 * this.splashScale) this.puddles.push(this._newPuddle(false))
-    const maxPuddles = Math.round(26 * this.splashScale)
+    if (Math.random() < 0.1 * this.splashScale) this.puddles.push(this._newPuddle(false))
+    const maxPuddles = Math.round(42 * this.splashScale)
     if (this.puddles.length > maxPuddles)
       this.puddles.splice(0, this.puddles.length - maxPuddles)
 
@@ -414,28 +415,20 @@ export class RainHDEffect {
 
     // ── 3. Rain streaks — bg layer first (painter's algorithm) ───────────
     ctx.lineCap = "round"
-    ctx.lineJoin = "round"
     for (const d of this.drops) {
-      const lean = 0.52 + Math.abs(d.vx / Math.max(1, d.vy)) * 0.65
-      const tx = d.x - d.vx * lean
-      const ty = d.y - d.len * 0.58
-      const hx = d.x + d.vx * 0.14
-      const hy = d.y + d.len * 0.42
+      const angle = Math.atan2(d.vy, d.vx)
+      const tx = d.x - Math.cos(angle) * d.len
+      const ty = d.y - Math.sin(angle) * d.len
+      const lg = ctx.createLinearGradient(tx, ty, d.x, d.y)
+      lg.addColorStop(0, `rgba(${rgb},0)`)
+      lg.addColorStop(0.45, `rgba(${rgb},${d.op * 0.38})`)
+      lg.addColorStop(1, `rgba(${rgb},${d.op})`)
       ctx.beginPath()
       ctx.moveTo(tx, ty)
-      ctx.lineTo(hx, hy)
-      ctx.strokeStyle = this._layerStroke[d.li]
+      ctx.lineTo(d.x, d.y)
+      ctx.strokeStyle = lg
       ctx.lineWidth = RainHDEffect.LAYERS[d.li][7]
       ctx.stroke()
-
-      if (d.li > 0) {
-        ctx.beginPath()
-        ctx.moveTo(hx - d.vx * 0.04, hy - d.len * 0.1)
-        ctx.lineTo(hx, hy)
-        ctx.strokeStyle = this._layerHeadStroke[d.li]
-        ctx.lineWidth = Math.max(0.45, RainHDEffect.LAYERS[d.li][7] * 0.58)
-        ctx.stroke()
-      }
     }
 
     // ── 4. Splash rings ───────────────────────────────────────────────────
@@ -471,16 +464,16 @@ export class RainHDEffect {
       const flashOp = lt.flashes[lt.flashIdx][0]
 
       // Full-screen white flash overlay
-      ctx.fillStyle = `rgba(235,245,255,${flashOp * 0.72})`
+      ctx.fillStyle = `rgba(255,255,255,${flashOp})`
       ctx.fillRect(0, 0, W, H)
 
       // Bolt glow: wide soft blur layer
       ctx.save()
-      ctx.globalAlpha = lt.boltOp * 0.42
+      ctx.globalAlpha = lt.boltOp * 0.55
       ctx.strokeStyle = `rgba(200,220,255,1)`
-      ctx.lineWidth = 4.2
+      ctx.lineWidth = 6
       ctx.shadowColor = "rgba(180,210,255,1)"
-      ctx.shadowBlur = 18
+      ctx.shadowBlur = 28
       ctx.lineCap = "round"
       for (const seg of lt.bolt) {
         ctx.beginPath()
@@ -494,9 +487,9 @@ export class RainHDEffect {
       ctx.save()
       ctx.globalAlpha = lt.boltOp * 0.9
       ctx.strokeStyle = "rgba(255,255,255,1)"
-      ctx.lineWidth = 1.15
+      ctx.lineWidth = 1.5
       ctx.shadowColor = "rgba(255,255,255,1)"
-      ctx.shadowBlur = 5
+      ctx.shadowBlur = 8
       ctx.lineCap = "round"
       for (const seg of lt.bolt) {
         ctx.beginPath()

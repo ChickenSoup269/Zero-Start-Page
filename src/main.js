@@ -35,7 +35,10 @@ import {
 
 // --- Initialization ---
 async function bootstrap() {
-  document.body.classList.add("is-booting")
+  const skipStartupLoader = document.body.classList.contains("skip-startup-loader")
+  if (!skipStartupLoader) {
+    document.body.classList.add("is-booting")
+  }
 
   // Load language first so all other components have translations
   await initI18n()
@@ -359,12 +362,22 @@ async function bootstrap() {
     
     const hideOverlay = () => {
       const overlay = document.getElementById("startup-overlay")
-      if (overlay) {
+      if (overlay && !skipStartupLoader) {
         overlay.style.opacity = "0"
         overlay.style.visibility = "hidden"
       }
+      localStorage.setItem("startpageHasOpened", "1")
+      localStorage.removeItem("startpageShowStartupLoader")
       document.body.classList.remove("loading-state")
       document.body.classList.remove("is-booting")
+    }
+
+    if (skipStartupLoader) {
+      requestAnimationFrame(() => {
+        if (mainContainer) mainContainer.classList.add("ready")
+        hideOverlay()
+      })
+      return
     }
 
     // Wait for bookmarks-grid, taskbar, sidebar to be stable
@@ -389,7 +402,9 @@ async function bootstrap() {
 
   // initSettings() moved up to prevent CLS
 
-  if (window.requestIdleCallback) {
+  if (skipStartupLoader) {
+    revealApp()
+  } else if (window.requestIdleCallback) {
     window.requestIdleCallback(revealApp)
   } else {
     setTimeout(revealApp, 200)
@@ -507,11 +522,14 @@ async function bootstrap() {
         const hasSelection = Object.values(selection).some(v => v === true)
         if (!hasSelection) return
 
+        document.body.classList.remove("skip-startup-loader")
+        document.body.classList.add("loading-state")
         const overlay = document.getElementById("startup-overlay")
         if (overlay) {
           overlay.style.visibility = "visible"
           overlay.style.opacity = "1"
         }
+        localStorage.setItem("startpageShowStartupLoader", "1")
         
         setTimeout(() => {
           resetComponentPositions(selection)

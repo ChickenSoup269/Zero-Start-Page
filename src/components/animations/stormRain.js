@@ -21,11 +21,11 @@
 export class StormRainEffect {
   // [speedMin, speedMax, lenMin, lenMax, opMin, opMax, windFactor, baseWidth]
   static LAYERS = [
-    [4, 7, 8, 14, 0.045, 0.11, 0.18, 0.5], // lớp xa (bg)
-    [10, 17, 16, 28, 0.12, 0.25, 0.45, 0.78], // lớp giữa
-    [18, 29, 24, 42, 0.2, 0.38, 0.82, 1.05], // lớp gần (fg)
+    [3, 6, 5, 10, 0.04, 0.1, 0.15, 0.55], // lớp xa (bg)
+    [8, 15, 12, 22, 0.12, 0.24, 0.4, 0.9], // lớp giữa
+    [16, 26, 22, 38, 0.22, 0.45, 0.8, 1.3], // lớp gần (fg)
   ]
-  static LAYER_SHARE = [0.38, 0.42, 0.2]
+  static LAYER_SHARE = [0.35, 0.4, 0.25]
 
   constructor(canvasId, options = {}) {
     this.canvas = document.getElementById(canvasId)
@@ -36,9 +36,9 @@ export class StormRainEffect {
     this.rainColor = options.rainColor ?? "#9ecfee"
     this.cloudColor = options.cloudColor ?? "#080b14"
     this.density = options.density ?? 115
-    this.speedMult = options.speed ?? 1.0
+    this.speedMult = options.speed ?? 1.18
     this.autoWind = options.autoWind ?? true // false = gió cố định
-    this.targetFps = options.targetFps ?? 42
+    this.targetFps = options.targetFps ?? 60
     this.renderScale = options.renderScale ?? 1
     this.densityScale = options.densityScale ?? 0.85
 
@@ -135,7 +135,7 @@ export class StormRainEffect {
       this._parseRainColor(this.rainColor)
     }
     if (options.targetFps !== undefined) {
-      this.targetFps = Math.max(24, Math.min(60, Number(options.targetFps) || 42))
+      this.targetFps = Math.max(24, Math.min(60, Number(options.targetFps) || 60))
     }
     if (options.renderScale !== undefined) {
       this.renderScale = Math.max(0.75, Math.min(1, Number(options.renderScale) || 1))
@@ -159,7 +159,7 @@ export class StormRainEffect {
     if (!this.canvas) return
     const W = window.innerWidth,
       H = window.innerHeight
-    const scale = Math.max(0.65, Math.min(1, Number(this.renderScale) || 1))
+    const scale = 1
     this.canvas.width = Math.max(1, Math.round(W * scale))
     this.canvas.height = Math.max(1, Math.round(H * scale))
     this._rc.width = this.canvas.width
@@ -189,14 +189,6 @@ export class StormRainEffect {
     }
     this._rainStroke = `rgb(${this._r},${this._g},${this._b})`
     this._rainHeadStroke = `rgb(${Math.min(255, this._r + 42)},${Math.min(255, this._g + 23)},${Math.min(255, this._b + 17)})`
-    this._rainLayerStroke = StormRainEffect.LAYERS.map((layer) => {
-      const alpha = ((layer[4] + layer[5]) / 2).toFixed(3)
-      return `rgba(${this._r},${this._g},${this._b},${alpha})`
-    })
-    this._rainLayerHeadStroke = StormRainEffect.LAYERS.map((layer) => {
-      const alpha = Math.min(0.48, layer[5] * 1.15).toFixed(3)
-      return `rgba(${Math.min(255, this._r + 50)},${Math.min(255, this._g + 35)},${Math.min(255, this._b + 28)},${alpha})`
-    })
   }
 
   _hexToRgb(color) {
@@ -242,7 +234,7 @@ export class StormRainEffect {
   }
 
   _buildClouds() {
-    const count = 5 + Math.floor(this.canvas.width / 620)
+    const count = 7 + Math.floor(this.canvas.width / 480)
     this.clouds = []
     for (let i = 0; i < count; i++) {
       this.clouds.push(this._makeCloud(false))
@@ -316,7 +308,7 @@ export class StormRainEffect {
     const ctx = this._cctx
     const rgb = this._hexToRgb(this.cloudColor)
     this._cloudRedrawMs += dt
-    const shouldRedraw = this._cloudRedrawMs >= 260 || this.lightningFlash > 0
+    const shouldRedraw = this._cloudRedrawMs >= 150 || this.lightningFlash > 0
 
     for (const cloud of this.clouds) {
       cloud.x += (cloud.speed + this.windX * 0.035) * (dt / 16.67)
@@ -384,9 +376,9 @@ export class StormRainEffect {
     // Recursive function to branch out the lightning
     const createBranch = (x, y, angle, depth) => {
       // Stop branching if it gets too deep or reaches bottom
-      if (depth > 5 || y > this.canvas.height) return
+      if (depth > 7 || y > this.canvas.height) return
 
-      const length = 48 + Math.random() * 86
+      const length = 40 + Math.random() * 80
       const targetX = x + Math.cos(angle) * length
       const targetY = y + Math.sin(angle) * length
 
@@ -401,7 +393,7 @@ export class StormRainEffect {
       )
 
       // Split sub branch
-      if (depth < 5 && Math.random() < 0.18) {
+      if (Math.random() < 0.28) {
         const splitAngle =
           angle +
           (Math.random() > 0.5 ? 0.6 : -0.6) +
@@ -422,7 +414,7 @@ export class StormRainEffect {
 
     if (this.lightningFlash > 0) {
       // 1. Background flash (lower intensity so bolt pops out more)
-      ctx.fillStyle = `rgba(240, 248, 255, ${this.lightningFlash * 0.3})`
+      ctx.fillStyle = `rgba(240, 248, 255, ${this.lightningFlash * 0.45})`
       ctx.fillRect(0, 0, W, H)
 
       // 2. Draw actual lightning bolt lines
@@ -430,10 +422,10 @@ export class StormRainEffect {
         ctx.save()
         ctx.lineCap = "round"
         ctx.lineJoin = "round"
-        ctx.shadowBlur = 7
+        ctx.shadowBlur = 10
         ctx.shadowColor = "rgba(255, 255, 255, 0.8)"
         ctx.strokeStyle = `rgba(180, 220, 255, ${Math.min(0.7, this.lightningFlash)})`
-        ctx.lineWidth = 4.2
+        ctx.lineWidth = 5.5
 
         ctx.beginPath()
         for (const bolt of this.currentLightningBolts) {
@@ -444,7 +436,7 @@ export class StormRainEffect {
 
         ctx.shadowBlur = 0
         ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(1, this.lightningFlash * 1.15)})`
-        ctx.lineWidth = 1.65
+        ctx.lineWidth = 2.4
         ctx.stroke()
         ctx.restore()
       }
@@ -456,8 +448,8 @@ export class StormRainEffect {
 
     this.lightningTimer -= dt
     if (this.lightningTimer <= 0) {
-      if (Math.random() < 0.07) {
-        this.lightningFlash = 0.45 + Math.random() * 0.32 // Initial flash intensity
+      if (Math.random() < 0.08) {
+        this.lightningFlash = 0.6 + Math.random() * 0.4 // Initial flash intensity
         this._generateLightningBolts() // Generate branches
 
         // Next lightning in 3s to 12s
@@ -499,7 +491,8 @@ export class StormRainEffect {
     rctx.fillRect(0, 0, W, H)
     rctx.globalCompositeOperation = "source-over"
     rctx.lineCap = "round"
-    rctx.lineJoin = "round"
+    rctx.strokeStyle = this._rainStroke
+    const rgb = `${this._r},${this._g},${this._b}`
 
     for (let i = this.drops.length - 1; i >= 0; i--) {
       const d = this.drops[i]
@@ -519,27 +512,33 @@ export class StormRainEffect {
       if (d.x < -120) d.x = W + 120
       if (d.x > W + 120) d.x = -120
 
-      const lean = 0.55 + Math.abs(d.vx / Math.max(1, d.vy)) * 0.7
-      const tailX = d.x - d.vx * lean
-      const tailY = d.y - d.len * 0.55
-      const headX = d.x + d.vx * 0.18
-      const headY = d.y + d.len * 0.55
+      const trailMult = 0.3 + Math.abs(d.vx / d.vy) * 0.5
+      const tailX = d.x - d.vx * trailMult
+      const tailY = d.y - d.vy * trailMult
+      const headX = d.x + d.vx * 0.04
+      const headY = d.y + d.len
+
+      const streak = rctx.createLinearGradient(tailX, tailY, headX, headY)
+      streak.addColorStop(0, `rgba(${rgb},0)`)
+      streak.addColorStop(0.48, `rgba(${rgb},${d.op * 0.55})`)
+      streak.addColorStop(1, `rgba(${rgb},${d.op})`)
 
       rctx.globalAlpha = 1
-      rctx.strokeStyle = this._rainLayerStroke[d.li]
+      rctx.strokeStyle = streak
       rctx.lineWidth = Math.max(0.4, d.width)
       rctx.beginPath()
       rctx.moveTo(tailX, tailY)
       rctx.lineTo(headX, headY)
       rctx.stroke()
 
-      if (d.li > 0 && d.op > 0.2) {
-        rctx.strokeStyle = this._rainLayerHeadStroke[d.li]
-        rctx.lineWidth = Math.max(0.45, d.width * 0.62)
+      if (d.li === 2 && d.op > 0.32) {
+        rctx.globalAlpha = Math.min(0.42, d.op)
+        rctx.strokeStyle = this._rainHeadStroke
         rctx.beginPath()
-        rctx.moveTo(headX - d.vx * 0.06, headY - d.len * 0.12)
+        rctx.moveTo(headX - d.vx * 0.08, headY - d.len * 0.18)
         rctx.lineTo(headX, headY)
         rctx.stroke()
+        rctx.strokeStyle = this._rainStroke
       }
     }
     rctx.globalAlpha = 1

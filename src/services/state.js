@@ -222,6 +222,7 @@ export const defaultSettings = {
   timerCustomAlarmSoundName: "",
   musicPlayerExpanded: false,
   musicPlayerUseDefaultColor: true,
+  spotifyClientId: "",
   sideControlsGhostMode: false,
   flipLayout: false,
   showDonateButton: true,
@@ -1029,6 +1030,12 @@ export const resetComponentPositions = (options = {}) => {
   // Ghi đè state hiện tại
   settingsState = newSettings
 
+  try {
+    localStorage.setItem("startpageShowStartupLoader", "1")
+  } catch (e) {
+    console.warn("Could not mark startup loader for reset reload", e)
+  }
+
   // Lưu và tải lại
   saveSettings(true)
   window.location.reload()
@@ -1057,6 +1064,12 @@ export function resetSettingsModules(modules = []) {
   if (selectedModules.includes("layout")) {
     settingsState.componentPositions = {}
     settingsState.lockedWidgets = {}
+  }
+
+  try {
+    localStorage.setItem("startpageShowStartupLoader", "1")
+  } catch (e) {
+    console.warn("Could not mark startup loader for module reset", e)
   }
 
   saveSettings(true)
