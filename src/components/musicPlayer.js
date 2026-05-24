@@ -280,15 +280,18 @@ export class MusicPlayer {
 
   startPolling() {
     if (this.pollInterval) return
-    this.pollInterval = setInterval(() => this.fetchMediaState(), 1000)
+    this.pollInterval = setInterval(() => this.fetchMediaState(), 500)
     // Run an initial fetch
     this.fetchMediaState()
   }
 
   fetchMediaState() {
     if (!this.showPlayer || !this.isVisible) return
+    if (this._mediaStatePending) return
+    this._mediaStatePending = true
     try {
       chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
+        this._mediaStatePending = false
         if (chrome.runtime.lastError) {
           this.setInactive()
           return
@@ -300,6 +303,7 @@ export class MusicPlayer {
         }
       })
     } catch (e) {
+      this._mediaStatePending = false
       this.setInactive()
     }
   }
@@ -332,6 +336,10 @@ export class MusicPlayer {
       this.platformIcon.className = "platform-icon fa-brands fa-spotify"
       this.platformIcon.style.display = "inline"
       this.platformIcon.style.color = "#1DB954"
+    } else if (url.includes("zingmp3.vn") || data.source === "zingmp3") {
+      this.platformIcon.className = "platform-icon fa-solid fa-music"
+      this.platformIcon.style.display = "inline"
+      this.platformIcon.style.color = "#a855f7"
     } else {
       this.platformIcon.style.display = "none"
     }
@@ -438,6 +446,8 @@ export class MusicPlayer {
       iconClass = "fa-brands fa-youtube"
     else if (url.includes("spotify.com") || data.source === "spotify")
       iconClass = "fa-brands fa-spotify"
+    else if (url.includes("zingmp3.vn") || data.source === "zingmp3")
+      iconClass = "fa-solid fa-music"
     else if (url.includes("soundcloud.com"))
       iconClass = "fa-brands fa-soundcloud"
 
@@ -466,6 +476,8 @@ export class MusicPlayer {
 
   sendControl(command) {
     chrome.runtime.sendMessage({ action: "mediaControl", command: command })
+    setTimeout(() => this.fetchMediaState(), 120)
+    setTimeout(() => this.fetchMediaState(), 450)
   }
 
   togglePlayer() {

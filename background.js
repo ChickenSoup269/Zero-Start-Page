@@ -269,6 +269,7 @@ function findAudioTab(callback) {
         (t) =>
           t.url?.includes("youtube.com") ||
           t.url?.includes("spotify.com") ||
+          t.url?.includes("zingmp3.vn") ||
           t.url?.includes("music.youtube.com"),
       )
       callback(tab || null)
@@ -280,6 +281,7 @@ function isKnownMediaTab(tab) {
   return (
     tab?.url?.includes("youtube.com") ||
     tab?.url?.includes("spotify.com") ||
+    tab?.url?.includes("zingmp3.vn") ||
     tab?.url?.includes("music.youtube.com")
   )
 }
@@ -315,6 +317,7 @@ function controlMediaTab(tabId, command, sendResponse) {
           document.querySelector("video") || document.querySelector("audio")
         const cmdName = typeof command === "string" ? command : command.name
         const isSpotify = window.location.href.includes("spotify.com")
+        const isZing = window.location.href.includes("zingmp3.vn")
         const clickFirst = (selectors) => {
           for (const selector of selectors) {
             const el = document.querySelector(selector)
@@ -325,7 +328,7 @@ function controlMediaTab(tabId, command, sendResponse) {
           }
           return false
         }
-        const seekSpotify = (time) => {
+        const seekWebSlider = (time) => {
           const slider =
             document.querySelector(
               '[data-testid="playback-progressbar"] input[type="range"]',
@@ -334,6 +337,10 @@ function controlMediaTab(tabId, command, sendResponse) {
               '[data-testid="playback-progressbar"] [role="slider"]',
             ) ||
             document.querySelector('[data-testid="playback-progressbar"]') ||
+            document.querySelector(".duration-bar input[type='range']") ||
+            document.querySelector(".player-controls__container input[type='range']") ||
+            document.querySelector(".zm-slider input[type='range']") ||
+            document.querySelector(".zm-slider [role='slider']") ||
             document.querySelector('[aria-label*="progress" i][role="slider"]')
 
           if (!slider) return false
@@ -387,28 +394,42 @@ function controlMediaTab(tabId, command, sendResponse) {
             if (video) {
               if (video.paused) video.play()
               else video.pause()
-            } else if (isSpotify) {
-              clickFirst(['[data-testid="control-button-playpause"]'])
+            } else if (isSpotify || isZing) {
+              clickFirst([
+                '[data-testid="control-button-playpause"]',
+                ".player-controls__container .btn-play",
+                ".zm-btn.btn-play",
+                'button[title="Phát"]',
+                'button[title="Tạm dừng"]',
+              ])
             }
             break
           case "next":
             clickFirst([
               ".ytp-next-button",
               '[data-testid="control-button-skip-forward"]',
+              ".player-controls__container .btn-next",
+              ".zm-btn.btn-next",
+              'button[title="Tiếp theo"]',
             ])
             break
           case "prev":
             clickFirst([
               ".ytp-prev-button",
               '[data-testid="control-button-skip-back"]',
+              ".player-controls__container .btn-pre",
+              ".player-controls__container .btn-prev",
+              ".zm-btn.btn-pre",
+              ".zm-btn.btn-prev",
+              'button[title="Trước đó"]',
             ])
             break
           case "seekTo":
             if (typeof command.time === "number") {
               if (video) {
                 video.currentTime = command.time
-              } else if (isSpotify) {
-                seekSpotify(command.time)
+              } else if (isSpotify || isZing) {
+                seekWebSlider(command.time)
               }
             }
             break
@@ -711,6 +732,7 @@ function getMediaFromTab(tabId, sendResponse) {
         const video =
           document.querySelector("video") || document.querySelector("audio")
         const isSpotify = window.location.href.includes("spotify.com")
+        const isZing = window.location.href.includes("zingmp3.vn")
         const textFrom = (selectors) => {
           for (const selector of selectors) {
             const text = document.querySelector(selector)?.textContent?.trim()
@@ -725,8 +747,8 @@ function getMediaFromTab(tabId, sendResponse) {
           if (parts.some((part) => Number.isNaN(part))) return 0
           return parts.reduce((total, part) => total * 60 + part, 0)
         }
-        const spotifyPlayback = (() => {
-          if (!isSpotify) return null
+        const webPlayback = (() => {
+          if (!isSpotify && !isZing) return null
           const slider =
             document.querySelector(
               '[data-testid="playback-progressbar"] input[type="range"]',
@@ -735,6 +757,10 @@ function getMediaFromTab(tabId, sendResponse) {
               '[data-testid="playback-progressbar"] [role="slider"]',
             ) ||
             document.querySelector('[data-testid="playback-progressbar"]') ||
+            document.querySelector(".duration-bar input[type='range']") ||
+            document.querySelector(".player-controls__container input[type='range']") ||
+            document.querySelector(".zm-slider input[type='range']") ||
+            document.querySelector(".zm-slider [role='slider']") ||
             document.querySelector('[aria-label*="progress" i][role="slider"]')
           let currentTime =
             Number(slider?.value) ||
@@ -743,6 +769,8 @@ function getMediaFromTab(tabId, sendResponse) {
               textFrom([
                 '[data-testid="playback-position"]',
                 ".playback-bar__progress-time:first-child",
+                ".duration-bar .time.left",
+                ".time.left",
               ]),
             )
           let duration =
@@ -752,6 +780,8 @@ function getMediaFromTab(tabId, sendResponse) {
               textFrom([
                 '[data-testid="playback-duration"]',
                 ".playback-bar__progress-time:last-child",
+                ".duration-bar .time.right",
+                ".time.right",
               ]),
             )
           if (duration > 36000) {
@@ -762,14 +792,24 @@ function getMediaFromTab(tabId, sendResponse) {
             document
               .querySelector('[data-testid="control-button-playpause"]')
               ?.getAttribute("aria-label")
+              ?.toLowerCase() ||
+            document
+              .querySelector(".player-controls__container .btn-play")
+              ?.getAttribute("aria-label")
               ?.toLowerCase() || ""
+          const zingPlayButton = document.querySelector(
+            ".player-controls__container .btn-play, .zm-btn.btn-play",
+          )
           const mediaState = navigator.mediaSession?.playbackState
           const paused =
             mediaState === "playing"
               ? false
               : mediaState === "paused"
                 ? true
-                : playPauseLabel.includes("play")
+                : isZing
+                  ? !zingPlayButton?.classList.contains("is-playing") &&
+                    !zingPlayButton?.classList.contains("playing")
+                  : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()
 
@@ -795,23 +835,41 @@ function getMediaFromTab(tabId, sendResponse) {
           '[data-testid="now-playing-widget"] [data-testid="context-item-info-subtitles"]',
           '[data-testid="context-item-info-subtitles"]',
         ])
+        const zingTitle = textFrom([
+          ".player-controls__container .media .title",
+          ".player-controls__container .media-content .title",
+          ".player-controls__container .title",
+          ".now-playing .title",
+          ".media-content .title",
+          ".song-title",
+        ])
+        const zingArtist = textFrom([
+          ".player-controls__container .media .subtitle",
+          ".player-controls__container .media-content .subtitle",
+          ".player-controls__container .subtitle",
+          ".now-playing .subtitle",
+          ".media-content .subtitle",
+          ".artist-names",
+          ".artists",
+        ])
 
         return {
           title:
             metadata?.title ||
             ytTitle ||
             spotifyTitle ||
+            zingTitle ||
             document.title.replace(/^\(\d+\)\s/, ""),
-          artist: metadata?.artist || ytArtist || spotifyArtist || "",
-          paused: video ? video.paused : spotifyPlayback?.paused ?? true,
-          currentTime: video ? video.currentTime : spotifyPlayback?.currentTime || 0,
+          artist: metadata?.artist || ytArtist || spotifyArtist || zingArtist || "",
+          paused: video ? video.paused : webPlayback?.paused ?? true,
+          currentTime: video ? video.currentTime : webPlayback?.currentTime || 0,
           duration: video
             ? isFinite(video.duration)
               ? video.duration
               : 0
-            : spotifyPlayback?.duration || 0,
+            : webPlayback?.duration || 0,
           url: window.location.href,
-          source: isSpotify ? "spotify" : "",
+          source: isSpotify ? "spotify" : isZing ? "zingmp3" : "",
           thumbnail: (() => {
             // Priority 1: MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
@@ -841,6 +899,15 @@ function getMediaFromTab(tabId, sendResponse) {
                const spotThumb = document.querySelector('[data-testid="now-playing-widget"] img')?.src ||
                                 document.querySelector(".cover-art img")?.src
                if (spotThumb) return spotThumb
+            }
+
+            if (window.location.href.includes("zingmp3.vn")) {
+              const zingThumb =
+                document.querySelector(".player-controls__container img")?.src ||
+                document.querySelector(".now-playing img")?.src ||
+                document.querySelector(".media-left img")?.src ||
+                document.querySelector('img[src*="zmdcdn.me"]')?.src
+              if (zingThumb) return zingThumb
             }
 
             // Priority 4: Generic OG Image
