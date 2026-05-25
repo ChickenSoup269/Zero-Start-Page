@@ -12,6 +12,27 @@
   transition: all 0.3s ease;
 }
 
+.settings-subsection-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin: 10px 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-subsection-title hr.subsection-divider {
+  flex: 1;
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-color) 0%, transparent 100%);
+  opacity: 0.5;
+  margin: 0;
+}
+
 .effect-search-input:focus {
   border-color: var(--accent-color);
 }
@@ -1317,7 +1338,11 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-sm);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.03)
+    ),
     rgba(255, 255, 255, 0.035);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
@@ -6238,7 +6263,11 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 /* Material Design 3 dynamic accent layer */
 .settings-sidebar {
   --glass-bg: color-mix(in srgb, var(--m3-surface-container) 58%, transparent);
-  --glass-border: color-mix(in srgb, var(--m3-outline-variant) 68%, transparent);
+  --glass-border: color-mix(
+    in srgb,
+    var(--m3-outline-variant) 68%,
+    transparent
+  );
   --glass-edge: color-mix(in srgb, var(--m3-outline) 34%, transparent);
   --hover-bg: color-mix(in srgb, var(--m3-primary-container) 32%, transparent);
   color: var(--m3-on-surface, #fff);
@@ -6252,14 +6281,34 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 }
 
 .settings-sidebar .setting-item-row {
-  background: color-mix(in srgb, var(--m3-surface-container) 56%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-outline-variant) 70%, transparent) !important;
-  border-top-color: color-mix(in srgb, var(--m3-outline) 28%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container) 56%,
+    transparent
+  ) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-outline-variant) 70%,
+    transparent
+  ) !important;
+  border-top-color: color-mix(
+    in srgb,
+    var(--m3-outline) 28%,
+    transparent
+  ) !important;
 }
 
 .settings-sidebar .setting-item-row:hover {
-  background: color-mix(in srgb, var(--m3-surface-container-high) 70%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-primary) 38%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-high) 70%,
+    transparent
+  ) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary) 38%,
+    transparent
+  ) !important;
 }
 
 .settings-sidebar .setting-item-row label,
@@ -6270,7 +6319,8 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 .settings-sidebar input[type="checkbox"]:checked {
   background-color: var(--m3-primary, var(--accent-color));
   border-color: var(--m3-primary, var(--accent-color));
-  box-shadow: 0 0 0 3px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14);
+  box-shadow: 0 0 0 3px
+    rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14);
 }
 
 .settings-sidebar input[type="checkbox"]:checked::before {
@@ -6290,12 +6340,18 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 .settings-sidebar input[type="text"]:focus,
 .settings-sidebar input[type="color"]:focus {
   border-color: var(--m3-primary, var(--accent-color)) !important;
-  box-shadow: 0 0 0 3px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14) !important;
+  box-shadow: 0 0 0 3px
+    rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14) !important;
 }
 
 .accent-color-selector {
-  background: color-mix(in srgb, var(--m3-surface-container-low) 70%, transparent);
-  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 64%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-low) 70%,
+    transparent
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--m3-outline-variant) 64%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-2);
 }
@@ -6320,7 +6376,11 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 
 body.sidebar-light .settings-sidebar {
   --glass-bg: color-mix(in srgb, var(--m3-inverse-surface) 82%, white);
-  --glass-border: color-mix(in srgb, var(--m3-outline-variant) 44%, transparent);
+  --glass-border: color-mix(
+    in srgb,
+    var(--m3-outline-variant) 44%,
+    transparent
+  );
   --glass-edge: color-mix(in srgb, var(--m3-outline) 24%, transparent);
 }
 /* Optional calm toggle switches: keep controls visible, only remove flashy glow. */
@@ -6362,7 +6422,8 @@ body.sidebar-glow-disabled .settings-sidebar .setting-item-row::after {
   content: none !important;
 }
 
-body:not(.allow-text-selection) *:not(input):not(textarea):not([contenteditable="true"]) {
+body:not(.allow-text-selection)
+  *:not(input):not(textarea):not([contenteditable="true"]) {
   -webkit-user-select: none !important;
   user-select: none !important;
 }

@@ -30,6 +30,9 @@ export const themesGrid = document.getElementById("themes-grid")
 export const saveCurrentThemeBtn = document.getElementById(
   "save-current-theme-btn",
 )
+export const saveCurrentStyleBtn = document.getElementById(
+  "save-current-style-btn",
+)
 export const saveThemeModal = document.getElementById("save-theme-modal")
 export const closeSaveThemeModalBtn = document.getElementById(
   "close-save-theme-modal-btn",
@@ -1130,9 +1133,7 @@ export const spotifyConnectBtn = document.getElementById("spotify-connect-btn")
 export const spotifyDisconnectBtn = document.getElementById(
   "spotify-disconnect-btn",
 )
-export const spotifyAuthStatus = document.getElementById(
-  "spotify-auth-status",
-)
+export const spotifyAuthStatus = document.getElementById("spotify-auth-status")
 export const musicVisualizerStyleSelect = document.getElementById(
   "music-visualizer-style-select",
 )
@@ -1253,7 +1254,9 @@ export const gradientV2ToggleBtn = document.getElementById(
 export const gradientV2ToggleLabel = document.getElementById(
   "gradient-v2-toggle-label",
 )
-export const gradientV2Settings = document.getElementById("gradient-v2-settings")
+export const gradientV2Settings = document.getElementById(
+  "gradient-v2-settings",
+)
 export const gradientV2Color1 = document.getElementById("gradient-v2-color1")
 export const gradientV2Color2 = document.getElementById("gradient-v2-color2")
 export const gradientV2Color3 = document.getElementById("gradient-v2-color3")
@@ -1332,7 +1335,9 @@ export const gradientV2GrainScaleValue = document.getElementById(
 export const gradientV2GrainAnimated = document.getElementById(
   "gradient-v2-grain-animated",
 )
-export const gradientV2Contrast = document.getElementById("gradient-v2-contrast")
+export const gradientV2Contrast = document.getElementById(
+  "gradient-v2-contrast",
+)
 export const gradientV2ContrastValue = document.getElementById(
   "gradient-v2-contrast-value",
 )
@@ -1478,7 +1483,9 @@ export const silkRotationValue = document.getElementById("silk-rotation-value")
 export const silkRandomBtn = document.getElementById("silk-random-btn")
 export const silkSaveBtn = document.getElementById("silk-save-btn")
 export const userSilksGallery = document.getElementById("user-silks-gallery")
-export const userSilksGalleryWrap = document.getElementById("user-silks-gallery-wrap")
+export const userSilksGalleryWrap = document.getElementById(
+  "user-silks-gallery-wrap",
+)
 
 // Light Pillar Effect
 export const lightPillarToggleBtn = document.getElementById(
@@ -1534,50 +1541,118 @@ export const lightPillarRotation = document.getElementById(
 export const lightPillarRotationValue = document.getElementById(
   "light-pillar-rotation-value",
 )
-export const lightPillarSaveBtn = document.getElementById("light-pillar-save-btn")
-export const userLightPillarsGallery = document.getElementById("user-light-pillars-gallery")
-export const userLightPillarsGalleryWrap = document.getElementById("user-light-pillars-gallery-wrap")
+export const lightPillarSaveBtn = document.getElementById(
+  "light-pillar-save-btn",
+)
+export const userLightPillarsGallery = document.getElementById(
+  "user-light-pillars-gallery",
+)
+export const userLightPillarsGalleryWrap = document.getElementById(
+  "user-light-pillars-gallery-wrap",
+)
 
 // Liquid Ether Effect
-export const liquidEtherToggleBtn = document.getElementById("liquid-ether-toggle-btn")
-export const liquidEtherToggleLabel = document.getElementById("liquid-ether-toggle-label")
-export const liquidEtherSettings = document.getElementById("liquid-ether-settings")
+export const liquidEtherToggleBtn = document.getElementById(
+  "liquid-ether-toggle-btn",
+)
+export const liquidEtherToggleLabel = document.getElementById(
+  "liquid-ether-toggle-label",
+)
+export const liquidEtherSettings = document.getElementById(
+  "liquid-ether-settings",
+)
 export const liquidEtherActive = document.getElementById("liquid-ether-active")
-export const liquidEtherRandomBtn = document.getElementById("liquid-ether-random-btn")
+export const liquidEtherRandomBtn = document.getElementById(
+  "liquid-ether-random-btn",
+)
 export const liquidEtherColor1 = document.getElementById("liquid-ether-color1")
 export const liquidEtherColor2 = document.getElementById("liquid-ether-color2")
 export const liquidEtherColor3 = document.getElementById("liquid-ether-color3")
-export const liquidEtherGlowWidth = document.getElementById("liquid-ether-glow-width")
-export const liquidEtherGlowWidthValue = document.getElementById("liquid-ether-glow-width-value")
-export const liquidEtherSaveBtn = document.getElementById("liquid-ether-save-btn")
-export const userLiquidEthersGallery = document.getElementById("user-liquid-ethers-gallery")
-export const userLiquidEthersGalleryWrap = document.getElementById("user-liquid-ethers-gallery-wrap")
+export const liquidEtherGlowWidth = document.getElementById(
+  "liquid-ether-glow-width",
+)
+export const liquidEtherGlowWidthValue = document.getElementById(
+  "liquid-ether-glow-width-value",
+)
+export const liquidEtherSaveBtn = document.getElementById(
+  "liquid-ether-save-btn",
+)
+export const userLiquidEthersGallery = document.getElementById(
+  "user-liquid-ethers-gallery",
+)
+export const userLiquidEthersGalleryWrap = document.getElementById(
+  "user-liquid-ethers-gallery-wrap",
+)
 
 // Splash Cursor Effect
-export const splashCursorToggleBtn = document.getElementById("splash-cursor-toggle-btn")
-export const splashCursorToggleLabel = document.getElementById("splash-cursor-toggle-label")
-export const splashCursorSettings = document.getElementById("splash-cursor-settings")
-export const splashCursorActive = document.getElementById("splash-cursor-active")
-export const splashCursorDarkBg = document.getElementById("splash-cursor-dark-bg")
-export const splashCursorDarkBgBtn = document.getElementById("splash-cursor-dark-bg-btn")
-export const splashCursorRainbow = document.getElementById("splash-cursor-rainbow")
-export const splashCursorColorWrap = document.getElementById("splash-cursor-color-wrap")
+export const splashCursorToggleBtn = document.getElementById(
+  "splash-cursor-toggle-btn",
+)
+export const splashCursorToggleLabel = document.getElementById(
+  "splash-cursor-toggle-label",
+)
+export const splashCursorSettings = document.getElementById(
+  "splash-cursor-settings",
+)
+export const splashCursorActive = document.getElementById(
+  "splash-cursor-active",
+)
+export const splashCursorDarkBg = document.getElementById(
+  "splash-cursor-dark-bg",
+)
+export const splashCursorDarkBgBtn = document.getElementById(
+  "splash-cursor-dark-bg-btn",
+)
+export const splashCursorRainbow = document.getElementById(
+  "splash-cursor-rainbow",
+)
+export const splashCursorColorWrap = document.getElementById(
+  "splash-cursor-color-wrap",
+)
 export const splashCursorColor = document.getElementById("splash-cursor-color")
-export const splashCursorShading = document.getElementById("splash-cursor-shading")
-export const splashCursorSplatRadius = document.getElementById("splash-cursor-splat-radius")
-export const splashCursorSplatRadiusValue = document.getElementById("splash-cursor-splat-radius-value")
-export const splashCursorSplatForce = document.getElementById("splash-cursor-splat-force")
-export const splashCursorSplatForceValue = document.getElementById("splash-cursor-splat-force-value")
+export const splashCursorShading = document.getElementById(
+  "splash-cursor-shading",
+)
+export const splashCursorSplatRadius = document.getElementById(
+  "splash-cursor-splat-radius",
+)
+export const splashCursorSplatRadiusValue = document.getElementById(
+  "splash-cursor-splat-radius-value",
+)
+export const splashCursorSplatForce = document.getElementById(
+  "splash-cursor-splat-force",
+)
+export const splashCursorSplatForceValue = document.getElementById(
+  "splash-cursor-splat-force-value",
+)
 export const splashCursorCurl = document.getElementById("splash-cursor-curl")
-export const splashCursorCurlValue = document.getElementById("splash-cursor-curl-value")
-export const splashCursorDensity = document.getElementById("splash-cursor-density")
-export const splashCursorDensityValue = document.getElementById("splash-cursor-density-value")
-export const splashCursorVelocity = document.getElementById("splash-cursor-velocity")
-export const splashCursorVelocityValue = document.getElementById("splash-cursor-velocity-value")
-export const splashCursorColorSpeed = document.getElementById("splash-cursor-color-speed")
-export const splashCursorColorSpeedValue = document.getElementById("splash-cursor-color-speed-value")
-export const splashCursorDyeRes = document.getElementById("splash-cursor-dye-res")
-export const splashCursorDyeResValue = document.getElementById("splash-cursor-dye-res-value")
+export const splashCursorCurlValue = document.getElementById(
+  "splash-cursor-curl-value",
+)
+export const splashCursorDensity = document.getElementById(
+  "splash-cursor-density",
+)
+export const splashCursorDensityValue = document.getElementById(
+  "splash-cursor-density-value",
+)
+export const splashCursorVelocity = document.getElementById(
+  "splash-cursor-velocity",
+)
+export const splashCursorVelocityValue = document.getElementById(
+  "splash-cursor-velocity-value",
+)
+export const splashCursorColorSpeed = document.getElementById(
+  "splash-cursor-color-speed",
+)
+export const splashCursorColorSpeedValue = document.getElementById(
+  "splash-cursor-color-speed-value",
+)
+export const splashCursorDyeRes = document.getElementById(
+  "splash-cursor-dye-res",
+)
+export const splashCursorDyeResValue = document.getElementById(
+  "splash-cursor-dye-res-value",
+)
 
 export const softAuroraScaleSlider = document.getElementById(
   "soft-aurora-scale-slider",

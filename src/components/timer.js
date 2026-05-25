@@ -170,6 +170,11 @@ export class Timer {
             </div>
             <div id="timer-input-view" class="timer-input-view" style="display: none;">
                 <div class="timer-input-header">Set Timer</div>
+                <div class="pomodoro-presets" aria-label="Pomodoro presets">
+                    <button type="button" class="pomodoro-btn" data-time="1500" data-i18n-title="pomodoroFocus" title="Focus (25m)"><i class="fa-solid fa-brain"></i> <span>25m</span></button>
+                    <button type="button" class="pomodoro-btn" data-time="300" data-i18n-title="pomodoroShortBreak" title="Short Break (5m)"><i class="fa-solid fa-mug-hot"></i> <span>5m</span></button>
+                    <button type="button" class="pomodoro-btn" data-time="900" data-i18n-title="pomodoroLongBreak" title="Long Break (15m)"><i class="fa-solid fa-couch"></i> <span>15m</span></button>
+                </div>
                 <div class="timer-input-wrapper">
                     <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="00h 00m 00s" maxlength="6" inputmode="numeric">
                     <div class="timer-input-hint">Enter digits (e.g. 500 for 5m)</div>
@@ -328,6 +333,30 @@ export class Timer {
 
     this.container.querySelectorAll(".timer-keypad-btn").forEach((btn) => {
       btn.addEventListener("click", () => this.handleKeypadInput(btn))
+    })
+
+    this.container.querySelectorAll(".pomodoro-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const timeStr = btn.dataset.time
+        if (timeStr) {
+          const totalSeconds = parseInt(timeStr, 10)
+
+          if (this.isRunning) this.pauseTimer()
+          this.stopAlarm()
+          this.initialTime = totalSeconds
+          this.timeLeft = this.initialTime
+          this.endTime = 0
+          this.saveState()
+          this.render()
+          this.updateTimerStatus("ready")
+          if (
+            this.container.querySelector("#timer-input-view").style.display !==
+            "none"
+          ) {
+            this.hideInputView()
+          }
+        }
+      })
     })
   }
 

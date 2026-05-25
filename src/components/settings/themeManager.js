@@ -1,4 +1,10 @@
-import { updateAllSettings, saveSettings, getSettings, defaultSettings, updateSetting } from "../../services/state.js"
+import {
+  updateAllSettings,
+  saveSettings,
+  getSettings,
+  defaultSettings,
+  updateSetting,
+} from "../../services/state.js"
 import { showAlert } from "../../utils/dialog.js"
 
 const THEMES = {
@@ -15,7 +21,7 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "default",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   christmas: {
     accentColor: "#00d4ff",
@@ -30,7 +36,7 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "glow",
     clockColor: "#ffffff",
-    dateColor: "#e0f7fa"
+    dateColor: "#e0f7fa",
   },
   cyberpunk: {
     accentColor: "#ffff00",
@@ -47,7 +53,7 @@ const THEMES = {
     clockFontTarget: "weekday",
     dateClockStyle: "cool",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   ocean: {
     accentColor: "#00d4ff",
@@ -64,7 +70,7 @@ const THEMES = {
     dateClockStyle: "sidestyle",
     sidestyleAlign: "center",
     clockColor: "#ffffff",
-    dateColor: "#e0f7fa"
+    dateColor: "#e0f7fa",
   },
   sakura: {
     accentColor: "#ffb7c5",
@@ -80,7 +86,7 @@ const THEMES = {
     clockFontTarget: "weekday",
     dateClockStyle: "jp-style",
     clockColor: "#ffffff",
-    dateColor: "#ffebf0"
+    dateColor: "#ffebf0",
   },
   space: {
     accentColor: "#ffffff",
@@ -97,7 +103,7 @@ const THEMES = {
     dateClockStyle: "sidestyle",
     sidestyleAlign: "center",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   bubbles: {
     accentColor: "#ffffff",
@@ -113,7 +119,7 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "glow",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   rainbow: {
     accentColor: "#ff00ff",
@@ -128,7 +134,7 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "glow",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   monochrome: {
     accentColor: "#ffffff",
@@ -145,7 +151,7 @@ const THEMES = {
     dateClockStyle: "analog",
     analogMarkerMode: "full",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   nature: {
     accentColor: "#ccff00",
@@ -161,7 +167,7 @@ const THEMES = {
     clockFont: "'Anurati', sans-serif",
     dateClockStyle: "sidebar",
     clockColor: "#ffffff",
-    dateColor: "#ccff00"
+    dateColor: "#ccff00",
   },
   aurora: {
     accentColor: "#ccff00",
@@ -179,7 +185,7 @@ const THEMES = {
     clockFont: "'Outfit', sans-serif",
     dateClockStyle: "round",
     clockColor: "#ffffff",
-    dateColor: "#ffffff"
+    dateColor: "#ffffff",
   },
   arctic: {
     accentColor: "#ffffff",
@@ -196,32 +202,70 @@ const THEMES = {
     fliqloTheme: "dark",
     clockColor: "#ffffff",
     dateColor: "#ffffff",
-    contextMenuStyle: "light"
+    contextMenuStyle: "light",
   },
 }
 
 // List of settings that themes are allowed to modify.
 export const THEMEABLE_KEYS = [
-  "background", "activeBgUid", "unsplashLastCredit",
-  "accentColor", "sidebarBg", "panelBg", "glassBg", "glassBorder", "glassEdge",
-  "effect", "hueTextMode", "font", "clockFont", "clockFontTarget", "dateClockStyle", 
-  "clockColor", "dateColor", "analogMarkerMode", "sidestyleAlign",
-  "hackerColor", "oceanWaveColor", "sakuraColor", "bubbleColor", "lightPillarsColor", "plantGrowthColor",
-  "starColor", "meteorColor", "auraColor", "northernLightsColor", "pixelCubesColor",
-  "snowfallColor", "sunbeamColor", "rainHDColor", "stormRainColor",
-  "wavyLinesColor", "shinyColor", "lineShinyColor", "nintendoPixelColor",
-  "northernLightsStyle", "northernLightsBrightness", "fliqloTheme", "contextMenuStyle",
-  "sidebarClockFlip", "analogBlurBackground"
-];
+  "background",
+  "activeBgUid",
+  "unsplashLastCredit",
+  "accentColor",
+  "sidebarBg",
+  "panelBg",
+  "glassBg",
+  "glassBorder",
+  "glassEdge",
+  "effect",
+  "hueTextMode",
+  "font",
+  "clockFont",
+  "clockFontTarget",
+  "dateClockStyle",
+  "clockColor",
+  "dateColor",
+  "analogMarkerMode",
+  "sidestyleAlign",
+  "hackerColor",
+  "oceanWaveColor",
+  "sakuraColor",
+  "bubbleColor",
+  "lightPillarsColor",
+  "plantGrowthColor",
+  "starColor",
+  "meteorColor",
+  "auraColor",
+  "northernLightsColor",
+  "pixelCubesColor",
+  "snowfallColor",
+  "sunbeamColor",
+  "rainHDColor",
+  "stormRainColor",
+  "wavyLinesColor",
+  "shinyColor",
+  "lineShinyColor",
+  "nintendoPixelColor",
+  "northernLightsStyle",
+  "northernLightsBrightness",
+  "fliqloTheme",
+  "contextMenuStyle",
+  "sidebarClockFlip",
+  "analogBlurBackground",
+]
 
 // Variable to store user's manual settings before a theme was applied
-let preThemeSnapshot = null;
+let preThemeSnapshot = null
 
-export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs) {
+export function initThemeManager(
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
   if (!DOM.themesGrid) return
 
   // Load and render user themes
-  renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
+  renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
 
   const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
   const currentTheme = getSettings().theme
@@ -246,20 +290,25 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
   // Use event delegation for themes grid to handle dynamic user themes
   DOM.themesGrid.addEventListener("click", (e) => {
     e.stopPropagation()
-    const themeItem = e.target.closest(".theme-item");
-    if (!themeItem) return;
+    const themeItem = e.target.closest(".theme-item")
+    if (!themeItem) return
 
     // Handle delete button
     if (e.target.closest(".delete-theme-btn")) {
-        const themeKey = themeItem.dataset.theme;
-        if (themeKey.startsWith("user-")) {
-            deleteUserTheme(themeKey, DOM, handleSettingUpdate, updateSettingsInputs);
-        }
-        return;
+      const themeKey = themeItem.dataset.theme
+      if (themeKey.startsWith("user-")) {
+        deleteUserTheme(
+          themeKey,
+          DOM,
+          handleSettingUpdate,
+          updateSettingsInputs,
+        )
+      }
+      return
     }
 
-    const themeKey = themeItem.dataset.theme;
-    
+    const themeKey = themeItem.dataset.theme
+
     // If clicking the ALREADY active theme, treat it as "deselect" and restore original
     if (themeItem.classList.contains("active")) {
       updateActiveUI(null)
@@ -268,102 +317,117 @@ export function initThemeManager(DOM, handleSettingUpdate, updateSettingsInputs)
       return
     }
 
-    let themeData = THEMES[themeKey];
+    let themeData = THEMES[themeKey]
     if (!themeData && themeKey.startsWith("user-")) {
-        const userThemes = getSettings().userThemes || [];
-        const userTheme = userThemes.find(t => t.id === themeKey);
-        if (userTheme) themeData = userTheme.snapshot;
+      const userThemes = getSettings().userThemes || []
+      const userTheme = userThemes.find((t) => t.id === themeKey)
+      if (userTheme) themeData = userTheme.snapshot
     }
 
     if (themeData) {
       // Before applying the very first theme in a sequence, take a snapshot of current settings
-      captureUserSnapshot();
-      
+      captureUserSnapshot()
+
       updateActiveUI(themeKey)
       updateSetting("theme", themeKey)
       applyTheme(themeData, updateSettingsInputs)
     }
-  });
+  })
 
   // Save current theme button
   if (DOM.saveCurrentThemeBtn) {
-      DOM.saveCurrentThemeBtn.addEventListener("click", () => {
-          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.add("open");
-      });
+    DOM.saveCurrentThemeBtn.addEventListener("click", () => {
+      if (DOM.saveThemeModal) DOM.saveThemeModal.classList.add("open")
+    })
+  }
+
+  // Save current style button
+  if (DOM.saveCurrentStyleBtn) {
+    DOM.saveCurrentStyleBtn.addEventListener("click", () => {
+      alert("Save Style functionality is coming soon!")
+    })
   }
 
   // Icon selection in modal
   if (DOM.themeIconGrid) {
-      const icons = DOM.themeIconGrid.querySelectorAll(".icon-option");
-      icons.forEach(icon => {
-          icon.addEventListener("click", () => {
-              icons.forEach(i => i.classList.remove("active"));
-              icon.classList.add("active");
-          });
-      });
+    const icons = DOM.themeIconGrid.querySelectorAll(".icon-option")
+    icons.forEach((icon) => {
+      icon.addEventListener("click", () => {
+        icons.forEach((i) => i.classList.remove("active"))
+        icon.classList.add("active")
+      })
+    })
   }
 
   // Close modal
   if (DOM.closeSaveThemeModalBtn) {
-      DOM.closeSaveThemeModalBtn.addEventListener("click", () => {
-          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open");
-      });
+    DOM.closeSaveThemeModalBtn.addEventListener("click", () => {
+      if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open")
+    })
   }
 
   // Confirm save logic
   const handleConfirmSave = () => {
-      const name = DOM.customThemeNameInput.value.trim() || "My Theme";
-      const activeIcon = DOM.themeIconGrid.querySelector(".icon-option.active");
-      const icon = activeIcon ? activeIcon.dataset.icon : "fa-palette";
-      
-      const success = saveUserTheme(name, icon, DOM, handleSettingUpdate, updateSettingsInputs);
-      
-      if (success) {
-          if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open");
-          DOM.customThemeNameInput.value = "";
-      }
-  };
+    const name = DOM.customThemeNameInput.value.trim() || "My Theme"
+    const activeIcon = DOM.themeIconGrid.querySelector(".icon-option.active")
+    const icon = activeIcon ? activeIcon.dataset.icon : "fa-palette"
+
+    const success = saveUserTheme(
+      name,
+      icon,
+      DOM,
+      handleSettingUpdate,
+      updateSettingsInputs,
+    )
+
+    if (success) {
+      if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open")
+      DOM.customThemeNameInput.value = ""
+    }
+  }
 
   if (DOM.confirmSaveThemeBtn) {
-      DOM.confirmSaveThemeBtn.addEventListener("click", handleConfirmSave);
+    DOM.confirmSaveThemeBtn.addEventListener("click", handleConfirmSave)
   }
 
   // Enter key support
   if (DOM.customThemeNameInput) {
-      DOM.customThemeNameInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-              handleConfirmSave();
-          }
-      });
+    DOM.customThemeNameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleConfirmSave()
+      }
+    })
   }
 
   // Click outside to close
   if (DOM.saveThemeModal) {
-      DOM.saveThemeModal.addEventListener("click", (e) => {
-          if (e.target === DOM.saveThemeModal) {
-              DOM.saveThemeModal.classList.remove("open");
-          }
-      });
+    DOM.saveThemeModal.addEventListener("click", (e) => {
+      if (e.target === DOM.saveThemeModal) {
+        DOM.saveThemeModal.classList.remove("open")
+      }
+    })
   }
 }
 
 function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
-    if (!DOM.themesGrid) return;
-    
-    // Clear existing user themes (keep default themes)
-    const existingUserThemes = DOM.themesGrid.querySelectorAll(".theme-item[data-theme^='user-']");
-    existingUserThemes.forEach(el => el.remove());
-    
-    const userThemes = getSettings().userThemes || [];
-    userThemes.forEach(theme => {
-        const item = document.createElement("div");
-        item.className = "theme-item";
-        item.dataset.theme = theme.id;
-        
-        // Use a preview color from the snapshot if available
-        const previewColor = theme.snapshot.accentColor || "#ffffff";
-        
-        item.innerHTML = `
+  if (!DOM.themesGrid) return
+
+  // Clear existing user themes (keep default themes)
+  const existingUserThemes = DOM.themesGrid.querySelectorAll(
+    ".theme-item[data-theme^='user-']",
+  )
+  existingUserThemes.forEach((el) => el.remove())
+
+  const userThemes = getSettings().userThemes || []
+  userThemes.forEach((theme) => {
+    const item = document.createElement("div")
+    item.className = "theme-item"
+    item.dataset.theme = theme.id
+
+    // Use a preview color from the snapshot if available
+    const previewColor = theme.snapshot.accentColor || "#ffffff"
+
+    item.innerHTML = `
             <div class="theme-preview">
                 <div class="preview-sidebar"></div>
                 <div class="preview-content"></div>
@@ -373,104 +437,114 @@ function renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs) {
             <span class="theme-name">${theme.name}</span>
             <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
             <button class="delete-theme-btn" title="Delete Theme"><i class="fa-solid fa-trash-can"></i></button>
-        `;
-        
-        DOM.themesGrid.appendChild(item);
-    });
+        `
+
+    DOM.themesGrid.appendChild(item)
+  })
 }
 
-function saveUserTheme(name, icon, DOM, handleSettingUpdate, updateSettingsInputs) {
-    const currentSettings = getSettings();
-    const userThemes = currentSettings.userThemes || [];
-    
-    // Check for duplicates
-    const isDuplicate = userThemes.some(t => t.name.toLowerCase() === name.toLowerCase());
-    if (isDuplicate) {
-        showAlert("A theme with this name already exists. Please choose a different name.");
-        return false;
-    }
+function saveUserTheme(
+  name,
+  icon,
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
+  const currentSettings = getSettings()
+  const userThemes = currentSettings.userThemes || []
 
-    const snapshot = {};
-    
-    THEMEABLE_KEYS.forEach(key => {
-        if (currentSettings[key] !== undefined) {
-            snapshot[key] = currentSettings[key];
-        }
-    });
-    
-    const newTheme = {
-        id: "user-" + Date.now(),
-        name: name,
-        icon: icon,
-        snapshot: snapshot
-    };
-    
-    userThemes.push(newTheme);
-    updateSetting("userThemes", userThemes);
-    saveSettings(true);
-    
-    renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
-    return true;
+  // Check for duplicates
+  const isDuplicate = userThemes.some(
+    (t) => t.name.toLowerCase() === name.toLowerCase(),
+  )
+  if (isDuplicate) {
+    showAlert(
+      "A theme with this name already exists. Please choose a different name.",
+    )
+    return false
+  }
+
+  const snapshot = {}
+
+  THEMEABLE_KEYS.forEach((key) => {
+    if (currentSettings[key] !== undefined) {
+      snapshot[key] = currentSettings[key]
+    }
+  })
+
+  const newTheme = {
+    id: "user-" + Date.now(),
+    name: name,
+    icon: icon,
+    snapshot: snapshot,
+  }
+
+  userThemes.push(newTheme)
+  updateSetting("userThemes", userThemes)
+  saveSettings(true)
+
+  renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
+  return true
 }
 
 function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInputs) {
-    const currentSettings = getSettings();
-    let userThemes = currentSettings.userThemes || [];
-    userThemes = userThemes.filter(t => t.id !== id);
-    
-    updateSetting("userThemes", userThemes);
-    
-    // If the deleted theme was active, reset to default
-    if (currentSettings.theme === id) {
-        updateSetting("theme", null);
-        restoreUserOriginalSettings(updateSettingsInputs);
-    }
-    
-    saveSettings(true);
-    renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs);
+  const currentSettings = getSettings()
+  let userThemes = currentSettings.userThemes || []
+  userThemes = userThemes.filter((t) => t.id !== id)
+
+  updateSetting("userThemes", userThemes)
+
+  // If the deleted theme was active, reset to default
+  if (currentSettings.theme === id) {
+    updateSetting("theme", null)
+    restoreUserOriginalSettings(updateSettingsInputs)
+  }
+
+  saveSettings(true)
+  renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
 }
 
 function captureUserSnapshot() {
-  if (preThemeSnapshot !== null) return;
-  
-  const currentSettings = getSettings();
-  preThemeSnapshot = {};
-  
-  THEMEABLE_KEYS.forEach(key => {
+  if (preThemeSnapshot !== null) return
+
+  const currentSettings = getSettings()
+  preThemeSnapshot = {}
+
+  THEMEABLE_KEYS.forEach((key) => {
     if (currentSettings[key] !== undefined) {
-      preThemeSnapshot[key] = currentSettings[key];
+      preThemeSnapshot[key] = currentSettings[key]
     }
-  });
+  })
 }
 
 function restoreUserOriginalSettings(updateSettingsInputs) {
-  if (!preThemeSnapshot) return;
+  if (!preThemeSnapshot) return
 
-  updateAllSettings(preThemeSnapshot);
-  preThemeSnapshot = null; // Clear so next theme click takes a fresh snapshot
+  updateAllSettings(preThemeSnapshot)
+  preThemeSnapshot = null // Clear so next theme click takes a fresh snapshot
 
-  if (updateSettingsInputs) updateSettingsInputs();
-  saveSettings(true);
-  if (window.appApplySettings) window.appApplySettings();
+  if (updateSettingsInputs) updateSettingsInputs()
+  saveSettings(true)
+  if (window.appApplySettings) window.appApplySettings()
 }
 
 function applyTheme(themeData, updateSettingsInputs) {
-  const resetData = {};
+  const resetData = {}
 
   // Reset to user's original state (or default if not set) first
   // This ensures we don't overwrite custom effect colors not specified by the theme
-  THEMEABLE_KEYS.forEach(key => {
+  THEMEABLE_KEYS.forEach((key) => {
     if (preThemeSnapshot && preThemeSnapshot[key] !== undefined) {
-      resetData[key] = preThemeSnapshot[key];
+      resetData[key] = preThemeSnapshot[key]
     } else if (defaultSettings[key] !== undefined) {
-      resetData[key] = defaultSettings[key];
+      resetData[key] = defaultSettings[key]
     }
-  });
+  })
 
-  const finalData = { ...resetData, ...themeData };
-  updateAllSettings(finalData);
+  const finalData = { ...resetData, ...themeData }
+  updateAllSettings(finalData)
 
-  if (updateSettingsInputs) updateSettingsInputs();
-  saveSettings(true);
-  if (window.appApplySettings) window.appApplySettings();
+  if (updateSettingsInputs) updateSettingsInputs()
+  saveSettings(true)
+  if (window.appApplySettings) window.appApplySettings()
 }

@@ -341,7 +341,8 @@
                         </a>
                         <a href="https://chat.google.com" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-chat-Icon.svg" alt="Chat">
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-chat-Icon.svg"
+                                    alt="Chat">
                             </div>
                             <span data-i18n="g_app_chat">Chat</span>
                         </a>
@@ -380,7 +381,8 @@
                         </a>
                         <a href="https://docs.google.com/forms/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-forms-Icon.svg" alt="Forms">
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-forms-Icon.svg"
+                                    alt="Forms">
                             </div>
                             <span data-i18n="g_app_forms">Forms</span>
                         </a>
@@ -407,7 +409,8 @@
                         </a>
                         <a href="https://keep.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-keep-Icon.svg" alt="Keep">
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-keep-Icon.svg"
+                                    alt="Keep">
                             </div>
                             <span data-i18n="g_app_keep">Keep</span>
                         </a>
@@ -452,13 +455,15 @@
                         </a>
                         <a href="https://books.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icons8-google-books-96.png" alt="Books">
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icons8-google-books-96.png"
+                                    alt="Books">
                             </div>
                             <span data-i18n="g_app_books">Books</span>
                         </a>
                         <a href="https://earth.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icon-google-earth.svg" alt="Earth">
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icon-google-earth.svg"
+                                    alt="Earth">
                             </div>
                             <span data-i18n="g_app_earth">Earth</span>
                         </a>
@@ -767,10 +772,10 @@
                     <input type="text" id="tab-icon-input" data-i18n-placeholder="settings_tab_icon_placeholder"
                         placeholder="SP" maxlength="2"
                         style="flex:1;padding: 0.4rem 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
-                    <input type="file" id="tab-icon-file-input" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
+                    <input type="file" id="tab-icon-file-input"
+                        accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
                     <button type="button" id="tab-icon-upload-btn" class="icon-btn" title="Upload icon"
-                        data-i18n-title="settings_tab_icon_upload"
-                        style="width:32px;height:32px;flex-shrink:0;">
+                        data-i18n-title="settings_tab_icon_upload" style="width:32px;height:32px;flex-shrink:0;">
                         <i class="fa-solid fa-upload"></i>
                     </button>
                     <div id="tab-icon-preview"
@@ -785,16 +790,19 @@
             <div class="settings-section" data-section-id="themes">
                 <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
                 <div class="section-content">
-                    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-                        <button id="save-current-theme-btn" class="secondary-btn"
-                            style="flex: 1; height: 44px; justify-content: center; border-radius: 12px; border: 1px solid var(--accent-color);">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
-                                Custom Theme</span>
+                    <!-- Styles Subsection -->
+                    <div class="settings-subsection-title">
+                        <span data-i18n="style_presets_title">Style Presets</span>
+                        <hr class="subsection-divider">
+                    </div>
+                    <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+                        <button id="save-current-style-btn" class="secondary-btn"
+                            style="flex: 1; height: 40px; justify-content: center; border-radius: 8px; border: 1px dashed var(--accent-color);">
+                            <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom
+                                Style</span>
                         </button>
                     </div>
                     <div class="setting-group style-preset-panel">
-                        <div class="setting-label"><i class="fa-solid fa-wand-magic-sparkles"></i> <span
-                                data-i18n="style_presets_title">Style Presets</span></div>
                         <p class="setting-hint" data-i18n="style_presets_hint">
                             One-click bundles for bookmark and music player styling.
                         </p>
@@ -851,6 +859,20 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Themes Subsection -->
+                    <div class="settings-subsection-title" style="margin-top: 15px;">
+                        <span data-i18n="settings_themes">Themes</span>
+                        <hr class="subsection-divider">
+                    </div>
+                    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                        <button id="save-current-theme-btn" class="secondary-btn"
+                            style="flex: 1; height: 44px; justify-content: center; border-radius: 12px; border: 1px solid var(--accent-color);">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
+                                Custom Theme</span>
+                        </button>
+                    </div>
+
                     <div class="themes-grid" id="themes-grid">
                         <!-- Default -->
                         <div class="theme-item" data-theme="default">
@@ -4788,8 +4810,10 @@
                                     value="14" style="width: 100%; margin-top: 4px;">
                                 <div class="setting-item-row"
                                     style="margin: 12px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-group-show-count" data-i18n="settings_bookmark_group_show_count"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show bookmark count</label>
+                                    <label for="bookmark-group-show-count"
+                                        data-i18n="settings_bookmark_group_show_count"
+                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Show bookmark
+                                        count</label>
                                     <input type="checkbox" id="bookmark-group-show-count" checked
                                         style="transform: scale(1.1); margin: 0;">
                                 </div>
@@ -5259,8 +5283,8 @@
                         </div>
                         <div class="setting-item">
                             <label for="spotify-client-id-input" data-i18n="spotify_client_id">Spotify Client ID</label>
-                            <input type="text" id="spotify-client-id-input" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                                autocomplete="off" spellcheck="false">
+                            <input type="text" id="spotify-client-id-input"
+                                placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
                             <small class="setting-hint" data-i18n="spotify_client_hint">Create a Spotify Developer app,
                                 add the redirect URI below, then connect.</small>
                         </div>
