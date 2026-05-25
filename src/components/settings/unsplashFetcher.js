@@ -58,6 +58,21 @@ function formatResolution(width, height) {
   return width && height ? `${width} x ${height}` : "Unknown size"
 }
 
+function getMissingUnsplashKeyMessage() {
+  const i18n = typeof geti18n === "function" ? geti18n() : {}
+  return (
+    i18n.settings_unsplash_missing_key ||
+    "Please enter your Unsplash Access Key first.\nYou can get a free key at unsplash.com/developers."
+  )
+}
+
+function hasUnsplashAccessKey(showMessage = true) {
+  const accessKey = (getSettings().unsplashAccessKey || "").trim()
+  if (accessKey) return true
+  if (showMessage) showAlert(getMissingUnsplashKeyMessage())
+  return false
+}
+
 async function fetchUnsplashPhotoByParams(accessKey, params) {
   const search = new URLSearchParams({
     ...params,
@@ -214,13 +229,8 @@ async function setUnsplashRandomBackground(
 ) {
   const settings = getSettings()
   const previousBackground = settings.background
-  const accessKey = settings.unsplashAccessKey || ""
-  if (!accessKey) {
-    showAlert(
-      "Please enter your Unsplash Access Key in Settings.\nGet a free key at: https://unsplash.com/developers",
-    )
-    return
-  }
+  if (!hasUnsplashAccessKey(true)) return
+  const accessKey = settings.unsplashAccessKey.trim()
 
   const btn = unsplashRandomBtn
   const originalHtml = btn.innerHTML
@@ -551,6 +561,8 @@ function minimizeUnsplashExplorer() {
 }
 
 async function openUnsplashExplorer(type = "latest", query = "") {
+  if (!hasUnsplashAccessKey(true)) return
+
   const modal = document.getElementById("unsplash-explorer-modal")
   if (!modal) return
 

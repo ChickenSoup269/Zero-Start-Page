@@ -245,6 +245,7 @@
   "settings_unsplash_search_placeholder": "Search photos...",
   "settings_unsplash_save": "Save Background",
   "settings_unsplash_saved": "Saved",
+  "settings_unsplash_missing_key": "Please enter your Unsplash Access Key first.\nYou can get a free key at unsplash.com/developers.",
   "settings_unsplash_mini_hint": "Open photo picker",
   "settings_save_color_btn": "Save Color",
   "settings_remove_bg_btn": "Remove",

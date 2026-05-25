@@ -245,6 +245,7 @@
   "settings_unsplash_search_placeholder": "Tìm kiếm ảnh...",
   "settings_unsplash_save": "Lưu hình nền",
   "settings_unsplash_saved": "Đã lưu",
+  "settings_unsplash_missing_key": "Bạn cần nhập Unsplash Access Key trước.\nCó thể lấy key miễn phí tại unsplash.com/developers.",
   "settings_unsplash_mini_hint": "Mở lại chọn ảnh",
   "settings_save_color_btn": "Lưu màu",
   "settings_remove_bg_btn": "Xóa bỏ",
