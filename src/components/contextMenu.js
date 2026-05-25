@@ -60,7 +60,11 @@ export function showContextMenu(
 
   const i18n = geti18n()
 
-  if (type === "bookmark" || type === "bookmarkStack") {
+  if (
+    type === "bookmark" ||
+    type === "bookmarkStack" ||
+    type === "bookmarkStackItem"
+  ) {
     menuSelect.style.display = "flex"
   }
 
@@ -542,7 +546,7 @@ async function handleEdit() {
   const i18n = geti18n()
 
   if (contextMenuCallbacks && contextMenuCallbacks.onEdit) {
-    contextMenuCallbacks.onEdit()
+    await contextMenuCallbacks.onEdit()
     hideContextMenu()
     return
   }
@@ -576,7 +580,7 @@ async function handleDelete() {
   const i18n = geti18n()
 
   if (contextMenuCallbacks && contextMenuCallbacks.onDelete) {
-    contextMenuCallbacks.onDelete()
+    await contextMenuCallbacks.onDelete()
     hideContextMenu()
     return
   }
@@ -780,7 +784,9 @@ function handleLock() {
 export function initContextMenu() {
   menuSelect.addEventListener("click", (e) => {
     e.stopPropagation()
-    if (
+    if (contextMenuCallbacks && contextMenuCallbacks.onSelect) {
+      contextMenuCallbacks.onSelect()
+    } else if (
       contextMenuTargetType === "bookmark" ||
       contextMenuTargetType === "bookmarkStack"
     ) {

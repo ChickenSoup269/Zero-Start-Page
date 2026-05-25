@@ -331,23 +331,31 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const selectBtn = document.createElement("button")
   selectBtn.type = "button"
   selectBtn.className = "bookmark-stack-popup-action"
+  selectBtn.title = i18n.bookmark_stack_select || "Select"
+  selectBtn.setAttribute("aria-label", i18n.bookmark_stack_select || "Select")
   selectBtn.innerHTML = `<i class="fa-solid fa-check-square"></i><span>${i18n.bookmark_stack_select || "Select"}</span>`
 
   const renameBtn = document.createElement("button")
   renameBtn.type = "button"
   renameBtn.className = "bookmark-stack-popup-action"
+  renameBtn.title = i18n.bookmark_stack_rename || "Rename"
+  renameBtn.setAttribute("aria-label", i18n.bookmark_stack_rename || "Rename")
   renameBtn.innerHTML = `<i class="fa-solid fa-pen"></i><span>${i18n.bookmark_stack_rename || "Rename"}</span>`
 
   const deleteBtn = document.createElement("button")
   deleteBtn.type = "button"
   deleteBtn.className = "bookmark-stack-popup-action danger"
   deleteBtn.hidden = true
+  deleteBtn.title = i18n.bookmark_stack_delete_selected || "Delete selected"
+  deleteBtn.setAttribute("aria-label", i18n.bookmark_stack_delete_selected || "Delete selected")
   deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i><span>${i18n.bookmark_stack_delete_selected || "Delete selected"}</span>`
 
   const cancelBtn = document.createElement("button")
   cancelBtn.type = "button"
   cancelBtn.className = "bookmark-stack-popup-action"
   cancelBtn.hidden = true
+  cancelBtn.title = i18n.bookmark_stack_cancel || "Cancel"
+  cancelBtn.setAttribute("aria-label", i18n.bookmark_stack_cancel || "Cancel")
   cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.bookmark_stack_cancel || "Cancel"}</span>`
 
   actions.appendChild(selectBtn)
@@ -403,6 +411,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       link.appendChild(createBookmarkIcon(item))
 
       const label = document.createElement("span")
+      label.className = "bookmark-stack-popup-label"
       label.textContent = item.title
       link.appendChild(label)
 
@@ -425,6 +434,48 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       })
       link.addEventListener("dragstart", handleStackItemDragStart)
       link.addEventListener("dragend", handleDragEnd)
+      link.addEventListener("contextmenu", (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        showContextMenu(
+          event.clientX,
+          event.clientY,
+          itemIndex,
+          "bookmarkStackItem",
+          `${stackIndex}:${itemIndex}`,
+          {
+            onEdit: () => {
+              openModal(null, {
+                type: "stackItem",
+                stackIndex,
+                itemIndex,
+              })
+            },
+            onDelete: async () => {
+              const confirmed = await showConfirm(
+                `${i18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(item)}"?`,
+              )
+              if (!confirmed) return
+              const snapshot = captureBookmarkSnapshot()
+              stack.items.splice(itemIndex, 1)
+              normalizeStackAfterDelete()
+              popup.remove()
+              renderBookmarks()
+              showBookmarkUndo(
+                i18n.bookmark_deleted || "Bookmark deleted",
+                snapshot,
+              )
+            },
+            onSelect: () => {
+              isStackSelectionMode = true
+              selectedStackIndices.clear()
+              selectedStackIndices.add(itemIndex)
+              renderStackItems()
+              syncStackSelectionUi()
+            },
+          },
+        )
+      })
 
       grid.appendChild(link)
     })

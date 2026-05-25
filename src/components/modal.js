@@ -23,14 +23,28 @@ import {
 } from "./bookmarks.js"
 
 let editingIndex = null
+let editingTarget = null
 
-export function openModal(index = null) {
+export function openModal(index = null, target = null) {
   const i18n = geti18n()
   modal.classList.add("show")
   editingIndex = index
+  editingTarget = target
   _showManualForm()
 
-  if (index !== null) {
+  if (editingTarget?.type === "stackItem") {
+    const bookmarks = getBookmarks()
+    const bookmark =
+      bookmarks[editingTarget.stackIndex]?.items?.[editingTarget.itemIndex]
+    if (!bookmark) {
+      closeModal()
+      return
+    }
+    modalTitle.textContent = i18n.modal_edit_title
+    bookmarkTitleInput.value = bookmark.title
+    bookmarkUrlInput.value = bookmark.url
+    bookmarkIconInput.value = bookmark.icon || ""
+  } else if (index !== null) {
     const bookmarks = getBookmarks()
     modalTitle.textContent = i18n.modal_edit_title
     const bookmark = bookmarks[index]
@@ -49,6 +63,7 @@ export function openModal(index = null) {
 export function closeModal() {
   modal.classList.remove("show")
   editingIndex = null
+  editingTarget = null
 }
 
 function _showManualForm() {
@@ -78,10 +93,15 @@ function saveBookmark() {
 
   if (title && url) {
     const snapshot = captureBookmarkSnapshot()
-    const wasEditing = editingIndex !== null
+    const wasEditing = editingIndex !== null || editingTarget !== null
     if (!url.match(/^https?:\/\//)) url = "https://" + url
     const newBookmark = { title, url, icon }
-    if (wasEditing) {
+    if (editingTarget?.type === "stackItem") {
+      const stack = bookmarks[editingTarget.stackIndex]
+      if (stack?.items?.[editingTarget.itemIndex]) {
+        stack.items[editingTarget.itemIndex] = newBookmark
+      }
+    } else if (editingIndex !== null) {
       bookmarks[editingIndex] = newBookmark
     } else {
       bookmarks.push(newBookmark)
@@ -363,7 +383,7 @@ export function initModal() {
 
   backToManualBtn.addEventListener("click", () => {
     _showManualForm()
-    if (editingIndex !== null) {
+    if (editingIndex !== null || editingTarget !== null) {
       modalTitle.textContent = i18n.modal_edit_title
     }
   })
