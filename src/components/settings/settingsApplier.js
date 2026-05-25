@@ -13,7 +13,11 @@ import {
   updateBookmarkGroupsToggleIcon,
 } from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
-import { getContrastYIQ, hexToRgb } from "../../utils/colors.js"
+import {
+  buildMaterial3Scheme,
+  getContrastYIQ,
+  hexToRgb,
+} from "../../utils/colors.js"
 import { fadeToggle } from "../../utils/dom.js"
 import {
   isIdbImage,
@@ -39,6 +43,51 @@ let _perfLagging = false
 let _perfLastApply = 0
 
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+
+function applyMaterialAccentTokens(seedColor) {
+  const root = document.documentElement
+  const scheme = buildMaterial3Scheme(seedColor)
+  const tokenMap = {
+    "--m3-seed": scheme.seed,
+    "--m3-primary": scheme.primary,
+    "--m3-on-primary": scheme.onPrimary,
+    "--m3-primary-container": scheme.primaryContainer,
+    "--m3-on-primary-container": scheme.onPrimaryContainer,
+    "--m3-secondary": scheme.secondary,
+    "--m3-on-secondary": scheme.onSecondary,
+    "--m3-secondary-container": scheme.secondaryContainer,
+    "--m3-on-secondary-container": scheme.onSecondaryContainer,
+    "--m3-tertiary": scheme.tertiary,
+    "--m3-on-tertiary": scheme.onTertiary,
+    "--m3-tertiary-container": scheme.tertiaryContainer,
+    "--m3-on-tertiary-container": scheme.onTertiaryContainer,
+    "--m3-surface": scheme.surface,
+    "--m3-on-surface": scheme.onSurface,
+    "--m3-surface-container-low": scheme.surfaceContainerLow,
+    "--m3-surface-container": scheme.surfaceContainer,
+    "--m3-surface-container-high": scheme.surfaceContainerHigh,
+    "--m3-surface-variant": scheme.surfaceVariant,
+    "--m3-on-surface-variant": scheme.onSurfaceVariant,
+    "--m3-outline": scheme.outline,
+    "--m3-outline-variant": scheme.outlineVariant,
+    "--m3-inverse-surface": scheme.inverseSurface,
+    "--m3-inverse-on-surface": scheme.inverseOnSurface,
+    "--m3-inverse-primary": scheme.inversePrimary,
+    "--m3-surface-tint": scheme.surfaceTint,
+    "--m3-primary-rgb": scheme.primaryRgb,
+  }
+
+  Object.entries(tokenMap).forEach(([token, value]) => {
+    root.style.setProperty(token, value)
+  })
+
+  root.style.setProperty("--accent-color", scheme.primary)
+  root.style.setProperty("--accent-color-rgb", scheme.primaryRgb)
+  root.style.setProperty("--accent-contrast-color", scheme.onPrimary)
+  root.style.setProperty("--safe-accent", scheme.inversePrimary)
+
+  return scheme
+}
 
 const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
@@ -1349,34 +1398,7 @@ function createApplySettings(effectInstances) {
     }
 
     if (settings.accentColor) {
-      document.documentElement.style.setProperty(
-        "--accent-color",
-        settings.accentColor,
-      )
-      // Dynamic contrast color for accent background
-      const contrastColor =
-        getContrastYIQ(settings.accentColor) === "black" ? "#1a1a2e" : "#ffffff"
-      document.documentElement.style.setProperty(
-        "--accent-contrast-color",
-        contrastColor,
-      )
-
-      // Safe accent for light backgrounds (darken if too light)
-      const isLightAccent = getContrastYIQ(settings.accentColor) === "black"
-      document.documentElement.style.setProperty(
-        "--safe-accent",
-        isLightAccent
-          ? `color-mix(in srgb, ${settings.accentColor}, black 25%)`
-          : settings.accentColor,
-      )
-
-      const rgb = hexToRgb(settings.accentColor)
-      if (rgb) {
-        document.documentElement.style.setProperty(
-          "--accent-color-rgb",
-          `${rgb.r}, ${rgb.g}, ${rgb.b}`,
-        )
-      }
+      const m3Scheme = applyMaterialAccentTokens(settings.accentColor)
 
       // Sidebar Dynamic Color & Monochrome Logic
       const forceLightSidebar = settings.showQuickAccessBg === true
@@ -1389,26 +1411,7 @@ function createApplySettings(effectInstances) {
         )
         document.body.classList.add("sidebar-light")
       } else {
-        // Restore actual accent color from settings
-        document.documentElement.style.setProperty(
-          "--accent-color",
-          settings.accentColor,
-        )
-        const rgb = hexToRgb(settings.accentColor)
-        if (rgb) {
-          document.documentElement.style.setProperty(
-            "--accent-color-rgb",
-            `${rgb.r}, ${rgb.g}, ${rgb.b}`,
-          )
-        }
-        const contrastColor =
-          getContrastYIQ(settings.accentColor) === "black"
-            ? "#1a1a2e"
-            : "#ffffff"
-        document.documentElement.style.setProperty(
-          "--accent-contrast-color",
-          contrastColor,
-        )
+        applyMaterialAccentTokens(settings.accentColor)
 
         // Default sidebar color from theme/settings
         if (settings.sidebarBg) {
@@ -1425,10 +1428,7 @@ function createApplySettings(effectInstances) {
       if (unsplashRandomBtn) {
         const icon = unsplashRandomBtn.querySelector("i")
         if (icon) {
-          icon.style.color =
-            getContrastYIQ(settings.accentColor) === "black"
-              ? "rgba(0,0,0,0.8)"
-              : "#ffffff"
+          icon.style.color = m3Scheme.onPrimary
         }
       }
     }

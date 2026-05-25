@@ -6234,6 +6234,95 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
     transform: translateY(0);
   }
 }
+
+/* Material Design 3 dynamic accent layer */
+.settings-sidebar {
+  --glass-bg: color-mix(in srgb, var(--m3-surface-container) 58%, transparent);
+  --glass-border: color-mix(in srgb, var(--m3-outline-variant) 68%, transparent);
+  --glass-edge: color-mix(in srgb, var(--m3-outline) 34%, transparent);
+  --hover-bg: color-mix(in srgb, var(--m3-primary-container) 32%, transparent);
+  color: var(--m3-on-surface, #fff);
+}
+
+.settings-sidebar .setting-group h4,
+.settings-sidebar .effect-category-header,
+.settings-sidebar .gradient-v2-section-title,
+.settings-sidebar .color-group-label {
+  color: var(--m3-primary, var(--accent-color));
+}
+
+.settings-sidebar .setting-item-row {
+  background: color-mix(in srgb, var(--m3-surface-container) 56%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-outline-variant) 70%, transparent) !important;
+  border-top-color: color-mix(in srgb, var(--m3-outline) 28%, transparent) !important;
+}
+
+.settings-sidebar .setting-item-row:hover {
+  background: color-mix(in srgb, var(--m3-surface-container-high) 70%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary) 38%, transparent) !important;
+}
+
+.settings-sidebar .setting-item-row label,
+.settings-sidebar .setting-item-row .setting-label {
+  color: var(--m3-on-surface, #eee);
+}
+
+.settings-sidebar input[type="checkbox"]:checked {
+  background-color: var(--m3-primary, var(--accent-color));
+  border-color: var(--m3-primary, var(--accent-color));
+  box-shadow: 0 0 0 3px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14);
+}
+
+.settings-sidebar input[type="checkbox"]:checked::before {
+  background-color: var(--m3-on-primary, var(--accent-contrast-color));
+}
+
+.settings-sidebar input[type="range"] {
+  accent-color: var(--m3-primary, var(--accent-color));
+}
+
+.settings-sidebar input[type="range"]::-webkit-slider-thumb {
+  background: var(--m3-primary, var(--accent-color));
+  border: 2px solid var(--m3-on-primary, var(--accent-contrast-color));
+}
+
+.settings-sidebar select:focus,
+.settings-sidebar input[type="text"]:focus,
+.settings-sidebar input[type="color"]:focus {
+  border-color: var(--m3-primary, var(--accent-color)) !important;
+  box-shadow: 0 0 0 3px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.14) !important;
+}
+
+.accent-color-selector {
+  background: color-mix(in srgb, var(--m3-surface-container-low) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 64%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+}
+
+.accent-color-preset.active {
+  border-color: var(--m3-on-primary-container, #fff);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, currentColor 22%, transparent),
+    0 0 24px color-mix(in srgb, currentColor 74%, transparent),
+    0 0 0 2px color-mix(in srgb, var(--m3-primary) 72%, transparent);
+}
+
+.btn-group-item.active,
+.effect-item.active,
+.font-item.active,
+.clock-style-card.active,
+.style-preset-btn.active {
+  background: color-mix(in srgb, var(--m3-primary-container) 54%, transparent);
+  border-color: var(--m3-primary, var(--accent-color));
+  color: var(--m3-on-primary-container, #fff);
+}
+
+body.sidebar-light .settings-sidebar {
+  --glass-bg: color-mix(in srgb, var(--m3-inverse-surface) 82%, white);
+  --glass-border: color-mix(in srgb, var(--m3-outline-variant) 44%, transparent);
+  --glass-edge: color-mix(in srgb, var(--m3-outline) 24%, transparent);
+}
 /* Optional calm toggle switches: keep controls visible, only remove flashy glow. */
 body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"],
 body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"]::before,

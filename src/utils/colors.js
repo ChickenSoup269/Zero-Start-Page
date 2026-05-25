@@ -184,6 +184,118 @@ export function hexToRgb(hex) {
   return { r, g, b }
 }
 
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+
+const componentToHex = (component) =>
+  clamp(Math.round(component), 0, 255).toString(16).padStart(2, "0")
+
+const rgbToHex = ({ r, g, b }) =>
+  `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
+
+const rgbToHsl = ({ r, g, b }) => {
+  r /= 255
+  g /= 255
+  b /= 255
+
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  let h = 0
+  let s = 0
+  const l = (max + min) / 2
+
+  if (max !== min) {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      default:
+        h = (r - g) / d + 4
+        break
+    }
+    h /= 6
+  }
+
+  return { h: h * 360, s: s * 100, l: l * 100 }
+}
+
+const hslToHex = (h, s, l) => {
+  h = ((h % 360) + 360) % 360
+  s = clamp(s, 0, 100) / 100
+  l = clamp(l, 0, 100) / 100
+
+  const c = (1 - Math.abs(2 * l - 1)) * s
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
+  const m = l - c / 2
+  let r = 0
+  let g = 0
+  let b = 0
+
+  if (h < 60) [r, g, b] = [c, x, 0]
+  else if (h < 120) [r, g, b] = [x, c, 0]
+  else if (h < 180) [r, g, b] = [0, c, x]
+  else if (h < 240) [r, g, b] = [0, x, c]
+  else if (h < 300) [r, g, b] = [x, 0, c]
+  else [r, g, b] = [c, 0, x]
+
+  return rgbToHex({
+    r: (r + m) * 255,
+    g: (g + m) * 255,
+    b: (b + m) * 255,
+  })
+}
+
+const tone = (h, s, l) => hslToHex(h, s, l)
+
+export function buildMaterial3Scheme(seedHex = "#6750a4") {
+  const seedRgb = hexToRgb(seedHex)
+  const seed = rgbToHsl(seedRgb)
+  const chroma = clamp(seed.s, 28, 78)
+  const neutralHue = seed.h
+  const neutralChroma = clamp(seed.s * 0.12, 4, 14)
+  const neutralVariantChroma = clamp(seed.s * 0.22, 8, 24)
+  const secondaryChroma = clamp(chroma * 0.42, 20, 38)
+  const tertiaryHue = (seed.h + 58) % 360
+  const tertiaryChroma = clamp(chroma * 0.55, 24, 48)
+
+  const primary = tone(seed.h, chroma, 80)
+  const primaryRgb = hexToRgb(primary)
+
+  return {
+    seed: seedHex,
+    primary,
+    onPrimary: tone(seed.h, chroma, 18),
+    primaryContainer: tone(seed.h, chroma * 0.86, 30),
+    onPrimaryContainer: tone(seed.h, chroma, 92),
+    secondary: tone(seed.h, secondaryChroma, 80),
+    onSecondary: tone(seed.h, secondaryChroma, 18),
+    secondaryContainer: tone(seed.h, secondaryChroma, 30),
+    onSecondaryContainer: tone(seed.h, secondaryChroma, 92),
+    tertiary: tone(tertiaryHue, tertiaryChroma, 80),
+    onTertiary: tone(tertiaryHue, tertiaryChroma, 18),
+    tertiaryContainer: tone(tertiaryHue, tertiaryChroma, 30),
+    onTertiaryContainer: tone(tertiaryHue, tertiaryChroma, 92),
+    surface: tone(neutralHue, neutralChroma, 6),
+    onSurface: tone(neutralHue, neutralChroma, 92),
+    surfaceContainerLow: tone(neutralHue, neutralChroma, 10),
+    surfaceContainer: tone(neutralHue, neutralChroma, 12),
+    surfaceContainerHigh: tone(neutralHue, neutralChroma, 17),
+    surfaceVariant: tone(neutralHue, neutralVariantChroma, 30),
+    onSurfaceVariant: tone(neutralHue, neutralVariantChroma, 80),
+    outline: tone(neutralHue, neutralVariantChroma, 60),
+    outlineVariant: tone(neutralHue, neutralVariantChroma, 32),
+    inverseSurface: tone(neutralHue, neutralChroma, 90),
+    inverseOnSurface: tone(neutralHue, neutralChroma, 14),
+    inversePrimary: tone(seed.h, chroma, 40),
+    surfaceTint: primary,
+    primaryRgb: `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`,
+  }
+}
+
 export function getRandomHexColor() {
   return (
     "#" +

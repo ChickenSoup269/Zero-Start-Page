@@ -42,7 +42,10 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import { getRandomHexColor } from "../../utils/colors.js"
+import {
+  buildMaterial3Scheme,
+  getRandomHexColor,
+} from "../../utils/colors.js"
 import { getGoogleProfile } from "../../services/googleIdentity.js"
 import {
   setUnsplashRandomBackground,
@@ -66,7 +69,6 @@ import {
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
-import { hexToRgb } from "../../utils/colors.js"
 import {
   copyText,
   decodePresetCode,
@@ -1471,16 +1473,51 @@ export function setupGeneralEventHandlers(
     }
   }
 
+  const previewMaterialAccent = (color) => {
+    const scheme = buildMaterial3Scheme(color)
+    const root = document.documentElement
+    const tokens = {
+      "--m3-seed": scheme.seed,
+      "--m3-primary": scheme.primary,
+      "--m3-on-primary": scheme.onPrimary,
+      "--m3-primary-container": scheme.primaryContainer,
+      "--m3-on-primary-container": scheme.onPrimaryContainer,
+      "--m3-secondary": scheme.secondary,
+      "--m3-on-secondary": scheme.onSecondary,
+      "--m3-secondary-container": scheme.secondaryContainer,
+      "--m3-on-secondary-container": scheme.onSecondaryContainer,
+      "--m3-tertiary": scheme.tertiary,
+      "--m3-on-tertiary": scheme.onTertiary,
+      "--m3-tertiary-container": scheme.tertiaryContainer,
+      "--m3-on-tertiary-container": scheme.onTertiaryContainer,
+      "--m3-surface": scheme.surface,
+      "--m3-on-surface": scheme.onSurface,
+      "--m3-surface-container-low": scheme.surfaceContainerLow,
+      "--m3-surface-container": scheme.surfaceContainer,
+      "--m3-surface-container-high": scheme.surfaceContainerHigh,
+      "--m3-surface-variant": scheme.surfaceVariant,
+      "--m3-on-surface-variant": scheme.onSurfaceVariant,
+      "--m3-outline": scheme.outline,
+      "--m3-outline-variant": scheme.outlineVariant,
+      "--m3-inverse-surface": scheme.inverseSurface,
+      "--m3-inverse-on-surface": scheme.inverseOnSurface,
+      "--m3-inverse-primary": scheme.inversePrimary,
+      "--m3-surface-tint": scheme.surfaceTint,
+      "--m3-primary-rgb": scheme.primaryRgb,
+    }
+
+    Object.entries(tokens).forEach(([token, value]) => {
+      root.style.setProperty(token, value)
+    })
+    root.style.setProperty("--accent-color", scheme.primary)
+    root.style.setProperty("--accent-color-rgb", scheme.primaryRgb)
+    root.style.setProperty("--accent-contrast-color", scheme.onPrimary)
+    root.style.setProperty("--safe-accent", scheme.inversePrimary)
+  }
+
   DOM.accentColorPicker.addEventListener("input", () => {
     const val = DOM.accentColorPicker.value
-    document.documentElement.style.setProperty("--accent-color", val)
-    const rgb = hexToRgb(val)
-    if (rgb) {
-      document.documentElement.style.setProperty(
-        "--accent-color-rgb",
-        `${rgb.r}, ${rgb.g}, ${rgb.b}`,
-      )
-    }
+    previewMaterialAccent(val)
     updateAccentHexInput(val)
   })
   DOM.accentColorPicker.addEventListener("change", () =>

@@ -1,12 +1,8 @@
 /* Buttons */
 .primary-btn {
-  background: linear-gradient(
-    135deg,
-    var(--accent-color),
-    rgba(var(--accent-color-rgb, 168, 192, 255), 0.8)
-  );
-  color: #1a1a2e;
-  border: 1px solid var(--accent-color);
+  background: var(--m3-primary, var(--accent-color));
+  color: var(--m3-on-primary, var(--accent-contrast-color));
+  border: 1px solid transparent;
   padding: var(--space-2) var(--space-3);
   font-size: 1rem;
   border-radius: var(--radius-sm);
@@ -17,14 +13,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  box-shadow: 0 4px 12px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.18);
   gap: var(--space-1);
   border: none;
 }
 
 .primary-btn:hover {
-  filter: brightness(1.15);
-  box-shadow: 0 8px 24px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  background: color-mix(
+    in srgb,
+    var(--m3-primary, var(--accent-color)) 92%,
+    white
+  );
+  box-shadow: 0 8px 24px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.3);
   transform: translateY(-2px);
 }
 
@@ -34,9 +34,13 @@
 }
 
 .secondary-btn {
-  background: rgba(255, 255, 255, 0.05);
-  color: #efefef;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: color-mix(
+    in srgb,
+    var(--m3-secondary-container, rgba(255, 255, 255, 0.08)) 34%,
+    transparent
+  );
+  color: var(--m3-on-secondary-container, #efefef);
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant, rgba(255, 255, 255, 0.15)) 72%, transparent);
   padding: var(--space-1) var(--space-2);
   font-size: 0.85rem;
   border-radius: var(--radius-sm);
@@ -52,13 +56,17 @@
 }
 
 .secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--accent-color);
+  background: color-mix(
+    in srgb,
+    var(--m3-secondary-container, rgba(255, 255, 255, 0.12)) 54%,
+    transparent
+  );
+  border-color: var(--m3-primary, var(--accent-color));
   transform: translateY(-2px);
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
-  color: #fff;
+    0 0 12px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.2);
+  color: var(--m3-on-primary-container, #fff);
 }
 
 .secondary-btn:active {
