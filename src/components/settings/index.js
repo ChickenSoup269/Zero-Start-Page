@@ -895,6 +895,7 @@ export function initSettings() {
   }
 
   effects.renderTabIconPreview = renderTabIconPreview
+  effects.applyTabIcon = applyTabIcon
   effects.updateWaveColorPreviews = (settingsState) =>
     updateWaveColorPreviews(
       settingsState,

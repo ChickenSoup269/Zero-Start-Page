@@ -414,6 +414,7 @@ async function bootstrap() {
   window.addEventListener("layoutUpdated", (e) => {
     syncQuickButtons()
     if (e.detail.key === "showSearchBar") {
+      document.body.classList.toggle("hide-search-bar", !e.detail.value)
       const el = document.getElementById("search-container")
       if (el) fadeToggle(el, e.detail.value, "")
     }

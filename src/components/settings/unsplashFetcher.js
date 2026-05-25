@@ -10,7 +10,6 @@ import {
   saveSettings,
 } from "../../services/state.js"
 import { showAlert } from "../../utils/dialog.js"
-import { saveImage } from "../../services/imageStore.js"
 import { geti18n } from "../../services/i18n.js"
 
 function firstPhoto(payload) {
@@ -26,11 +25,32 @@ function preloadImage(url) {
   })
 }
 
+function prepareDynamicBackgroundSwap() {
+  const bgLayer = document.getElementById("bg-layer")
+  const bgVideo = document.getElementById("bg-video")
+
+  if (bgVideo) {
+    bgVideo.style.opacity = "0"
+    bgVideo.style.display = "none"
+  }
+
+  if (bgLayer) {
+    bgLayer.style.transition = ""
+  }
+}
+
 function getTargetImageDimensions() {
   const dpr = window.devicePixelRatio || 1
+  const effectiveDpr = Math.min(dpr, 1.5)
   return {
-    width: Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * dpr),
-    height: Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * dpr),
+    width: Math.min(
+      2400,
+      Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * effectiveDpr),
+    ),
+    height: Math.min(
+      1600,
+      Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * effectiveDpr),
+    ),
   }
 }
 
@@ -226,40 +246,10 @@ async function setUnsplashRandomBackground(
     const separator = baseUrl.includes("?") ? "&" : "?"
     const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
-    // Keep screen black while waiting for the final image bytes.
-    const bgLayer = document.getElementById("bg-layer")
-    const bgVideo = document.getElementById("bg-video")
-    if (bgVideo) {
-      bgVideo.style.opacity = "0"
-      bgVideo.style.display = "none"
-    }
-    if (bgLayer) {
-      bgLayer.style.transition = "none"
-      bgLayer.style.backgroundImage = "none"
-      bgLayer.style.background = "#000000"
-      bgLayer.style.opacity = "1"
-    }
+    await preloadImage(imageUrl)
+    const finalBgValue = imageUrl
 
-    // Tải ảnh về ở dạng blob và lưu vào IndexedDB (tránh tải lại mỗi lần reload)
-    let finalBgValue = imageUrl
-    try {
-      const imgRes = await fetch(imageUrl)
-      if (imgRes.ok) {
-        const blob = await imgRes.blob()
-        // Use a unique ID for each Unsplash image
-        finalBgValue = await saveImage(blob, `idb-img-unsplash-${Date.now()}`)
-      } else {
-        await preloadImage(imageUrl)
-      }
-    } catch (fetchErr) {
-      console.warn(
-        "Could not download Unsplash blob, falling back to URL:",
-        fetchErr,
-      )
-      await preloadImage(imageUrl).catch(() => {})
-    }
-
-    if (bgLayer) bgLayer.style.transition = ""
+    prepareDynamicBackgroundSwap()
 
     // Prepare metadata
     const photoInfo = {
@@ -709,20 +699,11 @@ async function applyUnsplashPhoto(photo, element = null) {
   const separator = baseUrl.includes("?") ? "&" : "?"
   const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
 
-  // Show loading state on background
-  const bgLayer = document.getElementById("bg-layer")
-  if (bgLayer) {
-    bgLayer.style.opacity = "0.5"
-  }
-
   try {
-    // Tải ảnh và lưu vào IndexedDB
-    let finalBgValue = imageUrl
-    const imgRes = await fetch(imageUrl)
-    if (imgRes.ok) {
-      const blob = await imgRes.blob()
-      finalBgValue = await saveImage(blob, `idb-img-unsplash-${Date.now()}`)
-    }
+    await preloadImage(imageUrl)
+    const finalBgValue = imageUrl
+
+    prepareDynamicBackgroundSwap()
 
     // Persist credit
     updateSetting("unsplashLastCredit", {

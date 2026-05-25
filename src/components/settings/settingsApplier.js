@@ -281,6 +281,9 @@ function createApplySettings(effectInstances) {
 
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
+    if (typeof effectInstances.applyTabIcon === "function") {
+      effectInstances.applyTabIcon(settings.tabIcon || "")
+    }
 
     // 1b. Top Right Controls
     const topRightControls = document.getElementById("top-right-controls")
@@ -290,6 +293,18 @@ function createApplySettings(effectInstances) {
         !settings.showTopRightControls,
       )
     }
+    document.body.classList.toggle(
+      "hide-top-right-controls",
+      settings.showTopRightControls === false,
+    )
+    document.body.classList.toggle(
+      "has-top-right-controls",
+      settings.showTopRightControls !== false,
+    )
+    document.body.classList.toggle(
+      "hide-search-bar",
+      settings.showSearchBar === false,
+    )
 
     const donateSection = document.querySelector(".donate-section")
     if (donateSection) {
@@ -358,12 +373,20 @@ function createApplySettings(effectInstances) {
     document.body.style.background = ""
     document.body.style.backgroundImage = ""
     const bgLayer = document.getElementById("bg-layer")
+    const bgFadeLayer = document.getElementById("bg-fade-layer")
+    if (bgChanged && bgLayer && bgFadeLayer) {
+      bgFadeLayer.className = bgLayer.className
+      bgFadeLayer.style.background = bgLayer.style.background
+      bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
+      bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
+      bgFadeLayer.style.opacity = "1"
+    }
     if (bgLayer) {
       bgLayer.style.backgroundImage = ""
       bgLayer.style.backgroundSize = ""
       bgLayer.style.background = ""
       bgLayer.className = ""
-      if (bgChanged) bgLayer.style.opacity = "0"
+      bgLayer.style.opacity = "1"
     }
     document.documentElement.style.setProperty("--text-color", "#ffffff")
 
@@ -856,6 +879,16 @@ function createApplySettings(effectInstances) {
         requestAnimationFrame(() => {
           const _bgLayer = document.getElementById("bg-layer")
           if (_bgLayer) _bgLayer.style.opacity = "1"
+          const _bgFadeLayer = document.getElementById("bg-fade-layer")
+          if (_bgFadeLayer) {
+            _bgFadeLayer.style.opacity = "0"
+            window.setTimeout(() => {
+              _bgFadeLayer.className = ""
+              _bgFadeLayer.style.background = ""
+              _bgFadeLayer.style.backgroundImage = ""
+              _bgFadeLayer.style.backgroundSize = ""
+            }, Math.max(250, Number(getSettings().bgFadeIn ?? 0.5) * 1000 + 120))
+          }
           const _bgVideo = document.getElementById("bg-video")
           if (_bgVideo && _bgVideo.style.display === "block")
             _bgVideo.style.opacity = "1"
@@ -2113,8 +2146,17 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.pageTitleInput)
       DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
-    if (DOM.tabIconInput) DOM.tabIconInput.value = settings.tabIcon || ""
-    effectInstances.renderTabIconPreview(settings.tabIcon || "")
+    if (DOM.tabIconInput) {
+      DOM.tabIconInput.value = String(settings.tabIcon || "").startsWith(
+        "data:image/",
+      )
+        ? ""
+        : settings.tabIcon || ""
+    }
+    effectInstances.renderTabIconPreview(
+      settings.tabIcon || "",
+      DOM.tabIconPreview,
+    )
 
     if (DOM.clockSizeInput) DOM.clockSizeInput.value = settings.clockSize
     if (DOM.clockSizeValue)
@@ -2292,13 +2334,21 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const unsplashSaveBtn = document.getElementById("unsplash-save-bg-btn")
     if (unsplashSaveBtn) {
+      const isUnsplashBackground =
+        typeof settings.background === "string" &&
+        (settings.background.startsWith("idb-img-unsplash-") ||
+          settings.background.includes("images.unsplash.com"))
       if (
         settings.background &&
-        settings.background.startsWith("idb-img-unsplash-")
+        isUnsplashBackground
       ) {
         const userBackgrounds = settings.userBackgrounds || []
         const isSaved = userBackgrounds.some(
-          (bg) => (typeof bg === "string" ? bg : bg.id) === settings.background,
+          (bg) =>
+            (typeof bg === "string" ? bg : bg.id) === settings.background ||
+            (settings.unsplashLastCredit?.photoUrl &&
+              typeof bg === "object" &&
+              bg.photoUrl === settings.unsplashLastCredit.photoUrl),
         )
         unsplashSaveBtn.disabled = isSaved
 

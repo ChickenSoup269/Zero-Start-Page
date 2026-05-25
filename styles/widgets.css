@@ -290,7 +290,9 @@
 .g-app-icon img {
   width: 32px;
   height: 32px;
+  display: block;
   object-fit: contain;
+  object-position: center;
   transition: transform 0.2s;
 }
 

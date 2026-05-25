@@ -1261,19 +1261,45 @@ export function setupGeneralEventHandlers(
       bgSize: settings.bgSize || "cover",
     })
 
-    unsplashSaveBtn.addEventListener("click", () => {
+    const isUnsplashBackground = (value) =>
+      typeof value === "string" &&
+      (value.startsWith("idb-img-unsplash") ||
+        value.includes("images.unsplash.com"))
+
+    unsplashSaveBtn.addEventListener("click", async () => {
       const settings = getSettings()
       const currentBg = settings.background
 
-      if (!currentBg || !currentBg.startsWith('idb-img-unsplash')) {
+      if (!currentBg || !isUnsplashBackground(currentBg)) {
         showAlert("No Unsplash background to save!")
         return
+      }
+
+      const i18n = geti18n()
+      const originalHtml = unsplashSaveBtn.innerHTML
+      unsplashSaveBtn.disabled = true
+      unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${i18n.settings_saving || "Saving..."}</span>`
+
+      let savedBgId = currentBg
+      if (!currentBg.startsWith("idb-img-unsplash")) {
+        try {
+          const res = await fetch(currentBg)
+          if (!res.ok) throw new Error(`Image download failed: ${res.status}`)
+          const blob = await res.blob()
+          savedBgId = await saveImage(blob, `idb-img-unsplash-${Date.now()}`)
+        } catch (err) {
+          console.error("Failed to save Unsplash background:", err)
+          unsplashSaveBtn.disabled = false
+          unsplashSaveBtn.innerHTML = originalHtml
+          showAlert("Failed to save Unsplash background.")
+          return
+        }
       }
 
       const authorName = lastUnsplashPhoto?.user?.name || settings.unsplashLastCredit?.authorName || "Unsplash"
       const newBg = {
         uid: "bg-" + Date.now(), // Unique entry ID
-        id: currentBg, // Source image ID
+        id: savedBgId, // Source image ID
         authorName: authorName,
         type: "image",
         date: new Date().toISOString(),
@@ -1286,25 +1312,40 @@ export function setupGeneralEventHandlers(
 
       // Check if image already exists in gallery (match by source image ID)
       const exists = settings.userBackgrounds.some(
-        (bg) => (typeof bg === "object" ? bg.id : bg) === currentBg,
+        (bg) => {
+          if (typeof bg === "object") {
+            return bg.id === savedBgId || (newBg.photoUrl && bg.photoUrl === newBg.photoUrl)
+          }
+          return bg === savedBgId
+        },
       )
       if (exists) {
         showAlert(
           geti18n().alert_bg_exists || "This background is already in your gallery!",
         )
+        unsplashSaveBtn.disabled = true
+        unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
         return
       }
 
       settings.userBackgrounds.push(newBg)
       saveSettings()
+      if (savedBgId !== currentBg) {
+        updateSetting("unsplashLastCredit", {
+          photoUrl: newBg.photoUrl,
+          authorName: newBg.authorName,
+          authorUrl: newBg.authorUrl,
+        })
+        await handleSettingUpdate("background", savedBgId)
+      }
       renderLocalBackgrounds(DOM, handleSettingUpdate)
       showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
 
       // Allow saving again (e.g. if they change blur/brightness)
-      const i18n = geti18n()
       unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
       setTimeout(() => {
         unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>${i18n.settings_unsplash_save || "Save Background"}</span>`
+        unsplashSaveBtn.disabled = false
       }, 2000)
     })  }
 
@@ -3335,6 +3376,43 @@ export function setupGeneralEventHandlers(
     document.title = newTitle
   })
 
+  const fileToDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = () => reject(reader.error)
+      reader.readAsDataURL(file)
+    })
+
+  const rasterFileToTabIcon = async (file) => {
+    const source = await fileToDataUrl(file)
+    if (file.type === "image/svg+xml" || file.type === "image/x-icon") {
+      return source
+    }
+
+    const img = await new Promise((resolve, reject) => {
+      const image = new Image()
+      image.onload = () => resolve(image)
+      image.onerror = () => reject(new Error("Invalid icon image"))
+      image.src = source
+    })
+
+    const size = 128
+    const canvas = document.createElement("canvas")
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext("2d")
+    ctx.clearRect(0, 0, size, size)
+
+    const scale = Math.min(size / img.width, size / img.height)
+    const width = Math.round(img.width * scale)
+    const height = Math.round(img.height * scale)
+    const x = Math.round((size - width) / 2)
+    const y = Math.round((size - height) / 2)
+    ctx.drawImage(img, x, y, width, height)
+    return canvas.toDataURL("image/png")
+  }
+
   DOM.tabIconInput?.addEventListener("input", () => {
     const raw = DOM.tabIconInput.value
     const chars = getTabIconChars(raw)
@@ -3342,6 +3420,34 @@ export function setupGeneralEventHandlers(
     saveSettings()
     applyTabIcon(chars)
     renderTabIconPreview(chars, DOM.tabIconPreview)
+  })
+
+  DOM.tabIconUploadBtn?.addEventListener("click", () => {
+    DOM.tabIconFileInput?.click()
+  })
+
+  DOM.tabIconFileInput?.addEventListener("change", async () => {
+    const file = DOM.tabIconFileInput.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith("image/")) {
+      showAlert("Please choose an image file for the tab icon.")
+      DOM.tabIconFileInput.value = ""
+      return
+    }
+
+    try {
+      const iconDataUrl = await rasterFileToTabIcon(file)
+      updateSetting("tabIcon", iconDataUrl)
+      saveSettings()
+      if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+      applyTabIcon(iconDataUrl)
+      renderTabIconPreview(iconDataUrl, DOM.tabIconPreview)
+    } catch (err) {
+      console.error("Failed to load tab icon:", err)
+      showAlert("Could not use this image as a tab icon.")
+    } finally {
+      DOM.tabIconFileInput.value = ""
+    }
   })
 
   DOM.clockSizeInput?.addEventListener("input", () => {
@@ -3525,6 +3631,9 @@ export function setupGeneralEventHandlers(
   const setupLayoutCheckbox = (checkbox, key, eventDetail) => {
     checkbox.addEventListener("change", () => {
       handleSettingUpdate(key, checkbox.checked)
+      if (key === "showSearchBar") {
+        document.body.classList.toggle("hide-search-bar", !checkbox.checked)
+      }
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { ...eventDetail, key, value: checkbox.checked },
@@ -3870,6 +3979,9 @@ export function setupGeneralEventHandlers(
   function lcpToggle(key, value, sidebarCheckbox) {
     sidebarCheckbox.checked = value
     handleSettingUpdate(key, value)
+    if (key === "showSearchBar") {
+      document.body.classList.toggle("hide-search-bar", !value)
+    }
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", { detail: { key, value } }),
     )
@@ -3943,6 +4055,8 @@ export function setupGeneralEventHandlers(
   DOM.showTopRightControlsCheckbox.addEventListener("change", () => {
     const isVisible = DOM.showTopRightControlsCheckbox.checked
     handleSettingUpdate("showTopRightControls", isVisible)
+    document.body.classList.toggle("hide-top-right-controls", !isVisible)
+    document.body.classList.toggle("has-top-right-controls", isVisible)
     const topRightControls = document.getElementById("top-right-controls")
     if (topRightControls) {
       topRightControls.classList.toggle("hidden", !isVisible)
@@ -3957,6 +4071,8 @@ export function setupGeneralEventHandlers(
       const isVisible = DOM.lcpTopRightControls.checked
       DOM.showTopRightControlsCheckbox.checked = isVisible
       handleSettingUpdate("showTopRightControls", isVisible)
+      document.body.classList.toggle("hide-top-right-controls", !isVisible)
+      document.body.classList.toggle("has-top-right-controls", isVisible)
       const topRightControls = document.getElementById("top-right-controls")
       if (topRightControls) {
         topRightControls.classList.toggle("hidden", !isVisible)

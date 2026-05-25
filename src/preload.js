@@ -36,6 +36,8 @@
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.showTopRightControls !== false) body.classList.add("has-top-right-controls")
+      else body.classList.add("hide-top-right-controls")
+      if (settings.showSearchBar === false) body.classList.add("hide-search-bar")
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")
@@ -214,9 +216,7 @@
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }
 
-      if (settings.showSearchBar === false) {
-        css += `#search-container { display: none !important; }\n`
-      }
+      css += `body.hide-search-bar #search-container { display: none !important; }\n`
       if (settings.showBookmarks === false) {
         css += `#bookmarks-container { display: none !important; }\n`
       }
@@ -226,9 +226,7 @@
       if (settings.showSearchAIIcon === false) {
         css += `#search-ai-btn { display: none !important; }\n`
       }
-      if (settings.showTopRightControls === false) {
-        css += `#top-right-controls { display: none !important; }\n`
-      }
+      css += `body.hide-top-right-controls #top-right-controls { display: none !important; }\n`
       if (settings.showCustomTitle === false) {
         css += `#custom-title-display { display: none !important; }\n`
       }

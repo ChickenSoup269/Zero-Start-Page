@@ -5,17 +5,26 @@
 
 function getTabIconChars(raw) {
   if (!raw) return ""
+  if (/^(data:image\/|blob:|https?:\/\/)/i.test(raw)) return raw
   const segs = Intl.Segmenter
     ? [...new Intl.Segmenter().segment(raw)].map((s) => s.segment)
     : [...raw]
   return segs.slice(0, 2).join("")
 }
 
-function applyTabIcon(text) {
+function isImageIcon(value) {
+  return typeof value === "string" && /^(data:image\/|blob:|https?:\/\/)/i.test(value)
+}
+
+function applyTabIcon(value) {
   const link = document.getElementById("tab-favicon")
   if (!link) return
-  if (!text) {
+  if (!value) {
     link.removeAttribute("href")
+    return
+  }
+  if (isImageIcon(value)) {
+    link.href = value
     return
   }
   const size = 64
@@ -32,8 +41,8 @@ function applyTabIcon(text) {
   }
   ctx.fill()
   const segs = Intl.Segmenter
-    ? [...new Intl.Segmenter().segment(text)].map((s) => s.segment)
-    : [...text]
+    ? [...new Intl.Segmenter().segment(value)].map((s) => s.segment)
+    : [...value]
   const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
   ctx.textAlign = "center"
   ctx.textBaseline = "middle"
@@ -45,16 +54,29 @@ function applyTabIcon(text) {
   link.href = canvas.toDataURL("image/png")
 }
 
-function renderTabIconPreview(text, tabIconPreview) {
+function renderTabIconPreview(value, tabIconPreview) {
   if (!tabIconPreview) return
-  if (!text) {
+  tabIconPreview.innerHTML = ""
+  tabIconPreview.style.backgroundImage = ""
+  if (!value) {
     tabIconPreview.textContent = ""
     tabIconPreview.style.fontSize = ""
     return
   }
+  if (isImageIcon(value)) {
+    const img = document.createElement("img")
+    img.src = value
+    img.alt = "Tab icon preview"
+    img.style.width = "100%"
+    img.style.height = "100%"
+    img.style.objectFit = "cover"
+    tabIconPreview.appendChild(img)
+    tabIconPreview.style.fontSize = ""
+    return
+  }
   const segs = Intl.Segmenter
-    ? [...new Intl.Segmenter().segment(text)].map((s) => s.segment)
-    : [...text]
+    ? [...new Intl.Segmenter().segment(value)].map((s) => s.segment)
+    : [...value]
   const display = segs.slice(0, 2).join("")
   tabIconPreview.textContent = display
   const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
