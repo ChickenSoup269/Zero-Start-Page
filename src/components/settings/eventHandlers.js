@@ -1826,6 +1826,13 @@ export function setupGeneralEventHandlers(
         )
       })
     }
+    if (DOM.bookmarkGroupShowCount) {
+      DOM.bookmarkGroupShowCount.addEventListener("change", () => {
+        const showCount = DOM.bookmarkGroupShowCount.checked
+        document.body.classList.toggle("bookmark-group-count-hidden", !showCount)
+        throttleSettingUpdate("bookmarkGroupShowCount", showCount)
+      })
+    }
 
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {

@@ -6193,6 +6193,222 @@ body.bookmark-taskbar-left-mode .bookmark-group-tab.add-group-tab {
   justify-content: center;
 }
 
+/* M3 bookmark group tabs */
+body.bookmark-sidebar-mode .bookmark-groups-container,
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-top-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  gap: 8px !important;
+  padding: 8px !important;
+  border-radius: var(--radius-md) !important;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--m3-surface-container-high, #1e1f24) 76%, transparent),
+      color-mix(in srgb, var(--m3-surface-container, #14161d) 70%, transparent)
+    ),
+    rgba(10, 12, 18, 0.48) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant, rgba(255, 255, 255, 0.16)) 76%, transparent) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    0 1px 0 color-mix(in srgb, white 10%, transparent) inset !important;
+  backdrop-filter: blur(22px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab,
+body.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-taskbar-top-mode .bookmark-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab {
+  --bookmark-group-fg: var(--bookmark-group-text-color, var(--m3-on-surface, rgba(255, 255, 255, 0.9)));
+  align-items: center;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bookmark-group-tab-bg, var(--m3-surface-container-high, #22262d)) 86%, white 5%),
+      color-mix(in srgb, var(--bookmark-group-tab-bg, var(--m3-surface-container, #171a20)) 88%, black 4%)
+    ) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant, rgba(255, 255, 255, 0.16)) 76%, transparent) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--bookmark-group-fg) !important;
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 10px !important;
+  position: relative;
+  transform: translateZ(0);
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab .group-tab-icon,
+body.bookmark-taskbar-mode .bookmark-group-tab .group-tab-icon,
+body.bookmark-taskbar-top-mode .bookmark-group-tab .group-tab-icon,
+body.bookmark-taskbar-left-mode .bookmark-group-tab .group-tab-icon {
+  align-items: center;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.24), transparent 38%),
+    color-mix(in srgb, var(--m3-primary-container, var(--accent-color)) 56%, transparent);
+  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--accent-color)) 34%, transparent);
+  border-radius: 6px;
+  color: var(--m3-primary, var(--accent-color));
+  display: inline-flex;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.18));
+  font-size: 0.84rem;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-mode .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-top-mode .bookmark-group-tab .group-tab-name,
+body.bookmark-taskbar-left-mode .bookmark-group-tab .group-tab-name {
+  max-width: 138px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-group-tab .group-tab-count {
+  align-items: center;
+  background: color-mix(in srgb, var(--m3-surface-variant, rgba(255, 255, 255, 0.14)) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant, rgba(255, 255, 255, 0.18)) 72%, transparent);
+  border-radius: 999px;
+  color: var(--m3-on-surface-variant, rgba(255, 255, 255, 0.72));
+  display: inline-flex;
+  font-size: 0.68rem;
+  font-weight: 800;
+  height: 20px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 20px;
+  padding: 0 6px;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab:hover,
+body.bookmark-taskbar-mode .bookmark-group-tab:hover,
+body.bookmark-taskbar-top-mode .bookmark-group-tab:hover,
+body.bookmark-taskbar-left-mode .bookmark-group-tab:hover {
+  background: color-mix(in srgb, var(--m3-primary-container, var(--accent-color)) 34%, var(--m3-surface-container-high, rgba(255, 255, 255, 0.08))) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 56%, transparent) !important;
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.22),
+    0 0 0 3px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.1) !important;
+  color: var(--m3-on-primary-container, #fff) !important;
+  transform: translateY(-2px) !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab:hover .group-tab-icon,
+body.bookmark-taskbar-mode .bookmark-group-tab:hover .group-tab-icon,
+body.bookmark-taskbar-top-mode .bookmark-group-tab:hover .group-tab-icon,
+body.bookmark-taskbar-left-mode .bookmark-group-tab:hover .group-tab-icon {
+  background: var(--m3-primary, var(--accent-color));
+  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 84%, white 16%);
+  color: var(--m3-on-primary, var(--accent-contrast-color));
+  transform: scale(1.06);
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.active,
+body.bookmark-taskbar-mode .bookmark-group-tab.active,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.active,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.active {
+  background: var(--m3-primary, var(--accent-color)) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 88%, white 12%) !important;
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+  box-shadow:
+    0 14px 28px rgba(var(--m3-primary-rgb, var(--accent-color-rgb)), 0.24),
+    0 0 0 1px color-mix(in srgb, var(--m3-on-primary, #000) 20%, transparent) inset !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-sidebar-mode .bookmark-group-tab.active .group-tab-count,
+body.bookmark-taskbar-mode .bookmark-group-tab.active .group-tab-count,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.active .group-tab-count,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.active .group-tab-count {
+  background: color-mix(in srgb, var(--m3-on-primary, #10131a) 14%, transparent);
+  border-color: color-mix(in srgb, var(--m3-on-primary, #10131a) 22%, transparent);
+  color: var(--m3-on-primary, var(--accent-contrast-color));
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.active .group-tab-icon,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.active .group-tab-icon {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--m3-on-primary, #10131a) 18%, transparent) inset;
+  filter: none;
+}
+
+body.bookmark-group-count-hidden .bookmark-group-tab:not(.add-group-tab) {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+body.bookmark-group-count-hidden .bookmark-group-tab .group-tab-count {
+  display: none;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.add-group-tab,
+body.bookmark-taskbar-mode .bookmark-group-tab.add-group-tab,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.add-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.add-group-tab {
+  grid-template-columns: 1fr;
+  min-width: 40px;
+  opacity: 0.86;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.add-group-tab i,
+body.bookmark-taskbar-mode .bookmark-group-tab.add-group-tab i,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.add-group-tab i,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.add-group-tab i {
+  align-items: center;
+  color: var(--m3-primary, var(--accent-color));
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.drag-over,
+body.bookmark-taskbar-mode .bookmark-group-tab.drag-over,
+body.bookmark-taskbar-top-mode .bookmark-group-tab.drag-over,
+body.bookmark-taskbar-left-mode .bookmark-group-tab.drag-over {
+  border-color: var(--m3-tertiary, var(--accent-color)) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--m3-tertiary, var(--accent-color)) 26%, transparent),
+    0 16px 30px rgba(0, 0, 0, 0.24) !important;
+}
+
+@media (max-width: 768px) {
+  body.bookmark-sidebar-mode .bookmark-group-tab,
+  body.bookmark-taskbar-mode .bookmark-group-tab,
+  body.bookmark-taskbar-top-mode .bookmark-group-tab,
+  body.bookmark-taskbar-left-mode .bookmark-group-tab {
+    min-height: 34px;
+    padding: 6px 8px !important;
+  }
+
+  body.bookmark-sidebar-mode .bookmark-group-tab .group-tab-name,
+  body.bookmark-taskbar-mode .bookmark-group-tab .group-tab-name,
+  body.bookmark-taskbar-top-mode .bookmark-group-tab .group-tab-name,
+  body.bookmark-taskbar-left-mode .bookmark-group-tab .group-tab-name {
+    max-width: 98px;
+  }
+}
+
 .bookmark-stack-popup {
   overscroll-behavior: contain;
 }

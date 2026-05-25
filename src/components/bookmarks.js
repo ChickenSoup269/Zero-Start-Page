@@ -1497,6 +1497,10 @@ function renderGroupTabs() {
     const tab = document.createElement("div")
     tab.className = `bookmark-group-tab ${group.id === activeId ? "active" : ""}`
     tab.dataset.index = index
+    tab.dataset.count = Array.isArray(group.items) ? group.items.length : 0
+    tab.title = group.name
+    tab.setAttribute("role", "button")
+    tab.setAttribute("aria-pressed", String(group.id === activeId))
 
     if (enableDrag) {
       tab.draggable = true
@@ -1516,7 +1520,14 @@ function renderGroupTabs() {
     // Name Span (for double-click edit)
     const nameSpan = document.createElement("span")
     nameSpan.textContent = group.name
+    nameSpan.className = "group-tab-name"
     tab.appendChild(nameSpan)
+
+    const countBadge = document.createElement("small")
+    countBadge.className = "group-tab-count"
+    countBadge.textContent = String(tab.dataset.count)
+    countBadge.setAttribute("aria-label", `${tab.dataset.count} bookmarks`)
+    tab.appendChild(countBadge)
 
     // Events
     tab.addEventListener("click", () => {
@@ -1555,6 +1566,8 @@ function renderGroupTabs() {
   addTab.className = "bookmark-group-tab add-group-tab"
   addTab.innerHTML = '<i class="fa-solid fa-plus"></i>'
   addTab.title = "Add Group"
+  addTab.setAttribute("role", "button")
+  addTab.setAttribute("aria-label", "Add bookmark group")
   addTab.addEventListener("click", async () => {
     const currentI18n = geti18n()
     const name = await showPrompt(

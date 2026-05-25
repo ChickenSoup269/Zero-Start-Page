@@ -362,6 +362,10 @@ function createApplySettings(effectInstances) {
       "sidebar-glow-disabled",
       settings.sidebarGlowAnimations === false,
     )
+    document.body.classList.toggle(
+      "bookmark-group-count-hidden",
+      settings.bookmarkGroupShowCount === false,
+    )
 
     const donateSection = document.querySelector(".donate-section")
     if (donateSection) {
@@ -2308,6 +2312,10 @@ function createUpdateSettingsInputs(effectInstances) {
       }
       if (DOM.bookmarkLimit20) {
         DOM.bookmarkLimit20.checked = settings.bookmarkLimit20 !== false
+      }
+      if (DOM.bookmarkGroupShowCount) {
+        DOM.bookmarkGroupShowCount.checked =
+          settings.bookmarkGroupShowCount !== false
       }
     }
 

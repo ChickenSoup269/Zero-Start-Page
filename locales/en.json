@@ -799,6 +799,7 @@
   "settings_bookmark_group_bg_color": "Tab Background Color",
   "settings_bookmark_group_text_color": "Tab Text Color",
   "settings_bookmark_group_font_size": "Tab Font Size",
+  "settings_bookmark_group_show_count": "Show bookmark count",
   "settings_bookmark_hide_text": "Hide Title Text",
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
   "settings_bookmark_macos_hover": "Enable MacOS Hover Effect",

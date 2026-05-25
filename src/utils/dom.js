@@ -1000,6 +1000,9 @@ export const bookmarkGroupFontSizeInput = document.getElementById(
 export const bookmarkGroupFontSizeValue = document.getElementById(
   "bookmark-group-font-size-value",
 )
+export const bookmarkGroupShowCount = document.getElementById(
+  "bookmark-group-show-count",
+)
 
 export const enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",
