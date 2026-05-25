@@ -6234,3 +6234,51 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
     transform: translateY(0);
   }
 }
+/* Optional calm toggle switches: keep controls visible, only remove flashy glow. */
+body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"],
+body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"]::before,
+body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"]::after,
+body.sidebar-glow-disabled .settings-sidebar .switch,
+body.sidebar-glow-disabled .settings-sidebar .switch::before,
+body.sidebar-glow-disabled .settings-sidebar .switch::after,
+body.sidebar-glow-disabled .settings-sidebar .toggle,
+body.sidebar-glow-disabled .settings-sidebar .toggle::before,
+body.sidebar-glow-disabled .settings-sidebar .toggle::after,
+body.sidebar-glow-disabled .settings-sidebar .slider,
+body.sidebar-glow-disabled .settings-sidebar .slider::before,
+body.sidebar-glow-disabled .settings-sidebar .slider::after,
+body.sidebar-glow-disabled .settings-sidebar .lcp-switch,
+body.sidebar-glow-disabled .settings-sidebar .lcp-switch::before,
+body.sidebar-glow-disabled .settings-sidebar .lcp-switch::after,
+body.sidebar-glow-disabled .settings-sidebar .lcp-slider,
+body.sidebar-glow-disabled .settings-sidebar .lcp-slider::before,
+body.sidebar-glow-disabled .settings-sidebar .lcp-slider::after,
+body.sidebar-glow-disabled .settings-sidebar .setting-item-row,
+body.sidebar-glow-disabled .settings-sidebar .setting-item-row::after {
+  animation: none !important;
+}
+
+body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"]:checked,
+body.sidebar-glow-disabled .settings-sidebar input[type="checkbox"]:focus,
+body.sidebar-glow-disabled .settings-sidebar .switch,
+body.sidebar-glow-disabled .settings-sidebar .toggle,
+body.sidebar-glow-disabled .settings-sidebar .slider,
+body.sidebar-glow-disabled .settings-sidebar .lcp-slider,
+body.sidebar-glow-disabled .settings-sidebar .setting-item-row {
+  box-shadow: none !important;
+}
+
+body.sidebar-glow-disabled .settings-sidebar .setting-item-row::after {
+  display: none !important;
+  content: none !important;
+}
+
+body:not(.allow-text-selection) *:not(input):not(textarea):not([contenteditable="true"]) {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}

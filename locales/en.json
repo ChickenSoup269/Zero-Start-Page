@@ -825,6 +825,8 @@
   "settings_drag_note": "(Note: This also enables reordering for your saved backgrounds, colors, and gradients by dragging them)",
   "sidebar_toc": "Table of Contents",
   "settings_show_top_right": "Show Google Apps & Avatar",
+  "settings_allow_text_selection": "Allow Text Selection",
+  "settings_sidebar_glow_animations": "Sidebar Glow Animations",
   "g_apps_favorites": "Your favorites",
   "g_apps_media": "Media & Communication",
   "g_apps_workspace": "Workspace",

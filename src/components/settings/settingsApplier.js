@@ -305,6 +305,14 @@ function createApplySettings(effectInstances) {
       "hide-search-bar",
       settings.showSearchBar === false,
     )
+    document.body.classList.toggle(
+      "allow-text-selection",
+      settings.allowTextSelection === true,
+    )
+    document.body.classList.toggle(
+      "sidebar-glow-disabled",
+      settings.sidebarGlowAnimations === false,
+    )
 
     const donateSection = document.querySelector(".donate-section")
     if (donateSection) {
@@ -3236,6 +3244,13 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.showDonateButtonCheckbox) {
       DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
+    }
+    if (DOM.allowTextSelectionCheckbox) {
+      DOM.allowTextSelectionCheckbox.checked = settings.allowTextSelection === true
+    }
+    if (DOM.sidebarGlowAnimationsCheckbox) {
+      DOM.sidebarGlowAnimationsCheckbox.checked =
+        settings.sidebarGlowAnimations !== false
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.lcpSearchBar) {

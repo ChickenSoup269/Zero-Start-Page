@@ -131,6 +131,8 @@ export const defaultSettings = {
   bookmarkItemStyle: "default",
   bookmarkTextColor: null,
   showTopRightControls: true,
+  allowTextSelection: false,
+  sidebarGlowAnimations: true,
   showQuickAccessBg: false,
   bookmarkShadowColor: "#000000",
   bookmarkShadowOpacity: 24,

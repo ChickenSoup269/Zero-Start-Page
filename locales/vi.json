@@ -822,6 +822,8 @@
   "settings_drag_note": "(Lưu ý: Tính năng này cũng cho phép sắp xếp lại hình nền, màu sắc và dải màu đã lưu bằng cách kéo thả)",
   "sidebar_toc": "Mục lục",
   "settings_show_top_right": "Hiện ứng dụng Google & Ảnh đại diện",
+  "settings_allow_text_selection": "Cho phép chọn văn bản",
+  "settings_sidebar_glow_animations": "Hiệu ứng sáng ở thanh cài đặt",
   "g_apps_favorites": "Ứng dụng yêu thích",
   "g_apps_media": "Phương tiện & Liên lạc",
   "g_apps_workspace": "Không gian làm việc",

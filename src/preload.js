@@ -33,6 +33,8 @@
         body.classList.add("bookmark-taskbar-left-mode")
 
       if (settings.flipLayout) body.classList.add("flip-layout")
+      if (settings.allowTextSelection === true) body.classList.add("allow-text-selection")
+      if (settings.sidebarGlowAnimations === false) body.classList.add("sidebar-glow-disabled")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.showTopRightControls !== false) body.classList.add("has-top-right-controls")
