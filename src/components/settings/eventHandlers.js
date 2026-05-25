@@ -42,10 +42,7 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import {
-  buildMaterial3Scheme,
-  getRandomHexColor,
-} from "../../utils/colors.js"
+import { buildMaterial3Scheme, getRandomHexColor } from "../../utils/colors.js"
 import { getGoogleProfile } from "../../services/googleIdentity.js"
 import {
   setUnsplashRandomBackground,
@@ -69,11 +66,7 @@ import {
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
-import {
-  copyText,
-  decodePresetCode,
-  encodePresetCode,
-} from "./presetCode.js"
+import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
 import {
   BACKGROUND_ANIMATION_KEYS,
   pickSettings,
@@ -88,9 +81,12 @@ export function setupGeneralEventHandlers(
   updateSettingsInputs,
 ) {
   const DOM = ctx.DOM
-  const i18n = new Proxy({}, {
-    get: (target, prop) => geti18n()[prop]
-  })
+  const i18n = new Proxy(
+    {},
+    {
+      get: (target, prop) => geti18n()[prop],
+    },
+  )
   const effects = ctx.effects
   const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
   const CUSTOM_TIMER_ALARM_KEY = "custom_alarm_sound"
@@ -305,9 +301,11 @@ export function setupGeneralEventHandlers(
   ])
 
   const setStylePresetActive = (presetId) => {
-    document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.stylePreset === presetId)
-    })
+    document
+      .querySelectorAll(".style-preset-btn[data-style-preset]")
+      .forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.stylePreset === presetId)
+      })
   }
 
   const markInterfaceStyleCustom = (key) => {
@@ -347,7 +345,10 @@ export function setupGeneralEventHandlers(
     const hasCustomSound = Boolean(settings.timerCustomAlarmSoundId)
     const label = customName || i18n.timer_alarm_custom || "Custom Sound"
 
-    ;[DOM.timerAlarmSoundSelect, document.getElementById("timer-alarm-sound-widget")]
+    ;[
+      DOM.timerAlarmSoundSelect,
+      document.getElementById("timer-alarm-sound-widget"),
+    ]
       .filter(Boolean)
       .forEach((select) => {
         const option = select.querySelector(
@@ -399,7 +400,9 @@ export function setupGeneralEventHandlers(
   }
 
   const getSelectedLanguageGuide = () => {
-    const guide = getLanguageGuideOption(DOM.languageGuideTargetSelect?.value || "ja")
+    const guide = getLanguageGuideOption(
+      DOM.languageGuideTargetSelect?.value || "ja",
+    )
     return {
       ...guide,
       code: DOM.languageCodeInput?.value.trim() || guide.code,
@@ -408,7 +411,9 @@ export function setupGeneralEventHandlers(
   }
 
   const syncLanguageGuideFields = () => {
-    const guide = getLanguageGuideOption(DOM.languageGuideTargetSelect?.value || "ja")
+    const guide = getLanguageGuideOption(
+      DOM.languageGuideTargetSelect?.value || "ja",
+    )
     if (DOM.languageCodeInput && !DOM.languageCodeInput.value.trim()) {
       DOM.languageCodeInput.value = guide.code
     }
@@ -542,11 +547,9 @@ export function setupGeneralEventHandlers(
     if (!code || !language) return
 
     const confirmed = await showConfirm(
-      (geti18n().language_delete_confirm ||
-        'Delete custom language "{name}"?').replace(
-        "{name}",
-        language.name || code,
-      ),
+      (
+        geti18n().language_delete_confirm || 'Delete custom language "{name}"?'
+      ).replace("{name}", language.name || code),
       geti18n().language_delete_custom || "Delete Custom Language",
     )
     if (!confirmed) return
@@ -563,9 +566,7 @@ export function setupGeneralEventHandlers(
         detail: { key: "language", value: "en" },
       }),
     )
-    showAlert(
-      geti18n().language_delete_success || "Custom language deleted.",
-    )
+    showAlert(geti18n().language_delete_success || "Custom language deleted.")
   }
 
   renderCustomLanguageOptions()
@@ -686,11 +687,13 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      applyInterfaceStylePreset(btn.dataset.stylePreset)
+  document
+    .querySelectorAll(".style-preset-btn[data-style-preset]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyInterfaceStylePreset(btn.dataset.stylePreset)
+      })
     })
-  })
   setStylePresetActive(getSettings().interfaceStylePreset || "custom")
 
   const blobToDataUrl = (blob) =>
@@ -786,7 +789,8 @@ export function setupGeneralEventHandlers(
     if (modDonate) modDonate.classList.remove("open")
   }
   if (closeDonate) closeDonate.addEventListener("click", handleCloseDonate)
-  if (closeDonateBtn) closeDonateBtn.addEventListener("click", handleCloseDonate)
+  if (closeDonateBtn)
+    closeDonateBtn.addEventListener("click", handleCloseDonate)
   if (showMomo) {
     showMomo.addEventListener("click", (e) => {
       e.stopPropagation()
@@ -802,7 +806,7 @@ export function setupGeneralEventHandlers(
     if (modDonate && e.target === modDonate) {
       modDonate.classList.remove("open")
     }
-    
+
     // Close MoMo QR if clicking outside or on the QR itself
     if (momoQr && momoQr.style.display === "block") {
       momoQr.style.display = "none"
@@ -891,11 +895,14 @@ export function setupGeneralEventHandlers(
       // Use getSettings() if available to get live data, otherwise fallback to localStorage
       let rawSettings = {}
       try {
-        rawSettings = typeof getSettings === "function" ? getSettings() : JSON.parse(localStorage.getItem("pageSettings") || "{}")
+        rawSettings =
+          typeof getSettings === "function"
+            ? getSettings()
+            : JSON.parse(localStorage.getItem("pageSettings") || "{}")
       } catch (e) {
         rawSettings = JSON.parse(localStorage.getItem("pageSettings") || "{}")
       }
-      
+
       const filteredSettings = { ...rawSettings }
 
       // Remove sensitive/large keys
@@ -910,37 +917,42 @@ export function setupGeneralEventHandlers(
         "userMultiColors",
         "userSvgWaves",
         "userSavedFonts",
-        "background" 
+        "background",
       ]
 
-      sensitiveKeys.forEach(key => delete filteredSettings[key])
+      sensitiveKeys.forEach((key) => delete filteredSettings[key])
 
       // Add basic system info
       const info = {
-        version: document.querySelector(".settings-version")?.textContent || "Unknown",
+        version:
+          document.querySelector(".settings-version")?.textContent || "Unknown",
         userAgent: navigator.userAgent,
         language: navigator.language,
         screenSize: `${window.innerWidth}x${window.innerHeight}`,
         timestamp: new Date().toISOString(),
-        settings: filteredSettings
+        settings: filteredSettings,
       }
 
       bugTextarea.value = JSON.stringify(info, null, 2)
-      
+
       // Update bug report form link based on language
       const bugLink = document.getElementById("bug-report-link")
       if (bugLink) {
         const currentLang = filteredSettings.language || "en"
-        const viForm = "https://docs.google.com/forms/d/e/1FAIpQLSeQnSKZycijyQds73GWCo4FT4tV78Hk4-fhkfcsHoI4LAqTww/viewform?usp=publish-editor"
-        const enForm = "https://docs.google.com/forms/d/e/1FAIpQLSfnnh8zLc76qvb_eSzA73a3DYBSv72OCQ34qLZLFZogSMd8fA/viewform?usp=publish-editor"
+        const viForm =
+          "https://docs.google.com/forms/d/e/1FAIpQLSeQnSKZycijyQds73GWCo4FT4tV78Hk4-fhkfcsHoI4LAqTww/viewform?usp=publish-editor"
+        const enForm =
+          "https://docs.google.com/forms/d/e/1FAIpQLSfnnh8zLc76qvb_eSzA73a3DYBSv72OCQ34qLZLFZogSMd8fA/viewform?usp=publish-editor"
         bugLink.href = currentLang === "vi" ? viForm : enForm
       }
 
       bugModal.classList.add("open")
     })
 
-    closeBugBtn?.addEventListener("click", () => bugModal.classList.remove("open"))
-    
+    closeBugBtn?.addEventListener("click", () =>
+      bugModal.classList.remove("open"),
+    )
+
     // Close on click outside
     window.addEventListener("click", (e) => {
       if (bugModal && e.target === bugModal) bugModal.classList.remove("open")
@@ -950,7 +962,8 @@ export function setupGeneralEventHandlers(
       bugTextarea.select()
       navigator.clipboard.writeText(bugTextarea.value).then(() => {
         const originalText = copyBugBtn.innerHTML
-        copyBugBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Copied!</span>'
+        copyBugBtn.innerHTML =
+          '<i class="fa-solid fa-check"></i> <span>Copied!</span>'
         setTimeout(() => {
           copyBugBtn.innerHTML = originalText
         }, 2000)
@@ -1143,7 +1156,8 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.languageToolsToggleBtn?.addEventListener("click", () => {
-    const nextIsOpen = DOM.languageToolsPanel?.classList.contains("is-collapsed")
+    const nextIsOpen =
+      DOM.languageToolsPanel?.classList.contains("is-collapsed")
     setLanguageToolsOpen(Boolean(nextIsOpen))
   })
 
@@ -1194,7 +1208,9 @@ export function setupGeneralEventHandlers(
     try {
       const text = DOM.languageJsonInput?.value.trim()
       if (!text) {
-        showAlert(geti18n().language_empty_json || "Paste translated JSON first.")
+        showAlert(
+          geti18n().language_empty_json || "Paste translated JSON first.",
+        )
         return
       }
       await installCustomLanguage(JSON.parse(text))
@@ -1298,32 +1314,43 @@ export function setupGeneralEventHandlers(
         }
       }
 
-      const authorName = lastUnsplashPhoto?.user?.name || settings.unsplashLastCredit?.authorName || "Unsplash"
+      const authorName =
+        lastUnsplashPhoto?.user?.name ||
+        settings.unsplashLastCredit?.authorName ||
+        "Unsplash"
       const newBg = {
         uid: "bg-" + Date.now(), // Unique entry ID
         id: savedBgId, // Source image ID
         authorName: authorName,
         type: "image",
         date: new Date().toISOString(),
-        photoUrl: lastUnsplashPhoto?.links?.html || settings.unsplashLastCredit?.photoUrl || "",
-        authorUrl: lastUnsplashPhoto?.user?.links?.html || settings.unsplashLastCredit?.authorUrl || "",
+        photoUrl:
+          lastUnsplashPhoto?.links?.html ||
+          settings.unsplashLastCredit?.photoUrl ||
+          "",
+        authorUrl:
+          lastUnsplashPhoto?.user?.links?.html ||
+          settings.unsplashLastCredit?.authorUrl ||
+          "",
         settings: getBackgroundSnapshot(settings),
       }
 
       settings.userBackgrounds = settings.userBackgrounds || []
 
       // Check if image already exists in gallery (match by source image ID)
-      const exists = settings.userBackgrounds.some(
-        (bg) => {
-          if (typeof bg === "object") {
-            return bg.id === savedBgId || (newBg.photoUrl && bg.photoUrl === newBg.photoUrl)
-          }
-          return bg === savedBgId
-        },
-      )
+      const exists = settings.userBackgrounds.some((bg) => {
+        if (typeof bg === "object") {
+          return (
+            bg.id === savedBgId ||
+            (newBg.photoUrl && bg.photoUrl === newBg.photoUrl)
+          )
+        }
+        return bg === savedBgId
+      })
       if (exists) {
         showAlert(
-          geti18n().alert_bg_exists || "This background is already in your gallery!",
+          geti18n().alert_bg_exists ||
+            "This background is already in your gallery!",
         )
         unsplashSaveBtn.disabled = true
         unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
@@ -1349,7 +1376,8 @@ export function setupGeneralEventHandlers(
         unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> <span>${i18n.settings_unsplash_save || "Save Background"}</span>`
         unsplashSaveBtn.disabled = false
       }, 2000)
-    })  }
+    })
+  }
 
   DOM.unsplashCategorySelect.addEventListener("change", () => {
     handleSettingUpdate("unsplashCategory", DOM.unsplashCategorySelect.value)
@@ -1404,17 +1432,25 @@ export function setupGeneralEventHandlers(
   }
 
   if (unsplashLatestBtn) {
-    unsplashLatestBtn.addEventListener("click", () => openUnsplashExplorer("latest"))
+    unsplashLatestBtn.addEventListener("click", () =>
+      openUnsplashExplorer("latest"),
+    )
   }
 
   if (unsplashPopularBtn) {
-    unsplashPopularBtn.addEventListener("click", () => openUnsplashExplorer("popular"))
+    unsplashPopularBtn.addEventListener("click", () =>
+      openUnsplashExplorer("popular"),
+    )
   }
 
   // Unsplash Explorer Modal
   const explorerModal = document.getElementById("unsplash-explorer-modal")
-  const closeExplorerBtn = document.getElementById("close-unsplash-explorer-btn")
-  const loadMoreExplorerBtn = document.getElementById("unsplash-explorer-load-more")
+  const closeExplorerBtn = document.getElementById(
+    "close-unsplash-explorer-btn",
+  )
+  const loadMoreExplorerBtn = document.getElementById(
+    "unsplash-explorer-load-more",
+  )
 
   if (closeExplorerBtn) {
     closeExplorerBtn.addEventListener("click", () => minimizeUnsplashExplorer())
@@ -1436,7 +1472,7 @@ export function setupGeneralEventHandlers(
   DOM.saveColorBtn.addEventListener("click", () => {
     const settings = getSettings()
     const color = DOM.bgInput.value.trim()
-    
+
     if (!color) {
       showAlert("Please select or enter a color first!")
       return
@@ -1538,7 +1574,6 @@ export function setupGeneralEventHandlers(
     })
   }
 
-
   document.querySelectorAll(".accent-color-preset").forEach((btn) => {
     if (btn.dataset.color) {
       btn.style.setProperty("--accent-swatch", btn.dataset.color)
@@ -1566,6 +1601,64 @@ export function setupGeneralEventHandlers(
       .forEach((b) => b.classList.remove("active"))
   })
 
+  // Dynamic M3 Color (Extract from background)
+  if (DOM.m3DynamicColorBtn) {
+    DOM.m3DynamicColorBtn.addEventListener("click", async () => {
+      const applyColor = (colorHex) => {
+        DOM.accentColorPicker.value = colorHex
+        updateAccentHexInput(colorHex)
+        handleSettingUpdate("accentColor", colorHex)
+        document
+          .querySelectorAll(".accent-color-preset")
+          .forEach((b) => b.classList.remove("active"))
+      }
+
+      // Try to get background image url directly from DOM
+      const bgLayer = document.getElementById("bg-layer")
+      let imageUrl = null
+
+      if (bgLayer) {
+        let bgImage = bgLayer.style.backgroundImage
+        if (bgImage && bgImage !== "none") {
+          // Extract URL from url("...")
+          const match = bgImage.match(/^url\(['"]?([^'"]+)['"]?\)/)
+          if (match) {
+            imageUrl = match[1]
+          }
+        }
+      }
+
+      if (imageUrl) {
+        const origHtml = DOM.m3DynamicColorBtn.innerHTML
+        DOM.m3DynamicColorBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`
+        try {
+          const { extractAverageColor, rgbToHexObject } =
+            await import("../../utils/colors.js")
+          const rgb = await extractAverageColor(imageUrl)
+
+          if (rgb) {
+            const hex = rgbToHexObject(rgb)
+            applyColor(hex)
+          } else {
+            applyColor(getRandomHexColor())
+          }
+        } catch (e) {
+          console.error("M3 color extraction failed:", e)
+        } finally {
+          DOM.m3DynamicColorBtn.innerHTML = origHtml
+        }
+      } else {
+        const settings = getSettings()
+        // Fallback for solid colors or gradients
+        if (settings.background && settings.background.startsWith("#")) {
+          applyColor(settings.background)
+        } else {
+          console.warn("No suitable image background found for M3 extract")
+        }
+      }
+    })
+  }
+
   DOM.saveAccentColorBtn.addEventListener("click", () => {
     const settings = getSettings()
     const color = DOM.accentColorPicker.value
@@ -1592,16 +1685,18 @@ export function setupGeneralEventHandlers(
       DOM.accentColorPicker.value = color
       updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
-      
+
       // Clear active from presets
       document
         .querySelectorAll(".accent-color-preset")
         .forEach((b) => b.classList.remove("active"))
-        
+
       // Update active in user gallery
-      document.querySelectorAll("#user-accent-colors-gallery .user-color-item").forEach(el => {
-        el.classList.toggle("active", el.dataset.bgId === color)
-      })
+      document
+        .querySelectorAll("#user-accent-colors-gallery .user-color-item")
+        .forEach((el) => {
+          el.classList.toggle("active", el.dataset.bgId === color)
+        })
     }
   })
 
@@ -1611,9 +1706,8 @@ export function setupGeneralEventHandlers(
     DOM.accentColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
     DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
     DOM.accentColorToggleLabel.textContent =
-      geti18n()?.[
-        isOpen ? "settings_accent_close" : "settings_accent_open"
-      ] || (isOpen ? "Hide Controls" : "Show Controls")
+      geti18n()?.[isOpen ? "settings_accent_close" : "settings_accent_open"] ||
+      (isOpen ? "Hide Controls" : "Show Controls")
   }
 
   DOM.accentColorToggleBtn?.addEventListener("click", () => {
@@ -1645,7 +1739,10 @@ export function setupGeneralEventHandlers(
     root.style.setProperty("--bg-pos-x", `${x}%`)
     root.style.setProperty("--bg-pos-y", `${y}%`)
     root.style.setProperty("--bg-filter", filters)
-    root.style.setProperty("--bg-blur", `${next.bgBlur ?? current.bgBlur ?? 0}px`)
+    root.style.setProperty(
+      "--bg-blur",
+      `${next.bgBlur ?? current.bgBlur ?? 0}px`,
+    )
     root.style.setProperty(
       "--bg-brightness",
       `${next.bgBrightness ?? current.bgBrightness ?? 100}%`,
@@ -1820,16 +1917,16 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkLimit20) {
       DOM.bookmarkLimit20.addEventListener("change", () => {
-        throttleSettingUpdate(
-          "bookmarkLimit20",
-          DOM.bookmarkLimit20.checked,
-        )
+        throttleSettingUpdate("bookmarkLimit20", DOM.bookmarkLimit20.checked)
       })
     }
     if (DOM.bookmarkGroupShowCount) {
       DOM.bookmarkGroupShowCount.addEventListener("change", () => {
         const showCount = DOM.bookmarkGroupShowCount.checked
-        document.body.classList.toggle("bookmark-group-count-hidden", !showCount)
+        document.body.classList.toggle(
+          "bookmark-group-count-hidden",
+          !showCount,
+        )
         throttleSettingUpdate("bookmarkGroupShowCount", showCount)
       })
     }
@@ -2256,7 +2353,10 @@ export function setupGeneralEventHandlers(
       angle: DOM.gradientAngleInput.value,
       type: type,
       repeating: DOM.gradientRepeatingToggle?.checked === true,
-      extraColorCount: DOM.gradientExtraColorCount?.value !== undefined ? Number(DOM.gradientExtraColorCount.value) : 2,
+      extraColorCount:
+        DOM.gradientExtraColorCount?.value !== undefined
+          ? Number(DOM.gradientExtraColorCount.value)
+          : 2,
       customColors: DOM.gradientCustomColors?.value || "",
       position: DOM.gradientPositionSelect?.value || "center",
       radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
@@ -2316,7 +2416,8 @@ export function setupGeneralEventHandlers(
     DOM.gradientEndPicker.value = payload.end || "#302b63"
     DOM.gradientAngleInput.value = Number(payload.angle ?? 135)
     DOM.gradientAngleValue.textContent = `${DOM.gradientAngleInput.value}°`
-    if (DOM.gradientTypeSelect) DOM.gradientTypeSelect.value = payload.type || "linear"
+    if (DOM.gradientTypeSelect)
+      DOM.gradientTypeSelect.value = payload.type || "linear"
     if (DOM.gradientRepeatingToggle)
       DOM.gradientRepeatingToggle.checked = payload.repeating === true
     if (DOM.gradientExtraColorCount)
@@ -2359,8 +2460,7 @@ export function setupGeneralEventHandlers(
       multiColorType: DOM.multiColorTypeSelect?.value || "linear",
       multiColorRepeating: DOM.multiColorRepeatingToggle?.checked === true,
       multiColorPosition: DOM.multiColorPositionSelect?.value || "center",
-      multiColorRadialShape:
-        DOM.multiColorRadialShapeSelect?.value || "circle",
+      multiColorRadialShape: DOM.multiColorRadialShapeSelect?.value || "circle",
     }
   }
 
@@ -2385,7 +2485,10 @@ export function setupGeneralEventHandlers(
   })
 
   const applyMultiColorPresetPayload = (payload) => {
-    if (!Array.isArray(payload.gradientStops) || payload.gradientStops.length < 2) {
+    if (
+      !Array.isArray(payload.gradientStops) ||
+      payload.gradientStops.length < 2
+    ) {
       throw new Error("Invalid multi-color preset")
     }
     window.dispatchEvent(
@@ -2408,7 +2511,10 @@ export function setupGeneralEventHandlers(
   })
 
   const getBackgroundAnimationPresetPayload = () => ({
-    backgroundAnimations: pickSettings(getSettings(), BACKGROUND_ANIMATION_KEYS),
+    backgroundAnimations: pickSettings(
+      getSettings(),
+      BACKGROUND_ANIMATION_KEYS,
+    ),
   })
 
   const applyBackgroundAnimationPresetPayload = (payload) => {
@@ -2518,10 +2624,7 @@ export function setupGeneralEventHandlers(
       "svgWaveStartSaturation",
       Number(payload.startSaturation ?? 70),
     )
-    updateSetting(
-      "svgWaveStartLightness",
-      Number(payload.startLightness ?? 40),
-    )
+    updateSetting("svgWaveStartLightness", Number(payload.startLightness ?? 40))
     updateSetting("svgWaveEndHue", Number(payload.endHue ?? 280))
     updateSetting("svgWaveEndSaturation", Number(payload.endSaturation ?? 70))
     updateSetting("svgWaveEndLightness", Number(payload.endLightness ?? 30))
@@ -2718,11 +2821,14 @@ export function setupGeneralEventHandlers(
       angle: DOM.gradientAngleInput.value,
       type: DOM.gradientTypeSelect?.value || "linear",
       repeating: DOM.gradientRepeatingToggle?.checked === true,
-      extraColorCount: DOM.gradientExtraColorCount?.value !== undefined ? Number(DOM.gradientExtraColorCount.value) : 2,
+      extraColorCount:
+        DOM.gradientExtraColorCount?.value !== undefined
+          ? Number(DOM.gradientExtraColorCount.value)
+          : 2,
       customColors: DOM.gradientCustomColors?.value || "",
       position: DOM.gradientPositionSelect?.value || "center",
       radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
-      uid: `grad-${Date.now()}`
+      uid: `grad-${Date.now()}`,
     }
     const alreadyExists = settings.userGradients.some(
       (g) =>
@@ -2767,7 +2873,7 @@ export function setupGeneralEventHandlers(
         customColors: item.dataset.customColors || "",
         position: item.dataset.position || "center",
         radialShape: item.dataset.radialShape || "circle",
-        uid: item.dataset.uid || null
+        uid: item.dataset.uid || null,
       }
       if (DOM.gradientExtraColorCount) {
         DOM.gradientExtraColorCount.value = String(gradient.extraColorCount)
@@ -3022,77 +3128,79 @@ export function setupGeneralEventHandlers(
 
   DOM.effectSearch.addEventListener("input", () => {
     const q = DOM.effectSearch.value.toLowerCase()
-    
+
     // Hide/show effects
     DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {
-      const searchTerms = el.dataset.search || "";
-      const name = el.querySelector(".effect-name").textContent.toLowerCase();
+      const searchTerms = el.dataset.search || ""
+      const name = el.querySelector(".effect-name").textContent.toLowerCase()
       el.style.display =
-        searchTerms.toLowerCase().includes(q) ||
-        name.includes(q)
-          ? ""
-          : "none"
+        searchTerms.toLowerCase().includes(q) || name.includes(q) ? "" : "none"
     })
-    
+
     // Hide/show category headers if all items under them are hidden
-    DOM.effectGrid.querySelectorAll(".effect-category-header").forEach((header) => {
-      let next = header.nextElementSibling;
-      let hasVisible = false;
-      while (next && !next.classList.contains("effect-category-header")) {
-        if (next.classList.contains("effect-item") && next.style.display !== "none") {
-          hasVisible = true;
-          break;
+    DOM.effectGrid
+      .querySelectorAll(".effect-category-header")
+      .forEach((header) => {
+        let next = header.nextElementSibling
+        let hasVisible = false
+        while (next && !next.classList.contains("effect-category-header")) {
+          if (
+            next.classList.contains("effect-item") &&
+            next.style.display !== "none"
+          ) {
+            hasVisible = true
+            break
+          }
+          next = next.nextElementSibling
         }
-        next = next.nextElementSibling;
-      }
-      header.style.display = hasVisible ? "flex" : "none";
-    })
+        header.style.display = hasVisible ? "flex" : "none"
+      })
   })
 
   // Add context menu for effects
   DOM.effectGrid.addEventListener("contextmenu", async (e) => {
-    const item = e.target.closest(".effect-item");
+    const item = e.target.closest(".effect-item")
     if (item) {
-      e.preventDefault();
-      const { showContextMenu } = await import("../contextMenu.js");
-      showContextMenu(e.clientX, e.clientY, -1, "effect", item.dataset.value);
+      e.preventDefault()
+      const { showContextMenu } = await import("../contextMenu.js")
+      showContextMenu(e.clientX, e.clientY, -1, "effect", item.dataset.value)
     }
-  });
+  })
 
   // Handle favorite changed event to update UI
-  window.addEventListener('effectFavoriteChanged', (e) => {
-    updateEffectFavoriteUI();
-  });
+  window.addEventListener("effectFavoriteChanged", (e) => {
+    updateEffectFavoriteUI()
+  })
 
   function updateEffectFavoriteUI() {
-    const settings = getSettings();
-    const favoriteEffects = settings.favoriteEffects || [];
+    const settings = getSettings()
+    const favoriteEffects = settings.favoriteEffects || []
     DOM.effectGrid.querySelectorAll(".effect-item").forEach((el) => {
-      const effectId = el.dataset.value;
-      const isFav = favoriteEffects.includes(effectId);
-      
-      let favIcon = el.querySelector(".effect-favorite-icon");
+      const effectId = el.dataset.value
+      const isFav = favoriteEffects.includes(effectId)
+
+      let favIcon = el.querySelector(".effect-favorite-icon")
       if (isFav) {
         if (!favIcon) {
-          favIcon = document.createElement("span");
-          favIcon.className = "effect-favorite-icon";
-          favIcon.innerHTML = '<i class="fa-solid fa-star"></i>';
-          favIcon.style.position = "absolute";
-          favIcon.style.top = "5px";
-          favIcon.style.right = "5px";
-          favIcon.style.color = "#ffcc00";
-          favIcon.style.fontSize = "0.7rem";
-          el.style.position = "relative";
-          el.appendChild(favIcon);
+          favIcon = document.createElement("span")
+          favIcon.className = "effect-favorite-icon"
+          favIcon.innerHTML = '<i class="fa-solid fa-star"></i>'
+          favIcon.style.position = "absolute"
+          favIcon.style.top = "5px"
+          favIcon.style.right = "5px"
+          favIcon.style.color = "#ffcc00"
+          favIcon.style.fontSize = "0.7rem"
+          el.style.position = "relative"
+          el.appendChild(favIcon)
         }
       } else if (favIcon) {
-        favIcon.remove();
+        favIcon.remove()
       }
-    });
+    })
   }
-  
+
   // Initial UI update for favorites
-  updateEffectFavoriteUI();
+  updateEffectFavoriteUI()
 
   // Font management
   DOM.loadCustomFontBtn?.addEventListener("click", () => {
@@ -3214,7 +3322,7 @@ export function setupGeneralEventHandlers(
         handleSettingUpdate("clockDisplayMode", "weekday")
         if (DOM.clockDisplaySelect) DOM.clockDisplaySelect.value = "weekday"
       } else {
-        // If switching AWAY from weekday-style, and we were in weekday display mode, 
+        // If switching AWAY from weekday-style, and we were in weekday display mode,
         // switch back to 'all' so the clock is visible in the new style.
         const settings = getSettings()
         if (settings.clockDisplayMode === "weekday") {
@@ -3273,7 +3381,10 @@ export function setupGeneralEventHandlers(
   DOM.clockStyleBgSelect?.addEventListener("change", () => {
     const value = DOM.clockStyleBgSelect.value
     handleSettingUpdate("clockStyleBackground", value)
-    handleSettingUpdate("clockStyleTransparentBackground", value === "transparent")
+    handleSettingUpdate(
+      "clockStyleTransparentBackground",
+      value === "transparent",
+    )
 
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -3300,7 +3411,7 @@ export function setupGeneralEventHandlers(
 
   DOM.fliqloZenCheckbox?.addEventListener("change", () => {
     handleSettingUpdate("fliqloZenMode", DOM.fliqloZenCheckbox.checked)
-    
+
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: {
@@ -3312,8 +3423,11 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.fliqloTransparentCheckbox?.addEventListener("change", () => {
-    handleSettingUpdate("fliqloTransparent", DOM.fliqloTransparentCheckbox.checked)
-    
+    handleSettingUpdate(
+      "fliqloTransparent",
+      DOM.fliqloTransparentCheckbox.checked,
+    )
+
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: {
@@ -3495,7 +3609,8 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.clockSizeInput?.addEventListener("input", () => {
-    if (DOM.clockSizeValue) DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
+    if (DOM.clockSizeValue)
+      DOM.clockSizeValue.textContent = `${DOM.clockSizeInput.value}rem`
     document.documentElement.style.setProperty(
       "--clock-size",
       `${DOM.clockSizeInput.value}rem`,
@@ -3506,7 +3621,8 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.dateSizeInput?.addEventListener("input", () => {
-    if (DOM.dateSizeValue) DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
+    if (DOM.dateSizeValue)
+      DOM.dateSizeValue.textContent = `${DOM.dateSizeInput.value}rem`
     document.documentElement.style.setProperty(
       "--date-size",
       `${DOM.dateSizeInput.value}rem`,
@@ -3588,12 +3704,16 @@ export function setupGeneralEventHandlers(
         },
         {
           key: "media",
-          label: i18n.reset_opt_media || "Delete all uploaded Images & Videos (IndexedDB)",
+          label:
+            i18n.reset_opt_media ||
+            "Delete all uploaded Images & Videos (IndexedDB)",
           checked: false,
         },
         {
           key: "cloud",
-          label: i18n.reset_opt_cloud || "Delete Cloud Sync backup from Google Account",
+          label:
+            i18n.reset_opt_cloud ||
+            "Delete Cloud Sync backup from Google Account",
           checked: false,
         },
       ],
@@ -3627,8 +3747,14 @@ export function setupGeneralEventHandlers(
     }
 
     // Logic for standard settings reset
-    if (selected.all || selected.positions || selected.effects || selected.styles) {
-      const { resetComponentPositions } = await import("../../services/state.js")
+    if (
+      selected.all ||
+      selected.positions ||
+      selected.effects ||
+      selected.styles
+    ) {
+      const { resetComponentPositions } =
+        await import("../../services/state.js")
       resetComponentPositions({
         all: selected.all,
         positions: selected.positions,
@@ -3809,7 +3935,11 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
   setupLayoutCheckbox(DOM.flipLayoutCheckbox, "flipLayout", {})
   if (DOM.allowTextSelectionCheckbox) {
-    setupLayoutCheckbox(DOM.allowTextSelectionCheckbox, "allowTextSelection", {})
+    setupLayoutCheckbox(
+      DOM.allowTextSelectionCheckbox,
+      "allowTextSelection",
+      {},
+    )
   }
   if (DOM.sidebarGlowAnimationsCheckbox) {
     setupLayoutCheckbox(
@@ -3845,13 +3975,20 @@ export function setupGeneralEventHandlers(
   // Quick Access White Mode logic
   const handleWhiteModeChange = (checked) => {
     handleSettingUpdate("showQuickAccessBg", checked)
-    
-    const widgets = ["todo", "timer", "calendar", "notepad", "quotes", "musicPlayer"]
+
+    const widgets = [
+      "todo",
+      "timer",
+      "calendar",
+      "notepad",
+      "quotes",
+      "musicPlayer",
+    ]
     const settings = getSettings()
 
     if (checked) {
       // ON: Switch to white-blur if it's currently default
-      widgets.forEach(w => {
+      widgets.forEach((w) => {
         const currentSkin = settings[`${w}Skin`] || "default"
         if (currentSkin === "default") {
           handleSettingUpdate(`${w}Skin`, "white-blur")
@@ -3859,7 +3996,7 @@ export function setupGeneralEventHandlers(
       })
     } else {
       // OFF: Revert to default if it's currently white-blur
-      widgets.forEach(w => {
+      widgets.forEach((w) => {
         const currentSkin = settings[`${w}Skin`]
         if (currentSkin === "white-blur") {
           handleSettingUpdate(`${w}Skin`, "default")
@@ -3868,19 +4005,24 @@ export function setupGeneralEventHandlers(
     }
 
     // Sync checkboxes
-    if (DOM.showQuickAccessBgCheckbox) DOM.showQuickAccessBgCheckbox.checked = checked
+    if (DOM.showQuickAccessBgCheckbox)
+      DOM.showQuickAccessBgCheckbox.checked = checked
     if (DOM.lcpQuickAccessBg) DOM.lcpQuickAccessBg.checked = checked
-    
+
     // Refresh UI
     applySettings()
     updateSettingsInputs() // Ensure dropdowns in settings sidebar also update
   }
 
   if (DOM.showQuickAccessBgCheckbox) {
-    DOM.showQuickAccessBgCheckbox.addEventListener("change", (e) => handleWhiteModeChange(e.target.checked))
+    DOM.showQuickAccessBgCheckbox.addEventListener("change", (e) =>
+      handleWhiteModeChange(e.target.checked),
+    )
   }
   if (DOM.lcpQuickAccessBg) {
-    DOM.lcpQuickAccessBg.addEventListener("change", (e) => handleWhiteModeChange(e.target.checked))
+    DOM.lcpQuickAccessBg.addEventListener("change", (e) =>
+      handleWhiteModeChange(e.target.checked),
+    )
   }
 
   DOM.contextMenuStyleSelect.addEventListener("change", () =>
@@ -3965,13 +4107,18 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.spotifyClientIdInput?.addEventListener("change", () => {
-    handleSettingUpdate("spotifyClientId", DOM.spotifyClientIdInput.value.trim())
+    handleSettingUpdate(
+      "spotifyClientId",
+      DOM.spotifyClientIdInput.value.trim(),
+    )
   })
 
   DOM.spotifyConnectBtn?.addEventListener("click", async () => {
     const clientId = DOM.spotifyClientIdInput?.value.trim() || ""
     if (!clientId) {
-      showAlert(i18n.spotify_client_missing || "Enter your Spotify Client ID first.")
+      showAlert(
+        i18n.spotify_client_missing || "Enter your Spotify Client ID first.",
+      )
       return
     }
 
@@ -3994,7 +4141,11 @@ export function setupGeneralEventHandlers(
       )
     } else {
       setSpotifyAuthUi(false, response.redirectUri || "")
-      showAlert(response.error || i18n.spotify_auth_failed || "Could not connect Spotify.")
+      showAlert(
+        response.error ||
+          i18n.spotify_auth_failed ||
+          "Could not connect Spotify.",
+      )
     }
   })
 
@@ -4021,7 +4172,9 @@ export function setupGeneralEventHandlers(
 
   DOM.layoutControlsBtn.addEventListener("click", (e) => {
     e.stopPropagation()
-    const isVisible = DOM.layoutControlsPopup.style.display !== "none" && DOM.layoutControlsPopup.style.opacity !== "0"
+    const isVisible =
+      DOM.layoutControlsPopup.style.display !== "none" &&
+      DOM.layoutControlsPopup.style.opacity !== "0"
     if (isVisible) {
       closeLcp()
     } else {
@@ -4442,7 +4595,9 @@ export function setupGeneralEventHandlers(
         [
           {
             key: "clear",
-            label: i18n.import_clear_existing || "Clear existing data before importing (WARNING: This will delete current settings, bookmarks, and todos)",
+            label:
+              i18n.import_clear_existing ||
+              "Clear existing data before importing (WARNING: This will delete current settings, bookmarks, and todos)",
             checked: false,
           },
           {
@@ -4500,7 +4655,7 @@ export function setupGeneralEventHandlers(
         localStorage.removeItem("detachedNotes")
         localStorage.removeItem("hiddenNotes")
         localStorage.removeItem("calendarEvents")
-        // Note: IndexedDB is not fully cleared here to avoid breaking concurrent operations, 
+        // Note: IndexedDB is not fully cleared here to avoid breaking concurrent operations,
         // but new IDs will be generated for imported media anyway.
       }
 
@@ -4631,8 +4786,14 @@ export function setupGeneralEventHandlers(
         `${i18n.sync_backup_success}\n\n${i18n.sync_no_images_warning || "Images/Videos are not included in cloud sync."}`,
       )
     } catch (e) {
-      if (e.message?.includes("quota") || e.message?.includes("kQuotaBytesPerItem")) {
-        showAlert(i18n.sync_error_quota || `Backup failed: Limit exceeded (100KB). Try selecting fewer items.`)
+      if (
+        e.message?.includes("quota") ||
+        e.message?.includes("kQuotaBytesPerItem")
+      ) {
+        showAlert(
+          i18n.sync_error_quota ||
+            `Backup failed: Limit exceeded (100KB). Try selecting fewer items.`,
+        )
       } else {
         showAlert(`Backup failed: ${e.message}`)
       }

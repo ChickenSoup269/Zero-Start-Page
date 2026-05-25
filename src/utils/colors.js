@@ -184,6 +184,75 @@ export function hexToRgb(hex) {
   return { r, g, b }
 }
 
+export function extractAverageColor(imageSrc) {
+  return new Promise((resolve, reject) => {
+    if (!imageSrc) return reject("No image source")
+    let actualSrc = imageSrc
+    // If it's a relative url but we are in chrome-extension:// context, it's fine.
+
+    const img = new Image()
+    img.crossOrigin = "Anonymous"
+    img.onload = () => {
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d", { willReadFrequently: true })
+      // Use a larger sample to find a vibrant color
+      canvas.width = 64
+      canvas.height = 64
+      ctx.drawImage(img, 0, 0, 64, 64)
+      try {
+        const data = ctx.getImageData(0, 0, 64, 64).data
+        let r = 0,
+          g = 0,
+          b = 0
+        let count = 0
+
+        for (let i = 0; i < data.length; i += 4) {
+          // Skip overly bright or overly dark pixels, or grayish
+          const pr = data[i],
+            pg = data[i + 1],
+            pb = data[i + 2]
+          const max = Math.max(pr, pg, pb)
+          const min = Math.min(pr, pg, pb)
+          const saturation = max === 0 ? 0 : (max - min) / max
+
+          // M3 favors vibrant colors
+          if (saturation > 0.2 && max > 50 && max < 240) {
+            r += pr
+            g += pg
+            b += pb
+            count++
+          }
+        }
+
+        if (count > 0) {
+          resolve({
+            r: Math.round(r / count),
+            g: Math.round(g / count),
+            b: Math.round(b / count),
+          })
+        } else {
+          // Fallback to 1x1 average if no vibrant color found
+          ctx.drawImage(img, 0, 0, 1, 1)
+          const backup = ctx.getImageData(0, 0, 1, 1).data
+          resolve({ r: backup[0], g: backup[1], b: backup[2] })
+        }
+      } catch (e) {
+        reject(e)
+      }
+    }
+    img.onerror = (e) => reject("Failed to load image for color extraction")
+    img.src = actualSrc
+  })
+}
+
+export function rgbToHexObject({ r, g, b }) {
+  const componentToHex = (c) => {
+    const hex = c.toString(16)
+    return hex.length === 1 ? "0" + hex : hex
+  }
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
+}
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 
 const componentToHex = (component) =>

@@ -57,6 +57,8 @@
   "settings_accent_open": "Show Controls",
   "settings_accent_close": "Hide Controls",
   "settings_accent_modern": "Modern & Vibrant",
+  "settings_accent_dynamic": "Dynamic Color (M3)",
+  "settings_m3_dynamic": "Extract from Background",
   "settings_accent_prime": "Prime",
   "settings_accent_pastel": "Pastel & Soft",
   "settings_accent_dark": "Dark & Monochrome",
