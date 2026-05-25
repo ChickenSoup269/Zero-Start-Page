@@ -235,6 +235,7 @@ export const defaultSettings = {
   notepadSkin: "default",
   quotesSkin: "default",
   musicPlayerSkin: "default",
+  interfaceStylePreset: "custom",
   showBookmarkGroups: true,
   showSearchBar: true,
   searchBarWidth: 600,
@@ -525,6 +526,7 @@ const MODULE_RESET_KEYS = {
     "notepadSkin",
     "quotesSkin",
     "musicPlayerSkin",
+    "interfaceStylePreset",
   ],
   bookmarks: [
     "showBookmarks",

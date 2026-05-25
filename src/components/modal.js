@@ -16,7 +16,11 @@ import {
 } from "../utils/dom.js"
 import { getBookmarks, setBookmarks, saveBookmarks } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
-import { renderBookmarks } from "./bookmarks.js"
+import {
+  captureBookmarkSnapshot,
+  renderBookmarks,
+  showBookmarkUndo,
+} from "./bookmarks.js"
 
 let editingIndex = null
 
@@ -73,9 +77,11 @@ function saveBookmark() {
   const icon = bookmarkIconInput.value.trim()
 
   if (title && url) {
+    const snapshot = captureBookmarkSnapshot()
+    const wasEditing = editingIndex !== null
     if (!url.match(/^https?:\/\//)) url = "https://" + url
     const newBookmark = { title, url, icon }
-    if (editingIndex !== null) {
+    if (wasEditing) {
       bookmarks[editingIndex] = newBookmark
     } else {
       bookmarks.push(newBookmark)
@@ -84,6 +90,12 @@ function saveBookmark() {
     saveBookmarks()
     renderBookmarks()
     closeModal()
+    showBookmarkUndo(
+      wasEditing
+        ? i18n.bookmark_updated || "Bookmark updated"
+        : i18n.bookmark_added || "Bookmark added",
+      snapshot,
+    )
   } else {
     showAlert(i18n.alert_missing_fields)
   }
@@ -283,12 +295,20 @@ async function confirmImport() {
   }
 
   if (newItems.length > 0) {
+    const snapshot = captureBookmarkSnapshot()
     bookmarks.push(...newItems)
     setBookmarks(bookmarks)
     saveBookmarks()
     renderBookmarks()
     showAlert(i18n.alert_imported.replace("{count}", newItems.length))
     closeModal()
+    showBookmarkUndo(
+      (i18n.bookmark_imported || "Imported {count} bookmarks").replace(
+        "{count}",
+        newItems.length,
+      ),
+      snapshot,
+    )
   } else {
     showAlert(i18n.alert_no_selection)
   }

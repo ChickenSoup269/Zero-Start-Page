@@ -21,7 +21,12 @@ import {
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
-import { renderBookmarks, toggleSelectionMode } from "./bookmarks.js"
+import {
+  captureBookmarkSnapshot,
+  renderBookmarks,
+  showBookmarkUndo,
+  toggleSelectionMode,
+} from "./bookmarks.js"
 
 let contextMenuTargetIndex = -1
 let contextMenuTargetType = "bookmark" // 'bookmark', 'group', 'widget', 'localBg', etc.
@@ -55,7 +60,7 @@ export function showContextMenu(
 
   const i18n = geti18n()
 
-  if (type === "bookmark") {
+  if (type === "bookmark" || type === "bookmarkStack") {
     menuSelect.style.display = "flex"
   }
 
@@ -555,9 +560,11 @@ async function handleEdit() {
         group.name,
       )
       if (newName && newName.trim() !== "") {
+        const snapshot = captureBookmarkSnapshot()
         group.name = newName.trim()
         saveBookmarks()
         renderBookmarks()
+        showBookmarkUndo(i18n.bookmark_group_renamed || "Group renamed", snapshot)
       }
     }
   }
@@ -582,10 +589,12 @@ async function handleDelete() {
         `${i18n.alert_delete_confirm} "${bookmarks[contextMenuTargetIndex].title}"?`,
       ))
     ) {
+      const snapshot = captureBookmarkSnapshot()
       bookmarks.splice(contextMenuTargetIndex, 1)
       setBookmarks(bookmarks)
       saveBookmarks()
       renderBookmarks()
+      showBookmarkUndo(i18n.bookmark_deleted || "Bookmark deleted", snapshot)
     }
   } else if (contextMenuTargetType === "group") {
     const groups = getBookmarkGroups()
@@ -596,6 +605,7 @@ async function handleDelete() {
           `${i18n.alert_delete_group_confirm || "Delete group"} "${group.name}"?`,
         )
       ) {
+        const snapshot = captureBookmarkSnapshot()
         // Prevent deleting if it's the only group? (Optional, but UI might break if no groups)
         if (groups.length <= 1) {
           showAlert(
@@ -617,6 +627,7 @@ async function handleDelete() {
           saveBookmarks()
         }
         renderBookmarks()
+        showBookmarkUndo(i18n.bookmark_group_deleted || "Group deleted", snapshot)
       }
     }
   } else if (
@@ -769,7 +780,10 @@ function handleLock() {
 export function initContextMenu() {
   menuSelect.addEventListener("click", (e) => {
     e.stopPropagation()
-    if (contextMenuTargetType === "bookmark") {
+    if (
+      contextMenuTargetType === "bookmark" ||
+      contextMenuTargetType === "bookmarkStack"
+    ) {
       toggleSelectionMode(contextMenuTargetIndex)
     }
     hideContextMenu()

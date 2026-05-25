@@ -38,6 +38,8 @@ let _perfAvgFrameMs = 16.7
 let _perfLagging = false
 let _perfLastApply = 0
 
+const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+
 const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
   fireflies: "firefliesEffect",
@@ -425,7 +427,7 @@ function createApplySettings(effectInstances) {
           let imageUrl = bg
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
-            bgLayer.style.backgroundImage = `url('${imageUrl}')`
+            bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = settings.bgSize || "cover"
           }
         }
@@ -447,7 +449,7 @@ function createApplySettings(effectInstances) {
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else if (bg.match(/^https?:\/\//)) {
           if (bgLayer) {
-            bgLayer.style.backgroundImage = `url('${bg}')`
+            bgLayer.style.backgroundImage = cssUrl(bg)
             bgLayer.style.backgroundSize = settings.bgSize || "cover"
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
@@ -690,7 +692,7 @@ function createApplySettings(effectInstances) {
           let imageUrl = bg
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
-            bgLayer.style.backgroundImage = `url('${imageUrl}')`
+            bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = settings.bgSize || "cover"
           }
         }
@@ -714,7 +716,7 @@ function createApplySettings(effectInstances) {
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else if (bg.match(/^https?:\/\//)) {
         if (bgLayer) {
-          bgLayer.style.backgroundImage = `url('${bg}')`
+          bgLayer.style.backgroundImage = cssUrl(bg)
           bgLayer.style.backgroundSize = settings.bgSize || "cover"
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
@@ -3341,6 +3343,12 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
     }
+    document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.dataset.stylePreset === (settings.interfaceStylePreset || "custom"),
+      )
+    })
 
     // Sync Theme-specific UI
     if (DOM.fliqloThemeSelect) {

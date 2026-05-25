@@ -693,7 +693,6 @@
                     <span class="lcp-slider"></span>
                 </label>
             </div>
-
         </div>
     </div>
 
@@ -785,6 +784,65 @@
                             <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
                                 Custom Theme</span>
                         </button>
+                    </div>
+                    <div class="setting-group style-preset-panel">
+                        <div class="setting-label"><i class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                data-i18n="style_presets_title">Style Presets</span></div>
+                        <p class="setting-hint" data-i18n="style_presets_hint">
+                            One-click bundles for bookmark and music player styling.
+                        </p>
+                        <div class="style-preset-grid">
+                            <button type="button" class="style-preset-btn" data-style-preset="clean">
+                                <span class="style-preset-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_clean">Clean</span>
+                                <small data-i18n="style_preset_clean_hint">Soft glass, simple grid</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="dock">
+                                <span class="style-preset-icon"><i class="fa-solid fa-grip-lines"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_dock">Dock</span>
+                                <small data-i18n="style_preset_dock_hint">Taskbar bookmarks, pill music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="macos">
+                                <span class="style-preset-icon"><i class="fa-brands fa-apple"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_macos">macOS</span>
+                                <small data-i18n="style_preset_macos_hint">Large dock, Apple music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="glass">
+                                <span class="style-preset-icon"><i class="fa-regular fa-gem"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_glass">Glass</span>
+                                <small data-i18n="style_preset_glass_hint">Clear icons, soft vinyl</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="compact">
+                                <span class="style-preset-icon"><i class="fa-solid fa-table-cells-large"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_compact">Compact</span>
+                                <small data-i18n="style_preset_compact_hint">Small taskbar, minimal music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="sidebar">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bars-staggered"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_sidebar">Sidebar</span>
+                                <small data-i18n="style_preset_sidebar_hint">Vertical bookmarks, sidebar music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="neon">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bolt"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_neon">Neon</span>
+                                <small data-i18n="style_preset_neon_hint">Bright glow, neon music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="terminal">
+                                <span class="style-preset-icon"><i class="fa-solid fa-terminal"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_terminal">Terminal</span>
+                                <small data-i18n="style_preset_terminal_hint">Compact sidebar, mono vibe</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cassette">
+                                <span class="style-preset-icon"><i class="fa-solid fa-record-vinyl"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cassette">Cassette</span>
+                                <small data-i18n="style_preset_cassette_hint">Warm icons, cassette music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cozy">
+                                <span class="style-preset-icon"><i class="fa-solid fa-leaf"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cozy">Cozy</span>
+                                <small data-i18n="style_preset_cozy_hint">Warm icons, forest music</small>
+                            </button>
+                        </div>
                     </div>
                     <div class="themes-grid" id="themes-grid">
                         <!-- Default -->
@@ -5392,8 +5450,12 @@
             <div id="bookmark-selection-toolbar" class="selection-toolbar" style="display: none;">
                 <div class="selection-info">
                     <span id="selection-count">0</span> <span data-i18n="bookmark_selected">Selected</span>
+                    <small id="selection-scope"></small>
                 </div>
                 <div class="selection-actions">
+                    <button id="bookmark-select-all" class="selection-btn" title="Select All">
+                        <i class="fa-solid fa-check-double"></i>
+                    </button>
                     <button id="bookmark-delete-selected" class="selection-btn delete" title="Delete Selected">
                         <i class="fa-solid fa-trash"></i>
                     </button>

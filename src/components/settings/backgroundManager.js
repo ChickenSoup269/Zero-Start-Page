@@ -26,6 +26,7 @@ import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 
 let bgSelectMode = false
 const bgSelectedIds = new Set()
+const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
 function renderUserColors(DOM) {
   const settings = getSettings()
@@ -379,7 +380,7 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       if (isIdbMedia(bgId)) {
         getThumbnailUrl(bgId).then(async (thumbUrl) => {
           if (thumbUrl) {
-            thumbLayer.style.backgroundImage = `url('${thumbUrl}')`
+            thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
           } else {
             const originalUrl = await getImageUrl(bgId)
             if (originalUrl) {
@@ -389,15 +390,15 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
                 isVideo,
               )
               if (newThumb) {
-                thumbLayer.style.backgroundImage = `url('${newThumb}')`
+                thumbLayer.style.backgroundImage = cssUrl(newThumb)
               } else {
-                thumbLayer.style.backgroundImage = `url('${originalUrl}')`
+                thumbLayer.style.backgroundImage = cssUrl(originalUrl)
               }
             }
           }
         })
       } else if (bgId) {
-        thumbLayer.style.backgroundImage = `url('${bgId}')`
+        thumbLayer.style.backgroundImage = cssUrl(bgId)
       }
 
       if (isVideo) item.classList.add("video-bg-item")
@@ -775,7 +776,8 @@ function setupFileUploads(DOM, handleSettingUpdate) {
         return
       }
 
-      if (file.type === "image/gif") {
+      const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
+      if (isGif) {
         saveImage(file)
           .then((id) => {
             getSettings().userBackgrounds.push(id)

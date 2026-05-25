@@ -662,9 +662,21 @@
 }
 
 .selection-info {
+  display: grid;
+  gap: 2px;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--accent-color);
+}
+
+.selection-info small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.68rem;
+  font-weight: 700;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .selection-actions {
@@ -689,6 +701,11 @@
 .selection-btn:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
+}
+
+.selection-btn:hover:first-child {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2);
+  color: var(--accent-color);
 }
 
 .selection-btn.delete:hover {
@@ -720,6 +737,60 @@
   background: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
   line-height: 1;
+}
+
+.bookmark-undo-toast {
+  align-items: center;
+  background: rgba(16, 18, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  bottom: 22px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.34);
+  color: #fff;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  max-width: min(360px, calc(100vw - 28px));
+  min-width: 240px;
+  opacity: 0;
+  padding: 11px 12px 11px 14px;
+  pointer-events: none;
+  position: fixed;
+  right: 22px;
+  transform: translateY(12px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  z-index: 30000;
+}
+
+.bookmark-undo-toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.bookmark-undo-toast span {
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.bookmark-undo-toast button {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.32);
+  border-radius: 8px;
+  color: var(--accent-color, #a8c0ff);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 30px;
+  padding: 0 11px;
+}
+
+.bookmark-undo-toast button:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
 }
 
 .quick-access-white .modal-content {

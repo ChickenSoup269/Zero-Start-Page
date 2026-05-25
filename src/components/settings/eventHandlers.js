@@ -93,6 +93,251 @@ export function setupGeneralEventHandlers(
   const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
   const CUSTOM_TIMER_ALARM_KEY = "custom_alarm_sound"
   const MAX_TIMER_ALARM_SIZE = 12 * 1024 * 1024
+  const STYLE_PRESETS = {
+    clean: {
+      bookmarkLayout: "default",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: true,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 42,
+      bookmarkGap: 10,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 0,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 14,
+      bookmarkShadowBlur: 6,
+      musicBarStyle: "minimal",
+      musicPlayerSkin: "white-blur",
+    },
+    dock: {
+      bookmarkLayout: "taskbar",
+      bookmarkLayoutBgStyle: "white",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: true,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: true,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 46,
+      bookmarkGap: 8,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 92,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 22,
+      bookmarkShadowBlur: 10,
+      musicBarStyle: "pill",
+      musicPlayerSkin: "white-blur",
+    },
+    macos: {
+      bookmarkLayout: "taskbar",
+      bookmarkLayoutBgStyle: "white",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: true,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: true,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 52,
+      bookmarkGap: 10,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 88,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 24,
+      bookmarkShadowBlur: 14,
+      musicBarStyle: "apple",
+      musicPlayerSkin: "white-blur",
+    },
+    glass: {
+      bookmarkLayout: "default",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 42,
+      bookmarkGap: 10,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 36,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 18,
+      bookmarkShadowBlur: 12,
+      musicBarStyle: "vinyl",
+      musicPlayerSkin: "white-blur",
+    },
+    compact: {
+      bookmarkLayout: "taskbar-left",
+      bookmarkLayoutBgStyle: "hidden",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: true,
+      bookmarkHideBg: true,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 9,
+      bookmarkIconSize: 34,
+      bookmarkGap: 4,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 0,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 16,
+      bookmarkShadowBlur: 6,
+      musicBarStyle: "minimal",
+      musicPlayerSkin: "default",
+    },
+    sidebar: {
+      bookmarkLayout: "sidebar",
+      bookmarkLayoutBgStyle: "white",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 38,
+      bookmarkGap: 7,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 72,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 18,
+      bookmarkShadowBlur: 8,
+      musicBarStyle: "sidebar",
+      musicPlayerSkin: "white-blur",
+    },
+    neon: {
+      bookmarkLayout: "default",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 11,
+      bookmarkIconSize: 44,
+      bookmarkGap: 12,
+      bookmarkTextColor: "#ffffff",
+      bookmarkBgColor: "#07111f",
+      bookmarkBgOpacity: 54,
+      bookmarkShadowColor: "#00f5d4",
+      bookmarkShadowOpacity: 45,
+      bookmarkShadowBlur: 14,
+      musicBarStyle: "neon",
+      musicPlayerSkin: "default",
+    },
+    terminal: {
+      bookmarkLayout: "sidebar",
+      bookmarkLayoutBgStyle: "hidden",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: true,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 11,
+      bookmarkIconSize: 34,
+      bookmarkGap: 6,
+      bookmarkTextColor: "#7cffad",
+      bookmarkBgColor: "#00140a",
+      bookmarkBgOpacity: 18,
+      bookmarkShadowColor: "#7cffad",
+      bookmarkShadowOpacity: 28,
+      bookmarkShadowBlur: 8,
+      musicBarStyle: "terminal",
+      musicPlayerSkin: "default",
+    },
+    cassette: {
+      bookmarkLayout: "default",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: false,
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 44,
+      bookmarkGap: 11,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#fff7ed",
+      bookmarkBgOpacity: 76,
+      bookmarkShadowColor: "#7c2d12",
+      bookmarkShadowOpacity: 20,
+      bookmarkShadowBlur: 10,
+      musicBarStyle: "cassette",
+      musicPlayerSkin: "default",
+    },
+    cozy: {
+      bookmarkLayout: "default",
+      bookmarkItemStyle: "default",
+      bookmarkHideText: false,
+      bookmarkHideBg: false,
+      bookmarkMacosHover: true,
+      bookmarkFontSize: 11,
+      bookmarkIconSize: 46,
+      bookmarkGap: 12,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 84,
+      bookmarkShadowColor: "#1f3d2b",
+      bookmarkShadowOpacity: 22,
+      bookmarkShadowBlur: 12,
+      musicBarStyle: "forest",
+      musicPlayerSkin: "white-blur",
+    },
+  }
+  const INTERFACE_STYLE_KEYS = new Set([
+    "bookmarkLayout",
+    "bookmarkLayoutBgStyle",
+    "bookmarkLayoutBgColor",
+    "bookmarkItemStyle",
+    "bookmarkHideText",
+    "bookmarkHideBg",
+    "bookmarkMacosHover",
+    "bookmarkFontSize",
+    "bookmarkIconSize",
+    "bookmarkGap",
+    "bookmarkTextColor",
+    "bookmarkBgColor",
+    "bookmarkBgOpacity",
+    "bookmarkShadowColor",
+    "bookmarkShadowOpacity",
+    "bookmarkShadowBlur",
+    "musicBarStyle",
+    "musicPlayerSkin",
+    "musicPlayerUseDefaultColor",
+  ])
+
+  const setStylePresetActive = (presetId) => {
+    document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.stylePreset === presetId)
+    })
+  }
+
+  const markInterfaceStyleCustom = (key) => {
+    if (key && !INTERFACE_STYLE_KEYS.has(key)) return
+    if (getSettings().interfaceStylePreset !== "custom") {
+      updateSetting("interfaceStylePreset", "custom")
+    }
+    setStylePresetActive("custom")
+  }
+
+  const dispatchSettingsUpdated = (key, value) => {
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: { key, value },
+      }),
+    )
+  }
+
+  const applyInterfaceStylePreset = (presetId) => {
+    const preset = STYLE_PRESETS[presetId]
+    if (!preset) return
+
+    Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
+    updateSetting("interfaceStylePreset", presetId)
+    saveSettings(true)
+    updateSettingsInputs()
+    applySettings()
+    renderBookmarks()
+    setStylePresetActive(presetId)
+    dispatchSettingsUpdated("musicBarStyle", preset.musicBarStyle)
+    dispatchSettingsUpdated("musicPlayerSkin", preset.musicPlayerSkin)
+  }
 
   const updateTimerAlarmCustomUi = () => {
     const settings = getSettings()
@@ -329,6 +574,7 @@ export function setupGeneralEventHandlers(
   let reqAnimFrame = null
 
   const throttleSettingUpdate = (key, value) => {
+    markInterfaceStyleCustom(key)
     const fastFeedbackKeys = [
       "bookmarkGap",
       "bookmarkBgColor",
@@ -437,6 +683,14 @@ export function setupGeneralEventHandlers(
       }, delay)
     }
   }
+
+  document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      applyInterfaceStylePreset(btn.dataset.stylePreset)
+    })
+  })
+  setStylePresetActive(getSettings().interfaceStylePreset || "custom")
+
   const blobToDataUrl = (blob) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -950,9 +1204,17 @@ export function setupGeneralEventHandlers(
   })
 
   // Background inputs
-  DOM.bgInput.addEventListener("change", () =>
-    handleSettingUpdate("background", DOM.bgInput.value.trim()),
-  )
+  const normalizeBackgroundInput = (value) => {
+    const trimmed = String(value || "").trim()
+    const cssUrlMatch = trimmed.match(/^url\(\s*(['"]?)(.*?)\1\s*\)$/i)
+    return cssUrlMatch ? cssUrlMatch[2].trim() : trimmed
+  }
+
+  DOM.bgInput.addEventListener("change", () => {
+    const background = normalizeBackgroundInput(DOM.bgInput.value)
+    DOM.bgInput.value = background
+    handleSettingUpdate("background", background)
+  })
   DOM.bgColorPicker.addEventListener("input", () => {
     DOM.bgInput.value = DOM.bgColorPicker.value
     handleSettingUpdate("background", DOM.bgColorPicker.value)
@@ -1505,18 +1767,21 @@ export function setupGeneralEventHandlers(
 
     if (DOM.hideBookmarkText) {
       DOM.hideBookmarkText.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkHideText")
         throttleSettingUpdate("bookmarkHideText", DOM.hideBookmarkText.checked)
       })
     }
 
     if (DOM.hideBookmarkBg) {
       DOM.hideBookmarkBg.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkHideBg")
         throttleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
       })
     }
 
     if (DOM.bookmarkMacosHover) {
       DOM.bookmarkMacosHover.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkMacosHover")
         throttleSettingUpdate(
           "bookmarkMacosHover",
           DOM.bookmarkMacosHover.checked,
@@ -1526,6 +1791,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkLayout) {
       DOM.bookmarkLayout.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkLayout")
         throttleSettingUpdate("bookmarkLayout", DOM.bookmarkLayout.value)
         if (DOM.lcpBookmarkLayout)
           DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
@@ -1539,6 +1805,7 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.lcpBookmarkLayout) {
       DOM.lcpBookmarkLayout.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkLayout")
         throttleSettingUpdate("bookmarkLayout", DOM.lcpBookmarkLayout.value)
         if (DOM.bookmarkLayout)
           DOM.bookmarkLayout.value = DOM.lcpBookmarkLayout.value
@@ -1553,6 +1820,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkLayoutBgStyle) {
       DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkLayoutBgStyle")
         handleSettingUpdate(
           "bookmarkLayoutBgStyle",
           DOM.bookmarkLayoutBgStyle.value,
@@ -1575,6 +1843,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkItemStyle) {
       DOM.bookmarkItemStyle.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkItemStyle")
         throttleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
       })
     }
@@ -3472,6 +3741,7 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
+    markInterfaceStyleCustom("musicPlayerUseDefaultColor")
     handleSettingUpdate(
       "musicPlayerUseDefaultColor",
       DOM.musicPlayerUseDefaultColorCheckbox.checked,
@@ -3709,6 +3979,7 @@ export function setupGeneralEventHandlers(
 
   // Music style
   const applyMusicStyle = (style) => {
+    markInterfaceStyleCustom("musicBarStyle")
     DOM.musicStyleSelect.value = style
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = style
@@ -3734,6 +4005,7 @@ export function setupGeneralEventHandlers(
   if (DOM.lcpMusicUseDefaultColorCheckbox) {
     DOM.lcpMusicUseDefaultColorCheckbox.addEventListener("change", () => {
       const isChecked = DOM.lcpMusicUseDefaultColorCheckbox.checked
+      markInterfaceStyleCustom("musicPlayerUseDefaultColor")
       DOM.musicPlayerUseDefaultColorCheckbox.checked = isChecked
       handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
       window.dispatchEvent(

@@ -74,7 +74,7 @@
 
       const styleEl = document.createElement("style")
       let css = ""
-      const cssUrl = (value) => String(value || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'")
+      const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
       const cssText = (value) => String(value || "").replace(/<\/style/gi, "<\\/style")
       const buildEarlyGradientCss = () => {
         const start = settings.gradientStart || "#0a1f11"
@@ -173,7 +173,7 @@
         }
         if (bg && typeof bg === "string") {
           if (bg.startsWith("data:image") || bg.startsWith("blob:") || bg.startsWith("http")) {
-            return `url('${cssUrl(bg)}')`
+            return cssUrl(bg)
           }
           if (!bg.startsWith("idb-") && !bg.startsWith("data:video") && !/\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(bg)) {
             return bg

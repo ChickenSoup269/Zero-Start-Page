@@ -6,6 +6,7 @@ import {
 import { showPrompt, showAlert, showConfirm } from "../utils/dialog.js"
 import {
   getBookmarks,
+  getBookmarkState,
   setBookmarks,
   getBookmarkGroups,
   setBookmarkGroups,
@@ -29,10 +30,60 @@ function getHostname(url) {
 }
 
 const iconCache = new Map()
+let bookmarkUndoTimeout = null
 
 // --- Selection State ---
 let isSelectionMode = false
 let selectedIndices = new Set()
+
+export function captureBookmarkSnapshot() {
+  return JSON.parse(JSON.stringify(getBookmarkState()))
+}
+
+function restoreBookmarkSnapshot(snapshot) {
+  if (!snapshot?.groups) return
+  setBookmarkGroups(snapshot.groups)
+  setActiveGroupId(snapshot.activeGroupId || snapshot.groups[0]?.id)
+  saveBookmarks()
+  selectedIndices.clear()
+  isSelectionMode = false
+  document.getElementById("hidden-bookmarks-popup")?.remove()
+  document.getElementById("bookmark-stack-popup")?.remove()
+  renderBookmarks()
+}
+
+export function showBookmarkUndo(message, snapshot) {
+  if (!snapshot) return
+  const i18n = geti18n()
+  let toast = document.getElementById("bookmark-undo-toast")
+  if (!toast) {
+    toast = document.createElement("div")
+    toast.id = "bookmark-undo-toast"
+    toast.className = "bookmark-undo-toast"
+    document.body.appendChild(toast)
+  }
+
+  toast.innerHTML = ""
+  const text = document.createElement("span")
+  text.textContent = message
+  const undoBtn = document.createElement("button")
+  undoBtn.type = "button"
+  undoBtn.textContent = i18n.bookmark_undo || "Undo"
+  undoBtn.addEventListener("click", () => {
+    if (bookmarkUndoTimeout) clearTimeout(bookmarkUndoTimeout)
+    restoreBookmarkSnapshot(snapshot)
+    toast.classList.remove("show")
+  })
+
+  toast.appendChild(text)
+  toast.appendChild(undoBtn)
+  requestAnimationFrame(() => toast.classList.add("show"))
+
+  if (bookmarkUndoTimeout) clearTimeout(bookmarkUndoTimeout)
+  bookmarkUndoTimeout = setTimeout(() => {
+    toast.classList.remove("show")
+  }, 5200)
+}
 
 export function toggleSelectionMode(initialIndex = -1) {
   isSelectionMode = true
@@ -75,6 +126,7 @@ async function deleteSelected() {
   )
 
   if (confirmed) {
+    const snapshot = captureBookmarkSnapshot()
     const bookmarks = getBookmarks()
     const sortedIndices = Array.from(selectedIndices).sort((a, b) => b - a)
     sortedIndices.forEach((index) => {
@@ -83,18 +135,32 @@ async function deleteSelected() {
     setBookmarks(bookmarks)
     saveBookmarks()
     cancelSelection()
+    showBookmarkUndo(
+      (i18n.bookmark_deleted_many || "Deleted {count} bookmarks").replace(
+        "{count}",
+        sortedIndices.length,
+      ),
+      snapshot,
+    )
   }
 }
 
 function updateSelectionUI() {
   const toolbar = document.getElementById("bookmark-selection-toolbar")
   const countEl = document.getElementById("selection-count")
+  const scopeEl = document.getElementById("selection-scope")
 
   if (!toolbar || !countEl) return
 
   if (isSelectionMode) {
     toolbar.style.display = "flex"
     countEl.textContent = selectedIndices.size
+    if (scopeEl) {
+      const activeGroup = getBookmarkGroups().find(
+        (group) => group.id === getActiveGroupId(),
+      )
+      scopeEl.textContent = activeGroup ? activeGroup.name : ""
+    }
   } else {
     toolbar.style.display = "none"
   }
@@ -238,13 +304,16 @@ function createBookmarkStackIcon(stack) {
   return wrap
 }
 
-function openBookmarkStackPopup(stack, anchor) {
+function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const existing = document.getElementById("bookmark-stack-popup")
   if (existing) existing.remove()
 
   const popup = document.createElement("div")
   popup.id = "bookmark-stack-popup"
   popup.className = "bookmark-stack-popup"
+  let isStackSelectionMode = false
+  const selectedStackIndices = new Set()
+  const i18n = geti18n()
 
   const header = document.createElement("div")
   header.className = "bookmark-stack-popup-header"
@@ -256,22 +325,173 @@ function openBookmarkStackPopup(stack, anchor) {
   header.appendChild(count)
   popup.appendChild(header)
 
+  const actions = document.createElement("div")
+  actions.className = "bookmark-stack-popup-actions"
+
+  const selectBtn = document.createElement("button")
+  selectBtn.type = "button"
+  selectBtn.className = "bookmark-stack-popup-action"
+  selectBtn.innerHTML = `<i class="fa-solid fa-check-square"></i><span>${i18n.bookmark_stack_select || "Select"}</span>`
+
+  const renameBtn = document.createElement("button")
+  renameBtn.type = "button"
+  renameBtn.className = "bookmark-stack-popup-action"
+  renameBtn.innerHTML = `<i class="fa-solid fa-pen"></i><span>${i18n.bookmark_stack_rename || "Rename"}</span>`
+
+  const deleteBtn = document.createElement("button")
+  deleteBtn.type = "button"
+  deleteBtn.className = "bookmark-stack-popup-action danger"
+  deleteBtn.hidden = true
+  deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i><span>${i18n.bookmark_stack_delete_selected || "Delete selected"}</span>`
+
+  const cancelBtn = document.createElement("button")
+  cancelBtn.type = "button"
+  cancelBtn.className = "bookmark-stack-popup-action"
+  cancelBtn.hidden = true
+  cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.bookmark_stack_cancel || "Cancel"}</span>`
+
+  actions.appendChild(selectBtn)
+  actions.appendChild(renameBtn)
+  actions.appendChild(deleteBtn)
+  actions.appendChild(cancelBtn)
+  popup.appendChild(actions)
+
   const grid = document.createElement("div")
   grid.className = "bookmark-stack-popup-grid"
-  stack.items.forEach((item) => {
-    const link = document.createElement("a")
-    link.className = "bookmark bookmark-stack-popup-item"
-    link.href = item.url
-    link.target = "_blank"
-    link.rel = "noopener noreferrer"
-    link.appendChild(createBookmarkIcon(item))
-
-    const label = document.createElement("span")
-    label.textContent = item.title
-    link.appendChild(label)
-    grid.appendChild(link)
-  })
   popup.appendChild(grid)
+
+  const syncStackSelectionUi = () => {
+    popup.classList.toggle("is-selecting", isStackSelectionMode)
+    selectBtn.hidden = isStackSelectionMode
+    renameBtn.hidden = isStackSelectionMode
+    deleteBtn.hidden = !isStackSelectionMode
+    cancelBtn.hidden = !isStackSelectionMode
+    deleteBtn.disabled = selectedStackIndices.size === 0
+    count.textContent = isStackSelectionMode
+      ? `${selectedStackIndices.size}/${stack.items.length}`
+      : `${stack.items.length}`
+  }
+
+  const normalizeStackAfterDelete = () => {
+    const bookmarks = getBookmarks()
+    if (!bookmarks[stackIndex]) return
+
+    if (stack.items.length <= 0) {
+      bookmarks.splice(stackIndex, 1)
+    } else if (stack.items.length === 1) {
+      bookmarks[stackIndex] = stack.items[0]
+    } else {
+      bookmarks[stackIndex] = stack
+    }
+
+    setBookmarks(bookmarks)
+    saveBookmarks()
+  }
+
+  const renderStackItems = () => {
+    grid.innerHTML = ""
+    stack.items.forEach((item, itemIndex) => {
+      const link = document.createElement("a")
+      link.className = "bookmark bookmark-stack-popup-item"
+      link.href = item.url
+      link.target = "_blank"
+      link.rel = "noopener noreferrer"
+      link.dataset.stackIndex = itemIndex
+      link.dataset.parentStackIndex = stackIndex
+      link.draggable = !isStackSelectionMode
+      link.classList.toggle("selected", selectedStackIndices.has(itemIndex))
+      link.appendChild(createBookmarkIcon(item))
+
+      const label = document.createElement("span")
+      label.textContent = item.title
+      link.appendChild(label)
+
+      const check = document.createElement("span")
+      check.className = "bookmark-stack-popup-check"
+      check.innerHTML = '<i class="fa-solid fa-check"></i>'
+      link.appendChild(check)
+
+      link.addEventListener("click", (event) => {
+        if (!isStackSelectionMode) return
+        event.preventDefault()
+        event.stopPropagation()
+        if (selectedStackIndices.has(itemIndex)) {
+          selectedStackIndices.delete(itemIndex)
+        } else {
+          selectedStackIndices.add(itemIndex)
+        }
+        renderStackItems()
+        syncStackSelectionUi()
+      })
+      link.addEventListener("dragstart", handleStackItemDragStart)
+      link.addEventListener("dragend", handleDragEnd)
+
+      grid.appendChild(link)
+    })
+  }
+
+  selectBtn.addEventListener("click", () => {
+    isStackSelectionMode = true
+    selectedStackIndices.clear()
+    renderStackItems()
+    syncStackSelectionUi()
+  })
+
+  renameBtn.addEventListener("click", async () => {
+    const newName = await showPrompt(
+      i18n.prompt_rename_group || "Enter new group name:",
+      stack.title || i18n.bookmark_stack_default_name || "Bookmark Group",
+    )
+    if (!newName?.trim()) return
+    const snapshot = captureBookmarkSnapshot()
+    const bookmarks = getBookmarks()
+    if (isBookmarkStack(bookmarks[stackIndex])) {
+      bookmarks[stackIndex].title = newName.trim()
+      stack.title = newName.trim()
+      title.textContent = stack.title
+      setBookmarks(bookmarks)
+      saveBookmarks()
+      renderBookmarks()
+      showBookmarkUndo(i18n.bookmark_group_renamed || "Group renamed", snapshot)
+    }
+  })
+
+  cancelBtn.addEventListener("click", () => {
+    isStackSelectionMode = false
+    selectedStackIndices.clear()
+    renderStackItems()
+    syncStackSelectionUi()
+  })
+
+  deleteBtn.addEventListener("click", async () => {
+    if (selectedStackIndices.size === 0) return
+    const confirmed = await showConfirm(
+      (i18n.bookmark_delete_selected_confirm || "Delete {count} selected bookmarks?").replace(
+        "{count}",
+        selectedStackIndices.size,
+      ),
+    )
+    if (!confirmed) return
+
+    const snapshot = captureBookmarkSnapshot()
+    const deletedCount = selectedStackIndices.size
+    Array.from(selectedStackIndices)
+      .sort((a, b) => b - a)
+      .forEach((itemIndex) => stack.items.splice(itemIndex, 1))
+    normalizeStackAfterDelete()
+    popup.remove()
+    renderBookmarks()
+    showBookmarkUndo(
+      (i18n.bookmark_deleted_many || "Deleted {count} bookmarks").replace(
+        "{count}",
+        deletedCount,
+      ),
+      snapshot,
+    )
+  })
+
+  renderStackItems()
+  syncStackSelectionUi()
 
   document.body.appendChild(popup)
 
@@ -306,6 +526,7 @@ function openBookmarkStackPopup(stack, anchor) {
 // --- Drag and Drop State ---
 let draggedBookmarkIndex = null
 let draggedGroupIndex = null
+let draggedStackItem = null
 
 function isBookmarkStack(item) {
   return item?.type === "stack" && Array.isArray(item.items)
@@ -319,13 +540,89 @@ function getBookmarkLabel(item) {
   return item?.title || item?.name || "Bookmark"
 }
 
+function getBookmarkCategory(item) {
+  const text = `${item?.title || ""} ${item?.url || ""} ${getHostname(item?.url || "")}`.toLowerCase()
+  const rules = [
+    ["ai", /openai|chatgpt|claude|gemini|perplexity|poe|copilot|midjourney|huggingface/],
+    ["dev", /github|gitlab|stackoverflow|stackblitz|codesandbox|npmjs|vercel|netlify|localhost|developer|docs\./],
+    ["social", /facebook|instagram|twitter|x\.com|threads|reddit|discord|telegram|zalo|tiktok|messenger/],
+    ["music", /spotify|soundcloud|zingmp3|music\.youtube|nhac|music|audio|podcast/],
+    ["video", /youtube|netflix|primevideo|disney|twitch|vimeo|movie|film|video/],
+    ["work", /notion|slack|trello|jira|asana|clickup|figma|miro|office|docs\.google|drive\.google|calendar\.google/],
+    ["shop", /amazon|shopee|lazada|tiki|etsy|ebay|store|shop|cart/],
+    ["news", /news|medium|substack|vnexpress|tuoitre|thanhnien|bbc|cnn|bloomberg/],
+    ["learn", /coursera|udemy|edx|duolingo|khanacademy|learn|course|study|school/],
+    ["finance", /bank|paypal|stripe|binance|coinbase|finance|stock|money|crypto/],
+  ]
+  return rules.find(([, pattern]) => pattern.test(text))?.[0] || null
+}
+
+function inferBookmarkStackName(items) {
+  const i18n = geti18n()
+  const categoryLabels = {
+    ai: i18n.bookmark_category_ai || "AI",
+    dev: i18n.bookmark_category_dev || "Developer",
+    social: i18n.bookmark_category_social || "Social",
+    music: i18n.bookmark_category_music || "Music",
+    video: i18n.bookmark_category_video || "Video",
+    work: i18n.bookmark_category_work || "Work",
+    shop: i18n.bookmark_category_shop || "Shopping",
+    news: i18n.bookmark_category_news || "News",
+    learn: i18n.bookmark_category_learn || "Learning",
+    finance: i18n.bookmark_category_finance || "Finance",
+  }
+  const counts = new Map()
+  items.forEach((item) => {
+    const category = getBookmarkCategory(item)
+    if (category) counts.set(category, (counts.get(category) || 0) + 1)
+  })
+  const best = Array.from(counts.entries()).sort((a, b) => b[1] - a[1])[0]
+  if (best && best[1] >= Math.max(1, Math.ceil(items.length / 2))) {
+    return categoryLabels[best[0]]
+  }
+
+  const hostParts = items
+    .map((item) => getHostname(item.url).replace(/^www\./, "").split(".")[0])
+    .filter(Boolean)
+  const commonHost = hostParts.find(
+    (host) => hostParts.filter((part) => part === host).length >= 2,
+  )
+  if (commonHost) {
+    return commonHost.charAt(0).toUpperCase() + commonHost.slice(1)
+  }
+
+  return i18n.bookmark_stack_default_name || "Bookmark Group"
+}
+
 function createBookmarkStack(title, items) {
+  const validItems = items.filter((item) => item && item.url && item.title)
   return {
     type: "stack",
     id: `stack-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    title,
-    items: items.filter((item) => item && item.url && item.title),
+    title: title || inferBookmarkStackName(validItems),
+    items: validItems,
   }
+}
+
+function takeDraggedStackItem() {
+  if (!draggedStackItem) return null
+  const bookmarks = getBookmarks()
+  const { stackIndex, itemIndex } = draggedStackItem
+  const sourceStack = bookmarks[stackIndex]
+  if (!isBookmarkStack(sourceStack) || !sourceStack.items[itemIndex]) return null
+
+  const [item] = sourceStack.items.splice(itemIndex, 1)
+  let removedSourceSlot = false
+  if (sourceStack.items.length <= 0) {
+    bookmarks.splice(stackIndex, 1)
+    removedSourceSlot = true
+  } else if (sourceStack.items.length === 1) {
+    bookmarks[stackIndex] = sourceStack.items[0]
+  } else {
+    bookmarks[stackIndex] = sourceStack
+  }
+
+  return { bookmarks, item, sourceStackIndex: stackIndex, removedSourceSlot }
 }
 
 function getBookmarkDropIntent(target, event) {
@@ -350,7 +647,10 @@ function updateBookmarkDropIntent(el, event) {
   clearBookmarkDropClasses(el)
   if (el.dataset.index === String(draggedBookmarkIndex)) return
 
-  const intent = getBookmarkDropIntent(el, event)
+  let intent = getBookmarkDropIntent(el, event)
+  if (draggedStackItem !== null && intent === "stack") {
+    intent = "after"
+  }
   const i18n = geti18n()
   if (intent === "before") {
     el.classList.add("drag-over-before")
@@ -368,14 +668,28 @@ function updateBookmarkDropIntent(el, event) {
 
 function handleDragStart(e) {
   draggedBookmarkIndex = Number(this.dataset.index)
+  draggedStackItem = null
   e.dataTransfer.effectAllowed = "move"
   document.body.classList.add("bookmark-dragging-active")
   // The timeout ensures the drop target is visually still clear, while the dragged shadow exists
   setTimeout(() => this.classList.add("dragging"), 0)
 }
 
+function handleStackItemDragStart(e) {
+  draggedStackItem = {
+    stackIndex: Number(this.dataset.parentStackIndex),
+    itemIndex: Number(this.dataset.stackIndex),
+  }
+  draggedBookmarkIndex = null
+  draggedGroupIndex = null
+  e.dataTransfer.effectAllowed = "move"
+  document.body.classList.add("bookmark-dragging-active")
+  setTimeout(() => this.classList.add("dragging"), 0)
+}
+
 function handleGroupDragStart(e) {
   draggedGroupIndex = Number(this.dataset.index)
+  draggedStackItem = null
   e.dataTransfer.effectAllowed = "move"
   setTimeout(() => this.classList.add("dragging"), 0)
 }
@@ -383,7 +697,18 @@ function handleGroupDragStart(e) {
 function handleDragOver(e) {
   e.preventDefault()
   e.dataTransfer.dropEffect = "move"
-  updateBookmarkDropIntent(this, e)
+  if (this.classList.contains("bookmark")) {
+    updateBookmarkDropIntent(this, e)
+  } else if (this.classList.contains("bookmark-group-tab")) {
+    if (draggedBookmarkIndex !== null || draggedStackItem !== null) {
+      this.classList.add("drag-over", "drag-over-bookmark")
+      this.dataset.dropLabel =
+        geti18n().bookmark_drop_move_to_folder || "Move here"
+    } else if (draggedGroupIndex !== null) {
+      this.classList.add("drag-over")
+      this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
+    }
+  }
   return false
 }
 
@@ -394,15 +719,23 @@ function handleDragEnter(e) {
       updateBookmarkDropIntent(this, e)
     }
   } else if (this.classList.contains("bookmark-group-tab")) {
-    if (this.dataset.index !== String(draggedGroupIndex)) {
+    if (draggedBookmarkIndex !== null || draggedStackItem !== null) {
+      const i18n = geti18n()
+      this.classList.add("drag-over", "drag-over-bookmark")
+      this.dataset.dropLabel = i18n.bookmark_drop_move_to_folder || "Move here"
+    } else if (this.dataset.index !== String(draggedGroupIndex)) {
       this.classList.add("drag-over")
+      this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
     }
   }
 }
 
 function handleDragLeave(e) {
   if (this.classList.contains("bookmark")) clearBookmarkDropClasses(this)
-  else this.classList.remove("drag-over")
+  else {
+    this.classList.remove("drag-over", "drag-over-bookmark")
+    this.removeAttribute("data-drop-label")
+  }
 }
 
 function handleDrop(e) {
@@ -411,7 +744,24 @@ function handleDrop(e) {
   clearBookmarkDropClasses(this)
   const targetIndex = Number(this.dataset.index)
 
-  if (draggedBookmarkIndex !== null && draggedBookmarkIndex !== targetIndex) {
+  if (draggedStackItem !== null) {
+    const snapshot = captureBookmarkSnapshot()
+    const extracted = takeDraggedStackItem()
+    if (!extracted?.item) return false
+
+    const { bookmarks, item, sourceStackIndex, removedSourceSlot } = extracted
+    let insertIndex = targetIndex
+    if (removedSourceSlot && sourceStackIndex < targetIndex) insertIndex -= 1
+    const intent = getBookmarkDropIntent(this, e)
+    if (intent !== "before") insertIndex += 1
+    bookmarks.splice(Math.max(0, insertIndex), 0, item)
+    setBookmarks(bookmarks)
+    saveBookmarks()
+    document.getElementById("bookmark-stack-popup")?.remove()
+    renderBookmarks()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
+  } else if (draggedBookmarkIndex !== null && draggedBookmarkIndex !== targetIndex) {
+    const snapshot = captureBookmarkSnapshot()
     const bookmarks = getBookmarks()
     const draggedItem = bookmarks[draggedBookmarkIndex]
     const targetItem = bookmarks[targetIndex]
@@ -420,12 +770,17 @@ function handleDrop(e) {
     if (intent === "stack") {
       if (isBookmarkStack(targetItem)) {
         targetItem.items.push(...getStackItems(draggedItem))
+        if (
+          !targetItem.title ||
+          targetItem.title === "Bookmark Group" ||
+          targetItem.title === "Nhóm bookmark" ||
+          targetItem.title === (geti18n().bookmark_stack_default_name || "Bookmark Group")
+        ) {
+          targetItem.title = inferBookmarkStackName(targetItem.items)
+        }
         bookmarks.splice(draggedBookmarkIndex, 1)
       } else {
-        const currentI18n = geti18n()
-        const stackTitle =
-          currentI18n.bookmark_stack_default_name || "Bookmark Group"
-        bookmarks[targetIndex] = createBookmarkStack(stackTitle, [
+        bookmarks[targetIndex] = createBookmarkStack(null, [
           targetItem,
           ...getStackItems(draggedItem),
         ])
@@ -434,6 +789,7 @@ function handleDrop(e) {
       setBookmarks(bookmarks)
       saveBookmarks()
       renderBookmarks()
+      showBookmarkUndo(geti18n().bookmark_group_created || "Group created", snapshot)
       return false
     }
 
@@ -445,6 +801,7 @@ function handleDrop(e) {
     setBookmarks(bookmarks)
     saveBookmarks()
     renderBookmarks()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
   }
   return false
 }
@@ -452,16 +809,74 @@ function handleDrop(e) {
 function handleGroupDrop(e) {
   e.stopPropagation()
   e.preventDefault()
-  this.classList.remove("drag-over")
+  this.classList.remove("drag-over", "drag-over-bookmark")
+  this.removeAttribute("data-drop-label")
   const targetIndex = Number(this.dataset.index)
 
-  if (draggedGroupIndex !== null && draggedGroupIndex !== targetIndex) {
+  if (draggedStackItem !== null) {
+    const snapshot = captureBookmarkSnapshot()
+    const groups = getBookmarkGroups()
+    const targetGroup = groups[targetIndex]
+    const activeGroupId = getActiveGroupId()
+    if (!targetGroup || targetGroup.id === activeGroupId) return false
+    if (
+      getSettings().bookmarkLimit20 !== false &&
+      (targetGroup.items || []).length >= 20
+    ) {
+      showAlert(
+        geti18n().alert_bookmark_limit_reached ||
+          "This group already has 20 bookmarks!",
+      )
+      return false
+    }
+
+    const extracted = takeDraggedStackItem()
+    if (!extracted?.item) return false
+    targetGroup.items = targetGroup.items || []
+    targetGroup.items.push(extracted.item)
+    setBookmarks(extracted.bookmarks)
+    setBookmarkGroups(groups)
+    saveBookmarks()
+    document.getElementById("bookmark-stack-popup")?.remove()
+    renderBookmarks()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
+  } else if (draggedBookmarkIndex !== null) {
+    const snapshot = captureBookmarkSnapshot()
+    const groups = getBookmarkGroups()
+    const targetGroup = groups[targetIndex]
+    const activeGroupId = getActiveGroupId()
+    if (!targetGroup || targetGroup.id === activeGroupId) return false
+    if (
+      getSettings().bookmarkLimit20 !== false &&
+      (targetGroup.items || []).length >= 20
+    ) {
+      showAlert(
+        geti18n().alert_bookmark_limit_reached ||
+          "This group already has 20 bookmarks!",
+      )
+      return false
+    }
+
+    const bookmarks = getBookmarks()
+    const [draggedItem] = bookmarks.splice(draggedBookmarkIndex, 1)
+    if (!draggedItem) return false
+
+    targetGroup.items = targetGroup.items || []
+    targetGroup.items.push(draggedItem)
+    setBookmarks(bookmarks)
+    setBookmarkGroups(groups)
+    saveBookmarks()
+    renderBookmarks()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
+  } else if (draggedGroupIndex !== null && draggedGroupIndex !== targetIndex) {
+    const snapshot = captureBookmarkSnapshot()
     const groups = getBookmarkGroups()
     const [draggedItem] = groups.splice(draggedGroupIndex, 1)
     groups.splice(targetIndex, 0, draggedItem)
     setBookmarkGroups(groups)
     saveBookmarks()
     renderBookmarks()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
   }
   return false
 }
@@ -469,14 +884,40 @@ function handleGroupDrop(e) {
 function handleDragEnd(e) {
   this.classList.remove("dragging")
   document
-    .querySelectorAll(".bookmark, .bookmark-group-tab")
+    .querySelectorAll(".bookmark, .bookmark-group-tab, .add-bookmark-card")
     .forEach((el) => {
       clearBookmarkDropClasses(el)
-      el.classList.remove("drag-over")
+      el.classList.remove("drag-over", "drag-over-bookmark")
+      el.removeAttribute("data-drop-label")
     })
   draggedBookmarkIndex = null
   draggedGroupIndex = null
+  draggedStackItem = null
   document.body.classList.remove("bookmark-dragging-active")
+}
+
+function handleAddBookmarkDragOver(e) {
+  if (draggedStackItem === null) return
+  e.preventDefault()
+  e.dataTransfer.dropEffect = "move"
+  this.classList.add("drag-over")
+  this.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
+}
+
+function handleAddBookmarkDrop(e) {
+  if (draggedStackItem === null) return
+  e.preventDefault()
+  e.stopPropagation()
+  clearBookmarkDropClasses(this)
+  const snapshot = captureBookmarkSnapshot()
+  const extracted = takeDraggedStackItem()
+  if (!extracted?.item) return
+  extracted.bookmarks.push(extracted.item)
+  setBookmarks(extracted.bookmarks)
+  saveBookmarks()
+  document.getElementById("bookmark-stack-popup")?.remove()
+  renderBookmarks()
+  showBookmarkUndo(geti18n().bookmark_moved || "Bookmark moved", snapshot)
 }
 
 let toggleListenerAdded = false
@@ -619,7 +1060,7 @@ export function renderBookmarks() {
 
       if (isStack) {
         e.preventDefault()
-        openBookmarkStackPopup(bookmark, bookmarkEl)
+        openBookmarkStackPopup(bookmark, bookmarkEl, index)
       }
     })
 
@@ -635,9 +1076,14 @@ export function renderBookmarks() {
               bookmark.title || currentI18n.bookmark_stack_default_name || "Bookmark Group",
             )
             if (newName && newName.trim()) {
+              const snapshot = captureBookmarkSnapshot()
               bookmarks[index].title = newName.trim()
               saveBookmarks()
               renderBookmarks()
+              showBookmarkUndo(
+                currentI18n.bookmark_group_renamed || "Group renamed",
+                snapshot,
+              )
             }
           },
           onDelete: async () => {
@@ -646,10 +1092,15 @@ export function renderBookmarks() {
               `${currentI18n.alert_delete_confirm || "Delete"} "${getBookmarkLabel(bookmark)}"?`,
             )
             if (confirmed) {
+              const snapshot = captureBookmarkSnapshot()
               bookmarks.splice(index, 1)
               setBookmarks(bookmarks)
               saveBookmarks()
               renderBookmarks()
+              showBookmarkUndo(
+                currentI18n.bookmark_group_deleted || "Group deleted",
+                snapshot,
+              )
             }
           },
         })
@@ -674,6 +1125,11 @@ export function renderBookmarks() {
       return
     }
     openModal(null)
+  })
+  addBtn.addEventListener("dragover", handleAddBookmarkDragOver)
+  addBtn.addEventListener("drop", handleAddBookmarkDrop)
+  addBtn.addEventListener("dragleave", function () {
+    clearBookmarkDropClasses(this)
   })
   frag.appendChild(addBtn)
 
@@ -1025,9 +1481,11 @@ function renderGroupTabs() {
       const currentI18n = geti18n()
       const newName = await showPrompt(currentI18n.prompt_rename_group || "Enter new group name:", group.name)
       if (newName && newName.trim() !== "") {
+        const snapshot = captureBookmarkSnapshot()
         group.name = newName.trim()
         saveBookmarks()
         renderBookmarks() // Re-render tabs
+        showBookmarkUndo(currentI18n.bookmark_group_renamed || "Group renamed", snapshot)
       }
     })
 
@@ -1053,6 +1511,7 @@ function renderGroupTabs() {
       (currentI18n.bookmark_group_default_name || "Group {count}").replace("{count}", groups.length + 1),
     )
     if (name) {
+      const snapshot = captureBookmarkSnapshot()
       const newGroup = {
         id: `group-${Date.now()}`,
         name: name.trim() || (currentI18n.bookmark_group_default_name || "Group {count}").replace("{count}", groups.length + 1),
@@ -1062,6 +1521,7 @@ function renderGroupTabs() {
       setBookmarkGroups(groups)
       setActiveGroupId(newGroup.id) // Switch to new group
       renderBookmarks()
+      showBookmarkUndo(currentI18n.bookmark_group_created || "Group created", snapshot)
     }
   })
   bookmarkGroupsContainer.appendChild(addTab)
@@ -1073,6 +1533,22 @@ export function initBookmarks() {
   // Selection toolbar events
   const deleteBtn = document.getElementById("bookmark-delete-selected")
   const cancelBtn = document.getElementById("bookmark-cancel-selection")
+  const selectAllBtn = document.getElementById("bookmark-select-all")
+
+  if (selectAllBtn) {
+    selectAllBtn.addEventListener("click", (e) => {
+      e.stopPropagation()
+      const bookmarks = getBookmarks()
+      if (!isSelectionMode) isSelectionMode = true
+      if (selectedIndices.size === bookmarks.length) {
+        selectedIndices.clear()
+      } else {
+        selectedIndices = new Set(bookmarks.map((_, index) => index))
+      }
+      renderBookmarks()
+      updateSelectionUI()
+    })
+  }
 
   if (deleteBtn) {
     deleteBtn.addEventListener("click", (e) => {

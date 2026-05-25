@@ -488,7 +488,8 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
     background 0.16s ease;
 }
 
-.bookmark.drag-over {
+.bookmark.drag-over,
+.add-bookmark-card.drag-over {
   position: relative;
   border: 2px dashed var(--accent-color, #a8c0ff);
   border-radius: 10px;
@@ -518,6 +519,7 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
 }
 
 .bookmark.drag-over::after,
+.add-bookmark-card.drag-over::after,
 .bookmark.drag-over-before::after,
 .bookmark.drag-over-after::after {
   content: attr(data-drop-label);
@@ -546,7 +548,8 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
   -webkit-backdrop-filter: blur(10px);
 }
 
-.bookmark.drag-over::after {
+.bookmark.drag-over::after,
+.add-bookmark-card.drag-over::after {
   background: var(--accent-color, #a8c0ff);
   color: var(--accent-contrast-color, #10131a);
 }
@@ -698,6 +701,46 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
   color: var(--text-color);
 }
 
+.bookmark-stack-popup-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bookmark-stack-popup-action {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-color, #fff);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  gap: 6px;
+  justify-content: center;
+  min-height: 32px;
+  padding: 7px 9px;
+}
+
+.bookmark-stack-popup-action:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.bookmark-stack-popup-action.danger {
+  color: #ff8a8a;
+}
+
+.bookmark-stack-popup-action.danger:not(:disabled):hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.bookmark-stack-popup-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .bookmark-stack-popup-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -706,6 +749,40 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
 
 .bookmark-stack-popup .bookmark {
   width: 100%;
+}
+
+.bookmark-stack-popup-item {
+  position: relative;
+}
+
+.bookmark-stack-popup-check {
+  align-items: center;
+  background: var(--accent-color, #a8c0ff);
+  border-radius: 999px;
+  color: var(--accent-contrast-color, #10131a);
+  display: none;
+  font-size: 0.62rem;
+  height: 18px;
+  justify-content: center;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 18px;
+}
+
+.bookmark-stack-popup.is-selecting .bookmark-stack-popup-item {
+  cursor: pointer;
+}
+
+.bookmark-stack-popup.is-selecting .bookmark-stack-popup-item.selected {
+  outline: 2px solid var(--accent-color);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+}
+
+.bookmark-stack-popup.is-selecting
+  .bookmark-stack-popup-item.selected
+  .bookmark-stack-popup-check {
+  display: inline-flex;
 }
 
 body.hide-bookmark-bg .bookmark img,
@@ -3670,6 +3747,14 @@ body.context-menu-none .calendar-event-preview-desc {
   -webkit-backdrop-filter: blur(4px);
 }
 
+.bookmark-group-tab span {
+  min-width: 0;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .bookmark-group-tab:hover {
   background: var(
     --accent-contrast-color,
@@ -3678,6 +3763,45 @@ body.context-menu-none .calendar-event-preview-desc {
   color: var(--accent-color, #fff) !important;
   transform: translateY(-1px);
   border-color: var(--accent-color) !important;
+}
+
+.bookmark-group-tab.drag-over {
+  position: relative;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
+  border-color: var(--accent-color) !important;
+  color: var(--accent-color) !important;
+  box-shadow:
+    0 0 0 2px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16),
+    0 10px 24px rgba(0, 0, 0, 0.24);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.bookmark-group-tab.drag-over::after {
+  content: attr(data-drop-label);
+  position: absolute;
+  left: 50%;
+  top: -25px;
+  z-index: 4;
+  min-width: max-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(15, 18, 25, 0.92);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+  color: var(--text-color, #fff);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.bookmark-group-tab.drag-over-bookmark::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px dashed var(--accent-color);
+  border-radius: 7px;
+  pointer-events: none;
 }
 
 .bookmark-group-tab.active {
@@ -5262,6 +5386,81 @@ body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container {
   max-height: 0 !important;
 }
 
+/* Bookmark group tabs tuned per compact layout */
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  align-items: stretch !important;
+  background: rgba(12, 14, 20, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  max-height: min(520px, calc(100vh - 130px));
+  max-width: 150px !important;
+  overflow-y: auto;
+  padding: 8px !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab {
+  justify-content: flex-start;
+  min-height: 34px;
+  padding: 8px 10px !important;
+  width: 100%;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab span {
+  max-width: 82px;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab.add-group-tab {
+  min-width: 0;
+  width: 100%;
+}
+
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-top-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  background: rgba(12, 14, 20, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  max-width: min(760px, calc(100vw - 36px)) !important;
+  overflow-x: auto;
+  padding: 7px !important;
+  scrollbar-width: thin;
+}
+
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+}
+
+body.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-taskbar-top-mode .bookmark-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab {
+  border-radius: 10px;
+  min-height: 34px;
+  padding: 7px 10px !important;
+  white-space: nowrap;
+}
+
+body.bookmark-taskbar-mode .bookmark-group-tab span,
+body.bookmark-taskbar-top-mode .bookmark-group-tab span,
+body.bookmark-taskbar-left-mode .bookmark-group-tab span {
+  max-width: 96px;
+}
+
+body.bookmark-taskbar-top-mode .bookmark-groups-container {
+  margin-bottom: 8px !important;
+  margin-top: 0 !important;
+}
+
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  margin-bottom: 0 !important;
+  margin-top: 8px !important;
+}
+
 /* Beautiful Toggle Animation */
 .bookmark-groups-toggle {
   transition:
@@ -5847,4 +6046,30 @@ body.bookmark-taskbar-top-mode.bookmark-macos-hover .bookmark:hover > span {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
+}
+
+/* Final bookmark-group layout polish */
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+}
+
+body.bookmark-taskbar-mode .bookmark-groups-container {
+  justify-content: center !important;
+}
+
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+}
+
+body.bookmark-taskbar-top-mode .bookmark-groups-container {
+  justify-content: center !important;
+  margin-bottom: 8px !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-group-tab,
+body.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-taskbar-top-mode .bookmark-group-tab,
+body.bookmark-taskbar-left-mode .bookmark-group-tab {
+  flex: 0 0 auto;
 }
