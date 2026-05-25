@@ -57,6 +57,20 @@
   --font-date: var(--font-clock-date);
   --clock-size: 6rem;
   --date-size: 1.5rem;
+  /* 8-point layout scale */
+  --space-0: 0;
+  --space-0-5: 4px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-edge: rgba(255, 255, 255, 0.2); /* For rim lighting effect */

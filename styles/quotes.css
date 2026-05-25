@@ -6,8 +6,8 @@
   transform: translate(-50%, -50%);
   z-index: 100;
   text-align: center;
-  padding: 18px 25px;
-  border-radius: 12px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-2);
 }
 
 .quotes-container:hover {
@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-1);
 }
 
 /* Quote Section */
@@ -41,7 +41,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-1);
 }
 
 .quote-text {
@@ -58,7 +58,7 @@
   justify-content: center;
   position: relative;
   width: 100%;
-  padding: 0 5px;
+  padding: 0 var(--space-1);
 }
 
 .quote-author {
@@ -72,10 +72,10 @@
 /* Actions Row - Integrated with Author */
 .quotes-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--space-2);
   align-items: center;
   position: absolute;
-  right: 5px;
+  right: var(--space-1);
 }
 
 .crystal-ball-trigger,
@@ -98,24 +98,24 @@
 /* Crystal Ball Section - Centered and Neat */
 .crystal-ball-ui {
   width: 100%;
-  padding-top: 15px;
+  padding-top: var(--space-2);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-2);
 }
 
 .cb-input-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-2);
   width: 100%;
 }
 
 #cb-work-input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(0, 0, 0, 0.2);
   color: white;
@@ -183,7 +183,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-1);
   width: 100%;
 }
 
@@ -198,13 +198,13 @@
 
 .cb-priority-buttons {
   display: flex;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .cb-prio-btn {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: white;
@@ -229,7 +229,7 @@
   min-width: 80px;
   text-align: left;
   border-left: 1px solid rgba(255, 255, 255, 0.2);
-  padding-left: 10px;
+  padding-left: var(--space-1);
   line-height: 1.2;
 }
 
@@ -243,8 +243,8 @@
 
 #cb-ask-btn {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
   border: none;
   background: var(--accent-color, #4caf50);
   color: black;
@@ -259,7 +259,7 @@
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.9);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,7 +270,7 @@
   color: var(--accent-color, #4caf50);
   font-size: 1.1rem;
   font-weight: 700;
-  padding: 20px;
+  padding: var(--space-3);
 }
 
 /* White Blur Skin */

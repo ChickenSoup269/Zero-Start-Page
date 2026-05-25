@@ -54,7 +54,7 @@
 .bug-modal-content {
   background: rgba(15, 15, 20, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   width: 90%;
   max-width: 550px;
@@ -67,7 +67,7 @@
   animation: dialogSlideIn 0.3s ease;
 }
 .bug-modal-header {
-  padding: 14px 24px;
+  padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
@@ -84,7 +84,7 @@
 }
 
 .bug-modal-body {
-  padding: 0 24px 24px;
+  padding: 0 var(--space-3) var(--space-3);
   overflow-y: auto;
   flex: 1;
   scrollbar-width: thin;
@@ -93,14 +93,14 @@
 }
 
 .bug-modal-body > *:first-child {
-  margin-top: 16px !important;
+  margin-top: var(--space-2) !important;
 }
 
 .bug-modal-footer {
-  padding: 16px 24px 24px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  gap: 16px;
+  gap: var(--space-2);
   flex-shrink: 0;
 }
 
@@ -108,7 +108,7 @@
 .bug-report-intro {
   font-size: 0.9rem;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-2);
   line-height: 1.6;
 }
 
@@ -117,10 +117,10 @@
   height: 300px;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: #fff;
   font-family: monospace;
-  padding: 16px;
+  padding: var(--space-2);
   resize: none;
   overflow-y: auto;
   overflow-x: hidden;
@@ -132,10 +132,10 @@
 
 .bug-modal input[type="text"] {
   width: 100%;
-  padding: 12px 16px;
+  padding: var(--space-2) var(--space-2);
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   color: #fff;
   font-size: 1rem;
   outline: none;
@@ -144,7 +144,7 @@
 }
 
 .bug-modal .modal-input-group input[type="text"] {
-  padding-left: 42px;
+  padding-left: var(--space-5);
 }
 
 .bug-modal input[type="text"]:focus {
@@ -157,7 +157,7 @@
   height: 44px;
   background: #fff;
   color: #000;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,13 +176,13 @@
   height: 44px;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-1);
   font-weight: 600;
   transition: all 0.2s;
 }
@@ -204,7 +204,7 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   width: 90%;
   max-width: 420px;
   padding: 0;
@@ -219,7 +219,7 @@
 }
 
 .dialog-header {
-  padding: 18px 24px;
+  padding: var(--space-2) var(--space-3);
   font-weight: 700;
   font-size: 1.1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -228,20 +228,20 @@
 }
 
 .dialog-body {
-  padding: 30px 24px;
+  padding: var(--space-4) var(--space-3);
   text-align: center;
 }
 
 .dialog-icon {
   font-size: 2.8rem;
-  margin-bottom: 18px;
+  margin-bottom: var(--space-2);
   color: var(--accent-color);
   display: block;
   filter: drop-shadow(0 0 10px rgba(var(--accent-color-rgb), 0.3));
 }
 
 .dialog-message {
-  margin-bottom: 22px;
+  margin-bottom: var(--space-3);
   font-size: 1.05rem;
   font-weight: 500;
   line-height: 1.5;
@@ -250,10 +250,10 @@
 
 .dialog-input {
   width: 100%;
-  padding: 14px 18px;
+  padding: var(--space-2) var(--space-2);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: #fff;
   font-size: 1rem;
   outline: none;
@@ -268,9 +268,9 @@
 }
 
 .dialog-footer {
-  padding: 18px 24px 24px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
   display: flex;
-  gap: 12px;
+  gap: var(--space-2);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -278,7 +278,7 @@
   flex: 1 1 0;
   width: 0;
   height: 44px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: none;
   font-weight: 700;
   font-size: 0.95rem;
@@ -319,19 +319,19 @@
 .dialog-checklist {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-1);
   text-align: left;
-  margin-top: 15px;
+  margin-top: var(--space-2);
 }
 
 .dialog-check-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -349,7 +349,7 @@
   width: 20px;
   height: 20px;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
   position: relative;
@@ -457,7 +457,7 @@
 .quick-access-white .bookmark-tree-container {
   background: #000 !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
 
 .quick-access-white .bookmark-tree-container * {
@@ -617,15 +617,15 @@
 .update-popup-actions {
   display: grid;
   grid-template-columns: minmax(96px, 0.85fr) minmax(180px, 1.65fr);
-  gap: 12px;
+  gap: var(--space-2);
   align-items: stretch;
 }
 
 .update-popup-close-btn,
 .update-changelog-btn {
   min-height: 44px;
-  border-radius: 12px !important;
-  padding: 0 16px !important;
+  border-radius: var(--radius-md) !important;
+  padding: 0 var(--space-2) !important;
   text-decoration: none;
   text-align: center;
   justify-content: center;
@@ -646,7 +646,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
   font-size: 0.9rem;
   font-weight: 700;
-  gap: 9px;
+  gap: var(--space-1);
 }
 
 .update-changelog-btn:hover {
@@ -664,8 +664,8 @@
 
 @media (max-width: 480px) {
   #update-notification-popup {
-    right: 14px !important;
-    bottom: 14px !important;
+    right: var(--space-2) !important;
+    bottom: var(--space-2) !important;
     width: calc(100vw - 28px) !important;
   }
 

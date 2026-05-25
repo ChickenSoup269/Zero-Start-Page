@@ -1,7 +1,7 @@
 /* Music Player Container & Wrapper */
 .music-player-container {
   position: fixed;
-  bottom: 25px;
+  bottom: var(--space-3);
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -25,14 +25,14 @@
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
   border: 1px solid rgba(var(--accent-color-rgb, 30, 215, 96), 0.25);
-  border-radius: 20px;
-  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(var(--accent-color-rgb, 30, 215, 96), 0.08) inset;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--space-3);
   width: auto;
   min-width: 320px;
   position: relative;
@@ -258,7 +258,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-1);
 }
 
 .player-info h3 {
@@ -287,7 +287,7 @@
 .progress-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-1);
   width: 100%;
   min-width: 220px;
 }
@@ -346,7 +346,7 @@
 .controls-row {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--space-2);
 }
 
 .player-btn {
@@ -381,7 +381,7 @@
 .slider-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-1);
   width: 100%;
 }
 
@@ -410,7 +410,7 @@
 .volume-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-1);
   width: 80px;
 }
 
@@ -422,8 +422,8 @@
 /* Toggle & Close Buttons */
 .music-toggle-btn {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  bottom: var(--space-3);
+  right: var(--space-3);
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -451,8 +451,8 @@
 
 .close-player-btn {
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: -8px;
+  left: -8px;
   width: 26px;
   height: 26px;
   border-radius: 50%;
@@ -483,19 +483,19 @@
   position: absolute;
   pointer-events: none;
   transition: all 0.4s ease;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
 
 .music-player-container.show-video #player-iframe-wrapper {
   width: 280px;
   height: 157px;
   opacity: 1;
-  margin-left: 20px;
+  margin-left: var(--space-3);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .music-player-container.show-video .music-player-wrapper {
-  padding-right: 25px;
+  padding-right: var(--space-3);
 }
 
 /* Vinyl Style (Default) */
@@ -514,7 +514,7 @@
   border-radius: 0;
   image-rendering: pixelated;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
-  padding: 15px;
+  padding: var(--space-2);
   font-family: "Courier New", Courier, monospace;
 }
 
@@ -575,18 +575,18 @@
   border: 2px solid #fff;
   border-radius: 0;
   background: #222;
-  padding: 4px 8px;
+  padding: var(--space-0-5) var(--space-1);
 }
 
 /* Spotify Style (Modern Horizontal) */
 .music-style-spotify .music-player-wrapper {
   width: 680px;
   max-width: 96vw;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: #121212;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 12px 16px;
-  gap: 16px;
+  padding: var(--space-2) var(--space-2);
+  gap: var(--space-2);
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -628,7 +628,7 @@
     "info controls"
     "info progress";
   align-items: center;
-  gap: 4px 16px;
+  gap: var(--space-0-5) var(--space-2);
   flex: 1;
   overflow: hidden;
 }
@@ -667,7 +667,7 @@
 .music-style-spotify .controls-row {
   grid-area: controls;
   display: flex !important;
-  gap: 20px;
+  gap: var(--space-3);
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
@@ -719,7 +719,7 @@
   grid-area: progress;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-1);
 }
 
 .music-style-spotify .progress-time {
@@ -769,7 +769,7 @@
 
 /* Visualizer */
 .music-style-sidebar .music-visualizer {
-  padding: 0 8px;
+  padding: 0 var(--space-1);
   width: 100%;
   justify-content: center;
   align-items: flex-end;
@@ -781,9 +781,9 @@
 .music-visualizer {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--space-0-5);
   height: 40px;
-  padding: 0 20px;
+  padding: 0 var(--space-3);
   position: relative;
 }
 
@@ -1162,9 +1162,9 @@
 
 /* Minimal Style */
 .music-style-minimal .music-player-wrapper {
-  padding: 12px 16px;
-  gap: 12px;
-  border-radius: 16px;
+  padding: var(--space-2) var(--space-2);
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
   background: rgba(20, 20, 20, 0.65);
 }
 
@@ -1175,7 +1175,7 @@
 .music-style-minimal .player-main {
   flex-direction: row;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-2);
 }
 
 .music-style-minimal .player-info h3 {
@@ -1184,19 +1184,19 @@
 }
 
 .music-style-minimal .controls-row {
-  gap: 10px;
+  gap: var(--space-1);
 }
 
 .music-style-minimal .music-visualizer {
   height: 28px;
   gap: 3px;
-  padding: 0 8px;
+  padding: 0 var(--space-1);
   align-items: center;
 }
 
 .music-style-minimal .visualizer-bar {
   width: 2px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   background: var(--accent-color);
   opacity: 0.7;
   transition:
@@ -1242,7 +1242,7 @@
 
 /* Platform Icon Styles */
 .platform-icon {
-  margin-right: 6px;
+  margin-right: var(--space-1);
   font-size: 0.85rem;
 }
 
@@ -1253,12 +1253,12 @@
   background: rgb(26, 26, 26);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border-radius: 20px;
-  padding: 10px 18px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-1) var(--space-2);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-2);
 }
 .music-style-apple .disc-container {
   width: 50px;
@@ -1268,7 +1268,7 @@
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 10px; /* Apple uses rounded squares */
+  border-radius: var(--radius-sm); /* Apple uses rounded squares */
   animation: none !important;
 }
 .music-style-apple .vinyl-disc::before {
@@ -1279,7 +1279,7 @@
   grid-template-areas: "info controls" "progress progress";
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
-  gap: 6px;
+  gap: var(--space-1);
   width: 100%;
 }
 .music-style-apple .player-info {
@@ -1298,7 +1298,7 @@
 }
 .music-style-apple .controls-row {
   grid-area: controls;
-  gap: 12px;
+  gap: var(--space-2);
 }
 .music-style-apple .player-btn {
   font-size: 1rem;
@@ -1328,7 +1328,7 @@
 .music-style-apple .progress-bar-track {
   height: 5px;
   background: rgb(43, 43, 43);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 }
 .music-style-apple .progress-bar-fill {
   background: var(--accent-color); /* Apple Music Accent */
@@ -1337,7 +1337,7 @@
   height: 32px;
   display: flex !important;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-0-5);
 }
 .music-style-apple .visualizer-bar {
   background: var(--accent-color);
@@ -1388,7 +1388,7 @@
   background: linear-gradient(180deg, #333, #111);
   border: 1px solid #444;
   border-radius: 2px;
-  padding: 12px;
+  padding: var(--space-2);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 .music-style-soundcloud .disc-container {
@@ -1406,14 +1406,14 @@
 }
 .music-style-soundcloud .player-main {
   width: 100%;
-  gap: 8px;
+  gap: var(--space-1);
 }
 .music-style-soundcloud .player-info h3 {
   font-size: 0.8rem;
   font-weight: 400;
   color: #ccc;
   background: rgba(0, 0, 0, 0.8); /* SoundCloud title strip */
-  padding: 2px 6px;
+  padding: 2px var(--space-1);
   display: inline-block;
   margin-bottom: 3px;
 }
@@ -1421,7 +1421,7 @@
   color: #999;
   font-size: 0.7rem;
   background: rgba(0, 0, 0, 0.8);
-  padding: 2px 6px;
+  padding: 2px var(--space-1);
   display: inline-block;
 }
 .music-style-soundcloud .progress-bar-track {
@@ -1439,13 +1439,13 @@
 .music-style-soundcloud .music-visualizer {
   height: 48px;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 var(--space-1);
   gap: 3px;
 }
 .music-style-soundcloud .visualizer-bar {
   background: var(--accent-color);
   width: 3px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   opacity: 0.8;
   transition: height 0.15s ease;
 }
@@ -1497,7 +1497,7 @@
 }
 
 .music-style-soundcloud .controls-row {
-  margin-top: 4px;
+  margin-top: var(--space-0-5);
 }
 .music-style-soundcloud .player-btn {
   color: #ff5500;
@@ -1514,8 +1514,8 @@
 .music-style-cassette .music-player-wrapper {
   background: linear-gradient(45deg, #20202b 0%, #181818 60%, #161220 100%);
   border: 3px solid #000000;
-  border-radius: 5px;
-  padding: 16px;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 -2px 4px rgba(0, 0, 0, 0.3),
@@ -1529,8 +1529,8 @@
   background: #1a2a1a;
   border: 2px solid #111;
   border-radius: 4px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
+  padding: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-2);
   box-shadow:
     inset 0 2px 6px rgba(0, 0, 0, 0.8),
     inset 0 0 0 1px rgba(255, 255, 255, 0.04);
@@ -1579,9 +1579,9 @@
   display: flex;
   background: #1a2a1a;
   border: 1px solid #111;
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1);
+  margin-bottom: var(--space-2);
   justify-content: center;
   box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.9);
 }
@@ -1597,9 +1597,9 @@
 .music-style-cassette .controls-row {
   background: #1a2a1a;
   border: 2px solid #111;
-  padding: 8px 10px;
+  padding: var(--space-1) var(--space-1);
   border-radius: 4px;
-  gap: 8px;
+  gap: var(--space-1);
   justify-content: center;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
 }
@@ -1677,11 +1677,11 @@
   justify-content: center;
   gap: 3px;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 var(--space-1);
   background: #1a2a1a;
   border: 1px solid #111;
   border-radius: 3px;
-  margin-top: 4px;
+  margin-top: var(--space-0-5);
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
@@ -1749,11 +1749,11 @@
   background: rgba(20, 20, 20, 0.85);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50px;
-  padding: 6px 14px 6px 6px;
+  border-radius: 48px;
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-1);
   max-width: 260px;
 }
 .music-style-pill .disc-container {
@@ -1767,7 +1767,7 @@
 .music-style-pill .player-main {
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-1);
 }
 .music-style-pill .player-info {
   display: flex;
@@ -1786,7 +1786,7 @@
   display: none; /* Hide artist for space */
 }
 .music-style-pill .controls-row {
-  gap: 5px;
+  gap: var(--space-1);
 }
 .music-style-pill .controls-row .prev-btn,
 .music-style-pill .controls-row .next-btn {
@@ -1798,8 +1798,8 @@
 .music-style-pill .progress-row {
   position: absolute;
   bottom: -4px;
-  left: 30px;
-  right: 30px;
+  left: var(--space-4);
+  right: var(--space-4);
   opacity: 0.8;
 }
 .music-style-pill .progress-time {
@@ -1866,9 +1866,9 @@
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 5px 10px;
+  padding: var(--space-1) var(--space-1);
   background: rgba(var(--accent-color-rgb), 0.15);
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   height: 26px;
   margin-left: auto;
   border: 1px solid rgba(var(--accent-color-rgb), 0.1);
@@ -1878,7 +1878,7 @@
   width: 3px;
   height: 6px;
   background: var(--accent-color, #fff);
-  border-radius: 10px; /* Hình viên thuốc hoàn hảo */
+  border-radius: var(--radius-sm); /* Hình viên thuốc hoàn hảo */
   opacity: 0.9;
   box-shadow: 0 0 5px rgba(var(--accent-color-rgb), 0.3);
   transition: height 0.2s ease;
@@ -2010,7 +2010,7 @@
 .music-style-beach .player-info {
   position: relative;
   z-index: 2;
-  padding-left: 15px;
+  padding-left: var(--space-2);
 }
 
 .music-style-beach .player-info h3 {
@@ -2133,9 +2133,9 @@
 .music-style-heartbeat .music-player-wrapper {
   flex-direction: column;
   width: 150px;
-  padding: 12px;
-  gap: 10px;
-  border-radius: 16px;
+  padding: var(--space-2);
+  gap: var(--space-1);
+  border-radius: var(--radius-md);
   background: rgba(10, 10, 10, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -2156,7 +2156,7 @@
 .music-style-heartbeat .disc-container {
   width: 126px;
   height: 160px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
@@ -2168,7 +2168,7 @@
 .music-style-heartbeat .vinyl-disc {
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   animation: none !important;
   border: none;
   background-size: cover;
@@ -2178,7 +2178,7 @@
 
 .music-style-heartbeat .player-main {
   width: 100%;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .music-style-heartbeat .player-info h3 {
@@ -2203,19 +2203,19 @@
 }
 
 .music-style-heartbeat .controls-row {
-  gap: 12px;
+  gap: var(--space-2);
 }
 
 .music-style-heartbeat .music-visualizer {
   position: relative;
   width: 100%;
   height: 35px;
-  margin-top: 8px;
+  margin-top: var(--space-1);
   padding: 0;
   z-index: 5;
   pointer-events: none;
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   display: block !important;
   overflow: hidden;
 }
@@ -2223,8 +2223,8 @@
 /* GIAO DIỆN GAMEBOY (KHI CÓ CLASS .skin-gameboy) */
 .music-style-heartbeat .music-player-wrapper.skin-gameboy {
   width: 160px;
-  padding: 15px 12px 25px;
-  border-radius: 10px 10px 40px 10px;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm) var(--radius-sm) 40px var(--radius-sm);
   background: #c4c3c0;
   border: 2px solid #a3a2a0;
   box-shadow:
@@ -2247,7 +2247,7 @@
 }
 
 .music-style-heartbeat .music-player-wrapper.skin-gameboy .player-main {
-  padding-bottom: 40px;
+  padding-bottom: var(--space-5);
 }
 
 .music-style-heartbeat .music-player-wrapper.skin-gameboy .player-info h3 {
@@ -2266,8 +2266,8 @@
 .music-style-heartbeat .music-player-wrapper.skin-gameboy::before {
   content: "";
   position: absolute;
-  bottom: 20px;
-  left: 15px;
+  bottom: var(--space-3);
+  left: var(--space-2);
   width: 40px;
   height: 40px;
   background:
@@ -2292,8 +2292,8 @@
 .music-style-heartbeat .music-player-wrapper.skin-gameboy::after {
   content: "";
   position: absolute;
-  bottom: 25px;
-  right: 15px;
+  bottom: var(--space-3);
+  right: var(--space-2);
   width: 18px;
   height: 18px;
   background: #a91152;
@@ -2304,8 +2304,8 @@
 
 .music-style-heartbeat .music-player-wrapper.skin-gameboy .music-visualizer {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: var(--space-1);
+  left: var(--space-1);
   width: 110px;
   height: 100px;
   background: transparent;
@@ -2393,7 +2393,7 @@
   width: 140px;
   height: 45px;
   padding: 0;
-  margin-left: 10px;
+  margin-left: var(--space-1);
   overflow: visible !important;
 }
 
@@ -2433,9 +2433,9 @@
 .music-style-sidebar .music-player-wrapper {
   flex-direction: column;
   width: 72px;
-  padding: 14px 0 16px;
-  gap: 14px;
-  border-radius: 16px;
+  padding: var(--space-2) 0 var(--space-2);
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
   background: rgba(18, 18, 18, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -2450,7 +2450,7 @@
 .music-style-sidebar .disc-container {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -2459,7 +2459,7 @@
 .music-style-sidebar .vinyl-disc {
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   animation: none !important;
   border: none;
 }
@@ -2474,7 +2474,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-2);
 }
 
 /* Tên bài + artist - xoay dọc */
@@ -2518,7 +2518,7 @@
   display: none;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
   width: 1px;
   padding: 0;
   min-width: unset;
@@ -2559,7 +2559,7 @@
 /* Controls - xếp dọc */
 .music-style-sidebar .controls-row {
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-1);
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -2611,7 +2611,7 @@
   background: #0c0c0c;
   border: 2px solid var(--accent-color);
   border-radius: 4px;
-  padding: 15px;
+  padding: var(--space-2);
   font-family: "Courier New", Courier, monospace;
   box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.2);
   position: relative;
@@ -2721,7 +2721,7 @@
   border: 1px solid var(--accent-color);
   color: var(--accent-color);
   border-radius: 0;
-  margin-right: 5px;
+  margin-right: var(--space-1);
   height: 28px;
   width: 32px;
 }
