@@ -5112,6 +5112,20 @@ body.bookmark-taskbar-left-mode .main-container {
   transform: none !important;
   animation: none !important;
   transition: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  perspective: none !important;
+  contain: none !important;
+  will-change: auto !important;
+}
+
+body.bookmark-sidebar-mode .main-container.ready,
+body.bookmark-taskbar-mode .main-container.ready,
+body.bookmark-taskbar-top-mode .main-container.ready,
+body.bookmark-taskbar-left-mode .main-container.ready {
+  animation: none !important;
+  transform: none !important;
 }
 
 body.bookmark-sidebar-mode .main-container.ready > *:not(.bookmark-widget),
@@ -6222,6 +6236,36 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
   overflow-y: auto !important;
   overscroll-behavior-y: contain;
   scrollbar-width: thin;
+}
+
+/* Sidebar bookmark alignment lock */
+body.bookmark-sidebar-mode .bookmark-widget,
+body.has-top-right-controls.bookmark-sidebar-mode .bookmark-widget {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  align-items: center !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-widget {
+  right: calc(var(--space-3) + env(safe-area-inset-right, 0px)) !important;
+}
+
+body.flip-layout.bookmark-sidebar-mode .bookmark-widget {
+  left: calc(var(--space-3) + env(safe-area-inset-left, 0px)) !important;
+  right: auto !important;
+}
+
+body.bookmark-sidebar-mode .bookmarks-grid {
+  align-items: center !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  max-height: min(88vh, calc(100vh - 96px)) !important;
+  max-width: max-content !important;
+  min-width: calc(var(--bookmark-icon-size, 42px) + 16px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  width: max-content !important;
 }
 
 body.bookmark-sidebar-mode .bookmark-group-tab:hover,

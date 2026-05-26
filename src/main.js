@@ -23,6 +23,7 @@ import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
+import { applyBrowserZoom } from "./utils/browserZoom.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -68,6 +69,7 @@ async function bootstrap() {
   }
 
   const currentSettings = getSettings()
+  applyBrowserZoom(currentSettings.browserZoom)
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
   }

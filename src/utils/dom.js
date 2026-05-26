@@ -1821,6 +1821,10 @@ export const freeMoveCustomTitleCheckbox = document.getElementById(
 )
 
 export const lcpBookmarkLayout = document.getElementById("lcp-bookmark-layout")
+export const lcpBrowserZoom = document.getElementById("lcp-browser-zoom")
+export const lcpBrowserZoomValue = document.getElementById(
+  "lcp-browser-zoom-value",
+)
 
 // Multi-select for Gradients
 export const gradientSelectModeBtn = document.getElementById(

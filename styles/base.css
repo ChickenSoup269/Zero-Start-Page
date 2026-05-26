@@ -25,6 +25,10 @@ body {
   image-rendering: high-quality;
 }
 
+body.browser-zoom-css-fallback {
+  zoom: var(--browser-zoom, 1);
+}
+
 i {
   line-height: normal;
   display: inline-flex;

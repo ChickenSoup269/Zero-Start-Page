@@ -34,6 +34,7 @@ import {
 import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { buildMultiColorCss } from "./multiColorManager.js"
+import { applyBrowserZoom, formatBrowserZoom } from "../../utils/browserZoom.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
@@ -1300,6 +1301,7 @@ function createApplySettings(effectInstances) {
       "--search-bar-width",
       `${settings.searchBarWidth || 600}px`,
     )
+    applyBrowserZoom(settings.browserZoom)
 
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
@@ -3638,6 +3640,14 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.lcpSearchBarWidthVal) {
         DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
       }
+    }
+    if (DOM.lcpBrowserZoom) {
+      DOM.lcpBrowserZoom.value = String(settings.browserZoom || 1)
+    }
+    if (DOM.lcpBrowserZoomValue) {
+      DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(
+        settings.browserZoom || 1,
+      )
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     if (DOM.showQuickAccessBgCheckbox) {

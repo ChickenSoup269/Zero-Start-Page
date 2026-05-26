@@ -67,6 +67,7 @@ import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
+import { applyBrowserZoom, formatBrowserZoom } from "../../utils/browserZoom.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
 import {
   BACKGROUND_ANIMATION_KEYS,
@@ -2060,6 +2061,22 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgStyleRow.style.display =
             DOM.lcpBookmarkLayout.value === "default" ? "none" : "flex"
         }
+      })
+    }
+    if (DOM.lcpBrowserZoom) {
+      DOM.lcpBrowserZoom.addEventListener("change", () => {
+        const zoom = Number(DOM.lcpBrowserZoom.value) || 1
+        if (DOM.lcpBrowserZoomValue) {
+          DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(zoom)
+        }
+        updateSetting("browserZoom", zoom)
+        saveSettings(true)
+        applyBrowserZoom(zoom)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "browserZoom", value: zoom },
+          }),
+        )
       })
     }
 
@@ -5066,5 +5083,10 @@ export function setupGeneralEventHandlers(
       DOM.lcpSearchBarWidth.value = value
     if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout)
       DOM.lcpBookmarkLayout.value = value
+    if (key === "browserZoom") {
+      if (DOM.lcpBrowserZoom) DOM.lcpBrowserZoom.value = String(value)
+      if (DOM.lcpBrowserZoomValue)
+        DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(value)
+    }
   })
 }
