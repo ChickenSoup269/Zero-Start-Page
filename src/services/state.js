@@ -193,6 +193,7 @@ export const defaultSettings = {
   bgPositionX: 50,
   bgPositionY: 50,
   bgSize: "cover",
+  bgImageScale: 100,
   bgBlur: 0,
   bgBrightness: 100,
   bgContrast: 100,

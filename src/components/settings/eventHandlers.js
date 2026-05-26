@@ -1322,6 +1322,7 @@ export function setupGeneralEventHandlers(
       bgPositionX: settings.bgPositionX ?? 50,
       bgPositionY: settings.bgPositionY ?? 50,
       bgSize: settings.bgSize || "cover",
+      bgImageScale: settings.bgImageScale ?? 100,
     })
 
     const isUnsplashBackground = (value) =>
@@ -1755,7 +1756,10 @@ export function setupGeneralEventHandlers(
     const current = getSettings()
     const x = next.bgPositionX ?? current.bgPositionX ?? 50
     const y = next.bgPositionY ?? current.bgPositionY ?? 50
-    const size = next.bgSize ?? current.bgSize ?? "cover"
+    const fit = next.bgSize ?? current.bgSize ?? "cover"
+    const scale = Number(next.bgImageScale ?? current.bgImageScale ?? 100)
+    const size =
+      fit === "custom" ? `${Math.min(250, Math.max(25, scale || 100))}%` : fit
     const filters = [
       `blur(${next.bgBlur ?? current.bgBlur ?? 0}px)`,
       `brightness(${next.bgBrightness ?? current.bgBrightness ?? 100}%)`,
@@ -1784,13 +1788,30 @@ export function setupGeneralEventHandlers(
     document.body.style.filter = document.body.style.filter || ""
     if (bgVideo) {
       bgVideo.style.objectPosition = `${x}% ${y}%`
+      bgVideo.style.objectFit = fit === "contain" ? "contain" : "cover"
+      bgVideo.style.transform =
+        fit === "custom" ? `translateZ(0) scale(${(scale || 100) / 100})` : ""
       bgVideo.style.filter = filters
     }
   }
 
+  const syncBgImageScaleVisibility = () => {
+    if (!DOM.bgImageScaleRow) return
+    DOM.bgImageScaleRow.style.display =
+      DOM.bgSizeSelect.value === "custom" ? "block" : "none"
+  }
+
   DOM.bgSizeSelect.addEventListener("change", () => {
+    syncBgImageScaleVisibility()
     applyBackgroundVisualPreview({ bgSize: DOM.bgSizeSelect.value })
     handleSettingUpdate("bgSize", DOM.bgSizeSelect.value)
+  })
+
+  DOM.bgImageScaleInput?.addEventListener("input", () => {
+    const value = Number(DOM.bgImageScaleInput.value)
+    if (DOM.bgImageScaleValue) DOM.bgImageScaleValue.textContent = `${value}%`
+    applyBackgroundVisualPreview({ bgImageScale: value })
+    handleSettingUpdate("bgImageScale", value)
   })
 
   DOM.bgPosXInput.addEventListener("input", () => {

@@ -1164,7 +1164,17 @@
                                 <option value="cover" data-i18n="settings_bg_fit_cover">Cover (crop)</option>
                                 <option value="contain" data-i18n="settings_bg_fit_contain">Contain (full image)
                                 </option>
+                                <option value="custom" data-i18n="settings_bg_fit_custom">Custom size</option>
                             </select>
+                        </div>
+
+                        <div class="bg-slider-item" id="bg-image-scale-row" style="display: none;">
+                            <div class="bg-slider-info">
+                                <span class="bg-slider-label"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> <span
+                                        data-i18n="settings_bg_image_size">Image Size</span></span>
+                                <span id="bg-image-scale-value" class="bg-slider-value">100%</span>
+                            </div>
+                            <input type="range" id="bg-image-scale-input" min="25" max="250" step="5" value="100">
                         </div>
 
                         <div class="layout-fit-grid">

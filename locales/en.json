@@ -53,6 +53,8 @@
   "settings_bg_fit": "Image Fit",
   "settings_bg_fit_cover": "Cover (crop to fill)",
   "settings_bg_fit_contain": "Contain (show full image)",
+  "settings_bg_fit_custom": "Custom size",
+  "settings_bg_image_size": "Image Size",
   "settings_accent": "M3 Accent Color",
   "settings_accent_open": "Show Controls",
   "settings_accent_close": "Hide Controls",

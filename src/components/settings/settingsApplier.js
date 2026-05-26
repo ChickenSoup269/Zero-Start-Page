@@ -44,6 +44,11 @@ let _perfLastApply = 0
 
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
+const getBackgroundSizeValue = (settings) =>
+  settings.bgSize === "custom"
+    ? `${Math.min(250, Math.max(25, Number(settings.bgImageScale) || 100))}%`
+    : settings.bgSize || "cover"
+
 function applyMaterialAccentTokens(seedColor) {
   const root = document.documentElement
   const scheme = buildMaterial3Scheme(seedColor)
@@ -319,6 +324,7 @@ function setEffectActive(effectGrid, value) {
 function createApplySettings(effectInstances) {
   return function applySettings() {
     const settings = getSettings()
+    const backgroundSize = getBackgroundSizeValue(settings)
     const bgChanged = settings.background !== _prevBg
     _prevBg = settings.background
     let shouldUseSvgWave = false
@@ -483,6 +489,14 @@ function createApplySettings(effectInstances) {
 
     let activeVideoSource = null
     if (bgVideoElement) bgVideoElement.style.display = "none"
+    if (bgVideoElement) {
+      bgVideoElement.style.objectFit =
+        settings.bgSize === "contain" ? "contain" : "cover"
+      bgVideoElement.style.transform =
+        settings.bgSize === "custom"
+          ? `translateZ(0) scale(${(Number(settings.bgImageScale) || 100) / 100})`
+          : ""
+    }
 
     const applyUserSelectedBackgroundBehindSplashCursor = () => {
       if (isPredefinedLocalBg) {
@@ -512,10 +526,10 @@ function createApplySettings(effectInstances) {
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+            bgLayer.style.backgroundSize = backgroundSize
           }
         }
-        document.body.style.backgroundSize = settings.bgSize || "cover"
+        document.body.style.backgroundSize = backgroundSize
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else if (bg) {
         document.body.classList.add("bg-image-active")
@@ -534,7 +548,7 @@ function createApplySettings(effectInstances) {
         } else if (bg.match(/^https?:\/\//)) {
           if (bgLayer) {
             bgLayer.style.backgroundImage = cssUrl(bg)
-            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+            bgLayer.style.backgroundSize = backgroundSize
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else {
@@ -777,11 +791,11 @@ function createApplySettings(effectInstances) {
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgLayer.style.backgroundSize = settings.bgSize || "cover"
+            bgLayer.style.backgroundSize = backgroundSize
           }
         }
       }
-      document.body.style.backgroundSize = settings.bgSize || "cover"
+      document.body.style.backgroundSize = backgroundSize
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     }
     // Priority 5: Remote URL or Solid Color or Legacy Gradient
@@ -801,7 +815,7 @@ function createApplySettings(effectInstances) {
       } else if (bg.match(/^https?:\/\//)) {
         if (bgLayer) {
           bgLayer.style.backgroundImage = cssUrl(bg)
-          bgLayer.style.backgroundSize = settings.bgSize || "cover"
+          bgLayer.style.backgroundSize = backgroundSize
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
@@ -2326,6 +2340,16 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     DOM.bgSizeSelect.value = settings.bgSize || "cover"
+    if (DOM.bgImageScaleInput) {
+      DOM.bgImageScaleInput.value = settings.bgImageScale ?? 100
+    }
+    if (DOM.bgImageScaleValue) {
+      DOM.bgImageScaleValue.textContent = `${settings.bgImageScale ?? 100}%`
+    }
+    if (DOM.bgImageScaleRow) {
+      DOM.bgImageScaleRow.style.display =
+        (settings.bgSize || "cover") === "custom" ? "block" : "none"
+    }
     DOM.bgBlurInput.value = settings.bgBlur ?? 0
     DOM.bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100

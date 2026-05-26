@@ -53,6 +53,8 @@
   "settings_bg_fit": "Căn chỉnh ảnh",
   "settings_bg_fit_cover": "Phủ kín (Cắt ảnh)",
   "settings_bg_fit_contain": "Toàn cảnh (Hiện hết ảnh)",
+  "settings_bg_fit_custom": "Kích thước tùy chỉnh",
+  "settings_bg_image_size": "Kích thước ảnh",
   "settings_accent": "Màu chủ đạo M3",
   "settings_accent_open": "Hiện trình điều khiển",
   "settings_accent_close": "Ẩn trình điều khiển",

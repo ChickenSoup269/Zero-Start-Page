@@ -199,6 +199,10 @@
 
       const searchBarWidth = settings.searchBarWidth || 600
       const earlyBg = cssText(buildEarlyBackgroundCss())
+      const earlyBgSize =
+        settings.bgSize === "custom"
+          ? `${Math.min(250, Math.max(25, Number(settings.bgImageScale) || 100))}%`
+          : settings.bgSize || "cover"
       body.classList.add("preload-bg-ready", "bg-layer-active")
       css += `:root { 
         --accent-color: ${accentColor};
@@ -213,8 +217,8 @@
         --bg-fade-in: ${settings.bgFadeIn ?? 0.5}s;
         --bg-filter: blur(${settings.bgBlur ?? 0}px) brightness(${settings.bgBrightness ?? 100}%) contrast(${settings.bgContrast ?? 100}%) saturate(${settings.bgSaturation ?? 100}%);
       }\n`
-      css += `body.preload-bg-ready { background: ${earlyBg} !important; background-size: ${settings.bgSize || "cover"} !important; background-repeat: no-repeat !important; background-position: var(--bg-pos-x) var(--bg-pos-y) !important; animation: none !important; }\n`
-      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${settings.bgSize || "cover"}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; }\n`
+      css += `body.preload-bg-ready { background: ${earlyBg} !important; background-size: ${earlyBgSize} !important; background-repeat: no-repeat !important; background-position: var(--bg-pos-x) var(--bg-pos-y) !important; animation: none !important; }\n`
+      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; }\n`
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }

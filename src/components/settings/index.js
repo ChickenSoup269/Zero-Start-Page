@@ -676,6 +676,7 @@ export function initSettings() {
       "bgPositionX",
       "bgPositionY",
       "bgSize",
+      "bgImageScale",
     ])
 
     if (!isGradient && backgroundVisualKeys.has(key)) {
