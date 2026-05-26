@@ -144,6 +144,11 @@ export const defaultSettings = {
   clockDateStrokeWidth: 0,
   clockDateStrokeColor: "#000000",
   clockDateStrokeTarget: "both",
+  clockUseAccentColor: true,
+  clockAccentTarget: "style",
+  clockShadowTarget: "none",
+  clockShadowStrength: 0,
+  clockShadowColor: "#000000",
 
   clockColor: null,
   dateColor: null,

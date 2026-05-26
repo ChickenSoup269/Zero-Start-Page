@@ -745,6 +745,7 @@ function createApplySettings(effectInstances) {
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = backgroundSize
+            document.body.classList.remove("preload-bg-preview")
           }
         }
         document.body.style.backgroundSize = backgroundSize
@@ -1016,6 +1017,7 @@ function createApplySettings(effectInstances) {
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = backgroundSize
+            document.body.classList.remove("preload-bg-preview")
           }
         }
       }
@@ -1598,6 +1600,18 @@ function createApplySettings(effectInstances) {
     if (finalDateColor === "black") finalDateColor = "#000000"
     if (finalDateColor === "white") finalDateColor = "#ffffff"
 
+    const clockUseAccent = settings.clockUseAccentColor === true
+    const clockAccentTarget = settings.clockAccentTarget || "style"
+    const accentClockColor = settings.accentColor || "#00ff73"
+    if (clockUseAccent) {
+      if (clockAccentTarget === "both" || clockAccentTarget === "time") {
+        finalClockColor = accentClockColor
+      }
+      if (clockAccentTarget === "both" || clockAccentTarget === "date") {
+        finalDateColor = accentClockColor
+      }
+    }
+
     document.documentElement.style.setProperty("--clock-color", finalClockColor)
     document.documentElement.style.setProperty("--date-color", finalDateColor)
 
@@ -1608,6 +1622,59 @@ function createApplySettings(effectInstances) {
         `${clockRgb.r}, ${clockRgb.g}, ${clockRgb.b}`,
       )
     }
+
+    const clockWrap = document.getElementById("clock-date-wrap")
+    if (clockWrap) {
+      const shadowTarget = settings.clockShadowTarget || "none"
+      const shadowStrength = Math.min(
+        100,
+        Math.max(0, Number(settings.clockShadowStrength) || 0),
+      )
+      const shadowColor = settings.clockShadowColor || "#000000"
+      const shadowRgb = hexToRgb(shadowColor)
+      const shadowAlpha = Math.min(0.85, shadowStrength / 100)
+      const shadowBlur = Math.round(4 + shadowStrength * 0.28)
+      const boxBlur = Math.round(10 + shadowStrength * 0.48)
+      const boxSpread = Math.round(shadowStrength * 0.08)
+
+      clockWrap.classList.remove(
+        "clock-use-accent",
+        "clock-accent-target-style",
+        "clock-accent-target-both",
+        "clock-accent-target-time",
+        "clock-accent-target-date",
+        "clock-accent-target-weekday",
+        "clock-shadow-target-none",
+        "clock-shadow-target-all",
+        "clock-shadow-target-time",
+        "clock-shadow-target-date",
+        "clock-shadow-target-weekday",
+        "clock-shadow-target-box",
+      )
+      clockWrap.classList.toggle("clock-use-accent", clockUseAccent)
+      clockWrap.classList.add(`clock-accent-target-${clockAccentTarget}`)
+      clockWrap.classList.add(`clock-shadow-target-${shadowTarget}`)
+      const localAccentColor = clockUseAccent ? accentClockColor : finalClockColor
+      const localAccentRgb = hexToRgb(localAccentColor)
+      clockWrap.style.setProperty("--accent-color", localAccentColor)
+      clockWrap.style.setProperty(
+        "--accent-color-rgb",
+        `${localAccentRgb.r}, ${localAccentRgb.g}, ${localAccentRgb.b}`,
+      )
+      clockWrap.style.setProperty(
+        "--clock-effect-shadow",
+        shadowStrength > 0
+          ? `0 4px ${shadowBlur}px rgba(${shadowRgb.r}, ${shadowRgb.g}, ${shadowRgb.b}, ${shadowAlpha})`
+          : "none",
+      )
+      clockWrap.style.setProperty(
+        "--clock-effect-box-shadow",
+        shadowStrength > 0
+          ? `0 14px ${boxBlur}px ${boxSpread}px rgba(${shadowRgb.r}, ${shadowRgb.g}, ${shadowRgb.b}, ${Math.min(0.55, shadowAlpha)})`
+          : "none",
+      )
+    }
+
     const dateRgb = hexToRgb(finalDateColor)
     if (dateRgb) {
       document.documentElement.style.setProperty(
@@ -2212,6 +2279,25 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
     if (DOM.hueTextModeSelect)
       DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
+    if (DOM.clockUseAccentCheckbox) {
+      DOM.clockUseAccentCheckbox.checked = settings.clockUseAccentColor === true
+    }
+    if (DOM.clockAccentTargetSelect) {
+      DOM.clockAccentTargetSelect.value = settings.clockAccentTarget || "style"
+    }
+    if (DOM.clockShadowTargetSelect) {
+      DOM.clockShadowTargetSelect.value = settings.clockShadowTarget || "none"
+    }
+    if (DOM.clockShadowStrengthInput) {
+      DOM.clockShadowStrengthInput.value = settings.clockShadowStrength || 0
+      if (DOM.clockShadowStrengthValue) {
+        DOM.clockShadowStrengthValue.textContent = `${settings.clockShadowStrength || 0}%`
+      }
+    }
+    if (DOM.clockShadowColorPicker) {
+      DOM.clockShadowColorPicker.value =
+        settings.clockShadowColor || "#000000"
+    }
     if (DOM.analogMarkerModeSelect)
       DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
     if (DOM.sidestyleAlignSelect)

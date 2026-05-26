@@ -13,7 +13,12 @@ import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
 import { Notepad } from "./components/notepad.js"
 import { DailyQuotes } from "./components/quotes.js"
-import { preloadImages, migrateDataUrls } from "./services/imageStore.js"
+import {
+  preloadImages,
+  migrateDataUrls,
+  isIdbMedia,
+  getImageUrl,
+} from "./services/imageStore.js"
 import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
@@ -63,6 +68,9 @@ async function bootstrap() {
   }
 
   const currentSettings = getSettings()
+  if (isIdbMedia(currentSettings.background)) {
+    await getImageUrl(currentSettings.background).catch(() => {})
+  }
 
   // 1. Setup UI fast to prevent layout shifts
 
@@ -371,7 +379,7 @@ async function bootstrap() {
     
     const hideOverlay = () => {
       const overlay = document.getElementById("startup-overlay")
-      if (overlay && !skipStartupLoader) {
+      if (overlay) {
         overlay.style.opacity = "0"
         overlay.style.visibility = "hidden"
       }
@@ -383,8 +391,12 @@ async function bootstrap() {
 
     if (skipStartupLoader) {
       requestAnimationFrame(() => {
-        if (mainContainer) mainContainer.classList.add("ready")
-        hideOverlay()
+        setTimeout(() => {
+          hideOverlay()
+          setTimeout(() => {
+            if (mainContainer) mainContainer.classList.add("ready")
+          }, 220)
+        }, 60)
       })
       return
     }
@@ -404,9 +416,11 @@ async function bootstrap() {
     }, 1500)
   }
 
-  const { isIdbMedia, getImageUrl, preloadImages } = await import("./services/imageStore.js")
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
+    if (typeof window.appApplySettings === "function") {
+      window.appApplySettings()
+    }
   }
 
   // initSettings() moved up to prevent CLS

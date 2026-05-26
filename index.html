@@ -45,13 +45,16 @@
             #startup-overlay {
                 position: fixed;
                 inset: 0;
-                background: radial-gradient(circle at center, #0a0a0a 0%, #050505 100%);
+                background:
+                    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.88) 100%),
+                    radial-gradient(circle at center, #0a0a0a 0%, #050505 100%);
                 z-index: 999999;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 overflow: hidden;
-                transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+                transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1), visibility 1.05s;
+                backdrop-filter: blur(2px);
             }
 
             .ambient-glow {
@@ -209,12 +212,23 @@
             }
 
             body.skip-startup-loader #startup-overlay {
+                background:
+                    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.42) 58%, rgba(0, 0, 0, 0.78) 100%),
+                    linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.22) 48%, rgba(0, 0, 0, 0.36));
+                backdrop-filter: none;
+                transition: opacity 0.68s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.68s;
+                will-change: opacity;
+            }
+
+            body.skip-startup-loader #startup-overlay .startup-content,
+            body.skip-startup-loader #startup-overlay .ambient-glow {
                 display: none !important;
             }
 
             body.skip-startup-loader .main-container {
-                transform: translateY(4px);
-                transition: transform 0.22s ease-out, opacity 0.18s ease-out !important;
+                transform: translateY(6px) scale(0.998);
+                transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.42s ease-out !important;
+                will-change: transform, opacity;
             }
 
             body.skip-startup-loader .main-container.ready {
@@ -4627,6 +4641,54 @@
                                     <button id="reset-date-color-btn" class="secondary-btn"
                                         style="width: 38px; height: 38px; padding: 0;"><i
                                             class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item"
+                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                            <label
+                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                                <span>Clock Effects</span>
+                                <span id="clock-shadow-strength-value"
+                                    style="opacity: 0.7; font-family: monospace;">0%</span>
+                            </label>
+                            <div class="setting-item-row"
+                                style="background: transparent; padding: 0; border: none; margin-bottom: 10px;">
+                                <label for="clock-use-accent-checkbox">Use M3 Accent</label>
+                                <input type="checkbox" id="clock-use-accent-checkbox">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Accent Target</label>
+                                    <select id="clock-accent-target-select">
+                                        <option value="style">Style accents only</option>
+                                        <option value="both">Clock + Date</option>
+                                        <option value="time">Time only</option>
+                                        <option value="date">Date only</option>
+                                        <option value="weekday">Weekday only</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Shadow Target</label>
+                                    <select id="clock-shadow-target-select">
+                                        <option value="none">Off</option>
+                                        <option value="all">Clock + Date</option>
+                                        <option value="time">Time only</option>
+                                        <option value="date">Date only</option>
+                                        <option value="weekday">Weekday only</option>
+                                        <option value="box">Box shadow</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Shadow Color</label>
+                                    <input type="color" id="clock-shadow-color-picker" value="#000000"
+                                        style="height: 34px; width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Strength</label>
+                                    <input type="range" id="clock-shadow-strength-input" min="0" max="100" step="1"
+                                        value="0">
                                 </div>
                             </div>
                         </div>

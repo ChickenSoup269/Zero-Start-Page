@@ -16,6 +16,11 @@ export const VISUAL_THEME_KEYS = [
   "clockDateStrokeColor",
   "clockDateStrokeWidth",
   "clockDateStrokeTarget",
+  "clockUseAccentColor",
+  "clockAccentTarget",
+  "clockShadowTarget",
+  "clockShadowStrength",
+  "clockShadowColor",
 ]
 
 export const BACKGROUND_ANIMATION_KEYS = [

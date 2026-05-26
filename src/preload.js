@@ -189,8 +189,12 @@
         return `${repeating}linear-gradient(${angle}deg, ${stops})`
       }
       const buildEarlyBackgroundCss = () => {
+        const bg = settings.background
+        const isIndexedDbImage =
+          typeof bg === "string" && bg.startsWith("idb-img-")
+
         // If a persistent preview exists (data URL or CSS), use it for instant display
-        if (settings.lastUserBackgroundPreview) {
+        if (settings.lastUserBackgroundPreview && !isIndexedDbImage) {
           const preview = settings.lastUserBackgroundPreview
           if (
             preview.startsWith("data:") ||
@@ -201,7 +205,6 @@
           }
           return preview
         }
-        const bg = settings.background
         const isMultiColorActive =
           settings.activeBgUid?.startsWith("multi-") ||
           (settings.multiColorActive === true &&
@@ -219,6 +222,9 @@
         }
         if (settings.liquidEtherActive) {
           return `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
+        }
+        if (isIndexedDbImage) {
+          return "#050505"
         }
         if (bg && typeof bg === "string") {
           if (
@@ -252,6 +258,11 @@
       const accentRgb = hexToRgb(accentColor)
 
       const searchBarWidth = settings.searchBarWidth || 600
+      const isIndexedDbImage =
+        typeof settings.background === "string" &&
+        settings.background.startsWith("idb-img-")
+      const hasPersistentBgPreview =
+        Boolean(settings.lastUserBackgroundPreview) && !isIndexedDbImage
       const earlyBg = cssText(buildEarlyBackgroundCss())
       const earlyBgSize =
         settings.bgSize === "custom"
@@ -273,7 +284,7 @@
       }\n`
       css += `body.preload-bg-ready { background: #050505 !important; background-image: none !important; animation: none !important; }\n`
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
-      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); animation: preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards; }\n`
+      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }

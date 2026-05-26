@@ -1083,6 +1083,42 @@ body.date-clock-style-weekday-style .clock-date-primary {
   animation-delay: calc(var(--char-delay, 0s) - var(--time-offset, 0s));
 }
 
+.clock-use-accent.clock-accent-target-weekday .weekday-part {
+  color: var(--accent-color, #00ff73) !important;
+  text-shadow: 0 0 14px rgba(var(--accent-color-rgb, 0, 255, 115), 0.32);
+}
+
+.clock-shadow-target-all #clock,
+.clock-shadow-target-all #clock *,
+.clock-shadow-target-all #date,
+.clock-shadow-target-all #date * {
+  text-shadow: var(--clock-effect-shadow) !important;
+}
+
+.clock-shadow-target-time #clock,
+.clock-shadow-target-time #clock * {
+  text-shadow: var(--clock-effect-shadow) !important;
+}
+
+.clock-shadow-target-date #date,
+.clock-shadow-target-date #date *,
+.clock-shadow-target-date #clock [class*="date"],
+.clock-shadow-target-date #clock [class*="day"],
+.clock-shadow-target-date #clock [class*="weekday"],
+.clock-shadow-target-date #clock [class*="footer"],
+.clock-shadow-target-date #clock [class*="meta"],
+.clock-shadow-target-date #clock [class*="label"] {
+  text-shadow: var(--clock-effect-shadow) !important;
+}
+
+.clock-shadow-target-weekday .weekday-part {
+  text-shadow: var(--clock-effect-shadow) !important;
+}
+
+.clock-shadow-target-box {
+  box-shadow: var(--clock-effect-box-shadow) !important;
+}
+
 @keyframes hue-wave {
   0% {
     color: hsl(var(--char-hue, 0), 92%, 66%);

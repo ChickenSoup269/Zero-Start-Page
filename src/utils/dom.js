@@ -889,6 +889,24 @@ export const clockDateStrokeTargetSelect = document.getElementById(
 export const clockDateStrokeColorPicker = document.getElementById(
   "clock-date-stroke-color-picker",
 )
+export const clockUseAccentCheckbox = document.getElementById(
+  "clock-use-accent-checkbox",
+)
+export const clockAccentTargetSelect = document.getElementById(
+  "clock-accent-target-select",
+)
+export const clockShadowTargetSelect = document.getElementById(
+  "clock-shadow-target-select",
+)
+export const clockShadowStrengthInput = document.getElementById(
+  "clock-shadow-strength-input",
+)
+export const clockShadowStrengthValue = document.getElementById(
+  "clock-shadow-strength-value",
+)
+export const clockShadowColorPicker = document.getElementById(
+  "clock-shadow-color-picker",
+)
 export const clockColorPicker = document.getElementById("clock-color-picker")
 export const resetClockColorBtn = document.getElementById(
   "reset-clock-color-btn",

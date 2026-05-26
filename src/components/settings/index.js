@@ -1179,6 +1179,15 @@ export function initSettings() {
     "click",
     scheduleSettingsGalleriesRender,
   )
+  document
+    .querySelector('[data-section-id="background"] > .section-toggle')
+    ?.addEventListener("click", () => {
+      if (!settingsGalleriesRendered) {
+        renderSettingsGalleries()
+      } else {
+        renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
+      }
+    })
   if (DOM_EXPORTS.settingsSidebar?.classList.contains("open")) {
     scheduleSettingsGalleriesRender()
   }

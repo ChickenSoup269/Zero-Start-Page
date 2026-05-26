@@ -378,6 +378,18 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       // Performance Optimization: Always try to use small thumbnail for gallery
       if (isIdbMedia(bgId)) {
+        const cachedUrl = getBlobUrlSync(bgId)
+        if (cachedUrl) {
+          thumbLayer.style.backgroundImage = cssUrl(cachedUrl)
+        } else if (
+          isActive &&
+          typeof settings.lastUserBackgroundPreview === "string" &&
+          settings.lastUserBackgroundPreview.startsWith("data:image")
+        ) {
+          thumbLayer.style.backgroundImage = cssUrl(
+            settings.lastUserBackgroundPreview,
+          )
+        }
         getThumbnailUrl(bgId).then(async (thumbUrl) => {
           if (thumbUrl) {
             thumbLayer.style.backgroundImage = cssUrl(thumbUrl)

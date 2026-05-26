@@ -3572,6 +3572,51 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.clockUseAccentCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "clockUseAccentColor",
+      DOM.clockUseAccentCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockUseAccentColor",
+          value: DOM.clockUseAccentCheckbox.checked,
+        },
+      }),
+    )
+  })
+
+  DOM.clockAccentTargetSelect?.addEventListener("change", () => {
+    handleSettingUpdate("clockAccentTarget", DOM.clockAccentTargetSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockAccentTarget",
+          value: DOM.clockAccentTargetSelect.value,
+        },
+      }),
+    )
+  })
+
+  DOM.clockShadowTargetSelect?.addEventListener("change", () => {
+    handleSettingUpdate("clockShadowTarget", DOM.clockShadowTargetSelect.value)
+  })
+
+  DOM.clockShadowStrengthInput?.addEventListener("input", () => {
+    if (DOM.clockShadowStrengthValue) {
+      DOM.clockShadowStrengthValue.textContent = `${DOM.clockShadowStrengthInput.value}%`
+    }
+    handleSettingUpdate(
+      "clockShadowStrength",
+      Number(DOM.clockShadowStrengthInput.value) || 0,
+    )
+  })
+
+  DOM.clockShadowColorPicker?.addEventListener("input", () => {
+    handleSettingUpdate("clockShadowColor", DOM.clockShadowColorPicker.value)
+  })
+
   DOM.analogMarkerModeSelect?.addEventListener("change", () => {
     handleSettingUpdate("analogMarkerMode", DOM.analogMarkerModeSelect.value)
     window.dispatchEvent(

@@ -160,8 +160,9 @@ export async function clearAllMedia() {
 /** Preload blob URLs cho tất cả IDB IDs (gọi khi khởi động) */
 export async function preloadImages(ids) {
   for (const id of ids) {
-    if (isIdbMedia(id) && !_urlCache.has(id)) {
-      await getImageUrl(id).catch(() => {})
+    const mediaId = typeof id === "object" && id ? id.id : id
+    if (isIdbMedia(mediaId) && !_urlCache.has(mediaId)) {
+      await getImageUrl(mediaId).catch(() => {})
     }
   }
 }
