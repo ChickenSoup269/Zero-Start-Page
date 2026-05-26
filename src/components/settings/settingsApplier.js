@@ -227,7 +227,10 @@ function getEffectPerformanceOptions(settings, effectName) {
     if (level === "low") {
       return {
         targetFps: 18,
-        pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 96),
+        pixelResolution: Math.min(
+          settings.pixelSnowHQPixelResolution ?? 200,
+          96,
+        ),
         density: Math.min(settings.pixelSnowHQDensity ?? 0.3, 0.12),
         farPlane: Math.min(settings.pixelSnowHQFarPlane ?? 20, 10),
         maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 28 : 34,
@@ -236,7 +239,10 @@ function getEffectPerformanceOptions(settings, effectName) {
     if (shouldSave) {
       return {
         targetFps: 24,
-        pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 150),
+        pixelResolution: Math.min(
+          settings.pixelSnowHQPixelResolution ?? 200,
+          150,
+        ),
         density: Math.min(settings.pixelSnowHQDensity ?? 0.3, 0.22),
         farPlane: Math.min(settings.pixelSnowHQFarPlane ?? 20, 15),
         maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 44 : 52,
@@ -244,7 +250,10 @@ function getEffectPerformanceOptions(settings, effectName) {
     }
     return {
       targetFps: 30,
-      pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 200),
+      pixelResolution: Math.min(
+        settings.pixelSnowHQPixelResolution ?? 200,
+        200,
+      ),
       density: settings.pixelSnowHQDensity ?? 0.3,
       farPlane: settings.pixelSnowHQFarPlane ?? 20,
       maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 56 : 64,
@@ -319,7 +328,10 @@ function withPerformanceBudget(settings, type, options) {
         warpFrequency: Math.max(1.2, options.warpFrequency * scale.detail),
         warpSpeed: Math.max(0.2, options.warpSpeed * scale.speed),
         warpAmplitude: Math.max(12, options.warpAmplitude * scale.detail),
-        rotationAmount: Math.min(options.rotationAmount, level === "low" ? 90 : 220),
+        rotationAmount: Math.min(
+          options.rotationAmount,
+          level === "low" ? 90 : 220,
+        ),
         noiseScale: Math.min(options.noiseScale, level === "low" ? 0.9 : 1.4),
         grainAmount: level === "low" ? 0 : Math.min(options.grainAmount, 0.04),
         grainAnimated: level === "low" ? false : options.grainAnimated,
@@ -336,26 +348,41 @@ function withPerformanceBudget(settings, type, options) {
         ...options,
         intensity: Math.max(0.25, options.intensity * scale.detail),
         rotationSpeed: Math.max(0.04, options.rotationSpeed * scale.speed),
-        glowAmount: Math.min(options.glowAmount, level === "low" ? 0.006 : 0.014),
+        glowAmount: Math.min(
+          options.glowAmount,
+          level === "low" ? 0.006 : 0.014,
+        ),
         pillarWidth: Math.max(0.8, options.pillarWidth * scale.detail),
         noiseIntensity: Math.max(0.12, options.noiseIntensity * scale.detail),
       }
     case "liquidEther":
       return {
         ...options,
-        glowWidth: level === "low" ? Math.min(options.glowWidth, 3.2) : options.glowWidth,
+        glowWidth:
+          level === "low"
+            ? Math.min(options.glowWidth, 3.2)
+            : options.glowWidth,
       }
     case "splashCursor":
       return {
         ...options,
-        simResolution: Math.min(options.simResolution, level === "low" ? 64 : 96),
-        dyeResolution: Math.min(options.dyeResolution, level === "low" ? 192 : 320),
+        simResolution: Math.min(
+          options.simResolution,
+          level === "low" ? 64 : 96,
+        ),
+        dyeResolution: Math.min(
+          options.dyeResolution,
+          level === "low" ? 192 : 320,
+        ),
         pressureIterations: Math.min(
           options.pressureIterations,
           level === "low" ? 8 : 14,
         ),
         curl: Math.min(options.curl, level === "low" ? 1.2 : 2),
-        splatRadius: Math.min(options.splatRadius, level === "low" ? 0.12 : 0.16),
+        splatRadius: Math.min(
+          options.splatRadius,
+          level === "low" ? 0.12 : 0.16,
+        ),
         splatForce: Math.min(options.splatForce, level === "low" ? 2600 : 4200),
         shading: level === "low" ? false : options.shading,
       }
@@ -384,7 +411,8 @@ function withPerformanceBudget(settings, type, options) {
         brightness: options.brightness * (level === "low" ? 0.72 : 0.86),
         noiseFrequency: options.noiseFrequency * scale.detail,
         noiseAmplitude: options.noiseAmplitude * scale.detail,
-        enableMouseInteraction: level === "low" ? false : options.enableMouseInteraction,
+        enableMouseInteraction:
+          level === "low" ? false : options.enableMouseInteraction,
         mouseInfluence: options.mouseInfluence * scale.detail,
       }
     case "auroraWave":
@@ -433,10 +461,10 @@ function applyEffectPerformanceBudget(effect, settings) {
       level === "low"
         ? Math.min(baseFps, 20)
         : mode === "battery"
-        ? Math.min(baseFps, 30)
-        : shouldSave
-          ? Math.min(baseFps, 36)
-          : baseFps
+          ? Math.min(baseFps, 30)
+          : shouldSave
+            ? Math.min(baseFps, 36)
+            : baseFps
 
     effect.fps = nextFps
     if ("fpsInterval" in effect) effect.fpsInterval = 1000 / nextFps
@@ -456,10 +484,10 @@ function applyEffectPerformanceBudget(effect, settings) {
       level === "low"
         ? Math.min(baseTargetFps, 20)
         : mode === "battery"
-        ? Math.min(baseTargetFps, 30)
-        : shouldSave
-          ? Math.min(baseTargetFps, 36)
-          : baseTargetFps
+          ? Math.min(baseTargetFps, 30)
+          : shouldSave
+            ? Math.min(baseTargetFps, 36)
+            : baseTargetFps
   }
 }
 
@@ -585,23 +613,35 @@ function createApplySettings(effectInstances) {
         document.body.classList.remove(cls)
     })
 
-    document.body.style.background = ""
-    document.body.style.backgroundImage = ""
+    // If we already injected a preload background preview, avoid clearing it
+    // to prevent a flash of the default color before the user background appears.
+    const previewExists = Boolean(
+      settings.lastUserBackgroundPreview &&
+      document.body.classList.contains("preload-bg-ready"),
+    )
     const bgLayer = document.getElementById("bg-layer")
     const bgFadeLayer = document.getElementById("bg-fade-layer")
-    if (bgChanged && bgLayer && bgFadeLayer) {
-      bgFadeLayer.className = bgLayer.className
-      bgFadeLayer.style.background = bgLayer.style.background
-      bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
-      bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
-      bgFadeLayer.style.opacity = "1"
-    }
-    if (bgLayer) {
-      bgLayer.style.backgroundImage = ""
-      bgLayer.style.backgroundSize = ""
-      bgLayer.style.background = ""
-      bgLayer.className = ""
-      bgLayer.style.opacity = "1"
+    if (!previewExists) {
+      document.body.style.background = ""
+      document.body.style.backgroundImage = ""
+      if (bgChanged && bgLayer && bgFadeLayer) {
+        bgFadeLayer.className = bgLayer.className
+        bgFadeLayer.style.background = bgLayer.style.background
+        bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
+        bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
+        bgFadeLayer.style.opacity = "1"
+      }
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = ""
+        bgLayer.style.backgroundSize = ""
+        bgLayer.style.background = ""
+        bgLayer.className = ""
+        bgLayer.style.opacity = "1"
+      }
+    } else {
+      // Keep the preload preview active; ensure classes indicate background present
+      document.body.classList.add("bg-layer-active")
+      if (bgLayer) bgLayer.style.opacity = "1"
     }
     document.documentElement.style.setProperty("--text-color", "#ffffff")
 
@@ -622,6 +662,34 @@ function createApplySettings(effectInstances) {
           })
         })
       }
+    }
+
+    // If we don't have an immediate blob URL but a persistent preview exists,
+    // use that preview so the background shows instantly while the real image loads.
+    if (
+      isIdbMedia(settings.background) &&
+      !getBlobUrlSync(settings.background) &&
+      settings.lastUserBackgroundPreview
+    ) {
+      const preview = settings.lastUserBackgroundPreview
+      // preview may be a CSS string (gradient) or data URL/object URL
+      if (bgLayer) {
+        if (typeof preview === "string" && preview.startsWith("data:")) {
+          bgLayer.style.backgroundImage = cssUrl(preview)
+          bgLayer.style.backgroundSize = backgroundSize
+        } else if (
+          typeof preview === "string" &&
+          preview.includes("gradient(")
+        ) {
+          bgLayer.style.background = preview
+        } else if (typeof preview === "string" && preview.startsWith("#")) {
+          bgLayer.style.background = preview
+        } else if (typeof preview === "string" && preview.startsWith("blob:")) {
+          bgLayer.style.backgroundImage = cssUrl(preview)
+          bgLayer.style.backgroundSize = backgroundSize
+        }
+      }
+      document.body.classList.add("bg-layer-active")
     }
     const isPredefinedLocalBg = effectInstances.localBackgrounds.some(
       (b) => b.id === bg,
@@ -814,17 +882,21 @@ function createApplySettings(effectInstances) {
     else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
       shouldUseLightPillar = true
       document.body.classList.add("bg-layer-active")
-      const lightPillarOptions = withPerformanceBudget(settings, "lightPillar", {
-        topColor: settings.lightPillarTopColor,
-        bottomColor: settings.lightPillarBottomColor,
-        intensity: settings.lightPillarIntensity,
-        rotationSpeed: settings.lightPillarRotationSpeed,
-        glowAmount: settings.lightPillarGlowAmount,
-        pillarWidth: settings.lightPillarWidth,
-        pillarHeight: settings.lightPillarHeight,
-        noiseIntensity: settings.lightPillarNoiseIntensity,
-        pillarRotation: settings.lightPillarRotation,
-      })
+      const lightPillarOptions = withPerformanceBudget(
+        settings,
+        "lightPillar",
+        {
+          topColor: settings.lightPillarTopColor,
+          bottomColor: settings.lightPillarBottomColor,
+          intensity: settings.lightPillarIntensity,
+          rotationSpeed: settings.lightPillarRotationSpeed,
+          glowAmount: settings.lightPillarGlowAmount,
+          pillarWidth: settings.lightPillarWidth,
+          pillarHeight: settings.lightPillarHeight,
+          noiseIntensity: settings.lightPillarNoiseIntensity,
+          pillarRotation: settings.lightPillarRotation,
+        },
+      )
       if (effectInstances.lightPillarEffect.active) {
         effectInstances.lightPillarEffect.setOptions(lightPillarOptions)
       } else {
@@ -837,14 +909,18 @@ function createApplySettings(effectInstances) {
     else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
       shouldUseLiquidEther = true
       document.body.classList.add("bg-layer-active")
-      const liquidEtherOptions = withPerformanceBudget(settings, "liquidEther", {
-        colors: [
-          settings.liquidEtherColor1 || "#5227FF",
-          settings.liquidEtherColor2 || "#FF9FFC",
-          settings.liquidEtherColor3 || "#B497CF",
-        ],
-        glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
-      })
+      const liquidEtherOptions = withPerformanceBudget(
+        settings,
+        "liquidEther",
+        {
+          colors: [
+            settings.liquidEtherColor1 || "#5227FF",
+            settings.liquidEtherColor2 || "#FF9FFC",
+            settings.liquidEtherColor3 || "#B497CF",
+          ],
+          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
+        },
+      )
       if (effectInstances.liquidEtherEffect.active) {
         effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
       } else {
@@ -1103,12 +1179,15 @@ function createApplySettings(effectInstances) {
           const _bgFadeLayer = document.getElementById("bg-fade-layer")
           if (_bgFadeLayer) {
             _bgFadeLayer.style.opacity = "0"
-            window.setTimeout(() => {
-              _bgFadeLayer.className = ""
-              _bgFadeLayer.style.background = ""
-              _bgFadeLayer.style.backgroundImage = ""
-              _bgFadeLayer.style.backgroundSize = ""
-            }, Math.max(250, Number(getSettings().bgFadeIn ?? 0.5) * 1000 + 120))
+            window.setTimeout(
+              () => {
+                _bgFadeLayer.className = ""
+                _bgFadeLayer.style.background = ""
+                _bgFadeLayer.style.backgroundImage = ""
+                _bgFadeLayer.style.backgroundSize = ""
+              },
+              Math.max(250, Number(getSettings().bgFadeIn ?? 0.5) * 1000 + 120),
+            )
           }
           const _bgVideo = document.getElementById("bg-video")
           if (_bgVideo && _bgVideo.style.display === "block")
@@ -1702,7 +1781,9 @@ function createApplySettings(effectInstances) {
     }
 
     if (effectToStart === "stormRain" && selectedEffect?.setOptions) {
-      selectedEffect.setOptions(getEffectPerformanceOptions(settings, "stormRain"))
+      selectedEffect.setOptions(
+        getEffectPerformanceOptions(settings, "stormRain"),
+      )
     }
 
     if (effectToStart === "rainHD" && selectedEffect?.setOptions) {
@@ -2194,8 +2275,11 @@ function createUpdateSettingsInputs(effectInstances) {
         style === "sidebar" ? "block" : "none"
 
     if (DOM.clockStyleBgSetting)
-      DOM.clockStyleBgSetting.style.display =
-        backgroundClockStyles.includes(style) ? "block" : "none"
+      DOM.clockStyleBgSetting.style.display = backgroundClockStyles.includes(
+        style,
+      )
+        ? "block"
+        : "none"
 
     if (DOM.framedClockThemeSetting) {
       DOM.framedClockThemeSetting.style.display =
@@ -2540,10 +2624,7 @@ function createUpdateSettingsInputs(effectInstances) {
         typeof settings.background === "string" &&
         (settings.background.startsWith("idb-img-unsplash-") ||
           settings.background.includes("images.unsplash.com"))
-      if (
-        settings.background &&
-        isUnsplashBackground
-      ) {
+      if (settings.background && isUnsplashBackground) {
         const userBackgrounds = settings.userBackgrounds || []
         const isSaved = userBackgrounds.some(
           (bg) =>
@@ -3444,7 +3525,8 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
     }
     if (DOM.allowTextSelectionCheckbox) {
-      DOM.allowTextSelectionCheckbox.checked = settings.allowTextSelection === true
+      DOM.allowTextSelectionCheckbox.checked =
+        settings.allowTextSelection === true
     }
     if (DOM.sidebarGlowAnimationsCheckbox) {
       DOM.sidebarGlowAnimationsCheckbox.checked =
@@ -3606,12 +3688,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
     }
-    document.querySelectorAll(".style-preset-btn[data-style-preset]").forEach((btn) => {
-      btn.classList.toggle(
-        "active",
-        btn.dataset.stylePreset === (settings.interfaceStylePreset || "custom"),
-      )
-    })
+    document
+      .querySelectorAll(".style-preset-btn[data-style-preset]")
+      .forEach((btn) => {
+        btn.classList.toggle(
+          "active",
+          btn.dataset.stylePreset ===
+            (settings.interfaceStylePreset || "custom"),
+        )
+      })
 
     // Sync Theme-specific UI
     if (DOM.fliqloThemeSelect) {

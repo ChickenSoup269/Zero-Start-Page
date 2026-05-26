@@ -8,6 +8,8 @@ import {
   saveImage,
   saveVideo,
   getImageBlob,
+  getThumbnailUrl,
+  getImageUrl,
 } from "../../services/imageStore.js"
 import * as DOM_EXPORTS from "../../utils/dom.js"
 import {
@@ -165,7 +167,9 @@ function getRandomSoftAuroraPalette() {
 
 function randomRange(min, max, step = 0.1) {
   const steps = Math.round((max - min) / step)
-  return Number((min + Math.floor(Math.random() * (steps + 1)) * step).toFixed(2))
+  return Number(
+    (min + Math.floor(Math.random() * (steps + 1)) * step).toFixed(2),
+  )
 }
 
 function getRandomSoftAuroraConfig() {
@@ -272,10 +276,9 @@ export function initSettings() {
       "effect-canvas",
       settings.rainHDColor || "#99ccff",
     ),
-    stormRainEffect: new StormRainEffect(
-      "effect-canvas",
-      { rainColor: settings.stormRainColor || "#7dd3fc" },
-    ),
+    stormRainEffect: new StormRainEffect("effect-canvas", {
+      rainColor: settings.stormRainColor || "#7dd3fc",
+    }),
     rainbowEffect: new RainbowBackground(
       "effect-canvas",
       settings.rainbowDirection || "left",
@@ -505,7 +508,10 @@ export function initSettings() {
     if (settingsGalleriesRendered) return
     settingsGalleriesRendered = true
     refreshBackgroundGalleries()
-    populateUnsplashCollections(DOM_EXPORTS.unsplashCategorySelect, getSettings())
+    populateUnsplashCollections(
+      DOM_EXPORTS.unsplashCategorySelect,
+      getSettings(),
+    )
   }
 
   function scheduleSettingsGalleriesRender() {
@@ -653,7 +659,10 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      updateSetting("lastUserBackgroundState", getBackgroundStateSnapshot(getSettings()))
+      updateSetting(
+        "lastUserBackgroundState",
+        getBackgroundStateSnapshot(getSettings()),
+      )
 
       if (editableGradientUid) {
         updateSetting(
@@ -701,9 +710,114 @@ export function initSettings() {
             : null
 
           updateSetting("lastUserBackground", value)
-          updateSetting("lastUserActiveBgUid", activePreset ? activeBgUid : null)
+          updateSetting(
+            "lastUserActiveBgUid",
+            activePreset ? activeBgUid : null,
+          )
           if (!activePreset) updateSetting("activeBgUid", null)
-          updateSetting("lastUserBackgroundState", getBackgroundStateSnapshot(getSettings()))
+          updateSetting(
+            "lastUserBackgroundState",
+            getBackgroundStateSnapshot(getSettings()),
+          )
+          // Generate a small persistent preview for faster reloads (data URL or CSS)
+          ;(async () => {
+            try {
+              const previewKey = "lastUserBackgroundPreview"
+              const settingsNow = getSettings()
+              if (
+                settingsNow.gradientV2Active ||
+                settingsNow.silkActive ||
+                settingsNow.lightPillarActive ||
+                settingsNow.liquidEtherActive
+              ) {
+                const preview = (() => {
+                  if (settingsNow.gradientV2Active)
+                    return `linear-gradient(135deg, ${settingsNow.gradientV2Color1 || "#0f172a"}, ${settingsNow.gradientV2Color2 || "#1d4ed8"}, ${settingsNow.gradientV2Color3 || "#7c3aed"})`
+                  if (settingsNow.silkActive)
+                    return `radial-gradient(circle at center, ${settingsNow.silkColor || "#7B7481"}, #050505)`
+                  if (settingsNow.lightPillarActive)
+                    return `linear-gradient(180deg, ${settingsNow.lightPillarTopColor || "#ffffff"}, ${settingsNow.lightPillarBottomColor || "#000000"})`
+                  if (settingsNow.liquidEtherActive)
+                    return `linear-gradient(135deg, ${settingsNow.liquidEtherColor1 || "#5227FF"}, ${settingsNow.liquidEtherColor2 || "#FF9FFC"}, ${settingsNow.liquidEtherColor3 || "#B497CF"})`
+                  return null
+                })()
+                if (preview) {
+                  updateSetting(previewKey, preview)
+                  saveSettings()
+                }
+                return
+              }
+
+              const bg = value
+              if (!bg) {
+                updateSetting("lastUserBackgroundPreview", null)
+                saveSettings()
+                return
+              }
+
+              if (
+                typeof bg === "string" &&
+                (bg.startsWith("#") ||
+                  bg.includes("gradient(") ||
+                  bg.startsWith("linear-gradient") ||
+                  bg.startsWith("radial-gradient") ||
+                  bg.startsWith("conic-gradient"))
+              ) {
+                updateSetting("lastUserBackgroundPreview", bg)
+                saveSettings()
+                return
+              }
+
+              let candidateUrl = null
+              if (typeof bg === "string") {
+                if (bg.startsWith("idb-")) {
+                  candidateUrl =
+                    (await getThumbnailUrl(bg).catch(() => null)) ||
+                    (await getImageUrl(bg).catch(() => null))
+                } else if (
+                  bg.startsWith("data:") ||
+                  bg.startsWith("blob:") ||
+                  /^https?:\/\//i.test(bg)
+                ) {
+                  candidateUrl = bg
+                }
+              }
+
+              if (!candidateUrl) return
+
+              try {
+                const img = new Image()
+                img.crossOrigin = "Anonymous"
+                const dataUrl = await new Promise((resolve) => {
+                  img.onload = () => {
+                    try {
+                      const canvas = document.createElement("canvas")
+                      // Kích thước nhỏ 32x32 hoặc 16x16 để tải data URL nhanh nhất có thể (chỉ làm nền mờ mờ)
+                      const size = 32
+                      canvas.width = size
+                      canvas.height = size
+                      const ctx = canvas.getContext("2d")
+                      ctx.drawImage(img, 0, 0, size, size)
+                      const quality = 0.5 // JPG quality giúp string base64 ngắn hơn nếu không cần alpha
+                      resolve(canvas.toDataURL("image/jpeg", quality))
+                    } catch (e) {
+                      resolve(candidateUrl)
+                    }
+                  }
+                  img.onerror = () => resolve(candidateUrl)
+                  img.src = candidateUrl
+                })
+                if (dataUrl) {
+                  updateSetting("lastUserBackgroundPreview", dataUrl)
+                  saveSettings()
+                }
+              } catch (e) {
+                // ignore
+              }
+            } catch (err) {
+              console.warn("Background preview generation failed:", err)
+            }
+          })()
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
           updateSetting("silkActive", false)
@@ -820,9 +934,12 @@ export function initSettings() {
       updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "svgWaveActive" && value === true) {
       updateSetting("background", null)
@@ -831,11 +948,15 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "silkActive" && value === true) {
       updateSetting("background", null)
@@ -844,11 +965,15 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "lightPillarActive" && value === true) {
       updateSetting("background", null)
@@ -857,11 +982,14 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "liquidEtherActive" && value === true) {
       updateSetting("background", null)
@@ -870,11 +998,14 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "splashCursorActive" && value === true) {
       updateSetting("splashCursorDarkBg", false)
@@ -884,12 +1015,16 @@ export function initSettings() {
       updateSetting("silkActive", false)
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorDarkBg) DOM_EXPORTS.splashCursorDarkBg.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorDarkBg)
+        DOM_EXPORTS.splashCursorDarkBg.checked = false
       if (DOM_EXPORTS.splashCursorDarkBgBtn)
         DOM_EXPORTS.splashCursorDarkBgBtn.classList.remove("active")
     }
@@ -907,12 +1042,16 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (isGradient) {
       updateSetting("gradientV2Active", false)
@@ -921,12 +1060,16 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
-      if (DOM_EXPORTS.gradientV2Active) DOM_EXPORTS.gradientV2Active.checked = false
+      if (DOM_EXPORTS.gradientV2Active)
+        DOM_EXPORTS.gradientV2Active.checked = false
       if (DOM_EXPORTS.svgWaveActive) DOM_EXPORTS.svgWaveActive.checked = false
       if (DOM_EXPORTS.silkActive) DOM_EXPORTS.silkActive.checked = false
-      if (DOM_EXPORTS.lightPillarActive) DOM_EXPORTS.lightPillarActive.checked = false
-      if (DOM_EXPORTS.liquidEtherActive) DOM_EXPORTS.liquidEtherActive.checked = false
-      if (DOM_EXPORTS.splashCursorActive) DOM_EXPORTS.splashCursorActive.checked = false
+      if (DOM_EXPORTS.lightPillarActive)
+        DOM_EXPORTS.lightPillarActive.checked = false
+      if (DOM_EXPORTS.liquidEtherActive)
+        DOM_EXPORTS.liquidEtherActive.checked = false
+      if (DOM_EXPORTS.splashCursorActive)
+        DOM_EXPORTS.splashCursorActive.checked = false
     }
     if (key === "effect" && value !== "none") {
       updateSetting("gradientV2Active", false)
@@ -1224,31 +1367,100 @@ export function initSettings() {
         DOM_EXPORTS.softAuroraColor2Picker.value = config.color2
 
       const sliderUpdates = [
-        ["softAuroraSpeed", "speed", DOM_EXPORTS.softAuroraSpeedSlider, DOM_EXPORTS.softAuroraSpeedVal, 1],
-        ["softAuroraScale", "scale", DOM_EXPORTS.softAuroraScaleSlider, DOM_EXPORTS.softAuroraScaleVal, 1],
-        ["softAuroraBrightness", "brightness", DOM_EXPORTS.softAuroraBrightnessSlider, DOM_EXPORTS.softAuroraBrightnessVal, 1],
-        ["softAuroraNoiseFreq", "noiseFrequency", DOM_EXPORTS.softAuroraNoiseFreqSlider, DOM_EXPORTS.softAuroraNoiseFreqVal, 1],
-        ["softAuroraNoiseAmp", "noiseAmplitude", DOM_EXPORTS.softAuroraNoiseAmpSlider, DOM_EXPORTS.softAuroraNoiseAmpVal, 1],
-        ["softAuroraBandHeight", "bandHeight", DOM_EXPORTS.softAuroraBandHeightSlider, DOM_EXPORTS.softAuroraBandHeightVal, 2],
-        ["softAuroraBandSpread", "bandSpread", DOM_EXPORTS.softAuroraBandSpreadSlider, DOM_EXPORTS.softAuroraBandSpreadVal, 1],
-        ["softAuroraOctaveDecay", "octaveDecay", DOM_EXPORTS.softAuroraOctaveDecaySlider, DOM_EXPORTS.softAuroraOctaveDecayVal, 2],
-        ["softAuroraLayerOffset", "layerOffset", DOM_EXPORTS.softAuroraLayerOffsetSlider, DOM_EXPORTS.softAuroraLayerOffsetVal, 1],
-        ["softAuroraColorSpeed", "colorSpeed", DOM_EXPORTS.softAuroraColorSpeedSlider, DOM_EXPORTS.softAuroraColorSpeedVal, 1],
-        ["softAuroraMouseInfluence", "mouseInfluence", DOM_EXPORTS.softAuroraMouseInfluenceSlider, DOM_EXPORTS.softAuroraMouseInfluenceVal, 2],
+        [
+          "softAuroraSpeed",
+          "speed",
+          DOM_EXPORTS.softAuroraSpeedSlider,
+          DOM_EXPORTS.softAuroraSpeedVal,
+          1,
+        ],
+        [
+          "softAuroraScale",
+          "scale",
+          DOM_EXPORTS.softAuroraScaleSlider,
+          DOM_EXPORTS.softAuroraScaleVal,
+          1,
+        ],
+        [
+          "softAuroraBrightness",
+          "brightness",
+          DOM_EXPORTS.softAuroraBrightnessSlider,
+          DOM_EXPORTS.softAuroraBrightnessVal,
+          1,
+        ],
+        [
+          "softAuroraNoiseFreq",
+          "noiseFrequency",
+          DOM_EXPORTS.softAuroraNoiseFreqSlider,
+          DOM_EXPORTS.softAuroraNoiseFreqVal,
+          1,
+        ],
+        [
+          "softAuroraNoiseAmp",
+          "noiseAmplitude",
+          DOM_EXPORTS.softAuroraNoiseAmpSlider,
+          DOM_EXPORTS.softAuroraNoiseAmpVal,
+          1,
+        ],
+        [
+          "softAuroraBandHeight",
+          "bandHeight",
+          DOM_EXPORTS.softAuroraBandHeightSlider,
+          DOM_EXPORTS.softAuroraBandHeightVal,
+          2,
+        ],
+        [
+          "softAuroraBandSpread",
+          "bandSpread",
+          DOM_EXPORTS.softAuroraBandSpreadSlider,
+          DOM_EXPORTS.softAuroraBandSpreadVal,
+          1,
+        ],
+        [
+          "softAuroraOctaveDecay",
+          "octaveDecay",
+          DOM_EXPORTS.softAuroraOctaveDecaySlider,
+          DOM_EXPORTS.softAuroraOctaveDecayVal,
+          2,
+        ],
+        [
+          "softAuroraLayerOffset",
+          "layerOffset",
+          DOM_EXPORTS.softAuroraLayerOffsetSlider,
+          DOM_EXPORTS.softAuroraLayerOffsetVal,
+          1,
+        ],
+        [
+          "softAuroraColorSpeed",
+          "colorSpeed",
+          DOM_EXPORTS.softAuroraColorSpeedSlider,
+          DOM_EXPORTS.softAuroraColorSpeedVal,
+          1,
+        ],
+        [
+          "softAuroraMouseInfluence",
+          "mouseInfluence",
+          DOM_EXPORTS.softAuroraMouseInfluenceSlider,
+          DOM_EXPORTS.softAuroraMouseInfluenceVal,
+          2,
+        ],
       ]
 
       updateSetting("softAuroraColor1", config.color1)
       updateSetting("softAuroraColor2", config.color2)
-      sliderUpdates.forEach(([settingKey, optionKey, input, valueLabel, digits]) => {
-        const value = config[optionKey]
-        if (input) input.value = value
-        if (valueLabel) valueLabel.textContent = value.toFixed(digits)
-        updateSetting(settingKey, value)
-      })
+      sliderUpdates.forEach(
+        ([settingKey, optionKey, input, valueLabel, digits]) => {
+          const value = config[optionKey]
+          if (input) input.value = value
+          if (valueLabel) valueLabel.textContent = value.toFixed(digits)
+          updateSetting(settingKey, value)
+        },
+      )
       updateSetting("softAuroraEnableMouse", config.enableMouseInteraction)
 
       if (DOM_EXPORTS.softAuroraMouseCheckbox)
-        DOM_EXPORTS.softAuroraMouseCheckbox.checked = config.enableMouseInteraction
+        DOM_EXPORTS.softAuroraMouseCheckbox.checked =
+          config.enableMouseInteraction
 
       saveSettings()
 
@@ -1436,7 +1648,9 @@ export function initSettings() {
   }
 
   // Animated Backgrounds Collapsible Group
-  const animatedBgHeader = document.getElementById("animated-backgrounds-header")
+  const animatedBgHeader = document.getElementById(
+    "animated-backgrounds-header",
+  )
   if (animatedBgHeader) {
     animatedBgHeader.addEventListener("click", () => {
       scheduleSettingsGalleriesRender()
@@ -1451,12 +1665,17 @@ export function initSettings() {
         }
       }, 50)
     })
-    
+
     // Auto-expand if any effect within this group is active
-    const isAnyActive = settings.silkActive || settings.lightPillarActive || settings.liquidEtherActive || settings.splashCursorActive || settings.gradientV2Active
+    const isAnyActive =
+      settings.silkActive ||
+      settings.lightPillarActive ||
+      settings.liquidEtherActive ||
+      settings.splashCursorActive ||
+      settings.gradientV2Active
     if (isAnyActive) {
-        const section = animatedBgHeader.parentElement
-        section.classList.remove("collapsed")
+      const section = animatedBgHeader.parentElement
+      section.classList.remove("collapsed")
     }
   }
 

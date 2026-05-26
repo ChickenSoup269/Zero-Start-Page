@@ -130,6 +130,27 @@ const getBackgroundImageSource = async () => {
 
 export async function pickAccentFromCurrentBackground(options = {}) {
   const { fallbackRandom = false } = options
+  // Prefer explicit seed colors when background is a simple color or gradient
+  try {
+    const settings = getSettings()
+    const bg = settings?.background
+    if (typeof bg === "string") {
+      const trimmed = bg.trim()
+      // direct hex background
+      if (/^#[0-9A-F]{6}$/i.test(trimmed)) return trimmed
+
+      // CSS gradient background (linear-gradient, radial-gradient, etc.)
+      if (/gradient\(/i.test(trimmed)) {
+        // prefer explicit gradient start/end settings if available
+        if (/^#[0-9A-F]{6}$/i.test(settings.gradientStart || ""))
+          return settings.gradientStart
+        if (/^#[0-9A-F]{6}$/i.test(settings.gradientEnd || ""))
+          return settings.gradientEnd
+      }
+    }
+  } catch (e) {
+    // ignore and continue to sampling
+  }
   const videoColor = sampleCurrentVideoFrameColor()
   if (videoColor) return videoColor
 
@@ -156,7 +177,8 @@ export async function applyAccentFromCurrentBackground(options = {}) {
   } = options
   const color = await pickAccentFromCurrentBackground({ fallbackRandom })
   if (!color) {
-    if (!silent) console.warn("No suitable background color found for M3 accent")
+    if (!silent)
+      console.warn("No suitable background color found for M3 accent")
     return null
   }
 

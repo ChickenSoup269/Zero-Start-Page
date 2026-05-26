@@ -33,18 +33,24 @@
         body.classList.add("bookmark-taskbar-left-mode")
 
       if (settings.flipLayout) body.classList.add("flip-layout")
-      if (settings.allowTextSelection === true) body.classList.add("allow-text-selection")
-      if (settings.sidebarGlowAnimations === false) body.classList.add("sidebar-glow-disabled")
-      if (settings.bookmarkGroupShowCount === false) body.classList.add("bookmark-group-count-hidden")
+      if (settings.allowTextSelection === true)
+        body.classList.add("allow-text-selection")
+      if (settings.sidebarGlowAnimations === false)
+        body.classList.add("sidebar-glow-disabled")
+      if (settings.bookmarkGroupShowCount === false)
+        body.classList.add("bookmark-group-count-hidden")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
-      if (settings.showTopRightControls !== false) body.classList.add("has-top-right-controls")
+      if (settings.showTopRightControls !== false)
+        body.classList.add("has-top-right-controls")
       else body.classList.add("hide-top-right-controls")
-      if (settings.showSearchBar === false) body.classList.add("hide-search-bar")
+      if (settings.showSearchBar === false)
+        body.classList.add("hide-search-bar")
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")
-      else if (bgStyle === "white") body.classList.add("bookmark-layout-bg-white")
+      else if (bgStyle === "white")
+        body.classList.add("bookmark-layout-bg-white")
       else if (bgStyle === "colored") {
         body.classList.add("bookmark-layout-bg-colored")
         document.documentElement.style.setProperty(
@@ -80,20 +86,26 @@
       const styleEl = document.createElement("style")
       let css = ""
       const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
-      const cssText = (value) => String(value || "").replace(/<\/style/gi, "<\\/style")
+      const cssText = (value) =>
+        String(value || "").replace(/<\/style/gi, "<\\/style")
       const buildEarlyGradientCss = () => {
         const start = settings.gradientStart || "#0a1f11"
         const end = settings.gradientEnd || "#1d472c"
         const angle = Number(settings.gradientAngle ?? 135)
-        const type = ["linear", "radial", "conic"].includes(settings.gradientType)
+        const type = ["linear", "radial", "conic"].includes(
+          settings.gradientType,
+        )
           ? settings.gradientType
           : "linear"
-        const repeating = settings.gradientRepeating === true ? "repeating-" : ""
+        const repeating =
+          settings.gradientRepeating === true ? "repeating-" : ""
         const position = settings.gradientPosition || "center"
         const radialShape = settings.gradientRadialShape || "circle"
         const customColors =
           typeof settings.gradientCustomColors === "string"
-            ? settings.gradientCustomColors.match(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g) || []
+            ? settings.gradientCustomColors.match(
+                /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/g,
+              ) || []
             : []
         const hexToParts = (hex) => {
           const normalized = String(hex || "").replace("#", "")
@@ -105,8 +117,13 @@
                   .join("")
               : normalized
           const value = Number.parseInt(full, 16)
-          if (!Number.isFinite(value) || full.length !== 6) return { r: 15, g: 23, b: 42 }
-          return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 }
+          if (!Number.isFinite(value) || full.length !== 6)
+            return { r: 15, g: 23, b: 42 }
+          return {
+            r: (value >> 16) & 255,
+            g: (value >> 8) & 255,
+            b: value & 255,
+          }
         }
         const mixHex = (a, b, t) => {
           const c1 = hexToParts(a)
@@ -126,7 +143,11 @@
         const generatedColors = Array.from({ length: extraCount }, (_, index) =>
           mixHex(start, end, (index + 1) / (extraCount + 1)),
         )
-        const colors = [start, ...(customColors.length ? customColors.slice(0, 5) : generatedColors), end]
+        const colors = [
+          start,
+          ...(customColors.length ? customColors.slice(0, 5) : generatedColors),
+          end,
+        ]
 
         if (type === "radial") {
           return `${repeating}radial-gradient(${radialShape} at ${position}, ${colors.join(", ")})`
@@ -137,18 +158,26 @@
         return `${repeating}linear-gradient(${angle}deg, ${colors.join(", ")})`
       }
       const buildEarlyMultiColorCss = () => {
-        const colors = Array.isArray(settings.multiColors) && settings.multiColors.length >= 2
-          ? settings.multiColors
-          : ["#FF6B6B", "#4ECDC4"]
+        const colors =
+          Array.isArray(settings.multiColors) &&
+          settings.multiColors.length >= 2
+            ? settings.multiColors
+            : ["#FF6B6B", "#4ECDC4"]
         const angle = Number(settings.multiGradientAngle ?? 135)
-        const type = ["linear", "radial", "conic"].includes(settings.multiColorType)
+        const type = ["linear", "radial", "conic"].includes(
+          settings.multiColorType,
+        )
           ? settings.multiColorType
           : "linear"
-        const repeating = settings.multiColorRepeating === true ? "repeating-" : ""
+        const repeating =
+          settings.multiColorRepeating === true ? "repeating-" : ""
         const position = settings.multiColorPosition || "center"
         const radialShape = settings.multiColorRadialShape || "circle"
         const stops = colors
-          .map((color, index) => `${color} ${(index / (colors.length - 1)) * 100}%`)
+          .map(
+            (color, index) =>
+              `${color} ${(index / (colors.length - 1)) * 100}%`,
+          )
           .join(", ")
 
         if (type === "radial") {
@@ -160,16 +189,27 @@
         return `${repeating}linear-gradient(${angle}deg, ${stops})`
       }
       const buildEarlyBackgroundCss = () => {
+        // If a persistent preview exists (data URL or CSS), use it for instant display
+        if (settings.lastUserBackgroundPreview) {
+          const preview = settings.lastUserBackgroundPreview
+          if (preview.startsWith("data:") || preview.startsWith("blob:") || /^https?:\/\//i.test(preview)) {
+            return cssUrl(preview)
+          }
+          return preview
+        }
         const bg = settings.background
         const isMultiColorActive =
           settings.activeBgUid?.startsWith("multi-") ||
-          (settings.multiColorActive === true && !settings.activeBgUid?.startsWith("grad-"))
+          (settings.multiColorActive === true &&
+            !settings.activeBgUid?.startsWith("grad-"))
 
-        if (settings.splashCursorActive && settings.splashCursorDarkBg === true) return "#000000"
+        if (settings.splashCursorActive && settings.splashCursorDarkBg === true)
+          return "#000000"
         if (settings.gradientV2Active) {
           return `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
         }
-        if (settings.silkActive) return `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
+        if (settings.silkActive)
+          return `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
         if (settings.lightPillarActive) {
           return `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
         }
@@ -177,14 +217,24 @@
           return `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
         }
         if (bg && typeof bg === "string") {
-          if (bg.startsWith("data:image") || bg.startsWith("blob:") || bg.startsWith("http")) {
+          if (
+            bg.startsWith("data:image") ||
+            bg.startsWith("blob:") ||
+            bg.startsWith("http")
+          ) {
             return cssUrl(bg)
           }
-          if (!bg.startsWith("idb-") && !bg.startsWith("data:video") && !/\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(bg)) {
+          if (
+            !bg.startsWith("idb-") &&
+            !bg.startsWith("data:video") &&
+            !/\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(bg)
+          ) {
             return bg
           }
         }
-        return isMultiColorActive ? buildEarlyMultiColorCss() : buildEarlyGradientCss()
+        return isMultiColorActive
+          ? buildEarlyMultiColorCss()
+          : buildEarlyGradientCss()
       }
 
       // Inject accent color and other theme variables for loading screen
@@ -218,7 +268,8 @@
         --bg-filter: blur(${settings.bgBlur ?? 0}px) brightness(${settings.bgBrightness ?? 100}%) contrast(${settings.bgContrast ?? 100}%) saturate(${settings.bgSaturation ?? 100}%);
       }\n`
       css += `body.preload-bg-ready { background: ${earlyBg} !important; background-size: ${earlyBgSize} !important; background-repeat: no-repeat !important; background-position: var(--bg-pos-x) var(--bg-pos-y) !important; animation: none !important; }\n`
-      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; }\n`
+      // Update by Copilot: Allow fade-in animation
+      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); animation: bgFadeIn var(--bg-fade-in, 0.5s) ease-out forwards; }\n`
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }
