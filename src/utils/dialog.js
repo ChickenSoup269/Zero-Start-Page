@@ -224,8 +224,17 @@ export function showChecklistConfirm(options, title = null, message = null) {
     const i18n = geti18n()
 
     const checklistHtml = (options || [])
-      .map(
-        (opt, idx) => `
+      .map((opt, idx) => {
+        if (opt.type === "section") {
+          return `
+            <div class="dialog-check-section">
+              ${opt.icon ? `<i class="${opt.icon}"></i>` : ""}
+              <span>${opt.label}</span>
+            </div>
+          `
+        }
+
+        return `
           <label class="dialog-check-item" for="dialog-check-${idx}">
             <input
               type="checkbox"
@@ -236,8 +245,8 @@ export function showChecklistConfirm(options, title = null, message = null) {
             />
             <span>${opt.label}</span>
           </label>
-        `,
-      )
+        `
+      })
       .join("")
 
     container.innerHTML = `
@@ -290,6 +299,76 @@ export function showChecklistConfirm(options, title = null, message = null) {
     })
 
     // Close on ESC
+    const escHandler = (e) => {
+      if (e.key === "Escape") {
+        closeDialog()
+        resolve(null)
+        document.removeEventListener("keydown", escHandler)
+      }
+    }
+    document.addEventListener("keydown", escHandler)
+  })
+}
+
+// Choice Dialog
+export function showChoiceConfirm(options, title = null, message = null) {
+  return new Promise((resolve) => {
+    const container = createDialogContainer()
+    const i18n = geti18n()
+
+    const choicesHtml = (options || [])
+      .map(
+        (opt) => `
+          <button type="button" class="dialog-choice-item" data-key="${opt.key}">
+            ${opt.icon ? `<i class="${opt.icon}"></i>` : ""}
+            <span>
+              <strong>${opt.label}</strong>
+              ${opt.description ? `<small>${opt.description}</small>` : ""}
+            </span>
+          </button>
+        `,
+      )
+      .join("")
+
+    container.innerHTML = `
+      <div class="custom-dialog custom-choice">
+        ${title ? `<div class="dialog-header">${title}</div>` : ""}
+        <div class="dialog-body">
+          <i class="fa-solid fa-language dialog-icon"></i>
+          ${message ? `<div class="dialog-message">${message}</div>` : ""}
+          <div class="dialog-choice-list">${choicesHtml}</div>
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-secondary" id="choice-cancel">
+            ${i18n.cancel || "Cancel"}
+          </button>
+        </div>
+      </div>
+    `
+
+    container.classList.add("active")
+
+    container.querySelectorAll(".dialog-choice-item[data-key]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.dataset.key
+        closeDialog()
+        resolve(value)
+      })
+    })
+
+    const cancelBtn = container.querySelector("#choice-cancel")
+    cancelBtn.addEventListener("click", () => {
+      closeDialog()
+      resolve(null)
+    })
+
+    container.addEventListener("click", (e) => {
+      if (e.target === container) {
+        closeDialog()
+        resolve(null)
+      }
+    })
+
     const escHandler = (e) => {
       if (e.key === "Escape") {
         closeDialog()

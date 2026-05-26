@@ -207,6 +207,7 @@
   border-radius: var(--radius-lg);
   width: 90%;
   max-width: 420px;
+  max-height: min(86vh, 760px);
   padding: 0;
   overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
@@ -216,6 +217,10 @@
 
 .custom-dialog-overlay.active .custom-dialog {
   transform: scale(1) translateY(0);
+}
+
+.custom-dialog.custom-checklist {
+  max-width: min(640px, 94vw);
 }
 
 .dialog-header {
@@ -230,6 +235,8 @@
 .dialog-body {
   padding: var(--space-4) var(--space-3);
   text-align: center;
+  max-height: calc(86vh - 118px);
+  overflow: auto;
 }
 
 .dialog-icon {
@@ -319,22 +326,47 @@
 .dialog-checklist {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 3px;
   text-align: left;
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
+  max-height: min(46vh, 420px);
+  overflow: auto;
+  padding-right: 4px;
 }
 
 .dialog-check-item {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-2);
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+}
+
+.dialog-check-section {
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  gap: 7px;
+  letter-spacing: 0.02em;
+  margin: 7px 2px 2px;
+  padding: 3px 4px;
+  text-transform: uppercase;
+}
+
+.dialog-check-section:first-child {
+  margin-top: 0;
+}
+
+.dialog-check-section i {
+  color: var(--accent-color);
+  font-size: 0.82rem;
 }
 
 .dialog-check-item:hover {
@@ -355,6 +387,7 @@
   position: relative;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .dialog-check-item input[type='checkbox']:checked {
@@ -375,10 +408,121 @@
   transform: translate(-50%, -50%);
 }
 
-.dialog-check-item span {
+.dialog-check-item > span {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 8px;
   font-size: 0.95rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.dialog-check-main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dialog-check-favicon {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.dialog-check-item .dialog-check-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.dialog-check-item .dialog-check-desc {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.74rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.dialog-choice-list {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  text-align: left;
+}
+
+.dialog-choice-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.dialog-choice-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(var(--accent-color-rgb), 0.45);
+  transform: translateY(-1px);
+}
+
+.dialog-choice-item i {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(var(--accent-color-rgb), 0.18);
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.dialog-choice-item span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dialog-choice-item strong {
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.dialog-choice-item small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.dialog-message .dialog-link-white {
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dialog-message .dialog-link-white:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.36);
 }
 
 /* White Mode for Modals - Including UI parts of Import Mode */
@@ -599,6 +743,35 @@
 
 .quick-access-white .dialog-check-item span {
   color: #000 !important;
+}
+
+.quick-access-white .dialog-check-section {
+  color: rgba(0, 0, 0, 0.62) !important;
+}
+
+.quick-access-white .dialog-check-item .dialog-check-desc {
+  color: rgba(0, 0, 0, 0.58) !important;
+}
+
+.quick-access-white .dialog-choice-item {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+}
+
+.quick-access-white .dialog-choice-item:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.quick-access-white .dialog-choice-item small {
+  color: rgba(0, 0, 0, 0.58) !important;
+}
+
+.quick-access-white .dialog-message .dialog-link-white {
+  color: #fff !important;
+  background: #000 !important;
+  border-color: #000 !important;
 }
 
 .quick-access-white .dialog-check-item input[type='checkbox'] {

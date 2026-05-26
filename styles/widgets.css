@@ -6204,6 +6204,26 @@ body.bookmark-taskbar-left-mode .bookmark-group-tab {
   min-width: 0;
 }
 
+/* Keep imported Chrome folder groups from pushing the group bar off-screen. */
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-top-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+  max-width: min(92vw, calc(100vw - 32px)) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  max-height: min(72vh, calc(100vh - 132px)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+}
+
 body.bookmark-sidebar-mode .bookmark-group-tab:hover,
 body.bookmark-taskbar-mode .bookmark-group-tab:hover,
 body.bookmark-taskbar-top-mode .bookmark-group-tab:hover,
@@ -6719,4 +6739,20 @@ body.bookmark-taskbar-left-mode
   .bookmark-stack-popup-action span {
     display: none;
   }
+}
+
+/* Final overflow guard for large imported bookmark folder sets. */
+body.bookmark-taskbar-mode .bookmark-groups-container,
+body.bookmark-taskbar-top-mode .bookmark-groups-container,
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  justify-content: flex-start !important;
+  max-width: min(92vw, calc(100vw - 32px)) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+body.bookmark-sidebar-mode .bookmark-groups-container {
+  max-height: min(72vh, calc(100vh - 132px)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }

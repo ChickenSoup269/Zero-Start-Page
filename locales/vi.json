@@ -1105,5 +1105,20 @@
   "settings_bookmark_size_header": "Kích thước & Khoảng cách",
   "settings_bookmark_appearance_header": "Giao diện",
   "settings_bookmark_layout_header": "Bố cục & Hành vi",
-  "modal_toggle_folders": "Ẩn/hiện thư mục"
+  "modal_toggle_folders": "Ẩn/hiện thư mục",
+  "first_run_open_source_title": "Mã nguồn mở",
+  "first_run_open_source_message": "Zero Start Page là dự án mã nguồn mở. Bạn có thể xem tại<br><a class=\"dialog-link-white\" href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\"><i class=\"fa-brands fa-github\"></i> ChickenSoup269/Zero-Start-Page</a>",
+  "first_run_import_bookmarks_title": "Nhập bookmark Chrome",
+  "first_run_import_bookmarks_prompt": "Chọn folder bookmark Chrome bạn muốn lấy. Ví dụ: chọn Thanh dấu trang để lấy shortcut nằm dưới thanh địa chỉ Chrome, hoặc Dấu trang khác để lấy các folder đã lưu.",
+  "first_run_import_bookmarks_success": "Đã nhập {count} bookmark từ Chrome.",
+  "first_run_import_bookmarks_none": "Không tìm thấy bookmark Chrome mới để nhập.",
+  "first_run_import_bookmarks_error": "Hiện chưa thể nhập bookmark Chrome.",
+  "first_run_import_bookmarks_folder": "Folder bookmark",
+  "first_run_import_bookmarks_count": "{count} bookmark",
+  "first_run_import_bookmarks_example": "Ví dụ",
+  "first_run_import_bookmarks_empty": "Folder này chưa có bookmark",
+  "first_run_import_bookmarks_single": "Bookmark riêng lẻ",
+  "first_run_import_selected_bookmarks_group": "Bookmark đã chọn",
+  "first_run_import_folder_section": "Folder",
+  "first_run_import_bookmark_section": "Bookmark riêng lẻ"
 }

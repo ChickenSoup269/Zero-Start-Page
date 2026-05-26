@@ -20,6 +20,14 @@ export class MusicPlayer {
     this._lastKnownTime = 0
     this._lastUpdateTimestamp = 0
     this._progressInterval = null
+    this._visibilityHandler = () => {
+      if (document.visibilityState === "hidden") {
+        this.stopPolling()
+      } else if (this.showPlayer && this.isVisible) {
+        this.startPolling()
+        this.fetchMediaState()
+      }
+    }
 
     this.init()
   }
@@ -196,6 +204,8 @@ export class MusicPlayer {
         this.applyNoShaking(value)
       }
     })
+
+    document.addEventListener("visibilitychange", this._visibilityHandler)
   }
 
   applyMusicStyle(styleName) {
@@ -280,7 +290,8 @@ export class MusicPlayer {
 
   startPolling() {
     if (this.pollInterval) return
-    this.pollInterval = setInterval(() => this.fetchMediaState(), 500)
+    if (document.visibilityState === "hidden") return
+    this.pollInterval = setInterval(() => this.fetchMediaState(), 1500)
     // Run an initial fetch
     this.fetchMediaState()
   }
@@ -432,7 +443,7 @@ export class MusicPlayer {
       const elapsed = (Date.now() - this._lastUpdateTimestamp) / 1000
       const estimated = Math.min(this._lastKnownTime + elapsed, this._duration)
       this._updateProgressUI(estimated, this._duration)
-    }, 250)
+    }, 1000)
   }
 
   _stopProgressAnimation() {

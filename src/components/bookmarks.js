@@ -1889,7 +1889,7 @@ function updateMacosHover() {
     })
   }
 
-  rafId = requestAnimationFrame(updateMacosHover)
+  rafId = null
 }
 
 document.addEventListener("mousemove", (e) => {
@@ -1906,5 +1906,6 @@ document.addEventListener("mousemove", (e) => {
     if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   } else {
     isHoveringContainer = false
+    if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   }
 })

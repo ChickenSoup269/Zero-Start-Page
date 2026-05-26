@@ -624,6 +624,16 @@ export function setupGeneralEventHandlers(
   const throttleSettingUpdate = (key, value) => {
     markInterfaceStyleCustom(key)
     const fastFeedbackKeys = [
+      "bgBlur",
+      "bgBrightness",
+      "bgContrast",
+      "bgSaturation",
+      "bgFadeIn",
+      "bgPositionX",
+      "bgPositionY",
+      "bgImageScale",
+      "bookmarkFontSize",
+      "bookmarkIconSize",
       "bookmarkGap",
       "bookmarkBgColor",
       "bookmarkBgOpacity",
@@ -658,7 +668,12 @@ export function setupGeneralEventHandlers(
       }
 
       const rootStyle = document.documentElement.style
-      if (k === "bookmarkGap") rootStyle.setProperty("--bookmark-gap", `${v}px`)
+      if (k === "bookmarkFontSize")
+        rootStyle.setProperty("--bookmark-font-size", `${v}px`)
+      else if (k === "bookmarkIconSize")
+        rootStyle.setProperty("--bookmark-icon-size", `${v}px`)
+      else if (k === "bookmarkGap")
+        rootStyle.setProperty("--bookmark-gap", `${v}px`)
       else if (k === "bookmarkBgColor" || k === "bookmarkBgOpacity") {
         let hex = settings.bookmarkBgColor || "#ffffff"
         let op = settings.bookmarkBgOpacity ?? 100
@@ -1811,25 +1826,25 @@ export function setupGeneralEventHandlers(
     const value = Number(DOM.bgImageScaleInput.value)
     if (DOM.bgImageScaleValue) DOM.bgImageScaleValue.textContent = `${value}%`
     applyBackgroundVisualPreview({ bgImageScale: value })
-    handleSettingUpdate("bgImageScale", value)
+    throttleSettingUpdate("bgImageScale", value)
   })
 
   DOM.bgPosXInput.addEventListener("input", () => {
     DOM.bgPosXValue.textContent = `${DOM.bgPosXInput.value}%`
     applyBackgroundVisualPreview({ bgPositionX: DOM.bgPosXInput.value })
-    handleSettingUpdate("bgPositionX", DOM.bgPosXInput.value)
+    throttleSettingUpdate("bgPositionX", Number(DOM.bgPosXInput.value))
   })
 
   DOM.bgPosYInput.addEventListener("input", () => {
     DOM.bgPosYValue.textContent = `${DOM.bgPosYInput.value}%`
     applyBackgroundVisualPreview({ bgPositionY: DOM.bgPosYInput.value })
-    handleSettingUpdate("bgPositionY", DOM.bgPosYInput.value)
+    throttleSettingUpdate("bgPositionY", Number(DOM.bgPosYInput.value))
   })
 
   DOM.bgBlurInput.addEventListener("input", () => {
     DOM.bgBlurValue.textContent = `${DOM.bgBlurInput.value}px`
     applyBackgroundVisualPreview({ bgBlur: Number(DOM.bgBlurInput.value) })
-    handleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
+    throttleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
   })
 
   if (DOM.bgContrastInput) {
@@ -1838,7 +1853,7 @@ export function setupGeneralEventHandlers(
       applyBackgroundVisualPreview({
         bgContrast: Number(DOM.bgContrastInput.value),
       })
-      handleSettingUpdate("bgContrast", Number(DOM.bgContrastInput.value))
+      throttleSettingUpdate("bgContrast", Number(DOM.bgContrastInput.value))
     })
   }
 
@@ -1848,7 +1863,7 @@ export function setupGeneralEventHandlers(
       applyBackgroundVisualPreview({
         bgSaturation: Number(DOM.bgSaturationInput.value),
       })
-      handleSettingUpdate("bgSaturation", Number(DOM.bgSaturationInput.value))
+      throttleSettingUpdate("bgSaturation", Number(DOM.bgSaturationInput.value))
     })
   }
 
@@ -1857,34 +1872,34 @@ export function setupGeneralEventHandlers(
     applyBackgroundVisualPreview({
       bgBrightness: Number(DOM.bgBrightnessInput.value),
     })
-    handleSettingUpdate("bgBrightness", Number(DOM.bgBrightnessInput.value))
+    throttleSettingUpdate("bgBrightness", Number(DOM.bgBrightnessInput.value))
   })
 
   DOM.bgFadeInInput.addEventListener("input", () => {
     DOM.bgFadeInValue.textContent = `${DOM.bgFadeInInput.value}s`
-    handleSettingUpdate("bgFadeIn", Number(DOM.bgFadeInInput.value))
+    throttleSettingUpdate("bgFadeIn", Number(DOM.bgFadeInInput.value))
   })
 
   // Custom Bookmark listeners
   if (DOM.bookmarkFontSizeInput) {
     DOM.bookmarkFontSizeInput.addEventListener("input", () => {
-      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
-      handleSettingUpdate(
+      DOM.bookmarkFontSizeValue.textContent = `${DOM.bookmarkFontSizeInput.value}px`
+      throttleSettingUpdate(
         "bookmarkFontSize",
         Number(DOM.bookmarkFontSizeInput.value),
       )
     })
 
     DOM.bookmarkIconSizeInput.addEventListener("input", () => {
-      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
-      handleSettingUpdate(
+      DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
+      throttleSettingUpdate(
         "bookmarkIconSize",
         Number(DOM.bookmarkIconSizeInput.value),
       )
     })
 
     DOM.bookmarkGapInput.addEventListener("input", () => {
-      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}${DOM.bookmarkGroupFontSizeInput.value}px`
+      DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
       throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
     })
 

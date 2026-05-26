@@ -1108,5 +1108,20 @@
   "settings_bookmark_size_header": "Sizes & Spacing",
   "settings_bookmark_appearance_header": "Appearance",
   "settings_bookmark_layout_header": "Layout & Behavior",
-  "modal_toggle_folders": "Toggle Folders"
+  "modal_toggle_folders": "Toggle Folders",
+  "first_run_open_source_title": "Open source",
+  "first_run_open_source_message": "Zero Start Page is open source. You can view the project at<br><a class=\"dialog-link-white\" href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\"><i class=\"fa-brands fa-github\"></i> ChickenSoup269/Zero-Start-Page</a>",
+  "first_run_import_bookmarks_title": "Import Chrome bookmarks",
+  "first_run_import_bookmarks_prompt": "Choose which Chrome bookmark folders you want to import. For example, pick Bookmark Bar for the shortcuts shown under Chrome's address bar, or Other Bookmarks for saved folders.",
+  "first_run_import_bookmarks_success": "Imported {count} bookmarks from Chrome.",
+  "first_run_import_bookmarks_none": "No new Chrome bookmarks were found.",
+  "first_run_import_bookmarks_error": "Could not import Chrome bookmarks right now.",
+  "first_run_import_bookmarks_folder": "Bookmark folder",
+  "first_run_import_bookmarks_count": "{count} bookmarks",
+  "first_run_import_bookmarks_example": "Example",
+  "first_run_import_bookmarks_empty": "No bookmarks inside",
+  "first_run_import_bookmarks_single": "Bookmark",
+  "first_run_import_selected_bookmarks_group": "Selected bookmarks",
+  "first_run_import_folder_section": "Folders",
+  "first_run_import_bookmark_section": "Individual bookmarks"
 }

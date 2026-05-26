@@ -2,7 +2,7 @@ import { initI18n, geti18n } from "./services/i18n.js"
 import { fadeToggle } from "./utils/dom.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
-import { initBookmarks } from "./components/bookmarks.js"
+import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
 import { initContextMenu } from "./components/contextMenu.js"
 import { initSettings } from "./components/settings.js"
@@ -14,6 +14,10 @@ import { FullCalendar } from "./components/fullCalendar.js"
 import { Notepad } from "./components/notepad.js"
 import { DailyQuotes } from "./components/quotes.js"
 import { preloadImages, migrateDataUrls } from "./services/imageStore.js"
+import {
+  prepareFirstRunDefaults,
+  promptFirstRunBookmarkImport,
+} from "./services/firstRun.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -42,6 +46,7 @@ async function bootstrap() {
 
   // Load language first so all other components have translations
   await initI18n()
+  prepareFirstRunDefaults()
 
   // Update version in startup overlay and settings sidebar immediately
   try {
@@ -152,6 +157,10 @@ async function bootstrap() {
   initSearch()
   initContextMenu()
   initModal()
+  setTimeout(
+    () => promptFirstRunBookmarkImport(renderBookmarks),
+    skipStartupLoader ? 500 : 1800,
+  )
 
   const widgets = {
     todo: null,
