@@ -66,6 +66,7 @@ export const defaultSettings = {
   pageTitle: "Start Page",
   tabIcon: "",
   accentColor: "#00ff73",
+  m3AutoAccentFromBg: false,
   sidebarBg: "rgba(20, 20, 25, 0.85)",
   panelBg: "rgba(26, 46, 31, 0.7)",
   glassBg: "rgba(255, 255, 255, 0.05)",

@@ -49,6 +49,7 @@ import {
   createApplySettings,
   createUpdateSettingsInputs,
 } from "./settingsApplier.js"
+import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import {
   renderLocalBackgrounds,
   renderUserColors,
@@ -517,6 +518,22 @@ export function initSettings() {
     isGradient = false,
     skipSave = false,
   ) {
+    const scheduleAutoAccentUpdate = () => {
+      ;[120, 650, 1400].forEach((delay) => {
+        setTimeout(() => {
+          if (getSettings().m3AutoAccentFromBg !== true) return
+          applyAccentFromCurrentBackground({
+            DOM: DOM_EXPORTS,
+            handleSettingUpdate,
+            fallbackRandom: false,
+            silent: true,
+          }).catch((err) => {
+            console.warn("Auto M3 accent update failed:", err)
+          })
+        }, delay)
+      })
+    }
+
     const rememberCurrentBackground = () => {
       const settings = getSettings()
       if (settings.background != null) {
@@ -879,6 +896,20 @@ export function initSettings() {
     }
 
     applySettings()
+
+    const shouldUpdateAutoAccent =
+      getSettings().m3AutoAccentFromBg === true &&
+      (key === "background" ||
+        isGradient ||
+        key === "multiColors" ||
+        key === "multiColorActive" ||
+        key === "gradientStart" ||
+        key === "gradientEnd" ||
+        key === "activeBgUid")
+
+    if (shouldUpdateAutoAccent) {
+      scheduleAutoAccentUpdate()
+    }
   }
 
   ctx.handleSettingUpdate = handleSettingUpdate

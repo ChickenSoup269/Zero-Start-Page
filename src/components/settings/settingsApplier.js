@@ -2169,6 +2169,9 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.tabIcon || "",
       DOM.tabIconPreview,
     )
+    if (DOM.tabIconClearBtn) {
+      DOM.tabIconClearBtn.hidden = !Boolean(settings.tabIcon)
+    }
 
     if (DOM.clockSizeInput) DOM.clockSizeInput.value = settings.clockSize
     if (DOM.clockSizeValue)
@@ -2184,6 +2187,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.accentColorHexInput.value = (
         settings.accentColor || "#a8c0ff"
       ).toUpperCase()
+    }
+    if (DOM.m3AutoBgToggle) {
+      DOM.m3AutoBgToggle.checked = settings.m3AutoAccentFromBg === true
     }
     if (DOM.accentColorSettingsBody) {
       const isOpen = settings.accentControlsOpen !== false

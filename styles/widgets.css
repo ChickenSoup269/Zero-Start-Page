@@ -134,7 +134,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  z-index: 1000;
+  z-index: 10020;
   transition: opacity 0.3s ease;
 }
 
@@ -206,7 +206,7 @@
     0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   display: none;
   flex-direction: column;
-  z-index: 1001;
+  z-index: 10021;
   animation: fadeInMenu 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

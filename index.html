@@ -778,6 +778,10 @@
                         data-i18n-title="settings_tab_icon_upload" style="width:32px;height:32px;flex-shrink:0;">
                         <i class="fa-solid fa-upload"></i>
                     </button>
+                    <button type="button" id="tab-icon-clear-btn" class="icon-btn" title="Remove icon"
+                        data-i18n-title="settings_tab_icon_remove" style="width:32px;height:32px;flex-shrink:0;" hidden>
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                     <div id="tab-icon-preview"
                         style="width:32px;height:32px;flex-shrink:0;border-radius:6px;background:rgba(255,255,255,0.08);border:1px solid var(--input-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;overflow:hidden;">
                     </div>
@@ -1248,6 +1252,14 @@
                             <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract from
                                 Background</span>
                         </button>
+                        <label class="setting-item-row accent-auto-bg-row"
+                            style="grid-column: 1 / -1; margin-bottom: 10px;">
+                            <div>
+                                <span data-i18n="settings_m3_auto_bg">Auto match background</span>
+                                <small data-i18n="settings_m3_auto_bg_hint">Update M3 accent when background changes</small>
+                            </div>
+                            <input type="checkbox" id="m3-auto-bg-toggle">
+                        </label>
 
                         <!-- Group: Modern & Vibrant -->
                         <div class="color-group-label"

@@ -63,6 +63,7 @@ import {
   applyTabIcon,
   renderTabIconPreview,
 } from "./tabIcon.js"
+import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
@@ -104,6 +105,10 @@ export function setupGeneralEventHandlers(
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
       bookmarkBgOpacity: 0,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 0,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 14,
       bookmarkShadowBlur: 6,
@@ -123,6 +128,10 @@ export function setupGeneralEventHandlers(
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
       bookmarkBgOpacity: 92,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 82,
+      bookmarkGroupTextColor: "#111827",
+      bookmarkGroupFontSize: 13,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 22,
       bookmarkShadowBlur: 10,
@@ -142,6 +151,10 @@ export function setupGeneralEventHandlers(
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
       bookmarkBgOpacity: 88,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 86,
+      bookmarkGroupTextColor: "#111827",
+      bookmarkGroupFontSize: 13,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 24,
       bookmarkShadowBlur: 14,
@@ -159,7 +172,11 @@ export function setupGeneralEventHandlers(
       bookmarkGap: 10,
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
-      bookmarkBgOpacity: 36,
+      bookmarkBgOpacity: 28,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 22,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 12,
@@ -179,6 +196,10 @@ export function setupGeneralEventHandlers(
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
       bookmarkBgOpacity: 0,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 0,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 12,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 16,
       bookmarkShadowBlur: 6,
@@ -197,7 +218,11 @@ export function setupGeneralEventHandlers(
       bookmarkGap: 7,
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
-      bookmarkBgOpacity: 72,
+      bookmarkBgOpacity: 56,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 16,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 8,
@@ -213,32 +238,40 @@ export function setupGeneralEventHandlers(
       bookmarkFontSize: 11,
       bookmarkIconSize: 44,
       bookmarkGap: 12,
-      bookmarkTextColor: "#ffffff",
-      bookmarkBgColor: "#07111f",
-      bookmarkBgOpacity: 54,
-      bookmarkShadowColor: "#00f5d4",
-      bookmarkShadowOpacity: 45,
-      bookmarkShadowBlur: 14,
-      musicBarStyle: "neon",
-      musicPlayerSkin: "default",
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 34,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 18,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 24,
+      bookmarkShadowBlur: 10,
+      musicBarStyle: "pill",
+      musicPlayerSkin: "white-blur",
     },
     terminal: {
       bookmarkLayout: "sidebar",
-      bookmarkLayoutBgStyle: "hidden",
+      bookmarkLayoutBgStyle: "default",
       bookmarkItemStyle: "default",
       bookmarkHideText: false,
-      bookmarkHideBg: true,
+      bookmarkHideBg: false,
       bookmarkMacosHover: false,
-      bookmarkFontSize: 11,
-      bookmarkIconSize: 34,
-      bookmarkGap: 6,
-      bookmarkTextColor: "#7cffad",
-      bookmarkBgColor: "#00140a",
+      bookmarkFontSize: 10,
+      bookmarkIconSize: 36,
+      bookmarkGap: 7,
+      bookmarkTextColor: null,
+      bookmarkBgColor: "#ffffff",
       bookmarkBgOpacity: 18,
-      bookmarkShadowColor: "#7cffad",
-      bookmarkShadowOpacity: 28,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 10,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 13,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 8,
-      musicBarStyle: "terminal",
+      musicBarStyle: "minimal",
       musicPlayerSkin: "default",
     },
     cassette: {
@@ -251,13 +284,17 @@ export function setupGeneralEventHandlers(
       bookmarkIconSize: 44,
       bookmarkGap: 11,
       bookmarkTextColor: null,
-      bookmarkBgColor: "#fff7ed",
-      bookmarkBgOpacity: 76,
-      bookmarkShadowColor: "#7c2d12",
-      bookmarkShadowOpacity: 20,
+      bookmarkBgColor: "#ffffff",
+      bookmarkBgOpacity: 52,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 18,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 10,
-      musicBarStyle: "cassette",
-      musicPlayerSkin: "default",
+      musicBarStyle: "pill",
+      musicPlayerSkin: "white-blur",
     },
     cozy: {
       bookmarkLayout: "default",
@@ -270,11 +307,15 @@ export function setupGeneralEventHandlers(
       bookmarkGap: 12,
       bookmarkTextColor: null,
       bookmarkBgColor: "#ffffff",
-      bookmarkBgOpacity: 84,
-      bookmarkShadowColor: "#1f3d2b",
-      bookmarkShadowOpacity: 22,
+      bookmarkBgOpacity: 64,
+      bookmarkGroupBgColor: "#ffffff",
+      bookmarkGroupBgOpacity: 24,
+      bookmarkGroupTextColor: null,
+      bookmarkGroupFontSize: 14,
+      bookmarkShadowColor: "#000000",
+      bookmarkShadowOpacity: 20,
       bookmarkShadowBlur: 12,
-      musicBarStyle: "forest",
+      musicBarStyle: "minimal",
       musicPlayerSkin: "white-blur",
     },
   }
@@ -292,6 +333,10 @@ export function setupGeneralEventHandlers(
     "bookmarkTextColor",
     "bookmarkBgColor",
     "bookmarkBgOpacity",
+    "bookmarkGroupBgColor",
+    "bookmarkGroupBgOpacity",
+    "bookmarkGroupTextColor",
+    "bookmarkGroupFontSize",
     "bookmarkShadowColor",
     "bookmarkShadowOpacity",
     "bookmarkShadowBlur",
@@ -1604,60 +1649,42 @@ export function setupGeneralEventHandlers(
   // Dynamic M3 Color (Extract from background)
   if (DOM.m3DynamicColorBtn) {
     DOM.m3DynamicColorBtn.addEventListener("click", async () => {
-      const applyColor = (colorHex) => {
-        DOM.accentColorPicker.value = colorHex
-        updateAccentHexInput(colorHex)
-        handleSettingUpdate("accentColor", colorHex)
-        document
-          .querySelectorAll(".accent-color-preset")
-          .forEach((b) => b.classList.remove("active"))
-      }
-
-      // Try to get background image url directly from DOM
-      const bgLayer = document.getElementById("bg-layer")
-      let imageUrl = null
-
-      if (bgLayer) {
-        let bgImage = bgLayer.style.backgroundImage
-        if (bgImage && bgImage !== "none") {
-          // Extract URL from url("...")
-          const match = bgImage.match(/^url\(['"]?([^'"]+)['"]?\)/)
-          if (match) {
-            imageUrl = match[1]
-          }
-        }
-      }
-
-      if (imageUrl) {
-        const origHtml = DOM.m3DynamicColorBtn.innerHTML
-        DOM.m3DynamicColorBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`
-        try {
-          const { extractAverageColor, rgbToHexObject } =
-            await import("../../utils/colors.js")
-          const rgb = await extractAverageColor(imageUrl)
-
-          if (rgb) {
-            const hex = rgbToHexObject(rgb)
-            applyColor(hex)
-          } else {
-            applyColor(getRandomHexColor())
-          }
-        } catch (e) {
-          console.error("M3 color extraction failed:", e)
-        } finally {
-          DOM.m3DynamicColorBtn.innerHTML = origHtml
-        }
-      } else {
-        const settings = getSettings()
-        // Fallback for solid colors or gradients
-        if (settings.background && settings.background.startsWith("#")) {
-          applyColor(settings.background)
-        } else {
-          console.warn("No suitable image background found for M3 extract")
-        }
+      const origHtml = DOM.m3DynamicColorBtn.innerHTML
+      DOM.m3DynamicColorBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`
+      try {
+        await applyAccentFromCurrentBackground({
+          DOM,
+          handleSettingUpdate,
+          fallbackRandom: true,
+        })
+      } catch (e) {
+        console.error("M3 color extraction failed:", e)
+      } finally {
+        DOM.m3DynamicColorBtn.innerHTML = origHtml
       }
     })
   }
+
+  DOM.m3AutoBgToggle?.addEventListener("change", async () => {
+    const enabled = DOM.m3AutoBgToggle.checked === true
+    updateSetting("m3AutoAccentFromBg", enabled)
+    saveSettings()
+    if (enabled) {
+      ;[0, 650, 1400].forEach((delay) => {
+        setTimeout(() => {
+          if (getSettings().m3AutoAccentFromBg !== true) return
+          applyAccentFromCurrentBackground({
+            DOM,
+            handleSettingUpdate,
+            fallbackRandom: false,
+            silent: true,
+          }).catch((err) => {
+            console.warn("Initial auto M3 accent update failed:", err)
+          })
+        }, delay)
+      })
+    }
+  })
 
   DOM.saveAccentColorBtn.addEventListener("click", () => {
     const settings = getSettings()
@@ -3578,10 +3605,21 @@ export function setupGeneralEventHandlers(
     saveSettings()
     applyTabIcon(chars)
     renderTabIconPreview(chars, DOM.tabIconPreview)
+    if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = !chars
   })
 
   DOM.tabIconUploadBtn?.addEventListener("click", () => {
     DOM.tabIconFileInput?.click()
+  })
+
+  DOM.tabIconClearBtn?.addEventListener("click", () => {
+    updateSetting("tabIcon", "")
+    saveSettings()
+    if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+    if (DOM.tabIconFileInput) DOM.tabIconFileInput.value = ""
+    if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
+    applyTabIcon("")
+    renderTabIconPreview("", DOM.tabIconPreview)
   })
 
   DOM.tabIconFileInput?.addEventListener("change", async () => {
@@ -3598,6 +3636,7 @@ export function setupGeneralEventHandlers(
       updateSetting("tabIcon", iconDataUrl)
       saveSettings()
       if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+      if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = false
       applyTabIcon(iconDataUrl)
       renderTabIconPreview(iconDataUrl, DOM.tabIconPreview)
     } catch (err) {
