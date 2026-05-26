@@ -657,6 +657,8 @@ function createApplySettings(effectInstances) {
         import("../../services/imageStore.js").then((m) => {
           m.getImageUrl(settings.background).then((url) => {
             if (url && getSettings().background === bg) {
+              // crossfade from early preview to sharp image
+              _prevBg = "force-idb-crossfade-" + Date.now()
               applySettings()
             }
           })

@@ -192,7 +192,11 @@
         // If a persistent preview exists (data URL or CSS), use it for instant display
         if (settings.lastUserBackgroundPreview) {
           const preview = settings.lastUserBackgroundPreview
-          if (preview.startsWith("data:") || preview.startsWith("blob:") || /^https?:\/\//i.test(preview)) {
+          if (
+            preview.startsWith("data:") ||
+            preview.startsWith("blob:") ||
+            /^https?:\/\//i.test(preview)
+          ) {
             return cssUrl(preview)
           }
           return preview
@@ -267,9 +271,9 @@
         --bg-fade-in: ${settings.bgFadeIn ?? 0.5}s;
         --bg-filter: blur(${settings.bgBlur ?? 0}px) brightness(${settings.bgBrightness ?? 100}%) contrast(${settings.bgContrast ?? 100}%) saturate(${settings.bgSaturation ?? 100}%);
       }\n`
-      css += `body.preload-bg-ready { background: ${earlyBg} !important; background-size: ${earlyBgSize} !important; background-repeat: no-repeat !important; background-position: var(--bg-pos-x) var(--bg-pos-y) !important; animation: none !important; }\n`
-      // Update by Copilot: Allow fade-in animation
-      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); animation: bgFadeIn var(--bg-fade-in, 0.5s) ease-out forwards; }\n`
+      css += `body.preload-bg-ready { background: #050505 !important; background-image: none !important; animation: none !important; }\n`
+      css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
+      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); animation: preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards; }\n`
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }
