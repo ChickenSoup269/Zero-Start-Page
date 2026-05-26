@@ -31,6 +31,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
     panel.style.display = "block"
     panel.classList.toggle("is-collapsed", !isOpen)
   }
+  const setToggleExpanded = (button, panel, isOpen) => {
+    setAnimatedPanelExpanded(panel, isOpen)
+    button?.setAttribute("aria-expanded", String(isOpen))
+  }
 
   // --- Silk UI Setup ---
   const silkActive = document.getElementById("silk-active")
@@ -44,10 +48,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const silkSettings = document.getElementById("silk-settings")
   const silkToggleLabel = document.getElementById("silk-toggle-label")
   if (silkToggleBtn && silkSettings) {
-    setAnimatedPanelExpanded(silkSettings, silkSettings.style.display !== "none")
+    setToggleExpanded(silkToggleBtn, silkSettings, silkSettings.style.display !== "none")
     silkToggleBtn.addEventListener("click", () => {
       const isHidden = silkSettings.classList.contains("is-collapsed")
-      setAnimatedPanelExpanded(silkSettings, isHidden)
+      setToggleExpanded(silkToggleBtn, silkSettings, isHidden)
       if (silkToggleLabel) {
         silkToggleLabel.textContent = isHidden ? "Close Silk" : "Open Silk"
       }
@@ -150,10 +154,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const lightPillarSettings = document.getElementById("light-pillar-settings")
   const lightPillarToggleLabel = document.getElementById("light-pillar-toggle-label")
   if (lightPillarToggleBtn && lightPillarSettings) {
-    setAnimatedPanelExpanded(lightPillarSettings, lightPillarSettings.style.display !== "none")
+    setToggleExpanded(lightPillarToggleBtn, lightPillarSettings, lightPillarSettings.style.display !== "none")
     lightPillarToggleBtn.addEventListener("click", () => {
       const isHidden = lightPillarSettings.classList.contains("is-collapsed")
-      setAnimatedPanelExpanded(lightPillarSettings, isHidden)
+      setToggleExpanded(lightPillarToggleBtn, lightPillarSettings, isHidden)
       if (lightPillarToggleLabel) {
         lightPillarToggleLabel.textContent = isHidden ? "Close Light Pillar" : "Open Light Pillar"
       }
@@ -282,10 +286,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const liquidEtherSettings = document.getElementById("liquid-ether-settings")
   const liquidEtherToggleLabel = document.getElementById("liquid-ether-toggle-label")
   if (liquidEtherToggleBtn && liquidEtherSettings) {
-    setAnimatedPanelExpanded(liquidEtherSettings, liquidEtherSettings.style.display !== "none")
+    setToggleExpanded(liquidEtherToggleBtn, liquidEtherSettings, liquidEtherSettings.style.display !== "none")
     liquidEtherToggleBtn.addEventListener("click", () => {
       const isHidden = liquidEtherSettings.classList.contains("is-collapsed")
-      setAnimatedPanelExpanded(liquidEtherSettings, isHidden)
+      setToggleExpanded(liquidEtherToggleBtn, liquidEtherSettings, isHidden)
       if (liquidEtherToggleLabel) {
         const i18n = geti18n()
         liquidEtherToggleLabel.textContent = isHidden
@@ -413,10 +417,10 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
   const scSettings = document.getElementById("splash-cursor-settings")
   const scToggleLabel = document.getElementById("splash-cursor-toggle-label")
   if (scToggleBtn && scSettings) {
-    setAnimatedPanelExpanded(scSettings, scSettings.style.display !== "none")
+    setToggleExpanded(scToggleBtn, scSettings, scSettings.style.display !== "none")
     scToggleBtn.addEventListener("click", () => {
       const isHidden = scSettings.classList.contains("is-collapsed")
-      setAnimatedPanelExpanded(scSettings, isHidden)
+      setToggleExpanded(scToggleBtn, scSettings, isHidden)
       if (scToggleLabel) {
         const i18n = geti18n()
         scToggleLabel.textContent = isHidden

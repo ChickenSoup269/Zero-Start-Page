@@ -2998,6 +2998,7 @@ export function setupGeneralEventHandlers(
     localStorage.setItem("startpage_svgWaveGeneratorOpen", nowOpen ? "1" : "0")
 
     DOM.svgWaveToggleBtn.classList.toggle("active", nowOpen)
+    DOM.svgWaveToggleBtn.setAttribute("aria-expanded", String(nowOpen))
 
     const settings = getSettings()
     // Mở ra thì tự động bật sóng nếu chưa bật

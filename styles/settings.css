@@ -6352,8 +6352,19 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   padding: 0 !important;
 }
 
-#accent-color-toggle-btn {
+#accent-color-toggle-btn,
+#svg-wave-toggle-btn,
+#gradient-toggle-btn,
+#multi-color-toggle-btn,
+#gradient-v2-toggle-btn,
+#silk-toggle-btn,
+#light-pillar-toggle-btn,
+#liquid-ether-toggle-btn,
+#splash-cursor-toggle-btn {
   min-height: 42px;
+  padding: 10px 14px !important;
+  justify-content: center;
+  gap: 9px;
   background: color-mix(
     in srgb,
     var(--m3-primary-container, var(--accent-color)) 42%,
@@ -6366,9 +6377,18 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
     0 0 0 1px color-mix(in srgb, var(--m3-primary) 12%, transparent) inset;
   color: var(--m3-on-primary-container, #fff) !important;
   font-weight: 800;
+  line-height: 1.2;
 }
 
-#accent-color-toggle-btn:hover {
+#accent-color-toggle-btn:hover,
+#svg-wave-toggle-btn:hover,
+#gradient-toggle-btn:hover,
+#multi-color-toggle-btn:hover,
+#gradient-v2-toggle-btn:hover,
+#silk-toggle-btn:hover,
+#light-pillar-toggle-btn:hover,
+#liquid-ether-toggle-btn:hover,
+#splash-cursor-toggle-btn:hover {
   background: color-mix(
     in srgb,
     var(--m3-primary-container, var(--accent-color)) 62%,
@@ -6377,12 +6397,28 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   border-color: var(--m3-primary, var(--accent-color)) !important;
 }
 
-#accent-color-toggle-btn i {
+#accent-color-toggle-btn i,
+#svg-wave-toggle-btn i,
+#gradient-toggle-btn i,
+#multi-color-toggle-btn i,
+#gradient-v2-toggle-btn i,
+#silk-toggle-btn i,
+#light-pillar-toggle-btn i,
+#liquid-ether-toggle-btn i,
+#splash-cursor-toggle-btn i {
   color: var(--m3-primary, var(--accent-color));
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
-#accent-color-toggle-btn[aria-expanded="false"] {
+#accent-color-toggle-btn[aria-expanded="false"],
+#svg-wave-toggle-btn[aria-expanded="false"],
+#gradient-toggle-btn[aria-expanded="false"],
+#multi-color-toggle-btn[aria-expanded="false"],
+#gradient-v2-toggle-btn[aria-expanded="false"],
+#silk-toggle-btn[aria-expanded="false"],
+#light-pillar-toggle-btn[aria-expanded="false"],
+#liquid-ether-toggle-btn[aria-expanded="false"],
+#splash-cursor-toggle-btn[aria-expanded="false"] {
   margin-bottom: 0 !important;
 }
 
@@ -6397,6 +6433,13 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 #accent-color-settings-body.is-collapsed .accent-color-custom-section {
   margin: 0 !important;
   padding: 0 !important;
+}
+
+#light-pillar-canvas,
+.light-pillar-webgl-canvas {
+  z-index: -1 !important;
+  background: #000 !important;
+  mix-blend-mode: normal !important;
 }
 
 .accent-color-preset.active {

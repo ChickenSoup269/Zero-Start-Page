@@ -1038,6 +1038,7 @@
   "settings_performance_auto": "Tự động",
   "settings_performance_quality": "Chất lượng",
   "settings_performance_battery": "Tiết kiệm pin",
+  "settings_performance_low": "Cấu hình thấp",
   "settings_silk_save": "Lưu hình nền",
   "settings_silk_saved_label": "Lụa đã lưu",
   "settings_lightPillar_save": "Lưu hình nền",
@@ -1120,5 +1121,13 @@
   "first_run_import_bookmarks_single": "Bookmark riêng lẻ",
   "first_run_import_selected_bookmarks_group": "Bookmark đã chọn",
   "first_run_import_folder_section": "Folder",
-  "first_run_import_bookmark_section": "Bookmark riêng lẻ"
+  "first_run_import_bookmark_section": "Bookmark riêng lẻ",
+  "first_run_style_title": "Chọn giao diện bắt đầu",
+  "first_run_style_prompt": "Chọn một kiểu bố cục để dùng ngay. Sau này bạn vẫn đổi được trong Settings.",
+  "first_run_style_dock": "Dock",
+  "first_run_style_dock_desc": "Dock dưới màn hình, icon gọn, dễ dùng cho tab mới.",
+  "first_run_style_clean": "Gọn nhẹ",
+  "first_run_style_clean_desc": "Bookmark ở giữa, nền tối giản, ít rối mắt.",
+  "first_run_style_sidebar": "Sidebar",
+  "first_run_style_sidebar_desc": "Danh sách folder dọc, hợp với người dùng nhiều bookmark."
 }

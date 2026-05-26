@@ -39,10 +39,12 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
     const isInitiallyHidden = settingsPanel.style.display === "none"
     settingsPanel.style.display = "block"
     settingsPanel.classList.toggle("is-collapsed", isInitiallyHidden)
+    toggleBtn.setAttribute("aria-expanded", String(!isInitiallyHidden))
     toggleBtn.addEventListener("click", () => {
       const isHidden = settingsPanel.classList.contains("is-collapsed")
       settingsPanel.style.display = "block"
       settingsPanel.classList.toggle("is-collapsed", !isHidden)
+      toggleBtn.setAttribute("aria-expanded", String(isHidden))
       if (toggleLabel) {
         toggleLabel.setAttribute(
           "data-i18n",
@@ -60,7 +62,6 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
     activeCheckbox.checked = settings.gradientV2Active
     activeCheckbox.addEventListener("change", (e) => {
       const active = e.target.checked
-      updateSetting("gradientV2Active", active)
       if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", active)
       
       if (active && gradientV2Instance) {
@@ -335,7 +336,6 @@ function applyPreset(preset, dom) {
   })
 
   // Activate and update instance
-  updateSetting("gradientV2Active", true)
   if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", true)
   const activeCheckbox = dom.gradientV2Active || document.getElementById("gradient-v2-active")
   if (activeCheckbox) activeCheckbox.checked = true

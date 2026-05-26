@@ -326,7 +326,7 @@
 .dialog-checklist {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   text-align: left;
   margin-top: var(--space-1);
   max-height: min(46vh, 420px);
@@ -338,7 +338,7 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 7px 8px;
+  padding: 8px 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
@@ -355,8 +355,8 @@
   font-weight: 800;
   gap: 7px;
   letter-spacing: 0.02em;
-  margin: 7px 2px 2px;
-  padding: 3px 4px;
+  margin: 10px 2px 3px;
+  padding: 5px 6px;
   text-transform: uppercase;
 }
 

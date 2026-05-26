@@ -16,6 +16,7 @@ import {
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
+const FIRST_RUN_STYLE_KEY = "startpageFirstRunStyleV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const REPO_URL = "https://github.com/ChickenSoup269/Zero-Start-Page"
@@ -121,6 +122,75 @@ const escapeHtml = (value) =>
 const getFaviconUrl = (url) =>
   `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32`
 
+const FIRST_RUN_STYLE_PRESETS = {
+  dock: {
+    bookmarkLayout: "taskbar",
+    bookmarkLayoutBgStyle: "white",
+    bookmarkItemStyle: "default",
+    bookmarkHideText: true,
+    bookmarkHideBg: false,
+    bookmarkMacosHover: true,
+    bookmarkFontSize: 10,
+    bookmarkIconSize: 46,
+    bookmarkGap: 8,
+    bookmarkBgColor: "#ffffff",
+    bookmarkBgOpacity: 92,
+    bookmarkGroupBgColor: "#ffffff",
+    bookmarkGroupBgOpacity: 82,
+    bookmarkGroupTextColor: "#111827",
+    bookmarkGroupFontSize: 13,
+    bookmarkShadowColor: "#000000",
+    bookmarkShadowOpacity: 22,
+    bookmarkShadowBlur: 10,
+    musicBarStyle: "pill",
+    musicPlayerSkin: "white-blur",
+  },
+  clean: {
+    bookmarkLayout: "default",
+    bookmarkLayoutBgStyle: "default",
+    bookmarkItemStyle: "default",
+    bookmarkHideText: false,
+    bookmarkHideBg: true,
+    bookmarkMacosHover: false,
+    bookmarkFontSize: 10,
+    bookmarkIconSize: 42,
+    bookmarkGap: 10,
+    bookmarkBgColor: "#ffffff",
+    bookmarkBgOpacity: 0,
+    bookmarkGroupBgColor: "#ffffff",
+    bookmarkGroupBgOpacity: 0,
+    bookmarkGroupTextColor: null,
+    bookmarkGroupFontSize: 14,
+    bookmarkShadowColor: "#000000",
+    bookmarkShadowOpacity: 14,
+    bookmarkShadowBlur: 6,
+    musicBarStyle: "minimal",
+    musicPlayerSkin: "white-blur",
+  },
+  sidebar: {
+    bookmarkLayout: "sidebar",
+    bookmarkLayoutBgStyle: "white",
+    bookmarkItemStyle: "default",
+    bookmarkHideText: false,
+    bookmarkHideBg: false,
+    bookmarkMacosHover: false,
+    bookmarkFontSize: 10,
+    bookmarkIconSize: 38,
+    bookmarkGap: 7,
+    bookmarkBgColor: "#ffffff",
+    bookmarkBgOpacity: 56,
+    bookmarkGroupBgColor: "#ffffff",
+    bookmarkGroupBgOpacity: 16,
+    bookmarkGroupTextColor: null,
+    bookmarkGroupFontSize: 14,
+    bookmarkShadowColor: "#000000",
+    bookmarkShadowOpacity: 18,
+    bookmarkShadowBlur: 8,
+    musicBarStyle: "sidebar",
+    musicPlayerSkin: "white-blur",
+  },
+}
+
 const getChromeBookmarkTree = () =>
   new Promise((resolve, reject) => {
     try {
@@ -147,6 +217,10 @@ function directBookmarksFromFolder(folder, existingUrls) {
     })
 }
 
+function getDirectBookmarkNodes(folder) {
+  return (folder.children || []).filter((child) => child.url)
+}
+
 function collectBookmarkUrls(node, items = []) {
   if (!node) return items
   if (node.url) {
@@ -162,7 +236,7 @@ function getFolderPath(pathParts, fallbackName) {
 }
 
 function getFolderOptionLabel(node, pathParts, i18n) {
-  const items = collectBookmarkUrls(node)
+  const items = getDirectBookmarkNodes(node)
   const fallbackName = i18n.first_run_import_bookmarks_folder || "Folder"
   const title = getFolderPath(pathParts, fallbackName)
   const examples = items
@@ -227,12 +301,12 @@ function collectImportOptions(nodes, i18n, pathParts = [], result = null) {
       return
     }
 
-    const items = collectBookmarkUrls(node)
+    const items = getDirectBookmarkNodes(node)
     if (items.length) {
       output.folders.push({
         key: `folder:${node.id}`,
         label: getFolderOptionLabel(node, nextPath, i18n),
-        checked: pathParts.length === 0,
+        checked: false,
       })
     }
     collectImportOptions(node.children || [], i18n, nextPath, output)
@@ -296,11 +370,10 @@ function collectChromeGroups(
   existingUrls,
   selection,
   fallbackName,
-  ancestorSelected = false,
 ) {
   if (!node?.children) return
 
-  const shouldImportFolder = ancestorSelected || selection[`folder:${node.id}`]
+  const shouldImportFolder = selection[`folder:${node.id}`]
   const items = shouldImportFolder ? directBookmarksFromFolder(node, existingUrls) : []
   if (items.length) {
     groups.push({
@@ -319,7 +392,6 @@ function collectChromeGroups(
         existingUrls,
         selection,
         child.title || fallbackName,
-        shouldImportFolder,
       ),
     )
 }
@@ -363,10 +435,83 @@ async function promptFirstRunLanguage() {
   localStorage.setItem(FIRST_RUN_LANGUAGE_KEY, language)
 }
 
+function applyFirstRunStyleToBody(layout) {
+  document.body.classList.remove(
+    "bookmark-sidebar-mode",
+    "bookmark-taskbar-mode",
+    "bookmark-taskbar-top-mode",
+    "bookmark-taskbar-left-mode",
+  )
+
+  if (layout === "sidebar") {
+    document.body.classList.add("bookmark-sidebar-mode")
+  } else if (layout === "taskbar") {
+    document.body.classList.add("bookmark-taskbar-mode")
+  } else if (layout === "taskbar-top") {
+    document.body.classList.add("bookmark-taskbar-top-mode")
+  } else if (layout === "taskbar-left") {
+    document.body.classList.add("bookmark-taskbar-left-mode")
+  }
+}
+
+async function promptFirstRunStyle(renderBookmarks) {
+  if (localStorage.getItem(FIRST_RUN_STYLE_KEY)) return
+
+  const i18n = geti18n()
+  const selectedStyle = await showChoiceConfirm(
+    [
+      {
+        key: "dock",
+        label: i18n.first_run_style_dock || "Dock",
+        description:
+          i18n.first_run_style_dock_desc ||
+          "Bottom dock, compact icons, easy for new tabs.",
+        icon: "fa-solid fa-grip",
+      },
+      {
+        key: "clean",
+        label: i18n.first_run_style_clean || "Clean",
+        description:
+          i18n.first_run_style_clean_desc ||
+          "Simple centered bookmarks with minimal background.",
+        icon: "fa-solid fa-sparkles",
+      },
+      {
+        key: "sidebar",
+        label: i18n.first_run_style_sidebar || "Sidebar",
+        description:
+          i18n.first_run_style_sidebar_desc ||
+          "Vertical folder list for heavier bookmark use.",
+        icon: "fa-solid fa-table-columns",
+      },
+    ],
+    i18n.first_run_style_title || "Choose a start style",
+    i18n.first_run_style_prompt ||
+      "Pick a layout to start with. You can change it later in Settings.",
+  )
+
+  if (selectedStyle && FIRST_RUN_STYLE_PRESETS[selectedStyle]) {
+    const preset = FIRST_RUN_STYLE_PRESETS[selectedStyle]
+    Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
+    updateSetting("interfaceStylePreset", selectedStyle)
+    saveSettings(true)
+    applyFirstRunStyleToBody(preset.bookmarkLayout)
+    renderBookmarks?.()
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: { key: "musicBarStyle", value: preset.musicBarStyle },
+      }),
+    )
+  }
+
+  localStorage.setItem(FIRST_RUN_STYLE_KEY, selectedStyle || "skipped")
+}
+
 export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
 
   await promptFirstRunLanguage()
+  await promptFirstRunStyle(renderBookmarks)
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(

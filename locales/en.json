@@ -1041,6 +1041,7 @@
   "settings_performance_auto": "Auto",
   "settings_performance_quality": "Quality",
   "settings_performance_battery": "Battery Saver",
+  "settings_performance_low": "Low Setting",
   "settings_silk_save": "Save Background",
   "settings_silk_saved_label": "Saved Silks",
   "settings_lightPillar_save": "Save Background",
@@ -1123,5 +1124,13 @@
   "first_run_import_bookmarks_single": "Bookmark",
   "first_run_import_selected_bookmarks_group": "Selected bookmarks",
   "first_run_import_folder_section": "Folders",
-  "first_run_import_bookmark_section": "Individual bookmarks"
+  "first_run_import_bookmark_section": "Individual bookmarks",
+  "first_run_style_title": "Choose a start style",
+  "first_run_style_prompt": "Pick a layout to start with. You can change it later in Settings.",
+  "first_run_style_dock": "Dock",
+  "first_run_style_dock_desc": "Bottom dock, compact icons, easy for new tabs.",
+  "first_run_style_clean": "Clean",
+  "first_run_style_clean_desc": "Simple centered bookmarks with minimal background.",
+  "first_run_style_sidebar": "Sidebar",
+  "first_run_style_sidebar_desc": "Vertical folder list for heavier bookmark use."
 }

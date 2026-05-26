@@ -14,8 +14,8 @@ export class LightPillarEffect {
       this.canvas.style.pointerEvents =
         this.canvas.style.pointerEvents || "none"
       this.canvas.style.display = this.canvas.style.display || "none"
-      this.canvas.style.mixBlendMode =
-        this.canvas.style.mixBlendMode || "screen"
+      this.canvas.style.mixBlendMode = "normal"
+      this.canvas.style.background = "#000"
       this.canvas.style.width = "100%"
       this.canvas.style.height = "100%"
     } else {
@@ -29,7 +29,8 @@ export class LightPillarEffect {
       this.canvas.style.zIndex = "-3"
       this.canvas.style.pointerEvents = "none"
       this.canvas.style.display = "none"
-      this.canvas.style.mixBlendMode = "screen"
+      this.canvas.style.mixBlendMode = "normal"
+      this.canvas.style.background = "#000"
       this.canvas.style.width = "100%"
       this.canvas.style.height = "100%"
       this.canvasWrapper.appendChild(this.canvas)

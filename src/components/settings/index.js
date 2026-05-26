@@ -534,17 +534,71 @@ export function initSettings() {
       })
     }
 
+    const animatedBackgroundKeys = [
+      "gradientV2Active",
+      "svgWaveActive",
+      "silkActive",
+      "lightPillarActive",
+      "liquidEtherActive",
+      "splashCursorActive",
+    ]
+
+    const isAnimatedBackgroundActive = (settings) =>
+      animatedBackgroundKeys.some((activeKey) => settings[activeKey] === true)
+
+    const getBackgroundStateSnapshot = (settings) => ({
+      background: settings.background ?? null,
+      activeBgUid: settings.activeBgUid || null,
+      gradientStart: settings.gradientStart,
+      gradientEnd: settings.gradientEnd,
+      gradientAngle: settings.gradientAngle,
+      gradientType: settings.gradientType,
+      gradientRepeating: settings.gradientRepeating,
+      gradientExtraColorCount: settings.gradientExtraColorCount,
+      gradientCustomColors: settings.gradientCustomColors,
+      gradientPosition: settings.gradientPosition,
+      gradientRadialShape: settings.gradientRadialShape,
+      multiColorActive: settings.multiColorActive === true,
+      multiColorCount: settings.multiColorCount,
+      multiColors: Array.isArray(settings.multiColors)
+        ? [...settings.multiColors]
+        : settings.multiColors,
+      multiGradientAngle: settings.multiGradientAngle,
+      multiColorType: settings.multiColorType,
+      multiColorRepeating: settings.multiColorRepeating,
+      multiColorPosition: settings.multiColorPosition,
+      multiColorRadialShape: settings.multiColorRadialShape,
+      multiColorMode: settings.multiColorMode,
+      multiColorDividers: settings.multiColorDividers,
+      multiColorDividerColor: settings.multiColorDividerColor,
+      multiColorDividerWidth: settings.multiColorDividerWidth,
+      multiColorFreeLineAngles: settings.multiColorFreeLineAngles,
+      multiColorLineAngles: Array.isArray(settings.multiColorLineAngles)
+        ? [...settings.multiColorLineAngles]
+        : settings.multiColorLineAngles,
+      unsplashLastCredit: settings.unsplashLastCredit || null,
+    })
+
     const rememberCurrentBackground = () => {
       const settings = getSettings()
-      if (settings.background != null) {
-        updateSetting("lastUserBackground", settings.background)
-        updateSetting("lastUserActiveBgUid", settings.activeBgUid || null)
-      }
+      if (isAnimatedBackgroundActive(settings)) return
+      const snapshot = getBackgroundStateSnapshot(settings)
+      updateSetting("lastUserBackgroundState", snapshot)
+      updateSetting("lastUserBackground", snapshot.background)
+      updateSetting("lastUserActiveBgUid", snapshot.activeBgUid)
     }
 
     const restoreRememberedBackground = () => {
       const settings = getSettings()
-      if (settings.background == null && settings.lastUserBackground != null) {
+      const snapshot = settings.lastUserBackgroundState
+      if (snapshot && typeof snapshot === "object") {
+        Object.entries(snapshot).forEach(([snapshotKey, snapshotValue]) => {
+          updateSetting(snapshotKey, snapshotValue)
+        })
+      } else if (
+        settings.background == null &&
+        settings.lastUserBackground != null
+      ) {
         updateSetting("background", settings.lastUserBackground)
         updateSetting("activeBgUid", settings.lastUserActiveBgUid || null)
       }
@@ -599,6 +653,7 @@ export function initSettings() {
       updateSetting("lightPillarActive", false)
       updateSetting("liquidEtherActive", false)
       updateSetting("splashCursorActive", false)
+      updateSetting("lastUserBackgroundState", getBackgroundStateSnapshot(getSettings()))
 
       if (editableGradientUid) {
         updateSetting(
@@ -648,6 +703,7 @@ export function initSettings() {
           updateSetting("lastUserBackground", value)
           updateSetting("lastUserActiveBgUid", activePreset ? activeBgUid : null)
           if (!activePreset) updateSetting("activeBgUid", null)
+          updateSetting("lastUserBackgroundState", getBackgroundStateSnapshot(getSettings()))
           updateSetting("svgWaveActive", false)
           updateSetting("gradientV2Active", false)
           updateSetting("silkActive", false)
@@ -837,19 +893,12 @@ export function initSettings() {
       if (DOM_EXPORTS.splashCursorDarkBgBtn)
         DOM_EXPORTS.splashCursorDarkBgBtn.classList.remove("active")
     }
-    const animatedBackgroundKeys = [
-      "gradientV2Active",
-      "svgWaveActive",
-      "silkActive",
-      "lightPillarActive",
-      "liquidEtherActive",
-      "splashCursorActive",
-    ]
     if (
       (animatedBackgroundKeys.includes(key) && value === false) ||
       (key === "splashCursorDarkBg" && value === false)
     ) {
       restoreRememberedBackground()
+      if (!skipSave) saveSettings(true)
     }
     if (key === "background" && value != null) {
       updateSetting("gradientV2Active", false)
@@ -894,6 +943,17 @@ export function initSettings() {
       updateSetting("splashCursorActive", false)
       if (DOM_EXPORTS.splashCursorActive)
         DOM_EXPORTS.splashCursorActive.checked = false
+    }
+
+    if (
+      !skipSave &&
+      (animatedBackgroundKeys.includes(key) ||
+        key === "background" ||
+        key === "effect" ||
+        key === "splashCursorDarkBg" ||
+        isGradient)
+    ) {
+      saveSettings(true)
     }
 
     applySettings()

@@ -195,14 +195,24 @@ function getPerformanceProfile(settings) {
   const smallScreen =
     Math.min(window.innerWidth || 0, window.innerHeight || 0) <= 720
   const shouldSave =
+    mode === "low" ||
     mode === "battery" ||
     (mode === "auto" && (saveData || lowCores || smallScreen || _perfLagging))
 
-  return { mode, shouldSave }
+  const level =
+    mode === "low"
+      ? "low"
+      : shouldSave
+        ? "battery"
+        : mode === "quality"
+          ? "quality"
+          : "balanced"
+
+  return { mode, shouldSave, level }
 }
 
 function getEffectPerformanceOptions(settings, effectName) {
-  const { mode, shouldSave } = getPerformanceProfile(settings)
+  const { mode, shouldSave, level } = getPerformanceProfile(settings)
 
   if (effectName === "pixelSnowHQ") {
     if (mode === "quality") {
@@ -212,6 +222,15 @@ function getEffectPerformanceOptions(settings, effectName) {
         density: settings.pixelSnowHQDensity ?? 0.3,
         farPlane: settings.pixelSnowHQFarPlane ?? 20,
         maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 64 : 72,
+      }
+    }
+    if (level === "low") {
+      return {
+        targetFps: 18,
+        pixelResolution: Math.min(settings.pixelSnowHQPixelResolution ?? 200, 96),
+        density: Math.min(settings.pixelSnowHQDensity ?? 0.3, 0.12),
+        farPlane: Math.min(settings.pixelSnowHQFarPlane ?? 20, 10),
+        maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 28 : 34,
       }
     }
     if (shouldSave) {
@@ -236,6 +255,9 @@ function getEffectPerformanceOptions(settings, effectName) {
     if (mode === "quality") {
       return { targetFps: 60, renderScale: 1, densityScale: 0.82 }
     }
+    if (level === "low") {
+      return { targetFps: 24, renderScale: 0.58, densityScale: 0.24 }
+    }
     if (shouldSave) {
       return { targetFps: 42, renderScale: 1, densityScale: 0.48 }
     }
@@ -249,6 +271,14 @@ function getEffectPerformanceOptions(settings, effectName) {
         renderScale: 0.9,
         densityScale: 0.9,
         splashScale: 0.85,
+      }
+    }
+    if (level === "low") {
+      return {
+        targetFps: 24,
+        renderScale: 0.46,
+        densityScale: 0.28,
+        splashScale: 0.18,
       }
     }
     if (shouldSave) {
@@ -270,10 +300,124 @@ function getEffectPerformanceOptions(settings, effectName) {
   return {}
 }
 
+function withPerformanceBudget(settings, type, options) {
+  const { level, shouldSave } = getPerformanceProfile(settings)
+  if (level === "quality") return options
+
+  const scale =
+    level === "low"
+      ? { fps: 20, render: 0.48, density: 0.32, speed: 0.35, detail: 0.38 }
+      : shouldSave
+        ? { fps: 30, render: 0.72, density: 0.58, speed: 0.62, detail: 0.68 }
+        : { fps: 36, render: 0.86, density: 0.78, speed: 0.82, detail: 0.86 }
+
+  switch (type) {
+    case "gradientV2":
+      return {
+        ...options,
+        timeSpeed: Math.max(0.04, options.timeSpeed * scale.speed),
+        warpFrequency: Math.max(1.2, options.warpFrequency * scale.detail),
+        warpSpeed: Math.max(0.2, options.warpSpeed * scale.speed),
+        warpAmplitude: Math.max(12, options.warpAmplitude * scale.detail),
+        rotationAmount: Math.min(options.rotationAmount, level === "low" ? 90 : 220),
+        noiseScale: Math.min(options.noiseScale, level === "low" ? 0.9 : 1.4),
+        grainAmount: level === "low" ? 0 : Math.min(options.grainAmount, 0.04),
+        grainAnimated: level === "low" ? false : options.grainAnimated,
+      }
+    case "silk":
+      return {
+        ...options,
+        speed: Math.max(0.4, options.speed * scale.speed),
+        scale: Math.max(0.65, options.scale * scale.detail),
+        noise: Math.max(0.35, options.noise * scale.detail),
+      }
+    case "lightPillar":
+      return {
+        ...options,
+        intensity: Math.max(0.25, options.intensity * scale.detail),
+        rotationSpeed: Math.max(0.04, options.rotationSpeed * scale.speed),
+        glowAmount: Math.min(options.glowAmount, level === "low" ? 0.006 : 0.014),
+        pillarWidth: Math.max(0.8, options.pillarWidth * scale.detail),
+        noiseIntensity: Math.max(0.12, options.noiseIntensity * scale.detail),
+      }
+    case "liquidEther":
+      return {
+        ...options,
+        glowWidth: level === "low" ? Math.min(options.glowWidth, 3.2) : options.glowWidth,
+      }
+    case "splashCursor":
+      return {
+        ...options,
+        simResolution: Math.min(options.simResolution, level === "low" ? 64 : 96),
+        dyeResolution: Math.min(options.dyeResolution, level === "low" ? 192 : 320),
+        pressureIterations: Math.min(
+          options.pressureIterations,
+          level === "low" ? 8 : 14,
+        ),
+        curl: Math.min(options.curl, level === "low" ? 1.2 : 2),
+        splatRadius: Math.min(options.splatRadius, level === "low" ? 0.12 : 0.16),
+        splatForce: Math.min(options.splatForce, level === "low" ? 2600 : 4200),
+        shading: level === "low" ? false : options.shading,
+      }
+    case "svgWave":
+      return {
+        ...options,
+        lines: Math.min(options.lines, level === "low" ? 3 : 5),
+        amplitudeX: options.amplitudeX * scale.detail,
+        amplitudeY: options.amplitudeY * scale.detail,
+        craziness: Math.min(options.craziness, level === "low" ? 10 : 20),
+        smoothness: Math.max(options.smoothness, level === "low" ? 0.72 : 0.58),
+      }
+    case "pixelWeather":
+      return {
+        ...options,
+        density: options.density * scale.density,
+        resolution: Math.max(options.resolution, level === "low" ? 2.5 : 1.6),
+        speed: options.speed * scale.speed,
+        size: options.size * (level === "low" ? 0.72 : 0.88),
+      }
+    case "softAurora":
+      return {
+        ...options,
+        speed: options.speed * scale.speed,
+        scale: Math.max(0.8, options.scale * scale.detail),
+        brightness: options.brightness * (level === "low" ? 0.72 : 0.86),
+        noiseFrequency: options.noiseFrequency * scale.detail,
+        noiseAmplitude: options.noiseAmplitude * scale.detail,
+        enableMouseInteraction: level === "low" ? false : options.enableMouseInteraction,
+        mouseInfluence: options.mouseInfluence * scale.detail,
+      }
+    case "auroraWave":
+      return {
+        ...options,
+        speed: options.speed * scale.speed,
+        brightness: options.brightness * (level === "low" ? 0.65 : 0.85),
+        waveAmplitude: options.waveAmplitude * scale.detail,
+      }
+    case "gridScan":
+      return {
+        ...options,
+        speed: options.speed * scale.speed,
+        spacing: Math.max(options.spacing, level === "low" ? 90 : 64),
+        perspective: level === "low" ? false : options.perspective,
+      }
+    case "pixelBlast":
+      return {
+        ...options,
+        pixelSize: Math.max(options.pixelSize, level === "low" ? 26 : 18),
+        liquidStrength: options.liquidStrength * scale.detail,
+        cursorRadius: options.cursorRadius * (level === "low" ? 0.5 : 0.72),
+        enableRipples: level === "low" ? false : options.enableRipples,
+      }
+    default:
+      return options
+  }
+}
+
 function applyEffectPerformanceBudget(effect, settings) {
   if (!effect) return
 
-  const { mode, shouldSave } = getPerformanceProfile(settings)
+  const { mode, shouldSave, level } = getPerformanceProfile(settings)
 
   if (
     Number.isFinite(effect.fps) &&
@@ -286,7 +430,9 @@ function applyEffectPerformanceBudget(effect, settings) {
   const baseFps = effect._performanceBaseFps
   if (Number.isFinite(baseFps) && baseFps > 0) {
     const nextFps =
-      mode === "battery"
+      level === "low"
+        ? Math.min(baseFps, 20)
+        : mode === "battery"
         ? Math.min(baseFps, 30)
         : shouldSave
           ? Math.min(baseFps, 36)
@@ -307,7 +453,9 @@ function applyEffectPerformanceBudget(effect, settings) {
   const baseTargetFps = effect._performanceBaseTargetFps
   if (Number.isFinite(baseTargetFps) && baseTargetFps > 0) {
     effect.targetFps =
-      mode === "battery"
+      level === "low"
+        ? Math.min(baseTargetFps, 20)
+        : mode === "battery"
         ? Math.min(baseTargetFps, 30)
         : shouldSave
           ? Math.min(baseTargetFps, 36)
@@ -613,106 +761,95 @@ function createApplySettings(effectInstances) {
     if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
       shouldUseGradientV2 = true
       document.body.classList.add("bg-layer-active")
+      const gradientV2Options = withPerformanceBudget(settings, "gradientV2", {
+        color1: settings.gradientV2Color1,
+        color2: settings.gradientV2Color2,
+        color3: settings.gradientV2Color3,
+        timeSpeed: settings.gradientV2TimeSpeed,
+        colorBalance: settings.gradientV2ColorBalance,
+        warpStrength: settings.gradientV2WarpStrength,
+        warpFrequency: settings.gradientV2WarpFrequency,
+        warpSpeed: settings.gradientV2WarpSpeed,
+        warpAmplitude: settings.gradientV2WarpAmplitude,
+        blendAngle: settings.gradientV2BlendAngle,
+        blendSoftness: settings.gradientV2BlendSoftness,
+        rotationAmount: settings.gradientV2RotationAmount,
+        noiseScale: settings.gradientV2NoiseScale,
+        grainAmount: settings.gradientV2GrainAmount,
+        grainScale: settings.gradientV2GrainScale,
+        grainAnimated: settings.gradientV2GrainAnimated,
+        contrast: settings.gradientV2Contrast,
+        gamma: settings.gradientV2Gamma,
+        saturation: settings.gradientV2Saturation,
+        centerX: settings.gradientV2CenterX,
+        centerY: settings.gradientV2CenterY,
+        zoom: settings.gradientV2Zoom,
+      })
       if (effectInstances.gradientV2Effect.active) {
-        effectInstances.gradientV2Effect.setOptions({
-          color1: settings.gradientV2Color1,
-          color2: settings.gradientV2Color2,
-          color3: settings.gradientV2Color3,
-          timeSpeed: settings.gradientV2TimeSpeed,
-          colorBalance: settings.gradientV2ColorBalance,
-          warpStrength: settings.gradientV2WarpStrength,
-          warpFrequency: settings.gradientV2WarpFrequency,
-          warpSpeed: settings.gradientV2WarpSpeed,
-          warpAmplitude: settings.gradientV2WarpAmplitude,
-          blendAngle: settings.gradientV2BlendAngle,
-          blendSoftness: settings.gradientV2BlendSoftness,
-          rotationAmount: settings.gradientV2RotationAmount,
-          noiseScale: settings.gradientV2NoiseScale,
-          grainAmount: settings.gradientV2GrainAmount,
-          grainScale: settings.gradientV2GrainScale,
-          grainAnimated: settings.gradientV2GrainAnimated,
-          contrast: settings.gradientV2Contrast,
-          gamma: settings.gradientV2Gamma,
-          saturation: settings.gradientV2Saturation,
-          centerX: settings.gradientV2CenterX,
-          centerY: settings.gradientV2CenterY,
-          zoom: settings.gradientV2Zoom,
-        })
+        effectInstances.gradientV2Effect.setOptions(gradientV2Options)
       } else {
         effectInstances.gradientV2Effect.start()
+        effectInstances.gradientV2Effect.setOptions(gradientV2Options)
       }
     }
     // Priority 1.5: Silk (Animated)
     else if (settings.silkActive && effectInstances.silkEffect) {
       shouldUseSilk = true
       document.body.classList.add("bg-layer-active")
+      const silkOptions = withPerformanceBudget(settings, "silk", {
+        color: settings.silkColor,
+        speed: settings.silkSpeed,
+        scale: settings.silkScale,
+        noise: settings.silkNoise,
+        rotation: settings.silkRotation,
+      })
       if (effectInstances.silkEffect.active) {
-        effectInstances.silkEffect.setOptions({
-          color: settings.silkColor,
-          speed: settings.silkSpeed,
-          scale: settings.silkScale,
-          noise: settings.silkNoise,
-          rotation: settings.silkRotation,
-        })
+        effectInstances.silkEffect.setOptions(silkOptions)
       } else {
         effectInstances.silkEffect.start()
+        effectInstances.silkEffect.setOptions(silkOptions)
       }
     }
     // Priority 1.6: Light Pillar (Animated)
     else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
       shouldUseLightPillar = true
       document.body.classList.add("bg-layer-active")
+      const lightPillarOptions = withPerformanceBudget(settings, "lightPillar", {
+        topColor: settings.lightPillarTopColor,
+        bottomColor: settings.lightPillarBottomColor,
+        intensity: settings.lightPillarIntensity,
+        rotationSpeed: settings.lightPillarRotationSpeed,
+        glowAmount: settings.lightPillarGlowAmount,
+        pillarWidth: settings.lightPillarWidth,
+        pillarHeight: settings.lightPillarHeight,
+        noiseIntensity: settings.lightPillarNoiseIntensity,
+        pillarRotation: settings.lightPillarRotation,
+      })
       if (effectInstances.lightPillarEffect.active) {
-        effectInstances.lightPillarEffect.setOptions({
-          topColor: settings.lightPillarTopColor,
-          bottomColor: settings.lightPillarBottomColor,
-          intensity: settings.lightPillarIntensity,
-          rotationSpeed: settings.lightPillarRotationSpeed,
-          glowAmount: settings.lightPillarGlowAmount,
-          pillarWidth: settings.lightPillarWidth,
-          pillarHeight: settings.lightPillarHeight,
-          noiseIntensity: settings.lightPillarNoiseIntensity,
-          pillarRotation: settings.lightPillarRotation,
-        })
+        effectInstances.lightPillarEffect.setOptions(lightPillarOptions)
       } else {
         effectInstances.lightPillarEffect.start()
         // Ensure options are applied immediately after start
-        effectInstances.lightPillarEffect.setOptions({
-          topColor: settings.lightPillarTopColor,
-          bottomColor: settings.lightPillarBottomColor,
-          intensity: settings.lightPillarIntensity,
-          rotationSpeed: settings.lightPillarRotationSpeed,
-          glowAmount: settings.lightPillarGlowAmount,
-          pillarWidth: settings.lightPillarWidth,
-          pillarHeight: settings.lightPillarHeight,
-          noiseIntensity: settings.lightPillarNoiseIntensity,
-          pillarRotation: settings.lightPillarRotation,
-        })
+        effectInstances.lightPillarEffect.setOptions(lightPillarOptions)
       }
     }
     // Priority 1.7: Liquid Ether (Animated)
     else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
       shouldUseLiquidEther = true
       document.body.classList.add("bg-layer-active")
+      const liquidEtherOptions = withPerformanceBudget(settings, "liquidEther", {
+        colors: [
+          settings.liquidEtherColor1 || "#5227FF",
+          settings.liquidEtherColor2 || "#FF9FFC",
+          settings.liquidEtherColor3 || "#B497CF",
+        ],
+        glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
+      })
       if (effectInstances.liquidEtherEffect.active) {
-        effectInstances.liquidEtherEffect.updateSettings({
-          colors: [
-            settings.liquidEtherColor1 || "#5227FF",
-            settings.liquidEtherColor2 || "#FF9FFC",
-            settings.liquidEtherColor3 || "#B497CF",
-          ],
-          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
-        })
+        effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
       } else {
         effectInstances.liquidEtherEffect.start()
-        effectInstances.liquidEtherEffect.updateSettings({
-          colors: [
-            settings.liquidEtherColor1 || "#5227FF",
-            settings.liquidEtherColor2 || "#FF9FFC",
-            settings.liquidEtherColor3 || "#B497CF",
-          ],
-          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
-        })
+        effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
       }
     }
     // Priority 1.75: Splash Cursor (Animated)
@@ -733,7 +870,11 @@ function createApplySettings(effectInstances) {
       } else {
         applyUserSelectedBackgroundBehindSplashCursor()
       }
-      const splashOpts = splashCursorOptionsFromSettings(settings)
+      const splashOpts = withPerformanceBudget(
+        settings,
+        "splashCursor",
+        splashCursorOptionsFromSettings(settings),
+      )
       if (effectInstances.splashCursorEffect.active) {
         effectInstances.splashCursorEffect.setOptions(splashOpts)
       } else {
@@ -746,10 +887,15 @@ function createApplySettings(effectInstances) {
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
       shouldUseSvgWave = true
       document.body.classList.add("bg-layer-active")
+      const svgWaveParams = withPerformanceBudget(
+        settings,
+        "svgWave",
+        getSvgWaveParams(settings),
+      )
       if (effectInstances.svgWaveEffect.active) {
-        effectInstances.svgWaveEffect.update(getSvgWaveParams(settings))
+        effectInstances.svgWaveEffect.update(svgWaveParams)
       } else {
-        effectInstances.svgWaveEffect.start(getSvgWaveParams(settings))
+        effectInstances.svgWaveEffect.start(svgWaveParams)
       }
     }
 
@@ -1527,12 +1673,14 @@ function createApplySettings(effectInstances) {
         selectedEffect.setMode(settings.pixelWeatherStyle || "snow")
       }
       if (selectedEffect.setOptions) {
-        selectedEffect.setOptions({
-          density: settings.pixelWeatherDensity || 1.0,
-          resolution: settings.pixelWeatherResolution || 1,
-          speed: settings.pixelWeatherSpeed || 1.0,
-          size: settings.pixelWeatherSize || 1.0,
-        })
+        selectedEffect.setOptions(
+          withPerformanceBudget(settings, "pixelWeather", {
+            density: settings.pixelWeatherDensity || 1.0,
+            resolution: settings.pixelWeatherResolution || 1,
+            speed: settings.pixelWeatherSpeed || 1.0,
+            size: settings.pixelWeatherSize || 1.0,
+          }),
+        )
       }
     }
 
@@ -1574,11 +1722,13 @@ function createApplySettings(effectInstances) {
       selectedEffect &&
       selectedEffect.setOptions
     ) {
-      selectedEffect.setOptions({
-        speed: settings.pixelWeatherSpeed || 1.0,
-        spacing: settings.gridSpacing || 50,
-        perspective: settings.gridPerspective !== false,
-      })
+      selectedEffect.setOptions(
+        withPerformanceBudget(settings, "gridScan", {
+          speed: settings.pixelWeatherSpeed || 1.0,
+          spacing: settings.gridSpacing || 50,
+          perspective: settings.gridPerspective !== false,
+        }),
+      )
     }
 
     if (
@@ -1586,15 +1736,17 @@ function createApplySettings(effectInstances) {
       selectedEffect &&
       selectedEffect.setOptions
     ) {
-      selectedEffect.setOptions({
-        color: settings.auroraWaveColor || "#00bcd4",
-        brightness: settings.auroraWaveBrightness || 0.65,
-        speed: settings.auroraWaveSpeed || 1.0,
-        waveAmplitude: settings.auroraWaveAmplitude || 70,
-        transparent: settings.auroraWaveTransparent !== false,
-        backgroundColor: settings.auroraWaveBgColor || "#000000",
-        bgOpacity: settings.auroraWaveBgOpacity ?? 0.15,
-      })
+      selectedEffect.setOptions(
+        withPerformanceBudget(settings, "auroraWave", {
+          color: settings.auroraWaveColor || "#00bcd4",
+          brightness: settings.auroraWaveBrightness || 0.65,
+          speed: settings.auroraWaveSpeed || 1.0,
+          waveAmplitude: settings.auroraWaveAmplitude || 70,
+          transparent: settings.auroraWaveTransparent !== false,
+          backgroundColor: settings.auroraWaveBgColor || "#000000",
+          bgOpacity: settings.auroraWaveBgOpacity ?? 0.15,
+        }),
+      )
     }
 
     if (
@@ -1635,24 +1787,26 @@ function createApplySettings(effectInstances) {
       selectedEffect &&
       selectedEffect.setOptions
     ) {
-      selectedEffect.setOptions({
-        speed: settings.softAuroraSpeed,
-        scale: settings.softAuroraScale,
-        brightness: settings.softAuroraBrightness,
-        color1: settings.softAuroraColor1,
-        color2: settings.softAuroraColor2,
-        noiseFrequency: settings.softAuroraNoiseFreq,
-        noiseAmplitude: settings.softAuroraNoiseAmp,
-        bandHeight: settings.softAuroraBandHeight,
-        bandSpread: settings.softAuroraBandSpread,
-        octaveDecay: settings.softAuroraOctaveDecay,
-        layerOffset: settings.softAuroraLayerOffset,
-        colorSpeed: settings.softAuroraColorSpeed,
-        enableMouseInteraction: settings.softAuroraEnableMouse,
-        mouseInfluence: settings.softAuroraMouseInfluence,
-        transparent: settings.softAuroraTransparent,
-        backgroundColor: settings.softAuroraBackgroundColor,
-      })
+      selectedEffect.setOptions(
+        withPerformanceBudget(settings, "softAurora", {
+          speed: settings.softAuroraSpeed,
+          scale: settings.softAuroraScale,
+          brightness: settings.softAuroraBrightness,
+          color1: settings.softAuroraColor1,
+          color2: settings.softAuroraColor2,
+          noiseFrequency: settings.softAuroraNoiseFreq,
+          noiseAmplitude: settings.softAuroraNoiseAmp,
+          bandHeight: settings.softAuroraBandHeight,
+          bandSpread: settings.softAuroraBandSpread,
+          octaveDecay: settings.softAuroraOctaveDecay,
+          layerOffset: settings.softAuroraLayerOffset,
+          colorSpeed: settings.softAuroraColorSpeed,
+          enableMouseInteraction: settings.softAuroraEnableMouse,
+          mouseInfluence: settings.softAuroraMouseInfluence,
+          transparent: settings.softAuroraTransparent,
+          backgroundColor: settings.softAuroraBackgroundColor,
+        }),
+      )
     }
 
     if (
@@ -1660,17 +1814,19 @@ function createApplySettings(effectInstances) {
       selectedEffect &&
       selectedEffect.setOptions
     ) {
-      selectedEffect.setOptions({
-        pixelSize: settings.pixelBlastSize || 15,
-        variant: settings.pixelBlastVariant || "square",
-        color: settings.pixelBlastColor || "#B497CF",
-        transparent: settings.pixelBlastTransparent !== false,
-        backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
-        liquid: settings.pixelBlastLiquid !== false,
-        liquidStrength: settings.pixelBlastLiquidStrength ?? 1.0,
-        cursorRadius: settings.pixelBlastCursorRadius || 150,
-        enableRipples: settings.pixelBlastRipples !== false,
-      })
+      selectedEffect.setOptions(
+        withPerformanceBudget(settings, "pixelBlast", {
+          pixelSize: settings.pixelBlastSize || 15,
+          variant: settings.pixelBlastVariant || "square",
+          color: settings.pixelBlastColor || "#B497CF",
+          transparent: settings.pixelBlastTransparent !== false,
+          backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
+          liquid: settings.pixelBlastLiquid !== false,
+          liquidStrength: settings.pixelBlastLiquidStrength ?? 1.0,
+          cursorRadius: settings.pixelBlastCursorRadius || 150,
+          enableRipples: settings.pixelBlastRipples !== false,
+        }),
+      )
     }
     if (
       effectToStart === "flashlight" &&
@@ -3182,6 +3338,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.svgWaveSettings.style.display = "block"
       DOM.svgWaveSettings.classList.toggle("is-collapsed", !waveGeneratorOpen)
     }
+    DOM.svgWaveToggleBtn?.setAttribute(
+      "aria-expanded",
+      String(waveGeneratorOpen),
+    )
     if (DOM.svgWaveToggleLabel) {
       const i18n = geti18n()
       DOM.svgWaveToggleLabel.textContent = waveGeneratorOpen
