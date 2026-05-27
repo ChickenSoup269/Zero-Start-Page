@@ -16,6 +16,8 @@ export function applyBrowserZoom(value) {
     if (!document.body) return
     document.body.classList.add("browser-zoom-css-fallback")
     document.body.style.zoom = zoom === 1 ? "" : String(zoom)
+    // CSS zoom doesn't trigger window resize, so we force it
+    window.dispatchEvent(new Event("resize"))
   }
 
   const chromeTabs = globalThis.chrome?.tabs
@@ -38,6 +40,10 @@ export function applyBrowserZoom(value) {
         } else {
           clearCssFallback()
         }
+        // Force a resize event after zoom is applied to update all components
+        setTimeout(() => {
+          window.dispatchEvent(new Event("resize"))
+        }, 100)
       }
       if (Number.isInteger(tabId)) {
         chromeTabs.setZoom(tabId, zoom, callback)

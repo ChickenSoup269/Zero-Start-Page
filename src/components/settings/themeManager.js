@@ -6,6 +6,7 @@ import {
   updateSetting,
 } from "../../services/state.js"
 import { showAlert } from "../../utils/dialog.js"
+import { showToast } from "../../utils/toast.js"
 
 const THEMES = {
   default: {
@@ -311,9 +312,11 @@ export function initThemeManager(
 
     // If clicking the ALREADY active theme, treat it as "deselect" and restore original
     if (themeItem.classList.contains("active")) {
+      const themeName = themeItem.querySelector(".theme-name")?.textContent || themeKey
       updateActiveUI(null)
       updateSetting("theme", null)
       restoreUserOriginalSettings(updateSettingsInputs)
+      showToast(`Đã bỏ theme: ${themeName}`, { type: 'info' })
       return
     }
 
@@ -327,10 +330,29 @@ export function initThemeManager(
     if (themeData) {
       // Before applying the very first theme in a sequence, take a snapshot of current settings
       captureUserSnapshot()
+      const prevThemeKey = getSettings().theme
+      const prevSnapshot = preThemeSnapshot ? { ...preThemeSnapshot } : null
 
       updateActiveUI(themeKey)
       updateSetting("theme", themeKey)
       applyTheme(themeData, updateSettingsInputs)
+
+      const themeName = themeItem.querySelector(".theme-name")?.textContent || themeKey
+      showToast(`Đã áp dụng theme: ${themeName}`, {
+        undoFn: () => {
+          updateActiveUI(prevThemeKey || null)
+          updateSetting("theme", prevThemeKey || null)
+          if (prevSnapshot) {
+            updateAllSettings(prevSnapshot)
+            preThemeSnapshot = null
+          } else {
+            restoreUserOriginalSettings(updateSettingsInputs)
+          }
+          if (updateSettingsInputs) updateSettingsInputs()
+          saveSettings(true)
+          if (window.appApplySettings) window.appApplySettings()
+        }
+      })
     }
   })
 

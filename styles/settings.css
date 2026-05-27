@@ -892,7 +892,7 @@
 .sidebar-scroll-top-btn {
   position: absolute;
   right: var(--space-2);
-  bottom: 88px;
+  bottom: 130px;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -945,7 +945,7 @@
 .sidebar-hotkeys-btn {
   position: absolute;
   right: var(--space-2);
-  bottom: 130px;
+  bottom: 88px;
   width: 34px;
   height: 34px;
   border-radius: 50%;

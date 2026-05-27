@@ -69,6 +69,7 @@ import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
 import { applyBrowserZoom, formatBrowserZoom } from "../../utils/browserZoom.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
+import { showToast } from "../../utils/toast.js"
 import {
   BACKGROUND_ANIMATION_KEYS,
   pickSettings,
@@ -1618,9 +1619,17 @@ export function setupGeneralEventHandlers(
     previewMaterialAccent(val)
     updateAccentHexInput(val)
   })
-  DOM.accentColorPicker.addEventListener("change", () =>
-    handleSettingUpdate("accentColor", DOM.accentColorPicker.value),
-  )
+  DOM.accentColorPicker.addEventListener("change", () => {
+    const prev = getSettings().accentColor
+    handleSettingUpdate("accentColor", DOM.accentColorPicker.value)
+    showToast(`Màu nhấn: ${DOM.accentColorPicker.value.toUpperCase()}`, {
+      type: 'success',
+      undoFn: () => {
+        DOM.accentColorPicker.value = prev || '#a8c0ff'
+        handleSettingUpdate('accentColor', prev)
+      }
+    })
+  })
 
   if (DOM.accentColorHexInput) {
     DOM.accentColorHexInput.addEventListener("input", (e) => {
@@ -1643,6 +1652,7 @@ export function setupGeneralEventHandlers(
 
     btn.addEventListener("click", () => {
       const color = btn.dataset.color
+      const prev = getSettings().accentColor
       DOM.accentColorPicker.value = color
       updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
@@ -1650,10 +1660,18 @@ export function setupGeneralEventHandlers(
         .querySelectorAll(".accent-color-preset")
         .forEach((b) => b.classList.remove("active"))
       btn.classList.add("active")
+      showToast(`Màu nhấn: ${color.toUpperCase()}`, {
+        type: 'success',
+        undoFn: () => {
+          DOM.accentColorPicker.value = prev || '#a8c0ff'
+          handleSettingUpdate('accentColor', prev)
+        }
+      })
     })
   })
 
   DOM.randomAccentColorBtn.addEventListener("click", () => {
+    const prev = getSettings().accentColor
     const color = getRandomHexColor()
     DOM.accentColorPicker.value = color
     updateAccentHexInput(color)
@@ -1661,6 +1679,13 @@ export function setupGeneralEventHandlers(
     document
       .querySelectorAll(".accent-color-preset")
       .forEach((b) => b.classList.remove("active"))
+    showToast(`Màu nhấn ngẫu nhiên: ${color.toUpperCase()}`, {
+      type: 'success',
+      undoFn: () => {
+        DOM.accentColorPicker.value = prev || '#a8c0ff'
+        handleSettingUpdate('accentColor', prev)
+      }
+    })
   })
 
   // Dynamic M3 Color (Extract from background)
@@ -3290,13 +3315,17 @@ export function setupGeneralEventHandlers(
       showAlert(i18n.alert_font_error || "Please enter a font name.")
       return
     }
+    const prevFont = getSettings().font
     loadGoogleFont(fontName)
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
       handleSettingUpdate("font", fontValue)
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
-      showAlert(i18n.alert_font_loaded || "Font loaded successfully!")
+      showToast(`Đã áp dụng font: ${fontName}`, {
+        type: 'success',
+        undoFn: () => handleSettingUpdate('font', prevFont)
+      })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
@@ -3318,6 +3347,7 @@ export function setupGeneralEventHandlers(
       showAlert(i18n.alert_font_already_saved || "Font already saved.")
       return
     }
+    const prevFont2 = getSettings().font
     loadGoogleFont(fontName)
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
@@ -3325,7 +3355,10 @@ export function setupGeneralEventHandlers(
       updateSetting("userSavedFonts", [...savedFonts, fontName])
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
-      showAlert(i18n.alert_font_saved || "Font saved!")
+      showToast(`Đã lưu & áp dụng font: ${fontName}`, {
+        type: 'success',
+        undoFn: () => handleSettingUpdate('font', prevFont2)
+      })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
@@ -4163,9 +4196,18 @@ export function setupGeneralEventHandlers(
     )
   }
 
-  DOM.contextMenuStyleSelect.addEventListener("change", () =>
-    handleSettingUpdate("contextMenuStyle", DOM.contextMenuStyleSelect.value),
-  )
+  DOM.contextMenuStyleSelect.addEventListener("change", () => {
+    const prev = getSettings().contextMenuStyle || 'dark'
+    const val = DOM.contextMenuStyleSelect.value
+    handleSettingUpdate("contextMenuStyle", val)
+    const styleNames = { dark: 'Dark Glass', light: 'Light Glass', macos: 'macOS' }
+    showToast(`Style menu: ${styleNames[val] || val}`, {
+      undoFn: () => {
+        if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = prev
+        handleSettingUpdate('contextMenuStyle', prev)
+      }
+    })
+  })
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
   DOM.showMusicCheckbox.addEventListener("change", () => {
@@ -4377,9 +4419,18 @@ export function setupGeneralEventHandlers(
   }
   if (DOM.lcpContextMenuStyle) {
     DOM.lcpContextMenuStyle.addEventListener("change", () => {
+      const prev = getSettings().contextMenuStyle || 'dark'
       const val = DOM.lcpContextMenuStyle.value
       if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = val
       handleSettingUpdate("contextMenuStyle", val)
+      const styleNames = { dark: 'Dark Glass', light: 'Light Glass', macos: 'macOS' }
+      showToast(`Style menu: ${styleNames[val] || val}`, {
+        undoFn: () => {
+          if (DOM.lcpContextMenuStyle) DOM.lcpContextMenuStyle.value = prev
+          if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = prev
+          handleSettingUpdate('contextMenuStyle', prev)
+        }
+      })
     })
   }
   DOM.lcpBookmarkGroups.addEventListener("change", () =>

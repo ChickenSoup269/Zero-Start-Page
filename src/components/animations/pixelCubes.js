@@ -76,6 +76,8 @@ export class PixelCubes {
       }
     }
     this.active = true
+    this._resizeHandler = () => this.resize()
+    window.addEventListener("resize", this._resizeHandler)
     animate(performance.now())
   }
 
@@ -227,6 +229,7 @@ export class PixelCubes {
 
   stop() {
     this.active = false
+    window.removeEventListener("resize", this._resizeHandler)
     if (this.animationId) {
       cancelAnimationFrame(this.animationId)
       this.animationId = null
