@@ -106,8 +106,8 @@ export class SplashCursor {
   _fitCanvas() {
     if (!this.canvas) return
     const dpr = window.devicePixelRatio || 1
-    const w = this.canvas.clientWidth || window.innerWidth
-    const h = this.canvas.clientHeight || window.innerHeight
+    const w = window.innerWidth
+    const h = window.innerHeight
     const width = Math.max(1, Math.floor(w * dpr))
     const height = Math.max(1, Math.floor(h * dpr))
     if (this.canvas.width !== width || this.canvas.height !== height) {
@@ -1375,18 +1375,24 @@ export class SplashCursor {
 
     let firstMouseMoveHandled = false
 
+    function getCanvasRelativePos(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect()
+      return {
+        x: scaleByPixelRatio(clientX - rect.left),
+        y: scaleByPixelRatio(clientY - rect.top),
+      }
+    }
+
     function handleMouseDown(e) {
       const pointer = pointers[0]
-      const posX = scaleByPixelRatio(e.clientX)
-      const posY = scaleByPixelRatio(e.clientY)
+      const { x: posX, y: posY } = getCanvasRelativePos(e.clientX, e.clientY)
       updatePointerDownData(pointer, -1, posX, posY)
       clickSplat(pointer)
     }
 
     function handleMouseMove(e) {
       const pointer = pointers[0]
-      const posX = scaleByPixelRatio(e.clientX)
-      const posY = scaleByPixelRatio(e.clientY)
+      const { x: posX, y: posY } = getCanvasRelativePos(e.clientX, e.clientY)
       if (!firstMouseMoveHandled) {
         const color = generateColor()
         updatePointerMoveData(pointer, posX, posY, color)
@@ -1400,8 +1406,7 @@ export class SplashCursor {
       const touches = e.targetTouches
       const pointer = pointers[0]
       for (let i = 0; i < touches.length; i++) {
-        const posX = scaleByPixelRatio(touches[i].clientX)
-        const posY = scaleByPixelRatio(touches[i].clientY)
+        const { x: posX, y: posY } = getCanvasRelativePos(touches[i].clientX, touches[i].clientY)
         updatePointerDownData(pointer, touches[i].identifier, posX, posY)
         clickSplat(pointer)
       }
@@ -1412,8 +1417,7 @@ export class SplashCursor {
       const touches = e.targetTouches
       const pointer = pointers[0]
       for (let i = 0; i < touches.length; i++) {
-        const posX = scaleByPixelRatio(touches[i].clientX)
-        const posY = scaleByPixelRatio(touches[i].clientY)
+        const { x: posX, y: posY } = getCanvasRelativePos(touches[i].clientX, touches[i].clientY)
         updatePointerMoveData(pointer, posX, posY, pointer.color)
       }
     }

@@ -659,6 +659,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   const galleries = [
     document.getElementById("local-images-gallery"),
     document.getElementById("local-videos-gallery"),
+    document.getElementById("user-colors-gallery"),
     DOM.localBackgroundGallery, // Keep original for compatibility
   ].filter(Boolean)
 

@@ -753,7 +753,14 @@ export function setupGeneralEventHandlers(
     .querySelectorAll(".style-preset-btn[data-style-preset]")
     .forEach((btn) => {
       btn.addEventListener("click", () => {
+        const prevPreset = getSettings().interfaceStylePreset || "custom"
         applyInterfaceStylePreset(btn.dataset.stylePreset)
+        const presetNames = { clean: 'Clean', dock: 'Dock', macos: 'macOS', glass: 'Glass', compact: 'Compact', custom: 'Custom' }
+        const presetId = btn.dataset.stylePreset
+        showToast(`Style preset: ${presetNames[presetId] || presetId}`, {
+          type: 'success',
+          undoFn: () => applyInterfaceStylePreset(prevPreset)
+        })
       })
     })
   setStylePresetActive(getSettings().interfaceStylePreset || "custom")
@@ -1145,15 +1152,19 @@ export function setupGeneralEventHandlers(
               }
             }
 
-            // 3) Calculate precise scroll pixel
-            const sidebarRect = sidebarContent.getBoundingClientRect()
-            const sectionRect = section.getBoundingClientRect()
-            const targetPixel =
-              sectionRect.top - sidebarRect.top + sidebarContent.scrollTop - 10
+            // 3) Calculate precise scroll pixel after DOM has re-laid out
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                const sidebarRect = sidebarContent.getBoundingClientRect()
+                const sectionRect = section.getBoundingClientRect()
+                const targetPixel =
+                  sectionRect.top - sidebarRect.top + sidebarContent.scrollTop - 10
 
-            sidebarContent.scrollTo({
-              top: targetPixel,
-              behavior: "smooth",
+                sidebarContent.scrollTo({
+                  top: targetPixel,
+                  behavior: "smooth",
+                })
+              })
             })
 
             tocMenu.classList.remove("open")
@@ -2107,6 +2118,7 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkLayoutBgStyle) {
       DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
+        const prev = getSettings().bookmarkLayoutBgStyle || 'default'
         markInterfaceStyleCustom("bookmarkLayoutBgStyle")
         handleSettingUpdate(
           "bookmarkLayoutBgStyle",
@@ -2116,6 +2128,15 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgColorRow.style.display =
             DOM.bookmarkLayoutBgStyle.value === "colored" ? "flex" : "none"
         }
+        const styleNames = { default: 'Mặc định', white: 'Trắng', colored: 'Màu sắc', hidden: 'Ẩn' }
+        const val = DOM.bookmarkLayoutBgStyle.value
+        showToast(`Style bookmark: ${styleNames[val] || val}`, {
+          undoFn: () => {
+            DOM.bookmarkLayoutBgStyle.value = prev
+            markInterfaceStyleCustom('bookmarkLayoutBgStyle')
+            handleSettingUpdate('bookmarkLayoutBgStyle', prev)
+          }
+        })
       })
     }
 
@@ -2130,8 +2151,17 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkItemStyle) {
       DOM.bookmarkItemStyle.addEventListener("change", () => {
+        const prev = getSettings().bookmarkItemStyle || 'default'
         markInterfaceStyleCustom("bookmarkItemStyle")
         throttleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
+        const val = DOM.bookmarkItemStyle.value
+        showToast(`Kiểu bookmark: ${val}`, {
+          undoFn: () => {
+            DOM.bookmarkItemStyle.value = prev
+            markInterfaceStyleCustom('bookmarkItemStyle')
+            handleSettingUpdate('bookmarkItemStyle', prev)
+          }
+        })
       })
     }
 
@@ -2467,7 +2497,7 @@ export function setupGeneralEventHandlers(
       radialShape: DOM.gradientRadialShapeSelect?.value || "circle",
     }
 
-    handleSettingUpdate(null, gradientConfig)
+    handleSettingUpdate(null, gradientConfig, true)
   }
 
   const showPresetCodeError = () => {
@@ -2968,6 +2998,8 @@ export function setupGeneralEventHandlers(
 
     const item = e.target.closest(".user-gradient-item")
     if (item && !e.target.closest(".remove-bg-btn")) {
+      const prevBg = getSettings().background
+      const prevBgUid = getSettings().activeBgUid
       const gradient = {
         start: item.dataset.start,
         end: item.dataset.end,
@@ -2996,6 +3028,13 @@ export function setupGeneralEventHandlers(
       updateSetting("activeBgUid", item.dataset.uid || null)
       handleSettingUpdate(null, gradient, true)
       updateSettingsInputs()
+      const label = item.title || item.dataset.uid || 'Gradient'
+      showToast(`Đã áp dụng: ${label}`, {
+        undoFn: () => {
+          updateSetting('activeBgUid', prevBgUid)
+          handleSettingUpdate('background', prevBg)
+        }
+      })
     }
   })
 
@@ -4104,6 +4143,15 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
+  if (DOM.showLunarCalendarClockCheckbox) {
+    DOM.showLunarCalendarClockCheckbox.checked = !!getSettings().showLunarCalendar
+    DOM.showLunarCalendarClockCheckbox.addEventListener("change", () => {
+      const val = DOM.showLunarCalendarClockCheckbox.checked
+      handleSettingUpdate("showLunarCalendar", val)
+      if (DOM.showLunarCalendarCheckbox) DOM.showLunarCalendarCheckbox.checked = val
+      if (DOM.lcpLunarCalendar) DOM.lcpLunarCalendar.checked = val
+    })
+  }
   setupLayoutCheckbox(DOM.flipLayoutCheckbox, "flipLayout", {})
   if (DOM.allowTextSelectionCheckbox) {
     setupLayoutCheckbox(
@@ -4514,12 +4562,20 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.musicStyleSelect.addEventListener("change", () => {
+    const prev = getSettings().musicBarStyle || 'vinyl'
     applyMusicStyle(DOM.musicStyleSelect.value)
+    showToast(`Style nhạc: ${DOM.musicStyleSelect.value}`, {
+      undoFn: () => applyMusicStyle(prev)
+    })
   })
 
   if (DOM.lcpMusicStyleSelect) {
     DOM.lcpMusicStyleSelect.addEventListener("change", () => {
+      const prev = getSettings().musicBarStyle || 'vinyl'
       applyMusicStyle(DOM.lcpMusicStyleSelect.value)
+      showToast(`Style nhạc: ${DOM.lcpMusicStyleSelect.value}`, {
+        undoFn: () => applyMusicStyle(prev)
+      })
     })
   }
 

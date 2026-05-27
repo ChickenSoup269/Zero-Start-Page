@@ -1069,3 +1069,14 @@ body.context-menu-macos .context-menu-divider {
 .toast-close-btn:hover {
   color: rgba(255, 255, 255, 0.85);
 }
+
+
+/* Lunar Calendar Date Display */
+.clock-lunar-date {
+  font-size: 0.75em;
+  opacity: 0.7;
+  margin-top: 2px;
+  text-align: center;
+  letter-spacing: 0.03em;
+  font-style: italic;
+}

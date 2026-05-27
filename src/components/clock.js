@@ -2,6 +2,7 @@ import { clockElement, dateElement, fadeToggle } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
+import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
 
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -976,6 +977,30 @@ export function updateTime() {
     dateElement.innerHTML = dateString
   }
 
+  // Lunar calendar display
+  const lunarWrap = document.getElementById("clock-lunar-date")
+  if (settings.showLunarCalendar && !isTimer) {
+    const zonedNow = tz ? new Date(now.toLocaleString("en-US", { timeZone: tz })) : now
+    const lunar = convertSolar2Lunar(zonedNow.getDate(), zonedNow.getMonth() + 1, zonedNow.getFullYear())
+    const leapStr = lunar.leap ? " (nhuận)" : ""
+    const lunarStr = `${lunar.day}/${lunar.month}${leapStr} Âm lịch`
+    if (lunarWrap) {
+      lunarWrap.textContent = lunarStr
+      lunarWrap.style.display = ""
+    } else {
+      const el = document.getElementById("date-fade-wrap")
+      if (el && !document.getElementById("clock-lunar-date")) {
+        const span = document.createElement("div")
+        span.id = "clock-lunar-date"
+        span.className = "clock-lunar-date"
+        span.textContent = lunarStr
+        el.appendChild(span)
+      }
+    }
+  } else if (lunarWrap) {
+    lunarWrap.style.display = "none"
+  }
+
   applyHueMode(settings)
 
   document.body.classList.remove("time-priority-none", "time-priority-date")
@@ -1024,7 +1049,8 @@ export function initClock() {
       e.detail.key === "sidestyleNoBorder" ||
       e.detail.key === "fliqloZenMode" ||
       e.detail.key === "fliqloTransparent" ||
-      e.detail.key === "fliqloTheme"
+      e.detail.key === "fliqloTheme" ||
+      e.detail.key === "showLunarCalendar"
     ) {
       updateTime()
     }

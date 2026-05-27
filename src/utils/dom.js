@@ -1098,6 +1098,9 @@ export const showFullCalendarCheckbox = document.getElementById(
 export const showLunarCalendarCheckbox = document.getElementById(
   "show-lunar-calendar-checkbox",
 )
+export const showLunarCalendarClockCheckbox = document.getElementById(
+  "show-lunar-calendar-checkbox-clock",
+)
 export const showTopRightControlsCheckbox = document.getElementById(
   "show-top-right-controls-checkbox",
 )

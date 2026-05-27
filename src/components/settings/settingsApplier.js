@@ -3603,6 +3603,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpLunarCalendar) {
       DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
     }
+    if (DOM.showLunarCalendarClockCheckbox) {
+      DOM.showLunarCalendarClockCheckbox.checked = settings.showLunarCalendar !== false
+    }
 
     if (DOM.flipLayoutCheckbox) {
       DOM.flipLayoutCheckbox.checked = settings.flipLayout === true
