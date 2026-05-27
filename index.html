@@ -5530,6 +5530,9 @@
         <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
+        <button id="sidebar-hotkeys-btn" class="sidebar-hotkeys-btn" title="Mở bảng phím tắt (Ctrl + K)">
+            <i class="fa-solid fa-keyboard"></i>
+        </button>
         <button id="bug-report-btn" class="sidebar-bug-btn" title="Report Bug / Get Config">
             <i class="fa-solid fa-bug"></i>
         </button>
@@ -6062,6 +6065,38 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
     </div>
+
+    <!-- Command Palette Modal -->
+    <div id="command-palette-modal" class="bug-modal">
+        <div class="bug-modal-content" style="max-width: 500px;">
+            <div class="bug-modal-header">
+                <h2><i class="fa-solid fa-keyboard" style="margin-right: 8px;"></i> Lệnh Nhanh</h2>
+                <span id="close-command-palette-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="bug-modal-body">
+                <div class="modal-input-group" style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-magnifying-glass modal-input-icon"></i>
+                    <input type="text" id="command-palette-search" placeholder="Tìm kiếm lệnh... (Ví dụ: hình nền, thời tiết)" class="full-width" style="margin: 0;" autocomplete="off">
+                </div>
+                <div id="command-palette-list" class="command-palette-list">
+                    <!-- Commands injected here -->
+                </div>
+            </div>
+            <div class="bug-modal-footer" style="justify-content: center; opacity: 0.7; font-size: 0.85em;">
+                <span>Sử dụng <kbd>↑</kbd> <kbd>↓</kbd> để di chuyển, <kbd>Enter</kbd> để chọn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette Onboarding Tooltip -->
+    <div id="command-palette-tooltip" class="command-palette-tooltip">
+        <div class="tooltip-content">
+            <i class="fa-solid fa-lightbulb" style="color: #FFD43B; margin-right: 8px;"></i>
+            <span>Bấm <kbd>Ctrl</kbd> + <kbd>K</kbd> để mở nhanh các lối tắt</span>
+        </div>
+        <button id="close-cp-tooltip" class="close-tooltip-btn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
 </body>
 
 </html>

@@ -942,7 +942,28 @@
   backdrop-filter: blur(8px);
 }
 
-.sidebar-bug-btn:hover {
+.sidebar-hotkeys-btn {
+  position: absolute;
+  right: var(--space-2);
+  bottom: 130px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.sidebar-bug-btn:hover, .sidebar-hotkeys-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   color: var(--accent-color);
@@ -5412,15 +5433,17 @@ body.sidebar-light .settings-sidebar button i {
   opacity: 1 !important;
 }
 
-/* Bug report button prominence in light mode */
-body.sidebar-light .sidebar-bug-btn {
+/* Bug report and Hotkeys buttons prominence in light mode */
+body.sidebar-light .sidebar-bug-btn,
+body.sidebar-light .sidebar-hotkeys-btn {
   background: #000000 !important;
   color: #ffffff !important;
   border: 1px solid #000000 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
-body.sidebar-light .sidebar-bug-btn i {
+body.sidebar-light .sidebar-bug-btn i,
+body.sidebar-light .sidebar-hotkeys-btn i {
   color: #ffffff !important;
 }
 

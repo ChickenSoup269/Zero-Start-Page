@@ -24,6 +24,7 @@ import {
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
 import { applyBrowserZoom } from "./utils/browserZoom.js"
+import { initCommandPalette } from "./components/commandPalette.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -167,6 +168,7 @@ async function bootstrap() {
   initSearch()
   initContextMenu()
   initModal()
+  initCommandPalette()
   setTimeout(
     () => promptFirstRunBookmarkImport(renderBookmarks),
     skipStartupLoader ? 500 : 1800,
