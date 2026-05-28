@@ -25,10 +25,6 @@ body {
   image-rendering: high-quality;
 }
 
-body.browser-zoom-css-fallback {
-  zoom: var(--browser-zoom, 1);
-}
-
 i {
   line-height: normal;
   display: inline-flex;
@@ -88,18 +84,6 @@ i {
   pointer-events: none;
 }
 
-/* Fix for browser zoom fallback mode */
-body.browser-zoom-css-fallback #effect-canvas,
-body.browser-zoom-css-fallback #gradient-v2-canvas,
-body.browser-zoom-css-fallback #pixel-snow-hq-canvas,
-body.browser-zoom-css-fallback #splash-cursor-canvas,
-body.browser-zoom-css-fallback #liquid-ether-canvas,
-body.browser-zoom-css-fallback #light-pillar-canvas,
-body.browser-zoom-css-fallback #silk-canvas {
-  width: calc(100vw / var(--browser-zoom, 1)) !important;
-  height: calc(100vh / var(--browser-zoom, 1)) !important;
-  transform-origin: top left;
-}
 
 #splash-cursor-canvas {
   z-index: -2;

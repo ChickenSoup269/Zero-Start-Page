@@ -4,7 +4,7 @@ import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
-import { initContextMenu } from "./components/contextMenu.js"
+import { initContextMenu, showContextMenu, hideContextMenu } from "./components/contextMenu.js"
 import { initSettings } from "./components/settings.js"
 import { initSearch } from "./components/search.js"
 import { TodoList } from "./components/todo.js"
@@ -23,7 +23,6 @@ import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
-import { applyBrowserZoom } from "./utils/browserZoom.js"
 import { initCommandPalette } from "./components/commandPalette.js"
 
 import { makeDraggable } from "./utils/draggable.js"
@@ -70,7 +69,6 @@ async function bootstrap() {
   }
 
   const currentSettings = getSettings()
-  applyBrowserZoom(currentSettings.browserZoom)
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
   }
@@ -580,9 +578,36 @@ async function bootstrap() {
 
     // Collapse functionality
     const quickAccessBar = document.querySelector(".quick-access-bar")
+    quickAccessBar.addEventListener("contextmenu", (e) => {
+      e.preventDefault()
+      showContextMenu(e.clientX, e.clientY, -1, "quick-access")
+    })
     const collapseBtn = document.getElementById("quick-access-collapse")
     if (collapseBtn && quickAccessBar) {
       const settings = getSettings()
+      
+      // Apply border-radius
+      document.documentElement.style.setProperty("--quick-access-btn-radius", settings.quickAccessBorderRadius || "5px");
+      document.documentElement.style.setProperty("--quick-access-bar-radius", settings.quickAccessBarRadius || "var(--radius-lg)");
+      if (settings.quickAccessBorderVisible === false) {
+        quickAccessBar.classList.add("no-border");
+      }
+      window.addEventListener("layoutUpdated", (e) => {
+        if (e.detail.key === "quickAccessBorderRadius") {
+          document.documentElement.style.setProperty("--quick-access-btn-radius", e.detail.value);
+        }
+        if (e.detail.key === "quickAccessBarRadius") {
+          document.documentElement.style.setProperty("--quick-access-bar-radius", e.detail.value);
+        }
+        if (e.detail.key === "quickAccessBorderVisible") {
+          if (e.detail.value) {
+            quickAccessBar.classList.remove("no-border");
+          } else {
+            quickAccessBar.classList.add("no-border");
+          }
+        }
+      });
+
       if (settings.quickAccessCollapsed) {
         quickAccessBar.classList.add("collapsed")
       }

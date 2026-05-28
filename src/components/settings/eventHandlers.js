@@ -67,7 +67,6 @@ import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { renderBookmarks } from "../bookmarks.js"
-import { applyBrowserZoom, formatBrowserZoom } from "../../utils/browserZoom.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
 import { showToast } from "../../utils/toast.js"
 import {
@@ -2099,23 +2098,6 @@ export function setupGeneralEventHandlers(
         }
       })
     }
-    if (DOM.lcpBrowserZoom) {
-      DOM.lcpBrowserZoom.addEventListener("change", () => {
-        const zoom = Number(DOM.lcpBrowserZoom.value) || 1
-        if (DOM.lcpBrowserZoomValue) {
-          DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(zoom)
-        }
-        updateSetting("browserZoom", zoom)
-        saveSettings(true)
-        applyBrowserZoom(zoom)
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: "browserZoom", value: zoom },
-          }),
-        )
-      })
-    }
-
     if (DOM.bookmarkLayoutBgStyle) {
       DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
         const prev = getSettings().bookmarkLayoutBgStyle || 'default'
@@ -3732,6 +3714,26 @@ export function setupGeneralEventHandlers(
     document.title = newTitle
   })
 
+  DOM.pageTitleColorInput?.addEventListener("input", () => {
+    updateSetting("pageTitleColor", DOM.pageTitleColorInput.value)
+    saveSettings()
+    document.documentElement.style.setProperty("--page-title-color", DOM.pageTitleColorInput.value)
+  })
+
+  DOM.tabIconBgColorInput?.addEventListener("input", () => {
+    updateSetting("tabIconBgColor", DOM.tabIconBgColorInput.value)
+    saveSettings()
+    applyTabIcon(getSettings().tabIcon)
+    renderTabIconPreview(getSettings().tabIcon, DOM.tabIconPreview)
+  })
+
+  DOM.tabIconTextColorInput?.addEventListener("input", () => {
+    updateSetting("tabIconTextColor", DOM.tabIconTextColorInput.value)
+    saveSettings()
+    applyTabIcon(getSettings().tabIcon)
+    renderTabIconPreview(getSettings().tabIcon, DOM.tabIconPreview)
+  })
+
   const fileToDataUrl = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -5190,10 +5192,5 @@ export function setupGeneralEventHandlers(
       DOM.lcpSearchBarWidth.value = value
     if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout)
       DOM.lcpBookmarkLayout.value = value
-    if (key === "browserZoom") {
-      if (DOM.lcpBrowserZoom) DOM.lcpBrowserZoom.value = String(value)
-      if (DOM.lcpBrowserZoomValue)
-        DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(value)
-    }
   })
 }

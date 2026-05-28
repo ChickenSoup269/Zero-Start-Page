@@ -13,11 +13,9 @@ import {
   showChecklistConfirm,
   showChoiceConfirm,
 } from "../utils/dialog.js"
-import { applyBrowserZoom } from "../utils/browserZoom.js"
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
-const FIRST_RUN_BROWSER_ZOOM_KEY = "startpageFirstRunBrowserZoomV1"
 const FIRST_RUN_STYLE_KEY = "startpageFirstRunStyleV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
@@ -104,7 +102,6 @@ export function prepareFirstRunDefaults() {
     svgWaveEndSaturation: preset.end[1],
     svgWaveEndLightness: preset.end[2],
     accentColor: preset.accent,
-    browserZoom: 0.8,
   })
   saveSettings(true)
   localStorage.setItem(FIRST_RUN_BG_KEY, "applied")
@@ -438,47 +435,6 @@ async function promptFirstRunLanguage() {
   localStorage.setItem(FIRST_RUN_LANGUAGE_KEY, language)
 }
 
-async function promptFirstRunBrowserZoom() {
-  if (localStorage.getItem(FIRST_RUN_BROWSER_ZOOM_KEY)) return
-
-  const i18n = geti18n()
-  const selectedZoom = await showChoiceConfirm(
-    [
-      {
-        key: "0.8",
-        label: i18n.first_run_zoom_80 || "80% (Recommended)",
-        description:
-          i18n.first_run_zoom_80_desc ||
-          "Balanced size for clocks, bookmarks, and widgets.",
-        icon: "fa-solid fa-compress",
-      },
-      {
-        key: "0.9",
-        label: i18n.first_run_zoom_90 || "90%",
-        description:
-          i18n.first_run_zoom_90_desc || "Larger UI with less empty space.",
-        icon: "fa-solid fa-magnifying-glass-plus",
-      },
-      {
-        key: "0.75",
-        label: i18n.first_run_zoom_75 || "75%",
-        description:
-          i18n.first_run_zoom_75_desc ||
-          "More breathing room for heavier layouts.",
-        icon: "fa-solid fa-minimize",
-      },
-    ],
-    i18n.first_run_zoom_title || "Choose browser zoom",
-    i18n.first_run_zoom_prompt ||
-      "Pick a comfortable start size. 80% is recommended and can be changed later in Layout Controls.",
-  )
-
-  const zoom = Number(selectedZoom || 0.8)
-  updateSetting("browserZoom", zoom)
-  saveSettings(true)
-  applyBrowserZoom(zoom)
-  localStorage.setItem(FIRST_RUN_BROWSER_ZOOM_KEY, String(zoom))
-}
 
 function applyFirstRunStyleToBody(layout) {
   document.body.classList.remove(
@@ -556,7 +512,6 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
 
   await promptFirstRunLanguage()
-  await promptFirstRunBrowserZoom()
   await promptFirstRunStyle(renderBookmarks)
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {

@@ -873,6 +873,9 @@ export const tabIconFileInput = document.getElementById("tab-icon-file-input")
 export const tabIconUploadBtn = document.getElementById("tab-icon-upload-btn")
 export const tabIconClearBtn = document.getElementById("tab-icon-clear-btn")
 export const tabIconPreview = document.getElementById("tab-icon-preview")
+export const pageTitleColorInput = document.getElementById("page-title-color")
+export const tabIconBgColorInput = document.getElementById("tab-icon-bg-color")
+export const tabIconTextColorInput = document.getElementById("tab-icon-text-color")
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const dateSizeInput = document.getElementById("date-size-input")
@@ -1824,10 +1827,6 @@ export const freeMoveCustomTitleCheckbox = document.getElementById(
 )
 
 export const lcpBookmarkLayout = document.getElementById("lcp-bookmark-layout")
-export const lcpBrowserZoom = document.getElementById("lcp-browser-zoom")
-export const lcpBrowserZoomValue = document.getElementById(
-  "lcp-browser-zoom-value",
-)
 
 // Multi-select for Gradients
 export const gradientSelectModeBtn = document.getElementById(

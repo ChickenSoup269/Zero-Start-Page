@@ -685,17 +685,6 @@
                 </select>
             </div>
             <div class="lcp-row lcp-row-select">
-                <i class="fa-solid fa-magnifying-glass-minus lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_browser_zoom">Browser Zoom</span>
-                <span class="range-val" id="lcp-browser-zoom-value" style="font-size: 0.8em; opacity: 0.8;">100%</span>
-                <select id="lcp-browser-zoom" class="lcp-select">
-                    <option value="1">100%</option>
-                    <option value="0.9">90%</option>
-                    <option value="0.8">80% Recommended</option>
-                    <option value="0.75">75%</option>
-                </select>
-            </div>
-            <div class="lcp-row lcp-row-select">
                 <i class="fa-solid fa-compact-disc lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
                 <select id="lcp-music-style-select" class="lcp-select">
@@ -813,6 +802,20 @@
                 </div>
                 <small style="opacity: 0.7; margin-top: 0.25rem; display: block;" data-i18n="settings_tab_icon_hint">Max
                     2 letters or 1 emoji (leave blank for default)</small>
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 0.8rem;">
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label style="font-size: 0.8rem; opacity: 0.85;" for="page-title-color">Title Color</label>
+                        <input type="color" id="page-title-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-bg-color">Icon BG</label>
+                        <input type="color" id="tab-icon-bg-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-text-color">Icon Text</label>
+                        <input type="color" id="tab-icon-text-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                    </div>
+                </div>
             </div>
 
             <!-- Theme Selector -->

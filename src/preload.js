@@ -258,10 +258,6 @@
       const accentRgb = hexToRgb(accentColor)
 
       const searchBarWidth = settings.searchBarWidth || 600
-      const browserZoom = Math.min(
-        1,
-        Math.max(0.75, Number(settings.browserZoom) || 1),
-      )
       const isIndexedDbImage =
         typeof settings.background === "string" &&
         settings.background.startsWith("idb-img-")
@@ -277,7 +273,6 @@
         --accent-color: ${accentColor};
         --accent-color-rgb: ${accentRgb};
         --search-bar-width: ${searchBarWidth}px;
-        --browser-zoom: ${browserZoom};
         --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;

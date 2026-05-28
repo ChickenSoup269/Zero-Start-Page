@@ -3,6 +3,8 @@
  * Handles emoji/text icon generation for browser tab favicon
  */
 
+import { getSettings } from "../../services/state.js"
+
 function getTabIconChars(raw) {
   if (!raw) return ""
   if (/^(data:image\/|blob:|https?:\/\/)/i.test(raw)) return raw
@@ -27,12 +29,13 @@ function applyTabIcon(value) {
     link.href = value
     return
   }
+  const settings = getSettings()
   const size = 64
   const canvas = document.createElement("canvas")
   canvas.width = size
   canvas.height = size
   const ctx = canvas.getContext("2d")
-  ctx.fillStyle = "rgba(30,30,50,0.85)"
+  ctx.fillStyle = settings.tabIconBgColor || "#1e1e32"
   ctx.beginPath()
   if (ctx.roundRect) {
     ctx.roundRect(0, 0, size, size, 14)
@@ -46,7 +49,7 @@ function applyTabIcon(value) {
   const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
   ctx.textAlign = "center"
   ctx.textBaseline = "middle"
-  ctx.fillStyle = "#ffffff"
+  ctx.fillStyle = settings.tabIconTextColor || "#ffffff"
   ctx.font = isSingleEmoji
     ? `${size * 0.65}px sans-serif`
     : `bold ${segs.length === 1 ? size * 0.55 : size * 0.42}px sans-serif`
@@ -58,9 +61,12 @@ function renderTabIconPreview(value, tabIconPreview) {
   if (!tabIconPreview) return
   tabIconPreview.innerHTML = ""
   tabIconPreview.style.backgroundImage = ""
+  const settings = getSettings()
   if (!value) {
     tabIconPreview.textContent = ""
     tabIconPreview.style.fontSize = ""
+    tabIconPreview.style.backgroundColor = ""
+    tabIconPreview.style.color = ""
     return
   }
   if (isImageIcon(value)) {
@@ -72,6 +78,8 @@ function renderTabIconPreview(value, tabIconPreview) {
     img.style.objectFit = "cover"
     tabIconPreview.appendChild(img)
     tabIconPreview.style.fontSize = ""
+    tabIconPreview.style.backgroundColor = ""
+    tabIconPreview.style.color = ""
     return
   }
   const segs = Intl.Segmenter
@@ -79,6 +87,8 @@ function renderTabIconPreview(value, tabIconPreview) {
     : [...value]
   const display = segs.slice(0, 2).join("")
   tabIconPreview.textContent = display
+  tabIconPreview.style.backgroundColor = settings.tabIconBgColor || "#1e1e32"
+  tabIconPreview.style.color = settings.tabIconTextColor || "#ffffff"
   const isSingleEmoji = segs.length === 1 && /\p{Emoji}/u.test(segs[0])
   tabIconPreview.style.fontSize = isSingleEmoji
     ? "18px"

@@ -886,6 +886,10 @@ body.ghost-controls .side-controls:hover {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
+.quick-access-bar.no-border {
+  border: none !important;
+}
+
 .quick-access-bar {
   display: flex;
   flex-direction: column;
@@ -895,7 +899,7 @@ body.ghost-controls .side-controls:hover {
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   padding: var(--space-2) var(--space-1);
-  border-radius: var(--radius-lg);
+  border-radius: var(--quick-access-bar-radius, var(--radius-lg));
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1134,7 +1138,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   color: var(--accent-contrast-color);
   background: var(--accent-color, #1a1a2e);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-md);
+  border-radius: var(--quick-access-btn-radius, var(--radius-md));
 }
 
 /* Layout Controls Popup */

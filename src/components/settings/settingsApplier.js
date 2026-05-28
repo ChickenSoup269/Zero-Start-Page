@@ -34,7 +34,6 @@ import {
 import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { buildMultiColorCss } from "./multiColorManager.js"
-import { applyBrowserZoom, formatBrowserZoom } from "../../utils/browserZoom.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
@@ -1301,7 +1300,6 @@ function createApplySettings(effectInstances) {
       "--search-bar-width",
       `${settings.searchBarWidth || 600}px`,
     )
-    applyBrowserZoom(settings.browserZoom)
 
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
@@ -2502,6 +2500,12 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.pageTitleInput)
       DOM.pageTitleInput.value = settings.pageTitle || "Start Page"
+    if (DOM.pageTitleColorInput)
+      DOM.pageTitleColorInput.value = settings.pageTitleColor || "#ffffff"
+    if (DOM.tabIconBgColorInput)
+      DOM.tabIconBgColorInput.value = settings.tabIconBgColor || "#1e1e32"
+    if (DOM.tabIconTextColorInput)
+      DOM.tabIconTextColorInput.value = settings.tabIconTextColor || "#ffffff"
     if (DOM.tabIconInput) {
       DOM.tabIconInput.value = String(settings.tabIcon || "").startsWith(
         "data:image/",
@@ -3643,14 +3647,6 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.lcpSearchBarWidthVal) {
         DOM.lcpSearchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
       }
-    }
-    if (DOM.lcpBrowserZoom) {
-      DOM.lcpBrowserZoom.value = String(settings.browserZoom || 1)
-    }
-    if (DOM.lcpBrowserZoomValue) {
-      DOM.lcpBrowserZoomValue.textContent = formatBrowserZoom(
-        settings.browserZoom || 1,
-      )
     }
     DOM.showBookmarksCheckbox.checked = settings.showBookmarks !== false
     if (DOM.showQuickAccessBgCheckbox) {
