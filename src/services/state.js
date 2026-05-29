@@ -220,7 +220,11 @@ export const defaultSettings = {
   clockTimerMode: false,
   showFullCalendar: false,
   showLunarCalendar: false,
+  showClockLunarCalendar: false,
+  // 'append' = show lunar date alongside Gregorian; 'replace' = show lunar instead of Gregorian
+  showClockLunarMode: "append",
   clockDisplayMode: "all",
+  calendarDateMode: "solar",
   showNotepad: false,
   musicPlayerEnabled: false,
   componentPositions: {},
@@ -409,6 +413,14 @@ let settingsState = {
   ...(JSON.parse(localStorage.getItem("pageSettings")) || {}),
 }
 
+const storedSettings = JSON.parse(localStorage.getItem("pageSettings")) || {}
+if (!Object.prototype.hasOwnProperty.call(storedSettings, "calendarDateMode")) {
+  settingsState.calendarDateMode = settingsState.showLunarCalendar
+    ? "both"
+    : "solar"
+}
+settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
+
 const MODULE_RESET_KEYS = {
   background: [
     "background",
@@ -527,6 +539,9 @@ const MODULE_RESET_KEYS = {
     "clockTimerMode",
     "showFullCalendar",
     "showLunarCalendar",
+    "calendarDateMode",
+    "showClockLunarCalendar",
+    "showClockLunarMode",
     "clockDisplayMode",
     "showNotepad",
     "musicPlayerEnabled",

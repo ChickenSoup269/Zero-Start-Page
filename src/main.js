@@ -578,10 +578,19 @@ async function bootstrap() {
 
     // Collapse functionality
     const quickAccessBar = document.querySelector(".quick-access-bar")
-    quickAccessBar.addEventListener("contextmenu", (e) => {
-      e.preventDefault()
-      showContextMenu(e.clientX, e.clientY, -1, "quick-access")
-    })
+    const settingsToggle = document.getElementById("settings-toggle")
+    if (quickAccessBar) {
+      quickAccessBar.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        showContextMenu(e.clientX, e.clientY, -1, "quick-access-bar")
+      })
+    }
+    if (settingsToggle) {
+      settingsToggle.addEventListener("contextmenu", (e) => {
+        e.preventDefault()
+        showContextMenu(e.clientX, e.clientY, -1, "quick-access-toggle")
+      })
+    }
     const collapseBtn = document.getElementById("quick-access-collapse")
     if (collapseBtn && quickAccessBar) {
       const settings = getSettings()

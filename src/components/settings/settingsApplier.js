@@ -1654,7 +1654,9 @@ function createApplySettings(effectInstances) {
       clockWrap.classList.toggle("clock-use-accent", clockUseAccent)
       clockWrap.classList.add(`clock-accent-target-${clockAccentTarget}`)
       clockWrap.classList.add(`clock-shadow-target-${shadowTarget}`)
-      const localAccentColor = clockUseAccent ? accentClockColor : finalClockColor
+      const localAccentColor = clockUseAccent
+        ? accentClockColor
+        : finalClockColor
       const localAccentRgb = hexToRgb(localAccentColor)
       clockWrap.style.setProperty("--accent-color", localAccentColor)
       clockWrap.style.setProperty(
@@ -2295,8 +2297,7 @@ function createUpdateSettingsInputs(effectInstances) {
       }
     }
     if (DOM.clockShadowColorPicker) {
-      DOM.clockShadowColorPicker.value =
-        settings.clockShadowColor || "#000000"
+      DOM.clockShadowColorPicker.value = settings.clockShadowColor || "#000000"
     }
     if (DOM.analogMarkerModeSelect)
       DOM.analogMarkerModeSelect.value = settings.analogMarkerMode || "quarters"
@@ -3603,12 +3604,27 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showFullCalendarCheckbox.checked = settings.showFullCalendar === true
     if (DOM.freeMoveClockCheckbox)
       DOM.freeMoveClockCheckbox.checked = settings.freeMoveClock === true
-    DOM.showLunarCalendarCheckbox.checked = settings.showLunarCalendar !== false
+    const calendarDateMode =
+      settings.calendarDateMode ||
+      (settings.showLunarCalendar ? "both" : "solar")
+    if (DOM.calendarDisplayModeSelect) {
+      DOM.calendarDisplayModeSelect.value =
+        calendarDateMode === "lunar" || calendarDateMode === "both"
+          ? calendarDateMode
+          : "solar"
+    }
+    if (DOM.showLunarCalendarCheckbox) {
+      DOM.showLunarCalendarCheckbox.checked = calendarDateMode !== "solar"
+    }
     if (DOM.lcpLunarCalendar) {
-      DOM.lcpLunarCalendar.checked = settings.showLunarCalendar !== false
+      DOM.lcpLunarCalendar.checked = calendarDateMode !== "solar"
     }
     if (DOM.showLunarCalendarClockCheckbox) {
-      DOM.showLunarCalendarClockCheckbox.checked = settings.showLunarCalendar !== false
+      DOM.showLunarCalendarClockCheckbox.checked =
+        !!settings.showClockLunarCalendar
+    }
+    if (DOM.clockLunarModeSelect) {
+      DOM.clockLunarModeSelect.value = settings.showClockLunarMode || "append"
     }
 
     if (DOM.flipLayoutCheckbox) {

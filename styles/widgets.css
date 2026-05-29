@@ -214,6 +214,19 @@
   display: flex;
 }
 
+/* Lunar date styles for Clock */
+.clock-lunar-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  opacity: 0.9;
+  margin-top: 4px;
+  letter-spacing: 0.6px;
+}
+.clock-lunar-replace {
+  font-weight: 600;
+  color: var(--accent-color, #ffd166);
+}
+
 .g-apps-scroll-area {
   overflow-y: auto;
   padding: var(--space-2) var(--space-2) var(--space-1);
@@ -873,7 +886,7 @@ body.ghost-controls .side-controls:hover {
   justify-content: center;
   align-items: center;
   padding: 0;
-  border-radius: 50%;
+  border-radius: var(--quick-access-btn-radius, 50%);
   color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1139,6 +1152,47 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   background: var(--accent-color, #1a1a2e);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   border-radius: var(--quick-access-btn-radius, var(--radius-md));
+}
+
+.quick-access-menu-title {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  pointer-events: none;
+  cursor: default;
+}
+
+.quick-access-menu-title-main {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.quick-access-menu-title-sub {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  opacity: 0.7;
+  white-space: normal;
+}
+
+.quick-access-radius-item {
+  padding-left: var(--space-2);
+}
+
+.quick-access-radius-item i,
+.quick-access-border-toggle i {
+  width: 14px;
+  text-align: center;
+}
+
+.quick-access-border-toggle {
+  margin-top: 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: var(--space-1);
+}
+
+.context-menu .quick-access-menu-title + .quick-access-radius-item {
+  margin-top: 2px;
 }
 
 /* Layout Controls Popup */
@@ -2718,6 +2772,27 @@ body.todo-fullscreen-active::before {
   width: 450px;
 }
 
+.calendar-card.calendar-mode-lunar .day-info-header {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.calendar-card.calendar-mode-lunar .day-item .day-number {
+  font-size: 0.82rem;
+  line-height: 1.05;
+  text-align: center;
+  letter-spacing: 0.1px;
+}
+
+.calendar-card.calendar-mode-lunar .day-item .holiday-name {
+  margin-top: 2px;
+}
+
+.calendar-card.calendar-mode-both .day-info-header {
+  gap: 2px;
+}
+
 .lunar-month-title {
   font-size: 0.85rem;
   opacity: 0.6;
@@ -3071,6 +3146,15 @@ body.todo-fullscreen-active::before {
 
   .day-item .lunar-date {
     font-size: 0.55rem !important;
+  }
+
+  .calendar-card.calendar-mode-lunar .day-item .day-number {
+    font-size: 0.72rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .calendar-card.calendar-mode-lunar .day-info-header {
+    gap: 0 !important;
   }
 
   .todo-container {

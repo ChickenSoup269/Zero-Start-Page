@@ -417,7 +417,7 @@
                         </a>
                         <a href="https://www.google.com/finance/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-graph-Icon.svg"
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/google-finance.png"
                                     alt="Finance"></div>
                             <span data-i18n="g_app_finance">Finance</span>
                         </a>
@@ -504,13 +504,13 @@
                     <div class="g-apps-grid">
                         <a href="https://passwords.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-safe-Icon.svg"
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-safe-Icon.png"
                                     alt="Password Manager"></div>
                             <span data-i18n="g_app_passwords">Passwords</span>
                         </a>
                         <a href="https://analytics.google.com" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/Google-graph-Icon.svg"
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icons8-google-analytics-48.png"
                                     alt="Analytics"></div>
                             <span data-i18n="g_app_analytics">Analytics</span>
                         </a>
@@ -522,13 +522,13 @@
                         </a>
                         <a href="https://tasks.google.com" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icons8-google-tasks-96.png"
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/google-tasks.png"
                                     alt="Tasks"></div>
                             <span data-i18n="g_app_tasks">Tasks</span>
                         </a>
                         <a href="https://notebooklm.google.com/" target="_blank" class="g-app-item">
                             <div class="g-app-icon"><img
-                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/icons8-notebook-94.png"
+                                    src="https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app/google-notebooklm-logo-icon.svg"
                                     alt="NotebookLM"></div>
                             <span data-i18n="g_app_notebook">NotebookLM</span>
                         </a>
@@ -805,15 +805,18 @@
                 <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 0.8rem;">
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
                         <label style="font-size: 0.8rem; opacity: 0.85;" for="page-title-color">Title Color</label>
-                        <input type="color" id="page-title-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                        <input type="color" id="page-title-color"
+                            style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
                         <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-bg-color">Icon BG</label>
-                        <input type="color" id="tab-icon-bg-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                        <input type="color" id="tab-icon-bg-color"
+                            style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
                         <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-text-color">Icon Text</label>
-                        <input type="color" id="tab-icon-text-color" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
+                        <input type="color" id="tab-icon-text-color"
+                            style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
                     </div>
                 </div>
             </div>
@@ -4300,8 +4303,22 @@
                             <input type="checkbox" id="hide-seconds-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="show-lunar-calendar-checkbox-clock" data-i18n="settings_show_lunar_calendar">Lịch Âm</label>
+                            <label for="show-lunar-calendar-checkbox-clock"
+                                data-i18n="settings_clock_show_lunar_calendar">Lịch Âm trên đồng hồ</label>
                             <input type="checkbox" id="show-lunar-calendar-checkbox-clock">
+                        </div>
+                        <div class="setting-item">
+                            <label for="clock-lunar-mode-select" data-i18n="settings_clock_lunar_mode">Clock Lunar
+                                Mode</label>
+                            <select id="clock-lunar-mode-select">
+                                <option value="append" data-i18n="settings_clock_lunar_mode_append">Show lunar alongside
+                                    Gregorian</option>
+                                <option value="replace" data-i18n="settings_clock_lunar_mode_replace">Replace Gregorian
+                                    with lunar</option>
+                            </select>
+                            <p class="setting-hint" data-i18n="settings_clock_lunar_mode_hint"
+                                style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the clock
+                                appends the lunar date or replaces the Gregorian date.</p>
                         </div>
                         <div class="setting-item">
                             <label for="clock-display-select" data-i18n="settings_clock_display">Clock Display</label>
@@ -5447,10 +5464,19 @@
                                 Calendar</label>
                             <input type="checkbox" id="show-full-calendar-checkbox">
                         </div>
-                        <div class="setting-item-row">
-                            <label for="show-lunar-calendar-checkbox" data-i18n="settings_show_lunar_calendar">Show
-                                Lunar Calendar</label>
-                            <input type="checkbox" id="show-lunar-calendar-checkbox" checked>
+                        <div class="setting-item">
+                            <label for="calendar-display-mode-select"
+                                data-i18n="settings_calendar_display_mode">Calendar Display</label>
+                            <select id="calendar-display-mode-select">
+                                <option value="solar" data-i18n="settings_calendar_display_solar">Gregorian only
+                                </option>
+                                <option value="lunar" data-i18n="settings_calendar_display_lunar">Lunar only</option>
+                                <option value="both" data-i18n="settings_calendar_display_both">Gregorian + Lunar
+                                </option>
+                            </select>
+                            <p class="setting-hint" data-i18n="settings_calendar_display_mode_hint"
+                                style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the month
+                                grid shows solar dates, lunar dates, or both.</p>
                         </div>
                     </div>
                 </div>

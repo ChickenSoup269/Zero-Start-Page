@@ -254,162 +254,89 @@ export function showContextMenu(
         contextMenu.insertBefore(separator, skinBtn)
       }
     }
-  } else if (type === "quick-access") {
+  } else if (
+    type === "quick-access-toggle" ||
+    type === "quick-access-bar" ||
+    type === "quick-access"
+  ) {
     menuEdit.style.display = "none"
     menuDelete.style.display = "none"
     menuLock.style.display = "none"
     menuFavorite.style.display = "none"
+    menuSelect.style.display = "none"
 
     const settings = getSettings()
-    const currentRadius = settings.quickAccessBorderRadius || "5px"
+    const isToggleMenu = type === "quick-access-toggle" || type === "quick-access"
+    const selectedRadius = isToggleMenu
+      ? settings.quickAccessBorderRadius || "5px"
+      : settings.quickAccessBarRadius || "var(--radius-lg)"
 
-    const r30 = document.createElement("div")
-    r30.className = "context-menu-item custom-music-item"
-    r30.innerHTML = `<i class="${currentRadius === "30px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>30px</span>`
-    r30.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "30px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "30px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r30, menuLock)
-
-    const r25 = document.createElement("div")
-    r25.className = "context-menu-item custom-music-item"
-    r25.innerHTML = `<i class="${currentRadius === "25px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>25px</span>`
-    r25.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "25px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "25px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r25, r30)
-
-    const r20 = document.createElement("div")
-    r20.className = "context-menu-item custom-music-item"
-    r20.innerHTML = `<i class="${currentRadius === "20px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>20px</span>`
-    r20.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "20px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "20px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r20, r25)
-
-    const r15 = document.createElement("div")
-    r15.className = "context-menu-item custom-music-item"
-    r15.innerHTML = `<i class="${currentRadius === "15px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>15px</span>`
-    r15.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "15px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "15px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r15, r20)
-
-    const r10 = document.createElement("div")
-    r10.className = "context-menu-item custom-music-item"
-    r10.innerHTML = `<i class="${currentRadius === "10px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>10px</span>`
-    r10.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "10px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "10px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r10, r15)
-
-    const r5 = document.createElement("div")
-    r5.className = "context-menu-item custom-music-item"
-    r5.innerHTML = `<i class="${currentRadius === "5px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>5px</span>`
-    r5.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "5px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "5px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r5, r10)
-
-    const r0 = document.createElement("div")
-    r0.className = "context-menu-item custom-music-item"
-    r0.innerHTML = `<i class="${currentRadius === "0px" ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>0px</span>`
-    r0.onclick = () => {
-      updateSetting("quickAccessBorderRadius", "0px")
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderRadius", value: "0px" },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(r0, r5)
-
-    const toggleBorder = document.createElement("div")
-    toggleBorder.className = "context-menu-item custom-music-item"
-    const isVisible = settings.quickAccessBorderVisible !== false
-    toggleBorder.innerHTML = `<i class="${isVisible ? "fa-solid fa-square-check" : "fa-regular fa-square"}"></i> <span>Show Border</span>`
-    toggleBorder.onclick = () => {
-      const newVal = !isVisible
-      updateSetting("quickAccessBorderVisible", newVal)
-      saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "quickAccessBorderVisible", value: newVal },
-        }),
-      )
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(toggleBorder, r30)
-
-    const barRadiusTitle = document.createElement("div")
-    barRadiusTitle.className = "context-menu-item custom-music-item"
-    barRadiusTitle.style.fontWeight = "bold"
-    barRadiusTitle.style.marginTop = "5px"
-    barRadiusTitle.innerHTML = `<span>Bar Radius</span>`
-    contextMenu.insertBefore(barRadiusTitle, toggleBorder)
-
-    const currentBarRadius = settings.quickAccessBarRadius || "var(--radius-lg)"
-    const barRadii = ["30px", "25px", "20px", "15px", "10px", "5px", "0px"]
-    barRadii.forEach(r => {
+    const createTitle = (title, hint) => {
       const el = document.createElement("div")
-      el.className = "context-menu-item custom-music-item"
-      el.innerHTML = `<i class="${currentBarRadius === r ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>${r}</span>`
-      el.onclick = () => {
-        updateSetting("quickAccessBarRadius", r)
+      el.className = "context-menu-item custom-music-item quick-access-menu-title"
+      el.innerHTML = `
+        <div class="quick-access-menu-title-main">${title}</div>
+        <div class="quick-access-menu-title-sub">${hint}</div>
+      `
+      contextMenu.appendChild(el)
+      return el
+    }
+
+    const createRadiusItem = (radius) => {
+      const item = document.createElement("div")
+      item.className = "context-menu-item custom-music-item quick-access-radius-item"
+      item.dataset.radius = radius
+      item.innerHTML = `<i class="${selectedRadius === radius ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>${radius}</span>`
+      item.onclick = () => {
+        const settingKey = isToggleMenu ? "quickAccessBorderRadius" : "quickAccessBarRadius"
+        updateSetting(settingKey, radius)
         saveSettings()
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
-            detail: { key: "quickAccessBarRadius", value: r },
+            detail: { key: settingKey, value: radius },
           }),
         )
         hideContextMenu()
       }
-      contextMenu.insertBefore(el, barRadiusTitle)
+      return item
+    }
+
+    const createBorderToggle = () => {
+      const toggle = document.createElement("div")
+      toggle.className = "context-menu-item custom-music-item quick-access-border-toggle"
+      const isVisible = settings.quickAccessBorderVisible !== false
+      toggle.innerHTML = `<i class="${isVisible ? "fa-solid fa-square-check" : "fa-regular fa-square"}"></i> <span>Show Border</span>`
+      toggle.onclick = () => {
+        const newVal = !isVisible
+        updateSetting("quickAccessBorderVisible", newVal)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "quickAccessBorderVisible", value: newVal },
+          }),
+        )
+        hideContextMenu()
+      }
+      return toggle
+    }
+
+    const radii = ["30px", "25px", "20px", "15px", "10px", "5px", "0px"]
+    const title = isToggleMenu
+      ? i18n.quick_access_button_radius || "Quick Access Button Radius"
+      : i18n.quick_access_bar_radius || "Quick Access Bar Radius"
+    const hint = isToggleMenu
+      ? i18n.quick_access_button_radius_hint || "Applies to settings-toggle and active quick buttons."
+      : i18n.quick_access_bar_radius_hint || "Applies to the full quick access panel."
+
+    createTitle(title, hint)
+
+    radii.forEach((radius) => {
+      contextMenu.appendChild(createRadiusItem(radius))
     })
+
+    if (!isToggleMenu) {
+      contextMenu.appendChild(createBorderToggle())
+    }
   } else if (
     [
       "localBg",

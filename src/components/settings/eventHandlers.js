@@ -754,11 +754,18 @@ export function setupGeneralEventHandlers(
       btn.addEventListener("click", () => {
         const prevPreset = getSettings().interfaceStylePreset || "custom"
         applyInterfaceStylePreset(btn.dataset.stylePreset)
-        const presetNames = { clean: 'Clean', dock: 'Dock', macos: 'macOS', glass: 'Glass', compact: 'Compact', custom: 'Custom' }
+        const presetNames = {
+          clean: "Clean",
+          dock: "Dock",
+          macos: "macOS",
+          glass: "Glass",
+          compact: "Compact",
+          custom: "Custom",
+        }
         const presetId = btn.dataset.stylePreset
         showToast(`Style preset: ${presetNames[presetId] || presetId}`, {
-          type: 'success',
-          undoFn: () => applyInterfaceStylePreset(prevPreset)
+          type: "success",
+          undoFn: () => applyInterfaceStylePreset(prevPreset),
         })
       })
     })
@@ -1157,7 +1164,10 @@ export function setupGeneralEventHandlers(
                 const sidebarRect = sidebarContent.getBoundingClientRect()
                 const sectionRect = section.getBoundingClientRect()
                 const targetPixel =
-                  sectionRect.top - sidebarRect.top + sidebarContent.scrollTop - 10
+                  sectionRect.top -
+                  sidebarRect.top +
+                  sidebarContent.scrollTop -
+                  10
 
                 sidebarContent.scrollTo({
                   top: targetPixel,
@@ -1633,11 +1643,11 @@ export function setupGeneralEventHandlers(
     const prev = getSettings().accentColor
     handleSettingUpdate("accentColor", DOM.accentColorPicker.value)
     showToast(`Màu nhấn: ${DOM.accentColorPicker.value.toUpperCase()}`, {
-      type: 'success',
+      type: "success",
       undoFn: () => {
-        DOM.accentColorPicker.value = prev || '#a8c0ff'
-        handleSettingUpdate('accentColor', prev)
-      }
+        DOM.accentColorPicker.value = prev || "#a8c0ff"
+        handleSettingUpdate("accentColor", prev)
+      },
     })
   })
 
@@ -1671,11 +1681,11 @@ export function setupGeneralEventHandlers(
         .forEach((b) => b.classList.remove("active"))
       btn.classList.add("active")
       showToast(`Màu nhấn: ${color.toUpperCase()}`, {
-        type: 'success',
+        type: "success",
         undoFn: () => {
-          DOM.accentColorPicker.value = prev || '#a8c0ff'
-          handleSettingUpdate('accentColor', prev)
-        }
+          DOM.accentColorPicker.value = prev || "#a8c0ff"
+          handleSettingUpdate("accentColor", prev)
+        },
       })
     })
   })
@@ -1690,11 +1700,11 @@ export function setupGeneralEventHandlers(
       .querySelectorAll(".accent-color-preset")
       .forEach((b) => b.classList.remove("active"))
     showToast(`Màu nhấn ngẫu nhiên: ${color.toUpperCase()}`, {
-      type: 'success',
+      type: "success",
       undoFn: () => {
-        DOM.accentColorPicker.value = prev || '#a8c0ff'
-        handleSettingUpdate('accentColor', prev)
-      }
+        DOM.accentColorPicker.value = prev || "#a8c0ff"
+        handleSettingUpdate("accentColor", prev)
+      },
     })
   })
 
@@ -2100,7 +2110,7 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.bookmarkLayoutBgStyle) {
       DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
-        const prev = getSettings().bookmarkLayoutBgStyle || 'default'
+        const prev = getSettings().bookmarkLayoutBgStyle || "default"
         markInterfaceStyleCustom("bookmarkLayoutBgStyle")
         handleSettingUpdate(
           "bookmarkLayoutBgStyle",
@@ -2110,14 +2120,19 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgColorRow.style.display =
             DOM.bookmarkLayoutBgStyle.value === "colored" ? "flex" : "none"
         }
-        const styleNames = { default: 'Mặc định', white: 'Trắng', colored: 'Màu sắc', hidden: 'Ẩn' }
+        const styleNames = {
+          default: "Mặc định",
+          white: "Trắng",
+          colored: "Màu sắc",
+          hidden: "Ẩn",
+        }
         const val = DOM.bookmarkLayoutBgStyle.value
         showToast(`Style bookmark: ${styleNames[val] || val}`, {
           undoFn: () => {
             DOM.bookmarkLayoutBgStyle.value = prev
-            markInterfaceStyleCustom('bookmarkLayoutBgStyle')
-            handleSettingUpdate('bookmarkLayoutBgStyle', prev)
-          }
+            markInterfaceStyleCustom("bookmarkLayoutBgStyle")
+            handleSettingUpdate("bookmarkLayoutBgStyle", prev)
+          },
         })
       })
     }
@@ -2133,16 +2148,16 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkItemStyle) {
       DOM.bookmarkItemStyle.addEventListener("change", () => {
-        const prev = getSettings().bookmarkItemStyle || 'default'
+        const prev = getSettings().bookmarkItemStyle || "default"
         markInterfaceStyleCustom("bookmarkItemStyle")
         throttleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
         const val = DOM.bookmarkItemStyle.value
         showToast(`Kiểu bookmark: ${val}`, {
           undoFn: () => {
             DOM.bookmarkItemStyle.value = prev
-            markInterfaceStyleCustom('bookmarkItemStyle')
-            handleSettingUpdate('bookmarkItemStyle', prev)
-          }
+            markInterfaceStyleCustom("bookmarkItemStyle")
+            handleSettingUpdate("bookmarkItemStyle", prev)
+          },
         })
       })
     }
@@ -3010,12 +3025,12 @@ export function setupGeneralEventHandlers(
       updateSetting("activeBgUid", item.dataset.uid || null)
       handleSettingUpdate(null, gradient, true)
       updateSettingsInputs()
-      const label = item.title || item.dataset.uid || 'Gradient'
+      const label = item.title || item.dataset.uid || "Gradient"
       showToast(`Đã áp dụng: ${label}`, {
         undoFn: () => {
-          updateSetting('activeBgUid', prevBgUid)
-          handleSettingUpdate('background', prevBg)
-        }
+          updateSetting("activeBgUid", prevBgUid)
+          handleSettingUpdate("background", prevBg)
+        },
       })
     }
   })
@@ -3344,8 +3359,8 @@ export function setupGeneralEventHandlers(
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       showToast(`Đã áp dụng font: ${fontName}`, {
-        type: 'success',
-        undoFn: () => handleSettingUpdate('font', prevFont)
+        type: "success",
+        undoFn: () => handleSettingUpdate("font", prevFont),
       })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
@@ -3377,8 +3392,8 @@ export function setupGeneralEventHandlers(
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
       showToast(`Đã lưu & áp dụng font: ${fontName}`, {
-        type: 'success',
-        undoFn: () => handleSettingUpdate('font', prevFont2)
+        type: "success",
+        undoFn: () => handleSettingUpdate("font", prevFont2),
       })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
@@ -3717,7 +3732,10 @@ export function setupGeneralEventHandlers(
   DOM.pageTitleColorInput?.addEventListener("input", () => {
     updateSetting("pageTitleColor", DOM.pageTitleColorInput.value)
     saveSettings()
-    document.documentElement.style.setProperty("--page-title-color", DOM.pageTitleColorInput.value)
+    document.documentElement.style.setProperty(
+      "--page-title-color",
+      DOM.pageTitleColorInput.value,
+    )
   })
 
   DOM.tabIconBgColorInput?.addEventListener("input", () => {
@@ -4144,14 +4162,51 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
-  setupLayoutCheckbox(DOM.showLunarCalendarCheckbox, "showLunarCalendar", {})
+  if (DOM.calendarDisplayModeSelect) {
+    const syncCalendarDisplayMode = (mode) => {
+      const normalizedMode =
+        mode === "lunar" || mode === "both" ? mode : "solar"
+      DOM.calendarDisplayModeSelect.value = normalizedMode
+      if (DOM.lcpLunarCalendar) {
+        DOM.lcpLunarCalendar.checked = normalizedMode !== "solar"
+      }
+      handleSettingUpdate("calendarDateMode", normalizedMode)
+      handleSettingUpdate("showLunarCalendar", normalizedMode !== "solar")
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "calendarDateMode", value: normalizedMode },
+        }),
+      )
+    }
+
+    DOM.calendarDisplayModeSelect.value =
+      getSettings().calendarDateMode ||
+      (getSettings().showLunarCalendar ? "both" : "solar")
+    DOM.calendarDisplayModeSelect.addEventListener("change", () => {
+      syncCalendarDisplayMode(DOM.calendarDisplayModeSelect.value)
+    })
+  }
   if (DOM.showLunarCalendarClockCheckbox) {
-    DOM.showLunarCalendarClockCheckbox.checked = !!getSettings().showLunarCalendar
+    DOM.showLunarCalendarClockCheckbox.checked =
+      !!getSettings().showClockLunarCalendar
     DOM.showLunarCalendarClockCheckbox.addEventListener("change", () => {
       const val = DOM.showLunarCalendarClockCheckbox.checked
-      handleSettingUpdate("showLunarCalendar", val)
-      if (DOM.showLunarCalendarCheckbox) DOM.showLunarCalendarCheckbox.checked = val
-      if (DOM.lcpLunarCalendar) DOM.lcpLunarCalendar.checked = val
+      handleSettingUpdate("showClockLunarCalendar", val)
+    })
+  }
+  if (DOM.clockLunarModeSelect) {
+    DOM.clockLunarModeSelect.value =
+      getSettings().showClockLunarMode || "append"
+    DOM.clockLunarModeSelect.addEventListener("change", () => {
+      handleSettingUpdate("showClockLunarMode", DOM.clockLunarModeSelect.value)
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: {
+            key: "showClockLunarMode",
+            value: DOM.clockLunarModeSelect.value,
+          },
+        }),
+      )
     })
   }
   setupLayoutCheckbox(DOM.flipLayoutCheckbox, "flipLayout", {})
@@ -4247,15 +4302,19 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.contextMenuStyleSelect.addEventListener("change", () => {
-    const prev = getSettings().contextMenuStyle || 'dark'
+    const prev = getSettings().contextMenuStyle || "dark"
     const val = DOM.contextMenuStyleSelect.value
     handleSettingUpdate("contextMenuStyle", val)
-    const styleNames = { dark: 'Dark Glass', light: 'Light Glass', macos: 'macOS' }
+    const styleNames = {
+      dark: "Dark Glass",
+      light: "Light Glass",
+      macos: "macOS",
+    }
     showToast(`Style menu: ${styleNames[val] || val}`, {
       undoFn: () => {
         if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = prev
-        handleSettingUpdate('contextMenuStyle', prev)
-      }
+        handleSettingUpdate("contextMenuStyle", prev)
+      },
     })
   })
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
@@ -4423,7 +4482,7 @@ export function setupGeneralEventHandlers(
   })
 
   function lcpToggle(key, value, sidebarCheckbox) {
-    sidebarCheckbox.checked = value
+    if (sidebarCheckbox) sidebarCheckbox.checked = value
     handleSettingUpdate(key, value)
     if (key === "showSearchBar") {
       document.body.classList.toggle("hide-search-bar", !value)
@@ -4469,17 +4528,22 @@ export function setupGeneralEventHandlers(
   }
   if (DOM.lcpContextMenuStyle) {
     DOM.lcpContextMenuStyle.addEventListener("change", () => {
-      const prev = getSettings().contextMenuStyle || 'dark'
+      const prev = getSettings().contextMenuStyle || "dark"
       const val = DOM.lcpContextMenuStyle.value
       if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = val
       handleSettingUpdate("contextMenuStyle", val)
-      const styleNames = { dark: 'Dark Glass', light: 'Light Glass', macos: 'macOS' }
+      const styleNames = {
+        dark: "Dark Glass",
+        light: "Light Glass",
+        macos: "macOS",
+      }
       showToast(`Style menu: ${styleNames[val] || val}`, {
         undoFn: () => {
           if (DOM.lcpContextMenuStyle) DOM.lcpContextMenuStyle.value = prev
-          if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = prev
-          handleSettingUpdate('contextMenuStyle', prev)
-        }
+          if (DOM.contextMenuStyleSelect)
+            DOM.contextMenuStyleSelect.value = prev
+          handleSettingUpdate("contextMenuStyle", prev)
+        },
       })
     })
   }
@@ -4490,13 +4554,20 @@ export function setupGeneralEventHandlers(
       DOM.showBookmarkGroupsCheckbox,
     ),
   )
-  DOM.lcpLunarCalendar.addEventListener("change", () =>
-    lcpToggle(
-      "showLunarCalendar",
-      DOM.lcpLunarCalendar.checked,
-      DOM.showLunarCalendarCheckbox,
-    ),
-  )
+  DOM.lcpLunarCalendar.addEventListener("change", () => {
+    const showLunar = DOM.lcpLunarCalendar.checked
+    const calendarMode = showLunar ? "both" : "solar"
+    if (DOM.calendarDisplayModeSelect) {
+      DOM.calendarDisplayModeSelect.value = calendarMode
+    }
+    handleSettingUpdate("calendarDateMode", calendarMode)
+    handleSettingUpdate("showLunarCalendar", showLunar)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "calendarDateMode", value: calendarMode },
+      }),
+    )
+  })
   if (DOM.lcpFlipLayout) {
     DOM.lcpFlipLayout.addEventListener("change", () =>
       lcpToggle(
@@ -4564,19 +4635,19 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.musicStyleSelect.addEventListener("change", () => {
-    const prev = getSettings().musicBarStyle || 'vinyl'
+    const prev = getSettings().musicBarStyle || "vinyl"
     applyMusicStyle(DOM.musicStyleSelect.value)
     showToast(`Style nhạc: ${DOM.musicStyleSelect.value}`, {
-      undoFn: () => applyMusicStyle(prev)
+      undoFn: () => applyMusicStyle(prev),
     })
   })
 
   if (DOM.lcpMusicStyleSelect) {
     DOM.lcpMusicStyleSelect.addEventListener("change", () => {
-      const prev = getSettings().musicBarStyle || 'vinyl'
+      const prev = getSettings().musicBarStyle || "vinyl"
       applyMusicStyle(DOM.lcpMusicStyleSelect.value)
       showToast(`Style nhạc: ${DOM.lcpMusicStyleSelect.value}`, {
-        undoFn: () => applyMusicStyle(prev)
+        undoFn: () => applyMusicStyle(prev),
       })
     })
   }
@@ -5182,6 +5253,18 @@ export function setupGeneralEventHandlers(
       DOM.lcpBookmarkGroups.checked = value
     if (key === "showLunarCalendar" && DOM.lcpLunarCalendar)
       DOM.lcpLunarCalendar.checked = value
+    if (key === "showLunarCalendar" && DOM.calendarDisplayModeSelect) {
+      DOM.calendarDisplayModeSelect.value = value ? "both" : "solar"
+    }
+    if (key === "calendarDateMode" && DOM.calendarDisplayModeSelect) {
+      DOM.calendarDisplayModeSelect.value = value
+    }
+    if (key === "calendarDateMode" && DOM.lcpLunarCalendar) {
+      DOM.lcpLunarCalendar.checked = value !== "solar"
+    }
+    if (key === "showClockLunarMode" && DOM.clockLunarModeSelect) {
+      DOM.clockLunarModeSelect.value = value
+    }
     if (key === "sideControlsGhostMode" && DOM.lcpGhostControls)
       DOM.lcpGhostControls.checked = value
     if (key === "showTopRightControls" && DOM.lcpTopRightControls)

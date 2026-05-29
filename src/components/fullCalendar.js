@@ -14,14 +14,29 @@ import {
   convertSolar2Lunar,
 } from "../utils/lunarCalendar.js"
 
+function getCalendarDisplayMode(settings = getSettings()) {
+  const mode = settings.calendarDateMode
+  if (mode === "solar" || mode === "lunar" || mode === "both") {
+    return mode
+  }
+  return settings.showLunarCalendar ? "both" : "solar"
+}
+
 export class FullCalendar {
   constructor() {
     this.container = document.getElementById("full-calendar-container")
+
     this.isVisible = getSettings().showFullCalendar === true
-    this.showLunar = getSettings().showLunarCalendar !== false // Default true
+    this.calendarDateMode = getCalendarDisplayMode()
+    this.showLunar = this.calendarDateMode !== "solar"
     this.viewDate = new Date()
     this.selectedDate = null
     this.init()
+  }
+
+  syncCalendarMode() {
+    this.calendarDateMode = getCalendarDisplayMode()
+    this.showLunar = this.calendarDateMode !== "solar"
   }
 
   init() {
@@ -37,12 +52,12 @@ export class FullCalendar {
         this.isVisible = e.detail.value
         this.updateVisibility()
       }
-      if (e.detail.key === "showLunarCalendar") {
-        this.showLunar = e.detail.value
+      if (
+        e.detail.key === "showLunarCalendar" ||
+        e.detail.key === "calendarDateMode"
+      ) {
+        this.syncCalendarMode()
         this.render()
-      }
-      if (e.detail.key === "calendarSkin") {
-        this.applySkin()
       }
       if (e.detail.key === "language") {
         this.render()
@@ -56,7 +71,9 @@ export class FullCalendar {
       } else if (e.target.closest("#next-month")) {
         this.navigateMonth(1)
       } else if (e.target.closest("#calendar-add-event")) {
-        const rect = e.target.closest("#calendar-add-event").getBoundingClientRect()
+        const rect = e.target
+          .closest("#calendar-add-event")
+          .getBoundingClientRect()
         const dateStr = this.selectedDate
           ? this.formatDate(this.selectedDate)
           : this.formatDate(new Date())
@@ -68,12 +85,12 @@ export class FullCalendar {
       } else if (e.target.closest(".day-item")) {
         // Just select the day with left click
         const dayItem = e.target.closest(".day-item")
-        const dayNumber = dayItem.querySelector(".day-number")
+        const dayNumber = dayItem.dataset.day
         if (dayNumber) {
           this.selectDay(dayItem)
 
           // Show day menu on left click as a floating menu outside the card.
-          const day = parseInt(dayNumber.textContent)
+          const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
           const events = getCalendarEvents().filter(
             (evt) => evt.date === dateStr,
@@ -96,9 +113,9 @@ export class FullCalendar {
       // Right click on day item
       else if (e.target.closest(".day-item")) {
         const dayItem = e.target.closest(".day-item")
-        const dayNumber = dayItem.querySelector(".day-number")
+        const dayNumber = dayItem.dataset.day
         if (dayNumber) {
-          const day = parseInt(dayNumber.textContent)
+          const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
           const events = getCalendarEvents().filter((e) => e.date === dateStr)
           this.showDayContextMenu(e.clientX, e.clientY, day, events)
@@ -153,10 +170,9 @@ export class FullCalendar {
   }
 
   selectDay(dayElement) {
-    const dayNumber = dayElement.querySelector(".day-number")
-    if (!dayNumber) return
+    const day = parseInt(dayElement.dataset.day || "", 10)
+    if (Number.isNaN(day)) return
 
-    const day = parseInt(dayNumber.textContent)
     this.selectedDate = new Date(
       this.viewDate.getFullYear(),
       this.viewDate.getMonth(),
@@ -325,9 +341,11 @@ export class FullCalendar {
       this.hideContextMenu()
     })
 
-    menu.querySelector(".calendar-event-cancel")?.addEventListener("click", () => {
-      this.hideContextMenu()
-    })
+    menu
+      .querySelector(".calendar-event-cancel")
+      ?.addEventListener("click", () => {
+        this.hideContextMenu()
+      })
 
     document.body.appendChild(menu)
     this.currentContextMenu = menu
@@ -381,16 +399,16 @@ export class FullCalendar {
     title.textContent = holidayEl.textContent
     preview.appendChild(title)
 
-    const dayNumber = dayItem.querySelector(".day-number")?.textContent || ""
-    const lunarDate = dayItem.querySelector(".lunar-date")?.textContent || ""
+    const solarDate = dayItem.dataset.day
+      ? `${dayItem.dataset.day}/${this.viewDate.getMonth() + 1}/${this.viewDate.getFullYear()}`
+      : ""
+    const lunarDate =
+      dayItem.dataset.lunarDate ||
+      dayItem.querySelector(".lunar-date")?.textContent ||
+      ""
     const meta = document.createElement("div")
     meta.className = "calendar-event-preview-meta"
-    meta.textContent = [
-      dayNumber
-        ? `${dayNumber}/${this.viewDate.getMonth() + 1}/${this.viewDate.getFullYear()}`
-        : "",
-      lunarDate,
-    ].filter(Boolean).join(" | ")
+    meta.textContent = [solarDate, lunarDate].filter(Boolean).join(" | ")
     preview.appendChild(meta)
 
     document.body.appendChild(preview)
@@ -414,10 +432,8 @@ export class FullCalendar {
 
   positionContextMenu(menu, x, y) {
     const rect = menu.getBoundingClientRect()
-    const safeX =
-      rect.right > window.innerWidth ? x - rect.width : x
-    const safeY =
-      rect.bottom > window.innerHeight ? y - rect.height : y
+    const safeX = rect.right > window.innerWidth ? x - rect.width : x
+    const safeY = rect.bottom > window.innerHeight ? y - rect.height : y
     menu.style.left = `${Math.max(8, safeX)}px`
     menu.style.top = `${Math.max(8, safeY)}px`
   }
@@ -460,8 +476,8 @@ export class FullCalendar {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = isWhiteMode ? "white-blur" : (settings.calendarSkin || "default")
-    
+    const skin = isWhiteMode ? "white-blur" : settings.calendarSkin || "default"
+
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
   }
 
@@ -553,12 +569,22 @@ export class FullCalendar {
     const month = this.viewDate.getMonth()
     const now = new Date()
 
+    this.syncCalendarMode()
+
     this.container.classList.add("calendar-card", "glass-panel", "drag-handle")
-    if (this.showLunar) {
-      this.container.classList.add("with-lunar")
-    } else {
-      this.container.classList.remove("with-lunar")
-    }
+    this.container.classList.toggle("with-lunar", this.showLunar)
+    this.container.classList.toggle(
+      "calendar-mode-solar",
+      this.calendarDateMode === "solar",
+    )
+    this.container.classList.toggle(
+      "calendar-mode-lunar",
+      this.calendarDateMode === "lunar",
+    )
+    this.container.classList.toggle(
+      "calendar-mode-both",
+      this.calendarDateMode === "both",
+    )
 
     const monthKeys = [
       "calendar_month_january",
@@ -648,6 +674,15 @@ export class FullCalendar {
       dayDiv.className = "day-item"
 
       const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+      const lunarDate = this.showLunar
+        ? getLunarDateString(day, month + 1, year)
+        : ""
+      const lunarInfo = this.showLunar
+        ? convertSolar2Lunar(day, month + 1, year)
+        : null
+      dayDiv.dataset.day = String(day)
+      dayDiv.dataset.solarDate = dateStr
+      dayDiv.dataset.lunarDate = lunarDate
 
       // Check if today
       if (
@@ -665,12 +700,15 @@ export class FullCalendar {
       // Day number (Solar)
       const dayNumber = document.createElement("div")
       dayNumber.className = "day-number"
-      dayNumber.textContent = day
+      if (this.calendarDateMode === "lunar") {
+        dayNumber.textContent = lunarDate || String(day)
+      } else {
+        dayNumber.textContent = day
+      }
       dayHeader.appendChild(dayNumber)
 
       // Lunar date (if enabled)
-      if (this.showLunar) {
-        const lunarDate = getLunarDateString(day, month + 1, year)
+      if (this.calendarDateMode === "both" && lunarInfo) {
         const lunarDiv = document.createElement("div")
         lunarDiv.className = "lunar-date"
         lunarDiv.textContent = lunarDate

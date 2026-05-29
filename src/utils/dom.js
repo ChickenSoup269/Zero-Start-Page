@@ -875,7 +875,9 @@ export const tabIconClearBtn = document.getElementById("tab-icon-clear-btn")
 export const tabIconPreview = document.getElementById("tab-icon-preview")
 export const pageTitleColorInput = document.getElementById("page-title-color")
 export const tabIconBgColorInput = document.getElementById("tab-icon-bg-color")
-export const tabIconTextColorInput = document.getElementById("tab-icon-text-color")
+export const tabIconTextColorInput = document.getElementById(
+  "tab-icon-text-color",
+)
 export const clockSizeInput = document.getElementById("clock-size-input")
 export const clockSizeValue = document.getElementById("clock-size-value")
 export const dateSizeInput = document.getElementById("date-size-input")
@@ -1101,8 +1103,14 @@ export const showFullCalendarCheckbox = document.getElementById(
 export const showLunarCalendarCheckbox = document.getElementById(
   "show-lunar-calendar-checkbox",
 )
+export const calendarDisplayModeSelect = document.getElementById(
+  "calendar-display-mode-select",
+)
 export const showLunarCalendarClockCheckbox = document.getElementById(
   "show-lunar-calendar-checkbox-clock",
+)
+export const clockLunarModeSelect = document.getElementById(
+  "clock-lunar-mode-select",
 )
 export const showTopRightControlsCheckbox = document.getElementById(
   "show-top-right-controls-checkbox",
