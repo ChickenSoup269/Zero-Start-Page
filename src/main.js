@@ -4,7 +4,11 @@ import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
-import { initContextMenu, showContextMenu, hideContextMenu } from "./components/contextMenu.js"
+import {
+  initContextMenu,
+  showContextMenu,
+  hideContextMenu,
+} from "./components/contextMenu.js"
 import { initSettings } from "./components/settings.js"
 import { initSearch } from "./components/search.js"
 import { TodoList } from "./components/todo.js"
@@ -45,7 +49,9 @@ import {
 
 // --- Initialization ---
 async function bootstrap() {
-  const skipStartupLoader = document.body.classList.contains("skip-startup-loader")
+  const skipStartupLoader = document.body.classList.contains(
+    "skip-startup-loader",
+  )
   if (!skipStartupLoader) {
     document.body.classList.add("is-booting")
   }
@@ -60,7 +66,7 @@ async function bootstrap() {
     if (manifest && manifest.version) {
       const startupVersion = document.getElementById("startup-version")
       if (startupVersion) startupVersion.textContent = `v${manifest.version}`
-      
+
       const settingsVersion = document.getElementById("settings-version")
       if (settingsVersion) settingsVersion.textContent = `v${manifest.version}`
     }
@@ -160,7 +166,7 @@ async function bootstrap() {
   // Initialize Settings (Applies background & heavy canvas effects)
   // CRITICAL: Must happen BEFORE bookmarks so CSS variables are ready
   initSettings()
-  
+
   initClock()
   initBookmarks()
   initSearch()
@@ -216,7 +222,12 @@ async function bootstrap() {
         return widgets.quotes
       case "notepad":
         widgets.notepad = new Notepad()
-        makeDraggable(widgets.notepad.container, "notepad", null, ".notepad-header")
+        makeDraggable(
+          widgets.notepad.container,
+          "notepad",
+          null,
+          ".notepad-header",
+        )
         return widgets.notepad
     }
   }
@@ -378,7 +389,7 @@ async function bootstrap() {
   // Smooth reveal: wait for critical components and then fade out overlay
   const revealApp = () => {
     const mainContainer = document.querySelector(".main-container")
-    
+
     const hideOverlay = () => {
       const overlay = document.getElementById("startup-overlay")
       if (overlay) {
@@ -487,10 +498,7 @@ async function bootstrap() {
     }
 
     if (e.detail.key === "freeMoveClock") {
-      document.body.classList.toggle(
-        "free-move-clock",
-        e.detail.value === true,
-      )
+      document.body.classList.toggle("free-move-clock", e.detail.value === true)
       const clockWrap = document.getElementById("clock-date-wrap")
       if (clockWrap) {
         if (e.detail.value === true) {
@@ -532,20 +540,36 @@ async function bootstrap() {
     const handleReset = async () => {
       const i18n = geti18n ? geti18n() : {}
       const options = [
-        { key: "all", label: i18n.reset_opt_all || "Entire Settings", checked: false },
-        { key: "positions", label: i18n.reset_opt_positions || "Layout Positions", checked: false },
-        { key: "effectColors", label: i18n.reset_opt_effects || "Effect Colors", checked: false },
-        { key: "styles", label: i18n.reset_opt_styles || "Custom Styles", checked: false }
+        {
+          key: "all",
+          label: i18n.reset_opt_all || "Entire Settings",
+          checked: false,
+        },
+        {
+          key: "positions",
+          label: i18n.reset_opt_positions || "Layout Positions",
+          checked: false,
+        },
+        {
+          key: "effectColors",
+          label: i18n.reset_opt_effects || "Effect Colors",
+          checked: false,
+        },
+        {
+          key: "styles",
+          label: i18n.reset_opt_styles || "Custom Styles",
+          checked: false,
+        },
       ]
-      
+
       const selection = await showChecklistConfirm(
         options,
         i18n.settings_reset_layout || "Reset Settings",
-        i18n.alert_reset_layout_confirm || "Select items to reset:"
+        i18n.alert_reset_layout_confirm || "Select items to reset:",
       )
-      
+
       if (selection) {
-        const hasSelection = Object.values(selection).some(v => v === true)
+        const hasSelection = Object.values(selection).some((v) => v === true)
         if (!hasSelection) return
 
         document.body.classList.remove("skip-startup-loader")
@@ -556,7 +580,7 @@ async function bootstrap() {
           overlay.style.opacity = "1"
         }
         localStorage.setItem("startpageShowStartupLoader", "1")
-        
+
         setTimeout(() => {
           resetComponentPositions(selection)
         }, 1000)
@@ -594,28 +618,50 @@ async function bootstrap() {
     const collapseBtn = document.getElementById("quick-access-collapse")
     if (collapseBtn && quickAccessBar) {
       const settings = getSettings()
-      
-      // Apply border-radius
-      document.documentElement.style.setProperty("--quick-access-btn-radius", settings.quickAccessBorderRadius || "5px");
-      document.documentElement.style.setProperty("--quick-access-bar-radius", settings.quickAccessBarRadius || "var(--radius-lg)");
-      if (settings.quickAccessBorderVisible === false) {
-        quickAccessBar.classList.add("no-border");
+      const toggleBorderVisibility = (isVisible) => {
+        quickAccessBar.classList.toggle("no-border", !isVisible)
+        if (settingsToggle) {
+          settingsToggle.classList.toggle("no-border", !isVisible)
+        }
       }
+
+      // Apply border-radius
+      document.documentElement.style.setProperty(
+        "--quick-access-btn-radius",
+        settings.quickAccessBorderRadius || "5px",
+      )
+      document.documentElement.style.setProperty(
+        "--quick-access-bar-radius",
+        settings.quickAccessBarRadius || "var(--radius-lg)",
+      )
+      document.documentElement.style.setProperty(
+        "--quick-access-toggle-radius",
+        settings.quickAccessToggleRadius || "50%",
+      )
+      toggleBorderVisibility(settings.quickAccessBorderVisible !== false)
       window.addEventListener("layoutUpdated", (e) => {
         if (e.detail.key === "quickAccessBorderRadius") {
-          document.documentElement.style.setProperty("--quick-access-btn-radius", e.detail.value);
+          document.documentElement.style.setProperty(
+            "--quick-access-btn-radius",
+            e.detail.value,
+          )
         }
         if (e.detail.key === "quickAccessBarRadius") {
-          document.documentElement.style.setProperty("--quick-access-bar-radius", e.detail.value);
+          document.documentElement.style.setProperty(
+            "--quick-access-bar-radius",
+            e.detail.value,
+          )
+        }
+        if (e.detail.key === "quickAccessToggleRadius") {
+          document.documentElement.style.setProperty(
+            "--quick-access-toggle-radius",
+            e.detail.value,
+          )
         }
         if (e.detail.key === "quickAccessBorderVisible") {
-          if (e.detail.value) {
-            quickAccessBar.classList.remove("no-border");
-          } else {
-            quickAccessBar.classList.add("no-border");
-          }
+          toggleBorderVisibility(!!e.detail.value)
         }
-      });
+      })
 
       if (settings.quickAccessCollapsed) {
         quickAccessBar.classList.add("collapsed")
@@ -652,61 +698,75 @@ async function bootstrap() {
           const storage = window.chrome?.storage?.local || {
             get: (keys, cb) => {
               const res = {}
-              keys.forEach(k => {
+              keys.forEach((k) => {
                 const val = localStorage.getItem(k)
                 res[k] = val === "true" ? true : val === "false" ? false : val
               })
               cb(res)
             },
             set: (obj) => {
-              Object.keys(obj).forEach(k => localStorage.setItem(k, obj[k]))
-            }
+              Object.keys(obj).forEach((k) => localStorage.setItem(k, obj[k]))
+            },
           }
 
-          storage.get(["lastVersion", "updateModalAcknowledged", "updateArrowTimestamp"], (result) => {
-            let { lastVersion, updateModalAcknowledged, updateArrowTimestamp } = result
-            
-            if (typeof updateArrowTimestamp === 'string') updateArrowTimestamp = parseInt(updateArrowTimestamp)
+          storage.get(
+            ["lastVersion", "updateModalAcknowledged", "updateArrowTimestamp"],
+            (result) => {
+              let {
+                lastVersion,
+                updateModalAcknowledged,
+                updateArrowTimestamp,
+              } = result
 
-            const isFreshInstall = !lastVersion && !localStorage.getItem("pageSettings") && !localStorage.getItem("bookmarks")
+              if (typeof updateArrowTimestamp === "string")
+                updateArrowTimestamp = parseInt(updateArrowTimestamp)
 
-            if (isFreshInstall) {
-              storage.set({ 
-                lastVersion: currentVersion, 
-                updateModalAcknowledged: true, 
-                updateArrowTimestamp: 0 
-              })
-              return
-            }
+              const isFreshInstall =
+                !lastVersion &&
+                !localStorage.getItem("pageSettings") &&
+                !localStorage.getItem("bookmarks")
 
-            // Version changed or first time tracking
-            if (!lastVersion || lastVersion !== currentVersion) {
-              updateModalAcknowledged = false
-              updateArrowTimestamp = Date.now()
-              storage.set({ 
-                lastVersion: currentVersion, 
-                updateModalAcknowledged, 
-                updateArrowTimestamp 
-              })
-            }
+              if (isFreshInstall) {
+                storage.set({
+                  lastVersion: currentVersion,
+                  updateModalAcknowledged: true,
+                  updateArrowTimestamp: 0,
+                })
+                return
+              }
 
-            const showModal = updateModalAcknowledged !== true
-            const now = Date.now()
-            const hour = 3600000
-            const showArrow = updateArrowTimestamp && (now - updateArrowTimestamp < hour)
+              // Version changed or first time tracking
+              if (!lastVersion || lastVersion !== currentVersion) {
+                updateModalAcknowledged = false
+                updateArrowTimestamp = Date.now()
+                storage.set({
+                  lastVersion: currentVersion,
+                  updateModalAcknowledged,
+                  updateArrowTimestamp,
+                })
+              }
 
-            if (showModal || showArrow) {
-              showUpdateUI(currentVersion, showModal, showArrow)
-            }
-            
-            if (showArrow) {
+              const showModal = updateModalAcknowledged !== true
+              const now = Date.now()
+              const hour = 3600000
+              const showArrow =
+                updateArrowTimestamp && now - updateArrowTimestamp < hour
+
+              if (showModal || showArrow) {
+                showUpdateUI(currentVersion, showModal, showArrow)
+              }
+
+              if (showArrow) {
                 const timeLeft = hour - (now - updateArrowTimestamp)
                 setTimeout(() => {
-                    const sidebarLink = document.getElementById("sidebar-update-link")
-                    if (sidebarLink) fadeToggle(sidebarLink, false, "flex")
+                  const sidebarLink = document.getElementById(
+                    "sidebar-update-link",
+                  )
+                  if (sidebarLink) fadeToggle(sidebarLink, false, "flex")
                 }, timeLeft)
-            }
-          })
+              }
+            },
+          )
         }
 
         function showUpdateUI(currentVersion, showModal, showArrow) {
@@ -717,7 +777,10 @@ async function bootstrap() {
           const acknowledgeUpdate = () => {
             if (popup) fadeToggle(popup, false, "block")
             const storage = window.chrome?.storage?.local || {
-              set: (obj) => Object.keys(obj).forEach(k => localStorage.setItem(k, obj[k]))
+              set: (obj) =>
+                Object.keys(obj).forEach((k) =>
+                  localStorage.setItem(k, obj[k]),
+                ),
             }
             storage.set({ updateModalAcknowledged: true })
           }
@@ -726,8 +789,12 @@ async function bootstrap() {
             verLabel.textContent = `v${currentVersion}`
             fadeToggle(popup, true, "block")
 
-            document.getElementById("close-update-popup")?.addEventListener("click", acknowledgeUpdate)
-            document.getElementById("github-update-link")?.addEventListener("click", acknowledgeUpdate)
+            document
+              .getElementById("close-update-popup")
+              ?.addEventListener("click", acknowledgeUpdate)
+            document
+              .getElementById("github-update-link")
+              ?.addEventListener("click", acknowledgeUpdate)
           }
 
           if (showArrow && sidebarLink) {

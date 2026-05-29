@@ -32,6 +32,8 @@ let contextMenuTargetIndex = -1
 let contextMenuTargetType = "bookmark" // 'bookmark', 'group', 'widget', 'localBg', etc.
 let contextMenuTargetId = null // For groups or widget ids
 let contextMenuCallbacks = null
+let lastContextMenuX = 0
+let lastContextMenuY = 0
 
 export function showContextMenu(
   x,
@@ -45,6 +47,8 @@ export function showContextMenu(
   contextMenuTargetType = type
   contextMenuTargetId = id
   contextMenuCallbacks = callbacks
+  lastContextMenuX = x || 0
+  lastContextMenuY = y || 0
 
   // Dọn dẹp các mục custom cũ nếu có
   contextMenu
@@ -181,7 +185,6 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(shakeBtn, menuLock)
-
       if (musicStyle === "heartbeat") {
         // Nút đổi Skin GameBoy
         const isGameBoy = settings.musicPlayerSkin === "gameboy"
@@ -266,77 +269,226 @@ export function showContextMenu(
     menuSelect.style.display = "none"
 
     const settings = getSettings()
-    const isToggleMenu = type === "quick-access-toggle" || type === "quick-access"
-    const selectedRadius = isToggleMenu
-      ? settings.quickAccessBorderRadius || "5px"
-      : settings.quickAccessBarRadius || "var(--radius-lg)"
+    const radii = ["30px", "25px", "20px", "15px", "10px", "5px", "0px"]
 
-    const createTitle = (title, hint) => {
-      const el = document.createElement("div")
-      el.className = "context-menu-item custom-music-item quick-access-menu-title"
-      el.innerHTML = `
-        <div class="quick-access-menu-title-main">${title}</div>
-        <div class="quick-access-menu-title-sub">${hint}</div>
-      `
-      contextMenu.appendChild(el)
-      return el
-    }
-
-    const createRadiusItem = (radius) => {
+    const createMenuItem = (label, iconClass, handler, extraClass = "") => {
       const item = document.createElement("div")
-      item.className = "context-menu-item custom-music-item quick-access-radius-item"
-      item.dataset.radius = radius
-      item.innerHTML = `<i class="${selectedRadius === radius ? "fa-solid fa-check" : "fa-regular fa-circle"}"></i> <span>${radius}</span>`
-      item.onclick = () => {
-        const settingKey = isToggleMenu ? "quickAccessBorderRadius" : "quickAccessBarRadius"
-        updateSetting(settingKey, radius)
-        saveSettings()
-        window.dispatchEvent(
-          new CustomEvent("layoutUpdated", {
-            detail: { key: settingKey, value: radius },
-          }),
-        )
-        hideContextMenu()
-      }
+      item.className =
+        `context-menu-item custom-music-item ${extraClass}`.trim()
+      item.innerHTML = `<i class="${iconClass}"></i> <span>${label}</span>`
+      item.onclick = handler
       return item
     }
 
-    const createBorderToggle = () => {
-      const toggle = document.createElement("div")
-      toggle.className = "context-menu-item custom-music-item quick-access-border-toggle"
-      const isVisible = settings.quickAccessBorderVisible !== false
-      toggle.innerHTML = `<i class="${isVisible ? "fa-solid fa-square-check" : "fa-regular fa-square"}"></i> <span>Show Border</span>`
-      toggle.onclick = () => {
-        const newVal = !isVisible
-        updateSetting("quickAccessBorderVisible", newVal)
+    let closeOnOutside = null
+    const removeQuickPopup = () => {
+      if (closeOnOutside) {
+        window.removeEventListener("pointerdown", closeOnOutside)
+        closeOnOutside = null
+      }
+      document
+        .querySelectorAll(".quick-access-popup")
+        .forEach((el) => el.remove())
+    }
+
+    const openQuickAccessPopup = () => {
+      removeQuickPopup()
+
+      const quickAccessBar = document.querySelector(".quick-access-bar")
+      const barRect = quickAccessBar?.getBoundingClientRect?.()
+
+      const popup = document.createElement("div")
+      popup.className = "layout-controls-popup quick-access-popup"
+      popup.style.position = "fixed"
+      if (barRect) {
+        popup.style.left = `${Math.min(barRect.right + 12, window.innerWidth - 404)}px`
+        popup.style.top = `${Math.max(12, Math.min(barRect.top, window.innerHeight - 520))}px`
+      } else {
+        popup.style.left = `${Math.max(12, Math.min(lastContextMenuX + 188, window.innerWidth - 404))}px`
+        popup.style.top = `${Math.max(12, Math.min(lastContextMenuY - 28, window.innerHeight - 520))}px`
+      }
+
+      const title = document.createElement("div")
+      title.className = "lcp-title"
+      title.innerHTML = `<i class="fa-solid fa-sliders"></i><span>${i18n.quick_access_settings || "Quick Access Settings"}</span>`
+      popup.appendChild(title)
+
+      const sections = [
+        {
+          key: "quickAccessBorderRadius",
+          label: i18n.quick_access_button_radius || "Active Button Radius",
+          hint:
+            i18n.quick_access_button_radius_hint ||
+            "Applies to active quick buttons.",
+          value: settings.quickAccessBorderRadius || "5px",
+          icon: "fa-solid fa-circle-dot",
+        },
+        {
+          key: "quickAccessBarRadius",
+          label: i18n.quick_access_bar_radius || "Quick Access Bar Radius",
+          hint:
+            i18n.quick_access_bar_radius_hint ||
+            "Applies to the full quick access panel.",
+          value: settings.quickAccessBarRadius || "var(--radius-lg)",
+          icon: "fa-regular fa-window-maximize",
+        },
+        {
+          key: "quickAccessToggleRadius",
+          label: i18n.quick_access_toggle_radius || "Settings Toggle Radius",
+          hint:
+            i18n.quick_access_toggle_radius_hint ||
+            "Applies to the settings-toggle button.",
+          value: settings.quickAccessToggleRadius || "50%",
+          icon: "fa-solid fa-gear",
+        },
+      ]
+
+      sections.forEach((section) => {
+        const sectionRow = document.createElement("div")
+        sectionRow.className = "lcp-row quick-access-section-row"
+
+        const icon = document.createElement("div")
+        icon.className = "lcp-icon"
+        icon.innerHTML = `<i class="${section.icon}"></i>`
+
+        const content = document.createElement("div")
+        content.className = "quick-access-section-content"
+
+        const header = document.createElement("div")
+        header.className = "quick-access-section-header"
+
+        const label = document.createElement("div")
+        label.className = "lcp-label quick-access-section-label"
+        label.textContent = section.label
+
+        const current = document.createElement("div")
+        current.className = "quick-access-section-current"
+        current.textContent = section.value
+
+        const hint = document.createElement("div")
+        hint.className = "quick-access-section-hint"
+        hint.textContent = section.hint
+
+        header.appendChild(label)
+        header.appendChild(current)
+        content.appendChild(header)
+        content.appendChild(hint)
+        sectionRow.appendChild(icon)
+        sectionRow.appendChild(content)
+        popup.appendChild(sectionRow)
+
+        const chipWrap = document.createElement("div")
+        chipWrap.className = "quick-access-radius-grid"
+        radii.forEach((radius) => {
+          const chip = document.createElement("button")
+          chip.type = "button"
+          chip.className = "quick-access-radius-chip"
+          if (section.value === radius) {
+            chip.classList.add("is-active")
+          }
+          chip.innerHTML =
+            section.value === radius
+              ? `<i class="fa-solid fa-check"></i><span>${radius}</span>`
+              : `<span>${radius}</span>`
+          chip.onclick = () => {
+            updateSetting(section.key, radius)
+            saveSettings()
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: section.key, value: radius },
+              }),
+            )
+            current.textContent = radius
+            chipWrap
+              .querySelectorAll(".quick-access-radius-chip")
+              .forEach((el) => {
+                el.classList.remove("is-active")
+                const icon = el.querySelector("i")
+                const text = el.querySelector("span")
+                if (icon) icon.remove()
+                if (text) {
+                  el.textContent = text.textContent
+                }
+              })
+            chip.classList.add("is-active")
+            chip.innerHTML = `<i class="fa-solid fa-check"></i><span>${radius}</span>`
+          }
+          chip.addEventListener("pointerdown", (event) => {
+            event.stopPropagation()
+          })
+          chipWrap.appendChild(chip)
+        })
+        popup.appendChild(chipWrap)
+      })
+
+      const borderRow = document.createElement("div")
+      borderRow.className = "lcp-row quick-access-border-row"
+      const borderIcon = document.createElement("div")
+      borderIcon.className = "lcp-icon"
+      let borderVisible = settings.quickAccessBorderVisible !== false
+      borderIcon.innerHTML = `<i class="${borderVisible ? "fa-solid fa-square-check" : "fa-regular fa-square"}"></i>`
+
+      const borderLabel = document.createElement("div")
+      borderLabel.className = "lcp-label"
+      borderLabel.textContent = i18n.quick_access_border_toggle || "Show Border"
+
+      const borderBtn = document.createElement("button")
+      borderBtn.type = "button"
+      borderBtn.className =
+        "quick-access-radius-chip quick-access-border-button"
+      borderBtn.textContent = borderVisible
+        ? i18n.quick_access_border_on || "Show Border"
+        : i18n.quick_access_border_off || "Hide Border"
+      borderBtn.onclick = () => {
+        borderVisible = !borderVisible
+        updateSetting("quickAccessBorderVisible", borderVisible)
         saveSettings()
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
-            detail: { key: "quickAccessBorderVisible", value: newVal },
+            detail: { key: "quickAccessBorderVisible", value: borderVisible },
           }),
         )
-        hideContextMenu()
+        borderIcon.innerHTML = `<i class="${borderVisible ? "fa-solid fa-square-check" : "fa-regular fa-square"}"></i>`
+        borderBtn.textContent = borderVisible
+          ? i18n.quick_access_border_on || "Show Border"
+          : i18n.quick_access_border_off || "Hide Border"
       }
-      return toggle
+      borderBtn.addEventListener("pointerdown", (event) => {
+        event.stopPropagation()
+      })
+
+      borderRow.appendChild(borderIcon)
+      borderRow.appendChild(borderLabel)
+      borderRow.appendChild(borderBtn)
+      popup.appendChild(borderRow)
+
+      popup.addEventListener("pointerdown", (event) => {
+        event.stopPropagation()
+      })
+
+      document.body.appendChild(popup)
+
+      closeOnOutside = (event) => {
+        if (!popup.contains(event.target)) {
+          removeQuickPopup()
+        }
+      }
+
+      setTimeout(() => {
+        window.addEventListener("pointerdown", closeOnOutside)
+      }, 0)
     }
 
-    const radii = ["30px", "25px", "20px", "15px", "10px", "5px", "0px"]
-    const title = isToggleMenu
-      ? i18n.quick_access_button_radius || "Quick Access Button Radius"
-      : i18n.quick_access_bar_radius || "Quick Access Bar Radius"
-    const hint = isToggleMenu
-      ? i18n.quick_access_button_radius_hint || "Applies to settings-toggle and active quick buttons."
-      : i18n.quick_access_bar_radius_hint || "Applies to the full quick access panel."
-
-    createTitle(title, hint)
-
-    radii.forEach((radius) => {
-      contextMenu.appendChild(createRadiusItem(radius))
-    })
-
-    if (!isToggleMenu) {
-      contextMenu.appendChild(createBorderToggle())
-    }
+    const menuText = createMenuItem(
+      i18n.quick_access_settings || "Quick Access Settings",
+      "fa-solid fa-sliders",
+      () => {
+        hideContextMenu()
+        openQuickAccessPopup()
+      },
+      "quick-access-root-item",
+    )
+    contextMenu.appendChild(menuText)
   } else if (
     [
       "localBg",
@@ -463,6 +615,9 @@ export function hideContextMenu() {
   contextMenuTargetType = "bookmark"
   contextMenuTargetId = null
   contextMenuCallbacks = null
+  // Remove any quick-access popup that may have been opened
+  const old = document.querySelector(".quick-access-popup")
+  if (old && old.parentElement) old.parentElement.removeChild(old)
 }
 
 async function handleFavorite() {
@@ -651,7 +806,10 @@ async function handleEdit() {
         group.name = newName.trim()
         saveBookmarks()
         renderBookmarks()
-        showBookmarkUndo(i18n.bookmark_group_renamed || "Group renamed", snapshot)
+        showBookmarkUndo(
+          i18n.bookmark_group_renamed || "Group renamed",
+          snapshot,
+        )
       }
     }
   }
@@ -714,7 +872,10 @@ async function handleDelete() {
           saveBookmarks()
         }
         renderBookmarks()
-        showBookmarkUndo(i18n.bookmark_group_deleted || "Group deleted", snapshot)
+        showBookmarkUndo(
+          i18n.bookmark_group_deleted || "Group deleted",
+          snapshot,
+        )
       }
     }
   } else if (
@@ -899,7 +1060,10 @@ export function initContextMenu() {
   })
 
   window.addEventListener("click", (e) => {
-    if (!contextMenu.contains(e.target)) {
+    if (
+      !contextMenu.contains(e.target) &&
+      !e.target.closest?.(".quick-access-popup")
+    ) {
       hideContextMenu()
     }
   })
