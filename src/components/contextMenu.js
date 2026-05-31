@@ -236,6 +236,83 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(m3SkinBtn, shakeBtn)
 
+      const sourceIconModes = ["brand", "accent", "none"]
+      const currentIconMode = settings.musicSourceIconColorMode || "brand"
+      const nextIconMode =
+        sourceIconModes[
+          (sourceIconModes.indexOf(currentIconMode) + 1) %
+            sourceIconModes.length
+        ]
+      const sourceIconModeLabels = {
+        brand: i18n.music_source_icon_brand || "Màu thương hiệu",
+        accent: i18n.music_source_icon_accent || "Màu accent",
+        none: i18n.music_source_icon_none || "Không màu",
+      }
+      const sourceIconBtn = document.createElement("div")
+      sourceIconBtn.className = "context-menu-item custom-music-item"
+      sourceIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.music_source_icon_context || "Icon nguồn"}: ${sourceIconModeLabels[nextIconMode]}</span>`
+      sourceIconBtn.onclick = () => {
+        updateSetting("musicSourceIconColorMode", nextIconMode)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: {
+              key: "musicSourceIconColorMode",
+              value: nextIconMode,
+            },
+          }),
+        )
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: {
+              key: "musicSourceIconColorMode",
+              value: nextIconMode,
+            },
+          }),
+        )
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(sourceIconBtn, shakeBtn)
+
+      const usesDefaultColor = settings.musicPlayerUseDefaultColor === true
+      const defaultColorBtn = document.createElement("div")
+      defaultColorBtn.className = "context-menu-item custom-music-item"
+      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>${usesDefaultColor ? i18n.music_player_default_color_off || "Tắt màu mặc định" : i18n.music_player_default_color_on || "Bật màu mặc định"}</span>`
+      defaultColorBtn.onclick = () => {
+        const newVal = !usesDefaultColor
+        updateSetting("musicPlayerUseDefaultColor", newVal)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerUseDefaultColor", value: newVal },
+          }),
+        )
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "musicPlayerUseDefaultColor", value: newVal },
+          }),
+        )
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(defaultColorBtn, shakeBtn)
+
+      const isTransparent = settings.musicPlayerSkin === "transparent"
+      const transparentBtn = document.createElement("div")
+      transparentBtn.className = "context-menu-item custom-music-item"
+      transparentBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.skin_transparent || "Nền Trong Suốt"}</span>`
+      transparentBtn.onclick = () => {
+        const newSkin = isTransparent ? "default" : "transparent"
+        updateSetting("musicPlayerSkin", newSkin)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerSkin", value: newSkin },
+          }),
+        )
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(transparentBtn, shakeBtn)
+
       if (musicStyle === "heartbeat") {
         // Nút đổi Skin GameBoy
         const isGameBoy = settings.musicPlayerSkin === "gameboy"

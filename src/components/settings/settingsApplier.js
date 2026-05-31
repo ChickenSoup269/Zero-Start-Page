@@ -612,6 +612,7 @@ function createApplySettings(effectInstances) {
           if (wrapper) {
             wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
             wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
+            wrapper.classList.toggle("skin-transparent", skin === "transparent")
           }
         }
       }
@@ -3607,6 +3608,10 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.musicPlayerUseDefaultColorCheckbox.checked =
         settings.musicPlayerUseDefaultColor === true
     }
+    if (DOM.musicSourceIconColorModeSelect) {
+      DOM.musicSourceIconColorModeSelect.value =
+        settings.musicSourceIconColorMode || "brand"
+    }
     if (DOM.spotifyClientIdInput) {
       DOM.spotifyClientIdInput.value = settings.spotifyClientId || ""
     }
@@ -3805,11 +3810,6 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
-    if (DOM.lcpMusicUseDefaultColorCheckbox) {
-      DOM.lcpMusicUseDefaultColorCheckbox.checked =
-        settings.musicPlayerUseDefaultColor === true
-    }
-
     if (DOM.lcpMusicStyleSelect) {
       DOM.lcpMusicStyleSelect.value = settings.musicBarStyle || "vinyl"
     }

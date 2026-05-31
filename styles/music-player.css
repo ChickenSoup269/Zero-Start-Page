@@ -200,9 +200,37 @@
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+.music-player-wrapper.skin-transparent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.music-player-wrapper.skin-transparent .player-btn,
+.music-player-wrapper.skin-transparent .disc-container,
+.music-player-wrapper.skin-transparent .progress-bar-track,
+.music-player-wrapper.skin-transparent .music-visualizer,
+.music-player-wrapper.skin-transparent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
 /* M3 Accent Skin */
 body.widgets-m3-accent .music-player-wrapper,
 .music-player-wrapper.skin-m3-accent {
+  --music-m3-panel-bg: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, #101317) 62%,
+    var(--m3-primary-container, var(--safe-accent)) 38%
+  );
+  --music-m3-panel-border: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 28%,
+    transparent
+  );
   background:
     radial-gradient(
       circle at 14% 18%,
@@ -245,13 +273,16 @@ body.widgets-m3-accent .music-player-wrapper span,
 body.widgets-m3-accent .music-player-wrapper .player-btn,
 .music-player-wrapper.skin-m3-accent .player-btn {
   color: var(--m3-on-primary-container, var(--text-color)) !important;
-  background: color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
+  background: var(--music-m3-panel-bg) !important;
+  border-color: var(--music-m3-panel-border) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 12%, transparent),
+    0 8px 18px rgba(0, 0, 0, 0.12) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .player-btn:hover,
 .music-player-wrapper.skin-m3-accent .player-btn:hover {
-  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+  background: color-mix(in srgb, var(--music-m3-panel-bg) 72%, var(--m3-primary, var(--safe-accent)) 28%) !important;
   border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 46%, transparent) !important;
 }
 
@@ -267,18 +298,24 @@ body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
   box-shadow:
     0 10px 24px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent),
     inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary, #fff) 28%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 48%, transparent) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
 body.widgets-m3-accent .music-player-wrapper .disc-container,
-body.widgets-m3-accent .music-player-wrapper .controls-row,
 body.widgets-m3-accent .music-player-wrapper .music-visualizer,
 .music-player-wrapper.skin-m3-accent .progress-bar-track,
 .music-player-wrapper.skin-m3-accent .disc-container,
-.music-player-wrapper.skin-m3-accent .controls-row,
 .music-player-wrapper.skin-m3-accent .music-visualizer {
-  background: color-mix(in srgb, var(--m3-surface-container-high, var(--m3-primary-container, #fff)) 56%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+  background: var(--music-m3-panel-bg) !important;
+  border-color: var(--music-m3-panel-border) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .controls-row,
+.music-player-wrapper.skin-m3-accent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .progress-bar-fill,
@@ -298,9 +335,15 @@ body.widgets-m3-accent .music-player-wrapper .visualizer-bar,
 
 body.widgets-m3-accent .music-player-wrapper .disc-container,
 .music-player-wrapper.skin-m3-accent .disc-container {
+  overflow: hidden;
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
-    0 10px 24px rgba(0, 0, 0, 0.22) !important;
+    0 10px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .vinyl-disc,
+.music-player-wrapper.skin-m3-accent .vinyl-disc {
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
 }
 
 /* Disc Container */
@@ -344,18 +387,6 @@ body.widgets-m3-accent .music-player-wrapper .disc-container,
 
 .vinyl-disc.playing {
   animation-play-state: running;
-}
-
-.source-icon-overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  color: white;
-  font-size: 0.8rem;
-  pointer-events: none;
-  display: none !important;
 }
 
 /* Player Info & Controls */
@@ -601,6 +632,18 @@ body.widgets-m3-accent .music-player-wrapper .disc-container,
 
 .music-player-container.show-video .music-player-wrapper {
   padding-right: var(--space-3);
+}
+
+.music-player-container.music-style-pill.show-video #player-iframe-wrapper {
+  width: 0;
+  height: 0;
+  opacity: 0;
+  margin-left: 0;
+  border: 0;
+}
+
+.music-player-container.music-style-pill.show-video .music-player-wrapper {
+  padding-right: var(--space-2);
 }
 
 /* Vinyl Style (Default) */
@@ -1347,8 +1390,20 @@ body.widgets-m3-accent .music-player-wrapper .disc-container,
 
 /* Platform Icon Styles */
 .platform-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-right: var(--space-1);
   font-size: 0.85rem;
+  min-width: 1.1em;
+  height: 1.1em;
+}
+
+.music-source-badge {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 /* =========================================
@@ -1910,7 +1965,20 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
   text-overflow: ellipsis;
 }
 .music-style-pill .player-info p {
-  display: none; /* Hide artist for space */
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  opacity: 0.82;
+}
+
+.music-style-pill .platform-icon {
+  margin-right: 5px;
+  flex: 0 0 auto;
+}
+
+.music-style-pill #artist-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .music-style-pill .controls-row {
   gap: var(--space-1);

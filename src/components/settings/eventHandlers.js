@@ -4358,15 +4358,26 @@ export function setupGeneralEventHandlers(
   DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
     const isChecked = DOM.musicPlayerUseDefaultColorCheckbox.checked
     markInterfaceStyleCustom("musicPlayerUseDefaultColor")
-    if (DOM.lcpMusicUseDefaultColorCheckbox) {
-      DOM.lcpMusicUseDefaultColorCheckbox.checked = isChecked
-    }
     handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
         detail: {
           key: "musicPlayerUseDefaultColor",
           value: isChecked,
+        },
+      }),
+    )
+  })
+
+  DOM.musicSourceIconColorModeSelect?.addEventListener("change", () => {
+    const mode = DOM.musicSourceIconColorModeSelect.value || "brand"
+    markInterfaceStyleCustom("musicSourceIconColorMode")
+    handleSettingUpdate("musicSourceIconColorMode", mode)
+    window.dispatchEvent(
+      new CustomEvent("settingsUpdated", {
+        detail: {
+          key: "musicSourceIconColorMode",
+          value: mode,
         },
       }),
     )
@@ -4662,23 +4673,6 @@ export function setupGeneralEventHandlers(
       showToast(`Style nhạc: ${DOM.lcpMusicStyleSelect.value}`, {
         undoFn: () => applyMusicStyle(prev),
       })
-    })
-  }
-
-  if (DOM.lcpMusicUseDefaultColorCheckbox) {
-    DOM.lcpMusicUseDefaultColorCheckbox.addEventListener("change", () => {
-      const isChecked = DOM.lcpMusicUseDefaultColorCheckbox.checked
-      markInterfaceStyleCustom("musicPlayerUseDefaultColor")
-      DOM.musicPlayerUseDefaultColorCheckbox.checked = isChecked
-      handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
-      window.dispatchEvent(
-        new CustomEvent("settingsUpdated", {
-          detail: {
-            key: "musicPlayerUseDefaultColor",
-            value: isChecked,
-          },
-        }),
-      )
     })
   }
 
@@ -5280,6 +5274,12 @@ export function setupGeneralEventHandlers(
     }
     if (key === "widgetUseM3Accent" && DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = value === true
+    }
+    if (key === "musicPlayerUseDefaultColor" && DOM.musicPlayerUseDefaultColorCheckbox) {
+      DOM.musicPlayerUseDefaultColorCheckbox.checked = value === true
+    }
+    if (key === "musicSourceIconColorMode" && DOM.musicSourceIconColorModeSelect) {
+      DOM.musicSourceIconColorModeSelect.value = value || "brand"
     }
     if (key === "sideControlsGhostMode" && DOM.lcpGhostControls)
       DOM.lcpGhostControls.checked = value

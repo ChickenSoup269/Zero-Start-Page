@@ -3,6 +3,68 @@ import MusicVisualizer from "./visualizer.js"
 import { fadeToggle } from "../utils/dom.js"
 import { geti18n } from "../services/i18n.js"
 
+const SOURCE_META = [
+  {
+    key: "youtube",
+    match: (url, source = "") =>
+      url.includes("youtube.com") ||
+      url.includes("youtu.be") ||
+      source === "youtube",
+    iconClass: "fa-brands fa-youtube",
+    color: "#ff0033",
+  },
+  {
+    key: "spotify",
+    match: (url, source = "") =>
+      url.includes("spotify.com") || source === "spotify",
+    iconClass: "fa-brands fa-spotify",
+    color: "#1DB954",
+  },
+  {
+    key: "apple",
+    match: (url, source = "") =>
+      url.includes("music.apple.com") ||
+      url.includes("itunes.apple.com") ||
+      source === "apple" ||
+      source === "applemusic",
+    iconClass: "fa-brands fa-apple",
+    color: "#fa243c",
+  },
+  {
+    key: "zingmp3",
+    match: (url, source = "") =>
+      url.includes("zingmp3.vn") ||
+      url.includes("mp3.zing.vn") ||
+      source === "zingmp3" ||
+      source === "zing",
+    label: "Z",
+    color: "#a855f7",
+  },
+  {
+    key: "nhaccuatui",
+    match: (url, source = "") =>
+      url.includes("nhaccuatui.com") ||
+      url.includes("nct.vn") ||
+      source === "nhaccuatui" ||
+      source === "nct",
+    label: "NCT",
+    color: "#2f80ed",
+  },
+  {
+    key: "soundcloud",
+    match: (url, source = "") =>
+      url.includes("soundcloud.com") || source === "soundcloud",
+    iconClass: "fa-brands fa-soundcloud",
+    color: "#ff5500",
+  },
+]
+
+function getSourceMeta(data = {}) {
+  const url = (data.url || "").toLowerCase()
+  const source = String(data.source || "").toLowerCase()
+  return SOURCE_META.find((meta) => meta.match(url, source)) || null
+}
+
 export class MusicPlayer {
   constructor() {
     const settings = getSettings()
@@ -12,6 +74,7 @@ export class MusicPlayer {
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
     this.useDefaultColor = settings.musicPlayerUseDefaultColor === true
+    this.sourceIconColorMode = settings.musicSourceIconColorMode || "brand"
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
@@ -45,7 +108,7 @@ export class MusicPlayer {
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
-    if (["gameboy", "white-blur", "m3-accent"].includes(settings.musicPlayerSkin)) {
+    if (["gameboy", "white-blur", "m3-accent", "transparent"].includes(settings.musicPlayerSkin)) {
       this.applySkin(settings.musicPlayerSkin)
     }
 
@@ -68,8 +131,8 @@ export class MusicPlayer {
     if (!skin) skin = settings.musicPlayerSkin || "default"
 
     // Xóa tất cả skin classes cũ
-    wrapper.classList.remove("skin-gameboy", "skin-white-blur", "skin-m3-accent")
-    if (this.container) this.container.classList.remove("skin-white-blur", "skin-m3-accent")
+    wrapper.classList.remove("skin-gameboy", "skin-white-blur", "skin-m3-accent", "skin-transparent")
+    if (this.container) this.container.classList.remove("skin-white-blur", "skin-m3-accent", "skin-transparent")
 
     if (skin === "gameboy") {
       wrapper.classList.add("skin-gameboy")
@@ -79,6 +142,9 @@ export class MusicPlayer {
     } else if (skin === "m3-accent") {
       wrapper.classList.add("skin-m3-accent")
       if (this.container) this.container.classList.add("skin-m3-accent")
+    } else if (skin === "transparent") {
+      wrapper.classList.add("skin-transparent")
+      if (this.container) this.container.classList.add("skin-transparent")
     }
   }
   applyNoShaking(disabled) {
@@ -108,7 +174,6 @@ export class MusicPlayer {
             <div class="music-player-wrapper">
                 <div class="disc-container">
                     <div id="vinyl-disc" class="vinyl-disc"></div>
-                    <div id="source-icon-overlay" class="source-icon-overlay"></div>
                 </div>
                 <div class="player-main">
                     <div class="player-info">
@@ -136,7 +201,6 @@ export class MusicPlayer {
         `
 
     this.disc = this.container.querySelector("#vinyl-disc")
-    this.sourceIcon = this.container.querySelector("#source-icon-overlay")
     this.titleElement = this.container.querySelector("#music-title")
     this.artistElement = this.container.querySelector("#music-artist")
     this.platformIcon = this.container.querySelector("#platform-icon")
@@ -195,6 +259,11 @@ export class MusicPlayer {
       if (key === "musicPlayerUseDefaultColor") {
         this.useDefaultColor = value
         this.applyMusicStyle(this.currentStyle)
+        this.applySourceMeta(this.lastSourceMeta)
+      }
+      if (key === "musicSourceIconColorMode") {
+        this.sourceIconColorMode = value || "brand"
+        this.applySourceMeta(this.lastSourceMeta)
       }
       if (key === "accentColor" && !this.useDefaultColor) {
         this.applyMusicStyle(this.currentStyle)
@@ -341,26 +410,9 @@ export class MusicPlayer {
     this.artistText.textContent = artist
 
     // Show platform icon based on URL
-    const url = data.url || ""
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
-      this.platformIcon.className = "platform-icon fa-brands fa-youtube"
-      this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = this.useDefaultColor ? "#ffffff" : "var(--accent-color)"
-    } else if (url.includes("spotify.com") || data.source === "spotify") {
-      this.platformIcon.className = "platform-icon fa-brands fa-spotify"
-      this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = this.useDefaultColor ? "#1DB954" : "var(--accent-color)"
-    } else if (url.includes("zingmp3.vn") || data.source === "zingmp3") {
-      this.platformIcon.className = "platform-icon fa-solid fa-music"
-      this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = this.useDefaultColor ? "#a855f7" : "var(--accent-color)"
-    } else if (url.includes("soundcloud.com") || data.source === "soundcloud") {
-      this.platformIcon.className = "platform-icon fa-brands fa-soundcloud"
-      this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = this.useDefaultColor ? "#ff5500" : "var(--accent-color)"
-    } else {
-      this.platformIcon.style.display = "none"
-    }
+    const sourceMeta = getSourceMeta(data)
+    this.lastSourceMeta = sourceMeta
+    this.applySourceMeta(sourceMeta)
 
     const wasPlaying = this.container.querySelector(".vinyl-disc").classList.contains("playing")
     this.isPlaying = !data.paused
@@ -406,7 +458,6 @@ export class MusicPlayer {
       this.disc.classList.remove("has-thumb")
     }
 
-    this.updateSourceIcon(data)
     this._duration =
       typeof data.duration === "number" && data.duration > 0 ? data.duration : 0
     this._lastKnownTime = data.currentTime || 0
@@ -457,20 +508,38 @@ export class MusicPlayer {
   }
 
   updateSourceIcon(data) {
-    const url = data?.url || ""
-    if (!url) return
-    let iconClass = "fa-solid fa-music"
-    if (url.includes("youtube.com") || url.includes("youtu.be"))
-      iconClass = "fa-brands fa-youtube"
-    else if (url.includes("spotify.com") || data.source === "spotify")
-      iconClass = "fa-brands fa-spotify"
-    else if (url.includes("zingmp3.vn") || data.source === "zingmp3")
-      iconClass = "fa-solid fa-music"
-    else if (url.includes("soundcloud.com") || data.source === "soundcloud")
-      iconClass = "fa-brands fa-soundcloud"
+    this.applySourceMeta(getSourceMeta(data))
+  }
 
-    this.sourceIcon.innerHTML = `<i class="${iconClass}"></i>`
-    this.sourceIcon.style.display = "flex"
+  getSourceIconColor(meta) {
+    if (!meta) return ""
+    if (this.sourceIconColorMode === "none") return "currentColor"
+    if (this.sourceIconColorMode === "accent") return "var(--accent-color)"
+    return meta.color || "var(--accent-color)"
+  }
+
+  setIconContent(element, meta) {
+    element.className = "platform-icon"
+    element.textContent = ""
+    if (meta.iconClass) {
+      element.className = `platform-icon ${meta.iconClass}`
+      return
+    }
+    element.classList.add("music-source-badge")
+    element.textContent = meta.label || ""
+  }
+
+  applySourceMeta(meta) {
+    if (!meta) {
+      this.platformIcon.style.display = "none"
+      return
+    }
+
+    const color = this.getSourceIconColor(meta)
+    this.setIconContent(this.platformIcon, meta)
+    this.platformIcon.style.display = "inline-flex"
+    this.platformIcon.style.color = color
+
   }
 
   setInactive() {
@@ -478,9 +547,9 @@ export class MusicPlayer {
     this.titleElement.textContent = i18n.music_no_media || "No Media Playing"
     this.artistText.textContent = ""
     this.platformIcon.style.display = "none"
+    this.lastSourceMeta = null
     this.isPlaying = false
     this.disc.classList.remove("playing")
-    this.sourceIcon.style.display = "none"
     this.disc.style.backgroundImage = "none"
     this.currentThumbnail = ""
     document.getElementById("play-pause-btn").innerHTML =

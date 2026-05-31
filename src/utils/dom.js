@@ -1161,6 +1161,9 @@ export const musicStyleSelect = document.getElementById("music-style-select")
 export const musicPlayerUseDefaultColorCheckbox = document.getElementById(
   "music-player-use-default-color-checkbox",
 )
+export const musicSourceIconColorModeSelect = document.getElementById(
+  "music-source-icon-color-mode",
+)
 export const spotifyClientIdInput = document.getElementById(
   "spotify-client-id-input",
 )
@@ -1201,9 +1204,6 @@ export const lcpHideChromeBookmarksRow = document.getElementById(
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
 export const lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",
-)
-export const lcpMusicUseDefaultColorCheckbox = document.getElementById(
-  "lcp-music-player-use-default-color",
 )
 export const m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 

@@ -270,7 +270,11 @@ function findAudioTab(callback) {
           t.url?.includes("youtube.com") ||
           t.url?.includes("spotify.com") ||
           t.url?.includes("zingmp3.vn") ||
+          t.url?.includes("mp3.zing.vn") ||
           t.url?.includes("soundcloud.com") ||
+          t.url?.includes("music.apple.com") ||
+          t.url?.includes("nhaccuatui.com") ||
+          t.url?.includes("nct.vn") ||
           t.url?.includes("music.youtube.com"),
       )
       callback(tab || null)
@@ -283,7 +287,11 @@ function isKnownMediaTab(tab) {
     tab?.url?.includes("youtube.com") ||
     tab?.url?.includes("spotify.com") ||
     tab?.url?.includes("zingmp3.vn") ||
+    tab?.url?.includes("mp3.zing.vn") ||
     tab?.url?.includes("soundcloud.com") ||
+    tab?.url?.includes("music.apple.com") ||
+    tab?.url?.includes("nhaccuatui.com") ||
+    tab?.url?.includes("nct.vn") ||
     tab?.url?.includes("music.youtube.com")
   )
 }
@@ -319,8 +327,14 @@ function controlMediaTab(tabId, command, sendResponse) {
           document.querySelector("video") || document.querySelector("audio")
         const cmdName = typeof command === "string" ? command : command.name
         const isSpotify = window.location.href.includes("spotify.com")
-        const isZing = window.location.href.includes("zingmp3.vn")
+        const isZing =
+          window.location.href.includes("zingmp3.vn") ||
+          window.location.href.includes("mp3.zing.vn")
         const isSoundCloud = window.location.href.includes("soundcloud.com")
+        const isAppleMusic = window.location.href.includes("music.apple.com")
+        const isNct =
+          window.location.href.includes("nhaccuatui.com") ||
+          window.location.href.includes("nct.vn")
         const textFrom = (selectors) => {
           for (const selector of selectors) {
             const text = document.querySelector(selector)?.textContent?.trim()
@@ -427,11 +441,17 @@ function controlMediaTab(tabId, command, sendResponse) {
             } else if (video) {
               if (video.paused) video.play()
               else video.pause()
-            } else if (isSpotify || isZing) {
+            } else if (isSpotify || isZing || isAppleMusic || isNct) {
               clickFirst([
                 '[data-testid="control-button-playpause"]',
+                '[data-testid="playback-controls-play-button"]',
+                '[aria-label="Play"]',
+                '[aria-label="Pause"]',
                 ".player-controls__container .btn-play",
                 ".zm-btn.btn-play",
+                ".player-control .btn-play",
+                ".box_playing .btn-play",
+                ".player .btn-play",
                 'button[title="Phát"]',
                 'button[title="Tạm dừng"]',
               ])
@@ -443,8 +463,12 @@ function controlMediaTab(tabId, command, sendResponse) {
               '[data-testid="control-button-skip-forward"]',
               ".player-controls__container .btn-next",
               ".zm-btn.btn-next",
+              ".player-control .btn-next",
+              ".box_playing .btn-next",
+              ".player .btn-next",
               ".skipControl__next",
               ".playControls__next",
+              '[aria-label="Next"]',
               'button[title="Tiếp theo"]',
             ])
             break
@@ -456,8 +480,15 @@ function controlMediaTab(tabId, command, sendResponse) {
               ".player-controls__container .btn-prev",
               ".zm-btn.btn-pre",
               ".zm-btn.btn-prev",
+              ".player-control .btn-pre",
+              ".player-control .btn-prev",
+              ".box_playing .btn-pre",
+              ".box_playing .btn-prev",
+              ".player .btn-pre",
+              ".player .btn-prev",
               ".skipControl__previous",
               ".playControls__prev",
+              '[aria-label="Previous"]',
               'button[title="Trước đó"]',
             ])
             break
@@ -465,7 +496,7 @@ function controlMediaTab(tabId, command, sendResponse) {
             if (typeof command.time === "number") {
               if (video && !isSoundCloud) {
                 video.currentTime = command.time
-              } else if (isSpotify || isZing || isSoundCloud) {
+              } else if (isSpotify || isZing || isSoundCloud || isAppleMusic || isNct) {
                 seekWebSlider(command.time)
               }
             }
@@ -769,8 +800,14 @@ function getMediaFromTab(tabId, sendResponse) {
         const video =
           document.querySelector("video") || document.querySelector("audio")
         const isSpotify = window.location.href.includes("spotify.com")
-        const isZing = window.location.href.includes("zingmp3.vn")
+        const isZing =
+          window.location.href.includes("zingmp3.vn") ||
+          window.location.href.includes("mp3.zing.vn")
         const isSoundCloud = window.location.href.includes("soundcloud.com")
+        const isAppleMusic = window.location.href.includes("music.apple.com")
+        const isNct =
+          window.location.href.includes("nhaccuatui.com") ||
+          window.location.href.includes("nct.vn")
         const textFrom = (selectors) => {
           for (const selector of selectors) {
             const text = document.querySelector(selector)?.textContent?.trim()
@@ -786,7 +823,8 @@ function getMediaFromTab(tabId, sendResponse) {
           return parts.reduce((total, part) => total * 60 + part, 0)
         }
         const webPlayback = (() => {
-          if (!isSpotify && !isZing && !isSoundCloud) return null
+          if (!isSpotify && !isZing && !isSoundCloud && !isAppleMusic && !isNct)
+            return null
           const slider =
             document.querySelector(
               '[data-testid="playback-progressbar"] input[type="range"]',
@@ -799,6 +837,8 @@ function getMediaFromTab(tabId, sendResponse) {
             document.querySelector(".player-controls__container input[type='range']") ||
             document.querySelector(".zm-slider input[type='range']") ||
             document.querySelector(".zm-slider [role='slider']") ||
+            document.querySelector('[aria-label*="timeline" i][role="slider"]') ||
+            document.querySelector('[aria-label*="time" i][role="slider"]') ||
             document.querySelector(".playbackTimeline__progressWrapper") ||
             document.querySelector(".playbackTimeline__progressBar") ||
             document.querySelector('[aria-label*="progress" i][role="slider"]')
@@ -916,6 +956,36 @@ function getMediaFromTab(tabId, sendResponse) {
           ".soundTitle__username",
           ".soundTitle__username span",
         ])
+        const appleTitle = textFrom([
+          '[data-testid="track-title"]',
+          ".web-chrome-playback-lcd__song-name",
+          ".songs-list-row--selected .songs-list-row__song-name",
+          ".songs-list-row__song-name",
+        ])
+        const appleArtist = textFrom([
+          '[data-testid="track-artist"]',
+          ".web-chrome-playback-lcd__sub-copy",
+          ".songs-list-row--selected .songs-list-row__by-line",
+          ".songs-list-row__by-line",
+        ])
+        const nctTitle = textFrom([
+          ".box_playing .name_song",
+          ".box_playing .name-song",
+          ".player .name_song",
+          ".player .name-song",
+          ".name_song",
+          ".name-song",
+          ".title_song",
+        ])
+        const nctArtist = textFrom([
+          ".box_playing .name_singer",
+          ".box_playing .name-singer",
+          ".player .name_singer",
+          ".player .name-singer",
+          ".name_singer",
+          ".name-singer",
+          ".singer-name",
+        ])
 
         return {
           title:
@@ -924,6 +994,8 @@ function getMediaFromTab(tabId, sendResponse) {
             spotifyTitle ||
             zingTitle ||
             soundCloudTitle ||
+            appleTitle ||
+            nctTitle ||
             document.title.replace(/^\(\d+\)\s/, ""),
           artist:
             metadata?.artist ||
@@ -931,6 +1003,8 @@ function getMediaFromTab(tabId, sendResponse) {
             spotifyArtist ||
             zingArtist ||
             soundCloudArtist ||
+            appleArtist ||
+            nctArtist ||
             "",
           paused:
             isSoundCloud && webPlayback
@@ -949,11 +1023,15 @@ function getMediaFromTab(tabId, sendResponse) {
             : webPlayback?.duration || 0,
           url: window.location.href,
           source: isSpotify
-            ? "spotify"
-            : isZing
-              ? "zingmp3"
-              : isSoundCloud
-                ? "soundcloud"
+              ? "spotify"
+              : isZing
+                ? "zingmp3"
+                : isSoundCloud
+                  ? "soundcloud"
+                  : isAppleMusic
+                    ? "applemusic"
+                    : isNct
+                      ? "nhaccuatui"
                 : "",
           thumbnail: (() => {
             // Priority 1: MediaSession Artwork
@@ -986,7 +1064,10 @@ function getMediaFromTab(tabId, sendResponse) {
                if (spotThumb) return spotThumb
             }
 
-            if (window.location.href.includes("zingmp3.vn")) {
+            if (
+              window.location.href.includes("zingmp3.vn") ||
+              window.location.href.includes("mp3.zing.vn")
+            ) {
               const zingThumb =
                 document.querySelector(".player-controls__container img")?.src ||
                 document.querySelector(".now-playing img")?.src ||
@@ -1006,6 +1087,26 @@ function getMediaFromTab(tabId, sendResponse) {
                 document.querySelector(".image__full")?.src ||
                 document.querySelector('img[src*="sndcdn.com"]')?.src
               if (soundCloudThumb) return soundCloudThumb
+            }
+
+            if (window.location.href.includes("music.apple.com")) {
+              const appleThumb =
+                document.querySelector('[data-testid="artwork-component"] img')?.src ||
+                document.querySelector(".web-chrome-playback-lcd__artwork img")?.src ||
+                document.querySelector('img[src*="mzstatic.com"]')?.src
+              if (appleThumb) return appleThumb
+            }
+
+            if (
+              window.location.href.includes("nhaccuatui.com") ||
+              window.location.href.includes("nct.vn")
+            ) {
+              const nctThumb =
+                document.querySelector(".box_playing img")?.src ||
+                document.querySelector(".player img")?.src ||
+                document.querySelector('img[src*="nhaccuatui"]')?.src ||
+                document.querySelector('img[src*="nct"]')?.src
+              if (nctThumb) return nctThumb
             }
 
             // Priority 4: Generic OG Image
