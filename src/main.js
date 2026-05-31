@@ -107,6 +107,8 @@ async function bootstrap() {
     document.body.classList.add("bookmark-layout-bg-hidden")
   else if (bgStyle === "white")
     document.body.classList.add("bookmark-layout-bg-white")
+  else if (bgStyle === "m3-accent")
+    document.body.classList.add("bookmark-layout-bg-m3-accent")
   else if (bgStyle === "colored") {
     document.body.classList.add("bookmark-layout-bg-colored")
     document.documentElement.style.setProperty(

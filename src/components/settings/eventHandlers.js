@@ -2135,6 +2135,7 @@ export function setupGeneralEventHandlers(
         const styleNames = {
           default: "Mặc định",
           white: "Trắng",
+          "m3-accent": "M3 Accent",
           colored: "Màu sắc",
           hidden: "Ẩn",
         }

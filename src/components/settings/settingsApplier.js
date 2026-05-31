@@ -566,6 +566,7 @@ function createApplySettings(effectInstances) {
       "bookmark-taskbar-left-mode",
       "bookmark-layout-bg-hidden",
       "bookmark-layout-bg-white",
+      "bookmark-layout-bg-m3-accent",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
       "hide-bookmark-text",
@@ -1451,6 +1452,7 @@ function createApplySettings(effectInstances) {
     document.body.classList.remove(
       "bookmark-layout-bg-hidden",
       "bookmark-layout-bg-white",
+      "bookmark-layout-bg-m3-accent",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
     )
@@ -1459,6 +1461,8 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bookmark-layout-bg-hidden")
     } else if (bgStyle === "white") {
       document.body.classList.add("bookmark-layout-bg-white")
+    } else if (bgStyle === "m3-accent") {
+      document.body.classList.add("bookmark-layout-bg-m3-accent")
     } else if (bgStyle === "colored") {
       document.body.classList.add("bookmark-layout-bg-colored")
       document.documentElement.style.setProperty(

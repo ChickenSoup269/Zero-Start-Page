@@ -195,7 +195,7 @@ export function showContextMenu(
 
       const separator = document.createElement("div")
       separator.className = "context-menu-divider custom-music-item"
-      contextMenu.insertBefore(separator, skinBtn)
+      contextMenu.insertBefore(separator, menuLock)
     }
 
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
@@ -272,7 +272,7 @@ export function showContextMenu(
         )
         hideContextMenu()
       }
-      contextMenu.insertBefore(sourceIconBtn, shakeBtn)
+      contextMenu.insertBefore(sourceIconBtn, menuLock)
 
       const usesDefaultColor = settings.musicPlayerUseDefaultColor === true
       const defaultColorBtn = document.createElement("div")
@@ -356,7 +356,7 @@ export function showContextMenu(
         separator.style.height = "1px"
         separator.style.background = "rgba(255,255,255,0.1)"
         separator.style.margin = "4px 0"
-        contextMenu.insertBefore(separator, skinBtn)
+        contextMenu.insertBefore(separator, shakeBtn)
       } else {
         // Tùy chọn skin Trắng Blur cho tất cả các style khác
         const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
@@ -382,7 +382,7 @@ export function showContextMenu(
         separator.style.height = "1px"
         separator.style.background = "rgba(255,255,255,0.1)"
         separator.style.margin = "4px 0"
-        contextMenu.insertBefore(separator, skinBtn)
+        contextMenu.insertBefore(separator, shakeBtn)
       }
     }
   } else if (

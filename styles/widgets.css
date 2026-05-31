@@ -6496,6 +6496,29 @@ body.bookmark-layout-bg-colored.bookmark-taskbar-left-mode .bookmarks-grid {
   background: var(--bookmark-layout-bg-color, #ffffff) !important;
 }
 
+body.bookmark-layout-bg-m3-accent.bookmark-sidebar-mode .bookmarks-grid,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-top-mode .bookmarks-grid,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmarks-grid {
+  background:
+    radial-gradient(
+      circle at 14% 8%,
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--m3-surface-container-high, rgba(18, 20, 26, 0.88)) 72%, var(--m3-primary-container, var(--safe-accent)) 28%),
+      color-mix(in srgb, var(--m3-secondary-container, var(--safe-accent)) 34%, rgba(12, 14, 20, 0.82))
+    ) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, rgba(255, 255, 255, 0.12)) !important;
+  box-shadow:
+    0 18px 44px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, rgba(0, 0, 0, 0.42)),
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 14%, transparent) !important;
+  backdrop-filter: blur(18px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+}
+
 body.bookmark-layout-bg-white.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {

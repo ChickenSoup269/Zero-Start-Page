@@ -51,6 +51,8 @@
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")
       else if (bgStyle === "white")
         body.classList.add("bookmark-layout-bg-white")
+      else if (bgStyle === "m3-accent")
+        body.classList.add("bookmark-layout-bg-m3-accent")
       else if (bgStyle === "colored") {
         body.classList.add("bookmark-layout-bg-colored")
         document.documentElement.style.setProperty(
