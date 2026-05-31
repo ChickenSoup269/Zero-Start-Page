@@ -322,6 +322,124 @@
   transform: translateY(-2px);
 }
 
+.first-run-zoom-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+.first-run-zoom-lead {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.first-run-zoom-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.first-run-zoom-card {
+  min-height: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.first-run-zoom-card.recommended {
+  border-color: rgba(var(--accent-color-rgb), 0.55);
+  background:
+    linear-gradient(180deg, rgba(var(--accent-color-rgb), 0.22), rgba(var(--accent-color-rgb), 0.08)),
+    rgba(255, 255, 255, 0.05);
+  color: #fff;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(var(--accent-color-rgb), 0.12) inset;
+}
+
+.first-run-zoom-card .zoom-percent {
+  color: #fff;
+  font-size: 1.45rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.first-run-zoom-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zoom-key {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-bottom-color: rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.zoom-key kbd {
+  min-width: 22px;
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.zoom-key-icon {
+  width: 36px;
+  justify-content: center;
+  color: var(--accent-color);
+}
+
+.zoom-wheel {
+  white-space: nowrap;
+}
+
+.first-run-zoom-note {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 520px) {
+  .first-run-zoom-options {
+    grid-template-columns: 1fr;
+  }
+
+  .first-run-zoom-card {
+    min-height: 60px;
+  }
+}
+
 /* Modern Checklist Styles */
 .dialog-checklist {
   display: flex;
@@ -331,7 +449,45 @@
   margin-top: var(--space-1);
   max-height: min(46vh, 420px);
   overflow: auto;
-  padding-right: 4px;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.46) rgba(255, 255, 255, 0.045);
+}
+
+.dialog-checklist::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dialog-checklist::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 999px;
+  margin: 8px 0;
+}
+
+.dialog-checklist::-webkit-scrollbar-thumb {
+  min-height: 42px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(var(--accent-color-rgb), 0.78),
+      rgba(var(--accent-color-rgb), 0.34)
+    )
+    padding-box;
+  box-shadow:
+    0 0 12px rgba(var(--accent-color-rgb), 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.16) inset;
+}
+
+.dialog-checklist::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(var(--accent-color-rgb), 0.95),
+      rgba(var(--accent-color-rgb), 0.52)
+    )
+    padding-box;
 }
 
 .dialog-check-item {

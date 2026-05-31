@@ -216,14 +216,54 @@
 
 /* Lunar date styles for Clock */
 .clock-lunar-date {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.75);
-  opacity: 0.9;
-  margin-top: 4px;
-  letter-spacing: 0.6px;
+  display: inline-flex;
+  width: fit-content;
+  max-width: min(92vw, 520px);
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto 0;
+  padding: 5px 12px;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.34);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045)),
+    rgba(4, 8, 14, 0.32);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.055) inset;
+  color: var(--date-color, rgba(255, 255, 255, 0.92));
+  font-family: var(--font-date);
+  font-size: clamp(0.78rem, calc(var(--date-size, 1.5rem) * 0.58), 1rem);
+  font-style: normal;
+  font-weight: 720;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  opacity: 1;
+  text-align: center;
+  text-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
 }
+
+.clock-lunar-date::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent-color, #a8c0ff);
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.75);
+  flex-shrink: 0;
+}
+
 .clock-lunar-replace {
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.08em 0.42em;
+  border-radius: 999px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.13);
+  box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) inset;
+  font-weight: 760;
   color: var(--accent-color, #ffd166);
 }
 

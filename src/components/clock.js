@@ -307,7 +307,7 @@ function getCustomDateString(now, langCode, tz, settings, formatOverride) {
     const lunar = convertSolar2Lunar(zonedNow.getDate(), zonedNow.getMonth() + 1, zonedNow.getFullYear())
     const leapStr = lunar.leap ? " (nhuận)" : ""
     const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(/^<span class=\"weekday-part\">|<\/span>$/g, "")
-    return `<span class="weekday-part"> ${weekdayStr} </span>, ${lunar.day}/${lunar.month}${leapStr} Âm lịch`
+    return `<span class="weekday-part"> ${weekdayStr} </span>, <span class="clock-lunar-replace">${lunar.day}/${lunar.month}${leapStr} Âm lịch</span>`
   }
   let dateString = ""
 
@@ -1105,6 +1105,8 @@ export function updateTime() {
     dateElement.innerHTML = dateString
   }
 
+  const outerContainer = document.getElementById("clock-date-wrap")
+
   // Lunar calendar display
   const lunarWrap = document.getElementById("clock-lunar-date")
   if (settings.showClockLunarCalendar && settings.showClockLunarMode !== "replace" && !isTimer) {
@@ -1121,8 +1123,11 @@ export function updateTime() {
     if (lunarWrap) {
       lunarWrap.textContent = lunarStr
       lunarWrap.style.display = ""
+      if (outerContainer && lunarWrap.parentElement !== outerContainer) {
+        outerContainer.appendChild(lunarWrap)
+      }
     } else {
-      const el = document.getElementById("date-fade-wrap")
+      const el = outerContainer || document.getElementById("date-fade-wrap")
       if (el && !document.getElementById("clock-lunar-date")) {
         const span = document.createElement("div")
         span.id = "clock-lunar-date"
@@ -1140,7 +1145,6 @@ export function updateTime() {
   document.body.classList.remove("time-priority-none", "time-priority-date")
   document.body.classList.add(`time-priority-${priority}`)
 
-  const outerContainer = document.getElementById("clock-date-wrap")
   if (outerContainer && clockFadeWrap && dateFadeWrap) {
     const isHiddenTimerRunning =
       settings.timerIsRunning === true &&

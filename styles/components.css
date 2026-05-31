@@ -658,20 +658,52 @@ body.context-menu-macos .context-menu-divider {
   max-height: 340px;
   overflow-y: auto;
   padding: var(--space-1);
-  background: rgba(0, 0, 0, 0.25);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.45) rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.22);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 10px 26px rgba(0, 0, 0, 0.18) inset;
 }
 
 .bookmark-tree-container::-webkit-scrollbar {
-  width: 5px;
+  width: 10px;
 }
+
+.bookmark-tree-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 999px;
+  margin: 8px 0;
+}
+
 .bookmark-tree-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-sm);
+  min-height: 40px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(var(--accent-color-rgb), 0.78),
+      rgba(var(--accent-color-rgb), 0.34)
+    )
+    padding-box;
+  box-shadow:
+    0 0 12px rgba(var(--accent-color-rgb), 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.16) inset;
 }
+
 .bookmark-tree-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(var(--accent-color-rgb), 0.95),
+      rgba(var(--accent-color-rgb), 0.52)
+    )
+    padding-box;
 }
 
 /* Folder row */
@@ -1073,10 +1105,6 @@ body.context-menu-macos .context-menu-divider {
 
 /* Lunar Calendar Date Display */
 .clock-lunar-date {
-  font-size: 0.75em;
-  opacity: 0.7;
-  margin-top: 2px;
-  text-align: center;
-  letter-spacing: 0.03em;
-  font-style: italic;
+  display: inline-flex;
+  opacity: 1;
 }

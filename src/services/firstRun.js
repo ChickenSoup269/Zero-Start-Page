@@ -17,6 +17,7 @@ import {
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
 const FIRST_RUN_STYLE_KEY = "startpageFirstRunStyleV1"
+const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomTipV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const REPO_URL = "https://github.com/ChickenSoup269/Zero-Start-Page"
@@ -508,11 +509,58 @@ async function promptFirstRunStyle(renderBookmarks) {
   localStorage.setItem(FIRST_RUN_STYLE_KEY, selectedStyle || "skipped")
 }
 
+async function promptFirstRunZoomTip() {
+  if (localStorage.getItem(FIRST_RUN_ZOOM_KEY)) return
+
+  const i18n = geti18n()
+  await showAlert(
+    `
+      <div class="first-run-zoom-tip">
+        <p class="first-run-zoom-lead">
+          ${
+            i18n.first_run_zoom_prompt ||
+            "For the best spacing on the start page, try one of these browser zoom levels:"
+          }
+        </p>
+        <div class="first-run-zoom-options" aria-label="Recommended zoom levels">
+          <div class="first-run-zoom-card">
+            <span class="zoom-percent">90%</span>
+            <span>${i18n.first_run_zoom_balanced || "Balanced"}</span>
+          </div>
+          <div class="first-run-zoom-card recommended">
+            <span class="zoom-percent">80%</span>
+            <span>${i18n.recommended || "Recommended"}</span>
+          </div>
+          <div class="first-run-zoom-card">
+            <span class="zoom-percent">75%</span>
+            <span>${i18n.first_run_zoom_compact || "Compact"}</span>
+          </div>
+        </div>
+        <div class="first-run-zoom-shortcuts">
+          <span class="zoom-key"><kbd>Ctrl</kbd><kbd>-</kbd></span>
+          <span class="zoom-key"><kbd>Ctrl</kbd><span class="zoom-wheel">${i18n.first_run_zoom_wheel || "Mouse wheel"}</span></span>
+          <span class="zoom-key zoom-key-icon"><i class="fa-solid fa-magnifying-glass-minus"></i></span>
+        </div>
+        <small class="first-run-zoom-note">
+          ${
+            i18n.first_run_zoom_note ||
+            "You can change this anytime from the browser zoom menu. The page will still work at 100%, but 80% usually shows more widgets without crowding."
+          }
+        </small>
+      </div>
+    `,
+    i18n.first_run_zoom_title || "Recommended browser zoom",
+  )
+
+  localStorage.setItem(FIRST_RUN_ZOOM_KEY, "shown")
+}
+
 export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
 
   await promptFirstRunLanguage()
   await promptFirstRunStyle(renderBookmarks)
+  await promptFirstRunZoomTip()
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(
