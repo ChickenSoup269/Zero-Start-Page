@@ -591,7 +591,7 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "quick-access-transparent",
-      settings.quickAccessSkin === "transparent",
+      false,
     )
 
     // Apply Widget Skins
@@ -614,6 +614,10 @@ function createApplySettings(effectInstances) {
         el.classList.toggle("skin-white-blur", skin === "white-blur")
         el.classList.toggle("skin-m3-accent", skin === "m3-accent")
         el.classList.toggle("skin-transparent", skin === "transparent")
+        el.classList.toggle(
+          "widget-border-hidden",
+          settings[`${key}HideBorder`] === true,
+        )
 
         // Special handling for music player wrapper inside its container
         if (key === "musicPlayer") {
@@ -622,6 +626,10 @@ function createApplySettings(effectInstances) {
             wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
             wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
             wrapper.classList.toggle("skin-transparent", skin === "transparent")
+            wrapper.classList.toggle(
+              "widget-border-hidden",
+              settings.musicPlayerHideBorder === true,
+            )
           }
         }
       }

@@ -104,6 +104,8 @@ export function showContextMenu(
       const isWhiteBlur = currentSkin === "white-blur"
       const isTransparent = currentSkin === "transparent"
       const isM3Accent = currentSkin === "m3-accent"
+      const borderKey = `${id === "daily-quotes" ? "quotes" : id}HideBorder`
+      const isBorderHidden = settings[borderKey] === true
 
       const skinBtn = document.createElement("div")
       skinBtn.className = "context-menu-item custom-music-item"
@@ -193,9 +195,38 @@ export function showContextMenu(
         contextMenu.insertBefore(transBtn, menuLock)
       }
 
+      const borderBtn = document.createElement("div")
+      borderBtn.className = "context-menu-item custom-music-item"
+      borderBtn.innerHTML = `<i class="${isBorderHidden ? "fa-regular fa-square" : "fa-solid fa-border-all"}"></i> <span>${isBorderHidden ? i18n.menu_show_border || "Show Border" : i18n.menu_hide_border || "Hide Border"}</span>`
+      borderBtn.onclick = () => {
+        const newVal = !isBorderHidden
+        updateSetting(borderKey, newVal)
+        saveSettings(true)
+
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: borderKey, value: newVal },
+          }),
+        )
+
+        const widgetIdMap = {
+          todo: "todo-container",
+          timer: "timer-component",
+          calendar: "full-calendar-container",
+          notepad: "notepad-container",
+          "daily-quotes": "daily-quotes",
+        }
+        const el = document.getElementById(widgetIdMap[id] || id)
+        if (el) {
+          el.classList.toggle("widget-border-hidden", newVal)
+        }
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(borderBtn, menuLock)
+
       const separator = document.createElement("div")
       separator.className = "context-menu-divider custom-music-item"
-      contextMenu.insertBefore(separator, menuLock)
+      contextMenu.insertBefore(separator, borderBtn)
     }
 
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
@@ -312,6 +343,32 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(transparentBtn, shakeBtn)
+
+      const isMusicBorderHidden = settings.musicPlayerHideBorder === true
+      const musicBorderBtn = document.createElement("div")
+      musicBorderBtn.className = "context-menu-item custom-music-item"
+      musicBorderBtn.innerHTML = `<i class="${isMusicBorderHidden ? "fa-regular fa-square" : "fa-solid fa-border-all"}"></i> <span>${isMusicBorderHidden ? i18n.menu_show_border || "Show Border" : i18n.menu_hide_border || "Hide Border"}</span>`
+      musicBorderBtn.onclick = () => {
+        const newVal = !isMusicBorderHidden
+        updateSetting("musicPlayerHideBorder", newVal)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerHideBorder", value: newVal },
+          }),
+        )
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "musicPlayerHideBorder", value: newVal },
+          }),
+        )
+        const container = document.getElementById("music-player-container")
+        const wrapper = container?.querySelector(".music-player-wrapper")
+        container?.classList.toggle("widget-border-hidden", newVal)
+        wrapper?.classList.toggle("widget-border-hidden", newVal)
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(musicBorderBtn, menuLock)
 
       if (musicStyle === "heartbeat") {
         // Nút đổi Skin GameBoy
@@ -553,6 +610,72 @@ export function showContextMenu(
         popup.appendChild(chipWrap)
       })
 
+      const skinRow = document.createElement("div")
+      skinRow.className = "lcp-row quick-access-border-row"
+      const skinIcon = document.createElement("div")
+      skinIcon.className = "lcp-icon"
+      skinIcon.innerHTML = `<i class="fa-solid fa-palette"></i>`
+      const skinLabel = document.createElement("div")
+      skinLabel.className = "lcp-label"
+      skinLabel.textContent = i18n.quick_access_skin || "Quick Access Skin"
+      skinRow.appendChild(skinIcon)
+      skinRow.appendChild(skinLabel)
+      popup.appendChild(skinRow)
+
+      const skinGrid = document.createElement("div")
+      skinGrid.className = "quick-access-radius-grid quick-access-skin-grid"
+      const skins = [
+        {
+          value: "default",
+          label: i18n.skin_default || "Default",
+          icon: "fa-solid fa-circle",
+        },
+        {
+          value: "m3-accent",
+          label: i18n.skin_m3_accent || "M3 Accent",
+          icon: "fa-solid fa-palette",
+        },
+      ]
+      let activeSkin =
+        settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+      skins.forEach((skin) => {
+        const chip = document.createElement("button")
+        chip.type = "button"
+        chip.className = "quick-access-radius-chip"
+        if (activeSkin === skin.value) chip.classList.add("is-active")
+        chip.innerHTML = `<i class="${activeSkin === skin.value ? "fa-solid fa-check" : skin.icon}"></i><span>${skin.label}</span>`
+        chip.onclick = () => {
+          activeSkin = skin.value
+          updateSetting("quickAccessSkin", skin.value)
+          saveSettings()
+          document.body.classList.toggle(
+            "quick-access-m3-accent",
+            skin.value === "m3-accent",
+          )
+          document.body.classList.toggle(
+            "quick-access-transparent",
+            false,
+          )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "quickAccessSkin", value: skin.value },
+            }),
+          )
+          skinGrid
+            .querySelectorAll(".quick-access-radius-chip")
+            .forEach((el, index) => {
+              el.classList.toggle("is-active", skins[index].value === skin.value)
+              el.innerHTML = `<i class="${skins[index].value === skin.value ? "fa-solid fa-check" : skins[index].icon}"></i><span>${skins[index].label}</span>`
+            })
+        }
+        chip.addEventListener("pointerdown", (event) => {
+          event.stopPropagation()
+        })
+        chip.addEventListener("click", keepQuickPopupOpen)
+        skinGrid.appendChild(chip)
+      })
+      popup.appendChild(skinGrid)
+
       const borderRow = document.createElement("div")
       borderRow.className = "lcp-row quick-access-border-row"
       const borderIcon = document.createElement("div")
@@ -594,76 +717,6 @@ export function showContextMenu(
       borderRow.appendChild(borderLabel)
       borderRow.appendChild(borderBtn)
       popup.appendChild(borderRow)
-
-      const skinRow = document.createElement("div")
-      skinRow.className = "lcp-row quick-access-border-row"
-      const skinIcon = document.createElement("div")
-      skinIcon.className = "lcp-icon"
-      skinIcon.innerHTML = `<i class="fa-solid fa-palette"></i>`
-      const skinLabel = document.createElement("div")
-      skinLabel.className = "lcp-label"
-      skinLabel.textContent = i18n.quick_access_skin || "Quick Access Skin"
-      skinRow.appendChild(skinIcon)
-      skinRow.appendChild(skinLabel)
-      popup.appendChild(skinRow)
-
-      const skinGrid = document.createElement("div")
-      skinGrid.className = "quick-access-radius-grid quick-access-skin-grid"
-      const skins = [
-        {
-          value: "default",
-          label: i18n.skin_default || "Default",
-          icon: "fa-solid fa-circle",
-        },
-        {
-          value: "m3-accent",
-          label: i18n.skin_m3_accent || "M3 Accent",
-          icon: "fa-solid fa-palette",
-        },
-        {
-          value: "transparent",
-          label: i18n.skin_transparent || "Transparent",
-          icon: "fa-solid fa-ghost",
-        },
-      ]
-      let activeSkin = settings.quickAccessSkin || "default"
-      skins.forEach((skin) => {
-        const chip = document.createElement("button")
-        chip.type = "button"
-        chip.className = "quick-access-radius-chip"
-        if (activeSkin === skin.value) chip.classList.add("is-active")
-        chip.innerHTML = `<i class="${activeSkin === skin.value ? "fa-solid fa-check" : skin.icon}"></i><span>${skin.label}</span>`
-        chip.onclick = () => {
-          activeSkin = skin.value
-          updateSetting("quickAccessSkin", skin.value)
-          saveSettings()
-          document.body.classList.toggle(
-            "quick-access-m3-accent",
-            skin.value === "m3-accent",
-          )
-          document.body.classList.toggle(
-            "quick-access-transparent",
-            skin.value === "transparent",
-          )
-          window.dispatchEvent(
-            new CustomEvent("layoutUpdated", {
-              detail: { key: "quickAccessSkin", value: skin.value },
-            }),
-          )
-          skinGrid
-            .querySelectorAll(".quick-access-radius-chip")
-            .forEach((el, index) => {
-              el.classList.toggle("is-active", skins[index].value === skin.value)
-              el.innerHTML = `<i class="${skins[index].value === skin.value ? "fa-solid fa-check" : skins[index].icon}"></i><span>${skins[index].label}</span>`
-            })
-        }
-        chip.addEventListener("pointerdown", (event) => {
-          event.stopPropagation()
-        })
-        chip.addEventListener("click", keepQuickPopupOpen)
-        skinGrid.appendChild(chip)
-      })
-      popup.appendChild(skinGrid)
 
       popup.addEventListener("pointerdown", keepQuickPopupOpen)
       popup.addEventListener("click", keepQuickPopupOpen)

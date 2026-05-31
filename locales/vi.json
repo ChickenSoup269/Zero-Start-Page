@@ -220,6 +220,8 @@
   "menu_unfavorite": "Bỏ yêu thích",
   "menu_lock": "Khóa vị trí",
   "menu_unlock": "Bỏ khóa vị trí",
+  "menu_hide_border": "Ẩn viền",
+  "menu_show_border": "Hiện viền",
   "modal_add_title": "Thêm Dấu trang",
   "modal_edit_title": "Sửa Dấu trang",
   "modal_import_title": "Nhập từ Trình duyệt",

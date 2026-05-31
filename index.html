@@ -780,12 +780,12 @@
                         style="flex:1;padding: 0.4rem 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);" />
                     <input type="file" id="tab-icon-file-input"
                         accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
-                    <button type="button" id="tab-icon-upload-btn" class="icon-btn" title="Upload icon"
-                        data-i18n-title="settings_tab_icon_upload" style="width:32px;height:32px;flex-shrink:0;">
+                    <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn"
+                        title="Upload icon" data-i18n-title="settings_tab_icon_upload">
                         <i class="fa-solid fa-upload"></i>
                     </button>
-                    <button type="button" id="tab-icon-clear-btn" class="icon-btn" title="Remove icon"
-                        data-i18n-title="settings_tab_icon_remove" style="width:32px;height:32px;flex-shrink:0;" hidden>
+                    <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn" title="Remove icon"
+                        data-i18n-title="settings_tab_icon_remove" hidden>
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <div id="tab-icon-preview"
@@ -795,11 +795,6 @@
                 <small style="opacity: 0.7; margin-top: 0.25rem; display: block;" data-i18n="settings_tab_icon_hint">Max
                     2 letters or 1 emoji (leave blank for default)</small>
                 <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 0.8rem;">
-                    <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label style="font-size: 0.8rem; opacity: 0.85;" for="page-title-color">Title Color</label>
-                        <input type="color" id="page-title-color"
-                            style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
-                    </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
                         <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-bg-color">Icon BG</label>
                         <input type="color" id="tab-icon-bg-color"

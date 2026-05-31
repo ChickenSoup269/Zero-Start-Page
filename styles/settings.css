@@ -6535,19 +6535,17 @@ body.sidebar-light .settings-sidebar {
   color: var(--m3-on-primary, var(--accent-contrast-color));
 }
 
-#tab-icon-upload-btn {
+.tab-icon-action-btn {
   width: 34px !important;
   height: 34px !important;
   flex-shrink: 0;
-  border-radius: 11px !important;
-  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--accent-color)) 34%, transparent) !important;
-  background:
-    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.2), transparent 36%),
-    color-mix(in srgb, var(--m3-primary-container, var(--accent-color)) 46%, transparent) !important;
-  color: var(--m3-primary, var(--accent-color)) !important;
+  border-radius: 9px !important;
+  border: 1px solid color-mix(in srgb, var(--m3-outline, var(--input-border)) 70%, transparent) !important;
+  background: color-mix(in srgb, var(--m3-surface-container, var(--input-bg)) 86%, transparent) !important;
+  color: color-mix(in srgb, var(--m3-on-surface, var(--text-color)) 86%, var(--m3-primary, var(--accent-color)) 14%) !important;
   box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 6px 14px rgba(0, 0, 0, 0.1);
   transition:
     transform 0.18s ease,
     background 0.18s ease,
@@ -6556,20 +6554,20 @@ body.sidebar-light .settings-sidebar {
     color 0.18s ease;
 }
 
-#tab-icon-upload-btn i {
+.tab-icon-action-btn i {
   font-size: 0.92rem;
   line-height: 1;
   transition: transform 0.18s ease;
 }
 
 #tab-icon-upload-btn:hover {
-  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 62%, transparent) !important;
-  background: var(--m3-primary, var(--accent-color)) !important;
-  color: var(--m3-on-primary, #fff) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 46%, var(--m3-outline, transparent)) !important;
+  background: color-mix(in srgb, var(--m3-primary-container, var(--accent-color)) 48%, var(--m3-surface-container-high, transparent)) !important;
+  color: var(--m3-primary, var(--accent-color)) !important;
   box-shadow:
-    0 12px 24px color-mix(in srgb, var(--m3-primary, var(--accent-color)) 30%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transform: translateY(-1px) scale(1.04) !important;
+    0 10px 22px color-mix(in srgb, var(--m3-primary, var(--accent-color)) 18%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px) !important;
 }
 
 #tab-icon-upload-btn:hover i {
@@ -6578,9 +6576,6 @@ body.sidebar-light .settings-sidebar {
 
 #tab-icon-upload-btn:active {
   transform: translateY(0) scale(0.98) !important;
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 #tab-icon-clear-btn[hidden] {
@@ -6588,30 +6583,17 @@ body.sidebar-light .settings-sidebar {
 }
 
 #tab-icon-clear-btn {
-  width: 34px !important;
-  height: 34px !important;
-  flex-shrink: 0;
-  border-radius: 11px !important;
-  border: 1px solid color-mix(in srgb, #ff6b7a 36%, transparent) !important;
-  background: color-mix(in srgb, #ff6b7a 16%, transparent) !important;
+  border-color: color-mix(in srgb, #ff6b7a 32%, var(--m3-outline, transparent)) !important;
+  background: color-mix(in srgb, #ff6b7a 10%, var(--m3-surface-container, transparent)) !important;
   color: #ff9aa5 !important;
-  box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    color 0.18s ease;
 }
 
 #tab-icon-clear-btn:hover {
-  border-color: color-mix(in srgb, #ff6b7a 72%, transparent) !important;
-  background: #ff6b7a !important;
-  color: #1c0609 !important;
-  box-shadow: 0 12px 24px color-mix(in srgb, #ff6b7a 30%, transparent);
-  transform: translateY(-1px) scale(1.04) !important;
+  border-color: color-mix(in srgb, #ff6b7a 54%, transparent) !important;
+  background: color-mix(in srgb, #ff6b7a 18%, var(--m3-surface-container-high, transparent)) !important;
+  color: #ffb4bd !important;
+  box-shadow: 0 10px 22px color-mix(in srgb, #ff6b7a 16%, transparent);
+  transform: translateY(-1px) !important;
 }
 
 #tab-icon-clear-btn:active {

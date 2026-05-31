@@ -3251,3 +3251,12 @@ body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
 .music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before {
   display: none !important;
 }
+
+.music-player-container.widget-border-hidden .music-player-wrapper,
+.music-player-wrapper.widget-border-hidden {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 0 transparent !important;
+}

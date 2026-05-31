@@ -3931,6 +3931,18 @@ body.widgets-m3-accent .quotes-container,
   border-left-color: var(--m3-primary, var(--safe-accent)) !important;
 }
 
+.todo-container.widget-border-hidden,
+.timer-container.widget-border-hidden,
+.calendar-card.widget-border-hidden,
+.notepad-container.widget-border-hidden,
+.quotes-container.widget-border-hidden {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 0 transparent !important;
+}
+
 /* Search Engine Selector */
 .search-engine-selector {
   position: relative;

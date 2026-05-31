@@ -220,6 +220,8 @@
   "menu_unfavorite": "Unfavorite",
   "menu_lock": "Lock Position",
   "menu_unlock": "Unlock Position",
+  "menu_hide_border": "Hide Border",
+  "menu_show_border": "Show Border",
   "modal_add_title": "Add Bookmark",
   "modal_edit_title": "Edit Bookmark",
   "modal_import_title": "Import from Browser",
