@@ -1,6 +1,65 @@
 import { saveComponentPosition, getSettings } from "../services/state.js"
 import { showContextMenu } from "../components/contextMenu.js"
 
+const VIEWPORT_PADDING = 8
+
+function parsePixelValue(value) {
+  const parsed = Number.parseFloat(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function getClampedStyleValue(element, style, axis, clampedScreenValue, delta) {
+  const inlineValue = axis === "x" ? element.style.left : element.style.top
+  const computedValue = axis === "x" ? style.left : style.top
+  const parsedValue = parsePixelValue(inlineValue || computedValue)
+  if (parsedValue !== null) return parsedValue + delta
+
+  if (style.position === "fixed") return clampedScreenValue
+
+  const parentRect = element.offsetParent?.getBoundingClientRect()
+  const parentOffset = axis === "x" ? parentRect?.left || 0 : parentRect?.top || 0
+  return clampedScreenValue - parentOffset
+}
+
+function clampElementIntoViewport(element, componentId, persist = false) {
+  if (!element || element.classList.contains("dragging")) return
+  if (componentId === "todo" && element.classList.contains("todo-fullscreen")) return
+
+  const style = window.getComputedStyle(element)
+  if (style.position !== "fixed" && style.position !== "absolute") return
+
+  const rect = element.getBoundingClientRect()
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  if (!rect.width || !rect.height || !vw || !vh) return
+
+  const minLeft = Math.min(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
+  const maxLeft = Math.max(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
+  const minTop = Math.min(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
+  const maxTop = Math.max(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
+
+  const clampedLeft = Math.max(minLeft, Math.min(rect.left, maxLeft))
+  const clampedTop = Math.max(minTop, Math.min(rect.top, maxTop))
+  const deltaX = clampedLeft - rect.left
+  const deltaY = clampedTop - rect.top
+
+  if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) return
+
+  element.style.left = `${getClampedStyleValue(element, style, "x", clampedLeft, deltaX)}px`
+  element.style.top = `${getClampedStyleValue(element, style, "y", clampedTop, deltaY)}px`
+  element.style.bottom = "auto"
+  element.style.right = "auto"
+  element.style.margin = "0"
+
+  if (persist) {
+    saveComponentPosition(componentId, {
+      top: element.style.top,
+      left: element.style.left,
+      transform: element.style.transform,
+    })
+  }
+}
+
 export function makeDraggable(
   element,
   componentId,
@@ -27,6 +86,29 @@ export function makeDraggable(
       element.style.right = "auto"
       element.style.margin = "0"
       if (savedPos.transform) element.style.transform = savedPos.transform
+    }
+  }
+
+  requestAnimationFrame(() => clampElementIntoViewport(element, componentId))
+
+  if (!element._draggableViewportClamp) {
+    let resizeTimer = null
+    element._draggableViewportClamp = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(
+        () => clampElementIntoViewport(element, componentId, true),
+        80,
+      )
+    }
+    window.addEventListener("resize", element._draggableViewportClamp, {
+      passive: true,
+    })
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener(
+        "resize",
+        element._draggableViewportClamp,
+        { passive: true },
+      )
     }
   }
 
