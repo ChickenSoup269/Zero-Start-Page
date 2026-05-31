@@ -302,13 +302,17 @@ body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
 }
 
 body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
-body.widgets-m3-accent .music-player-wrapper .disc-container,
-body.widgets-m3-accent .music-player-wrapper .music-visualizer,
-.music-player-wrapper.skin-m3-accent .progress-bar-track,
-.music-player-wrapper.skin-m3-accent .disc-container,
-.music-player-wrapper.skin-m3-accent .music-visualizer {
+.music-player-wrapper.skin-m3-accent .progress-bar-track {
   background: var(--music-m3-panel-bg) !important;
   border-color: var(--music-m3-panel-border) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .disc-container,
+body.widgets-m3-accent .music-player-wrapper .music-visualizer,
+.music-player-wrapper.skin-m3-accent .disc-container,
+.music-player-wrapper.skin-m3-accent .music-visualizer {
+  background: transparent !important;
+  border-color: transparent !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .controls-row,
@@ -337,8 +341,8 @@ body.widgets-m3-accent .music-player-wrapper .disc-container,
 .music-player-wrapper.skin-m3-accent .disc-container {
   overflow: hidden;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
-    0 10px 24px rgba(0, 0, 0, 0.18) !important;
+    inset 0 0 0 1px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent),
+    0 8px 18px rgba(0, 0, 0, 0.14) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .vinyl-disc,
@@ -1992,10 +1996,14 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
 }
 .music-style-pill .progress-row {
   position: absolute;
-  bottom: -4px;
-  left: var(--space-4);
-  right: var(--space-4);
+  bottom: 2px;
+  left: 42px;
+  right: 48px;
   opacity: 0.8;
+  min-width: 0;
+  width: auto;
+  max-width: calc(100% - 90px);
+  overflow: hidden;
 }
 .music-style-pill .progress-time {
   display: none;
@@ -3084,18 +3092,162 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
 }
 
 .music-style-beach .music-disc-container,
+.music-style-beach .disc-container,
 .music-style-beach .player-info,
+.music-style-beach .player-main,
+.music-style-beach .progress-row,
+.music-style-beach .controls-row,
 .music-style-beach .player-controls,
 .music-style-beach .music-player-controls,
 .music-style-forest .music-disc-container,
+.music-style-forest .disc-container,
 .music-style-forest .player-info,
+.music-style-forest .player-main,
+.music-style-forest .progress-row,
+.music-style-forest .controls-row,
 .music-style-forest .player-controls,
 .music-style-forest .music-player-controls {
   position: relative !important;
   z-index: 10 !important;
 }
 
+.music-style-beach .player-info h3,
+.music-style-beach .player-info p,
+.music-style-forest .player-info h3,
+.music-style-forest .player-info p {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 220px;
+}
+
 .music-style-beach .player-controls,
+.music-style-beach .controls-row,
 .music-style-forest .player-controls {
   pointer-events: auto !important;
+}
+
+.music-style-forest .controls-row {
+  pointer-events: auto !important;
+}
+
+/* Final music skin harmonizer: keep child surfaces unified after style-specific blocks. */
+body.widgets-m3-accent .music-player-wrapper,
+.music-player-wrapper.skin-m3-accent {
+  --music-m3-panel-bg: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, #101317) 62%,
+    var(--m3-primary-container, var(--safe-accent)) 38%
+  );
+  --music-m3-panel-border: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 28%,
+    transparent
+  );
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-btn,
+body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
+.music-player-wrapper.skin-m3-accent .player-btn,
+.music-player-wrapper.skin-m3-accent .progress-bar-track {
+  background: var(--music-m3-panel-bg) !important;
+  border-color: var(--music-m3-panel-border) !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent),
+    0 8px 18px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .disc-container,
+body.widgets-m3-accent .music-player-wrapper .music-visualizer,
+.music-player-wrapper.skin-m3-accent .disc-container,
+.music-player-wrapper.skin-m3-accent .music-visualizer {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .music-visualizer,
+.music-player-wrapper.skin-m3-accent .music-visualizer {
+  box-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .controls-row,
+.music-player-wrapper.skin-m3-accent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
+.music-player-wrapper.skin-m3-accent .play-pause-btn {
+  background:
+    linear-gradient(
+      135deg,
+      var(--m3-primary, var(--safe-accent)),
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
+    ) !important;
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+}
+
+.music-player-wrapper.skin-transparent,
+.music-player-wrapper.skin-transparent .player-btn,
+.music-player-wrapper.skin-transparent .disc-container,
+.music-player-wrapper.skin-transparent .progress-bar-track,
+.music-player-wrapper.skin-transparent .music-visualizer,
+.music-player-wrapper.skin-transparent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.music-player-wrapper.skin-white-blur .player-btn,
+.music-player-wrapper.skin-white-blur .progress-bar-track,
+.music-player-wrapper.skin-white-blur .disc-container,
+.music-player-wrapper.skin-white-blur .music-visualizer {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.widgets-m3-accent .music-style-neon .disc-container,
+body.widgets-m3-accent .music-style-moon8 .disc-container,
+body.widgets-m3-accent .music-style-vinyl .disc-container,
+body.widgets-m3-accent .music-style-forest .disc-container,
+body.widgets-m3-accent .music-style-beach .disc-container,
+.music-style-neon .music-player-wrapper.skin-m3-accent .disc-container,
+.music-style-moon8 .music-player-wrapper.skin-m3-accent .disc-container,
+.music-style-vinyl .music-player-wrapper.skin-m3-accent .disc-container,
+.music-style-forest .music-player-wrapper.skin-m3-accent .disc-container,
+.music-style-beach .music-player-wrapper.skin-m3-accent .disc-container {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-style-neon .vinyl-disc.has-thumb,
+body.widgets-m3-accent .music-style-moon8 .vinyl-disc.has-thumb,
+body.widgets-m3-accent .music-style-vinyl .vinyl-disc.has-thumb,
+body.widgets-m3-accent .music-style-forest .vinyl-disc.has-thumb,
+body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb,
+.music-style-neon .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
+.music-style-moon8 .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
+.music-style-vinyl .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
+.music-style-forest .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
+.music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb {
+  background-color: transparent !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.widgets-m3-accent .music-style-neon .vinyl-disc.has-thumb::before,
+body.widgets-m3-accent .music-style-moon8 .vinyl-disc.has-thumb::before,
+body.widgets-m3-accent .music-style-vinyl .vinyl-disc.has-thumb::before,
+body.widgets-m3-accent .music-style-forest .vinyl-disc.has-thumb::before,
+body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
+.music-style-neon .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
+.music-style-moon8 .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
+.music-style-vinyl .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
+.music-style-forest .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
+.music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before {
+  display: none !important;
 }

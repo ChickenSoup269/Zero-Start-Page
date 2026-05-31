@@ -584,6 +584,14 @@ function createApplySettings(effectInstances) {
       "widgets-m3-accent",
       settings.widgetUseM3Accent === true,
     )
+    document.body.classList.toggle(
+      "quick-access-m3-accent",
+      settings.quickAccessSkin === "m3-accent",
+    )
+    document.body.classList.toggle(
+      "quick-access-transparent",
+      settings.quickAccessSkin === "transparent",
+    )
 
     // Apply Widget Skins
     const widgetSkinsMap = {

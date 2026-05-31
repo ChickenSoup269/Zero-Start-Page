@@ -137,6 +137,7 @@ export const defaultSettings = {
   quickAccessBorderRadius: "5px",
   quickAccessToggleRadius: "50%",
   quickAccessBarRadius: "var(--radius-lg)",
+  quickAccessSkin: "default",
   bookmarkLayoutBgColor: "",
   bookmarkItemStyle: "default",
   bookmarkTextColor: null,

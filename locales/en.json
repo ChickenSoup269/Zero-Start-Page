@@ -490,6 +490,7 @@
   "quick_access_toggle_radius": "Settings Toggle Radius",
   "quick_access_toggle_radius_hint": "Applies to the settings-toggle button.",
   "quick_access_settings": "Quick Access Settings",
+  "quick_access_skin": "Quick Access Skin",
   "quick_access_border_on": "Show Border",
   "quick_access_border_off": "Hide Border",
   "quick_access_border_toggle": "Border Visibility",

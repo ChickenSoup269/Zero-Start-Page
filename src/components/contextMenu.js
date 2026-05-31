@@ -418,6 +418,9 @@ export function showContextMenu(
         .querySelectorAll(".quick-access-popup")
         .forEach((el) => el.remove())
     }
+    const keepQuickPopupOpen = (event) => {
+      event.stopPropagation()
+    }
 
     const openQuickAccessPopup = () => {
       removeQuickPopup()
@@ -544,6 +547,7 @@ export function showContextMenu(
           chip.addEventListener("pointerdown", (event) => {
             event.stopPropagation()
           })
+          chip.addEventListener("click", keepQuickPopupOpen)
           chipWrap.appendChild(chip)
         })
         popup.appendChild(chipWrap)
@@ -584,20 +588,93 @@ export function showContextMenu(
       borderBtn.addEventListener("pointerdown", (event) => {
         event.stopPropagation()
       })
+      borderBtn.addEventListener("click", keepQuickPopupOpen)
 
       borderRow.appendChild(borderIcon)
       borderRow.appendChild(borderLabel)
       borderRow.appendChild(borderBtn)
       popup.appendChild(borderRow)
 
-      popup.addEventListener("pointerdown", (event) => {
-        event.stopPropagation()
+      const skinRow = document.createElement("div")
+      skinRow.className = "lcp-row quick-access-border-row"
+      const skinIcon = document.createElement("div")
+      skinIcon.className = "lcp-icon"
+      skinIcon.innerHTML = `<i class="fa-solid fa-palette"></i>`
+      const skinLabel = document.createElement("div")
+      skinLabel.className = "lcp-label"
+      skinLabel.textContent = i18n.quick_access_skin || "Quick Access Skin"
+      skinRow.appendChild(skinIcon)
+      skinRow.appendChild(skinLabel)
+      popup.appendChild(skinRow)
+
+      const skinGrid = document.createElement("div")
+      skinGrid.className = "quick-access-radius-grid quick-access-skin-grid"
+      const skins = [
+        {
+          value: "default",
+          label: i18n.skin_default || "Default",
+          icon: "fa-solid fa-circle",
+        },
+        {
+          value: "m3-accent",
+          label: i18n.skin_m3_accent || "M3 Accent",
+          icon: "fa-solid fa-palette",
+        },
+        {
+          value: "transparent",
+          label: i18n.skin_transparent || "Transparent",
+          icon: "fa-solid fa-ghost",
+        },
+      ]
+      let activeSkin = settings.quickAccessSkin || "default"
+      skins.forEach((skin) => {
+        const chip = document.createElement("button")
+        chip.type = "button"
+        chip.className = "quick-access-radius-chip"
+        if (activeSkin === skin.value) chip.classList.add("is-active")
+        chip.innerHTML = `<i class="${activeSkin === skin.value ? "fa-solid fa-check" : skin.icon}"></i><span>${skin.label}</span>`
+        chip.onclick = () => {
+          activeSkin = skin.value
+          updateSetting("quickAccessSkin", skin.value)
+          saveSettings()
+          document.body.classList.toggle(
+            "quick-access-m3-accent",
+            skin.value === "m3-accent",
+          )
+          document.body.classList.toggle(
+            "quick-access-transparent",
+            skin.value === "transparent",
+          )
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "quickAccessSkin", value: skin.value },
+            }),
+          )
+          skinGrid
+            .querySelectorAll(".quick-access-radius-chip")
+            .forEach((el, index) => {
+              el.classList.toggle("is-active", skins[index].value === skin.value)
+              el.innerHTML = `<i class="${skins[index].value === skin.value ? "fa-solid fa-check" : skins[index].icon}"></i><span>${skins[index].label}</span>`
+            })
+        }
+        chip.addEventListener("pointerdown", (event) => {
+          event.stopPropagation()
+        })
+        chip.addEventListener("click", keepQuickPopupOpen)
+        skinGrid.appendChild(chip)
       })
+      popup.appendChild(skinGrid)
+
+      popup.addEventListener("pointerdown", keepQuickPopupOpen)
+      popup.addEventListener("click", keepQuickPopupOpen)
+      popup.addEventListener("contextmenu", keepQuickPopupOpen)
 
       document.body.appendChild(popup)
 
       closeOnOutside = (event) => {
-        if (!popup.contains(event.target)) {
+        const path =
+          typeof event.composedPath === "function" ? event.composedPath() : []
+        if (!popup.contains(event.target) && !path.includes(popup)) {
           removeQuickPopup()
         }
       }
