@@ -200,6 +200,109 @@
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+/* M3 Accent Skin */
+body.widgets-m3-accent .music-player-wrapper,
+.music-player-wrapper.skin-m3-accent {
+  background:
+    radial-gradient(
+      circle at 14% 18%,
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 86% 78%,
+      color-mix(in srgb, var(--m3-tertiary, var(--m3-secondary, var(--safe-accent))) 20%, transparent),
+      transparent 40%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--m3-surface-container-high, #101317) 84%, var(--m3-primary-container, var(--safe-accent)) 16%),
+      color-mix(in srgb, var(--m3-secondary-container, var(--safe-accent)) 48%, rgba(12, 12, 16, 0.72))
+    ) !important;
+  backdrop-filter: blur(26px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(180%) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 42%, transparent) !important;
+  box-shadow:
+    0 20px 54px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+    0 8px 20px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 24%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-info h3,
+body.widgets-m3-accent .music-player-wrapper .player-info p,
+body.widgets-m3-accent .music-player-wrapper .progress-time,
+body.widgets-m3-accent .music-player-wrapper span,
+.music-player-wrapper.skin-m3-accent .player-info h3,
+.music-player-wrapper.skin-m3-accent .player-info p,
+.music-player-wrapper.skin-m3-accent .progress-time,
+.music-player-wrapper.skin-m3-accent span {
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  text-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-btn,
+.music-player-wrapper.skin-m3-accent .player-btn {
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  background: color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-btn:hover,
+.music-player-wrapper.skin-m3-accent .player-btn:hover {
+  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 46%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
+.music-player-wrapper.skin-m3-accent .play-pause-btn {
+  background:
+    linear-gradient(
+      135deg,
+      var(--m3-primary, var(--safe-accent)),
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
+    ) !important;
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+  box-shadow:
+    0 10px 24px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary, #fff) 28%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
+body.widgets-m3-accent .music-player-wrapper .disc-container,
+body.widgets-m3-accent .music-player-wrapper .controls-row,
+body.widgets-m3-accent .music-player-wrapper .music-visualizer,
+.music-player-wrapper.skin-m3-accent .progress-bar-track,
+.music-player-wrapper.skin-m3-accent .disc-container,
+.music-player-wrapper.skin-m3-accent .controls-row,
+.music-player-wrapper.skin-m3-accent .music-visualizer {
+  background: color-mix(in srgb, var(--m3-surface-container-high, var(--m3-primary-container, #fff)) 56%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .progress-bar-fill,
+body.widgets-m3-accent .music-player-wrapper .progress-bar-thumb,
+body.widgets-m3-accent .music-player-wrapper .visualizer-bar,
+.music-player-wrapper.skin-m3-accent .progress-bar-fill,
+.music-player-wrapper.skin-m3-accent .progress-bar-thumb,
+.music-player-wrapper.skin-m3-accent .visualizer-bar {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff),
+      var(--m3-primary, var(--safe-accent))
+    ) !important;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .disc-container,
+.music-player-wrapper.skin-m3-accent .disc-container {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+    0 10px 24px rgba(0, 0, 0, 0.22) !important;
+}
+
 /* Disc Container */
 .disc-container {
   position: relative;
@@ -1502,10 +1605,26 @@
   margin-top: var(--space-0-5);
 }
 .music-style-soundcloud .player-btn {
-  color: #ff5500;
+  color: var(--accent-color, #ff5500);
 }
 .music-style-soundcloud .player-btn:hover {
-  text-shadow: 0 0 8px rgba(255, 85, 0, 0.5);
+  text-shadow: 0 0 8px rgba(var(--accent-color-rgb, 255, 85, 0), 0.5);
+}
+
+.music-style-soundcloud .progress-bar-fill,
+.music-style-soundcloud .progress-bar-thumb,
+.music-style-soundcloud .visualizer-bar,
+.music-style-soundcloud .visualizer-bar:nth-child(n) {
+  background: var(--accent-color, #ff5500);
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 255, 85, 0), 0.22);
+}
+
+.music-style-soundcloud .music-player-wrapper.skin-m3-accent .player-info h3,
+.music-style-soundcloud .music-player-wrapper.skin-m3-accent .player-info p,
+body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-info h3,
+body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-info p {
+  background: color-mix(in srgb, var(--m3-surface-container-high, #111) 64%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
 }
 
 /* =========================================
@@ -1756,7 +1875,9 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  max-width: 260px;
+  width: clamp(300px, 34vw, 420px);
+  max-width: calc(100vw - 32px);
+  min-width: 300px;
 }
 .music-style-pill .disc-container {
   width: 32px;
@@ -1770,12 +1891,16 @@
   flex-direction: row;
   align-items: center;
   gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
 }
 .music-style-pill .player-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 100px;
+  flex: 1;
+  min-width: 0;
+  max-width: none;
   overflow: hidden;
 }
 .music-style-pill .player-info h3 {

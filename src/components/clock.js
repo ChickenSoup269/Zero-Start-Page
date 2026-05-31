@@ -4,6 +4,33 @@ import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
 import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
 
+let lunarHideTimer = null
+
+function setClockLunarVisibility(element, visible) {
+  if (!element) return
+
+  if (visible) {
+    if (lunarHideTimer) {
+      clearTimeout(lunarHideTimer)
+      lunarHideTimer = null
+    }
+    element.style.display = "inline-flex"
+    requestAnimationFrame(() => {
+      element.classList.add("is-visible")
+    })
+    return
+  }
+
+  element.classList.remove("is-visible")
+  if (lunarHideTimer) clearTimeout(lunarHideTimer)
+  lunarHideTimer = setTimeout(() => {
+    if (!element.classList.contains("is-visible")) {
+      element.style.display = "none"
+    }
+    lunarHideTimer = null
+  }, 260)
+}
+
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
@@ -1122,10 +1149,10 @@ export function updateTime() {
     const lunarStr = `${lunar.day}/${lunar.month}${leapStr} Âm lịch`
     if (lunarWrap) {
       lunarWrap.textContent = lunarStr
-      lunarWrap.style.display = ""
       if (outerContainer && lunarWrap.parentElement !== outerContainer) {
         outerContainer.appendChild(lunarWrap)
       }
+      setClockLunarVisibility(lunarWrap, true)
     } else {
       const el = outerContainer || document.getElementById("date-fade-wrap")
       if (el && !document.getElementById("clock-lunar-date")) {
@@ -1134,10 +1161,11 @@ export function updateTime() {
         span.className = "clock-lunar-date"
         span.textContent = lunarStr
         el.appendChild(span)
+        setClockLunarVisibility(span, true)
       }
     }
   } else if (lunarWrap) {
-    lunarWrap.style.display = "none"
+    setClockLunarVisibility(lunarWrap, false)
   }
 
   applyHueMode(settings)

@@ -1748,6 +1748,18 @@ export function setupGeneralEventHandlers(
     }
   })
 
+  DOM.m3WidgetsToggle?.addEventListener("change", () => {
+    const enabled = DOM.m3WidgetsToggle.checked === true
+    handleSettingUpdate("widgetUseM3Accent", enabled)
+    document.body.classList.toggle("widgets-m3-accent", enabled)
+    showToast(
+      enabled
+        ? geti18n().settings_m3_widgets_on || "M3 widget backgrounds enabled"
+        : geti18n().settings_m3_widgets_off || "M3 widget backgrounds disabled",
+      { type: "success" },
+    )
+  })
+
   DOM.saveAccentColorBtn.addEventListener("click", () => {
     const settings = getSettings()
     const color = DOM.accentColorPicker.value
@@ -4344,16 +4356,17 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
+    const isChecked = DOM.musicPlayerUseDefaultColorCheckbox.checked
     markInterfaceStyleCustom("musicPlayerUseDefaultColor")
-    handleSettingUpdate(
-      "musicPlayerUseDefaultColor",
-      DOM.musicPlayerUseDefaultColorCheckbox.checked,
-    )
+    if (DOM.lcpMusicUseDefaultColorCheckbox) {
+      DOM.lcpMusicUseDefaultColorCheckbox.checked = isChecked
+    }
+    handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
         detail: {
           key: "musicPlayerUseDefaultColor",
-          value: DOM.musicPlayerUseDefaultColorCheckbox.checked,
+          value: isChecked,
         },
       }),
     )
@@ -5264,6 +5277,9 @@ export function setupGeneralEventHandlers(
     }
     if (key === "showClockLunarMode" && DOM.clockLunarModeSelect) {
       DOM.clockLunarModeSelect.value = value
+    }
+    if (key === "widgetUseM3Accent" && DOM.m3WidgetsToggle) {
+      DOM.m3WidgetsToggle.checked = value === true
     }
     if (key === "sideControlsGhostMode" && DOM.lcpGhostControls)
       DOM.lcpGhostControls.checked = value

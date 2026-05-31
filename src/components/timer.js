@@ -786,9 +786,12 @@ export class Timer {
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = isWhiteMode ? "white-blur" : settings.timerSkin || "default"
+    const skin = settings.widgetUseM3Accent === true
+      ? "m3-accent"
+      : isWhiteMode ? "white-blur" : settings.timerSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
+    this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
   }
 
   toggleClockTimerMode() {

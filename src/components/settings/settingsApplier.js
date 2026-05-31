@@ -580,6 +580,10 @@ function createApplySettings(effectInstances) {
       sideControls.classList.toggle("light-mode", isWhiteMode)
       document.body.classList.toggle("quick-access-white", isWhiteMode)
     }
+    document.body.classList.toggle(
+      "widgets-m3-accent",
+      settings.widgetUseM3Accent === true,
+    )
 
     // Apply Widget Skins
     const widgetSkinsMap = {
@@ -595,14 +599,19 @@ function createApplySettings(effectInstances) {
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
       const el = document.getElementById(id)
       if (el) {
-        const skin = settings[`${key}Skin`]
+        const skin = settings.widgetUseM3Accent === true
+          ? "m3-accent"
+          : settings[`${key}Skin`]
         el.classList.toggle("skin-white-blur", skin === "white-blur")
+        el.classList.toggle("skin-m3-accent", skin === "m3-accent")
+        el.classList.toggle("skin-transparent", skin === "transparent")
 
         // Special handling for music player wrapper inside its container
         if (key === "musicPlayer") {
           const wrapper = el.querySelector(".music-player-wrapper")
           if (wrapper) {
             wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
+            wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
           }
         }
       }
@@ -2540,6 +2549,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.m3AutoBgToggle) {
       DOM.m3AutoBgToggle.checked = settings.m3AutoAccentFromBg === true
     }
+    if (DOM.m3WidgetsToggle) {
+      DOM.m3WidgetsToggle.checked = settings.widgetUseM3Accent === true
+    }
     if (DOM.accentColorSettingsBody) {
       const isOpen = settings.accentControlsOpen !== false
       DOM.accentColorSettingsBody.style.display = "block"
@@ -3593,7 +3605,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
     if (DOM.musicPlayerUseDefaultColorCheckbox) {
       DOM.musicPlayerUseDefaultColorCheckbox.checked =
-        settings.musicPlayerUseDefaultColor !== false
+        settings.musicPlayerUseDefaultColor === true
     }
     if (DOM.spotifyClientIdInput) {
       DOM.spotifyClientIdInput.value = settings.spotifyClientId || ""
@@ -3795,7 +3807,7 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.musicStyleSelect.value = settings.musicBarStyle || "vinyl"
     if (DOM.lcpMusicUseDefaultColorCheckbox) {
       DOM.lcpMusicUseDefaultColorCheckbox.checked =
-        settings.musicPlayerUseDefaultColor !== false
+        settings.musicPlayerUseDefaultColor === true
     }
 
     if (DOM.lcpMusicStyleSelect) {

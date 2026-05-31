@@ -243,6 +243,21 @@
   text-shadow:
     0 1px 8px rgba(0, 0, 0, 0.45),
     0 0 14px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+  transform: translateY(-6px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.24s ease,
+    background 0.24s ease;
+  will-change: opacity, transform;
+}
+
+.clock-lunar-date.is-visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .clock-lunar-date::before {
@@ -3799,6 +3814,121 @@ body.context-menu-none .calendar-event-preview-desc {
 .notepad-container.skin-white-blur .notepad-header #add-note-btn,
 .notepad-container.skin-white-blur .notepad-header #add-note-btn i {
   color: #000000 !important;
+}
+
+/* === M3 ACCENT SKIN FOR WIDGETS === */
+body.widgets-m3-accent .todo-container,
+body.widgets-m3-accent .timer-container,
+body.widgets-m3-accent .calendar-card,
+body.widgets-m3-accent .notepad-container,
+body.widgets-m3-accent .quotes-container,
+.todo-container.skin-m3-accent,
+.timer-container.skin-m3-accent,
+.calendar-card.skin-m3-accent,
+.notepad-container.skin-m3-accent,
+.quotes-container.skin-m3-accent {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--m3-primary-container, var(--safe-accent)) 76%, transparent),
+      color-mix(in srgb, var(--m3-secondary-container, var(--safe-accent)) 58%, transparent)
+    ) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
+  box-shadow:
+    0 18px 46px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 22%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
+.skin-m3-accent h3,
+.skin-m3-accent h4,
+.skin-m3-accent .month-title,
+.skin-m3-accent .day-number,
+.skin-m3-accent .timer-display,
+.skin-m3-accent .quote-text,
+.skin-m3-accent .quote-author,
+.skin-m3-accent .todo-text,
+.skin-m3-accent .section-title,
+.skin-m3-accent .notepad-header h3 {
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  text-shadow: none !important;
+}
+
+.notepad-container.skin-m3-accent .notepad-header h3 {
+  background: none !important;
+  -webkit-text-fill-color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
+.skin-m3-accent .icon-btn,
+.skin-m3-accent .note-action-btn,
+.skin-m3-accent .toolbar-btn {
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  background: color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
+}
+
+.skin-m3-accent .icon-btn:hover,
+.skin-m3-accent .note-action-btn:hover,
+.skin-m3-accent .toolbar-btn:hover {
+  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 44%, transparent) !important;
+}
+
+.skin-m3-accent input,
+.skin-m3-accent textarea,
+.skin-m3-accent .todo-item,
+.skin-m3-accent .day-item:not(.today),
+.skin-m3-accent .calendar-event,
+.skin-m3-accent .note-item,
+.skin-m3-accent .quick-access-divider,
+.skin-m3-accent .todo-section-header {
+  background: color-mix(in srgb, var(--m3-surface-container-high, var(--m3-primary-container, #fff)) 58%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
+}
+
+.skin-m3-accent input:focus,
+.skin-m3-accent textarea:focus,
+.skin-m3-accent .day-item.selected {
+  border-color: var(--m3-primary, var(--safe-accent)) !important;
+  outline-color: var(--m3-primary, var(--safe-accent)) !important;
+}
+
+.skin-m3-accent .weekday-header,
+.skin-m3-accent .lunar-month-title,
+.skin-m3-accent .lunar-date,
+.skin-m3-accent .holiday-name {
+  color: color-mix(in srgb, var(--m3-on-primary-container, var(--text-color)) 72%, transparent) !important;
+}
+
+.skin-m3-accent .day-item.today,
+.skin-m3-accent .timer-input-actions .primary-btn {
+  background: var(--m3-primary, var(--safe-accent)) !important;
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+  border-color: var(--m3-primary, var(--safe-accent)) !important;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 32%, transparent) !important;
+}
+
+.skin-m3-accent .day-item.today .day-number,
+.skin-m3-accent .day-item.today .lunar-date,
+.skin-m3-accent .day-item.today .holiday-name {
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+}
+
+.skin-m3-accent .todo-checkbox {
+  accent-color: var(--m3-primary, var(--safe-accent)) !important;
+}
+
+.skin-m3-accent .event-dot,
+.skin-m3-accent .todo-item.completed .toggle-btn i {
+  background: var(--m3-primary, var(--safe-accent)) !important;
+  color: var(--m3-primary, var(--safe-accent)) !important;
+}
+
+.skin-m3-accent .calendar-event {
+  border-left-color: var(--m3-primary, var(--safe-accent)) !important;
 }
 
 /* Search Engine Selector */

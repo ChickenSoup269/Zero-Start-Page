@@ -11,7 +11,7 @@ export class MusicPlayer {
     this.isPlaying = false
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
-    this.useDefaultColor = settings.musicPlayerUseDefaultColor !== false
+    this.useDefaultColor = settings.musicPlayerUseDefaultColor === true
     this.pollInterval = null
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
@@ -45,7 +45,7 @@ export class MusicPlayer {
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
-    if (settings.musicPlayerSkin === "gameboy" || settings.musicPlayerSkin === "white-blur") {
+    if (["gameboy", "white-blur", "m3-accent"].includes(settings.musicPlayerSkin)) {
       this.applySkin(settings.musicPlayerSkin)
     }
 
@@ -68,14 +68,17 @@ export class MusicPlayer {
     if (!skin) skin = settings.musicPlayerSkin || "default"
 
     // Xóa tất cả skin classes cũ
-    wrapper.classList.remove("skin-gameboy", "skin-white-blur")
-    if (this.container) this.container.classList.remove("skin-white-blur")
+    wrapper.classList.remove("skin-gameboy", "skin-white-blur", "skin-m3-accent")
+    if (this.container) this.container.classList.remove("skin-white-blur", "skin-m3-accent")
 
     if (skin === "gameboy") {
       wrapper.classList.add("skin-gameboy")
     } else if (skin === "white-blur") {
       wrapper.classList.add("skin-white-blur")
       if (this.container) this.container.classList.add("skin-white-blur")
+    } else if (skin === "m3-accent") {
+      wrapper.classList.add("skin-m3-accent")
+      if (this.container) this.container.classList.add("skin-m3-accent")
     }
   }
   applyNoShaking(disabled) {
@@ -342,19 +345,19 @@ export class MusicPlayer {
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
       this.platformIcon.className = "platform-icon fa-brands fa-youtube"
       this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = "#ffffff"
+      this.platformIcon.style.color = this.useDefaultColor ? "#ffffff" : "var(--accent-color)"
     } else if (url.includes("spotify.com") || data.source === "spotify") {
       this.platformIcon.className = "platform-icon fa-brands fa-spotify"
       this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = "#1DB954"
+      this.platformIcon.style.color = this.useDefaultColor ? "#1DB954" : "var(--accent-color)"
     } else if (url.includes("zingmp3.vn") || data.source === "zingmp3") {
       this.platformIcon.className = "platform-icon fa-solid fa-music"
       this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = "#a855f7"
+      this.platformIcon.style.color = this.useDefaultColor ? "#a855f7" : "var(--accent-color)"
     } else if (url.includes("soundcloud.com") || data.source === "soundcloud") {
       this.platformIcon.className = "platform-icon fa-brands fa-soundcloud"
       this.platformIcon.style.display = "inline"
-      this.platformIcon.style.color = "#ff5500"
+      this.platformIcon.style.color = this.useDefaultColor ? "#ff5500" : "var(--accent-color)"
     } else {
       this.platformIcon.style.display = "none"
     }

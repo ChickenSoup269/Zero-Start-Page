@@ -103,6 +103,7 @@ export function showContextMenu(
       const currentSkin = settings[skinKey] || "default"
       const isWhiteBlur = currentSkin === "white-blur"
       const isTransparent = currentSkin === "transparent"
+      const isM3Accent = currentSkin === "m3-accent"
 
       const skinBtn = document.createElement("div")
       skinBtn.className = "context-menu-item custom-music-item"
@@ -128,11 +129,43 @@ export function showContextMenu(
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
+          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
         }
         hideContextMenu()
       }
       contextMenu.insertBefore(skinBtn, menuLock)
+
+      const m3SkinBtn = document.createElement("div")
+      m3SkinBtn.className = "context-menu-item custom-music-item"
+      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.skin_default || "Giao diện Mặc định" : i18n.skin_m3_accent || "Nền M3 Accent"}</span>`
+      m3SkinBtn.onclick = () => {
+        const newVal = isM3Accent ? "default" : "m3-accent"
+        updateSetting(skinKey, newVal)
+        saveSettings(true)
+
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: skinKey, value: newVal },
+          }),
+        )
+
+        const widgetIdMap = {
+          todo: "todo-container",
+          timer: "timer-component",
+          calendar: "full-calendar-container",
+          notepad: "notepad-container",
+          "daily-quotes": "daily-quotes",
+        }
+        const el = document.getElementById(widgetIdMap[id] || id)
+        if (el) {
+          el.classList.toggle("skin-white-blur", newVal === "white-blur")
+          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
+          el.classList.toggle("skin-transparent", newVal === "transparent")
+        }
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(m3SkinBtn, menuLock)
 
       if (id === "daily-quotes") {
         const transBtn = document.createElement("div")
@@ -152,6 +185,7 @@ export function showContextMenu(
           const el = document.getElementById("daily-quotes")
           if (el) {
             el.classList.toggle("skin-white-blur", newVal === "white-blur")
+            el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
             el.classList.toggle("skin-transparent", newVal === "transparent")
           }
           hideContextMenu()
@@ -185,6 +219,23 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(shakeBtn, menuLock)
+      const isM3Accent = settings.musicPlayerSkin === "m3-accent"
+      const m3SkinBtn = document.createElement("div")
+      m3SkinBtn.className = "context-menu-item custom-music-item"
+      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.skin_m3_accent || "Nền M3 Accent"}</span>`
+      m3SkinBtn.onclick = () => {
+        const newSkin = isM3Accent ? "default" : "m3-accent"
+        updateSetting("musicPlayerSkin", newSkin)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerSkin", value: newSkin },
+          }),
+        )
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(m3SkinBtn, shakeBtn)
+
       if (musicStyle === "heartbeat") {
         // Nút đổi Skin GameBoy
         const isGameBoy = settings.musicPlayerSkin === "gameboy"

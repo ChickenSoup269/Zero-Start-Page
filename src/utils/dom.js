@@ -1205,6 +1205,7 @@ export const lcpMusicStyleSelect = document.getElementById(
 export const lcpMusicUseDefaultColorCheckbox = document.getElementById(
   "lcp-music-player-use-default-color",
 )
+export const m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 
 // SVG Wave Generator Controls
 export const svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
