@@ -1038,6 +1038,12 @@ export const bookmarkGroupFontSizeValue = document.getElementById(
 export const bookmarkGroupShowCount = document.getElementById(
   "bookmark-group-show-count",
 )
+export const bookmarkGroupUseAccent = document.getElementById(
+  "bookmark-group-use-accent",
+)
+export const bookmarkLayoutShowGroups = document.getElementById(
+  "bookmark-layout-show-groups",
+)
 
 export const enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",

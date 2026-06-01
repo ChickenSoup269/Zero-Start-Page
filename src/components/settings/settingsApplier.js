@@ -620,6 +620,7 @@ function createApplySettings(effectInstances) {
       "bookmark-layout-bg-m3-accent",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
+      "bookmark-group-accent-enabled",
       "hide-bookmark-text",
       "hide-bookmark-bg",
       "flip-layout",
@@ -643,6 +644,10 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "quick-access-transparent",
       false,
+    )
+    document.body.classList.toggle(
+      "bookmark-group-accent-enabled",
+      settings.bookmarkGroupUseAccent === true,
     )
 
     // Apply Widget Skins
@@ -2789,6 +2794,14 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.bookmarkGroupShowCount.checked =
           settings.bookmarkGroupShowCount !== false
       }
+      if (DOM.bookmarkGroupUseAccent) {
+        DOM.bookmarkGroupUseAccent.checked =
+          settings.bookmarkGroupUseAccent === true
+      }
+      if (DOM.bookmarkLayoutShowGroups) {
+        DOM.bookmarkLayoutShowGroups.checked =
+          settings.showBookmarkGroups !== false
+      }
     }
 
     DOM.bgSizeSelect.value = settings.bgSize || "cover"
@@ -3809,6 +3822,10 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
+    if (DOM.bookmarkLayoutShowGroups) {
+      DOM.bookmarkLayoutShowGroups.checked =
+        settings.showBookmarkGroups !== false
+    }
     if (DOM.lcpBookmarkGroups) {
       DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
     }

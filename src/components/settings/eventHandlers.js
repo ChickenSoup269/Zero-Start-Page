@@ -647,6 +647,7 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupBgOpacity",
       "bookmarkGroupTextColor",
       "bookmarkGroupFontSize",
+      "bookmarkGroupUseAccent",
       "bookmarkShadowColor",
       "bookmarkShadowOpacity",
       "bookmarkShadowBlur",
@@ -2096,6 +2097,13 @@ export function setupGeneralEventHandlers(
         throttleSettingUpdate("bookmarkGroupShowCount", showCount)
       })
     }
+    if (DOM.bookmarkGroupUseAccent) {
+      DOM.bookmarkGroupUseAccent.addEventListener("change", () => {
+        const enabled = DOM.bookmarkGroupUseAccent.checked
+        document.body.classList.toggle("bookmark-group-accent-enabled", enabled)
+        throttleSettingUpdate("bookmarkGroupUseAccent", enabled)
+      })
+    }
 
     if (DOM.bookmarkTextColorPicker) {
       DOM.bookmarkTextColorPicker.addEventListener("input", () => {
@@ -2163,6 +2171,20 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgStyleRow.style.display =
             DOM.lcpBookmarkLayout.value === "default" ? "none" : "flex"
         }
+      })
+    }
+    if (DOM.bookmarkLayoutShowGroups) {
+      DOM.bookmarkLayoutShowGroups.addEventListener("change", () => {
+        const showGroups = DOM.bookmarkLayoutShowGroups.checked
+        if (DOM.showBookmarkGroupsCheckbox)
+          DOM.showBookmarkGroupsCheckbox.checked = showGroups
+        if (DOM.lcpBookmarkGroups) DOM.lcpBookmarkGroups.checked = showGroups
+        handleSettingUpdate("showBookmarkGroups", showGroups)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "showBookmarkGroups", value: showGroups },
+          }),
+        )
       })
     }
     if (DOM.bookmarkLayoutBgStyle) {
@@ -5310,6 +5332,8 @@ export function setupGeneralEventHandlers(
       DOM.lcpContextMenuBg.checked = value
     if (key === "showBookmarkGroups" && DOM.lcpBookmarkGroups)
       DOM.lcpBookmarkGroups.checked = value
+    if (key === "showBookmarkGroups" && DOM.bookmarkLayoutShowGroups)
+      DOM.bookmarkLayoutShowGroups.checked = value
     if (key === "showLunarCalendar" && DOM.lcpLunarCalendar)
       DOM.lcpLunarCalendar.checked = value
     if (key === "showLunarCalendar" && DOM.calendarDisplayModeSelect) {
