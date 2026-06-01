@@ -1178,9 +1178,17 @@ export function initSettings() {
       (animatedBackgroundKeys.includes(key) && value === false) ||
       (key === "splashCursorDarkBg" && value === false)
     ) {
+      const keepSplashCursorActive =
+        key === "splashCursorDarkBg" &&
+        getSettings().splashCursorActive === true
       restoreRememberedBackground()
-      if (key === "splashCursorDarkBg" && getSettings().splashCursorActive) {
+      if (keepSplashCursorActive) {
         updateSetting("splashCursorActive", true)
+        updateSetting("splashCursorDarkBg", false)
+        if (DOM_EXPORTS.splashCursorDarkBg)
+          DOM_EXPORTS.splashCursorDarkBg.checked = false
+        if (DOM_EXPORTS.splashCursorDarkBgBtn)
+          DOM_EXPORTS.splashCursorDarkBgBtn.classList.remove("active")
       }
       if (!skipSave) saveSettings(true)
     }

@@ -37,7 +37,7 @@ const SOURCE_META = [
       url.includes("mp3.zing.vn") ||
       source === "zingmp3" ||
       source === "zing",
-    label: "Z",
+    label: "Zing mp3",
     color: "#a855f7",
   },
   {
@@ -98,17 +98,21 @@ export class MusicPlayer {
   init() {
     this.createElements()
     this.setupEventListeners()
-    this.applyMusicStyle(this.currentStyle) 
+    this.applyMusicStyle(this.currentStyle)
     if (!this.showPlayer) {
       this.container.style.display = "none"
     } else {
       this.updateVisibility()
     }
-    
+
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
-    if (["gameboy", "white-blur", "m3-accent", "transparent"].includes(settings.musicPlayerSkin)) {
+    if (
+      ["gameboy", "white-blur", "m3-accent", "transparent"].includes(
+        settings.musicPlayerSkin,
+      )
+    ) {
       this.applySkin(settings.musicPlayerSkin)
     }
 
@@ -122,17 +126,29 @@ export class MusicPlayer {
   }
 
   applySkin(skin) {
-    const wrapper = this.container ? this.container.querySelector(".music-player-wrapper") : document.querySelector("#music-player-container .music-player-wrapper")
+    const wrapper = this.container
+      ? this.container.querySelector(".music-player-wrapper")
+      : document.querySelector("#music-player-container .music-player-wrapper")
     if (!wrapper) return
 
     const settings = getSettings()
-    
+
     // If no skin provided, get from settings
     if (!skin) skin = settings.musicPlayerSkin || "default"
 
     // Xóa tất cả skin classes cũ
-    wrapper.classList.remove("skin-gameboy", "skin-white-blur", "skin-m3-accent", "skin-transparent")
-    if (this.container) this.container.classList.remove("skin-white-blur", "skin-m3-accent", "skin-transparent")
+    wrapper.classList.remove(
+      "skin-gameboy",
+      "skin-white-blur",
+      "skin-m3-accent",
+      "skin-transparent",
+    )
+    if (this.container)
+      this.container.classList.remove(
+        "skin-white-blur",
+        "skin-m3-accent",
+        "skin-transparent",
+      )
 
     if (skin === "gameboy") {
       wrapper.classList.add("skin-gameboy")
@@ -160,7 +176,7 @@ export class MusicPlayer {
   createElements() {
     const i18n = geti18n()
     this.container = document.getElementById("music-player-container")
-    
+
     if (!this.container) {
       this.container = document.createElement("div")
       this.container.id = "music-player-container"
@@ -346,7 +362,10 @@ export class MusicPlayer {
             b = matches[2]
           }
         }
-        this.container.style.setProperty("--accent-color-rgb", `${r}, ${g}, ${b}`)
+        this.container.style.setProperty(
+          "--accent-color-rgb",
+          `${r}, ${g}, ${b}`,
+        )
       }
     } else {
       // Remove local overrides so it inherits the dynamically updating global accent color
@@ -403,7 +422,8 @@ export class MusicPlayer {
 
   updateUI(data) {
     const i18n = geti18n()
-    this.titleElement.textContent = data.title || i18n.music_unknown_title || "Unknown Title"
+    this.titleElement.textContent =
+      data.title || i18n.music_unknown_title || "Unknown Title"
 
     // Update artist text and platform icon
     const artist = data.artist || i18n.music_unknown_artist || "Unknown Artist"
@@ -414,7 +434,9 @@ export class MusicPlayer {
     this.lastSourceMeta = sourceMeta
     this.applySourceMeta(sourceMeta)
 
-    const wasPlaying = this.container.querySelector(".vinyl-disc").classList.contains("playing")
+    const wasPlaying = this.container
+      .querySelector(".vinyl-disc")
+      .classList.contains("playing")
     this.isPlaying = !data.paused
 
     const btn = document.getElementById("play-pause-btn")
@@ -539,7 +561,6 @@ export class MusicPlayer {
     this.setIconContent(this.platformIcon, meta)
     this.platformIcon.style.display = "inline-flex"
     this.platformIcon.style.color = color
-
   }
 
   setInactive() {
