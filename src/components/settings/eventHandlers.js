@@ -648,6 +648,7 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupTextColor",
       "bookmarkGroupFontSize",
       "bookmarkGroupUseAccent",
+      "bookmarkGroupContainerBgHidden",
       "bookmarkShadowColor",
       "bookmarkShadowOpacity",
       "bookmarkShadowBlur",
@@ -2102,6 +2103,16 @@ export function setupGeneralEventHandlers(
         const enabled = DOM.bookmarkGroupUseAccent.checked
         document.body.classList.toggle("bookmark-group-accent-enabled", enabled)
         throttleSettingUpdate("bookmarkGroupUseAccent", enabled)
+      })
+    }
+    if (DOM.bookmarkGroupContainerBgHidden) {
+      DOM.bookmarkGroupContainerBgHidden.addEventListener("change", () => {
+        const hidden = DOM.bookmarkGroupContainerBgHidden.checked
+        document.body.classList.toggle(
+          "bookmark-group-container-bg-hidden",
+          hidden,
+        )
+        throttleSettingUpdate("bookmarkGroupContainerBgHidden", hidden)
       })
     }
 

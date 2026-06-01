@@ -1041,6 +1041,9 @@ export const bookmarkGroupShowCount = document.getElementById(
 export const bookmarkGroupUseAccent = document.getElementById(
   "bookmark-group-use-accent",
 )
+export const bookmarkGroupContainerBgHidden = document.getElementById(
+  "bookmark-group-container-bg-hidden",
+)
 export const bookmarkLayoutShowGroups = document.getElementById(
   "bookmark-layout-show-groups",
 )

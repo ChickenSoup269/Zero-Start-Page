@@ -621,6 +621,7 @@ function createApplySettings(effectInstances) {
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
       "bookmark-group-accent-enabled",
+      "bookmark-group-container-bg-hidden",
       "hide-bookmark-text",
       "hide-bookmark-bg",
       "flip-layout",
@@ -648,6 +649,10 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "bookmark-group-accent-enabled",
       settings.bookmarkGroupUseAccent === true,
+    )
+    document.body.classList.toggle(
+      "bookmark-group-container-bg-hidden",
+      settings.bookmarkGroupContainerBgHidden === true,
     )
 
     // Apply Widget Skins
@@ -2797,6 +2802,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkGroupUseAccent) {
         DOM.bookmarkGroupUseAccent.checked =
           settings.bookmarkGroupUseAccent === true
+      }
+      if (DOM.bookmarkGroupContainerBgHidden) {
+        DOM.bookmarkGroupContainerBgHidden.checked =
+          settings.bookmarkGroupContainerBgHidden === true
       }
       if (DOM.bookmarkLayoutShowGroups) {
         DOM.bookmarkLayoutShowGroups.checked =

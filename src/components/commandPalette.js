@@ -236,7 +236,7 @@ export function initCommandPalette() {
             title: 'Bật/Tắt: Nhóm Bookmarks',
             desc: 'Hiện hoặc ẩn các nhóm bookmark',
             icon: '<i class="fa-solid fa-folder-bookmark"></i>',
-            shortcut: 'Alt + R',
+            shortcut: 'Alt + J',
             keywords: 'folder group bookmark nhom thu muc',
             action: () => toggleCheckbox(showBookmarkGroupsCheckbox, 'Nhóm Bookmarks')
         },

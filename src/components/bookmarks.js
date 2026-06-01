@@ -1843,7 +1843,7 @@ function updateMacosHover() {
     const bookmarks = document.querySelectorAll(".bookmark")
     bookmarks.forEach((item) => {
       if (item.style.transform !== "") {
-        item.style.transform = ""
+        item.style.removeProperty("transform")
         item.style.zIndex = ""
       }
     })
@@ -1884,7 +1884,7 @@ function updateMacosHover() {
       if (item.classList.contains("dragging")) scale = 1
 
       // Apply scaling and smooth z-index
-      item.style.transform = `scale(${scale})`
+      item.style.setProperty("transform", `scale(${scale})`, "important")
       item.style.zIndex = Math.round(scale * 100)
     })
   }

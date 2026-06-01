@@ -103,6 +103,8 @@ async function bootstrap() {
     document.body.classList.add("hide-bookmark-bg")
   if (currentSettings.bookmarkGroupUseAccent === true)
     document.body.classList.add("bookmark-group-accent-enabled")
+  if (currentSettings.bookmarkGroupContainerBgHidden === true)
+    document.body.classList.add("bookmark-group-container-bg-hidden")
 
   let bgStyle = currentSettings.bookmarkLayoutBgStyle || "default"
   if (bgStyle === "hidden")
