@@ -619,11 +619,15 @@ export function setupGeneralEventHandlers(
   setLanguageToolsOpen(localStorage.getItem(LANGUAGE_TOOLS_OPEN_KEY) === "1")
 
   const throttledUpdates = {}
+  const throttledUndoBaselines = {}
   const lastUpdateTimes = {}
   let reqAnimFrame = null
 
   const throttleSettingUpdate = (key, value) => {
     markInterfaceStyleCustom(key)
+    if (!Object.prototype.hasOwnProperty.call(throttledUndoBaselines, key)) {
+      throttledUndoBaselines[key] = getSettings()[key]
+    }
     const fastFeedbackKeys = [
       "bgBlur",
       "bgBrightness",
@@ -737,12 +741,23 @@ export function setupGeneralEventHandlers(
 
       if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
       throttledUpdates[key] = setTimeout(() => {
-        handleSettingUpdate(key, value) // skipSave = false to persist changes
+        const previousValue = throttledUndoBaselines[key]
+        handleSettingUpdate(key, value, false, true)
+        saveSettings()
+        if (previousValue !== value) {
+          showToast(`Đã đổi ${key}`, {
+            type: "success",
+            undoFn: () => handleSettingUpdate(key, previousValue),
+          })
+        }
+        delete throttledUndoBaselines[key]
+        delete throttledUpdates[key]
       }, 500) // Heavy debounce (500ms) to ensure saving/re-rendering ONLY happens after dragging finishes completely
     } else {
       if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
       throttledUpdates[key] = setTimeout(() => {
         handleSettingUpdate(key, value)
+        delete throttledUndoBaselines[key]
         delete throttledUpdates[key]
       }, delay)
     }
@@ -1936,6 +1951,13 @@ export function setupGeneralEventHandlers(
   DOM.bgFadeInInput.addEventListener("input", () => {
     DOM.bgFadeInValue.textContent = `${DOM.bgFadeInInput.value}s`
     throttleSettingUpdate("bgFadeIn", Number(DOM.bgFadeInInput.value))
+  })
+
+  DOM.backgroundMediaQualitySelect?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "backgroundMediaQuality",
+      DOM.backgroundMediaQualitySelect.value,
+    )
   })
 
   // Custom Bookmark listeners

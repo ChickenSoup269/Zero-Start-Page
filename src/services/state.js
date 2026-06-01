@@ -79,6 +79,7 @@ export const defaultSettings = {
   glassEdge: "rgba(255, 255, 255, 0.2)",
   effect: "none",
   performanceMode: "auto",
+  backgroundMediaQuality: "balanced",
   favoriteEffects: [],
   pixelWeatherStyle: "snow",
   pixelWeatherResolution: 1,

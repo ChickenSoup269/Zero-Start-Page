@@ -39,19 +39,38 @@ function prepareDynamicBackgroundSwap() {
   }
 }
 
+function getMediaQualityProfile(settings = getSettings()) {
+  const mode = settings.backgroundMediaQuality || "balanced"
+  const profiles = {
+    quality: { dprCap: 2, widthCap: 3200, heightCap: 2200, quality: 90 },
+    balanced: { dprCap: 1.5, widthCap: 2400, heightCap: 1600, quality: 82 },
+    low: { dprCap: 1, widthCap: 1600, heightCap: 1000, quality: 68 },
+    still: { dprCap: 0.85, widthCap: 1280, heightCap: 800, quality: 60 },
+  }
+  return profiles[mode] || profiles.balanced
+}
+
 function getTargetImageDimensions() {
+  const profile = getMediaQualityProfile()
   const dpr = window.devicePixelRatio || 1
-  const effectiveDpr = Math.min(dpr, 1.5)
+  const effectiveDpr = Math.min(dpr, profile.dprCap)
   return {
     width: Math.min(
-      2400,
+      profile.widthCap,
       Math.round((window.innerWidth > 0 ? window.innerWidth : 1920) * effectiveDpr),
     ),
     height: Math.min(
-      1600,
+      profile.heightCap,
       Math.round((window.innerHeight > 0 ? window.innerHeight : 1080) * effectiveDpr),
     ),
   }
+}
+
+function buildUnsplashImageUrl(photo, width, height) {
+  const profile = getMediaQualityProfile()
+  const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
+  const separator = baseUrl.includes("?") ? "&" : "?"
+  return `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=${profile.quality}`
 }
 
 function formatResolution(width, height) {
@@ -252,9 +271,7 @@ async function setUnsplashRandomBackground(
 
   try {
     const photo = await fetchBestUnsplashPhoto(accessKey, collection)
-    const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
-    const separator = baseUrl.includes("?") ? "&" : "?"
-    const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
+    const imageUrl = buildUnsplashImageUrl(photo, width, height)
 
     await preloadImage(imageUrl)
     const finalBgValue = imageUrl
@@ -707,9 +724,7 @@ async function applyUnsplashPhoto(photo, element = null) {
 
   const { width, height } = getTargetImageDimensions()
   
-  const baseUrl = photo.urls.raw || photo.urls.full || photo.urls.regular
-  const separator = baseUrl.includes("?") ? "&" : "?"
-  const imageUrl = `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=85`
+  const imageUrl = buildUnsplashImageUrl(photo, width, height)
 
   try {
     await preloadImage(imageUrl)

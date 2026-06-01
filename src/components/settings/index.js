@@ -4,6 +4,7 @@
  */
 
 import { showAlert, showConfirm } from "../../utils/dialog.js"
+import { showToast } from "../../utils/toast.js"
 import {
   saveImage,
   saveVideo,
@@ -79,6 +80,16 @@ import {
   renderSavedMultiColors,
 } from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
+
+let suppressSettingsUndoToast = false
+
+function cloneSettingsForUndo(settings) {
+  try {
+    return JSON.parse(JSON.stringify(settings))
+  } catch {
+    return { ...settings }
+  }
+}
 
 // Import animation effects
 import { StarFall } from "../animations/rainGalaxy.js"
@@ -524,6 +535,16 @@ export function initSettings() {
     isGradient = false,
     skipSave = false,
   ) {
+    const undoSnapshot =
+      !skipSave && !suppressSettingsUndoToast
+        ? cloneSettingsForUndo(getSettings())
+        : null
+    const undoLabel = isGradient
+      ? "background"
+      : typeof key === "string" && key
+        ? key
+        : "settings"
+
     const scheduleAutoAccentUpdate = () => {
       ;[120, 650, 1400].forEach((delay) => {
         setTimeout(() => {
@@ -1113,6 +1134,28 @@ export function initSettings() {
 
     if (shouldUpdateAutoAccent) {
       scheduleAutoAccentUpdate()
+    }
+
+    if (undoSnapshot && JSON.stringify(undoSnapshot) !== JSON.stringify(getSettings())) {
+      showToast(`Đã đổi ${undoLabel}`, {
+        type: "success",
+        undoFn: () => {
+          suppressSettingsUndoToast = true
+          try {
+            Object.entries(undoSnapshot).forEach(
+              ([snapshotKey, snapshotValue]) => {
+                updateSetting(snapshotKey, snapshotValue)
+              },
+            )
+            saveSettings(true)
+            applySettings()
+            updateSettingsInputs()
+            if (settingsGalleriesRendered) refreshBackgroundGalleries()
+          } finally {
+            suppressSettingsUndoToast = false
+          }
+        },
+      })
     }
   }
 

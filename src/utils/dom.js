@@ -56,6 +56,9 @@ export const bgSaturationInput = document.getElementById("bg-saturation-input")
 export const bgSaturationValue = document.getElementById("bg-saturation-value")
 export const bgFadeInInput = document.getElementById("bg-fadein-input")
 export const bgFadeInValue = document.getElementById("bg-fadein-value")
+export const backgroundMediaQualitySelect = document.getElementById(
+  "background-media-quality-select",
+)
 export const bgSizeSelect = document.getElementById("bg-size-select")
 export const bgImageScaleRow = document.getElementById("bg-image-scale-row")
 export const bgImageScaleInput = document.getElementById("bg-image-scale-input")

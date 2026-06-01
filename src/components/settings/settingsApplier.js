@@ -49,6 +49,36 @@ const getBackgroundSizeValue = (settings) =>
     ? `${Math.min(250, Math.max(25, Number(settings.bgImageScale) || 100))}%`
     : settings.bgSize || "cover"
 
+function configureBackgroundVideo(video, settings) {
+  if (!video) return
+  const quality = settings.backgroundMediaQuality || "balanced"
+  video.preload = quality === "quality" ? "auto" : "metadata"
+  video.disableRemotePlayback = true
+  video.playbackRate = quality === "low" ? 0.85 : 1
+
+  const shouldFreeze = quality === "still"
+  const freezeVideo = () => {
+    if (!shouldFreeze || video.style.display !== "block") return
+    const seekTo = Math.min(0.2, Number.isFinite(video.duration) ? video.duration / 10 : 0.2)
+    if (Number.isFinite(seekTo) && seekTo > 0 && video.currentTime < 0.05) {
+      try {
+        video.currentTime = seekTo
+      } catch {
+        // Some blob/video formats reject early seeks before metadata settles.
+      }
+    }
+    video.pause()
+  }
+
+  video.onloadeddata = freezeVideo
+  video.oncanplay = freezeVideo
+  if (shouldFreeze) {
+    freezeVideo()
+  } else if (video.paused && video.style.display === "block") {
+    video.play().catch(() => {})
+  }
+}
+
 function applyMaterialAccentTokens(seedColor) {
   const root = document.documentElement
   const scheme = buildMaterial3Scheme(seedColor)
@@ -735,6 +765,7 @@ function createApplySettings(effectInstances) {
     let activeVideoSource = null
     if (bgVideoElement) bgVideoElement.style.display = "none"
     if (bgVideoElement) {
+      configureBackgroundVideo(bgVideoElement, settings)
       bgVideoElement.style.objectFit =
         settings.bgSize === "contain" ? "contain" : "cover"
       bgVideoElement.style.transform =
@@ -1129,6 +1160,8 @@ function createApplySettings(effectInstances) {
       }
       document.body.classList.add("bg-layer-active")
     }
+
+    if (bgVideoElement) configureBackgroundVideo(bgVideoElement, settings)
 
     ;[
       shouldUseGradientV2 && effectInstances.gradientV2Effect,
@@ -2736,6 +2769,10 @@ function createUpdateSettingsInputs(effectInstances) {
 
     DOM.bgFadeInInput.value = settings.bgFadeIn ?? 0.5
     DOM.bgFadeInValue.textContent = `${settings.bgFadeIn ?? 0.5}s`
+    if (DOM.backgroundMediaQualitySelect) {
+      DOM.backgroundMediaQualitySelect.value =
+        settings.backgroundMediaQuality || "balanced"
+    }
     DOM.bgPosXInput.value = settings.bgPositionX || 50
     DOM.bgPosXValue.textContent = `${DOM.bgPosXInput.value}%`
     DOM.bgPosYInput.value = settings.bgPositionY || 50

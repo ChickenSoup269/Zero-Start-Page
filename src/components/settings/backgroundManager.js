@@ -29,6 +29,17 @@ let bgSelectMode = false
 const bgSelectedIds = new Set()
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
+function getUploadImageProfile(settings = getSettings()) {
+  const mode = settings.backgroundMediaQuality || "balanced"
+  const profiles = {
+    quality: { maxSize: 2560, quality: 0.9 },
+    balanced: { maxSize: 1920, quality: 0.82 },
+    low: { maxSize: 1440, quality: 0.68 },
+    still: { maxSize: 1280, quality: 0.6 },
+  }
+  return profiles[mode] || profiles.balanced
+}
+
 function renderUserColors(DOM) {
   const settings = getSettings()
   const userColorsGallery = document.getElementById("user-colors-gallery")
@@ -831,7 +842,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
         img.src = dataUrl
         img.onload = () => {
           const canvas = document.createElement("canvas")
-          const MAX_SIZE = 1920
+          const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
           let { width, height } = img
           if (width > height) {
             if (width > MAX_SIZE) {
@@ -861,7 +872,7 @@ function setupFileUploads(DOM, handleSettingUpdate) {
                 })
             },
             "image/jpeg",
-            0.85,
+            quality,
           )
         }
       }
