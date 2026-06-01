@@ -299,8 +299,30 @@ function renderUserGradientV2s(dom) {
       <div class="bg-item-overlay">
         <i class="fa-solid fa-play"></i>
       </div>
+      <button class="remove-bg-btn" title="Delete" aria-label="Delete">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
       <div class="bg-item-checkbox ${gradientV2SelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
     `
+
+    const removeBtn = item.querySelector(".remove-bg-btn")
+    removeBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation()
+      const i18n = geti18n()
+      const confirmed = await showConfirm(
+        i18n.alert_delete_bg_confirm || "Delete this saved background?",
+      )
+      if (!confirmed) return
+
+      const { userGradientV2s: current = [] } = getSettings()
+      updateSetting(
+        "userGradientV2s",
+        current.filter((_, i) => i !== index),
+      )
+      saveSettings()
+      gradientV2SelectedIndices.delete(index)
+      renderUserGradientV2s(dom)
+    })
 
     item.addEventListener("click", (e) => {
       e.stopPropagation()

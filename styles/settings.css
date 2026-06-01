@@ -3723,6 +3723,11 @@ body.sidebar-light .preset-code-input {
   color: #fff !important;
 }
 
+.video-thumb-badge.is-gif {
+  border: none !important;
+  color: #fff !important;
+}
+
 .video-thumb-badge i {
   font-size: 0.78rem;
   line-height: 1;
@@ -3754,7 +3759,11 @@ body.sidebar-light .preset-code-input {
 
 .local-bg-item.user-uploaded:hover .remove-bg-btn,
 .user-color-item:hover .remove-bg-btn,
-.user-gradient-item:hover .remove-bg-btn {
+.user-gradient-item:hover .remove-bg-btn,
+.user-gradient-v2-item:hover .remove-bg-btn,
+.user-silk-item:hover .remove-bg-btn,
+.user-light-pillar-item:hover .remove-bg-btn,
+.user-liquid-ether-item:hover .remove-bg-btn {
   opacity: 1;
 }
 
@@ -5203,6 +5212,14 @@ body.sidebar-light .video-thumb-badge.is-image {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
 }
 
+body.sidebar-light .video-thumb-badge.is-gif {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+}
+
 body.sidebar-light .unsplash-credit-badge i {
   color: #000 !important;
   opacity: 1 !important;
@@ -5669,6 +5686,10 @@ body.sidebar-light .user-accent-color-item:hover .remove-bg-btn,
 body.sidebar-light .accent-preset-item:hover .remove-bg-btn,
 body.sidebar-light .user-gradient-item:hover .remove-bg-btn,
 body.sidebar-light .user-multi-color-item:hover .remove-bg-btn,
+body.sidebar-light .user-gradient-v2-item:hover .remove-bg-btn,
+body.sidebar-light .user-silk-item:hover .remove-bg-btn,
+body.sidebar-light .user-light-pillar-item:hover .remove-bg-btn,
+body.sidebar-light .user-liquid-ether-item:hover .remove-bg-btn,
 body.sidebar-light .preview-wrapper:hover .preview-remove-btn {
   display: flex !important;
   opacity: 1 !important;

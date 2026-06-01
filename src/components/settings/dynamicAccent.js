@@ -60,6 +60,31 @@ const averageVibrantPixels = (data) => {
   }
 }
 
+const hslToHex = (h, s, l) => {
+  const hue = (((Number(h) || 0) % 360) + 360) % 360
+  const sat = Math.min(100, Math.max(0, Number(s) || 0)) / 100
+  const light = Math.min(100, Math.max(0, Number(l) || 0)) / 100
+  const c = (1 - Math.abs(2 * light - 1)) * sat
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1))
+  const m = light - c / 2
+  let r = 0
+  let g = 0
+  let b = 0
+
+  if (hue < 60) [r, g, b] = [c, x, 0]
+  else if (hue < 120) [r, g, b] = [x, c, 0]
+  else if (hue < 180) [r, g, b] = [0, c, x]
+  else if (hue < 240) [r, g, b] = [0, x, c]
+  else if (hue < 300) [r, g, b] = [x, 0, c]
+  else [r, g, b] = [c, 0, x]
+
+  const toHex = (value) =>
+    Math.round((value + m) * 255)
+      .toString(16)
+      .padStart(2, "0")
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
 const sampleCurrentVideoFrameColor = () => {
   const video = document.getElementById("bg-video")
   if (
@@ -98,6 +123,8 @@ const getFallbackSeedColor = () => {
   const bg = settings.background
 
   if (typeof bg === "string" && /^#[0-9A-F]{6}$/i.test(bg)) return bg
+  const generatedSeed = getGeneratedBackgroundSeedColor(settings)
+  if (generatedSeed) return generatedSeed
   if (
     settings.multiColorActive &&
     Array.isArray(settings.multiColors) &&
@@ -106,6 +133,79 @@ const getFallbackSeedColor = () => {
     return settings.multiColors[0]
   }
   if (/^#[0-9A-F]{6}$/i.test(settings.gradientStart || "")) {
+    return settings.gradientStart
+  }
+  return null
+}
+
+const getGeneratedBackgroundSeedColor = (settings = getSettings()) => {
+  if (settings.svgWaveActive === true) {
+    return hslToHex(
+      settings.svgWaveStartHue ?? 200,
+      settings.svgWaveStartSaturation ?? 70,
+      settings.svgWaveStartLightness ?? 40,
+    )
+  }
+  if (
+    settings.gradientV2Active === true &&
+    /^#[0-9A-F]{6}$/i.test(settings.gradientV2Color1 || "")
+  ) {
+    return settings.gradientV2Color1
+  }
+  if (
+    settings.silkActive === true &&
+    /^#[0-9A-F]{6}$/i.test(settings.silkColor || "")
+  ) {
+    return settings.silkColor
+  }
+  if (
+    settings.lightPillarActive === true &&
+    /^#[0-9A-F]{6}$/i.test(settings.lightPillarTopColor || "")
+  ) {
+    return settings.lightPillarTopColor
+  }
+  if (
+    settings.liquidEtherActive === true &&
+    /^#[0-9A-F]{6}$/i.test(
+      settings.liquidEtherColor1 ||
+        (Array.isArray(settings.liquidEtherColors)
+          ? settings.liquidEtherColors[0]
+          : ""),
+    )
+  ) {
+    return (
+      settings.liquidEtherColor1 ||
+      (Array.isArray(settings.liquidEtherColors)
+        ? settings.liquidEtherColors[0]
+        : null)
+    )
+  }
+  if (settings.splashCursorDarkBg === true) return "#000000"
+  return null
+}
+
+const isImageOrVideoBackground = (value) => {
+  if (typeof value !== "string") return false
+  return (
+    /^(data:image\/|data:video\/|blob:|https?:\/\/)/i.test(value) ||
+    isIdbMedia(value) ||
+    /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) ||
+    value.includes("googlevideo")
+  )
+}
+
+const getGradientSeedColor = (settings) => {
+  if (
+    settings.multiColorActive &&
+    Array.isArray(settings.multiColors) &&
+    /^#[0-9A-F]{6}$/i.test(settings.multiColors[0] || "")
+  ) {
+    return settings.multiColors[0]
+  }
+  if (
+    !settings.background &&
+    /^#[0-9A-F]{6}$/i.test(settings.gradientStart || "")
+  ) {
     return settings.gradientStart
   }
   return null
@@ -148,6 +248,10 @@ export async function pickAccentFromCurrentBackground(options = {}) {
           return settings.gradientEnd
       }
     }
+    const explicitSeed =
+      getGeneratedBackgroundSeedColor(settings) ||
+      (!isImageOrVideoBackground(bg) ? getGradientSeedColor(settings) : null)
+    if (explicitSeed) return explicitSeed
   } catch (e) {
     // ignore and continue to sampling
   }

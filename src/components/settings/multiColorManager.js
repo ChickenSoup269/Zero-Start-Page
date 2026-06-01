@@ -994,6 +994,10 @@ export function setupMultiColorManager(applySettings) {
     if (forceApply && applySettings) {
       applySettings()
     }
+
+    if (getSettings().m3AutoAccentFromBg === true) {
+      window.appScheduleAutoAccentUpdate?.()
+    }
   }
 
   // Handle count selector change
@@ -1237,6 +1241,9 @@ export function setupMultiColorManager(applySettings) {
     
     saveSettings()
     if (applySettings) applySettings()
+    if (getSettings().m3AutoAccentFromBg === true) {
+      window.appScheduleAutoAccentUpdate?.()
+    }
 
     renderSavedMultiColors(DOM)
 

@@ -79,6 +79,27 @@ function configureBackgroundVideo(video, settings) {
   }
 }
 
+function isVideoBackgroundValue(value) {
+  return (
+    typeof value === "string" &&
+    (value.startsWith("data:video") ||
+      isIdbVideo(value) ||
+      /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) ||
+      value.includes("googlevideo"))
+  )
+}
+
+function clearBackgroundVideo(video) {
+  if (!video) return
+  video.pause()
+  video.style.display = "none"
+  video.style.opacity = "0"
+  if (video.getAttribute("src")) {
+    video.removeAttribute("src")
+    video.load()
+  }
+}
+
 function applyMaterialAccentTokens(seedColor) {
   const root = document.documentElement
   const scheme = buildMaterial3Scheme(seedColor)
@@ -670,23 +691,46 @@ function createApplySettings(effectInstances) {
         document.body.classList.remove(cls)
     })
 
-    // If we already injected a preload background preview, avoid clearing it
-    // to prevent a flash of the default color before the user background appears.
-    const previewExists = Boolean(
-      settings.lastUserBackgroundPreview &&
-      document.body.classList.contains("preload-bg-ready"),
-    )
     const bgLayer = document.getElementById("bg-layer")
     const bgFadeLayer = document.getElementById("bg-fade-layer")
+    const rawBg = settings.background
+    // Only keep the startup preview while the same kind of local media is still
+    // resolving. For colors/reset/gradients it is stale and causes a one-frame flash.
+    const previewExists = Boolean(
+      isIdbMedia(rawBg) &&
+        settings.lastUserBackgroundPreview &&
+        document.body.classList.contains("preload-bg-ready"),
+    )
+    const isNextPredefinedLocalBg = effectInstances.localBackgrounds.some(
+      (b) => b.id === rawBg,
+    )
+    const isNextVideoBg = isVideoBackgroundValue(rawBg)
+    const isNextImageBg =
+      typeof rawBg === "string" &&
+      (rawBg.startsWith("data:image") ||
+        rawBg.startsWith("blob:") ||
+        rawBg.match(/^https?:\/\//) ||
+        isIdbImage(rawBg))
+    const shouldCarryFadeLayer =
+      bgChanged && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
+    const earlyBgVideoElement = document.getElementById("bg-video")
+
     if (!previewExists) {
+      document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
       document.body.style.background = ""
       document.body.style.backgroundImage = ""
-      if (bgChanged && bgLayer && bgFadeLayer) {
+      if (shouldCarryFadeLayer && bgLayer && bgFadeLayer) {
         bgFadeLayer.className = bgLayer.className
         bgFadeLayer.style.background = bgLayer.style.background
         bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
         bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
         bgFadeLayer.style.opacity = "1"
+      } else if (bgFadeLayer) {
+        bgFadeLayer.className = ""
+        bgFadeLayer.style.background = ""
+        bgFadeLayer.style.backgroundImage = ""
+        bgFadeLayer.style.backgroundSize = ""
+        bgFadeLayer.style.opacity = "0"
       }
       if (bgLayer) {
         bgLayer.style.backgroundImage = ""
@@ -700,10 +744,11 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bg-layer-active")
       if (bgLayer) bgLayer.style.opacity = "1"
     }
+    if (!isNextVideoBg) clearBackgroundVideo(earlyBgVideoElement)
     document.documentElement.style.setProperty("--text-color", "#ffffff")
 
     // 3. Background Logic
-    let bg = settings.background
+    let bg = rawBg
     // Resolve IndexedDB image/video ID to blob URL
     const isVideoId = isIdbVideo(bg)
     if (isIdbMedia(bg)) {
@@ -750,9 +795,7 @@ function createApplySettings(effectInstances) {
       }
       document.body.classList.add("bg-layer-active")
     }
-    const isPredefinedLocalBg = effectInstances.localBackgrounds.some(
-      (b) => b.id === bg,
-    )
+    const isPredefinedLocalBg = isNextPredefinedLocalBg
     const isUserUploadedBg =
       bg &&
       (bg.startsWith("data:image") ||
@@ -829,7 +872,10 @@ function createApplySettings(effectInstances) {
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else {
-          if (bgLayer) bgLayer.style.background = bg
+          if (bgLayer) {
+            bgLayer.style.backgroundImage = "none"
+            bgLayer.style.background = bg
+          }
           document.body.classList.add("bg-layer-active")
           document.documentElement.style.setProperty(
             "--text-color",
@@ -838,6 +884,7 @@ function createApplySettings(effectInstances) {
         }
       } else {
         if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
           const isMultiColorActive =
             settings.activeBgUid?.startsWith("multi-") ||
             (settings.multiColorActive === true &&
@@ -1103,7 +1150,10 @@ function createApplySettings(effectInstances) {
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
-        if (bgLayer) bgLayer.style.background = bg
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.background = bg
+        }
         document.body.classList.add("bg-layer-active")
         document.documentElement.style.setProperty(
           "--text-color",
@@ -1114,6 +1164,7 @@ function createApplySettings(effectInstances) {
     // Fallback: Multi-Color Gradient or Default Gradient
     else {
       if (bgLayer) {
+        bgLayer.style.backgroundImage = "none"
         const isMultiColorActive =
           settings.activeBgUid?.startsWith("multi-") ||
           (settings.multiColorActive === true &&

@@ -169,7 +169,15 @@ export async function preloadImages(ids) {
 
 /** Kiểm tra xem có phải IDB ID không */
 export function isIdbImage(id) {
-  return typeof id === "string" && id.startsWith("idb-img-")
+  return (
+    typeof id === "string" &&
+    (id.startsWith("idb-img-") || id.startsWith("idb-gif-"))
+  )
+}
+
+/** Kiểm tra xem có phải IDB GIF ID không */
+export function isIdbGif(id) {
+  return typeof id === "string" && id.startsWith("idb-gif-")
 }
 
 /** Kiểm tra xem có phải IDB video ID không */

@@ -21,6 +21,12 @@ let lightPillarSelectedIndices = new Set()
 let liquidEtherSelectMode = false
 let liquidEtherSelectedIndices = new Set()
 
+const scheduleAutoAccentFromGeneratedBg = () => {
+  if (getSettings().m3AutoAccentFromBg === true) {
+    window.appScheduleAutoAccentUpdate?.()
+  }
+}
+
 /**
  * Initialize all special effects UI handlers
  */
@@ -110,6 +116,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       })
       if (silkColorPicker) silkColorPicker.value = randomHex
       saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
       if (getSettings().silkActive && effects.silkEffect) {
         effects.silkEffect.setOptions({
           color: randomProps.silkColor,
@@ -234,6 +241,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       if (lpTopColorPicker) lpTopColorPicker.value = randomProps.lightPillarTopColor
       if (lpBottomColorPicker) lpBottomColorPicker.value = randomProps.lightPillarBottomColor
       saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
       if (getSettings().lightPillarActive && effects.lightPillarEffect) {
         effects.lightPillarEffect.setOptions({
           topColor: randomProps.lightPillarTopColor,
@@ -310,7 +318,11 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       leColor3 ? leColor3.value : "#B497CF"
     ]
     updateSetting("liquidEtherColors", colors)
+    updateSetting("liquidEtherColor1", colors[0])
+    updateSetting("liquidEtherColor2", colors[1])
+    updateSetting("liquidEtherColor3", colors[2])
     saveSettings()
+    scheduleAutoAccentFromGeneratedBg()
     if (getSettings().liquidEtherActive && effects.liquidEtherEffect) {
       effects.liquidEtherEffect.updateSettings({ colors })
     }
@@ -342,6 +354,9 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       const glowWidth = parseFloat((Math.random() * 8 + 1).toFixed(1))
       
       updateSetting("liquidEtherColors", colors)
+      updateSetting("liquidEtherColor1", colors[0])
+      updateSetting("liquidEtherColor2", colors[1])
+      updateSetting("liquidEtherColor3", colors[2])
       updateSetting("liquidEtherGlowWidth", glowWidth)
       
       if (leColor1) leColor1.value = colors[0]
@@ -351,6 +366,7 @@ export function initSpecialEffectsManager(ctx, handleSettingUpdate) {
       if (leGlowWidthVal) leGlowWidthVal.textContent = glowWidth.toFixed(1)
       
       saveSettings()
+      scheduleAutoAccentFromGeneratedBg()
       if (getSettings().liquidEtherActive && effects.liquidEtherEffect) {
         effects.liquidEtherEffect.updateSettings({ colors, glowWidth })
       }
@@ -595,9 +611,15 @@ export function renderUserSilks() {
     item.style.background = preset.color || "#7B7481"
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
+      <button class="remove-bg-btn" title="Delete" aria-label="Delete"><i class="fa-solid fa-xmark"></i></button>
       <div class="bg-item-checkbox ${silkSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
+    const removeBtn = item.querySelector(".remove-bg-btn")
+    removeBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation()
+      await removeSavedEffectPreset("silk", index)
+    })
     item.addEventListener("click", (e) => {
       e.stopPropagation()
       if (silkSelectMode) {
@@ -630,6 +652,7 @@ function applySilkPreset(preset) {
   updateSetting("silkNoise", preset.noise)
   updateSetting("silkRotation", preset.rotation)
   updateSetting("background", null)
+  scheduleAutoAccentFromGeneratedBg()
   
   window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
     detail: { type: 'silk', preset } 
@@ -667,9 +690,15 @@ export function renderUserLightPillars() {
     item.style.background = `linear-gradient(to bottom, ${preset.topColor || '#5227FF'}, ${preset.bottomColor || '#FF9FFC'})`
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
+      <button class="remove-bg-btn" title="Delete" aria-label="Delete"><i class="fa-solid fa-xmark"></i></button>
       <div class="bg-item-checkbox ${lightPillarSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
+    const removeBtn = item.querySelector(".remove-bg-btn")
+    removeBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation()
+      await removeSavedEffectPreset("light-pillar", index)
+    })
     item.addEventListener("click", (e) => {
       e.stopPropagation()
       if (lightPillarSelectMode) {
@@ -706,6 +735,7 @@ function applyLightPillarPreset(preset) {
   updateSetting("lightPillarNoiseIntensity", preset.noiseIntensity)
   updateSetting("lightPillarRotation", preset.pillarRotation)
   updateSetting("background", null)
+  scheduleAutoAccentFromGeneratedBg()
   
   window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
     detail: { type: 'light-pillar', preset } 
@@ -732,8 +762,16 @@ export function renderUserLiquidEthers() {
     const item = document.createElement("div")
     item.className = "local-bg-item user-liquid-ether-item"
 
-    const colors = preset.colors || ["#5227FF", "#FF9FFC", "#B497CF"]
-    const sColors = settings.liquidEtherColors || []
+    const colors = preset.colors || [
+      preset.color1 || "#5227FF",
+      preset.color2 || "#FF9FFC",
+      preset.color3 || "#B497CF",
+    ]
+    const sColors = settings.liquidEtherColors || [
+      settings.liquidEtherColor1,
+      settings.liquidEtherColor2,
+      settings.liquidEtherColor3,
+    ]
     const isActive =
       settings.liquidEtherActive &&
       !settings.background &&
@@ -745,9 +783,15 @@ export function renderUserLiquidEthers() {
     item.style.background = `linear-gradient(135deg, ${colors[0]}, ${colors[1]}, ${colors[2]})`
     item.innerHTML = `
       <div class="bg-item-overlay"><i class="fa-solid fa-play"></i></div>
+      <button class="remove-bg-btn" title="Delete" aria-label="Delete"><i class="fa-solid fa-xmark"></i></button>
       <div class="bg-item-checkbox ${liquidEtherSelectedIndices.has(index) ? "checked" : ""}"><i class="fa-solid fa-check"></i></div>
       <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
     `
+    const removeBtn = item.querySelector(".remove-bg-btn")
+    removeBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation()
+      await removeSavedEffectPreset("liquid-ether", index)
+    })
     item.addEventListener("click", (e) => {
       e.stopPropagation()
       if (liquidEtherSelectMode) {
@@ -776,12 +820,48 @@ export function renderUserLiquidEthers() {
 function applyLiquidEtherPreset(preset) {
   const colors = preset.colors || ["#5227FF", "#FF9FFC", "#B497CF"]
   updateSetting("liquidEtherColors", colors)
+  updateSetting("liquidEtherColor1", colors[0])
+  updateSetting("liquidEtherColor2", colors[1])
+  updateSetting("liquidEtherColor3", colors[2])
   updateSetting("liquidEtherGlowWidth", preset.glowWidth)
   updateSetting("background", null)
+  scheduleAutoAccentFromGeneratedBg()
   
   window.dispatchEvent(new CustomEvent('specialEffectPresetApplied', { 
     detail: { type: 'liquid-ether', preset } 
   }));
+}
+
+async function removeSavedEffectPreset(type, index) {
+  const i18n = geti18n()
+  const confirmed = await showConfirm(
+    i18n.alert_delete_bg_confirm || "Delete this saved background?",
+  )
+  if (!confirmed) return
+
+  const key =
+    type === "silk"
+      ? "userSilks"
+      : type === "light-pillar"
+        ? "userLightPillars"
+        : "userLiquidEthers"
+  const items = getSettings()[key] || []
+  updateSetting(
+    key,
+    items.filter((_, i) => i !== index),
+  )
+  saveSettings()
+
+  if (type === "silk") {
+    silkSelectedIndices.delete(index)
+    renderUserSilks()
+  } else if (type === "light-pillar") {
+    lightPillarSelectedIndices.delete(index)
+    renderUserLightPillars()
+  } else {
+    liquidEtherSelectedIndices.delete(index)
+    renderUserLiquidEthers()
+  }
 }
 
 function setupEffectMultiSelect(type, handleSettingUpdate) {

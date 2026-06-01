@@ -190,13 +190,29 @@
         }
         return `${repeating}linear-gradient(${angle}deg, ${stops})`
       }
+      const isImageLikeBackground = (value) =>
+        typeof value === "string" &&
+        (value.startsWith("data:image") ||
+          value.startsWith("blob:") ||
+          /^https?:\/\//i.test(value) ||
+          value.startsWith("idb-img-") ||
+          value.startsWith("idb-gif-"))
+
       const buildEarlyBackgroundCss = () => {
         const bg = settings.background
         const isIndexedDbImage =
-          typeof bg === "string" && bg.startsWith("idb-img-")
+          typeof bg === "string" &&
+          (bg.startsWith("idb-img-") || bg.startsWith("idb-gif-"))
 
-        // If a persistent preview exists (data URL or CSS), use it for instant display
-        if (settings.lastUserBackgroundPreview && !isIndexedDbImage) {
+        // Only reuse a persistent preview for the same image-like background.
+        // A stale preview from a previous user image causes a broken-looking flash
+        // when the current background is a color, reset, or generated gradient.
+        if (
+          settings.lastUserBackgroundPreview &&
+          settings.lastUserBackground === bg &&
+          isImageLikeBackground(bg) &&
+          !isIndexedDbImage
+        ) {
           const preview = settings.lastUserBackgroundPreview
           if (
             preview.startsWith("data:") ||
@@ -262,9 +278,13 @@
       const searchBarWidth = settings.searchBarWidth || 600
       const isIndexedDbImage =
         typeof settings.background === "string" &&
-        settings.background.startsWith("idb-img-")
+        (settings.background.startsWith("idb-img-") ||
+          settings.background.startsWith("idb-gif-"))
       const hasPersistentBgPreview =
-        Boolean(settings.lastUserBackgroundPreview) && !isIndexedDbImage
+        Boolean(settings.lastUserBackgroundPreview) &&
+        settings.lastUserBackground === settings.background &&
+        isImageLikeBackground(settings.background) &&
+        !isIndexedDbImage
       const earlyBg = cssText(buildEarlyBackgroundCss())
       const earlyBgSize =
         settings.bgSize === "custom"

@@ -1325,9 +1325,32 @@ export function setupGeneralEventHandlers(
     return cssUrlMatch ? cssUrlMatch[2].trim() : trimmed
   }
 
-  DOM.bgInput.addEventListener("change", () => {
+  const isRemoteVideoBackground = (value) =>
+    /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) ||
+    value.includes("googlevideo")
+
+  const preloadRemoteImageBackground = (url) =>
+    new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => resolve(url)
+      img.onerror = () => reject(new Error("Failed to load background URL"))
+      img.src = url
+    })
+
+  DOM.bgInput.addEventListener("change", async () => {
     const background = normalizeBackgroundInput(DOM.bgInput.value)
     DOM.bgInput.value = background
+    if (
+      /^https?:\/\//i.test(background) &&
+      !isRemoteVideoBackground(background)
+    ) {
+      try {
+        await preloadRemoteImageBackground(background)
+      } catch {
+        showAlert("Could not load that image URL.")
+        return
+      }
+    }
     handleSettingUpdate("background", background)
   })
   DOM.bgColorPicker.addEventListener("input", () => {
@@ -2696,6 +2719,7 @@ export function setupGeneralEventHandlers(
     saveSettings()
     applySettings()
     updateSettingsInputs()
+    window.appScheduleAutoAccentUpdate?.()
   }
 
   const applyEffectPresetPayload = (payload) => {
@@ -2805,6 +2829,7 @@ export function setupGeneralEventHandlers(
     } else {
       effects.svgWaveEffect.start(params)
     }
+    window.appScheduleAutoAccentUpdate?.()
   }
 
   const setupPresetCodeControls = ({
@@ -3102,6 +3127,7 @@ export function setupGeneralEventHandlers(
     effects.svgWaveEffect.update(getSvgWaveParams(getSettings()), fade)
     if (!effects.svgWaveEffect.active)
       effects.svgWaveEffect.start(getSvgWaveParams(getSettings()))
+    window.appScheduleAutoAccentUpdate?.()
   }
 
   DOM.svgWaveToggleBtn.addEventListener("click", () => {
@@ -3119,6 +3145,7 @@ export function setupGeneralEventHandlers(
       updateSetting("svgWaveActive", true)
       updateSetting("background", null)
       saveSettings()
+      window.appScheduleAutoAccentUpdate?.()
     }
     applySettings()
     updateSettingsInputs()
@@ -3148,6 +3175,7 @@ export function setupGeneralEventHandlers(
     saveSettings()
     updateSettingsInputs()
     effects.svgWaveEffect.start(getSvgWaveParams(getSettings()))
+    window.appScheduleAutoAccentUpdate?.()
   })
 
   DOM.svgWaveAnglePresetBtns.forEach((btn) => {
@@ -3190,6 +3218,7 @@ export function setupGeneralEventHandlers(
     } else {
       effects.svgWaveEffect.start(rParams)
     }
+    window.appScheduleAutoAccentUpdate?.()
   })
 
   DOM.svgWaveSaveBtn.addEventListener("click", () => {

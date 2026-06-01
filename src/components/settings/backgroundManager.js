@@ -11,6 +11,7 @@ import {
 import {
   isIdbMedia,
   isIdbImage,
+  isIdbGif,
   isIdbVideo,
   getBlobUrlSync,
   getImageUrl,
@@ -323,8 +324,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   if (DOM.localBackgroundGallery) DOM.localBackgroundGallery.innerHTML = ""
 
   const imagesGallery = document.getElementById("local-images-gallery")
+  const gifsGallery = document.getElementById("local-gifs-gallery")
   const videosGallery = document.getElementById("local-videos-gallery")
   if (imagesGallery) imagesGallery.innerHTML = ""
+  if (gifsGallery) gifsGallery.innerHTML = ""
   if (videosGallery) videosGallery.innerHTML = ""
 
   // User Uploaded Backgrounds
@@ -336,6 +339,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       const authorName =
         typeof bgData === "object" ? bgData.authorName || bgData.author : null
       const isVideo = isIdbVideo(bgId)
+      const isGif =
+        isIdbGif(bgId) || (typeof bgData === "object" && bgData.type === "gif")
 
       const item = document.createElement("div")
       item.className = "local-bg-item user-uploaded"
@@ -375,6 +380,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       } else if (isVideo) {
         typeIcon.innerHTML = '<i class="fa-solid fa-video"></i>'
         typeIcon.classList.add("is-video")
+        item.appendChild(typeIcon)
+      } else if (isGif) {
+        typeIcon.innerHTML = '<i class="fa-solid fa-film"></i>'
+        typeIcon.classList.add("is-gif")
         item.appendChild(typeIcon)
       } else if (isIdbImage(bgId)) {
         typeIcon.innerHTML = '<i class="fa-solid fa-image"></i>'
@@ -426,7 +435,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       }
 
       if (isVideo) item.classList.add("video-bg-item")
-      item.title = `User ${isVideo ? "Video" : "Image"} ${index + 1}`
+      if (isGif) item.classList.add("gif-bg-item")
+      item.title = `User ${isVideo ? "Video" : isGif ? "GIF" : "Image"} ${index + 1}`
 
       item.addEventListener("contextmenu", (e) => {
         e.preventDefault()
@@ -508,6 +518,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       if (isVideo) {
         if (videosGallery) videosGallery.appendChild(item)
+      } else if (isGif) {
+        if (gifsGallery) gifsGallery.appendChild(item)
       } else {
         if (imagesGallery) imagesGallery.appendChild(item)
       }
@@ -516,9 +528,15 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
   // Show/hide sections based on content
   if (imagesGallery && videosGallery) {
+    const hasGifs = !!settings.userBackgrounds?.some((bg) => {
+      const bgId = typeof bg === "object" ? bg.id : bg
+      return isIdbGif(bgId) || (typeof bg === "object" && bg.type === "gif")
+    })
     const hasVideos = !!settings.userBackgrounds?.some((bg) =>
       isIdbVideo(typeof bg === "object" ? bg.id : bg),
     )
+    const gifsSection = document.getElementById("local-gifs-section")
+    if (gifsSection) gifsSection.style.display = hasGifs ? "block" : "none"
     document.getElementById("local-videos-section").style.display = hasVideos
       ? "block"
       : "none"
@@ -555,6 +573,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     const containers = [
       DOM.localBackgroundGallery,
       document.getElementById("local-images-gallery"),
+      document.getElementById("local-gifs-gallery"),
       document.getElementById("local-videos-gallery"),
       document.getElementById("user-colors-gallery"),
     ].filter(Boolean)
@@ -573,6 +592,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     const containers = [
       DOM.localBackgroundGallery,
       document.getElementById("local-images-gallery"),
+      document.getElementById("local-gifs-gallery"),
       document.getElementById("local-videos-gallery"),
       document.getElementById("user-colors-gallery"),
     ].filter(Boolean)
@@ -609,6 +629,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     // Find all user-uploaded items in all galleries
     const galleries = [
       document.getElementById("local-images-gallery"),
+      document.getElementById("local-gifs-gallery"),
       document.getElementById("local-videos-gallery"),
     ].filter(Boolean)
 
@@ -637,7 +658,13 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
     if (!confirmed) return
 
     const settings = getSettings()
-    const toDelete = Array.from(bgSelectedIds)
+    const toDelete = (settings.userBackgrounds || [])
+      .filter((bg) => {
+        const bgId = typeof bg === "object" ? bg.id : bg
+        const bgUid = typeof bg === "object" ? bg.uid || bg.id : bg
+        return bgSelectedIds.has(bgId) || bgSelectedIds.has(bgUid)
+      })
+      .map((bg) => (typeof bg === "object" ? bg.id : bg))
 
     // Fix: Handle both string IDs and objects in userBackgrounds, checking both id and uid
     settings.userBackgrounds = (settings.userBackgrounds || []).filter((bg) => {
@@ -669,6 +696,7 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
   // Add click listener to a common parent or both galleries
   const galleries = [
     document.getElementById("local-images-gallery"),
+    document.getElementById("local-gifs-gallery"),
     document.getElementById("local-videos-gallery"),
     document.getElementById("user-colors-gallery"),
     DOM.localBackgroundGallery, // Keep original for compatibility
@@ -823,9 +851,15 @@ function setupFileUploads(DOM, handleSettingUpdate) {
 
       const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
       if (isGif) {
-        saveImage(file)
+        saveImage(file, `idb-gif-${Date.now()}`)
           .then((id) => {
-            getSettings().userBackgrounds.push(id)
+            getSettings().userBackgrounds.push({
+              uid: "bg-" + Date.now(),
+              id,
+              type: "gif",
+              name: file.name || "GIF background",
+              date: new Date().toISOString(),
+            })
             handleSettingUpdate("background", id)
             renderLocalBackgrounds(DOM, handleSettingUpdate)
           })

@@ -80,6 +80,7 @@ import {
   renderSavedMultiColors,
 } from "./multiColorManager.js"
 import { setupGeneralEventHandlers } from "./eventHandlers.js"
+import { BACKGROUND_ANIMATION_KEYS } from "./visualPresetConfig.js"
 
 let suppressSettingsUndoToast = false
 
@@ -529,6 +530,52 @@ export function initSettings() {
     runWhenIdle(renderSettingsGalleries, 600)
   }
 
+  const scheduleAutoAccentUpdate = () => {
+    ;[120, 650, 1400].forEach((delay) => {
+      setTimeout(() => {
+        if (getSettings().m3AutoAccentFromBg !== true) return
+        applyAccentFromCurrentBackground({
+          DOM: DOM_EXPORTS,
+          handleSettingUpdate,
+          fallbackRandom: false,
+          silent: true,
+        }).catch((err) => {
+          console.warn("Auto M3 accent update failed:", err)
+        })
+      }, delay)
+    })
+  }
+
+  const autoAccentBackgroundKeys = new Set([
+    "background",
+    "activeBgUid",
+    "gradientStart",
+    "gradientEnd",
+    "gradientAngle",
+    "gradientType",
+    "gradientRepeating",
+    "gradientExtraColorCount",
+    "gradientCustomColors",
+    "gradientPosition",
+    "gradientRadialShape",
+    "multiColorActive",
+    "multiColorCount",
+    "multiColors",
+    "multiGradientAngle",
+    "multiColorMode",
+    "multiColorType",
+    "multiColorRepeating",
+    "multiColorPosition",
+    "multiColorRadialShape",
+    "multiColorDividers",
+    "multiColorDividerColor",
+    "multiColorDividerWidth",
+    "multiColorFreeLineAngles",
+    "multiColorLineAngles",
+    "liquidEtherColors",
+    ...BACKGROUND_ANIMATION_KEYS,
+  ])
+
   async function handleSettingUpdate(
     key,
     value,
@@ -545,22 +592,6 @@ export function initSettings() {
         ? key
         : "settings"
 
-    const scheduleAutoAccentUpdate = () => {
-      ;[120, 650, 1400].forEach((delay) => {
-        setTimeout(() => {
-          if (getSettings().m3AutoAccentFromBg !== true) return
-          applyAccentFromCurrentBackground({
-            DOM: DOM_EXPORTS,
-            handleSettingUpdate,
-            fallbackRandom: false,
-            silent: true,
-          }).catch((err) => {
-            console.warn("Auto M3 accent update failed:", err)
-          })
-        }, delay)
-      })
-    }
-
     const animatedBackgroundKeys = [
       "gradientV2Active",
       "svgWaveActive",
@@ -576,6 +607,13 @@ export function initSettings() {
     const getBackgroundStateSnapshot = (settings) => ({
       background: settings.background ?? null,
       activeBgUid: settings.activeBgUid || null,
+      svgWaveActive: settings.svgWaveActive === true,
+      gradientV2Active: settings.gradientV2Active === true,
+      silkActive: settings.silkActive === true,
+      lightPillarActive: settings.lightPillarActive === true,
+      liquidEtherActive: settings.liquidEtherActive === true,
+      splashCursorActive: settings.splashCursorActive === true,
+      splashCursorDarkBg: settings.splashCursorDarkBg === true,
       gradientStart: settings.gradientStart,
       gradientEnd: settings.gradientEnd,
       gradientAngle: settings.gradientAngle,
@@ -628,6 +666,63 @@ export function initSettings() {
       ) {
         updateSetting("background", settings.lastUserBackground)
         updateSetting("activeBgUid", settings.lastUserActiveBgUid || null)
+      }
+    }
+
+    const isMediaLikeBackgroundValue = (candidate) =>
+      typeof candidate === "string" &&
+      (candidate.startsWith("#") ||
+        candidate.includes("gradient(") ||
+        candidate.startsWith("data:image") ||
+        candidate.startsWith("data:video") ||
+        candidate.startsWith("blob:") ||
+        candidate.startsWith("idb-img-") ||
+        candidate.startsWith("idb-gif-") ||
+        candidate.startsWith("idb-video-") ||
+        /^https?:\/\//i.test(candidate) ||
+        /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(candidate) ||
+        candidate.includes("googlevideo"))
+
+    const currentBackgroundSnapshot =
+      key === "background" && value != null
+        ? getBackgroundStateSnapshot(getSettings())
+        : null
+    const shouldRestoreRememberedBackground =
+      key === "background" &&
+      value == null &&
+      isMediaLikeBackgroundValue(getSettings().background) &&
+      getSettings().lastUserBackgroundState &&
+      typeof getSettings().lastUserBackgroundState === "object"
+
+    if (shouldRestoreRememberedBackground) {
+      const snapshot = getSettings().lastUserBackgroundState
+      const current = getSettings()
+      const snapshotIsCurrentMedia =
+        snapshot.background === current.background &&
+        !snapshot.svgWaveActive &&
+        !snapshot.gradientV2Active &&
+        !snapshot.silkActive &&
+        !snapshot.lightPillarActive &&
+        !snapshot.liquidEtherActive &&
+        !snapshot.splashCursorActive
+
+      if (!snapshotIsCurrentMedia) {
+        Object.entries(snapshot).forEach(([snapshotKey, snapshotValue]) => {
+          updateSetting(snapshotKey, snapshotValue)
+        })
+        updateSetting("unsplashLastCredit", null)
+        updateSetting(
+          "lastUserBackgroundPreview",
+          typeof snapshot.background === "string" &&
+            (snapshot.background.startsWith("#") ||
+              snapshot.background.includes("gradient("))
+            ? snapshot.background
+            : null,
+        )
+        if (!skipSave) saveSettings(true)
+        applySettings()
+        updateSettingsInputs()
+        return
       }
     }
 
@@ -719,6 +814,35 @@ export function initSettings() {
     } else {
       updateSetting(key, value)
       if (key === "background") {
+        if (value == null) {
+          updateSetting("lastUserBackgroundPreview", null)
+          updateSetting("activeBgUid", null)
+        } else if (
+          typeof value === "string" &&
+          (value.startsWith("#") ||
+            value.includes("gradient(") ||
+            value.startsWith("linear-gradient") ||
+            value.startsWith("radial-gradient") ||
+            value.startsWith("conic-gradient"))
+        ) {
+          updateSetting("lastUserBackgroundPreview", value)
+        } else if (
+          typeof value === "string" &&
+          (value.startsWith("data:video") ||
+            value.startsWith("idb-video-") ||
+            /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) ||
+            value.includes("googlevideo"))
+        ) {
+          updateSetting("lastUserBackgroundPreview", null)
+        } else if (
+          typeof value === "string" &&
+          (value.startsWith("data:image") ||
+            value.startsWith("blob:") ||
+            /^https?:\/\//i.test(value))
+        ) {
+          updateSetting("lastUserBackgroundPreview", value)
+        }
+
         if (value != null) {
           const settings = getSettings()
           const activeBgUid = settings.activeBgUid || null
@@ -738,7 +862,7 @@ export function initSettings() {
           if (!activePreset) updateSetting("activeBgUid", null)
           updateSetting(
             "lastUserBackgroundState",
-            getBackgroundStateSnapshot(getSettings()),
+            currentBackgroundSnapshot || getBackgroundStateSnapshot(getSettings()),
           )
           // Generate a small persistent preview for faster reloads (data URL or CSS)
           ;(async () => {
@@ -1031,6 +1155,7 @@ export function initSettings() {
     if (key === "splashCursorActive" && value === true) {
       updateSetting("splashCursorDarkBg", false)
       restoreRememberedBackground()
+      updateSetting("splashCursorActive", true)
       updateSetting("gradientV2Active", false)
       updateSetting("svgWaveActive", false)
       updateSetting("silkActive", false)
@@ -1054,6 +1179,9 @@ export function initSettings() {
       (key === "splashCursorDarkBg" && value === false)
     ) {
       restoreRememberedBackground()
+      if (key === "splashCursorDarkBg" && getSettings().splashCursorActive) {
+        updateSetting("splashCursorActive", true)
+      }
       if (!skipSave) saveSettings(true)
     }
     if (key === "background" && value != null) {
@@ -1124,13 +1252,7 @@ export function initSettings() {
 
     const shouldUpdateAutoAccent =
       getSettings().m3AutoAccentFromBg === true &&
-      (key === "background" ||
-        isGradient ||
-        key === "multiColors" ||
-        key === "multiColorActive" ||
-        key === "gradientStart" ||
-        key === "gradientEnd" ||
-        key === "activeBgUid")
+      (isGradient || autoAccentBackgroundKeys.has(key))
 
     if (shouldUpdateAutoAccent) {
       scheduleAutoAccentUpdate()
@@ -1163,6 +1285,7 @@ export function initSettings() {
 
   // Expose for global access (e.g. from context menu)
   window.appHandleSettingUpdate = handleSettingUpdate
+  window.appScheduleAutoAccentUpdate = scheduleAutoAccentUpdate
 
   // Bridge shared helpers expected by settingsApplier/updateSettingsInputs.
   effects.DOM = DOM_EXPORTS
