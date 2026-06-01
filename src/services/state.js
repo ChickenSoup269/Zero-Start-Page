@@ -681,6 +681,40 @@ export function updateAllSettings(newSettings) {
   Object.assign(settingsState, newSettings)
 }
 
+const isCloudSafeThemeBackground = (value) => {
+  if (typeof value !== "string") return value == null
+  const trimmed = value.trim()
+  if (!trimmed) return true
+  if (/^#[0-9a-f]{3,8}$/i.test(trimmed)) return true
+  if (/(?:^|-)gradient\(/i.test(trimmed)) return true
+  if (/^hsl|^rgb/i.test(trimmed)) return true
+  return false
+}
+
+const sanitizeCloudThemeSnapshot = (snapshot) => {
+  if (!snapshot || typeof snapshot !== "object") return snapshot
+  const next = { ...snapshot }
+
+  if (!isCloudSafeThemeBackground(next.background)) {
+    delete next.background
+    delete next.activeBgUid
+    delete next.unsplashLastCredit
+  }
+
+  return next
+}
+
+const sanitizeCloudUserThemes = (themes) => {
+  if (!Array.isArray(themes)) return themes
+  return themes.map((theme) => {
+    if (!theme || typeof theme !== "object") return theme
+    return {
+      ...theme,
+      snapshot: sanitizeCloudThemeSnapshot(theme.snapshot),
+    }
+  })
+}
+
 /**
  * Backup settings to Chrome Sync Storage.
  * Excludes heavy media data but keeps essential UI state.
@@ -707,6 +741,12 @@ export async function backupToCloud(options = {}) {
     delete currentSettings.userGradientV2s
     delete currentSettings.userSilks
     delete currentSettings.userLightPillars
+  }
+
+  if (Array.isArray(currentSettings.userThemes)) {
+    currentSettings.userThemes = sanitizeCloudUserThemes(
+      currentSettings.userThemes,
+    )
   }
 
   if (!options.includeStyles) {
@@ -876,6 +916,9 @@ export async function restoreFromCloud() {
 
           if (settingsStr) {
             const restored = JSON.parse(settingsStr)
+            if (Array.isArray(restored.userThemes)) {
+              restored.userThemes = sanitizeCloudUserThemes(restored.userThemes)
+            }
             const current = getSettings()
 
             // IMPORTANT: Re-merge local media galleries that were not synced

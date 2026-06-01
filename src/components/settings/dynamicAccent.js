@@ -17,6 +17,54 @@ const parseCssUrl = (value) => {
   return match ? match[2] : null
 }
 
+const normalizeHexColor = (value) => {
+  const match = String(value || "").match(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/)
+  if (!match) return null
+  const raw = match[1]
+  if (raw.length === 3) {
+    return `#${raw[0]}${raw[0]}${raw[1]}${raw[1]}${raw[2]}${raw[2]}`.toLowerCase()
+  }
+  return `#${raw}`.toLowerCase()
+}
+
+const rgbStringToHex = (value) => {
+  const match = String(value || "").match(
+    /rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i,
+  )
+  if (!match) return null
+  const toHex = (component) =>
+    Math.max(0, Math.min(255, Math.round(Number(component) || 0)))
+      .toString(16)
+      .padStart(2, "0")
+  return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`
+}
+
+const hslStringToHex = (value) => {
+  const match = String(value || "").match(
+    /hsla?\(\s*([\d.]+)(?:deg)?\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%/i,
+  )
+  if (!match) return null
+  return hslToHex(Number(match[1]), Number(match[2]), Number(match[3]))
+}
+
+const pickColorFromCssText = (value) => {
+  if (typeof value !== "string") return null
+  const decoded = value.includes("%")
+    ? (() => {
+        try {
+          return decodeURIComponent(value)
+        } catch {
+          return value
+        }
+      })()
+    : value
+  return (
+    normalizeHexColor(decoded) ||
+    rgbStringToHex(decoded) ||
+    hslStringToHex(decoded)
+  )
+}
+
 const getCurrentBackgroundImageUrl = () => {
   const bgLayer = document.getElementById("bg-layer")
   if (!bgLayer) return null
@@ -118,11 +166,36 @@ const sampleCurrentVideoFrameColor = () => {
   }
 }
 
+const waitForVideoFrameColor = async () => {
+  const video = document.getElementById("bg-video")
+  if (!video || video.style.display === "none") return null
+
+  const immediate = sampleCurrentVideoFrameColor()
+  if (immediate) return immediate
+
+  await new Promise((resolve) => {
+    const finish = () => {
+      video.removeEventListener("loadeddata", finish)
+      video.removeEventListener("canplay", finish)
+      video.removeEventListener("timeupdate", finish)
+      resolve()
+    }
+    video.addEventListener("loadeddata", finish, { once: true })
+    video.addEventListener("canplay", finish, { once: true })
+    video.addEventListener("timeupdate", finish, { once: true })
+    setTimeout(finish, 900)
+  })
+
+  return sampleCurrentVideoFrameColor()
+}
+
 const getFallbackSeedColor = () => {
   const settings = getSettings()
   const bg = settings.background
+  const isMedia = isImageOrVideoBackground(bg)
 
   if (typeof bg === "string" && /^#[0-9A-F]{6}$/i.test(bg)) return bg
+  if (isMedia) return null
   const generatedSeed = getGeneratedBackgroundSeedColor(settings)
   if (generatedSeed) return generatedSeed
   if (
@@ -208,6 +281,8 @@ const getGradientSeedColor = (settings) => {
   ) {
     return settings.gradientStart
   }
+  const cssSeed = pickColorFromCssText(settings.background)
+  if (cssSeed) return cssSeed
   return null
 }
 
@@ -216,9 +291,20 @@ const getBackgroundImageSource = async () => {
   const bg = settings.background
 
   if (typeof bg === "string") {
-    if (/^(data:image\/|blob:|https?:\/\/)/i.test(bg)) return bg
+    if (/^data:image\//i.test(bg)) return bg
+    if (/^data:video\//i.test(bg)) return null
+    if (/^https?:\/\//i.test(bg)) {
+      if (
+        /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
+        bg.includes("googlevideo")
+      ) {
+        return null
+      }
+      return bg
+    }
+    if (/^blob:/i.test(bg)) return bg
 
-    if (isIdbImage(bg) || isIdbMedia(bg)) {
+    if (isIdbImage(bg)) {
       const cachedUrl = getBlobUrlSync(bg)
       if (cachedUrl) return cachedUrl
       return await getImageUrl(bg)
@@ -234,10 +320,12 @@ export async function pickAccentFromCurrentBackground(options = {}) {
   try {
     const settings = getSettings()
     const bg = settings?.background
+    const isMedia = isImageOrVideoBackground(bg)
+    const cssSeed = pickColorFromCssText(bg)
     if (typeof bg === "string") {
       const trimmed = bg.trim()
       // direct hex background
-      if (/^#[0-9A-F]{6}$/i.test(trimmed)) return trimmed
+      if (/^#[0-9A-F]{3,6}$/i.test(trimmed) && cssSeed) return cssSeed
 
       // CSS gradient background (linear-gradient, radial-gradient, etc.)
       if (/gradient\(/i.test(trimmed)) {
@@ -246,17 +334,25 @@ export async function pickAccentFromCurrentBackground(options = {}) {
           return settings.gradientStart
         if (/^#[0-9A-F]{6}$/i.test(settings.gradientEnd || ""))
           return settings.gradientEnd
+        if (cssSeed) return cssSeed
       }
+
+      if (/^data:image\/svg\+xml/i.test(trimmed) && cssSeed) return cssSeed
     }
     const explicitSeed =
-      getGeneratedBackgroundSeedColor(settings) ||
-      (!isImageOrVideoBackground(bg) ? getGradientSeedColor(settings) : null)
+      !isMedia
+        ? getGeneratedBackgroundSeedColor(settings) ||
+          getGradientSeedColor(settings)
+        : null
     if (explicitSeed) return explicitSeed
   } catch (e) {
     // ignore and continue to sampling
   }
-  const videoColor = sampleCurrentVideoFrameColor()
+  const videoColor = await waitForVideoFrameColor()
   if (videoColor) return videoColor
+
+  const layerSeed = pickColorFromCssText(getCurrentBackgroundImageUrl())
+  if (layerSeed) return layerSeed
 
   const imageUrl = await getBackgroundImageSource()
 

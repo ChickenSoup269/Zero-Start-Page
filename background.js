@@ -296,9 +296,27 @@ function isKnownMediaTab(tab) {
   )
 }
 
+function getKnownMediaTabPriority(tab, preferredSource = "") {
+  const url = tab?.url || ""
+  if (preferredSource === "spotify" && url.includes("spotify.com")) return 100
+  if (tab?.audible) return 90
+  if (url.includes("spotify.com")) return 80
+  if (url.includes("music.youtube.com")) return 70
+  if (url.includes("youtube.com")) return 60
+  if (url.includes("music.apple.com")) return 50
+  if (url.includes("soundcloud.com")) return 40
+  if (url.includes("zingmp3.vn") || url.includes("mp3.zing.vn")) return 30
+  if (url.includes("nhaccuatui.com") || url.includes("nct.vn")) return 20
+  return 0
+}
+
 function getMediaFromAnyKnownTab(sendResponse) {
   chrome.tabs.query({}, (allTabs) => {
-    const tab = allTabs.find(isKnownMediaTab)
+    const tab = allTabs
+      .filter(isKnownMediaTab)
+      .sort(
+        (a, b) => getKnownMediaTabPriority(b) - getKnownMediaTabPriority(a),
+      )[0]
     if (tab) {
       getMediaFromTab(tab.id, sendResponse)
     } else {
@@ -309,7 +327,15 @@ function getMediaFromAnyKnownTab(sendResponse) {
 
 function controlAnyKnownMediaTab(command, sendResponse) {
   chrome.tabs.query({}, (allTabs) => {
-    const targetTab = allTabs.find(isKnownMediaTab)
+    const preferredSource =
+      typeof command === "object" ? command.preferredSource || "" : ""
+    const targetTab = allTabs
+      .filter(isKnownMediaTab)
+      .sort(
+        (a, b) =>
+          getKnownMediaTabPriority(b, preferredSource) -
+          getKnownMediaTabPriority(a, preferredSource),
+      )[0]
     if (targetTab) {
       controlMediaTab(targetTab.id, command, sendResponse)
     } else {
@@ -445,8 +471,12 @@ function controlMediaTab(tabId, command, sendResponse) {
               clickFirst([
                 '[data-testid="control-button-playpause"]',
                 '[data-testid="playback-controls-play-button"]',
-                '[aria-label="Play"]',
-                '[aria-label="Pause"]',
+                'button[aria-label*="Play" i]',
+                'button[aria-label*="Pause" i]',
+                'button[aria-label*="Phát" i]',
+                'button[aria-label*="Tạm dừng" i]',
+                'button[title*="Play" i]',
+                'button[title*="Pause" i]',
                 ".player-controls__container .btn-play",
                 ".zm-btn.btn-play",
                 ".player-control .btn-play",

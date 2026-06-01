@@ -3771,6 +3771,37 @@ body.sidebar-light .preset-code-input {
   background: rgba(255, 0, 0, 0.8);
 }
 
+.spotify-advanced-settings {
+  display: block;
+}
+
+.spotify-advanced-settings summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+  opacity: 0.9;
+  user-select: none;
+}
+
+.spotify-advanced-settings summary::-webkit-details-marker {
+  display: none;
+}
+
+.spotify-advanced-settings summary::after {
+  content: "\f078";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-left: auto;
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.spotify-advanced-settings[open] summary::after {
+  transform: rotate(180deg);
+}
+
 .user-color-item,
 .user-gradient-item {
   width: 100%;

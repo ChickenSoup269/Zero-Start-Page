@@ -583,7 +583,21 @@ export class MusicPlayer {
   }
 
   sendControl(command) {
-    chrome.runtime.sendMessage({ action: "mediaControl", command: command })
+    const commandPayload =
+      typeof command === "string"
+        ? {
+            name: command,
+            preferredSource:
+              this.lastSourceMeta?.key === "spotify" ||
+              this.currentStyle === "spotify"
+                ? "spotify"
+                : this.lastSourceMeta?.key || "",
+          }
+        : command
+    chrome.runtime.sendMessage({
+      action: "mediaControl",
+      command: commandPayload,
+    })
     setTimeout(() => this.fetchMediaState(), 120)
     setTimeout(() => this.fetchMediaState(), 450)
   }
