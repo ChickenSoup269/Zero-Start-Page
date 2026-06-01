@@ -3260,3 +3260,186 @@ body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
     0 14px 34px rgba(0, 0, 0, 0.22),
     inset 0 0 0 0 transparent !important;
 }
+
+/* Music skin polish: keep controls readable without fighting each visual style. */
+body.widgets-m3-accent .music-player-wrapper,
+.music-player-wrapper.skin-m3-accent {
+  --music-m3-control-bg: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, rgba(255, 255, 255, 0.12)) 58%,
+    transparent
+  );
+  --music-m3-control-hover: color-mix(
+    in srgb,
+    var(--m3-primary-container, var(--safe-accent)) 32%,
+    var(--music-m3-control-bg)
+  );
+  --music-m3-control-border: color-mix(
+    in srgb,
+    var(--m3-outline-variant, rgba(255, 255, 255, 0.2)) 70%,
+    transparent
+  );
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-btn,
+.music-player-wrapper.skin-m3-accent .player-btn {
+  color: var(--m3-on-surface, var(--m3-on-primary-container, #ffffff)) !important;
+  background: var(--music-m3-control-bg) !important;
+  border-color: var(--music-m3-control-border) !important;
+  border-width: 1px !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 16%, transparent),
+    0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .player-btn:hover,
+.music-player-wrapper.skin-m3-accent .player-btn:hover {
+  color: var(--m3-on-surface, var(--m3-on-primary-container, #ffffff)) !important;
+  background: var(--music-m3-control-hover) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 32%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
+.music-player-wrapper.skin-m3-accent .play-pause-btn {
+  color: var(--m3-on-primary, var(--accent-contrast-color, #ffffff)) !important;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 88%, #ffffff),
+      var(--m3-primary, var(--safe-accent))
+    ) !important;
+  box-shadow:
+    0 6px 18px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 24%, transparent) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .controls-row,
+.music-player-wrapper.skin-m3-accent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
+.music-player-wrapper.skin-m3-accent .progress-bar-track {
+  background: color-mix(in srgb, var(--music-m3-control-bg) 76%, transparent) !important;
+  border-color: var(--music-m3-control-border) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.16) !important;
+}
+
+.music-player-wrapper.skin-transparent .player-btn,
+.music-style-cassette .music-player-wrapper.skin-transparent .player-btn,
+.music-style-terminal .music-player-wrapper.skin-transparent .player-btn {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.16) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+}
+
+.music-player-wrapper.skin-transparent .player-btn:hover,
+.music-style-cassette .music-player-wrapper.skin-transparent .player-btn:hover,
+.music-style-terminal .music-player-wrapper.skin-transparent .player-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
+}
+
+.music-player-wrapper.skin-transparent .play-pause-btn,
+.music-style-cassette .music-player-wrapper.skin-transparent .play-pause-btn,
+.music-style-terminal .music-player-wrapper.skin-transparent .play-pause-btn {
+  color: #111111 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+}
+
+.music-player-wrapper.skin-transparent .controls-row {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.music-player-wrapper.skin-transparent .progress-bar-track {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
+}
+
+.music-player-wrapper.skin-transparent .progress-time,
+.music-player-wrapper.skin-transparent .player-info h3,
+.music-player-wrapper.skin-transparent .player-info p {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-transparent,
+.music-style-terminal .music-player-wrapper.skin-transparent::before,
+.music-style-terminal .music-player-wrapper.skin-transparent::after {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-transparent::before,
+.music-style-terminal .music-player-wrapper.skin-transparent::after {
+  content: none !important;
+  display: none !important;
+}
+
+.music-style-terminal .music-player-wrapper.skin-transparent .disc-container,
+.music-style-terminal .music-player-wrapper.skin-transparent .music-visualizer,
+.music-style-terminal .music-player-wrapper.skin-transparent .progress-bar-track {
+  background-image: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper.skin-transparent {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper.skin-transparent .player-btn,
+body.widgets-m3-accent .music-style-cassette .music-player-wrapper.skin-transparent .player-btn,
+body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent .player-btn {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.16) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper.skin-transparent .play-pause-btn,
+body.widgets-m3-accent .music-style-cassette .music-player-wrapper.skin-transparent .play-pause-btn,
+body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent .play-pause-btn {
+  color: #111111 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+}
+
+body.widgets-m3-accent .music-player-wrapper.skin-transparent .controls-row,
+body.widgets-m3-accent .music-player-wrapper.skin-transparent .disc-container,
+body.widgets-m3-accent .music-player-wrapper.skin-transparent .music-visualizer {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent::before,
+body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  background-image: none !important;
+}

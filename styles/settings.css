@@ -2233,7 +2233,7 @@ body.sidebar-light .preset-code-input {
 .setting-group,
 .settings-section {
   animation: slideIn 0.5s ease-out forwards;
-  opacity: 0;
+  opacity: 1;
 }
 
 .setting-group:nth-child(1) {
@@ -6719,4 +6719,37 @@ body:not(.allow-text-selection)
 body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   -webkit-user-select: text !important;
   user-select: text !important;
+}
+
+/* Fail-safe: settings content must stay visible even if reveal animations are skipped. */
+.settings-sidebar .settings-section:not(.collapsed) > .section-content,
+.settings-sidebar .settings-section:not(.collapsed) .setting-group,
+.settings-sidebar .settings-section:not(.collapsed) .setting-item,
+.settings-sidebar .settings-section:not(.collapsed) .setting-item-row,
+.settings-sidebar .settings-section:not(.collapsed) .font-grid,
+.settings-sidebar .settings-section:not(.collapsed) .font-grid-separator,
+.settings-sidebar .settings-section:not(.collapsed) .font-item,
+.settings-sidebar .settings-section:not(.collapsed) .clock-style-grid,
+.settings-sidebar .settings-section:not(.collapsed) .clock-style-card,
+.settings-sidebar .settings-section:not(.collapsed) .theme-item,
+.settings-sidebar .settings-section:not(.collapsed) .effect-item {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.settings-sidebar .settings-section:not(.collapsed) > .section-content {
+  display: block !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setting-group,
+  .settings-section,
+  .settings-sidebar .settings-section:not(.collapsed) .setting-group,
+  .settings-sidebar .settings-section:not(.collapsed) .font-item,
+  .settings-sidebar .settings-section:not(.collapsed) .clock-style-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: none !important;
+    transform: none !important;
+  }
 }
