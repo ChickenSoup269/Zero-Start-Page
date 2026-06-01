@@ -130,6 +130,12 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".clock-sidebar-time"))
     } else if (style === "fliqlo") {
       clockTargets.push(clockElement.querySelector(".fliqlo-time"))
+    } else if (style === "neon-grid") {
+      clockTargets.push(clockElement.querySelector(".neon-grid-time"))
+    } else if (style === "holo-ring") {
+      clockTargets.push(clockElement.querySelector(".holo-ring-time"))
+    } else if (style === "media-orb") {
+      clockTargets.push(clockElement.querySelector(".media-orb-time"))
     } else if (style === "prism-stack") {
       clockTargets.push(clockElement.querySelector(".prism-stack-time"))
     } else if (style === "metro-panel") {
@@ -170,6 +176,15 @@ function applyHueMode(settings) {
         dateTargets.push(clockElement.querySelector(".clock-sidebar-date"))
       } else if (style === "fliqlo") {
         dateTargets.push(clockElement.querySelector(".fliqlo-date"))
+      } else if (style === "neon-grid") {
+        dateTargets.push(clockElement.querySelector(".neon-grid-date"))
+        dateTargets.push(clockElement.querySelector(".neon-grid-label"))
+      } else if (style === "holo-ring") {
+        dateTargets.push(clockElement.querySelector(".holo-ring-weekday"))
+        dateTargets.push(clockElement.querySelector(".holo-ring-date"))
+      } else if (style === "media-orb") {
+        dateTargets.push(clockElement.querySelector(".media-orb-weekday"))
+        dateTargets.push(clockElement.querySelector(".media-orb-date"))
       } else if (style === "prism-stack") {
         dateTargets.push(clockElement.querySelector(".prism-stack-date"))
       } else if (style === "metro-panel") {
@@ -280,6 +295,35 @@ function getZonedDateParts(date, tz) {
   }
 }
 
+function getZonedDate(date, tz) {
+  return tz ? new Date(date.toLocaleString("en-US", { timeZone: tz })) : date
+}
+
+function getVietnameseLunarParts(date, tz) {
+  const zonedDate = getZonedDate(date, tz)
+  const lunar = convertSolar2Lunar(
+    zonedDate.getDate(),
+    zonedDate.getMonth() + 1,
+    zonedDate.getFullYear(),
+  )
+  const leapText = lunar.leap ? "Nhuận " : ""
+
+  return {
+    day: String(lunar.day).padStart(2, "0"),
+    month: `${leapText}Tháng ${lunar.month}`,
+    line: `${lunar.day}/${lunar.month}${lunar.leap ? " nhuận" : ""} Âm lịch`,
+    label: "Âm lịch",
+  }
+}
+
+function escapeAttribute(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+}
+
 function getZonedWeekdayIndex(date, tz) {
   if (!tz) return date.getDay()
 
@@ -330,7 +374,7 @@ function getCustomDateString(now, langCode, tz, settings, formatOverride) {
   const format = formatOverride || settings.dateFormat || "full"
   // If user wants to replace Gregorian date with Lunar date in clock
   if (settings.showClockLunarCalendar && settings.showClockLunarMode === "replace") {
-    const zonedNow = tz ? new Date(now.toLocaleString("en-US", { timeZone: tz })) : now
+    const zonedNow = getZonedDate(now, tz)
     const lunar = convertSolar2Lunar(zonedNow.getDate(), zonedNow.getMonth() + 1, zonedNow.getFullYear())
     const leapStr = lunar.leap ? " (nhuận)" : ""
     const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(/^<span class=\"weekday-part\">|<\/span>$/g, "")
@@ -943,6 +987,115 @@ export function updateTime() {
       if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
       dateEl.style.display = dTxt ? "block" : "none"
     }
+  } else if (dateClockStyle === "neon-grid") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(
+          now,
+          langCode,
+          settings.shortWeekday,
+          tz,
+          settings,
+        ).toUpperCase()
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+    clockElement.innerHTML = `
+      <div class="neon-grid-clock">
+        <div class="neon-grid-label">${weekday}</div>
+        <div class="neon-grid-time">
+          <span class="neon-grid-hour">${hh}</span>
+          <span class="neon-grid-separator">:</span>
+          <span class="neon-grid-minute">${mm}</span>
+          ${ss ? `<span class="neon-grid-second">${ss}</span>` : ""}
+          ${ampm ? `<span class="neon-grid-ampm">${ampm}</span>` : ""}
+        </div>
+        ${isTimer ? `<div class="neon-grid-date">${countdownLabel}</div>` : dateStr ? `<div class="neon-grid-date">${dateStr}</div>` : ""}
+      </div>
+    `
+  } else if (dateClockStyle === "holo-ring") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+    let holoRoot = clockElement.querySelector(".holo-ring-clock")
+    if (!holoRoot) {
+      clockElement.innerHTML = `
+        <div class="holo-ring-clock">
+          <div class="holo-ring-orbit">
+            <span class="holo-ring-dot"></span>
+            <span class="holo-ring-weekday">${weekday}</span>
+          </div>
+          <div class="holo-ring-main">
+            <div class="holo-ring-time">
+              <span class="holo-ring-hour">${hh}</span>
+              <span class="holo-ring-separator">:</span>
+              <span class="holo-ring-minute">${mm}</span>
+              <span class="holo-ring-second">${ss}</span>
+              <span class="holo-ring-ampm">${ampm}</span>
+            </div>
+            <div class="holo-ring-date">${isTimer ? countdownLabel : dateStr}</div>
+          </div>
+        </div>
+      `
+      holoRoot = clockElement.querySelector(".holo-ring-clock")
+    }
+
+    const weekdayEl = holoRoot.querySelector(".holo-ring-weekday")
+    if (weekdayEl && weekdayEl.innerHTML !== weekday) weekdayEl.innerHTML = weekday
+    const hourEl = holoRoot.querySelector(".holo-ring-hour")
+    if (hourEl && hourEl.textContent !== hh) hourEl.textContent = hh
+    const minuteEl = holoRoot.querySelector(".holo-ring-minute")
+    if (minuteEl && minuteEl.textContent !== mm) minuteEl.textContent = mm
+    const secondEl = holoRoot.querySelector(".holo-ring-second")
+    if (secondEl) {
+      if (secondEl.textContent !== ss) secondEl.textContent = ss
+      secondEl.style.display = ss ? "inline-block" : "none"
+    }
+    const ampmEl = holoRoot.querySelector(".holo-ring-ampm")
+    if (ampmEl) {
+      if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+      ampmEl.style.display = ampm ? "inline-block" : "none"
+    }
+    const dateEl = holoRoot.querySelector(".holo-ring-date")
+    if (dateEl) {
+      const dTxt = isTimer ? countdownLabel : dateStr
+      if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
+      dateEl.style.display = dTxt ? "block" : "none"
+    }
+  } else if (dateClockStyle === "media-orb") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+    const mediaSrc = settings.mediaOrbImageData || settings.mediaOrbImageUrl || ""
+    const mediaHtml = mediaSrc
+      ? `<img class="media-orb-image" src="${escapeAttribute(mediaSrc)}" alt="">`
+      : `<div class="media-orb-placeholder"><i class="fa-solid fa-image"></i></div>`
+
+    clockElement.innerHTML = `
+      <div class="media-orb-clock">
+        <div class="media-orb-visual">
+          ${mediaHtml}
+          <span class="media-orb-ring"></span>
+        </div>
+        <div class="media-orb-main">
+          <div class="media-orb-weekday">${weekday}</div>
+          <div class="media-orb-time">
+            <span class="media-orb-hour">${hh}</span>
+            <span class="media-orb-separator">:</span>
+            <span class="media-orb-minute">${mm}</span>
+            ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
+            ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+          </div>
+          ${isTimer ? `<div class="media-orb-date">${countdownLabel}</div>` : dateStr ? `<div class="media-orb-date">${dateStr}</div>` : ""}
+        </div>
+      </div>
+    `
   } else if (dateClockStyle === "prism-stack") {
     const weekday = isTimer
       ? timerLabel
@@ -1018,29 +1171,29 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "lunar-orbit") {
-    const parts = getZonedDateParts(now, tz)
     const weekday = isTimer
       ? timerLabel
       : getSafeWeekday(now, langCode, true, tz, settings).toUpperCase()
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
-    const orbDay = isTimer ? (timerH > 0 ? hh : mm) : parts.day
+    const lunarParts = getVietnameseLunarParts(now, tz)
+    const orbDay = isTimer ? (timerH > 0 ? hh : mm) : lunarParts.day
     const orbMonth = isTimer
       ? timerH > 0
         ? "HR"
         : "MIN"
-      : getLocalizedMonthName(
-          now,
-          langCode,
-          tz,
-          settings,
-          "short",
-        ).toUpperCase()
+      : lunarParts.month.toUpperCase()
+    const orbLabel = isTimer ? weekday : lunarParts.label.toUpperCase()
+    const dateLine = isTimer
+      ? countdownLabel
+      : dateStr
+        ? `${lunarParts.line} - ${dateStr}`
+        : lunarParts.line
     clockElement.innerHTML = `
       <div class="lunar-orbit-clock">
         <div class="lunar-orbit-date-dial">
-          <span class="lunar-orbit-weekday">${weekday}</span>
+          <span class="lunar-orbit-weekday">${orbLabel}</span>
           <span class="lunar-orbit-day">${orbDay}</span>
           <span class="lunar-orbit-month">${orbMonth}</span>
         </div>
@@ -1052,7 +1205,7 @@ export function updateTime() {
             ${ss ? `<span class="lunar-orbit-second">${ss}</span>` : ""}
             ${ampm ? `<span class="lunar-orbit-ampm">${ampm}</span>` : ""}
           </div>
-          ${isTimer ? `<div class="lunar-orbit-date-line">${countdownLabel}</div>` : dateStr ? `<div class="lunar-orbit-date-line">${dateStr}</div>` : ""}
+          <div class="lunar-orbit-date-line">${dateLine}</div>
         </div>
       </div>
     `
@@ -1089,6 +1242,9 @@ export function updateTime() {
     "weekday-style",
     "fliqlo",
     "cyber-pulse",
+    "neon-grid",
+    "holo-ring",
+    "media-orb",
     "prism-stack",
     "metro-panel",
     "aurora-ribbon",

@@ -1335,6 +1335,55 @@ function createApplySettings(effectInstances) {
       ? "'Outfit', sans-serif"
       : rawFont
     const clockFont = rawClockFont
+    const getFontName = (font) =>
+      String(font || "")
+        .replace(/['"]/g, "")
+        .split(",")[0]
+        .trim()
+    const getClockFontProfile = (font) => {
+      const name = getFontName(font).toLowerCase()
+      if (name === "e1234") {
+        return {
+          clockScale: 0.68,
+          dateScale: 0.86,
+          letterSpacing: "0px",
+          maxWidthFactor: 5.8,
+        }
+      }
+      if (name === "electroharmonix" || name === "anurati") {
+        return {
+          clockScale: 0.78,
+          dateScale: 0.9,
+          letterSpacing: "0.02em",
+          maxWidthFactor: 6.1,
+        }
+      }
+      if (name === "saiba-45") {
+        return {
+          clockScale: 0.86,
+          dateScale: 0.94,
+          letterSpacing: "0.01em",
+          maxWidthFactor: 6.4,
+        }
+      }
+      return {
+        clockScale: 1,
+        dateScale: 1,
+        letterSpacing: "2px",
+        maxWidthFactor: 7,
+      }
+    }
+    const getStyleClockScale = (style) => {
+      const styleScales = {
+        "cyber-pulse": 0.94,
+        "neon-grid": 0.9,
+        "holo-ring": 0.9,
+        "lunar-orbit": 0.9,
+        fliqlo: 0.92,
+        sidebar: 0.94,
+      }
+      return styleScales[style] || 1
+    }
 
     document.documentElement.style.setProperty("--font-primary", primaryFont)
 
@@ -1400,6 +1449,14 @@ function createApplySettings(effectInstances) {
     const displayMode = settings.clockDisplayMode || "all"
     let computedClockSize = baseClockSize
     let computedDateSize = baseDateSize
+    const fontProfile = getClockFontProfile(clockFont)
+    const clockFontTarget = settings.clockFontTarget || "both"
+    const clockUsesDisplayFont =
+      clockFontTarget === "both" || clockFontTarget === "clock"
+    const dateUsesDisplayFont =
+      clockFontTarget === "both" ||
+      clockFontTarget === "date" ||
+      clockFontTarget === "weekday"
 
     if (priority === "date" || displayMode === "weekday") {
       // In date-priority mode OR Weekday-only mode, the date/weekday
@@ -1408,6 +1465,17 @@ function createApplySettings(effectInstances) {
       computedDateSize = baseClockSize
     }
 
+    if (clockUsesDisplayFont) {
+      computedClockSize *=
+        fontProfile.clockScale * getStyleClockScale(settings.dateClockStyle)
+    }
+    if (dateUsesDisplayFont) {
+      computedDateSize *= fontProfile.dateScale
+    }
+
+    computedClockSize = Math.min(10, Math.max(0.8, computedClockSize))
+    computedDateSize = Math.min(10, Math.max(0.8, computedDateSize))
+
     document.documentElement.style.setProperty(
       "--clock-size",
       `${computedClockSize}rem`,
@@ -1415,6 +1483,14 @@ function createApplySettings(effectInstances) {
     document.documentElement.style.setProperty(
       "--date-size",
       `${computedDateSize}rem`,
+    )
+    document.documentElement.style.setProperty(
+      "--clock-letter-spacing",
+      clockUsesDisplayFont ? fontProfile.letterSpacing : "2px",
+    )
+    document.documentElement.style.setProperty(
+      "--clock-max-width-factor",
+      String(fontProfile.maxWidthFactor),
     )
 
     document.documentElement.style.setProperty(
@@ -1607,6 +1683,9 @@ function createApplySettings(effectInstances) {
       "date-clock-style-weekday",
       "date-clock-style-fliqlo",
       "date-clock-style-cyber-pulse",
+      "date-clock-style-neon-grid",
+      "date-clock-style-holo-ring",
+      "date-clock-style-media-orb",
       "date-clock-style-prism-stack",
       "date-clock-style-metro-panel",
       "date-clock-style-aurora-ribbon",
@@ -1670,6 +1749,15 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "clock-style-bg-dark",
       (settings.clockStyleBackground || "default") === "dark",
+    )
+    document.body.classList.toggle(
+      "clock-style-bg-animated",
+      dateClockStyle === "prism-stack" &&
+        (settings.clockStyleBackground || "default") === "animated",
+    )
+    document.body.classList.toggle(
+      "media-orb-overflow-border",
+      dateClockStyle === "media-orb" && settings.mediaOrbOverflowBorder === true,
     )
 
     // 3.1 Clock & Date Visibility & Contrast
@@ -2449,6 +2537,9 @@ function createUpdateSettingsInputs(effectInstances) {
       "round",
       "square",
       "cyber-pulse",
+      "neon-grid",
+      "holo-ring",
+      "media-orb",
       "prism-stack",
       "metro-panel",
       "aurora-ribbon",
@@ -2463,6 +2554,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "sidestyle",
       "sidebar",
       "fliqlo",
+      "media-orb",
     ].includes(style)
     if (DOM.styleSpecificCustomization) {
       DOM.styleSpecificCustomization.style.display = styleHasExtras
@@ -2493,6 +2585,25 @@ function createUpdateSettingsInputs(effectInstances) {
       )
         ? "block"
         : "none"
+
+    if (DOM.clockStyleBgSelect) {
+      const animatedOption = DOM.clockStyleBgSelect.querySelector(
+        'option[value="animated"]',
+      )
+      if (animatedOption) animatedOption.hidden = style !== "prism-stack"
+      if (style !== "prism-stack" && DOM.clockStyleBgSelect.value === "animated") {
+        DOM.clockStyleBgSelect.value = "default"
+      }
+    }
+
+    if (DOM.mediaOrbImageSetting)
+      DOM.mediaOrbImageSetting.style.display =
+        style === "media-orb" ? "block" : "none"
+    if (DOM.mediaOrbImageUrlInput)
+      DOM.mediaOrbImageUrlInput.value = settings.mediaOrbImageUrl || ""
+    if (DOM.mediaOrbOverflowBorderCheckbox)
+      DOM.mediaOrbOverflowBorderCheckbox.checked =
+        settings.mediaOrbOverflowBorder === true
 
     if (DOM.framedClockThemeSetting) {
       DOM.framedClockThemeSetting.style.display =

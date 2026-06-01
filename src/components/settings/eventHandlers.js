@@ -3626,7 +3626,13 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.clockStyleBgSelect?.addEventListener("change", () => {
-    const value = DOM.clockStyleBgSelect.value
+    const settings = getSettings()
+    const value =
+      DOM.clockStyleBgSelect.value === "animated" &&
+      settings.dateClockStyle !== "prism-stack"
+        ? "default"
+        : DOM.clockStyleBgSelect.value
+    DOM.clockStyleBgSelect.value = value
     handleSettingUpdate("clockStyleBackground", value)
     handleSettingUpdate(
       "clockStyleTransparentBackground",
@@ -4449,6 +4455,72 @@ export function setupGeneralEventHandlers(
         detail: {
           key: "musicPlayerUseDefaultColor",
           value: isChecked,
+        },
+      }),
+    )
+  })
+
+  DOM.mediaOrbImageUrlInput?.addEventListener("change", () => {
+    handleSettingUpdate("mediaOrbImageUrl", DOM.mediaOrbImageUrlInput.value.trim())
+    if (DOM.mediaOrbImageUrlInput.value.trim()) {
+      handleSettingUpdate("mediaOrbImageData", "")
+    }
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "mediaOrbImageUrl",
+          value: DOM.mediaOrbImageUrlInput.value.trim(),
+        },
+      }),
+    )
+  })
+
+  DOM.mediaOrbUploadBtn?.addEventListener("click", () => {
+    DOM.mediaOrbImageUpload?.click()
+  })
+
+  DOM.mediaOrbImageUpload?.addEventListener("change", () => {
+    const file = DOM.mediaOrbImageUpload.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : ""
+      if (!result) return
+      handleSettingUpdate("mediaOrbImageData", result)
+      handleSettingUpdate("mediaOrbImageUrl", "")
+      if (DOM.mediaOrbImageUrlInput) DOM.mediaOrbImageUrlInput.value = ""
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "mediaOrbImageData", value: result },
+        }),
+      )
+      DOM.mediaOrbImageUpload.value = ""
+    }
+    reader.readAsDataURL(file)
+  })
+
+  DOM.mediaOrbClearBtn?.addEventListener("click", () => {
+    handleSettingUpdate("mediaOrbImageData", "")
+    handleSettingUpdate("mediaOrbImageUrl", "")
+    if (DOM.mediaOrbImageUrlInput) DOM.mediaOrbImageUrlInput.value = ""
+    if (DOM.mediaOrbImageUpload) DOM.mediaOrbImageUpload.value = ""
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "mediaOrbImageData", value: "" },
+      }),
+    )
+  })
+
+  DOM.mediaOrbOverflowBorderCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "mediaOrbOverflowBorder",
+      DOM.mediaOrbOverflowBorderCheckbox.checked,
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "mediaOrbOverflowBorder",
+          value: DOM.mediaOrbOverflowBorderCheckbox.checked,
         },
       }),
     )

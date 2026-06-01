@@ -80,6 +80,11 @@
         body.classList.add("clock-style-bg-light")
       } else if (clockStyleBackground === "dark") {
         body.classList.add("clock-style-bg-dark")
+      } else if (
+        clockStyleBackground === "animated" &&
+        dateClockStyle === "prism-stack"
+      ) {
+        body.classList.add("clock-style-bg-animated")
       }
 
       const fliqloTheme = settings.fliqloTheme || "dark"

@@ -859,6 +859,22 @@ export const clockStyleBgSetting = document.getElementById(
 export const clockStyleBgSelect = document.getElementById(
   "clock-style-bg-select",
 )
+export const mediaOrbImageSetting = document.getElementById(
+  "media-orb-image-setting",
+)
+export const mediaOrbImageUrlInput = document.getElementById(
+  "media-orb-image-url",
+)
+export const mediaOrbImageUpload = document.getElementById(
+  "media-orb-image-upload",
+)
+export const mediaOrbUploadBtn = document.getElementById(
+  "media-orb-upload-btn",
+)
+export const mediaOrbClearBtn = document.getElementById("media-orb-clear-btn")
+export const mediaOrbOverflowBorderCheckbox = document.getElementById(
+  "media-orb-overflow-border-checkbox",
+)
 export const fliqloThemeSetting = document.getElementById(
   "fliqlo-theme-setting",
 )

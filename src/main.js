@@ -134,6 +134,11 @@ async function bootstrap() {
     document.body.classList.add("clock-style-bg-light")
   } else if (clockStyleBackground === "dark") {
     document.body.classList.add("clock-style-bg-dark")
+  } else if (
+    clockStyleBackground === "animated" &&
+    dateClockStyle === "prism-stack"
+  ) {
+    document.body.classList.add("clock-style-bg-animated")
   }
 
   const fliqloTheme = currentSettings.fliqloTheme || "dark"
