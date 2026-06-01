@@ -57,6 +57,8 @@ class MusicVisualizer {
     if (style === "neon") newBarCount = 8
     if (style === "minimal") newBarCount = 6
     if (style === "pill") newBarCount = 4
+    if (style === "overlap") newBarCount = 9
+    if (style === "orbit") newBarCount = 0
     if (style === "spotify" || style === "sidebar") newBarCount = 5
     if (style === "soundcloud") newBarCount = 10
     if (style === "terminal") newBarCount = 12
@@ -81,6 +83,9 @@ class MusicVisualizer {
     }
     if (prev === "beach" && style !== "beach") {
       this._stopBeach()
+    }
+    if (prev === "orbit" && style !== "orbit") {
+      this._stopOrbit()
     }
 
     if (style === "pixel") {
@@ -118,9 +123,155 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopForest()
       this._startBeach()
+    } else if (style === "orbit") {
+      this._stopCSSLoop()
+      this._stopPixel()
+      this._stopMoon8()
+      this._stopHeartbeat()
+      this._stopForest()
+      this._stopBeach()
+      this._startOrbit()
     } else {
       if (this.isPlaying) this._startCSSLoop()
     }
+  }
+
+  _startOrbit() {
+    this._stopOrbit()
+    this.bars.forEach((b) => (b.style.display = "none"))
+    const canvas = document.createElement("canvas")
+    canvas.className = "orbit-wave-canvas"
+    canvas.style.cssText =
+      "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"
+    this.orbitCanvas = canvas
+    if (this.container) {
+      this.container.style.position = "absolute"
+      this.container.appendChild(canvas)
+    }
+
+    this._lastTs = performance.now()
+    const loop = (ts) => {
+      if (this.currentStyle !== "orbit") return
+      const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
+      this._lastTs = ts
+      this._orbitFrame(dt)
+      this.orbitAnimId = requestAnimationFrame(loop)
+    }
+    this.orbitAnimId = requestAnimationFrame(loop)
+  }
+
+  _stopOrbit() {
+    if (this.orbitAnimId) {
+      cancelAnimationFrame(this.orbitAnimId)
+      this.orbitAnimId = null
+    }
+    if (this.orbitCanvas) {
+      this.orbitCanvas.remove()
+      this.orbitCanvas = null
+    }
+    if (this.container) {
+      this.container.style.position = ""
+    }
+    this.bars.forEach((b) => (b.style.display = ""))
+  }
+
+  _orbitFrame(dt) {
+    const canvas = this.orbitCanvas
+    if (!canvas || !this.container) return
+    const parent = this.container.parentNode
+    const rect = this.container.getBoundingClientRect()
+    const W =
+      rect.width || this.container.offsetWidth || parent?.offsetWidth || 276
+    const H =
+      rect.height || this.container.offsetHeight || parent?.offsetHeight || 276
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    if (
+      canvas.width !== Math.floor(W * dpr) ||
+      canvas.height !== Math.floor(H * dpr)
+    ) {
+      canvas.width = Math.floor(W * dpr)
+      canvas.height = Math.floor(H * dpr)
+    }
+    const ctx = canvas.getContext("2d")
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    ctx.clearRect(0, 0, W, H)
+
+    this.orbitPhase =
+      (this.orbitPhase || 0) + dt * (this.isPlaying ? 2.6 : 0.75)
+    const cx = W / 2
+    const cy = H / 2
+    const baseRadius = Math.min(W, H) / 2 - 21
+    const amp = this.isPlaying ? 6.4 : 2.2
+    const accent =
+      getComputedStyle(parent).getPropertyValue("--accent-color").trim() ||
+      "#64f4d2"
+
+    const drawWaveRing = (radiusOffset, alpha, width, blur, phaseShift) => {
+      ctx.globalAlpha = alpha
+      ctx.lineWidth = width
+      ctx.shadowBlur = blur
+      ctx.shadowColor = accent
+      ctx.beginPath()
+      const steps = 192
+      for (let i = 0; i <= steps; i++) {
+        const a = (i / steps) * Math.PI * 2
+        const mirage =
+          this.isPlaying
+            ? Math.sin(a * 3 + this.orbitPhase * 0.7 + phaseShift) * 1.8
+            : 0
+        const wave =
+          Math.sin(a * 7 + this.orbitPhase * 2.1 + phaseShift) * amp +
+          Math.sin(a * 13 - this.orbitPhase * 1.35 + phaseShift) * amp * 0.34 +
+          mirage
+        const r = baseRadius + radiusOffset + wave
+        const x = cx + Math.cos(a) * r
+        const y = cy + Math.sin(a) * r
+        if (i === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      }
+      ctx.closePath()
+      ctx.stroke()
+    }
+
+    ctx.lineJoin = "round"
+    ctx.lineCap = "round"
+    const grad = ctx.createLinearGradient(0, 0, W, H)
+    grad.addColorStop(0, accent)
+    grad.addColorStop(0.5, "#8aa4ff")
+    grad.addColorStop(1, accent)
+    ctx.strokeStyle = grad
+
+    if (this.isPlaying) {
+      drawWaveRing(-4, 0.18, 8, 26, Math.sin(this.orbitPhase) * 1.7)
+      drawWaveRing(5, 0.13, 5, 22, Math.cos(this.orbitPhase * 0.8) * 2.2)
+
+      ctx.globalAlpha = 0.22
+      ctx.shadowBlur = 18
+      ctx.fillStyle = accent
+      for (let i = 0; i < 9; i++) {
+        const seed = i * 12.9898
+        const a =
+          (i / 9) * Math.PI * 2 +
+          Math.sin(this.orbitPhase * 0.9 + seed) * 0.12
+        const r =
+          baseRadius +
+          8 +
+          Math.sin(this.orbitPhase * 1.8 + seed) * 8
+        ctx.beginPath()
+        ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 1.4, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+
+    drawWaveRing(0, 0.92, 4, 14, 0)
+
+    ctx.shadowBlur = 0
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 1
+    ctx.strokeStyle = "rgba(255,255,255,0.18)"
+    ctx.beginPath()
+    ctx.arc(cx, cy, baseRadius - 9, 0, Math.PI * 2)
+    ctx.stroke()
   }
 
   _startBeach() {
@@ -1062,7 +1213,8 @@ class MusicVisualizer {
         this.currentStyle === "pixel" ||
         this.currentStyle === "moon8" ||
         this.currentStyle === "heartbeat" ||
-        this.currentStyle === "forest"
+        this.currentStyle === "forest" ||
+        this.currentStyle === "orbit"
       ) {
         this._cssAnimId = null
         return
@@ -1078,7 +1230,9 @@ class MusicVisualizer {
 
       const containerH = this.container.offsetHeight || 40
       const minH = 4
-      const maxH = containerH - 4
+      let maxH = containerH - 4
+      if (this.currentStyle === "overlap") maxH = 34
+      if (this.currentStyle === "orbit") maxH = 26
 
       if (this._realBands && this._realBands.length > 0) {
         for (let i = 0; i < bars.length; i++) {
@@ -1151,6 +1305,7 @@ class MusicVisualizer {
     else if (this.currentStyle === "moon8") this._startMoon8()
     else if (this.currentStyle === "heartbeat") this._startHeartbeat()
     else if (this.currentStyle === "forest") this._startForest()
+    else if (this.currentStyle === "orbit") this._startOrbit()
     else this._startCSSLoop()
   }
 
@@ -1161,6 +1316,7 @@ class MusicVisualizer {
     this._stopMoon8()
     this._stopHeartbeat()
     this._stopForest()
+    this._stopOrbit()
     this._stopPixel()
   }
 

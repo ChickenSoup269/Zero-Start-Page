@@ -321,6 +321,9 @@ export class MusicPlayer {
         case "neon":
           accentColor = "#00f0ff"
           break
+        case "orbit":
+          accentColor = "#64f4d2"
+          break
         case "cassette":
           accentColor = "#7ecf6a"
           break
