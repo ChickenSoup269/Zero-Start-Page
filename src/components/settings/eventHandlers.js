@@ -978,53 +978,25 @@ export function setupGeneralEventHandlers(
 
   if (bugReportBtn && bugModal) {
     bugReportBtn.addEventListener("click", () => {
-      // Use getSettings() if available to get live data, otherwise fallback to localStorage
-      let rawSettings = {}
-      try {
-        rawSettings =
-          typeof getSettings === "function"
-            ? getSettings()
-            : JSON.parse(localStorage.getItem("pageSettings") || "{}")
-      } catch (e) {
-        rawSettings = JSON.parse(localStorage.getItem("pageSettings") || "{}")
-      }
+      const currentSettings =
+        typeof getSettings === "function" ? getSettings() : {}
+      const extensionVersion =
+        document.querySelector(".settings-version")?.textContent || "Unknown"
 
-      const filteredSettings = { ...rawSettings }
-
-      // Remove sensitive/large keys
-      const sensitiveKeys = [
-        "unsplashAccessKey",
-        "userBackgrounds",
-        "userVideos",
-        "userImages",
-        "userColors",
-        "userAccentColors",
-        "userGradients",
-        "userMultiColors",
-        "userSvgWaves",
-        "userSavedFonts",
-        "background",
-      ]
-
-      sensitiveKeys.forEach((key) => delete filteredSettings[key])
-
-      // Add basic system info
       const info = {
-        version:
-          document.querySelector(".settings-version")?.textContent || "Unknown",
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        screenSize: `${window.innerWidth}x${window.innerHeight}`,
-        timestamp: new Date().toISOString(),
-        settings: filteredSettings,
+        version: extensionVersion,
+        browser: navigator.userAgent,
       }
 
-      bugTextarea.value = JSON.stringify(info, null, 2)
+      bugTextarea.value = [
+        `Version: ${info.version}`,
+        `Browser: ${info.browser}`,
+      ].join("\n")
 
       // Update bug report form link based on language
       const bugLink = document.getElementById("bug-report-link")
       if (bugLink) {
-        const currentLang = filteredSettings.language || "en"
+        const currentLang = currentSettings.language || "en"
         const viForm =
           "https://docs.google.com/forms/d/e/1FAIpQLSeQnSKZycijyQds73GWCo4FT4tV78Hk4-fhkfcsHoI4LAqTww/viewform?usp=publish-editor"
         const enForm =

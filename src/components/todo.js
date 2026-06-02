@@ -4,6 +4,27 @@ import { geti18n } from "../services/i18n.js"
 import { showConfirm, showPrompt } from "../utils/dialog.js"
 import { fadeToggle } from "../utils/dom.js"
 
+const TODO_TAG_COLORS = [
+  "#7cdaff",
+  "#ff8fb3",
+  "#ffd166",
+  "#8ee6a8",
+  "#b69cff",
+  "#ff9f6e",
+]
+
+const TODO_PROPERTY_COLORS = {
+  title: "#7cdaff",
+  dueDate: "#ffd166",
+  reminderAt: "#ff8fb3",
+  recurring: "#b69cff",
+  priority: "#ff9f6e",
+  tags: "#8ee6a8",
+  notes: "#9ad7ff",
+  subtasks: "#7fe7c4",
+  attachments: "#cdb4ff",
+}
+
 export class TodoList {
   constructor() {
     this.todos = JSON.parse(localStorage.getItem("todoItems")) || []
@@ -81,8 +102,8 @@ export class TodoList {
                   <input type="text" id="todo-input" placeholder="What needs to be done?">
                 </div>
                 <div class="todo-input-actions">
-                  <button id="todo-cancel-input-btn" class="secondary-btn">Cancel</button>
-                  <button id="todo-confirm-input-btn" class="primary-btn">Add</button>
+                  <button id="todo-cancel-input-btn" class="secondary-btn">${i18n.cancel || "Cancel"}</button>
+                  <button id="todo-confirm-input-btn" class="primary-btn">${i18n.todo_add_task || "Add"}</button>
                 </div>
             </div>
             <ul id="todo-list" class="todo-list"></ul>
@@ -112,7 +133,7 @@ export class TodoList {
       const isHidden = inputContainer.style.display === "none"
       inputContainer.style.display = isHidden ? "flex" : "none"
       input.placeholder = geti18n().todo_input_placeholder || "What needs to be done?"
-      confirmInputBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>Add</span>`
+      confirmInputBtn.innerHTML = `<i class="fa-solid fa-plus"></i><span>${geti18n().todo_add_task || "Add"}</span>`
       if (isHidden) input.focus()
     })
 
@@ -217,6 +238,7 @@ export class TodoList {
       reminderNotified: false,
       recurring: "none",
       tags: [],
+      tagColors: {},
       priority: "none",
       notes: "",
       attachments: [],
@@ -379,7 +401,7 @@ export class TodoList {
                   <label class="todo-item-select" title="" for="todo-cb-${item.id}">
                       <input type="checkbox" id="todo-cb-${item.id}" name="todo-cb-[${item.id}]" class="todo-checkbox todo-item-cb" ${isSelected ? "checked" : ""}>
                 </label>
-                <button class="todo-complete-btn" title="${item.completed ? "Mark incomplete" : "Mark complete"}">
+                <button class="todo-complete-btn" title="${item.completed ? (i18n.todo_mark_incomplete || "Mark incomplete") : (i18n.todo_mark_complete || "Mark complete")}">
                   <i class="${item.completed ? "fa-solid fa-circle-check" : "fa-regular fa-circle"}"></i>
                 </button>
                 <span class="todo-text">${this.escapeHtml(item.text)}</span>
@@ -510,6 +532,7 @@ export class TodoList {
       reminderNotified: false,
       recurring: "none",
       tags: [],
+      tagColors: {},
       priority: "none",
       notes: "",
       attachments: [],
@@ -593,9 +616,10 @@ export class TodoList {
   }
 
   async showReminder(todo) {
-    const title = "Task reminder"
+    const i18n = geti18n()
+    const title = i18n.todo_reminder_title || "Task reminder"
     const body = todo.dueDate
-      ? `${todo.text} - due ${this.formatDateTime(todo.dueDate)}`
+      ? `${todo.text} - ${(i18n.todo_due_prefix || "due")} ${this.formatDateTime(todo.dueDate)}`
       : todo.text
 
     if (!("Notification" in window)) {
@@ -626,22 +650,63 @@ export class TodoList {
     })
   }
 
+  t(key, fallback) {
+    return geti18n()[key] || fallback
+  }
+
+  getPriorityLabel(priority) {
+    const labels = {
+      none: this.t("todo_priority_none", "None"),
+      p1: this.t("todo_priority_p1", "P1 High"),
+      p2: this.t("todo_priority_p2", "P2 Medium"),
+      p3: this.t("todo_priority_p3", "P3 Low"),
+    }
+    return labels[priority || "none"] || labels.none
+  }
+
+  getRecurringLabel(recurring) {
+    const labels = {
+      none: this.t("todo_recurring_none", "None"),
+      daily: this.t("todo_recurring_daily", "Daily"),
+      weekly: this.t("todo_recurring_weekly", "Weekly"),
+      monthly: this.t("todo_recurring_monthly", "Monthly"),
+    }
+    return labels[recurring || "none"] || labels.none
+  }
+
+  getTagColor(tag, item) {
+    const storedColor = item.tagColors?.[tag]
+    if (this.isValidHexColor(storedColor)) return storedColor
+    const sum = Array.from(tag).reduce((total, char) => total + char.charCodeAt(0), 0)
+    return TODO_TAG_COLORS[sum % TODO_TAG_COLORS.length]
+  }
+
+  isValidHexColor(value) {
+    return /^#[0-9a-f]{6}$/i.test(String(value || ""))
+  }
+
+  renderPropertyIcon(property, icon) {
+    const color = TODO_PROPERTY_COLORS[property] || "var(--accent-color)"
+    return `<i class="${icon}" style="--todo-property-color: ${color}"></i>`
+  }
+
   renderTodoMeta(item) {
     const chips = []
     if (item.priority && item.priority !== "none") {
-      chips.push(`<span class="todo-meta-chip priority-chip">${item.priority.toUpperCase()}</span>`)
+      chips.push(`<span class="todo-meta-chip priority-chip priority-${this.escapeAttribute(item.priority)}">${this.escapeHtml(this.getPriorityLabel(item.priority))}</span>`)
     }
     if (item.dueDate) {
-      chips.push(`<span class="todo-meta-chip"><i class="fa-regular fa-calendar"></i>${this.escapeHtml(this.formatDateTime(item.dueDate))}</span>`)
+      chips.push(`<span class="todo-meta-chip due-chip"><i class="fa-regular fa-calendar"></i>${this.escapeHtml(this.formatDateTime(item.dueDate))}</span>`)
     }
     if (item.reminderAt) {
-      chips.push(`<span class="todo-meta-chip"><i class="fa-regular fa-bell"></i>${this.escapeHtml(this.formatDateTime(item.reminderAt))}</span>`)
+      chips.push(`<span class="todo-meta-chip reminder-chip"><i class="fa-regular fa-bell"></i>${this.escapeHtml(this.formatDateTime(item.reminderAt))}</span>`)
     }
     if (item.recurring && item.recurring !== "none") {
-      chips.push(`<span class="todo-meta-chip"><i class="fa-solid fa-rotate"></i>${this.escapeHtml(item.recurring)}</span>`)
+      chips.push(`<span class="todo-meta-chip recurring-chip"><i class="fa-solid fa-rotate"></i>${this.escapeHtml(this.getRecurringLabel(item.recurring))}</span>`)
     }
     item.tags.forEach((tag) => {
-      chips.push(`<span class="todo-meta-chip tag-chip">#${this.escapeHtml(tag)}</span>`)
+      const color = this.getTagColor(tag, item)
+      chips.push(`<span class="todo-meta-chip tag-chip" style="--todo-tag-color: ${color}"><span class="todo-tag-dot"></span>#${this.escapeHtml(tag)}</span>`)
     })
     if (item.subtasks.length > 0) {
       const done = item.subtasks.filter((subtask) => subtask.completed).length
@@ -656,15 +721,27 @@ export class TodoList {
 
   renderDetailPanel(item) {
     const tags = item.tags.join(", ")
+    const tagColorRows = item.tags
+      .map((tag) => {
+        const color = this.getTagColor(tag, item)
+        return `
+          <div class="todo-tag-color-row" data-tag="${this.escapeAttribute(tag)}" style="--todo-tag-color: ${color}">
+            <span class="todo-tag-color-swatch"></span>
+            <span class="todo-tag-color-name">#${this.escapeHtml(tag)}</span>
+            <input class="todo-tag-color-input" type="color" value="${color}" title="${this.t("todo_tag_color", "Tag color")}">
+          </div>
+        `
+      })
+      .join("")
     const subtasks = item.subtasks
       .map((subtask, index) => `
         <li class="todo-subtask ${subtask.completed ? "completed" : ""}" data-subtask-index="${index}">
-          <i class="fa-solid fa-grip-vertical subtask-drag-handle" draggable="true" title="Drag subtask"></i>
-          <label title="Complete subtask" for="todo-subtask-${item.id}-${subtask.id}">
+          <i class="fa-solid fa-grip-vertical subtask-drag-handle" draggable="true" title="${this.t("todo_drag_subtask", "Drag subtask")}"></i>
+          <label title="${this.t("todo_complete_subtask", "Complete subtask")}" for="todo-subtask-${item.id}-${subtask.id}">
             <input type="checkbox" id="todo-subtask-${item.id}-${subtask.id}" class="todo-checkbox subtask-checkbox" ${subtask.completed ? "checked" : ""}>
           </label>
-          <input class="subtask-title-input" type="text" value="${this.escapeAttribute(subtask.text)}" placeholder="Subtask">
-          <button class="subtask-delete-btn" title="Delete subtask"><i class="fa-solid fa-xmark"></i></button>
+          <input class="subtask-title-input" type="text" value="${this.escapeAttribute(subtask.text)}" placeholder="${this.t("todo_subtask_placeholder", "Subtask")}">
+          <button class="subtask-delete-btn" title="${this.t("todo_delete_subtask", "Delete subtask")}"><i class="fa-solid fa-xmark"></i></button>
         </li>
       `)
       .join("")
@@ -673,7 +750,7 @@ export class TodoList {
         <li class="todo-attachment" data-attachment-index="${index}">
           <i class="fa-solid fa-link"></i>
           <a href="${this.escapeAttribute(attachment.url)}" target="_blank" rel="noopener noreferrer">${this.escapeHtml(attachment.label || attachment.url)}</a>
-          <button class="attachment-delete-btn" title="Remove attachment"><i class="fa-solid fa-xmark"></i></button>
+          <button class="attachment-delete-btn" title="${this.t("todo_remove_attachment", "Remove attachment")}"><i class="fa-solid fa-xmark"></i></button>
         </li>
       `)
       .join("")
@@ -682,54 +759,57 @@ export class TodoList {
       <div class="todo-detail-panel">
         <div class="todo-detail-panel-header">
           <div>
-            <span class="todo-detail-kicker">Task details</span>
+            <span class="todo-detail-kicker">${this.t("todo_task_details", "Task details")}</span>
             <strong>${this.escapeHtml(item.text)}</strong>
           </div>
         </div>
         <div class="todo-detail-grid">
           <div class="todo-detail-group full">
-            <div class="todo-detail-group-title"><i class="fa-solid fa-pen-to-square"></i><span>General</span></div>
+            <div class="todo-detail-group-title">${this.renderPropertyIcon("title", "fa-solid fa-pen-to-square")}<span>${this.t("todo_detail_general", "General")}</span></div>
             <div class="todo-detail-grid compact">
-          <label class="todo-field full">
-            <span>Title</span>
-            <input class="todo-title-input" type="text" value="${this.escapeAttribute(item.text)}" placeholder="Task title">
+          <label class="todo-field full" data-prop="title">
+            <span>${this.renderPropertyIcon("title", "fa-solid fa-heading")}${this.t("todo_field_title", "Title")}</span>
+            <input class="todo-title-input" type="text" value="${this.escapeAttribute(item.text)}" placeholder="${this.t("todo_field_title_placeholder", "Task title")}">
           </label>
-          <label class="todo-field">
-            <span>Due date</span>
+          <label class="todo-field" data-prop="dueDate">
+            <span>${this.renderPropertyIcon("dueDate", "fa-regular fa-calendar")}${this.t("todo_field_due_date", "Due date")}</span>
             <input class="todo-due-input" type="datetime-local" value="${this.escapeAttribute(item.dueDate)}">
           </label>
-          <label class="todo-field">
-            <span>Reminder</span>
+          <label class="todo-field" data-prop="reminderAt">
+            <span>${this.renderPropertyIcon("reminderAt", "fa-regular fa-bell")}${this.t("todo_field_reminder", "Reminder")}</span>
             <input class="todo-reminder-input" type="datetime-local" value="${this.escapeAttribute(item.reminderAt)}">
           </label>
-          <label class="todo-field">
-            <span>Recurring</span>
+          <label class="todo-field" data-prop="recurring">
+            <span>${this.renderPropertyIcon("recurring", "fa-solid fa-rotate")}${this.t("todo_field_recurring", "Recurring")}</span>
             <select class="todo-recurring-select">
-              <option value="none" ${item.recurring === "none" ? "selected" : ""}>None</option>
-              <option value="daily" ${item.recurring === "daily" ? "selected" : ""}>Daily</option>
-              <option value="weekly" ${item.recurring === "weekly" ? "selected" : ""}>Weekly</option>
-              <option value="monthly" ${item.recurring === "monthly" ? "selected" : ""}>Monthly</option>
+              <option value="none" ${item.recurring === "none" ? "selected" : ""}>${this.getRecurringLabel("none")}</option>
+              <option value="daily" ${item.recurring === "daily" ? "selected" : ""}>${this.getRecurringLabel("daily")}</option>
+              <option value="weekly" ${item.recurring === "weekly" ? "selected" : ""}>${this.getRecurringLabel("weekly")}</option>
+              <option value="monthly" ${item.recurring === "monthly" ? "selected" : ""}>${this.getRecurringLabel("monthly")}</option>
             </select>
           </label>
-          <label class="todo-field">
-            <span>Priority</span>
+          <label class="todo-field" data-prop="priority">
+            <span>${this.renderPropertyIcon("priority", "fa-solid fa-flag")}${this.t("todo_field_priority", "Priority")}</span>
             <select class="todo-priority-select">
-              <option value="none" ${item.priority === "none" ? "selected" : ""}>None</option>
-              <option value="p1" ${item.priority === "p1" ? "selected" : ""}>P1 High</option>
-              <option value="p2" ${item.priority === "p2" ? "selected" : ""}>P2 Medium</option>
-              <option value="p3" ${item.priority === "p3" ? "selected" : ""}>P3 Low</option>
+              <option value="none" ${item.priority === "none" ? "selected" : ""}>${this.getPriorityLabel("none")}</option>
+              <option value="p1" ${item.priority === "p1" ? "selected" : ""}>${this.getPriorityLabel("p1")}</option>
+              <option value="p2" ${item.priority === "p2" ? "selected" : ""}>${this.getPriorityLabel("p2")}</option>
+              <option value="p3" ${item.priority === "p3" ? "selected" : ""}>${this.getPriorityLabel("p3")}</option>
             </select>
           </label>
-          <label class="todo-field full">
-            <span>Tags</span>
-            <input class="todo-tags-input" type="text" value="${this.escapeAttribute(tags)}" placeholder="home, work, personal">
+          <label class="todo-field full" data-prop="tags">
+            <span>${this.renderPropertyIcon("tags", "fa-solid fa-tags")}${this.t("todo_field_tags", "Tags")}</span>
+            <input class="todo-tags-input" type="text" value="${this.escapeAttribute(tags)}" placeholder="${this.t("todo_field_tags_placeholder", "home, work, personal")}">
           </label>
+          <div class="todo-tag-color-editor full">
+            ${tagColorRows || `<span class="todo-tag-color-empty">${this.t("todo_tag_color_empty", "Add tags to choose colors.")}</span>`}
+          </div>
             </div>
           </div>
           <div class="todo-detail-group full">
-            <div class="todo-detail-group-title"><i class="fa-regular fa-note-sticky"></i><span>Notes</span></div>
-            <label class="todo-field full">
-              <textarea class="todo-notes-input" rows="4" placeholder="Add details, links, or context">${this.escapeHtml(item.notes)}</textarea>
+            <div class="todo-detail-group-title">${this.renderPropertyIcon("notes", "fa-regular fa-note-sticky")}<span>${this.t("todo_field_notes", "Notes")}</span></div>
+            <label class="todo-field full" data-prop="notes">
+              <textarea class="todo-notes-input" rows="4" placeholder="${this.t("todo_notes_placeholder", "Add details, links, or context")}">${this.escapeHtml(item.notes)}</textarea>
             </label>
           </div>
         </div>
@@ -737,25 +817,25 @@ export class TodoList {
         <div class="todo-detail-columns">
           <section class="todo-detail-section">
             <div class="todo-detail-section-title">
-              <i class="fa-solid fa-list-check"></i>
-              <span>Subtasks</span>
+              ${this.renderPropertyIcon("subtasks", "fa-solid fa-list-check")}
+              <span>${this.t("todo_field_subtasks", "Subtasks")}</span>
             </div>
             <ul class="todo-subtask-list">${subtasks}</ul>
             <div class="todo-inline-add">
-              <input class="todo-new-subtask-input" type="text" placeholder="Add subtask">
-              <button class="todo-add-subtask-btn" title="Add subtask"><i class="fa-solid fa-plus"></i></button>
+              <input class="todo-new-subtask-input" type="text" placeholder="${this.t("todo_add_subtask_placeholder", "Add subtask")}">
+              <button class="todo-add-subtask-btn" title="${this.t("todo_add_subtask", "Add subtask")}"><i class="fa-solid fa-plus"></i></button>
             </div>
           </section>
 
           <section class="todo-detail-section">
             <div class="todo-detail-section-title">
-              <i class="fa-solid fa-paperclip"></i>
-              <span>Attachments</span>
+              ${this.renderPropertyIcon("attachments", "fa-solid fa-paperclip")}
+              <span>${this.t("todo_field_attachments", "Attachments")}</span>
             </div>
             <ul class="todo-attachment-list">${attachments}</ul>
             <div class="todo-inline-add">
-              <input class="todo-new-attachment-input" type="url" placeholder="Paste link">
-              <button class="todo-add-attachment-btn" title="Add attachment"><i class="fa-solid fa-plus"></i></button>
+              <input class="todo-new-attachment-input" type="url" placeholder="${this.t("todo_paste_link_placeholder", "Paste link")}">
+              <button class="todo-add-attachment-btn" title="${this.t("todo_add_attachment", "Add attachment")}"><i class="fa-solid fa-plus"></i></button>
             </div>
           </section>
         </div>
@@ -782,13 +862,33 @@ export class TodoList {
     updateFromInput(".todo-reminder-input", "reminderAt")
     updateFromInput(".todo-recurring-select", "recurring")
     updateFromInput(".todo-priority-select", "priority")
-    updateFromInput(".todo-tags-input", "tags", (value) =>
-      value
+    updateFromInput(".todo-notes-input", "notes")
+
+    const tagsInput = panel.querySelector(".todo-tags-input")
+    tagsInput?.addEventListener("change", () => {
+      const nextTags = tagsInput.value
         .split(",")
         .map((tag) => tag.trim().replace(/^#/, ""))
-        .filter(Boolean),
-    )
-    updateFromInput(".todo-notes-input", "notes")
+        .filter(Boolean)
+      const nextColors = {}
+      nextTags.forEach((tag) => {
+        nextColors[tag] = this.getTagColor(tag, item)
+      })
+      this.updateTodo(item.id, { tags: nextTags, tagColors: nextColors })
+    })
+
+    panel.querySelectorAll(".todo-tag-color-input").forEach((input) => {
+      input.addEventListener("change", () => {
+        const tag = input.closest(".todo-tag-color-row")?.dataset.tag
+        if (!tag || !this.isValidHexColor(input.value)) return
+        this.updateTodo(item.id, {
+          tagColors: {
+            ...(item.tagColors || {}),
+            [tag]: input.value,
+          },
+        })
+      })
+    })
 
     const addSubtask = () => {
       const input = panel.querySelector(".todo-new-subtask-input")

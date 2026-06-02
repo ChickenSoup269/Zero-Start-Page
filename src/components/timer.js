@@ -1,6 +1,7 @@
 import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
 import { getImageUrl } from "../services/imageStore.js"
+import { geti18n } from "../services/i18n.js"
 
 const TIMER_ALARM_BASE_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/"
@@ -108,6 +109,8 @@ export class Timer {
     this.alarm = new Audio(getTimerAlarmUrl("bedside_clock_alarm"))
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
+    this.isFocusMode = false
+    this.focusClockId = null
 
     this.init()
   }
@@ -140,6 +143,7 @@ export class Timer {
 
   createElements() {
     this.container = document.getElementById("timer-component")
+    const i18n = geti18n()
     if (!this.container) {
       this.container = document.createElement("div")
       this.container.className = "timer-container glass-panel drag-handle"
@@ -154,19 +158,20 @@ export class Timer {
                     <i class="fa-solid fa-circle-pause"></i>
                     <span>Ready</span>
                 </div>
+                <div class="timer-controls">
+                    <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
+                    <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button id="timer-edit" class="icon-btn" title="Set Time"><i class="fa-solid fa-keyboard"></i></button>
+                    <button id="timer-clock-mode" class="icon-btn" title="Countdown to Main Clock"><i class="fa-solid fa-hourglass-start"></i></button>
+                    <button id="timer-focus-mode" class="icon-btn" title="${i18n.timer_focus_mode || "Focus Mode"}"><i class="fa-solid fa-bullseye"></i></button>
+                    <button id="timer-minimize" class="icon-btn" title="Minimize to Clock"><i class="fa-solid fa-compress"></i></button>
+                </div>
                 <label class="timer-alarm-row" for="timer-alarm-sound-widget">
                     <i class="fa-solid fa-bell"></i>
                     <select id="timer-alarm-sound-widget" title="Alarm Sound">
                         ${renderTimerAlarmOptions(this.alarmSound)}
                     </select>
                 </label>
-                <div class="timer-controls">
-                    <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
-                    <button id="timer-reset" class="icon-btn" title="Reset"><i class="fa-solid fa-rotate-right"></i></button>
-                    <button id="timer-edit" class="icon-btn" title="Set Time"><i class="fa-solid fa-keyboard"></i></button>
-                    <button id="timer-clock-mode" class="icon-btn" title="Countdown to Main Clock"><i class="fa-solid fa-hourglass-start"></i></button>
-                    <button id="timer-minimize" class="icon-btn" title="Minimize to Clock"><i class="fa-solid fa-compress"></i></button>
-                </div>
             </div>
             <div id="timer-input-view" class="timer-input-view" style="display: none;">
                 <div class="timer-input-header">Set Timer</div>
@@ -210,6 +215,7 @@ export class Timer {
 
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
+    this._createFocusOverlay()
   }
 
   _createMiniIndicator() {
@@ -238,6 +244,41 @@ export class Timer {
       })
       clockWrap.appendChild(mini)
     }
+  }
+
+  _createFocusOverlay() {
+    if (document.getElementById("timer-focus-overlay")) return
+    const i18n = geti18n()
+
+    const overlay = document.createElement("div")
+    overlay.id = "timer-focus-overlay"
+    overlay.className = "timer-focus-overlay"
+    overlay.setAttribute("aria-hidden", "true")
+    overlay.innerHTML = `
+      <div class="timer-focus-vignette"></div>
+      <button type="button" class="timer-focus-exit" id="timer-focus-exit" title="${i18n.timer_focus_exit || "Exit Focus"}">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="timer-focus-stage" role="dialog" aria-modal="true" aria-label="${i18n.timer_focus_mode || "Timer Focus"}">
+        <div class="timer-focus-clock" id="timer-focus-clock">00:00</div>
+        <div class="timer-focus-label">
+          <i class="fa-solid fa-bullseye"></i>
+          <span>${i18n.timer_focus_label || "FOCUS"}</span>
+        </div>
+        <div class="timer-focus-countdown" id="timer-focus-countdown">00:00</div>
+        <div class="timer-focus-progress" aria-hidden="true">
+          <div class="timer-focus-arc">
+            <div class="timer-focus-arc-fill"></div>
+            <div class="timer-focus-arc-cutout"></div>
+          </div>
+        </div>
+      </div>
+    `
+    document.body.appendChild(overlay)
+
+    overlay
+      .querySelector("#timer-focus-exit")
+      ?.addEventListener("click", () => this.exitFocusMode())
   }
 
   setupEventListeners() {
@@ -288,6 +329,13 @@ export class Timer {
     this.container
       .querySelector("#timer-clock-mode")
       .addEventListener("click", () => this.toggleClockTimerMode())
+    this.container
+      .querySelector("#timer-focus-mode")
+      .addEventListener("click", () => this.enterFocusMode())
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && this.isFocusMode) this.exitFocusMode()
+    })
 
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showTimer") {
@@ -307,6 +355,9 @@ export class Timer {
       }
       if (e.detail.key === "hideTimerAlarmDropdown") {
         this.applyAlarmDropdownVisibility()
+      }
+      if (e.detail.key === "language") {
+        this.updateFocusLanguage()
       }
     })
 
@@ -536,6 +587,35 @@ export class Timer {
     this.updateTimerStatus()
   }
 
+  enterFocusMode() {
+    this._createFocusOverlay()
+    if (this.timeLeft <= 0) {
+      this.showInputView()
+      return
+    }
+
+    this.isFocusMode = true
+    document.body.classList.add("timer-focus-active")
+    const overlay = document.getElementById("timer-focus-overlay")
+    if (overlay) overlay.setAttribute("aria-hidden", "false")
+
+    if (!this.timerId) this.startTimer()
+    this.updateFocusOverlay()
+    if (this.focusClockId) clearInterval(this.focusClockId)
+    this.focusClockId = setInterval(() => this.updateFocusOverlay(), 1000)
+  }
+
+  exitFocusMode() {
+    this.isFocusMode = false
+    document.body.classList.remove("timer-focus-active")
+    const overlay = document.getElementById("timer-focus-overlay")
+    if (overlay) overlay.setAttribute("aria-hidden", "true")
+    if (this.focusClockId) {
+      clearInterval(this.focusClockId)
+      this.focusClockId = null
+    }
+  }
+
   updateSmartInputPreview(value) {
     if (!value) {
       this.display.textContent = "00:00:00"
@@ -636,6 +716,7 @@ export class Timer {
       "block"
     this.updateExpiredIndicator(true)
     this.updateTimerStatus("finished")
+    this.updateFocusOverlay()
   }
 
   stopAlarm() {
@@ -706,6 +787,7 @@ export class Timer {
       this.renderTime(this.timeLeft, miniText, true)
     }
     this.updateMiniIndicatorState()
+    this.updateFocusOverlay()
   }
 
   updateMiniIndicatorState() {
@@ -767,6 +849,7 @@ export class Timer {
   }
 
   renderTime(seconds, element, short = false) {
+    if (!element) return
     const h = Math.floor(seconds / 3600)
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
@@ -781,6 +864,59 @@ export class Timer {
       // Show just SS if there are only seconds
       element.textContent = short ? s.toString() : s.toString().padStart(2, "0")
     }
+  }
+
+  getFocusClockText() {
+    const now = new Date()
+    return now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  updateFocusOverlay() {
+    const overlay = document.getElementById("timer-focus-overlay")
+    if (!overlay || !this.isFocusMode) return
+
+    const clock = overlay.querySelector("#timer-focus-clock")
+    const countdown = overlay.querySelector("#timer-focus-countdown")
+    const stage = overlay.querySelector(".timer-focus-stage")
+    const clockText = this.getFocusClockText()
+    if (clock) clock.textContent = clockText
+    this.renderTime(this.timeLeft, countdown)
+
+    const base = this.initialTime > 0 ? this.initialTime : this.timeLeft
+    const progress = base > 0 ? Math.max(0, Math.min(1, this.timeLeft / base)) : 0
+    overlay.style.setProperty("--timer-focus-progress", progress.toFixed(4))
+    const progressAngle = Math.max(0, progress * 360)
+    const dotAngle = (-90 + progressAngle) * (Math.PI / 180)
+    const dotRadius = 36.5
+    overlay.style.setProperty(
+      "--timer-focus-angle",
+      `${progressAngle.toFixed(2)}deg`,
+    )
+    overlay.style.setProperty(
+      "--timer-focus-dot-x",
+      `${(50 + Math.cos(dotAngle) * dotRadius).toFixed(2)}%`,
+    )
+    overlay.style.setProperty(
+      "--timer-focus-dot-y",
+      `${(50 + Math.sin(dotAngle) * dotRadius).toFixed(2)}%`,
+    )
+    stage?.classList.toggle("is-finished", this.isExpired)
+    this.updateFocusLanguage()
+  }
+
+  updateFocusLanguage() {
+    const overlay = document.getElementById("timer-focus-overlay")
+    if (!overlay) return
+    const i18n = geti18n()
+    const label = overlay.querySelector(".timer-focus-label span")
+    const exitBtn = overlay.querySelector("#timer-focus-exit")
+    const stage = overlay.querySelector(".timer-focus-stage")
+    if (label) label.textContent = i18n.timer_focus_label || "FOCUS"
+    if (exitBtn) exitBtn.title = i18n.timer_focus_exit || "Exit Focus"
+    if (stage) stage.setAttribute("aria-label", i18n.timer_focus_mode || "Timer Focus")
   }
 
   applySkin() {

@@ -892,9 +892,10 @@
 .sidebar-scroll-top-btn {
   position: absolute;
   right: var(--space-2);
-  bottom: 130px;
+  bottom: calc(var(--space-5) + 88px);
   width: 34px;
   height: 34px;
+  padding: 0;
   border-radius: 50%;
   background: var(--accent-color);
   color: var(--accent-contrast-color, #1a1a2e);
@@ -942,12 +943,18 @@
   backdrop-filter: blur(8px);
 }
 
+.sidebar-scroll-top-btn,
+.sidebar-hotkeys-btn {
+  box-sizing: border-box;
+}
+
 .sidebar-hotkeys-btn {
   position: absolute;
   right: var(--space-2);
-  bottom: 88px;
+  bottom: calc(var(--space-5) + 44px);
   width: 34px;
   height: 34px;
+  padding: 0;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
@@ -6937,4 +6944,26 @@ body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-gr
 body.sidebar-light .settings-section[data-section-id="bookmark-custom"] .setting-hint,
 body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-hint {
   color: rgba(0, 0, 0, 0.68) !important;
+}
+
+/* Keep the floating sidebar action buttons on one clean vertical rail. */
+.sidebar-scroll-top-btn,
+.sidebar-hotkeys-btn,
+.sidebar-bug-btn {
+  right: var(--space-2) !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+}
+
+.sidebar-scroll-top-btn {
+  bottom: calc(var(--space-5) + 88px) !important;
+}
+
+.sidebar-hotkeys-btn {
+  bottom: calc(var(--space-5) + 44px) !important;
+}
+
+.sidebar-bug-btn {
+  bottom: var(--space-5) !important;
 }

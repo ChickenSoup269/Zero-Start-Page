@@ -2345,6 +2345,21 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.22);
 }
 
+.music-style-overlap .progress-bar-track {
+  overflow: visible;
+  isolation: isolate;
+}
+
+.music-style-overlap .progress-bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  max-width: 100%;
+}
+
+.music-style-overlap .progress-bar-thumb {
+  z-index: 2;
+}
+
 .music-style-overlap .music-visualizer {
   position: absolute;
   right: 19px;
