@@ -86,19 +86,19 @@ i {
 
 
 #splash-cursor-canvas {
-  z-index: -2;
+  z-index: -3;
 }
 
 #gradient-v2-canvas {
-  z-index: -1;
+  z-index: -3;
 }
 
 #pixel-snow-hq-canvas {
-  z-index: -1;
+  z-index: -3;
 }
 
 #effect-canvas {
-  z-index: -1;
+  z-index: -3;
 }
 
 #bg-layer,

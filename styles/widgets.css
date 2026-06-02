@@ -1615,7 +1615,6 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   justify-content: space-between;
   align-items: center;
   gap: var(--space-1);
-  border-left: 3px solid var(--accent-color);
 }
 
 .todo-section-header .section-title {
@@ -1625,8 +1624,8 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   min-width: 0;
   font-weight: 700;
   font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  text-transform: none;
+  letter-spacing: 0;
   color: var(--accent-color);
   overflow-wrap: anywhere;
 }
@@ -1773,18 +1772,6 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   align-items: center;
   gap: var(--space-1);
   min-width: 0;
-}
-
-.todo-item.priority-p1 {
-  border-left: 3px solid #ff5b6e;
-}
-
-.todo-item.priority-p2 {
-  border-left: 3px solid #ffb84d;
-}
-
-.todo-item.priority-p3 {
-  border-left: 3px solid #62d68f;
 }
 
 .todo-item:hover {
@@ -1979,6 +1966,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .todo-checkbox {
   appearance: none;
   -webkit-appearance: none;
+  box-sizing: border-box;
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -2001,14 +1989,14 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .todo-checkbox:checked::after {
   content: "";
   position: absolute;
-  left: var(--space-1);
-  top: 1.5px;
+  left: 50%;
+  top: 45%;
   width: 4px;
   height: 8px;
   border: 2px solid var(--accent-contrast-color, #fff);
   border-top: none;
   border-left: none;
-  transform: rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .todo-checkbox:indeterminate {
@@ -2169,9 +2157,11 @@ body.todo-fullscreen-active::before {
 
 .todo-container.todo-fullscreen.todo-columns-mode .todo-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
   align-content: start;
   gap: var(--space-2);
+  max-width: min(100%, calc(420px * 3 + var(--space-2) * 2));
+  margin-inline: auto;
 }
 
 .todo-container.todo-fullscreen .todo-item {
@@ -2287,7 +2277,6 @@ body.todo-fullscreen-active::before {
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.075);
-  border-left: 3px solid var(--todo-property-color, rgba(var(--accent-color-rgb, 168, 192, 255), 0.72));
 }
 
 .todo-field.full {
@@ -2362,6 +2351,7 @@ body.todo-fullscreen-active::before {
   font-size: 0.86rem;
   line-height: 1.35;
   box-sizing: border-box;
+  text-transform: none;
 }
 
 .todo-field textarea {
@@ -2800,6 +2790,12 @@ body.timer-focus-active {
   overflow: hidden;
 }
 
+@property --timer-focus-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 360deg;
+}
+
 .timer-focus-overlay {
   position: fixed;
   inset: 0;
@@ -2883,11 +2879,55 @@ body.timer-focus-active {
   position: relative;
   z-index: 2;
   font-family: var(--font-clock);
-  font-size: clamp(1.9rem, 4.7vw, 3.8rem);
-  font-weight: 780;
+  font-size: clamp(1.1rem, 2.5vw, 1.9rem);
+  font-weight: 720;
   line-height: 1;
+  color: rgba(255, 255, 255, 0.76);
+  text-shadow: 0 5px 18px rgba(0, 0, 0, 0.38);
+}
+
+.timer-focus-actions {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.timer-focus-control {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.32);
+  border-radius: 50%;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
   color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.timer-focus-control:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.52);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.timer-focus-reset {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
 .timer-focus-progress {
@@ -2927,18 +2967,11 @@ body.timer-focus-active {
     inset 0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.1);
   -webkit-mask: radial-gradient(circle, transparent 66%, #000 67%, #000 73%, transparent 74%);
   mask: radial-gradient(circle, transparent 66%, #000 67%, #000 73%, transparent 74%);
+  transition: --timer-focus-angle 0.72s linear;
 }
 
 .timer-focus-arc-cutout {
-  position: absolute;
-  left: var(--timer-focus-dot-x, 50%);
-  top: var(--timer-focus-dot-y, 13.5%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--accent-color, #a8c0ff);
-  box-shadow: 0 0 22px rgba(var(--accent-color-rgb, 168, 192, 255), 0.8);
+  display: none;
 }
 
 .timer-focus-exit {
@@ -2973,6 +3006,10 @@ body.timer-focus-active {
 }
 
 .timer-focus-stage.is-finished .timer-focus-countdown {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.timer-focus-stage.is-finished .timer-focus-clock {
   color: #ff9caf;
 }
 
@@ -4149,7 +4186,6 @@ body.context-menu-none .calendar-event-preview-desc {
 
 .skin-white-blur .todo-section-header {
   background: rgba(0, 0, 0, 0.08) !important;
-  border-left-color: var(--safe-accent) !important;
 }
 
 .skin-white-blur .todo-section-header .section-title {

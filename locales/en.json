@@ -1095,6 +1095,7 @@
   "todo_mark_complete": "Mark complete",
   "todo_mark_incomplete": "Mark incomplete",
   "todo_reminder_title": "Task reminder",
+  "todo_due_title": "Task due",
   "todo_due_prefix": "due",
   "music_no_media": "No Media Playing",
   "music_unknown_title": "Unknown Title",

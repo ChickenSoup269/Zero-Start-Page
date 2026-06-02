@@ -2171,7 +2171,7 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
   box-shadow:
     0 12px 22px rgba(0, 0, 0, 0.32),
     0 0 0 4px rgba(var(--overlap-accent-rgb), 0.18);
-  z-index: 3;
+  z-index: 4;
 }
 
 .music-style-overlap .vinyl-disc {
@@ -2357,7 +2357,7 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
 }
 
 .music-style-overlap .progress-bar-thumb {
-  z-index: 2;
+  z-index: 3;
 }
 
 .music-style-overlap .music-visualizer {
@@ -2440,6 +2440,36 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
     linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.12)),
     color-mix(in srgb, var(--overlap-accent) 72%, #ffffff) !important;
   box-shadow: 0 14px 26px rgba(var(--overlap-accent-rgb), 0.15) !important;
+}
+
+.music-style-overlap .music-player-wrapper.skin-white-blur::after,
+body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::after,
+.music-style-overlap .music-player-wrapper.skin-m3-accent::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.music-style-overlap .music-player-wrapper.skin-white-blur::after {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::after,
+.music-style-overlap .music-player-wrapper.skin-m3-accent::after {
+  background:
+    radial-gradient(
+      circle at 18% 18%,
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent),
+      transparent 38%
+    ),
+    color-mix(
+      in srgb,
+      var(--m3-surface-container-high, #111318) 86%,
+      var(--m3-primary-container, var(--safe-accent)) 14%
+    );
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .player-info h3,
@@ -4448,47 +4478,101 @@ body.widgets-m3-accent
 
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::before,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::before {
-  left: 108px !important;
-  right: 24px !important;
-  top: -42px !important;
-  height: 74px !important;
-  border-radius: 14px 14px 7px 7px !important;
+  left: 92px !important;
+  right: 20px !important;
+  top: -60px !important;
+  height: 94px !important;
+  border-radius: 16px 16px 6px 6px !important;
 }
 
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-info,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-info {
-  top: -35px !important;
+  top: -50px !important;
 }
 
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .progress-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .progress-row {
-  top: -10px !important;
+  top: -16px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::before,
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::before,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::before {
-  left: 116px !important;
-  right: 28px !important;
-  top: -28px !important;
-  height: 56px !important;
-  border-radius: 12px 12px 8px 8px !important;
+  left: 92px !important;
+  right: 20px !important;
+  top: -60px !important;
+  height: 94px !important;
+  border-radius: 16px 16px 6px 6px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .player-info,
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-info,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-info {
-  top: -24px !important;
+  top: -50px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .progress-row,
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .progress-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .progress-row {
-  top: -5px !important;
+  top: -16px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .controls-row,
 body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .controls-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .controls-row {
-  top: 36px !important;
+  top: 32px !important;
+}
+
+/* Overlap Flat progress fix for White Blur and M3 skins only. */
+.music-style-overlap .music-player-wrapper.skin-white-blur .progress-row,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-row,
+.music-style-overlap .music-player-wrapper.skin-m3-accent .progress-row {
+  height: 16px !important;
+  align-items: center !important;
+  z-index: 8 !important;
+}
+
+.music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-track,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-bar-track,
+.music-style-overlap .music-player-wrapper.skin-m3-accent .progress-bar-track {
+  flex: 1 1 auto !important;
+  min-width: 64px !important;
+  height: 5px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  overflow: visible !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--overlap-on-accent) 18%, transparent) !important;
+}
+
+.music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-track {
+  background: rgba(17, 17, 17, 0.16) !important;
+}
+
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-bar-track,
+.music-style-overlap .music-player-wrapper.skin-m3-accent .progress-bar-track {
+  background: color-mix(in srgb, var(--overlap-on-accent) 18%, transparent) !important;
+}
+
+.music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-fill,
+.music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-thumb,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-bar-fill,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-bar-thumb,
+.music-style-overlap .music-player-wrapper.skin-m3-accent .progress-bar-fill,
+.music-style-overlap .music-player-wrapper.skin-m3-accent .progress-bar-thumb {
+  background: var(--overlap-on-accent) !important;
 }

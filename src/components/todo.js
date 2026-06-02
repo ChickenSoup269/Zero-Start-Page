@@ -3,6 +3,7 @@ import { showContextMenu } from "./contextMenu.js"
 import { geti18n } from "../services/i18n.js"
 import { showConfirm, showPrompt } from "../utils/dialog.js"
 import { fadeToggle } from "../utils/dom.js"
+import { showToast } from "../utils/toast.js"
 
 const TODO_TAG_COLORS = [
   "#7cdaff",
@@ -234,6 +235,7 @@ export class TodoList {
       completed: false,
       type: "task",
       dueDate: "",
+      dueNotified: false,
       reminderAt: "",
       reminderNotified: false,
       recurring: "none",
@@ -261,14 +263,21 @@ export class TodoList {
   }
 
   toggleTodo(id) {
-    const todo = this.todos.find((t) => t.id === id)
-    const willComplete = todo && !todo.completed
-    this.todos = this.todos.map((t) =>
-      t.id === id ? { ...t, completed: !t.completed } : t,
-    )
-    if (todo && willComplete && todo.recurring && todo.recurring !== "none") {
-      this.createRecurringTodo(todo)
-    }
+    this.todos = this.todos.map((t) => {
+      if (t.id !== id) return t
+      const completed = !t.completed
+      const changes = {
+        completed,
+        dueNotified: false,
+        reminderNotified: false,
+      }
+
+      if (completed && t.recurring && t.recurring !== "none") {
+        Object.assign(changes, this.getNextRecurringSchedule(t))
+      }
+
+      return this.normalizeTodo({ ...t, ...changes })
+    })
     this.saveTodos()
     this.render()
   }
@@ -528,6 +537,7 @@ export class TodoList {
     if (todo.type === "section") return todo
     return {
       dueDate: "",
+      dueNotified: false,
       reminderAt: "",
       reminderNotified: false,
       recurring: "none",
@@ -551,32 +561,30 @@ export class TodoList {
     this.render()
   }
 
-  createRecurringTodo(todo) {
-    const nextDueDate = this.getNextDate(todo.dueDate, todo.recurring)
-    const nextReminderAt = this.getNextDate(todo.reminderAt, todo.recurring)
-    this.todos.push({
-      ...this.normalizeTodo(todo),
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      completed: false,
-      dueDate: nextDueDate,
-      reminderAt: nextReminderAt,
-      reminderNotified: false,
-      subtasks: todo.subtasks.map((subtask) => ({
-        ...subtask,
-        id: Date.now() + Math.floor(Math.random() * 100000),
-        completed: false,
-      })),
-    })
+  getNextRecurringSchedule(todo) {
+    return {
+      dueDate: this.getNextRecurringDate(todo.dueDate, todo.recurring),
+      reminderAt: this.getNextRecurringDate(todo.reminderAt, todo.recurring),
+    }
   }
 
-  getNextDate(value, recurring) {
-    if (!value) return ""
+  getNextRecurringDate(value, recurring) {
+    if (!value || !recurring || recurring === "none") return value || ""
     const date = new Date(value)
-    if (Number.isNaN(date.getTime())) return ""
+    if (Number.isNaN(date.getTime())) return value
+
+    const now = Date.now()
+    this.addRecurringInterval(date, recurring)
+    while (date.getTime() <= now) {
+      this.addRecurringInterval(date, recurring)
+    }
+    return this.toDateTimeLocal(date)
+  }
+
+  addRecurringInterval(date, recurring) {
     if (recurring === "daily") date.setDate(date.getDate() + 1)
     if (recurring === "weekly") date.setDate(date.getDate() + 7)
     if (recurring === "monthly") date.setMonth(date.getMonth() + 1)
-    return this.toDateTimeLocal(date)
   }
 
   toDateTimeLocal(date) {
@@ -593,49 +601,67 @@ export class TodoList {
   async checkReminders() {
     const now = Date.now()
     let changed = false
+    let shouldRender = false
 
     for (const todo of this.todos) {
-      if (
-        todo.type === "section" ||
-        todo.completed ||
-        !todo.reminderAt ||
-        todo.reminderNotified
-      ) {
+      if (todo.type === "section") continue
+
+      const dueTime = this.getTimestamp(todo.dueDate)
+      const reminderTime = this.getTimestamp(todo.reminderAt)
+      const isDue = dueTime !== null && dueTime <= now
+      const isReminderDue = reminderTime !== null && reminderTime <= now
+      const isRecurring = todo.recurring && todo.recurring !== "none"
+
+      if (todo.completed) {
+        if (isRecurring && (isDue || isReminderDue)) {
+          todo.completed = false
+          todo.dueNotified = isDue
+          todo.reminderNotified = isReminderDue
+          changed = true
+          shouldRender = true
+          this.showTaskToast(todo, isReminderDue ? "reminder" : "due")
+        }
         continue
       }
 
-      const reminderTime = new Date(todo.reminderAt).getTime()
-      if (Number.isNaN(reminderTime) || reminderTime > now) continue
+      if (isReminderDue && !todo.reminderNotified) {
+        todo.reminderNotified = true
+        changed = true
+        this.showTaskToast(todo, "reminder")
+      }
 
-      todo.reminderNotified = true
-      changed = true
-      this.showReminder(todo)
+      if (isDue && !todo.dueNotified) {
+        todo.dueNotified = true
+        changed = true
+        this.showTaskToast(todo, "due")
+      }
     }
 
     if (changed) this.saveTodos()
+    if (shouldRender) this.render()
   }
 
-  async showReminder(todo) {
+  getTimestamp(value) {
+    if (!value) return null
+    const timestamp = new Date(value).getTime()
+    return Number.isNaN(timestamp) ? null : timestamp
+  }
+
+  showTaskToast(todo, type) {
     const i18n = geti18n()
-    const title = i18n.todo_reminder_title || "Task reminder"
-    const body = todo.dueDate
-      ? `${todo.text} - ${(i18n.todo_due_prefix || "due")} ${this.formatDateTime(todo.dueDate)}`
-      : todo.text
-
-    if (!("Notification" in window)) {
-      alert(`${title}: ${body}`)
-      return
-    }
-
-    if (Notification.permission === "default") {
-      await Notification.requestPermission()
-    }
-
-    if (Notification.permission === "granted") {
-      new Notification(title, { body })
-    } else {
-      alert(`${title}: ${body}`)
-    }
+    const title =
+      type === "reminder"
+        ? i18n.todo_reminder_title || "Task reminder"
+        : i18n.todo_due_title || "Task due"
+    const time =
+      type === "reminder"
+        ? this.formatDateTime(todo.reminderAt)
+        : this.formatDateTime(todo.dueDate)
+    const suffix = time ? ` - ${this.escapeHtml(time)}` : ""
+    showToast(`${this.escapeHtml(title)}: ${this.escapeHtml(todo.text)}${suffix}`, {
+      duration: 7000,
+      type: type === "reminder" ? "info" : "warning",
+    })
   }
 
   formatDateTime(value) {
@@ -769,7 +795,7 @@ export class TodoList {
             <div class="todo-detail-grid compact">
           <label class="todo-field full" data-prop="title">
             <span>${this.renderPropertyIcon("title", "fa-solid fa-heading")}${this.t("todo_field_title", "Title")}</span>
-            <input class="todo-title-input" type="text" value="${this.escapeAttribute(item.text)}" placeholder="${this.t("todo_field_title_placeholder", "Task title")}">
+            <input class="todo-title-input" type="text" value="${this.escapeAttribute(item.text)}" placeholder="${this.t("todo_field_title_placeholder", "Task title")}" autocapitalize="off" autocomplete="off" spellcheck="false">
           </label>
           <label class="todo-field" data-prop="dueDate">
             <span>${this.renderPropertyIcon("dueDate", "fa-regular fa-calendar")}${this.t("todo_field_due_date", "Due date")}</span>
@@ -809,7 +835,7 @@ export class TodoList {
           <div class="todo-detail-group full">
             <div class="todo-detail-group-title">${this.renderPropertyIcon("notes", "fa-regular fa-note-sticky")}<span>${this.t("todo_field_notes", "Notes")}</span></div>
             <label class="todo-field full" data-prop="notes">
-              <textarea class="todo-notes-input" rows="4" placeholder="${this.t("todo_notes_placeholder", "Add details, links, or context")}">${this.escapeHtml(item.notes)}</textarea>
+              <textarea class="todo-notes-input" rows="4" placeholder="${this.t("todo_notes_placeholder", "Add details, links, or context")}" autocapitalize="off" autocomplete="off" spellcheck="false">${this.escapeHtml(item.notes)}</textarea>
             </label>
           </div>
         </div>
@@ -852,6 +878,7 @@ export class TodoList {
       if (!control) return
       control.addEventListener("change", () => {
         const changes = { [key]: normalize(control.value) }
+        if (key === "dueDate") changes.dueNotified = false
         if (key === "reminderAt") changes.reminderNotified = false
         this.updateTodo(item.id, changes)
       })

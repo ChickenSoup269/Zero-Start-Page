@@ -266,6 +266,14 @@ export class Timer {
           <span>${i18n.timer_focus_label || "FOCUS"}</span>
         </div>
         <div class="timer-focus-countdown" id="timer-focus-countdown">00:00</div>
+        <div class="timer-focus-actions">
+          <button type="button" class="timer-focus-control timer-focus-pause" id="timer-focus-pause" title="${i18n.timer_focus_pause || "Pause"}">
+            <i class="fa-solid fa-pause"></i>
+          </button>
+          <button type="button" class="timer-focus-control timer-focus-reset" id="timer-focus-reset" title="${i18n.timer_focus_reset || "Reset"}">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
         <div class="timer-focus-progress" aria-hidden="true">
           <div class="timer-focus-arc">
             <div class="timer-focus-arc-fill"></div>
@@ -279,6 +287,12 @@ export class Timer {
     overlay
       .querySelector("#timer-focus-exit")
       ?.addEventListener("click", () => this.exitFocusMode())
+    overlay
+      .querySelector("#timer-focus-pause")
+      ?.addEventListener("click", () => this.pauseFocusTimer())
+    overlay
+      .querySelector("#timer-focus-reset")
+      ?.addEventListener("click", () => this.resetFocusTimer())
   }
 
   setupEventListeners() {
@@ -616,6 +630,17 @@ export class Timer {
     }
   }
 
+  pauseFocusTimer() {
+    if (this.timerId || this.isRunning) this.pauseTimer()
+    this.stopAlarm()
+    this.updateFocusOverlay()
+  }
+
+  resetFocusTimer() {
+    this.resetTimer()
+    this.updateFocusOverlay()
+  }
+
   updateSmartInputPreview(value) {
     if (!value) {
       this.display.textContent = "00:00:00"
@@ -882,26 +907,16 @@ export class Timer {
     const countdown = overlay.querySelector("#timer-focus-countdown")
     const stage = overlay.querySelector(".timer-focus-stage")
     const clockText = this.getFocusClockText()
-    if (clock) clock.textContent = clockText
-    this.renderTime(this.timeLeft, countdown)
+    this.renderTime(this.timeLeft, clock)
+    if (countdown) countdown.textContent = clockText
 
     const base = this.initialTime > 0 ? this.initialTime : this.timeLeft
     const progress = base > 0 ? Math.max(0, Math.min(1, this.timeLeft / base)) : 0
     overlay.style.setProperty("--timer-focus-progress", progress.toFixed(4))
     const progressAngle = Math.max(0, progress * 360)
-    const dotAngle = (-90 + progressAngle) * (Math.PI / 180)
-    const dotRadius = 36.5
     overlay.style.setProperty(
       "--timer-focus-angle",
       `${progressAngle.toFixed(2)}deg`,
-    )
-    overlay.style.setProperty(
-      "--timer-focus-dot-x",
-      `${(50 + Math.cos(dotAngle) * dotRadius).toFixed(2)}%`,
-    )
-    overlay.style.setProperty(
-      "--timer-focus-dot-y",
-      `${(50 + Math.sin(dotAngle) * dotRadius).toFixed(2)}%`,
     )
     stage?.classList.toggle("is-finished", this.isExpired)
     this.updateFocusLanguage()
@@ -913,9 +928,13 @@ export class Timer {
     const i18n = geti18n()
     const label = overlay.querySelector(".timer-focus-label span")
     const exitBtn = overlay.querySelector("#timer-focus-exit")
+    const pauseBtn = overlay.querySelector("#timer-focus-pause")
+    const resetBtn = overlay.querySelector("#timer-focus-reset")
     const stage = overlay.querySelector(".timer-focus-stage")
     if (label) label.textContent = i18n.timer_focus_label || "FOCUS"
     if (exitBtn) exitBtn.title = i18n.timer_focus_exit || "Exit Focus"
+    if (pauseBtn) pauseBtn.title = i18n.timer_focus_pause || "Pause"
+    if (resetBtn) resetBtn.title = i18n.timer_focus_reset || "Reset"
     if (stage) stage.setAttribute("aria-label", i18n.timer_focus_mode || "Timer Focus")
   }
 

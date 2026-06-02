@@ -787,8 +787,8 @@
                         title="Upload icon" data-i18n-title="settings_tab_icon_upload">
                         <i class="fa-solid fa-upload"></i>
                     </button>
-                    <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn" title="Remove icon"
-                        data-i18n-title="settings_tab_icon_remove" hidden>
+                    <button type="button" id="tab-icon-clear-btn" class="icon-btn tab-icon-action-btn"
+                        title="Remove icon" data-i18n-title="settings_tab_icon_remove" hidden>
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     <div id="tab-icon-preview"
@@ -1113,10 +1113,12 @@
                                 <option value="quality" data-i18n="settings_media_quality_quality">Quality</option>
                                 <option value="balanced" data-i18n="settings_media_quality_balanced">Balanced</option>
                                 <option value="low" data-i18n="settings_media_quality_low">Low data</option>
-                                <option value="still" data-i18n="settings_media_quality_still">Still video saver</option>
+                                <option value="still" data-i18n="settings_media_quality_still">Still video saver
+                                </option>
                             </select>
                             <small style="opacity: 0.65; margin-top: 6px; display: block;"
-                                data-i18n="settings_background_media_quality_hint">Lower image size for fetched/uploaded backgrounds. Still mode pauses video backgrounds after loading.</small>
+                                data-i18n="settings_background_media_quality_hint">Lower image size for fetched/uploaded
+                                backgrounds. Still mode pauses video backgrounds after loading.</small>
                         </div>
 
                         <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled style="margin-top: 10px;">
@@ -1316,7 +1318,8 @@
                             style="grid-column: 1 / -1; margin-bottom: 10px;">
                             <div>
                                 <span data-i18n="settings_m3_widgets">Apply M3 to widgets</span>
-                                <small data-i18n="settings_m3_widgets_hint">Use the current M3 accent as widget backgrounds</small>
+                                <small data-i18n="settings_m3_widgets_hint">Use the current M3 accent as widget
+                                    backgrounds</small>
                             </div>
                             <input type="checkbox" id="m3-widgets-toggle">
                         </label>
@@ -4204,7 +4207,8 @@
                                     <div class="setting-item" style="margin-top: 15px;">
                                         <div class="setting-item-row no-margin">
                                             <label for="soft-aurora-transparent-checkbox"
-                                                data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                                data-i18n="setting_pixel_blast_transparent">Transparent
+                                                Background</label>
                                             <label class="soft-aurora-switch" for="soft-aurora-transparent-checkbox">
                                                 <input type="checkbox" id="soft-aurora-transparent-checkbox" checked>
                                                 <span class="soft-aurora-switch-track"></span>
@@ -4482,20 +4486,20 @@
                                 </div>
                                 <div class="clock-style-card" data-value="neon-grid">
                                     <i class="fa-solid fa-border-all"></i>
-                                    <span class="clock-style-name"
-                                        data-i18n="settings_clock_date_style_neon_grid">Neon Grid</span>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_neon_grid">Neon
+                                        Grid</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="holo-ring">
                                     <i class="fa-solid fa-circle-notch"></i>
-                                    <span class="clock-style-name"
-                                        data-i18n="settings_clock_date_style_holo_ring">Holo Ring</span>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_holo_ring">Holo
+                                        Ring</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="media-orb">
                                     <i class="fa-solid fa-photo-film"></i>
-                                    <span class="clock-style-name"
-                                        data-i18n="settings_clock_date_style_media_orb">Media Orb</span>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_media_orb">Media
+                                        Orb</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
                                 <div class="clock-style-card" data-value="prism-stack">
@@ -4606,7 +4610,8 @@
 
                         <div id="media-orb-image-setting" class="setting-item no-margin-top media-orb-setting"
                             style="display: none;">
-                            <label for="media-orb-image-url" data-i18n="settings_media_orb_image">Orb Image / GIF</label>
+                            <label for="media-orb-image-url" data-i18n="settings_media_orb_image">Orb Image /
+                                GIF</label>
                             <div class="media-orb-url-row">
                                 <i class="fa-solid fa-link"></i>
                                 <input type="url" id="media-orb-image-url"
@@ -4779,11 +4784,16 @@
                                         data-i18n="settings_clock_shadow_target">Shadow Target</label>
                                     <select id="clock-shadow-target-select">
                                         <option value="none" data-i18n="settings_hue_text_mode_off">Off</option>
-                                        <option value="all" data-i18n="settings_clock_shadow_target_all">Clock + Date</option>
-                                        <option value="time" data-i18n="settings_clock_shadow_target_time">Time only</option>
-                                        <option value="date" data-i18n="settings_clock_shadow_target_date">Date only</option>
-                                        <option value="weekday" data-i18n="settings_clock_shadow_target_weekday">Weekday only</option>
-                                        <option value="box" data-i18n="settings_clock_shadow_target_box">Box shadow</option>
+                                        <option value="all" data-i18n="settings_clock_shadow_target_all">Clock + Date
+                                        </option>
+                                        <option value="time" data-i18n="settings_clock_shadow_target_time">Time only
+                                        </option>
+                                        <option value="date" data-i18n="settings_clock_shadow_target_date">Date only
+                                        </option>
+                                        <option value="weekday" data-i18n="settings_clock_shadow_target_weekday">Weekday
+                                            only</option>
+                                        <option value="box" data-i18n="settings_clock_shadow_target_box">Box shadow
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="setting-item no-margin-top">
@@ -5026,7 +5036,8 @@
                                     style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                     <label for="bookmark-group-use-accent"
                                         data-i18n="settings_bookmark_group_use_accent"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Use accent color
+                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Use accent
+                                        color
                                         on default grid</label>
                                     <input type="checkbox" id="bookmark-group-use-accent"
                                         style="transform: scale(1.1); margin: 0;">
@@ -5054,7 +5065,8 @@
                         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
                             <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                <label for="bookmark-layout-show-groups" data-i18n="settings_bookmark_layout_show_groups"
+                                <label for="bookmark-layout-show-groups"
+                                    data-i18n="settings_bookmark_layout_show_groups"
                                     style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show bookmark
                                     folders</label>
                                 <input type="checkbox" id="bookmark-layout-show-groups" checked
@@ -5260,7 +5272,8 @@
                                     class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop
                                     Shadow</span></h4>
                             <p class="setting-hint custom-title-effect-hint"
-                                data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical offset
+                                data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical
+                                offset
                                 for cleaner Vietnamese text.</p>
                             <div style="display: flex; flex-direction: column; gap: 15px;">
                                 <div class="setting-item no-margin-top">
@@ -5545,14 +5558,18 @@
                                 <span data-i18n="spotify_advanced_settings">Spotify advanced settings</span>
                             </summary>
                             <div class="setting-item">
-                                <label for="spotify-client-id-input" data-i18n="spotify_client_id">Spotify Client ID</label>
+                                <label for="spotify-client-id-input" data-i18n="spotify_client_id">Spotify Client
+                                    ID</label>
                                 <input type="text" id="spotify-client-id-input"
-                                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
-                                <small class="setting-hint" data-i18n="spotify_client_hint">Create a Spotify Developer app,
+                                    placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off"
+                                    spellcheck="false">
+                                <small class="setting-hint" data-i18n="spotify_client_hint">Create a Spotify Developer
+                                    app,
                                     add the redirect URI below, then connect.</small>
                             </div>
                             <div class="setting-item">
-                                <label for="spotify-redirect-uri-output" data-i18n="spotify_redirect_uri">Spotify Redirect
+                                <label for="spotify-redirect-uri-output" data-i18n="spotify_redirect_uri">Spotify
+                                    Redirect
                                     URI</label>
                                 <input type="text" id="spotify-redirect-uri-output" readonly>
                                 <small class="setting-hint" data-i18n="spotify_redirect_hint">Add this exact URI in your
@@ -5570,7 +5587,8 @@
                                     </button>
                                 </div>
                                 <small id="spotify-auth-status" class="setting-hint"
-                                    data-i18n="spotify_status_disconnected">Spotify Web works like other music sites. Connect is optional.</small>
+                                    data-i18n="spotify_status_disconnected">Spotify Web works like other music sites.
+                                    Connect is optional.</small>
                             </div>
                         </details>
                     </div>
@@ -6248,7 +6266,8 @@
                 </div>
             </div>
             <div class="bug-modal-footer" style="justify-content: center; opacity: 0.7; font-size: 0.85em;">
-                <span>Sử dụng <kbd>↑</kbd> <kbd>↓</kbd> để di chuyển, <kbd>Enter</kbd> để chọn · bấm <i class="fa-solid fa-pen"></i> để sửa phím tắt</span>
+                <span>Sử dụng <kbd>↑</kbd> <kbd>↓</kbd> để di chuyển, <kbd>Enter</kbd> để chọn · bấm <i
+                        class="fa-solid fa-pen"></i> để sửa phím tắt</span>
             </div>
         </div>
     </div>
