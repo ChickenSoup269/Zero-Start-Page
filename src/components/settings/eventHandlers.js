@@ -5162,11 +5162,6 @@ export function setupGeneralEventHandlers(
             checked: true,
           },
           {
-            key: "includeThemes",
-            label: i18n.sync_opt_themes || "Custom Themes & Gradients",
-            checked: false,
-          },
-          {
             key: "includeStyles",
             label: i18n.sync_opt_styles || "Colors & Fonts",
             checked: false,

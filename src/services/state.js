@@ -720,6 +720,30 @@ const sanitizeCloudThemeSnapshot = (snapshot) => {
   return next
 }
 
+const isCloudUnsafeMediaValue = (value) =>
+  typeof value === "string" &&
+  /^(data:image\/|data:video\/|blob:|idb-img-|idb-gif-|idb-video-)/i.test(
+    value.trim(),
+  )
+
+const sanitizeCloudValue = (value) => {
+  if (isCloudUnsafeMediaValue(value)) return undefined
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => sanitizeCloudValue(item))
+      .filter((item) => item !== undefined)
+  }
+  if (value && typeof value === "object") {
+    const next = {}
+    Object.entries(value).forEach(([key, item]) => {
+      const sanitized = sanitizeCloudValue(item)
+      if (sanitized !== undefined) next[key] = sanitized
+    })
+    return next
+  }
+  return value
+}
+
 const sanitizeCloudUserThemes = (themes) => {
   if (!Array.isArray(themes)) return themes
   return themes.map((theme) => {
@@ -736,7 +760,7 @@ const sanitizeCloudUserThemes = (themes) => {
  * Excludes heavy media data but keeps essential UI state.
  */
 export async function backupToCloud(options = {}) {
-  const currentSettings = { ...getSettings() }
+  let currentSettings = { ...getSettings() }
 
   // 1. Mandatory Exclusions (Security/Heavy Media)
   const mandatoryExclusions = [
@@ -745,25 +769,24 @@ export async function backupToCloud(options = {}) {
     "userVideos",
     "userImages",
     "background",
+    "activeBgUid",
+    "lastUserBackground",
+    "lastUserActiveBgUid",
+    "lastUserBackgroundState",
+    "lastUserBackgroundPreview",
+    "mediaOrbImageData",
+    "userThemes",
+    "userGradients",
+    "userMultiColors",
+    "userSvgWaves",
+    "userGradientV2s",
+    "userSilks",
+    "userLightPillars",
   ]
   mandatoryExclusions.forEach((key) => delete currentSettings[key])
 
   // 2. User-selected Exclusions
-  if (!options.includeThemes) {
-    delete currentSettings.userThemes
-    delete currentSettings.userGradients
-    delete currentSettings.userMultiColors
-    delete currentSettings.userSvgWaves
-    delete currentSettings.userGradientV2s
-    delete currentSettings.userSilks
-    delete currentSettings.userLightPillars
-  }
-
-  if (Array.isArray(currentSettings.userThemes)) {
-    currentSettings.userThemes = sanitizeCloudUserThemes(
-      currentSettings.userThemes,
-    )
-  }
+  currentSettings = sanitizeCloudValue(currentSettings) || {}
 
   if (!options.includeStyles) {
     const styleKeys = [
@@ -814,6 +837,9 @@ export async function backupToCloud(options = {}) {
   })
 
   const settingsStr = JSON.stringify(currentSettings)
+  if (settingsStr.length > 95000) {
+    throw new Error("quota: cloud settings payload is too large")
+  }
 
   return new Promise((resolve, reject) => {
     if (!window.chrome || !chrome.storage || !chrome.storage.sync) {
