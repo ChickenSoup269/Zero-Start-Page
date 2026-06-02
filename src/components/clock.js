@@ -1,5 +1,5 @@
 import { clockElement, dateElement, fadeToggle } from "../utils/dom.js"
-import { getSettings } from "../services/state.js"
+import { DEFAULT_MEDIA_ORB_IMAGE_URL, getSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { makeDraggable } from "../utils/draggable.js"
 import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
@@ -1072,7 +1072,10 @@ export function updateTime() {
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
-    const mediaSrc = settings.mediaOrbImageData || settings.mediaOrbImageUrl || ""
+    const mediaSrc =
+      settings.mediaOrbImageData ||
+      settings.mediaOrbImageUrl ||
+      DEFAULT_MEDIA_ORB_IMAGE_URL
     const mediaHtml = mediaSrc
       ? `<img class="media-orb-image" src="${escapeAttribute(mediaSrc)}" alt="">`
       : `<div class="media-orb-placeholder"><i class="fa-solid fa-image"></i></div>`
@@ -1375,6 +1378,8 @@ export function initClock() {
       e.detail.key === "fliqloZenMode" ||
       e.detail.key === "fliqloTransparent" ||
       e.detail.key === "fliqloTheme" ||
+      e.detail.key === "mediaOrbImageUrl" ||
+      e.detail.key === "mediaOrbImageData" ||
       e.detail.key === "showClockLunarCalendar" ||
       e.detail.key === "showClockLunarMode"
     ) {

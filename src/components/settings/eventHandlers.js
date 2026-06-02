@@ -4,6 +4,7 @@
  */
 
 import {
+  DEFAULT_MEDIA_ORB_IMAGE_URL,
   getSettings,
   updateSetting,
   saveSettings,
@@ -4433,12 +4434,18 @@ export function setupGeneralEventHandlers(
 
   DOM.mediaOrbClearBtn?.addEventListener("click", () => {
     handleSettingUpdate("mediaOrbImageData", "")
-    handleSettingUpdate("mediaOrbImageUrl", "")
-    if (DOM.mediaOrbImageUrlInput) DOM.mediaOrbImageUrlInput.value = ""
+    handleSettingUpdate("mediaOrbImageUrl", DEFAULT_MEDIA_ORB_IMAGE_URL)
+    if (DOM.mediaOrbImageUrlInput)
+      DOM.mediaOrbImageUrlInput.value = DEFAULT_MEDIA_ORB_IMAGE_URL
     if (DOM.mediaOrbImageUpload) DOM.mediaOrbImageUpload.value = ""
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: { key: "mediaOrbImageData", value: "" },
+      }),
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "mediaOrbImageUrl", value: DEFAULT_MEDIA_ORB_IMAGE_URL },
       }),
     )
   })

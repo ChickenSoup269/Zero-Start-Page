@@ -19,6 +19,9 @@ const _GRADIENT_PRESETS = [
 const _initialGradient =
   _GRADIENT_PRESETS[Math.floor(Math.random() * _GRADIENT_PRESETS.length)]
 
+export const DEFAULT_MEDIA_ORB_IMAGE_URL =
+  "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDF4cmx2anVqaXlkaXN3ZnBqbzlocXk3ejc0YzF3ZThsbDQwc254dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/geix8MbhTqVQcnN7sO/giphy.gif"
+
 export const defaultSettings = {
   background: null,
   lastUserBackground: null,
@@ -37,7 +40,7 @@ export const defaultSettings = {
   fliqloTransparent: false,
   clockStyleBackground: "default",
   clockStyleTransparentBackground: false,
-  mediaOrbImageUrl: "",
+  mediaOrbImageUrl: DEFAULT_MEDIA_ORB_IMAGE_URL,
   mediaOrbImageData: "",
   mediaOrbOverflowBorder: false,
   sidestyleAlign: "left",

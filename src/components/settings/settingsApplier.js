@@ -4,6 +4,7 @@
  */
 
 import {
+  DEFAULT_MEDIA_ORB_IMAGE_URL,
   getSettings,
   updateSetting,
   saveSettings,
@@ -2594,7 +2595,8 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.mediaOrbImageSetting.style.display =
         style === "media-orb" ? "block" : "none"
     if (DOM.mediaOrbImageUrlInput)
-      DOM.mediaOrbImageUrlInput.value = settings.mediaOrbImageUrl || ""
+      DOM.mediaOrbImageUrlInput.value =
+        settings.mediaOrbImageUrl || DEFAULT_MEDIA_ORB_IMAGE_URL
     if (DOM.mediaOrbOverflowBorderCheckbox)
       DOM.mediaOrbOverflowBorderCheckbox.checked =
         settings.mediaOrbOverflowBorder === true
