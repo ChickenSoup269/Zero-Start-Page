@@ -5,7 +5,6 @@ import {
 } from "../../services/state.js"
 import { geti18n } from "../../services/i18n.js"
 import * as DOM from "../../utils/dom.js"
-import { showToast } from "../../utils/toast.js"
 
 let multiColorSelectMode = false
 let multiColorSelectedIndices = new Set()
@@ -1247,17 +1246,6 @@ export function setupMultiColorManager(applySettings) {
 
     renderSavedMultiColors(DOM)
 
-    const label = preset.name || preset.uid || 'Multi-color'
-    showToast(`Đã áp dụng: ${label}`, {
-      undoFn: () => {
-        const prev = getSettings().lastUserBackgroundState
-        if (prev && typeof prev === 'object') {
-          Object.entries(prev).forEach(([k, v]) => updateSetting(k, v))
-          saveSettings()
-          if (applySettings) applySettings()
-        }
-      }
-    })
   })
 
   window.addEventListener("multiColor:sync", syncFromSettings)

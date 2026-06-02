@@ -3646,6 +3646,37 @@ body.context-menu-none .calendar-event-form-title {
   color: #111;
 }
 
+/* Transparent context menu */
+body.context-menu-none #context-menu,
+body.context-menu-none .calendar-context-menu {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.context-menu-none .context-menu-item,
+body.context-menu-none .menu-item {
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
+}
+
+body.context-menu-none .context-menu-item i,
+body.context-menu-none .menu-item i {
+  color: rgba(255, 255, 255, 0.74) !important;
+}
+
+body.context-menu-none .context-menu-divider,
+body.context-menu-none .context-menu-separator {
+  background: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.context-menu-none .calendar-event-form-title {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
+}
+
 body.context-menu-macos .calendar-event-form label,
 body.context-menu-none .calendar-event-form label {
   color: rgba(0, 0, 0, 0.72);

@@ -634,6 +634,28 @@ body.context-menu-macos .context-menu-divider {
   margin: 3px 0;
 }
 
+/* Transparent variant */
+body.context-menu-none .context-menu {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.context-menu-none .menu-item {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
+}
+
+body.context-menu-none .menu-item:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
+}
+
+body.context-menu-none .context-menu-divider {
+  background: rgba(255, 255, 255, 0.18);
+}
+
 /* Favorite Star Icon */
 .favorite-star-badge {
   position: absolute;

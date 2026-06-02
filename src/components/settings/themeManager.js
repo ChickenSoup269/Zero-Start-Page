@@ -312,11 +312,9 @@ export function initThemeManager(
 
     // If clicking the ALREADY active theme, treat it as "deselect" and restore original
     if (themeItem.classList.contains("active")) {
-      const themeName = themeItem.querySelector(".theme-name")?.textContent || themeKey
       updateActiveUI(null)
       updateSetting("theme", null)
       restoreUserOriginalSettings(updateSettingsInputs)
-      showToast(`Đã bỏ theme: ${themeName}`, { type: 'info' })
       return
     }
 

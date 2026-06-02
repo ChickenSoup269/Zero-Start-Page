@@ -744,15 +744,8 @@ export function setupGeneralEventHandlers(
 
       if (throttledUpdates[key]) clearTimeout(throttledUpdates[key])
       throttledUpdates[key] = setTimeout(() => {
-        const previousValue = throttledUndoBaselines[key]
         handleSettingUpdate(key, value, false, true)
         saveSettings()
-        if (previousValue !== value) {
-          showToast(`Đã đổi ${key}`, {
-            type: "success",
-            undoFn: () => handleSettingUpdate(key, previousValue),
-          })
-        }
         delete throttledUndoBaselines[key]
         delete throttledUpdates[key]
       }, 500) // Heavy debounce (500ms) to ensure saving/re-rendering ONLY happens after dragging finishes completely
@@ -1681,15 +1674,7 @@ export function setupGeneralEventHandlers(
     updateAccentHexInput(val)
   })
   DOM.accentColorPicker.addEventListener("change", () => {
-    const prev = getSettings().accentColor
     handleSettingUpdate("accentColor", DOM.accentColorPicker.value)
-    showToast(`Màu nhấn: ${DOM.accentColorPicker.value.toUpperCase()}`, {
-      type: "success",
-      undoFn: () => {
-        DOM.accentColorPicker.value = prev || "#a8c0ff"
-        handleSettingUpdate("accentColor", prev)
-      },
-    })
   })
 
   if (DOM.accentColorHexInput) {
@@ -1713,7 +1698,6 @@ export function setupGeneralEventHandlers(
 
     btn.addEventListener("click", () => {
       const color = btn.dataset.color
-      const prev = getSettings().accentColor
       DOM.accentColorPicker.value = color
       updateAccentHexInput(color)
       handleSettingUpdate("accentColor", color)
@@ -1721,18 +1705,10 @@ export function setupGeneralEventHandlers(
         .querySelectorAll(".accent-color-preset")
         .forEach((b) => b.classList.remove("active"))
       btn.classList.add("active")
-      showToast(`Màu nhấn: ${color.toUpperCase()}`, {
-        type: "success",
-        undoFn: () => {
-          DOM.accentColorPicker.value = prev || "#a8c0ff"
-          handleSettingUpdate("accentColor", prev)
-        },
-      })
     })
   })
 
   DOM.randomAccentColorBtn.addEventListener("click", () => {
-    const prev = getSettings().accentColor
     const color = getRandomHexColor()
     DOM.accentColorPicker.value = color
     updateAccentHexInput(color)
@@ -1740,13 +1716,6 @@ export function setupGeneralEventHandlers(
     document
       .querySelectorAll(".accent-color-preset")
       .forEach((b) => b.classList.remove("active"))
-    showToast(`Màu nhấn ngẫu nhiên: ${color.toUpperCase()}`, {
-      type: "success",
-      undoFn: () => {
-        DOM.accentColorPicker.value = prev || "#a8c0ff"
-        handleSettingUpdate("accentColor", prev)
-      },
-    })
   })
 
   // Dynamic M3 Color (Extract from background)
@@ -1793,12 +1762,6 @@ export function setupGeneralEventHandlers(
     const enabled = DOM.m3WidgetsToggle.checked === true
     handleSettingUpdate("widgetUseM3Accent", enabled)
     document.body.classList.toggle("widgets-m3-accent", enabled)
-    showToast(
-      enabled
-        ? geti18n().settings_m3_widgets_on || "M3 widget backgrounds enabled"
-        : geti18n().settings_m3_widgets_off || "M3 widget backgrounds disabled",
-      { type: "success" },
-    )
   })
 
   DOM.saveAccentColorBtn.addEventListener("click", () => {
@@ -2211,7 +2174,6 @@ export function setupGeneralEventHandlers(
     }
     if (DOM.bookmarkLayoutBgStyle) {
       DOM.bookmarkLayoutBgStyle.addEventListener("change", () => {
-        const prev = getSettings().bookmarkLayoutBgStyle || "default"
         markInterfaceStyleCustom("bookmarkLayoutBgStyle")
         handleSettingUpdate(
           "bookmarkLayoutBgStyle",
@@ -2221,21 +2183,6 @@ export function setupGeneralEventHandlers(
           DOM.bookmarkLayoutBgColorRow.style.display =
             DOM.bookmarkLayoutBgStyle.value === "colored" ? "flex" : "none"
         }
-        const styleNames = {
-          default: "Mặc định",
-          white: "Trắng",
-          "m3-accent": "M3 Accent",
-          colored: "Màu sắc",
-          hidden: "Ẩn",
-        }
-        const val = DOM.bookmarkLayoutBgStyle.value
-        showToast(`Style bookmark: ${styleNames[val] || val}`, {
-          undoFn: () => {
-            DOM.bookmarkLayoutBgStyle.value = prev
-            markInterfaceStyleCustom("bookmarkLayoutBgStyle")
-            handleSettingUpdate("bookmarkLayoutBgStyle", prev)
-          },
-        })
       })
     }
 
@@ -2250,17 +2197,8 @@ export function setupGeneralEventHandlers(
 
     if (DOM.bookmarkItemStyle) {
       DOM.bookmarkItemStyle.addEventListener("change", () => {
-        const prev = getSettings().bookmarkItemStyle || "default"
         markInterfaceStyleCustom("bookmarkItemStyle")
         throttleSettingUpdate("bookmarkItemStyle", DOM.bookmarkItemStyle.value)
-        const val = DOM.bookmarkItemStyle.value
-        showToast(`Kiểu bookmark: ${val}`, {
-          undoFn: () => {
-            DOM.bookmarkItemStyle.value = prev
-            markInterfaceStyleCustom("bookmarkItemStyle")
-            handleSettingUpdate("bookmarkItemStyle", prev)
-          },
-        })
       })
     }
 
@@ -3141,8 +3079,6 @@ export function setupGeneralEventHandlers(
 
     const item = e.target.closest(".user-gradient-item")
     if (item && !e.target.closest(".remove-bg-btn")) {
-      const prevBg = getSettings().background
-      const prevBgUid = getSettings().activeBgUid
       const gradient = {
         start: item.dataset.start,
         end: item.dataset.end,
@@ -3171,13 +3107,6 @@ export function setupGeneralEventHandlers(
       updateSetting("activeBgUid", item.dataset.uid || null)
       handleSettingUpdate(null, gradient, true)
       updateSettingsInputs()
-      const label = item.title || item.dataset.uid || "Gradient"
-      showToast(`Đã áp dụng: ${label}`, {
-        undoFn: () => {
-          updateSetting("activeBgUid", prevBgUid)
-          handleSettingUpdate("background", prevBg)
-        },
-      })
     }
   })
 
@@ -3501,17 +3430,12 @@ export function setupGeneralEventHandlers(
       showAlert(i18n.alert_font_error || "Please enter a font name.")
       return
     }
-    const prevFont = getSettings().font
     loadGoogleFont(fontName)
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
       handleSettingUpdate("font", fontValue)
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
-      showToast(`Đã áp dụng font: ${fontName}`, {
-        type: "success",
-        undoFn: () => handleSettingUpdate("font", prevFont),
-      })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
@@ -3533,7 +3457,6 @@ export function setupGeneralEventHandlers(
       showAlert(i18n.alert_font_already_saved || "Font already saved.")
       return
     }
-    const prevFont2 = getSettings().font
     loadGoogleFont(fontName)
     setTimeout(() => {
       const fontValue = `'${fontName}', sans-serif`
@@ -3541,10 +3464,6 @@ export function setupGeneralEventHandlers(
       updateSetting("userSavedFonts", [...savedFonts, fontName])
       saveSettings()
       renderFontGrid(DOM.fontGrid, handleSettingUpdate)
-      showToast(`Đã lưu & áp dụng font: ${fontName}`, {
-        type: "success",
-        undoFn: () => handleSettingUpdate("font", prevFont2),
-      })
       if (DOM.customFontInput) DOM.customFontInput.value = ""
     }, 500)
   })
@@ -4458,20 +4377,8 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.contextMenuStyleSelect.addEventListener("change", () => {
-    const prev = getSettings().contextMenuStyle || "dark"
     const val = DOM.contextMenuStyleSelect.value
     handleSettingUpdate("contextMenuStyle", val)
-    const styleNames = {
-      dark: "Dark Glass",
-      light: "Light Glass",
-      macos: "macOS",
-    }
-    showToast(`Style menu: ${styleNames[val] || val}`, {
-      undoFn: () => {
-        if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = prev
-        handleSettingUpdate("contextMenuStyle", prev)
-      },
-    })
   })
   setupLayoutCheckbox(DOM.showBookmarkGroupsCheckbox, "showBookmarkGroups", {})
 
@@ -4762,23 +4669,9 @@ export function setupGeneralEventHandlers(
   }
   if (DOM.lcpContextMenuStyle) {
     DOM.lcpContextMenuStyle.addEventListener("change", () => {
-      const prev = getSettings().contextMenuStyle || "dark"
       const val = DOM.lcpContextMenuStyle.value
       if (DOM.contextMenuStyleSelect) DOM.contextMenuStyleSelect.value = val
       handleSettingUpdate("contextMenuStyle", val)
-      const styleNames = {
-        dark: "Dark Glass",
-        light: "Light Glass",
-        macos: "macOS",
-      }
-      showToast(`Style menu: ${styleNames[val] || val}`, {
-        undoFn: () => {
-          if (DOM.lcpContextMenuStyle) DOM.lcpContextMenuStyle.value = prev
-          if (DOM.contextMenuStyleSelect)
-            DOM.contextMenuStyleSelect.value = prev
-          handleSettingUpdate("contextMenuStyle", prev)
-        },
-      })
     })
   }
   DOM.lcpBookmarkGroups.addEventListener("change", () =>
@@ -4869,20 +4762,12 @@ export function setupGeneralEventHandlers(
   }
 
   DOM.musicStyleSelect.addEventListener("change", () => {
-    const prev = getSettings().musicBarStyle || "vinyl"
     applyMusicStyle(DOM.musicStyleSelect.value)
-    showToast(`Style nhạc: ${DOM.musicStyleSelect.value}`, {
-      undoFn: () => applyMusicStyle(prev),
-    })
   })
 
   if (DOM.lcpMusicStyleSelect) {
     DOM.lcpMusicStyleSelect.addEventListener("change", () => {
-      const prev = getSettings().musicBarStyle || "vinyl"
       applyMusicStyle(DOM.lcpMusicStyleSelect.value)
-      showToast(`Style nhạc: ${DOM.lcpMusicStyleSelect.value}`, {
-        undoFn: () => applyMusicStyle(prev),
-      })
     })
   }
 

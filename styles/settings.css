@@ -6837,3 +6837,104 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
     transform: none !important;
   }
 }
+
+/* Custom Bookmark / Custom Title readability polish */
+.settings-section[data-section-id="bookmark-custom"] .setting-group,
+.settings-section[data-section-id="custom-title"] .setting-group {
+  gap: 12px;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-group h4,
+.settings-section[data-section-id="custom-title"] .setting-group h4 {
+  font-size: 0.98rem !important;
+  line-height: 1.35 !important;
+  opacity: 1 !important;
+  color: var(--text-color) !important;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-hint,
+.settings-section[data-section-id="custom-title"] .setting-hint {
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+  opacity: 0.82 !important;
+  font-style: normal !important;
+  color: color-mix(in srgb, var(--text-color) 86%, transparent) !important;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item,
+.settings-section[data-section-id="custom-title"] .setting-item,
+.settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
+  border-radius: 10px !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.028)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item label,
+.settings-section[data-section-id="custom-title"] .setting-item label,
+.settings-section[data-section-id="bookmark-custom"] .setting-item-row label,
+.settings-section[data-section-id="custom-title"] .setting-item-row label {
+  font-size: 0.93rem !important;
+  line-height: 1.42 !important;
+  font-weight: 600 !important;
+  opacity: 0.96 !important;
+}
+
+.settings-section[data-section-id="bookmark-custom"] .setting-item label i,
+.settings-section[data-section-id="custom-title"] .setting-item label i,
+.settings-section[data-section-id="bookmark-custom"] .setting-group h4 i,
+.settings-section[data-section-id="custom-title"] .setting-group h4 i {
+  color: var(--accent-color);
+}
+
+.settings-section[data-section-id="bookmark-custom"] span[id$="-value"],
+.settings-section[data-section-id="custom-title"] span[id$="-val"] {
+  min-width: 44px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: color-mix(in srgb, var(--accent-color) 82%, #ffffff);
+  font-size: 0.78rem !important;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace !important;
+  text-align: center;
+}
+
+.settings-section[data-section-id="custom-title"] .custom-title-effect-hint {
+  margin: -6px 0 12px !important;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+}
+
+.settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
+  padding: 16px !important;
+}
+
+.settings-section[data-section-id="custom-title"] .setting-group.no-margin-top h4 {
+  margin-bottom: 12px !important;
+}
+
+.settings-section[data-section-id="custom-title"] input[type="text"] {
+  font-size: 0.96rem !important;
+  min-height: 44px;
+  border-radius: 10px !important;
+}
+
+.settings-section[data-section-id="bookmark-custom"] input[type="color"],
+.settings-section[data-section-id="custom-title"] input[type="color"] {
+  min-height: 32px;
+}
+
+body.sidebar-light .settings-section[data-section-id="bookmark-custom"] .setting-item,
+body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-item,
+body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
+  background: rgba(0, 0, 0, 0.035) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.sidebar-light .settings-section[data-section-id="bookmark-custom"] .setting-hint,
+body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-hint {
+  color: rgba(0, 0, 0, 0.68) !important;
+}

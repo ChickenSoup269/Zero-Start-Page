@@ -109,7 +109,7 @@ export function showContextMenu(
 
       const skinBtn = document.createElement("div")
       skinBtn.className = "context-menu-item custom-music-item"
-      skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.skin_default || "Giao diện Mặc định" : i18n.skin_white_blur || "Nền Trắng Blur"}</span>`
+      skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.skin_default || "Default Skin" : i18n.skin_white_blur || "White Blur Skin"}</span>`
       skinBtn.onclick = () => {
         const newVal = isWhiteBlur ? "default" : "white-blur"
         updateSetting(skinKey, newVal)
@@ -140,7 +140,7 @@ export function showContextMenu(
 
       const m3SkinBtn = document.createElement("div")
       m3SkinBtn.className = "context-menu-item custom-music-item"
-      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.skin_default || "Giao diện Mặc định" : i18n.skin_m3_accent || "Nền M3 Accent"}</span>`
+      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.skin_default || "Default Skin" : i18n.skin_m3_accent || "M3 Accent Skin"}</span>`
       m3SkinBtn.onclick = () => {
         const newVal = isM3Accent ? "default" : "m3-accent"
         updateSetting(skinKey, newVal)
@@ -172,7 +172,7 @@ export function showContextMenu(
       if (id === "daily-quotes") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
-        transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Giao diện Mặc định" : i18n.skin_transparent || "Nền Trong Suốt"}</span>`
+        transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
         transBtn.onclick = () => {
           const newVal = isTransparent ? "default" : "transparent"
           updateSetting(skinKey, newVal)
@@ -253,7 +253,7 @@ export function showContextMenu(
       const isM3Accent = settings.musicPlayerSkin === "m3-accent"
       const m3SkinBtn = document.createElement("div")
       m3SkinBtn.className = "context-menu-item custom-music-item"
-      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.skin_m3_accent || "Nền M3 Accent"}</span>`
+      m3SkinBtn.innerHTML = `<i class="fa-solid fa-palette"></i> <span>${isM3Accent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_m3_accent || "M3 Accent Skin"}</span>`
       m3SkinBtn.onclick = () => {
         const newSkin = isM3Accent ? "default" : "m3-accent"
         updateSetting("musicPlayerSkin", newSkin)
@@ -330,7 +330,7 @@ export function showContextMenu(
       const isTransparent = settings.musicPlayerSkin === "transparent"
       const transparentBtn = document.createElement("div")
       transparentBtn.className = "context-menu-item custom-music-item"
-      transparentBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.skin_transparent || "Nền Trong Suốt"}</span>`
+      transparentBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
       transparentBtn.onclick = () => {
         const newSkin = isTransparent ? "default" : "transparent"
         updateSetting("musicPlayerSkin", newSkin)
@@ -393,7 +393,7 @@ export function showContextMenu(
         const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
         const whiteSkinBtn = document.createElement("div")
         whiteSkinBtn.className = "context-menu-item custom-music-item"
-        whiteSkinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.music_player_skin_white_blur || "Nền Trắng Blur"}</span>`
+        whiteSkinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Default Skin" : i18n.music_player_skin_white_blur || "White Blur Skin"}</span>`
         whiteSkinBtn.onclick = () => {
           const newSkin = isWhiteBlur ? "default" : "white-blur"
           updateSetting("musicPlayerSkin", newSkin)
@@ -419,7 +419,7 @@ export function showContextMenu(
         const isWhiteBlur = settings.musicPlayerSkin === "white-blur"
         const skinBtn = document.createElement("div")
         skinBtn.className = "context-menu-item custom-music-item"
-        skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Giao diện Mặc định" : i18n.music_player_skin_white_blur || "Nền Trắng Blur"}</span>`
+        skinBtn.innerHTML = `<i class="fa-solid fa-circle-half-stroke"></i> <span>${isWhiteBlur ? i18n.music_player_skin_default || "Default Skin" : i18n.music_player_skin_white_blur || "White Blur Skin"}</span>`
         skinBtn.onclick = () => {
           const newSkin = isWhiteBlur ? "default" : "white-blur"
           updateSetting("musicPlayerSkin", newSkin)

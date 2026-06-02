@@ -1727,10 +1727,7 @@ function createApplySettings(effectInstances) {
       "context-menu-none",
       "context-menu-macos",
     )
-    const contextMenuStyle =
-      settings.contextMenuStyle === "none"
-        ? "macos"
-        : settings.contextMenuStyle || "dark"
+    const contextMenuStyle = settings.contextMenuStyle || "dark"
     document.body.classList.add(`context-menu-${contextMenuStyle}`)
 
     document.body.classList.toggle(
@@ -2459,10 +2456,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.timeFormatSelect.value = settings.timeFormat || "24h"
     if (DOM.timezoneSelect)
       DOM.timezoneSelect.value = settings.timezone || "local"
-    const contextMenuInputValue =
-      settings.contextMenuStyle === "none"
-        ? "macos"
-        : settings.contextMenuStyle || "dark"
+    const contextMenuInputValue = settings.contextMenuStyle || "dark"
     if (DOM.contextMenuStyleSelect)
       DOM.contextMenuStyleSelect.value = contextMenuInputValue
     if (DOM.lcpContextMenuStyle)
@@ -4076,10 +4070,7 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
     }
     if (DOM.contextMenuStyleSelect) {
-      DOM.contextMenuStyleSelect.value =
-        settings.contextMenuStyle === "none"
-          ? "macos"
-          : settings.contextMenuStyle || "dark"
+      DOM.contextMenuStyleSelect.value = settings.contextMenuStyle || "dark"
     }
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"

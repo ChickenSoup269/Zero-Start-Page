@@ -180,6 +180,7 @@ class MusicVisualizer {
     if (!canvas || !this.container) return
     const parent = this.container.parentNode
     const rect = this.container.getBoundingClientRect()
+    const parentRect = parent?.getBoundingClientRect?.()
     const W =
       rect.width || this.container.offsetWidth || parent?.offsetWidth || 276
     const H =
@@ -197,11 +198,19 @@ class MusicVisualizer {
     ctx.clearRect(0, 0, W, H)
 
     this.orbitPhase =
-      (this.orbitPhase || 0) + dt * (this.isPlaying ? 2.6 : 0.75)
+      (this.orbitPhase || 0) + dt * (this.isPlaying ? 4.25 : 0.75)
     const cx = W / 2
     const cy = H / 2
-    const baseRadius = Math.min(W, H) / 2 - 21
-    const amp = this.isPlaying ? 6.4 : 2.2
+    const playerSize = Math.min(
+      parentRect?.width || parent?.offsetWidth || W,
+      parentRect?.height || parent?.offsetHeight || H,
+    )
+    const baseRadius = Math.min(playerSize / 2 + 8, Math.min(W, H) / 2 - 58)
+    const beat =
+      this.isPlaying
+        ? Math.pow((Math.sin(this.orbitPhase * 2.2) + 1) / 2, 3)
+        : 0
+    const amp = this.isPlaying ? 8.2 + beat * 8.5 : 2.2
     const accent =
       getComputedStyle(parent).getPropertyValue("--accent-color").trim() ||
       "#64f4d2"
@@ -217,11 +226,12 @@ class MusicVisualizer {
         const a = (i / steps) * Math.PI * 2
         const mirage =
           this.isPlaying
-            ? Math.sin(a * 3 + this.orbitPhase * 0.7 + phaseShift) * 1.8
+            ? Math.sin(a * 3 + this.orbitPhase * 0.9 + phaseShift) * (2.4 + beat * 3.4)
             : 0
         const wave =
-          Math.sin(a * 7 + this.orbitPhase * 2.1 + phaseShift) * amp +
-          Math.sin(a * 13 - this.orbitPhase * 1.35 + phaseShift) * amp * 0.34 +
+          Math.sin(a * 7 + this.orbitPhase * 2.8 + phaseShift) * amp +
+          Math.sin(a * 13 - this.orbitPhase * 1.65 + phaseShift) * amp * 0.4 +
+          Math.sin(a * 23 + this.orbitPhase * 3.2 + phaseShift) * amp * 0.18 +
           mirage
         const r = baseRadius + radiusOffset + wave
         const x = cx + Math.cos(a) * r
@@ -242,8 +252,32 @@ class MusicVisualizer {
     ctx.strokeStyle = grad
 
     if (this.isPlaying) {
-      drawWaveRing(-4, 0.18, 8, 26, Math.sin(this.orbitPhase) * 1.7)
-      drawWaveRing(5, 0.13, 5, 22, Math.cos(this.orbitPhase * 0.8) * 2.2)
+      drawWaveRing(-4, 0.2 + beat * 0.1, 8, 30, Math.sin(this.orbitPhase) * 1.7)
+      drawWaveRing(5, 0.15 + beat * 0.08, 5, 24, Math.cos(this.orbitPhase * 0.8) * 2.2)
+
+      ctx.save()
+      ctx.globalAlpha = 0.4 + beat * 0.34
+      ctx.lineWidth = 2
+      ctx.shadowBlur = 18 + beat * 18
+      ctx.shadowColor = accent
+      ctx.strokeStyle = grad
+      const bars = 64
+      for (let i = 0; i < bars; i++) {
+        const a = (i / bars) * Math.PI * 2
+        const band =
+          Math.sin(i * 1.71 + this.orbitPhase * 5.3) * 0.5 +
+          Math.sin(i * 0.47 - this.orbitPhase * 3.1) * 0.35 +
+          Math.sin(i * 2.37 + this.orbitPhase * 1.4) * 0.15
+        const strength = Math.max(0, (band + 1) / 2)
+        const len = 4 + strength * 16 + beat * (8 + strength * 16)
+        const inner = baseRadius + 2
+        const outer = inner + len
+        ctx.beginPath()
+        ctx.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner)
+        ctx.lineTo(cx + Math.cos(a) * outer, cy + Math.sin(a) * outer)
+        ctx.stroke()
+      }
+      ctx.restore()
 
       ctx.globalAlpha = 0.22
       ctx.shadowBlur = 18

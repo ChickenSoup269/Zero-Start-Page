@@ -670,6 +670,7 @@
                 <select id="lcp-context-menu-style" class="lcp-select">
                     <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
                     <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
                     <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
                 </select>
             </div>
@@ -1106,14 +1107,16 @@
 
                         <div class="setting-item" style="margin-bottom: 15px;">
                             <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;"
-                                for="background-media-quality-select">Media Quality</label>
+                                for="background-media-quality-select"
+                                data-i18n="settings_background_media_quality">Media Quality</label>
                             <select id="background-media-quality-select" class="full-width">
-                                <option value="quality">Quality</option>
-                                <option value="balanced">Balanced</option>
-                                <option value="low">Low data</option>
-                                <option value="still">Still video saver</option>
+                                <option value="quality" data-i18n="settings_media_quality_quality">Quality</option>
+                                <option value="balanced" data-i18n="settings_media_quality_balanced">Balanced</option>
+                                <option value="low" data-i18n="settings_media_quality_low">Low data</option>
+                                <option value="still" data-i18n="settings_media_quality_still">Still video saver</option>
                             </select>
-                            <small style="opacity: 0.65; margin-top: 6px; display: block;">Lower image size for fetched/uploaded backgrounds. Still mode pauses video backgrounds after loading.</small>
+                            <small style="opacity: 0.65; margin-top: 6px; display: block;"
+                                data-i18n="settings_background_media_quality_hint">Lower image size for fetched/uploaded backgrounds. Still mode pauses video backgrounds after loading.</small>
                         </div>
 
                         <button id="unsplash-save-bg-btn" class="unsplash-save-btn" disabled style="margin-top: 10px;">
@@ -4162,7 +4165,7 @@
                                         </div>
                                         <div class="setting-item no-margin-top">
                                             <label style="display: flex; justify-content: space-between;">
-                                                <span>Octave Decay</span>
+                                                <span data-i18n="settings_soft_aurora_octave_decay">Octave Decay</span>
                                                 <span id="soft-aurora-octave-decay-val"
                                                     style="color: var(--accent-color);">0.1</span>
                                             </label>
@@ -4171,7 +4174,7 @@
                                         </div>
                                         <div class="setting-item no-margin-top">
                                             <label style="display: flex; justify-content: space-between;">
-                                                <span>Layer Offset</span>
+                                                <span data-i18n="settings_soft_aurora_layer_offset">Layer Offset</span>
                                                 <span id="soft-aurora-layer-offset-val"
                                                     style="color: var(--accent-color);">0.0</span>
                                             </label>
@@ -4180,7 +4183,7 @@
                                         </div>
                                         <div class="setting-item no-margin-top">
                                             <label style="display: flex; justify-content: space-between;">
-                                                <span>Color Speed</span>
+                                                <span data-i18n="settings_splash_cursor_color_speed">Color Speed</span>
                                                 <span id="soft-aurora-color-speed-val"
                                                     style="color: var(--accent-color);">1.0</span>
                                             </label>
@@ -4200,7 +4203,8 @@
 
                                     <div class="setting-item" style="margin-top: 15px;">
                                         <div class="setting-item-row no-margin">
-                                            <label for="soft-aurora-transparent-checkbox">Transparent Background</label>
+                                            <label for="soft-aurora-transparent-checkbox"
+                                                data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
                                             <label class="soft-aurora-switch" for="soft-aurora-transparent-checkbox">
                                                 <input type="checkbox" id="soft-aurora-transparent-checkbox" checked>
                                                 <span class="soft-aurora-switch-track"></span>
@@ -4771,18 +4775,20 @@
                                     </select>
                                 </div>
                                 <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;">Shadow Target</label>
+                                    <label style="font-size: 0.7rem; opacity: 0.7;"
+                                        data-i18n="settings_clock_shadow_target">Shadow Target</label>
                                     <select id="clock-shadow-target-select">
-                                        <option value="none">Off</option>
-                                        <option value="all">Clock + Date</option>
-                                        <option value="time">Time only</option>
-                                        <option value="date">Date only</option>
-                                        <option value="weekday">Weekday only</option>
-                                        <option value="box">Box shadow</option>
+                                        <option value="none" data-i18n="settings_hue_text_mode_off">Off</option>
+                                        <option value="all" data-i18n="settings_clock_shadow_target_all">Clock + Date</option>
+                                        <option value="time" data-i18n="settings_clock_shadow_target_time">Time only</option>
+                                        <option value="date" data-i18n="settings_clock_shadow_target_date">Date only</option>
+                                        <option value="weekday" data-i18n="settings_clock_shadow_target_weekday">Weekday only</option>
+                                        <option value="box" data-i18n="settings_clock_shadow_target_box">Box shadow</option>
                                     </select>
                                 </div>
                                 <div class="setting-item no-margin-top">
-                                    <label style="font-size: 0.7rem; opacity: 0.7;">Shadow Color</label>
+                                    <label style="font-size: 0.7rem; opacity: 0.7;"
+                                        data-i18n="settings_clock_shadow_color">Shadow Color</label>
                                     <input type="color" id="clock-shadow-color-picker" value="#000000"
                                         style="height: 34px; width: 100%;">
                                 </div>
@@ -5181,7 +5187,7 @@
                     <div class="setting-group"
                         style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
                         <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
-                                class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_text">Text
+                                class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_typography">Text
                                 Content & Typography</span></h4>
 
                         <div style="display: flex; flex-direction: column; gap: 15px;">
@@ -5253,6 +5259,9 @@
                             <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
                                     class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop
                                     Shadow</span></h4>
+                            <p class="setting-hint custom-title-effect-hint"
+                                data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical offset
+                                for cleaner Vietnamese text.</p>
                             <div style="display: flex; flex-direction: column; gap: 15px;">
                                 <div class="setting-item no-margin-top">
                                     <label for="custom-title-shadow-color"
@@ -5292,6 +5301,9 @@
                             <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
                                     class="fa-solid fa-border-style"></i> <span
                                     data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <p class="setting-hint custom-title-effect-hint"
+                                data-i18n="settings_custom_title_border_hint">Keep the outline thin so accents and long
+                                words stay readable.</p>
                             <div style="display: flex; flex-direction: column; gap: 15px;">
                                 <div class="setting-item no-margin-top">
                                     <label for="custom-title-border-color"
@@ -5363,6 +5375,7 @@
                             <select id="context-menu-style-select" class="settings-select">
                                 <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
                                 <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                                <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
                                 <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
                             </select>
                         </div>

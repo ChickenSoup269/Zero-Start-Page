@@ -23,7 +23,6 @@ import {
 } from "../../services/imageStore.js"
 import { geti18n, applyTranslations } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
-import { showToast } from "../../utils/toast.js"
 import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 
 let bgSelectMode = false
@@ -728,23 +727,12 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
       return
     }
 
-    const prevBg = getSettings().background
-    const prevBgUid = getSettings().activeBgUid
-    const prevCredit = getSettings().unsplashLastCredit
-
     if (item.dataset.bgId === "random-color") {
       const randomColor = `#${Math.floor(Math.random() * 16777215)
         .toString(16)
         .padStart(6, "0")}`
       updateSetting("activeBgUid", null)
       handleSettingUpdate("background", randomColor)
-      showToast('Đã áp dụng màu nền ngẫu nhiên', {
-        undoFn: () => {
-          updateSetting("activeBgUid", prevBgUid)
-          updateSetting("unsplashLastCredit", prevCredit)
-          handleSettingUpdate("background", prevBg)
-        }
-      })
     } else {
       const settings = getSettings()
       const bgUid = item.dataset.bgUid
@@ -781,15 +769,6 @@ function setupMultiSelectMode(DOM, handleSettingUpdate) {
 
       updateSetting("activeBgUid", bgUid)
       handleSettingUpdate("background", bgId)
-
-      const label = bgData?.name || item.title || 'Hình nền mới'
-      showToast(`Đã áp dụng: ${label}`, {
-        undoFn: () => {
-          updateSetting("activeBgUid", prevBgUid)
-          updateSetting("unsplashLastCredit", prevCredit)
-          handleSettingUpdate("background", prevBg)
-        }
-      })
     }
 
     // handleSettingUpdate will call applySettings and refresh all galleries
