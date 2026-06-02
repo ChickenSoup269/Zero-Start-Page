@@ -6121,10 +6121,21 @@ body.hide-bookmark-bg.bookmark-taskbar-left-mode
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.quick-access-border-row .lcp-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
 .quick-access-border-button {
   margin-left: auto;
-  min-width: 92px;
+  min-width: 70px;
+  max-width: 88px;
+  min-height: 26px;
+  padding-inline: 7px;
   font-weight: 600;
+  font-size: 0.68rem;
+  white-space: nowrap;
 }
 
 .quick-access-popup .quick-access-section-hint,
@@ -6234,6 +6245,20 @@ body.quick-access-m3-accent .quick-access-bar {
     inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 18%, transparent) !important;
 }
 
+body.quick-access-m3-accent .quick-btn {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: color-mix(in srgb, var(--m3-on-primary-container, var(--text-color)) 86%, transparent) !important;
+}
+
+body.quick-access-m3-accent .quick-btn:hover:not(.active) {
+  background: color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--m3-on-primary-container, #fff) 14%, transparent) !important;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+}
+
 body.quick-access-m3-accent .layout-controls-popup.quick-access-popup,
 body.quick-access-m3-accent .quick-access-popup {
   background:
@@ -6254,7 +6279,6 @@ body.quick-access-m3-accent .quick-access-popup {
     inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 16%, transparent) !important;
 }
 
-body.quick-access-m3-accent .quick-btn,
 body.quick-access-m3-accent .quick-access-popup .quick-access-section-row,
 body.quick-access-m3-accent .quick-access-popup .quick-access-border-row,
 body.quick-access-m3-accent .quick-access-popup .quick-access-radius-chip {
