@@ -7047,6 +7047,23 @@ body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmarks-grid {
     inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 14%, transparent) !important;
   backdrop-filter: blur(18px) saturate(145%) !important;
   -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+  overflow-clip-margin: 16px;
+  padding: calc(var(--space-1) + 2px) !important;
+}
+
+body.bookmark-layout-bg-m3-accent.bookmark-sidebar-mode .bookmark,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-mode .bookmark,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-top-mode .bookmark,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmark,
+body.bookmark-layout-bg-m3-accent.bookmark-sidebar-mode .bookmark img,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-mode .bookmark img,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-top-mode .bookmark img,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmark img,
+body.bookmark-layout-bg-m3-accent.bookmark-sidebar-mode .bookmark-icon-fallback,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-mode .bookmark-icon-fallback,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-top-mode .bookmark-icon-fallback,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmark-icon-fallback {
+  overflow-clip-margin: 12px;
 }
 
 body.bookmark-layout-bg-white.bookmark-sidebar-mode .bookmarks-grid,

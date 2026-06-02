@@ -2235,9 +2235,13 @@ export function setupGeneralEventHandlers(
 
     if (choice === "new") {
       updateSetting("bookmarkOpenInNewTab", true)
+      updateSetting("bookmarkOpenBehaviorClickPromptSeen", true)
       saveSettings(true)
       if (DOM.bookmarkOpenInNewTab) DOM.bookmarkOpenInNewTab.checked = true
       renderBookmarks()
+    } else if (choice === "current") {
+      updateSetting("bookmarkOpenBehaviorClickPromptSeen", true)
+      saveSettings(true)
     }
   }
   setTimeout(promptBookmarkOpenBehavior, 800)

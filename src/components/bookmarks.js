@@ -3,7 +3,12 @@ import {
   bookmarkGroupsContainer,
   bookmarkGroupsToggle,
 } from "../utils/dom.js"
-import { showPrompt, showAlert, showConfirm } from "../utils/dialog.js"
+import {
+  showPrompt,
+  showAlert,
+  showConfirm,
+  showChoiceConfirm,
+} from "../utils/dialog.js"
 import {
   getBookmarks,
   getBookmarkState,
@@ -21,6 +26,8 @@ import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
+let bookmarkOpenBehaviorPromptPending = false
+
 function applyBookmarkLinkBehavior(link, url) {
   const settings = getSettings()
   link.href = url
@@ -32,6 +39,60 @@ function applyBookmarkLinkBehavior(link, url) {
     link.removeAttribute("target")
     link.removeAttribute("rel")
   }
+}
+
+async function promptBookmarkOpenBehaviorOnClick(event, url) {
+  const settings = getSettings()
+  if (settings.bookmarkOpenBehaviorClickPromptSeen === true) return false
+  if (bookmarkOpenBehaviorPromptPending) {
+    event.preventDefault()
+    return true
+  }
+
+  event.preventDefault()
+  bookmarkOpenBehaviorPromptPending = true
+
+  const i18n = geti18n()
+  const choice = await showChoiceConfirm(
+    [
+      {
+        key: "current",
+        icon: "fa-solid fa-arrow-up-right-from-square",
+        label: i18n.bookmark_open_behavior_current_choice || "Open in this tab",
+        description:
+          i18n.bookmark_open_behavior_current_desc ||
+          "Clicking a bookmark replaces the Start Page in the current tab.",
+      },
+      {
+        key: "new",
+        icon: "fa-solid fa-up-right-from-square",
+        label: i18n.bookmark_open_behavior_new_choice || "Open a new tab",
+        description:
+          i18n.bookmark_open_behavior_new_desc ||
+          "Keep the Start Page open and launch bookmarks beside it.",
+      },
+    ],
+    i18n.bookmark_open_behavior_title || "Bookmark opening behavior",
+    i18n.bookmark_open_behavior_message ||
+      "Choose how bookmark links should open. You can switch this anytime in Settings > Custom Bookmark > Layout & Behavior.",
+  )
+
+  bookmarkOpenBehaviorPromptPending = false
+  if (!choice) return true
+
+  const openInNewTab = choice === "new"
+  updateSetting("bookmarkOpenInNewTab", openInNewTab)
+  updateSetting("bookmarkOpenBehaviorClickPromptSeen", true)
+  updateSetting("bookmarkOpenBehaviorPromptSeen", true)
+  saveSettings(true)
+  renderBookmarks()
+
+  if (openInNewTab) {
+    window.open(url, "_blank", "noopener,noreferrer")
+  } else {
+    window.location.href = url
+  }
+  return true
 }
 
 function getHostname(url) {
@@ -441,17 +502,20 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       check.innerHTML = '<i class="fa-solid fa-check"></i>'
       link.appendChild(check)
 
-      link.addEventListener("click", (event) => {
-        if (!isStackSelectionMode) return
-        event.preventDefault()
-        event.stopPropagation()
-        if (selectedStackIndices.has(itemIndex)) {
-          selectedStackIndices.delete(itemIndex)
-        } else {
-          selectedStackIndices.add(itemIndex)
+      link.addEventListener("click", async (event) => {
+        if (isStackSelectionMode) {
+          event.preventDefault()
+          event.stopPropagation()
+          if (selectedStackIndices.has(itemIndex)) {
+            selectedStackIndices.delete(itemIndex)
+          } else {
+            selectedStackIndices.add(itemIndex)
+          }
+          renderStackItems()
+          syncStackSelectionUi()
+          return
         }
-        renderStackItems()
-        syncStackSelectionUi()
+        await promptBookmarkOpenBehaviorOnClick(event, item.url)
       })
       link.addEventListener("dragstart", handleStackItemDragStart)
       link.addEventListener("dragend", handleDragEnd)
@@ -1231,7 +1295,7 @@ export function renderBookmarks() {
     }
     bookmarkEl.appendChild(titleEl)
 
-    bookmarkEl.addEventListener("click", (e) => {
+    bookmarkEl.addEventListener("click", async (e) => {
       // Allow clicking specifically if they are selection clicks or opening a stack.
       if (isSelectionMode) {
         e.preventDefault()
@@ -1256,7 +1320,10 @@ export function renderBookmarks() {
       if (isStack) {
         e.preventDefault()
         openBookmarkStackPopup(bookmark, bookmarkEl, index)
+        return
       }
+
+      await promptBookmarkOpenBehaviorOnClick(e, bookmark.url)
     })
 
     bookmarkEl.addEventListener("contextmenu", (e) => {
