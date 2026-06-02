@@ -6454,6 +6454,13 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   color: var(--m3-on-surface, #eee);
 }
 
+:lang(vi) .settings-sidebar label[for="ghost-controls-checkbox"],
+:lang(vi) .settings-sidebar label[for="show-top-right-controls-checkbox"] {
+  font-weight: 520;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
 .settings-sidebar input[type="checkbox"]:checked {
   background-color: var(--m3-primary, var(--accent-color));
   border-color: var(--m3-primary, var(--accent-color));
@@ -6516,6 +6523,20 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   color: var(--m3-on-primary-container, #fff) !important;
   font-weight: 800;
   line-height: 1.2;
+}
+
+:lang(vi) #accent-color-toggle-btn,
+:lang(vi) #svg-wave-toggle-btn,
+:lang(vi) #gradient-toggle-btn,
+:lang(vi) #multi-color-toggle-btn,
+:lang(vi) #gradient-v2-toggle-btn,
+:lang(vi) #silk-toggle-btn,
+:lang(vi) #light-pillar-toggle-btn,
+:lang(vi) #liquid-ether-toggle-btn,
+:lang(vi) #splash-cursor-toggle-btn {
+  font-weight: 620;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 #accent-color-toggle-btn:hover,

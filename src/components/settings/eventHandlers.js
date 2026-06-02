@@ -28,6 +28,7 @@ import { getLanguageGuideModalText } from "../../data/languageGuides/languageGui
 import {
   showAlert,
   showConfirm,
+  showChoiceConfirm,
   showChecklistConfirm,
   showBookmarkHideInstructions,
 } from "../../utils/dialog.js"
@@ -2083,6 +2084,16 @@ export function setupGeneralEventHandlers(
       renderBookmarks()
     })
 
+    if (DOM.bookmarkOpenInNewTab) {
+      DOM.bookmarkOpenInNewTab.addEventListener("change", () => {
+        handleSettingUpdate(
+          "bookmarkOpenInNewTab",
+          DOM.bookmarkOpenInNewTab.checked,
+        )
+        renderBookmarks()
+      })
+    }
+
     if (DOM.bookmarkLimit20) {
       DOM.bookmarkLimit20.addEventListener("change", () => {
         throttleSettingUpdate("bookmarkLimit20", DOM.bookmarkLimit20.checked)
@@ -2277,6 +2288,48 @@ export function setupGeneralEventHandlers(
       })
     }
   }
+
+  const promptBookmarkOpenBehavior = async () => {
+    const settings = getSettings()
+    if (settings.bookmarkOpenBehaviorPromptSeen === true) return
+
+    updateSetting("bookmarkOpenBehaviorPromptSeen", true)
+    saveSettings(true)
+
+    const choice = await showChoiceConfirm(
+      [
+        {
+          key: "current",
+          icon: "fa-solid fa-arrow-up-right-from-square",
+          label:
+            i18n.bookmark_open_behavior_current_choice ||
+            "Open in this tab",
+          description:
+            i18n.bookmark_open_behavior_current_desc ||
+            "Clicking a bookmark replaces the Start Page in the current tab.",
+        },
+        {
+          key: "new",
+          icon: "fa-solid fa-up-right-from-square",
+          label: i18n.bookmark_open_behavior_new_choice || "Open a new tab",
+          description:
+            i18n.bookmark_open_behavior_new_desc ||
+            "Keep the Start Page open and launch bookmarks beside it.",
+        },
+      ],
+      i18n.bookmark_open_behavior_title || "Bookmark opening behavior",
+      i18n.bookmark_open_behavior_message ||
+        "By default, bookmarks now open in the current tab. You can switch this anytime in Settings > Custom Bookmark > Layout & Behavior.",
+    )
+
+    if (choice === "new") {
+      updateSetting("bookmarkOpenInNewTab", true)
+      saveSettings(true)
+      if (DOM.bookmarkOpenInNewTab) DOM.bookmarkOpenInNewTab.checked = true
+      renderBookmarks()
+    }
+  }
+  setTimeout(promptBookmarkOpenBehavior, 800)
 
   // Gradient listeners
   const MODERN_GRADIENT_PRESETS = [

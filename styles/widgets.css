@@ -316,9 +316,18 @@
   margin: var(--space-2) 0 var(--space-1) var(--space-1);
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.68rem;
+  line-height: 1.25;
   text-transform: uppercase;
   letter-spacing: 1.2px;
   font-weight: 800;
+}
+
+:lang(vi) .g-apps-section h4 {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.1px;
+  text-transform: none;
 }
 
 .g-apps-section:first-child h4 {
@@ -372,12 +381,38 @@
   color: rgba(255, 255, 255, 0.85);
   font-size: 0.72rem;
   font-weight: 500;
+  line-height: 1.2;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
   padding: 0 var(--space-0-5);
+}
+
+:lang(vi) .g-app-item span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.85em;
+  font-size: 0.7rem;
+  font-weight: 480;
+  letter-spacing: 0;
+  line-height: 1.15;
+  white-space: normal;
+}
+
+:lang(vi) .lcp-title {
+  font-weight: 620;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+:lang(vi) .lcp-label {
+  font-weight: 480;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 .g-apps-divider {

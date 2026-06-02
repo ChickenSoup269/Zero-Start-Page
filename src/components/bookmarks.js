@@ -21,6 +21,19 @@ import { geti18n } from "../services/i18n.js"
 import { openModal } from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
+function applyBookmarkLinkBehavior(link, url) {
+  const settings = getSettings()
+  link.href = url
+
+  if (settings.bookmarkOpenInNewTab === true) {
+    link.target = "_blank"
+    link.rel = "noopener noreferrer"
+  } else {
+    link.removeAttribute("target")
+    link.removeAttribute("rel")
+  }
+}
+
 function getHostname(url) {
   try {
     return new URL(url).hostname
@@ -411,9 +424,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     stack.items.forEach((item, itemIndex) => {
       const link = document.createElement("a")
       link.className = "bookmark bookmark-stack-popup-item"
-      link.href = item.url
-      link.target = "_blank"
-      link.rel = "noopener noreferrer"
+      applyBookmarkLinkBehavior(link, item.url)
       link.dataset.stackIndex = itemIndex
       link.dataset.parentStackIndex = stackIndex
       link.draggable = true
@@ -1191,8 +1202,7 @@ export function renderBookmarks() {
         `${getBookmarkLabel(bookmark)} (${bookmark.items.length})`,
       )
     } else {
-      bookmarkEl.href = bookmark.url
-      bookmarkEl.target = "_blank"
+      applyBookmarkLinkBehavior(bookmarkEl, bookmark.url)
     }
     bookmarkEl.classList.add("bookmark")
     if (isStack) bookmarkEl.classList.add("bookmark-stack")

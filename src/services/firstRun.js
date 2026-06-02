@@ -12,11 +12,13 @@ import {
   showAlert,
   showChecklistConfirm,
   showChoiceConfirm,
+  showPrompt,
 } from "../utils/dialog.js"
 
 const FIRST_RUN_BG_KEY = "startpageFirstRunSvgBgV1"
 const FIRST_RUN_LANGUAGE_KEY = "startpageFirstRunLanguageV1"
 const FIRST_RUN_STYLE_KEY = "startpageFirstRunStyleV1"
+const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
 const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomTipV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
@@ -436,6 +438,46 @@ async function promptFirstRunLanguage() {
   localStorage.setItem(FIRST_RUN_LANGUAGE_KEY, language)
 }
 
+async function promptFirstRunUserName() {
+  if (localStorage.getItem(FIRST_RUN_NAME_KEY)) return
+
+  const i18n = geti18n()
+  const rawName = await showPrompt(
+    i18n.first_run_name_prompt ||
+      "What should your Start Page call you?",
+    "",
+    i18n.first_run_name_title || "Your name",
+  )
+  const name =
+    typeof rawName === "string"
+      ? rawName.trim().replace(/\s+/g, " ").slice(0, 40)
+      : ""
+
+  if (!name) {
+    localStorage.setItem(FIRST_RUN_NAME_KEY, "skipped")
+    return
+  }
+
+  const greeting = (
+    i18n.first_run_custom_title_greeting || "Hello, {name}"
+  ).replace("{name}", name)
+
+  updateSetting("customTitleText", greeting)
+  updateSetting("showCustomTitle", true)
+  saveSettings(true)
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key: "customTitleText", value: greeting },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key: "showCustomTitle", value: true },
+    }),
+  )
+  localStorage.setItem(FIRST_RUN_NAME_KEY, name)
+}
+
 
 function applyFirstRunStyleToBody(layout) {
   document.body.classList.remove(
@@ -559,6 +601,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
 
   await promptFirstRunLanguage()
+  await promptFirstRunUserName()
   await promptFirstRunStyle(renderBookmarks)
   await promptFirstRunZoomTip()
   const i18n = geti18n()

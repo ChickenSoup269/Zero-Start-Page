@@ -107,6 +107,9 @@ export function normalizeLanguageCode(code) {
 }
 
 export function applyTranslations() {
+  const currentLanguage = i18n.language || getSettings().language || "en"
+  document.documentElement.lang = currentLanguage
+
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n")
     if (i18n[key]) {

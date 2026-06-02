@@ -1067,6 +1067,9 @@ export const bookmarkLayoutShowGroups = document.getElementById(
 export const enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",
 )
+export const bookmarkOpenInNewTab = document.getElementById(
+  "bookmark-open-new-tab",
+)
 export const bookmarkLimit20 = document.getElementById("bookmark-limit-20")
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")

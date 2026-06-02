@@ -3949,6 +3949,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpBookmarkGroups) {
       DOM.lcpBookmarkGroups.checked = settings.showBookmarkGroups !== false
     }
+    if (DOM.bookmarkOpenInNewTab) {
+      DOM.bookmarkOpenInNewTab.checked = settings.bookmarkOpenInNewTab === true
+    }
     DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
     if (DOM.lcpGhostControls) {
       DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
