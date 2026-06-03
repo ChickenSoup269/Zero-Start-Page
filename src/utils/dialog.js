@@ -414,39 +414,37 @@ export function showBookmarkHideInstructions() {
   }
 
   const content = `
-    <div class="bookmark-hide-instructions" style="text-align: left; font-family: inherit;">
-      <p style="margin-bottom: 12px; font-size: 0.95rem;">${step1}</p>
-      <p style="margin-bottom: 8px; font-size: 0.95rem;">${step2}</p>
+    <div class="bookmark-hide-instructions">
+      <p class="bookmark-hide-step">${step1}</p>
+      <p class="bookmark-hide-step bookmark-hide-step-tight">${step2}</p>
       
-      <div class="command-box" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; position: relative; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.1);">
-        <code id="reg-command" style="display: block; word-break: break-all; font-family: 'Consolas', monospace; font-size: 0.85rem; color: var(--accent-color); margin-bottom: 12px; padding: 4px; background: rgba(0,0,0,0.3); border-radius: 4px;">${command}</code>
-        <button id="copy-reg-command" style="background: var(--accent-color); color: var(--accent-contrast-color, #1a1a2e); border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; font-family: inherit; margin: 0 auto;">
+      <div class="command-box">
+        <code id="reg-command">${command}</code>
+        <button id="copy-reg-command" class="bookmark-hide-copy-btn">
           <i class="fa-solid fa-copy"></i> <span>${copyText}</span>
         </button>
       </div>
 
-      <div style="margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <a href="chrome://policy/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
-            <i class="fa-solid fa-external-link" style="font-size: 0.85rem;"></i> ${policyLink}
+      <div class="bookmark-hide-links">
+        <div class="bookmark-hide-policy-row">
+          <a href="chrome://policy/" target="_blank" class="bookmark-hide-policy-link">
+            <i class="fa-solid fa-external-link"></i> <span>${policyLink}</span>
           </a>
-          <button id="copy-policy-link" title="Copy Link" style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-            <i class="fa-solid fa-copy" style="font-size: 0.8rem;"></i>
+          <button id="copy-policy-link" class="bookmark-hide-copy-link" title="Copy Link">
+            <i class="fa-solid fa-copy"></i>
           </button>
         </div>
         
-        <a href="https://chromeenterprise.google/intl/en_ca/policies/bookmark-bar-enabled/" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 0.85rem; opacity: 0.8; display: inline-flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-circle-info"></i> Detailed Policy Documentation
+        <a href="https://chromeenterprise.google/intl/en_ca/policies/bookmark-bar-enabled/" target="_blank" class="bookmark-hide-doc-link">
+          <i class="fa-solid fa-circle-info"></i> <span>Detailed Policy Documentation</span>
         </a>
-        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: -4px;">${linkHint}</p>
-        <p style="font-size: 0.75rem; opacity: 0.6; margin-top: -4px;">
-        ${note}
-        </p>
+        <p class="bookmark-hide-small-note">${linkHint}</p>
+        <p class="bookmark-hide-small-note">${note}</p>
       </div>
 
-      <div style="background: rgba(var(--accent-color-rgb), 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid var(--accent-color); margin-bottom: 12px;">
-        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">
-          <i class="fa-solid fa-lightbulb" style="color: var(--accent-color); margin-right: 4px;"></i> ${tip}
+      <div class="bookmark-hide-tip">
+        <p>
+          <i class="fa-solid fa-lightbulb"></i> ${tip}
         </p>
       </div>
     </div>

@@ -681,6 +681,181 @@
   border-color: rgba(255, 255, 255, 0.36);
 }
 
+.bookmark-hide-instructions {
+  text-align: left;
+  font-family: inherit;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.bookmark-hide-step {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.bookmark-hide-step-tight {
+  margin-bottom: 8px;
+}
+
+.bookmark-hide-instructions .command-box {
+  position: relative;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.bookmark-hide-instructions #reg-command {
+  display: block;
+  max-width: 100%;
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--accent-color);
+  font-family: Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.bookmark-hide-copy-btn {
+  max-width: 100%;
+  min-height: 34px;
+  margin: 0 auto;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent-color);
+  color: var(--accent-contrast-color, #1a1a2e);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition: all 0.2s;
+}
+
+.bookmark-hide-copy-btn span {
+  min-width: 0;
+  white-space: normal;
+}
+
+.bookmark-hide-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.bookmark-hide-policy-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bookmark-hide-policy-link,
+.bookmark-hide-doc-link {
+  min-width: 0;
+  color: var(--accent-color);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.bookmark-hide-policy-link {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.bookmark-hide-policy-link i,
+.bookmark-hide-doc-link i {
+  flex: 0 0 auto;
+  margin-top: 0.16em;
+}
+
+.bookmark-hide-policy-link span,
+.bookmark-hide-doc-link span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bookmark-hide-copy-link {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.bookmark-hide-copy-link i {
+  font-size: 0.8rem;
+}
+
+.bookmark-hide-doc-link {
+  font-size: 0.84rem;
+  opacity: 0.8;
+}
+
+.bookmark-hide-small-note {
+  margin: -4px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  opacity: 0.64;
+}
+
+.bookmark-hide-tip {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-left: 3px solid var(--accent-color);
+  border-radius: 8px;
+  background: rgba(var(--accent-color-rgb), 0.1);
+}
+
+.bookmark-hide-tip p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.bookmark-hide-tip i {
+  color: var(--accent-color);
+  margin-right: 4px;
+}
+
+@media (max-width: 430px) {
+  .bookmark-hide-policy-row {
+    align-items: stretch;
+  }
+
+  .bookmark-hide-copy-link {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 /* White Mode for Modals - Including UI parts of Import Mode */
 .quick-access-white .modal-content {
   background: rgba(255, 255, 255, 0.8) !important;

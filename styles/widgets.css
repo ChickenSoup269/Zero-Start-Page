@@ -1368,7 +1368,23 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 .lcp-label {
   font-size: 0.82rem;
   flex: 1;
+  min-width: 0;
   opacity: 0.9;
+  overflow-wrap: anywhere;
+}
+
+#lcp-hide-chrome-bookmarks-row {
+  align-items: flex-start;
+}
+
+#lcp-hide-chrome-bookmarks-row .lcp-icon,
+#lcp-hide-chrome-bookmarks-row > .fa-chevron-right {
+  flex: 0 0 auto;
+  margin-top: 0.22rem;
+}
+
+#lcp-hide-chrome-bookmarks-row .lcp-label {
+  line-height: 1.25;
 }
 
 .lcp-row-select {
@@ -8366,4 +8382,164 @@ body.bookmark-group-container-bg-hidden.bookmark-taskbar-left-mode
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+
+/* Sidebar macOS hover: labels must escape the compact grid. */
+body.bookmark-sidebar-mode.bookmark-macos-hover #bookmark-widget,
+body.bookmark-sidebar-mode.bookmark-macos-hover #bookmarks-container,
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmarks-grid {
+  overflow: visible !important;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark {
+  overflow: visible !important;
+  position: relative;
+  z-index: 1;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover {
+  z-index: 10020;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span,
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark .bookmark-title {
+  pointer-events: none;
+  z-index: 10021 !important;
+}
+
+body.bookmark-macos-hover .bookmark-stack-popup .bookmark,
+body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark-stack-popup .bookmark,
+body.bookmark-taskbar-mode.bookmark-macos-hover .bookmark-stack-popup .bookmark,
+body.bookmark-taskbar-top-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark,
+body.bookmark-taskbar-left-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark {
+  background: rgba(255, 255, 255, 0.055) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  position: relative !important;
+  transform: none !important;
+  width: 100% !important;
+  z-index: auto !important;
+}
+
+body.bookmark-macos-hover .bookmark-stack-popup .bookmark:hover,
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark:hover,
+body.bookmark-taskbar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark:hover,
+body.bookmark-taskbar-top-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark:hover,
+body.bookmark-taskbar-left-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark:hover {
+  background: rgba(255, 255, 255, 0.105) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.34) !important;
+  transform: translateY(-2px) !important;
+  z-index: auto !important;
+}
+
+body.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark
+  > .bookmark-stack-popup-label,
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark
+  > .bookmark-stack-popup-label,
+body.bookmark-taskbar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark
+  > .bookmark-stack-popup-label,
+body.bookmark-taskbar-top-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark
+  > .bookmark-stack-popup-label,
+body.bookmark-taskbar-left-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark
+  > .bookmark-stack-popup-label {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--text-color, #fff) !important;
+  display: block !important;
+  font-size: 0.74rem !important;
+  font-weight: 650 !important;
+  left: auto !important;
+  line-height: 1.25 !important;
+  max-width: 100% !important;
+  opacity: 0.92 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: static !important;
+  right: auto !important;
+  text-overflow: ellipsis !important;
+  top: auto !important;
+  transform: none !important;
+  visibility: visible !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+  z-index: auto !important;
+}
+
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark-stack-popup-label,
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark-stack-popup-check {
+  opacity: 1 !important;
+  pointer-events: none;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+body.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark-stack-popup-check,
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup
+  .bookmark-stack-popup-check {
+  align-items: center !important;
+  background: var(--accent-color, #a8c0ff) !important;
+  border: 0 !important;
+  border-radius: 1000px !important;
+  box-shadow: none !important;
+  color: var(--accent-contrast-color, #10131a) !important;
+  display: none !important;
+  font-size: 0.62rem !important;
+  height: 18px !important;
+  justify-content: center !important;
+  left: auto !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  right: 6px !important;
+  text-overflow: clip !important;
+  top: 6px !important;
+  transform: none !important;
+  visibility: visible !important;
+  white-space: normal !important;
+  width: 18px !important;
+  z-index: 3 !important;
+}
+
+body.bookmark-macos-hover
+  .bookmark-stack-popup.is-selecting
+  .bookmark-stack-popup-item.selected
+  .bookmark-stack-popup-check,
+body.bookmark-sidebar-mode.bookmark-macos-hover
+  .bookmark-stack-popup.is-selecting
+  .bookmark-stack-popup-item.selected
+  .bookmark-stack-popup-check {
+  display: inline-flex !important;
 }

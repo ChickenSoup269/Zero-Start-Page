@@ -451,6 +451,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const grid = document.createElement("div")
   grid.className = "bookmark-stack-popup-grid"
   popup.appendChild(grid)
+  let ignoreNextStackPopupClick = false
 
   const syncStackSelectionUi = () => {
     popup.classList.toggle("is-selecting", isStackSelectionMode)
@@ -480,6 +481,108 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     saveBookmarks()
   }
 
+  const getStackPopupDropIntent = (target, event) => {
+    const rect = target.getBoundingClientRect()
+    if (!rect.width) return "after"
+    return event.clientX < rect.left + rect.width / 2 ? "before" : "after"
+  }
+
+  const updateStackPopupDropIntent = (target, event) => {
+    clearBookmarkDropClasses(target)
+    const targetItemIndex = Number(target.dataset.stackIndex)
+    const isSelfDrop = draggedStackItems.some(
+      (item) =>
+        item.stackIndex === stackIndex && item.itemIndex === targetItemIndex,
+    )
+    if (isSelfDrop) return
+
+    const intent = getStackPopupDropIntent(target, event)
+    target.classList.add(
+      intent === "before" ? "drag-over-before" : "drag-over-after",
+    )
+    target.dataset.dropLabel = geti18n().bookmark_drop_move || "Move"
+  }
+
+  const moveDraggedStackItemsInsidePopup = (targetItemIndex, intent) => {
+    const movedIndices = draggedStackItems
+      .filter((item) => item.stackIndex === stackIndex)
+      .map((item) => item.itemIndex)
+      .filter((itemIndex) => stack.items[itemIndex])
+      .sort((a, b) => a - b)
+
+    if (
+      movedIndices.length === 0 ||
+      movedIndices.some((itemIndex) => itemIndex === targetItemIndex)
+    ) {
+      return false
+    }
+
+    const snapshot = captureBookmarkSnapshot()
+    const movedItems = movedIndices.map((itemIndex) => stack.items[itemIndex])
+
+    ;[...movedIndices]
+      .sort((a, b) => b - a)
+      .forEach((itemIndex) => stack.items.splice(itemIndex, 1))
+
+    let insertIndex = targetItemIndex
+    movedIndices.forEach((itemIndex) => {
+      if (itemIndex < targetItemIndex) insertIndex -= 1
+    })
+    if (intent === "after") insertIndex += 1
+    insertIndex = Math.max(0, Math.min(stack.items.length, insertIndex))
+
+    stack.items.splice(insertIndex, 0, ...movedItems)
+
+    const bookmarks = getBookmarks()
+    if (isBookmarkStack(bookmarks[stackIndex])) {
+      bookmarks[stackIndex] = stack
+      setBookmarks(bookmarks)
+      saveBookmarks()
+    }
+
+    isStackSelectionMode = false
+    selectedStackIndices.clear()
+    draggedStackItems = []
+    renderStackItems()
+    syncStackSelectionUi()
+    showBookmarkUndo(geti18n().bookmark_moved || "Bookmarks moved", snapshot)
+    return true
+  }
+
+  const handleStackPopupDragOver = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    event.dataTransfer.dropEffect = "move"
+    updateStackPopupDropIntent(event.currentTarget, event)
+    return false
+  }
+
+  const handleStackPopupDragEnter = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    updateStackPopupDropIntent(event.currentTarget, event)
+  }
+
+  const handleStackPopupDragLeave = (event) => {
+    clearBookmarkDropClasses(event.currentTarget)
+  }
+
+  const handleStackPopupDrop = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    clearBookmarkDropClasses(event.currentTarget)
+
+    const targetItemIndex = Number(event.currentTarget.dataset.stackIndex)
+    const intent = getStackPopupDropIntent(event.currentTarget, event)
+    if (moveDraggedStackItemsInsidePopup(targetItemIndex, intent)) {
+      ignoreNextStackPopupClick = true
+      setTimeout(() => {
+        ignoreNextStackPopupClick = false
+      }, 150)
+    }
+    return false
+  }
+
   const renderStackItems = () => {
     grid.innerHTML = ""
     stack.items.forEach((item, itemIndex) => {
@@ -503,6 +606,12 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
       link.appendChild(check)
 
       link.addEventListener("click", async (event) => {
+        if (ignoreNextStackPopupClick) {
+          event.preventDefault()
+          event.stopPropagation()
+          return
+        }
+
         if (isStackSelectionMode) {
           event.preventDefault()
           event.stopPropagation()
@@ -518,6 +627,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
         await promptBookmarkOpenBehaviorOnClick(event, item.url)
       })
       link.addEventListener("dragstart", handleStackItemDragStart)
+      link.addEventListener("dragover", handleStackPopupDragOver)
+      link.addEventListener("dragenter", handleStackPopupDragEnter)
+      link.addEventListener("dragleave", handleStackPopupDragLeave)
+      link.addEventListener("drop", handleStackPopupDrop)
       link.addEventListener("dragend", handleDragEnd)
       link.addEventListener("contextmenu", (event) => {
         event.preventDefault()
