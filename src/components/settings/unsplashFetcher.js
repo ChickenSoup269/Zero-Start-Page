@@ -45,6 +45,7 @@ function getMediaQualityProfile(settings = getSettings()) {
     quality: { dprCap: 2, widthCap: 3200, heightCap: 2200, quality: 90 },
     balanced: { dprCap: 1.5, widthCap: 2400, heightCap: 1600, quality: 82 },
     low: { dprCap: 1, widthCap: 1600, heightCap: 1000, quality: 68 },
+    tiny: { dprCap: 0.75, widthCap: 1024, heightCap: 640, quality: 50 },
     still: { dprCap: 0.85, widthCap: 1280, heightCap: 800, quality: 60 },
   }
   return profiles[mode] || profiles.balanced

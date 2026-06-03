@@ -273,6 +273,7 @@ export function initCommandPalette() {
             desc: 'Chỉnh kích thước hình nền vừa vặn toàn màn hình',
             icon: '<i class="fa-solid fa-expand"></i>',
             shortcut: '',
+            shortcutHint: 'W + S',
             keywords: 'background bg cover fill hinh nen',
             action: () => setBgSize('cover')
         },
@@ -288,11 +289,14 @@ export function initCommandPalette() {
     ];
 
     const customShortcuts = loadCustomShortcuts();
+    const FALLBACK_SHORTCUTS = {
+        'cycle-bg-size': 'W + S'
+    };
     let shortcutCaptureCommand = null;
     commands.forEach((cmd) => {
         cmd.defaultShortcut = cmd.shortcut || '';
         if (Object.prototype.hasOwnProperty.call(customShortcuts, cmd.id)) {
-            cmd.shortcut = customShortcuts[cmd.id] || '';
+            cmd.shortcut = customShortcuts[cmd.id] || FALLBACK_SHORTCUTS[cmd.id] || '';
         }
     });
 
@@ -464,8 +468,9 @@ export function initCommandPalette() {
             };
 
             let shortcutHtml = '';
-            if (cmd.shortcut) {
-                const keys = cmd.shortcut.split('+').map(k => `<kbd>${k.trim()}</kbd>`).join(' + ');
+            if (cmd.shortcut || cmd.shortcutHint) {
+                const shortcutText = cmd.shortcut || cmd.shortcutHint;
+                const keys = shortcutText.split('+').map(k => `<kbd>${k.trim()}</kbd>`).join(' + ');
                 shortcutHtml = `<div class="cp-item-shortcut">${keys}</div>`;
             } else {
                 shortcutHtml = '<div class="cp-item-shortcut muted">Chưa gán</div>';
@@ -527,7 +532,7 @@ export function initCommandPalette() {
     searchInput.addEventListener('input', (e) => {
         const query = normalizeText(e.target.value);
         filteredCommands = commands.filter(c => 
-            normalizeText(`${c.title} ${c.desc} ${c.shortcut || ''} ${c.keywords || ''}`).includes(query)
+            normalizeText(`${c.title} ${c.desc} ${c.shortcut || c.shortcutHint || ''} ${c.keywords || ''}`).includes(query)
         );
         selectedIndex = 0;
         renderList();
@@ -590,7 +595,6 @@ export function initCommandPalette() {
                 showToast('Ctrl + K được giữ để mở bảng lệnh nhanh');
                 return;
             }
-
             const duplicate = shortcut && commands.find(
                 (cmd) => cmd.id !== shortcutCaptureCommand.id && normalizeShortcut(cmd.shortcut) === normalizeShortcut(shortcut)
             );
@@ -599,14 +603,21 @@ export function initCommandPalette() {
                 return;
             }
 
-            shortcutCaptureCommand.shortcut = shortcut;
-            customShortcuts[shortcutCaptureCommand.id] = shortcut;
+            const fallbackShortcut = FALLBACK_SHORTCUTS[shortcutCaptureCommand.id] || '';
+            shortcutCaptureCommand.shortcut = shortcut || fallbackShortcut;
+            if (shortcut) {
+                customShortcuts[shortcutCaptureCommand.id] = shortcut;
+            } else if (fallbackShortcut) {
+                delete customShortcuts[shortcutCaptureCommand.id];
+            } else {
+                customShortcuts[shortcutCaptureCommand.id] = '';
+            }
             saveCustomShortcuts(customShortcuts);
-            const label = shortcut || 'đã bỏ gán';
+            const label = shortcutCaptureCommand.shortcut || 'đã bỏ gán';
             showToast(`Đã cập nhật phím tắt: ${shortcutCaptureCommand.title} (${label})`);
             shortcutCaptureCommand = null;
             filteredCommands = commands.filter(c =>
-                normalizeText(`${c.title} ${c.desc} ${c.shortcut || ''} ${c.keywords || ''}`).includes(normalizeText(searchInput.value))
+                normalizeText(`${c.title} ${c.desc} ${c.shortcut || c.shortcutHint || ''} ${c.keywords || ''}`).includes(normalizeText(searchInput.value))
             );
             renderList();
             return;

@@ -135,7 +135,7 @@ export const defaultSettings = {
   bookmarkGroupFontSize: 14,
   bookmarkGroupShowCount: true,
   bookmarkGroupUseAccent: false,
-  bookmarkGroupContainerBgHidden: false,
+  bookmarkGroupContainerBgHidden: true,
   bookmarkEnableDrag: true,
   bookmarkOpenInNewTab: false,
   bookmarkOpenBehaviorPromptSeen: false,

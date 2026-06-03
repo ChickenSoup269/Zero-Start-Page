@@ -80,9 +80,27 @@ export function prepareFirstRunDefaults() {
   }
 
   const preset = pick(SVG_WAVE_PRESETS)
+  const firstWaveUid = `svg-wave-first-run-${Date.now()}`
+  const firstWave = {
+    uid: firstWaveUid,
+    lines: randomInt(5, 8),
+    amplitudeX: preset.ampX + randomInt(-24, 24),
+    amplitudeY: preset.ampY + randomInt(-12, 16),
+    offsetX: randomInt(-28, 28),
+    angle: preset.angle + randomInt(-5, 5),
+    smoothness: 0.62,
+    fill: true,
+    craziness: randomInt(22, 36),
+    startHue: preset.start[0],
+    startSaturation: preset.start[1],
+    startLightness: preset.start[2],
+    endHue: preset.end[0],
+    endSaturation: preset.end[1],
+    endLightness: preset.end[2],
+  }
   updateAllSettings({
     background: null,
-    activeBgUid: null,
+    activeBgUid: firstWaveUid,
     effect: "none",
     multiColorActive: false,
     gradientV2Active: false,
@@ -91,20 +109,21 @@ export function prepareFirstRunDefaults() {
     liquidEtherActive: false,
     splashCursorActive: false,
     svgWaveActive: true,
-    svgWaveFill: true,
-    svgWaveLines: randomInt(5, 8),
-    svgWaveAmplitudeX: preset.ampX + randomInt(-24, 24),
-    svgWaveAmplitudeY: preset.ampY + randomInt(-12, 16),
-    svgWaveOffsetX: randomInt(-28, 28),
-    svgWaveAngle: preset.angle + randomInt(-5, 5),
-    svgWaveSmoothness: 0.62,
-    svgWaveCraziness: randomInt(22, 36),
-    svgWaveStartHue: preset.start[0],
-    svgWaveStartSaturation: preset.start[1],
-    svgWaveStartLightness: preset.start[2],
-    svgWaveEndHue: preset.end[0],
-    svgWaveEndSaturation: preset.end[1],
-    svgWaveEndLightness: preset.end[2],
+    svgWaveFill: firstWave.fill,
+    svgWaveLines: firstWave.lines,
+    svgWaveAmplitudeX: firstWave.amplitudeX,
+    svgWaveAmplitudeY: firstWave.amplitudeY,
+    svgWaveOffsetX: firstWave.offsetX,
+    svgWaveAngle: firstWave.angle,
+    svgWaveSmoothness: firstWave.smoothness,
+    svgWaveCraziness: firstWave.craziness,
+    svgWaveStartHue: firstWave.startHue,
+    svgWaveStartSaturation: firstWave.startSaturation,
+    svgWaveStartLightness: firstWave.startLightness,
+    svgWaveEndHue: firstWave.endHue,
+    svgWaveEndSaturation: firstWave.endSaturation,
+    svgWaveEndLightness: firstWave.endLightness,
+    userSvgWaves: [firstWave],
     accentColor: preset.accent,
   })
   saveSettings(true)
@@ -143,6 +162,7 @@ const FIRST_RUN_STYLE_PRESETS = {
     bookmarkGroupBgOpacity: 82,
     bookmarkGroupTextColor: "#111827",
     bookmarkGroupFontSize: 13,
+    bookmarkGroupContainerBgHidden: true,
     bookmarkShadowColor: "#000000",
     bookmarkShadowOpacity: 22,
     bookmarkShadowBlur: 10,
@@ -165,6 +185,7 @@ const FIRST_RUN_STYLE_PRESETS = {
     bookmarkGroupBgOpacity: 0,
     bookmarkGroupTextColor: null,
     bookmarkGroupFontSize: 14,
+    bookmarkGroupContainerBgHidden: true,
     bookmarkShadowColor: "#000000",
     bookmarkShadowOpacity: 14,
     bookmarkShadowBlur: 6,
@@ -187,6 +208,7 @@ const FIRST_RUN_STYLE_PRESETS = {
     bookmarkGroupBgOpacity: 16,
     bookmarkGroupTextColor: null,
     bookmarkGroupFontSize: 14,
+    bookmarkGroupContainerBgHidden: true,
     bookmarkShadowColor: "#000000",
     bookmarkShadowOpacity: 18,
     bookmarkShadowBlur: 8,
@@ -258,10 +280,9 @@ function getFolderOptionLabel(node, pathParts, i18n) {
     <span class="dialog-check-main">
       <span class="dialog-check-title">${escapeHtml(title)}</span>
       <small class="dialog-check-desc">
-        ${(i18n.first_run_import_bookmarks_count || "{count} bookmarks").replace(
-          "{count}",
-          items.length,
-        )}
+        ${(
+          i18n.first_run_import_bookmarks_count || "{count} bookmarks"
+        ).replace("{count}", items.length)}
         ${items.length ? ` · ${exampleText}` : ""}
       </small>
     </span>
@@ -327,9 +348,7 @@ function buildImportOptions(nodes, i18n) {
     options.push({
       type: "section",
       icon: "fa-solid fa-folder-tree",
-      label:
-        i18n.first_run_import_folder_section ||
-        "Folders",
+      label: i18n.first_run_import_folder_section || "Folders",
     })
     options.push(...folders)
   }
@@ -338,9 +357,7 @@ function buildImportOptions(nodes, i18n) {
     options.push({
       type: "section",
       icon: "fa-solid fa-link",
-      label:
-        i18n.first_run_import_bookmark_section ||
-        "Individual bookmarks",
+      label: i18n.first_run_import_bookmark_section || "Individual bookmarks",
     })
     options.push(...bookmarks)
   }
@@ -348,7 +365,12 @@ function buildImportOptions(nodes, i18n) {
   return options
 }
 
-function collectSelectedBookmarkItems(node, selection, existingUrls, items = []) {
+function collectSelectedBookmarkItems(
+  node,
+  selection,
+  existingUrls,
+  items = [],
+) {
   if (!node) return items
   if (node.url) {
     if (selection[`bookmark:${node.id}`] && !existingUrls.has(node.url)) {
@@ -378,7 +400,9 @@ function collectChromeGroups(
   if (!node?.children) return
 
   const shouldImportFolder = selection[`folder:${node.id}`]
-  const items = shouldImportFolder ? directBookmarksFromFolder(node, existingUrls) : []
+  const items = shouldImportFolder
+    ? directBookmarksFromFolder(node, existingUrls)
+    : []
   if (items.length) {
     groups.push({
       id: `chrome-${Date.now()}-${groups.length}`,
@@ -444,8 +468,7 @@ async function promptFirstRunUserName() {
 
   const i18n = geti18n()
   const rawName = await showPrompt(
-    i18n.first_run_name_prompt ||
-      "What should your Start Page call you?",
+    i18n.first_run_name_prompt || "What should your Start Page call you?",
     "",
     i18n.first_run_name_title || "Your name",
   )
@@ -478,7 +501,6 @@ async function promptFirstRunUserName() {
   )
   localStorage.setItem(FIRST_RUN_NAME_KEY, name)
 }
-
 
 function applyFirstRunStyleToBody(layout) {
   document.body.classList.remove(
@@ -519,7 +541,7 @@ async function promptFirstRunStyle(renderBookmarks) {
         description:
           i18n.first_run_style_clean_desc ||
           "Simple centered bookmarks with minimal background.",
-        icon: "fa-solid fa-sparkles",
+        icon: "fa-solid fa-wand-magic-sparkles",
       },
       {
         key: "sidebar",
@@ -608,8 +630,10 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   const i18n = geti18n()
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(
-      (i18n.first_run_open_source_message ||
-        'Zero Start Page is open source. You can view the project at <a href="{url}" target="_blank" rel="noopener noreferrer">GitHub</a>. If you find a bug or have a suggestion, you can open an issue here: <a href="{issuesUrl}" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.')
+      (
+        i18n.first_run_open_source_message ||
+        'Zero Start Page is open source. You can view the project at <a href="{url}" target="_blank" rel="noopener noreferrer">GitHub</a>. If you find a bug or have a suggestion, you can open an issue here: <a href="{issuesUrl}" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.'
+      )
         .replace("{url}", REPO_URL)
         .replace("{issuesUrl}", REPO_ISSUES_URL),
       i18n.first_run_open_source_title || "Open source",
@@ -657,16 +681,15 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
     )
     const importedGroups = []
 
-    rootFolders
-      .forEach((child) =>
-        collectChromeGroups(
-          child,
-          importedGroups,
-          existingUrls,
-          selection,
-          i18n.bookmark_stack_default_name || "Bookmarks",
-        ),
-      )
+    rootFolders.forEach((child) =>
+      collectChromeGroups(
+        child,
+        importedGroups,
+        existingUrls,
+        selection,
+        i18n.bookmark_stack_default_name || "Bookmarks",
+      ),
+    )
 
     const selectedBookmarkItems = []
     rootFolders.forEach((child) =>
@@ -709,11 +732,10 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
     renderBookmarks?.()
 
     await showAlert(
-      (i18n.first_run_import_bookmarks_success ||
-        "Imported {count} bookmarks from Chrome.").replace(
-        "{count}",
-        importedCount,
-      ),
+      (
+        i18n.first_run_import_bookmarks_success ||
+        "Imported {count} bookmarks from Chrome."
+      ).replace("{count}", importedCount),
     )
   } catch (error) {
     console.error("First-run bookmark import failed:", error)

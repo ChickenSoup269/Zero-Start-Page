@@ -55,7 +55,7 @@ function configureBackgroundVideo(video, settings) {
   const quality = settings.backgroundMediaQuality || "balanced"
   video.preload = quality === "quality" ? "auto" : "metadata"
   video.disableRemotePlayback = true
-  video.playbackRate = quality === "low" ? 0.85 : 1
+  video.playbackRate = quality === "low" || quality === "tiny" ? 0.85 : 1
 
   const shouldFreeze = quality === "still"
   const freezeVideo = () => {

@@ -272,6 +272,7 @@
   "settings_media_quality_quality": "Chất lượng cao",
   "settings_media_quality_balanced": "Cân bằng",
   "settings_media_quality_low": "Tiết kiệm dữ liệu",
+  "settings_media_quality_tiny": "Siêu nhẹ",
   "settings_media_quality_still": "Tĩnh video",
   "settings_unsplash_missing_key": "Bạn cần nhập Unsplash Access Key trước.\nCó thể lấy key miễn phí tại unsplash.com/developers.",
   "settings_unsplash_mini_hint": "Mở lại chọn ảnh",

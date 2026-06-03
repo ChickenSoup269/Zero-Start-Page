@@ -35,6 +35,7 @@ function getUploadImageProfile(settings = getSettings()) {
     quality: { maxSize: 2560, quality: 0.9 },
     balanced: { maxSize: 1920, quality: 0.82 },
     low: { maxSize: 1440, quality: 0.68 },
+    tiny: { maxSize: 960, quality: 0.52 },
     still: { maxSize: 1280, quality: 0.6 },
   }
   return profiles[mode] || profiles.balanced

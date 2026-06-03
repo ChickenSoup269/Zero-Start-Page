@@ -40,6 +40,14 @@ const TIMER_ALARM_SOUNDS = {
     file: "universfield-ringtone-070-496271.mp3",
     label: "Ringtone 070",
   },
+  morning_flower: {
+    file: "morning_flower.mp3",
+    label: "Morning Flower",
+  },
+  iphone_alarm: {
+    file: "iphone_alarm.mp3",
+    label: "iPhone Alarm",
+  },
   subnautica_alterra: {
     file: "subnautica_psa_beep.mp3",
     label: "Subnautica PSA Beep",
@@ -911,7 +919,8 @@ export class Timer {
     if (countdown) countdown.textContent = clockText
 
     const base = this.initialTime > 0 ? this.initialTime : this.timeLeft
-    const progress = base > 0 ? Math.max(0, Math.min(1, this.timeLeft / base)) : 0
+    const progress =
+      base > 0 ? Math.max(0, Math.min(1, this.timeLeft / base)) : 0
     overlay.style.setProperty("--timer-focus-progress", progress.toFixed(4))
     const progressAngle = Math.max(0, progress * 360)
     overlay.style.setProperty(
@@ -935,15 +944,19 @@ export class Timer {
     if (exitBtn) exitBtn.title = i18n.timer_focus_exit || "Exit Focus"
     if (pauseBtn) pauseBtn.title = i18n.timer_focus_pause || "Pause"
     if (resetBtn) resetBtn.title = i18n.timer_focus_reset || "Reset"
-    if (stage) stage.setAttribute("aria-label", i18n.timer_focus_mode || "Timer Focus")
+    if (stage)
+      stage.setAttribute("aria-label", i18n.timer_focus_mode || "Timer Focus")
   }
 
   applySkin() {
     const settings = getSettings()
     const isWhiteMode = settings.showQuickAccessBg === true
-    const skin = settings.widgetUseM3Accent === true
-      ? "m3-accent"
-      : isWhiteMode ? "white-blur" : settings.timerSkin || "default"
+    const skin =
+      settings.widgetUseM3Accent === true
+        ? "m3-accent"
+        : isWhiteMode
+          ? "white-blur"
+          : settings.timerSkin || "default"
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")

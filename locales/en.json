@@ -272,6 +272,7 @@
   "settings_media_quality_quality": "Quality",
   "settings_media_quality_balanced": "Balanced",
   "settings_media_quality_low": "Low data",
+  "settings_media_quality_tiny": "Tiny file",
   "settings_media_quality_still": "Still video saver",
   "settings_unsplash_missing_key": "Please enter your Unsplash Access Key first.\nYou can get a free key at unsplash.com/developers.",
   "settings_unsplash_mini_hint": "Open photo picker",
