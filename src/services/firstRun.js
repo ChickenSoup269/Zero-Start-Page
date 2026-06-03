@@ -23,6 +23,7 @@ const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomTipV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
 const REPO_URL = "https://github.com/ChickenSoup269/Zero-Start-Page"
+const REPO_ISSUES_URL = `${REPO_URL}/issues`
 
 const SVG_WAVE_PRESETS = [
   {
@@ -608,10 +609,9 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (!localStorage.getItem(FIRST_RUN_OPEN_SOURCE_KEY)) {
     await showAlert(
       (i18n.first_run_open_source_message ||
-        'Zero Start Page is open source. You can view the project at <a href="{url}" target="_blank" rel="noopener noreferrer">GitHub</a>.').replace(
-        "{url}",
-        REPO_URL,
-      ),
+        'Zero Start Page is open source. You can view the project at <a href="{url}" target="_blank" rel="noopener noreferrer">GitHub</a>. If you find a bug or have a suggestion, you can open an issue here: <a href="{issuesUrl}" target="_blank" rel="noopener noreferrer">GitHub Issues</a>.')
+        .replace("{url}", REPO_URL)
+        .replace("{issuesUrl}", REPO_ISSUES_URL),
       i18n.first_run_open_source_title || "Open source",
     )
     localStorage.setItem(FIRST_RUN_OPEN_SOURCE_KEY, "shown")

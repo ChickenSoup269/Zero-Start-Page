@@ -4304,7 +4304,6 @@ body.widgets-m3-accent .quotes-container,
 .skin-m3-accent h3,
 .skin-m3-accent h4,
 .skin-m3-accent .month-title,
-.skin-m3-accent .day-number,
 .skin-m3-accent .timer-display,
 .skin-m3-accent .quote-text,
 .skin-m3-accent .quote-author,
@@ -4338,7 +4337,6 @@ body.widgets-m3-accent .quotes-container,
 .skin-m3-accent input,
 .skin-m3-accent textarea,
 .skin-m3-accent .todo-item,
-.skin-m3-accent .day-item:not(.today),
 .skin-m3-accent .calendar-event,
 .skin-m3-accent .note-item,
 .skin-m3-accent .quick-access-divider,
@@ -4357,9 +4355,61 @@ body.widgets-m3-accent .quotes-container,
 
 .skin-m3-accent .weekday-header,
 .skin-m3-accent .lunar-month-title,
-.skin-m3-accent .lunar-date,
-.skin-m3-accent .holiday-name {
+.skin-m3-accent .lunar-date {
   color: color-mix(in srgb, var(--m3-on-primary-container, var(--text-color)) 72%, transparent) !important;
+}
+
+.calendar-card.skin-m3-accent {
+  --calendar-m3-text: var(--m3-on-surface, var(--text-color));
+  --calendar-m3-muted: var(--m3-on-surface-variant, var(--text-color));
+  --calendar-m3-cell-bg: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, #1f232b) 72%,
+    var(--m3-primary-container, var(--safe-accent)) 28%
+  );
+  --calendar-m3-cell-hover: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, #1f232b) 54%,
+    var(--m3-primary, var(--safe-accent)) 46%
+  );
+  color: var(--calendar-m3-text) !important;
+}
+
+.calendar-card.skin-m3-accent .month-title,
+.calendar-card.skin-m3-accent .day-item .day-number {
+  color: var(--calendar-m3-text) !important;
+}
+
+.calendar-card.skin-m3-accent .weekday-header,
+.calendar-card.skin-m3-accent .lunar-date,
+.calendar-card.skin-m3-accent .lunar-month-title {
+  color: color-mix(in srgb, var(--calendar-m3-muted) 78%, transparent) !important;
+}
+
+.calendar-card.skin-m3-accent .day-item:not(.today) {
+  background: var(--calendar-m3-cell-bg) !important;
+  color: var(--calendar-m3-text) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
+}
+
+.calendar-card.skin-m3-accent .day-item:hover:not(.today) {
+  background: var(--calendar-m3-cell-hover) !important;
+}
+
+.calendar-card.skin-m3-accent .day-item.selected:not(.today) {
+  background: color-mix(in srgb, var(--m3-primary-container, var(--safe-accent)) 54%, var(--m3-surface-container-high, #1f232b) 46%) !important;
+  color: var(--m3-on-primary-container, var(--calendar-m3-text)) !important;
+}
+
+.calendar-card.skin-m3-accent .day-item.selected:not(.today) .day-number,
+.calendar-card.skin-m3-accent .day-item.selected:not(.today) .lunar-date {
+  color: var(--m3-on-primary-container, var(--calendar-m3-text)) !important;
+}
+
+.calendar-card.skin-m3-accent .holiday-name {
+  background: color-mix(in srgb, var(--m3-tertiary-container, #4b2630) 72%, transparent) !important;
+  color: var(--m3-on-tertiary-container, #ffd8df) !important;
+  border-color: color-mix(in srgb, var(--m3-tertiary, var(--safe-accent)) 34%, transparent) !important;
 }
 
 .skin-m3-accent .day-item.today,

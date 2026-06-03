@@ -1,23 +1,51 @@
 console.log("Background script loaded") // For debugging
 
-// Set the uninstall URL
-chrome.runtime.onInstalled.addListener(() => {
-  // User feedback form link
-  const uninstallUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd2unrzbLeLRI3vNpU-XrHY4rLfP1M0busmjKALAU2nMMXVTg/viewform?usp=sf_link";
-  
+const UNINSTALL_LANGUAGE_KEY = "uninstallSurveyLanguage"
+const UNINSTALL_FORM_URLS = {
+  vi: "https://docs.google.com/forms/d/e/1FAIpQLScSBZfT8rsgt9C1Xc2bFb0bM9wN-l9-NyDvY5bqBHog25ZAIw/viewform?usp=publish-editor",
+  default:
+    "https://docs.google.com/forms/d/e/1FAIpQLSe0Amugpqf_TilWUYCuZsBP0p9Hwi1neyoXB5YbpK_-67o89A/viewform?usp=dialog",
+}
+
+function getUninstallUrl(language = "en") {
+  return language === "vi" ? UNINSTALL_FORM_URLS.vi : UNINSTALL_FORM_URLS.default
+}
+
+function setLocalizedUninstallUrl(language = "en") {
+  const uninstallUrl = getUninstallUrl(language)
+
   chrome.runtime.setUninstallURL(uninstallUrl, () => {
     if (chrome.runtime.lastError) {
-      console.error("Error setting uninstall URL:", chrome.runtime.lastError);
+      console.error("Error setting uninstall URL:", chrome.runtime.lastError)
     } else {
-      console.log("Uninstall URL set successfully:", uninstallUrl);
+      console.log("Uninstall URL set successfully:", uninstallUrl)
     }
-  });
-});
+  })
+}
+
+function restoreUninstallUrlFromStorage() {
+  chrome.storage.local.get([UNINSTALL_LANGUAGE_KEY], (data) => {
+    setLocalizedUninstallUrl(data?.[UNINSTALL_LANGUAGE_KEY] || "en")
+  })
+}
+
+// Set the uninstall URL
+chrome.runtime.onInstalled.addListener(restoreUninstallUrlFromStorage)
+chrome.runtime.onStartup?.addListener(restoreUninstallUrlFromStorage)
 
 // Version update check is now handled in main.js for better reliability
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // console.log("Message received:", request) // For debugging
+  if (request.action === "updateUninstallLanguage") {
+    const language = request.language === "vi" ? "vi" : "en"
+    chrome.storage.local.set({ [UNINSTALL_LANGUAGE_KEY]: language }, () => {
+      setLocalizedUninstallUrl(language)
+      sendResponse({ ok: true })
+    })
+    return true
+  }
+
   if (request.action === "fetchSuggestions") {
     fetch(
       `https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(request.query)}`,

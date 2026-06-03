@@ -32,6 +32,7 @@ import { initCommandPalette } from "./components/commandPalette.js"
 import { makeDraggable } from "./utils/draggable.js"
 import {
   resetComponentPositions,
+  resetSettingsModules,
   updateSetting,
   getSettings,
   saveSettings,
@@ -46,6 +47,25 @@ import {
   showNotepadCheckbox,
   showQuotesCheckbox,
 } from "./utils/dom.js"
+
+function syncUninstallSurveyLanguage(language) {
+  try {
+    window.chrome?.runtime?.sendMessage?.(
+      {
+        action: "updateUninstallLanguage",
+        language: language === "vi" ? "vi" : "en",
+      },
+      () => {
+        const error = window.chrome?.runtime?.lastError
+        if (error) {
+          console.warn("Could not sync uninstall survey language:", error.message)
+        }
+      },
+    )
+  } catch (error) {
+    console.warn("Could not sync uninstall survey language:", error)
+  }
+}
 
 // --- Initialization ---
 async function bootstrap() {
@@ -75,6 +95,7 @@ async function bootstrap() {
   }
 
   const currentSettings = getSettings()
+  syncUninstallSurveyLanguage(currentSettings.language)
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
   }
@@ -552,6 +573,11 @@ async function bootstrap() {
       const i18n = geti18n ? geti18n() : {}
       const options = [
         {
+          type: "section",
+          icon: "fa-solid fa-sliders",
+          label: i18n.reset_section_general || "General",
+        },
+        {
           key: "all",
           label: i18n.reset_opt_all || "Entire Settings",
           checked: false,
@@ -569,6 +595,41 @@ async function bootstrap() {
         {
           key: "styles",
           label: i18n.reset_opt_styles || "Custom Styles",
+          checked: false,
+        },
+        {
+          type: "section",
+          icon: "fa-solid fa-layer-group",
+          label: i18n.reset_section_modules || "Modules",
+        },
+        {
+          key: "module_background",
+          label: i18n.reset_module_background || "Background",
+          checked: false,
+        },
+        {
+          key: "module_effects",
+          label: i18n.reset_module_effects || "Effects",
+          checked: false,
+        },
+        {
+          key: "module_widgets",
+          label: i18n.reset_module_widgets || "Widgets",
+          checked: false,
+        },
+        {
+          key: "module_bookmarks",
+          label: i18n.reset_module_bookmarks || "Bookmarks",
+          checked: false,
+        },
+        {
+          key: "module_timer",
+          label: i18n.reset_module_timer || "Timer",
+          checked: false,
+        },
+        {
+          key: "module_layout",
+          label: i18n.reset_module_layout || "Layout",
           checked: false,
         },
       ]
@@ -593,7 +654,31 @@ async function bootstrap() {
         localStorage.setItem("startpageShowStartupLoader", "1")
 
         setTimeout(() => {
-          resetComponentPositions(selection)
+          const selectedModules = [
+            ["module_background", "background"],
+            ["module_effects", "effects"],
+            ["module_widgets", "widgets"],
+            ["module_bookmarks", "bookmarks"],
+            ["module_timer", "timer"],
+            ["module_layout", "layout"],
+          ]
+            .filter(([key]) => selection[key] === true)
+            .map(([, moduleName]) => moduleName)
+
+          if (selectedModules.length) {
+            resetSettingsModules(selectedModules)
+          }
+
+          if (
+            selection.all ||
+            selection.positions ||
+            selection.effectColors ||
+            selection.styles
+          ) {
+            resetComponentPositions(selection)
+          } else {
+            window.location.reload()
+          }
         }, 1000)
       }
     }

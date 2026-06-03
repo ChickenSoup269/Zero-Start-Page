@@ -78,6 +78,30 @@ import {
   VISUAL_THEME_KEYS,
 } from "./visualPresetConfig.js"
 
+const BUG_REPORT_FORM_URLS = {
+  vi: "https://docs.google.com/forms/d/e/1FAIpQLSfsOq7QtdqgxcZYIGiDeV-CimbfrmhLzANa0q0VTCb2mPOsmw/viewform?usp=publish-editor",
+  en: "https://docs.google.com/forms/d/e/1FAIpQLSeO4hVhXSx1yz3nr2WEKnmJUO3JJWaB0guFGNGzISjoB5hc1A/viewform?usp=publish-editor",
+}
+
+function syncUninstallSurveyLanguage(language) {
+  try {
+    window.chrome?.runtime?.sendMessage?.(
+      {
+        action: "updateUninstallLanguage",
+        language: language === "vi" ? "vi" : "en",
+      },
+      () => {
+        const error = window.chrome?.runtime?.lastError
+        if (error) {
+          console.warn("Could not sync uninstall survey language:", error.message)
+        }
+      },
+    )
+  } catch (error) {
+    console.warn("Could not sync uninstall survey language:", error)
+  }
+}
+
 export function setupGeneralEventHandlers(
   ctx,
   handleSettingUpdate,
@@ -976,11 +1000,10 @@ export function setupGeneralEventHandlers(
   const closeBugBtn = document.getElementById("close-bug-modal-btn")
   const bugTextarea = document.getElementById("bug-config-data")
   const copyBugBtn = document.getElementById("copy-bug-config-btn")
+  const bugLink = document.getElementById("bug-report-link")
 
   if (bugReportBtn && bugModal) {
     bugReportBtn.addEventListener("click", () => {
-      const currentSettings =
-        typeof getSettings === "function" ? getSettings() : {}
       const extensionVersion =
         document.querySelector(".settings-version")?.textContent || "Unknown"
 
@@ -994,15 +1017,8 @@ export function setupGeneralEventHandlers(
         `Browser: ${info.browser}`,
       ].join("\n")
 
-      // Update bug report form link based on language
-      const bugLink = document.getElementById("bug-report-link")
       if (bugLink) {
-        const currentLang = currentSettings.language || "en"
-        const viForm =
-          "https://docs.google.com/forms/d/e/1FAIpQLSeQnSKZycijyQds73GWCo4FT4tV78Hk4-fhkfcsHoI4LAqTww/viewform?usp=publish-editor"
-        const enForm =
-          "https://docs.google.com/forms/d/e/1FAIpQLSfnnh8zLc76qvb_eSzA73a3DYBSv72OCQ34qLZLFZogSMd8fA/viewform?usp=publish-editor"
-        bugLink.href = currentLang === "vi" ? viForm : enForm
+        bugLink.href = "#"
       }
 
       bugModal.classList.add("open")
@@ -1027,6 +1043,38 @@ export function setupGeneralEventHandlers(
           copyBugBtn.innerHTML = originalText
         }, 2000)
       })
+    })
+
+    bugLink?.addEventListener("click", async (event) => {
+      event.preventDefault()
+      const i18n = geti18n()
+      const selectedLanguage = await showChoiceConfirm(
+        [
+          {
+            key: "vi",
+            label: "Tiếng Việt",
+            description:
+              i18n.bug_report_language_vi_desc ||
+              "Mở form báo lỗi bằng tiếng Việt.",
+            icon: "fa-solid fa-language",
+          },
+          {
+            key: "en",
+            label: "English",
+            description:
+              i18n.bug_report_language_en_desc ||
+              "Open the English bug report form.",
+            icon: "fa-solid fa-globe",
+          },
+        ],
+        i18n.bug_report_language_title || "Choose report language",
+        i18n.bug_report_language_prompt ||
+          "Which language do you want to use for the bug report form?",
+      )
+
+      if (!selectedLanguage) return
+      const formUrl = BUG_REPORT_FORM_URLS[selectedLanguage] || BUG_REPORT_FORM_URLS.en
+      window.open(formUrl, "_blank", "noopener,noreferrer")
     })
   }
 
@@ -1210,6 +1258,7 @@ export function setupGeneralEventHandlers(
   // Language change
   DOM.languageSelect.addEventListener("change", async () => {
     handleSettingUpdate("language", DOM.languageSelect.value)
+    syncUninstallSurveyLanguage(DOM.languageSelect.value)
     renderCustomLanguageOptions()
     await loadLanguage(getSettings().language)
     applyTranslations()
@@ -4048,24 +4097,6 @@ export function setupGeneralEventHandlers(
       // If only media or cloud was cleared, we still reload to ensure clean state
       window.location.reload()
     }
-  })
-
-  document.querySelectorAll(".module-reset-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const moduleName = btn.dataset.resetModule
-      const label = btn.textContent.trim()
-      const confirmed = await showConfirm(
-        (i18n.reset_module_confirm || "Reset this module?").replace(
-          "{module}",
-          label,
-        ),
-      )
-      if (!confirmed) return
-      const { resetSettingsModules } = await import("../../services/state.js")
-      resetSettingsModules([moduleName])
-      showAlert(i18n.alert_resetting || "Resetting...")
-      window.location.reload()
-    })
   })
 
   // Search input
