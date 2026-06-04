@@ -6085,6 +6085,53 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   margin-bottom: var(--space-2);
 }
 
+.unsplash-category-field {
+  position: relative;
+}
+
+#unsplash-category-select {
+  min-height: 46px;
+  height: 46px;
+  line-height: 1.35;
+  padding: 0 34px 0 12px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  color: var(--text-color);
+  outline: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.7) rgba(255, 255, 255, 0.08);
+}
+
+#unsplash-category-select:focus {
+  border-color: rgba(var(--accent-color-rgb), 0.75);
+  box-shadow: 0 0 0 4px rgba(var(--accent-color-rgb), 0.12);
+}
+
+#unsplash-category-select option {
+  background: #111827;
+  color: #ffffff;
+  padding: 8px 10px;
+}
+
+#unsplash-category-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+#unsplash-category-select::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+#unsplash-category-select::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-color-rgb), 0.7);
+  border-radius: 999px;
+}
+
+#unsplash-category-select::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
 .unsplash-search-row-premium {
   display: flex;
   gap: var(--space-1);

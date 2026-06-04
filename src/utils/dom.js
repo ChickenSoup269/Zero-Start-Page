@@ -1930,8 +1930,9 @@ export const svgWaveSelectCancelBtn = document.getElementById(
 
 export function fadeToggle(el, show, displayStyle = "flex") {
   if (!el) return
+  const isHidden = window.getComputedStyle(el).display === "none"
   if (show) {
-    if (el.style.display !== "none") return
+    if (!isHidden) return
     el.style.opacity = 0
     el.style.display = displayStyle
     const anim = el.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -1942,7 +1943,7 @@ export function fadeToggle(el, show, displayStyle = "flex") {
       el.style.opacity = ""
     }
   } else {
-    if (el.style.display === "none") return
+    if (isHidden) return
     const anim = el.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 300,
       easing: "ease-in",

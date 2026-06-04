@@ -28,6 +28,7 @@ import {
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
 import { initCommandPalette } from "./components/commandPalette.js"
+import { getUpdateNotes } from "./data/updateNotes.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -865,6 +866,61 @@ async function bootstrap() {
           )
         }
 
+        function escapeUpdateHtml(value) {
+          return String(value || "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;")
+        }
+
+        function renderUpdateNotes() {
+          const updateNotes = getUpdateNotes(getSettings().language)
+          const changesTitle = document.getElementById("update-changes-title")
+          const contributorsTitle = document.getElementById(
+            "update-contributors-title",
+          )
+          const changesList = document.getElementById("update-change-list")
+          const contributorList = document.getElementById(
+            "update-contributor-list",
+          )
+
+          if (changesTitle) {
+            changesTitle.innerHTML = `<i class="fa-solid fa-star"></i> ${escapeUpdateHtml(updateNotes.changesTitle)}`
+          }
+          if (contributorsTitle) {
+            contributorsTitle.innerHTML = `<i class="fa-solid fa-handshake"></i> ${escapeUpdateHtml(updateNotes.contributorsTitle)}`
+          }
+          if (changesList) {
+            changesList.innerHTML = updateNotes.changes
+              .map((item) => `<li>${escapeUpdateHtml(item)}</li>`)
+              .join("")
+          }
+          if (contributorList) {
+            contributorList.innerHTML = updateNotes.contributors
+              .map((item) => {
+                const stats =
+                  item.badge || item.badgeLabel
+                    ? `<div class="update-contributor-stats">
+                        <span>${escapeUpdateHtml(item.badge)}</span>
+                        <small>${escapeUpdateHtml(item.badgeLabel)}</small>
+                      </div>`
+                    : ""
+                return `<article class="update-contributor ${stats ? "" : "compact"}">
+                  <div class="update-contributor-main">
+                    <strong>${escapeUpdateHtml(item.name)}</strong>
+                    <span>${escapeUpdateHtml(item.project)}</span>
+                    <em>${escapeUpdateHtml(item.role)}</em>
+                  </div>
+                  ${stats}
+                  <p>${escapeUpdateHtml(item.note)}</p>
+                </article>`
+              })
+              .join("")
+          }
+        }
+
         function showUpdateUI(currentVersion, showModal, showArrow) {
           const popup = document.getElementById("update-notification-popup")
           const verLabel = document.getElementById("update-version-label")
@@ -883,6 +939,7 @@ async function bootstrap() {
 
           if (showModal && popup && verLabel) {
             verLabel.textContent = `v${currentVersion}`
+            renderUpdateNotes()
             fadeToggle(popup, true, "block")
 
             document

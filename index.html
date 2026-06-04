@@ -1105,7 +1105,7 @@
                             </button>
                         </div>
 
-                        <div class="setting-item" style="margin-bottom: 15px;">
+                        <div class="setting-item unsplash-category-field" style="margin-bottom: 15px;">
                             <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;"
                                 data-i18n="settings_unsplash_category">Browse Categories</label>
                             <select id="unsplash-category-select" class="full-width"></select>
@@ -6090,21 +6090,29 @@
     <script type="module" src="src/main.js"></script>
 
     <!-- Update Notification Popup -->
-    <div id="update-notification-popup"
-        style="display: none; position: fixed; right: 24px; bottom: 24px; width: 400px; background: rgba(15, 18, 25, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); z-index: 10000; animation: lcpFadeIn 0.3s ease;">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-            <div
-                style="width: 40px; height: 40px; border-radius: 10px; background: rgba(var(--accent-color-rgb), 0.1); display: flex; align-items: center; justify-content: center;">
-                <i class="fa-solid fa-circle-arrow-up" style="color: var(--accent-color); font-size: 1.4rem;"></i>
+    <div id="update-notification-popup" class="update-notification-popup">
+        <div class="update-popup-header">
+            <div class="update-popup-icon">
+                <i class="fa-solid fa-circle-arrow-up"></i>
             </div>
-            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #fff;" data-i18n="update_title">Update
-                Available!</h3>
+            <div>
+                <h3 data-i18n="update_title">Cập nhật mới!</h3>
+                <span id="update-version-label" class="update-version-pill"></span>
+            </div>
         </div>
-        <p style="margin: 0 0 20px 0; font-size: 0.9rem; color: #eee; line-height: 1.6;">
-            <span data-i18n="update_desc">A new version of Zero Startpage has been installed.</span>
-            <br>
-            <strong style="color: var(--accent-color); font-size: 1rem;" id="update-version-label"></strong>
-        </p>
+
+        <div class="update-popup-body">
+            <section class="update-popup-section">
+                <h4 id="update-changes-title"><i class="fa-solid fa-star"></i> Có gì mới</h4>
+                <ul id="update-change-list" class="update-change-list"></ul>
+            </section>
+
+            <section class="update-popup-section">
+                <h4 id="update-contributors-title"><i class="fa-solid fa-handshake"></i> Người góp công</h4>
+                <div id="update-contributor-list" class="update-contributor-list"></div>
+            </section>
+        </div>
+
         <div class="update-popup-actions">
             <button id="close-update-popup" class="secondary-btn update-popup-close-btn"
                 data-i18n="cancel">Close</button>
