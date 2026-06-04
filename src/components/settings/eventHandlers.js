@@ -899,6 +899,89 @@ export function setupGeneralEventHandlers(
     return merged
   }
 
+  const SAVED_GALLERY_KEYS = [
+    "userColors",
+    "userAccentColors",
+    "userGradients",
+    "userMultiColors",
+    "userSvgWaves",
+    "userGradientV2s",
+    "userSilks",
+    "userLightPillars",
+    "userLiquidEthers",
+    "userSavedFonts",
+    "userThemes",
+  ]
+
+  const stablePresetIdentity = (value) => {
+    if (typeof value === "string") return value.trim().toLowerCase()
+    if (!value || typeof value !== "object") return JSON.stringify(value)
+
+    const normalize = (item) => {
+      if (Array.isArray(item)) return item.map(normalize)
+      if (!item || typeof item !== "object") return item
+
+      return Object.keys(item)
+        .filter((key) => !["id", "uid", "createdAt", "updatedAt"].includes(key))
+        .sort()
+        .reduce((output, key) => {
+          output[key] = normalize(item[key])
+          return output
+        }, {})
+    }
+
+    return JSON.stringify(normalize(value))
+  }
+
+  const mergePresetArray = (currentItems, importedItems) => {
+    const merged = Array.isArray(currentItems) ? [...currentItems] : []
+    if (!Array.isArray(importedItems)) return merged
+
+    const seen = new Set(merged.map(stablePresetIdentity))
+    importedItems.forEach((item) => {
+      const identity = stablePresetIdentity(item)
+      if (seen.has(identity)) return
+      merged.push(item)
+      seen.add(identity)
+    })
+
+    return merged
+  }
+
+  const mergeSavedGallerySettings = (currentSettings, importedSettings) => {
+    if (Array.isArray(importedSettings.userBackgrounds)) {
+      importedSettings.userBackgrounds = mergeUserBackgrounds(
+        currentSettings.userBackgrounds,
+        importedSettings.userBackgrounds,
+      )
+    }
+
+    SAVED_GALLERY_KEYS.forEach((key) => {
+      if (!Array.isArray(importedSettings[key])) return
+      importedSettings[key] = mergePresetArray(
+        currentSettings[key],
+        importedSettings[key],
+      )
+    })
+  }
+
+  const buildExistingMediaDataUrlMap = async () => {
+    const mediaMap = new Map()
+    const ids = collectLocalMediaIds(getSettings())
+
+    for (const id of ids) {
+      try {
+        const blob = await getImageBlob(id)
+        if (!blob) continue
+        mediaMap.set(await blobToDataUrl(blob), id)
+      } catch (err) {
+        console.warn("Skip existing media duplicate check for", id, err)
+      }
+    }
+
+    return mediaMap
+  }
+
   // Sidebar toggle and close
   DOM.settingsToggle.addEventListener("click", () =>
     DOM.settingsSidebar.classList.add("open"),
@@ -5411,9 +5494,19 @@ export function setupGeneralEventHandlers(
 
       const mediaIdMap = {}
       if (hasMedia && selected.localMedia) {
+        const existingMediaDataUrlMap = selected.clear
+          ? new Map()
+          : await buildExistingMediaDataUrlMap()
+
         for (const [oldId, payload] of Object.entries(data.media)) {
           try {
             if (!payload || typeof payload.dataUrl !== "string") continue
+            const existingId = existingMediaDataUrlMap.get(payload.dataUrl)
+            if (existingId) {
+              mediaIdMap[oldId] = existingId
+              continue
+            }
+
             const blob = await dataUrlToBlob(payload.dataUrl)
             const isVideo =
               payload.kind === "video" ||
@@ -5423,6 +5516,7 @@ export function setupGeneralEventHandlers(
               ? await saveVideo(blob)
               : await saveImage(blob)
             mediaIdMap[oldId] = newId
+            existingMediaDataUrlMap.set(payload.dataUrl, newId)
           } catch (err) {
             console.warn("Skip media import for", oldId, err)
           }
@@ -5437,11 +5531,8 @@ export function setupGeneralEventHandlers(
           replaceLocalMediaIds(importedSettings, mediaIdMap)
         }
 
-        if (!selected.clear && Array.isArray(importedSettings.userBackgrounds)) {
-          importedSettings.userBackgrounds = mergeUserBackgrounds(
-            currentSettings.userBackgrounds,
-            importedSettings.userBackgrounds,
-          )
+        if (!selected.clear) {
+          mergeSavedGallerySettings(currentSettings, importedSettings)
         }
 
         Object.assign(getSettings(), importedSettings)

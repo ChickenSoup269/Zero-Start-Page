@@ -782,6 +782,7 @@ export async function backupToCloud(options = {}) {
     "userGradientV2s",
     "userSilks",
     "userLightPillars",
+    "userLiquidEthers",
   ]
   mandatoryExclusions.forEach((key) => delete currentSettings[key])
 
@@ -968,6 +969,7 @@ export async function restoreFromCloud() {
               "userBackgrounds",
               "userVideos",
               "userImages",
+              "userColors",
               "userAccentColors",
               "userGradients",
               "userMultiColors",
@@ -975,6 +977,7 @@ export async function restoreFromCloud() {
               "userGradientV2s",
               "userSilks",
               "userLightPillars",
+              "userLiquidEthers",
               "userSavedFonts",
               "userThemes",
               "unsplashAccessKey",
@@ -1020,6 +1023,7 @@ export function resetSettingsState() {
     userGradientV2s: settings.userGradientV2s || [],
     userSilks: settings.userSilks || [],
     userLightPillars: settings.userLightPillars || [],
+    userLiquidEthers: settings.userLiquidEthers || [],
     userSavedFonts: settings.userSavedFonts || [],
     unsplashAccessKey: settings.unsplashAccessKey || "",
     unsplashLastCredit: settings.unsplashLastCredit || null,
@@ -1071,6 +1075,7 @@ export const resetComponentPositions = (options = {}) => {
     "userGradientV2s",
     "userSilks",
     "userLightPillars",
+    "userLiquidEthers",
     "userSavedFonts",
     "unsplashAccessKey",
     "unsplashLastCredit",
