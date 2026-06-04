@@ -896,12 +896,17 @@
                         <span data-i18n="settings_themes">Themes</span>
                         <hr class="subsection-divider">
                     </div>
-                    <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                    <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
                         <button id="save-current-theme-btn" class="secondary-btn"
-                            style="flex: 1; height: 44px; justify-content: center; border-radius: 12px; border: 1px solid var(--accent-color);">
+                            style="height: 44px; justify-content: center; border-radius: 12px; border: 1px solid var(--accent-color);">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="save_current_theme">Create
                                 Custom Theme</span>
                         </button>
+                        <a class="secondary-btn" href="https://zero-theme.vercel.app/" target="_blank"
+                            rel="noopener noreferrer"
+                            style="height: 44px; justify-content: center; border-radius: 12px; border: 1px solid rgba(var(--accent-color-rgb, 255, 255, 255), 0.35);">
+                            <i class="fa-solid fa-store"></i> <span data-i18n="theme_web_beta_link">Theme Web Beta</span>
+                        </a>
                     </div>
 
                     <div class="themes-grid" id="themes-grid">

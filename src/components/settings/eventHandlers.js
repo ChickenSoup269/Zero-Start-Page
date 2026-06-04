@@ -876,6 +876,29 @@ export function setupGeneralEventHandlers(
     return value
   }
 
+  const getBackgroundIdentity = (entry) => {
+    if (typeof entry === "string") return entry
+    if (!entry || typeof entry !== "object") return null
+    return entry.id || entry.url || entry.thumb || entry.preview || null
+  }
+
+  const mergeUserBackgrounds = (currentBackgrounds, importedBackgrounds) => {
+    const merged = Array.isArray(currentBackgrounds)
+      ? [...currentBackgrounds]
+      : []
+    if (!Array.isArray(importedBackgrounds)) return merged
+
+    const seen = new Set(merged.map(getBackgroundIdentity).filter(Boolean))
+    importedBackgrounds.forEach((entry) => {
+      const identity = getBackgroundIdentity(entry)
+      if (identity && seen.has(identity)) return
+      merged.push(entry)
+      if (identity) seen.add(identity)
+    })
+
+    return merged
+  }
+
   // Sidebar toggle and close
   DOM.settingsToggle.addEventListener("click", () =>
     DOM.settingsSidebar.classList.add("open"),
@@ -5408,12 +5431,41 @@ export function setupGeneralEventHandlers(
 
       if (hasSettings && selected.settings) {
         const importedSettings = JSON.parse(JSON.stringify(data.settings))
+        const currentSettings = getSettings()
 
         if (Object.keys(mediaIdMap).length > 0) {
           replaceLocalMediaIds(importedSettings, mediaIdMap)
         }
 
+        if (!selected.clear && Array.isArray(importedSettings.userBackgrounds)) {
+          importedSettings.userBackgrounds = mergeUserBackgrounds(
+            currentSettings.userBackgrounds,
+            importedSettings.userBackgrounds,
+          )
+        }
+
         Object.assign(getSettings(), importedSettings)
+        saveSettings()
+        applySettings()
+        updateSettingsInputs()
+      } else if (
+        hasSettings &&
+        selected.localMedia &&
+        Array.isArray(data.settings.userBackgrounds)
+      ) {
+        const importedSettings = JSON.parse(JSON.stringify(data.settings))
+
+        if (Object.keys(mediaIdMap).length > 0) {
+          replaceLocalMediaIds(importedSettings, mediaIdMap)
+        }
+
+        const settings = getSettings()
+        settings.userBackgrounds = selected.clear
+          ? importedSettings.userBackgrounds
+          : mergeUserBackgrounds(
+              settings.userBackgrounds,
+              importedSettings.userBackgrounds,
+            )
         saveSettings()
         applySettings()
         updateSettingsInputs()
