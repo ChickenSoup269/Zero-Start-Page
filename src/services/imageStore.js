@@ -80,11 +80,17 @@ export async function saveImage(blob, customId) {
   const id = customId || createMediaId("idb-img")
   const db = await openDb()
   await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, "readwrite")
+    const tx = db.transaction([STORE_NAME, THUMB_STORE_NAME], "readwrite")
     tx.objectStore(STORE_NAME).put(blob, id)
+    tx.objectStore(THUMB_STORE_NAME).delete(id)
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
+  if (_urlCache.has(id)) URL.revokeObjectURL(_urlCache.get(id))
+  if (_thumbCache.has(id)) {
+    URL.revokeObjectURL(_thumbCache.get(id))
+    _thumbCache.delete(id)
+  }
   _urlCache.set(id, URL.createObjectURL(blob))
   return id
 }

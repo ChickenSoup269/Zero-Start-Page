@@ -58,6 +58,7 @@ import {
   renderUserColors,
   renderLocalBackgrounds,
   renderUserAccentColors,
+  recompressSavedBackgroundImages,
 } from "./backgroundManager.js"
 import { renderUserGradients } from "./gradientManager.js"
 import {
@@ -1970,6 +1971,38 @@ export function setupGeneralEventHandlers(
       DOM.backgroundMediaQualitySelect.value,
     )
   })
+
+  document
+    .getElementById("compress-saved-bg-btn")
+    ?.addEventListener("click", async (event) => {
+      const btn = event.currentTarget
+      const originalHtml = btn.innerHTML
+      const i18nNow = geti18n()
+      btn.disabled = true
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>${i18nNow.settings_compressing || "Compressing..."}</span>`
+
+      try {
+        const result = await recompressSavedBackgroundImages(
+          DOM,
+          handleSettingUpdate,
+        )
+        showAlert(
+          (
+            i18nNow.settings_compress_saved_done ||
+            "Compressed {count} saved image(s)."
+          ).replace("{count}", result.reduced),
+        )
+      } catch (error) {
+        console.error("Failed to compress saved backgrounds:", error)
+        showAlert(
+          i18nNow.settings_compress_saved_error ||
+            "Could not compress saved images right now.",
+        )
+      } finally {
+        btn.disabled = false
+        btn.innerHTML = originalHtml
+      }
+    })
 
   // Custom Bookmark listeners
   if (DOM.bookmarkFontSizeInput) {

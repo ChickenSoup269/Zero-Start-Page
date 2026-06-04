@@ -13,6 +13,7 @@ import {
   isIdbImage,
   isIdbGif,
   isIdbVideo,
+  getImageBlob,
   getBlobUrlSync,
   getImageUrl,
   getThumbnailUrl,
@@ -39,6 +40,82 @@ function getUploadImageProfile(settings = getSettings()) {
     still: { maxSize: 1280, quality: 0.6 },
   }
   return profiles[mode] || profiles.balanced
+}
+
+function compressImageBlob(blob, settings = getSettings()) {
+  return new Promise((resolve, reject) => {
+    if (!blob || !blob.type?.startsWith("image/")) {
+      resolve(null)
+      return
+    }
+
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(blob)
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas")
+        const { maxSize, quality } = getUploadImageProfile(settings)
+        let { width, height } = img
+
+        if (width > height && width > maxSize) {
+          height = Math.round((height * maxSize) / width)
+          width = maxSize
+        } else if (height > maxSize) {
+          width = Math.round((width * maxSize) / height)
+          height = maxSize
+        }
+
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height)
+        canvas.toBlob(
+          (nextBlob) => {
+            URL.revokeObjectURL(objectUrl)
+            resolve(nextBlob)
+          },
+          "image/jpeg",
+          quality,
+        )
+      } catch (error) {
+        URL.revokeObjectURL(objectUrl)
+        reject(error)
+      }
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      reject(new Error("Could not load image for compression"))
+    }
+    img.src = objectUrl
+  })
+}
+
+async function recompressSavedBackgroundImages(DOM, handleSettingUpdate) {
+  const settings = getSettings()
+  const entries = settings.userBackgrounds || []
+  let processed = 0
+  let reduced = 0
+
+  for (const entry of entries) {
+    const id = typeof entry === "object" ? entry.id : entry
+    if (!isIdbImage(id) || isIdbGif(id)) continue
+
+    processed += 1
+    const blob = await getImageBlob(id).catch(() => null)
+    const nextBlob = await compressImageBlob(blob, settings).catch(() => null)
+    if (!blob || !nextBlob || nextBlob.size >= blob.size) continue
+
+    await saveImage(nextBlob, id)
+    reduced += 1
+  }
+
+  if (settings.background && isIdbImage(settings.background)) {
+    handleSettingUpdate("background", settings.background)
+  } else {
+    saveSettings()
+    renderLocalBackgrounds(DOM, handleSettingUpdate)
+  }
+
+  return { processed, reduced }
 }
 
 function renderUserColors(DOM) {
@@ -905,4 +982,5 @@ export {
   renderUserAccentColors,
   setupMultiSelectMode,
   setupFileUploads,
+  recompressSavedBackgroundImages,
 }

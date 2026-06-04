@@ -12,8 +12,63 @@ import {
 import { showAlert } from "../../utils/dialog.js"
 import { geti18n } from "../../services/i18n.js"
 
+const UNSPLASH_RECENT_PREFIX = "startpageUnsplashRecent:"
+const UNSPLASH_RECENT_LIMIT = 35
+const UNSPLASH_RANDOM_ATTEMPTS = 6
+
 function firstPhoto(payload) {
   return Array.isArray(payload) ? payload[0] : payload
+}
+
+function getPhotoKey(photo) {
+  return photo?.id || photo?.links?.html || photo?.urls?.raw || ""
+}
+
+function getRecentUnsplashKeys(categoryKey) {
+  try {
+    const raw = localStorage.getItem(`${UNSPLASH_RECENT_PREFIX}${categoryKey}`)
+    const parsed = JSON.parse(raw || "[]")
+    return Array.isArray(parsed) ? parsed.filter(Boolean) : []
+  } catch {
+    return []
+  }
+}
+
+function rememberUnsplashPhoto(categoryKey, photo) {
+  const key = getPhotoKey(photo)
+  if (!key) return
+
+  const recent = getRecentUnsplashKeys(categoryKey).filter((item) => item !== key)
+  recent.unshift(key)
+  try {
+    localStorage.setItem(
+      `${UNSPLASH_RECENT_PREFIX}${categoryKey}`,
+      JSON.stringify(recent.slice(0, UNSPLASH_RECENT_LIMIT)),
+    )
+  } catch {
+    // Recent history is only a repeat guard.
+  }
+}
+
+function getSavedUnsplashKeys(settings = getSettings()) {
+  return new Set(
+    (settings.userBackgrounds || [])
+      .flatMap((entry) => {
+        if (!entry || typeof entry !== "object") return []
+        return [entry.photoUrl, entry.id].filter(Boolean)
+      })
+      .filter(Boolean),
+  )
+}
+
+function hasSeenUnsplashPhoto(photo, categoryKey, settings = getSettings()) {
+  const key = getPhotoKey(photo)
+  const recent = new Set(getRecentUnsplashKeys(categoryKey))
+  const saved = getSavedUnsplashKeys(settings)
+  return (
+    Boolean(key && recent.has(key)) ||
+    Boolean(photo?.links?.html && saved.has(photo.links.html))
+  )
 }
 
 function preloadImage(url) {
@@ -122,7 +177,7 @@ async function fetchUnsplashPhotoFromCollections(accessKey, collectionIds) {
   })
 }
 
-async function fetchUnsplashPhotoFromTopic(accessKey, topicId) {
+async function fetchUnsplashPhotoFromTopic(accessKey, topicId, categoryKey) {
   if (!topicId) throw new Error("Missing Unsplash topic id")
 
   const page = String(Math.floor(Math.random() * 3) + 1)
@@ -144,7 +199,11 @@ async function fetchUnsplashPhotoFromTopic(accessKey, topicId) {
     throw new Error("No photos in selected Unsplash topic")
   }
 
-  const photo = results[Math.floor(Math.random() * results.length)]
+  const freshResults = results.filter(
+    (photo) => !hasSeenUnsplashPhoto(photo, categoryKey),
+  )
+  const pool = freshResults.length ? freshResults : results
+  const photo = pool[Math.floor(Math.random() * pool.length)]
   if (!photo?.urls?.raw && !photo?.urls?.full && !photo?.urls?.regular) {
     throw new Error("Unsplash topic payload missing image URL")
   }
@@ -152,7 +211,7 @@ async function fetchUnsplashPhotoFromTopic(accessKey, topicId) {
   return photo
 }
 
-async function fetchUnsplashPhotoFromSearch(accessKey, query) {
+async function fetchUnsplashPhotoFromSearch(accessKey, query, categoryKey) {
   const search = new URLSearchParams({
     query,
     orientation: "landscape",
@@ -169,65 +228,84 @@ async function fetchUnsplashPhotoFromSearch(accessKey, query) {
   if (!results.length) {
     throw new Error("No results for selected Unsplash category")
   }
-  return results[Math.floor(Math.random() * results.length)]
+  const freshResults = results.filter(
+    (photo) => !hasSeenUnsplashPhoto(photo, categoryKey),
+  )
+  const pool = freshResults.length ? freshResults : results
+  return pool[Math.floor(Math.random() * pool.length)]
 }
 
 async function fetchBestUnsplashPhoto(accessKey, collection) {
-  const keyword = buildUnsplashQuery(collection)
+  const categoryKey = collection?.key || "default"
+  const fetchCandidate = async () => {
+    const keyword = buildUnsplashQuery(collection)
 
-  // 1) Prefer curated collections if configured for this category.
-  if (collection.collections?.length) {
-    try {
-      return await fetchUnsplashPhotoFromCollections(
-        accessKey,
-        collection.collections,
-      )
-    } catch (err) {
-      console.warn(
-        "Unsplash collection fetch failed, trying topic/photos:",
-        err,
-      )
+    // 1) Prefer curated collections if configured for this category.
+    if (collection.collections?.length) {
+      try {
+        return await fetchUnsplashPhotoFromCollections(
+          accessKey,
+          collection.collections,
+        )
+      } catch (err) {
+        console.warn(
+          "Unsplash collection fetch failed, trying topic/photos:",
+          err,
+        )
+      }
     }
+
+    // 2) Prefer curated topic photos endpoint.
+    if (collection.topic) {
+      try {
+        return await fetchUnsplashPhotoFromTopic(
+          accessKey,
+          collection.topic,
+          categoryKey,
+        )
+      } catch (err) {
+        console.warn(
+          "Unsplash topic/photos fetch failed, trying random topic:",
+          err,
+        )
+      }
+    }
+
+    // 3) Fallback to random endpoint with topics/query/search.
+    if (collection.topic) {
+      try {
+        return await fetchUnsplashPhotoByParams(accessKey, {
+          topics: collection.topic,
+        })
+      } catch (err) {
+        console.warn("Unsplash topic fetch failed, trying query fallback:", err)
+      }
+    }
+
+    if (keyword) {
+      try {
+        return await fetchUnsplashPhotoByParams(accessKey, {
+          query: keyword,
+        })
+      } catch (err) {
+        console.warn(
+          "Unsplash random-query fetch failed, trying search fallback:",
+          err,
+        )
+        return fetchUnsplashPhotoFromSearch(accessKey, keyword, categoryKey)
+      }
+    }
+
+    throw new Error("Invalid Unsplash collection configuration")
   }
 
-  // 2) Prefer curated topic photos endpoint.
-  if (collection.topic) {
-    try {
-      return await fetchUnsplashPhotoFromTopic(accessKey, collection.topic)
-    } catch (err) {
-      console.warn(
-        "Unsplash topic/photos fetch failed, trying random topic:",
-        err,
-      )
-    }
+  let fallbackPhoto = null
+  for (let attempt = 0; attempt < UNSPLASH_RANDOM_ATTEMPTS; attempt++) {
+    const photo = await fetchCandidate()
+    if (!fallbackPhoto) fallbackPhoto = photo
+    if (!hasSeenUnsplashPhoto(photo, categoryKey)) return photo
   }
-
-  // 3) Fallback to random endpoint with topics/query/search.
-  if (collection.topic) {
-    try {
-      return await fetchUnsplashPhotoByParams(accessKey, {
-        topics: collection.topic,
-      })
-    } catch (err) {
-      console.warn("Unsplash topic fetch failed, trying query fallback:", err)
-    }
-  }
-
-  if (keyword) {
-    try {
-      return await fetchUnsplashPhotoByParams(accessKey, {
-        query: keyword,
-      })
-    } catch (err) {
-      console.warn(
-        "Unsplash random-query fetch failed, trying search fallback:",
-        err,
-      )
-      return fetchUnsplashPhotoFromSearch(accessKey, keyword)
-    }
-  }
-
-  throw new Error("Invalid Unsplash collection configuration")
+  return fallbackPhoto
 }
 
 function populateUnsplashCollections(unsplashCategorySelect, i18n) {
@@ -272,6 +350,7 @@ async function setUnsplashRandomBackground(
 
   try {
     const photo = await fetchBestUnsplashPhoto(accessKey, collection)
+    rememberUnsplashPhoto(collection.key, photo)
     const imageUrl = buildUnsplashImageUrl(photo, width, height)
 
     await preloadImage(imageUrl)
@@ -724,6 +803,7 @@ async function applyUnsplashPhoto(photo, element = null) {
   }
 
   const { width, height } = getTargetImageDimensions()
+  rememberUnsplashPhoto(explorerType || "explorer", photo)
   
   const imageUrl = buildUnsplashImageUrl(photo, width, height)
 
