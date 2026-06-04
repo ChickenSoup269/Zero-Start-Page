@@ -2790,6 +2790,126 @@ export function setupGeneralEventHandlers(
     ),
   })
 
+  const getBackgroundAnimationCodeRows = () => {
+    const settings = getSettings()
+    return [
+      {
+        labelKey: "background_animation_row_gradient_v2",
+        fallbackLabel: "Gradient V2",
+        payload: {
+          backgroundAnimations: {
+            ...pickSettings(settings, [
+              "gradientV2Active",
+              "gradientV2Color1",
+              "gradientV2Color2",
+              "gradientV2Color3",
+              "gradientV2TimeSpeed",
+              "gradientV2ColorBalance",
+              "gradientV2WarpStrength",
+              "gradientV2WarpFrequency",
+              "gradientV2WarpSpeed",
+              "gradientV2WarpAmplitude",
+              "gradientV2BlendAngle",
+              "gradientV2BlendSoftness",
+              "gradientV2RotationAmount",
+              "gradientV2NoiseScale",
+              "gradientV2GrainAmount",
+              "gradientV2GrainScale",
+              "gradientV2GrainAnimated",
+              "gradientV2Contrast",
+              "gradientV2Gamma",
+              "gradientV2Saturation",
+              "gradientV2CenterX",
+              "gradientV2CenterY",
+              "gradientV2Zoom",
+            ]),
+            gradientV2Active: true,
+          },
+        },
+      },
+      {
+        labelKey: "background_animation_row_silk",
+        fallbackLabel: "Silk",
+        payload: {
+          backgroundAnimations: {
+            ...pickSettings(settings, [
+              "silkActive",
+              "silkColor",
+              "silkSpeed",
+              "silkScale",
+              "silkNoise",
+              "silkRotation",
+            ]),
+            silkActive: true,
+          },
+        },
+      },
+      {
+        labelKey: "background_animation_row_light_pillar",
+        fallbackLabel: "Light Pillar",
+        payload: {
+          backgroundAnimations: {
+            ...pickSettings(settings, [
+              "lightPillarActive",
+              "lightPillarTopColor",
+              "lightPillarBottomColor",
+              "lightPillarIntensity",
+              "lightPillarRotationSpeed",
+              "lightPillarGlowAmount",
+              "lightPillarWidth",
+              "lightPillarHeight",
+              "lightPillarNoiseIntensity",
+              "lightPillarRotation",
+            ]),
+            lightPillarActive: true,
+          },
+        },
+      },
+      {
+        labelKey: "background_animation_row_mist_light",
+        fallbackLabel: "Mist Light",
+        payload: {
+          backgroundAnimations: {
+            ...pickSettings(settings, [
+              "liquidEtherActive",
+              "liquidEtherColor1",
+              "liquidEtherColor2",
+              "liquidEtherColor3",
+              "liquidEtherGlowWidth",
+            ]),
+            liquidEtherActive: true,
+          },
+        },
+      },
+      {
+        labelKey: "background_animation_row_splash_cursor",
+        fallbackLabel: "Splash Cursor",
+        payload: {
+          backgroundAnimations: {
+            ...pickSettings(settings, [
+              "splashCursorActive",
+              "splashCursorSimResolution",
+              "splashCursorDyeResolution",
+              "splashCursorDensityDissipation",
+              "splashCursorVelocityDissipation",
+              "splashCursorPressure",
+              "splashCursorPressureIterations",
+              "splashCursorCurl",
+              "splashCursorSplatRadius",
+              "splashCursorSplatForce",
+              "splashCursorShading",
+              "splashCursorColorUpdateSpeed",
+              "splashCursorRainbowMode",
+              "splashCursorColor",
+              "splashCursorDarkBg",
+            ]),
+            splashCursorActive: true,
+          },
+        },
+      },
+    ]
+  }
+
   const applyBackgroundAnimationPresetPayload = (payload) => {
     const animationPayload = payload?.backgroundAnimations || payload
     if (!animationPayload || typeof animationPayload !== "object") {
@@ -2840,6 +2960,44 @@ export function setupGeneralEventHandlers(
     }
   }
 
+  const getVisualPresetCodeRows = () => {
+    const settings = getSettings()
+    return [
+      {
+        labelKey: "visual_preset_row_gradient",
+        fallbackLabel: "Gradient",
+        payload: {
+          mode: "gradient",
+          data: getGradientPresetPayloadFromSettings(settings),
+        },
+      },
+      {
+        labelKey: "visual_preset_row_multi_color",
+        fallbackLabel: "Multi-Color",
+        payload: {
+          mode: "multiColor",
+          data: getMultiColorPresetPayloadFromSettings(settings),
+        },
+      },
+      {
+        labelKey: "visual_preset_row_svg_wave",
+        fallbackLabel: "SVG Wave",
+        payload: {
+          mode: "svgWave",
+          data: getSvgWaveParams(settings),
+        },
+      },
+      {
+        labelKey: "visual_preset_row_effect",
+        fallbackLabel: "Effect",
+        payload: {
+          mode: "effect",
+          data: { effects: pickSettings(settings, VISUAL_EFFECT_KEYS) },
+        },
+      },
+    ]
+  }
+
   const applyVisualPresetPayload = (payload) => {
     if (payload?.mode === "bundle") {
       if (payload.theme && typeof payload.theme === "object") {
@@ -2881,6 +3039,10 @@ export function setupGeneralEventHandlers(
       applyGradientPresetPayload(payload.data)
       return
     }
+    if (payload?.mode === "effect") {
+      applyEffectPresetPayload(payload.data)
+      return
+    }
     throw new Error("Invalid visual preset")
   }
 
@@ -2915,6 +3077,21 @@ export function setupGeneralEventHandlers(
     window.appScheduleAutoAccentUpdate?.()
   }
 
+  const encodeCodeForType = (type, payload) => {
+    const code = encodePresetCode(type, payload)
+    return type === "backgroundAnimation"
+      ? code.replace(/^SPC1\./, "BAC1.")
+      : code
+  }
+
+  const decodeCodeForType = (code, type) => {
+    const normalizedCode =
+      type === "backgroundAnimation"
+        ? String(code || "").trim().replace(/^BAC1\./, "SPC1.")
+        : code
+    return decodePresetCode(normalizedCode, type)
+  }
+
   const setupPresetCodeControls = ({
     copyBtn,
     applyBtn,
@@ -2922,10 +3099,89 @@ export function setupGeneralEventHandlers(
     type,
     getPayload,
     applyPayload,
+    lineContainer,
+    getCodeRows,
   }) => {
+    const renderCodeRows = () => {
+      if (!lineContainer || !getCodeRows) return
+      lineContainer.textContent = ""
+      getCodeRows().forEach((row) => {
+        const rowType = row.type || type
+        const code = encodeCodeForType(rowType, row.payload)
+        const item = document.createElement("div")
+        item.className = "preset-code-line"
+
+        const label = document.createElement("span")
+        label.className = "preset-code-line-label"
+        label.textContent =
+          (row.labelKey && geti18n()[row.labelKey]) ||
+          row.label ||
+          row.fallbackLabel ||
+          ""
+
+        const value = document.createElement("input")
+        value.className = "preset-code-line-value"
+        value.type = "text"
+        value.readOnly = true
+        value.value = code
+        value.addEventListener("focus", () => value.select())
+
+        const rowCopyBtn = document.createElement("button")
+        rowCopyBtn.className = "secondary-btn preset-code-line-copy"
+        rowCopyBtn.type = "button"
+        rowCopyBtn.title = geti18n().preset_code_copy || "Copy Code"
+        rowCopyBtn.innerHTML = '<i class="fa-solid fa-copy"></i>'
+        rowCopyBtn.addEventListener("click", async () => {
+          if (input) input.value = code
+          try {
+            await copyText(code)
+            const original = rowCopyBtn.innerHTML
+            rowCopyBtn.innerHTML = '<i class="fa-solid fa-check"></i>'
+            setTimeout(() => {
+              rowCopyBtn.innerHTML = original
+            }, 1200)
+          } catch {
+            showAlert(
+              geti18n().alert_gradient_css_copy_failed ||
+                "Unable to copy. Please copy manually.",
+            )
+          }
+        })
+
+        item.append(label, value, rowCopyBtn)
+        lineContainer.appendChild(item)
+      })
+    }
+
+    renderCodeRows()
+
+    if (lineContainer) {
+      const toggleBtn = lineContainer
+        .closest(".preset-code-card")
+        ?.querySelector("[data-preset-code-lines-toggle]")
+      const toggleLabel = toggleBtn?.querySelector("span")
+      const setLinesVisible = (isVisible) => {
+        lineContainer.hidden = !isVisible
+        if (toggleBtn) {
+          toggleBtn.setAttribute("aria-expanded", String(isVisible))
+          toggleBtn.classList.toggle("is-open", isVisible)
+        }
+        if (toggleLabel) {
+          toggleLabel.textContent = isVisible
+            ? geti18n().preset_code_hide_lines || "Hide codes"
+            : geti18n().preset_code_show_lines || "Show codes"
+        }
+      }
+      setLinesVisible(false)
+      toggleBtn?.addEventListener("click", () => {
+        setLinesVisible(lineContainer.hidden)
+      })
+    }
+
     copyBtn?.addEventListener("click", async () => {
-      const code = encodePresetCode(type, getPayload())
+      const code = encodeCodeForType(type, getPayload())
       if (input) input.value = code
+      renderCodeRows()
       try {
         await copyText(code)
         flashButtonLabel(copyBtn, "preset_code_copied", "Copied")
@@ -2939,7 +3195,7 @@ export function setupGeneralEventHandlers(
 
     applyBtn?.addEventListener("click", () => {
       try {
-        applyPayload(decodePresetCode(input?.value || "", type))
+        applyPayload(decodeCodeForType(input?.value || "", type))
         flashButtonLabel(applyBtn, "preset_code_applied", "Applied")
       } catch (error) {
         console.error("Invalid preset code:", error)
@@ -2977,6 +3233,8 @@ export function setupGeneralEventHandlers(
     type: "visual",
     getPayload: getVisualPresetPayload,
     applyPayload: applyVisualPresetPayload,
+    lineContainer: document.getElementById("visual-preset-code-lines"),
+    getCodeRows: getVisualPresetCodeRows,
   })
 
   setupPresetCodeControls({
@@ -2995,6 +3253,8 @@ export function setupGeneralEventHandlers(
     type: "backgroundAnimation",
     getPayload: getBackgroundAnimationPresetPayload,
     applyPayload: applyBackgroundAnimationPresetPayload,
+    lineContainer: document.getElementById("background-animation-code-lines"),
+    getCodeRows: getBackgroundAnimationCodeRows,
   })
 
   setupPresetCodeControls({

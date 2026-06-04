@@ -44,6 +44,12 @@ export const updateNotes = {
         role: "Bug Hunter",
         note: "Phát hiện bug ở spotify",
       },
+      {
+        name: "Ẩn danh (4)",
+        project: "Zero Startpage",
+        role: "Người đóng góp",
+        note: "Bookmark không thay thế newtab",
+      },
     ],
   },
   en: {
@@ -90,6 +96,12 @@ export const updateNotes = {
         project: "Zero Startpage",
         role: "Bug Hunter",
         note: "Reported a bug in the Spotify integration.",
+      },
+      {
+        name: "Anonymous (4)",
+        project: "Zero Startpage",
+        role: "Contributor",
+        note: "Suggested improvements to the user interface.",
       },
     ],
   },

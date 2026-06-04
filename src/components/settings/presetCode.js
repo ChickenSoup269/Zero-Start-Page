@@ -1,4 +1,7 @@
 const PRESET_CODE_PREFIX = "SPC1."
+const PRESET_CODE_PREFIX_BY_TYPE = {
+  backgroundAnimation: "BAC1.",
+}
 
 export function encodePresetCode(type, data) {
   const payload = {
@@ -11,17 +14,26 @@ export function encodePresetCode(type, data) {
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/g, "")
-  return `${PRESET_CODE_PREFIX}${encoded}`
+  return `${PRESET_CODE_PREFIX_BY_TYPE[type] || PRESET_CODE_PREFIX}${encoded}`
 }
 
 export function decodePresetCode(code, expectedType) {
   const rawCode = String(code || "").trim()
-  if (!rawCode.startsWith(PRESET_CODE_PREFIX)) {
+  const expectedPrefix =
+    PRESET_CODE_PREFIX_BY_TYPE[expectedType] || PRESET_CODE_PREFIX
+  const legacyPrefix = PRESET_CODE_PREFIX
+  const prefix = rawCode.startsWith(expectedPrefix)
+    ? expectedPrefix
+    : rawCode.startsWith(legacyPrefix)
+      ? legacyPrefix
+      : null
+
+  if (!prefix) {
     throw new Error("Invalid preset code")
   }
 
   const base64 = rawCode
-    .slice(PRESET_CODE_PREFIX.length)
+    .slice(prefix.length)
     .replace(/-/g, "+")
     .replace(/_/g, "/")
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=")
