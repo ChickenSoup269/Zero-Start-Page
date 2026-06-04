@@ -258,7 +258,6 @@ export const defaultSettings = {
   musicPlayerExpanded: false,
   musicPlayerUseDefaultColor: false,
   musicSourceIconColorMode: "brand",
-  spotifyClientId: "",
   sideControlsGhostMode: false,
   flipLayout: false,
   showDonateButton: true,

@@ -3849,9 +3849,6 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.musicSourceIconColorModeSelect.value =
         settings.musicSourceIconColorMode || "brand"
     }
-    if (DOM.spotifyClientIdInput) {
-      DOM.spotifyClientIdInput.value = settings.spotifyClientId || ""
-    }
     if (DOM.clockDisplaySelect) {
       DOM.clockDisplaySelect.value = settings.clockDisplayMode || "all"
     }
