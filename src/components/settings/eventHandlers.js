@@ -5424,6 +5424,8 @@ export function setupGeneralEventHandlers(
         }
       }
 
+      let requiresReload = Boolean(selected.clear)
+
       if (hasSettings && selected.settings) {
         const importedSettings = JSON.parse(JSON.stringify(data.settings))
         const currentSettings = getSettings()
@@ -5440,6 +5442,7 @@ export function setupGeneralEventHandlers(
         saveSettings()
         applySettings()
         updateSettingsInputs()
+        requiresReload = true
       } else if (
         hasSettings &&
         selected.localMedia &&
@@ -5461,9 +5464,8 @@ export function setupGeneralEventHandlers(
         saveSettings()
         applySettings()
         updateSettingsInputs()
+        requiresReload = true
       }
-
-      let requiresReload = false
 
       if (hasBookmarks && selected.bookmarks) {
         localStorage.setItem("bookmarks", JSON.stringify(data.bookmarks))
