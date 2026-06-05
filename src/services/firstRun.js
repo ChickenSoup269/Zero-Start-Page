@@ -914,6 +914,11 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
         <h3 class="first-run-tour-title"></h3>
         <p class="first-run-tour-text"></p>
         <div class="first-run-tour-progress"></div>
+        <div class="first-run-tour-shortcuts" aria-label="Keyboard shortcuts">
+          <span><kbd>←</kbd> <span data-role="back"></span></span>
+          <span><kbd>→</kbd> <span data-role="next"></span></span>
+          <span><kbd>Esc</kbd> <span data-role="skip"></span></span>
+        </div>
         <div class="first-run-tour-actions">
           <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-skip"></button>
           <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-back"></button>
@@ -933,6 +938,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
     const title = overlay.querySelector(".first-run-tour-title")
     const text = overlay.querySelector(".first-run-tour-text")
     const progress = overlay.querySelector(".first-run-tour-progress")
+    const shortcutBack = overlay.querySelector('[data-role="back"]')
+    const shortcutNext = overlay.querySelector('[data-role="next"]')
+    const shortcutSkip = overlay.querySelector('[data-role="skip"]')
     const skipBtn = overlay.querySelector(".first-run-tour-skip")
     const backBtn = overlay.querySelector(".first-run-tour-back")
     const nextBtn = overlay.querySelector(".first-run-tour-next")
@@ -1021,6 +1029,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       )
       skipBtn.textContent = i18n.first_run_guide_skip || "Skip"
       backBtn.textContent = i18n.first_run_guide_back || "Back"
+      shortcutBack.textContent = i18n.first_run_guide_back || "Back"
+      shortcutNext.textContent = i18n.first_run_guide_next || "Next"
+      shortcutSkip.textContent = i18n.first_run_guide_skip || "Skip"
       nextBtn.textContent =
         index === steps.length - 1
           ? i18n.first_run_guide_done || "Done"

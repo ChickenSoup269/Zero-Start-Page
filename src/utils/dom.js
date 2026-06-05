@@ -1051,11 +1051,20 @@ export const bookmarkGroupFontSizeInput = document.getElementById(
 export const bookmarkGroupFontSizeValue = document.getElementById(
   "bookmark-group-font-size-value",
 )
+export const bookmarkGroupBorderRadiusInput = document.getElementById(
+  "bookmark-group-border-radius-input",
+)
+export const bookmarkGroupBorderRadiusValue = document.getElementById(
+  "bookmark-group-border-radius-value",
+)
 export const bookmarkGroupShowCount = document.getElementById(
   "bookmark-group-show-count",
 )
 export const bookmarkGroupUseAccent = document.getElementById(
   "bookmark-group-use-accent",
+)
+export const bookmarkGroupKeepBgOnInteraction = document.getElementById(
+  "bookmark-group-keep-bg-on-interaction",
 )
 export const bookmarkGroupContainerBgHidden = document.getElementById(
   "bookmark-group-container-bg-hidden",

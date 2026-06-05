@@ -41,6 +41,10 @@
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.bookmarkGroupUseAccent === true)
         body.classList.add("bookmark-group-accent-enabled")
+      if (settings.bookmarkGroupKeepBgOnInteraction !== false)
+        body.classList.add("bookmark-group-keep-bg-on-interaction")
+      if ((settings.bookmarkGroupBgOpacity ?? 0) <= 0)
+        body.classList.add("bookmark-group-tab-bg-transparent")
       if (settings.bookmarkGroupContainerBgHidden === true)
         body.classList.add("bookmark-group-container-bg-hidden")
       if (settings.bookmarkGroupBorderHidden === true)
@@ -285,6 +289,16 @@
       const accentRgb = hexToRgb(accentColor)
 
       const searchBarWidth = settings.searchBarWidth || 600
+      const groupBgHex = settings.bookmarkGroupBgColor || "#ffffff"
+      const groupBgOpacity = settings.bookmarkGroupBgOpacity ?? 0
+      const groupBgRgb =
+        groupBgHex !== "transparent" && groupBgHex.startsWith("#")
+          ? hexToRgb(groupBgHex)
+          : null
+      const groupTabBg =
+        groupBgRgb && groupBgOpacity < 100
+          ? `rgba(${groupBgRgb}, ${groupBgOpacity / 100})`
+          : groupBgHex
       const isIndexedDbImage =
         typeof settings.background === "string" &&
         (settings.background.startsWith("idb-img-") ||
@@ -308,6 +322,9 @@
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;
         --bookmark-border-radius: ${settings.bookmarkBorderRadius ?? 12}px;
+        --bookmark-group-tab-bg: ${groupTabBg};
+        --bookmark-group-font-size: ${settings.bookmarkGroupFontSize ?? 14}px;
+        --bookmark-group-border-radius: ${settings.bookmarkGroupBorderRadius ?? 8}px;
         --bg-pos-x: ${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%;
         --bg-pos-y: ${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%;
         --bg-fade-in: ${settings.bgFadeIn ?? 0.5}s;

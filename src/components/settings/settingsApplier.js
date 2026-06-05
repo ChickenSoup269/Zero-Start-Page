@@ -596,6 +596,10 @@ function createApplySettings(effectInstances) {
       "bookmark-group-count-hidden",
       settings.bookmarkGroupShowCount === false,
     )
+    document.body.classList.toggle(
+      "bookmark-group-tab-bg-transparent",
+      (settings.bookmarkGroupBgOpacity ?? 0) <= 0,
+    )
 
     const donateSection = document.querySelector(".donate-section")
     if (donateSection) {
@@ -618,6 +622,8 @@ function createApplySettings(effectInstances) {
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
       "bookmark-group-accent-enabled",
+      "bookmark-group-keep-bg-on-interaction",
+      "bookmark-group-tab-bg-transparent",
       "bookmark-group-container-bg-hidden",
       "bookmark-group-border-hidden",
       "hide-bookmark-text",
@@ -647,6 +653,14 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "bookmark-group-accent-enabled",
       settings.bookmarkGroupUseAccent === true,
+    )
+    document.body.classList.toggle(
+      "bookmark-group-keep-bg-on-interaction",
+      settings.bookmarkGroupKeepBgOnInteraction !== false,
+    )
+    document.body.classList.toggle(
+      "bookmark-group-tab-bg-transparent",
+      (settings.bookmarkGroupBgOpacity ?? 0) <= 0,
     )
     document.body.classList.toggle(
       "bookmark-group-container-bg-hidden",
@@ -1553,6 +1567,10 @@ function createApplySettings(effectInstances) {
     document.documentElement.style.setProperty(
       "--bookmark-group-font-size",
       `${settings.bookmarkGroupFontSize ?? 14}px`,
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-group-border-radius",
+      `${settings.bookmarkGroupBorderRadius ?? 8}px`,
     )
 
     let bookmarkHex = settings.bookmarkBgColor || "#ffffff"
@@ -2840,6 +2858,12 @@ function createUpdateSettingsInputs(effectInstances) {
         if (DOM.bookmarkGroupFontSizeValue)
           DOM.bookmarkGroupFontSizeValue.textContent = `${DOM.bookmarkGroupFontSizeInput.value}px`
       }
+      if (DOM.bookmarkGroupBorderRadiusInput) {
+        DOM.bookmarkGroupBorderRadiusInput.value =
+          settings.bookmarkGroupBorderRadius ?? 8
+        if (DOM.bookmarkGroupBorderRadiusValue)
+          DOM.bookmarkGroupBorderRadiusValue.textContent = `${DOM.bookmarkGroupBorderRadiusInput.value}px`
+      }
 
       if (DOM.bookmarkTextColorPicker) {
         DOM.bookmarkTextColorPicker.value =
@@ -2910,6 +2934,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkGroupUseAccent) {
         DOM.bookmarkGroupUseAccent.checked =
           settings.bookmarkGroupUseAccent === true
+      }
+      if (DOM.bookmarkGroupKeepBgOnInteraction) {
+        DOM.bookmarkGroupKeepBgOnInteraction.checked =
+          settings.bookmarkGroupKeepBgOnInteraction !== false
       }
       if (DOM.bookmarkGroupContainerBgHidden) {
         DOM.bookmarkGroupContainerBgHidden.checked =

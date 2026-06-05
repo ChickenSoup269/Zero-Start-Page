@@ -364,6 +364,7 @@ export function setupGeneralEventHandlers(
     "bookmarkGroupBgOpacity",
     "bookmarkGroupTextColor",
     "bookmarkGroupFontSize",
+    "bookmarkGroupBorderRadius",
     "bookmarkShadowColor",
     "bookmarkShadowOpacity",
     "bookmarkShadowBlur",
@@ -673,7 +674,9 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupBgOpacity",
       "bookmarkGroupTextColor",
       "bookmarkGroupFontSize",
+      "bookmarkGroupBorderRadius",
       "bookmarkGroupUseAccent",
+      "bookmarkGroupKeepBgOnInteraction",
       "bookmarkGroupContainerBgHidden",
       "bookmarkGroupBorderHidden",
       "bookmarkShadowColor",
@@ -728,6 +731,10 @@ export function setupGeneralEventHandlers(
         let hex = settings.bookmarkGroupBgColor || "transparent"
         let op = settings.bookmarkGroupBgOpacity ?? 0
         let rgb = hexToRgbFast(hex)
+        document.body.classList.toggle(
+          "bookmark-group-tab-bg-transparent",
+          op <= 0,
+        )
         if (hex !== "transparent" && rgb && op < 100)
           rootStyle.setProperty(
             "--bookmark-group-tab-bg",
@@ -739,6 +746,8 @@ export function setupGeneralEventHandlers(
         else rootStyle.removeProperty("--bookmark-group-text-color")
       } else if (k === "bookmarkGroupFontSize") {
         rootStyle.setProperty("--bookmark-group-font-size", `${v}px`)
+      } else if (k === "bookmarkGroupBorderRadius") {
+        rootStyle.setProperty("--bookmark-group-border-radius", `${v}px`)
       } else if (
         k === "bookmarkShadowColor" ||
         k === "bookmarkShadowOpacity" ||
@@ -2194,6 +2203,16 @@ export function setupGeneralEventHandlers(
         )
       })
     }
+    if (DOM.bookmarkGroupBorderRadiusInput) {
+      DOM.bookmarkGroupBorderRadiusInput.addEventListener("input", () => {
+        if (DOM.bookmarkGroupBorderRadiusValue)
+          DOM.bookmarkGroupBorderRadiusValue.textContent = `${DOM.bookmarkGroupBorderRadiusInput.value}px`
+        throttleSettingUpdate(
+          "bookmarkGroupBorderRadius",
+          Number(DOM.bookmarkGroupBorderRadiusInput.value),
+        )
+      })
+    }
 
     DOM.enableBookmarkDrag.addEventListener("change", () => {
       throttleSettingUpdate(
@@ -2233,6 +2252,16 @@ export function setupGeneralEventHandlers(
         const enabled = DOM.bookmarkGroupUseAccent.checked
         document.body.classList.toggle("bookmark-group-accent-enabled", enabled)
         throttleSettingUpdate("bookmarkGroupUseAccent", enabled)
+      })
+    }
+    if (DOM.bookmarkGroupKeepBgOnInteraction) {
+      DOM.bookmarkGroupKeepBgOnInteraction.addEventListener("change", () => {
+        const enabled = DOM.bookmarkGroupKeepBgOnInteraction.checked
+        document.body.classList.toggle(
+          "bookmark-group-keep-bg-on-interaction",
+          enabled,
+        )
+        throttleSettingUpdate("bookmarkGroupKeepBgOnInteraction", enabled)
       })
     }
     if (DOM.bookmarkGroupContainerBgHidden) {
