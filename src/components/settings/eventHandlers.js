@@ -1037,6 +1037,7 @@ export function setupGeneralEventHandlers(
     }
   })
   document.addEventListener("click", (e) => {
+    if (document.body.classList.contains("first-run-tour-active")) return
     if (
       !DOM.settingsSidebar.contains(e.target) &&
       !DOM.settingsToggle.contains(e.target)
@@ -1358,6 +1359,11 @@ export function setupGeneralEventHandlers(
     renderCustomLanguageOptions()
     await loadLanguage(getSettings().language)
     applyTranslations()
+    window.dispatchEvent(
+      new CustomEvent("startpage:languageChanged", {
+        detail: { language: DOM.languageSelect.value },
+      }),
+    )
     populateUnsplashCollections(DOM.unsplashCategorySelect, getSettings())
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -5093,6 +5099,12 @@ export function setupGeneralEventHandlers(
       localStorage.setItem(FOOTER_KEY, isNowCollapsed ? "1" : "0")
     })
   }
+
+  document
+    .getElementById("replay-settings-guide-btn")
+    ?.addEventListener("click", () => {
+      window.startpageReplaySettingsGuide?.()
+    })
 
   // Export/Import settings
   DOM.exportSettingsBtn.addEventListener("click", async () => {

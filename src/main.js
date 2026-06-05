@@ -68,8 +68,24 @@ function syncUninstallSurveyLanguage(language) {
   }
 }
 
+function setUpdateNoticePending(isPending) {
+  window.startpageUpdateNoticePending = isPending
+  if (!isPending) {
+    window.dispatchEvent(new CustomEvent("startpage:updateNoticeSettled"))
+  }
+}
+
+function isFirstRunOnboardingPending() {
+  return (
+    window.startpageFirstRunActive === true ||
+    (localStorage.getItem("startpageFirstRunSvgBgV1") === "applied" &&
+      localStorage.getItem("startpageFirstRunOnboardingDoneV1") !== "1")
+  )
+}
+
 // --- Initialization ---
 async function bootstrap() {
+  setUpdateNoticePending(true)
   const skipStartupLoader = document.body.classList.contains(
     "skip-startup-loader",
   )
@@ -831,6 +847,7 @@ async function bootstrap() {
                   updateModalAcknowledged: true,
                   updateArrowTimestamp: 0,
                 })
+                setUpdateNoticePending(false)
                 return
               }
 
@@ -855,6 +872,10 @@ async function bootstrap() {
                 showUpdateUI(currentVersion, showModal, showArrow)
               }
 
+              if (!showModal) {
+                setUpdateNoticePending(false)
+              }
+
               if (showArrow) {
                 const timeLeft = hour - (now - updateArrowTimestamp)
                 setTimeout(() => {
@@ -866,6 +887,8 @@ async function bootstrap() {
               }
             },
           )
+        } else {
+          setUpdateNoticePending(false)
         }
 
         function escapeUpdateHtml(value) {
@@ -937,9 +960,11 @@ async function bootstrap() {
                 ),
             }
             storage.set({ updateModalAcknowledged: true })
+            setUpdateNoticePending(false)
           }
 
-          if (showModal && popup && verLabel) {
+          const showUpdateModal = () => {
+            if (!popup || !verLabel) return
             verLabel.textContent = `v${currentVersion}`
             renderUpdateNotes()
             fadeToggle(popup, true, "block")
@@ -952,12 +977,35 @@ async function bootstrap() {
               ?.addEventListener("click", acknowledgeUpdate)
           }
 
+          if (showModal && popup && verLabel) {
+            const waitForCurrentDialog = setInterval(() => {
+              if (
+                isFirstRunOnboardingPending() ||
+                document.body.classList.contains("first-run-tour-active") ||
+                document.querySelector("#custom-dialog-overlay.active")
+              ) {
+                return
+              }
+              clearInterval(waitForCurrentDialog)
+              showUpdateModal()
+            }, 150)
+          }
+
           if (showArrow && sidebarLink) {
             fadeToggle(sidebarLink, true, "flex")
           }
         }
+
+        window.addEventListener("startpage:languageChanged", () => {
+          const popup = document.getElementById("update-notification-popup")
+          if (!popup || window.getComputedStyle(popup).display === "none") {
+            return
+          }
+          renderUpdateNotes()
+        })
       } catch (e) {
         console.warn("Update check failed:", e)
+        setUpdateNoticePending(false)
       }
     }, 100)
   }, 10)

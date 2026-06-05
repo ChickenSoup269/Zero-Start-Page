@@ -22,6 +22,9 @@ const FIRST_RUN_NAME_KEY = "startpageFirstRunNameV1"
 const FIRST_RUN_ZOOM_KEY = "startpageFirstRunZoomTipV1"
 const FIRST_RUN_OPEN_SOURCE_KEY = "startpageFirstRunOpenSourceNoticeV1"
 const FIRST_RUN_IMPORT_KEY = "startpageFirstRunBookmarkImportV1"
+const FIRST_RUN_SETTINGS_GUIDE_KEY = "startpageFirstRunSettingsGuideV1"
+const FIRST_RUN_GUIDE_CONGRATS_KEY = "startpageFirstRunGuideCongratsV1"
+const FIRST_RUN_ONBOARDING_DONE_KEY = "startpageFirstRunOnboardingDoneV1"
 const REPO_URL = "https://github.com/ChickenSoup269/Zero-Start-Page"
 const REPO_ISSUES_URL = `${REPO_URL}/issues`
 
@@ -144,6 +147,68 @@ const escapeHtml = (value) =>
 
 const getFaviconUrl = (url) =>
   `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32`
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const waitForAnimationFrames = (count = 2) =>
+  new Promise((resolve) => {
+    const step = (remaining) => {
+      if (remaining <= 0) {
+        resolve()
+        return
+      }
+      requestAnimationFrame(() => step(remaining - 1))
+    }
+    step(count)
+  })
+
+function setFirstRunOnboardingActive(isActive) {
+  window.startpageFirstRunActive = isActive
+  if (!isActive) {
+    window.dispatchEvent(new CustomEvent("startpage:firstRunSettled"))
+  }
+}
+
+function isUpdateNoticeVisible() {
+  const popup = document.getElementById("update-notification-popup")
+  if (!popup) return false
+  const style = window.getComputedStyle(popup)
+  return style.display !== "none" && style.visibility !== "hidden"
+}
+
+function waitForUpdateNoticeSettled(timeout = 8000) {
+  if (!window.startpageUpdateNoticePending && !isUpdateNoticeVisible()) {
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) => {
+    let done = false
+    let checkTimer = null
+    let timeoutTimer = null
+
+    const finish = () => {
+      if (done) return
+      done = true
+      window.removeEventListener("startpage:updateNoticeSettled", check)
+      if (checkTimer) clearInterval(checkTimer)
+      if (timeoutTimer) clearTimeout(timeoutTimer)
+      resolve()
+    }
+
+    function check() {
+      if (!window.startpageUpdateNoticePending && !isUpdateNoticeVisible()) {
+        finish()
+      }
+    }
+
+    window.addEventListener("startpage:updateNoticeSettled", check)
+    checkTimer = setInterval(check, 250)
+    timeoutTimer = setTimeout(() => {
+      if (!isUpdateNoticeVisible()) finish()
+    }, timeout)
+    check()
+  })
+}
 
 const FIRST_RUN_STYLE_PRESETS = {
   dock: {
@@ -460,6 +525,11 @@ async function promptFirstRunLanguage() {
   await loadLanguage(language)
   applyTranslations()
   document.documentElement.lang = language
+  window.dispatchEvent(
+    new CustomEvent("startpage:languageChanged", {
+      detail: { language },
+    }),
+  )
   localStorage.setItem(FIRST_RUN_LANGUAGE_KEY, language)
 }
 
@@ -620,9 +690,397 @@ async function promptFirstRunZoomTip() {
   localStorage.setItem(FIRST_RUN_ZOOM_KEY, "shown")
 }
 
+function getFirstRunSettingsGuideSteps(i18n) {
+  return [
+    {
+      selector: "#settings-sidebar .sidebar-header",
+      icon: "fa-solid fa-sliders",
+      title: i18n.first_run_guide_settings_title || "Settings hub",
+      text:
+        i18n.first_run_guide_settings_desc ||
+        "This sidebar is where you tune your start page. The guide will walk through the main areas you can customize.",
+    },
+    {
+      selector: "#language-select",
+      icon: "fa-solid fa-language",
+      title: i18n.settings_language || "Language",
+      text:
+        i18n.first_run_guide_language_desc ||
+        "Change the interface language here. You can also open the custom language tools if you want to add another translation.",
+    },
+    {
+      selector: "#page-title-input",
+      icon: "fa-solid fa-heading",
+      title: i18n.settings_page_title || "Page title",
+      text:
+        i18n.first_run_guide_page_title_desc ||
+        "Set the browser tab title and the small tab icon so this page feels like your own workspace.",
+    },
+    {
+      selector: '[data-section-id="themes"]',
+      icon: "fa-solid fa-palette",
+      title: i18n.settings_themes || "Themes",
+      text:
+        i18n.first_run_guide_themes_desc ||
+        "Start from a theme preset, save your current look, or quickly switch between styles you like.",
+    },
+    {
+      selector: '[data-section-id="background"]',
+      icon: "fa-solid fa-image",
+      title: i18n.settings_bg || "Background",
+      text:
+        i18n.first_run_guide_background_desc ||
+        "Add an image, video, color, Unsplash photo, or saved local background. This section also controls blur, brightness, fit, and saved galleries.",
+    },
+    {
+      selector: "#accent-color-group",
+      icon: "fa-solid fa-droplet",
+      title: i18n.settings_accent || "Accent color",
+      text:
+        i18n.first_run_guide_accent_desc ||
+        "Pick the main accent color, extract it from the current background, or let widgets follow the same color system.",
+    },
+    {
+      selector: '[data-section-id="gradient-multi-color"]',
+      icon: "fa-solid fa-fill-drip",
+      title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
+      text:
+        i18n.first_run_guide_gradient_desc ||
+        "Build gradient, SVG wave, and multi-color backgrounds. You can randomize, save presets, and reuse generated codes.",
+    },
+    {
+      selector: '[data-section-id="animated-backgrounds"]',
+      icon: "fa-solid fa-wand-magic-sparkles",
+      title: i18n.settings_animated_backgrounds || "Animated backgrounds",
+      text:
+        i18n.first_run_guide_animated_desc ||
+        "Use richer animated backgrounds such as gradient motion, silk, light pillars, liquid light, or splash cursor effects.",
+    },
+    {
+      selector: '[data-section-id="special-effects"]',
+      icon: "fa-solid fa-star",
+      title: i18n.settings_effect || "Effects",
+      text:
+        i18n.first_run_guide_effects_desc ||
+        "Choose overlay effects and tune their colors. These are lighter visual layers that sit above your background.",
+    },
+    {
+      selector: '[data-section-id="font"]',
+      icon: "fa-solid fa-font",
+      title: i18n.settings_font || "Font",
+      text:
+        i18n.first_run_guide_font_desc ||
+        "Change the general font, clock font, or load and save a Google Font for later.",
+    },
+    {
+      selector: '[data-section-id="date-clock"]',
+      icon: "fa-solid fa-clock",
+      title: i18n.settings_date_format || "Date & Clock",
+      text:
+        i18n.first_run_guide_clock_desc ||
+        "Customize time format, date format, clock style, colors, size, and display mode.",
+    },
+    {
+      selector: '[data-section-id="bookmark-custom"]',
+      icon: "fa-solid fa-bookmark",
+      title: i18n.settings_custom_bookmark || "Bookmarks",
+      text:
+        i18n.first_run_guide_bookmarks_desc ||
+        "Tune bookmark layout, icon size, spacing, background style, drag behavior, and folder appearance.",
+    },
+    {
+      selector: '[data-section-id="custom-title"]',
+      icon: "fa-solid fa-heading",
+      title: i18n.settings_custom_title || "Custom title",
+      text:
+        i18n.first_run_guide_custom_title_desc ||
+        "Show a personal title, move it freely, and adjust its color, size, shadow, border, and effects.",
+    },
+    {
+      selector: '[data-section-id="layout"]',
+      icon: "fa-solid fa-layer-group",
+      title: i18n.settings_layout || "Layout",
+      text:
+        i18n.first_run_guide_layout_desc ||
+        "Turn page modules on or off, flip layout direction, adjust quick controls, and reset layout pieces when needed.",
+    },
+  ]
+}
+
+function setSettingsSectionExpanded(section, expanded = true) {
+  if (!section?.classList?.contains("settings-section")) return
+  section.classList.toggle("collapsed", !expanded)
+
+  const sectionId = section.dataset.sectionId
+  if (!sectionId) return
+  const sectionStates = JSON.parse(
+    localStorage.getItem("settingsSectionStates") || "{}",
+  )
+  sectionStates[sectionId] = !expanded
+  localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
+}
+
+function getGuideTarget(selector) {
+  const target = document.querySelector(selector)
+  if (!target) return null
+  if (target.classList.contains("settings-section")) {
+    return target.querySelector(".section-toggle") || target
+  }
+  if (target.matches("input, select, textarea")) {
+    return target.closest(".setting-group") || target
+  }
+  return target
+}
+
+function waitForSettingsSidebarOpen(sidebar, timeout = 2500) {
+  const startedAt = performance.now()
+  return new Promise((resolve) => {
+    const check = () => {
+      const rect = sidebar.getBoundingClientRect()
+      if (Math.abs(rect.left) <= 2 || performance.now() - startedAt > timeout) {
+        resolve()
+        return
+      }
+      requestAnimationFrame(check)
+    }
+    check()
+  })
+}
+
+async function scrollGuideTargetIntoView(sidebarContent, target) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const sidebarRect = sidebarContent.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+    const targetTop =
+      targetRect.top - sidebarRect.top + sidebarContent.scrollTop - 18
+
+    sidebarContent.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "auto",
+    })
+    await waitForAnimationFrames(3)
+
+    const nextSidebarRect = sidebarContent.getBoundingClientRect()
+    const nextTargetRect = target.getBoundingClientRect()
+    const isVisible =
+      nextTargetRect.top >= nextSidebarRect.top + 8 &&
+      nextTargetRect.bottom <= nextSidebarRect.bottom - 8
+
+    if (isVisible || nextTargetRect.height > nextSidebarRect.height - 24) {
+      return nextTargetRect
+    }
+  }
+
+  return target.getBoundingClientRect()
+}
+
+async function promptFirstRunSettingsGuide({ force = false } = {}) {
+  if (!force && localStorage.getItem(FIRST_RUN_SETTINGS_GUIDE_KEY)) return
+
+  const sidebar = document.getElementById("settings-sidebar")
+  const sidebarContent = sidebar?.querySelector(".sidebar-content")
+  const sidebarFooter = sidebar?.querySelector(".sidebar-footer")
+  if (!sidebar || !sidebarContent) {
+    localStorage.setItem(FIRST_RUN_SETTINGS_GUIDE_KEY, "unavailable")
+    return
+  }
+
+  const i18n = geti18n()
+  const steps = getFirstRunSettingsGuideSteps(i18n).filter((step) =>
+    document.querySelector(step.selector),
+  )
+  if (!steps.length) {
+    localStorage.setItem(FIRST_RUN_SETTINGS_GUIDE_KEY, "empty")
+    return
+  }
+
+  await showAlert(
+    i18n.first_run_guide_intro ||
+      "All set. Next, a quick guide will show where the main Settings areas live.",
+    i18n.first_run_guide_intro_title || "Quick settings guide",
+  )
+
+  return new Promise((resolve) => {
+    let index = 0
+    let resolved = false
+    const wasFooterCollapsed = sidebarFooter?.classList.contains("collapsed")
+
+    const overlay = document.createElement("div")
+    overlay.className = "first-run-tour-overlay"
+    overlay.innerHTML = `
+      <div class="first-run-tour-spotlight" aria-hidden="true"></div>
+      <div class="first-run-tour-card" role="dialog" aria-live="polite">
+        <div class="first-run-tour-kicker"></div>
+        <h3 class="first-run-tour-title"></h3>
+        <p class="first-run-tour-text"></p>
+        <div class="first-run-tour-progress"></div>
+        <div class="first-run-tour-actions">
+          <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-skip"></button>
+          <button type="button" class="dialog-btn dialog-btn-secondary first-run-tour-back"></button>
+          <button type="button" class="dialog-btn dialog-btn-primary first-run-tour-next"></button>
+        </div>
+      </div>
+    `
+    document.body.appendChild(overlay)
+    document.body.classList.add("first-run-tour-active")
+    sidebarFooter?.classList.add("collapsed")
+    sidebar.classList.add("open")
+    overlay.addEventListener("click", (event) => event.stopPropagation())
+
+    const spotlight = overlay.querySelector(".first-run-tour-spotlight")
+    const card = overlay.querySelector(".first-run-tour-card")
+    const kicker = overlay.querySelector(".first-run-tour-kicker")
+    const title = overlay.querySelector(".first-run-tour-title")
+    const text = overlay.querySelector(".first-run-tour-text")
+    const progress = overlay.querySelector(".first-run-tour-progress")
+    const skipBtn = overlay.querySelector(".first-run-tour-skip")
+    const backBtn = overlay.querySelector(".first-run-tour-back")
+    const nextBtn = overlay.querySelector(".first-run-tour-next")
+
+    const finish = (status) => {
+      if (resolved) return
+      resolved = true
+      localStorage.setItem(FIRST_RUN_SETTINGS_GUIDE_KEY, status)
+      document.body.classList.remove("first-run-tour-active")
+      if (sidebarFooter) {
+        sidebarFooter.classList.toggle("collapsed", wasFooterCollapsed)
+      }
+      document
+        .querySelectorAll(".first-run-tour-highlight")
+        .forEach((el) => el.classList.remove("first-run-tour-highlight"))
+      overlay.remove()
+      document.removeEventListener("keydown", onKeyDown)
+      window.removeEventListener("resize", renderStep)
+      resolve()
+    }
+
+    const positionCard = (targetRect) => {
+      const gap = 14
+      const cardRect = card.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const sidebarRect = sidebar.getBoundingClientRect()
+
+      let left = sidebarRect.right + gap
+      let top = targetRect.top + targetRect.height / 2 - cardRect.height / 2
+
+      if (left + cardRect.width > viewportWidth - gap) {
+        left = Math.max(gap, viewportWidth - cardRect.width - gap)
+        top = Math.min(
+          viewportHeight - cardRect.height - gap,
+          Math.max(gap, targetRect.bottom + gap),
+        )
+      }
+
+      top = Math.min(
+        viewportHeight - cardRect.height - gap,
+        Math.max(gap, top),
+      )
+
+      card.style.left = `${left}px`
+      card.style.top = `${top}px`
+    }
+
+    const renderStep = async () => {
+      sidebar.classList.add("open")
+      await waitForSettingsSidebarOpen(sidebar)
+      const step = steps[index]
+      const section = document.querySelector(step.selector)
+      if (section?.classList?.contains("settings-section")) {
+        setSettingsSectionExpanded(section, true)
+      }
+
+      const target = getGuideTarget(step.selector)
+      if (!target) {
+        finish("target-missing")
+        return
+      }
+
+      document
+        .querySelectorAll(".first-run-tour-highlight")
+        .forEach((el) => el.classList.remove("first-run-tour-highlight"))
+      target.classList.add("first-run-tour-highlight")
+
+      await waitForAnimationFrames(2)
+      const rect = await scrollGuideTargetIntoView(sidebarContent, target)
+      spotlight.style.left = `${rect.left - 8}px`
+      spotlight.style.top = `${rect.top - 8}px`
+      spotlight.style.width = `${rect.width + 16}px`
+      spotlight.style.height = `${rect.height + 16}px`
+
+      kicker.innerHTML = `<i class="${step.icon}"></i><span>${(
+        i18n.first_run_guide_step_label || "Step {current} of {total}"
+      )
+        .replace("{current}", index + 1)
+        .replace("{total}", steps.length)}</span>`
+      title.textContent = step.title
+      text.textContent = step.text
+      progress.style.setProperty(
+        "--first-run-tour-progress",
+        `${((index + 1) / steps.length) * 100}%`,
+      )
+      skipBtn.textContent = i18n.first_run_guide_skip || "Skip"
+      backBtn.textContent = i18n.first_run_guide_back || "Back"
+      nextBtn.textContent =
+        index === steps.length - 1
+          ? i18n.first_run_guide_done || "Done"
+          : i18n.first_run_guide_next || "Next"
+      backBtn.disabled = index === 0
+      positionCard(rect)
+      overlay.classList.add("is-ready")
+    }
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") finish("skipped")
+      if (event.key === "ArrowRight") nextBtn.click()
+      if (event.key === "ArrowLeft" && index > 0) backBtn.click()
+    }
+
+    skipBtn.addEventListener("click", () => finish("skipped"))
+    backBtn.addEventListener("click", () => {
+      if (index > 0) {
+        index -= 1
+        renderStep()
+      }
+    })
+    nextBtn.addEventListener("click", () => {
+      if (index >= steps.length - 1) {
+        finish("completed")
+        return
+      }
+      index += 1
+      renderStep()
+    })
+    window.addEventListener("resize", renderStep)
+    document.addEventListener("keydown", onKeyDown)
+    requestAnimationFrame(renderStep)
+  })
+}
+
+async function finishFirstRunGuide() {
+  await promptFirstRunSettingsGuide()
+  if (
+    localStorage.getItem(FIRST_RUN_SETTINGS_GUIDE_KEY) === "completed" &&
+    !localStorage.getItem(FIRST_RUN_GUIDE_CONGRATS_KEY)
+  ) {
+    const i18n = geti18n()
+    await showAlert(
+      i18n.first_run_guide_congrats_message ||
+        "You're ready to use Zero Start Page. You can replay this guide anytime from Settings > Layout & Features.",
+      i18n.first_run_guide_congrats_title || "You're all set!",
+    )
+    localStorage.setItem(FIRST_RUN_GUIDE_CONGRATS_KEY, "shown")
+  }
+  localStorage.setItem(FIRST_RUN_ONBOARDING_DONE_KEY, "1")
+  setFirstRunOnboardingActive(false)
+}
+
 export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
 
+  if (!localStorage.getItem(FIRST_RUN_ONBOARDING_DONE_KEY)) {
+    setFirstRunOnboardingActive(true)
+  }
   await promptFirstRunLanguage()
   await promptFirstRunUserName()
   await promptFirstRunStyle(renderBookmarks)
@@ -641,9 +1099,13 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
     localStorage.setItem(FIRST_RUN_OPEN_SOURCE_KEY, "shown")
   }
 
-  if (localStorage.getItem(FIRST_RUN_IMPORT_KEY)) return
+  if (localStorage.getItem(FIRST_RUN_IMPORT_KEY)) {
+    await finishFirstRunGuide()
+    return
+  }
   if (!chromeBookmarksAvailable()) {
     localStorage.setItem(FIRST_RUN_IMPORT_KEY, "api-unavailable")
+    await finishFirstRunGuide()
     return
   }
 
@@ -658,6 +1120,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
         i18n.first_run_import_bookmarks_none ||
           "No new Chrome bookmarks were found.",
       )
+      await finishFirstRunGuide()
       return
     }
 
@@ -669,6 +1132,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
     )
     if (!selection || !Object.values(selection).some(Boolean)) {
       localStorage.setItem(FIRST_RUN_IMPORT_KEY, "declined")
+      await finishFirstRunGuide()
       return
     }
     localStorage.setItem(FIRST_RUN_IMPORT_KEY, "accepted")
@@ -719,6 +1183,7 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
         i18n.first_run_import_bookmarks_none ||
           "No new Chrome bookmarks were found.",
       )
+      await finishFirstRunGuide()
       return
     }
 
@@ -737,11 +1202,18 @@ export async function promptFirstRunBookmarkImport(renderBookmarks) {
         "Imported {count} bookmarks from Chrome."
       ).replace("{count}", importedCount),
     )
+    await finishFirstRunGuide()
   } catch (error) {
     console.error("First-run bookmark import failed:", error)
     await showAlert(
       i18n.first_run_import_bookmarks_error ||
         "Could not import Chrome bookmarks right now.",
     )
+    await finishFirstRunGuide()
   }
+}
+
+window.startpageReplaySettingsGuide = async () => {
+  localStorage.removeItem(FIRST_RUN_SETTINGS_GUIDE_KEY)
+  await promptFirstRunSettingsGuide({ force: true })
 }
