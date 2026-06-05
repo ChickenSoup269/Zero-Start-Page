@@ -35,8 +35,6 @@
       if (settings.flipLayout) body.classList.add("flip-layout")
       if (settings.allowTextSelection === true)
         body.classList.add("allow-text-selection")
-      if (settings.sidebarGlowAnimations === false)
-        body.classList.add("sidebar-glow-disabled")
       if (settings.bookmarkGroupShowCount === false)
         body.classList.add("bookmark-group-count-hidden")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")

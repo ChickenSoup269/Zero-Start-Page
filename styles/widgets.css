@@ -8473,6 +8473,10 @@ body.bookmark-group-container-bg-hidden.bookmark-taskbar-left-mode
   -webkit-backdrop-filter: none !important;
 }
 
+body.bookmark-taskbar-top-mode:not(.groups-hidden) .bookmark-groups-container {
+  margin-top: 10px !important;
+}
+
 /* Sidebar macOS hover: labels must escape the compact grid. */
 body.bookmark-sidebar-mode.bookmark-macos-hover #bookmark-widget,
 body.bookmark-sidebar-mode.bookmark-macos-hover #bookmarks-container,

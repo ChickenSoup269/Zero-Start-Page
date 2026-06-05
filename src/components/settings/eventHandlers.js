@@ -4515,12 +4515,6 @@ export function setupGeneralEventHandlers(
       if (key === "allowTextSelection") {
         document.body.classList.toggle("allow-text-selection", checkbox.checked)
       }
-      if (key === "sidebarGlowAnimations") {
-        document.body.classList.toggle(
-          "sidebar-glow-disabled",
-          !checkbox.checked,
-        )
-      }
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { ...eventDetail, key, value: checkbox.checked },
@@ -4692,13 +4686,6 @@ export function setupGeneralEventHandlers(
     setupLayoutCheckbox(
       DOM.allowTextSelectionCheckbox,
       "allowTextSelection",
-      {},
-    )
-  }
-  if (DOM.sidebarGlowAnimationsCheckbox) {
-    setupLayoutCheckbox(
-      DOM.sidebarGlowAnimationsCheckbox,
-      "sidebarGlowAnimations",
       {},
     )
   }

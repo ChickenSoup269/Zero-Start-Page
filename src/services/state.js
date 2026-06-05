@@ -156,7 +156,6 @@ export const defaultSettings = {
   bookmarkTextColor: null,
   showTopRightControls: true,
   allowTextSelection: false,
-  sidebarGlowAnimations: true,
   showQuickAccessBg: false,
   bookmarkShadowColor: "#000000",
   bookmarkShadowOpacity: 24,

@@ -22,12 +22,12 @@ export const updateNotes = {
         note: "Báo lỗi UI (3+) & gợi ý: code màu M3, widget Pomodoro, Google App icon.",
       },
       {
-        name: "Trần Anh Quân",
+        name: "Kiến Huy",
         project: "Zero Startpage",
         role: "Bug Hunter & Người đóng gói",
-        badge: "1+",
-        badgeLabel: "1 báo lỗi",
-        note: "Báo lỗi page title icon (1+) & gợi ý nhạc SoundCloud.",
+        badge: "2+",
+        badgeLabel: "2 báo lỗi",
+        note: "Báo lỗi page title icon (2+), gợi ý nhạc SoundCloud, bookmark folder UI",
       },
       {
         name: "Ẩn danh (1)",

@@ -593,10 +593,6 @@ function createApplySettings(effectInstances) {
       settings.allowTextSelection === true,
     )
     document.body.classList.toggle(
-      "sidebar-glow-disabled",
-      settings.sidebarGlowAnimations === false,
-    )
-    document.body.classList.toggle(
       "bookmark-group-count-hidden",
       settings.bookmarkGroupShowCount === false,
     )
@@ -3900,10 +3896,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.allowTextSelectionCheckbox) {
       DOM.allowTextSelectionCheckbox.checked =
         settings.allowTextSelection === true
-    }
-    if (DOM.sidebarGlowAnimationsCheckbox) {
-      DOM.sidebarGlowAnimationsCheckbox.checked =
-        settings.sidebarGlowAnimations !== false
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.lcpSearchBar) {

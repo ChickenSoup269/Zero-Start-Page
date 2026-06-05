@@ -1152,9 +1152,6 @@ export const showTopRightControlsCheckbox = document.getElementById(
 export const allowTextSelectionCheckbox = document.getElementById(
   "allow-text-selection-checkbox",
 )
-export const sidebarGlowAnimationsCheckbox = document.getElementById(
-  "sidebar-glow-animations-checkbox",
-)
 export const flipLayoutCheckbox = document.getElementById(
   "flip-layout-checkbox",
 )
