@@ -869,6 +869,7 @@
   "settings_bookmark_group_show_count": "Show bookmark count",
   "settings_bookmark_group_use_accent": "Use accent color on default grid",
   "settings_bookmark_group_hide_container_bg": "Hide folder bar background",
+  "settings_bookmark_group_hide_border": "Hide folder border",
   "settings_bookmark_hide_text": "Hide Title Text",
   "settings_bookmark_hide_bg": "Hide Bookmark Background",
   "settings_bookmark_macos_hover": "Enable MacOS Hover Effect",

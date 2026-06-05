@@ -675,6 +675,7 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupFontSize",
       "bookmarkGroupUseAccent",
       "bookmarkGroupContainerBgHidden",
+      "bookmarkGroupBorderHidden",
       "bookmarkShadowColor",
       "bookmarkShadowOpacity",
       "bookmarkShadowBlur",
@@ -2236,6 +2237,13 @@ export function setupGeneralEventHandlers(
           hidden,
         )
         throttleSettingUpdate("bookmarkGroupContainerBgHidden", hidden)
+      })
+    }
+    if (DOM.bookmarkGroupBorderHidden) {
+      DOM.bookmarkGroupBorderHidden.addEventListener("change", () => {
+        const hidden = DOM.bookmarkGroupBorderHidden.checked
+        document.body.classList.toggle("bookmark-group-border-hidden", hidden)
+        throttleSettingUpdate("bookmarkGroupBorderHidden", hidden)
       })
     }
 

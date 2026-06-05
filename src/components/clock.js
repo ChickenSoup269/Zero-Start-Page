@@ -1433,16 +1433,30 @@ export function updateCustomTitle() {
   el.style.fontSize = (settings.customTitleFontSize || 24) + "px"
   el.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"
 
+  const titleTextTargets = [
+    el,
+    ...el.querySelectorAll(".clock-hue-char"),
+  ]
   if (settings.customTitleBorderSize > 0) {
-    el.style.webkitTextStroke = `${settings.customTitleBorderSize}px ${settings.customTitleBorderColor}`
+    const stroke = `${settings.customTitleBorderSize}px ${settings.customTitleBorderColor}`
+    titleTextTargets.forEach((target) => {
+      target.style.webkitTextStroke = stroke
+    })
   } else {
-    el.style.webkitTextStroke = ""
+    titleTextTargets.forEach((target) => {
+      target.style.webkitTextStroke = ""
+    })
   }
 
   if (settings.customTitleShadowBlur > 0 || settings.customTitleShadowY != 0) {
-    el.style.textShadow = `0px ${settings.customTitleShadowY || 0}px ${settings.customTitleShadowBlur || 0}px ${settings.customTitleShadowColor || "#000000"}`
+    const shadow = `0px ${settings.customTitleShadowY || 0}px ${settings.customTitleShadowBlur || 0}px ${settings.customTitleShadowColor || "#000000"}`
+    titleTextTargets.forEach((target) => {
+      target.style.textShadow = shadow
+    })
   } else {
-    el.style.textShadow = "none"
+    titleTextTargets.forEach((target) => {
+      target.style.textShadow = "none"
+    })
   }
 
   makeDraggable(el, "customTitle")

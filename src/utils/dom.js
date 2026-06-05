@@ -1060,6 +1060,9 @@ export const bookmarkGroupUseAccent = document.getElementById(
 export const bookmarkGroupContainerBgHidden = document.getElementById(
   "bookmark-group-container-bg-hidden",
 )
+export const bookmarkGroupBorderHidden = document.getElementById(
+  "bookmark-group-border-hidden",
+)
 export const bookmarkLayoutShowGroups = document.getElementById(
   "bookmark-layout-show-groups",
 )

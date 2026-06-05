@@ -45,6 +45,8 @@
         body.classList.add("bookmark-group-accent-enabled")
       if (settings.bookmarkGroupContainerBgHidden === true)
         body.classList.add("bookmark-group-container-bg-hidden")
+      if (settings.bookmarkGroupBorderHidden === true)
+        body.classList.add("bookmark-group-border-hidden")
       if (settings.showTopRightControls !== false)
         body.classList.add("has-top-right-controls")
       else body.classList.add("hide-top-right-controls")

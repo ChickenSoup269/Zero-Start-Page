@@ -7017,6 +7017,29 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   margin-bottom: 12px !important;
 }
 
+.settings-section[data-section-id="custom-title"] .setting-item:has(input[type="range"]) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  padding: 2px 0 0 !important;
+}
+
+.settings-section[data-section-id="custom-title"] input[type="range"] {
+  background: color-mix(in srgb, var(--text-color) 16%, transparent) !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  display: block;
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+}
+
+.settings-section[data-section-id="custom-title"] input[type="range"]::before,
+.settings-section[data-section-id="custom-title"] input[type="range"]::after {
+  content: none !important;
+  display: none !important;
+}
+
 .settings-section[data-section-id="custom-title"] input[type="text"] {
   font-size: 0.96rem !important;
   min-height: 44px;
