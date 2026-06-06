@@ -28,6 +28,7 @@ import {
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
 import { initCommandPalette } from "./components/commandPalette.js"
+import { initGoogleApps } from "./components/googleApps.js"
 import { getUpdateNotes } from "./data/updateNotes.js"
 
 import { makeDraggable } from "./utils/draggable.js"
@@ -227,6 +228,7 @@ async function bootstrap() {
   initSearch()
   initContextMenu()
   initModal()
+  initGoogleApps()
   initCommandPalette()
   setTimeout(
     () => promptFirstRunBookmarkImport(renderBookmarks),
