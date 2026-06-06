@@ -700,7 +700,7 @@
   "clock_weekday_full_fri": "Thứ Sáu",
   "clock_weekday_full_sat": "Thứ Bảy",
   "settings_export": "Xuất JSON",
-  "settings_import": "Nhập dữ liệu",
+  "settings_import": "Nhập dữ liệu JSON",
   "alert_export_success": "Đã xuất cài đặt thành công!",
   "confirm_export_include_unsplash_key_title": "Xuất cài đặt",
   "confirm_export_include_unsplash_key": "Bao gồm cả mã Unsplash Access Key trong tệp JSON?",

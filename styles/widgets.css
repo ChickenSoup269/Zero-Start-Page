@@ -584,6 +584,43 @@
   opacity: 0.5;
 }
 
+.bookmark-folder-reveal {
+  animation: bookmarkFolderReveal 0.46s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--bookmark-folder-reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+
+@keyframes bookmarkFolderReveal {
+  0% {
+    filter: blur(4px);
+    opacity: 0;
+    transform: translate3d(
+        var(--bookmark-folder-reveal-x, 0px),
+        var(--bookmark-folder-reveal-y, 0px),
+        0
+      )
+      scale(0.9);
+  }
+
+  62% {
+    filter: blur(0);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.035);
+  }
+
+  100% {
+    filter: none;
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookmark-folder-reveal {
+    animation: none;
+  }
+}
+
 body.bookmark-dragging-active .bookmark:not(.dragging),
 body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
   transition:
@@ -4564,6 +4601,60 @@ body.widgets-m3-accent .quotes-container,
   margin-right: auto;
   border-radius: var(--radius-md);
   background: transparent;
+  position: relative;
+}
+
+.bookmark-group-active-runner {
+  background: var(--accent-color);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+  left: 0;
+  opacity: 0.95;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform-origin: center;
+  transition:
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.16s ease;
+  z-index: 6;
+}
+
+.bookmark-group-active-runner.is-moving {
+  opacity: 1;
+}
+
+.bookmark-group-active-runner.is-fading {
+  opacity: 0;
+}
+
+.bookmark-group-tab.is-activating-bg {
+  animation: bookmarkGroupActiveBgIn 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes bookmarkGroupActiveBgIn {
+  0% {
+    filter: brightness(1.18);
+    transform: translateY(0) scale(0.96);
+  }
+
+  55% {
+    filter: brightness(1.08);
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  100% {
+    filter: none;
+    transform: translateY(-1px) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookmark-group-tab.is-activating-bg {
+    animation: none;
+  }
 }
 
 .bookmark-group-tab {

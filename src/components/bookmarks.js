@@ -27,6 +27,8 @@ import { openModal } from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
 let bookmarkOpenBehaviorPromptPending = false
+let pendingGroupTabActiveAnimation = null
+let pendingFolderBookmarkReveal = false
 
 function applyBookmarkLinkBehavior(link, url) {
   const settings = getSettings()
@@ -1525,7 +1527,10 @@ export function renderBookmarks() {
   bookmarksContainer.appendChild(frag)
 
   // Use requestAnimationFrame so UI can render before calculations
-  requestAnimationFrame(() => requestAnimationFrame(updateOverflowBookmarks))
+  requestAnimationFrame(() => {
+    animateBookmarksForFolderSwitch()
+    requestAnimationFrame(updateOverflowBookmarks)
+  })
 }
 
 export function updateOverflowBookmarks() {
@@ -1838,6 +1843,162 @@ function getGroupIcon(name) {
   return "fa-folder" // Default icon
 }
 
+function getGroupTabAnimationRect(tab) {
+  if (!tab || !bookmarkGroupsContainer) return null
+  const tabRect = tab.getBoundingClientRect()
+  const containerRect = bookmarkGroupsContainer.getBoundingClientRect()
+  return {
+    x: tabRect.left - containerRect.left + bookmarkGroupsContainer.scrollLeft,
+    y: tabRect.top - containerRect.top + bookmarkGroupsContainer.scrollTop,
+    width: tabRect.width,
+    height: tabRect.height,
+  }
+}
+
+function getGroupTabRunnerMetrics(rect, orientation) {
+  if (orientation === "right") {
+    return {
+      x: rect.x + rect.width - 2,
+      y: rect.y + 8,
+      width: 2,
+      height: Math.max(12, rect.height - 16),
+    }
+  }
+
+  return {
+    x: rect.x + 10,
+    y: orientation === "top" ? rect.y : rect.y + rect.height - 2,
+    width: Math.max(18, rect.width - 20),
+    height: 2,
+  }
+}
+
+function getGroupTabRunnerOrientation() {
+  if (document.body.classList.contains("bookmark-sidebar-mode")) return "right"
+  if (document.body.classList.contains("bookmark-taskbar-top-mode"))
+    return "top"
+  return "bottom"
+}
+
+function setGroupTabRunnerGeometry(runner, metrics) {
+  runner.style.width = `${metrics.width}px`
+  runner.style.height = `${metrics.height}px`
+  runner.style.transform = `translate3d(${metrics.x}px, ${metrics.y}px, 0)`
+}
+
+function animateGroupTabActiveRunner() {
+  if (!pendingGroupTabActiveAnimation || !bookmarkGroupsContainer) return
+
+  const activeTab = bookmarkGroupsContainer.querySelector(
+    ".bookmark-group-tab.active",
+  )
+  if (!activeTab) {
+    pendingGroupTabActiveAnimation = null
+    return
+  }
+
+  const fromRect = pendingGroupTabActiveAnimation.fromRect
+  const toRect = getGroupTabAnimationRect(activeTab)
+  pendingGroupTabActiveAnimation = null
+
+  if (
+    !fromRect ||
+    !toRect ||
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  ) {
+    return
+  }
+
+  const shouldUseRunner =
+    document.body.classList.contains("bookmark-group-tab-bg-transparent") &&
+    !document.body.classList.contains("bookmark-group-accent-enabled")
+
+  if (!shouldUseRunner) {
+    activeTab.classList.add("is-activating-bg")
+    window.setTimeout(() => {
+      activeTab.classList.remove("is-activating-bg")
+    }, 340)
+    return
+  }
+
+  const orientation = getGroupTabRunnerOrientation()
+  const fromMetrics = getGroupTabRunnerMetrics(fromRect, orientation)
+  const toMetrics = getGroupTabRunnerMetrics(toRect, orientation)
+  const runner = document.createElement("span")
+  runner.className = `bookmark-group-active-runner ${orientation}`
+  runner.setAttribute("aria-hidden", "true")
+  setGroupTabRunnerGeometry(runner, fromMetrics)
+  bookmarkGroupsContainer.appendChild(runner)
+
+  requestAnimationFrame(() => {
+    runner.classList.add("is-moving")
+    setGroupTabRunnerGeometry(runner, toMetrics)
+  })
+
+  window.setTimeout(() => {
+    runner.classList.add("is-fading")
+    window.setTimeout(() => runner.remove(), 180)
+  }, 330)
+}
+
+function animateBookmarksForFolderSwitch() {
+  if (!pendingFolderBookmarkReveal || !bookmarksContainer) return
+  pendingFolderBookmarkReveal = false
+
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return
+
+  const items = Array.from(
+    bookmarksContainer.querySelectorAll(".bookmark, .add-bookmark-card"),
+  ).filter((item) => !item.classList.contains("overflow-indicator"))
+  if (items.length === 0) return
+
+  const isVertical = document.body.classList.contains("bookmark-sidebar-mode")
+  const containerRect = bookmarksContainer.getBoundingClientRect()
+  const center = isVertical
+    ? containerRect.top + containerRect.height / 2
+    : containerRect.left + containerRect.width / 2
+
+  const itemMeta = items.map((item) => {
+    const rect = item.getBoundingClientRect()
+    const itemCenter = isVertical
+      ? rect.top + rect.height / 2
+      : rect.left + rect.width / 2
+    return {
+      item,
+      distance: Math.abs(itemCenter - center),
+      offset: Math.max(-72, Math.min(72, center - itemCenter)),
+    }
+  })
+
+  itemMeta
+    .sort((a, b) => a.distance - b.distance)
+    .forEach(({ item, offset }, order) => {
+      item.classList.remove("bookmark-folder-reveal")
+      item.style.setProperty(
+        "--bookmark-folder-reveal-x",
+        isVertical ? "0px" : `${offset}px`,
+      )
+      item.style.setProperty(
+        "--bookmark-folder-reveal-y",
+        isVertical ? `${offset}px` : "0px",
+      )
+      item.style.setProperty(
+        "--bookmark-folder-reveal-delay",
+        `${Math.min(order * 22, 180)}ms`,
+      )
+
+      requestAnimationFrame(() => {
+        item.classList.add("bookmark-folder-reveal")
+        window.setTimeout(() => {
+          item.classList.remove("bookmark-folder-reveal")
+          item.style.removeProperty("--bookmark-folder-reveal-x")
+          item.style.removeProperty("--bookmark-folder-reveal-y")
+          item.style.removeProperty("--bookmark-folder-reveal-delay")
+        }, 620)
+      })
+    })
+}
+
 function renderGroupTabs() {
   const groups = getBookmarkGroups()
   const activeId = getActiveGroupId()
@@ -1885,6 +2046,12 @@ function renderGroupTabs() {
     tab.addEventListener("click", () => {
       if (group.id !== activeId) {
         if (isSelectionMode) cancelSelection()
+        pendingGroupTabActiveAnimation = {
+          fromRect: getGroupTabAnimationRect(
+            bookmarkGroupsContainer.querySelector(".bookmark-group-tab.active"),
+          ),
+        }
+        pendingFolderBookmarkReveal = true
         setActiveGroupId(group.id)
         renderBookmarks()
       }
@@ -1949,6 +2116,12 @@ function renderGroupTabs() {
       }
       groups.push(newGroup)
       setBookmarkGroups(groups)
+      pendingGroupTabActiveAnimation = {
+        fromRect: getGroupTabAnimationRect(
+          bookmarkGroupsContainer.querySelector(".bookmark-group-tab.active"),
+        ),
+      }
+      pendingFolderBookmarkReveal = true
       setActiveGroupId(newGroup.id) // Switch to new group
       renderBookmarks()
       showBookmarkUndo(
@@ -1958,6 +2131,7 @@ function renderGroupTabs() {
     }
   })
   bookmarkGroupsContainer.appendChild(addTab)
+  requestAnimationFrame(animateGroupTabActiveRunner)
 }
 
 export function initBookmarks() {

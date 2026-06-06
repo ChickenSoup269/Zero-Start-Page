@@ -703,7 +703,7 @@
   "clock_weekday_full_fri": "Friday",
   "clock_weekday_full_sat": "Saturday",
   "settings_export": "Export JSON",
-  "settings_import": "Import",
+  "settings_import": "Import JSON",
   "alert_export_success": "Settings exported successfully!",
   "confirm_export_include_unsplash_key_title": "Export Settings",
   "confirm_export_include_unsplash_key": "Include Unsplash Access Key in exported JSON?",
