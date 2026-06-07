@@ -144,6 +144,8 @@ async function bootstrap() {
     document.body.classList.add("bookmark-group-accent-enabled")
   if (currentSettings.bookmarkGroupKeepBgOnInteraction !== false)
     document.body.classList.add("bookmark-group-keep-bg-on-interaction")
+  if (currentSettings.bookmarkGroupShowCount === false)
+    document.body.classList.add("bookmark-group-count-hidden")
   if ((currentSettings.bookmarkGroupBgOpacity ?? 0) <= 0)
     document.body.classList.add("bookmark-group-tab-bg-transparent")
   if (currentSettings.bookmarkGroupContainerBgHidden === true)

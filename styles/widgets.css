@@ -8841,8 +8841,7 @@ body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
   .bookmark-group-tab.active {
   color: color-mix(in srgb, var(--text-color, #fff) 86%, var(--accent-color) 14%) !important;
   opacity: 1 !important;
-  outline: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42) !important;
-  outline-offset: -1px;
+  outline: none !important;
 }
 
 body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
@@ -9261,4 +9260,126 @@ body.bookmark-group-tab-bg-transparent .bookmark-group-tab.active .group-tab-cou
     color-mix(in srgb, var(--accent-color, #a8c0ff) 78%, white 22%) !important;
   color: var(--accent-contrast-color, #10131a) !important;
   display: inline-flex !important;
+}
+
+body.bookmark-group-count-hidden .bookmark-group-tab:not(.add-group-tab) {
+  grid-template-columns: auto minmax(0, 1fr) !important;
+}
+
+body.bookmark-group-count-hidden .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-sidebar-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-top-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-left-mode
+  .bookmark-group-tab
+  .group-tab-count {
+  display: none !important;
+}
+
+body.bookmark-group-border-hidden .bookmark-groups-container,
+body.bookmark-group-border-hidden .bookmark-group-tab,
+body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
+body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
+body.bookmark-group-border-hidden.bookmark-sidebar-mode
+  .bookmark-groups-container,
+body.bookmark-group-border-hidden.bookmark-sidebar-mode .bookmark-group-tab,
+body.bookmark-group-border-hidden.bookmark-sidebar-mode
+  .bookmark-group-tab
+  .group-tab-icon,
+body.bookmark-group-border-hidden.bookmark-sidebar-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-border-hidden.bookmark-taskbar-mode
+  .bookmark-groups-container,
+body.bookmark-group-border-hidden.bookmark-taskbar-mode .bookmark-group-tab,
+body.bookmark-group-border-hidden.bookmark-taskbar-mode
+  .bookmark-group-tab
+  .group-tab-icon,
+body.bookmark-group-border-hidden.bookmark-taskbar-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
+  .bookmark-groups-container,
+body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
+  .bookmark-group-tab,
+body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
+  .bookmark-group-tab
+  .group-tab-icon,
+body.bookmark-group-border-hidden.bookmark-taskbar-top-mode
+  .bookmark-group-tab
+  .group-tab-count,
+body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
+  .bookmark-groups-container,
+body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
+  .bookmark-group-tab,
+body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
+  .bookmark-group-tab
+  .group-tab-icon,
+body.bookmark-group-border-hidden.bookmark-taskbar-left-mode
+  .bookmark-group-tab
+  .group-tab-count {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden)
+  .bookmark-group-tab.active,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden)
+  .bookmark-group-tab.active:hover,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-sidebar-mode
+  .bookmark-group-tab.active,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-sidebar-mode
+  .bookmark-group-tab.active:hover,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-mode
+  .bookmark-group-tab.active,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-mode
+  .bookmark-group-tab.active:hover,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-top-mode
+  .bookmark-group-tab.active,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-top-mode
+  .bookmark-group-tab.active:hover,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-left-mode
+  .bookmark-group-tab.active,
+body:not(.bookmark-group-tab-bg-transparent):not(.bookmark-group-border-hidden).bookmark-taskbar-left-mode
+  .bookmark-group-tab.active:hover {
+  border-color: var(--accent-color, #a8c0ff) !important;
+  box-shadow:
+    0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.26) inset,
+    0 8px 20px rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
+}
+
+body.bookmark-group-count-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden .bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-sidebar-mode #bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-mode #bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-top-mode #bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-count-hidden.bookmark-taskbar-left-mode #bookmark-groups-container .bookmark-group-tab .group-tab-count {
+  display: none !important;
+}
+
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab:hover,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab.active:hover,
+body.bookmark-group-tab-bg-transparent.bookmark-group-accent-enabled .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent.bookmark-group-accent-enabled .bookmark-group-tab.active:hover,
+body.bookmark-group-tab-bg-transparent.bookmark-sidebar-mode .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent.bookmark-sidebar-mode .bookmark-group-tab.active:hover,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-mode .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-mode .bookmark-group-tab.active:hover,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-top-mode .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-top-mode .bookmark-group-tab.active:hover,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-left-mode .bookmark-group-tab.active,
+body.bookmark-group-tab-bg-transparent.bookmark-taskbar-left-mode .bookmark-group-tab.active:hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
