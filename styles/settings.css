@@ -1849,6 +1849,7 @@ body.sidebar-light .preset-code-line-value {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin: 0;
   flex-shrink: 0;
+  align-self: center;
 }
 
 .setting-item-row input[type="checkbox"]:checked {
@@ -1863,8 +1864,9 @@ body.sidebar-light .preset-code-line-value {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  top: 1.5px;
-  left: 1.5px;
+  top: 50%;
+  left: 3px;
+  transform: translateY(-50%);
   background-color: #fff;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -1872,7 +1874,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .setting-item-row input[type="checkbox"]:checked::before {
-  left: var(--space-2);
+  left: 21px;
   background-color: var(--accent-contrast-color, #fff);
   box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.4);
 }
@@ -1882,7 +1884,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .setting-item-row input[type="checkbox"]:checked:active::before {
-  left: var(--space-2);
+  left: 17px;
 }
 
 .setting-group input[type="text"],
@@ -4433,7 +4435,7 @@ body.sidebar-light .preset-code-line-value {
   min-height: 52px;
   gap: var(--space-2) !important;
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping for long labels */
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
 }
@@ -4443,8 +4445,15 @@ body.sidebar-light .preset-code-line-value {
   line-height: 1.4 !important;
   font-size: 0.9rem !important;
   margin-right: 0 !important;
-  flex: 1 1 150px; /* Minimum width before wrapping */
+  flex: 1 1 auto;
+  min-width: 0;
   cursor: pointer;
+}
+
+.settings-sidebar .setting-item-row > div,
+.settings-sidebar .setting-item-row > .setting-label {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .settings-sidebar .setting-item-row select,
@@ -7084,4 +7093,36 @@ body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-hi
 
 .sidebar-bug-btn {
   bottom: var(--space-5) !important;
+}
+
+/* Keep sidebar toggle switches visually centered in rows with long or stacked labels. */
+.settings-sidebar .setting-item-row {
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+}
+
+.settings-sidebar .setting-item-row > label,
+.settings-sidebar .setting-item-row > div,
+.settings-sidebar .setting-item-row > .setting-label {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.settings-sidebar .setting-item-row input[type="checkbox"] {
+  align-self: center !important;
+  flex: 0 0 38px !important;
+}
+
+.settings-sidebar .setting-item-row input[type="checkbox"]::before {
+  top: 50% !important;
+  left: 3px !important;
+  transform: translateY(-50%) !important;
+}
+
+.settings-sidebar .setting-item-row input[type="checkbox"]:checked::before {
+  left: 21px !important;
+}
+
+.settings-sidebar .setting-item-row input[type="checkbox"]:checked:active::before {
+  left: 17px !important;
 }
