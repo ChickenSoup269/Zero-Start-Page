@@ -1775,7 +1775,10 @@ export function setupGeneralEventHandlers(
   }
 
   const previewMaterialAccent = (color) => {
-    const scheme = buildMaterial3Scheme(color)
+    const scheme = buildMaterial3Scheme(
+      color,
+      getSettings().m3PaletteStyle || "tonalSpot",
+    )
     const root = document.documentElement
     const tokens = {
       "--m3-seed": scheme.seed,
@@ -1850,6 +1853,12 @@ export function setupGeneralEventHandlers(
 
   DOM.accentColorModeDefault?.addEventListener("change", () => {
     if (DOM.accentColorModeDefault.checked) handleAccentModeChange("default")
+  })
+
+  DOM.m3PaletteStyleSelect?.addEventListener("change", () => {
+    const style = DOM.m3PaletteStyleSelect.value || "tonalSpot"
+    handleSettingUpdate("m3PaletteStyle", style)
+    previewAccent(DOM.accentColorPicker.value)
   })
 
   DOM.accentColorPicker.addEventListener("input", () => {
@@ -5806,6 +5815,9 @@ export function setupGeneralEventHandlers(
     }
     if (key === "widgetUseM3Accent" && DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = value === true
+    }
+    if (key === "m3PaletteStyle" && DOM.m3PaletteStyleSelect) {
+      DOM.m3PaletteStyleSelect.value = value || "tonalSpot"
     }
     if (key === "accentColorMode") {
       if (DOM.accentColorModeM3) DOM.accentColorModeM3.checked = value !== "default"

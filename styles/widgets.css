@@ -8830,10 +8830,30 @@ body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
   .bookmark-group-tab.active::after {
   background: var(--accent-color);
   border-radius: 999px;
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.62);
   content: "";
   display: block;
   pointer-events: none;
   position: absolute;
+}
+
+body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
+  .bookmark-group-tab.active {
+  color: color-mix(in srgb, var(--text-color, #fff) 86%, var(--accent-color) 14%) !important;
+  opacity: 1 !important;
+  outline: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42) !important;
+  outline-offset: -1px;
+}
+
+body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
+  .bookmark-group-tab.active
+  .group-tab-icon,
+body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled)
+  .bookmark-group-tab.active
+  .group-tab-count {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.38) !important;
+  color: var(--accent-color, #a8c0ff) !important;
 }
 
 body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(.bookmark-taskbar-top-mode)
@@ -8843,14 +8863,14 @@ body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled).bookm
 body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled).bookmark-taskbar-left-mode
   .bookmark-group-tab.active::after {
   bottom: -1px;
-  height: 2px;
+  height: 4px;
   left: 10px;
   right: 10px;
 }
 
 body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled).bookmark-taskbar-top-mode
   .bookmark-group-tab.active::after {
-  height: 2px;
+  height: 4px;
   left: 10px;
   right: 10px;
   top: -1px;
@@ -8861,7 +8881,7 @@ body.bookmark-group-tab-bg-transparent:not(.bookmark-group-accent-enabled).bookm
   bottom: 8px;
   right: -1px;
   top: 8px;
-  width: 2px;
+  width: 4px;
 }
 
 .bookmark-group-tab .group-tab-icon,
@@ -9215,5 +9235,30 @@ body.bookmark-sidebar-mode.bookmark-macos-hover
   .bookmark-stack-popup.is-selecting
   .bookmark-stack-popup-item.selected
   .bookmark-stack-popup-check {
+  display: inline-flex !important;
+}
+
+.bookmark .bookmark-stack-count,
+#bookmark-groups-container .bookmark-group-tab .group-tab-count,
+.bookmark-group-tab .group-tab-count,
+#hidden-bookmarks-popup .bookmark .bookmark-stack-count,
+body.hide-bookmark-text .bookmark .bookmark-stack-count,
+body.bookmark-sidebar-mode .bookmark .bookmark-stack-count,
+body.bookmark-taskbar-mode .bookmark .bookmark-stack-count,
+body.bookmark-taskbar-top-mode .bookmark .bookmark-stack-count,
+body.bookmark-taskbar-left-mode .bookmark .bookmark-stack-count,
+body.bookmark-macos-hover .bookmark .bookmark-stack-count,
+body.bookmark-sidebar-mode .bookmark-group-tab .group-tab-count,
+body.bookmark-taskbar-mode .bookmark-group-tab .group-tab-count,
+body.bookmark-taskbar-top-mode .bookmark-group-tab .group-tab-count,
+body.bookmark-taskbar-left-mode .bookmark-group-tab .group-tab-count,
+body.bookmark-group-accent-enabled .bookmark-group-tab.active .group-tab-count,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab .group-tab-count,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab:hover .group-tab-count,
+body.bookmark-group-tab-bg-transparent .bookmark-group-tab.active .group-tab-count {
+  background: var(--accent-color, #a8c0ff) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--accent-color, #a8c0ff) 78%, white 22%) !important;
+  color: var(--accent-contrast-color, #10131a) !important;
   display: inline-flex !important;
 }

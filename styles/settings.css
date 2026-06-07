@@ -6869,6 +6869,11 @@ body.sidebar-light .settings-sidebar {
   opacity: 0.56;
 }
 
+#m3-palette-style-select {
+  max-width: 170px;
+  min-width: 132px;
+}
+
 body:not(.allow-text-selection)
   *:not(input):not(textarea):not([contenteditable="true"]) {
   -webkit-user-select: none !important;

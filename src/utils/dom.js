@@ -91,6 +91,9 @@ export const randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )
 export const m3DynamicColorBtn = document.getElementById("m3-dynamic-color-btn")
+export const m3PaletteStyleSelect = document.getElementById(
+  "m3-palette-style-select",
+)
 export const m3AutoBgToggle = document.getElementById("m3-auto-bg-toggle")
 export const saveAccentColorBtn = document.getElementById(
   "save-accent-color-btn",

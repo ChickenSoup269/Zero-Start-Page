@@ -320,30 +320,241 @@ const hslToHex = (h, s, l) => {
 
 const tone = (h, s, l) => hslToHex(h, s, l)
 
-export function buildMaterial3Scheme(seedHex = "#6750a4") {
+const M3_PALETTE_STYLES = {
+  tonalSpot: {
+    primaryHue: 0,
+    secondaryHue: 0,
+    tertiaryHue: 58,
+    chromaMin: 28,
+    chromaMax: 78,
+    primaryScale: 1,
+    secondaryScale: 0.42,
+    tertiaryScale: 0.55,
+    secondaryMin: 20,
+    secondaryMax: 38,
+    tertiaryMin: 24,
+    tertiaryMax: 48,
+    neutralScale: 0.12,
+    neutralMin: 4,
+    neutralMax: 14,
+    neutralVariantScale: 0.22,
+    neutralVariantMin: 8,
+    neutralVariantMax: 24,
+  },
+  fidelity: {
+    primaryHue: 0,
+    secondaryHue: 0,
+    tertiaryHue: 48,
+    chromaMin: 0,
+    chromaMax: 100,
+    primaryScale: 1,
+    secondaryScale: 0.58,
+    tertiaryScale: 0.64,
+    secondaryMin: 10,
+    secondaryMax: 72,
+    tertiaryMin: 14,
+    tertiaryMax: 76,
+    neutralScale: 0.1,
+    neutralMin: 0,
+    neutralMax: 12,
+    neutralVariantScale: 0.18,
+    neutralVariantMin: 2,
+    neutralVariantMax: 20,
+  },
+  content: {
+    primaryHue: 0,
+    secondaryHue: 12,
+    tertiaryHue: 42,
+    chromaMin: 18,
+    chromaMax: 86,
+    primaryScale: 0.96,
+    secondaryScale: 0.5,
+    tertiaryScale: 0.62,
+    secondaryMin: 16,
+    secondaryMax: 54,
+    tertiaryMin: 18,
+    tertiaryMax: 62,
+    neutralScale: 0.08,
+    neutralMin: 2,
+    neutralMax: 10,
+    neutralVariantScale: 0.16,
+    neutralVariantMin: 6,
+    neutralVariantMax: 18,
+  },
+  vibrant: {
+    primaryHue: 0,
+    secondaryHue: 18,
+    tertiaryHue: 52,
+    chromaMin: 58,
+    chromaMax: 100,
+    primaryScale: 1.18,
+    secondaryScale: 0.86,
+    tertiaryScale: 0.9,
+    secondaryMin: 42,
+    secondaryMax: 88,
+    tertiaryMin: 46,
+    tertiaryMax: 92,
+    neutralScale: 0.16,
+    neutralMin: 6,
+    neutralMax: 18,
+    neutralVariantScale: 0.3,
+    neutralVariantMin: 12,
+    neutralVariantMax: 30,
+  },
+  expressive: {
+    primaryHue: 240,
+    secondaryHue: 120,
+    tertiaryHue: 60,
+    chromaMin: 42,
+    chromaMax: 92,
+    primaryScale: 0.96,
+    secondaryScale: 0.72,
+    tertiaryScale: 0.84,
+    secondaryMin: 34,
+    secondaryMax: 68,
+    tertiaryMin: 38,
+    tertiaryMax: 78,
+    neutralScale: 0.14,
+    neutralMin: 5,
+    neutralMax: 16,
+    neutralVariantScale: 0.26,
+    neutralVariantMin: 10,
+    neutralVariantMax: 28,
+  },
+  fruitSalad: {
+    primaryHue: -50,
+    secondaryHue: 50,
+    tertiaryHue: 130,
+    chromaMin: 46,
+    chromaMax: 96,
+    primaryScale: 1.02,
+    secondaryScale: 0.82,
+    tertiaryScale: 0.86,
+    secondaryMin: 38,
+    secondaryMax: 78,
+    tertiaryMin: 40,
+    tertiaryMax: 82,
+    neutralScale: 0.1,
+    neutralMin: 3,
+    neutralMax: 12,
+    neutralVariantScale: 0.22,
+    neutralVariantMin: 8,
+    neutralVariantMax: 24,
+  },
+  neutral: {
+    primaryHue: 0,
+    secondaryHue: 0,
+    tertiaryHue: 24,
+    chromaMin: 8,
+    chromaMax: 24,
+    primaryScale: 0.68,
+    secondaryScale: 0.36,
+    tertiaryScale: 0.42,
+    secondaryMin: 4,
+    secondaryMax: 16,
+    tertiaryMin: 5,
+    tertiaryMax: 18,
+    neutralScale: 0.04,
+    neutralMin: 0,
+    neutralMax: 5,
+    neutralVariantScale: 0.08,
+    neutralVariantMin: 0,
+    neutralVariantMax: 10,
+  },
+  monochrome: {
+    primaryHue: 0,
+    secondaryHue: 0,
+    tertiaryHue: 0,
+    chromaMin: 0,
+    chromaMax: 0,
+    primaryScale: 0,
+    secondaryScale: 0,
+    tertiaryScale: 0,
+    secondaryMin: 0,
+    secondaryMax: 0,
+    tertiaryMin: 0,
+    tertiaryMax: 0,
+    neutralScale: 0,
+    neutralMin: 0,
+    neutralMax: 0,
+    neutralVariantScale: 0,
+    neutralVariantMin: 0,
+    neutralVariantMax: 0,
+  },
+  rainbow: {
+    primaryHue: 0,
+    secondaryHue: 60,
+    tertiaryHue: 120,
+    chromaMin: 24,
+    chromaMax: 58,
+    primaryScale: 0.8,
+    secondaryScale: 0.72,
+    tertiaryScale: 0.72,
+    secondaryMin: 20,
+    secondaryMax: 42,
+    tertiaryMin: 20,
+    tertiaryMax: 42,
+    neutralScale: 0.02,
+    neutralMin: 0,
+    neutralMax: 4,
+    neutralVariantScale: 0.06,
+    neutralVariantMin: 0,
+    neutralVariantMax: 8,
+  },
+}
+
+const resolveM3PaletteStyle = (style) =>
+  M3_PALETTE_STYLES[style] || M3_PALETTE_STYLES.tonalSpot
+
+export function buildMaterial3Scheme(seedHex = "#6750a4", paletteStyle = "tonalSpot") {
   const seedRgb = hexToRgb(seedHex)
   const seed = rgbToHsl(seedRgb)
-  const chroma = clamp(seed.s, 28, 78)
+  const style = resolveM3PaletteStyle(paletteStyle)
+  const chroma = clamp(seed.s, style.chromaMin, style.chromaMax)
+  const primaryHue = seed.h + style.primaryHue
+  const secondaryHue = seed.h + style.secondaryHue
+  const tertiaryHue = seed.h + style.tertiaryHue
   const neutralHue = seed.h
-  const neutralChroma = clamp(seed.s * 0.12, 4, 14)
-  const neutralVariantChroma = clamp(seed.s * 0.22, 8, 24)
-  const secondaryChroma = clamp(chroma * 0.42, 20, 38)
-  const tertiaryHue = (seed.h + 58) % 360
-  const tertiaryChroma = clamp(chroma * 0.55, 24, 48)
+  const primaryChroma = clamp(
+    chroma * style.primaryScale,
+    style.chromaMin,
+    style.chromaMax,
+  )
+  const neutralChroma = clamp(
+    seed.s * style.neutralScale,
+    style.neutralMin,
+    style.neutralMax,
+  )
+  const neutralVariantChroma = clamp(
+    seed.s * style.neutralVariantScale,
+    style.neutralVariantMin,
+    style.neutralVariantMax,
+  )
+  const secondaryChroma = clamp(
+    chroma * style.secondaryScale,
+    style.secondaryMin,
+    style.secondaryMax,
+  )
+  const tertiaryChroma = clamp(
+    chroma * style.tertiaryScale,
+    style.tertiaryMin,
+    style.tertiaryMax,
+  )
 
-  const primary = tone(seed.h, chroma, 80)
+  const primary = tone(primaryHue, primaryChroma, 80)
   const primaryRgb = hexToRgb(primary)
 
   return {
     seed: seedHex,
+    paletteStyle,
     primary,
-    onPrimary: tone(seed.h, chroma, 18),
-    primaryContainer: tone(seed.h, chroma * 0.86, 30),
-    onPrimaryContainer: tone(seed.h, chroma, 92),
-    secondary: tone(seed.h, secondaryChroma, 80),
-    onSecondary: tone(seed.h, secondaryChroma, 18),
-    secondaryContainer: tone(seed.h, secondaryChroma, 30),
-    onSecondaryContainer: tone(seed.h, secondaryChroma, 92),
+    onPrimary: tone(primaryHue, primaryChroma, 18),
+    primaryContainer: tone(primaryHue, primaryChroma * 0.86, 30),
+    onPrimaryContainer: tone(primaryHue, primaryChroma, 92),
+    secondary: tone(secondaryHue, secondaryChroma, 80),
+    onSecondary: tone(secondaryHue, secondaryChroma, 18),
+    secondaryContainer: tone(secondaryHue, secondaryChroma, 30),
+    onSecondaryContainer: tone(secondaryHue, secondaryChroma, 92),
     tertiary: tone(tertiaryHue, tertiaryChroma, 80),
     onTertiary: tone(tertiaryHue, tertiaryChroma, 18),
     tertiaryContainer: tone(tertiaryHue, tertiaryChroma, 30),
@@ -359,7 +570,7 @@ export function buildMaterial3Scheme(seedHex = "#6750a4") {
     outlineVariant: tone(neutralHue, neutralVariantChroma, 32),
     inverseSurface: tone(neutralHue, neutralChroma, 90),
     inverseOnSurface: tone(neutralHue, neutralChroma, 14),
-    inversePrimary: tone(seed.h, chroma, 40),
+    inversePrimary: tone(primaryHue, primaryChroma, 40),
     surfaceTint: primary,
     primaryRgb: `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`,
   }

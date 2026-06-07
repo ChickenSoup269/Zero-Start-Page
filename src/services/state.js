@@ -77,6 +77,7 @@ export const defaultSettings = {
   tabIconTextColor: "#ffffff",
   accentColor: "#00ff73",
   accentColorMode: "m3",
+  m3PaletteStyle: "tonalSpot",
   m3AutoAccentFromBg: false,
   widgetUseM3Accent: false,
   sidebarBg: "rgba(20, 20, 25, 0.85)",
@@ -798,6 +799,7 @@ export async function backupToCloud(options = {}) {
     const styleKeys = [
       "accentColor",
       "accentColorMode",
+      "m3PaletteStyle",
       "font",
       "userColors",
       "userAccentColors",
@@ -1153,6 +1155,7 @@ export const resetComponentPositions = (options = {}) => {
       const styleKeys = [
         "accentColor",
         "accentColorMode",
+        "m3PaletteStyle",
         "theme",
         "font",
         "clockFont",

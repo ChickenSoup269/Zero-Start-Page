@@ -1065,6 +1065,25 @@
                         <div class="color-group-label"
                             style="font-size: 0.75rem; opacity: 0.7; margin-bottom: 6px; width: 100%; grid-column: 1 / -1;"
                             data-i18n="settings_accent_dynamic">Dynamic Color (M3)</div>
+                        <label class="setting-item-row accent-auto-bg-row"
+                            style="grid-column: 1 / -1; margin-bottom: 10px;">
+                            <div>
+                                <span data-i18n="settings_m3_palette_style">M3 palette style</span>
+                                <small data-i18n="settings_m3_palette_style_hint">Choose how Material colors are
+                                    mixed</small>
+                            </div>
+                            <select id="m3-palette-style-select" class="compact-select">
+                                <option value="tonalSpot" data-i18n="settings_m3_palette_tonal_spot">Tonal Spot</option>
+                                <option value="fidelity" data-i18n="settings_m3_palette_fidelity">Fidelity</option>
+                                <option value="content" data-i18n="settings_m3_palette_content">Content</option>
+                                <option value="vibrant" data-i18n="settings_m3_palette_vibrant">Vibrant</option>
+                                <option value="expressive" data-i18n="settings_m3_palette_expressive">Expressive</option>
+                                <option value="fruitSalad" data-i18n="settings_m3_palette_fruit_salad">Fruit Salad</option>
+                                <option value="neutral" data-i18n="settings_m3_palette_neutral">Neutral</option>
+                                <option value="monochrome" data-i18n="settings_m3_palette_monochrome">Monochrome</option>
+                                <option value="rainbow" data-i18n="settings_m3_palette_rainbow">Rainbow</option>
+                            </select>
+                        </label>
                         <button id="m3-dynamic-color-btn" class="secondary-btn full-width"
                             style="grid-column: 1 / -1; margin-bottom: 10px; border-radius: 8px; justify-content: center; border: 1px solid var(--accent-color); font-weight: 600;">
                             <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract from

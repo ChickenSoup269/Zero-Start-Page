@@ -101,9 +101,9 @@ function clearBackgroundVideo(video) {
   }
 }
 
-function applyMaterialAccentTokens(seedColor) {
+function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
   const root = document.documentElement
-  const scheme = buildMaterial3Scheme(seedColor)
+  const scheme = buildMaterial3Scheme(seedColor, paletteStyle)
   const tokenMap = {
     "--m3-seed": scheme.seed,
     "--m3-primary": scheme.primary,
@@ -168,7 +168,7 @@ function applyAccentTokens(settings) {
   if ((settings.accentColorMode || "m3") === "default") {
     return applyDefaultAccentTokens(color)
   }
-  return applyMaterialAccentTokens(color)
+  return applyMaterialAccentTokens(color, settings.m3PaletteStyle || "tonalSpot")
 }
 
 const EFFECT_KEY_MAP = {
@@ -2817,6 +2817,9 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = settings.widgetUseM3Accent === true
+    }
+    if (DOM.m3PaletteStyleSelect) {
+      DOM.m3PaletteStyleSelect.value = settings.m3PaletteStyle || "tonalSpot"
     }
     if (DOM.accentColorModeM3) {
       DOM.accentColorModeM3.checked =
