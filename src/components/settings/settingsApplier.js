@@ -45,10 +45,57 @@ let _perfLastApply = 0
 
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
+function getBackgroundLayoutValues(settings) {
+  const fit = settings.bgSize || "cover"
+  const scale = Math.min(
+    250,
+    Math.max(25, Number(settings.bgImageScale) || 100),
+  )
+
+  switch (fit) {
+    case "custom":
+      return { size: `${scale}%`, repeat: "no-repeat" }
+    case "stretch":
+      return { size: "100% 100%", repeat: "no-repeat" }
+    case "tile":
+      return { size: "auto", repeat: "repeat" }
+    case "center":
+      return { size: "auto", repeat: "no-repeat" }
+    case "span":
+      return { size: "cover", repeat: "no-repeat" }
+    default:
+      return { size: fit, repeat: "no-repeat" }
+  }
+}
+
 const getBackgroundSizeValue = (settings) =>
-  settings.bgSize === "custom"
-    ? `${Math.min(250, Math.max(25, Number(settings.bgImageScale) || 100))}%`
-    : settings.bgSize || "cover"
+  getBackgroundLayoutValues(settings).size
+
+const getBackgroundRepeatValue = (settings) =>
+  getBackgroundLayoutValues(settings).repeat
+
+function applyBackgroundVideoLayout(video, settings) {
+  if (!video) return
+  const fit = settings.bgSize || "cover"
+  const scale = Math.min(
+    250,
+    Math.max(25, Number(settings.bgImageScale) || 100),
+  )
+  const x = settings.bgPositionX ?? 50
+  const y = settings.bgPositionY ?? 50
+
+  video.style.objectPosition = `${x}% ${y}%`
+  video.style.objectFit =
+    fit === "contain" || fit === "tile"
+      ? "contain"
+      : fit === "stretch"
+        ? "fill"
+        : fit === "center"
+          ? "none"
+          : "cover"
+  video.style.transform =
+    fit === "custom" ? `translateZ(0) scale(${scale / 100})` : "translateZ(0)"
+}
 
 function configureBackgroundVideo(video, settings) {
   if (!video) return
@@ -578,6 +625,7 @@ function createApplySettings(effectInstances) {
   return function applySettings() {
     const settings = getSettings()
     const backgroundSize = getBackgroundSizeValue(settings)
+    const backgroundRepeat = getBackgroundRepeatValue(settings)
     const bgChanged = settings.background !== _prevBg
     _prevBg = settings.background
     let shouldUseSvgWave = false
@@ -775,17 +823,20 @@ function createApplySettings(effectInstances) {
         bgFadeLayer.style.background = bgLayer.style.background
         bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
         bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
+        bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
         bgFadeLayer.style.opacity = "1"
       } else if (bgFadeLayer) {
         bgFadeLayer.className = ""
         bgFadeLayer.style.background = ""
         bgFadeLayer.style.backgroundImage = ""
         bgFadeLayer.style.backgroundSize = ""
+        bgFadeLayer.style.backgroundRepeat = ""
         bgFadeLayer.style.opacity = "0"
       }
       if (bgLayer) {
         bgLayer.style.backgroundImage = ""
         bgLayer.style.backgroundSize = ""
+        bgLayer.style.backgroundRepeat = ""
         bgLayer.style.background = ""
         bgLayer.className = ""
         bgLayer.style.opacity = "1"
@@ -832,6 +883,7 @@ function createApplySettings(effectInstances) {
         if (typeof preview === "string" && preview.startsWith("data:")) {
           bgLayer.style.backgroundImage = cssUrl(preview)
           bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
         } else if (
           typeof preview === "string" &&
           preview.includes("gradient(")
@@ -842,6 +894,7 @@ function createApplySettings(effectInstances) {
         } else if (typeof preview === "string" && preview.startsWith("blob:")) {
           bgLayer.style.backgroundImage = cssUrl(preview)
           bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
         }
       }
       document.body.classList.add("bg-layer-active")
@@ -860,12 +913,7 @@ function createApplySettings(effectInstances) {
     if (bgVideoElement) bgVideoElement.style.display = "none"
     if (bgVideoElement) {
       configureBackgroundVideo(bgVideoElement, settings)
-      bgVideoElement.style.objectFit =
-        settings.bgSize === "contain" ? "contain" : "cover"
-      bgVideoElement.style.transform =
-        settings.bgSize === "custom"
-          ? `translateZ(0) scale(${(Number(settings.bgImageScale) || 100) / 100})`
-          : ""
+      applyBackgroundVideoLayout(bgVideoElement, settings)
     }
 
     const applyUserSelectedBackgroundBehindSplashCursor = () => {
@@ -897,10 +945,12 @@ function createApplySettings(effectInstances) {
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
             document.body.classList.remove("preload-bg-preview")
           }
         }
         document.body.style.backgroundSize = backgroundSize
+        document.body.style.backgroundRepeat = backgroundRepeat
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else if (bg) {
         document.body.classList.add("bg-image-active")
@@ -920,6 +970,7 @@ function createApplySettings(effectInstances) {
           if (bgLayer) {
             bgLayer.style.backgroundImage = cssUrl(bg)
             bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else {
@@ -1173,11 +1224,13 @@ function createApplySettings(effectInstances) {
           if (imageUrl) {
             bgLayer.style.backgroundImage = cssUrl(imageUrl)
             bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
             document.body.classList.remove("preload-bg-preview")
           }
         }
       }
       document.body.style.backgroundSize = backgroundSize
+      document.body.style.backgroundRepeat = backgroundRepeat
       document.documentElement.style.setProperty("--text-color", "#ffffff")
     }
     // Priority 5: Remote URL or Solid Color or Legacy Gradient
@@ -1198,6 +1251,7 @@ function createApplySettings(effectInstances) {
         if (bgLayer) {
           bgLayer.style.backgroundImage = cssUrl(bg)
           bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
@@ -1351,6 +1405,7 @@ function createApplySettings(effectInstances) {
                 _bgFadeLayer.style.background = ""
                 _bgFadeLayer.style.backgroundImage = ""
                 _bgFadeLayer.style.backgroundSize = ""
+                _bgFadeLayer.style.backgroundRepeat = ""
               },
               Math.max(250, Number(getSettings().bgFadeIn ?? 0.5) * 1000 + 120),
             )
@@ -3067,9 +3122,15 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.background.startsWith("data:image/") ||
         settings.background.startsWith("blob:") ||
         settings.background.startsWith("http"))
+    const isVideoBg =
+      settings.background &&
+      (isIdbVideo(settings.background) ||
+        settings.background.startsWith("data:video/") ||
+        isVideoBackgroundValue(settings.background))
 
     if (DOM.bgPositionSetting)
-      DOM.bgPositionSetting.style.display = isImageBg ? "block" : "none"
+      DOM.bgPositionSetting.style.display =
+        isImageBg || isVideoBg ? "block" : "none"
 
     DOM.clockColorPicker.style.opacity = settings.clockColor ? "1" : "0.5"
     DOM.dateColorPicker.style.opacity = settings.dateColor ? "1" : "0.5"

@@ -309,10 +309,23 @@
         isImageLikeBackground(settings.background) &&
         !isIndexedDbImage
       const earlyBg = cssText(buildEarlyBackgroundCss())
-      const earlyBgSize =
-        settings.bgSize === "custom"
-          ? `${Math.min(250, Math.max(25, Number(settings.bgImageScale) || 100))}%`
-          : settings.bgSize || "cover"
+      const fit = settings.bgSize || "cover"
+      const scale = Math.min(
+        250,
+        Math.max(25, Number(settings.bgImageScale) || 100),
+      )
+      const earlyBgLayout =
+        fit === "custom"
+          ? { size: `${scale}%`, repeat: "no-repeat" }
+          : fit === "stretch"
+            ? { size: "100% 100%", repeat: "no-repeat" }
+            : fit === "tile"
+              ? { size: "auto", repeat: "repeat" }
+              : fit === "center"
+                ? { size: "auto", repeat: "no-repeat" }
+                : fit === "span"
+                  ? { size: "cover", repeat: "no-repeat" }
+                  : { size: fit, repeat: "no-repeat" }
       body.classList.add("preload-bg-ready", "bg-layer-active")
       css += `:root { 
         --accent-color: ${accentColor};
@@ -332,7 +345,7 @@
       }\n`
       css += `body.preload-bg-ready { background: #050505 !important; background-image: none !important; animation: none !important; }\n`
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
-      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgSize}; background-repeat: no-repeat; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
+      css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgLayout.size}; background-repeat: ${earlyBgLayout.repeat}; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }

@@ -2028,8 +2028,19 @@ export function setupGeneralEventHandlers(
     const y = next.bgPositionY ?? current.bgPositionY ?? 50
     const fit = next.bgSize ?? current.bgSize ?? "cover"
     const scale = Number(next.bgImageScale ?? current.bgImageScale ?? 100)
-    const size =
-      fit === "custom" ? `${Math.min(250, Math.max(25, scale || 100))}%` : fit
+    const clampedScale = Math.min(250, Math.max(25, scale || 100))
+    const layout =
+      fit === "custom"
+        ? { size: `${clampedScale}%`, repeat: "no-repeat" }
+        : fit === "stretch"
+          ? { size: "100% 100%", repeat: "no-repeat" }
+          : fit === "tile"
+            ? { size: "auto", repeat: "repeat" }
+            : fit === "center"
+              ? { size: "auto", repeat: "no-repeat" }
+              : fit === "span"
+                ? { size: "cover", repeat: "no-repeat" }
+                : { size: fit, repeat: "no-repeat" }
     const filters = [
       `blur(${next.bgBlur ?? current.bgBlur ?? 0}px)`,
       `brightness(${next.bgBrightness ?? current.bgBrightness ?? 100}%)`,
@@ -2050,17 +2061,26 @@ export function setupGeneralEventHandlers(
     )
     if (bgLayer) {
       bgLayer.style.backgroundPosition = `${x}% ${y}%`
-      bgLayer.style.backgroundSize = size
+      bgLayer.style.backgroundSize = layout.size
+      bgLayer.style.backgroundRepeat = layout.repeat
       bgLayer.style.filter = filters
     }
     document.body.style.backgroundPosition = `${x}% ${y}%`
-    document.body.style.backgroundSize = size
+    document.body.style.backgroundSize = layout.size
+    document.body.style.backgroundRepeat = layout.repeat
     document.body.style.filter = document.body.style.filter || ""
     if (bgVideo) {
       bgVideo.style.objectPosition = `${x}% ${y}%`
-      bgVideo.style.objectFit = fit === "contain" ? "contain" : "cover"
+      bgVideo.style.objectFit =
+        fit === "contain" || fit === "tile"
+          ? "contain"
+          : fit === "stretch"
+            ? "fill"
+            : fit === "center"
+              ? "none"
+              : "cover"
       bgVideo.style.transform =
-        fit === "custom" ? `translateZ(0) scale(${(scale || 100) / 100})` : ""
+        fit === "custom" ? `translateZ(0) scale(${clampedScale / 100})` : ""
       bgVideo.style.filter = filters
     }
   }
