@@ -1,5 +1,6 @@
 import { geti18n } from "../services/i18n.js"
 import { showPrompt } from "../utils/dialog.js"
+import { showToast } from "../utils/toast.js"
 
 const STORAGE_KEY = "startpageGoogleAppsV2"
 const ICON_BASE =
@@ -14,9 +15,12 @@ const latestIconFiles = new Set([
   "google-finance.png",
   "Google-passwords-Icon.png",
 ])
+const ACCOUNT_DEFAULT_ICON =
+  "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExODU3YnA3eWVvc2NocWpqZXJldHc3dXN4ZXBhMThsMHE1eDlybXQwciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/y4nk5bgwpWL6T5Ax9y/giphy.gif"
 const defaultOptions = {
   dragEnabled: false,
   showTitles: true,
+  showAppText: true,
   largePopup: false,
   showMiniSearch: true,
 }
@@ -459,7 +463,9 @@ function normalizeUrl(value) {
   return `https://${url}`
 }
 
-function getIconUrl(item) {
+function getIconUrl(item, state = {}) {
+  if (state.iconUrls?.[item.id]) return state.iconUrls[item.id]
+  if (item.id === "account") return ACCOUNT_DEFAULT_ICON
   if (item.iconSlug) {
     const fileName = item.iconSlug.includes(".")
       ? item.iconSlug
@@ -540,7 +546,7 @@ function createSection(title, grid, className = "") {
 function createItem(item, state, onContextMenu) {
   const options = { ...defaultOptions, ...(state.options || {}) }
   const link = document.createElement("a")
-  link.href = state.urls?.[item.id] || item.url
+  link.href = item.url
   link.target = "_blank"
   link.rel = "noopener noreferrer"
   link.className = "g-app-item"
@@ -552,7 +558,7 @@ function createItem(item, state, onContextMenu) {
   icon.className = "g-app-icon"
 
   const img = document.createElement("img")
-  img.src = getIconUrl(item)
+  img.src = getIconUrl(item, state)
   img.alt = getLabel(item)
   img.loading = "eager"
   img.addEventListener(
@@ -611,7 +617,10 @@ export function initGoogleApps() {
     state = {
       sectionApps: getSectionApps(state),
       favorites: cleanFavorites(state.favorites),
-      urls: state.urls && typeof state.urls === "object" ? state.urls : {},
+      iconUrls:
+        state.iconUrls && typeof state.iconUrls === "object"
+          ? state.iconUrls
+          : {},
       options: {
         ...defaultOptions,
         ...(state.options || {}),
@@ -620,6 +629,7 @@ export function initGoogleApps() {
     }
     root.classList.toggle("g-apps-drag-enabled", state.options.dragEnabled)
     root.classList.toggle("g-apps-hide-titles", !state.options.showTitles)
+    root.classList.toggle("g-apps-hide-app-text", !state.options.showAppText)
     root.classList.toggle("g-apps-search-hidden", !state.options.showMiniSearch)
     dropdown?.classList.toggle("g-apps-large-popup", state.options.largePopup)
 
@@ -802,19 +812,65 @@ export function initGoogleApps() {
     true,
   )
 
-  async function editUrl(item) {
-    const currentUrl = state.urls?.[item.id] || item.url
-    const nextUrl = await showPrompt(
-      geti18n().g_apps_edit_url_prompt || "Enter a custom URL for this app:",
-      currentUrl,
+  function showIconChangedToast(previousIconUrls) {
+    const i18n = geti18n()
+    showToast(i18n.g_apps_icon_changed || "Google app icon updated", {
+      type: "success",
+      undoFn: () => {
+        state.iconUrls = previousIconUrls
+        render()
+      },
+    })
+  }
+
+  async function editIconUrl(item) {
+    const previousIconUrls = { ...(state.iconUrls || {}) }
+    const currentIcon = state.iconUrls?.[item.id] || getIconUrl(item, state)
+    const nextIcon = await showPrompt(
+      geti18n().g_apps_edit_icon_prompt || "Enter a custom icon URL:",
+      currentIcon,
       getLabel(item),
     )
-    if (nextUrl === null) return
-    const normalized = normalizeUrl(nextUrl)
-    state.urls = { ...(state.urls || {}) }
-    if (normalized && normalized !== item.url) state.urls[item.id] = normalized
-    else delete state.urls[item.id]
+    if (nextIcon === null) return
+
+    const normalized = normalizeUrl(nextIcon)
+    state.iconUrls = { ...(state.iconUrls || {}) }
+    if (normalized && normalized !== getIconUrl(item, { iconUrls: {} })) {
+      state.iconUrls[item.id] = normalized
+    } else {
+      delete state.iconUrls[item.id]
+    }
     render()
+    showIconChangedToast(previousIconUrls)
+  }
+
+  function uploadIcon(item) {
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "image/*"
+    input.addEventListener("change", () => {
+      const file = input.files?.[0]
+      if (!file) return
+      const reader = new FileReader()
+      const previousIconUrls = { ...(state.iconUrls || {}) }
+      reader.addEventListener("load", () => {
+        state.iconUrls = { ...(state.iconUrls || {}) }
+        state.iconUrls[item.id] = String(reader.result || "")
+        render()
+        showIconChangedToast(previousIconUrls)
+      })
+      reader.readAsDataURL(file)
+    })
+    input.click()
+  }
+
+  function resetIcon(item) {
+    if (!state.iconUrls?.[item.id]) return
+    const previousIconUrls = { ...(state.iconUrls || {}) }
+    state.iconUrls = { ...(state.iconUrls || {}) }
+    delete state.iconUrls[item.id]
+    render()
+    showIconChangedToast(previousIconUrls)
   }
 
   function resetGoogleApps() {
@@ -837,9 +893,12 @@ export function initGoogleApps() {
     const i18n = geti18n()
     return {
       open: i18n.g_apps_menu_open || "Open",
-      editUrl: i18n.g_apps_menu_edit_url || "Edit URL",
+      editIcon: i18n.g_apps_menu_edit_icon || "Edit icon URL",
+      uploadIcon: i18n.g_apps_menu_upload_icon || "Upload icon",
+      resetIcon: i18n.g_apps_menu_reset_icon || "Reset this icon",
       dragEnabled: i18n.g_apps_menu_drag || "Enable drag & drop",
       showTitles: i18n.g_apps_menu_titles || "Show titles",
+      showAppText: i18n.g_apps_menu_app_text || "Show app names",
       largePopup: i18n.g_apps_menu_large_popup || "Large popup",
       showMiniSearch: i18n.g_apps_menu_mini_search || "Mini search",
       reset: i18n.g_apps_reset || "Reset Google Apps",
@@ -895,14 +954,26 @@ export function initGoogleApps() {
     menu.innerHTML = `<div class="g-apps-menu-title">${labels.currentApp}</div>`
     menu.appendChild(
       createMenuButton("fa-solid fa-up-right-from-square", labels.open, () => {
-        window.open(state.urls?.[item.id] || item.url, "_blank", "noopener")
+        window.open(item.url, "_blank", "noopener")
         hideGoogleAppsMenu()
       }),
     )
     menu.appendChild(
-      createMenuButton("fa-solid fa-link", labels.editUrl, () => {
+      createMenuButton("fa-solid fa-image", labels.editIcon, () => {
         hideGoogleAppsMenu()
-        editUrl(item)
+        editIconUrl(item)
+      }),
+    )
+    menu.appendChild(
+      createMenuButton("fa-solid fa-upload", labels.uploadIcon, () => {
+        hideGoogleAppsMenu()
+        uploadIcon(item)
+      }),
+    )
+    menu.appendChild(
+      createMenuButton("fa-solid fa-rotate-left", labels.resetIcon, () => {
+        hideGoogleAppsMenu()
+        resetIcon(item)
       }),
     )
 
@@ -911,6 +982,7 @@ export function initGoogleApps() {
     list.append(
       createMenuToggle("dragEnabled", labels.dragEnabled),
       createMenuToggle("showTitles", labels.showTitles),
+      createMenuToggle("showAppText", labels.showAppText),
       createMenuToggle("showMiniSearch", labels.showMiniSearch),
       createMenuToggle("largePopup", labels.largePopup),
     )

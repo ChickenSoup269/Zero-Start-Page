@@ -146,6 +146,31 @@ function applyMaterialAccentTokens(seedColor) {
   return scheme
 }
 
+function applyDefaultAccentTokens(seedColor) {
+  const root = document.documentElement
+  const color = seedColor || "#00ff73"
+  const rgb = hexToRgb(color)
+
+  root.style.setProperty("--accent-color", color)
+  root.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+  root.style.setProperty("--accent-contrast-color", getContrastYIQ(color))
+  root.style.setProperty("--safe-accent", color)
+
+  return {
+    accent: color,
+    onAccent: getContrastYIQ(color),
+    onPrimary: getContrastYIQ(color),
+  }
+}
+
+function applyAccentTokens(settings) {
+  const color = settings.accentColor || "#00ff73"
+  if ((settings.accentColorMode || "m3") === "default") {
+    return applyDefaultAccentTokens(color)
+  }
+  return applyMaterialAccentTokens(color)
+}
+
 const EFFECT_KEY_MAP = {
   galaxy: "starFallEffect",
   fireflies: "firefliesEffect",
@@ -1941,7 +1966,7 @@ function createApplySettings(effectInstances) {
     }
 
     if (settings.accentColor) {
-      const m3Scheme = applyMaterialAccentTokens(settings.accentColor)
+      const accentScheme = applyAccentTokens(settings)
 
       // Sidebar Dynamic Color & Monochrome Logic
       const forceLightSidebar = settings.showQuickAccessBg === true
@@ -1954,7 +1979,7 @@ function createApplySettings(effectInstances) {
         )
         document.body.classList.add("sidebar-light")
       } else {
-        applyMaterialAccentTokens(settings.accentColor)
+        applyAccentTokens(settings)
 
         // Default sidebar color from theme/settings
         if (settings.sidebarBg) {
@@ -1971,7 +1996,7 @@ function createApplySettings(effectInstances) {
       if (unsplashRandomBtn) {
         const icon = unsplashRandomBtn.querySelector("i")
         if (icon) {
-          icon.style.color = m3Scheme.onPrimary
+          icon.style.color = accentScheme.onPrimary
         }
       }
     }
@@ -2792,6 +2817,14 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = settings.widgetUseM3Accent === true
+    }
+    if (DOM.accentColorModeM3) {
+      DOM.accentColorModeM3.checked =
+        (settings.accentColorMode || "m3") === "m3"
+    }
+    if (DOM.accentColorModeDefault) {
+      DOM.accentColorModeDefault.checked =
+        settings.accentColorMode === "default"
     }
     if (DOM.accentColorSettingsBody) {
       const isOpen = settings.accentControlsOpen !== false

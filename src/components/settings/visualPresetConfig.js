@@ -1,6 +1,7 @@
 export const VISUAL_THEME_KEYS = [
   "theme",
   "accentColor",
+  "accentColorMode",
   "sidebarBg",
   "panelBg",
   "glassBg",

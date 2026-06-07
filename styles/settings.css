@@ -6825,6 +6825,50 @@ body.sidebar-light .settings-sidebar {
   margin-top: 2px;
 }
 
+.accent-mode-toggle {
+  background: color-mix(in srgb, var(--m3-surface-container) 68%, transparent);
+  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 66%, transparent);
+  border-radius: var(--radius-sm, 8px);
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.accent-mode-option {
+  align-items: center;
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--m3-on-surface, #fff) 82%, transparent);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 34px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.accent-mode-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.accent-mode-option:has(input:checked) {
+  background: var(--accent-color);
+  box-shadow: 0 8px 18px rgba(var(--accent-color-rgb), 0.22);
+  color: var(--accent-contrast-color, #0b0f14);
+}
+
+#accent-color-settings-body.accent-mode-default .accent-auto-bg-row,
+#accent-color-settings-body.accent-mode-default #m3-dynamic-color-btn {
+  opacity: 0.56;
+}
+
 body:not(.allow-text-selection)
   *:not(input):not(textarea):not([contenteditable="true"]) {
   -webkit-user-select: none !important;

@@ -44,7 +44,12 @@ import {
   clearAllMedia,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams, updateWaveColorPreviews } from "./svgWaveUtils.js"
-import { buildMaterial3Scheme, getRandomHexColor } from "../../utils/colors.js"
+import {
+  buildMaterial3Scheme,
+  getContrastYIQ,
+  getRandomHexColor,
+  hexToRgb,
+} from "../../utils/colors.js"
 import {
   setUnsplashRandomBackground,
   populateUnsplashCollections,
@@ -1759,6 +1764,16 @@ export function setupGeneralEventHandlers(
     }
   }
 
+  const previewDefaultAccent = (color) => {
+    const root = document.documentElement
+    const rgb = hexToRgb(color)
+
+    root.style.setProperty("--accent-color", color)
+    root.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+    root.style.setProperty("--accent-contrast-color", getContrastYIQ(color))
+    root.style.setProperty("--safe-accent", color)
+  }
+
   const previewMaterialAccent = (color) => {
     const scheme = buildMaterial3Scheme(color)
     const root = document.documentElement
@@ -1801,9 +1816,45 @@ export function setupGeneralEventHandlers(
     root.style.setProperty("--safe-accent", scheme.inversePrimary)
   }
 
+  const previewAccent = (color) => {
+    const mode = getSettings().accentColorMode || "m3"
+    if (mode === "default") {
+      previewDefaultAccent(color)
+      return
+    }
+    previewMaterialAccent(color)
+  }
+
+  const syncAccentModeControls = () => {
+    const mode = getSettings().accentColorMode || "m3"
+    if (DOM.accentColorModeM3) DOM.accentColorModeM3.checked = mode === "m3"
+    if (DOM.accentColorModeDefault)
+      DOM.accentColorModeDefault.checked = mode === "default"
+    DOM.accentColorSettingsBody?.classList.toggle(
+      "accent-mode-default",
+      mode === "default",
+    )
+  }
+
+  const handleAccentModeChange = (mode) => {
+    handleSettingUpdate("accentColorMode", mode)
+    syncAccentModeControls()
+    previewAccent(DOM.accentColorPicker.value)
+  }
+
+  syncAccentModeControls()
+
+  DOM.accentColorModeM3?.addEventListener("change", () => {
+    if (DOM.accentColorModeM3.checked) handleAccentModeChange("m3")
+  })
+
+  DOM.accentColorModeDefault?.addEventListener("change", () => {
+    if (DOM.accentColorModeDefault.checked) handleAccentModeChange("default")
+  })
+
   DOM.accentColorPicker.addEventListener("input", () => {
     const val = DOM.accentColorPicker.value
-    previewMaterialAccent(val)
+    previewAccent(val)
     updateAccentHexInput(val)
   })
   DOM.accentColorPicker.addEventListener("change", () => {
@@ -5755,6 +5806,15 @@ export function setupGeneralEventHandlers(
     }
     if (key === "widgetUseM3Accent" && DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = value === true
+    }
+    if (key === "accentColorMode") {
+      if (DOM.accentColorModeM3) DOM.accentColorModeM3.checked = value !== "default"
+      if (DOM.accentColorModeDefault)
+        DOM.accentColorModeDefault.checked = value === "default"
+      DOM.accentColorSettingsBody?.classList.toggle(
+        "accent-mode-default",
+        value === "default",
+      )
     }
     if (key === "musicPlayerUseDefaultColor" && DOM.musicPlayerUseDefaultColorCheckbox) {
       DOM.musicPlayerUseDefaultColorCheckbox.checked = value === true

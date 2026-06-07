@@ -453,6 +453,7 @@
   width: 32px;
   height: 32px;
   display: block;
+  border-radius: 5px;
   object-fit: contain;
   object-position: center;
   transition: transform 0.2s;
@@ -497,8 +498,16 @@
   padding: 0 var(--space-0-5);
 }
 
-.g-apps-hide-titles .g-app-item span {
-  display: none;
+.g-apps-hide-titles .g-apps-section h4 {
+  display: none !important;
+}
+
+.g-apps-hide-app-text .g-app-item span {
+  display: none !important;
+}
+
+:lang(vi) .g-apps-hide-app-text .g-app-item span {
+  display: none !important;
 }
 
 :lang(vi) .g-app-item span {

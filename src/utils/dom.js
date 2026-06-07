@@ -81,6 +81,12 @@ export const accentColorToggleLabel = document.getElementById(
 export const accentColorSettingsBody = document.getElementById(
   "accent-color-settings-body",
 )
+export const accentColorModeM3 = document.getElementById(
+  "accent-color-mode-m3",
+)
+export const accentColorModeDefault = document.getElementById(
+  "accent-color-mode-default",
+)
 export const randomAccentColorBtn = document.getElementById(
   "random-accent-color-btn",
 )
