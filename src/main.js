@@ -588,7 +588,9 @@ async function bootstrap() {
       updateSetting("userBackgrounds", migrated)
       saveSettings()
     }
-    await preloadImages(getSettings().userBackgrounds)
+    const { activeBgUid, background } = getSettings()
+    // Chỉ preload ảnh đang active ngay lập tức; các ảnh còn lại lazy-load
+    await preloadImages(getSettings().userBackgrounds, activeBgUid || background || null)
 
     if (typeof window.appApplySettings === "function") {
       window.appApplySettings()

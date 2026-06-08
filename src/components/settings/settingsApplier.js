@@ -39,6 +39,7 @@ import { buildMultiColorCss } from "./multiColorManager.js"
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
 let _perfMonitorStarted = false
+let _perfMonitorRafId = null
 let _perfAvgFrameMs = 16.7
 let _perfLagging = false
 let _perfLastApply = 0
@@ -280,11 +281,19 @@ function ensurePerformanceMonitor() {
   _perfMonitorStarted = true
 
   let lastFrame = performance.now()
+  const scheduleTick = () => {
+    if (_perfMonitorRafId === null && document.visibilityState === "visible") {
+      _perfMonitorRafId = requestAnimationFrame(tick)
+    }
+  }
   const tick = (now) => {
+    _perfMonitorRafId = null
+    if (document.visibilityState !== "visible") return
+
     const delta = now - lastFrame
     lastFrame = now
 
-    if (document.visibilityState === "visible" && delta > 0 && delta < 1000) {
+    if (delta > 0 && delta < 1000) {
       _perfAvgFrameMs = _perfAvgFrameMs * 0.9 + delta * 0.1
       const nextLagging = _perfAvgFrameMs > 34
       if (nextLagging !== _perfLagging) {
@@ -302,10 +311,20 @@ function ensurePerformanceMonitor() {
       }
     }
 
-    requestAnimationFrame(tick)
+    scheduleTick()
   }
 
-  requestAnimationFrame(tick)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      lastFrame = performance.now()
+      scheduleTick()
+    } else if (_perfMonitorRafId !== null) {
+      cancelAnimationFrame(_perfMonitorRafId)
+      _perfMonitorRafId = null
+    }
+  })
+
+  scheduleTick()
 }
 
 function getPerformanceProfile(settings) {

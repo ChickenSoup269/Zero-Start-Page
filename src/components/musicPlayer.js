@@ -437,9 +437,6 @@ export class MusicPlayer {
     this.lastSourceMeta = sourceMeta
     this.applySourceMeta(sourceMeta)
 
-    const wasPlaying = this.container
-      .querySelector(".vinyl-disc")
-      .classList.contains("playing")
     this.isPlaying = !data.paused
 
     const btn = document.getElementById("play-pause-btn")
@@ -452,22 +449,10 @@ export class MusicPlayer {
       this.disc.classList.add("playing")
       if (wrapper) wrapper.classList.add("playing")
       this.visualizer.start()
-      // Audio sync is currently disabled to prevent performance issues on media sites
-      /*
-      if (!wasPlaying) {
-        chrome.runtime.sendMessage({ action: "startAudioSync" })
-      }
-      */
     } else {
       this.disc.classList.remove("playing")
       if (wrapper) wrapper.classList.remove("playing")
       this.visualizer.stop()
-      // Audio sync is currently disabled
-      /*
-      if (wasPlaying) {
-        chrome.runtime.sendMessage({ action: "stopAudioSync" })
-      }
-      */
     }
 
     // Update thumbnail

@@ -11,7 +11,9 @@ const THUMB_STORE_NAME = "thumbnails"
 const DB_VERSION = 2
 
 // In-memory cache: id -> blobUrl (revokeObjectURL khi xoá)
-const _urlCache = new Map()
+// Giới hạn số lượng entries để tránh rò rỉ bộ nhớ.
+const MAX_URL_CACHE_SIZE = 5
+const _urlCache = new Map() // insertion-order = LRU (xoá entry đầu tiên khi đầy)
 const _thumbCache = new Map()
 let _mediaIdCounter = 0
 
@@ -86,12 +88,11 @@ export async function saveImage(blob, customId) {
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
-  if (_urlCache.has(id)) URL.revokeObjectURL(_urlCache.get(id))
   if (_thumbCache.has(id)) {
     URL.revokeObjectURL(_thumbCache.get(id))
     _thumbCache.delete(id)
   }
-  _urlCache.set(id, URL.createObjectURL(blob))
+  _urlCacheSet(id, URL.createObjectURL(blob))
   return id
 }
 
@@ -118,7 +119,7 @@ export async function getImageUrl(id) {
   })
   if (!blob) return null
   const url = URL.createObjectURL(blob)
-  _urlCache.set(id, url)
+  _urlCacheSet(id, url)
   return url
 }
 
@@ -163,13 +164,47 @@ export async function clearAllMedia() {
   })
 }
 
-/** Preload blob URLs cho tất cả IDB IDs (gọi khi khởi động) */
-export async function preloadImages(ids) {
-  for (const id of ids) {
-    const mediaId = typeof id === "object" && id ? id.id : id
-    if (isIdbMedia(mediaId) && !_urlCache.has(mediaId)) {
-      await getImageUrl(mediaId).catch(() => {})
-    }
+/**
+ * Thêm vào cache có giới hạn — evict entry đầu tiên (oldest) khi vượt MAX_URL_CACHE_SIZE.
+ * @param {string} id
+ * @param {string} url
+ */
+function _urlCacheSet(id, url) {
+  // Nếu đã tồn tại, xoá rồi set lại để đưa lên cuối (LRU)
+  if (_urlCache.has(id)) {
+    URL.revokeObjectURL(_urlCache.get(id))
+    _urlCache.delete(id)
+  } else if (_urlCache.size >= MAX_URL_CACHE_SIZE) {
+    // Evict entry cũ nhất (first inserted)
+    const oldestKey = _urlCache.keys().next().value
+    URL.revokeObjectURL(_urlCache.get(oldestKey))
+    _urlCache.delete(oldestKey)
+  }
+  _urlCache.set(id, url)
+}
+
+/**
+ * Preload blob URL cho ảnh đang active ngay lập tức.
+ * Các ảnh còn lại lazy-load khi thực sự cần qua getImageUrl().
+ * @param {Array} ids - mảng userBackgrounds
+ * @param {string|null} activeId - ID của ảnh đang active
+ */
+export async function preloadImages(ids, activeId) {
+  if (!Array.isArray(ids) || ids.length === 0) return
+
+  // Ưu tiên load ảnh active trước
+  const activeMediaId = (() => {
+    if (!activeId) return null
+    const found = ids.find((bg) => {
+      if (typeof bg === "object" && bg) return bg.uid === activeId || bg.id === activeId
+      return bg === activeId
+    })
+    if (!found) return null
+    return typeof found === "object" ? found.id : found
+  })()
+
+  if (activeMediaId && isIdbMedia(activeMediaId) && !_urlCache.has(activeMediaId)) {
+    await getImageUrl(activeMediaId).catch(() => {})
   }
 }
 
@@ -211,7 +246,7 @@ export async function saveVideo(blob) {
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
-  _urlCache.set(id, URL.createObjectURL(blob))
+  _urlCacheSet(id, URL.createObjectURL(blob))
   return id
 }
 
@@ -225,7 +260,7 @@ export async function saveAudio(blob) {
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
-  _urlCache.set(id, URL.createObjectURL(blob))
+  _urlCacheSet(id, URL.createObjectURL(blob))
   return id
 }
 
