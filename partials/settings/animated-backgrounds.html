@@ -1,0 +1,2102 @@
+            <!-- Animated Backgrounds Section -->
+            <div class="settings-section" data-section-id="animated-backgrounds">
+                <h3 class="section-toggle" id="animated-backgrounds-header">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="settings_animated_backgrounds_title">Background Animations</span>
+                </h3>
+                <div class="section-content" id="animated-backgrounds-body">
+                    <div class="setting-group">
+                        <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
+                            <div class="preset-code-header">
+                                <div>
+                                    <strong data-i18n="background_animation_preset_share_title">Share Background
+                                        Animation Code</strong>
+                                    <small data-i18n="background_animation_preset_bundle_hint">Gradient V2, Silk, Light
+                                        Pillar, Mist Light Streams and Splash Cursor</small>
+                                </div>
+                                <span class="preset-code-chip">BAC1</span>
+                            </div>
+                            <div class="preset-code-actions">
+                                <button id="background-animation-copy-code-btn" class="secondary-btn small">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span data-i18n="preset_code_copy">Copy Code</span>
+                                </button>
+                                <button id="background-animation-apply-code-btn" class="secondary-btn small">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span data-i18n="preset_code_apply">Apply Code</span>
+                                </button>
+                            </div>
+                            <textarea id="background-animation-code-input" class="preset-code-input" rows="2"
+                                data-i18n-placeholder="preset_code_placeholder"
+                                placeholder="Paste a preset code here"></textarea>
+                            <button class="preset-code-lines-toggle secondary-btn" type="button"
+                                data-preset-code-lines-toggle aria-expanded="false">
+                                <i class="fa-solid fa-list-ul"></i>
+                                <span data-i18n="preset_code_show_lines">Show codes</span>
+                            </button>
+                            <div id="background-animation-code-lines" class="preset-code-lines"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="setting-item performance-mode-card">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span data-i18n="settings_performance_mode">Performance Mode</span>
+                            </div>
+                            <div class="btn-group performance-mode-group" id="background-performance-mode-group">
+                                <button type="button" class="btn-group-item performance-mode-btn active"
+                                    data-mode="auto" data-i18n="settings_performance_auto">Auto</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="quality"
+                                    data-i18n="settings_performance_quality">Quality</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="battery"
+                                    data-i18n="settings_performance_battery">Battery Saver</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="low"
+                                    data-i18n="settings_performance_low">Low Setting</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gradient V2 (Animated) Section -->
+                    <div class="setting-group" id="gradient-v2-group">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-brush"></i>
+                            <span data-i18n="settings_gradientV2_title">Gradient V2 (Animated)</span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="gradient-v2-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_gradientV2_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="gradient-v2-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <button id="gradient-v2-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="gradient-v2-toggle-label" data-i18n="settings_gradientV2_open">Open Gradient
+                                V2</span>
+                        </button>
+                        <div id="gradient-v2-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Colors -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-palette"></i> Colors</div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color1">Color 1</label>
+                                        <input type="color" id="gradient-v2-color1" value="#FF9FFC"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color2">Color 2</label>
+                                        <input type="color" id="gradient-v2-color2" value="#5227FF"
+                                            style="width: 100%;">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label data-i18n="settings_gradientV2_color3">Color 3</label>
+                                        <input type="color" id="gradient-v2-color3" value="#B497CF"
+                                            style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-play"></i> Animation</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
+                                            <span id="gradient-v2-time-speed-value" style="opacity: 0.8;">0.25</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-time-speed" min="0" max="2" step="0.05"
+                                            value="0.25">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_colorBalance">Balance</span>
+                                            <span id="gradient-v2-color-balance-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-color-balance" min="-1" max="1" step="0.1"
+                                            value="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Distortion / Warp -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-wind"></i> Warp &
+                                    Distortion
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpStrength">Strength</span>
+                                            <span id="gradient-v2-warp-strength-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-warp-strength" min="0" max="5" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpFrequency">Frequency</span>
+                                            <span id="gradient-v2-warp-frequency-value" style="opacity: 0.8;">5.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-warp-frequency" min="0" max="20" step="0.5"
+                                            value="5.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpSpeed">Warp Speed</span>
+                                            <span id="gradient-v2-warp-speed-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-warp-speed" min="0" max="10" step="0.5"
+                                            value="2.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
+                                            <span id="gradient-v2-warp-amplitude-value"
+                                                style="opacity: 0.8;">50.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-warp-amplitude" min="0" max="200" step="5"
+                                            value="50.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Blend & Noise -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-circle-nodes"></i> Blend &
+                                    Noise
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_blendAngle">Angle</span>
+                                            <span id="gradient-v2-blend-angle-value" style="opacity: 0.8;">0°</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-blend-angle" min="0" max="360" value="0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
+                                            <span id="gradient-v2-blend-softness-value"
+                                                style="opacity: 0.8;">0.05</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-blend-softness" min="0" max="1" step="0.01"
+                                            value="0.05">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_rotationAmount">Rotation</span>
+                                            <span id="gradient-v2-rotation-amount-value"
+                                                style="opacity: 0.8;">500</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-rotation-amount" min="0" max="2000"
+                                            step="10" value="500">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_noiseScale">Noise Scale</span>
+                                            <span id="gradient-v2-noise-scale-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-noise-scale" min="0.1" max="10" step="0.1"
+                                            value="2.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Film Grain -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-clapperboard"></i> Film
+                                    Grain
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_grainAmount">Amount</span>
+                                            <span id="gradient-v2-grain-amount-value" style="opacity: 0.8;">0.1</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-grain-amount" min="0" max="1" step="0.01"
+                                            value="0.1">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_grainScale">Scale</span>
+                                            <span id="gradient-v2-grain-scale-value" style="opacity: 0.8;">2.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-grain-scale" min="0.1" max="10" step="0.1"
+                                            value="2.0">
+                                    </div>
+                                </div>
+                                <div class="setting-item-row" style="margin-top: 8px;">
+                                    <label for="gradient-v2-grain-animated"
+                                        data-i18n="settings_gradientV2_grainAnimated">Animated Grain</label>
+                                    <input type="checkbox" id="gradient-v2-grain-animated">
+                                </div>
+                            </div>
+
+                            <!-- Post-Processing -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-adjust"></i> Image
+                                    Adjustment
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_contrast">Contrast</span>
+                                            <span id="gradient-v2-contrast-value" style="opacity: 0.8;">1.5</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-contrast" min="0.5" max="3" step="0.1"
+                                            value="1.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_gamma">Gamma</span>
+                                            <span id="gradient-v2-gamma-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-gamma" min="0.1" max="3" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_saturation">Saturation</span>
+                                            <span id="gradient-v2-saturation-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-saturation" min="0" max="3" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Layout & View -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    Layout
+                                    & Zoom</div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_centerX">Center X</span>
+                                            <span id="gradient-v2-center-x-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-center" min="-1" max="1" step="0.05"
+                                            value="0.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_centerY">Center Y</span>
+                                            <span id="gradient-v2-center-y-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-center-y" min="-1" max="1" step="0.05"
+                                            value="0.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top gradient-v2-grid-full">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_gradientV2_zoom">Zoom</span>
+                                            <span id="gradient-v2-zoom-value" style="opacity: 0.8;">0.9</span>
+                                        </label>
+                                        <input type="range" id="gradient-v2-zoom" min="0.1" max="5" step="0.1"
+                                            value="0.9">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; margin-bottom: 8px;">
+                                <button id="gradient-v2-randomize-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i> <span
+                                        data-i18n="settings_gradientV2_randomize">Randomize</span>
+                                </button>
+                                <button id="gradient-v2-save-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span
+                                        data-i18n="settings_gradientV2_save">Save BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="user-gradient-v2s-gallery-wrap" class="saved-gallery-container"
+                            style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_gradientV2_saved_label">Saved Gradient V2s</span>
+                                    <span id="count-gradient-v2" class="gallery-count"></span>
+                                </label>
+                                <button id="gradient-v2-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
+                            </div>
+                            <div id="gradient-v2-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="gradient-v2-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="gradient-v2-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="gradient-v2-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="gradient-v2-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-gradient-v2s-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Silk Background Section -->
+                    <div class="setting-group" id="silk-group">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-water"></i>
+                            <span data-i18n="settings_silk_title">Silk (Animated)</span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="silk-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_silk_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="silk-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <button id="silk-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="silk-toggle-label" data-i18n="settings_silk_open">Open Silk</span>
+                        </button>
+
+                        <div id="silk-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Color -->
+                            <div class="setting-item">
+                                <label data-i18n="settings_silk_color">Color</label>
+                                <input type="color" id="silk-color" value="#7B7481" style="width: 100%;">
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_silk_speed">Speed</span>
+                                            <span id="silk-speed-value" style="opacity: 0.8;">5.0</span>
+                                        </label>
+                                        <input type="range" id="silk-speed" min="0" max="20" step="0.5" value="5.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_silk_scale">Scale</span>
+                                            <span id="silk-scale-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="silk-scale" min="0.1" max="5.0" step="0.1" value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_silk_noise">Noise Intensity</span>
+                                            <span id="silk-noise-value" style="opacity: 0.8;">1.5</span>
+                                        </label>
+                                        <input type="range" id="silk-noise" min="0" max="5.0" step="0.1" value="1.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_silk_rotation">Rotation</span>
+                                            <span id="silk-rotation-value" style="opacity: 0.8;">0.0</span>
+                                        </label>
+                                        <input type="range" id="silk-rotation" min="0" max="6.28" step="0.1"
+                                            value="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="silk-random-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span data-i18n="settings_silk_randomize">Randomize</span>
+                                </button>
+                                <button id="silk-save-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span data-i18n="settings_silk_save">Save BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="user-silks-gallery-wrap" class="saved-gallery-container" style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_silk_saved_label">Saved Silks</span>
+                                    <span id="count-silk" class="gallery-count"></span>
+                                </label>
+                                <button id="silk-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
+                            </div>
+                            <div id="silk-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="silk-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="silk-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="silk-delete-selected-btn" class="icon-btn danger-btn" title="Delete"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                    <button id="silk-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-silks-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Light Pillar Section -->
+                    <div class="setting-group" id="light-pillar-group">
+                        <div class="setting-label">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span data-i18n="settings_lightPillar_title">Light Pillar (Animated)</span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="light-pillar-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_lightPillar_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="light-pillar-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <button id="light-pillar-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="light-pillar-toggle-label" data-i18n="settings_lightPillar_open">Open Light
+                                Pillar</span>
+                        </button>
+                        <div id="light-pillar-settings" style="display: none; margin-top: 12px;">
+
+                            <div class="gradient-v2-grid">
+                                <div class="setting-item no-margin-top">
+                                    <label data-i18n="settings_lightPillar_topColor">Top Color</label>
+                                    <input type="color" id="light-pillar-top-color" value="#5227FF"
+                                        style="width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label data-i18n="settings_lightPillar_bottomColor">Bottom Color</label>
+                                    <input type="color" id="light-pillar-bottom-color" value="#FF9FFC"
+                                        style="width: 100%;">
+                                </div>
+                            </div>
+
+                            <!-- Animation Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> Controls
+                                </div>
+                                <div class="gradient-v2-grid">
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_intensity">Intensity</span>
+                                            <span id="light-pillar-intensity-value" style="opacity: 0.8;">1.0</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-intensity" min="0" max="5" step="0.1"
+                                            value="1.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_rotationSpeed">Rotation Speed</span>
+                                            <span id="light-pillar-rotation-speed-value"
+                                                style="opacity: 0.8;">0.3</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-rotation-speed" min="0" max="2" step="0.1"
+                                            value="0.3">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_glowAmount">Glow Amount</span>
+                                            <span id="light-pillar-glow-value" style="opacity: 0.8;">0.005</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-glow" min="0" max="0.05" step="0.001"
+                                            value="0.005">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_pillarWidth">Pillar Width</span>
+                                            <span id="light-pillar-width-value" style="opacity: 0.8;">3.0</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-width" min="0.5" max="10" step="0.5"
+                                            value="3.0">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_pillarHeight">Pillar Height</span>
+                                            <span id="light-pillar-height-value" style="opacity: 0.8;">0.4</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-height" min="0.1" max="1" step="0.1"
+                                            value="0.4">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_noiseIntensity">Noise Intensity</span>
+                                            <span id="light-pillar-noise-value" style="opacity: 0.8;">0.5</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-noise" min="0" max="2" step="0.1"
+                                            value="0.5">
+                                    </div>
+                                    <div class="setting-item no-margin-top">
+                                        <label style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_lightPillar_pillarRotation">Pillar Rotation</span>
+                                            <span id="light-pillar-rotation-value" style="opacity: 0.8;">0°</span>
+                                        </label>
+                                        <input type="range" id="light-pillar-rotation" min="0" max="360" step="1"
+                                            value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="light-pillar-random-btn" class="secondary-btn" title="Randomize">
+                                    <i class="fa-solid fa-dice"></i>
+                                    <span data-i18n="settings_lightPillar_randomize">Randomize</span>
+                                </button>
+                                <button id="light-pillar-save-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span data-i18n="settings_lightPillar_save">Save BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="user-light-pillars-gallery-wrap" class="saved-gallery-container"
+                            style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_light_pillar_saved_label">Saved Light Pillars</span>
+                                    <span id="count-light-pillar" class="gallery-count"></span>
+                                </label>
+                                <button id="light-pillar-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
+                            </div>
+                            <div id="light-pillar-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="light-pillar-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="light-pillar-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="light-pillar-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="light-pillar-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-light-pillars-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mist Light Streams Section -->
+                    <div class="setting-group" id="liquid-ether-group">
+                        <div class="setting-label"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-water"></i> <span data-i18n="settings_liquid_ether_title">Mist
+                                    Light Streams
+                                    (Animated)</span></span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="liquid-ether-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_liquid_ether_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="liquid-ether-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <button id="liquid-ether-toggle-btn" class="secondary-btn full-width">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="liquid-ether-toggle-label" data-i18n="settings_liquid_ether_open">Open Mist
+                                Light Streams</span>
+                        </button>
+                        <div id="liquid-ether-settings" style="display: none; margin-top: 12px;">
+
+                            <!-- Colors -->
+                            <div class="setting-item">
+                                <label data-i18n="settings_liquid_ether_colors">Colors</label>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                    <input type="color" id="liquid-ether-color1" value="#5227FF" style="width: 100%;">
+                                    <input type="color" id="liquid-ether-color2" value="#FF9FFC" style="width: 100%;">
+                                    <input type="color" id="liquid-ether-color3" value="#B497CF" style="width: 100%;">
+                                </div>
+                            </div>
+
+                            <!-- Controls -->
+                            <div class="gradient-v2-panel">
+                                <div class="gradient-v2-section-title"><i class="fa-solid fa-sliders"></i> <span
+                                        data-i18n="settings_gradientV2_controls">Controls</span></div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_liquid_ether_glow_width">Glow Width</span>
+                                        <span id="liquid-ether-glow-width-value" style="opacity: 0.8;">5.5</span>
+                                    </label>
+                                    <input type="range" id="liquid-ether-glow-width" min="1" max="9" step="0.1"
+                                        value="5.5">
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 8px;">
+                                <button id="liquid-ether-random-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-dice"></i> <span
+                                        data-i18n="settings_liquid_ether_randomize">Randomize</span>
+                                </button>
+                                <button id="liquid-ether-save-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> <span
+                                        data-i18n="settings_liquid_ether_save">Save
+                                        BG</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="user-liquid-ethers-gallery-wrap" class="saved-gallery-container"
+                            style="margin-top:10px;">
+                            <div class="gallery-header">
+                                <label class="gallery-title">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span data-i18n="settings_liquid_ether_saved_label">Saved Mist Light Streams</span>
+                                    <span id="count-liquid-ether" class="gallery-count"></span>
+                                </label>
+                                <button id="liquid-ether-select-mode-btn" class="secondary-btn select-mode-btn"
+                                    title="Select multiple to delete" data-i18n="bg_select_mode">Select</button>
+                            </div>
+                            <div id="liquid-ether-select-toolbar" class="bg-select-toolbar"
+                                style="display:none; margin-bottom: 10px;">
+                                <span id="liquid-ether-select-count" class="bg-select-count">0 selected</span>
+                                <div style="display: flex; gap: 6px;">
+                                    <button id="liquid-ether-select-all-btn" class="icon-btn" title="Select All"><i
+                                            class="fa-solid fa-check-double"></i></button>
+                                    <button id="liquid-ether-delete-selected-btn" class="icon-btn danger-btn"
+                                        title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                    <button id="liquid-ether-select-cancel-btn" class="icon-btn" title="Cancel"><i
+                                            class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                            <div id="user-liquid-ethers-gallery" class="local-bg-gallery"></div>
+                        </div>
+                    </div>
+
+                    <!-- Splash Cursor Section -->
+                    <div class="setting-group" id="splash-cursor-group">
+                        <div class="setting-label"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-droplet"></i> <span
+                                    data-i18n="settings_splash_cursor_title">Splash Cursor</span></span>
+                        </div>
+
+                        <div class="setting-item-row">
+                            <label for="splash-cursor-active">
+                                <i class="fa-solid fa-power-off"></i>
+                                <span data-i18n="settings_splash_cursor_active">Active</span>
+                            </label>
+                            <input type="checkbox" id="splash-cursor-active">
+                        </div>
+
+                        <div class="settings-note-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span data-i18n="settings_performance_warning">Careful: may lag when used</span>
+                        </div>
+
+                        <button id="splash-cursor-toggle-btn" class="secondary-btn full-width"
+                            style="margin-top: 12px;">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span id="splash-cursor-toggle-label" data-i18n="settings_splash_cursor_open">Open Splash
+                                Cursor</span>
+                        </button>
+                        <div id="splash-cursor-settings" style="display: none; margin-top: 12px;">
+
+                            <div class="setting-item-row" style="margin-bottom: 8px;">
+                                <label for="splash-cursor-dark-bg">
+                                    <i class="fa-solid fa-circle-half-stroke"></i>
+                                    <span data-i18n="settings_splash_cursor_dark_bg">Black background</span>
+                                </label>
+                                <input type="checkbox" id="splash-cursor-dark-bg" checked>
+                            </div>
+                            <button type="button" id="splash-cursor-dark-bg-btn" class="secondary-btn full-width"
+                                style="margin-top: 4px; margin-bottom: 12px;">
+                                <i class="fa-solid fa-moon"></i>
+                                <span data-i18n="settings_splash_cursor_dark_bg_btn">Switch to black background</span>
+                            </button>
+
+                            <div class="setting-item-row" style="margin-bottom: 8px;">
+                                <label for="splash-cursor-rainbow">
+                                    <span data-i18n="settings_splash_cursor_rainbow">Rainbow mode</span>
+                                </label>
+                                <input type="checkbox" id="splash-cursor-rainbow" checked>
+                            </div>
+
+                            <div class="setting-item no-margin-top" id="splash-cursor-color-wrap">
+                                <label data-i18n="settings_splash_cursor_color">Color</label>
+                                <input type="color" id="splash-cursor-color" value="#ff0000" style="width: 100%;">
+                            </div>
+
+                            <div class="setting-item-row" style="margin-top: 8px;">
+                                <label for="splash-cursor-shading">
+                                    <span data-i18n="settings_splash_cursor_shading">Shading</span>
+                                </label>
+                                <input type="checkbox" id="splash-cursor-shading" checked>
+                            </div>
+
+                            <div class="gradient-v2-grid" style="margin-top: 12px;">
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_splat_radius">Splat radius</span>
+                                        <span id="splash-cursor-splat-radius-value" style="opacity: 0.8;">0.2</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-splat-radius" min="0.05" max="1" step="0.05"
+                                        value="0.2">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_splat_force">Splat force</span>
+                                        <span id="splash-cursor-splat-force-value" style="opacity: 0.8;">6000</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-splat-force" min="1000" max="12000" step="500"
+                                        value="6000">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_curl">Curl</span>
+                                        <span id="splash-cursor-curl-value" style="opacity: 0.8;">3</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-curl" min="0" max="10" step="0.5" value="3">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_density">Density dissipation</span>
+                                        <span id="splash-cursor-density-value" style="opacity: 0.8;">3.5</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-density" min="0.5" max="8" step="0.1"
+                                        value="3.5">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_velocity">Velocity dissipation</span>
+                                        <span id="splash-cursor-velocity-value" style="opacity: 0.8;">2</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-velocity" min="0.5" max="5" step="0.1"
+                                        value="2">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_color_speed">Color speed</span>
+                                        <span id="splash-cursor-color-speed-value" style="opacity: 0.8;">10</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-color-speed" min="1" max="30" step="1"
+                                        value="10">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="display: flex; justify-content: space-between;">
+                                        <span data-i18n="settings_splash_cursor_dye_res">Dye resolution</span>
+                                        <span id="splash-cursor-dye-res-value" style="opacity: 0.8;">512</span>
+                                    </label>
+                                    <input type="range" id="splash-cursor-dye-res" min="256" max="1440" step="128"
+                                        value="512">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Effects Section -->
+            <div class="settings-section" data-section-id="special-effects">
+                <h3 class="section-toggle" id="effect-section-header">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="setting_effect" style="flex: 1;">Effect</span>
+                    <span id="count-effect"
+                        style="margin-right: 12px; font-size: 0.8rem; opacity: 0.6; font-weight: normal; text-transform: lowercase;"></span>
+                </h3>
+                <div class="section-content" id="effect-section-body">
+                    <div class="group-body">
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-share-nodes"></i>
+                                <span data-i18n="effect_preset_share_title">Share Effect Code</span>
+                            </div>
+                            <div class="preset-code-card preset-code-card-compact preset-code-card-premium">
+                                <div class="preset-code-header">
+                                    <div>
+                                        <strong data-i18n="effect_preset_bundle_title">Current effect config</strong>
+                                        <small data-i18n="effect_preset_bundle_hint">Effect choice, colors, performance
+                                            and effect-specific settings</small>
+                                    </div>
+                                    <span class="preset-code-chip">SPC1</span>
+                                </div>
+                                <div class="preset-code-actions">
+                                    <button id="effect-preset-copy-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-copy"></i>
+                                        <span data-i18n="preset_code_copy">Copy Code</span>
+                                    </button>
+                                    <button id="effect-preset-apply-code-btn" class="secondary-btn" type="button">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        <span data-i18n="preset_code_apply">Apply Code</span>
+                                    </button>
+                                </div>
+                                <textarea id="effect-preset-code-input" class="preset-code-input" rows="2"
+                                    data-i18n-placeholder="preset_code_placeholder"
+                                    placeholder="Paste preset code here"></textarea>
+                            </div>
+                        </div>
+                        <div class="setting-item performance-mode-card">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span data-i18n="settings_performance_mode">Performance Mode</span>
+                            </div>
+                            <div class="btn-group performance-mode-group" id="performance-mode-group">
+                                <button type="button" class="btn-group-item performance-mode-btn active"
+                                    data-mode="auto" data-i18n="settings_performance_auto">Auto</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="quality"
+                                    data-i18n="settings_performance_quality">Quality</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="battery"
+                                    data-i18n="settings_performance_battery">Battery Saver</button>
+                                <button type="button" class="btn-group-item performance-mode-btn" data-mode="low"
+                                    data-i18n="settings_performance_low">Low Setting</button>
+                            </div>
+                        </div>
+                        <input type="text" id="effect-search" class="effect-search-input"
+                            placeholder="Search effects..." autocomplete="off">
+                        <div id="effect-grid" class="effect-grid">
+                            <div class="effect-category-header">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span data-i18n="effect_overlay_header">Overlay Effects (No Background)</span>
+                            </div>
+                            <button class="effect-item" data-value="none" data-search="none off disable">
+                                <span class="effect-icon"><i class="fa-solid fa-ban"></i></span>
+                                <span class="effect-name" data-i18n="effect_none">None</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="galaxy" data-search="rain galaxy star">
+                                <span class="effect-icon"><i class="fa-solid fa-cloud-rain"></i></span>
+                                <span class="effect-name" data-i18n="effect_galaxy">Rain</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="fireflies" data-search="fireflies glow">
+                                <span class="effect-icon"><i class="fa-solid fa-star"></i></span>
+                                <span class="effect-name" data-i18n="effect_fireflies">Fireflies</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="network" data-search="network connect">
+                                <span class="effect-icon"><i class="fa-solid fa-circle-nodes"></i></span>
+                                <span class="effect-name" data-i18n="effect_network">Network</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="matrix" data-search="matrix rain code">
+                                <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
+                                <span class="effect-name" data-i18n="effect_matrix">Matrix</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="wind" data-search="wind anime speed lines">
+                                <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                                <span class="effect-name" data-i18n="effect_wind">Wind</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="hacker" data-search="hacker binary code">
+                                <span class="effect-icon"><i class="fa-solid fa-code"></i></span>
+                                <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="jellyfish"
+                                data-search="jellyfish sua mourse interactive hover">
+                                <span class="effect-icon"><i class="fas fa-smile"></i></span>
+                                <span class="effect-name" data-i18n="effect_jellyfish">Jellyfish</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="sakura" data-search="sakura cherry blossom">
+                                <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
+                                <span class="effect-name" data-i18n="effect_sakura">Sakura</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="snowfall" data-search="snow snowfall winter">
+                                <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                                <span class="effect-name" data-i18n="effect_snowfall">Snow</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="pixelWeather"
+                                data-search="pixel snow rain wind square block weather weather">
+                                <span class="effect-icon"><i class="fa-brands fa-joomla"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixelWeather">Pixel Weather</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+
+                            <button class="effect-item" data-value="pixelSnowHQ">
+                                <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixel_snow_hq">Pixel Snow HQ</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="snowfallHD"
+                                data-search="snow snowfall hd high quality accumulate pile">
+                                <span class="effect-icon"><i class="fa-solid fa-snowflake"></i></span>
+                                <span class="effect-name" data-i18n="effect_snowfall_hd">Snowfall HD</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="bubbles" data-search="bubbles underwater">
+                                <span class="effect-icon"><i class="fa-solid fa-circle-dot"></i></span>
+                                <span class="effect-name" data-i18n="effect_bubbles">Bubbles</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="cursorTrail"
+                                data-search="cursor trail mouse interactive particles hover">
+                                <span class="effect-icon"><i class="fa-solid fa-arrow-pointer"></i></span>
+                                <span class="effect-name" data-i18n="effect_cursor_trail">Cursor Trail</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="flashlight"
+                                data-search="flashlight spotlight mouse reveal dark highlight lamp">
+                                <span class="effect-icon"><i class="fa-solid fa-lightbulb"></i></span>
+                                <span class="effect-name" data-i18n="effect_flashlight">Flashlight</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="plantGrowth" data-search="plant growth nature">
+                                <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
+                                <span class="effect-name" data-i18n="effect_plant_growth">Plant Growth</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="oceanFish"
+                                data-search="ocean fish aquarium water swim">
+                                <span class="effect-icon"><i class="fa-solid fa-fish"></i></span>
+                                <span class="effect-name" data-i18n="effect_ocean_fish">Ocean Fishes</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="rainHD" data-search="rain hd splash">
+                                <span class="effect-icon"><i class="fa-solid fa-cloud-showers-heavy"></i></span>
+                                <span class="effect-name" data-i18n="effect_rain_hd">Rain HD</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="stormRain"
+                                data-search="rain storm cloud thunder lightning">
+                                <span class="effect-icon"><i class="fa-solid fa-cloud-bolt"></i></span>
+                                <span class="effect-name" data-i18n="effect_storm_rain">Storm Rain</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="wavyLines" data-search="wavy lines wave">
+                                <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
+                                <span class="effect-name" data-i18n="effect_wavy_lines">Wavy Lines</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="firefliesHD" data-search="fireflies hd high">
+                                <span class="effect-icon"><i class="fa-solid fa-wand-sparkles"></i></span>
+                                <span class="effect-name" data-i18n="effect_fireflies_hd">Fireflies HD</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="oceanWave" data-search="ocean wave sea">
+                                <span class="effect-icon"><i class="fa-solid fa-sailboat"></i></span>
+                                <span class="effect-name" data-i18n="effect_ocean_wave">Ocean Wave</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="autumnLeaves" data-search="autumn leaves fall">
+                                <span class="effect-icon"><i class="fa-solid fa-tree"></i></span>
+                                <span class="effect-name" data-i18n="effect_autumn_leaves">Autumn Leaves</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="greenLeaves" data-search="green leaves wind">
+                                <span class="effect-icon"><i class="fa-solid fa-seedling"></i></span>
+                                <span class="effect-name" data-i18n="effect_green_leaves">Green Leaves</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="fallingLeavesSettled"
+                                data-search="falling leaves settled ground pile accumulate">
+                                <span class="effect-icon"><i class="fa-solid fa-leaf"></i></span>
+                                <span class="effect-name" data-i18n="effect_falling_leaves_settled">Settling
+                                    Leaves</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="sunbeam" data-search="sunbeam god rays light">
+                                <span class="effect-icon"><i class="fa-solid fa-sun"></i></span>
+                                <span class="effect-name" data-i18n="effect_sunbeam">Sunbeam</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="lightPillars"
+                                data-search="light pillars vertical sky">
+                                <span class="effect-icon"><i class="fa-solid fa-lines-leaning"></i></span>
+                                <span class="effect-name" data-i18n="effect_lightPillars">Light Pillars</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="tetFireworks"
+                                data-search="tet fireworks hoa mai chuc mung nam moi">
+                                <span class="effect-icon"><i class="fa-solid fa-explosion"></i></span>
+                                <span class="effect-name" data-i18n="effect_tet_fireworks">Tết Fireworks</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="reunificationDay"
+                                data-search="30/4 reunification day thong nhat giai phong mien nam phao hoa fireworks red yellow">
+                                <span class="effect-icon"><i class="fa-solid fa-star"></i></span>
+                                <span class="effect-name" data-i18n="effect_reunification_day">Reunification Day</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="halloween"
+                                data-search="halloween pumpkin bat cat ghost creepy pumpkin spider candy">
+                                <span class="effect-icon"><i class="fa-solid fa-ghost"></i></span>
+                                <span class="effect-name" data-i18n="effect_halloween">Halloween</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="skyLanterns"
+                                data-search="den hoa dang sky lanterns floating light festival">
+                                <span class="effect-icon"><i class="fa-solid fa-fire-flame-curved"></i></span>
+                                <span class="effect-name" data-i18n="effect_sky_lanterns">Sky Lanterns</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="meteor"
+                                data-search="meteor shower sao bang falling stars comet night sky">
+                                <span class="effect-icon"><i class="fa-solid fa-meteor"></i></span>
+                                <span class="effect-name" data-i18n="effect_meteor">Meteor Shower</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="aura" data-search="aura gradient glow">
+                                <span class="effect-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                                <span class="effect-name" data-i18n="effect_aura">Aura</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="pixelCubes"
+                                data-search="pixel cubes 3d rotate green">
+                                <span class="effect-icon"><i class="fa-solid fa-cubes"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixel_cubes">Pixel Cubes</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="gridScan"
+                                data-search="grid scan matrix retro tech radar">
+                                <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                                <span class="effect-name" data-i18n="effect_gridScan">Grid Scan</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="rainbow" data-search="rainbow color">
+                                <span class="effect-icon"><i class="fa-solid fa-palette"></i></span>
+                                <span class="effect-name" data-i18n="effect_rainbow">Rainbow</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="cloudDrift" data-search="cloud drift sky">
+                                <span class="effect-icon"><i class="fa-solid fa-cloud"></i></span>
+                                <span class="effect-name" data-i18n="effect_cloud_drift">Cloud Drift</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="shiny" data-search="shiny prismatic light">
+                                <span class="effect-icon"><i class="fa-solid fa-gem"></i></span>
+                                <span class="effect-name" data-i18n="effect_shiny">Shiny</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="lineShiny" data-search="line shiny glass rays">
+                                <span class="effect-icon"><i class="fa-solid fa-bolt"></i></span>
+                                <span class="effect-name" data-i18n="effect_line_shiny">Line Shiny</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="crtScanlines"
+                                data-search="crt scanline terminal 80s 90s monitor refresh sweep phosphor">
+                                <span class="effect-icon"><i class="fa-solid fa-tv"></i></span>
+                                <span class="effect-name" data-i18n="effect_crt_scanlines">CRT Scanlines</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="retroGame"
+                                data-search="retro game space invaders pixel arcade shooting">
+                                <span class="effect-icon"><i class="fa-solid fa-gamepad"></i></span>
+                                <span class="effect-name" data-i18n="effect_retro_game">Retro Game</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="wavyPattern"
+                                data-search="wavy pattern scallop fish scale ripple animated css">
+                                <span class="effect-icon"><i class="fa-solid fa-wave-square"></i></span>
+                                <span class="effect-name" data-i18n="effect_wavy_pattern">Wavy Pattern</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="angledPattern"
+                                data-search="angled pattern diamond tile stripe animated css">
+                                <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                                <span class="effect-name" data-i18n="effect_angled_pattern">Angled Pattern</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+
+                            <div class="effect-category-header">
+                                <i class="fa-solid fa-image"></i>
+                                <span data-i18n="effect_background_header">Background Effects (Has Background)</span>
+                            </div>
+                            <button class="effect-item" data-value="auroraWave" data-search="aurora wave northern">
+                                <span class="effect-icon"><i class="fa-solid fa-water"></i></span>
+                                <span class="effect-name" data-i18n="effect_aurora_wave">Aurora Wave</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="softAurora"
+                                data-search="soft aurora silk curtains glow cinematic">
+                                <span class="effect-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                <span class="effect-name" data-i18n="effect_soft_aurora">Soft Aurora</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="northernLights"
+                                data-search="northern lights aurora borealis waves">
+                                <span class="effect-icon"><i class="fa-solid fa-wind"></i></span>
+                                <span class="effect-name" data-i18n="effect_northern_lights">Northern Lights</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="pixelRun"
+                                data-search="pixel run mario 8bit platformer retro game">
+                                <span class="effect-icon"><i class="fa-solid fa-gamepad"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixel_run">Pixel Run</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+
+                            <button class="effect-item" data-value="nintendoPixel"
+                                data-search="retro terminal crt monitor phosphor command line pixel scanline">
+                                <span class="effect-icon"><i class="fa-solid fa-terminal"></i></span>
+                                <span class="effect-name" data-i18n="effect_nintendo_pixel">Retro Terminal</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="floatingLines"
+                                data-search="floating lines space cosmic bend mouse hover wavy">
+                                <span class="effect-icon"><i class="fa-solid fa-braille"></i></span>
+                                <span class="effect-name" data-i18n="effect_floating_lines">Floating Lines</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="hyperspace"
+                                data-search="hyperspace cosmic 3d road space tunnel warp starfield">
+                                <span class="effect-icon"><i class="fa-solid fa-rocket"></i></span>
+                                <span class="effect-name" data-i18n="effect_hyperspace">Hyperspace</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                            <button class="effect-item" data-value="pixelBlast"
+                                data-search="pixel blast blast grid ripples liquid distortion modern">
+                                <span class="effect-icon"><i class="fa-solid fa-border-all"></i></span>
+                                <span class="effect-name" data-i18n="effect_pixel_blast">Pixel Blast</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
+                        </div>
+
+                        <!-- Active Effect Settings (Card) -->
+                        <div id="active-effect-settings-container" class="bg-control-card"
+                            style="display: none; margin-top: 15px; animation: fadeIn 0.3s ease;">
+                            <div class="bg-control-title">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span data-i18n="effect_customization">Effect Settings</span>
+                            </div>
+                            <div id="active-effect-settings-body">
+                                <!-- Aurora Wave Settings -->
+                                <div id="aurora-wave-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="aurora-wave-color-picker" data-i18n="setting_aurora_wave_color">Aurora
+                                        Color</label>
+                                    <input type="color" id="aurora-wave-color-picker" value="#00bcd4" />
+                                </div>
+
+                                <div id="aurora-wave-brightness-setting" class="setting-item" style="display: none;">
+                                    <label for="aurora-wave-brightness-slider">
+                                        <span data-i18n="setting_aurora_wave_brightness">Brightness</span>:
+                                        <span id="aurora-wave-brightness-val">0.65</span>
+                                    </label>
+                                    <input type="range" id="aurora-wave-brightness-slider" min="0.1" max="1.5"
+                                        step="0.05" value="0.65" />
+                                </div>
+
+                                <div id="aurora-wave-speed-setting" class="setting-item" style="display: none;">
+                                    <label for="aurora-wave-speed-slider">
+                                        <span data-i18n="settings_pixel_weather_speed">Speed</span>:
+                                        <span id="aurora-wave-speed-val">1.0</span>x
+                                    </label>
+                                    <input type="range" id="aurora-wave-speed-slider" min="0.1" max="3.0" step="0.1"
+                                        value="1.0" />
+                                </div>
+
+                                <div id="aurora-wave-amplitude-setting" class="setting-item" style="display: none;">
+                                    <label for="aurora-wave-amplitude-slider">
+                                        <span data-i18n="setting_aurora_wave_amplitude">Wave Height</span>:
+                                        <span id="aurora-wave-amplitude-val">70</span>px
+                                    </label>
+                                    <input type="range" id="aurora-wave-amplitude-slider" min="10" max="200" step="5"
+                                        value="70" />
+                                </div>
+
+                                <div id="aurora-wave-bg-setting" class="setting-item" style="display: none;">
+                                    <div class="setting-item-row"
+                                        style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                                        <label for="aurora-wave-transparent"
+                                            data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                        <label class="lcp-switch">
+                                            <input type="checkbox" id="aurora-wave-transparent" checked>
+                                            <span class="lcp-slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div id="aurora-wave-bg-color-container" style="margin-top: 10px; display: none;">
+                                        <label for="aurora-wave-bg-color-picker"
+                                            data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                        <input type="color" id="aurora-wave-bg-color-picker" value="#000000" />
+                                    </div>
+                                    <div id="aurora-wave-bg-opacity-container" style="margin-top: 10px;">
+                                        <label for="aurora-wave-bg-opacity-slider">
+                                            <span data-i18n="setting_aurora_wave_bg_opacity">Overlay Opacity</span>:
+                                            <span id="aurora-wave-bg-opacity-val">0.15</span>
+                                        </label>
+                                        <input type="range" id="aurora-wave-bg-opacity-slider" min="0" max="1"
+                                            step="0.05" value="0.15" />
+                                    </div>
+                                </div>
+
+                                <!-- Hacker Color -->
+                                <div id="hacker-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="hacker-color-picker" data-i18n="setting_hacker_color">Hacker Text
+                                        Color</label>
+                                    <input type="color" id="hacker-color-picker" value="#00FF00" />
+                                </div>
+
+                                <!-- Aura Color -->
+                                <div id="aura-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="aura-color-picker" data-i18n="setting_aura_color">Aura Color</label>
+                                    <input type="color" id="aura-color-picker" value="#00ff73" />
+                                </div>
+
+                                <!-- Northern Lights Color -->
+                                <div id="northern-lights-color-setting" class="setting-item" style="display: none;">
+                                    <div class="setting-item-row">
+                                        <label for="northern-lights-color-picker"
+                                            data-i18n="setting_northern_lights_color">Aurora
+                                            Color</label>
+                                        <input type="color" id="northern-lights-color-picker" value="#00ffcc" />
+                                    </div>
+
+                                    <div class="setting-item" style="margin-top: 10px;">
+                                        <label for="northern-lights-style-select"
+                                            data-i18n="settings_northern_lights_style">Aurora Style</label>
+                                        <select id="northern-lights-style-select"
+                                            style="width: 100%; margin-bottom: 15px;">
+                                            <option value="classic" data-i18n="aurora_style_classic">Classic (Old)
+                                            </option>
+                                            <option value="hd" data-i18n="aurora_style_hd">HD Cinematic</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <label for="northern-lights-brightness-slider"
+                                            style="display: flex; justify-content: space-between;">
+                                            <span data-i18n="settings_aurora_brightness">Brightness</span>
+                                            <span id="northern-lights-brightness-val">0.8</span>
+                                        </label>
+                                        <input type="range" id="northern-lights-brightness-slider" min="0.2" max="1.5"
+                                            step="0.1" value="0.8">
+                                    </div>
+                                </div>
+
+
+                                <!-- Pixel Cubes Color -->
+                                <div id="pixel-cubes-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="pixel-cubes-color-picker" data-i18n="setting_pixel_cubes_color">Pixel
+                                        Cubes
+                                        Color</label>
+                                    <input type="color" id="pixel-cubes-color-picker" value="#00ff73" />
+                                </div>
+                                <div id="pixel-cubes-shape-setting" class="setting-item" style="display: none;">
+                                    <label for="pixel-cubes-shape-select" style="margin-top: 10px; display: block;"
+                                        data-i18n="setting_pixel_cubes_shape">Pixel Cubes Shape</label>
+                                    <select id="pixel-cubes-shape-select" style="width: 100%;">
+                                        <option value="cube" data-i18n="pixel_cubes_cube">Cube</option>
+                                        <option value="triangle" data-i18n="pixel_cubes_triangle">Triangle (Pyramid)
+                                        </option>
+                                        <option value="circle" data-i18n="pixel_cubes_circle">Circle (Sphere)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Wind Settings -->
+                                <div id="wind-mode-setting" class="setting-item" style="display: none;">
+                                    <label for="wind-mode-select" data-i18n="setting_wind_mode">Wind Mode</label>
+                                    <select id="wind-mode-select" style="width: 100%;">
+                                        <option value="2d" data-i18n="wind_mode_2d">2D (Horizontal)</option>
+                                        <option value="3d" data-i18n="wind_mode_3d">3D (Vertical Tilted)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Pixel Weather Settings -->
+                                <div id="pixel-weather-style-section" class="setting-item" style="display: none;">
+                                    <label for="pixel-weather-style-select"
+                                        data-i18n="settings_pixel_weather_style">Weather
+                                        Style</label>
+                                    <select id="pixel-weather-style-select" style="margin-bottom: 20px;">
+                                        <option value="snow" data-i18n="style_pixel_snow">Snow</option>
+                                        <option value="rain" data-i18n="style_pixel_rain">Rain</option>
+                                        <option value="wind" data-i18n="style_pixel_wind">Wind</option>
+                                        <option value="storm" data-i18n="style_pixel_storm">Storm</option>
+                                    </select>
+
+                                    <label for="pixel-weather-resolution-slider"><span
+                                            data-i18n="settings_pixel_weather_resolution">Resolution</span> <span
+                                            id="pixel-weather-resolution-val">1</span></label>
+                                    <input type="range" id="pixel-weather-resolution-slider" min="1" max="10" step="1"
+                                        value="1" style="margin-bottom: 10px;">
+
+                                    <label for="pixel-weather-speed-slider"><span
+                                            data-i18n="settings_pixel_weather_speed">Speed</span> <span
+                                            id="pixel-weather-speed-val">1.0</span></label>
+                                    <input type="range" id="pixel-weather-speed-slider" min="0.1" max="3.0" step="0.1"
+                                        value="1.0" style="margin-bottom: 10px;">
+
+                                    <label for="pixel-weather-size-slider"><span
+                                            data-i18n="settings_pixel_weather_flake_size">Flake
+                                            Size</span> <span id="pixel-weather-size-val">1.0</span></label>
+                                    <input type="range" id="pixel-weather-size-slider" min="0.5" max="5.0" step="0.1"
+                                        value="1.0" style="margin-bottom: 10px;">
+
+                                    <label for="pixel-weather-density-slider"><span
+                                            data-i18n="settings_pixel_weather_density">Density</span> <span
+                                            id="pixel-weather-density-val">1.0</span></label>
+                                    <input type="range" id="pixel-weather-density-slider" min="0.2" max="3.0" step="0.1"
+                                        value="1.0">
+                                </div>
+
+                                <!-- Sky Lanterns Settings -->
+                                <div id="sky-lanterns-setting" class="setting-item" style="display: none;"> <label
+                                        for="sky-lanterns-type-select" data-i18n="settings_sky_lanterns_type">Lantern
+                                        Type</label>
+                                    <select id="sky-lanterns-type-select" style="width: 100%;">
+                                        <option value="lantern" data-i18n="sky_lanterns_type_lantern">Traditional
+                                            Lantern
+                                        </option>
+                                        <option value="dots" data-i18n="sky_lanterns_type_dots">Light Dots (Stars)
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Grid Scan Color -->
+                                <div id="grid-scan-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="grid-scan-color-picker" data-i18n="setting_grid_scan_color">Grid Scan
+                                        Color</label>
+                                    <input type="color" id="grid-scan-color-picker" value="#00ffcc" />
+                                </div>
+
+                                <!-- Jellyfish Color -->
+                                <div id="jellyfish-color-setting" class="setting-item" style="display: none;">
+                                    <div class="setting-item-row">
+                                        <label for="jellyfish-color-picker"
+                                            data-i18n="setting_jellyfish_color">Jellyfish
+                                            Color</label>
+                                        <input type="color" id="jellyfish-color-picker" value="#ffaa00" />
+                                    </div>
+
+                                    <div class="setting-item" style="margin-top: 10px;">
+                                        <label for="jellyfish-type-select" style="display: block;"
+                                            data-i18n="setting_jellyfish_type">Sea Creature</label>
+                                        <select id="jellyfish-type-select" style="width: 100%;">
+                                            <option value="jellyfish" data-i18n="creature_jellyfish">Jellyfish</option>
+                                            <option value="turtle" data-i18n="creature_turtle">Sea Turtle</option>
+                                            <option value="manta" data-i18n="creature_manta">Manta Ray</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <!-- Star Color (Galaxy) -->
+                                <div id="star-color-setting" class="setting-item" style="display: none;">
+                                    <label for="star-color-picker" data-i18n="setting_star_color">Star Color</label>
+                                    <input type="color" id="star-color-picker" />
+                                </div>
+
+                                <!-- Meteor Color -->
+                                <div id="meteor-color-setting" class="setting-item" style="display: none;">
+                                    <label for="meteor-color-picker" data-i18n="setting_meteor_color">Meteor
+                                        Color</label>
+                                    <input type="color" id="meteor-color-picker" value="#ffffff" />
+
+                                    <div class="setting-item-row" style="margin-top: 10px;">
+                                        <label for="meteor-full-color-toggle" data-i18n="setting_meteor_full_color">Full
+                                            Color (Multi-HUE)</label>
+                                        <input type="checkbox" id="meteor-full-color-toggle">
+                                    </div>
+
+                                    <div class="setting-item" style="margin-top: 10px;">
+                                        <div class="flex-space-between">
+                                            <label for="meteor-angle-input" data-i18n="setting_meteor_angle">Falling
+                                                Angle</label>
+                                            <span id="meteor-angle-value" class="range-val">45°</span>
+                                        </div>
+                                        <input type="range" id="meteor-angle-input" min="0" max="360" value="45"
+                                            style="width: 100%;">
+                                    </div>
+                                </div>
+
+                                <!-- Network Color (M:i) -->
+                                <div id="network-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="network-color-picker" data-i18n="setting_network_color">Network
+                                        Color</label>
+                                    <input type="color" id="network-color-picker" value="#00bcd4" />
+                                </div>
+
+                                <!-- Matrix Color (M:i) -->
+                                <div id="matrix-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="matrix-color-picker" data-i18n="setting_matrix_color">Matrix
+                                        Color</label>
+                                    <input type="color" id="matrix-color-picker" value="#00FF00" />
+                                </div>
+
+                                <!-- Sakura Color (M:i) -->
+                                <div id="sakura-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="sakura-color-picker" data-i18n="setting_sakura_color">Sakura
+                                        Color</label>
+                                    <input type="color" id="sakura-color-picker" value="#ffb7c5" />
+                                </div>
+
+                                <!-- Snowfall Color -->
+                                <div id="snowfall-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="snowfall-color-picker" data-i18n="setting_snowfall_color">Snowfall
+                                        Color</label>
+                                    <input type="color" id="snowfall-color-picker" value="#ffffff" />
+                                </div>
+                                <!-- Falling Leaves Settled Skin -->
+                                <div id="falling-leaves-settled-skin-setting" class="setting-item"
+                                    style="display: none;">
+                                    <label for="falling-leaves-settled-skin"
+                                        data-i18n="setting_falling_leaves_skin">Leaf
+                                        Type</label>
+                                    <select id="falling-leaves-settled-skin" class="full-width">
+                                        <option value="maple" data-i18n="leaf_skin_maple">Maple Leaves</option>
+                                        <option value="oak" data-i18n="leaf_skin_oak">Oak Leaves</option>
+                                        <option value="simple" data-i18n="leaf_skin_simple">Simple Leaves</option>
+                                        <option value="ginkgo" data-i18n="leaf_skin_ginkgo">Ginkgo Leaves</option>
+                                        <option value="cherry" data-i18n="leaf_skin_cherry">Cherry Blossoms</option>
+                                        <option value="cherryPetal" data-i18n="leaf_skin_cherry_petal">Sakura Petals
+                                        </option>
+                                        <option value="plum" data-i18n="leaf_skin_plum">Plum Blossoms</option>
+                                    </select>
+                                </div>
+
+                                <!-- Tet Fireworks Settings Removed -->
+
+                                <!-- Pixel Blast Settings -->
+                                <div id="pixel-blast-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="pixel-blast-color-picker" data-i18n="setting_pixel_blast_color">Pixel
+                                        Color</label>
+                                    <input type="color" id="pixel-blast-color-picker" value="#B497CF" />
+                                </div>
+
+                                <div id="pixel-blast-bg-setting" class="setting-item" style="display: none;">
+                                    <div class="setting-item-row"
+                                        style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                                        <label for="pixel-blast-transparent"
+                                            data-i18n="setting_pixel_blast_transparent">Transparent Background</label>
+                                        <label class="lcp-switch">
+                                            <input type="checkbox" id="pixel-blast-transparent" checked>
+                                            <span class="lcp-slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div id="pixel-blast-bg-color-container" style="margin-top: 10px; display: none;">
+                                        <label for="pixel-blast-bg-color-picker"
+                                            data-i18n="setting_pixel_blast_bg_color">Background Color</label>
+                                        <input type="color" id="pixel-blast-bg-color-picker" value="#0a0a0a" />
+                                    </div>
+                                </div>
+
+                                <div id="pixel-blast-variant-setting" class="setting-item" style="display: none;">
+                                    <label for="pixel-blast-variant-select"
+                                        data-i18n="setting_pixel_blast_variant">Pixel
+                                        Shape</label>
+                                    <select id="pixel-blast-variant-select" class="full-width">
+                                        <option value="square" data-i18n="pixel_blast_square">Square</option>
+                                        <option value="circle" data-i18n="pixel_blast_circle">Circle</option>
+                                        <option value="triangle" data-i18n="pixel_blast_triangle">Triangle</option>
+                                        <option value="diamond" data-i18n="pixel_blast_diamond">Diamond</option>
+                                    </select>
+                                </div>
+
+                                <div id="pixel-blast-size-setting" class="setting-item" style="display: none;">
+                                    <label for="pixel-blast-size-slider">
+                                        <span data-i18n="setting_pixel_blast_size">Pixel Size</span>:
+                                        <span id="pixel-blast-size-val">15</span>px
+                                    </label>
+                                    <input type="range" id="pixel-blast-size-slider" min="5" max="50" step="1"
+                                        value="15" />
+                                </div>
+
+                                <div id="pixel-blast-liquid-setting" class="setting-item" style="display: none;">
+                                    <div class="setting-item-row"
+                                        style="background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                                        <label for="pixel-blast-liquid" data-i18n="setting_pixel_blast_liquid">Liquid
+                                            Distortion</label>
+                                        <label class="lcp-switch">
+                                            <input type="checkbox" id="pixel-blast-liquid" checked>
+                                            <span class="lcp-slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div id="pixel-blast-liquid-strength-container" style="margin-top: 10px;">
+                                        <label for="pixel-blast-liquid-strength-slider">
+                                            <span data-i18n="setting_pixel_blast_liquid_strength">Distortion
+                                                Strength</span>:
+                                            <span id="pixel-blast-liquid-strength-val">1.0</span>
+                                        </label>
+                                        <input type="range" id="pixel-blast-liquid-strength-slider" min="0" max="3"
+                                            step="0.1" value="1.0" />
+                                    </div>
+                                </div>
+
+                                <div id="pixel-blast-interactive-setting" class="setting-item" style="display: none;">
+                                    <label for="pixel-blast-cursor-radius-slider">
+                                        <span data-i18n="setting_pixel_blast_cursor_radius">Interaction Radius</span>:
+                                        <span id="pixel-blast-cursor-radius-val">150</span>px
+                                    </label>
+                                    <input type="range" id="pixel-blast-cursor-radius-slider" min="50" max="500"
+                                        step="10" value="150" />
+
+                                    <div class="setting-item-row"
+                                        style="margin-top: 10px; background: none; padding: 0; border: none; backdrop-filter: none; box-shadow: none;">
+                                        <label for="pixel-blast-ripples" data-i18n="setting_pixel_blast_ripples">Enable
+                                            Ripples (Click)</label>
+                                        <label class="lcp-switch">
+                                            <input type="checkbox" id="pixel-blast-ripples" checked>
+                                            <span class="lcp-slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Sunbeam Settings -->
+                                <div id="sunbeam-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="sunbeam-color-picker" data-i18n="setting_sunbeam_color">Sunbeam
+                                        Color</label>
+                                    <input type="color" id="sunbeam-color-picker" value="#ffffff" />
+                                </div>
+                                <div id="sunbeam-angle-setting" class="setting-item" style="display: none;">
+                                    <label for="sunbeam-angle-input">
+                                        <span data-i18n="setting_sunbeam_angle">Sunbeam Angle</span>:
+                                        <span id="sunbeam-angle-value">0</span>°
+                                    </label>
+                                    <input type="range" id="sunbeam-angle-input" min="-90" max="90" step="1"
+                                        value="0" />
+                                </div>
+                                <!-- Pixel Run Color -->
+                                <div id="pixel-run-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="pixel-run-color-picker" data-i18n="setting_pixel_run_color">Pixel
+                                        Color</label>
+                                    <input type="color" id="pixel-run-color-picker" value="#00e5ff" />
+                                </div>
+                                <div id="nintendo-pixel-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="nintendo-pixel-color-picker"
+                                        data-i18n="setting_nintendo_pixel_color">Phosphor
+                                        Glow</label>
+                                    <input type="color" id="nintendo-pixel-color-picker" value="#63f5ff" />
+                                </div>
+                                <div id="crt-scan-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="crt-scan-color-picker" data-i18n="setting_crt_scan_color">Scan Beam
+                                        Color</label>
+                                    <input type="color" id="crt-scan-color-picker" value="#7cffad" />
+                                </div>
+                                <div id="crt-scan-frequency-setting" class="setting-item" style="display: none;">
+                                    <label for="crt-scan-frequency-input">
+                                        <span data-i18n="setting_crt_scan_frequency">Scan Frequency</span>:
+                                        <span id="crt-scan-frequency-value">0.11</span>
+                                    </label>
+                                    <input type="range" id="crt-scan-frequency-input" min="0.01" max="2.00" step="0.01"
+                                        value="0.11" />
+                                </div>
+                                <div id="crt-scan-angle-setting" class="setting-item" style="display: none;">
+                                    <label for="crt-scan-angle-input">
+                                        <span data-i18n="setting_crt_scan_angle">Scan Angle</span>:
+                                        <span id="crt-scan-angle-value">0</span>°
+                                    </label>
+                                    <input type="range" id="crt-scan-angle-input" min="-180" max="180" step="1"
+                                        value="0" />
+                                </div>
+                                <div id="crt-scan-density-setting" class="setting-item" style="display: none;">
+                                    <label for="crt-scan-density-input">
+                                        <span data-i18n="setting_crt_scan_density">Scan Density</span>:
+                                        <span id="crt-scan-density-value">4</span>
+                                    </label>
+                                    <input type="range" id="crt-scan-density-input" min="1" max="20" step="1"
+                                        value="4" />
+                                </div>
+                                <div id="crt-gamma-setting" class="setting-item" style="display: none;">
+                                    <label for="crt-gamma-input">
+                                        <span data-i18n="setting_crt_gamma">CRT Gamma</span>:
+                                        <span id="crt-gamma-value">0.3</span>
+                                    </label>
+                                    <input type="range" id="crt-gamma-input" min="0" max="1" step="0.05" value="0.3" />
+                                </div>
+                                <div id="crt-background-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="crt-background-color-picker"
+                                        data-i18n="setting_crt_background_color">CRT
+                                        Background
+                                        Color</label>
+                                    <input type="color" id="crt-background-color-picker" value="#0a140f" />
+                                </div>
+                                <!-- Retro Game Type -->
+                                <div id="retro-game-type-setting" class="setting-item" style="display: none;">
+                                    <label for="retro-game-type-select" data-i18n="setting_retro_game_type">Game
+                                        Type</label>
+                                    <select id="retro-game-type-select">
+                                        <option value="space_invaders" data-i18n="retro_game_space_invaders">Space
+                                            Invaders</option>
+                                        <option value="pong" data-i18n="retro_game_pong">Pong</option>
+                                        <option value="pacman" data-i18n="retro_game_pacman">Pac-Man</option>
+                                        <option value="tetris" data-i18n="retro_game_tetris">Tetris</option>
+                                        <option value="snake" data-i18n="retro_game_snake">Snake</option>
+                                    </select>
+                                </div>
+                                <!-- Retro Game Color -->
+                                <div id="retro-game-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="retro-game-color-picker" data-i18n="setting_retro_game_color">Game
+                                        Color</label>
+                                    <input type="color" id="retro-game-color-picker" value="#00ff00" />
+                                </div>
+                                <!-- Wavy Pattern Colors -->
+                                <div id="wavy-pattern-color1-setting" class="setting-item-row" style="display: none;">
+                                    <label for="wavy-pattern-color1-picker"
+                                        data-i18n="setting_wavy_pattern_color1">Pattern
+                                        Color
+                                        1</label>
+                                    <input type="color" id="wavy-pattern-color1-picker" value="#AB3E5B" />
+                                </div>
+                                <div id="wavy-pattern-color2-setting" class="setting-item-row" style="display: none;">
+                                    <label for="wavy-pattern-color2-picker"
+                                        data-i18n="setting_wavy_pattern_color2">Pattern
+                                        Color
+                                        2</label>
+                                    <input type="color" id="wavy-pattern-color2-picker" value="#FFBE40" />
+                                </div>
+                                <!-- Angled Pattern Colors -->
+                                <div id="angled-pattern-color1-setting" class="setting-item-row" style="display: none;">
+                                    <label for="angled-pattern-color1-picker"
+                                        data-i18n="setting_angled_pattern_color1">Pattern
+                                        Color</label>
+                                    <input type="color" id="angled-pattern-color1-picker" value="#ECD078" />
+                                </div>
+                                <div id="angled-pattern-color2-setting" class="setting-item-row" style="display: none;">
+                                    <label for="angled-pattern-color2-picker"
+                                        data-i18n="setting_angled_pattern_color2">Background
+                                        Color</label>
+                                    <input type="color" id="angled-pattern-color2-picker" value="#0B486B" />
+                                </div>
+                                <!-- Bubbles Color -->
+                                <div id="bubbles-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="bubbles-color-picker" data-i18n="setting_bubbles_color">Bubble
+                                        Color</label>
+                                    <input type="color" id="bubbles-color-picker" value="#60c8ff" />
+                                </div>
+
+                                <!-- Cursor Trail Color -->
+                                <div id="cursor-trail-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="cursor-trail-color-picker" data-i18n="setting_cursor_trail_color">Cursor
+                                        Trail
+                                        Color</label>
+                                    <input type="color" id="cursor-trail-color-picker" value="#60c8ff" />
+                                </div>
+
+                                <!-- Cursor Trail Style -->
+                                <div id="cursor-trail-style-setting" class="setting-item" style="display: none;">
+                                    <label for="cursor-trail-style-select" data-i18n="settings_cursor_trail_style">Trail
+                                        Style</label>
+                                    <select id="cursor-trail-style-select" style="width: 100%;">
+                                        <option value="classic" data-i18n="cursor_trail_style_classic">Classic Particles
+                                        </option>
+                                        <option value="fire" data-i18n="cursor_trail_style_fire">Realistic Fire</option>
+                                    </select>
+                                </div>
+
+                                <!-- Cursor Trail Click Explosion -->
+                                <div id="cursor-trail-click-setting" class="setting-item-row"
+                                    style="display: none; margin-top: 0.6rem;">
+                                    <label for="cursor-trail-click-checkbox"
+                                        data-i18n="settings_cursor_trail_click">Click
+                                        Explosion</label>
+                                    <input type="checkbox" id="cursor-trail-click-checkbox">
+                                </div>
+
+                                <!-- Cursor Trail Random Colors -->
+                                <div id="cursor-trail-random-setting" class="setting-item-row"
+                                    style="display: none; margin-top: 0.6rem;">
+                                    <label for="cursor-trail-random-checkbox"
+                                        data-i18n="settings_cursor_trail_random">Random
+                                        Colors</label>
+                                    <input type="checkbox" id="cursor-trail-random-checkbox">
+                                </div>
+
+                                <!-- Flashlight Settings -->
+                                <div id="flashlight-color-setting" class="setting-item-row" style="display: none;">
+                                    <label for="flashlight-color-picker" data-i18n="setting_flashlight_color">Overlay
+                                        Color</label>
+                                    <input type="color" id="flashlight-color-picker" value="#000000" />
+                                </div>
+
+                                <div id="flashlight-size-setting" class="setting-item" style="display: none;">
+                                    <label for="flashlight-size-slider">
+                                        <span data-i18n="setting_flashlight_size">Flashlight Size</span>:
+                                        <span id="flashlight-size-val">150</span>px
+                                    </label>
+                                    <input type="range" id="flashlight-size-slider" min="50" max="500" step="5"
+                                        value="150" />
+                                </div>
+
+                                <div id="flashlight-opacity-setting" class="setting-item" style="display: none;">
+                                    <label for="flashlight-opacity-slider">
+                                        <span data-i18n="setting_flashlight_opacity">Darkness Level</span>:
+                                        <span id="flashlight-opacity-val">0.90</span>
+                                    </label>
+                                    <input type="range" id="flashlight-opacity-slider" min="0" max="1" step="0.05"
+                                        value="0.90" />
+                                </div>
+
+                                <!-- Plant Growth Setting -->
+                                <div id="plant-growth-color-setting" class="setting-item" style="display: none;">
+                                    <label for="plant-growth-color-picker" data-i18n="setting_plant_growth_color">Plant
+                                        Color</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="plant-growth-color-picker" value="#4CAF50">
+                                    </div>
+                                </div>
+
+                                <!-- Ocean Fish Color -->
+                                <div id="ocean-fish-color-setting" class="setting-item" style="display: none;">
+                                    <label for="ocean-fish-color-picker" data-i18n="setting_ocean_fish_color">Fish
+                                        Color</label>
+                                    <input type="color" id="ocean-fish-color-picker" value="#ff7f50" />
+                                </div>
+
+                                <!-- Floating Lines Color -->
+                                <div id="floating-lines-color-setting" class="setting-item" style="display: none;">
+                                    <label for="floating-lines-color-picker"
+                                        data-i18n="settings_floating_lines_color">Lines
+                                        Color</label>
+                                    <input type="color" id="floating-lines-color-picker" value="#ffffff" />
+                                </div>
+
+                                <!-- Floating Lines Angle -->
+                                <div id="floating-lines-angle-setting" class="setting-item" style="display: none;">
+                                    <div class="flex-space-between" style="margin-bottom: 8px;">
+                                        <label data-i18n="settings_floating_lines_angle" style="font-weight: 600;">Lines
+                                            Angle</label>
+                                        <span id="floating-lines-angle-value" class="bg-slider-value">0°</span>
+                                    </div>
+                                    <input type="range" id="floating-lines-angle-input" min="0" max="360" value="0"
+                                        style="width: 100%;">
+                                </div>
+
+                                <!-- Rain HD Color -->
+                                <div id="rain-hd-color-setting" class="setting-item" style="display: none;">
+                                    <label for="rain-hd-color-picker" data-i18n="setting_rain_hd_color">Rain
+                                        Color</label>
+                                    <input type="color" id="rain-hd-color-picker" value="#99ccff" />
+                                </div>
+
+                                <div id="storm-rain-color-setting" class="setting-item" style="display: none;">
+                                    <label for="storm-rain-color-picker" data-i18n="setting_storm_rain_color">Rain
+                                        Color</label>
+                                    <input type="color" id="storm-rain-color-picker" value="#7dd3fc" />
+                                </div>
+                                <!-- Wavy Lines Color -->
+                                <div id="wavy-lines-color-setting" class="setting-item" style="display: none;">
+                                    <label for="wavy-lines-color-picker" data-i18n="setting_wavy_lines_color">Wave
+                                        Color</label>
+                                    <input type="color" id="wavy-lines-color-picker" value="#00bcd4" />
+                                </div>
+                                <!-- Ocean Wave Color -->
+                                <div id="ocean-wave-color-setting" class="setting-item" style="display: none;">
+                                    <label for="ocean-wave-color-picker" data-i18n="setting_ocean_wave_color">Wave
+                                        Color</label>
+                                    <input type="color" id="ocean-wave-color-picker" value="#0077b6" />
+                                </div>
+                                <!-- Rainbow Direction -->
+                                <div id="rainbow-direction-setting" class="setting-item" style="display: none;">
+                                    <label data-i18n="setting_rainbow_direction">Light Direction</label>
+                                    <div class="btn-group">
+                                        <button id="rainbow-dir-left" class="btn-group-item active"
+                                            data-i18n="direction_left">Left</button>
+                                        <button id="rainbow-dir-right" class="btn-group-item"
+                                            data-i18n="direction_right">Right</button>
+                                    </div>
+                                </div>
+
+                                <!-- Ocean Wave Position -->
+                                <div id="ocean-wave-position-setting" class="setting-item" style="display: none;">
+                                    <label data-i18n="setting_ocean_wave_position" for="cloud-drift-color-picker">Wave
+                                        Position</label>
+                                    <div class="btn-group">
+                                        <button id="ocean-wave-pos-bottom" class="btn-group-item active"
+                                            data-i18n="position_bottom">Bottom</button>
+                                        <button id="ocean-wave-pos-top" class="btn-group-item"
+                                            data-i18n="position_top">Top</button>
+                                    </div>
+                                </div>
+                                <!-- Cloud Drift Color -->
+                                <div id="cloud-drift-color-setting" class="setting-item" style="display: none;">
+                                    <label for="cloud-drift-color-picker" data-i18n="setting_cloud_drift_color">Cloud
+                                        Color</label>
+                                    <input type="color" id="cloud-drift-color-picker" value="#0a0a0a" />
+                                </div>
+                                <!-- Shiny Tint Color -->
+                                <div id="shiny-color-setting" class="setting-item" style="display: none;">
+                                    <label for="shiny-color-picker" data-i18n="setting_shiny_color">Holographic
+                                        Tint</label>
+                                    <input type="color" id="shiny-color-picker" value="#ff0000" />
+                                </div>
+                                <!-- Line Shiny Tint Color -->
+                                <div id="line-shiny-color-setting" class="setting-item" style="display: none;">
+                                    <label for="line-shiny-color-picker" data-i18n="setting_line_shiny_color">Light Ray
+                                        Color</label>
+                                    <input type="color" id="line-shiny-color-picker" value="#ffffff" />
+                                </div>
+
+                                <!-- Pixel Snow HQ Settings -->
+                                <div id="pixel-snow-hq-settings" style="display: none;">
+                                    <div class="setting-item-row no-margin-top">
+                                        <label data-i18n="settings_clock_color">Snow Color</label>
+                                        <input type="color" id="pixel-snow-hq-color-picker" value="#ffffff" />
+                                    </div>
+
+                                    <div class="setting-item">
+                                        <label for="pixel-snow-hq-variant-select"
+                                            data-i18n="setting_pixel_blast_variant">Snow Shape</label>
+                                        <select id="pixel-snow-hq-variant-select" class="full-width">
+                                            <option value="square" data-i18n="pixel_blast_square">Square</option>
+                                            <option value="circle" data-i18n="pixel_cubes_circle">Circle</option>
+                                            <option value="snowflake" data-i18n="pixel_snow_variant_snowflake">Snowflake
+                                                (HQ)</option>
+                                        </select>
+                                    </div>
+
+                                    <div
+                                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_pixel_snow_hq_density">Density</span>
+                                                <span id="pixel-snow-hq-density-val"
+                                                    style="color: var(--accent-color);">0.3</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-density-slider" min="0.05" max="1.0"
+                                                step="0.05" value="0.3">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_pixel_weather_speed">Speed</span>
+                                                <span id="pixel-snow-hq-speed-val"
+                                                    style="color: var(--accent-color);">1.25</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-speed-slider" min="0.1" max="5.0"
+                                                step="0.1" value="1.25">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_pixel_snow_hq_direction">Wind</span>
+                                                <span id="pixel-snow-hq-direction-val"
+                                                    style="color: var(--accent-color);">125°</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-direction-slider" min="0" max="360"
+                                                step="1" value="125">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_pixel_snow_hq_pixel_res">Pixelation</span>
+                                                <span id="pixel-snow-hq-pixel-res-val"
+                                                    style="color: var(--accent-color);">200</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-pixel-res-slider" min="50" max="600"
+                                                step="10" value="200">
+                                        </div>
+
+                                        <div class="setting-item no-margin-top">
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_pixel_snow_hq_flake_size">Base Size</span>
+                                                <span id="pixel-snow-hq-flake-size-val">0.01</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-flake-size-slider" min="0.001"
+                                                max="0.05" step="0.001" value="0.01">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_pixel_snow_hq_min_flake_size">Min Size</span>
+                                                <span id="pixel-snow-hq-min-flake-size-val">1.25</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-min-flake-size-slider" min="0.1"
+                                                max="5.0" step="0.05" value="1.25">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_pixel_snow_hq_depth_fade">Fade</span>
+                                                <span id="pixel-snow-hq-depth-fade-val">8</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-depth-fade-slider" min="1" max="25"
+                                                step="0.5" value="8">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                                <span data-i18n="settings_pixel_snow_hq_brightness">Glow</span>
+                                                <span id="pixel-snow-hq-brightness-val">1.0</span>
+                                            </label>
+                                            <input type="range" id="pixel-snow-hq-brightness-slider" min="0.1" max="5.0"
+                                                step="0.1" value="1.0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Soft Aurora Settings -->
+                                <div id="soft-aurora-settings" style="display: none;">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                        <div class="setting-item no-margin-top">
+                                            <label data-i18n="settings_gradientV2_color1">Color 1</label>
+                                            <input type="color" id="soft-aurora-color1-picker" value="#74ebd5"
+                                                style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label data-i18n="settings_gradientV2_color2">Color 2</label>
+                                            <input type="color" id="soft-aurora-color2-picker" value="#e100ff"
+                                                style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        </div>
+                                    </div>
+                                    <button id="soft-aurora-random-colors-btn" class="secondary-btn full-width"
+                                        title="Randomize Soft Aurora"
+                                        data-i18n-title="settings_soft_aurora_random_colors" style="margin-top: 10px;">
+                                        <i class="fa-solid fa-dice"></i>
+                                        <span data-i18n="settings_soft_aurora_random_colors">Randomize</span>
+                                    </button>
+
+                                    <div
+                                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;">
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_gradientV2_timeSpeed">Speed</span>
+                                                <span id="soft-aurora-speed-val"
+                                                    style="color: var(--accent-color);">0.6</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-speed-slider" min="0.1" max="2.0"
+                                                step="0.1" value="0.6">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_gradientV2_zoom">Scale</span>
+                                                <span id="soft-aurora-scale-val"
+                                                    style="color: var(--accent-color);">1.5</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-scale-slider" min="0.5" max="4.0"
+                                                step="0.1" value="1.5">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="setting_aurora_wave_brightness">Brightness</span>
+                                                <span id="soft-aurora-brightness-val"
+                                                    style="color: var(--accent-color);">1.0</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-brightness-slider" min="0.1" max="3.0"
+                                                step="0.1" value="1.0">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_gradientV2_warpFrequency">Warp</span>
+                                                <span id="soft-aurora-noise-freq-val"
+                                                    style="color: var(--accent-color);">2.5</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-noise-freq-slider" min="0.5" max="10.0"
+                                                step="0.1" value="2.5">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="setting_aurora_wave_amplitude">Height</span>
+                                                <span id="soft-aurora-band-height-val"
+                                                    style="color: var(--accent-color);">0.5</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-band-height-slider" min="0.0" max="1.0"
+                                                step="0.05" value="0.5">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_gradientV2_blendSoftness">Softness</span>
+                                                <span id="soft-aurora-band-spread-val"
+                                                    style="color: var(--accent-color);">1.0</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-band-spread-slider" min="0.5" max="10.0"
+                                                step="0.1" value="1.0">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_gradientV2_warpAmplitude">Amplitude</span>
+                                                <span id="soft-aurora-noise-amp-val"
+                                                    style="color: var(--accent-color);">1.0</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-noise-amp-slider" min="0.1" max="5.0"
+                                                step="0.1" value="1.0">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_soft_aurora_octave_decay">Octave Decay</span>
+                                                <span id="soft-aurora-octave-decay-val"
+                                                    style="color: var(--accent-color);">0.1</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-octave-decay-slider" min="0.01"
+                                                max="1.0" step="0.01" value="0.1">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_soft_aurora_layer_offset">Layer Offset</span>
+                                                <span id="soft-aurora-layer-offset-val"
+                                                    style="color: var(--accent-color);">0.0</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-layer-offset-slider" min="0.0"
+                                                max="10.0" step="0.1" value="0.0">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span data-i18n="settings_splash_cursor_color_speed">Color Speed</span>
+                                                <span id="soft-aurora-color-speed-val"
+                                                    style="color: var(--accent-color);">1.0</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-color-speed-slider" min="0.1" max="5.0"
+                                                step="0.1" value="1.0">
+                                        </div>
+                                        <div class="setting-item no-margin-top">
+                                            <label style="display: flex; justify-content: space-between;">
+                                                <span>Mouse Scale</span>
+                                                <span id="soft-aurora-mouse-influence-val"
+                                                    style="color: var(--accent-color);">0.25</span>
+                                            </label>
+                                            <input type="range" id="soft-aurora-mouse-influence-slider" min="0.0"
+                                                max="2.0" step="0.05" value="0.25">
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item" style="margin-top: 15px;">
+                                        <div class="setting-item-row no-margin">
+                                            <label for="soft-aurora-transparent-checkbox"
+                                                data-i18n="setting_pixel_blast_transparent">Transparent
+                                                Background</label>
+                                            <label class="soft-aurora-switch" for="soft-aurora-transparent-checkbox">
+                                                <input type="checkbox" id="soft-aurora-transparent-checkbox" checked>
+                                                <span class="soft-aurora-switch-track"></span>
+                                            </label>
+                                        </div>
+                                        <div id="soft-aurora-bg-color-container"
+                                            style="margin-top: 10px; display: none;">
+                                            <label>Custom Background Color</label>
+                                            <input type="color" id="soft-aurora-bg-color-picker" value="#000000"
+                                                style="width: 100%; height: 38px; cursor: pointer; border: none; border-radius: 8px; background: rgba(0,0,0,0.2);">
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-item-row" style="margin-top: 10px;">
+                                        <label for="soft-aurora-mouse-checkbox"
+                                            data-i18n="settings_cursor_trail_click">Mouse Interaction</label>
+                                        <label class="soft-aurora-switch" for="soft-aurora-mouse-checkbox">
+                                            <input type="checkbox" id="soft-aurora-mouse-checkbox" checked>
+                                            <span class="soft-aurora-switch-track"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div><!-- /#active-effect-settings-body -->
+                        </div><!-- /#active-effect-settings-container -->
+                    </div><!-- /.group-body -->
+                </div><!-- /.section-content -->
+            </div><!-- /.settings-section -->
+
