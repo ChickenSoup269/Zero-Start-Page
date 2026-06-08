@@ -1,8 +1,8 @@
 async function hydrateSettingsPartials() {
   const placeholders = document.querySelectorAll("[data-settings-partial][data-src]")
-  for (const placeholder of placeholders) {
+  await Promise.all([...placeholders].map(async (placeholder) => {
     const src = placeholder.getAttribute("data-src")
-    if (!src) continue
+    if (!src) return
 
     try {
       const response = await fetch(src)
@@ -11,7 +11,7 @@ async function hydrateSettingsPartials() {
     } catch (error) {
       console.error("Could not hydrate settings partial:", error)
     }
-  }
+  }))
 }
 
 await hydrateSettingsPartials()

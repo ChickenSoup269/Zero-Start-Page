@@ -1,0 +1,533 @@
+            <div class="settings-section" data-section-id="date-clock">
+                <h3 class="section-toggle"><i class="fa-solid fa-clock"></i> <span data-i18n="settings_date_format">Date
+                        & Clock Format</span></h3>
+                <div class="section-content">
+                    <div class="setting-group">
+                        <div class="setting-label"><i class="fa-solid fa-gears"></i> <span
+                                data-i18n="settings_font_general">General Settings</span></div>
+
+                        <div class="setting-item-row">
+                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock">Free Move</label>
+                            <input type="checkbox" id="free-move-clock-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbr Day</label>
+                            <input type="checkbox" id="short-weekday-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
+                            <input type="checkbox" id="hide-seconds-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-lunar-calendar-checkbox-clock"
+                                data-i18n="settings_clock_show_lunar_calendar">Lịch Âm trên đồng hồ</label>
+                            <input type="checkbox" id="show-lunar-calendar-checkbox-clock">
+                        </div>
+                        <div class="setting-item">
+                            <label for="clock-lunar-mode-select" data-i18n="settings_clock_lunar_mode">Clock Lunar
+                                Mode</label>
+                            <select id="clock-lunar-mode-select">
+                                <option value="append" data-i18n="settings_clock_lunar_mode_append">Show lunar alongside
+                                    Gregorian</option>
+                                <option value="replace" data-i18n="settings_clock_lunar_mode_replace">Replace Gregorian
+                                    with lunar</option>
+                            </select>
+                            <p class="setting-hint" data-i18n="settings_clock_lunar_mode_hint"
+                                style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the clock
+                                appends the lunar date or replaces the Gregorian date.</p>
+                        </div>
+                        <div class="setting-item">
+                            <label for="clock-display-select" data-i18n="settings_clock_display">Clock Display</label>
+                            <select id="clock-display-select">
+                                <option value="all" data-i18n="settings_clock_display_all">Show All</option>
+                                <option value="weekday" data-i18n="settings_clock_display_weekday">Weekday only</option>
+                                <option value="hide" data-i18n="settings_clock_display_hide">Hide Clock</option>
+                            </select>
+                        </div>
+                        <div class="setting-item" style="margin-top: 15px;">
+                            <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
+                            <select id="date-format-select">
+                                <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
+                                </option>
+                                <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
+                                <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
+                                <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
+                                <option value="year" data-i18n="settings_date_format_year">Year only</option>
+                                <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="time-format-select" data-i18n="settings_time_format">Time Format</label>
+                            <select id="time-format-select">
+                                <option value="24h">24h</option>
+                                <option value="12h">12h (AM/PM)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="timezone-select" data-i18n="settings_timezone">Timezone</label>
+                            <select id="timezone-select">
+                                <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
+                                <option value="UTC">UTC / GMT</option>
+                                <option value="America/New_York">New York (EST/EDT)</option>
+                                <option value="Asia/Tokyo">Tokyo (JST)</option>
+                                <option value="Asia/Ho_Chi_Minh">Ho Chi Minh (ICT)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="hue-text-mode-select" data-i18n="settings_hue_text_mode">Random HUE
+                                Letters</label> <select id="hue-text-mode-select">
+                                <option value="off" data-i18n="settings_hue_text_mode_off">Off</option>
+                                <option value="clock" data-i18n="settings_hue_text_mode_clock">Clock only</option>
+                                <option value="date" data-i18n="settings_hue_text_mode_date">Date only</option>
+                                <option value="both" data-i18n="settings_hue_text_mode_both">Clock and Date</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Style Selection -->
+                    <div class="setting-group collapsible-group" id="clock-style-setting-group"
+                        style="margin-bottom: 20px;">
+                        <div class="group-header">
+                            <i class="fa-solid fa-swatchbook group-icon"></i>
+                            <span data-i18n="settings_clock_date_style">Clock Style</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div id="clock-style-grid" class="clock-style-grid">
+                                <div class="clock-style-card" data-value="default">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_default">Default</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="glow">
+                                    <i class="fa-solid fa-sun"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_glow">Glow</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="minimal">
+                                    <i class="fa-solid fa-minus"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_minimal">Minimal</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="glass">
+                                    <i class="fa-solid fa-window-maximize"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_glass">Glass</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="cool">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_cool">Cool</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="sidestyle">
+                                    <i class="fa-solid fa-grip-lines-vertical"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_sidestyle">Side</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="jp-style">
+                                    <i class="fa-solid fa-torii-gate"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_jp_style">JP</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="round">
+                                    <i class="fa-regular fa-circle"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_round">Round</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="square">
+                                    <i class="fa-regular fa-square"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_square">Square</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="analog">
+                                    <i class="fa-solid fa-clock-rotate-left"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_analog">Analog</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="sidebar">
+                                    <i class="fa-solid fa-columns"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_sidebar">Sidebar</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="weekday-style">
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_weekday">Weekday</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="fliqlo">
+                                    <i class="fa-solid fa-repeat"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_fliqlo">Fliqlo</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="cyber-pulse">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_cyber_pulse">Cyber Pulse</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="neon-grid">
+                                    <i class="fa-solid fa-border-all"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_neon_grid">Neon
+                                        Grid</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="holo-ring">
+                                    <i class="fa-solid fa-circle-notch"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_holo_ring">Holo
+                                        Ring</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="media-orb">
+                                    <i class="fa-solid fa-photo-film"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_media_orb">Media
+                                        Orb</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="prism-stack">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_prism_stack">Prism Stack</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="metro-panel">
+                                    <i class="fa-solid fa-table-list"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_metro_panel">Metro Panel</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="aurora-ribbon">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_aurora_ribbon">Aurora Ribbon</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="lunar-orbit">
+                                    <i class="fa-regular fa-moon"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_lunar_orbit">Lunar Orbit</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        <select id="clock-date-style-select" style="display: none;">
+                            <option value="default">Default</option>
+                            <option value="glow">Glow</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="glass">Glass</option>
+                            <option value="cool">Cool Style</option>
+                            <option value="sidestyle">Side Style</option>
+                            <option value="jp-style">JP Style</option>
+                            <option value="round">Round Clock</option>
+                            <option value="square">Square Clock</option>
+                            <option value="analog">Analog Clock</option>
+                            <option value="sidebar">Sidebar</option>
+                            <option value="weekday-style">Weekday Style</option>
+                            <option value="fliqlo">Fliqlo (Flip Clock)</option>
+                            <option value="cyber-pulse">Cyber Pulse</option>
+                            <option value="neon-grid">Neon Grid</option>
+                            <option value="holo-ring">Holo Ring</option>
+                            <option value="media-orb">Media Orb</option>
+                            <option value="prism-stack">Prism Stack</option>
+                            <option value="metro-panel">Metro Panel</option>
+                            <option value="aurora-ribbon">Aurora Ribbon</option>
+                            <option value="lunar-orbit">Lunar Orbit</option>
+                        </select>
+                    </div>
+                    <!-- Style Specific Customization (Stand-alone group) -->
+                    <div id="style-specific-customization" class="setting-group"
+                        style="display: none; background: rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--accent-color-rgb), 0.15);">
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="effect_customization">Style
+                                Customization</span>
+                        </div>
+
+                        <div id="sidestyle-align-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="sidestyle-align-select" data-i18n="settings_sidestyle_align">Alignment</label>
+                            <select id="sidestyle-align-select">
+                                <option value="left" data-i18n="settings_sidestyle_align_left">Left</option>
+                                <option value="center" data-i18n="settings_sidestyle_align_center">Center</option>
+                                <option value="right" data-i18n="settings_sidestyle_align_right">Right</option>
+                            </select>
+                            <div class="setting-item-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="sidestyle-no-border-checkbox" data-i18n="settings_sidestyle_no_border">Hide
+                                    Borders</label>
+                                <input type="checkbox" id="sidestyle-no-border-checkbox">
+                            </div>
+                        </div>
+
+                        <div id="sidebar-clock-flip-setting" class="setting-item no-margin-top" style="display: none;">
+                            <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
+                                <label for="sidebar-clock-flip-checkbox" data-i18n="settings_sidebar_clock_flip">Flip
+                                    Layout</label>
+                                <input type="checkbox" id="sidebar-clock-flip-checkbox">
+                            </div>
+                        </div>
+
+                        <div id="framed-clock-theme-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="framed-clock-theme-select" data-i18n="settings_framed_clock_theme">Glass
+                                Theme</label>
+                            <select id="framed-clock-theme-select">
+                                <option value="light" data-i18n="settings_framed_clock_theme_light">Light Glass (Frost)
+                                </option>
+                                <option value="dark" data-i18n="settings_framed_clock_theme_dark">Dark Glass (Deep)
+                                </option>
+                            </select>
+                        </div>
+
+                        <div id="clock-style-bg-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="clock-style-bg-select" data-i18n="settings_clock_style_bg">Clock
+                                Background</label>
+                            <select id="clock-style-bg-select">
+                                <option value="default" data-i18n="settings_clock_style_bg_default">Default</option>
+                                <option value="transparent" data-i18n="settings_clock_style_bg_transparent">Transparent
+                                </option>
+                                <option value="light" data-i18n="settings_clock_style_bg_light">White</option>
+                                <option value="dark" data-i18n="settings_clock_style_bg_dark">Black</option>
+                                <option value="animated" data-i18n="settings_clock_style_bg_animated">Animated</option>
+                            </select>
+                        </div>
+
+                        <div id="media-orb-image-setting" class="setting-item no-margin-top media-orb-setting"
+                            style="display: none;">
+                            <label for="media-orb-image-url" data-i18n="settings_media_orb_image">Orb Image /
+                                GIF</label>
+                            <div class="media-orb-url-row">
+                                <i class="fa-solid fa-link"></i>
+                                <input type="url" id="media-orb-image-url"
+                                    data-i18n-placeholder="settings_media_orb_image_placeholder"
+                                    placeholder="https://example.com/clock.gif">
+                            </div>
+                            <input type="file" id="media-orb-image-upload" accept="image/*,.gif" hidden>
+                            <div class="media-orb-action-row">
+                                <button type="button" id="media-orb-upload-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <span data-i18n="settings_media_orb_upload">Upload</span>
+                                </button>
+                                <button type="button" id="media-orb-clear-btn" class="secondary-btn">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span data-i18n="settings_media_orb_clear">Clear</span>
+                                </button>
+                            </div>
+                            <div class="setting-item-row media-orb-overflow-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="media-orb-overflow-border-checkbox"
+                                    data-i18n="settings_media_orb_overflow_border">Overflow Rim</label>
+                                <input type="checkbox" id="media-orb-overflow-border-checkbox">
+                            </div>
+                        </div>
+
+                        <div id="fliqlo-theme-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="fliqlo-theme-select" data-i18n="settings_fliqlo_theme">Fliqlo
+                                Theme</label>
+                            <select id="fliqlo-theme-select">
+                                <option value="dark" data-i18n="settings_fliqlo_theme_dark">Dark
+                                </option>
+                                <option value="light" data-i18n="settings_fliqlo_theme_light">Light
+                                </option>
+                            </select>
+                            <div class="setting-item-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="fliqlo-zen-checkbox" data-i18n="settings_fliqlo_zen">Zen Mode (Full
+                                    Screen)</label>
+                                <input type="checkbox" id="fliqlo-zen-checkbox">
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="fliqlo-transparent-checkbox"
+                                    data-i18n="settings_fliqlo_transparent">Transparent Background</label>
+                                <input type="checkbox" id="fliqlo-transparent-checkbox">
+                            </div>
+                        </div>
+
+                        <div id="jp-style-language-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="jp-style-language-select" data-i18n="settings_jp_style_language">JP
+                                Language</label>
+                            <select id="jp-style-language-select">
+                                <option value="auto" data-i18n="settings_jp_style_language_auto">Auto</option>
+                                <option value="ja" data-i18n="settings_jp_style_language_ja">Japanese</option>
+                            </select>
+                        </div>
+
+                        <div id="analog-marker-mode-setting" class="setting-item no-margin-top" style="display: none;">
+                            <label for="analog-marker-mode-select" data-i18n="settings_analog_marker_mode">Marker
+                                Mode</label>
+                            <select id="analog-marker-mode-select">
+                                <option value="ticks12" data-i18n="settings_analog_marker_mode_ticks12">Show Ticks 1-12
+                                </option>
+                                <option value="quarterTicks" data-i18n="settings_analog_marker_mode_quarter_ticks">Show
+                                    Tick 12,3,6,9</option>
+                                <option value="full" data-i18n="settings_analog_marker_mode_full">Show Numbers 1-12
+                                </option>
+                                <option value="quarters" data-i18n="settings_analog_marker_mode_quarters">Show Numbers
+                                    12,3,6,9</option>
+                            </select>
+                        </div>
+
+                        <div id="analog-blur-bg-setting" class="setting-item-row"
+                            style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
+                            <label for="analog-blur-bg-checkbox" data-i18n="settings_analog_blur_bg">Blur
+                                Background (Analog)</label>
+                            <input type="checkbox" id="analog-blur-bg-checkbox">
+                        </div>
+
+                    </div>
+
+                    <!-- Appearance, Colors & Sizing -->
+                    <div class="setting-group" style="margin-top: 20px;">
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-paintbrush"></i> <span data-i18n="settings_font_style">Appearance &
+                                Colors</span>
+                        </div>
+
+                        <div class="setting-item no-margin-top">
+                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target">Apply Font
+                                To</label>
+                            <select id="clock-font-target-select">
+                                <option value="both" data-i18n="settings_clock_font_target_both">Both</option>
+                                <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
+                                <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
+                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only
+                                </option>
+                            </select>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_clock_size">Clock Size</span>
+                                    <span id="clock-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">6rem</span>
+                                </label>
+                                <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6">
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label style="display: flex; justify-content: space-between;">
+                                    <span data-i18n="settings_date_size">Date Size</span>
+                                    <span id="date-size-value"
+                                        style="opacity: 0.7; font-family: monospace;">1.5rem</span>
+                                </label>
+                                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_clock_color">Clock Color</label>
+                                <div style="display: flex; gap: 5px;">
+                                    <input type="color" id="clock-color-picker" value="#ffffff"
+                                        style="height: 38px; flex: 1;">
+                                    <button id="reset-clock-color-btn" class="secondary-btn"
+                                        style="width: 38px; height: 38px; padding: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
+                            <div class="setting-item no-margin-top">
+                                <label data-i18n="settings_date_color">Date Color</label>
+                                <div style="display: flex; gap: 5px;">
+                                    <input type="color" id="date-color-picker" value="#ffffff"
+                                        style="height: 38px; flex: 1;">
+                                    <button id="reset-date-color-btn" class="secondary-btn"
+                                        style="width: 38px; height: 38px; padding: 0;"><i
+                                            class="fa-solid fa-rotate-left"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item"
+                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                            <label
+                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                                <span>Clock Effects</span>
+                                <span id="clock-shadow-strength-value"
+                                    style="opacity: 0.7; font-family: monospace;">0%</span>
+                            </label>
+                            <div class="setting-item-row"
+                                style="background: transparent; padding: 0; border: none; margin-bottom: 10px;">
+                                <label for="clock-use-accent-checkbox">Use M3 Accent</label>
+                                <input type="checkbox" id="clock-use-accent-checkbox">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Accent Target</label>
+                                    <select id="clock-accent-target-select">
+                                        <option value="style">Style accents only</option>
+                                        <option value="both">Clock + Date</option>
+                                        <option value="time">Time only</option>
+                                        <option value="date">Date only</option>
+                                        <option value="weekday">Weekday only</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;"
+                                        data-i18n="settings_clock_shadow_target">Shadow Target</label>
+                                    <select id="clock-shadow-target-select">
+                                        <option value="none" data-i18n="settings_hue_text_mode_off">Off</option>
+                                        <option value="all" data-i18n="settings_clock_shadow_target_all">Clock + Date
+                                        </option>
+                                        <option value="time" data-i18n="settings_clock_shadow_target_time">Time only
+                                        </option>
+                                        <option value="date" data-i18n="settings_clock_shadow_target_date">Date only
+                                        </option>
+                                        <option value="weekday" data-i18n="settings_clock_shadow_target_weekday">Weekday
+                                            only</option>
+                                        <option value="box" data-i18n="settings_clock_shadow_target_box">Box shadow
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;"
+                                        data-i18n="settings_clock_shadow_color">Shadow Color</label>
+                                    <input type="color" id="clock-shadow-color-picker" value="#000000"
+                                        style="height: 34px; width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Strength</label>
+                                    <input type="range" id="clock-shadow-strength-input" min="0" max="100" step="1"
+                                        value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="clock-date-stroke-setting"
+                            style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                            <label
+                                style="font-weight: 600; font-size: 0.8rem; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                                <span>Text Outline</span>
+                                <span id="clock-date-stroke-width-value"
+                                    style="opacity: 0.7; font-family: monospace;">0px</span>
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Color</label>
+                                    <input type="color" id="clock-date-stroke-color-picker" value="#000000"
+                                        style="height: 34px; width: 100%;">
+                                </div>
+                                <div class="setting-item no-margin-top">
+                                    <label style="font-size: 0.7rem; opacity: 0.7;">Thickness</label>
+                                    <input type="range" id="clock-date-stroke-width-input" min="0" max="10" step="0.5"
+                                        value="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
