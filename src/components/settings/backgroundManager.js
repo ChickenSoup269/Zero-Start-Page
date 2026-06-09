@@ -336,8 +336,7 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
       canvas.toBlob(
         async (thumbBlob) => {
           if (thumbBlob) {
-            await saveThumbnail(id, thumbBlob)
-            resolve(URL.createObjectURL(thumbBlob))
+            resolve(await saveThumbnail(id, thumbBlob))
           } else resolve(null)
         },
         "image/jpeg",

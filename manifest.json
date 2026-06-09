@@ -8,6 +8,12 @@
   "icons": {
     "128": "icon/logo.png"
   },
+  "action": {
+    "default_title": "__MSG_extName__",
+    "default_icon": {
+      "128": "icon/logo.png"
+    }
+  },
   "chrome_url_overrides": {
     "newtab": "index.html"
   },

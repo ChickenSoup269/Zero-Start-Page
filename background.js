@@ -29,9 +29,14 @@ function restoreUninstallUrlFromStorage() {
   })
 }
 
+function openStartpageTab() {
+  chrome.tabs.create({ url: chrome.runtime.getURL("index.html") })
+}
+
 // Set the uninstall URL
 chrome.runtime.onInstalled.addListener(restoreUninstallUrlFromStorage)
 chrome.runtime.onStartup?.addListener(restoreUninstallUrlFromStorage)
+chrome.action?.onClicked?.addListener(openStartpageTab)
 
 // Version update check is now handled in main.js for better reliability
 

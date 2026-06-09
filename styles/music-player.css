@@ -234,27 +234,50 @@ body.widgets-m3-accent .music-player-wrapper,
   background:
     radial-gradient(
       circle at 14% 18%,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 24%,
+        transparent
+      ),
       transparent 34%
     ),
     radial-gradient(
       circle at 86% 78%,
-      color-mix(in srgb, var(--m3-tertiary, var(--m3-secondary, var(--safe-accent))) 20%, transparent),
+      color-mix(
+        in srgb,
+        var(--m3-tertiary, var(--m3-secondary, var(--safe-accent))) 20%,
+        transparent
+      ),
       transparent 40%
     ),
     linear-gradient(
       135deg,
-      color-mix(in srgb, var(--m3-surface-container-high, #101317) 84%, var(--m3-primary-container, var(--safe-accent)) 16%),
-      color-mix(in srgb, var(--m3-secondary-container, var(--safe-accent)) 48%, rgba(12, 12, 16, 0.72))
+      color-mix(
+        in srgb,
+        var(--m3-surface-container-high, #101317) 84%,
+        var(--m3-primary-container, var(--safe-accent)) 16%
+      ),
+      color-mix(
+        in srgb,
+        var(--m3-secondary-container, var(--safe-accent)) 48%,
+        rgba(12, 12, 16, 0.72)
+      )
     ) !important;
   backdrop-filter: blur(26px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(26px) saturate(180%) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 42%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 42%,
+    transparent
+  ) !important;
   box-shadow:
-    0 20px 54px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+    0 20px 54px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
     0 8px 20px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 24%, transparent),
-    inset 0 -1px 0 color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
+    inset 0 1px 0
+      color-mix(in srgb, var(--m3-on-primary-container, #fff) 24%, transparent),
+    inset 0 -1px 0
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
 }
 
@@ -276,29 +299,43 @@ body.widgets-m3-accent .music-player-wrapper .player-btn,
   background: var(--music-m3-panel-bg) !important;
   border-color: var(--music-m3-panel-border) !important;
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 12%, transparent),
+    inset 0 1px 0
+      color-mix(in srgb, var(--m3-on-primary-container, #fff) 12%, transparent),
     0 8px 18px rgba(0, 0, 0, 0.12) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .player-btn:hover,
 .music-player-wrapper.skin-m3-accent .player-btn:hover {
-  background: color-mix(in srgb, var(--music-m3-panel-bg) 72%, var(--m3-primary, var(--safe-accent)) 28%) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 46%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--music-m3-panel-bg) 72%,
+    var(--m3-primary, var(--safe-accent)) 28%
+  ) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 46%,
+    transparent
+  ) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
 .music-player-wrapper.skin-m3-accent .play-pause-btn {
-  background:
-    linear-gradient(
-      135deg,
-      var(--m3-primary, var(--safe-accent)),
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
-    ) !important;
+  background: linear-gradient(
+    135deg,
+    var(--m3-primary, var(--safe-accent)),
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
+  ) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
   box-shadow:
-    0 10px 24px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary, #fff) 28%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 48%, transparent) !important;
+    0 10px 24px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent),
+    inset 0 1px 0
+      color-mix(in srgb, var(--m3-on-primary, #fff) 28%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 48%,
+    transparent
+  ) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
@@ -328,26 +365,31 @@ body.widgets-m3-accent .music-player-wrapper .visualizer-bar,
 .music-player-wrapper.skin-m3-accent .progress-bar-fill,
 .music-player-wrapper.skin-m3-accent .progress-bar-thumb,
 .music-player-wrapper.skin-m3-accent .visualizer-bar {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff),
-      var(--m3-primary, var(--safe-accent))
-    ) !important;
-  box-shadow: 0 0 14px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent) !important;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff),
+    var(--m3-primary, var(--safe-accent))
+  ) !important;
+  box-shadow: 0 0 14px
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 34%, transparent) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .disc-container,
 .music-player-wrapper.skin-m3-accent .disc-container {
   overflow: hidden;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent),
+    inset 0 0 0 1px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent),
     0 8px 18px rgba(0, 0, 0, 0.14) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .vinyl-disc,
 .music-player-wrapper.skin-m3-accent .vinyl-disc {
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 28%,
+    transparent
+  ) !important;
 }
 
 /* Disc Container */
@@ -1680,9 +1722,21 @@ body.widgets-m3-accent .music-player-wrapper .vinyl-disc,
 
 .music-style-soundcloud .music-player-wrapper.skin-m3-accent .player-info h3,
 .music-style-soundcloud .music-player-wrapper.skin-m3-accent .player-info p,
-body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-info h3,
-body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-info p {
-  background: color-mix(in srgb, var(--m3-surface-container-high, #111) 64%, transparent) !important;
+body.widgets-m3-accent
+  .music-style-soundcloud
+  .music-player-wrapper
+  .player-info
+  h3,
+body.widgets-m3-accent
+  .music-style-soundcloud
+  .music-player-wrapper
+  .player-info
+  p {
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, #111) 64%,
+    transparent
+  ) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
 }
 
@@ -2437,13 +2491,19 @@ body.widgets-m3-accent .music-style-soundcloud .music-player-wrapper .player-inf
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::before {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.12)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.48),
+      rgba(255, 255, 255, 0.12)
+    ),
     color-mix(in srgb, var(--overlap-accent) 72%, #ffffff) !important;
   box-shadow: 0 14px 26px rgba(var(--overlap-accent-rgb), 0.15) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::after,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::after,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)::after,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::after {
   content: "";
   position: absolute;
@@ -2457,12 +2517,18 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   background: rgba(255, 255, 255, 0.78);
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::after,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)::after,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::after {
   background:
     radial-gradient(
       circle at 18% 18%,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent),
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 18%,
+        transparent
+      ),
       transparent 38%
     ),
     color-mix(
@@ -2524,7 +2590,9 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
     0 0 0 4px rgba(var(--overlap-accent-rgb), 0.14) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent),
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent),
 .music-style-overlap .music-player-wrapper.skin-m3-accent {
   --overlap-accent: var(--m3-primary, var(--safe-accent));
   --overlap-accent-rgb: var(--accent-color-rgb);
@@ -2532,27 +2600,51 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   background:
     radial-gradient(
       circle at 18% 18%,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 24%,
+        transparent
+      ),
       transparent 38%
     ),
-    color-mix(in srgb, var(--m3-surface-container-high, #111318) 72%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+    color-mix(
+      in srgb,
+      var(--m3-surface-container-high, #111318) 72%,
+      transparent
+    ) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
   box-shadow:
-    0 18px 42px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 16%, transparent),
+    0 18px 42px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 16%, transparent),
     0 10px 24px rgba(0, 0, 0, 0.2) !important;
   backdrop-filter: blur(18px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::before,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)::before,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::before {
   background:
-    linear-gradient(180deg, color-mix(in srgb, #ffffff 22%, transparent), transparent 56%),
-    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 82%, var(--m3-tertiary, #ffffff)) !important;
-  box-shadow: 0 14px 28px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 22%, transparent),
+      transparent 56%
+    ),
+    color-mix(
+      in srgb,
+      var(--m3-primary, var(--safe-accent)) 82%,
+      var(--m3-tertiary, #ffffff)
+    ) !important;
+  box-shadow: 0 14px 28px
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-btn,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .player-btn,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-btn {
   color: var(--m3-on-primary-container, #ffffff) !important;
   background: transparent !important;
@@ -2560,7 +2652,10 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   box-shadow: none !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .play-pause-btn,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .play-pause-btn,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .play-pause-btn {
   color: var(--m3-on-primary, var(--accent-contrast-color, #101522)) !important;
   background: var(--m3-primary, var(--safe-accent)) !important;
@@ -2580,7 +2675,11 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   display: block;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.12), transparent 36%),
+    radial-gradient(
+      circle at 50% 22%,
+      rgba(255, 255, 255, 0.12),
+      transparent 36%
+    ),
     linear-gradient(180deg, #131a27 0%, #0c1018 100%);
   border: 1px solid rgba(255, 255, 255, 0.13);
   box-shadow:
@@ -2644,7 +2743,11 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   inset: 0;
   display: block;
   border-radius: inherit;
-  background: linear-gradient(180deg, transparent 54%, rgba(12, 16, 24, 0.58) 100%);
+  background: linear-gradient(
+    180deg,
+    transparent 54%,
+    rgba(12, 16, 24, 0.58) 100%
+  );
 }
 
 .music-style-orbit .player-main {
@@ -2759,8 +2862,12 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur {
-  background:
-    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.18) 44%, rgba(255, 255, 255, 0.08) 100%) !important;
+  background: radial-gradient(
+    circle at 50% 22%,
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.18) 44%,
+    rgba(255, 255, 255, 0.08) 100%
+  ) !important;
   border-color: rgba(255, 255, 255, 0.58) !important;
   box-shadow:
     0 18px 42px rgba(0, 0, 0, 0.16),
@@ -2785,7 +2892,11 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur .vinyl-disc::before {
-  background: linear-gradient(180deg, transparent 54%, rgba(255, 255, 255, 0.38) 100%) !important;
+  background: linear-gradient(
+    180deg,
+    transparent 54%,
+    rgba(255, 255, 255, 0.38) 100%
+  ) !important;
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur .player-info h3 {
@@ -2815,7 +2926,11 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
 
 .music-style-orbit .music-player-wrapper.skin-transparent {
   background:
-    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.08), transparent 44%),
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(255, 255, 255, 0.08),
+      transparent 44%
+    ),
     rgba(0, 0, 0, 0.06) !important;
   border-color: transparent !important;
   box-shadow: none !important;
@@ -3922,7 +4037,8 @@ body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
   background: var(--music-m3-panel-bg) !important;
   border-color: var(--music-m3-panel-border) !important;
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent),
+    inset 0 1px 0
+      color-mix(in srgb, var(--m3-on-primary-container, #fff) 10%, transparent),
     0 8px 18px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -3948,12 +4064,11 @@ body.widgets-m3-accent .music-player-wrapper .controls-row,
 
 body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
 .music-player-wrapper.skin-m3-accent .play-pause-btn {
-  background:
-    linear-gradient(
-      135deg,
-      var(--m3-primary, var(--safe-accent)),
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
-    ) !important;
+  background: linear-gradient(
+    135deg,
+    var(--m3-primary, var(--safe-accent)),
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 72%, #ffffff)
+  ) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
 }
 
@@ -4023,7 +4138,11 @@ body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb,
 .music-style-forest .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb,
 .music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb {
   background-color: transparent !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 18%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 18%,
+    transparent
+  ) !important;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -4032,11 +4151,21 @@ body.widgets-m3-accent .music-style-moon8 .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-vinyl .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-forest .vinyl-disc.has-thumb::before,
 body.widgets-m3-accent .music-style-beach .vinyl-disc.has-thumb::before,
-.music-style-neon .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
-.music-style-moon8 .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
-.music-style-vinyl .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
-.music-style-forest .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before,
-.music-style-beach .music-player-wrapper.skin-m3-accent .vinyl-disc.has-thumb::before {
+.music-style-neon
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before,
+.music-style-moon8
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before,
+.music-style-vinyl
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before,
+.music-style-forest
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before,
+.music-style-beach
+  .music-player-wrapper.skin-m3-accent
+  .vinyl-disc.has-thumb::before {
   display: none !important;
 }
 
@@ -4071,7 +4200,10 @@ body.widgets-m3-accent .music-player-wrapper,
 
 body.widgets-m3-accent .music-player-wrapper .player-btn,
 .music-player-wrapper.skin-m3-accent .player-btn {
-  color: var(--m3-on-surface, var(--m3-on-primary-container, #ffffff)) !important;
+  color: var(
+    --m3-on-surface,
+    var(--m3-on-primary-container, #ffffff)
+  ) !important;
   background: var(--music-m3-control-bg) !important;
   border-color: var(--music-m3-control-border) !important;
   border-width: 1px !important;
@@ -4081,10 +4213,14 @@ body.widgets-m3-accent .music-player-wrapper .player-btn,
 }
 
 body.widgets-m3-accent
-  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper
   .player-btn,
-.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-m3-accent
   .player-btn {
   border-radius: 5px;
@@ -4092,30 +4228,41 @@ body.widgets-m3-accent
 
 body.widgets-m3-accent .music-player-wrapper .player-btn:hover,
 .music-player-wrapper.skin-m3-accent .player-btn:hover {
-  color: var(--m3-on-surface, var(--m3-on-primary-container, #ffffff)) !important;
+  color: var(
+    --m3-on-surface,
+    var(--m3-on-primary-container, #ffffff)
+  ) !important;
   background: var(--music-m3-control-hover) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 32%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 32%,
+    transparent
+  ) !important;
 }
 
 body.widgets-m3-accent .music-player-wrapper .play-pause-btn,
 .music-player-wrapper.skin-m3-accent .play-pause-btn {
   color: var(--m3-on-primary, var(--accent-contrast-color, #ffffff)) !important;
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 88%, #ffffff),
-      var(--m3-primary, var(--safe-accent))
-    ) !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 88%, #ffffff),
+    var(--m3-primary, var(--safe-accent))
+  ) !important;
   box-shadow:
-    0 6px 18px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+    0 6px 18px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
     inset 0 1px 0 color-mix(in srgb, #ffffff 24%, transparent) !important;
 }
 
 body.widgets-m3-accent
-  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper
   .play-pause-btn,
-.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-m3-accent
   .play-pause-btn {
   border-radius: 5px;
@@ -4130,7 +4277,11 @@ body.widgets-m3-accent .music-player-wrapper .controls-row,
 
 body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
 .music-player-wrapper.skin-m3-accent .progress-bar-track {
-  background: color-mix(in srgb, var(--music-m3-control-bg) 76%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--music-m3-control-bg) 76%,
+    transparent
+  ) !important;
   border-color: var(--music-m3-control-border) !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.16) !important;
 }
@@ -4139,15 +4290,17 @@ body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
 .music-style-cassette .music-player-wrapper.skin-transparent .player-btn,
 .music-style-terminal .music-player-wrapper.skin-transparent .player-btn {
   color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.12) !important;
+  background: transparent !important;
   border-color: rgba(255, 255, 255, 0.22) !important;
-  box-shadow:
+  /* box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.16) !important;
+    0 4px 12px rgba(0, 0, 0, 0.16) !important; */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
 }
 
-.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-transparent
   .player-btn {
   border-radius: 5px;
@@ -4173,7 +4326,9 @@ body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
     inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
 }
 
-.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+.music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-transparent
   .play-pause-btn {
   border-radius: 5px;
@@ -4205,7 +4360,9 @@ body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
-.music-style-heartbeat .music-player-wrapper.skin-transparent .music-visualizer {
+.music-style-heartbeat
+  .music-player-wrapper.skin-transparent
+  .music-visualizer {
   background: rgba(0, 0, 0, 0.4) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
   box-shadow: none !important;
@@ -4235,7 +4392,9 @@ body.widgets-m3-accent .music-player-wrapper .progress-bar-track,
 
 .music-style-terminal .music-player-wrapper.skin-transparent .disc-container,
 .music-style-terminal .music-player-wrapper.skin-transparent .music-visualizer,
-.music-style-terminal .music-player-wrapper.skin-transparent .progress-bar-track {
+.music-style-terminal
+  .music-player-wrapper.skin-transparent
+  .progress-bar-track {
   background-image: none !important;
 }
 
@@ -4249,8 +4408,14 @@ body.widgets-m3-accent .music-player-wrapper.skin-transparent {
 }
 
 body.widgets-m3-accent .music-player-wrapper.skin-transparent .player-btn,
-body.widgets-m3-accent .music-style-cassette .music-player-wrapper.skin-transparent .player-btn,
-body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent .player-btn {
+body.widgets-m3-accent
+  .music-style-cassette
+  .music-player-wrapper.skin-transparent
+  .player-btn,
+body.widgets-m3-accent
+  .music-style-terminal
+  .music-player-wrapper.skin-transparent
+  .player-btn {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.12) !important;
   border-color: rgba(255, 255, 255, 0.22) !important;
@@ -4260,22 +4425,32 @@ body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transpar
 }
 
 body.widgets-m3-accent
-  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-transparent
   .player-btn {
   border-radius: 5px;
 }
 
 body.widgets-m3-accent .music-player-wrapper.skin-transparent .play-pause-btn,
-body.widgets-m3-accent .music-style-cassette .music-player-wrapper.skin-transparent .play-pause-btn,
-body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent .play-pause-btn {
+body.widgets-m3-accent
+  .music-style-cassette
+  .music-player-wrapper.skin-transparent
+  .play-pause-btn,
+body.widgets-m3-accent
+  .music-style-terminal
+  .music-player-wrapper.skin-transparent
+  .play-pause-btn {
   color: #111111 !important;
   background: rgba(255, 255, 255, 0.92) !important;
   border-color: rgba(255, 255, 255, 0.38) !important;
 }
 
 body.widgets-m3-accent
-  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(.music-style-pill):not(.music-style-orbit):not(.music-style-overlap)
+  .music-player-container:not(.music-style-spotify):not(.music-style-apple):not(
+    .music-style-pill
+  ):not(.music-style-orbit):not(.music-style-overlap)
   .music-player-wrapper.skin-transparent
   .play-pause-btn {
   border-radius: 5px;
@@ -4293,7 +4468,9 @@ body.widgets-m3-accent
 
 body.widgets-m3-accent .music-player-wrapper.skin-transparent .controls-row,
 body.widgets-m3-accent .music-player-wrapper.skin-transparent .disc-container,
-body.widgets-m3-accent .music-player-wrapper.skin-transparent .music-visualizer {
+body.widgets-m3-accent
+  .music-player-wrapper.skin-transparent
+  .music-visualizer {
   background: transparent !important;
   background-image: none !important;
   border-color: transparent !important;
@@ -4309,8 +4486,12 @@ body.widgets-m3-accent
   box-shadow: none !important;
 }
 
-body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent::before,
-body.widgets-m3-accent .music-style-terminal .music-player-wrapper.skin-transparent::after {
+body.widgets-m3-accent
+  .music-style-terminal
+  .music-player-wrapper.skin-transparent::before,
+body.widgets-m3-accent
+  .music-style-terminal
+  .music-player-wrapper.skin-transparent::after {
   content: none !important;
   display: none !important;
   background: transparent !important;
@@ -4344,7 +4525,9 @@ body.widgets-m3-accent
 }
 
 .music-style-overlap .music-player-wrapper.skin-transparent,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper.skin-transparent {
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper.skin-transparent {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 64%),
     rgba(0, 0, 0, 0.08) !important;
@@ -4375,33 +4558,55 @@ body.widgets-m3-accent
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent),
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent),
 .music-style-overlap .music-player-wrapper.skin-m3-accent {
   background:
     radial-gradient(
       circle at 18% 18%,
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent),
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 24%,
+        transparent
+      ),
       transparent 38%
     ),
-    color-mix(in srgb, var(--m3-surface-container-high, #111318) 72%, transparent) !important;
-  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 22%, transparent) !important;
+    color-mix(
+      in srgb,
+      var(--m3-surface-container-high, #111318) 72%,
+      transparent
+    ) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 22%,
+    transparent
+  ) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-btn,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .player-btn,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-btn {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .play-pause-btn,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .play-pause-btn,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .play-pause-btn {
   background: var(--m3-primary, var(--safe-accent)) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color, #101522)) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-transparent,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper.skin-transparent {
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper.skin-transparent {
   background: transparent !important;
   background-image: none !important;
   border-color: transparent !important;
@@ -4476,7 +4681,9 @@ body.widgets-m3-accent
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.48) !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::before,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)::before,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::before {
   left: 92px !important;
   right: 20px !important;
@@ -4485,18 +4692,26 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
   border-radius: 16px 16px 6px 6px !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-info,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .player-info,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-info {
   top: -50px !important;
 }
 
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .progress-row,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .progress-row {
   top: -16px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::before,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent)::before,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)::before,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::before {
   left: 92px !important;
   right: 20px !important;
@@ -4506,19 +4721,28 @@ body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-tran
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .player-info,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .player-info,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .player-info,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .player-info {
   top: -50px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .progress-row,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .progress-row,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .progress-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .progress-row {
   top: -16px !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .controls-row,
-body.widgets-m3-accent .music-style-overlap .music-player-wrapper:not(.skin-transparent) .controls-row,
+body.widgets-m3-accent
+  .music-style-overlap
+  .music-player-wrapper:not(.skin-transparent)
+  .controls-row,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .controls-row {
   top: 32px !important;
 }
@@ -4547,7 +4771,8 @@ body.widgets-m3-accent
   border: 0 !important;
   border-radius: 999px !important;
   overflow: visible !important;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--overlap-on-accent) 18%, transparent) !important;
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--overlap-on-accent) 18%, transparent) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-track {
@@ -4559,7 +4784,11 @@ body.widgets-m3-accent
   .music-player-wrapper:not(.skin-transparent)
   .progress-bar-track,
 .music-style-overlap .music-player-wrapper.skin-m3-accent .progress-bar-track {
-  background: color-mix(in srgb, var(--overlap-on-accent) 18%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--overlap-on-accent) 18%,
+    transparent
+  ) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-fill,

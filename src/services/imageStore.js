@@ -13,6 +13,7 @@ const DB_VERSION = 2
 // In-memory cache: id -> blobUrl (revokeObjectURL khi xoá)
 // Giới hạn số lượng entries để tránh rò rỉ bộ nhớ.
 const MAX_URL_CACHE_SIZE = 5
+const MAX_THUMB_CACHE_SIZE = 30
 const _urlCache = new Map() // insertion-order = LRU (xoá entry đầu tiên khi đầy)
 const _thumbCache = new Map()
 let _mediaIdCounter = 0
@@ -52,8 +53,9 @@ export async function saveThumbnail(id, blob) {
     tx.oncomplete = resolve
     tx.onerror = (e) => reject(e.target.error)
   })
-  if (_thumbCache.has(id)) URL.revokeObjectURL(_thumbCache.get(id))
-  _thumbCache.set(id, URL.createObjectURL(blob))
+  const url = URL.createObjectURL(blob)
+  _thumbCacheSet(id, url)
+  return url
 }
 
 /** Lấy thumbnail URL */
@@ -73,7 +75,7 @@ export async function getThumbnailUrl(id) {
   
   if (!blob) return null
   const url = URL.createObjectURL(blob)
-  _thumbCache.set(id, url)
+  _thumbCacheSet(id, url)
   return url
 }
 
@@ -181,6 +183,18 @@ function _urlCacheSet(id, url) {
     _urlCache.delete(oldestKey)
   }
   _urlCache.set(id, url)
+}
+
+function _thumbCacheSet(id, url) {
+  if (_thumbCache.has(id)) {
+    URL.revokeObjectURL(_thumbCache.get(id))
+    _thumbCache.delete(id)
+  } else if (_thumbCache.size >= MAX_THUMB_CACHE_SIZE) {
+    const oldestKey = _thumbCache.keys().next().value
+    URL.revokeObjectURL(_thumbCache.get(oldestKey))
+    _thumbCache.delete(oldestKey)
+  }
+  _thumbCache.set(id, url)
 }
 
 /**
