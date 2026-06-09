@@ -34,6 +34,38 @@ const SEARCH_ENGINES = {
     placeholderKey: "search_placeholder_ecosia",
     icon: "fa-solid fa-leaf",
   },
+  brave: {
+    name: "Brave",
+    url: (q) => `https://search.brave.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_brave",
+    icon: "fa-solid fa-shield",
+  },
+  startpage: {
+    name: "Startpage",
+    url: (q) =>
+      `https://www.startpage.com/sp/search?query=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_startpage",
+    icon: "fa-solid fa-lock",
+  },
+  perplexity: {
+    name: "Perplexity",
+    url: (q) => `https://www.perplexity.ai/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_perplexity",
+    icon: "fa-solid fa-brain",
+  },
+  youtube: {
+    name: "YouTube",
+    url: (q) =>
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_youtube",
+    icon: "fa-brands fa-youtube",
+  },
+  github: {
+    name: "GitHub",
+    url: (q) => `https://github.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_github",
+    icon: "fa-brands fa-github",
+  },
   "google-image": {
     name: "Images",
     url: (q) =>
@@ -84,6 +116,28 @@ let pendingImageFile = null // Store the image file waiting to be uploaded
 let activeSuggestionIndex = -1
 let originalQuery = ""
 let currentSuggestions = []
+
+function setSearchEngine(value, { persist = false, focus = false } = {}) {
+  if (!SEARCH_ENGINES[value]) return
+  currentEngine = value
+
+  engineOptions.forEach((option) => {
+    option.classList.toggle("active", option.dataset.value === value)
+  })
+
+  const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
+  selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
+  const settingsSelect = document.getElementById("search-engine-select")
+  if (settingsSelect) settingsSelect.value = value
+
+  if (persist) {
+    updateSetting("searchEngine", value)
+    saveSettings()
+  }
+
+  if (focus) searchInput.focus()
+  updateSearchUI()
+}
 
 async function fetchSuggestions(query) {
   if (!query) {
@@ -327,16 +381,7 @@ function initSearch() {
   // Restore saved engine
   const savedEngine = getSettings().searchEngine
   if (savedEngine && SEARCH_ENGINES[savedEngine]) {
-    currentEngine = savedEngine
-    const savedOption = [...engineOptions].find(
-      (o) => o.dataset.value === savedEngine,
-    )
-    if (savedOption) {
-      engineOptions.forEach((o) => o.classList.remove("active"))
-      savedOption.classList.add("active")
-      const engine = SEARCH_ENGINES[savedEngine]
-      selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
-    }
+    setSearchEngine(savedEngine)
   }
 
   // Dropdown Toggle
@@ -350,28 +395,18 @@ function initSearch() {
     option.addEventListener("click", (e) => {
       e.stopPropagation()
       const value = option.dataset.value
-      currentEngine = value
-
-      // Persist selection
-      updateSetting("searchEngine", value)
-      saveSettings()
-
-      // Update Active State
-      engineOptions.forEach((opt) => opt.classList.remove("active"))
-      option.classList.add("active")
-
-      // Update Icon
-      const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
-      selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
 
       // Close Dropdown
       engineDropdown.classList.remove("show")
 
-      // Focus Input
-      searchInput.focus()
-
-      updateSearchUI()
+      setSearchEngine(value, { persist: true, focus: true })
     })
+  })
+
+  window.addEventListener("settingsUpdated", (e) => {
+    if (e.detail?.key === "searchEngine") {
+      setSearchEngine(e.detail.value)
+    }
   })
 
   // Camera Button Click

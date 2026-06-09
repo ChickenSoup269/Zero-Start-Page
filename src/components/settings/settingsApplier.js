@@ -1612,6 +1612,10 @@ function createApplySettings(effectInstances) {
       "--search-bar-width",
       `${settings.searchBarWidth || 600}px`,
     )
+    document.documentElement.style.setProperty(
+      "--search-bar-blur",
+      `${settings.searchBarBlur ?? 20}px`,
+    )
 
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
@@ -4048,10 +4052,19 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.showSearchAiIconCheckbox) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
     }
+    if (DOM.searchEngineSelect) {
+      DOM.searchEngineSelect.value = settings.searchEngine || "google"
+    }
     if (DOM.searchBarWidthSlider) {
       DOM.searchBarWidthSlider.value = settings.searchBarWidth || 600
       if (DOM.searchBarWidthVal) {
         DOM.searchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
+      }
+    }
+    if (DOM.searchBarBlurSlider) {
+      DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
+      if (DOM.searchBarBlurVal) {
+        DOM.searchBarBlurVal.textContent = `${settings.searchBarBlur ?? 20}px`
       }
     }
     if (DOM.lcpSearchBarWidth) {

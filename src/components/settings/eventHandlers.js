@@ -4811,6 +4811,16 @@ export function setupGeneralEventHandlers(
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})
   }
+  if (DOM.searchEngineSelect) {
+    DOM.searchEngineSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("searchEngine", e.target.value)
+      window.dispatchEvent(
+        new CustomEvent("settingsUpdated", {
+          detail: { key: "searchEngine", value: e.target.value },
+        }),
+      )
+    })
+  }
   if (DOM.searchBarWidthSlider) {
     DOM.searchBarWidthSlider.addEventListener("input", (e) => {
       const width = e.target.value
@@ -4823,6 +4833,23 @@ export function setupGeneralEventHandlers(
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { key: "searchBarWidth", value: width },
+        }),
+      )
+    })
+  }
+  if (DOM.searchBarBlurSlider) {
+    DOM.searchBarBlurSlider.addEventListener("input", (e) => {
+      const blur = e.target.value
+      if (DOM.searchBarBlurVal)
+        DOM.searchBarBlurVal.textContent = `${blur}px`
+      document.documentElement.style.setProperty("--search-bar-blur", `${blur}px`)
+    })
+    DOM.searchBarBlurSlider.addEventListener("change", (e) => {
+      const blur = e.target.value
+      handleSettingUpdate("searchBarBlur", parseInt(blur, 10))
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "searchBarBlur", value: blur },
         }),
       )
     })

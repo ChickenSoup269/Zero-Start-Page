@@ -289,6 +289,7 @@
       const accentRgb = hexToRgb(accentColor)
 
       const searchBarWidth = settings.searchBarWidth || 600
+      const searchBarBlur = settings.searchBarBlur ?? 20
       const groupBgHex = settings.bookmarkGroupBgColor || "#ffffff"
       const groupBgOpacity = settings.bookmarkGroupBgOpacity ?? 0
       const groupBgRgb =
@@ -331,6 +332,7 @@
         --accent-color: ${accentColor};
         --accent-color-rgb: ${accentRgb};
         --search-bar-width: ${searchBarWidth}px;
+        --search-bar-blur: ${searchBarBlur}px;
         --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;

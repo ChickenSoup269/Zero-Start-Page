@@ -220,6 +220,10 @@ async function bootstrap() {
     "--search-bar-width",
     `${currentSettings.searchBarWidth || 600}px`,
   )
+  document.documentElement.style.setProperty(
+    "--search-bar-blur",
+    `${currentSettings.searchBarBlur ?? 20}px`,
+  )
 
   // Initialize Settings (Applies background & heavy canvas effects)
   // CRITICAL: Must happen BEFORE bookmarks so CSS variables are ready
@@ -520,6 +524,12 @@ async function bootstrap() {
     if (e.detail.key === "searchBarWidth") {
       document.documentElement.style.setProperty(
         "--search-bar-width",
+        `${e.detail.value}px`,
+      )
+    }
+    if (e.detail.key === "searchBarBlur") {
+      document.documentElement.style.setProperty(
+        "--search-bar-blur",
         `${e.detail.value}px`,
       )
     }

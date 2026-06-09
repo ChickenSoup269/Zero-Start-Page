@@ -1185,10 +1185,17 @@ export const showSearchBarCheckbox = document.getElementById(
 export const showSearchAiIconCheckbox = document.getElementById(
   "show-search-ai-icon-checkbox",
 )
+export const searchEngineSelect = document.getElementById(
+  "search-engine-select",
+)
 export const searchBarWidthSlider = document.getElementById(
   "search-bar-width-slider",
 )
 export const searchBarWidthVal = document.getElementById("search-bar-width-val")
+export const searchBarBlurSlider = document.getElementById(
+  "search-bar-blur-slider",
+)
+export const searchBarBlurVal = document.getElementById("search-bar-blur-val")
 export const searchAiBtn = document.getElementById("search-ai-btn")
 export const searchContainer = document.getElementById("search-container")
 export const showBookmarksCheckbox = document.getElementById(

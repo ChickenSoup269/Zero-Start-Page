@@ -8,8 +8,8 @@
   margin-bottom: var(--space-3);
   align-items: center;
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--search-bar-blur, 20px));
+  -webkit-backdrop-filter: blur(var(--search-bar-blur, 20px));
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
   padding: var(--space-1);

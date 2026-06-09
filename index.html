@@ -1450,12 +1450,36 @@
                             <input type="checkbox" id="show-search-ai-icon-checkbox" checked>
                         </div>
                         <div class="setting-item">
+                            <label for="search-engine-select" data-i18n="settings_search_engine">Search Engine</label>
+                            <select id="search-engine-select">
+                                <option value="google">Google</option>
+                                <option value="bing">Bing</option>
+                                <option value="yahoo">Yahoo</option>
+                                <option value="duckduckgo">DuckDuckGo</option>
+                                <option value="ecosia">Ecosia</option>
+                                <option value="brave">Brave</option>
+                                <option value="startpage">Startpage</option>
+                                <option value="perplexity">Perplexity</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="github">GitHub</option>
+                                <option value="google-image">Google Images</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
                             <label for="search-bar-width-slider" data-i18n="settings_search_bar_width">Search Bar
                                 Width</label>
                             <div class="range-wrapper">
                                 <input type="range" id="search-bar-width-slider" min="300" max="1200" step="10"
                                     value="600">
                                 <span class="range-val" id="search-bar-width-val">600px</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="search-bar-blur-slider" data-i18n="settings_search_bar_blur">Search Bar
+                                Blur</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="search-bar-blur-slider" min="0" max="40" step="1" value="20">
+                                <span class="range-val" id="search-bar-blur-val">20px</span>
                             </div>
                         </div>
                     </div>
@@ -1724,6 +1748,21 @@
                     </div>
                     <div class="engine-option" data-value="ecosia"><i class="fa-solid fa-leaf"></i>
                         <span>Ecosia</span>
+                    </div>
+                    <div class="engine-option" data-value="brave"><i class="fa-solid fa-shield"></i>
+                        <span>Brave</span>
+                    </div>
+                    <div class="engine-option" data-value="startpage"><i class="fa-solid fa-lock"></i>
+                        <span>Startpage</span>
+                    </div>
+                    <div class="engine-option" data-value="perplexity"><i class="fa-solid fa-brain"></i>
+                        <span>Perplexity</span>
+                    </div>
+                    <div class="engine-option" data-value="youtube"><i class="fa-brands fa-youtube"></i>
+                        <span>YouTube</span>
+                    </div>
+                    <div class="engine-option" data-value="github"><i class="fa-brands fa-github"></i>
+                        <span>GitHub</span>
                     </div>
                     <div class="engine-option" data-value="google-image"><i class="fa-regular fa-image"></i>
                         <span>Images</span>
