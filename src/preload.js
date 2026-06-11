@@ -303,7 +303,7 @@
           ? `rgba(${groupBgRgb}, ${groupBgOpacity / 100})`
           : groupBgHex
       const groupTextColor =
-        settings.bookmarkGroupAutoTextContrast === true && groupBgOpacity > 0
+        settings.bookmarkGroupAutoTextContrast === true
           ? (() => {
               const [r, g, b] = String(groupBgRgb || "255,255,255")
                 .split(",")

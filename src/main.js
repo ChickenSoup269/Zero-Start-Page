@@ -297,10 +297,21 @@ async function bootstrap() {
     }
   }
 
+  const hasDetachedNotepadNotes = () => {
+    try {
+      const detached = JSON.parse(localStorage.getItem("detachedNotes") || "{}")
+      return Object.values(detached).some(Boolean)
+    } catch {
+      return false
+    }
+  }
+
   const initVisibleWidgets = () => {
     const settings = getSettings()
     if (settings.showTodoList !== false) initWidget("todo")
-    if (settings.showNotepad !== false) initWidget("notepad")
+    if (settings.showNotepad !== false || hasDetachedNotepadNotes()) {
+      initWidget("notepad")
+    }
     if (settings.showQuotes !== false) initWidget("quotes")
     if (settings.showTimer === true) initWidget("timer")
     if (settings.showFullCalendar === true) initWidget("calendar")

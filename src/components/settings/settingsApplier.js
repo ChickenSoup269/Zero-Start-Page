@@ -1665,10 +1665,7 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    if (
-      settings.bookmarkGroupAutoTextContrast === true &&
-      (settings.bookmarkGroupBgOpacity ?? 0) > 0
-    ) {
+    if (settings.bookmarkGroupAutoTextContrast === true) {
       document.documentElement.style.setProperty(
         "--bookmark-group-text-color",
         getContrastYIQ(settings.bookmarkGroupBgColor || "#ffffff") === "black"

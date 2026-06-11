@@ -21,7 +21,7 @@
     box-shadow 0.35s ease,
     border-color 0.35s ease,
     transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 50;
+  z-index: 10030;
 }
 
 .search-container form {
@@ -5140,6 +5140,9 @@ body.widgets-m3-accent .quotes-container,
 }
 
 .selected-engine {
+  appearance: none;
+  border: 0;
+  background: transparent;
   width: 34px;
   height: 34px;
   display: flex;
@@ -5163,6 +5166,12 @@ body.widgets-m3-accent .quotes-container,
   background: rgba(255, 255, 255, 0.1);
 }
 
+.selected-engine:focus-visible,
+.engine-option:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .engine-dropdown {
   position: absolute;
   top: 100%;
@@ -5178,7 +5187,7 @@ body.widgets-m3-accent .quotes-container,
   display: none;
   grid-template-columns: repeat(4, 40px);
   gap: 4px;
-  z-index: 100;
+  z-index: 10031;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   margin-top: var(--space-1);
   animation: fadeInMenu 0.2s ease-out;
@@ -6055,7 +6064,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 
 .floating-note-header {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-2);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -6063,11 +6073,13 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   user-select: none;
   transition: all 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  flex-wrap: wrap;
 }
 
-.floating-note-header .note-color-dropdown {
-  margin-left: auto;
+.floating-note-title-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
 }
 
 .floating-note-header .note-color-trigger {
@@ -6081,10 +6093,12 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   font-weight: 600;
   color: white;
   font-size: 0.9rem;
+  line-height: 1.35;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 80px;
+  min-width: 0;
+  width: 100%;
 }
 
 .floating-note-actions {
@@ -6092,7 +6106,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   align-items: center;
   gap: var(--space-0-5);
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .floating-note-close {
@@ -10163,4 +10178,35 @@ body.bookmark-group-tab-bg-transparent.bookmark-taskbar-left-mode
   border-color: transparent !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+.bookmark-group-tab[style*="--bookmark-group-icon-color"] .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"]:hover
+  .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"].active
+  .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"].active:hover
+  .group-tab-icon,
+body.bookmark-sidebar-mode
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon,
+body.bookmark-taskbar-mode
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon,
+body.bookmark-taskbar-top-mode
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon,
+body.bookmark-taskbar-left-mode
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon,
+body.bookmark-group-accent-enabled
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"].active
+  .group-tab-icon,
+body.bookmark-group-tab-bg-transparent
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon,
+body.bookmark-group-border-hidden
+  .bookmark-group-tab[style*="--bookmark-group-icon-color"]
+  .group-tab-icon {
+  color: var(--bookmark-group-icon-color) !important;
 }

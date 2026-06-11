@@ -204,12 +204,39 @@ function createEngineIcon(engine) {
   return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="lazy" decoding="async">`
 }
 
+function getTranslation(key, fallback) {
+  const i18n = geti18n()
+  return (key && i18n[key]) || fallback
+}
+
+function getEngineName(value, engine = SEARCH_ENGINES[value]) {
+  return getTranslation(
+    `search_engine_${value.replace(/-/g, "_")}`,
+    engine?.name || value,
+  )
+}
+
+function getEngineShortName(value, engine = SEARCH_ENGINES[value]) {
+  return getTranslation(
+    `search_engine_${value.replace(/-/g, "_")}_short`,
+    engine?.shortName || getEngineName(value, engine),
+  )
+}
+
+function getEngineTooltip(value, engine = SEARCH_ENGINES[value]) {
+  return getTranslation(
+    `search_engine_${value.replace(/-/g, "_")}_tooltip`,
+    getEngineName(value, engine),
+  )
+}
+
 function renderSearchEngineOptions() {
   if (!engineDropdown) return
   engineDropdown.innerHTML = Object.entries(SEARCH_ENGINES)
     .map(([value, engine]) => {
-      const label = engine.shortName || engine.name
-      return `<button type="button" class="engine-option" data-value="${value}" title="${escapeHtml(engine.name)}" aria-label="${escapeHtml(engine.name)}">
+      const label = getEngineShortName(value, engine)
+      const tooltip = getEngineTooltip(value, engine)
+      return `<button type="button" class="engine-option" role="option" data-value="${value}" title="${escapeHtml(tooltip)}" aria-label="${escapeHtml(tooltip)}" aria-selected="false" tabindex="-1">
         ${createEngineIcon(engine)}
         <span>${escapeHtml(label)}</span>
       </button>`
@@ -223,9 +250,79 @@ function renderSettingsSearchEngineOptions() {
   if (!settingsSelect) return
   const currentValue = settingsSelect.value || getSettings().searchEngine || "google"
   settingsSelect.innerHTML = Object.entries(SEARCH_ENGINES)
-    .map(([value, engine]) => `<option value="${value}">${escapeHtml(engine.name)}</option>`)
+    .map(
+      ([value, engine]) =>
+        `<option value="${value}">${escapeHtml(getEngineName(value, engine))}</option>`,
+    )
     .join("")
   settingsSelect.value = SEARCH_ENGINES[currentValue] ? currentValue : "google"
+}
+
+function openEngineDropdown({ focusValue = currentEngine } = {}) {
+  engineDropdown.classList.add("show")
+  selectedEngine.setAttribute("aria-expanded", "true")
+  const target =
+    engineOptions.find((option) => option.dataset.value === focusValue) ||
+    engineOptions[0]
+  target?.focus()
+}
+
+function closeEngineDropdown({ focusSelector = false } = {}) {
+  engineDropdown.classList.remove("show")
+  selectedEngine.setAttribute("aria-expanded", "false")
+  if (focusSelector) selectedEngine.focus()
+}
+
+function toggleEngineDropdown() {
+  if (engineDropdown.classList.contains("show")) {
+    closeEngineDropdown()
+  } else {
+    openEngineDropdown()
+  }
+}
+
+function moveEngineFocus(delta) {
+  if (!engineOptions.length) return
+  const focusedIndex = engineOptions.indexOf(document.activeElement)
+  const currentIndex = engineOptions.findIndex(
+    (option) => option.dataset.value === currentEngine,
+  )
+  const startIndex = focusedIndex >= 0 ? focusedIndex : Math.max(currentIndex, 0)
+  const nextIndex =
+    (startIndex + delta + engineOptions.length) % engineOptions.length
+  engineOptions[nextIndex].focus()
+}
+
+function bindEngineOptionEvents() {
+  engineOptions.forEach((option) => {
+    option.addEventListener("click", (e) => {
+      e.stopPropagation()
+      closeEngineDropdown()
+      setSearchEngine(option.dataset.value, { persist: true, focus: true })
+    })
+
+    option.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault()
+        moveEngineFocus(1)
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault()
+        moveEngineFocus(-1)
+      } else if (e.key === "Home") {
+        e.preventDefault()
+        engineOptions[0]?.focus()
+      } else if (e.key === "End") {
+        e.preventDefault()
+        engineOptions[engineOptions.length - 1]?.focus()
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        closeEngineDropdown()
+        setSearchEngine(option.dataset.value, { persist: true, focus: true })
+      } else if (e.key === "Escape" || e.key === "Tab") {
+        closeEngineDropdown({ focusSelector: e.key === "Escape" })
+      }
+    })
+  })
 }
 
 function setSearchEngine(value, { persist = false, focus = false } = {}) {
@@ -233,13 +330,16 @@ function setSearchEngine(value, { persist = false, focus = false } = {}) {
   currentEngine = value
 
   engineOptions.forEach((option) => {
-    option.classList.toggle("active", option.dataset.value === value)
+    const isActive = option.dataset.value === value
+    option.classList.toggle("active", isActive)
+    option.setAttribute("aria-selected", String(isActive))
   })
 
   const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
+  const tooltip = getEngineTooltip(value, engine)
   selectedEngine.innerHTML = createEngineIcon(engine)
-  selectedEngine.title = engine.name
-  selectedEngine.setAttribute("aria-label", engine.name)
+  selectedEngine.title = tooltip
+  selectedEngine.setAttribute("aria-label", tooltip)
   const settingsSelect = document.getElementById("search-engine-select")
   if (settingsSelect) settingsSelect.value = value
 
@@ -493,6 +593,10 @@ function updateSearchUI() {
 function initSearch() {
   renderSearchEngineOptions()
   renderSettingsSearchEngineOptions()
+  engineDropdown.setAttribute(
+    "aria-label",
+    geti18n().search_engine_dropdown_label || "Search engines",
+  )
 
   // Restore saved engine
   const savedEngine = getSettings().searchEngine
@@ -503,28 +607,39 @@ function initSearch() {
   }
 
   // Dropdown Toggle
-  searchEngineSelector.addEventListener("click", (e) => {
+  selectedEngine.addEventListener("click", (e) => {
     e.stopPropagation()
-    engineDropdown.classList.toggle("show")
+    toggleEngineDropdown()
   })
 
-  // Option Selection
-  engineOptions.forEach((option) => {
-    option.addEventListener("click", (e) => {
-      e.stopPropagation()
-      const value = option.dataset.value
-
-      // Close Dropdown
-      engineDropdown.classList.remove("show")
-
-      setSearchEngine(value, { persist: true, focus: true })
-    })
+  selectedEngine.addEventListener("keydown", (e) => {
+    if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) {
+      e.preventDefault()
+      openEngineDropdown()
+      if (e.key === "ArrowUp") moveEngineFocus(-1)
+    } else if (e.key === "Escape") {
+      closeEngineDropdown()
+    }
   })
+
+  bindEngineOptionEvents()
 
   window.addEventListener("settingsUpdated", (e) => {
     if (e.detail?.key === "searchEngine") {
       setSearchEngine(e.detail.value)
     }
+  })
+
+  window.addEventListener("startpage:languageChanged", () => {
+    const value = currentEngine
+    renderSearchEngineOptions()
+    bindEngineOptionEvents()
+    renderSettingsSearchEngineOptions()
+    engineDropdown.setAttribute(
+      "aria-label",
+      geti18n().search_engine_dropdown_label || "Search engines",
+    )
+    setSearchEngine(value)
   })
 
   // Camera Button Click
@@ -604,7 +719,7 @@ function initSearch() {
   // Close Dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!searchEngineSelector.contains(e.target)) {
-      engineDropdown.classList.remove("show")
+      closeEngineDropdown()
     }
     if (!searchContainer.contains(e.target)) {
       suggestionsContainer.style.display = "none"

@@ -723,10 +723,7 @@ export function setupGeneralEventHandlers(
 
       const rootStyle = document.documentElement.style
       const applyBookmarkGroupTextColor = () => {
-        if (
-          settings.bookmarkGroupAutoTextContrast === true &&
-          (settings.bookmarkGroupBgOpacity ?? 0) > 0
-        ) {
+        if (settings.bookmarkGroupAutoTextContrast === true) {
           const bgHex = settings.bookmarkGroupBgColor || "#ffffff"
           rootStyle.setProperty(
             "--bookmark-group-text-color",

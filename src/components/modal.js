@@ -476,17 +476,39 @@ function createFolderIconEditor({
 
   let iconColorInput = null
   let iconColorDirty = false
+  let iconColorReset = false
   if (showIconColor) {
     const iconColorGroup = document.createElement("label")
     iconColorGroup.className = "bookmark-edit-field bookmark-edit-color-field"
     iconColorGroup.innerHTML = `<span>${i18n.bookmark_group_icon_color || "Icon color"}</span>`
+    const iconColorControl = document.createElement("div")
+    iconColorControl.className = "bookmark-edit-color-control"
     iconColorInput = document.createElement("input")
     iconColorInput.type = "color"
     iconColorInput.value = iconColor || "#ffffff"
     iconColorInput.addEventListener("input", () => {
       iconColorDirty = true
+      iconColorReset = false
     })
-    iconColorGroup.appendChild(iconColorInput)
+    const resetIconColorBtn = document.createElement("button")
+    resetIconColorBtn.type = "button"
+    resetIconColorBtn.className = "secondary-btn bookmark-edit-color-reset"
+    resetIconColorBtn.title = i18n.settings_reset_default || "Reset Default"
+    resetIconColorBtn.setAttribute(
+      "aria-label",
+      i18n.settings_reset_default || "Reset Default",
+    )
+    resetIconColorBtn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>'
+    resetIconColorBtn.addEventListener("click", (event) => {
+      event.preventDefault()
+      iconColorDirty = true
+      iconColorReset = true
+      iconColorInput.value = "#ffffff"
+      updatePreview()
+    })
+    iconColorControl.appendChild(iconColorInput)
+    iconColorControl.appendChild(resetIconColorBtn)
+    iconColorGroup.appendChild(iconColorControl)
     fields.appendChild(iconColorGroup)
   }
 
@@ -507,7 +529,10 @@ function createFolderIconEditor({
   popover.appendChild(fields)
 
   const updatePreview = () => {
-    applyFolderIconColor(iconPreview, iconColorInput?.value || "")
+    applyFolderIconColor(
+      iconPreview,
+      iconColorReset ? "" : iconColorInput?.value || "",
+    )
     renderFolderIconPreview(iconPreview, iconInput.value, nameInput.value || "?")
   }
 
@@ -543,7 +568,9 @@ function createFolderIconEditor({
       icon: iconInput.value.trim(),
       iconColor:
         showIconColor && (iconColorDirty || iconColor)
-          ? iconColorInput?.value || ""
+          ? iconColorReset
+            ? ""
+            : iconColorInput?.value || ""
           : undefined,
     })
     closeBookmarkEditPopover()

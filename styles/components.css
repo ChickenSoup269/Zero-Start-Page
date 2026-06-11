@@ -515,6 +515,24 @@
   padding: 4px;
 }
 
+.bookmark-edit-color-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bookmark-edit-color-control input[type="color"] {
+  flex: 1 1 auto;
+}
+
+.bookmark-edit-color-reset {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  justify-content: center;
+}
+
 .bookmark-edit-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;

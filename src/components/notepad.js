@@ -241,26 +241,30 @@ export class Notepad {
 
     floatingContainer.innerHTML = `
       <div class="floating-note-header drag-handle">
-        <span class="floating-note-title">${this.escapeHtml(note.title)}</span>
-        <div class="note-color-dropdown">
-          <button class="icon-btn note-color-trigger" title="Change Color">
-            <i class="fa-solid fa-palette"></i>
-          </button>
-          <div class="note-color-menu">
-            ${Notepad.COLORS.map(
-              (color) => `
-              <button class="note-color-btn ${note.color === color ? "active" : ""}" 
-                      data-color="${color}" 
-                      style="background-color: ${color}" 
-                      title="${color}"></button>
-            `,
-            ).join("")}
-          </div>
+        <div class="floating-note-title-row">
+          <span class="floating-note-title">${this.escapeHtml(note.title)}</span>
         </div>
-        <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
-        <button class="icon-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
-        <button class="icon-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
-        <button class="icon-btn floating-note-close" title="Reattach"><i class="fa-solid fa-window-close"></i></button>
+        <div class="floating-note-actions">
+          <div class="note-color-dropdown">
+            <button class="icon-btn note-color-trigger" title="Change Color">
+              <i class="fa-solid fa-palette"></i>
+            </button>
+            <div class="note-color-menu">
+              ${Notepad.COLORS.map(
+                (color) => `
+                <button class="note-color-btn ${note.color === color ? "active" : ""}"
+                        data-color="${color}"
+                        style="background-color: ${color}"
+                        title="${color}"></button>
+              `,
+              ).join("")}
+            </div>
+          </div>
+          <button class="icon-btn" data-action="toggle-bg" title="Toggle background (White/Black)"><i class="fa-solid ${note.contentBg === "#FFFFFF" || (!note.contentBg && this.getContrastColor(note.color) === "#000000") ? "fa-sun" : "fa-moon"}"></i></button>
+          <button class="icon-btn" data-action="toggle-edit-toolbar" title="Toggle edit toolbar"><i class="fa-solid ${isEditToolbarHidden ? "fa-pen-to-square" : "fa-pen"}"></i></button>
+          <button class="icon-btn floating-note-collapse" data-action="toggle-collapse" title="Collapse/Expand"><i class="fa-solid ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"}"></i></button>
+          <button class="icon-btn floating-note-close" title="Reattach"><i class="fa-solid fa-window-close"></i></button>
+        </div>
       </div>
       <div class="floating-note-toolbar">
         <button class="toolbar-btn" data-command="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
