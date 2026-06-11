@@ -2953,6 +2953,52 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkGapValue && DOM.bookmarkGapInput)
         DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
 
+      const normalizeQuickAccessRadius = (value, fallback = "8px") => {
+        const allowed = new Set([
+          "0px",
+          "4px",
+          "5px",
+          "8px",
+          "10px",
+          "12px",
+          "14px",
+          "16px",
+          "18px",
+          "20px",
+        ])
+        const match = String(value || "").match(/^(\d+(?:\.\d+)?)px$/)
+        if (!match) return fallback
+        const px = Math.min(20, Math.max(0, Math.round(Number(match[1]))))
+        const normalized = `${px}px`
+        return allowed.has(normalized) ? normalized : fallback
+      }
+      if (DOM.lcpQuickAccessButtonRadius) {
+        DOM.lcpQuickAccessButtonRadius.value = normalizeQuickAccessRadius(
+          settings.quickAccessBorderRadius,
+          "5px",
+        )
+      }
+      if (DOM.lcpQuickAccessBarRadius) {
+        DOM.lcpQuickAccessBarRadius.value = normalizeQuickAccessRadius(
+          settings.quickAccessBarRadius,
+          "14px",
+        )
+      }
+      if (DOM.lcpQuickAccessToggleRadius) {
+        DOM.lcpQuickAccessToggleRadius.value = normalizeQuickAccessRadius(
+          settings.quickAccessToggleRadius,
+          "20px",
+        )
+      }
+      if (DOM.lcpQuickAccessSkin) {
+        DOM.lcpQuickAccessSkin.value =
+          settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+      }
+      if (DOM.lcpQuickAccessBorderVisible) {
+        DOM.lcpQuickAccessBorderVisible.checked =
+          settings.quickAccessBorderVisible !== false
+      }
+
       DOM.bookmarkBgColorPicker.value = settings.bookmarkBgColor || "#ffffff"
       DOM.bookmarkBgOpacityInput.value = settings.bookmarkBgOpacity ?? 100
 

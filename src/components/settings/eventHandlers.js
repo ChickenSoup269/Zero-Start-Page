@@ -5051,6 +5051,30 @@ export function setupGeneralEventHandlers(
     DOM.layoutControlsBtn.classList.remove("active")
   }
 
+  const setLcpTab = (tabName = "layout") => {
+    DOM.lcpTabs?.forEach((tab) => {
+      const active = tab.dataset.lcpTab === tabName
+      tab.classList.toggle("active", active)
+      tab.setAttribute("aria-selected", active ? "true" : "false")
+    })
+    DOM.lcpTabPanels?.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.lcpPanel === tabName)
+    })
+  }
+
+  const showLcp = (tabName = "layout") => {
+    setLcpTab(tabName)
+    DOM.fadeToggle(DOM.layoutControlsPopup, true, "block")
+    DOM.layoutControlsBtn.classList.add("active")
+  }
+
+  DOM.lcpTabs?.forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      e.stopPropagation()
+      setLcpTab(tab.dataset.lcpTab || "layout")
+    })
+  })
+
   DOM.layoutControlsBtn.addEventListener("click", (e) => {
     e.stopPropagation()
     const isVisible =
@@ -5059,9 +5083,12 @@ export function setupGeneralEventHandlers(
     if (isVisible) {
       closeLcp()
     } else {
-      DOM.fadeToggle(DOM.layoutControlsPopup, true, "block")
-      DOM.layoutControlsBtn.classList.add("active")
+      showLcp("layout")
     }
+  })
+
+  window.addEventListener("openLayoutControls", (e) => {
+    showLcp(e.detail?.tab || "layout")
   })
 
   document.addEventListener("click", (e) => {
@@ -5233,6 +5260,90 @@ export function setupGeneralEventHandlers(
     footerToggleBtn.addEventListener("click", () => {
       const isNowCollapsed = sidebarFooter.classList.toggle("collapsed")
       localStorage.setItem(FOOTER_KEY, isNowCollapsed ? "1" : "0")
+    })
+  }
+
+  const radiusOptions = new Set([
+    "0px",
+    "4px",
+    "5px",
+    "8px",
+    "10px",
+    "12px",
+    "14px",
+    "16px",
+    "18px",
+    "20px",
+  ])
+  const normalizeQuickAccessRadius = (value, fallback = "8px") => {
+    const match = String(value || "").match(/^(\d+(?:\.\d+)?)px$/)
+    if (!match) return fallback
+    const px = Math.min(20, Math.max(0, Math.round(Number(match[1]))))
+    const normalized = `${px}px`
+    return radiusOptions.has(normalized) ? normalized : fallback
+  }
+  const updateQuickAccessRadius = (key, value) => {
+    const normalized = normalizeQuickAccessRadius(value)
+    handleSettingUpdate(key, normalized)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", { detail: { key, value: normalized } }),
+    )
+  }
+
+  const settings = getSettings()
+  if (DOM.lcpQuickAccessButtonRadius) {
+    DOM.lcpQuickAccessButtonRadius.value = normalizeQuickAccessRadius(
+      settings.quickAccessBorderRadius,
+      "5px",
+    )
+    DOM.lcpQuickAccessButtonRadius.addEventListener("change", (e) =>
+      updateQuickAccessRadius("quickAccessBorderRadius", e.target.value),
+    )
+  }
+  if (DOM.lcpQuickAccessBarRadius) {
+    DOM.lcpQuickAccessBarRadius.value = normalizeQuickAccessRadius(
+      settings.quickAccessBarRadius,
+      "14px",
+    )
+    DOM.lcpQuickAccessBarRadius.addEventListener("change", (e) =>
+      updateQuickAccessRadius("quickAccessBarRadius", e.target.value),
+    )
+  }
+  if (DOM.lcpQuickAccessToggleRadius) {
+    DOM.lcpQuickAccessToggleRadius.value = normalizeQuickAccessRadius(
+      settings.quickAccessToggleRadius,
+      "20px",
+    )
+    DOM.lcpQuickAccessToggleRadius.addEventListener("change", (e) =>
+      updateQuickAccessRadius("quickAccessToggleRadius", e.target.value),
+    )
+  }
+  if (DOM.lcpQuickAccessSkin) {
+    DOM.lcpQuickAccessSkin.value =
+      settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+    DOM.lcpQuickAccessSkin.addEventListener("change", (e) => {
+      const skin = e.target.value === "m3-accent" ? "m3-accent" : "default"
+      handleSettingUpdate("quickAccessSkin", skin)
+      document.body.classList.toggle("quick-access-m3-accent", skin === "m3-accent")
+      document.body.classList.toggle("quick-access-transparent", false)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "quickAccessSkin", value: skin },
+        }),
+      )
+    })
+  }
+  if (DOM.lcpQuickAccessBorderVisible) {
+    DOM.lcpQuickAccessBorderVisible.checked =
+      settings.quickAccessBorderVisible !== false
+    DOM.lcpQuickAccessBorderVisible.addEventListener("change", () => {
+      const visible = DOM.lcpQuickAccessBorderVisible.checked
+      handleSettingUpdate("quickAccessBorderVisible", visible)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "quickAccessBorderVisible", value: visible },
+        }),
+      )
     })
   }
 

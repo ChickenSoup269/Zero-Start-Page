@@ -1229,6 +1229,8 @@ export const layoutControlsBtn = document.getElementById("layout-controls-btn")
 export const layoutControlsPopup = document.getElementById(
   "layout-controls-popup",
 )
+export const lcpTabs = document.querySelectorAll("[data-lcp-tab]")
+export const lcpTabPanels = document.querySelectorAll("[data-lcp-panel]")
 export const lcpSearchBar = document.getElementById("lcp-search-bar")
 export const lcpSearchBarWidth = document.getElementById("lcp-search-bar-width")
 export const lcpSearchBarWidthVal = document.getElementById(
@@ -1249,6 +1251,21 @@ export const lcpHideChromeBookmarksRow = document.getElementById(
 export const lcpGhostControls = document.getElementById("lcp-ghost-controls")
 export const lcpMusicStyleSelect = document.getElementById(
   "lcp-music-style-select",
+)
+export const lcpQuickAccessButtonRadius = document.getElementById(
+  "lcp-quick-access-button-radius",
+)
+export const lcpQuickAccessBarRadius = document.getElementById(
+  "lcp-quick-access-bar-radius",
+)
+export const lcpQuickAccessToggleRadius = document.getElementById(
+  "lcp-quick-access-toggle-radius",
+)
+export const lcpQuickAccessSkin = document.getElementById(
+  "lcp-quick-access-skin",
+)
+export const lcpQuickAccessBorderVisible = document.getElementById(
+  "lcp-quick-access-border-visible",
 )
 export const m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 

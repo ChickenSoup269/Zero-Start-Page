@@ -6,79 +6,158 @@ import { showAlert } from "../utils/dialog.js"
 const SEARCH_ENGINES = {
   google: {
     name: "Google",
+    domain: "google.com",
     url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_google",
-    icon: "fa-brands fa-google",
   },
   bing: {
     name: "Bing",
+    domain: "bing.com",
     url: (q) => `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_bing",
-    icon: "fa-brands fa-microsoft",
   },
   yahoo: {
     name: "Yahoo",
+    domain: "yahoo.com",
     url: (q) => `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_yahoo",
-    icon: "fa-brands fa-yahoo",
   },
   duckduckgo: {
     name: "DuckDuckGo",
+    domain: "duckduckgo.com",
     url: (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_duckduckgo",
-    icon: "fa-solid fa-shield-halved",
   },
   ecosia: {
     name: "Ecosia",
+    domain: "ecosia.org",
     url: (q) => `https://www.ecosia.org/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_ecosia",
-    icon: "fa-solid fa-leaf",
   },
   brave: {
     name: "Brave",
+    domain: "search.brave.com",
     url: (q) => `https://search.brave.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_brave",
-    icon: "fa-solid fa-shield",
   },
   startpage: {
     name: "Startpage",
+    domain: "startpage.com",
     url: (q) =>
       `https://www.startpage.com/sp/search?query=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_startpage",
-    icon: "fa-solid fa-lock",
   },
   perplexity: {
     name: "Perplexity",
+    domain: "perplexity.ai",
     url: (q) => `https://www.perplexity.ai/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_perplexity",
-    icon: "fa-solid fa-brain",
   },
   youtube: {
     name: "YouTube",
+    domain: "youtube.com",
     url: (q) =>
       `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_youtube",
-    icon: "fa-brands fa-youtube",
   },
   github: {
     name: "GitHub",
+    domain: "github.com",
     url: (q) => `https://github.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_github",
-    icon: "fa-brands fa-github",
   },
   "google-image": {
-    name: "Images",
+    name: "Google Images",
+    shortName: "Images",
+    domain: "images.google.com",
     url: (q) =>
       `https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=isch`,
     placeholderKey: "search_placeholder_images",
-    icon: "fa-regular fa-image",
   },
   "google-lens": {
     name: "Google Lens",
+    domain: "lens.google.com",
     url: (q) =>
       `https://lens.google.com/search?ep=ccm&s=&st=${Date.now()}&re=df&url=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_lens",
-    icon: "fa-solid fa-camera-viewfinder",
+  },
+  kagi: {
+    name: "Kagi",
+    domain: "kagi.com",
+    url: (q) => `https://kagi.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_kagi",
+  },
+  qwant: {
+    name: "Qwant",
+    domain: "qwant.com",
+    url: (q) => `https://www.qwant.com/?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_qwant",
+  },
+  mojeek: {
+    name: "Mojeek",
+    domain: "mojeek.com",
+    url: (q) => `https://www.mojeek.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_mojeek",
+  },
+  yep: {
+    name: "Yep",
+    domain: "yep.com",
+    url: (q) => `https://yep.com/web?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_yep",
+  },
+  yandex: {
+    name: "Yandex",
+    domain: "yandex.com",
+    url: (q) => `https://yandex.com/search/?text=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_yandex",
+  },
+  baidu: {
+    name: "Baidu",
+    domain: "baidu.com",
+    url: (q) => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_baidu",
+  },
+  wikipedia: {
+    name: "Wikipedia",
+    domain: "wikipedia.org",
+    url: (q) =>
+      `https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_wikipedia",
+  },
+  reddit: {
+    name: "Reddit",
+    domain: "reddit.com",
+    url: (q) => `https://www.reddit.com/search/?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_reddit",
+  },
+  stackoverflow: {
+    name: "Stack Overflow",
+    shortName: "Stack",
+    domain: "stackoverflow.com",
+    url: (q) =>
+      `https://stackoverflow.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_stackoverflow",
+  },
+  mdn: {
+    name: "MDN",
+    domain: "developer.mozilla.org",
+    url: (q) =>
+      `https://developer.mozilla.org/en-US/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_mdn",
+  },
+  npm: {
+    name: "npm",
+    domain: "npmjs.com",
+    url: (q) => `https://www.npmjs.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_npm",
+  },
+  scholar: {
+    name: "Google Scholar",
+    shortName: "Scholar",
+    domain: "scholar.google.com",
+    url: (q) =>
+      `https://scholar.google.com/scholar?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_scholar",
   },
 }
 
@@ -92,7 +171,7 @@ searchContainer.appendChild(suggestionsContainer)
 const searchEngineSelector = document.getElementById("search-engine-selector")
 const selectedEngine = document.getElementById("selected-engine")
 const engineDropdown = document.getElementById("engine-dropdown")
-const engineOptions = document.querySelectorAll(".engine-option")
+let engineOptions = []
 
 // Image Search Elements
 const cameraBtn = document.getElementById("search-camera-btn")
@@ -117,6 +196,38 @@ let activeSuggestionIndex = -1
 let originalQuery = ""
 let currentSuggestions = []
 
+function getEngineIconUrl(engine) {
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(engine.domain)}&sz=64`
+}
+
+function createEngineIcon(engine) {
+  return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="lazy" decoding="async">`
+}
+
+function renderSearchEngineOptions() {
+  if (!engineDropdown) return
+  engineDropdown.innerHTML = Object.entries(SEARCH_ENGINES)
+    .map(([value, engine]) => {
+      const label = engine.shortName || engine.name
+      return `<button type="button" class="engine-option" data-value="${value}" title="${escapeHtml(engine.name)}" aria-label="${escapeHtml(engine.name)}">
+        ${createEngineIcon(engine)}
+        <span>${escapeHtml(label)}</span>
+      </button>`
+    })
+    .join("")
+  engineOptions = [...engineDropdown.querySelectorAll(".engine-option")]
+}
+
+function renderSettingsSearchEngineOptions() {
+  const settingsSelect = document.getElementById("search-engine-select")
+  if (!settingsSelect) return
+  const currentValue = settingsSelect.value || getSettings().searchEngine || "google"
+  settingsSelect.innerHTML = Object.entries(SEARCH_ENGINES)
+    .map(([value, engine]) => `<option value="${value}">${escapeHtml(engine.name)}</option>`)
+    .join("")
+  settingsSelect.value = SEARCH_ENGINES[currentValue] ? currentValue : "google"
+}
+
 function setSearchEngine(value, { persist = false, focus = false } = {}) {
   if (!SEARCH_ENGINES[value]) return
   currentEngine = value
@@ -126,7 +237,9 @@ function setSearchEngine(value, { persist = false, focus = false } = {}) {
   })
 
   const engine = SEARCH_ENGINES[value] || SEARCH_ENGINES.google
-  selectedEngine.innerHTML = `<i class="${engine.icon}"></i>`
+  selectedEngine.innerHTML = createEngineIcon(engine)
+  selectedEngine.title = engine.name
+  selectedEngine.setAttribute("aria-label", engine.name)
   const settingsSelect = document.getElementById("search-engine-select")
   if (settingsSelect) settingsSelect.value = value
 
@@ -378,10 +491,15 @@ function updateSearchUI() {
 }
 
 function initSearch() {
+  renderSearchEngineOptions()
+  renderSettingsSearchEngineOptions()
+
   // Restore saved engine
   const savedEngine = getSettings().searchEngine
   if (savedEngine && SEARCH_ENGINES[savedEngine]) {
     setSearchEngine(savedEngine)
+  } else {
+    setSearchEngine(currentEngine)
   }
 
   // Dropdown Toggle
@@ -472,7 +590,7 @@ function initSearch() {
         
         // If not in image engine, switch to it automatically to show correct context
         if (currentEngine !== "google-image" && currentEngine !== "google-lens") {
-          const imageOption = [...engineOptions].find(o => o.dataset.value === "google-image")
+          const imageOption = engineOptions.find(o => o.dataset.value === "google-image")
           if (imageOption) imageOption.click()
         }
         

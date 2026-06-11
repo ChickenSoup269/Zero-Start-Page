@@ -485,7 +485,7 @@ export function showContextMenu(
     menuSelect.style.display = "none"
 
     const settings = getSettings()
-    const radii = ["30px", "25px", "20px", "15px", "10px", "5px", "0px"]
+    const radii = ["20px", "18px", "16px", "14px", "12px", "10px", "8px", "5px", "4px", "0px"]
 
     const createMenuItem = (label, iconClass, handler, extraClass = "") => {
       const item = document.createElement("div")
@@ -512,6 +512,14 @@ export function showContextMenu(
 
     const openQuickAccessPopup = () => {
       removeQuickPopup()
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("openLayoutControls", {
+            detail: { tab: "quick-access" },
+          }),
+        )
+      }, 0)
+      return
 
       const quickAccessBar = document.querySelector(".quick-access-bar")
       const barRect = quickAccessBar?.getBoundingClientRect?.()

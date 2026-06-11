@@ -759,38 +759,44 @@ async function bootstrap() {
           settingsToggle.classList.toggle("no-border", !isVisible)
         }
       }
+      const normalizeQuickAccessRadius = (value, fallback) => {
+        const match = String(value || "").match(/^(\d+(?:\.\d+)?)px$/)
+        if (!match) return fallback
+        const px = Math.min(20, Math.max(0, Math.round(Number(match[1]))))
+        return `${px}px`
+      }
 
       // Apply border-radius
       document.documentElement.style.setProperty(
         "--quick-access-btn-radius",
-        settings.quickAccessBorderRadius || "5px",
+        normalizeQuickAccessRadius(settings.quickAccessBorderRadius, "5px"),
       )
       document.documentElement.style.setProperty(
         "--quick-access-bar-radius",
-        settings.quickAccessBarRadius || "var(--radius-lg)",
+        normalizeQuickAccessRadius(settings.quickAccessBarRadius, "14px"),
       )
       document.documentElement.style.setProperty(
         "--quick-access-toggle-radius",
-        settings.quickAccessToggleRadius || "50%",
+        normalizeQuickAccessRadius(settings.quickAccessToggleRadius, "20px"),
       )
       toggleBorderVisibility(settings.quickAccessBorderVisible !== false)
       window.addEventListener("layoutUpdated", (e) => {
         if (e.detail.key === "quickAccessBorderRadius") {
           document.documentElement.style.setProperty(
             "--quick-access-btn-radius",
-            e.detail.value,
+            normalizeQuickAccessRadius(e.detail.value, "5px"),
           )
         }
         if (e.detail.key === "quickAccessBarRadius") {
           document.documentElement.style.setProperty(
             "--quick-access-bar-radius",
-            e.detail.value,
+            normalizeQuickAccessRadius(e.detail.value, "14px"),
           )
         }
         if (e.detail.key === "quickAccessToggleRadius") {
           document.documentElement.style.setProperty(
             "--quick-access-toggle-radius",
-            e.detail.value,
+            normalizeQuickAccessRadius(e.detail.value, "20px"),
           )
         }
         if (e.detail.key === "quickAccessBorderVisible") {

@@ -317,6 +317,18 @@
             <div class="lcp-title"><i class="fa-solid fa-sliders"></i> <span data-i18n="quick_layout_title">Layout
                     Controls</span></div>
 
+            <div class="lcp-tabs" role="tablist" aria-label="Layout controls tabs">
+                <button type="button" class="lcp-tab active" data-lcp-tab="layout" role="tab" aria-selected="true">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Layout</span>
+                </button>
+                <button type="button" class="lcp-tab" data-lcp-tab="quick-access" role="tab" aria-selected="false">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Quick Access</span>
+                </button>
+            </div>
+
+            <div class="lcp-tab-panel active" data-lcp-panel="layout" role="tabpanel">
             <div class="lcp-row">
                 <i class="fa-solid fa-arrow-right-arrow-left lcp-icon"></i>
                 <span class="lcp-label" data-i18n="settings_flip_layout">Flip Interface Layout</span>
@@ -448,6 +460,74 @@
                     <option value="neon" data-i18n="style_neon">Neon</option>
                     <option value="minimal" data-i18n="style_minimal">Minimal</option>
                 </select>
+            </div>
+            </div>
+
+            <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
+                <div class="lcp-row lcp-row-select quick-access-section-row">
+                    <i class="fa-solid fa-circle-dot lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_button_radius">Quick Access Button Radius</span>
+                    <select id="lcp-quick-access-button-radius" class="lcp-select quick-access-radius-select">
+                        <option value="0px">0px</option>
+                        <option value="4px">4px</option>
+                        <option value="5px">5px</option>
+                        <option value="8px">8px</option>
+                        <option value="10px">10px</option>
+                        <option value="12px">12px</option>
+                        <option value="14px">14px</option>
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                        <option value="20px">20px</option>
+                    </select>
+                </div>
+                <div class="lcp-row lcp-row-select quick-access-section-row">
+                    <i class="fa-regular fa-window-maximize lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_bar_radius">Quick Access Bar Radius</span>
+                    <select id="lcp-quick-access-bar-radius" class="lcp-select quick-access-radius-select">
+                        <option value="0px">0px</option>
+                        <option value="4px">4px</option>
+                        <option value="5px">5px</option>
+                        <option value="8px">8px</option>
+                        <option value="10px">10px</option>
+                        <option value="12px">12px</option>
+                        <option value="14px">14px</option>
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                        <option value="20px">20px</option>
+                    </select>
+                </div>
+                <div class="lcp-row lcp-row-select quick-access-section-row">
+                    <i class="fa-solid fa-gear lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_toggle_radius">Settings Toggle Radius</span>
+                    <select id="lcp-quick-access-toggle-radius" class="lcp-select quick-access-radius-select">
+                        <option value="0px">0px</option>
+                        <option value="4px">4px</option>
+                        <option value="5px">5px</option>
+                        <option value="8px">8px</option>
+                        <option value="10px">10px</option>
+                        <option value="12px">12px</option>
+                        <option value="14px">14px</option>
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                        <option value="20px">20px</option>
+                    </select>
+                </div>
+                <div class="lcp-row lcp-row-select quick-access-section-row">
+                    <i class="fa-solid fa-palette lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_skin">Quick Access Skin</span>
+                    <select id="lcp-quick-access-skin" class="lcp-select">
+                        <option value="default" data-i18n="skin_default">Default</option>
+                        <option value="m3-accent" data-i18n="skin_m3_accent">M3 Accent</option>
+                    </select>
+                </div>
+                <div class="lcp-row quick-access-border-row">
+                    <i class="fa-solid fa-border-all lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="quick_access_border_toggle">Border Visibility</span>
+                    <label class="lcp-switch" for="lcp-quick-access-border-visible">
+                        <input type="checkbox" id="lcp-quick-access-border-visible">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -1463,6 +1543,19 @@
                                 <option value="youtube">YouTube</option>
                                 <option value="github">GitHub</option>
                                 <option value="google-image">Google Images</option>
+                                <option value="google-lens">Google Lens</option>
+                                <option value="kagi">Kagi</option>
+                                <option value="qwant">Qwant</option>
+                                <option value="mojeek">Mojeek</option>
+                                <option value="yep">Yep</option>
+                                <option value="yandex">Yandex</option>
+                                <option value="baidu">Baidu</option>
+                                <option value="wikipedia">Wikipedia</option>
+                                <option value="reddit">Reddit</option>
+                                <option value="stackoverflow">Stack Overflow</option>
+                                <option value="mdn">MDN</option>
+                                <option value="npm">npm</option>
+                                <option value="scholar">Google Scholar</option>
                             </select>
                         </div>
                         <div class="setting-item">
@@ -1732,44 +1825,130 @@
 
         <div id="search-container" class="search-container">
             <div class="search-engine-selector" id="search-engine-selector">
-                <div class="selected-engine" id="selected-engine"><i class="fa-brands fa-google"></i></div>
+                <div class="selected-engine" id="selected-engine" title="Google" aria-label="Google"><img
+                        class="search-engine-icon"
+                        src="https://www.google.com/s2/favicons?domain=google.com&amp;sz=64" alt=""></div>
                 <div class="engine-dropdown" id="engine-dropdown">
-                    <div class="engine-option active" data-value="google" title="Google" aria-label="Google"><i class="fa-brands fa-google"></i>
+                    <button type="button" class="engine-option active" data-value="google" title="Google"
+                        aria-label="Google"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=google.com&amp;sz=64" alt="">
                         <span>Google</span>
-                    </div>
-                    <div class="engine-option" data-value="bing" title="Bing" aria-label="Bing"><i class="fa-brands fa-microsoft"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="bing" title="Bing" aria-label="Bing"><img
+                            class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=bing.com&amp;sz=64" alt="">
                         <span>Bing</span>
-                    </div>
-                    <div class="engine-option" data-value="yahoo" title="Yahoo" aria-label="Yahoo"><i class="fa-brands fa-yahoo"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="yahoo" title="Yahoo"
+                        aria-label="Yahoo"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=yahoo.com&amp;sz=64" alt="">
                         <span>Yahoo</span>
-                    </div>
-                    <div class="engine-option" data-value="duckduckgo" title="DuckDuckGo" aria-label="DuckDuckGo"><i class="fa-solid fa-shield-halved"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="duckduckgo" title="DuckDuckGo"
+                        aria-label="DuckDuckGo"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=duckduckgo.com&amp;sz=64" alt="">
                         <span>DuckDuckGo</span>
-                    </div>
-                    <div class="engine-option" data-value="ecosia" title="Ecosia" aria-label="Ecosia"><i class="fa-solid fa-leaf"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="ecosia" title="Ecosia"
+                        aria-label="Ecosia"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=ecosia.org&amp;sz=64" alt="">
                         <span>Ecosia</span>
-                    </div>
-                    <div class="engine-option" data-value="brave" title="Brave" aria-label="Brave"><i class="fa-solid fa-shield"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="brave" title="Brave"
+                        aria-label="Brave"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=search.brave.com&amp;sz=64" alt="">
                         <span>Brave</span>
-                    </div>
-                    <div class="engine-option" data-value="startpage" title="Startpage" aria-label="Startpage"><i class="fa-solid fa-lock"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="startpage" title="Startpage"
+                        aria-label="Startpage"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=startpage.com&amp;sz=64" alt="">
                         <span>Startpage</span>
-                    </div>
-                    <div class="engine-option" data-value="perplexity" title="Perplexity" aria-label="Perplexity"><i class="fa-solid fa-brain"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="perplexity" title="Perplexity"
+                        aria-label="Perplexity"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=perplexity.ai&amp;sz=64" alt="">
                         <span>Perplexity</span>
-                    </div>
-                    <div class="engine-option" data-value="youtube" title="YouTube" aria-label="YouTube"><i class="fa-brands fa-youtube"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="youtube" title="YouTube"
+                        aria-label="YouTube"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=youtube.com&amp;sz=64" alt="">
                         <span>YouTube</span>
-                    </div>
-                    <div class="engine-option" data-value="github" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="github" title="GitHub"
+                        aria-label="GitHub"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=github.com&amp;sz=64" alt="">
                         <span>GitHub</span>
-                    </div>
-                    <div class="engine-option" data-value="google-image" title="Google Images" aria-label="Google Images"><i class="fa-regular fa-image"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="google-image" title="Google Images"
+                        aria-label="Google Images"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=images.google.com&amp;sz=64" alt="">
                         <span>Images</span>
-                    </div>
-                    <!-- <div class="engine-option" data-value="google-lens"><i class="fa-solid fa-camera-viewfinder"></i>
+                    </button>
+                    <button type="button" class="engine-option" data-value="google-lens" title="Google Lens"
+                        aria-label="Google Lens"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=lens.google.com&amp;sz=64" alt="">
                         <span>Google Lens</span>
-                    </div> -->
+                    </button>
+                    <button type="button" class="engine-option" data-value="kagi" title="Kagi" aria-label="Kagi"><img
+                            class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=kagi.com&amp;sz=64" alt="">
+                        <span>Kagi</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="qwant" title="Qwant"
+                        aria-label="Qwant"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=qwant.com&amp;sz=64" alt="">
+                        <span>Qwant</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="mojeek" title="Mojeek"
+                        aria-label="Mojeek"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=mojeek.com&amp;sz=64" alt="">
+                        <span>Mojeek</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="yep" title="Yep" aria-label="Yep"><img
+                            class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=yep.com&amp;sz=64" alt="">
+                        <span>Yep</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="yandex" title="Yandex"
+                        aria-label="Yandex"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=yandex.com&amp;sz=64" alt="">
+                        <span>Yandex</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="baidu" title="Baidu"
+                        aria-label="Baidu"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=baidu.com&amp;sz=64" alt="">
+                        <span>Baidu</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="wikipedia" title="Wikipedia"
+                        aria-label="Wikipedia"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=wikipedia.org&amp;sz=64" alt="">
+                        <span>Wikipedia</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="reddit" title="Reddit"
+                        aria-label="Reddit"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=reddit.com&amp;sz=64" alt="">
+                        <span>Reddit</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="stackoverflow" title="Stack Overflow"
+                        aria-label="Stack Overflow"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=stackoverflow.com&amp;sz=64" alt="">
+                        <span>Stack</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="mdn" title="MDN" aria-label="MDN"><img
+                            class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=developer.mozilla.org&amp;sz=64" alt="">
+                        <span>MDN</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="npm" title="npm" aria-label="npm"><img
+                            class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=npmjs.com&amp;sz=64" alt="">
+                        <span>npm</span>
+                    </button>
+                    <button type="button" class="engine-option" data-value="scholar" title="Google Scholar"
+                        aria-label="Google Scholar"><img class="search-engine-icon"
+                            src="https://www.google.com/s2/favicons?domain=scholar.google.com&amp;sz=64" alt="">
+                        <span>Scholar</span>
+                    </button>
                 </div>
             </div>
 
