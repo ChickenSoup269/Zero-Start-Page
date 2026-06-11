@@ -2083,6 +2083,9 @@ function renderGroupTabs() {
     } else {
       icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
     }
+    if (group.iconColor) {
+      tab.style.setProperty("--bookmark-group-icon-color", group.iconColor)
+    }
     tab.appendChild(icon)
 
     // Name Span (for double-click edit)

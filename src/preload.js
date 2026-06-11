@@ -37,6 +37,8 @@
         body.classList.add("allow-text-selection")
       if (settings.bookmarkGroupShowCount === false)
         body.classList.add("bookmark-group-count-hidden")
+      if (settings.bookmarkGroupAutoTextContrast === true)
+        body.classList.add("bookmark-group-auto-text-contrast")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.bookmarkGroupUseAccent === true)
@@ -300,6 +302,17 @@
         groupBgRgb && groupBgOpacity < 100
           ? `rgba(${groupBgRgb}, ${groupBgOpacity / 100})`
           : groupBgHex
+      const groupTextColor =
+        settings.bookmarkGroupAutoTextContrast === true && groupBgOpacity > 0
+          ? (() => {
+              const [r, g, b] = String(groupBgRgb || "255,255,255")
+                .split(",")
+                .map((value) => Number(value.trim()) || 0)
+              return (r * 299 + g * 587 + b * 114) / 1000 >= 128
+                ? "#111827"
+                : "#ffffff"
+            })()
+          : settings.bookmarkGroupTextColor || ""
       const isIndexedDbImage =
         typeof settings.background === "string" &&
         (settings.background.startsWith("idb-img-") ||
@@ -338,6 +351,7 @@
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;
         --bookmark-border-radius: ${settings.bookmarkBorderRadius ?? 12}px;
         --bookmark-group-tab-bg: ${groupTabBg};
+        ${groupTextColor ? `--bookmark-group-text-color: ${groupTextColor};` : ""}
         --bookmark-group-font-size: ${settings.bookmarkGroupFontSize ?? 14}px;
         --bookmark-group-border-radius: ${settings.bookmarkGroupBorderRadius ?? 8}px;
         --bg-pos-x: ${settings.bgPositionX !== undefined ? settings.bgPositionX : 50}%;

@@ -689,6 +689,10 @@ function createApplySettings(effectInstances) {
       settings.bookmarkGroupShowCount === false,
     )
     document.body.classList.toggle(
+      "bookmark-group-auto-text-contrast",
+      settings.bookmarkGroupAutoTextContrast === true,
+    )
+    document.body.classList.toggle(
       "bookmark-group-tab-bg-transparent",
       (settings.bookmarkGroupBgOpacity ?? 0) <= 0,
     )
@@ -715,6 +719,7 @@ function createApplySettings(effectInstances) {
       "bookmark-item-card-style",
       "bookmark-group-accent-enabled",
       "bookmark-group-keep-bg-on-interaction",
+      "bookmark-group-auto-text-contrast",
       "bookmark-group-tab-bg-transparent",
       "bookmark-group-container-bg-hidden",
       "bookmark-group-border-hidden",
@@ -749,6 +754,10 @@ function createApplySettings(effectInstances) {
     document.body.classList.toggle(
       "bookmark-group-keep-bg-on-interaction",
       settings.bookmarkGroupKeepBgOnInteraction !== false,
+    )
+    document.body.classList.toggle(
+      "bookmark-group-auto-text-contrast",
+      settings.bookmarkGroupAutoTextContrast === true,
     )
     document.body.classList.toggle(
       "bookmark-group-tab-bg-transparent",
@@ -1656,7 +1665,17 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    if (settings.bookmarkGroupTextColor) {
+    if (
+      settings.bookmarkGroupAutoTextContrast === true &&
+      (settings.bookmarkGroupBgOpacity ?? 0) > 0
+    ) {
+      document.documentElement.style.setProperty(
+        "--bookmark-group-text-color",
+        getContrastYIQ(settings.bookmarkGroupBgColor || "#ffffff") === "black"
+          ? "#111827"
+          : "#ffffff",
+      )
+    } else if (settings.bookmarkGroupTextColor) {
       document.documentElement.style.setProperty(
         "--bookmark-group-text-color",
         settings.bookmarkGroupTextColor,
@@ -3013,6 +3032,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkGroupTextColorPicker) {
         DOM.bookmarkGroupTextColorPicker.value =
           settings.bookmarkGroupTextColor || "#ffffff"
+      }
+      if (DOM.bookmarkGroupAutoTextContrast) {
+        DOM.bookmarkGroupAutoTextContrast.checked =
+          settings.bookmarkGroupAutoTextContrast === true
       }
       if (DOM.bookmarkGroupFontSizeInput) {
         DOM.bookmarkGroupFontSizeInput.value =

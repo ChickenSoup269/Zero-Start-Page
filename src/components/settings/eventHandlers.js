@@ -140,6 +140,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 0,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 14,
@@ -163,6 +164,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 82,
       bookmarkGroupTextColor: "#111827",
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 13,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 22,
@@ -186,6 +188,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 86,
       bookmarkGroupTextColor: "#111827",
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 13,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 24,
@@ -208,6 +211,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 22,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
@@ -231,6 +235,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 0,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 12,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 16,
@@ -254,6 +259,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 16,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
@@ -276,6 +282,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 18,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 24,
@@ -299,6 +306,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 10,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 13,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
@@ -321,6 +329,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 18,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
@@ -343,6 +352,7 @@ export function setupGeneralEventHandlers(
       bookmarkGroupBgColor: "#ffffff",
       bookmarkGroupBgOpacity: 24,
       bookmarkGroupTextColor: null,
+      bookmarkGroupAutoTextContrast: false,
       bookmarkGroupFontSize: 14,
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 20,
@@ -368,6 +378,7 @@ export function setupGeneralEventHandlers(
     "bookmarkGroupBgColor",
     "bookmarkGroupBgOpacity",
     "bookmarkGroupTextColor",
+    "bookmarkGroupAutoTextContrast",
     "bookmarkGroupFontSize",
     "bookmarkGroupBorderRadius",
     "bookmarkShadowColor",
@@ -678,6 +689,7 @@ export function setupGeneralEventHandlers(
       "bookmarkGroupBgColor",
       "bookmarkGroupBgOpacity",
       "bookmarkGroupTextColor",
+      "bookmarkGroupAutoTextContrast",
       "bookmarkGroupFontSize",
       "bookmarkGroupBorderRadius",
       "bookmarkGroupUseAccent",
@@ -710,6 +722,28 @@ export function setupGeneralEventHandlers(
       }
 
       const rootStyle = document.documentElement.style
+      const applyBookmarkGroupTextColor = () => {
+        if (
+          settings.bookmarkGroupAutoTextContrast === true &&
+          (settings.bookmarkGroupBgOpacity ?? 0) > 0
+        ) {
+          const bgHex = settings.bookmarkGroupBgColor || "#ffffff"
+          rootStyle.setProperty(
+            "--bookmark-group-text-color",
+            getContrastYIQ(bgHex) === "black" ? "#111827" : "#ffffff",
+          )
+          return
+        }
+
+        if (settings.bookmarkGroupTextColor) {
+          rootStyle.setProperty(
+            "--bookmark-group-text-color",
+            settings.bookmarkGroupTextColor,
+          )
+        } else {
+          rootStyle.removeProperty("--bookmark-group-text-color")
+        }
+      }
       if (k === "bookmarkFontSize")
         rootStyle.setProperty("--bookmark-font-size", `${v}px`)
       else if (k === "bookmarkIconSize")
@@ -746,9 +780,15 @@ export function setupGeneralEventHandlers(
             `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${op / 100})`,
           )
         else rootStyle.setProperty("--bookmark-group-tab-bg", hex)
+        applyBookmarkGroupTextColor()
       } else if (k === "bookmarkGroupTextColor") {
-        if (v) rootStyle.setProperty("--bookmark-group-text-color", v)
-        else rootStyle.removeProperty("--bookmark-group-text-color")
+        applyBookmarkGroupTextColor()
+      } else if (k === "bookmarkGroupAutoTextContrast") {
+        document.body.classList.toggle(
+          "bookmark-group-auto-text-contrast",
+          v === true,
+        )
+        applyBookmarkGroupTextColor()
       } else if (k === "bookmarkGroupFontSize") {
         rootStyle.setProperty("--bookmark-group-font-size", `${v}px`)
       } else if (k === "bookmarkGroupBorderRadius") {
@@ -2271,6 +2311,16 @@ export function setupGeneralEventHandlers(
       DOM.resetBookmarkGroupTextColorBtn.addEventListener("click", () => {
         DOM.bookmarkGroupTextColorPicker.value = "#ffffff"
         throttleSettingUpdate("bookmarkGroupTextColor", null)
+      })
+    }
+    if (DOM.bookmarkGroupAutoTextContrast) {
+      DOM.bookmarkGroupAutoTextContrast.addEventListener("change", () => {
+        const enabled = DOM.bookmarkGroupAutoTextContrast.checked
+        document.body.classList.toggle(
+          "bookmark-group-auto-text-contrast",
+          enabled,
+        )
+        throttleSettingUpdate("bookmarkGroupAutoTextContrast", enabled)
       })
     }
     if (DOM.bookmarkGroupFontSizeInput) {

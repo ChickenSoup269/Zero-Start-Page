@@ -1063,6 +1063,9 @@ export const bookmarkGroupTextColorPicker = document.getElementById(
 export const resetBookmarkGroupTextColorBtn = document.getElementById(
   "reset-bookmark-group-text-color-btn",
 )
+export const bookmarkGroupAutoTextContrast = document.getElementById(
+  "bookmark-group-auto-text-contrast",
+)
 export const bookmarkGroupFontSizeInput = document.getElementById(
   "bookmark-group-font-size-input",
 )

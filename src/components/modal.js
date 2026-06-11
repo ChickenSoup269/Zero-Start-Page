@@ -406,10 +406,18 @@ function renderFolderIconPreview(target, iconValue, fallbackText = "?") {
   target.textContent = fallbackText.charAt(0).toUpperCase()
 }
 
+function applyFolderIconColor(target, color) {
+  const nextColor = String(color || "").trim()
+  if (nextColor) target.style.setProperty("--folder-edit-icon-color", nextColor)
+  else target.style.removeProperty("--folder-edit-icon-color")
+}
+
 function createFolderIconEditor({
   title,
   name,
   icon,
+  iconColor = "",
+  showIconColor = false,
   anchor,
   focus = "name",
   onSave,
@@ -466,6 +474,22 @@ function createFolderIconEditor({
   fields.appendChild(nameGroup)
   fields.appendChild(iconGroup)
 
+  let iconColorInput = null
+  let iconColorDirty = false
+  if (showIconColor) {
+    const iconColorGroup = document.createElement("label")
+    iconColorGroup.className = "bookmark-edit-field bookmark-edit-color-field"
+    iconColorGroup.innerHTML = `<span>${i18n.bookmark_group_icon_color || "Icon color"}</span>`
+    iconColorInput = document.createElement("input")
+    iconColorInput.type = "color"
+    iconColorInput.value = iconColor || "#ffffff"
+    iconColorInput.addEventListener("input", () => {
+      iconColorDirty = true
+    })
+    iconColorGroup.appendChild(iconColorInput)
+    fields.appendChild(iconColorGroup)
+  }
+
   const actions = document.createElement("div")
   actions.className = "bookmark-edit-actions"
   const cancelBtn = document.createElement("button")
@@ -482,8 +506,10 @@ function createFolderIconEditor({
   fields.appendChild(actions)
   popover.appendChild(fields)
 
-  const updatePreview = () =>
+  const updatePreview = () => {
+    applyFolderIconColor(iconPreview, iconColorInput?.value || "")
     renderFolderIconPreview(iconPreview, iconInput.value, nameInput.value || "?")
+  }
 
   const syncButtons = () => {
     const current = iconInput.value.trim()
@@ -515,12 +541,16 @@ function createFolderIconEditor({
     onSave({
       name: nextName,
       icon: iconInput.value.trim(),
+      iconColor:
+        showIconColor && (iconColorDirty || iconColor)
+          ? iconColorInput?.value || ""
+          : undefined,
     })
     closeBookmarkEditPopover()
   }
 
   saveBtn.addEventListener("click", saveFolder)
-  ;[nameInput, iconInput].forEach((input) => {
+  ;[nameInput, iconInput, iconColorInput].filter(Boolean).forEach((input) => {
     input.addEventListener("input", () => {
       syncButtons()
       updatePreview()
@@ -594,15 +624,18 @@ export function openBookmarkGroupEditPopover(groupId, anchor = null, options = {
     title: i18n.bookmark_group_edit || "Edit bookmark folder",
     name: group.name,
     icon: group.icon || "",
+    iconColor: group.iconColor || "",
+    showIconColor: true,
     anchor,
     focus: options.focus,
-    onSave: ({ name, icon }) => {
+    onSave: ({ name, icon, iconColor }) => {
       const snapshot = captureBookmarkSnapshot()
       const nextGroups = getBookmarkGroups()
       const nextGroup = nextGroups.find((item) => item.id === groupId)
       if (!nextGroup) return
       nextGroup.name = name
       nextGroup.icon = icon
+      if (iconColor !== undefined) nextGroup.iconColor = iconColor || ""
       setBookmarkGroups(nextGroups)
       saveBookmarks()
       renderBookmarks()

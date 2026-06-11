@@ -9646,6 +9646,29 @@ body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count {
   outline: none !important;
 }
 
+.bookmark-group-tab[style*="--bookmark-group-icon-color"] .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"]:hover .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"].active .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"].active:hover
+  .group-tab-icon {
+  color: var(--bookmark-group-icon-color) !important;
+}
+
+body.bookmark-group-auto-text-contrast
+  .bookmark-group-tab:not(.add-group-tab),
+body.bookmark-group-auto-text-contrast
+  .bookmark-group-tab:not(.add-group-tab):hover,
+body.bookmark-group-auto-text-contrast
+  .bookmark-group-tab:not(.add-group-tab).active,
+body.bookmark-group-auto-text-contrast
+  .bookmark-group-tab:not(.add-group-tab).active:hover {
+  color: var(--bookmark-group-text-color, #ffffff) !important;
+}
+
+body.bookmark-group-auto-text-contrast .bookmark-group-tab .group-tab-count {
+  color: var(--bookmark-group-text-color, #ffffff) !important;
+}
+
 /* Bookmark group popup: clearer cards and less cramped controls. */
 .bookmark-stack-popup {
   background:
