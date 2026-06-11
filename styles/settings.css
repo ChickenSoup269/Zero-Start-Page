@@ -951,7 +951,8 @@
   backdrop-filter: blur(8px);
 }
 
-.sidebar-bug-btn:hover, .sidebar-hotkeys-btn:hover {
+.sidebar-bug-btn:hover,
+.sidebar-hotkeys-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   color: var(--accent-color);
@@ -1284,7 +1285,11 @@
   border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
   border-radius: var(--radius-sm);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.03)
+    ),
     rgba(var(--accent-color-rgb, 168, 192, 255), 0.05);
 }
 
@@ -1911,10 +1916,10 @@ body.sidebar-light .preset-code-line-value {
 .setting-group input[type="text"]:focus,
 .bg-control-card input[type="text"]:focus {
   outline: none;
-  border-color: var(--accent-color);
+  /* border-color: var(--accent-color); */
   background: rgba(255, 255, 255, 0.12);
   box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25);
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .setting-group select,
@@ -6710,8 +6715,13 @@ body.sidebar-light .settings-sidebar {
 
 /* Cleaner, deterministic style preset cards */
 .style-preset-panel {
-  background: color-mix(in srgb, var(--m3-surface-container-low) 52%, transparent);
-  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 64%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-low) 52%,
+    transparent
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--m3-outline-variant) 64%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-2);
 }
@@ -6733,7 +6743,11 @@ body.sidebar-light .settings-sidebar {
 }
 
 .style-preset-btn:hover {
-  background: color-mix(in srgb, var(--m3-surface-container-high) 72%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-high) 72%,
+    transparent
+  );
   border-color: color-mix(in srgb, var(--m3-primary) 48%, transparent);
 }
 
@@ -6755,9 +6769,18 @@ body.sidebar-light .settings-sidebar {
   height: 34px !important;
   flex-shrink: 0;
   border-radius: 9px !important;
-  border: 1px solid color-mix(in srgb, var(--m3-outline, var(--input-border)) 70%, transparent) !important;
-  background: color-mix(in srgb, var(--m3-surface-container, var(--input-bg)) 86%, transparent) !important;
-  color: color-mix(in srgb, var(--m3-on-surface, var(--text-color)) 86%, var(--m3-primary, var(--accent-color)) 14%) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-outline, var(--input-border)) 70%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container, var(--input-bg)) 86%,
+    transparent
+  ) !important;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-surface, var(--text-color)) 86%,
+    var(--m3-primary, var(--accent-color)) 14%
+  ) !important;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 6px 14px rgba(0, 0, 0, 0.1);
@@ -6776,11 +6799,24 @@ body.sidebar-light .settings-sidebar {
 }
 
 #tab-icon-upload-btn:hover {
-  border-color: color-mix(in srgb, var(--m3-primary, var(--accent-color)) 46%, var(--m3-outline, transparent)) !important;
-  background: color-mix(in srgb, var(--m3-primary-container, var(--accent-color)) 48%, var(--m3-surface-container-high, transparent)) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--m3-primary, var(--accent-color)) 46%,
+    var(--m3-outline, transparent)
+  ) !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-primary-container, var(--accent-color)) 48%,
+    var(--m3-surface-container-high, transparent)
+  ) !important;
   color: var(--m3-primary, var(--accent-color)) !important;
   box-shadow:
-    0 10px 22px color-mix(in srgb, var(--m3-primary, var(--accent-color)) 18%, transparent),
+    0 10px 22px
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--accent-color)) 18%,
+        transparent
+      ),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   transform: translateY(-1px) !important;
 }
@@ -6798,14 +6834,26 @@ body.sidebar-light .settings-sidebar {
 }
 
 #tab-icon-clear-btn {
-  border-color: color-mix(in srgb, #ff6b7a 32%, var(--m3-outline, transparent)) !important;
-  background: color-mix(in srgb, #ff6b7a 10%, var(--m3-surface-container, transparent)) !important;
+  border-color: color-mix(
+    in srgb,
+    #ff6b7a 32%,
+    var(--m3-outline, transparent)
+  ) !important;
+  background: color-mix(
+    in srgb,
+    #ff6b7a 10%,
+    var(--m3-surface-container, transparent)
+  ) !important;
   color: #ff9aa5 !important;
 }
 
 #tab-icon-clear-btn:hover {
   border-color: color-mix(in srgb, #ff6b7a 54%, transparent) !important;
-  background: color-mix(in srgb, #ff6b7a 18%, var(--m3-surface-container-high, transparent)) !important;
+  background: color-mix(
+    in srgb,
+    #ff6b7a 18%,
+    var(--m3-surface-container-high, transparent)
+  ) !important;
   color: #ffb4bd !important;
   box-shadow: 0 10px 22px color-mix(in srgb, #ff6b7a 16%, transparent);
   transform: translateY(-1px) !important;
@@ -6818,7 +6866,8 @@ body.sidebar-light .settings-sidebar {
 .accent-auto-bg-row {
   align-items: center;
   background: color-mix(in srgb, var(--m3-surface-container) 62%, transparent);
-  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 66%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--m3-outline-variant) 66%, transparent);
   border-radius: var(--radius-sm, 8px);
   color: var(--m3-on-surface, #fff);
   display: flex;
@@ -6827,7 +6876,11 @@ body.sidebar-light .settings-sidebar {
 }
 
 .accent-auto-bg-row small {
-  color: color-mix(in srgb, var(--m3-on-surface-variant, #fff) 72%, transparent);
+  color: color-mix(
+    in srgb,
+    var(--m3-on-surface-variant, #fff) 72%,
+    transparent
+  );
   display: block;
   font-size: 0.72rem;
   line-height: 1.3;
@@ -6836,7 +6889,8 @@ body.sidebar-light .settings-sidebar {
 
 .accent-mode-toggle {
   background: color-mix(in srgb, var(--m3-surface-container) 68%, transparent);
-  border: 1px solid color-mix(in srgb, var(--m3-outline-variant) 66%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--m3-outline-variant) 66%, transparent);
   border-radius: var(--radius-sm, 8px);
   display: grid;
   gap: 6px;
@@ -6955,8 +7009,11 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
 .settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
   border-radius: 10px !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.028)) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.028)
+  ) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
 }
 
@@ -7001,11 +7058,14 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   padding: 16px !important;
 }
 
-.settings-section[data-section-id="custom-title"] .setting-group.no-margin-top h4 {
+.settings-section[data-section-id="custom-title"]
+  .setting-group.no-margin-top
+  h4 {
   margin-bottom: 12px !important;
 }
 
-.settings-section[data-section-id="custom-title"] .setting-item:has(input[type="range"]) {
+.settings-section[data-section-id="custom-title"]
+  .setting-item:has(input[type="range"]) {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
@@ -7028,7 +7088,8 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   display: none !important;
 }
 
-.settings-section[data-section-id="bookmark-custom"] #bookmark-layout-bg-style-row {
+.settings-section[data-section-id="bookmark-custom"]
+  #bookmark-layout-bg-style-row {
   align-items: stretch !important;
   display: flex !important;
   flex-direction: column !important;
@@ -7061,15 +7122,25 @@ body.allow-text-selection *:not(button):not(.icon-btn):not(canvas):not(video) {
   min-height: 32px;
 }
 
-body.sidebar-light .settings-section[data-section-id="bookmark-custom"] .setting-item,
-body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-item,
-body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-group.no-margin-top {
+body.sidebar-light
+  .settings-section[data-section-id="bookmark-custom"]
+  .setting-item,
+body.sidebar-light
+  .settings-section[data-section-id="custom-title"]
+  .setting-item,
+body.sidebar-light
+  .settings-section[data-section-id="custom-title"]
+  .setting-group.no-margin-top {
   background: rgba(0, 0, 0, 0.035) !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
-body.sidebar-light .settings-section[data-section-id="bookmark-custom"] .setting-hint,
-body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-hint {
+body.sidebar-light
+  .settings-section[data-section-id="bookmark-custom"]
+  .setting-hint,
+body.sidebar-light
+  .settings-section[data-section-id="custom-title"]
+  .setting-hint {
   color: rgba(0, 0, 0, 0.68) !important;
 }
 
@@ -7123,6 +7194,8 @@ body.sidebar-light .settings-section[data-section-id="custom-title"] .setting-hi
   left: 21px !important;
 }
 
-.settings-sidebar .setting-item-row input[type="checkbox"]:checked:active::before {
+.settings-sidebar
+  .setting-item-row
+  input[type="checkbox"]:checked:active::before {
   left: 17px !important;
 }

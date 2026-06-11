@@ -5367,418 +5367,511 @@ export function setupGeneralEventHandlers(
       window.startpageReplaySettingsGuide?.()
     })
 
-  // Export/Import settings
-  DOM.exportSettingsBtn.addEventListener("click", async () => {
-    try {
-      const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
-      const hasUnsplashKey = Boolean(
-        settingsSnapshot.unsplashAccessKey &&
+  const buildExportPayload = async () => {
+    const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
+    const hasUnsplashKey = Boolean(
+      settingsSnapshot.unsplashAccessKey &&
         settingsSnapshot.unsplashAccessKey.trim(),
+    )
+    const localMediaIds = collectLocalMediaIds(settingsSnapshot)
+    const hasLocalMedia = localMediaIds.length > 0
+
+    const selected = await showChecklistConfirm(
+      [
+        {
+          key: "settings",
+          label: i18n.export_option_settings || "Settings",
+          checked: true,
+        },
+        {
+          key: "bookmarks",
+          label: i18n.export_option_bookmarks || "Bookmarks",
+          checked: true,
+        },
+        {
+          key: "todos",
+          label: i18n.export_option_todos || "Todo Items",
+          checked: true,
+        },
+        {
+          key: "notepad",
+          label: i18n.export_option_notepad || "Notepad Notes",
+          checked: true,
+        },
+        {
+          key: "calendarEvents",
+          label: i18n.export_option_calendar || "Calendar Events",
+          checked: true,
+        },
+        {
+          key: "unsplashAccessKey",
+          label:
+            i18n.export_option_unsplash_key ||
+            "Unsplash Access Key (in Settings)",
+          checked: false,
+          disabled: !hasUnsplashKey,
+        },
+        {
+          key: "localMedia",
+          label:
+            i18n.export_option_local_media ||
+            "Local Images/Videos (for transfer to another machine)",
+          checked: hasLocalMedia,
+          disabled: !hasLocalMedia,
+        },
+      ],
+      i18n.confirm_export_include_unsplash_key_title || "Export Settings",
+      i18n.export_select_sections || "Select data to include in JSON export.",
+    )
+
+    if (!selected) return null
+
+    const hasMainSection =
+      selected.settings ||
+      selected.bookmarks ||
+      selected.todos ||
+      selected.notepad ||
+      selected.calendarEvents ||
+      selected.localMedia
+
+    if (!hasMainSection) {
+      showAlert(
+        i18n.export_select_at_least_one ||
+          "Please select at least one section to export.",
       )
-      const localMediaIds = collectLocalMediaIds(settingsSnapshot)
-      const hasLocalMedia = localMediaIds.length > 0
+      return null
+    }
 
-      const selected = await showChecklistConfirm(
-        [
-          {
-            key: "settings",
-            label: i18n.export_option_settings || "Settings",
-            checked: true,
-          },
-          {
-            key: "bookmarks",
-            label: i18n.export_option_bookmarks || "Bookmarks",
-            checked: true,
-          },
-          {
-            key: "todos",
-            label: i18n.export_option_todos || "Todo Items",
-            checked: true,
-          },
-          {
-            key: "notepad",
-            label: i18n.export_option_notepad || "Notepad Notes",
-            checked: true,
-          },
-          {
-            key: "calendarEvents",
-            label: i18n.export_option_calendar || "Calendar Events",
-            checked: true,
-          },
-          {
-            key: "unsplashAccessKey",
-            label:
-              i18n.export_option_unsplash_key ||
-              "Unsplash Access Key (in Settings)",
-            checked: false,
-            disabled: !hasUnsplashKey,
-          },
-          {
-            key: "localMedia",
-            label:
-              i18n.export_option_local_media ||
-              "Local Images/Videos (for transfer to another machine)",
-            checked: hasLocalMedia,
-            disabled: !hasLocalMedia,
-          },
-        ],
-        i18n.confirm_export_include_unsplash_key_title || "Export Settings",
-        i18n.export_select_sections || "Select data to include in JSON export.",
-      )
+    const exportData = {
+      source: "zero-startpage",
+      version: 2,
+      exportedAt: new Date().toISOString(),
+    }
 
-      if (!selected) return
+    if (selected.settings) {
+      if (!selected.unsplashAccessKey) {
+        delete settingsSnapshot.unsplashAccessKey
+      }
+      exportData.settings = settingsSnapshot
+    }
 
-      const hasMainSection =
-        selected.settings ||
-        selected.bookmarks ||
-        selected.todos ||
-        selected.notepad ||
-        selected.calendarEvents ||
-        selected.localMedia
-
-      if (!hasMainSection) {
-        showAlert(
-          i18n.export_select_at_least_one ||
-            "Please select at least one section to export.",
+    if (selected.bookmarks) {
+      try {
+        exportData.bookmarks = JSON.parse(
+          localStorage.getItem("bookmarks") || "null",
         )
-        return
+      } catch {
+        exportData.bookmarks = null
       }
+    }
 
-      const exportData = {
-        source: "zero-startpage",
-        version: 2,
-        exportedAt: new Date().toISOString(),
+    if (selected.todos) {
+      try {
+        exportData.todos = JSON.parse(localStorage.getItem("todoItems") || "[]")
+      } catch {
+        exportData.todos = []
       }
+    }
 
-      if (selected.settings) {
-        if (!selected.unsplashAccessKey) {
-          delete settingsSnapshot.unsplashAccessKey
+    if (selected.notepad) {
+      try {
+        exportData.notepad = {
+          notes: JSON.parse(localStorage.getItem("notepadNotes") || "[]"),
+          detached: JSON.parse(localStorage.getItem("detachedNotes") || "{}"),
+          hidden: JSON.parse(localStorage.getItem("hiddenNotes") || "{}"),
         }
-        exportData.settings = settingsSnapshot
+      } catch {
+        exportData.notepad = { notes: [], detached: {}, hidden: {} }
       }
+    }
 
-      if (selected.bookmarks) {
-        try {
-          exportData.bookmarks = JSON.parse(
-            localStorage.getItem("bookmarks") || "null",
-          )
-        } catch {
-          exportData.bookmarks = null
-        }
+    if (selected.calendarEvents) {
+      try {
+        exportData.calendarEvents = JSON.parse(
+          localStorage.getItem("calendarEvents") || "[]",
+        )
+      } catch {
+        exportData.calendarEvents = []
       }
+    }
 
-      if (selected.todos) {
+    if (selected.localMedia) {
+      const media = {}
+      for (const id of localMediaIds) {
         try {
-          exportData.todos = JSON.parse(
-            localStorage.getItem("todoItems") || "[]",
-          )
-        } catch {
-          exportData.todos = []
-        }
-      }
-
-      if (selected.notepad) {
-        try {
-          exportData.notepad = {
-            notes: JSON.parse(localStorage.getItem("notepadNotes") || "[]"),
-            detached: JSON.parse(localStorage.getItem("detachedNotes") || "{}"),
-            hidden: JSON.parse(localStorage.getItem("hiddenNotes") || "{}"),
+          const blob = await getImageBlob(id)
+          if (!blob) continue
+          media[id] = {
+            kind:
+              isIdbVideo(id) || blob.type.startsWith("video/")
+                ? "video"
+                : "image",
+            mimeType: blob.type || "",
+            dataUrl: await blobToDataUrl(blob),
           }
-        } catch {
-          exportData.notepad = { notes: [], detached: {}, hidden: {} }
+        } catch (err) {
+          console.warn("Skip media export for", id, err)
         }
       }
 
-      if (selected.calendarEvents) {
+      if (Object.keys(media).length === 0) {
+        showAlert(
+          i18n.export_local_media_error ||
+            "Could not package local images/videos into JSON. Open the image/video background once, then try again.",
+        )
+        return null
+      }
+
+      exportData.media = media
+    }
+
+    return JSON.stringify(exportData, null, 2)
+  }
+
+  const downloadExportPayload = (payload) => {
+    const blob = new Blob([payload], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `startpage-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const escapeDialogHtml = (value) =>
+    String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;")
+
+  const showJsonCodeDialog = () =>
+    new Promise((resolve) => {
+      const overlay = document.createElement("div")
+      overlay.className = "custom-dialog-overlay active"
+      const title = escapeDialogHtml(
+        i18n.import_json_code_title || "Paste JSON Code",
+      )
+      const prompt = escapeDialogHtml(
+        i18n.import_json_code_prompt ||
+          "Paste a copied Zero Start Page JSON backup code below.",
+      )
+      const placeholder = escapeDialogHtml(
+        i18n.import_json_code_placeholder || "Paste JSON code here",
+      )
+      const cancelLabel = escapeDialogHtml(i18n.cancel || "Close")
+      const importLabel = escapeDialogHtml(i18n.settings_import || "Import JSON")
+      overlay.innerHTML = `
+        <div class="custom-dialog json-code-dialog">
+          <div class="dialog-header">${title}</div>
+          <div class="dialog-body">
+            <i class="fa-solid fa-code dialog-icon"></i>
+            <div class="dialog-message">${prompt}</div>
+            <textarea id="json-code-input" class="dialog-input json-code-input" spellcheck="false" placeholder="${placeholder}"></textarea>
+          </div>
+          <div class="dialog-footer">
+            <button class="dialog-btn dialog-btn-secondary" id="json-code-cancel">${cancelLabel}</button>
+            <button class="dialog-btn dialog-btn-primary" id="json-code-import">${importLabel}</button>
+          </div>
+        </div>
+      `
+      document.body.appendChild(overlay)
+
+      const textarea = overlay.querySelector("#json-code-input")
+      const close = (value) => {
+        document.removeEventListener("keydown", onKeyDown)
+        overlay.classList.remove("active")
+        setTimeout(() => overlay.remove(), 250)
+        resolve(value)
+      }
+
+      overlay
+        .querySelector("#json-code-cancel")
+        ?.addEventListener("click", () => close(null))
+      overlay
+        .querySelector("#json-code-import")
+        ?.addEventListener("click", () => close(textarea.value))
+      overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) close(null)
+      })
+
+      const onKeyDown = (event) => {
+        if (event.key !== "Escape") return
+        close(null)
+      }
+      document.addEventListener("keydown", onKeyDown)
+      setTimeout(() => textarea.focus(), 80)
+    })
+
+  const importSettingsData = async (data) => {
+    const isStartpageFile =
+      data.source === "zero-startpage" ||
+      (data.version !== undefined &&
+        (data.settings ||
+          data.bookmarks ||
+          data.todos ||
+          data.notepad ||
+          data.calendarEvents))
+
+    if (!isStartpageFile) {
+      showAlert(i18n.alert_import_error || "Invalid settings file.")
+      return
+    }
+
+    const hasSettings = data.settings && typeof data.settings === "object"
+    const hasBookmarks = data.bookmarks && typeof data.bookmarks === "object"
+    const hasTodos = Array.isArray(data.todos)
+    const hasNotepad = data.notepad && typeof data.notepad === "object"
+    const hasCalendarEvents = Array.isArray(data.calendarEvents)
+    const hasMedia =
+      data.media &&
+      typeof data.media === "object" &&
+      Object.keys(data.media).length > 0
+
+    if (
+      !hasSettings &&
+      !hasBookmarks &&
+      !hasTodos &&
+      !hasNotepad &&
+      !hasCalendarEvents &&
+      !hasMedia
+    ) {
+      showAlert(i18n.alert_import_error || "Invalid settings file.")
+      return
+    }
+
+    const selected = await showChecklistConfirm(
+      [
+        {
+          key: "clear",
+          label:
+            i18n.import_clear_existing ||
+            "Clear existing data before importing (WARNING: This will delete current settings, bookmarks, and todos)",
+          checked: false,
+        },
+        {
+          key: "settings",
+          label: i18n.export_option_settings || "Settings",
+          checked: hasSettings,
+          disabled: !hasSettings,
+        },
+        {
+          key: "bookmarks",
+          label: i18n.export_option_bookmarks || "Bookmarks",
+          checked: hasBookmarks,
+          disabled: !hasBookmarks,
+        },
+        {
+          key: "todos",
+          label: i18n.export_option_todos || "Todo Items",
+          checked: hasTodos,
+          disabled: !hasTodos,
+        },
+        {
+          key: "notepad",
+          label: i18n.export_option_notepad || "Notepad Notes",
+          checked: hasNotepad,
+          disabled: !hasNotepad,
+        },
+        {
+          key: "calendarEvents",
+          label: i18n.export_option_calendar || "Calendar Events",
+          checked: hasCalendarEvents,
+          disabled: !hasCalendarEvents,
+        },
+        {
+          key: "localMedia",
+          label: hasMedia
+            ? i18n.export_option_local_media || "Local Images/Videos"
+            : `${i18n.export_option_local_media || "Local Images/Videos"} (not found in JSON)`,
+          checked: hasMedia,
+          disabled: !hasMedia,
+        },
+      ],
+      i18n.settings_import || "Import Settings",
+      i18n.import_select_sections ||
+        "Select data to import from this JSON backup.",
+    )
+
+    if (!selected) return
+
+    showAlert(i18n.alert_importing || "Importing...")
+
+    if (selected.clear) {
+      resetSettingsState()
+      localStorage.removeItem("bookmarks")
+      localStorage.removeItem("todoItems")
+      localStorage.removeItem("notepadNotes")
+      localStorage.removeItem("detachedNotes")
+      localStorage.removeItem("hiddenNotes")
+      localStorage.removeItem("calendarEvents")
+      // IndexedDB is not fully cleared here to avoid breaking concurrent operations.
+    }
+
+    const mediaIdMap = {}
+    if (hasMedia && selected.localMedia) {
+      const existingMediaDataUrlMap = selected.clear
+        ? new Map()
+        : await buildExistingMediaDataUrlMap()
+
+      for (const [oldId, payload] of Object.entries(data.media)) {
         try {
-          exportData.calendarEvents = JSON.parse(
-            localStorage.getItem("calendarEvents") || "[]",
-          )
-        } catch {
-          exportData.calendarEvents = []
-        }
-      }
-
-      if (selected.localMedia) {
-        const media = {}
-        for (const id of localMediaIds) {
-          try {
-            const blob = await getImageBlob(id)
-            if (!blob) continue
-            media[id] = {
-              kind:
-                isIdbVideo(id) || blob.type.startsWith("video/")
-                  ? "video"
-                  : "image",
-              mimeType: blob.type || "",
-              dataUrl: await blobToDataUrl(blob),
-            }
-          } catch (err) {
-            console.warn("Skip media export for", id, err)
+          if (!payload || typeof payload.dataUrl !== "string") continue
+          const existingId = existingMediaDataUrlMap.get(payload.dataUrl)
+          if (existingId) {
+            mediaIdMap[oldId] = existingId
+            continue
           }
-        }
 
-        if (Object.keys(media).length === 0) {
-          showAlert(
-            "Không đóng gói được ảnh/video cục bộ vào JSON. Hãy mở lại nền ảnh/video một lần rồi thử xuất lại.",
-          )
-          return
+          const blob = await dataUrlToBlob(payload.dataUrl)
+          const isVideo =
+            payload.kind === "video" ||
+            oldId.startsWith("idb-video-") ||
+            blob.type.startsWith("video/")
+          const newId = isVideo ? await saveVideo(blob) : await saveImage(blob)
+          mediaIdMap[oldId] = newId
+          existingMediaDataUrlMap.set(payload.dataUrl, newId)
+        } catch (err) {
+          console.warn("Skip media import for", oldId, err)
         }
+      }
+    }
 
-        exportData.media = media
+    let requiresReload = Boolean(selected.clear)
+
+    if (hasSettings && selected.settings) {
+      const importedSettings = JSON.parse(JSON.stringify(data.settings))
+      const currentSettings = getSettings()
+
+      if (Object.keys(mediaIdMap).length > 0) {
+        replaceLocalMediaIds(importedSettings, mediaIdMap)
       }
 
-      const payload = JSON.stringify(exportData, null, 2)
-      const blob = new Blob([payload], { type: "application/json" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `startpage-${new Date().toISOString().slice(0, 10)}.json`
-      a.click()
-      URL.revokeObjectURL(url)
+      if (!selected.clear) {
+        mergeSavedGallerySettings(currentSettings, importedSettings)
+      }
+
+      Object.assign(getSettings(), importedSettings)
+      saveSettings()
+      applySettings()
+      updateSettingsInputs()
+      requiresReload = true
+    } else if (
+      hasSettings &&
+      selected.localMedia &&
+      Array.isArray(data.settings.userBackgrounds)
+    ) {
+      const importedSettings = JSON.parse(JSON.stringify(data.settings))
+
+      if (Object.keys(mediaIdMap).length > 0) {
+        replaceLocalMediaIds(importedSettings, mediaIdMap)
+      }
+
+      const settings = getSettings()
+      settings.userBackgrounds = selected.clear
+        ? importedSettings.userBackgrounds
+        : mergeUserBackgrounds(
+            settings.userBackgrounds,
+            importedSettings.userBackgrounds,
+          )
+      saveSettings()
+      applySettings()
+      updateSettingsInputs()
+      requiresReload = true
+    }
+
+    if (hasBookmarks && selected.bookmarks) {
+      localStorage.setItem("bookmarks", JSON.stringify(data.bookmarks))
+      requiresReload = true
+    }
+
+    if (hasTodos && selected.todos) {
+      localStorage.setItem("todoItems", JSON.stringify(data.todos))
+      requiresReload = true
+    }
+
+    if (hasNotepad && selected.notepad) {
+      localStorage.setItem(
+        "notepadNotes",
+        JSON.stringify(data.notepad.notes || []),
+      )
+      localStorage.setItem(
+        "detachedNotes",
+        JSON.stringify(data.notepad.detached || {}),
+      )
+      localStorage.setItem(
+        "hiddenNotes",
+        JSON.stringify(data.notepad.hidden || {}),
+      )
+      requiresReload = true
+    }
+
+    if (hasCalendarEvents && selected.calendarEvents) {
+      localStorage.setItem(
+        "calendarEvents",
+        JSON.stringify(data.calendarEvents),
+      )
+      requiresReload = true
+    }
+
+    await showAlert(
+      i18n.alert_import_success || "Settings imported successfully!",
+    )
+    if (requiresReload) {
+      window.location.reload()
+    }
+  }
+
+  const importSettingsText = async (text) => {
+    try {
+      await importSettingsData(JSON.parse(text))
+    } catch (err) {
+      console.error("Import error:", err)
+      showAlert(i18n.alert_import_error || "Invalid settings file.")
+    }
+  }
+
+  // Export/Import settings
+  DOM.exportSettingsBtn?.addEventListener("click", async () => {
+    try {
+      const payload = await buildExportPayload()
+      if (!payload) return
+      downloadExportPayload(payload)
       showAlert(i18n.alert_export_success || "Settings exported!")
     } catch (err) {
       console.error("Export error:", err)
-      showAlert("Export failed.")
+      showAlert(i18n.alert_export_error || "Export failed.")
     }
   })
 
-  DOM.importSettingsBtn.addEventListener("click", () =>
-    DOM.importSettingsInput.click(),
+  DOM.copySettingsJsonBtn?.addEventListener("click", async () => {
+    try {
+      const payload = await buildExportPayload()
+      if (!payload) return
+      await copyText(payload)
+      showAlert(i18n.alert_export_copied || "JSON copied to clipboard!")
+    } catch (err) {
+      console.error("Copy JSON export error:", err)
+      showAlert(i18n.alert_export_error || "Export failed.")
+    }
+  })
+
+  DOM.importSettingsBtn?.addEventListener("click", () =>
+    DOM.importSettingsInput?.click(),
   )
 
-  DOM.importSettingsInput.addEventListener("change", async (e) => {
+  DOM.pasteSettingsJsonBtn?.addEventListener("click", async () => {
+    const text = await showJsonCodeDialog()
+    if (!text?.trim()) return
+    await importSettingsText(text)
+  })
+
+  DOM.importSettingsInput?.addEventListener("change", async (e) => {
     const file = e.target.files[0]
     if (!file) return
     e.target.value = null
-
-    try {
-      const text = await file.text()
-      const data = JSON.parse(text)
-
-      // Signature & structure check
-      const isStartpageFile =
-        data.source === "zero-startpage" ||
-        (data.version !== undefined &&
-          (data.settings ||
-            data.bookmarks ||
-            data.todos ||
-            data.notepad ||
-            data.calendarEvents))
-
-      if (!isStartpageFile) {
-        showAlert(i18n.alert_import_error || "Invalid settings file.")
-        return
-      }
-
-      const hasSettings = data.settings && typeof data.settings === "object"
-      const hasBookmarks = data.bookmarks && typeof data.bookmarks === "object"
-      const hasTodos = Array.isArray(data.todos)
-      const hasNotepad = data.notepad && typeof data.notepad === "object"
-      const hasCalendarEvents = Array.isArray(data.calendarEvents)
-      const hasMedia =
-        data.media &&
-        typeof data.media === "object" &&
-        Object.keys(data.media).length > 0
-
-      if (
-        !hasSettings &&
-        !hasBookmarks &&
-        !hasTodos &&
-        !hasNotepad &&
-        !hasCalendarEvents &&
-        !hasMedia
-      ) {
-        showAlert(i18n.alert_import_error || "Invalid settings file.")
-        return
-      }
-
-      const selected = await showChecklistConfirm(
-        [
-          {
-            key: "clear",
-            label:
-              i18n.import_clear_existing ||
-              "Clear existing data before importing (WARNING: This will delete current settings, bookmarks, and todos)",
-            checked: false,
-          },
-          {
-            key: "settings",
-            label: i18n.export_option_settings || "Settings",
-            checked: hasSettings,
-            disabled: !hasSettings,
-          },
-          {
-            key: "bookmarks",
-            label: i18n.export_option_bookmarks || "Bookmarks",
-            checked: hasBookmarks,
-            disabled: !hasBookmarks,
-          },
-          {
-            key: "todos",
-            label: i18n.export_option_todos || "Todo Items",
-            checked: hasTodos,
-            disabled: !hasTodos,
-          },
-          {
-            key: "notepad",
-            label: i18n.export_option_notepad || "Notepad Notes",
-            checked: hasNotepad,
-            disabled: !hasNotepad,
-          },
-          {
-            key: "calendarEvents",
-            label: i18n.export_option_calendar || "Calendar Events",
-            checked: hasCalendarEvents,
-            disabled: !hasCalendarEvents,
-          },
-          {
-            key: "localMedia",
-            label: hasMedia
-              ? i18n.export_option_local_media || "Local Images/Videos"
-              : `${i18n.export_option_local_media || "Local Images/Videos"} (not found in JSON)`,
-            checked: hasMedia,
-            disabled: !hasMedia,
-          },
-        ],
-        i18n.settings_import || "Import Settings",
-        i18n.export_select_sections || "Select data to include in JSON export.",
-      )
-
-      if (!selected) return
-
-      showAlert(i18n.alert_importing || "Importing...")
-
-      if (selected.clear) {
-        resetSettingsState()
-        localStorage.removeItem("bookmarks")
-        localStorage.removeItem("todoItems")
-        localStorage.removeItem("notepadNotes")
-        localStorage.removeItem("detachedNotes")
-        localStorage.removeItem("hiddenNotes")
-        localStorage.removeItem("calendarEvents")
-        // Note: IndexedDB is not fully cleared here to avoid breaking concurrent operations,
-        // but new IDs will be generated for imported media anyway.
-      }
-
-      const mediaIdMap = {}
-      if (hasMedia && selected.localMedia) {
-        const existingMediaDataUrlMap = selected.clear
-          ? new Map()
-          : await buildExistingMediaDataUrlMap()
-
-        for (const [oldId, payload] of Object.entries(data.media)) {
-          try {
-            if (!payload || typeof payload.dataUrl !== "string") continue
-            const existingId = existingMediaDataUrlMap.get(payload.dataUrl)
-            if (existingId) {
-              mediaIdMap[oldId] = existingId
-              continue
-            }
-
-            const blob = await dataUrlToBlob(payload.dataUrl)
-            const isVideo =
-              payload.kind === "video" ||
-              oldId.startsWith("idb-video-") ||
-              blob.type.startsWith("video/")
-            const newId = isVideo
-              ? await saveVideo(blob)
-              : await saveImage(blob)
-            mediaIdMap[oldId] = newId
-            existingMediaDataUrlMap.set(payload.dataUrl, newId)
-          } catch (err) {
-            console.warn("Skip media import for", oldId, err)
-          }
-        }
-      }
-
-      let requiresReload = Boolean(selected.clear)
-
-      if (hasSettings && selected.settings) {
-        const importedSettings = JSON.parse(JSON.stringify(data.settings))
-        const currentSettings = getSettings()
-
-        if (Object.keys(mediaIdMap).length > 0) {
-          replaceLocalMediaIds(importedSettings, mediaIdMap)
-        }
-
-        if (!selected.clear) {
-          mergeSavedGallerySettings(currentSettings, importedSettings)
-        }
-
-        Object.assign(getSettings(), importedSettings)
-        saveSettings()
-        applySettings()
-        updateSettingsInputs()
-        requiresReload = true
-      } else if (
-        hasSettings &&
-        selected.localMedia &&
-        Array.isArray(data.settings.userBackgrounds)
-      ) {
-        const importedSettings = JSON.parse(JSON.stringify(data.settings))
-
-        if (Object.keys(mediaIdMap).length > 0) {
-          replaceLocalMediaIds(importedSettings, mediaIdMap)
-        }
-
-        const settings = getSettings()
-        settings.userBackgrounds = selected.clear
-          ? importedSettings.userBackgrounds
-          : mergeUserBackgrounds(
-              settings.userBackgrounds,
-              importedSettings.userBackgrounds,
-            )
-        saveSettings()
-        applySettings()
-        updateSettingsInputs()
-        requiresReload = true
-      }
-
-      if (hasBookmarks && selected.bookmarks) {
-        localStorage.setItem("bookmarks", JSON.stringify(data.bookmarks))
-        requiresReload = true
-      }
-
-      if (hasTodos && selected.todos) {
-        localStorage.setItem("todoItems", JSON.stringify(data.todos))
-        requiresReload = true
-      }
-
-      if (hasNotepad && selected.notepad) {
-        localStorage.setItem(
-          "notepadNotes",
-          JSON.stringify(data.notepad.notes || []),
-        )
-        localStorage.setItem(
-          "detachedNotes",
-          JSON.stringify(data.notepad.detached || {}),
-        )
-        localStorage.setItem(
-          "hiddenNotes",
-          JSON.stringify(data.notepad.hidden || {}),
-        )
-        requiresReload = true
-      }
-
-      if (hasCalendarEvents && selected.calendarEvents) {
-        localStorage.setItem(
-          "calendarEvents",
-          JSON.stringify(data.calendarEvents),
-        )
-        requiresReload = true
-      }
-
-      await showAlert(
-        i18n.alert_import_success || "Settings imported successfully!",
-      )
-      if (requiresReload) {
-        window.location.reload()
-      }
-    } catch (err) {
-      console.error("Import error:", err)
-      showAlert("Import failed.")
-    }
+    await importSettingsText(await file.text())
   })
 
   // Cloud Sync Logic

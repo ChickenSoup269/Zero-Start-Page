@@ -722,7 +722,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
       title: i18n.settings_themes || "Themes",
       text:
         i18n.first_run_guide_themes_desc ||
-        "Start from a theme preset, save your current look, or quickly switch between styles you like.",
+        "Start from a theme preset, save your current look, try style presets, or open Theme Web Beta to browse shared looks.",
     },
     {
       selector: '[data-section-id="background"]',
@@ -746,7 +746,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
       title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
       text:
         i18n.first_run_guide_gradient_desc ||
-        "Build gradient, SVG wave, and multi-color backgrounds. You can randomize, save presets, and reuse generated codes.",
+        "Build gradient, SVG wave, and multi-color backgrounds. The Visual Preset Hub can copy or apply a full shareable visual bundle.",
     },
     {
       selector: '[data-section-id="animated-backgrounds"]',
@@ -786,7 +786,15 @@ function getFirstRunSettingsGuideSteps(i18n) {
       title: i18n.settings_custom_bookmark || "Bookmarks",
       text:
         i18n.first_run_guide_bookmarks_desc ||
-        "Tune bookmark layout, icon size, spacing, background style, drag behavior, and folder appearance.",
+        "Tune bookmark layout, icon size, spacing, background style, drag behavior, and the newer bookmark group tab controls.",
+    },
+    {
+      selector: "#bookmark-group-bg-color-picker",
+      icon: "fa-regular fa-folder",
+      title: i18n.settings_bookmark_group_header || "Group Tabs Interface",
+      text:
+        i18n.first_run_guide_bookmark_groups_desc ||
+        "Customize bookmark group tabs with background and text colors, opacity, font size, counts, borders, and interaction behavior.",
     },
     {
       selector: '[data-section-id="custom-title"]',
@@ -802,7 +810,23 @@ function getFirstRunSettingsGuideSteps(i18n) {
       title: i18n.settings_layout || "Layout",
       text:
         i18n.first_run_guide_layout_desc ||
-        "Turn page modules on or off, flip layout direction, adjust quick controls, and reset layout pieces when needed.",
+        "Turn page modules on or off, flip layout direction, adjust quick controls, and replay this guide when needed.",
+    },
+    {
+      selector: "#show-top-right-controls-checkbox",
+      icon: "fa-brands fa-google",
+      title: i18n.google_apps_tooltip || "Google Apps",
+      text:
+        i18n.first_run_guide_google_apps_desc ||
+        "Show or hide the Google Apps corner. Open the apps menu to search, drag apps, resize the popup, show names, and customize app icons.",
+    },
+    {
+      selector: "#search-engine-select",
+      icon: "fa-solid fa-magnifying-glass",
+      title: i18n.settings_group_search || "Search Bar",
+      text:
+        i18n.first_run_guide_search_desc ||
+        "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
     },
   ]
 }

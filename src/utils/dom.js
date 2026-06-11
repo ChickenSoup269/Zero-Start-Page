@@ -800,7 +800,13 @@ export const angledPatternColor2Setting = document.getElementById(
 
 export const resetSettingsBtn = document.getElementById("reset-settings")
 export const exportSettingsBtn = document.getElementById("export-settings-btn")
+export const copySettingsJsonBtn = document.getElementById(
+  "copy-settings-json-btn",
+)
 export const importSettingsBtn = document.getElementById("import-settings-btn")
+export const pasteSettingsJsonBtn = document.getElementById(
+  "paste-settings-json-btn",
+)
 export const importSettingsInput = document.getElementById(
   "import-settings-input",
 )

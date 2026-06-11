@@ -223,6 +223,10 @@
   max-width: min(640px, 94vw);
 }
 
+.custom-dialog.json-code-dialog {
+  max-width: min(760px, 94vw);
+}
+
 .dialog-header {
   padding: var(--space-2) var(--space-3);
   font-weight: 700;
@@ -272,6 +276,15 @@
   background: rgba(255, 255, 255, 0.1);
   border-color: var(--accent-color);
   box-shadow: 0 0 20px rgba(var(--accent-color-rgb), 0.2);
+}
+
+.json-code-input {
+  min-height: 260px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  white-space: pre;
 }
 
 .dialog-footer {
