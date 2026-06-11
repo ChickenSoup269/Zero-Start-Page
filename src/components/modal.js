@@ -14,19 +14,606 @@ import {
   confirmImportBtn,
   browserBookmarksList,
 } from "../utils/dom.js"
-import { getBookmarks, setBookmarks, saveBookmarks } from "../services/state.js"
+import {
+  getBookmarks,
+  setBookmarks,
+  saveBookmarks,
+  getBookmarkGroups,
+  setBookmarkGroups,
+} from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import {
   captureBookmarkSnapshot,
+  invalidateBookmarkIconCache,
   renderBookmarks,
   showBookmarkUndo,
 } from "./bookmarks.js"
 
 let editingIndex = null
 let editingTarget = null
+let bookmarkEditPopover = null
+
+const BOOKMARK_ICON_OPTIONS = [
+  {
+    key: "auto",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    label: "Auto",
+    getValue: () => "",
+  },
+  {
+    key: "iconhorse",
+    icon: "fa-solid fa-horse-head",
+    label: "Icon Horse",
+    getValue: (url) => {
+      const host = getBookmarkHostname(url)
+      return host ? `https://icon.horse/icon/${host}` : ""
+    },
+  },
+  {
+    key: "duckduckgo",
+    icon: "fa-solid fa-shield-halved",
+    label: "DuckDuckGo",
+    getValue: (url) => {
+      const host = getBookmarkHostname(url)
+      return host ? `https://icons.duckduckgo.com/ip3/${host}.ico` : ""
+    },
+  },
+  {
+    key: "google",
+    icon: "fa-brands fa-google",
+    label: "Google",
+    getValue: (url) => {
+      const host = getBookmarkHostname(url)
+      return host
+        ? `https://www.google.com/s2/favicons?domain=${host}&sz=128`
+        : ""
+    },
+  },
+]
+
+const BOOKMARK_FOLDER_ICON_OPTIONS = [
+  {
+    key: "auto",
+    icon: "fa-solid fa-border-all",
+    label: "Auto",
+    value: "",
+  },
+  {
+    key: "folder",
+    icon: "fa-solid fa-folder",
+    label: "Folder",
+    value: "fa:fa-solid fa-folder",
+  },
+  {
+    key: "folder-open",
+    icon: "fa-solid fa-folder-open",
+    label: "Open folder",
+    value: "fa:fa-solid fa-folder-open",
+  },
+  {
+    key: "layer",
+    icon: "fa-solid fa-layer-group",
+    label: "Stack",
+    value: "fa:fa-solid fa-layer-group",
+  },
+  {
+    key: "star",
+    icon: "fa-solid fa-star",
+    label: "Star",
+    value: "fa:fa-solid fa-star",
+  },
+  {
+    key: "briefcase",
+    icon: "fa-solid fa-briefcase",
+    label: "Work",
+    value: "fa:fa-solid fa-briefcase",
+  },
+  {
+    key: "code",
+    icon: "fa-solid fa-code",
+    label: "Code",
+    value: "fa:fa-solid fa-code",
+  },
+  {
+    key: "robot",
+    icon: "fa-solid fa-robot",
+    label: "AI",
+    value: "fa:fa-solid fa-robot",
+  },
+]
+
+function getBookmarkHostname(url) {
+  try {
+    const normalized = /^https?:\/\//.test(url) ? url : `https://${url}`
+    return new URL(normalized).hostname
+  } catch {
+    return ""
+  }
+}
+
+function getBookmarkForEdit(index, target) {
+  const bookmarks = getBookmarks()
+  if (target?.type === "stackItem") {
+    return bookmarks[target.stackIndex]?.items?.[target.itemIndex] || null
+  }
+  if (index !== null) return bookmarks[index] || null
+  return null
+}
+
+function positionBookmarkEditPopover(popover, anchor) {
+  const margin = 12
+  const anchorRect = anchor?.getBoundingClientRect?.()
+  const width = popover.offsetWidth || 340
+  const height = popover.offsetHeight || 420
+
+  let left = anchorRect
+    ? anchorRect.left + anchorRect.width / 2 - width / 2
+    : window.innerWidth / 2 - width / 2
+  let top = anchorRect ? anchorRect.bottom + 10 : window.innerHeight / 2 - height / 2
+
+  if (anchorRect && top + height > window.innerHeight - margin) {
+    top = anchorRect.top - height - 10
+  }
+
+  left = Math.min(Math.max(left, margin), window.innerWidth - width - margin)
+  top = Math.min(Math.max(top, margin), window.innerHeight - height - margin)
+
+  popover.style.left = `${left}px`
+  popover.style.top = `${top}px`
+}
+
+export function closeBookmarkEditPopover() {
+  if (!bookmarkEditPopover) return
+  bookmarkEditPopover.remove()
+  bookmarkEditPopover = null
+  editingIndex = null
+  editingTarget = null
+}
+
+export function openBookmarkEditPopover(
+  index = null,
+  target = null,
+  anchor = null,
+  options = {},
+) {
+  const i18n = geti18n()
+  const bookmark = getBookmarkForEdit(index, target)
+  if (!bookmark) return
+
+  closeModal()
+  closeBookmarkEditPopover()
+
+  editingIndex = index
+  editingTarget = target
+
+  const popover = document.createElement("div")
+  popover.className = "bookmark-edit-popover"
+  popover.setAttribute("role", "dialog")
+  popover.setAttribute("aria-label", i18n.modal_edit_title || "Edit Bookmark")
+
+  const title = document.createElement("div")
+  title.className = "bookmark-edit-popover-title"
+  title.innerHTML = `<i class="fa-solid fa-bookmark"></i><span>${i18n.modal_edit_title || "Edit Bookmark"}</span>`
+
+  const closeBtn = document.createElement("button")
+  closeBtn.type = "button"
+  closeBtn.className = "bookmark-edit-popover-close"
+  closeBtn.setAttribute("aria-label", i18n.close || "Close")
+  closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+  closeBtn.addEventListener("click", closeBookmarkEditPopover)
+  title.appendChild(closeBtn)
+  popover.appendChild(title)
+
+  const iconPreview = document.createElement("div")
+  iconPreview.className = "bookmark-edit-icon-preview"
+  popover.appendChild(iconPreview)
+
+  const iconGrid = document.createElement("div")
+  iconGrid.className = "bookmark-edit-icon-grid"
+  popover.appendChild(iconGrid)
+
+  const form = document.createElement("div")
+  form.className = "bookmark-edit-fields"
+
+  const titleGroup = document.createElement("label")
+  titleGroup.className = "bookmark-edit-field"
+  titleGroup.innerHTML = `<span>${i18n.modal_title_placeholder || "Title"}</span>`
+  const titleInput = document.createElement("input")
+  titleInput.type = "text"
+  titleInput.value = bookmark.title || ""
+  titleGroup.appendChild(titleInput)
+
+  const urlGroup = document.createElement("label")
+  urlGroup.className = "bookmark-edit-field"
+  urlGroup.innerHTML = `<span>${i18n.modal_url_placeholder || "URL"}</span>`
+  const urlInput = document.createElement("input")
+  urlInput.type = "url"
+  urlInput.value = bookmark.url || ""
+  urlGroup.appendChild(urlInput)
+
+  const iconGroup = document.createElement("label")
+  iconGroup.className = "bookmark-edit-field"
+  iconGroup.innerHTML = `<span>${i18n.modal_icon_placeholder || "Custom Icon URL (Optional)"}</span>`
+  const iconInput = document.createElement("input")
+  iconInput.type = "url"
+  iconInput.value = bookmark.icon || ""
+  iconGroup.appendChild(iconInput)
+
+  form.appendChild(titleGroup)
+  form.appendChild(urlGroup)
+  form.appendChild(iconGroup)
+
+  const actions = document.createElement("div")
+  actions.className = "bookmark-edit-actions"
+  const cancelBtn = document.createElement("button")
+  cancelBtn.type = "button"
+  cancelBtn.className = "secondary-btn"
+  cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.cancel || "Cancel"}</span>`
+  cancelBtn.addEventListener("click", closeBookmarkEditPopover)
+  const saveBtn = document.createElement("button")
+  saveBtn.type = "button"
+  saveBtn.className = "primary-btn"
+  saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>${i18n.modal_save || "Save"}</span>`
+  actions.appendChild(cancelBtn)
+  actions.appendChild(saveBtn)
+  form.appendChild(actions)
+  popover.appendChild(form)
+
+  const updatePreview = () => {
+    iconPreview.innerHTML = ""
+    const icon = iconInput.value.trim()
+    if (icon) {
+      const img = document.createElement("img")
+      img.src = icon
+      img.alt = ""
+      img.referrerPolicy = "no-referrer"
+      img.addEventListener("error", () => {
+        iconPreview.textContent = (titleInput.value || "?").charAt(0).toUpperCase()
+      })
+      iconPreview.appendChild(img)
+    } else {
+      iconPreview.textContent = (titleInput.value || "?").charAt(0).toUpperCase()
+    }
+  }
+
+  const syncIconButtons = () => {
+    const current = iconInput.value.trim()
+    iconGrid.querySelectorAll("button").forEach((button) => {
+      const value = button.dataset.value || ""
+      button.classList.toggle("active", current === value)
+    })
+  }
+
+  const rebuildIconOptions = () => {
+    iconGrid.innerHTML = ""
+    BOOKMARK_ICON_OPTIONS.forEach((option) => {
+      const value = option.getValue(urlInput.value.trim())
+      const button = document.createElement("button")
+      button.type = "button"
+      button.dataset.value = value
+      button.title = option.label
+      button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
+      button.addEventListener("click", () => {
+        iconInput.value = value
+        syncIconButtons()
+        updatePreview()
+      })
+      iconGrid.appendChild(button)
+    })
+
+    const customButton = document.createElement("button")
+    customButton.type = "button"
+    customButton.className = "bookmark-edit-custom-icon-btn"
+    customButton.innerHTML = `<i class="fa-solid fa-pen-to-square"></i><span>${i18n.bookmark_edit_icon || "Edit icon"}</span>`
+    customButton.addEventListener("click", () => iconInput.focus())
+    iconGrid.appendChild(customButton)
+    syncIconButtons()
+  }
+
+  const saveEdit = () => {
+    const title = titleInput.value.trim()
+    let url = urlInput.value.trim()
+    const icon = iconInput.value.trim()
+
+    if (!title || !url) {
+      showAlert(i18n.alert_missing_fields)
+      return
+    }
+
+    const oldUrl = bookmark.url
+    const snapshot = captureBookmarkSnapshot()
+    if (!url.match(/^https?:\/\//)) url = `https://${url}`
+    const updatedBookmark = { title, url, icon }
+    const bookmarks = getBookmarks()
+
+    if (editingTarget?.type === "stackItem") {
+      const stack = bookmarks[editingTarget.stackIndex]
+      if (stack?.items?.[editingTarget.itemIndex]) {
+        stack.items[editingTarget.itemIndex] = updatedBookmark
+      }
+    } else if (editingIndex !== null) {
+      bookmarks[editingIndex] = updatedBookmark
+    }
+
+    setBookmarks(bookmarks)
+    invalidateBookmarkIconCache(oldUrl)
+    invalidateBookmarkIconCache(url)
+    saveBookmarks()
+    renderBookmarks()
+    closeBookmarkEditPopover()
+    showBookmarkUndo(i18n.bookmark_updated || "Bookmark updated", snapshot)
+  }
+
+  saveBtn.addEventListener("click", saveEdit)
+  ;[titleInput, urlInput, iconInput].forEach((input) => {
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault()
+        saveEdit()
+      } else if (event.key === "Escape") {
+        closeBookmarkEditPopover()
+      }
+    })
+  })
+  titleInput.addEventListener("input", updatePreview)
+  iconInput.addEventListener("input", () => {
+    syncIconButtons()
+    updatePreview()
+  })
+  urlInput.addEventListener("input", rebuildIconOptions)
+
+  document.body.appendChild(popover)
+  bookmarkEditPopover = popover
+  rebuildIconOptions()
+  updatePreview()
+  positionBookmarkEditPopover(popover, anchor)
+
+  const closeOnOutside = (event) => {
+    if (!popover.contains(event.target) && !anchor?.contains?.(event.target)) {
+      closeBookmarkEditPopover()
+      document.removeEventListener("pointerdown", closeOnOutside)
+    }
+  }
+  setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
+
+  const focusTarget = options.focus === "icon" ? iconInput : titleInput
+  focusTarget.focus()
+  focusTarget.select?.()
+}
+
+function renderFolderIconPreview(target, iconValue, fallbackText = "?") {
+  target.innerHTML = ""
+  const value = iconValue.trim()
+  if (value.startsWith("fa:")) {
+    const icon = document.createElement("i")
+    icon.className = value.slice(3)
+    target.appendChild(icon)
+    return
+  }
+
+  if (value) {
+    const img = document.createElement("img")
+    img.src = value
+    img.alt = ""
+    img.referrerPolicy = "no-referrer"
+    img.addEventListener("error", () => {
+      target.textContent = fallbackText.charAt(0).toUpperCase()
+    })
+    target.appendChild(img)
+    return
+  }
+
+  target.textContent = fallbackText.charAt(0).toUpperCase()
+}
+
+function createFolderIconEditor({
+  title,
+  name,
+  icon,
+  anchor,
+  focus = "name",
+  onSave,
+}) {
+  const i18n = geti18n()
+  closeModal()
+  closeBookmarkEditPopover()
+
+  const popover = document.createElement("div")
+  popover.className = "bookmark-edit-popover bookmark-folder-edit-popover"
+  popover.setAttribute("role", "dialog")
+  popover.setAttribute("aria-label", title)
+
+  const heading = document.createElement("div")
+  heading.className = "bookmark-edit-popover-title"
+  heading.innerHTML = `<i class="fa-solid fa-folder"></i><span>${title}</span>`
+  const closeBtn = document.createElement("button")
+  closeBtn.type = "button"
+  closeBtn.className = "bookmark-edit-popover-close"
+  closeBtn.setAttribute("aria-label", i18n.close || "Close")
+  closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+  closeBtn.addEventListener("click", closeBookmarkEditPopover)
+  heading.appendChild(closeBtn)
+  popover.appendChild(heading)
+
+  const iconPreview = document.createElement("div")
+  iconPreview.className = "bookmark-edit-icon-preview bookmark-folder-icon-preview"
+  popover.appendChild(iconPreview)
+
+  const iconGrid = document.createElement("div")
+  iconGrid.className = "bookmark-edit-icon-grid bookmark-folder-icon-grid"
+  popover.appendChild(iconGrid)
+
+  const fields = document.createElement("div")
+  fields.className = "bookmark-edit-fields"
+
+  const nameGroup = document.createElement("label")
+  nameGroup.className = "bookmark-edit-field"
+  nameGroup.innerHTML = `<span>${i18n.modal_title_placeholder || "Title"}</span>`
+  const nameInput = document.createElement("input")
+  nameInput.type = "text"
+  nameInput.value = name || ""
+  nameGroup.appendChild(nameInput)
+
+  const iconGroup = document.createElement("label")
+  iconGroup.className = "bookmark-edit-field"
+  iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Folder icon"}</span>`
+  const iconInput = document.createElement("input")
+  iconInput.type = "text"
+  iconInput.value = icon || ""
+  iconInput.placeholder = "fa:fa-solid fa-folder or https://..."
+  iconGroup.appendChild(iconInput)
+
+  fields.appendChild(nameGroup)
+  fields.appendChild(iconGroup)
+
+  const actions = document.createElement("div")
+  actions.className = "bookmark-edit-actions"
+  const cancelBtn = document.createElement("button")
+  cancelBtn.type = "button"
+  cancelBtn.className = "secondary-btn"
+  cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.cancel || "Cancel"}</span>`
+  cancelBtn.addEventListener("click", closeBookmarkEditPopover)
+  const saveBtn = document.createElement("button")
+  saveBtn.type = "button"
+  saveBtn.className = "primary-btn"
+  saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>${i18n.modal_save || "Save"}</span>`
+  actions.appendChild(cancelBtn)
+  actions.appendChild(saveBtn)
+  fields.appendChild(actions)
+  popover.appendChild(fields)
+
+  const updatePreview = () =>
+    renderFolderIconPreview(iconPreview, iconInput.value, nameInput.value || "?")
+
+  const syncButtons = () => {
+    const current = iconInput.value.trim()
+    iconGrid.querySelectorAll("button").forEach((button) => {
+      button.classList.toggle("active", (button.dataset.value || "") === current)
+    })
+  }
+
+  BOOKMARK_FOLDER_ICON_OPTIONS.forEach((option) => {
+    const button = document.createElement("button")
+    button.type = "button"
+    button.dataset.value = option.value
+    button.title = option.label
+    button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
+    button.addEventListener("click", () => {
+      iconInput.value = option.value
+      syncButtons()
+      updatePreview()
+    })
+    iconGrid.appendChild(button)
+  })
+
+  const saveFolder = () => {
+    const nextName = nameInput.value.trim()
+    if (!nextName) {
+      showAlert(i18n.alert_missing_fields)
+      return
+    }
+    onSave({
+      name: nextName,
+      icon: iconInput.value.trim(),
+    })
+    closeBookmarkEditPopover()
+  }
+
+  saveBtn.addEventListener("click", saveFolder)
+  ;[nameInput, iconInput].forEach((input) => {
+    input.addEventListener("input", () => {
+      syncButtons()
+      updatePreview()
+    })
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault()
+        saveFolder()
+      } else if (event.key === "Escape") {
+        closeBookmarkEditPopover()
+      }
+    })
+  })
+
+  document.body.appendChild(popover)
+  bookmarkEditPopover = popover
+  syncButtons()
+  updatePreview()
+  positionBookmarkEditPopover(popover, anchor)
+
+  const closeOnOutside = (event) => {
+    if (!popover.contains(event.target) && !anchor?.contains?.(event.target)) {
+      closeBookmarkEditPopover()
+      document.removeEventListener("pointerdown", closeOnOutside)
+    }
+  }
+  setTimeout(() => document.addEventListener("pointerdown", closeOnOutside), 0)
+
+  const focusTarget = focus === "icon" ? iconInput : nameInput
+  focusTarget.focus()
+  focusTarget.select?.()
+}
+
+export function openBookmarkStackEditPopover(
+  stackIndex,
+  anchor = null,
+  options = {},
+) {
+  const i18n = geti18n()
+  const bookmarks = getBookmarks()
+  const stack = bookmarks[stackIndex]
+  if (!stack?.items) return
+
+  createFolderIconEditor({
+    title: i18n.bookmark_stack_edit || "Edit bookmark folder",
+    name: stack.title || i18n.bookmark_stack_default_name || "Bookmark Group",
+    icon: stack.icon || "",
+    anchor,
+    focus: options.focus,
+    onSave: ({ name, icon }) => {
+      const snapshot = captureBookmarkSnapshot()
+      const current = getBookmarks()
+      if (!current[stackIndex]?.items) return
+      current[stackIndex].title = name
+      current[stackIndex].icon = icon
+      setBookmarks(current)
+      saveBookmarks()
+      renderBookmarks()
+      showBookmarkUndo(i18n.bookmark_group_renamed || "Group updated", snapshot)
+    },
+  })
+}
+
+export function openBookmarkGroupEditPopover(groupId, anchor = null, options = {}) {
+  const i18n = geti18n()
+  const groups = getBookmarkGroups()
+  const group = groups.find((item) => item.id === groupId)
+  if (!group) return
+
+  createFolderIconEditor({
+    title: i18n.bookmark_group_edit || "Edit bookmark folder",
+    name: group.name,
+    icon: group.icon || "",
+    anchor,
+    focus: options.focus,
+    onSave: ({ name, icon }) => {
+      const snapshot = captureBookmarkSnapshot()
+      const nextGroups = getBookmarkGroups()
+      const nextGroup = nextGroups.find((item) => item.id === groupId)
+      if (!nextGroup) return
+      nextGroup.name = name
+      nextGroup.icon = icon
+      setBookmarkGroups(nextGroups)
+      saveBookmarks()
+      renderBookmarks()
+      showBookmarkUndo(i18n.bookmark_group_renamed || "Group updated", snapshot)
+    },
+  })
+}
 
 export function openModal(index = null, target = null) {
   const i18n = geti18n()
+  closeBookmarkEditPopover()
   modal.classList.add("show")
   editingIndex = index
   editingTarget = target
@@ -107,6 +694,7 @@ function saveBookmark() {
       bookmarks.push(newBookmark)
     }
     setBookmarks(bookmarks)
+    invalidateBookmarkIconCache(url)
     saveBookmarks()
     renderBookmarks()
     closeModal()

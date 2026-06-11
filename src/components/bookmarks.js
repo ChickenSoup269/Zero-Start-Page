@@ -23,7 +23,12 @@ import {
   saveSettings,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
-import { openModal } from "./modal.js"
+import {
+  openBookmarkEditPopover,
+  openBookmarkGroupEditPopover,
+  openBookmarkStackEditPopover,
+  openModal,
+} from "./modal.js"
 import { showContextMenu } from "./contextMenu.js"
 
 let bookmarkOpenBehaviorPromptPending = false
@@ -107,6 +112,14 @@ function getHostname(url) {
 
 const iconCache = new Map()
 let bookmarkUndoTimeout = null
+
+export function invalidateBookmarkIconCache(url = null) {
+  if (url) {
+    iconCache.delete(url)
+    return
+  }
+  iconCache.clear()
+}
 
 // --- Selection State ---
 let isSelectionMode = false
@@ -362,6 +375,18 @@ function createBookmarkStackIcon(stack) {
   const wrap = document.createElement("div")
   wrap.className = "bookmark-stack-icon"
 
+  if (stack.icon) {
+    wrap.classList.add("has-custom-stack-icon")
+    wrap.appendChild(createStoredIconElement(stack.icon, getBookmarkLabel(stack)))
+
+    const badge = document.createElement("span")
+    badge.className = "bookmark-stack-count"
+    badge.textContent = stack.items.length
+    wrap.appendChild(badge)
+
+    return wrap
+  }
+
   stack.items.slice(0, 4).forEach((item) => {
     const cell = document.createElement("div")
     cell.className = "bookmark-stack-cell"
@@ -382,6 +407,40 @@ function createBookmarkStackIcon(stack) {
   wrap.appendChild(badge)
 
   return wrap
+}
+
+function createStoredIconElement(value, label = "Bookmark") {
+  const iconValue = String(value || "").trim()
+
+  if (iconValue.startsWith("fa:")) {
+    const icon = document.createElement("i")
+    icon.className = `${iconValue.slice(3)} stored-bookmark-icon`
+    icon.setAttribute("aria-hidden", "true")
+    return icon
+  }
+
+  if (iconValue) {
+    const img = document.createElement("img")
+    img.src = iconValue
+    img.alt = `${label} icon`
+    img.loading = "lazy"
+    img.decoding = "async"
+    img.referrerPolicy = "no-referrer"
+    img.className = "stored-bookmark-icon"
+    img.addEventListener("error", () => {
+      img.replaceWith(createStoredIconFallback(label))
+    })
+    return img
+  }
+
+  return createStoredIconFallback(label)
+}
+
+function createStoredIconFallback(label = "Bookmark") {
+  const fallback = document.createElement("span")
+  fallback.className = "stored-bookmark-icon stored-bookmark-icon-fallback"
+  fallback.textContent = (label || "?").trim().charAt(0).toUpperCase()
+  return fallback
 }
 
 function openBookmarkStackPopup(stack, anchor, stackIndex) {
@@ -645,11 +704,27 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
           `${stackIndex}:${itemIndex}`,
           {
             onEdit: () => {
-              openModal(null, {
-                type: "stackItem",
-                stackIndex,
-                itemIndex,
-              })
+              openBookmarkEditPopover(
+                null,
+                {
+                  type: "stackItem",
+                  stackIndex,
+                  itemIndex,
+                },
+                link,
+              )
+            },
+            onEditIcon: () => {
+              openBookmarkEditPopover(
+                null,
+                {
+                  type: "stackItem",
+                  stackIndex,
+                  itemIndex,
+                },
+                link,
+                { focus: "icon" },
+              )
             },
             onDelete: async () => {
               const confirmed = await showConfirm(
@@ -688,23 +763,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     syncStackSelectionUi()
   })
 
-  renameBtn.addEventListener("click", async () => {
-    const newName = await showPrompt(
-      i18n.prompt_rename_group || "Enter new group name:",
-      stack.title || i18n.bookmark_stack_default_name || "Bookmark Group",
-    )
-    if (!newName?.trim()) return
-    const snapshot = captureBookmarkSnapshot()
-    const bookmarks = getBookmarks()
-    if (isBookmarkStack(bookmarks[stackIndex])) {
-      bookmarks[stackIndex].title = newName.trim()
-      stack.title = newName.trim()
-      title.textContent = stack.title
-      setBookmarks(bookmarks)
-      saveBookmarks()
-      renderBookmarks()
-      showBookmarkUndo(i18n.bookmark_group_renamed || "Group renamed", snapshot)
-    }
+  renameBtn.addEventListener("click", () => {
+    openBookmarkStackEditPopover(stackIndex, anchor)
   })
 
   cancelBtn.addEventListener("click", () => {
@@ -1453,23 +1513,10 @@ export function renderBookmarks() {
           bookmark.id,
           {
             onEdit: async () => {
-              const currentI18n = geti18n()
-              const newName = await showPrompt(
-                currentI18n.prompt_rename_group || "Enter new group name:",
-                bookmark.title ||
-                  currentI18n.bookmark_stack_default_name ||
-                  "Bookmark Group",
-              )
-              if (newName && newName.trim()) {
-                const snapshot = captureBookmarkSnapshot()
-                bookmarks[index].title = newName.trim()
-                saveBookmarks()
-                renderBookmarks()
-                showBookmarkUndo(
-                  currentI18n.bookmark_group_renamed || "Group renamed",
-                  snapshot,
-                )
-              }
+              openBookmarkStackEditPopover(index, bookmarkEl)
+            },
+            onEditIcon: () => {
+              openBookmarkStackEditPopover(index, bookmarkEl, { focus: "icon" })
             },
             onDelete: async () => {
               const currentI18n = geti18n()
@@ -1491,7 +1538,9 @@ export function renderBookmarks() {
           },
         )
       } else {
-        showContextMenu(e.clientX, e.clientY, index)
+        showContextMenu(e.clientX, e.clientY, index, "bookmark", null, {
+          anchor: bookmarkEl,
+        })
       }
     })
     frag.appendChild(bookmarkEl)
@@ -2026,8 +2075,14 @@ function renderGroupTabs() {
     }
 
     // Representative Icon
-    const icon = document.createElement("i")
-    icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
+    const icon = group.icon
+      ? createStoredIconElement(group.icon, group.name)
+      : document.createElement("i")
+    if (group.icon) {
+      icon.classList.add("group-tab-icon", "custom-group-tab-icon")
+    } else {
+      icon.className = `fa-solid ${getGroupIcon(group.name)} group-tab-icon`
+    }
     tab.appendChild(icon)
 
     // Name Span (for double-click edit)
@@ -2080,7 +2135,12 @@ function renderGroupTabs() {
     tab.addEventListener("contextmenu", (e) => {
       e.preventDefault()
       const index = groups.indexOf(group)
-      showContextMenu(e.clientX, e.clientY, index, "group", group.id)
+      showContextMenu(e.clientX, e.clientY, index, "group", group.id, {
+        anchor: tab,
+        onEdit: () => openBookmarkGroupEditPopover(group.id, tab),
+        onEditIcon: () =>
+          openBookmarkGroupEditPopover(group.id, tab, { focus: "icon" }),
+      })
     })
 
     bookmarkGroupsContainer.appendChild(tab)

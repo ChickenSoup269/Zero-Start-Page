@@ -1,5 +1,4 @@
 import { geti18n } from "../services/i18n.js"
-import { showPrompt } from "../utils/dialog.js"
 import { showToast } from "../utils/toast.js"
 
 const STORAGE_KEY = "startpageGoogleAppsV2"
@@ -463,8 +462,24 @@ function normalizeUrl(value) {
   return `https://${url}`
 }
 
-function getIconUrl(item, state = {}) {
-  if (state.iconUrls?.[item.id]) return state.iconUrls[item.id]
+function normalizeIconUrl(value) {
+  const url = String(value || "").trim()
+  if (!url) return ""
+  if (/^(https?:|data:|blob:|file:|chrome:|edge:|about:)/i.test(url)) {
+    return url
+  }
+  return `https://${url}`
+}
+
+function getAppHostname(item) {
+  try {
+    return item.fallbackDomain || new URL(item.url).hostname
+  } catch {
+    return item.fallbackDomain || ""
+  }
+}
+
+function getDeclaredIconUrl(item) {
   if (item.id === "account") return ACCOUNT_DEFAULT_ICON
   if (item.iconSlug) {
     const fileName = item.iconSlug.includes(".")
@@ -473,7 +488,22 @@ function getIconUrl(item, state = {}) {
     const base = latestIconFiles.has(fileName) ? ICON_BASE_LATEST : ICON_BASE
     return `${base}/${fileName}`
   }
-  return `https://www.google.com/s2/favicons?domain=${item.fallbackDomain || new URL(item.url).hostname}&sz=64`
+  const hostname = getAppHostname(item)
+  return hostname
+    ? `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`
+    : ""
+}
+
+function getWebIconUrl(item) {
+  const hostname = getAppHostname(item)
+  return hostname
+    ? `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`
+    : getDeclaredIconUrl(item)
+}
+
+function getIconUrl(item, state = {}) {
+  if (state.iconUrls?.[item.id]) return state.iconUrls[item.id]
+  return getDeclaredIconUrl(item)
 }
 
 function getLabel(item) {
@@ -564,7 +594,7 @@ function createItem(item, state, onContextMenu) {
   img.addEventListener(
     "error",
     () => {
-      img.src = `https://www.google.com/s2/favicons?domain=${item.fallbackDomain || new URL(item.url).hostname}&sz=64`
+      img.src = getWebIconUrl(item)
     },
     { once: true },
   )
@@ -602,6 +632,7 @@ export function initGoogleApps() {
   const root = document.getElementById("g-apps-dynamic-root")
   const button = document.querySelector(".google-apps-btn")
   const dropdown = document.getElementById("g-apps-dropdown")
+  const scrollArea = dropdown?.querySelector(".g-apps-scroll-area")
   if (!root) return
 
   let state = loadState()
@@ -823,27 +854,6 @@ export function initGoogleApps() {
     })
   }
 
-  async function editIconUrl(item) {
-    const previousIconUrls = { ...(state.iconUrls || {}) }
-    const currentIcon = state.iconUrls?.[item.id] || getIconUrl(item, state)
-    const nextIcon = await showPrompt(
-      geti18n().g_apps_edit_icon_prompt || "Enter a custom icon URL:",
-      currentIcon,
-      getLabel(item),
-    )
-    if (nextIcon === null) return
-
-    const normalized = normalizeUrl(nextIcon)
-    state.iconUrls = { ...(state.iconUrls || {}) }
-    if (normalized && normalized !== getIconUrl(item, { iconUrls: {} })) {
-      state.iconUrls[item.id] = normalized
-    } else {
-      delete state.iconUrls[item.id]
-    }
-    render()
-    showIconChangedToast(previousIconUrls)
-  }
-
   function uploadIcon(item) {
     const input = document.createElement("input")
     input.type = "file"
@@ -862,6 +872,196 @@ export function initGoogleApps() {
       reader.readAsDataURL(file)
     })
     input.click()
+  }
+
+  function applyIconValue(item, value, previousIconUrls) {
+    const normalized = normalizeIconUrl(value)
+    const defaultIcon = getDeclaredIconUrl(item)
+    state.iconUrls = { ...(state.iconUrls || {}) }
+    if (normalized && normalized !== defaultIcon) {
+      state.iconUrls[item.id] = normalized
+    } else {
+      delete state.iconUrls[item.id]
+    }
+    render()
+    showIconChangedToast(previousIconUrls)
+  }
+
+  function hideGoogleAppsIconPopover() {
+    document.querySelector(".g-apps-icon-popover")?.remove()
+  }
+
+  function createIconChoice(iconClass, label, value, onSelect) {
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className = "g-apps-icon-choice"
+    button.dataset.value = value || ""
+    button.innerHTML = `<i class="${iconClass}"></i><span>${label}</span>`
+    button.addEventListener("click", () => onSelect(value || ""))
+    return button
+  }
+
+  function positionIconPopover(popover, x, y) {
+    const padding = 10
+    const rect = popover.getBoundingClientRect()
+    popover.style.left = `${Math.max(
+      padding,
+      Math.min(x, window.innerWidth - rect.width - padding),
+    )}px`
+    popover.style.top = `${Math.max(
+      padding,
+      Math.min(y, window.innerHeight - rect.height - padding),
+    )}px`
+  }
+
+  function openIconPicker(item, anchorEvent = null) {
+    hideGoogleAppsIconPopover()
+    const i18n = geti18n()
+    const previousIconUrls = { ...(state.iconUrls || {}) }
+    const defaultIcon = getDeclaredIconUrl(item)
+    const webIcon = getWebIconUrl(item)
+    let selectedValue = state.iconUrls?.[item.id] || defaultIcon
+
+    const popover = document.createElement("div")
+    popover.className = "g-apps-icon-popover"
+    popover.addEventListener("click", (event) => event.stopPropagation())
+    popover.addEventListener("pointerdown", (event) => event.stopPropagation())
+
+    const header = document.createElement("div")
+    header.className = "g-apps-icon-popover-header"
+    header.innerHTML = `<div><i class="fa-solid fa-icons"></i><span>${i18n.g_apps_menu_edit_icon || "Edit icon"}</span></div>`
+    const closeBtn = document.createElement("button")
+    closeBtn.type = "button"
+    closeBtn.setAttribute("aria-label", i18n.close || "Close")
+    closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+    closeBtn.addEventListener("click", hideGoogleAppsIconPopover)
+    header.appendChild(closeBtn)
+    popover.appendChild(header)
+
+    const preview = document.createElement("div")
+    preview.className = "g-apps-icon-preview"
+    const previewImg = document.createElement("img")
+    previewImg.alt = getLabel(item)
+    previewImg.referrerPolicy = "no-referrer"
+    preview.appendChild(previewImg)
+    popover.appendChild(preview)
+
+    const choices = document.createElement("div")
+    choices.className = "g-apps-icon-choices"
+    popover.appendChild(choices)
+
+    const field = document.createElement("label")
+    field.className = "g-apps-icon-url-field"
+    field.innerHTML = `<span>${i18n.g_apps_custom_icon_url || "Custom icon URL"}</span>`
+    const input = document.createElement("input")
+    input.type = "text"
+    input.value =
+      selectedValue && selectedValue !== defaultIcon && selectedValue !== webIcon
+        ? selectedValue
+        : ""
+    input.placeholder = "https://... or data:image/..."
+    field.appendChild(input)
+    popover.appendChild(field)
+
+    const actions = document.createElement("div")
+    actions.className = "g-apps-icon-actions"
+    const uploadBtn = document.createElement("button")
+    uploadBtn.type = "button"
+    uploadBtn.className = "secondary-btn"
+    uploadBtn.innerHTML = `<i class="fa-solid fa-upload"></i><span>${i18n.g_apps_menu_upload_icon || "Upload icon"}</span>`
+    const saveBtn = document.createElement("button")
+    saveBtn.type = "button"
+    saveBtn.className = "primary-btn"
+    saveBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>${i18n.modal_save || "Save"}</span>`
+    actions.append(uploadBtn, saveBtn)
+    popover.appendChild(actions)
+
+    const syncPreview = () => {
+      previewImg.src = selectedValue || defaultIcon
+      choices.querySelectorAll(".g-apps-icon-choice").forEach((choice) => {
+        choice.classList.toggle("active", choice.dataset.value === selectedValue)
+      })
+    }
+
+    const selectValue = (value) => {
+      selectedValue = value || defaultIcon
+      if (selectedValue === defaultIcon || selectedValue === webIcon) {
+        input.value = ""
+      } else {
+        input.value = selectedValue
+      }
+      syncPreview()
+    }
+
+    choices.append(
+      createIconChoice(
+        "fa-solid fa-rotate-left",
+        i18n.g_apps_default_icon || "Default",
+        defaultIcon,
+        selectValue,
+      ),
+      createIconChoice(
+        "fa-solid fa-globe",
+        i18n.g_apps_web_icon || "Web icon",
+        webIcon,
+        selectValue,
+      ),
+      createIconChoice(
+        "fa-solid fa-link",
+        i18n.g_apps_url_icon || "URL",
+        selectedValue !== defaultIcon && selectedValue !== webIcon
+          ? selectedValue
+          : "",
+        () => {
+          selectedValue = normalizeIconUrl(input.value) || selectedValue
+          input.focus()
+          syncPreview()
+        },
+      ),
+    )
+
+    input.addEventListener("input", () => {
+      selectedValue = normalizeIconUrl(input.value) || defaultIcon
+      syncPreview()
+    })
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault()
+        applyIconValue(item, selectedValue, previousIconUrls)
+        hideGoogleAppsIconPopover()
+      }
+      if (event.key === "Escape") hideGoogleAppsIconPopover()
+    })
+
+    uploadBtn.addEventListener("click", () => {
+      const fileInput = document.createElement("input")
+      fileInput.type = "file"
+      fileInput.accept = "image/*"
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0]
+        if (!file) return
+        const reader = new FileReader()
+        reader.addEventListener("load", () => {
+          selectedValue = String(reader.result || "")
+          input.value = selectedValue
+          syncPreview()
+        })
+        reader.readAsDataURL(file)
+      })
+      fileInput.click()
+    })
+
+    saveBtn.addEventListener("click", () => {
+      applyIconValue(item, selectedValue, previousIconUrls)
+      hideGoogleAppsIconPopover()
+    })
+
+    document.body.appendChild(popover)
+    syncPreview()
+    const x = anchorEvent?.clientX ?? window.innerWidth / 2
+    const y = anchorEvent?.clientY ?? window.innerHeight / 2
+    positionIconPopover(popover, x, y)
+    input.focus()
   }
 
   function resetIcon(item) {
@@ -903,6 +1103,7 @@ export function initGoogleApps() {
       showMiniSearch: i18n.g_apps_menu_mini_search || "Mini search",
       reset: i18n.g_apps_reset || "Reset Google Apps",
       currentApp: getLabel(item),
+      scrollTop: i18n.g_apps_scroll_top || "Scroll to top",
     }
   }
 
@@ -961,7 +1162,7 @@ export function initGoogleApps() {
     menu.appendChild(
       createMenuButton("fa-solid fa-image", labels.editIcon, () => {
         hideGoogleAppsMenu()
-        editIconUrl(item)
+        openIconPicker(item, event)
       }),
     )
     menu.appendChild(
@@ -1003,6 +1204,26 @@ export function initGoogleApps() {
     menu.style.top = `${Math.min(event.clientY, window.innerHeight - rect.height - padding)}px`
   }
 
+  function ensureScrollTopButton() {
+    if (!dropdown || !scrollArea) return
+    let scrollBtn = dropdown.querySelector(".g-apps-scroll-top")
+    if (!scrollBtn) {
+      scrollBtn = document.createElement("button")
+      scrollBtn.type = "button"
+      scrollBtn.className = "g-apps-scroll-top"
+      scrollBtn.title = getMenuLabels(apps[0]).scrollTop
+      scrollBtn.setAttribute("aria-label", getMenuLabels(apps[0]).scrollTop)
+      scrollBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>'
+      scrollBtn.addEventListener("click", (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        scrollArea.scrollTo({ top: 0, behavior: "smooth" })
+      })
+      dropdown.appendChild(scrollBtn)
+    }
+    scrollBtn.classList.toggle("show", scrollArea.scrollTop > 80)
+  }
+
   button?.addEventListener(
     "click",
     (event) => {
@@ -1010,26 +1231,37 @@ export function initGoogleApps() {
       event.stopImmediatePropagation()
       dropdown?.classList.toggle("show")
       hideGoogleAppsMenu()
+      hideGoogleAppsIconPopover()
+      ensureScrollTopButton()
     },
     true,
   )
   document.addEventListener("click", (event) => {
     if (!dropdown || !button) return
     if (event.target.closest(".g-apps-context-menu")) return
+    if (event.target.closest(".g-apps-icon-popover")) return
     if (event.target.closest("#custom-dialog-overlay")) return
     if (!dropdown.contains(event.target) && !button.contains(event.target)) {
       dropdown.classList.remove("show")
       hideGoogleAppsMenu()
+      hideGoogleAppsIconPopover()
     }
   })
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".g-apps-context-menu")) hideGoogleAppsMenu()
+    if (!event.target.closest(".g-apps-icon-popover"))
+      hideGoogleAppsIconPopover()
   })
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") hideGoogleAppsMenu()
+    if (event.key === "Escape") {
+      hideGoogleAppsMenu()
+      hideGoogleAppsIconPopover()
+    }
   })
   dropdown?.addEventListener("scroll", hideGoogleAppsMenu, true)
+  scrollArea?.addEventListener("scroll", ensureScrollTopButton)
   window.addEventListener("startpage:languageChanged", render)
 
   render()
+  ensureScrollTopButton()
 }

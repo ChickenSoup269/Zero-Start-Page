@@ -354,6 +354,248 @@
   white-space: nowrap;
 }
 
+.bookmark-edit-popover {
+  position: fixed;
+  z-index: 21000;
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(30, 30, 40, 0.9);
+  color: var(--text-color, #fff);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  animation: contextMenuFadeIn 0.12s ease-out;
+}
+
+.bookmark-edit-popover-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.bookmark-edit-popover-title > i {
+  color: var(--accent-color, #8b9cff);
+}
+
+.bookmark-edit-popover-title span {
+  flex: 1;
+  min-width: 0;
+}
+
+.bookmark-edit-popover-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bookmark-edit-popover-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bookmark-edit-icon-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 8px auto 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.bookmark-edit-icon-preview img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.bookmark-edit-icon-preview i {
+  font-size: 1.55rem;
+}
+
+.bookmark-edit-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.bookmark-edit-icon-grid button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bookmark-edit-icon-grid button:hover,
+.bookmark-edit-icon-grid button.active {
+  border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.6);
+  background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.18);
+}
+
+.bookmark-edit-icon-grid button i {
+  width: 16px;
+  text-align: center;
+  opacity: 0.86;
+}
+
+.bookmark-edit-icon-grid button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-edit-fields {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bookmark-edit-field {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.bookmark-edit-field input {
+  width: 100%;
+  min-height: 38px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-color, #fff);
+  font-family: var(--font-primary);
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.bookmark-edit-field input:focus {
+  border-color: var(--accent-color, #8b9cff);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 129, 140, 248), 0.16);
+}
+
+.bookmark-edit-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.bookmark-edit-actions .primary-btn,
+.bookmark-edit-actions .secondary-btn {
+  min-width: 0;
+  height: 38px;
+  justify-content: center;
+  gap: 8px;
+}
+
+body.context-menu-light .bookmark-edit-popover,
+body.context-menu-macos .bookmark-edit-popover {
+  background: rgba(255, 255, 255, 0.82);
+  color: #17171c;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.18);
+}
+
+body.context-menu-light .bookmark-edit-icon-preview,
+body.context-menu-light .bookmark-edit-icon-grid button,
+body.context-menu-light .bookmark-edit-field input,
+body.context-menu-macos .bookmark-edit-icon-preview,
+body.context-menu-macos .bookmark-edit-icon-grid button,
+body.context-menu-macos .bookmark-edit-field input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #17171c;
+}
+
+body.context-menu-light .bookmark-edit-fields,
+body.context-menu-macos .bookmark-edit-fields {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.context-menu-light .bookmark-edit-field,
+body.context-menu-macos .bookmark-edit-field {
+  color: rgba(0, 0, 0, 0.68);
+}
+
+.bookmark-stack-icon.has-custom-stack-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon {
+  width: 62%;
+  height: 62%;
+  object-fit: contain;
+  border: 0;
+  border-radius: 8px;
+  color: var(--accent-color, #a8c0ff);
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.48);
+  line-height: 1;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+  color: var(--text-color, #fff);
+  font-weight: 750;
+}
+
+.bookmark-group-tab .custom-group-tab-icon {
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  color: inherit;
+}
+
+.bookmark-group-tab .custom-group-tab-icon.stored-bookmark-icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78em;
+  font-weight: 750;
+}
+
 /* Import toolbar (search + select-all) */
 .import-toolbar {
   display: flex;

@@ -20,7 +20,7 @@ import {
   saveSettings,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
-import { openModal } from "./modal.js"
+import { openBookmarkEditPopover } from "./modal.js"
 import {
   captureBookmarkSnapshot,
   renderBookmarks,
@@ -70,6 +70,37 @@ export function showContextMenu(
     type === "bookmarkStackItem"
   ) {
     menuSelect.style.display = "flex"
+  }
+
+  if (
+    type === "bookmark" ||
+    type === "bookmarkStack" ||
+    type === "bookmarkStackItem" ||
+    type === "group"
+  ) {
+    const editIconBtn = document.createElement("div")
+    editIconBtn.className = "context-menu-item custom-music-item"
+    editIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.bookmark_edit_icon || "Edit icon"}</span>`
+    editIconBtn.onclick = (event) => {
+      event.stopPropagation()
+      const anchor =
+        contextMenuCallbacks?.anchor ||
+        document.querySelector(
+          `[data-index="${contextMenuTargetIndex}"].bookmark`,
+        )
+      if (contextMenuCallbacks?.onEditIcon) {
+        contextMenuCallbacks.onEditIcon()
+      } else if (contextMenuTargetType === "bookmark") {
+        openBookmarkEditPopover(
+          contextMenuTargetIndex,
+          null,
+          anchor,
+          { focus: "icon" },
+        )
+      }
+      hideContextMenu()
+    }
+    contextMenu.insertBefore(editIconBtn, menuDelete)
   }
 
   if (type === "widget") {
@@ -1049,7 +1080,10 @@ async function handleEdit() {
 
   if (contextMenuTargetType === "bookmark") {
     if (contextMenuTargetIndex > -1) {
-      openModal(contextMenuTargetIndex)
+      const anchor =
+        contextMenuCallbacks?.anchor ||
+        document.querySelector(`[data-index="${contextMenuTargetIndex}"].bookmark`)
+      openBookmarkEditPopover(contextMenuTargetIndex, null, anchor)
     }
   } else if (contextMenuTargetType === "group") {
     const groups = getBookmarkGroups()
