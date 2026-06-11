@@ -270,6 +270,20 @@ function getIntlLanguageCode(settings) {
   return "en-US"
 }
 
+function getClockDateLanguageCode(settings) {
+  const language = settings.clockDateLanguage || "auto"
+  if (language === "auto") return getIntlLanguageCode(settings)
+
+  try {
+    const supported = Intl.DateTimeFormat.supportedLocalesOf([language])
+    if (supported.length > 0) return supported[0]
+  } catch (e) {
+    // Fall back below for invalid stored values.
+  }
+
+  return getIntlLanguageCode(settings)
+}
+
 function isCustomLanguage(settings) {
   return Boolean(settings.customLanguages?.[settings.language])
 }
@@ -476,6 +490,7 @@ export function updateTime() {
   const settings = getSettings()
   const now = new Date()
   const langCode = getIntlLanguageCode(settings)
+  const dateLangCode = getClockDateLanguageCode(settings)
   const dateClockStyle = settings.dateClockStyle || "default"
   const timerLabel = getClockLabel("clock_label_timer", "TIMER")
   const countdownLabel = getClockLabel("clock_label_countdown", "COUNTDOWN")
@@ -640,7 +655,7 @@ export function updateTime() {
 
     const dayName = getSafeWeekday(
       now,
-      langCode,
+      dateLangCode,
       settings.shortWeekday,
       tz,
       settings,
@@ -649,10 +664,10 @@ export function updateTime() {
     let dateHtml = ""
     if (format === "full") {
       const day = getZonedDateParts(now, tz).day
-      const monthName = getLocalizedMonthName(now, langCode, tz, settings)
+      const monthName = getLocalizedMonthName(now, dateLangCode, tz, settings)
       dateHtml = `${day} - ${monthName}`
     } else {
-      dateHtml = getCustomDateString(now, langCode, tz, settings)
+      dateHtml = getCustomDateString(now, dateLangCode, tz, settings)
     }
 
     clockElement.innerHTML = `
@@ -679,7 +694,7 @@ export function updateTime() {
 
     const dayName = getSafeWeekday(
       now,
-      langCode,
+      dateLangCode,
       settings.shortWeekday,
       tz,
       settings,
@@ -688,13 +703,13 @@ export function updateTime() {
     clockElement.innerHTML = `
       <div class="clock-sidestyle">
         <div class="clock-sidestyle-day">${isTimer ? countdownLabel : dayName}</div>
-        ${shouldShowDate ? _buildSidestyleDateStr(now, langCode, tz, settings) : ""}
+        ${shouldShowDate ? _buildSidestyleDateStr(now, dateLangCode, tz, settings) : ""}
         <div class="clock-sidestyle-time">${finalTimeStr}</div>
       </div>
     `
   } else if (dateClockStyle === "jp-style") {
     const jpLangOption = settings.jpStyleLanguage || "auto"
-    const displayLang = jpLangOption === "ja" ? "ja-JP" : langCode
+    const displayLang = jpLangOption === "ja" ? "ja-JP" : dateLangCode
 
     let dayName = ""
     if (isTimer) {
@@ -760,7 +775,7 @@ export function updateTime() {
     const year = parts.year
     const weekday = getSafeWeekday(
       now,
-      langCode,
+      dateLangCode,
       settings.shortWeekday,
       tz,
       settings,
@@ -796,7 +811,7 @@ export function updateTime() {
     const year = parts.year
     const weekday = getSafeWeekday(
       now,
-      langCode,
+      dateLangCode,
       settings.shortWeekday,
       tz,
       settings,
@@ -825,7 +840,7 @@ export function updateTime() {
     `
   } else if (dateClockStyle === "sidebar") {
     if (settings.sidebarClockFlip) {
-      const dateParts = new Intl.DateTimeFormat(langCode, {
+      const dateParts = new Intl.DateTimeFormat(dateLangCode, {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -837,7 +852,7 @@ export function updateTime() {
       const dVal =
         dateParts.find((p) => p.type === "day")?.value || zonedParts.day
       const mVal = isCustomLanguage(settings)
-        ? getLocalizedMonthName(now, langCode, tz, settings, "short")
+        ? getLocalizedMonthName(now, dateLangCode, tz, settings, "short")
         : dateParts.find((p) => p.type === "month")?.value || ""
       const yVal =
         dateParts.find((p) => p.type === "year")?.value || zonedParts.year
@@ -860,7 +875,7 @@ export function updateTime() {
       `
     } else {
       const dateHtml = shouldShowDate
-        ? `<div class="clock-sidebar-date">${getCustomDateString(now, langCode, tz, settings)}</div>`
+        ? `<div class="clock-sidebar-date">${getCustomDateString(now, dateLangCode, tz, settings)}</div>`
         : ""
       clockElement.innerHTML = `
         <div class="clock-sidebar-style">

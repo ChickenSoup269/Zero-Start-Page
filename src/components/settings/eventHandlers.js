@@ -4013,6 +4013,20 @@ export function setupGeneralEventHandlers(
       }),
     )
   })
+  DOM.clockDateLanguageSelect?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "clockDateLanguage",
+      DOM.clockDateLanguageSelect.value || "auto",
+    )
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockDateLanguage",
+          value: DOM.clockDateLanguageSelect.value || "auto",
+        },
+      }),
+    )
+  })
 
   DOM.shortWeekdayCheckbox?.addEventListener("change", () => {
     handleSettingUpdate("shortWeekday", DOM.shortWeekdayCheckbox.checked)

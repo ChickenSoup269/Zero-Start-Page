@@ -30,6 +30,7 @@ export const defaultSettings = {
   activeBgUid: null,
   font: "'Outfit', sans-serif",
   dateFormat: "full",
+  clockDateLanguage: "auto",
   shortWeekday: false,
   timeFormat: "24h", // "12h" or "24h"
   timezone: "local",

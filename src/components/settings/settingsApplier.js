@@ -2573,6 +2573,8 @@ function createUpdateSettingsInputs(effectInstances) {
     // General Inputs
     effectInstances.renderFontGrid()
     if (DOM.dateFormatSelect) DOM.dateFormatSelect.value = settings.dateFormat
+    if (DOM.clockDateLanguageSelect)
+      DOM.clockDateLanguageSelect.value = settings.clockDateLanguage || "auto"
     if (DOM.shortWeekdayCheckbox)
       DOM.shortWeekdayCheckbox.checked = settings.shortWeekday === true
     if (DOM.timeFormatSelect)

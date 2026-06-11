@@ -805,6 +805,9 @@ export const importSettingsInput = document.getElementById(
   "import-settings-input",
 )
 export const dateFormatSelect = document.getElementById("date-format-select")
+export const clockDateLanguageSelect = document.getElementById(
+  "clock-date-language-select",
+)
 export const shortWeekdayCheckbox = document.getElementById(
   "short-weekday-checkbox",
 )
