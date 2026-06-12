@@ -1616,13 +1616,31 @@
 }
 
 /* --- Command Palette & Hotkeys Styles --- */
+#command-palette-modal .bug-modal-content {
+  max-width: min(680px, calc(100vw - 32px)) !important;
+  width: min(680px, calc(100vw - 32px));
+}
+
+#command-palette-modal .bug-modal-body {
+  padding: 18px 22px;
+}
+
+#command-palette-modal .modal-input-group {
+  margin-bottom: 18px !important;
+}
+
+#command-palette-search {
+  min-height: 44px;
+  font-size: 0.98rem;
+}
+
 .command-palette-list {
-  max-height: 300px;
+  max-height: min(430px, calc(100vh - 260px));
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .command-palette-list::-webkit-scrollbar {
@@ -1642,7 +1660,7 @@
 .cp-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 14px 18px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   cursor: pointer;
@@ -1656,8 +1674,8 @@
 }
 
 .cp-item-icon {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1673,13 +1691,13 @@
 
 .cp-item-title {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   margin-bottom: 2px;
   color: var(--text-color, #eee);
 }
 
 .cp-item-desc {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #aaa;
 }
 

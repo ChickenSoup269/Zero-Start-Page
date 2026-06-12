@@ -196,8 +196,8 @@ export class Timer {
                     <div class="timer-saved-presets-list" id="timer-saved-presets-list"></div>
                 </div>
                 <div class="timer-input-wrapper">
-                    <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="00h 00m 00s" maxlength="6" inputmode="numeric">
-                    <div class="timer-input-hint">Enter digits (e.g. 500 for 5m)</div>
+                    <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="25m" maxlength="18" inputmode="text">
+                    <div class="timer-input-hint">Try 25m, 1h 30m, 90s, or 500 for 5m</div>
                 </div>
                 <div class="timer-keypad" aria-label="Timer keypad">
                     <button type="button" class="timer-keypad-btn" data-key="1">1</button>
@@ -407,10 +407,8 @@ export class Timer {
     // Smart input handler
     const smartInput = this.container.querySelector("#timer-smart-input")
     smartInput.addEventListener("input", (e) => {
-      let val = e.target.value.replace(/\D/g, "")
-      if (val.length > 6) val = val.slice(0, 6)
-      e.target.value = this.formatTimerDigits(val)
-      this.updateSmartInputPreview(val)
+      e.target.value = this.normalizeSmartTimerInput(e.target.value)
+      this.updateSmartInputPreview(e.target.value)
     })
 
     smartInput.addEventListener("keypress", (e) => {
@@ -544,14 +542,7 @@ export class Timer {
     const h = Math.floor(this.timeLeft / 3600)
     const m = Math.floor((this.timeLeft % 3600) / 60)
     const s = this.timeLeft % 60
-    smartInput.value =
-      h > 0
-        ? h.toString().padStart(2, "0") +
-          m.toString().padStart(2, "0") +
-          s.toString().padStart(2, "0")
-        : m > 0
-          ? m.toString().padStart(2, "0") + s.toString().padStart(2, "0")
-          : s.toString()
+    smartInput.value = this.formatDurationLabel(this.timeLeft)
 
     smartInput.focus()
     smartInput.select()
@@ -666,7 +657,7 @@ export class Timer {
   }
 
   updateSmartInputPreview(value) {
-    if (!value) {
+    if (!value.trim()) {
       this.display.textContent = "00:00:00"
       return
     }
@@ -679,6 +670,14 @@ export class Timer {
     if (digits.length <= 2) return digits
     if (digits.length <= 4) return `${digits.slice(0, -2)}:${digits.slice(-2)}`
     return `${digits.slice(0, -4)}:${digits.slice(-4, -2)}:${digits.slice(-2)}`
+  }
+
+  normalizeSmartTimerInput(value) {
+    return value
+      .toLowerCase()
+      .replace(/[^0-9hms:\s]/g, "")
+      .replace(/\s+/g, " ")
+      .slice(0, 18)
   }
 
   handleKeypadInput(btn) {
@@ -703,7 +702,41 @@ export class Timer {
   }
 
   parseSmartTimerInput(value) {
-    const digits = value.replace(/\D/g, "")
+    const normalized = this.normalizeSmartTimerInput(value)
+    const unitMatches = [...normalized.matchAll(/(\d+)\s*([hms])/g)]
+    if (unitMatches.length > 0) {
+      const total = unitMatches.reduce((sum, match) => {
+        const amount = parseInt(match[1], 10)
+        if (!Number.isFinite(amount)) return sum
+        if (match[2] === "h") return sum + amount * 3600
+        if (match[2] === "m") return sum + amount * 60
+        return sum + amount
+      }, 0)
+      return Math.min(total, 23 * 3600 + 59 * 60 + 59)
+    }
+
+    const colonParts = normalized
+      .split(":")
+      .map((part) => part.trim())
+      .filter(Boolean)
+    if (colonParts.length > 1 && colonParts.every((part) => /^\d+$/.test(part))) {
+      const parts = colonParts.map((part) => parseInt(part, 10)).slice(-3)
+      let hours = 0
+      let minutes = 0
+      let seconds = 0
+      if (parts.length === 2) {
+        ;[minutes, seconds] = parts
+      } else {
+        ;[hours, minutes, seconds] = parts
+      }
+      return (
+        Math.min(hours, 23) * 3600 +
+        Math.min(minutes, 59) * 60 +
+        Math.min(seconds, 59)
+      )
+    }
+
+    const digits = normalized.replace(/\D/g, "")
     const len = digits.length
     if (len === 0) return 0
     let hours = 0,

@@ -3917,10 +3917,11 @@ body.timer-focus-active {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   color: #fff;
-  font-size: 1.4rem;
-  padding: var(--space-1);
+  font-size: 1.55rem;
+  padding: 10px var(--space-1);
   text-align: center;
   font-family: monospace;
+  font-weight: 800;
   outline: none;
   transition: border-color 0.2s;
   box-sizing: border-box;
@@ -3931,8 +3932,8 @@ body.timer-focus-active {
 }
 
 .timer-input-hint {
-  font-size: 0.7rem;
-  opacity: 0.5;
+  font-size: 0.72rem;
+  opacity: 0.62;
   margin-top: var(--space-1);
 }
 
@@ -3974,15 +3975,31 @@ body.timer-focus-active {
 }
 
 .timer-input-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.9fr 1.05fr 0.9fr;
   gap: var(--space-1);
   width: 100%;
 }
 
 .timer-input-actions button {
-  flex: 1;
+  min-width: 0;
   padding: var(--space-1);
   font-size: 0.85rem;
+}
+
+#timer-save-preset {
+  gap: 6px;
+  white-space: nowrap;
+}
+
+#timer-save-preset span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#timer-set-confirm {
+  font-weight: 800;
 }
 
 /* Mini Indicator on Clock */
