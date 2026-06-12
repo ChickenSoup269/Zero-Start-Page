@@ -329,138 +329,140 @@
             </div>
 
             <div class="lcp-tab-panel active" data-lcp-panel="layout" role="tabpanel">
-            <div class="lcp-row">
-                <i class="fa-solid fa-arrow-right-arrow-left lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_flip_layout">Flip Interface Layout</span>
-                <label class="lcp-switch" for="lcp-flip-layout">
-                    <input type="checkbox" id="lcp-flip-layout">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-magnifying-glass lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_search_bar">Search Bar</span>
-                <label class="lcp-switch" for="lcp-search-bar">
-                    <input type="checkbox" id="lcp-search-bar">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-bookmark lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_bookmarks">Bookmarks</span>
-                <label class="lcp-switch" for="lcp-bookmarks">
-                    <input type="checkbox" id="lcp-bookmarks">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-folder lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_bookmark_groups">Bookmark Folders</span>
-                <label class="lcp-switch" for="lcp-bookmark-groups">
-                    <input type="checkbox" id="lcp-bookmark-groups">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-moon lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
-                <label class="lcp-switch" for="lcp-lunar-calendar">
-                    <input type="checkbox" id="lcp-lunar-calendar">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-square lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_quick_access_bg">Quick Access Background</span>
-                <label class="lcp-switch" for="lcp-quick-access-bg">
-                    <input type="checkbox" id="lcp-quick-access-bg">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-
-            <div class="lcp-row">
-                <i class="fa-solid fa-eye-slash lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
-                <label class="lcp-switch" for="lcp-ghost-controls">
-                    <input type="checkbox" id="lcp-ghost-controls">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-            <div class="lcp-row">
-                <i class="fa-solid fa-grip lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_show_top_right">Google Apps</span>
-                <label class="lcp-switch" for="lcp-top-right-controls">
-                    <input type="checkbox" id="lcp-top-right-controls">
-                    <span class="lcp-slider"></span>
-                </label>
-            </div>
-
-            <div class="lcp-row" id="lcp-hide-chrome-bookmarks-row"
-                style="cursor: pointer; background: rgba(var(--accent-color-rgb), 0.05); border: 1px dashed rgba(var(--accent-color-rgb), 0.3); margin-top: 4px;">
-                <i class="fa-solid fa-circle-info lcp-icon"></i>
-                <span class="lcp-label" data-i18n="lcp_hide_bookmark_bar" style="font-weight: 500;">Hide Chrome Bookmark
-                    Bar</span>
-                <i class="fa-solid fa-chevron-right" style="margin-left: auto; opacity: 0.4; font-size: 0.7rem;"></i>
-            </div>
-
-            <div class="lcp-divider" style="height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0;"></div>
-
-            <div class="lcp-row lcp-slider-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                    <span style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
-                        <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
-                    </span>
-                    <span class="range-val" id="lcp-search-bar-width-val"
-                        style="font-size: 0.8em; opacity: 0.8;">600px</span>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-arrow-right-arrow-left lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_flip_layout">Flip Interface Layout</span>
+                    <label class="lcp-switch" for="lcp-flip-layout">
+                        <input type="checkbox" id="lcp-flip-layout">
+                        <span class="lcp-slider"></span>
+                    </label>
                 </div>
-                <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600"
-                    style="width: 100%;">
-            </div>
-            <div class="lcp-row lcp-row-select">
-                <i class="fa-solid fa-square-poll-vertical lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_context_menu_style">Context Menu Style</span>
-                <select id="lcp-context-menu-style" class="lcp-select">
-                    <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
-                    <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
-                    <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
-                    <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
-                </select>
-            </div>
-            <div class="lcp-row lcp-row-select">
-                <i class="fa-solid fa-list lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_bookmark_layout">Bookmark Layout</span>
-                <select id="lcp-bookmark-layout" class="lcp-select">
-                    <option value="default" data-i18n="layout_default">Default</option>
-                    <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
-                    <option value="taskbar" data-i18n="layout_taskbar">Taskbar (C)</option>
-                    <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (T)</option>
-                    <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (L)</option>
-                </select>
-            </div>
-            <div class="lcp-row lcp-row-select">
-                <i class="fa-solid fa-compact-disc lcp-icon"></i>
-                <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
-                <select id="lcp-music-style-select" class="lcp-select">
-                    <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
-                    <option value="pixel" data-i18n="style_pixel">Pixel</option>
-                    <option value="spotify" data-i18n="style_spotify">Spotify</option>
-                    <option value="apple" data-i18n="style_apple">Apple Music</option>
-                    <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
-                    <option value="overlap" data-i18n="style_overlap">Overlap</option>
-                    <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
-                    <option value="cassette" data-i18n="style_cassette">Cassette</option>
-                    <option value="moon8" data-i18n="style_moon8">Infinity</option>
-                    <option value="beach" data-i18n="style_beach">Beach</option>
-                    <option value="forest" data-i18n="style_forest">Forest</option>
-                    <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
-                    <option value="terminal" data-i18n="style_terminal">Terminal</option>
-                    <option value="pill" data-i18n="style_pill">Pill Widget</option>
-                    <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
-                    <option value="neon" data-i18n="style_neon">Neon</option>
-                    <option value="minimal" data-i18n="style_minimal">Minimal</option>
-                </select>
-            </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-magnifying-glass lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_search_bar">Search Bar</span>
+                    <label class="lcp-switch" for="lcp-search-bar">
+                        <input type="checkbox" id="lcp-search-bar">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-bookmark lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_bookmarks">Bookmarks</span>
+                    <label class="lcp-switch" for="lcp-bookmarks">
+                        <input type="checkbox" id="lcp-bookmarks">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-folder lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_bookmark_groups">Bookmark Folders</span>
+                    <label class="lcp-switch" for="lcp-bookmark-groups">
+                        <input type="checkbox" id="lcp-bookmark-groups">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-moon lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_lunar_calendar">Lunar Calendar</span>
+                    <label class="lcp-switch" for="lcp-lunar-calendar">
+                        <input type="checkbox" id="lcp-lunar-calendar">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-square lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_quick_access_bg">Quick Access Background</span>
+                    <label class="lcp-switch" for="lcp-quick-access-bg">
+                        <input type="checkbox" id="lcp-quick-access-bg">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+
+                <div class="lcp-row">
+                    <i class="fa-solid fa-eye-slash lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_ghost_controls">Auto-hide controls</span>
+                    <label class="lcp-switch" for="lcp-ghost-controls">
+                        <input type="checkbox" id="lcp-ghost-controls">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-grip lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_show_top_right">Google Apps</span>
+                    <label class="lcp-switch" for="lcp-top-right-controls">
+                        <input type="checkbox" id="lcp-top-right-controls">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+
+                <div class="lcp-row" id="lcp-hide-chrome-bookmarks-row"
+                    style="cursor: pointer; background: rgba(var(--accent-color-rgb), 0.05); border: 1px dashed rgba(var(--accent-color-rgb), 0.3); margin-top: 4px;">
+                    <i class="fa-solid fa-circle-info lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="lcp_hide_bookmark_bar" style="font-weight: 500;">Hide Chrome
+                        Bookmark
+                        Bar</span>
+                    <i class="fa-solid fa-chevron-right"
+                        style="margin-left: auto; opacity: 0.4; font-size: 0.7rem;"></i>
+                </div>
+
+                <div class="lcp-divider" style="height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0;"></div>
+
+                <div class="lcp-row lcp-slider-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <span style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
+                            <span class="lcp-label" data-i18n="settings_search_bar_width">Search Bar Width</span>
+                        </span>
+                        <span class="range-val" id="lcp-search-bar-width-val"
+                            style="font-size: 0.8em; opacity: 0.8;">600px</span>
+                    </div>
+                    <input type="range" id="lcp-search-bar-width" min="300" max="1200" step="10" value="600"
+                        style="width: 100%;">
+                </div>
+                <div class="lcp-row lcp-row-select">
+                    <i class="fa-solid fa-square-poll-vertical lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_context_menu_style">Context Menu Style</span>
+                    <select id="lcp-context-menu-style" class="lcp-select">
+                        <option value="dark" data-i18n="settings_context_menu_dark">Dark Glass</option>
+                        <option value="light" data-i18n="settings_context_menu_light">Light Glass</option>
+                        <option value="none" data-i18n="settings_context_menu_none">Transparent</option>
+                        <option value="macos" data-i18n="settings_context_menu_macos">macOS</option>
+                    </select>
+                </div>
+                <div class="lcp-row lcp-row-select">
+                    <i class="fa-solid fa-list lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_bookmark_layout">Bookmark Layout</span>
+                    <select id="lcp-bookmark-layout" class="lcp-select">
+                        <option value="default" data-i18n="layout_default">Default</option>
+                        <option value="sidebar" data-i18n="layout_sidebar">Sidebar</option>
+                        <option value="taskbar" data-i18n="layout_taskbar">Taskbar (C)</option>
+                        <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (T)</option>
+                        <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (L)</option>
+                    </select>
+                </div>
+                <div class="lcp-row lcp-row-select">
+                    <i class="fa-solid fa-compact-disc lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_music_style">Music Bar Style</span>
+                    <select id="lcp-music-style-select" class="lcp-select">
+                        <option value="vinyl" data-i18n="style_vinyl">Vinyl</option>
+                        <option value="pixel" data-i18n="style_pixel">Pixel</option>
+                        <option value="spotify" data-i18n="style_spotify">Spotify</option>
+                        <option value="apple" data-i18n="style_apple">Apple Music</option>
+                        <option value="soundcloud" data-i18n="style_soundcloud">SoundCloud</option>
+                        <option value="overlap" data-i18n="style_overlap">Overlap</option>
+                        <option value="orbit" data-i18n="style_orbit">Orbit Circle</option>
+                        <option value="cassette" data-i18n="style_cassette">Cassette</option>
+                        <option value="moon8" data-i18n="style_moon8">Infinity</option>
+                        <option value="beach" data-i18n="style_beach">Beach</option>
+                        <option value="forest" data-i18n="style_forest">Forest</option>
+                        <option value="heartbeat" data-i18n="style_heartbeat">Heartbeat</option>
+                        <option value="terminal" data-i18n="style_terminal">Terminal</option>
+                        <option value="pill" data-i18n="style_pill">Pill Widget</option>
+                        <option value="sidebar" data-i18n="style_sidebar">Sidebar</option>
+                        <option value="neon" data-i18n="style_neon">Neon</option>
+                        <option value="minimal" data-i18n="style_minimal">Minimal</option>
+                    </select>
+                </div>
             </div>
 
             <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
@@ -720,7 +722,8 @@
                         <a class="secondary-btn" href="https://zero-theme.vercel.app/" target="_blank"
                             rel="noopener noreferrer"
                             style="height: 44px; justify-content: center; border-radius: 12px; border: 1px solid rgba(var(--accent-color-rgb, 255, 255, 255), 0.35);">
-                            <i class="fa-solid fa-store"></i> <span data-i18n="theme_web_beta_link">Theme Web Beta</span>
+                            <i class="fa-solid fa-store"></i> <span data-i18n="theme_web_beta_link">Theme Web
+                                Beta</span>
                         </a>
                     </div>
 
@@ -862,8 +865,10 @@
             </div>
 
             <div data-settings-partial="background" data-src="partials/settings/background.html"></div>
-            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html"></div>
-            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html"></div>
+            <div data-settings-partial="gradient-multi-color" data-src="partials/settings/gradient-multi-color.html">
+            </div>
+            <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html">
+            </div>
             <div class="settings-section" data-section-id="font">
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
                 <div class="section-content">
@@ -1130,7 +1135,8 @@
                                 <div
                                     style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
                                     <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
-                                            data-i18n="settings_bookmark_group_border_radius">Border Radius</span></label>
+                                            data-i18n="settings_bookmark_group_border_radius">Border
+                                            Radius</span></label>
                                     <span id="bookmark-group-border-radius-value"
                                         style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">8px</span>
                                 </div>
@@ -1483,10 +1489,14 @@
                     <div class="setting-group">
                         <div class="setting-label"><i class="fa-solid fa-display"></i> <span
                                 data-i18n="settings_group_interface">Interface</span></div>
-                        <button type="button" id="replay-settings-guide-btn" class="secondary-btn full-width-btn"
-                            data-i18n="settings_replay_guide">
-                            <i class="fa-solid fa-route"></i> Replay Settings Guide
-                        </button>
+
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" id="replay-settings-guide-btn" class="secondary-btn full-width-btn"
+                                data-i18n="settings_replay_guide">
+                                <i class="fa-solid fa-route"></i> Replay Settings Guide
+                            </button>
+                        </div>
+
                         <div class="setting-item-row">
                             <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
                                 Layout</label>
@@ -1842,8 +1852,8 @@
             <div class="search-engine-selector" id="search-engine-selector">
                 <button type="button" class="selected-engine" id="selected-engine" title="Google" aria-label="Google"
                     aria-haspopup="listbox" aria-expanded="false" aria-controls="engine-dropdown"><img
-                        class="search-engine-icon"
-                        src="https://www.google.com/s2/favicons?domain=google.com&amp;sz=64" alt=""></button>
+                        class="search-engine-icon" src="https://www.google.com/s2/favicons?domain=google.com&amp;sz=64"
+                        alt=""></button>
                 <div class="engine-dropdown" id="engine-dropdown" role="listbox" aria-label="Search engines">
                 </div>
             </div>

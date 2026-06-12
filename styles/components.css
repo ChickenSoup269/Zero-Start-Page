@@ -13,7 +13,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.18);
+  box-shadow: 0 4px 12px
+    rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.18);
   gap: var(--space-1);
   border: none;
 }
@@ -24,7 +25,8 @@
     var(--m3-primary, var(--accent-color)) 92%,
     white
   );
-  box-shadow: 0 8px 24px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.3);
+  box-shadow: 0 8px 24px
+    rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.3);
   transform: translateY(-2px);
 }
 
@@ -40,7 +42,12 @@
     transparent
   );
   color: var(--m3-on-secondary-container, #efefef);
-  border: 1px solid color-mix(in srgb, var(--m3-outline-variant, rgba(255, 255, 255, 0.15)) 72%, transparent);
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--m3-outline-variant, rgba(255, 255, 255, 0.15)) 72%,
+      transparent
+    );
   padding: var(--space-1) var(--space-2);
   font-size: 0.85rem;
   border-radius: var(--radius-sm);
@@ -65,7 +72,8 @@
   transform: translateY(-2px);
   box-shadow:
     0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 12px rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.2);
+    0 0 12px
+      rgba(var(--m3-primary-rgb, var(--accent-color-rgb, 168, 192, 255)), 0.2);
   color: var(--m3-on-primary-container, #fff);
 }
 
@@ -731,7 +739,11 @@ body.context-menu-macos .bookmark-edit-field {
   transform-origin: top left;
 
   /* Default: Dark Glass */
-  background: linear-gradient(160deg, rgba(22, 24, 34, 0.97) 0%, rgba(12, 14, 22, 0.95) 100%);
+  background: linear-gradient(
+    160deg,
+    rgba(22, 24, 34, 0.97) 0%,
+    rgba(12, 14, 22, 0.95) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
   box-shadow:
@@ -774,7 +786,9 @@ body.context-menu-macos .bookmark-edit-field {
   font-size: 0.82rem;
   opacity: 0.75;
   flex-shrink: 0;
-  transition: opacity 0.14s, transform 0.14s;
+  transition:
+    opacity 0.14s,
+    transform 0.14s;
 }
 
 .menu-item:hover {
@@ -808,7 +822,11 @@ body.context-menu-macos .bookmark-edit-field {
 
 /* ── Light Glass variant ── */
 body.context-menu-light .context-menu {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.88) 0%, rgba(240, 242, 248, 0.92) 100%);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(240, 242, 248, 0.92) 100%
+  );
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.18),
@@ -949,7 +967,11 @@ body.context-menu-none .context-menu-divider {
   scrollbar-width: thin;
   scrollbar-color: rgba(var(--accent-color-rgb), 0.45) rgba(255, 255, 255, 0.05);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.02)
+    ),
     rgba(0, 0, 0, 0.22);
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -972,8 +994,7 @@ body.context-menu-none .context-menu-divider {
   min-height: 40px;
   border: 2px solid transparent;
   border-radius: 999px;
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(var(--accent-color-rgb), 0.78),
       rgba(var(--accent-color-rgb), 0.34)
@@ -985,8 +1006,7 @@ body.context-menu-none .context-menu-divider {
 }
 
 .bookmark-tree-container::-webkit-scrollbar-thumb:hover {
-  background:
-    linear-gradient(
+  background: linear-gradient(
       180deg,
       rgba(var(--accent-color-rgb), 0.95),
       rgba(var(--accent-color-rgb), 0.52)
@@ -1342,7 +1362,9 @@ body.context-menu-none .context-menu-divider {
   pointer-events: all;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
   max-width: 420px;
   min-width: 220px;
   white-space: nowrap;
@@ -1358,9 +1380,15 @@ body.context-menu-none .context-menu-divider {
   flex-shrink: 0;
 }
 
-.toast-info .toast-icon    { color: #60b4ff; }
-.toast-success .toast-icon { color: #4cde80; }
-.toast-warning .toast-icon { color: #ffc94d; }
+.toast-info .toast-icon {
+  color: #60b4ff;
+}
+.toast-success .toast-icon {
+  color: #4cde80;
+}
+.toast-warning .toast-icon {
+  color: #ffc94d;
+}
 
 .toast-message {
   flex: 1;
@@ -1400,7 +1428,6 @@ body.context-menu-none .context-menu-divider {
 .toast-close-btn:hover {
   color: rgba(255, 255, 255, 0.85);
 }
-
 
 /* Lunar Calendar Date Display */
 .clock-lunar-date {
