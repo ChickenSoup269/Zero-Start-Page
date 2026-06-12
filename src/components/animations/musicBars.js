@@ -116,6 +116,13 @@ export class MusicBarsEffect {
     if (this.canvas) this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.bars = []
+    this.sparks = []
+  }
+
   _drawBars(dt) {
     const ctx = this.ctx
     const H = window.innerHeight

@@ -188,6 +188,15 @@ export class PixelWeatherEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.particles = []
+    this.splashes = []
+    this.clouds = []
+    this.lightning.branches = []
+  }
+
   _drawPixelCloud(ctx, c) {
     ctx.fillStyle = `rgba(100, 100, 120, ${c.opacity})`
     const blockSize = 10 * this.resFactor

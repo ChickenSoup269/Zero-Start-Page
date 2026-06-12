@@ -2364,7 +2364,15 @@ function createApplySettings(effectInstances) {
 
       const previousEffectKey = EFFECT_KEY_MAP[_prevEffect] || _prevEffect
       const releasablePreviousEffects = new Set([
+        "cloudDriftEffect",
+        "crtScanlinesEffect",
+        "floatingLinesEffect",
+        "gridScanEffect",
+        "lightPillarsEffect",
+        "musicBarsEffect",
+        "northernLightsEffect",
         "pixelSnowHQEffect",
+        "pixelWeatherEffect",
         "softAuroraEffect",
       ])
       if (

@@ -56,6 +56,12 @@ export class GridScanEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.particles = []
+  }
+
   drawCorner(ctx, x, y, size, angle, opacity, rgbStr) {
     ctx.save()
     ctx.translate(x, y)

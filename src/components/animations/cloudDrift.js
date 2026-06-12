@@ -90,6 +90,13 @@ export class CloudDriftEffect {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.clouds = []
+    this._rgb = null
+  }
+
   update(dt, time) {
     for (const c of this.clouds) {
       c.x += c.speed * dt

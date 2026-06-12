@@ -323,6 +323,15 @@ export class NorthernLightsEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.curtains = []
+    this.particles = []
+    this.planes = []
+    this.rays = []
+  }
+
   setOptions(opts = {}) {
     if (opts.color !== undefined) {
         this.color = opts.color

@@ -44,6 +44,12 @@ export class CrtScanlinesEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this._rgb = null
+  }
+
   animate() {
     if (!this.active) return
     this._animId = requestAnimationFrame(() => this.animate())

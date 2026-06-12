@@ -102,6 +102,12 @@ export class FloatingLinesEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.stars = []
+  }
+
   _drawWaveGroup(count, yBase, ampBase, speed, offsetBase, opacity, colorBase, cosR, sinR) {
     const ctx = this.ctx
     const W = this.canvas.width, H = this.canvas.height

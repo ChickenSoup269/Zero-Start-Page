@@ -183,6 +183,13 @@ export class LightPillarsEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.pillars = []
+    this.crystals = []
+  }
+
   animate(currentTime = 0) {
     if (!this.active) return
     this.rafId = requestAnimationFrame((t) => this.animate(t))
