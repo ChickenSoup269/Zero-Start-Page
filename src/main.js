@@ -22,6 +22,7 @@ import {
   migrateDataUrls,
   isIdbMedia,
   getImageUrl,
+  trimMediaMemory,
 } from "./services/imageStore.js"
 import {
   prepareFirstRunDefaults,
@@ -114,6 +115,16 @@ async function bootstrap() {
 
   const currentSettings = getSettings()
   syncUninstallSurveyLanguage(currentSettings.language)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "hidden") return
+    const latestSettings = getSettings()
+    trimMediaMemory({
+      keepIds: [latestSettings.background],
+      includeThumbnails: true,
+      maxUrls: 1,
+      maxThumbnails: 6,
+    })
+  })
   if (isIdbMedia(currentSettings.background)) {
     await getImageUrl(currentSettings.background).catch(() => {})
   }

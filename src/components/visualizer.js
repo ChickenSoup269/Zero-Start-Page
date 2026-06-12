@@ -198,7 +198,7 @@ class MusicVisualizer {
     ctx.clearRect(0, 0, W, H)
 
     this.orbitPhase =
-      (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.62 : 0.12)
+      (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.78 : 0.16)
     const cx = W / 2
     const cy = H / 2
     const playerSize = Math.min(
@@ -219,11 +219,13 @@ class MusicVisualizer {
     const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
       const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
       const attack = phase < 0.16 ? phase / 0.16 : 1
-      const hold = phase < holdEnd ? 1 : Math.max(0, 1 - (phase - holdEnd) / (1 - holdEnd))
+      const hold =
+        phase < holdEnd ? 1 : Math.max(0, 1 - (phase - holdEnd) / (1 - holdEnd))
       const punch = Math.sin(Math.min(phase / 0.2, 1) * Math.PI * 0.5)
       const easeOut = 1 - Math.pow(1 - phase, 2.6)
       const beatLift = bass * Math.pow(hold, 1.7)
-      const radius = baseRadius - 8 + punch * (4 + beatLift * 9) + easeOut * expansion
+      const radius =
+        baseRadius - 8 + punch * (4 + beatLift * 9) + easeOut * expansion
       const alpha =
         alphaBase *
         Math.pow(hold, 1.15) *
@@ -250,7 +252,8 @@ class MusicVisualizer {
     ctx.strokeStyle = accent
 
     drawNcsRing(0, 0.9, 4.25, 23, 0.38)
-    drawNcsRing(0.5, 0.58, 3, 18, 0.26)
+    drawNcsRing(0.34, 0.58, 3, 18, 0.26)
+    drawNcsRing(0.68, 0.42, 2.35, 15, 0.22)
 
     ctx.shadowBlur = 0
     ctx.globalAlpha = 1

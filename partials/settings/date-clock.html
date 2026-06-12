@@ -83,48 +83,76 @@
                         <div class="setting-item">
                             <label for="timezone-select" data-i18n="settings_timezone">Timezone</label>
                             <select id="timezone-select">
-                                <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
-                                <option value="UTC">UTC / GMT</option>
-                                <option value="Pacific/Honolulu">Honolulu (HST)</option>
-                                <option value="America/Anchorage">Anchorage (AKST/AKDT)</option>
-                                <option value="America/Los_Angeles">Los Angeles (PST/PDT)</option>
-                                <option value="America/Denver">Denver (MST/MDT)</option>
-                                <option value="America/Chicago">Chicago (CST/CDT)</option>
-                                <option value="America/New_York">New York (EST/EDT)</option>
-                                <option value="America/Toronto">Toronto (EST/EDT)</option>
-                                <option value="America/Mexico_City">Mexico City (CST/CDT)</option>
-                                <option value="America/Bogota">Bogota (COT)</option>
-                                <option value="America/Lima">Lima (PET)</option>
-                                <option value="America/Sao_Paulo">Sao Paulo (BRT)</option>
-                                <option value="America/Argentina/Buenos_Aires">Buenos Aires (ART)</option>
-                                <option value="Europe/London">London (GMT/BST)</option>
-                                <option value="Europe/Paris">Paris (CET/CEST)</option>
-                                <option value="Europe/Berlin">Berlin (CET/CEST)</option>
-                                <option value="Europe/Madrid">Madrid (CET/CEST)</option>
-                                <option value="Europe/Rome">Rome (CET/CEST)</option>
-                                <option value="Europe/Amsterdam">Amsterdam (CET/CEST)</option>
-                                <option value="Europe/Warsaw">Warsaw (CET/CEST)</option>
-                                <option value="Europe/Athens">Athens (EET/EEST)</option>
-                                <option value="Europe/Istanbul">Istanbul (TRT)</option>
-                                <option value="Europe/Moscow">Moscow (MSK)</option>
-                                <option value="Africa/Cairo">Cairo (EET)</option>
-                                <option value="Africa/Johannesburg">Johannesburg (SAST)</option>
-                                <option value="Asia/Dubai">Dubai (GST)</option>
-                                <option value="Asia/Kolkata">India (IST)</option>
-                                <option value="Asia/Bangkok">Bangkok (ICT)</option>
-                                <option value="Asia/Jakarta">Jakarta (WIB)</option>
-                                <option value="Asia/Singapore">Singapore (SGT)</option>
-                                <option value="Asia/Manila">Manila (PHT)</option>
-                                <option value="Asia/Shanghai">Shanghai (CST)</option>
-                                <option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
-                                <option value="Asia/Taipei">Taipei (CST)</option>
-                                <option value="Asia/Seoul">Seoul (KST)</option>
-                                <option value="Asia/Tokyo">Tokyo (JST)</option>
-                                <option value="Asia/Ho_Chi_Minh">Ho Chi Minh (ICT)</option>
-                                <option value="Australia/Perth">Perth (AWST)</option>
-                                <option value="Australia/Adelaide">Adelaide (ACST/ACDT)</option>
-                                <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
-                                <option value="Pacific/Auckland">Auckland (NZST/NZDT)</option>
+                                <optgroup label="System / UTC">
+                                    <option value="local" data-i18n="settings_timezone_local">Local OS Timezone</option>
+                                    <option value="UTC">UTC+00:00 - UTC / GMT</option>
+                                </optgroup>
+                                <optgroup label="Americas">
+                                    <option value="Pacific/Honolulu">UTC-10:00 - Honolulu (HST)</option>
+                                    <option value="America/Anchorage">UTC-09:00/-08:00 - Anchorage (AKST/AKDT)</option>
+                                    <option value="America/Los_Angeles">UTC-08:00/-07:00 - Los Angeles (PST/PDT)</option>
+                                    <option value="America/Phoenix">UTC-07:00 - Phoenix (MST)</option>
+                                    <option value="America/Denver">UTC-07:00/-06:00 - Denver (MST/MDT)</option>
+                                    <option value="America/Mexico_City">UTC-06:00 - Mexico City (CST)</option>
+                                    <option value="America/Chicago">UTC-06:00/-05:00 - Chicago (CST/CDT)</option>
+                                    <option value="America/Bogota">UTC-05:00 - Bogota (COT)</option>
+                                    <option value="America/Lima">UTC-05:00 - Lima (PET)</option>
+                                    <option value="America/New_York">UTC-05:00/-04:00 - New York (EST/EDT)</option>
+                                    <option value="America/Toronto">UTC-05:00/-04:00 - Toronto (EST/EDT)</option>
+                                    <option value="America/Santiago">UTC-04:00/-03:00 - Santiago (CLT/CLST)</option>
+                                    <option value="America/Sao_Paulo">UTC-03:00 - Sao Paulo (BRT)</option>
+                                    <option value="America/Argentina/Buenos_Aires">UTC-03:00 - Buenos Aires (ART)</option>
+                                </optgroup>
+                                <optgroup label="Europe / Africa">
+                                    <option value="Europe/London">UTC+00:00/+01:00 - London (GMT/BST)</option>
+                                    <option value="Africa/Casablanca">UTC+01:00 - Casablanca (WET/WEST)</option>
+                                    <option value="Europe/Paris">UTC+01:00/+02:00 - Paris (CET/CEST)</option>
+                                    <option value="Europe/Berlin">UTC+01:00/+02:00 - Berlin (CET/CEST)</option>
+                                    <option value="Europe/Madrid">UTC+01:00/+02:00 - Madrid (CET/CEST)</option>
+                                    <option value="Europe/Rome">UTC+01:00/+02:00 - Rome (CET/CEST)</option>
+                                    <option value="Europe/Amsterdam">UTC+01:00/+02:00 - Amsterdam (CET/CEST)</option>
+                                    <option value="Europe/Warsaw">UTC+01:00/+02:00 - Warsaw (CET/CEST)</option>
+                                    <option value="Africa/Johannesburg">UTC+02:00 - Johannesburg (SAST)</option>
+                                    <option value="Africa/Cairo">UTC+02:00/+03:00 - Cairo (EET/EEST)</option>
+                                    <option value="Europe/Athens">UTC+02:00/+03:00 - Athens (EET/EEST)</option>
+                                    <option value="Europe/Istanbul">UTC+03:00 - Istanbul (TRT)</option>
+                                    <option value="Europe/Moscow">UTC+03:00 - Moscow (MSK)</option>
+                                    <option value="Africa/Nairobi">UTC+03:00 - Nairobi (EAT)</option>
+                                </optgroup>
+                                <optgroup label="Middle East / Central Asia">
+                                    <option value="Asia/Dubai">UTC+04:00 - Dubai (GST)</option>
+                                    <option value="Asia/Baku">UTC+04:00 - Baku (AZT)</option>
+                                    <option value="Asia/Kabul">UTC+04:30 - Kabul (AFT)</option>
+                                    <option value="Asia/Karachi">UTC+05:00 - Karachi (PKT)</option>
+                                    <option value="Asia/Tashkent">UTC+05:00 - Tashkent (UZT)</option>
+                                    <option value="Asia/Kolkata">UTC+05:30 - India (IST)</option>
+                                    <option value="Asia/Kathmandu">UTC+05:45 - Kathmandu (NPT)</option>
+                                    <option value="Asia/Dhaka">UTC+06:00 - Dhaka (BST)</option>
+                                    <option value="Asia/Yangon">UTC+06:30 - Yangon (MMT)</option>
+                                </optgroup>
+                                <optgroup label="Asia">
+                                    <option value="Asia/Bangkok">UTC+07:00 - Bangkok (ICT)</option>
+                                    <option value="Asia/Ho_Chi_Minh">UTC+07:00 - Ho Chi Minh / Vietnam (ICT)</option>
+                                    <option value="Asia/Jakarta">UTC+07:00 - Jakarta (WIB)</option>
+                                    <option value="Asia/Singapore">UTC+08:00 - Singapore (SGT)</option>
+                                    <option value="Asia/Manila">UTC+08:00 - Manila (PHT)</option>
+                                    <option value="Asia/Kuala_Lumpur">UTC+08:00 - Kuala Lumpur (MYT)</option>
+                                    <option value="Asia/Shanghai">UTC+08:00 - Shanghai / Beijing (CST)</option>
+                                    <option value="Asia/Hong_Kong">UTC+08:00 - Hong Kong (HKT)</option>
+                                    <option value="Asia/Taipei">UTC+08:00 - Taipei (CST)</option>
+                                    <option value="Asia/Seoul">UTC+09:00 - Seoul (KST)</option>
+                                    <option value="Asia/Tokyo">UTC+09:00 - Tokyo (JST)</option>
+                                </optgroup>
+                                <optgroup label="Australia / Pacific">
+                                    <option value="Australia/Perth">UTC+08:00 - Perth (AWST)</option>
+                                    <option value="Australia/Darwin">UTC+09:30 - Darwin (ACST)</option>
+                                    <option value="Australia/Adelaide">UTC+09:30/+10:30 - Adelaide (ACST/ACDT)</option>
+                                    <option value="Australia/Brisbane">UTC+10:00 - Brisbane (AEST)</option>
+                                    <option value="Australia/Sydney">UTC+10:00/+11:00 - Sydney (AEST/AEDT)</option>
+                                    <option value="Pacific/Guam">UTC+10:00 - Guam (ChST)</option>
+                                    <option value="Pacific/Auckland">UTC+12:00/+13:00 - Auckland (NZST/NZDT)</option>
+                                    <option value="Pacific/Fiji">UTC+12:00 - Fiji (FJT)</option>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="setting-item">

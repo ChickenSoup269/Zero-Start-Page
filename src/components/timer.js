@@ -197,7 +197,7 @@ export class Timer {
                 </div>
                 <div class="timer-input-wrapper">
                     <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="25m" maxlength="18" inputmode="text">
-                    <div class="timer-input-hint">Try 25m, 1h 30m, 90s, or 500 for 5m</div>
+                    <div class="timer-input-hint">Try 25m, 1h 30m, 90s, or 222222 for 22:22:22</div>
                 </div>
                 <div class="timer-keypad" aria-label="Timer keypad">
                     <button type="button" class="timer-keypad-btn" data-key="1">1</button>
@@ -673,11 +673,20 @@ export class Timer {
   }
 
   normalizeSmartTimerInput(value) {
-    return value
+    const normalized = value
       .toLowerCase()
       .replace(/[^0-9hms:\s]/g, "")
       .replace(/\s+/g, " ")
       .slice(0, 18)
+
+    if (/^[\d:\s]{3,8}$/.test(normalized)) {
+      const digits = normalized.replace(/\D/g, "")
+      if (digits.length >= 3 && digits.length <= 6) {
+        return this.formatTimerDigits(digits)
+      }
+    }
+
+    return normalized
   }
 
   handleKeypadInput(btn) {

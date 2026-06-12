@@ -12,8 +12,8 @@ const DB_VERSION = 2
 
 // In-memory cache: id -> blobUrl (revokeObjectURL khi xoá)
 // Giới hạn số lượng entries để tránh rò rỉ bộ nhớ.
-const MAX_URL_CACHE_SIZE = 5
-const MAX_THUMB_CACHE_SIZE = 30
+const MAX_URL_CACHE_SIZE = 3
+const MAX_THUMB_CACHE_SIZE = 16
 const _urlCache = new Map() // insertion-order = LRU (xoá entry đầu tiên khi đầy)
 const _thumbCache = new Map()
 let _mediaIdCounter = 0
@@ -195,6 +195,37 @@ function _thumbCacheSet(id, url) {
     _thumbCache.delete(oldestKey)
   }
   _thumbCache.set(id, url)
+}
+
+function _normalizeKeepIds(keepIds) {
+  return new Set(
+    (Array.isArray(keepIds) ? keepIds : [keepIds]).filter(
+      (id) => typeof id === "string" || typeof id === "number",
+    ),
+  )
+}
+
+function _trimCache(cache, keepIds, maxSize) {
+  if (!Number.isFinite(maxSize) || maxSize < 0) return
+  for (const [id, url] of cache) {
+    if (cache.size <= maxSize) break
+    if (keepIds.has(id)) continue
+    URL.revokeObjectURL(url)
+    cache.delete(id)
+  }
+}
+
+export function trimMediaMemory({
+  keepIds = [],
+  includeThumbnails = false,
+  maxUrls = 1,
+  maxThumbnails = 8,
+} = {}) {
+  const keep = _normalizeKeepIds(keepIds)
+  _trimCache(_urlCache, keep, maxUrls)
+  if (includeThumbnails) {
+    _trimCache(_thumbCache, keep, maxThumbnails)
+  }
 }
 
 /**

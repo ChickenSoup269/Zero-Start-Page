@@ -3158,7 +3158,8 @@ body.todo-fullscreen-active::before {
   position: absolute;
   top: 104px;
   right: var(--space-3);
-  width: 224px;
+  width: 268px;
+  min-width: 268px;
   padding: var(--space-2);
   display: flex;
   flex-direction: column;
@@ -3833,7 +3834,7 @@ body.timer-focus-active {
 
 .timer-saved-presets-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(118px, 1fr));
   gap: var(--space-1);
 }
 
@@ -3865,9 +3866,9 @@ body.timer-focus-active {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 7px 8px;
+  padding: 8px 10px;
   background: transparent;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
@@ -3917,8 +3918,8 @@ body.timer-focus-active {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   color: #fff;
-  font-size: 1.55rem;
-  padding: 10px var(--space-1);
+  font-size: 1.7rem;
+  padding: 11px var(--space-2);
   text-align: center;
   font-family: monospace;
   font-weight: 800;

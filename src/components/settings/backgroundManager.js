@@ -17,6 +17,7 @@ import {
   getBlobUrlSync,
   getImageUrl,
   getThumbnailUrl,
+  trimMediaMemory,
   saveThumbnail,
   deleteImage,
   saveImage,
@@ -500,6 +501,10 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
               )
               if (newThumb) {
                 thumbLayer.style.backgroundImage = cssUrl(newThumb)
+                trimMediaMemory({
+                  keepIds: [getSettings().background],
+                  maxUrls: 1,
+                })
               } else {
                 thumbLayer.style.backgroundImage = cssUrl(originalUrl)
               }

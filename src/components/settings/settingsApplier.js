@@ -25,6 +25,7 @@ import {
   isIdbVideo,
   isIdbMedia,
   getBlobUrlSync,
+  trimMediaMemory,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams } from "./svgWaveUtils.js"
 import { splashCursorOptionsFromSettings } from "../animations/splashCursor.js"
@@ -43,6 +44,7 @@ let _perfMonitorRafId = null
 let _perfAvgFrameMs = 16.7
 let _perfLagging = false
 let _perfLastApply = 0
+let _lastMediaTrim = 0
 
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
@@ -354,6 +356,29 @@ function getPerformanceProfile(settings) {
   return { mode, shouldSave, level }
 }
 
+function trimMediaCacheForProfile(settings) {
+  const mode = settings.performanceMode || "auto"
+  const mediaQuality = settings.backgroundMediaQuality || "balanced"
+  const shouldTrim =
+    mode === "low" ||
+    mode === "battery" ||
+    mediaQuality === "low" ||
+    mediaQuality === "tiny" ||
+    mediaQuality === "still" ||
+    _perfLagging
+
+  if (!shouldTrim) return
+  const now = performance.now()
+  if (now - _lastMediaTrim < 5000) return
+  _lastMediaTrim = now
+
+  trimMediaMemory({
+    keepIds: [settings.background],
+    includeThumbnails: false,
+    maxUrls: 1,
+  })
+}
+
 function getEffectPerformanceOptions(settings, effectName) {
   const { mode, shouldSave, level } = getPerformanceProfile(settings)
 
@@ -635,6 +660,7 @@ function setEffectActive(effectGrid, value) {
 function createApplySettings(effectInstances) {
   return function applySettings() {
     const settings = getSettings()
+    trimMediaCacheForProfile(settings)
     const backgroundSize = getBackgroundSizeValue(settings)
     const backgroundRepeat = getBackgroundRepeatValue(settings)
     const bgChanged = settings.background !== _prevBg
