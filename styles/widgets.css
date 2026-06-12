@@ -21,7 +21,7 @@
     box-shadow 0.35s ease,
     border-color 0.35s ease,
     transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 10030;
+  z-index: 1030;
 }
 
 .search-container form {
@@ -3444,6 +3444,59 @@ body.timer-focus-active {
   isolation: isolate;
 }
 
+.timer-focus-stage::before,
+.timer-focus-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  z-index: 0;
+  width: min(56vw, 360px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.timer-focus-stage::before {
+  background: radial-gradient(
+    circle,
+    rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) 0%,
+    rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) 34%,
+    transparent 68%
+  );
+  filter: blur(28px);
+  opacity: 0.82;
+  animation: timerFocusHalo 4.8s ease-in-out infinite;
+}
+
+.timer-focus-stage::after {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.22) 34deg,
+    rgba(var(--accent-color-rgb, 168, 192, 255), 0.3) 54deg,
+    transparent 86deg,
+    transparent 360deg
+  );
+  opacity: 0.34;
+  -webkit-mask: radial-gradient(
+    circle,
+    transparent 46%,
+    #000 52%,
+    #000 64%,
+    transparent 70%
+  );
+  mask: radial-gradient(
+    circle,
+    transparent 46%,
+    #000 52%,
+    #000 64%,
+    transparent 70%
+  );
+  animation: timerFocusSweep 9s linear infinite;
+}
+
 .timer-focus-clock {
   position: relative;
   z-index: 2;
@@ -3544,6 +3597,22 @@ body.timer-focus-active {
   pointer-events: none;
 }
 
+.timer-focus-progress::before {
+  content: "";
+  position: absolute;
+  inset: -9%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 58%,
+    rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) 64%,
+    transparent 72%
+  );
+  filter: blur(10px);
+  opacity: 0.58;
+  animation: timerFocusBreath 3.2s ease-in-out infinite;
+}
+
 .timer-focus-arc {
   position: relative;
   width: 100%;
@@ -3582,6 +3651,24 @@ body.timer-focus-active {
     transparent 74%
   );
   transition: --timer-focus-angle 0.72s linear;
+}
+
+.timer-focus-arc-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from calc(var(--timer-focus-angle, 360deg) - 18deg),
+    transparent 0deg,
+    rgba(255, 255, 255, 0.72) 8deg,
+    transparent 24deg,
+    transparent 360deg
+  );
+  -webkit-mask: inherit;
+  mask: inherit;
+  opacity: 0.75;
+  filter: blur(0.5px);
 }
 
 .timer-focus-arc-cutout {
@@ -3625,6 +3712,44 @@ body.timer-focus-active {
 
 .timer-focus-stage.is-finished .timer-focus-clock {
   color: #ff9caf;
+}
+
+@keyframes timerFocusHalo {
+  0%,
+  100% {
+    opacity: 0.58;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  50% {
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+@keyframes timerFocusSweep {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes timerFocusBreath {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: scale(0.985);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-focus-stage::before,
+  .timer-focus-stage::after,
+  .timer-focus-progress::before {
+    animation: none;
+  }
 }
 
 #alarm-control-container .primary-btn {
@@ -3684,6 +3809,91 @@ body.timer-focus-active {
 
 .pomodoro-btn i {
   color: rgba(255, 255, 255, 0.8);
+}
+
+.timer-saved-presets {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: calc(var(--space-1) * -0.5) 0 var(--space-1);
+}
+
+.timer-saved-presets[hidden] {
+  display: none;
+}
+
+.timer-saved-presets-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.timer-saved-presets-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+
+.timer-saved-preset {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  border-radius: var(--radius-sm);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
+  overflow: hidden;
+}
+
+.timer-saved-preset-btn,
+.timer-saved-preset-remove {
+  appearance: none;
+  border: 0;
+  color: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.timer-saved-preset-btn {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 8px;
+  background: transparent;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.timer-saved-preset-btn span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.timer-saved-preset-remove {
+  width: 30px;
+  flex: 0 0 30px;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+}
+
+.timer-saved-preset-btn:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  color: #fff;
+}
+
+.timer-saved-preset-remove:hover {
+  background: rgba(255, 77, 109, 0.2);
+  color: #fff;
 }
 
 .timer-input-header {
@@ -6036,7 +6246,7 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   top: 152px;
   right: var(--space-4);
-  overflow: hidden;
+  overflow: visible;
   background: transparent;
   resize: none;
 }
@@ -6068,11 +6278,16 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   cursor: default;
   user-select: none;
   transition: all 0.3s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.floating-note-window.collapsed .floating-note-header {
+  border-radius: var(--radius-md);
 }
 
 .floating-note-title-row {
@@ -6086,6 +6301,10 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   background: rgba(255, 255, 255, 0.1);
   color: white;
   padding: var(--space-0-5) var(--space-1);
+}
+
+.floating-note-window .note-color-menu {
+  z-index: 2200;
 }
 
 .floating-note-title {
@@ -9663,14 +9882,14 @@ body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count {
 
 .bookmark-group-tab[style*="--bookmark-group-icon-color"] .group-tab-icon,
 .bookmark-group-tab[style*="--bookmark-group-icon-color"]:hover .group-tab-icon,
-.bookmark-group-tab[style*="--bookmark-group-icon-color"].active .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"].active
+  .group-tab-icon,
 .bookmark-group-tab[style*="--bookmark-group-icon-color"].active:hover
   .group-tab-icon {
   color: var(--bookmark-group-icon-color) !important;
 }
 
-body.bookmark-group-auto-text-contrast
-  .bookmark-group-tab:not(.add-group-tab),
+body.bookmark-group-auto-text-contrast .bookmark-group-tab:not(.add-group-tab),
 body.bookmark-group-auto-text-contrast
   .bookmark-group-tab:not(.add-group-tab):hover,
 body.bookmark-group-auto-text-contrast
@@ -10181,8 +10400,7 @@ body.bookmark-group-tab-bg-transparent.bookmark-taskbar-left-mode
 }
 
 .bookmark-group-tab[style*="--bookmark-group-icon-color"] .group-tab-icon,
-.bookmark-group-tab[style*="--bookmark-group-icon-color"]:hover
-  .group-tab-icon,
+.bookmark-group-tab[style*="--bookmark-group-icon-color"]:hover .group-tab-icon,
 .bookmark-group-tab[style*="--bookmark-group-icon-color"].active
   .group-tab-icon,
 .bookmark-group-tab[style*="--bookmark-group-icon-color"].active:hover

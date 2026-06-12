@@ -59,6 +59,8 @@ const TIMER_ALARM_SOUNDS = {
 }
 
 const CUSTOM_ALARM_SOUND_KEY = "custom_alarm_sound"
+const SAVED_TIMER_PRESETS_KEY = "savedTimerPresets"
+const MAX_SAVED_TIMER_PRESETS = 6
 
 function getTimerAlarmUrl(soundKey) {
   const sound =
@@ -119,6 +121,7 @@ export class Timer {
     this.isVisible = settings.showTimer === true
     this.isFocusMode = false
     this.focusClockId = null
+    this.savedTimerPresets = this.loadSavedTimerPresets()
 
     this.init()
   }
@@ -164,7 +167,7 @@ export class Timer {
                 <div class="timer-display" id="timer-display">00:00:00</div>
                 <div class="timer-status" id="timer-status">
                     <i class="fa-solid fa-circle-pause"></i>
-                    <span>Ready</span>
+                    <span>${i18n.timer_status_ready || "Ready"}</span>
                 </div>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
@@ -188,6 +191,10 @@ export class Timer {
                     <button type="button" class="pomodoro-btn" data-time="300" data-i18n-title="pomodoroShortBreak" title="Short Break (5m)"><i class="fa-solid fa-mug-hot"></i> <span>5m</span></button>
                     <button type="button" class="pomodoro-btn" data-time="900" data-i18n-title="pomodoroLongBreak" title="Long Break (15m)"><i class="fa-solid fa-couch"></i> <span>15m</span></button>
                 </div>
+                <div class="timer-saved-presets" id="timer-saved-presets" hidden>
+                    <div class="timer-saved-presets-label">${i18n.timer_saved_presets || "Saved"}</div>
+                    <div class="timer-saved-presets-list" id="timer-saved-presets-list"></div>
+                </div>
                 <div class="timer-input-wrapper">
                     <input type="text" id="timer-smart-input" name="timer-smart-input" placeholder="00h 00m 00s" maxlength="6" inputmode="numeric">
                     <div class="timer-input-hint">Enter digits (e.g. 500 for 5m)</div>
@@ -208,6 +215,7 @@ export class Timer {
                 </div>
                 <div class="timer-input-actions">
                     <button id="timer-cancel-edit" class="secondary-btn">Cancel</button>
+                    <button id="timer-save-preset" class="secondary-btn" title="${i18n.timer_save_preset || "Save preset"}"><i class="fa-solid fa-floppy-disk"></i> <span>${i18n.timer_save || "Save"}</span></button>
                     <button id="timer-set-confirm" class="primary-btn">Set</button>
                 </div>
             </div>
@@ -220,6 +228,7 @@ export class Timer {
     this.status = this.container.querySelector("#timer-status")
     this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
     this.applyAlarmDropdownVisibility()
+    this.renderSavedTimerPresets()
 
     // Create the mini clock indicator if it doesn't exist
     this._createMiniIndicator()
@@ -342,6 +351,9 @@ export class Timer {
       .querySelector("#timer-set-confirm")
       .addEventListener("click", () => this.setTimer())
     this.container
+      .querySelector("#timer-save-preset")
+      .addEventListener("click", () => this.saveCurrentTimerPreset())
+    this.container
       .querySelector("#stop-alarm-btn")
       .addEventListener("click", () => this.stopAlarm())
     this.alarmSelect?.addEventListener("change", () => {
@@ -379,6 +391,9 @@ export class Timer {
         this.applyAlarmDropdownVisibility()
       }
       if (e.detail.key === "language") {
+        this.updateTimerStatus()
+        this.updateMiniIndicatorState()
+        this.updateTimerInputLanguage()
         this.updateFocusLanguage()
       }
     })
@@ -412,25 +427,25 @@ export class Timer {
       btn.addEventListener("click", () => {
         const timeStr = btn.dataset.time
         if (timeStr) {
-          const totalSeconds = parseInt(timeStr, 10)
-
-          if (this.isRunning) this.pauseTimer()
-          this.stopAlarm()
-          this.initialTime = totalSeconds
-          this.timeLeft = this.initialTime
-          this.endTime = 0
-          this.saveState()
-          this.render()
-          this.updateTimerStatus("ready")
-          if (
-            this.container.querySelector("#timer-input-view").style.display !==
-            "none"
-          ) {
-            this.hideInputView()
-          }
+          this.applyTimerDuration(parseInt(timeStr, 10))
         }
       })
     })
+
+    this.container
+      .querySelector("#timer-saved-presets-list")
+      ?.addEventListener("click", (e) => {
+        const removeBtn = e.target.closest(".timer-saved-preset-remove")
+        if (removeBtn) {
+          this.removeSavedTimerPreset(parseInt(removeBtn.dataset.time, 10))
+          return
+        }
+
+        const presetBtn = e.target.closest(".timer-saved-preset-btn")
+        if (presetBtn) {
+          this.applyTimerDuration(parseInt(presetBtn.dataset.time, 10))
+        }
+      })
   }
 
   async setAlarmSound(soundKey, persist = false, forceReload = false) {
@@ -523,6 +538,7 @@ export class Timer {
   showInputView() {
     this.container.querySelector(".timer-main-view").style.display = "none"
     this.container.querySelector("#timer-input-view").style.display = "flex"
+    this.renderSavedTimerPresets()
     const smartInput = this.container.querySelector("#timer-smart-input")
 
     const h = Math.floor(this.timeLeft / 3600)
@@ -717,6 +733,12 @@ export class Timer {
       this.hideInputView()
       return
     }
+    this.applyTimerDuration(totalSeconds)
+  }
+
+  applyTimerDuration(totalSeconds) {
+    if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return
+
     if (this.isRunning) this.pauseTimer()
     this.stopAlarm()
     this.initialTime = totalSeconds
@@ -725,7 +747,105 @@ export class Timer {
     this.saveState()
     this.render()
     this.updateTimerStatus("ready")
-    this.hideInputView()
+    if (
+      this.container.querySelector("#timer-input-view").style.display !== "none"
+    ) {
+      this.hideInputView()
+    }
+  }
+
+  loadSavedTimerPresets() {
+    try {
+      const presets = JSON.parse(
+        localStorage.getItem(SAVED_TIMER_PRESETS_KEY) || "[]",
+      )
+      return Array.isArray(presets)
+        ? presets
+            .map((value) => parseInt(value, 10))
+            .filter((value) => Number.isFinite(value) && value > 0)
+            .slice(0, MAX_SAVED_TIMER_PRESETS)
+        : []
+    } catch {
+      return []
+    }
+  }
+
+  persistSavedTimerPresets() {
+    localStorage.setItem(
+      SAVED_TIMER_PRESETS_KEY,
+      JSON.stringify(this.savedTimerPresets),
+    )
+  }
+
+  saveCurrentTimerPreset() {
+    const smartInput = this.container.querySelector("#timer-smart-input")
+    const totalSeconds = this.parseSmartTimerInput(smartInput.value)
+    if (totalSeconds <= 0) return
+
+    this.savedTimerPresets = [
+      totalSeconds,
+      ...this.savedTimerPresets.filter((value) => value !== totalSeconds),
+    ].slice(0, MAX_SAVED_TIMER_PRESETS)
+    this.persistSavedTimerPresets()
+    this.renderSavedTimerPresets()
+    smartInput.focus()
+  }
+
+  removeSavedTimerPreset(totalSeconds) {
+    this.savedTimerPresets = this.savedTimerPresets.filter(
+      (value) => value !== totalSeconds,
+    )
+    this.persistSavedTimerPresets()
+    this.renderSavedTimerPresets()
+  }
+
+  renderSavedTimerPresets() {
+    const section = this.container?.querySelector("#timer-saved-presets")
+    const list = this.container?.querySelector("#timer-saved-presets-list")
+    if (!section || !list) return
+
+    const i18n = geti18n()
+    const label = section.querySelector(".timer-saved-presets-label")
+    if (label) label.textContent = i18n.timer_saved_presets || "Saved"
+
+    section.hidden = this.savedTimerPresets.length === 0
+    list.innerHTML = this.savedTimerPresets
+      .map((seconds) => {
+        const labelText = this.formatDurationLabel(seconds)
+        const removeTitle = i18n.timer_remove_saved_preset || "Remove preset"
+        return `
+          <div class="timer-saved-preset">
+            <button type="button" class="timer-saved-preset-btn" data-time="${seconds}" title="${labelText}">
+              <i class="fa-solid fa-clock"></i>
+              <span>${labelText}</span>
+            </button>
+            <button type="button" class="timer-saved-preset-remove" data-time="${seconds}" title="${removeTitle}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `
+      })
+      .join("")
+  }
+
+  updateTimerInputLanguage() {
+    const i18n = geti18n()
+    const saveBtn = this.container?.querySelector("#timer-save-preset")
+    const saveBtnLabel = saveBtn?.querySelector("span")
+    if (saveBtn) saveBtn.title = i18n.timer_save_preset || "Save preset"
+    if (saveBtnLabel) saveBtnLabel.textContent = i18n.timer_save || "Save"
+    this.renderSavedTimerPresets()
+  }
+
+  formatDurationLabel(totalSeconds) {
+    const h = Math.floor(totalSeconds / 3600)
+    const m = Math.floor((totalSeconds % 3600) / 60)
+    const s = totalSeconds % 60
+    const parts = []
+    if (h) parts.push(`${h}h`)
+    if (m) parts.push(`${m}m`)
+    if (s || parts.length === 0) parts.push(`${s}s`)
+    return parts.join(" ")
   }
 
   saveState() {
@@ -832,13 +952,14 @@ export class Timer {
       "is-ready",
       !this.isRunning && this.timeLeft > 0 && !this.isExpired,
     )
+    const i18n = geti18n()
     mini.title = this.isExpired
-      ? "Timer finished"
+      ? i18n.timer_status_finished || "Timer finished"
       : this.isRunning
-        ? "Timer running"
+        ? i18n.timer_status_running || "Timer running"
         : this.timeLeft > 0
-          ? "Timer ready"
-          : "Timer"
+          ? i18n.timer_status_ready || "Timer ready"
+          : i18n.timer_title || "Timer"
 
     const miniIcon = mini.querySelector("i")
     if (miniIcon && !this.isExpired) {
@@ -854,7 +975,6 @@ export class Timer {
     if (!this.status) return
 
     let icon = "fa-circle-pause"
-    let label = "Ready"
     const state =
       forcedState ||
       (this.isExpired
@@ -864,21 +984,33 @@ export class Timer {
           : this.timeLeft > 0
             ? "ready"
             : "empty")
+    const labels = this.getTimerStatusLabels()
+    let label = labels.ready
 
     if (state === "running") {
       icon = "fa-hourglass-half"
-      label = "Running"
+      label = labels.running
     } else if (state === "finished") {
       icon = "fa-bell"
-      label = "Time's up"
+      label = labels.finished
     } else if (state === "empty") {
       icon = "fa-keyboard"
-      label = "Set time"
+      label = labels.empty
     }
 
     this.status.classList.toggle("is-running", state === "running")
     this.status.classList.toggle("is-finished", state === "finished")
     this.status.innerHTML = `<i class="fa-solid ${icon}"></i><span>${label}</span>`
+  }
+
+  getTimerStatusLabels() {
+    const i18n = geti18n()
+    return {
+      ready: i18n.timer_status_ready || "Ready",
+      running: i18n.timer_status_running || "Running",
+      finished: i18n.timer_status_finished || "Time's up",
+      empty: i18n.timer_status_set_time || "Set time",
+    }
   }
 
   renderTime(seconds, element, short = false) {
