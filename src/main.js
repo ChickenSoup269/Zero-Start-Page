@@ -120,9 +120,8 @@ async function bootstrap() {
     const latestSettings = getSettings()
     trimMediaMemory({
       keepIds: [latestSettings.background],
-      includeThumbnails: true,
+      includeThumbnails: false,
       maxUrls: 1,
-      maxThumbnails: 6,
     })
   })
   if (isIdbMedia(currentSettings.background)) {

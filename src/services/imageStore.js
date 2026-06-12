@@ -13,7 +13,7 @@ const DB_VERSION = 2
 // In-memory cache: id -> blobUrl (revokeObjectURL khi xoá)
 // Giới hạn số lượng entries để tránh rò rỉ bộ nhớ.
 const MAX_URL_CACHE_SIZE = 3
-const MAX_THUMB_CACHE_SIZE = 16
+const MAX_THUMB_CACHE_SIZE = 64
 const _urlCache = new Map() // insertion-order = LRU (xoá entry đầu tiên khi đầy)
 const _thumbCache = new Map()
 let _mediaIdCounter = 0

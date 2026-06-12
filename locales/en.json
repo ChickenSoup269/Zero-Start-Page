@@ -1076,6 +1076,7 @@
   "alert_bg_gallery_full": "Gallery full! Please remove some backgrounds before saving more.",
   "alert_bg_saved": "Background saved to Local Themes!",
   "alert_upload_limit": "You can only upload up to {count} custom backgrounds.",
+  "alert_local_bg_performance_warning": "You have saved 20+ custom backgrounds. More saved images, especially GIF/video backgrounds, can use more memory and make Startpage slower.",
   "credit_local_video": "Local Video",
   "credit_local_image": "Local Image",
   "g_app_search": "Search",

@@ -3002,6 +3002,27 @@ body.sidebar-light .preset-code-line-value {
   backface-visibility: hidden;
 }
 
+.local-bg-item.thumb-loading .local-bg-thumb {
+  opacity: 0.34;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at 30% 25%, rgba(var(--accent-color-rgb, 168, 192, 255), 0.22), transparent 42%);
+}
+
+.local-bg-item.thumb-loading::before {
+  content: "\f03e";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
 .local-bg-item:hover {
   animation: localBgHoverFade 1.25s ease-in-out infinite !important;
   transform: translateY(-4px) scale(1.045) !important;
@@ -5836,37 +5857,113 @@ body.sidebar-light .remove-bg-btn:hover i {
 }
 
 /* Unsplash Explorer Modal */
-.unsplash-explorer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-2);
-  padding: var(--space-1);
-  max-height: 60vh;
-  overflow-y: auto;
-  overflow-anchor: none;
-  overscroll-behavior: contain;
+#unsplash-explorer-modal .bug-modal-content {
+  width: min(1040px, calc(100vw - 32px)) !important;
+  max-width: 1040px !important;
+  max-height: min(860px, calc(100vh - 32px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(24, 27, 34, 0.96), rgba(13, 15, 20, 0.96));
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.explorer-photo-item {
-  aspect-ratio: 16 / 10;
-  background-size: cover;
-  background-position: center;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition:
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  position: relative;
+#unsplash-explorer-modal .bug-modal-header {
+  flex: 0 0 auto;
+  min-height: 58px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+#unsplash-explorer-modal .bug-modal-header h2 {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+#unsplash-explorer-modal .modal-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#unsplash-explorer-modal .bug-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 16px;
   overflow: hidden;
 }
 
+#unsplash-explorer-modal .bug-modal-footer {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.unsplash-explorer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+  align-content: start;
+  gap: 14px;
+  height: min(68vh, 680px);
+  padding: 2px 8px 14px 2px;
+  overflow-y: auto;
+  overflow-anchor: none;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb), 0.65) rgba(255, 255, 255, 0.07);
+}
+
+.unsplash-explorer-grid::-webkit-scrollbar {
+  width: 9px;
+}
+
+.unsplash-explorer-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+}
+
+.unsplash-explorer-grid::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-color-rgb), 0.65);
+  border-radius: 999px;
+}
+
+.explorer-photo-item {
+  min-height: 112px;
+  aspect-ratio: 16 / 10.5;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    filter 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+  position: relative;
+  overflow: hidden;
+  outline: 3px solid rgba(255, 255, 255, 0.035);
+  outline-offset: -4px;
+}
+
 .explorer-photo-item:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  filter: saturate(1.04) brightness(1.04);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.38);
+  border-color: rgba(var(--accent-color-rgb), 0.75);
 }
 
 .explorer-photo-item.applying {
@@ -5913,23 +6010,23 @@ body.sidebar-light .remove-bg-btn:hover i {
 
 .explorer-photo-meta {
   position: absolute;
-  left: var(--space-1);
-  right: var(--space-1);
-  bottom: var(--space-1);
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
   z-index: 2;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
+  gap: 5px;
   pointer-events: none;
 }
 
 .explorer-photo-meta span {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-0-5);
+  gap: 4px;
   min-height: 20px;
-  padding: 3px var(--space-1);
-  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  border-radius: 6px;
   background: rgba(0, 0, 0, 0.58);
   color: #fff;
   font-size: 10px;
@@ -5947,6 +6044,18 @@ body.sidebar-light .remove-bg-btn:hover i {
   padding: var(--space-5);
   font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.6);
+}
+
+body.sidebar-light #unsplash-explorer-modal .bug-modal-content {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 247, 250, 0.96));
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.sidebar-light #unsplash-explorer-modal .bug-modal-header,
+body.sidebar-light #unsplash-explorer-modal .bug-modal-footer {
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 .unsplash-explorer-mini {

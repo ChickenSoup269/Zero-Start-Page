@@ -602,6 +602,17 @@ function getExplorerDisplayTitle(type = explorerType, query = explorerQuery) {
   return i18n.settings_unsplash_latest || "Latest Photos"
 }
 
+function reopenMinimizedUnsplashExplorer() {
+  const modal = document.getElementById("unsplash-explorer-modal")
+  if (!modal) return
+
+  initUnsplashExplorerMini()
+  hideUnsplashExplorerMini()
+  const titleEl = modal.querySelector(".modal-title-text")
+  if (titleEl) titleEl.textContent = getExplorerDisplayTitle()
+  modal.classList.add("open")
+}
+
 function initUnsplashExplorerMini() {
   if (explorerMiniInitialized) return
   explorerMiniInitialized = true
@@ -611,7 +622,7 @@ function initUnsplashExplorerMini() {
   const closeBtn = document.getElementById("unsplash-explorer-mini-close")
 
   openBtn?.addEventListener("click", () => {
-    openUnsplashExplorer(explorerType, explorerQuery)
+    reopenMinimizedUnsplashExplorer()
   })
 
   closeBtn?.addEventListener("click", (event) => {

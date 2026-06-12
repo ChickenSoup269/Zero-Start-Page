@@ -30,6 +30,9 @@ import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 let bgSelectMode = false
 const bgSelectedIds = new Set()
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+const LOCAL_BG_PERFORMANCE_WARNING_THRESHOLD = 20
+const LOCAL_BG_PERFORMANCE_WARNING_KEY =
+  "localBackgroundPerformanceWarningShownCountV2"
 
 function getUploadImageProfile(settings = getSettings()) {
   const mode = settings.backgroundMediaQuality || "balanced"
@@ -117,6 +120,31 @@ async function recompressSavedBackgroundImages(DOM, handleSettingUpdate) {
   }
 
   return { processed, reduced }
+}
+
+function maybeShowLocalBackgroundPerformanceWarning(count) {
+  if (count < LOCAL_BG_PERFORMANCE_WARNING_THRESHOLD) return
+  const warningBucket =
+    Math.floor(count / LOCAL_BG_PERFORMANCE_WARNING_THRESHOLD) *
+    LOCAL_BG_PERFORMANCE_WARNING_THRESHOLD
+  try {
+    const shownCount = Number(
+      localStorage.getItem(LOCAL_BG_PERFORMANCE_WARNING_KEY) || 0,
+    )
+    if (shownCount >= warningBucket) {
+      return false
+    }
+    localStorage.setItem(LOCAL_BG_PERFORMANCE_WARNING_KEY, String(warningBucket))
+  } catch {
+    // Ignore storage issues; the warning is informational only.
+  }
+
+  const i18n = geti18n()
+  showAlert(
+    i18n.alert_local_bg_performance_warning ||
+      "You have saved 20+ custom backgrounds. More saved images can use more memory and may reduce performance, especially with GIF/video backgrounds.",
+  )
+  return true
 }
 
 function renderUserColors(DOM) {
@@ -396,6 +424,9 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
 function renderLocalBackgrounds(DOM, handleSettingUpdate) {
   const i18n = geti18n()
   const settings = getSettings()
+  maybeShowLocalBackgroundPerformanceWarning(
+    Array.isArray(settings.userBackgrounds) ? settings.userBackgrounds.length : 0,
+  )
 
   // Clear all galleries
   if (DOM.localBackgroundGallery) DOM.localBackgroundGallery.innerHTML = ""
@@ -476,9 +507,11 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
 
       // Performance Optimization: Always try to use small thumbnail for gallery
       if (isIdbMedia(bgId)) {
+        item.classList.add("thumb-loading")
         const cachedUrl = getBlobUrlSync(bgId)
         if (cachedUrl) {
           thumbLayer.style.backgroundImage = cssUrl(cachedUrl)
+          item.classList.remove("thumb-loading")
         } else if (
           isActive &&
           typeof settings.lastUserBackgroundPreview === "string" &&
@@ -487,10 +520,12 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
           thumbLayer.style.backgroundImage = cssUrl(
             settings.lastUserBackgroundPreview,
           )
+          item.classList.remove("thumb-loading")
         }
         getThumbnailUrl(bgId).then(async (thumbUrl) => {
           if (thumbUrl) {
             thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
+            item.classList.remove("thumb-loading")
           } else {
             const originalUrl = await getImageUrl(bgId)
             if (originalUrl) {
@@ -501,15 +536,19 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
               )
               if (newThumb) {
                 thumbLayer.style.backgroundImage = cssUrl(newThumb)
+                item.classList.remove("thumb-loading")
                 trimMediaMemory({
                   keepIds: [getSettings().background],
                   maxUrls: 1,
                 })
               } else {
                 thumbLayer.style.backgroundImage = cssUrl(originalUrl)
+                item.classList.remove("thumb-loading")
               }
             }
           }
+        }).catch(() => {
+          item.classList.remove("thumb-loading")
         })
       } else if (bgId) {
         thumbLayer.style.backgroundImage = cssUrl(bgId)
@@ -886,6 +925,9 @@ function setupFileUploads(DOM, handleSettingUpdate) {
     try {
       const id = await saveVideo(file)
       getSettings().userBackgrounds.push(id)
+      maybeShowLocalBackgroundPerformanceWarning(
+        getSettings().userBackgrounds.length,
+      )
       handleSettingUpdate("background", id)
       renderLocalBackgrounds(DOM, handleSettingUpdate)
     } catch (err) {
@@ -921,6 +963,9 @@ function setupFileUploads(DOM, handleSettingUpdate) {
               name: file.name || "GIF background",
               date: new Date().toISOString(),
             })
+            maybeShowLocalBackgroundPerformanceWarning(
+              getSettings().userBackgrounds.length,
+            )
             handleSettingUpdate("background", id)
             renderLocalBackgrounds(DOM, handleSettingUpdate)
           })
@@ -958,6 +1003,9 @@ function setupFileUploads(DOM, handleSettingUpdate) {
               saveImage(blob)
                 .then((id) => {
                   getSettings().userBackgrounds.push(id)
+                  maybeShowLocalBackgroundPerformanceWarning(
+                    getSettings().userBackgrounds.length,
+                  )
                   handleSettingUpdate("background", id)
                   renderLocalBackgrounds(DOM, handleSettingUpdate)
                 })
@@ -987,4 +1035,5 @@ export {
   setupMultiSelectMode,
   setupFileUploads,
   recompressSavedBackgroundImages,
+  maybeShowLocalBackgroundPerformanceWarning,
 }

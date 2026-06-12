@@ -1073,6 +1073,7 @@
   "alert_bg_gallery_full": "Thư viện đã đầy! Vui lòng xóa bớt hình nền trước khi lưu thêm.",
   "alert_bg_saved": "Đã lưu hình nền vào Chủ đề cục bộ!",
   "alert_upload_limit": "Bạn chỉ có thể tải lên tối đa {count} hình nền tùy chỉnh.",
+  "alert_local_bg_performance_warning": "Bạn đã lưu từ 20 hình nền tùy chỉnh trở lên. Lưu càng nhiều ảnh, đặc biệt là GIF/video, có thể dùng thêm RAM và làm Startpage chậm hơn.",
   "credit_local_video": "Video cục bộ",
   "credit_local_image": "Ảnh cục bộ",
   "g_app_search": "Tìm kiếm",

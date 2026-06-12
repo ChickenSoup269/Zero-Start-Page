@@ -1200,6 +1200,7 @@ class MusicVisualizer {
     const loop = (ts) => {
       if (
         !this.isPlaying ||
+        this._shouldSkipBarVisualizer(bars) ||
         this.currentStyle === "pixel" ||
         this.currentStyle === "moon8" ||
         this.currentStyle === "heartbeat" ||
@@ -1274,6 +1275,22 @@ class MusicVisualizer {
       this._cssAnimId = requestAnimationFrame(loop)
     }
     this._cssAnimId = requestAnimationFrame(loop)
+  }
+
+  _shouldSkipBarVisualizer(bars = this.bars) {
+    if (!this.container || !bars?.length) return true
+    const containerStyle = getComputedStyle(this.container)
+    if (
+      containerStyle.display === "none" ||
+      containerStyle.visibility === "hidden"
+    ) {
+      return true
+    }
+
+    return bars.every((bar) => {
+      const style = getComputedStyle(bar)
+      return style.display === "none" || style.visibility === "hidden"
+    })
   }
 
   _stopCSSLoop() {

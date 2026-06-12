@@ -63,6 +63,7 @@ import {
   renderLocalBackgrounds,
   renderUserAccentColors,
   recompressSavedBackgroundImages,
+  maybeShowLocalBackgroundPerformanceWarning,
 } from "./backgroundManager.js"
 import { renderUserGradients } from "./gradientManager.js"
 import {
@@ -1650,6 +1651,8 @@ export function setupGeneralEventHandlers(
       }
 
       settings.userBackgrounds.push(newBg)
+      const showedPerformanceWarning =
+        maybeShowLocalBackgroundPerformanceWarning(settings.userBackgrounds.length)
       saveSettings()
       if (savedBgId !== currentBg) {
         updateSetting("unsplashLastCredit", {
@@ -1660,7 +1663,9 @@ export function setupGeneralEventHandlers(
         await handleSettingUpdate("background", savedBgId)
       }
       renderLocalBackgrounds(DOM, handleSettingUpdate)
-      showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
+      if (!showedPerformanceWarning) {
+        showAlert(geti18n().alert_bg_saved || "Background saved to Local Themes!")
+      }
 
       // Allow saving again (e.g. if they change blur/brightness)
       unsplashSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${i18n.settings_unsplash_saved || "Saved"}</span>`
