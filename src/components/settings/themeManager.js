@@ -242,7 +242,7 @@ export const THEMEABLE_KEYS = [
   "snowfallColor",
   "sunbeamColor",
   "rainHDColor",
-  "stormRainColor",
+  "musicBarsColor",
   "wavyLinesColor",
   "shinyColor",
   "lineShinyColor",

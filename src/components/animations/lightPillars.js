@@ -4,7 +4,7 @@
  * Simulates the atmospheric optical phenomenon where vertical beams of light
  * appear to extend above and/or below light sources.
  * - Tall vertical rectangles with gradients that fade out at the top/bottom.
- * - Slow shimmering and subtle shifting.
+ * - Slow shimmering with fixed pillar positions.
  * - Tiny glowing particles floating around like ice crystals.
  */
 export class LightPillarsEffect {
@@ -66,16 +66,13 @@ export class LightPillarsEffect {
 
     return {
       x,
-      baseX: x, // For subtle horizontal sway
-      targetX: x,
+      baseX: x,
       width,
       height,
       yOffset,
       alpha: 0.2 + Math.random() * 0.5,
       shimmerPhase: Math.random() * Math.PI * 2,
       shimmerSpeed: 0.01 + Math.random() * 0.03,
-      driftPhase: Math.random() * Math.PI * 2,
-      driftSpeed: 0.002 + Math.random() * 0.005,
       hue,
       sat,
       light,
@@ -112,11 +109,6 @@ export class LightPillarsEffect {
 
     // Update logic
     pillar.shimmerPhase += pillar.shimmerSpeed
-    pillar.driftPhase += pillar.driftSpeed
-
-    // Subtle horizontal sway
-    pillar.x = pillar.baseX + Math.sin(pillar.driftPhase) * 40
-
     // Shimmer effect (opacity pulsing)
     const shimmer = 0.7 + 0.3 * Math.sin(pillar.shimmerPhase)
     const currentAlpha = pillar.alpha * shimmer

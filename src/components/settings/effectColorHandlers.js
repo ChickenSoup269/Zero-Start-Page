@@ -330,13 +330,15 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.stormRainColorPicker.addEventListener("input", () => {
-    updateSetting("stormRainColor", DOM.stormRainColorPicker.value)
-    saveSettings()
-    if (effectInstances.stormRainEffect) {
-      effectInstances.stormRainEffect.updateColor(DOM.stormRainColorPicker.value)
-    }
-  })
+  if (DOM.musicBarsColorPicker) {
+    DOM.musicBarsColorPicker.addEventListener("input", () => {
+      updateSetting("musicBarsColor", DOM.musicBarsColorPicker.value)
+      saveSettings()
+      if (effectInstances.musicBarsEffect) {
+        effectInstances.musicBarsEffect.updateColor(DOM.musicBarsColorPicker.value)
+      }
+    })
+  }
 
   DOM.wavyLinesColorPicker.addEventListener("input", () => {
     updateSetting("wavyLinesColor", DOM.wavyLinesColorPicker.value)

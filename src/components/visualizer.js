@@ -198,7 +198,7 @@ class MusicVisualizer {
     ctx.clearRect(0, 0, W, H)
 
     this.orbitPhase =
-      (this.orbitPhase || 0) + dt * (this.isPlaying ? 4.25 : 0.75)
+      (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.62 : 0.12)
     const cx = W / 2
     const cy = H / 2
     const playerSize = Math.min(
@@ -206,98 +206,51 @@ class MusicVisualizer {
       parentRect?.height || parent?.offsetHeight || H,
     )
     const baseRadius = Math.min(playerSize / 2 + 8, Math.min(W, H) / 2 - 58)
-    const beat =
-      this.isPlaying
-        ? Math.pow((Math.sin(this.orbitPhase * 2.2) + 1) / 2, 3)
-        : 0
-    const amp = this.isPlaying ? 8.2 + beat * 8.5 : 2.2
     const accent =
       getComputedStyle(parent).getPropertyValue("--accent-color").trim() ||
       "#64f4d2"
+    const bass =
+      this.isPlaying && this._realBands?.length
+        ? Math.min(1, (this._realBands[0] + this._realBands[1]) * 0.72)
+        : this.isPlaying
+          ? 0.42
+          : 0
 
-    const drawWaveRing = (radiusOffset, alpha, width, blur, phaseShift) => {
+    const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
+      const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
+      const attack = phase < 0.16 ? phase / 0.16 : 1
+      const hold = phase < holdEnd ? 1 : Math.max(0, 1 - (phase - holdEnd) / (1 - holdEnd))
+      const punch = Math.sin(Math.min(phase / 0.2, 1) * Math.PI * 0.5)
+      const easeOut = 1 - Math.pow(1 - phase, 2.6)
+      const beatLift = bass * Math.pow(hold, 1.7)
+      const radius = baseRadius - 8 + punch * (4 + beatLift * 9) + easeOut * expansion
+      const alpha =
+        alphaBase *
+        Math.pow(hold, 1.15) *
+        (this.isPlaying ? 0.22 + attack * 0.78 : 0.42)
+
       ctx.globalAlpha = alpha
-      ctx.lineWidth = width
-      ctx.shadowBlur = blur
+      ctx.lineWidth = width + beatLift * 2.8
+      ctx.shadowBlur = 12 + punch * 20 + beatLift * 24
       ctx.shadowColor = accent
       ctx.beginPath()
-      const steps = 192
-      for (let i = 0; i <= steps; i++) {
-        const a = (i / steps) * Math.PI * 2
-        const mirage =
-          this.isPlaying
-            ? Math.sin(a * 3 + this.orbitPhase * 0.9 + phaseShift) * (2.4 + beat * 3.4)
-            : 0
-        const wave =
-          Math.sin(a * 7 + this.orbitPhase * 2.8 + phaseShift) * amp +
-          Math.sin(a * 13 - this.orbitPhase * 1.65 + phaseShift) * amp * 0.4 +
-          Math.sin(a * 23 + this.orbitPhase * 3.2 + phaseShift) * amp * 0.18 +
-          mirage
-        const r = baseRadius + radiusOffset + wave
-        const x = cx + Math.cos(a) * r
-        const y = cy + Math.sin(a) * r
-        if (i === 0) ctx.moveTo(x, y)
-        else ctx.lineTo(x, y)
-      }
-      ctx.closePath()
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      ctx.stroke()
+
+      ctx.globalAlpha = alpha * (0.18 + beatLift * 0.16)
+      ctx.lineWidth = width + 8 + beatLift * 5
+      ctx.shadowBlur = 22 + punch * 24 + beatLift * 28
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius + 1.5, 0, Math.PI * 2)
       ctx.stroke()
     }
 
     ctx.lineJoin = "round"
     ctx.lineCap = "round"
-    const grad = ctx.createLinearGradient(0, 0, W, H)
-    grad.addColorStop(0, accent)
-    grad.addColorStop(0.5, "#8aa4ff")
-    grad.addColorStop(1, accent)
-    ctx.strokeStyle = grad
+    ctx.strokeStyle = accent
 
-    if (this.isPlaying) {
-      drawWaveRing(-4, 0.2 + beat * 0.1, 8, 30, Math.sin(this.orbitPhase) * 1.7)
-      drawWaveRing(5, 0.15 + beat * 0.08, 5, 24, Math.cos(this.orbitPhase * 0.8) * 2.2)
-
-      ctx.save()
-      ctx.globalAlpha = 0.4 + beat * 0.34
-      ctx.lineWidth = 2
-      ctx.shadowBlur = 18 + beat * 18
-      ctx.shadowColor = accent
-      ctx.strokeStyle = grad
-      const bars = 64
-      for (let i = 0; i < bars; i++) {
-        const a = (i / bars) * Math.PI * 2
-        const band =
-          Math.sin(i * 1.71 + this.orbitPhase * 5.3) * 0.5 +
-          Math.sin(i * 0.47 - this.orbitPhase * 3.1) * 0.35 +
-          Math.sin(i * 2.37 + this.orbitPhase * 1.4) * 0.15
-        const strength = Math.max(0, (band + 1) / 2)
-        const len = 4 + strength * 16 + beat * (8 + strength * 16)
-        const inner = baseRadius + 2
-        const outer = inner + len
-        ctx.beginPath()
-        ctx.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner)
-        ctx.lineTo(cx + Math.cos(a) * outer, cy + Math.sin(a) * outer)
-        ctx.stroke()
-      }
-      ctx.restore()
-
-      ctx.globalAlpha = 0.22
-      ctx.shadowBlur = 18
-      ctx.fillStyle = accent
-      for (let i = 0; i < 9; i++) {
-        const seed = i * 12.9898
-        const a =
-          (i / 9) * Math.PI * 2 +
-          Math.sin(this.orbitPhase * 0.9 + seed) * 0.12
-        const r =
-          baseRadius +
-          8 +
-          Math.sin(this.orbitPhase * 1.8 + seed) * 8
-        ctx.beginPath()
-        ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 1.4, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
-
-    drawWaveRing(0, 0.92, 4, 14, 0)
+    drawNcsRing(0, 0.9, 4.25, 23, 0.38)
+    drawNcsRing(0.5, 0.58, 3, 18, 0.26)
 
     ctx.shadowBlur = 0
     ctx.globalAlpha = 1

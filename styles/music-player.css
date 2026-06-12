@@ -2696,39 +2696,53 @@ body.widgets-m3-accent
 .music-style-orbit .music-player-wrapper::before {
   content: "";
   position: absolute;
-  inset: -9px;
+  inset: -14px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    transparent 70%,
-    rgba(var(--accent-color-rgb), 0.2) 71%,
-    transparent 74%
-  );
+  border: 2px solid rgba(var(--accent-color-rgb), 0.58);
+  box-shadow:
+    0 0 22px rgba(var(--accent-color-rgb), 0.3),
+    0 0 44px rgba(var(--accent-color-rgb), 0.16);
   pointer-events: none;
   z-index: 0;
+  animation: orbitNcsPulseLead 2.28s cubic-bezier(0.14, 0.86, 0.28, 1) infinite;
+}
+
+.music-style-orbit .music-player-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: -26px;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-color-rgb), 0.36);
+  box-shadow:
+    0 0 28px rgba(var(--accent-color-rgb), 0.2),
+    0 0 58px rgba(var(--accent-color-rgb), 0.12);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbitNcsPulse 2.05s cubic-bezier(0.14, 0.86, 0.28, 1) infinite 1.04s;
 }
 
 .music-style-orbit .disc-container {
   position: absolute;
-  top: 13px;
-  left: 13px;
-  right: 13px;
-  width: auto;
-  height: 96px;
+  top: 24px;
+  left: 50%;
+  right: auto;
+  width: 92px;
+  height: 92px;
+  transform: translateX(-50%);
   overflow: hidden;
-  border-radius: 105px 105px 12px 12px;
-  border: 0;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   background: #080b12;
   box-shadow:
-    inset 0 -16px 22px rgba(0, 0, 0, 0.38),
-    0 10px 22px rgba(0, 0, 0, 0.22);
+    0 16px 30px rgba(0, 0, 0, 0.28),
+    0 0 0 6px rgba(255, 255, 255, 0.035);
   z-index: 5;
 }
 
 .music-style-orbit .vinyl-disc {
   width: 100%;
   height: 100%;
-  border-radius: 105px 105px 12px 12px;
+  border-radius: inherit;
   border: 0;
   animation: none !important;
   background-size: cover;
@@ -2745,8 +2759,8 @@ body.widgets-m3-accent
   border-radius: inherit;
   background: linear-gradient(
     180deg,
-    transparent 54%,
-    rgba(12, 16, 24, 0.58) 100%
+    transparent 48%,
+    rgba(12, 16, 24, 0.48) 100%
   );
 }
 
@@ -2754,7 +2768,7 @@ body.widgets-m3-accent
   position: absolute;
   left: 28px;
   right: 28px;
-  top: 118px;
+  top: 126px;
   bottom: 18px;
   width: auto;
   display: flex;
@@ -2876,19 +2890,20 @@ body.widgets-m3-accent
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur::before {
-  background: radial-gradient(
-    circle at 50% 50%,
-    transparent 70%,
-    rgba(var(--accent-color-rgb), 0.18) 71%,
-    transparent 74%
-  ) !important;
+  border-color: rgba(var(--accent-color-rgb), 0.36) !important;
+  box-shadow: 0 0 22px rgba(var(--accent-color-rgb), 0.14) !important;
+}
+
+.music-style-orbit .music-player-wrapper.skin-white-blur::after {
+  border-color: rgba(var(--accent-color-rgb), 0.2) !important;
+  box-shadow: 0 0 30px rgba(var(--accent-color-rgb), 0.1) !important;
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur .disc-container {
   background: rgba(255, 255, 255, 0.36) !important;
   box-shadow:
-    inset 0 -16px 22px rgba(255, 255, 255, 0.18),
-    0 10px 22px rgba(0, 0, 0, 0.12) !important;
+    0 16px 28px rgba(0, 0, 0, 0.1),
+    0 0 0 6px rgba(255, 255, 255, 0.28) !important;
 }
 
 .music-style-orbit .music-player-wrapper.skin-white-blur .vinyl-disc::before {
@@ -2940,12 +2955,60 @@ body.widgets-m3-accent
   display: none !important;
 }
 
+.music-style-orbit .music-player-wrapper.skin-transparent::after {
+  display: none !important;
+}
+
 .music-style-orbit .music-player-wrapper.skin-transparent .disc-container {
   background: rgba(0, 0, 0, 0.1) !important;
   border-color: transparent !important;
   box-shadow:
-    inset 0 -16px 22px rgba(0, 0, 0, 0.2),
-    0 10px 22px rgba(0, 0, 0, 0.12) !important;
+    0 14px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 5px rgba(255, 255, 255, 0.06) !important;
+}
+
+@keyframes orbitNcsPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  8% {
+    opacity: 0.88;
+    transform: scale(0.98);
+  }
+  22% {
+    opacity: 0.72;
+    transform: scale(1.04);
+  }
+  58% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes orbitNcsPulseLead {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  8% {
+    opacity: 0.92;
+    transform: scale(0.98);
+  }
+  28% {
+    opacity: 0.78;
+    transform: scale(1.05);
+  }
+  64% {
+    opacity: 0.24;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
 }
 
 .music-style-orbit .music-player-wrapper.skin-transparent .progress-bar-track {

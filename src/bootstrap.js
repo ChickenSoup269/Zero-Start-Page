@@ -5,7 +5,7 @@ async function hydrateSettingsPartials() {
     if (!src) return
 
     try {
-      const response = await fetch(src)
+      const response = await fetch(src, { cache: "no-store" })
       if (!response.ok) throw new Error(`Failed to load ${src}`)
       placeholder.outerHTML = await response.text()
     } catch (error) {

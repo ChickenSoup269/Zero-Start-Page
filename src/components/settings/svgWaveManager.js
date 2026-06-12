@@ -17,6 +17,10 @@ import { getSvgWaveParams } from "./svgWaveUtils.js"
 let svgWaveSelectMode = false
 let svgWaveSelectedIndices = new Set()
 
+function resolveSvgWaveEffect(svgWaveEffect) {
+  return typeof svgWaveEffect === "function" ? svgWaveEffect() : svgWaveEffect
+}
+
 function setupMultiSelect(DOM, svgWaveEffect, onActivate) {
   const i18n = geti18n()
 
@@ -134,6 +138,7 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     DOM.userSvgWavesGallery.parentElement.style.display = "none"
     return
   }
+  const effect = resolveSvgWaveEffect(svgWaveEffect)
   DOM.userSvgWavesGallery.parentElement.style.display = ""
   settings.userSvgWaves.forEach((wave, index) => {
     if (!wave.uid) wave.uid = `svg-wave-${Date.now()}-${index}`
@@ -147,7 +152,7 @@ function renderUserSvgWaves(DOM, svgWaveEffect, onActivate) {
     item.dataset.startHue = wave.startHue
     item.dataset.endHue = wave.endHue
     item.title = `Wave ${index + 1}`
-    item.style.backgroundImage = `url("${svgWaveEffect ? svgWaveEffect.generateThumbnailDataUri(wave) : ""}")`
+    item.style.backgroundImage = `url("${effect ? effect.generateThumbnailDataUri(wave) : ""}")`
     item.style.backgroundSize = "cover"
 
     // Check if this wave is currently active

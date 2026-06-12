@@ -12,8 +12,16 @@ import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { geti18n, applyTranslations } from "../../services/i18n.js"
 
 let gradientV2Instance = null
+let gradientV2InstanceGetter = null
 let handleUpdateCallback = null
 let isInitialized = false
+
+function getGradientV2Instance() {
+  if (typeof gradientV2InstanceGetter === "function") {
+    gradientV2Instance = gradientV2InstanceGetter()
+  }
+  return gradientV2Instance
+}
 
 // Multi-select state
 let gradientV2SelectMode = false
@@ -25,7 +33,11 @@ let gradientV2SelectedIndices = new Set()
 function initGradientV2Manager(dom, effectInstance, onUpdate) {
   if (isInitialized) return
   
-  gradientV2Instance = effectInstance
+  if (typeof effectInstance === "function") {
+    gradientV2InstanceGetter = effectInstance
+  } else {
+    gradientV2Instance = effectInstance
+  }
   handleUpdateCallback = onUpdate
   
   const settings = getSettings()
@@ -64,10 +76,11 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       const active = e.target.checked
       if (handleUpdateCallback) handleUpdateCallback("gradientV2Active", active)
       
-      if (active && gradientV2Instance) {
-        gradientV2Instance.start()
-      } else if (!active && gradientV2Instance) {
-        gradientV2Instance.stop()
+      const instance = getGradientV2Instance()
+      if (active && instance) {
+        instance.start()
+      } else if (!active && instance) {
+        instance.stop()
       }
     })
   }
@@ -121,9 +134,10 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       if (handleUpdateCallback) handleUpdateCallback(prop.id, value)
       
       // Live update effect
-      if (gradientV2Instance) {
+      const instance = getGradientV2Instance()
+      if (instance) {
         const optionKey = prop.id.replace("gradientV2", "").charAt(0).toLowerCase() + prop.id.replace("gradientV2", "").slice(1)
-        gradientV2Instance.setOptions({ [optionKey]: value })
+        instance.setOptions({ [optionKey]: value })
       }
     })
   })
@@ -199,13 +213,14 @@ function initGradientV2Manager(dom, effectInstance, onUpdate) {
       })
 
       // Update effect
-      if (gradientV2Instance) {
+      const instance = getGradientV2Instance()
+      if (instance) {
           const options = {}
           Object.entries(randomProps).forEach(([id, val]) => {
               const optionKey = id.replace("gradientV2", "").charAt(0).toLowerCase() + id.replace("gradientV2", "").slice(1)
               options[optionKey] = val
           })
-          gradientV2Instance.setOptions(options)
+          instance.setOptions(options)
       }
     })
   }
@@ -362,9 +377,10 @@ function applyPreset(preset, dom) {
   const activeCheckbox = dom.gradientV2Active || document.getElementById("gradient-v2-active")
   if (activeCheckbox) activeCheckbox.checked = true
   
-  if (gradientV2Instance) {
-    gradientV2Instance.setOptions(preset)
-    gradientV2Instance.start()
+  const instance = getGradientV2Instance()
+  if (instance) {
+    instance.setOptions(preset)
+    instance.start()
   }
 }
 

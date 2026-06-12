@@ -236,7 +236,7 @@ const EFFECT_KEY_MAP = {
   northernLights: "northernLightsEffect",
   bubbles: "bubblesEffect",
   rainHD: "rainHDEffect",
-  stormRain: "stormRainEffect",
+  musicBars: "musicBarsEffect",
   rainbow: "rainbowEffect",
   wavyLines: "wavyLinesEffect",
   oceanWave: "oceanWaveEffect",
@@ -401,19 +401,6 @@ function getEffectPerformanceOptions(settings, effectName) {
       farPlane: settings.pixelSnowHQFarPlane ?? 20,
       maxSteps: settings.pixelSnowHQVariant === "snowflake" ? 56 : 64,
     }
-  }
-
-  if (effectName === "stormRain") {
-    if (mode === "quality") {
-      return { targetFps: 60, renderScale: 1, densityScale: 0.82 }
-    }
-    if (level === "low") {
-      return { targetFps: 24, renderScale: 0.58, densityScale: 0.24 }
-    }
-    if (shouldSave) {
-      return { targetFps: 42, renderScale: 1, densityScale: 0.48 }
-    }
-    return { targetFps: 60, renderScale: 1, densityScale: 0.62 }
   }
 
   if (effectName === "rainHD") {
@@ -632,6 +619,11 @@ function applyEffectPerformanceBudget(effect, settings) {
             ? Math.min(baseTargetFps, 36)
             : baseTargetFps
   }
+}
+
+function getCreatedEffect(effectInstances, key) {
+  if (!effectInstances?.hasEffect?.(key)) return null
+  return effectInstances[key] || null
 }
 
 function setEffectActive(effectGrid, value) {
@@ -1358,24 +1350,39 @@ function createApplySettings(effectInstances) {
       .filter(Boolean)
       .forEach((effect) => applyEffectPerformanceBudget(effect, settings))
 
-    // Cleanup: Stop unused background effects
-    if (!shouldUseGradientV2 && effectInstances.gradientV2Effect?.active) {
-      effectInstances.gradientV2Effect.stop()
+    // Cleanup: stop only background effects that have actually been created.
+    const gradientV2Effect = getCreatedEffect(effectInstances, "gradientV2Effect")
+    if (!shouldUseGradientV2 && gradientV2Effect?.active) {
+      gradientV2Effect.stop()
     }
-    if (!shouldUseSvgWave && effectInstances.svgWaveEffect?.active) {
-      effectInstances.svgWaveEffect.stop()
+    const svgWaveEffect = getCreatedEffect(effectInstances, "svgWaveEffect")
+    if (!shouldUseSvgWave && svgWaveEffect?.active) {
+      svgWaveEffect.stop()
     }
-    if (!shouldUseSilk && effectInstances.silkEffect?.active) {
-      effectInstances.silkEffect.stop()
+    const silkEffect = getCreatedEffect(effectInstances, "silkEffect")
+    if (!shouldUseSilk && silkEffect?.active) {
+      silkEffect.stop()
     }
-    if (!shouldUseLightPillar && effectInstances.lightPillarEffect?.active) {
-      effectInstances.lightPillarEffect.stop()
+    const lightPillarEffect = getCreatedEffect(
+      effectInstances,
+      "lightPillarEffect",
+    )
+    if (!shouldUseLightPillar && lightPillarEffect?.active) {
+      lightPillarEffect.stop()
     }
-    if (!shouldUseLiquidEther && effectInstances.liquidEtherEffect?.active) {
-      effectInstances.liquidEtherEffect.stop()
+    const liquidEtherEffect = getCreatedEffect(
+      effectInstances,
+      "liquidEtherEffect",
+    )
+    if (!shouldUseLiquidEther && liquidEtherEffect?.active) {
+      liquidEtherEffect.stop()
     }
-    if (!shouldUseSplashCursor && effectInstances.splashCursorEffect?.active) {
-      effectInstances.splashCursorEffect.stop()
+    const splashCursorEffect = getCreatedEffect(
+      effectInstances,
+      "splashCursorEffect",
+    )
+    if (!shouldUseSplashCursor && splashCursorEffect?.active) {
+      splashCursorEffect.stop()
     }
 
     // 2.1 Background Position
@@ -2199,12 +2206,6 @@ function createApplySettings(effectInstances) {
       }
     }
 
-    if (effectToStart === "stormRain" && selectedEffect?.setOptions) {
-      selectedEffect.setOptions(
-        getEffectPerformanceOptions(settings, "stormRain"),
-      )
-    }
-
     if (effectToStart === "rainHD" && selectedEffect?.setOptions) {
       selectedEffect.setOptions(getEffectPerformanceOptions(settings, "rainHD"))
     }
@@ -2360,6 +2361,19 @@ function createApplySettings(effectInstances) {
           effect.stop()
         }
       })
+
+      const previousEffectKey = EFFECT_KEY_MAP[_prevEffect] || _prevEffect
+      const releasablePreviousEffects = new Set([
+        "pixelSnowHQEffect",
+        "softAuroraEffect",
+      ])
+      if (
+        previousEffectKey &&
+        previousEffectKey !== mappedKey &&
+        releasablePreviousEffects.has(previousEffectKey)
+      ) {
+        effectInstances.releaseEffect?.(previousEffectKey)
+      }
 
       if (effectCanvas) {
         const ctx = effectCanvas.getContext("2d")
@@ -3341,7 +3355,9 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
-    DOM.stormRainColorPicker.value = settings.stormRainColor || "#7dd3fc"
+    if (DOM.musicBarsColorPicker) {
+      DOM.musicBarsColorPicker.value = settings.musicBarsColor || "#8be9fd"
+    }
     DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
     DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
     const oceanWavePos = settings.oceanWavePosition || "bottom"
@@ -3799,9 +3815,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.rainHDColorSetting)
       DOM.rainHDColorSetting.style.display =
         settings.effect === "rainHD" ? "block" : "none"
-    if (DOM.stormRainColorSetting)
-      DOM.stormRainColorSetting.style.display =
-        settings.effect === "stormRain" ? "block" : "none"
+    if (DOM.musicBarsColorSetting)
+      DOM.musicBarsColorSetting.style.display =
+        settings.effect === "musicBars" ? "block" : "none"
     if (DOM.wavyLinesColorSetting)
       DOM.wavyLinesColorSetting.style.display =
         settings.effect === "wavyLines" ? "block" : "none"
@@ -3866,7 +3882,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "plantGrowth",
         "oceanFish",
         "rainHD",
-        "stormRain",
+        "musicBars",
         "wavyLines",
         "oceanWave",
         "cloudDrift",

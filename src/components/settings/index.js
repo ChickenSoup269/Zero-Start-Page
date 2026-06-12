@@ -101,7 +101,7 @@ import { CursorTrailEffect } from "../animations/cursorTrail.js"
 import { FlashlightEffect } from "../animations/flashlight.js"
 import { GridScanEffect } from "../animations/gridScan.js"
 import { RainHDEffect } from "../animations/rainHD.js"
-import { StormRainEffect } from "../animations/stormRain.js"
+import { MusicBarsEffect } from "../animations/musicBars.js"
 import { RainbowBackground } from "../animations/rainbowBackground.js"
 import { WavyLinesEffect } from "../animations/wavyLines.js"
 import { OceanWaveEffect } from "../animations/oceanWave.js"
@@ -203,8 +203,322 @@ function getExtensionVersion() {
   return ""
 }
 
+function createLazyEffects(settings) {
+  const instances = {}
+  const extraProps = {}
+  const factories = {
+    starFallEffect: () => new StarFall("effect-canvas", settings.starColor),
+    firefliesEffect: () => new FirefliesEffect("effect-canvas"),
+    networkEffect: () =>
+      new NetworkEffect(
+        "effect-canvas",
+        settings.networkColor || settings.accentColor,
+      ),
+    matrixRainEffect: () =>
+      new MatrixRain("effect-canvas", settings.matrixColor),
+    auraEffect: () => new AuraEffect("effect-canvas", settings.auraColor),
+    windEffect: () => new WindEffect("effect-canvas", settings.windMode || "2d"),
+    hackerEffect: () =>
+      new HackerEffect("effect-canvas", settings.hackerColor),
+    pixelCubesEffect: () =>
+      new PixelCubes(
+        "effect-canvas",
+        settings.pixelCubesColor,
+        settings.pixelCubesShape,
+      ),
+    sakuraEffect: () =>
+      new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),
+    snowfallEffect: () =>
+      new SnowfallEffect("effect-canvas", settings.snowfallColor || "#ffffff"),
+    snowfallHDEffect: () => new SnowfallHDEffect("effect-canvas"),
+    auroraWaveEffect: () =>
+      new AuroraWaveEffect(
+        "effect-canvas",
+        settings.auroraWaveColor || "#00bcd4",
+      ),
+    northernLightsEffect: () =>
+      new NorthernLightsEffect("effect-canvas", {
+        color: settings.northernLightsColor || "#00ff88",
+        style: settings.northernLightsStyle || "hd",
+        brightness: settings.northernLightsBrightness ?? 0.8,
+      }),
+    bubblesEffect: () =>
+      new BubblesEffect("effect-canvas", settings.bubbleColor || "#60c8ff"),
+    cursorTrailEffect: () =>
+      new CursorTrailEffect(
+        "effect-canvas",
+        settings.cursorTrailColor || "#60c8ff",
+        settings.cursorTrailClickExplosion !== false,
+        settings.cursorTrailRandomColor === true,
+        settings.cursorTrailStyle || "classic",
+      ),
+    flashlightEffect: () =>
+      new FlashlightEffect("effect-canvas", {
+        color: settings.flashlightColor || "#000000",
+        size: settings.flashlightSize || 150,
+        opacity: settings.flashlightOpacity ?? 0.9,
+      }),
+    gridScanEffect: () =>
+      new GridScanEffect("effect-canvas", settings.gridScanColor || "#00ffcc"),
+    rainHDEffect: () =>
+      new RainHDEffect("effect-canvas", settings.rainHDColor || "#99ccff"),
+    musicBarsEffect: () =>
+      new MusicBarsEffect("effect-canvas", settings.musicBarsColor || "#8be9fd"),
+    rainbowEffect: () =>
+      new RainbowBackground("effect-canvas", settings.rainbowDirection || "left"),
+    wavyLinesEffect: () =>
+      new WavyLinesEffect("effect-canvas", settings.wavyLinesColor || "#00bcd4"),
+    oceanWaveEffect: () =>
+      new OceanWaveEffect(
+        "effect-canvas",
+        settings.oceanWaveColor || "#0077b6",
+        settings.oceanWavePosition || "bottom",
+      ),
+    cloudDriftEffect: () =>
+      new CloudDriftEffect("effect-canvas", settings.cloudDriftColor || "#0a0a0a"),
+    firefliesHDEffect: () => new FirefliesHD("effect-canvas"),
+    autumnLeavesEffect: () => new AutumnLeavesEffect("effect-canvas"),
+    greenLeavesEffect: () => new GreenLeavesEffect("effect-canvas"),
+    fallingLeavesSettledEffect: () =>
+      new FallingLeavesSettledEffect(
+        "effect-canvas",
+        settings.fallingLeavesSkin || "maple",
+      ),
+    sunbeamEffect: () =>
+      new SunbeamEffect("effect-canvas", {
+        color: settings.sunbeamColor || "#ffffff",
+        angle: settings.sunbeamAngle ?? 0,
+      }),
+    lightPillarsEffect: () => new LightPillarsEffect("effect-canvas"),
+    pixelWeatherEffect: () =>
+      new PixelWeatherEffect(
+        "effect-canvas",
+        settings.pixelWeatherStyle || "snow",
+      ),
+    shinyEffect: () =>
+      new ShinyEffect("effect-canvas", settings.shinyColor || "#ff0000"),
+    lineShinyEffect: () =>
+      new LineShinyEffect("effect-canvas", settings.lineShinyColor || "#ffffff"),
+    tetFireworksEffect: () => new TetFireworksEffect("effect-canvas", {}),
+    reunificationDayEffect: () =>
+      new ReunificationDayEffect("effect-canvas", {}),
+    halloweenEffect: () => new HalloweenEffect("effect-canvas", {}),
+    skyLanternsEffect: () =>
+      new SkyLanternsEffect("effect-canvas", {
+        type: settings.skyLanternsType || "lantern",
+      }),
+    pixelRunEffect: () =>
+      new PixelRunEffect("effect-canvas", settings.pixelRunColor || "#00e5ff"),
+    nintendoPixelEffect: () =>
+      new NintendoPixelEffect(
+        "effect-canvas",
+        settings.nintendoPixelColor || "#63f5ff",
+      ),
+    retroGameEffect: () =>
+      new RetroGameEffect(
+        "effect-canvas",
+        settings.retroGameColor || "#00ff00",
+        settings.retroGameType || "space_invaders",
+      ),
+    crtScanlinesEffect: () =>
+      new CrtScanlinesEffect("effect-canvas", {
+        scanColor: settings.crtScanColor || "#7cffad",
+        scanFrequency: settings.crtScanFrequency ?? 0.11,
+        scanAngle: settings.crtScanAngle ?? 0,
+        scanDensity: settings.crtScanDensity ?? 4,
+        gamma: settings.crtGamma ?? 0.3,
+        backgroundColor: settings.crtBackgroundColor || "#0a140f",
+      }),
+    meteorEffect: () =>
+      new MeteorEffect(
+        "effect-canvas",
+        settings.meteorColor || settings.starColor || "#ffffff",
+      ),
+    plantGrowthEffect: () =>
+      new PlantGrowthEffect(
+        "effect-canvas",
+        settings.plantGrowthColor || "#4caf50",
+      ),
+    oceanFishEffect: () =>
+      new OceanFishEffect("effect-canvas", settings.oceanFishColor || "#ff7f50"),
+    floatingLinesEffect: () =>
+      new FloatingLinesEffect(
+        "effect-canvas",
+        settings.floatingLinesColor || "#ffffff",
+        settings.floatingLinesAngle || 0,
+      ),
+    pixelBlastEffect: () =>
+      new PixelBlastEffect("effect-canvas", {
+        variant: settings.pixelBlastVariant || "square",
+        pixelSize: settings.pixelBlastSize || 15,
+        color: settings.pixelBlastColor || "#B497CF",
+        enableRipples: settings.pixelBlastRipples !== false,
+        rippleSpeed: settings.pixelBlastRippleSpeed || 0.3,
+        rippleThickness: settings.pixelBlastRippleThickness || 0.1,
+        rippleIntensityScale: settings.pixelBlastRippleIntensity || 1,
+        liquid: settings.pixelBlastLiquid !== false,
+        liquidStrength: settings.pixelBlastLiquidStrength ?? 1.0,
+        cursorRadius: settings.pixelBlastCursorRadius || 150,
+        speed: settings.pixelBlastSpeed || 0.5,
+        edgeFade: settings.pixelBlastEdgeFade || 0.2,
+        transparent: settings.pixelBlastTransparent !== false,
+        backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
+      }),
+    wavyPatternEffect: () =>
+      new WavyPatternEffect(
+        settings.wavyPatternColor1 || "#AB3E5B",
+        settings.wavyPatternColor2 || "#FFBE40",
+      ),
+    angledPatternEffect: () =>
+      new AngledPatternEffect(
+        settings.angledPatternColor1 || "#ECD078",
+        settings.angledPatternColor2 || "#0B486B",
+      ),
+    jellyfishEffect: () =>
+      new Jellyfish(
+        "effect-canvas",
+        settings.jellyfishColor || "#ffaa00",
+        settings.jellyfishType || "jellyfish",
+      ),
+    hyperspaceEffect: () =>
+      new HyperspaceEffect("effect-canvas", settings.accentColor),
+    pixelSnowHQEffect: () =>
+      new PixelSnowEffect("pixel-snow-hq-canvas", {
+        color: settings.pixelSnowHQColor,
+        flakeSize: settings.pixelSnowHQFlakeSize,
+        minFlakeSize: settings.pixelSnowHQMinFlakeSize,
+        pixelResolution: settings.pixelSnowHQPixelResolution,
+        speed: settings.pixelSnowHQSpeed,
+        depthFade: settings.pixelSnowHQDepthFade,
+        farPlane: settings.pixelSnowHQFarPlane,
+        brightness: settings.pixelSnowHQBrightness,
+        gamma: settings.pixelSnowHQGamma,
+        density: settings.pixelSnowHQDensity,
+        variant: settings.pixelSnowHQVariant,
+        direction: settings.pixelSnowHQDirection,
+      }),
+    gradientV2Effect: () =>
+      new GradientV2Effect("gradient-v2-canvas", {
+        color1: settings.gradientV2Color1,
+        color2: settings.gradientV2Color2,
+        color3: settings.gradientV2Color3,
+        timeSpeed: settings.gradientV2TimeSpeed,
+        colorBalance: settings.gradientV2ColorBalance,
+        warpStrength: settings.gradientV2WarpStrength,
+        warpFrequency: settings.gradientV2WarpFrequency,
+        warpSpeed: settings.gradientV2WarpSpeed,
+        warpAmplitude: settings.gradientV2WarpAmplitude,
+        blendAngle: settings.gradientV2BlendAngle,
+        blendSoftness: settings.gradientV2BlendSoftness,
+        rotationAmount: settings.gradientV2RotationAmount,
+        noiseScale: settings.gradientV2NoiseScale,
+        grainAmount: settings.gradientV2GrainAmount,
+        grainScale: settings.gradientV2GrainScale,
+        grainAnimated: settings.gradientV2GrainAnimated,
+        contrast: settings.gradientV2Contrast,
+        gamma: settings.gradientV2Gamma,
+        saturation: settings.gradientV2Saturation,
+        centerX: settings.gradientV2CenterX,
+        centerY: settings.gradientV2CenterY,
+        zoom: settings.gradientV2Zoom,
+      }),
+    softAuroraEffect: () =>
+      new SoftAuroraEffect("soft-aurora-canvas", {
+        speed: settings.softAuroraSpeed,
+        scale: settings.softAuroraScale,
+        brightness: settings.softAuroraBrightness,
+        color1: settings.softAuroraColor1,
+        color2: settings.softAuroraColor2,
+        noiseFrequency: settings.softAuroraNoiseFreq,
+        bandHeight: settings.softAuroraBandHeight,
+        bandSpread: settings.softAuroraBandSpread,
+        enableMouseInteraction: settings.softAuroraEnableMouse,
+      }),
+    silkEffect: () =>
+      new SilkEffect("silk-canvas", {
+        color: settings.silkColor,
+        speed: settings.silkSpeed,
+        scale: settings.silkScale,
+        noise: settings.silkNoise,
+        rotation: settings.silkRotation,
+      }),
+    liquidEtherEffect: () => new LiquidEther("liquid-ether-canvas"),
+    splashCursorEffect: () =>
+      new SplashCursor(
+        "splash-cursor-canvas",
+        splashCursorOptionsFromSettings(settings),
+      ),
+    lightPillarEffect: () =>
+      new LightPillarEffect("light-pillar-canvas", {
+        topColor: settings.lightPillarTopColor,
+        bottomColor: settings.lightPillarBottomColor,
+        intensity: settings.lightPillarIntensity,
+        rotationSpeed: settings.lightPillarRotationSpeed,
+        glowAmount: settings.lightPillarGlowAmount,
+        pillarWidth: settings.lightPillarWidth,
+        pillarHeight: settings.lightPillarHeight,
+        noiseIntensity: settings.lightPillarNoiseIntensity,
+        pillarRotation: settings.lightPillarRotation,
+      }),
+    svgWaveEffect: () => new SvgWaveGenerator(),
+  }
+
+  const getEffect = (key) => {
+    if (!factories[key]) return undefined
+    if (!Object.prototype.hasOwnProperty.call(instances, key)) {
+      instances[key] = factories[key]()
+    }
+    return instances[key]
+  }
+  const releaseEffect = (key) => {
+    if (!Object.prototype.hasOwnProperty.call(instances, key)) return
+    const effect = instances[key]
+    if (effect?.active && typeof effect.stop === "function") effect.stop()
+    if (typeof effect?.destroy === "function") {
+      effect.destroy()
+    } else if (typeof effect?.dispose === "function") {
+      effect.dispose()
+    } else if (typeof effect?.stop === "function") {
+      effect.stop()
+    }
+    delete instances[key]
+  }
+
+  return new Proxy(extraProps, {
+    get(target, prop) {
+      if (prop === "getEffect") return getEffect
+      if (prop === "hasEffect") return (key) => Boolean(instances[key])
+      if (prop === "releaseEffect") return releaseEffect
+      if (prop in target) return target[prop]
+      if (prop in factories) return getEffect(prop)
+      return undefined
+    },
+    set(target, prop, value) {
+      target[prop] = value
+      return true
+    },
+    ownKeys(target) {
+      return Reflect.ownKeys(instances).concat(Reflect.ownKeys(target))
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      if (prop in instances) {
+        return { configurable: true, enumerable: true, value: instances[prop] }
+      }
+      if (prop in target) {
+        return { configurable: true, enumerable: false, value: target[prop] }
+      }
+      return undefined
+    },
+  })
+}
+
 export function initSettings() {
   const settings = getSettings()
+  if (settings.effect === "stormRain") {
+    updateSetting("effect", "musicBars")
+    saveSettings()
+    settings.effect = "musicBars"
+  }
   if (DOM_EXPORTS.settingsVersion) {
     const version = getExtensionVersion()
     DOM_EXPORTS.settingsVersion.textContent = version ? `v${version}` : ""
@@ -217,261 +531,11 @@ export function initSettings() {
     effectCountSpan.textContent = `(${effectItemCount - 1})`
   }
 
-  // Create effect instances
-  const effects = {
-    starFallEffect: new StarFall("effect-canvas", settings.starColor),
-    firefliesEffect: new FirefliesEffect("effect-canvas"),
-    networkEffect: new NetworkEffect(
-      "effect-canvas",
-      settings.networkColor || settings.accentColor,
-    ),
-    matrixRainEffect: new MatrixRain("effect-canvas", settings.matrixColor),
-    auraEffect: new AuraEffect("effect-canvas", settings.auraColor),
-    windEffect: new WindEffect("effect-canvas", settings.windMode || "2d"),
-    hackerEffect: new HackerEffect("effect-canvas", settings.hackerColor),
-    pixelCubesEffect: new PixelCubes(
-      "effect-canvas",
-      settings.pixelCubesColor,
-      settings.pixelCubesShape,
-    ),
-    sakuraEffect: new SakuraEffect(
-      "effect-canvas",
-      settings.sakuraColor || "#ffb7c5",
-    ),
-    snowfallEffect: new SnowfallEffect(
-      "effect-canvas",
-      settings.snowfallColor || "#ffffff",
-    ),
-    snowfallHDEffect: new SnowfallHDEffect("effect-canvas"),
-    auroraWaveEffect: new AuroraWaveEffect(
-      "effect-canvas",
-      settings.auroraWaveColor || "#00bcd4",
-    ),
-    northernLightsEffect: new NorthernLightsEffect("effect-canvas", {
-      color: settings.northernLightsColor || "#00ff88",
-      style: settings.northernLightsStyle || "hd",
-      brightness: settings.northernLightsBrightness ?? 0.8,
-    }),
-    bubblesEffect: new BubblesEffect(
-      "effect-canvas",
-      settings.bubbleColor || "#60c8ff",
-    ),
-    cursorTrailEffect: new CursorTrailEffect(
-      "effect-canvas",
-      settings.cursorTrailColor || "#60c8ff",
-      settings.cursorTrailClickExplosion !== false,
-      settings.cursorTrailRandomColor === true,
-      settings.cursorTrailStyle || "classic",
-    ),
-    flashlightEffect: new FlashlightEffect("effect-canvas", {
-      color: settings.flashlightColor || "#000000",
-      size: settings.flashlightSize || 150,
-      opacity: settings.flashlightOpacity ?? 0.9,
-    }),
-
-    gridScanEffect: new GridScanEffect(
-      "effect-canvas",
-      settings.gridScanColor || "#00ffcc",
-    ),
-    rainHDEffect: new RainHDEffect(
-      "effect-canvas",
-      settings.rainHDColor || "#99ccff",
-    ),
-    stormRainEffect: new StormRainEffect("effect-canvas", {
-      rainColor: settings.stormRainColor || "#7dd3fc",
-    }),
-    rainbowEffect: new RainbowBackground(
-      "effect-canvas",
-      settings.rainbowDirection || "left",
-    ),
-    wavyLinesEffect: new WavyLinesEffect(
-      "effect-canvas",
-      settings.wavyLinesColor || "#00bcd4",
-    ),
-    oceanWaveEffect: new OceanWaveEffect(
-      "effect-canvas",
-      settings.oceanWaveColor || "#0077b6",
-      settings.oceanWavePosition || "bottom",
-    ),
-    cloudDriftEffect: new CloudDriftEffect(
-      "effect-canvas",
-      settings.cloudDriftColor || "#0a0a0a",
-    ),
-    firefliesHDEffect: new FirefliesHD("effect-canvas"),
-    autumnLeavesEffect: new AutumnLeavesEffect("effect-canvas"),
-    greenLeavesEffect: new GreenLeavesEffect("effect-canvas"),
-    fallingLeavesSettledEffect: new FallingLeavesSettledEffect(
-      "effect-canvas",
-      settings.fallingLeavesSkin || "maple",
-    ),
-    sunbeamEffect: new SunbeamEffect("effect-canvas", {
-      color: settings.sunbeamColor || "#ffffff",
-      angle: settings.sunbeamAngle ?? 0,
-    }),
-    lightPillarsEffect: new LightPillarsEffect("effect-canvas"),
-    pixelWeatherEffect: new PixelWeatherEffect(
-      "effect-canvas",
-      settings.pixelWeatherStyle || "snow",
-    ),
-    shinyEffect: new ShinyEffect(
-      "effect-canvas",
-      settings.shinyColor || "#ff0000",
-    ),
-    lineShinyEffect: new LineShinyEffect(
-      "effect-canvas",
-      settings.lineShinyColor || "#ffffff",
-    ),
-    tetFireworksEffect: new TetFireworksEffect("effect-canvas", {}),
-    reunificationDayEffect: new ReunificationDayEffect("effect-canvas", {}),
-    halloweenEffect: new HalloweenEffect("effect-canvas", {}),
-    skyLanternsEffect: new SkyLanternsEffect("effect-canvas", {
-      type: settings.skyLanternsType || "lantern",
-    }),
-    pixelRunEffect: new PixelRunEffect(
-      "effect-canvas",
-      settings.pixelRunColor || "#00e5ff",
-    ),
-
-    nintendoPixelEffect: new NintendoPixelEffect(
-      "effect-canvas",
-      settings.nintendoPixelColor || "#63f5ff",
-    ),
-    retroGameEffect: new RetroGameEffect(
-      "effect-canvas",
-      settings.retroGameColor || "#00ff00",
-      settings.retroGameType || "space_invaders",
-    ),
-    crtScanlinesEffect: new CrtScanlinesEffect("effect-canvas", {
-      scanColor: settings.crtScanColor || "#7cffad",
-      scanFrequency: settings.crtScanFrequency ?? 0.11,
-      scanAngle: settings.crtScanAngle ?? 0,
-      scanDensity: settings.crtScanDensity ?? 4,
-      gamma: settings.crtGamma ?? 0.3,
-      backgroundColor: settings.crtBackgroundColor || "#0a140f",
-    }),
-    meteorEffect: new MeteorEffect(
-      "effect-canvas",
-      settings.meteorColor || settings.starColor || "#ffffff",
-    ),
-    plantGrowthEffect: new PlantGrowthEffect(
-      "effect-canvas",
-      settings.plantGrowthColor || "#4caf50",
-    ),
-    oceanFishEffect: new OceanFishEffect(
-      "effect-canvas",
-      settings.oceanFishColor || "#ff7f50",
-    ),
-    floatingLinesEffect: new FloatingLinesEffect(
-      "effect-canvas",
-      settings.floatingLinesColor || "#ffffff",
-      settings.floatingLinesAngle || 0,
-    ),
-    pixelBlastEffect: new PixelBlastEffect("effect-canvas", {
-      variant: settings.pixelBlastVariant || "square",
-      pixelSize: settings.pixelBlastSize || 15,
-      color: settings.pixelBlastColor || "#B497CF",
-      enableRipples: settings.pixelBlastRipples !== false,
-      rippleSpeed: settings.pixelBlastRippleSpeed || 0.3,
-      rippleThickness: settings.pixelBlastRippleThickness || 0.1,
-      rippleIntensityScale: settings.pixelBlastRippleIntensity || 1,
-      liquid: settings.pixelBlastLiquid !== false,
-      liquidStrength: settings.pixelBlastLiquidStrength ?? 1.0,
-      cursorRadius: settings.pixelBlastCursorRadius || 150,
-      speed: settings.pixelBlastSpeed || 0.5,
-      edgeFade: settings.pixelBlastEdgeFade || 0.2,
-      transparent: settings.pixelBlastTransparent !== false,
-      backgroundColor: settings.pixelBlastBgColor || "#0a0a0a",
-    }),
-    wavyPatternEffect: new WavyPatternEffect(
-      settings.wavyPatternColor1 || "#AB3E5B",
-      settings.wavyPatternColor2 || "#FFBE40",
-    ),
-    angledPatternEffect: new AngledPatternEffect(
-      settings.angledPatternColor1 || "#ECD078",
-      settings.angledPatternColor2 || "#0B486B",
-    ),
-    jellyfishEffect: new Jellyfish(
-      "effect-canvas",
-      settings.jellyfishColor || "#ffaa00",
-      settings.jellyfishType || "jellyfish",
-    ),
-    hyperspaceEffect: new HyperspaceEffect(
-      "effect-canvas",
-      settings.accentColor,
-    ),
-    pixelSnowHQEffect: new PixelSnowEffect("pixel-snow-hq-canvas", {
-      color: settings.pixelSnowHQColor,
-      flakeSize: settings.pixelSnowHQFlakeSize,
-      minFlakeSize: settings.pixelSnowHQMinFlakeSize,
-      pixelResolution: settings.pixelSnowHQPixelResolution,
-      speed: settings.pixelSnowHQSpeed,
-      depthFade: settings.pixelSnowHQDepthFade,
-      farPlane: settings.pixelSnowHQFarPlane,
-      brightness: settings.pixelSnowHQBrightness,
-      gamma: settings.pixelSnowHQGamma,
-      density: settings.pixelSnowHQDensity,
-      variant: settings.pixelSnowHQVariant,
-      direction: settings.pixelSnowHQDirection,
-    }),
-    gradientV2Effect: new GradientV2Effect("gradient-v2-canvas", {
-      color1: settings.gradientV2Color1,
-      color2: settings.gradientV2Color2,
-      color3: settings.gradientV2Color3,
-      timeSpeed: settings.gradientV2TimeSpeed,
-      colorBalance: settings.gradientV2ColorBalance,
-      warpStrength: settings.gradientV2WarpStrength,
-      warpFrequency: settings.gradientV2WarpFrequency,
-      warpSpeed: settings.gradientV2WarpSpeed,
-      warpAmplitude: settings.gradientV2WarpAmplitude,
-      blendAngle: settings.gradientV2BlendAngle,
-      blendSoftness: settings.gradientV2BlendSoftness,
-      rotationAmount: settings.gradientV2RotationAmount,
-      noiseScale: settings.gradientV2NoiseScale,
-      grainAmount: settings.gradientV2GrainAmount,
-      grainScale: settings.gradientV2GrainScale,
-      grainAnimated: settings.gradientV2GrainAnimated,
-      contrast: settings.gradientV2Contrast,
-      gamma: settings.gradientV2Gamma,
-      saturation: settings.gradientV2Saturation,
-      centerX: settings.gradientV2CenterX,
-      centerY: settings.gradientV2CenterY,
-      zoom: settings.gradientV2Zoom,
-    }),
-    softAuroraEffect: new SoftAuroraEffect("soft-aurora-canvas", {
-      speed: settings.softAuroraSpeed,
-      scale: settings.softAuroraScale,
-      brightness: settings.softAuroraBrightness,
-      color1: settings.softAuroraColor1,
-      color2: settings.softAuroraColor2,
-      noiseFrequency: settings.softAuroraNoiseFreq,
-      bandHeight: settings.softAuroraBandHeight,
-      bandSpread: settings.softAuroraBandSpread,
-      enableMouseInteraction: settings.softAuroraEnableMouse,
-    }),
-    silkEffect: new SilkEffect("silk-canvas", {
-      color: settings.silkColor,
-      speed: settings.silkSpeed,
-      scale: settings.silkScale,
-      noise: settings.silkNoise,
-      rotation: settings.silkRotation,
-    }),
-    liquidEtherEffect: new LiquidEther("liquid-ether-canvas"),
-    splashCursorEffect: new SplashCursor(
-      "splash-cursor-canvas",
-      splashCursorOptionsFromSettings(settings),
-    ),
-    lightPillarEffect: new LightPillarEffect("light-pillar-canvas", {
-      topColor: settings.lightPillarTopColor,
-      bottomColor: settings.lightPillarBottomColor,
-      intensity: settings.lightPillarIntensity,
-      rotationSpeed: settings.lightPillarRotationSpeed,
-      glowAmount: settings.lightPillarGlowAmount,
-      pillarWidth: settings.lightPillarWidth,
-      pillarHeight: settings.lightPillarHeight,
-      noiseIntensity: settings.lightPillarNoiseIntensity,
-      pillarRotation: settings.lightPillarRotation,
-    }),
-    svgWaveEffect: new SvgWaveGenerator(),
+  // Effect instances are created on first use to keep the new-tab baseline light.
+  const effects = createLazyEffects(settings)
+  const getActiveOrCreatedEffect = (key, isActive = false) => {
+    if (!isActive && !effects.hasEffect?.(key)) return null
+    return effects[key] || null
   }
 
   // Build utilities context
@@ -495,7 +559,7 @@ export function initSettings() {
     renderLocalBackgrounds(DOM_EXPORTS, handleSettingUpdate)
     renderUserColors(DOM_EXPORTS)
     renderUserGradients(DOM_EXPORTS)
-    renderUserSvgWaves(DOM_EXPORTS, effects.svgWaveEffect, () => {
+    renderUserSvgWaves(DOM_EXPORTS, () => effects.svgWaveEffect, () => {
       handleSettingUpdate("svgWaveActive", true)
     })
     renderUserGradientV2s(DOM_EXPORTS)
@@ -1285,7 +1349,7 @@ export function initSettings() {
   }
 
   // Initialize Gradient V2 Manager
-  initGradientV2Manager(DOM_EXPORTS, effects.gradientV2Effect, (k, v) => {
+  initGradientV2Manager(DOM_EXPORTS, () => effects.gradientV2Effect, (k, v) => {
     handleSettingUpdate(k, v)
   })
 
@@ -1326,7 +1390,7 @@ export function initSettings() {
   // Initialize multi-select modes and file uploads
   setupMultiSelectMode(DOM_EXPORTS, handleSettingUpdate)
   setupGradientMultiSelect(DOM_EXPORTS)
-  setupSvgWaveMultiSelect(DOM_EXPORTS, effects.svgWaveEffect)
+  setupSvgWaveMultiSelect(DOM_EXPORTS, () => effects.svgWaveEffect)
   setupFileUploads(DOM_EXPORTS, handleSettingUpdate)
 
   // Initialize Effect Color Handlers
@@ -1461,11 +1525,15 @@ export function initSettings() {
         updateSetting(prop.id, val)
 
         // Live update for performance (avoid full applySettings)
-        if (settings.effect === "pixelSnowHQ" && effects.pixelSnowHQEffect) {
+        const pixelSnowEffect = getActiveOrCreatedEffect(
+          "pixelSnowHQEffect",
+          getSettings().effect === "pixelSnowHQ",
+        )
+        if (pixelSnowEffect) {
           const optKey =
             prop.id.replace("pixelSnowHQ", "").charAt(0).toLowerCase() +
             prop.id.replace("pixelSnowHQ", "").slice(1)
-          effects.pixelSnowHQEffect.setOptions({ [optKey]: val })
+          pixelSnowEffect.setOptions({ [optKey]: val })
         }
       })
       // Save only on mouse up/change to reduce disk/storage IO
@@ -1477,8 +1545,12 @@ export function initSettings() {
     DOM_EXPORTS.pixelSnowHQVariantSelect.addEventListener("change", (e) => {
       const val = e.target.value
       handleSettingUpdate("pixelSnowHQVariant", val)
-      if (effects.pixelSnowHQEffect) {
-        effects.pixelSnowHQEffect.setOptions({ variant: val })
+      const pixelSnowEffect = getActiveOrCreatedEffect(
+        "pixelSnowHQEffect",
+        getSettings().effect === "pixelSnowHQ",
+      )
+      if (pixelSnowEffect) {
+        pixelSnowEffect.setOptions({ variant: val })
       }
     })
   }
@@ -1487,15 +1559,23 @@ export function initSettings() {
   if (DOM_EXPORTS.softAuroraColor1Picker) {
     DOM_EXPORTS.softAuroraColor1Picker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraColor1", e.target.value)
-      if (effects.softAuroraEffect)
-        effects.softAuroraEffect.setOptions({ color1: e.target.value })
+      const softAuroraEffect = getActiveOrCreatedEffect(
+        "softAuroraEffect",
+        getSettings().effect === "softAurora",
+      )
+      if (softAuroraEffect)
+        softAuroraEffect.setOptions({ color1: e.target.value })
     })
   }
   if (DOM_EXPORTS.softAuroraColor2Picker) {
     DOM_EXPORTS.softAuroraColor2Picker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraColor2", e.target.value)
-      if (effects.softAuroraEffect)
-        effects.softAuroraEffect.setOptions({ color2: e.target.value })
+      const softAuroraEffect = getActiveOrCreatedEffect(
+        "softAuroraEffect",
+        getSettings().effect === "softAurora",
+      )
+      if (softAuroraEffect)
+        softAuroraEffect.setOptions({ color2: e.target.value })
     })
   }
   if (DOM_EXPORTS.softAuroraRandomColorsBtn) {
@@ -1604,8 +1684,12 @@ export function initSettings() {
 
       saveSettings()
 
-      if (effects.softAuroraEffect)
-        effects.softAuroraEffect.setOptions({
+      const softAuroraEffect = getActiveOrCreatedEffect(
+        "softAuroraEffect",
+        getSettings().effect === "softAurora",
+      )
+      if (softAuroraEffect)
+        softAuroraEffect.setOptions({
           color1: config.color1,
           color2: config.color2,
           speed: config.speed,
@@ -1673,14 +1757,18 @@ export function initSettings() {
           )
         updateSetting(prop.id, val)
 
-        if (settings.effect === "softAurora" && effects.softAuroraEffect) {
+        const softAuroraEffect = getActiveOrCreatedEffect(
+          "softAuroraEffect",
+          getSettings().effect === "softAurora",
+        )
+        if (softAuroraEffect) {
           const optKey =
             prop.id.replace("softAurora", "").charAt(0).toLowerCase() +
             prop.id.replace("softAurora", "").slice(1)
           let mappedKey = optKey
           if (optKey === "noiseFreq") mappedKey = "noiseFrequency"
           if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
-          effects.softAuroraEffect.setOptions({ [mappedKey]: val })
+          softAuroraEffect.setOptions({ [mappedKey]: val })
         }
       })
       prop.dom.addEventListener("change", () => saveSettings())
@@ -1729,13 +1817,17 @@ export function initSettings() {
           prop.val.textContent = val.toFixed(prop.id.includes("Decay") ? 2 : 1)
         updateSetting(prop.id, val)
 
-        if (settings.effect === "softAurora" && effects.softAuroraEffect) {
+        const softAuroraEffect = getActiveOrCreatedEffect(
+          "softAuroraEffect",
+          getSettings().effect === "softAurora",
+        )
+        if (softAuroraEffect) {
           const optKey =
             prop.id.replace("softAurora", "").charAt(0).toLowerCase() +
             prop.id.replace("softAurora", "").slice(1)
           let mappedKey = optKey
           if (optKey === "noiseAmp") mappedKey = "noiseAmplitude"
-          effects.softAuroraEffect.setOptions({ [mappedKey]: val })
+          softAuroraEffect.setOptions({ [mappedKey]: val })
         }
       })
       prop.dom.addEventListener("change", () => saveSettings())
@@ -1745,8 +1837,12 @@ export function initSettings() {
   if (DOM_EXPORTS.softAuroraMouseCheckbox) {
     DOM_EXPORTS.softAuroraMouseCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraEnableMouse", e.target.checked)
-      if (effects.softAuroraEffect)
-        effects.softAuroraEffect.setOptions({
+      const softAuroraEffect = getActiveOrCreatedEffect(
+        "softAuroraEffect",
+        getSettings().effect === "softAurora",
+      )
+      if (softAuroraEffect)
+        softAuroraEffect.setOptions({
           enableMouseInteraction: e.target.checked,
         })
     })
@@ -1763,8 +1859,12 @@ export function initSettings() {
             ? "none"
             : "block"
         }
-        if (effects.softAuroraEffect)
-          effects.softAuroraEffect.setOptions({ transparent: isTransparent })
+        const softAuroraEffect = getActiveOrCreatedEffect(
+          "softAuroraEffect",
+          getSettings().effect === "softAurora",
+        )
+        if (softAuroraEffect)
+          softAuroraEffect.setOptions({ transparent: isTransparent })
       },
     )
   }
@@ -1772,8 +1872,12 @@ export function initSettings() {
   if (DOM_EXPORTS.softAuroraBgColorPicker) {
     DOM_EXPORTS.softAuroraBgColorPicker.addEventListener("change", (e) => {
       handleSettingUpdate("softAuroraBackgroundColor", e.target.value)
-      if (effects.softAuroraEffect)
-        effects.softAuroraEffect.setOptions({ backgroundColor: e.target.value })
+      const softAuroraEffect = getActiveOrCreatedEffect(
+        "softAuroraEffect",
+        getSettings().effect === "softAurora",
+      )
+      if (softAuroraEffect)
+        softAuroraEffect.setOptions({ backgroundColor: e.target.value })
     })
   }
 

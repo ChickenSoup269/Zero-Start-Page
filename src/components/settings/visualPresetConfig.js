@@ -107,7 +107,7 @@ export const VISUAL_EFFECT_KEYS = [
   "sunbeamAngle",
   "bubbleColor",
   "rainHDColor",
-  "stormRainColor",
+  "musicBarsColor",
   "wavyLinesColor",
   "oceanWaveColor",
   "oceanWavePosition",
