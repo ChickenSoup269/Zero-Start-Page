@@ -3161,6 +3161,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkLimit20) {
         DOM.bookmarkLimit20.checked = settings.bookmarkLimit20 !== false
       }
+      if (DOM.showAddBookmarkButton) {
+        DOM.showAddBookmarkButton.checked =
+          settings.showAddBookmarkButton !== false
+      }
       if (DOM.bookmarkGroupShowCount) {
         DOM.bookmarkGroupShowCount.checked =
           settings.bookmarkGroupShowCount !== false

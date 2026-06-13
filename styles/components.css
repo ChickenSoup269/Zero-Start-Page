@@ -238,6 +238,220 @@
   width: 520px;
 }
 
+.settings-scroll-highlight {
+  animation: settings-scroll-highlight 1.3s ease;
+}
+
+@keyframes settings-scroll-highlight {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  20%,
+  70% {
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+  }
+}
+
+#bookmark-modal .bookmark-modal-content {
+  width: min(500px, 94vw);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.025)
+    ),
+    rgba(15, 18, 25, 0.94);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+
+#bookmark-modal .bookmark-modal-content.import-mode {
+  width: min(620px, 94vw);
+}
+
+#bookmark-modal .modal-header {
+  margin-bottom: 0;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border-bottom-color: rgba(255, 255, 255, 0.09);
+}
+
+#bookmark-modal .modal-header-left {
+  min-width: 0;
+  gap: 10px;
+}
+
+#bookmark-modal .modal-header-left::before {
+  content: "\f02e";
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+  color: var(--accent-color, #a8c0ff);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+#bookmark-modal .modal-content.import-mode .modal-header-left::before {
+  content: "\f019";
+}
+
+#bookmark-modal #modal-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.05rem;
+  font-weight: 780;
+}
+
+#bookmark-modal .modal-body {
+  padding: 14px 16px 16px;
+}
+
+#bookmark-modal .modal-body > *:first-child {
+  margin-top: 0 !important;
+}
+
+#bookmark-modal .bookmark-modal-form {
+  display: grid;
+  gap: 0;
+}
+
+#bookmark-modal .modal-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.035);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#bookmark-modal .bookmark-modal-form > .modal-input-group + .modal-input-group {
+  margin-top: 12px;
+}
+
+#bookmark-modal .modal-input-group:focus-within {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.48);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+}
+
+#bookmark-modal .modal-input-icon {
+  position: static;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  color: rgba(255, 255, 255, 0.62);
+  transform: none;
+  font-size: 0.82rem;
+}
+
+#bookmark-modal .modal-input-group:focus-within .modal-input-icon {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.22);
+  color: var(--accent-color, #a8c0ff);
+}
+
+#bookmark-modal .modal-content input {
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 0.92rem;
+}
+
+#bookmark-modal .modal-content input:focus {
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+#bookmark-modal .modal-actions {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px !important;
+  margin-top: 6px !important;
+}
+
+#bookmark-modal .modal-actions .primary-btn,
+#bookmark-modal .modal-actions .secondary-btn {
+  width: auto !important;
+  min-width: 0;
+  height: 42px !important;
+  border-radius: var(--radius-sm);
+}
+
+#bookmark-modal .modal-import-trigger-btn {
+  white-space: normal;
+}
+
+#bookmark-modal #import-section {
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+#bookmark-modal .bookmark-tree-container {
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+body.context-menu-light #bookmark-modal .bookmark-modal-content,
+body.context-menu-macos #bookmark-modal .bookmark-modal-content {
+  background: rgba(255, 255, 255, 0.88);
+  color: #17171c;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.context-menu-light #bookmark-modal .modal-header,
+body.context-menu-macos #bookmark-modal .modal-header,
+body.context-menu-light #bookmark-modal .modal-input-group,
+body.context-menu-macos #bookmark-modal .modal-input-group,
+body.context-menu-light #bookmark-modal #import-section,
+body.context-menu-macos #bookmark-modal #import-section {
+  background: rgba(0, 0, 0, 0.035);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.context-menu-light #bookmark-modal .modal-content input,
+body.context-menu-macos #bookmark-modal .modal-content input {
+  color: #17171c;
+}
+
+body.context-menu-light #bookmark-modal .modal-content input::placeholder,
+body.context-menu-macos #bookmark-modal .modal-content input::placeholder {
+  color: rgba(0, 0, 0, 0.42);
+}
+
+@media (max-width: 520px) {
+  #bookmark-modal .modal-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;

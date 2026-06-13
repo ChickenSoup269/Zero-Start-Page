@@ -1104,6 +1104,9 @@ export const bookmarkOpenInNewTab = document.getElementById(
   "bookmark-open-new-tab",
 )
 export const bookmarkLimit20 = document.getElementById("bookmark-limit-20")
+export const showAddBookmarkButton = document.getElementById(
+  "show-add-bookmark-button",
+)
 export const hideBookmarkText = document.getElementById("hide-bookmark-text")
 export const hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export const bookmarkMacosHover = document.getElementById(

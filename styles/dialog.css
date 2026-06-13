@@ -486,6 +486,20 @@
   opacity: 0;
 }
 
+.first-run-tour-card.is-bottom-target::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -11px;
+  width: 18px;
+  height: 18px;
+  background: rgba(15, 18, 25, 0.96);
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  transform: translateX(-50%) rotate(45deg);
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.22);
+}
+
 .first-run-tour-overlay.is-ready .first-run-tour-spotlight,
 .first-run-tour-overlay.is-ready .first-run-tour-card {
   opacity: 1;

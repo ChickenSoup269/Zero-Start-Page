@@ -248,6 +248,60 @@ async function bootstrap() {
   initModal()
   initGoogleApps()
   initCommandPalette()
+
+  const backgroundContextExclusions = [
+    "#context-menu",
+    "#settings-sidebar",
+    "#settings-toggle",
+    "#top-right-controls",
+    "#quick-access-bar",
+    "#layout-controls-popup",
+    "#search-container",
+    "#clock-date-wrap",
+    "#custom-title-display",
+    "#todo-container",
+    "#timer-component",
+    "#music-player-container",
+    "#full-calendar-container",
+    "#notepad-container",
+    "#daily-quotes",
+    ".modal",
+    ".custom-dialog-overlay",
+    ".first-run-tour-overlay",
+    "#startup-overlay",
+    ".startup-overlay",
+  ].join(", ")
+
+  document.addEventListener("contextmenu", (event) => {
+    if (event.defaultPrevented) return
+    if (event.target.closest?.(backgroundContextExclusions)) return
+
+    event.preventDefault()
+    showContextMenu(event.clientX, event.clientY, -1, "background")
+  })
+
+  const widgetContextTargets = [
+    ["#clock-date-wrap", "clock"],
+    ["#todo-container", "todo"],
+    ["#timer-component", "timer"],
+    ["#music-player-container", "music"],
+    ["#full-calendar-container", "calendar"],
+    ["#notepad-container", "notepad"],
+    ["#daily-quotes", "daily-quotes"],
+  ]
+
+  document.addEventListener("contextmenu", (event) => {
+    if (event.defaultPrevented) return
+    const match = widgetContextTargets.find(([selector]) =>
+      event.target.closest?.(selector),
+    )
+    if (!match) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    showContextMenu(event.clientX, event.clientY, -1, "widget", match[1])
+  })
+
   setTimeout(
     () => promptFirstRunBookmarkImport(renderBookmarks),
     skipStartupLoader ? 500 : 1800,

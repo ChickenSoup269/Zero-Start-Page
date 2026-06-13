@@ -816,6 +816,15 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Turn page modules on or off, flip layout direction, adjust quick controls, and replay this guide when needed.",
     },
     {
+      virtualTarget: "chrome-bottom-bar",
+      placement: "bottom",
+      icon: "fa-brands fa-chrome",
+      title: i18n.first_run_guide_chrome_bar_title || "Chrome bottom bar",
+      text:
+        i18n.first_run_guide_chrome_bar_desc ||
+        "If you see Customize Chrome or Thanh tuy chinh Chrome at the bottom of the new tab page, right-click that bar and choose Hide customize Chrome bar.",
+    },
+    {
       selector: "#show-top-right-controls-checkbox",
       icon: "fa-brands fa-google",
       title: i18n.google_apps_tooltip || "Google Apps",
@@ -857,6 +866,24 @@ function getGuideTarget(selector) {
     return target.closest(".setting-group") || target
   }
   return target
+}
+
+function getVirtualGuideRect(target) {
+  if (target !== "chrome-bottom-bar") return null
+
+  const width = Math.min(620, window.innerWidth - 28)
+  const height = 58
+  const left = Math.max(14, (window.innerWidth - width) / 2)
+  const top = Math.max(14, window.innerHeight - height - 18)
+
+  return {
+    left,
+    top,
+    width,
+    height,
+    right: left + width,
+    bottom: top + height,
+  }
 }
 
 function waitForSettingsSidebarOpen(sidebar, timeout = 2500) {
@@ -914,7 +941,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
   const i18n = geti18n()
   const steps = getFirstRunSettingsGuideSteps(i18n).filter((step) =>
-    document.querySelector(step.selector),
+    step.virtualTarget ? getVirtualGuideRect(step.virtualTarget) : document.querySelector(step.selector),
   )
   if (!steps.length) {
     localStorage.setItem(FIRST_RUN_SETTINGS_GUIDE_KEY, "empty")
@@ -989,7 +1016,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       resolve()
     }
 
-    const positionCard = (targetRect) => {
+    const positionCard = (targetRect, step = {}) => {
       const gap = 14
       const cardRect = card.getBoundingClientRect()
       const viewportWidth = window.innerWidth
@@ -998,6 +1025,14 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
       let left = sidebarRect.right + gap
       let top = targetRect.top + targetRect.height / 2 - cardRect.height / 2
+
+      if (step.placement === "bottom") {
+        left = Math.min(
+          viewportWidth - cardRect.width - gap,
+          Math.max(gap, targetRect.left + targetRect.width / 2 - cardRect.width / 2),
+        )
+        top = Math.max(gap, targetRect.top - cardRect.height - 22)
+      }
 
       if (left + cardRect.width > viewportWidth - gap) {
         left = Math.max(gap, viewportWidth - cardRect.width - gap)
@@ -1020,13 +1055,16 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       sidebar.classList.add("open")
       await waitForSettingsSidebarOpen(sidebar)
       const step = steps[index]
-      const section = document.querySelector(step.selector)
+      const section = step.selector ? document.querySelector(step.selector) : null
       if (section?.classList?.contains("settings-section")) {
         setSettingsSectionExpanded(section, true)
       }
 
-      const target = getGuideTarget(step.selector)
-      if (!target) {
+      const target = step.virtualTarget ? null : getGuideTarget(step.selector)
+      const virtualRect = step.virtualTarget
+        ? getVirtualGuideRect(step.virtualTarget)
+        : null
+      if (!target && !virtualRect) {
         finish("target-missing")
         return
       }
@@ -1034,10 +1072,13 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       document
         .querySelectorAll(".first-run-tour-highlight")
         .forEach((el) => el.classList.remove("first-run-tour-highlight"))
-      target.classList.add("first-run-tour-highlight")
+      overlay.classList.toggle("is-bottom-target", step.placement === "bottom")
+      card.classList.toggle("is-bottom-target", step.placement === "bottom")
+
+      if (target) target.classList.add("first-run-tour-highlight")
 
       await waitForAnimationFrames(2)
-      const rect = await scrollGuideTargetIntoView(sidebarContent, target)
+      const rect = virtualRect || (await scrollGuideTargetIntoView(sidebarContent, target))
       spotlight.style.left = `${rect.left - 8}px`
       spotlight.style.top = `${rect.top - 8}px`
       spotlight.style.width = `${rect.width + 16}px`
@@ -1064,7 +1105,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
           ? i18n.first_run_guide_done || "Done"
           : i18n.first_run_guide_next || "Next"
       backBtn.disabled = index === 0
-      positionCard(rect)
+      positionCard(rect, step)
       overlay.classList.add("is-ready")
     }
 

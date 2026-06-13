@@ -2373,6 +2373,15 @@ export function setupGeneralEventHandlers(
         throttleSettingUpdate("bookmarkLimit20", DOM.bookmarkLimit20.checked)
       })
     }
+    if (DOM.showAddBookmarkButton) {
+      DOM.showAddBookmarkButton.addEventListener("change", () => {
+        handleSettingUpdate(
+          "showAddBookmarkButton",
+          DOM.showAddBookmarkButton.checked,
+        )
+        renderBookmarks()
+      })
+    }
     if (DOM.bookmarkGroupShowCount) {
       DOM.bookmarkGroupShowCount.addEventListener("change", () => {
         const showCount = DOM.bookmarkGroupShowCount.checked

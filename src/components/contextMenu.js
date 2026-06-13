@@ -20,7 +20,7 @@ import {
   saveSettings,
 } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
-import { openBookmarkEditPopover } from "./modal.js"
+import { openBookmarkEditPopover, openModal } from "./modal.js"
 import {
   captureBookmarkSnapshot,
   renderBookmarks,
@@ -34,6 +34,301 @@ let contextMenuTargetId = null // For groups or widget ids
 let contextMenuCallbacks = null
 let lastContextMenuX = 0
 let lastContextMenuY = 0
+
+function createCustomMenuItem(label, iconClass, handler, extraClass = "") {
+  const item = document.createElement("div")
+  item.className = `context-menu-item custom-music-item ${extraClass}`.trim()
+  item.innerHTML = `<i class="${iconClass}"></i> <span>${label}</span>`
+  item.onclick = (event) => {
+    event.stopPropagation()
+    handler()
+  }
+  return item
+}
+
+function createCustomMenuDivider() {
+  const divider = document.createElement("div")
+  divider.className = "context-menu-divider custom-music-item"
+  return divider
+}
+
+function applyContextSetting(key, value) {
+  if (typeof window.appHandleSettingUpdate === "function") {
+    window.appHandleSettingUpdate(key, value)
+  } else {
+    updateSetting(key, value)
+    saveSettings()
+    if (typeof window.appApplySettings === "function") {
+      window.appApplySettings()
+    }
+  }
+
+  window.dispatchEvent(
+    new CustomEvent("settingsUpdated", {
+      detail: { key, value },
+    }),
+  )
+  window.dispatchEvent(
+    new CustomEvent("layoutUpdated", {
+      detail: { key, value },
+    }),
+  )
+}
+
+function syncBackgroundControlValue(key, value) {
+  const controlMap = {
+    bgBlur: ["bg-blur-input", "bg-blur-value", "px"],
+    bgBrightness: ["bg-brightness-input", "bg-brightness-value", "%"],
+    bgSize: ["bg-size-select", null, ""],
+  }
+  const [inputId, valueId, suffix] = controlMap[key] || []
+  if (!inputId) return
+
+  const input = document.getElementById(inputId)
+  if (input) input.value = String(value)
+  const valueEl = valueId ? document.getElementById(valueId) : null
+  if (valueEl) valueEl.textContent = `${value}${suffix}`
+}
+
+function openSettingsSection(sectionId, targetSelector = null) {
+  const sidebar = document.getElementById("settings-sidebar")
+  const sidebarContent = sidebar?.querySelector(".sidebar-content")
+  const section = document.querySelector(`[data-section-id="${sectionId}"]`)
+  if (!sidebar || !section) return
+
+  sidebar.classList.add("open")
+  section.classList.remove("collapsed")
+
+  const sectionStates = JSON.parse(
+    localStorage.getItem("settingsSectionStates") || "{}",
+  )
+  sectionStates[sectionId] = false
+  localStorage.setItem("settingsSectionStates", JSON.stringify(sectionStates))
+
+  requestAnimationFrame(() => {
+    const targetElement =
+      (targetSelector ? section.querySelector(targetSelector) : null) ||
+      section.querySelector(".section-toggle") ||
+      section
+    const target =
+      targetElement.closest?.(
+        ".setting-item-row, .setting-item, .setting-group, .settings-section",
+      ) || targetElement
+    const sidebarRect = sidebarContent?.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+    if (!sidebarContent || !sidebarRect) return
+    sidebarContent.scrollTo({
+      top: targetRect.top - sidebarRect.top + sidebarContent.scrollTop - 12,
+      behavior: "smooth",
+    })
+    target.classList.add("settings-scroll-highlight")
+    window.setTimeout(() => {
+      target.classList.remove("settings-scroll-highlight")
+    }, 1300)
+  })
+}
+
+function getWidgetSettingsTarget(id) {
+  const targets = {
+    clock: {
+      section: "date-clock",
+      target: "#clock-style-setting-group",
+      labelKey: "settings_date_format",
+      fallback: "Clock",
+    },
+    todo: {
+      section: "layout",
+      target: "#show-todo-checkbox",
+      labelKey: "settings_show_todo",
+      fallback: "Todo",
+    },
+    timer: {
+      section: "layout",
+      target: "#show-timer-checkbox",
+      labelKey: "settings_show_timer",
+      fallback: "Timer",
+    },
+    notepad: {
+      section: "layout",
+      target: "#show-notepad-checkbox",
+      labelKey: "settings_show_notepad",
+      fallback: "Notepad",
+    },
+    calendar: {
+      section: "layout",
+      target: "#show-full-calendar-checkbox",
+      labelKey: "settings_show_full_calendar",
+      fallback: "Calendar",
+    },
+    "daily-quotes": {
+      section: "layout",
+      target: "#show-quotes-checkbox",
+      labelKey: "settings_show_quotes",
+      fallback: "Daily Quotes",
+    },
+    music: {
+      section: "layout",
+      target: "#show-music-checkbox",
+      labelKey: "settings_show_music",
+      fallback: "Music",
+    },
+  }
+  return targets[id] || null
+}
+
+function addOpenWidgetSettingsItem(id, i18n) {
+  const target = getWidgetSettingsTarget(id)
+  if (!target) return
+
+  const widgetName = i18n[target.labelKey] || target.fallback
+  const template = i18n.context_open_widget_settings || "Settings: {name}"
+  const settingsBtn = createCustomMenuItem(
+    template.replace("{name}", widgetName),
+    "fa-solid fa-gear",
+    () => {
+      hideContextMenu()
+      openSettingsSection(target.section, target.target)
+    },
+  )
+  contextMenu.insertBefore(settingsBtn, menuLock)
+}
+
+function openExternalUrl(url) {
+  if (window.chrome?.tabs?.create) {
+    window.chrome.tabs.create({ url })
+    return
+  }
+  window.open(url, "_blank", "noopener,noreferrer")
+}
+
+function addBackgroundContextMenuItems(i18n) {
+  const settings = getSettings()
+  const currentFit = settings.bgSize || "cover"
+  const fitOrder = ["cover", "contain", "center", "stretch", "tile"]
+  const nextFit =
+    fitOrder[(Math.max(0, fitOrder.indexOf(currentFit)) + 1) % fitOrder.length]
+  const fitLabels = {
+    cover: i18n.settings_bg_fit_cover || "Cover",
+    contain: i18n.settings_bg_fit_contain || "Contain",
+    center: i18n.settings_bg_fit_center || "Center",
+    stretch: i18n.settings_bg_fit_stretch || "Stretch",
+    tile: i18n.settings_bg_fit_tile || "Tile",
+  }
+
+  const blur = Number(settings.bgBlur ?? 0)
+  const brightness = Number(settings.bgBrightness ?? 100)
+
+  const items = [
+    createCustomMenuItem(
+      i18n.bg_context_open_settings || "Background settings",
+      "fa-solid fa-sliders",
+      () => {
+        hideContextMenu()
+        openSettingsSection("background")
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_reset || "Reset background",
+      "fa-solid fa-trash",
+      () => {
+        applyContextSetting("background", null)
+        hideContextMenu()
+      },
+      "danger",
+    ),
+    createCustomMenuDivider(),
+    createCustomMenuItem(
+      `${i18n.bg_context_fit || "Fit"}: ${fitLabels[nextFit]}`,
+      "fa-solid fa-up-right-and-down-left-from-center",
+      () => {
+        syncBackgroundControlValue("bgSize", nextFit)
+        applyContextSetting("bgSize", nextFit)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_blur_more || "More blur",
+      "fa-solid fa-droplet",
+      () => {
+        const nextBlur = Math.min(40, blur + 2)
+        syncBackgroundControlValue("bgBlur", nextBlur)
+        applyContextSetting("bgBlur", nextBlur)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_blur_less || "Less blur",
+      "fa-regular fa-droplet",
+      () => {
+        const nextBlur = Math.max(0, blur - 2)
+        syncBackgroundControlValue("bgBlur", nextBlur)
+        applyContextSetting("bgBlur", nextBlur)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_brightness_more || "Brighter",
+      "fa-solid fa-sun",
+      () => {
+        const nextBrightness = Math.min(200, brightness + 10)
+        syncBackgroundControlValue("bgBrightness", nextBrightness)
+        applyContextSetting("bgBrightness", nextBrightness)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_brightness_less || "Darker",
+      "fa-regular fa-sun",
+      () => {
+        const nextBrightness = Math.max(10, brightness - 10)
+        syncBackgroundControlValue("bgBrightness", nextBrightness)
+        applyContextSetting("bgBrightness", nextBrightness)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuDivider(),
+    createCustomMenuItem(
+      i18n.bg_context_add_bookmark || "Add bookmark",
+      "fa-solid fa-bookmark",
+      () => {
+        const bookmarks = getBookmarks()
+        const settings = getSettings()
+        if (settings.bookmarkLimit20 !== false && bookmarks.length >= 20) {
+          showAlert(
+            i18n.alert_bookmark_limit_reached ||
+              "This group already has 20 bookmarks!",
+          )
+          hideContextMenu()
+          return
+        }
+        hideContextMenu()
+        openModal(null)
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_customize_chrome || "Hide/show Customize Chrome",
+      "fa-brands fa-chrome",
+      () => {
+        hideContextMenu()
+        showAlert(
+          i18n.bg_context_customize_chrome_desc ||
+            "If the Customize Chrome bar appears at the bottom of the new tab page, right-click that bar and choose Hide customize Chrome bar. To show it again, use Chrome's new tab customization controls.",
+          i18n.bg_context_customize_chrome || "Customize Chrome guide",
+        )
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_open_google || "Open regular Google",
+      "fa-brands fa-google",
+      () => {
+        hideContextMenu()
+        openExternalUrl("https://www.google.com/webhp")
+      },
+    ),
+  ]
+
+  items.forEach((item) => contextMenu.appendChild(item))
+}
 
 export function showContextMenu(
   x,
@@ -120,6 +415,8 @@ export function showContextMenu(
       lockIcon.className = "fa-solid fa-lock"
       lockText.textContent = i18n.menu_lock || "Lock Position"
     }
+
+    addOpenWidgetSettingsItem(id, i18n)
 
     // THÊM TÙY CHỌN SKIN CHO CÁC WIDGET
     const skinnableWidgets = [
@@ -473,6 +770,14 @@ export function showContextMenu(
         contextMenu.insertBefore(separator, shakeBtn)
       }
     }
+  } else if (type === "background") {
+    menuEdit.style.display = "none"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "none"
+    menuFavorite.style.display = "none"
+    menuSelect.style.display = "none"
+
+    addBackgroundContextMenuItems(i18n)
   } else if (
     type === "quick-access-toggle" ||
     type === "quick-access-bar" ||

@@ -1247,6 +1247,14 @@
                             </div>
                             <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="show-add-bookmark-button" data-i18n="settings_show_add_bookmark_button"
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show add bookmark
+                                    button</label>
+                                <input type="checkbox" id="show-add-bookmark-button" checked
+                                    style="transform: scale(1.1); margin: 0;">
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                 <label for="enable-bookmark-drag" data-i18n="settings_bookmark_enable_drag"
                                     style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Drag & Drop
                                     Reorder</label>
@@ -1990,7 +1998,7 @@
     </div>
 
     <div id="bookmark-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content bookmark-modal-content">
             <div class="modal-header">
                 <div class="modal-header-left">
                     <button id="back-to-manual" class="modal-back-btn" style="display:none;" aria-label="Back">
@@ -2003,7 +2011,7 @@
 
             <div class="modal-body">
                 <!-- Manual Entry Form -->
-                <div id="manual-entry-form">
+                <div id="manual-entry-form" class="bookmark-modal-form">
                     <div class="modal-input-group">
                         <i class="fa-solid fa-tag modal-input-icon"></i>
                         <input type="text" id="bookmark-title" class="i18n-placeholder"

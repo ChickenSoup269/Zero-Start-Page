@@ -1546,30 +1546,31 @@ export function renderBookmarks() {
     frag.appendChild(bookmarkEl)
   })
 
-  // Add Button (Always at end of list)
-  const addBtn = document.createElement("button")
-  addBtn.className = "add-bookmark-card"
-  addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
-  addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
-  addBtn.addEventListener("click", () => {
-    const bookmarks = getBookmarks()
-    const settings = getSettings()
-    const currentI18n = geti18n()
-    if (settings.bookmarkLimit20 !== false && bookmarks.length >= 20) {
-      showAlert(
-        currentI18n.alert_bookmark_limit_reached ||
-          "This group already has 20 bookmarks!",
-      )
-      return
-    }
-    openModal(null)
-  })
-  addBtn.addEventListener("dragover", handleAddBookmarkDragOver)
-  addBtn.addEventListener("drop", handleAddBookmarkDrop)
-  addBtn.addEventListener("dragleave", function () {
-    clearBookmarkDropClasses(this)
-  })
-  frag.appendChild(addBtn)
+  if (settings.showAddBookmarkButton !== false) {
+    const addBtn = document.createElement("button")
+    addBtn.className = "add-bookmark-card"
+    addBtn.setAttribute("aria-label", i18n.modal_add_title || "Add Bookmark")
+    addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>'
+    addBtn.addEventListener("click", () => {
+      const bookmarks = getBookmarks()
+      const settings = getSettings()
+      const currentI18n = geti18n()
+      if (settings.bookmarkLimit20 !== false && bookmarks.length >= 20) {
+        showAlert(
+          currentI18n.alert_bookmark_limit_reached ||
+            "This group already has 20 bookmarks!",
+        )
+        return
+      }
+      openModal(null)
+    })
+    addBtn.addEventListener("dragover", handleAddBookmarkDragOver)
+    addBtn.addEventListener("drop", handleAddBookmarkDrop)
+    addBtn.addEventListener("dragleave", function () {
+      clearBookmarkDropClasses(this)
+    })
+    frag.appendChild(addBtn)
+  }
 
   // Clear and update DOM once
   bookmarksContainer.innerHTML = ""
