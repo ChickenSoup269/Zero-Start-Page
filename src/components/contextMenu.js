@@ -130,6 +130,12 @@ function openSettingsSection(sectionId, targetSelector = null) {
 
 function getWidgetSettingsTarget(id) {
   const targets = {
+    search: {
+      section: "layout",
+      target: "#show-search-bar-checkbox",
+      labelKey: "settings_group_search",
+      fallback: "Search Bar",
+    },
     clock: {
       section: "date-clock",
       target: "#clock-style-setting-group",
@@ -176,7 +182,7 @@ function getWidgetSettingsTarget(id) {
   return targets[id] || null
 }
 
-function addOpenWidgetSettingsItem(id, i18n) {
+function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
   const target = getWidgetSettingsTarget(id)
   if (!target) return
 
@@ -190,7 +196,26 @@ function addOpenWidgetSettingsItem(id, i18n) {
       openSettingsSection(target.section, target.target)
     },
   )
-  contextMenu.insertBefore(settingsBtn, menuLock)
+  if (withDivider) contextMenu.appendChild(createCustomMenuDivider())
+  contextMenu.appendChild(settingsBtn)
+}
+
+function addTimerAlarmDropdownToggle(i18n, settings) {
+  const isHidden = settings.hideTimerAlarmDropdown === true
+  const toggleBtn = createCustomMenuItem(
+    isHidden
+      ? i18n.context_timer_show_alarm_sound || "Show alarm sound selector"
+      : i18n.context_timer_hide_alarm_sound || "Hide alarm sound selector",
+    isHidden ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark",
+    () => {
+      const nextValue = !isHidden
+      const checkbox = document.getElementById("hide-timer-alarm-dropdown-checkbox")
+      if (checkbox) checkbox.checked = nextValue
+      applyContextSetting("hideTimerAlarmDropdown", nextValue)
+      hideContextMenu()
+    },
+  )
+  contextMenu.insertBefore(toggleBtn, menuLock)
 }
 
 function addOpenBookmarkSettingsItem(i18n) {
@@ -216,15 +241,25 @@ function openExternalUrl(url) {
 function addBackgroundContextMenuItems(i18n) {
   const settings = getSettings()
   const currentFit = settings.bgSize || "cover"
-  const fitOrder = ["cover", "contain", "center", "stretch", "tile"]
+  const fitOrder = [
+    "cover",
+    "contain",
+    "stretch",
+    "tile",
+    "center",
+    "span",
+    "custom",
+  ]
   const nextFit =
     fitOrder[(Math.max(0, fitOrder.indexOf(currentFit)) + 1) % fitOrder.length]
   const fitLabels = {
     cover: i18n.settings_bg_fit_cover || "Cover",
     contain: i18n.settings_bg_fit_contain || "Contain",
-    center: i18n.settings_bg_fit_center || "Center",
     stretch: i18n.settings_bg_fit_stretch || "Stretch",
     tile: i18n.settings_bg_fit_tile || "Tile",
+    center: i18n.settings_bg_fit_center || "Center",
+    span: i18n.settings_bg_fit_span || "Span",
+    custom: i18n.settings_bg_fit_custom || "Custom size",
   }
 
   const blur = Number(settings.bgBlur ?? 0)
@@ -326,18 +361,6 @@ function addBackgroundContextMenuItems(i18n) {
       },
     ),
     createCustomMenuItem(
-      i18n.bg_context_customize_chrome || "Hide/show Customize Chrome",
-      "fa-brands fa-chrome",
-      () => {
-        hideContextMenu()
-        showAlert(
-          i18n.bg_context_customize_chrome_desc ||
-            "If the Customize Chrome bar appears at the bottom of the new tab page, right-click that bar and choose Hide customize Chrome bar. To show it again, use Chrome's new tab customization controls.",
-          i18n.bg_context_customize_chrome || "Customize Chrome guide",
-        )
-      },
-    ),
-    createCustomMenuItem(
       i18n.bg_context_open_google || "Open regular Google",
       "fa-brands fa-google",
       () => {
@@ -394,33 +417,16 @@ export function showContextMenu(
     type === "group"
   ) {
     addOpenBookmarkSettingsItem(i18n)
-
-    const editIconBtn = document.createElement("div")
-    editIconBtn.className = "context-menu-item custom-music-item"
-    editIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.bookmark_edit_icon || "Edit icon"}</span>`
-    editIconBtn.onclick = (event) => {
-      event.stopPropagation()
-      const anchor =
-        contextMenuCallbacks?.anchor ||
-        document.querySelector(
-          `[data-index="${contextMenuTargetIndex}"].bookmark`,
-        )
-      if (contextMenuCallbacks?.onEditIcon) {
-        contextMenuCallbacks.onEditIcon()
-      } else if (contextMenuTargetType === "bookmark") {
-        openBookmarkEditPopover(
-          contextMenuTargetIndex,
-          null,
-          anchor,
-          { focus: "icon" },
-        )
-      }
-      hideContextMenu()
-    }
-    contextMenu.insertBefore(editIconBtn, menuDelete)
   }
 
-  if (type === "widget") {
+  if (type === "search") {
+    menuEdit.style.display = "none"
+    menuDelete.style.display = "none"
+    menuLock.style.display = "none"
+    menuFavorite.style.display = "none"
+    menuSelect.style.display = "none"
+    addOpenWidgetSettingsItem("search", i18n, false)
+  } else if (type === "widget") {
     menuEdit.style.display = "none"
     menuDelete.style.display = "none"
     menuLock.style.display = "flex"
@@ -436,6 +442,10 @@ export function showContextMenu(
     } else {
       lockIcon.className = "fa-solid fa-lock"
       lockText.textContent = i18n.menu_lock || "Lock Position"
+    }
+
+    if (id === "timer") {
+      addTimerAlarmDropdownToggle(i18n, settings)
     }
 
     addOpenWidgetSettingsItem(id, i18n)

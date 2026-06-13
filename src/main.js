@@ -280,6 +280,15 @@ async function bootstrap() {
     showContextMenu(event.clientX, event.clientY, -1, "background")
   })
 
+  document.addEventListener("contextmenu", (event) => {
+    if (event.defaultPrevented) return
+    if (!event.target.closest?.("#search-container")) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    showContextMenu(event.clientX, event.clientY, -1, "search")
+  })
+
   const widgetContextTargets = [
     ["#clock-date-wrap", "clock"],
     ["#todo-container", "todo"],

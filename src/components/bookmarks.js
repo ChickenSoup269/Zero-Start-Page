@@ -1627,10 +1627,20 @@ export function updateOverflowBookmarks() {
   const isSidebar = mode === "sidebar"
   const isTaskbarTop = mode === "taskbar-top"
 
+  const addBtn = children.find((child) =>
+    child.classList.contains("add-bookmark-card"),
+  )
+  const overflowItems = children.filter(
+    (child) =>
+      child.classList.contains("bookmark") &&
+      !child.classList.contains("add-bookmark-card") &&
+      !child.classList.contains("overflow-indicator"),
+  )
+
   const checkOverflow = () => {
     let visibleCount = 0
-    for (let j = 0; j < children.length - 1; j++) {
-      if (children[j].style.display !== "none") visibleCount++
+    for (let j = 0; j < overflowItems.length; j++) {
+      if (overflowItems[j].style.display !== "none") visibleCount++
     }
     if (visibleCount > 15) return true
     return isSidebar
@@ -1651,7 +1661,6 @@ export function updateOverflowBookmarks() {
 
   container.style.overflow = "visible"
 
-  const addBtn = children[children.length - 1]
   let hiddenCount = 0
   const hiddenElements = []
 
@@ -1671,12 +1680,14 @@ export function updateOverflowBookmarks() {
 
   if (isSidebar) {
     container.insertBefore(indicator, container.firstChild)
-  } else {
+  } else if (addBtn) {
     container.insertBefore(indicator, addBtn)
+  } else {
+    container.appendChild(indicator)
   }
 
-  for (let i = children.length - 2; i >= 0; i--) {
-    const el = children[i]
+  for (let i = overflowItems.length - 1; i >= 0; i--) {
+    const el = overflowItems[i]
     el.style.display = "none"
     hiddenElements.unshift(el)
     hiddenCount++
