@@ -193,6 +193,18 @@ function addOpenWidgetSettingsItem(id, i18n) {
   contextMenu.insertBefore(settingsBtn, menuLock)
 }
 
+function addOpenBookmarkSettingsItem(i18n) {
+  const settingsBtn = createCustomMenuItem(
+    i18n.context_open_bookmark_settings || "Bookmark settings",
+    "fa-solid fa-sliders",
+    () => {
+      hideContextMenu()
+      openSettingsSection("bookmark-custom", "#bookmark-font-size-input")
+    },
+  )
+  contextMenu.insertBefore(settingsBtn, menuEdit)
+}
+
 function openExternalUrl(url) {
   if (window.chrome?.tabs?.create) {
     window.chrome.tabs.create({ url })
@@ -306,6 +318,14 @@ function addBackgroundContextMenuItems(i18n) {
       },
     ),
     createCustomMenuItem(
+      i18n.context_open_bookmark_settings || "Bookmark settings",
+      "fa-solid fa-sliders",
+      () => {
+        hideContextMenu()
+        openSettingsSection("bookmark-custom", "#bookmark-font-size-input")
+      },
+    ),
+    createCustomMenuItem(
       i18n.bg_context_customize_chrome || "Hide/show Customize Chrome",
       "fa-brands fa-chrome",
       () => {
@@ -373,6 +393,8 @@ export function showContextMenu(
     type === "bookmarkStackItem" ||
     type === "group"
   ) {
+    addOpenBookmarkSettingsItem(i18n)
+
     const editIconBtn = document.createElement("div")
     editIconBtn.className = "context-menu-item custom-music-item"
     editIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.bookmark_edit_icon || "Edit icon"}</span>`

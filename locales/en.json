@@ -319,6 +319,7 @@
   "menu_hide_border": "Hide Border",
   "menu_show_border": "Show Border",
   "context_open_widget_settings": "Settings: {name}",
+  "context_open_bookmark_settings": "Bookmark settings",
   "bg_context_open_settings": "Background settings",
   "bg_context_reset": "Reset background",
   "bg_context_fit": "Next image fit",
