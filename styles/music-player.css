@@ -236,6 +236,14 @@
   box-shadow: none !important;
 }
 
+.music-player-wrapper.skin-light-transparent {
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
 /* M3 Accent Skin */
 body.widgets-m3-accent .music-player-wrapper,
 .music-player-wrapper.skin-m3-accent {

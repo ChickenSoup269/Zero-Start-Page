@@ -38,10 +38,12 @@
     "*://images.google.com/*",
     "https://api.unsplash.com/*",
     "https://images.unsplash.com/*",
+    "https://api.open-meteo.com/*",
+    "https://geocoding-api.open-meteo.com/*",
     "https://i.ytimg.com/*",
     "https://i.scdn.co/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://api.unsplash.com https://images.unsplash.com https://suggestqueries.google.com;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://api.unsplash.com https://images.unsplash.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://suggestqueries.google.com;"
   }
 }

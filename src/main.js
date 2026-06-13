@@ -17,6 +17,7 @@ import { MusicPlayer } from "./components/musicPlayer.js"
 import { FullCalendar } from "./components/fullCalendar.js"
 import { Notepad } from "./components/notepad.js"
 import { DailyQuotes } from "./components/quotes.js"
+import { Weather } from "./components/weather.js"
 import {
   preloadImages,
   migrateDataUrls,
@@ -49,6 +50,7 @@ import {
   showGregorianCheckbox,
   showNotepadCheckbox,
   showQuotesCheckbox,
+  showWeatherCheckbox,
 } from "./utils/dom.js"
 
 function syncUninstallSurveyLanguage(language) {
@@ -265,6 +267,7 @@ async function bootstrap() {
     "#full-calendar-container",
     "#notepad-container",
     "#daily-quotes",
+    "#weather-container",
     ".modal",
     ".custom-dialog-overlay",
     ".first-run-tour-overlay",
@@ -297,6 +300,7 @@ async function bootstrap() {
     ["#full-calendar-container", "calendar"],
     ["#notepad-container", "notepad"],
     ["#daily-quotes", "daily-quotes"],
+    ["#weather-container", "weather"],
   ]
 
   document.addEventListener("contextmenu", (event) => {
@@ -322,6 +326,7 @@ async function bootstrap() {
     music: null,
     calendar: null,
     quotes: null,
+    weather: null,
     notepad: null,
   }
 
@@ -358,6 +363,10 @@ async function bootstrap() {
         widgets.quotes = new DailyQuotes()
         makeDraggable(widgets.quotes.container, "daily-quotes")
         return widgets.quotes
+      case "weather":
+        widgets.weather = new Weather()
+        makeDraggable(widgets.weather.container, "weather")
+        return widgets.weather
       case "notepad":
         widgets.notepad = new Notepad()
         makeDraggable(
@@ -386,6 +395,7 @@ async function bootstrap() {
       initWidget("notepad")
     }
     if (settings.showQuotes !== false) initWidget("quotes")
+    if (settings.showWeather === true) initWidget("weather")
     if (settings.showTimer === true) initWidget("timer")
     if (settings.showFullCalendar === true) initWidget("calendar")
     if (settings.musicPlayerEnabled === true) initWidget("music")
@@ -410,6 +420,9 @@ async function bootstrap() {
         break
       case "showQuotes":
         initWidget("quotes")
+        break
+      case "showWeather":
+        initWidget("weather")
         break
     }
   })
@@ -455,6 +468,9 @@ async function bootstrap() {
           break
         case "quotes":
           isActive = settings.showQuotes !== false
+          break
+        case "weather":
+          isActive = settings.showWeather === true
           break
       }
       btn.classList.toggle("active", isActive)
@@ -519,13 +535,18 @@ async function bootstrap() {
             }),
           )
           break
+        case "weather":
+          key = "showWeather"
+          checkbox = showWeatherCheckbox
+          break
       }
       if (key && checkbox) {
         if (
           (type === "todo" ||
             type === "notepad" ||
             type === "timer" ||
-            type === "calendar") &&
+            type === "calendar" ||
+            type === "weather") &&
           !getSettings()[key]
         ) {
           initWidget(type)

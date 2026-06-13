@@ -172,6 +172,12 @@ function getWidgetSettingsTarget(id) {
       labelKey: "settings_show_quotes",
       fallback: "Daily Quotes",
     },
+    weather: {
+      section: "layout",
+      target: "#show-weather-checkbox",
+      labelKey: "settings_show_weather",
+      fallback: "Weather",
+    },
     music: {
       section: "layout",
       target: "#show-music-checkbox",
@@ -455,6 +461,7 @@ export function showContextMenu(
       "todo",
       "timer",
       "calendar",
+      "weather",
       "notepad",
       "daily-quotes",
     ]
@@ -463,6 +470,7 @@ export function showContextMenu(
       const currentSkin = settings[skinKey] || "default"
       const isWhiteBlur = currentSkin === "white-blur"
       const isTransparent = currentSkin === "transparent"
+      const isLightTransparent = currentSkin === "light-transparent"
       const isM3Accent = currentSkin === "m3-accent"
       const borderKey = `${id === "daily-quotes" ? "quotes" : id}HideBorder`
       const isBorderHidden = settings[borderKey] === true
@@ -485,6 +493,7 @@ export function showContextMenu(
           todo: "todo-container",
           timer: "timer-component",
           calendar: "full-calendar-container",
+          weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
         }
@@ -493,6 +502,7 @@ export function showContextMenu(
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
           el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
+          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
         }
         hideContextMenu()
       }
@@ -516,6 +526,7 @@ export function showContextMenu(
           todo: "todo-container",
           timer: "timer-component",
           calendar: "full-calendar-container",
+          weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
         }
@@ -524,12 +535,46 @@ export function showContextMenu(
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
           el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
+          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
         }
         hideContextMenu()
       }
       contextMenu.insertBefore(m3SkinBtn, menuLock)
 
-      if (id === "daily-quotes") {
+      const lightTransBtn = document.createElement("div")
+      lightTransBtn.className = "context-menu-item custom-music-item"
+      lightTransBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
+      lightTransBtn.onclick = () => {
+        const newVal = isLightTransparent ? "default" : "light-transparent"
+        updateSetting(skinKey, newVal)
+        saveSettings(true)
+
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: skinKey, value: newVal },
+          }),
+        )
+
+        const widgetIdMap = {
+          todo: "todo-container",
+          timer: "timer-component",
+          calendar: "full-calendar-container",
+          weather: "weather-container",
+          notepad: "notepad-container",
+          "daily-quotes": "daily-quotes",
+        }
+        const el = document.getElementById(widgetIdMap[id] || id)
+        if (el) {
+          el.classList.toggle("skin-white-blur", newVal === "white-blur")
+          el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
+          el.classList.toggle("skin-transparent", newVal === "transparent")
+          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
+        }
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(lightTransBtn, menuLock)
+
+      if (id === "daily-quotes" || id === "weather") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -544,15 +589,45 @@ export function showContextMenu(
             }),
           )
 
-          const el = document.getElementById("daily-quotes")
+          const widgetIdMap = {
+            weather: "weather-container",
+            "daily-quotes": "daily-quotes",
+          }
+          const el = document.getElementById(widgetIdMap[id] || id)
           if (el) {
             el.classList.toggle("skin-white-blur", newVal === "white-blur")
             el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
             el.classList.toggle("skin-transparent", newVal === "transparent")
+            el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
           }
           hideContextMenu()
         }
         contextMenu.insertBefore(transBtn, menuLock)
+      }
+
+      if (id === "weather") {
+        const isExpanded = settings.weatherExpanded === true
+        const expandBtn = document.createElement("div")
+        expandBtn.className = "context-menu-item custom-music-item"
+        expandBtn.innerHTML = `<i class="fa-solid ${isExpanded ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${isExpanded ? i18n.weather_collapse || "Shrink Weather" : i18n.weather_expand || "Enlarge Weather"}</span>`
+        expandBtn.onclick = () => {
+          const newVal = !isExpanded
+          updateSetting("weatherExpanded", newVal)
+          saveSettings(true)
+
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "weatherExpanded", value: newVal },
+            }),
+          )
+
+          const el = document.getElementById("weather-container")
+          if (el) {
+            el.classList.toggle("weather-expanded", newVal)
+          }
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(expandBtn, menuLock)
       }
 
       const borderBtn = document.createElement("div")
@@ -573,6 +648,7 @@ export function showContextMenu(
           todo: "todo-container",
           timer: "timer-component",
           calendar: "full-calendar-container",
+          weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
         }
@@ -703,6 +779,23 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(transparentBtn, shakeBtn)
+
+      const isLightTransparent = settings.musicPlayerSkin === "light-transparent"
+      const lightTransparentBtn = document.createElement("div")
+      lightTransparentBtn.className = "context-menu-item custom-music-item"
+      lightTransparentBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
+      lightTransparentBtn.onclick = () => {
+        const newSkin = isLightTransparent ? "default" : "light-transparent"
+        updateSetting("musicPlayerSkin", newSkin)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerSkin", value: newSkin },
+          }),
+        )
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(lightTransparentBtn, shakeBtn)
 
       const isMusicBorderHidden = settings.musicPlayerHideBorder === true
       const musicBorderBtn = document.createElement("div")
@@ -1011,9 +1104,15 @@ export function showContextMenu(
           label: i18n.skin_m3_accent || "M3 Accent",
           icon: "fa-solid fa-palette",
         },
+        {
+          value: "light-transparent",
+          label: i18n.skin_light_transparent || "Light Transparent",
+          icon: "fa-solid fa-droplet",
+        },
       ]
-      let activeSkin =
-        settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+      let activeSkin = skins.some((skin) => skin.value === settings.quickAccessSkin)
+        ? settings.quickAccessSkin
+        : "default"
       skins.forEach((skin) => {
         const chip = document.createElement("button")
         chip.type = "button"
@@ -1027,6 +1126,10 @@ export function showContextMenu(
           document.body.classList.toggle(
             "quick-access-m3-accent",
             skin.value === "m3-accent",
+          )
+          document.body.classList.toggle(
+            "quick-access-light-transparent",
+            skin.value === "light-transparent",
           )
           document.body.classList.toggle(
             "quick-access-transparent",
@@ -1641,6 +1744,7 @@ function handleLock() {
       clock: "clock-date-wrap",
       customTitle: "custom-title-display",
       calendar: "full-calendar-container",
+      weather: "weather-container",
       todo: "todo-container",
       timer: "timer-component",
       music: "music-player-container",

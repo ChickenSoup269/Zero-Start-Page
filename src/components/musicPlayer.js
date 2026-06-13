@@ -142,12 +142,14 @@ export class MusicPlayer {
       "skin-white-blur",
       "skin-m3-accent",
       "skin-transparent",
+      "skin-light-transparent",
     )
     if (this.container)
       this.container.classList.remove(
         "skin-white-blur",
         "skin-m3-accent",
         "skin-transparent",
+        "skin-light-transparent",
       )
 
     if (skin === "gameboy") {
@@ -161,6 +163,9 @@ export class MusicPlayer {
     } else if (skin === "transparent") {
       wrapper.classList.add("skin-transparent")
       if (this.container) this.container.classList.add("skin-transparent")
+    } else if (skin === "light-transparent") {
+      wrapper.classList.add("skin-light-transparent")
+      if (this.container) this.container.classList.add("skin-light-transparent")
     }
   }
   applyNoShaking(disabled) {

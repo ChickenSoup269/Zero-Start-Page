@@ -4723,6 +4723,7 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
+  setupLayoutCheckbox(DOM.showWeatherCheckbox, "showWeather", {})
   setupLayoutCheckbox(
     DOM.hideTimerAlarmDropdownCheckbox,
     "hideTimerAlarmDropdown",
@@ -4942,6 +4943,7 @@ export function setupGeneralEventHandlers(
       "todo",
       "timer",
       "calendar",
+      "weather",
       "notepad",
       "quotes",
       "musicPlayer",
@@ -5398,12 +5400,22 @@ export function setupGeneralEventHandlers(
     )
   }
   if (DOM.lcpQuickAccessSkin) {
-    DOM.lcpQuickAccessSkin.value =
-      settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+    const validQuickAccessSkins = ["default", "m3-accent", "light-transparent"]
+    DOM.lcpQuickAccessSkin.value = validQuickAccessSkins.includes(
+      settings.quickAccessSkin,
+    )
+      ? settings.quickAccessSkin
+      : "default"
     DOM.lcpQuickAccessSkin.addEventListener("change", (e) => {
-      const skin = e.target.value === "m3-accent" ? "m3-accent" : "default"
+      const skin = validQuickAccessSkins.includes(e.target.value)
+        ? e.target.value
+        : "default"
       handleSettingUpdate("quickAccessSkin", skin)
       document.body.classList.toggle("quick-access-m3-accent", skin === "m3-accent")
+      document.body.classList.toggle(
+        "quick-access-light-transparent",
+        skin === "light-transparent",
+      )
       document.body.classList.toggle("quick-access-transparent", false)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {

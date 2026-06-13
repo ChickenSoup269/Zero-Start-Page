@@ -1157,6 +1157,9 @@ export const showGregorianCheckbox = document.getElementById(
 export const showQuotesCheckbox = document.getElementById(
   "show-quotes-checkbox",
 )
+export const showWeatherCheckbox = document.getElementById(
+  "show-weather-checkbox",
+)
 export const showMusicCheckbox = document.getElementById("show-music-checkbox")
 export const freeMoveClockCheckbox = document.getElementById(
   "free-move-clock-checkbox",

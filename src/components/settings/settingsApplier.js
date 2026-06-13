@@ -766,6 +766,10 @@ function createApplySettings(effectInstances) {
       settings.quickAccessSkin === "m3-accent",
     )
     document.body.classList.toggle(
+      "quick-access-light-transparent",
+      settings.quickAccessSkin === "light-transparent",
+    )
+    document.body.classList.toggle(
       "quick-access-transparent",
       false,
     )
@@ -799,6 +803,7 @@ function createApplySettings(effectInstances) {
       todo: "todo-container",
       timer: "timer-component",
       calendar: "full-calendar-container",
+      weather: "weather-container",
       notepad: "notepad-container",
       quotes: "daily-quotes",
       musicPlayer: "music-player-container",
@@ -814,6 +819,7 @@ function createApplySettings(effectInstances) {
         el.classList.toggle("skin-white-blur", skin === "white-blur")
         el.classList.toggle("skin-m3-accent", skin === "m3-accent")
         el.classList.toggle("skin-transparent", skin === "transparent")
+        el.classList.toggle("skin-light-transparent", skin === "light-transparent")
         el.classList.toggle(
           "widget-border-hidden",
           settings[`${key}HideBorder`] === true,
@@ -826,6 +832,7 @@ function createApplySettings(effectInstances) {
             wrapper.classList.toggle("skin-white-blur", skin === "white-blur")
             wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
             wrapper.classList.toggle("skin-transparent", skin === "transparent")
+            wrapper.classList.toggle("skin-light-transparent", skin === "light-transparent")
             wrapper.classList.toggle(
               "widget-border-hidden",
               settings.musicPlayerHideBorder === true,
@@ -3061,8 +3068,13 @@ function createUpdateSettingsInputs(effectInstances) {
         )
       }
       if (DOM.lcpQuickAccessSkin) {
-        DOM.lcpQuickAccessSkin.value =
-          settings.quickAccessSkin === "m3-accent" ? "m3-accent" : "default"
+        DOM.lcpQuickAccessSkin.value = [
+          "default",
+          "m3-accent",
+          "light-transparent",
+        ].includes(settings.quickAccessSkin)
+          ? settings.quickAccessSkin
+          : "default"
       }
       if (DOM.lcpQuickAccessBorderVisible) {
         DOM.lcpQuickAccessBorderVisible.checked =
@@ -4090,6 +4102,9 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
+    if (DOM.showWeatherCheckbox) {
+      DOM.showWeatherCheckbox.checked = settings.showWeather === true
+    }
     if (DOM.hideTimerAlarmDropdownCheckbox) {
       DOM.hideTimerAlarmDropdownCheckbox.checked =
         settings.hideTimerAlarmDropdown === true

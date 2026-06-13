@@ -93,6 +93,7 @@ export class Notepad {
 
     this.container.classList.toggle("skin-white-blur", skin === "white-blur")
     this.container.classList.toggle("skin-m3-accent", skin === "m3-accent")
+    this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
   }
 
   addNote() {
