@@ -225,6 +225,13 @@
                 display: none !important;
             }
 
+            body.skip-startup-loader #startup-overlay *,
+            body.skip-startup-loader #startup-overlay *::before,
+            body.skip-startup-loader #startup-overlay *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+
             body.skip-startup-loader .main-container {
                 transform: translateY(6px) scale(0.998);
                 transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.42s ease-out !important;
@@ -1625,29 +1632,7 @@
                         <div class="setting-item">
                             <label for="timer-alarm-sound-select" data-i18n="settings_timer_alarm_sound">Timer Alarm
                                 Sound</label>
-                            <select id="timer-alarm-sound-select">
-                                <option value="bedside_clock_alarm" data-i18n="timer_alarm_bedside">Bedside Clock Alarm
-                                </option>
-                                <option value="among_us_sabotage" data-i18n="timer_alarm_among_us">Among Us Sabotage
-                                </option>
-                                <option value="universfield_ringtone_014" data-i18n="timer_alarm_ringtone_014">Ringtone
-                                    014</option>
-                                <option value="universfield_ringtone_022" data-i18n="timer_alarm_ringtone_022">Ringtone
-                                    022</option>
-                                <option value="universfield_ringtone_025" data-i18n="timer_alarm_ringtone_025">Ringtone
-                                    025</option>
-                                <option value="universfield_ringtone_046" data-i18n="timer_alarm_ringtone_046">Ringtone
-                                    046</option>
-                                <option value="universfield_ringtone_064" data-i18n="timer_alarm_ringtone_064">Ringtone
-                                    064</option>
-                                <option value="universfield_ringtone_070" data-i18n="timer_alarm_ringtone_070">Ringtone
-                                    070</option>
-                                <option value="subnautica_alterra" data-i18n="timer_alarm_subnautica_alterra">Subnautica
-                                    Alterra</option>
-                                <option value="mambo" data-i18n="timer_alarm_mambo">Mambo</option>
-                                <option value="custom_alarm_sound" data-i18n="timer_alarm_custom" disabled>Custom Sound
-                                </option>
-                            </select>
+                            <select id="timer-alarm-sound-select"></select>
                             <div class="timer-alarm-upload-row">
                                 <input type="file" id="timer-alarm-sound-upload" accept="audio/*" hidden>
                                 <button type="button" id="timer-alarm-sound-upload-btn" class="secondary-btn">
@@ -2322,18 +2307,23 @@
         </div>
     </div>
     <div id="unsplash-explorer-modal" class="bug-modal">
-        <div class="bug-modal-content" style="max-width: 900px; width: 90%;">
+        <div class="bug-modal-content unsplash-explorer-shell">
             <div class="bug-modal-header">
-                <h2 class="modal-title-text">Unsplash Explorer</h2>
+                <div class="unsplash-explorer-title">
+                    <span class="unsplash-explorer-logo"><i class="fa-brands fa-unsplash"></i></span>
+                    <div>
+                        <h2 class="modal-title-text">Unsplash Explorer</h2>
+                        <small data-i18n="settings_unsplash_mini_hint">Open photo picker</small>
+                    </div>
+                </div>
                 <span id="close-unsplash-explorer-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="bug-modal-body">
                 <div id="unsplash-explorer-grid" class="unsplash-explorer-grid">
                     <!-- Photos will be injected here -->
                 </div>
-                <div class="explorer-footer" style="text-align: center; margin-top: 20px;">
-                    <button id="unsplash-explorer-load-more" class="primary-btn"
-                        style="display: none; margin: 0 auto; min-width: 150px; justify-content: center;">
+                <div class="explorer-footer">
+                    <button id="unsplash-explorer-load-more" class="primary-btn">
                         <i class="fa-solid fa-plus"></i> <span data-i18n="settings_unsplash_load_more">Load More</span>
                     </button>
                 </div>

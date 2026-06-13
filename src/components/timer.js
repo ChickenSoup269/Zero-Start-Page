@@ -2,96 +2,17 @@ import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { fadeToggle } from "../utils/dom.js"
 import { getImageUrl } from "../services/imageStore.js"
 import { geti18n } from "../services/i18n.js"
+import {
+  CUSTOM_ALARM_SOUND_KEY,
+  DEFAULT_TIMER_ALARM_SOUND,
+  getTimerAlarmUrl,
+  normalizeTimerAlarmSound,
+  renderTimerAlarmOptions,
+  renderTimerAlarmSelectOptions,
+} from "../data/timerAlarmSounds.js"
 
-const TIMER_ALARM_BASE_URL =
-  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/"
-
-const TIMER_ALARM_SOUNDS = {
-  bedside_clock_alarm: {
-    file: "bedside_clock_alarm.mp3",
-    label: "Bedside Clock Alarm",
-  },
-  among_us_sabotage: {
-    file: "alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3",
-    label: "Among Us Sabotage",
-  },
-  // Ringtone source: https://pixabay.com/users/universfield-28281460/
-  universfield_ringtone_014: {
-    file: "universfield-ringtone-014-133357.mp3",
-    label: "Ringtone 014",
-  },
-  universfield_ringtone_022: {
-    file: "universfield-ringtone-022-376904.mp3",
-    label: "Ringtone 022",
-  },
-  universfield_ringtone_025: {
-    file: "universfield-ringtone-025-376905.mp3",
-    label: "Ringtone 025",
-  },
-  universfield_ringtone_046: {
-    file: "universfield-ringtone-046-494552.mp3",
-    label: "Ringtone 046",
-  },
-  universfield_ringtone_064: {
-    file: "universfield-ringtone-064-496264.mp3",
-    label: "Ringtone 064",
-  },
-  universfield_ringtone_070: {
-    file: "universfield-ringtone-070-496271.mp3",
-    label: "Ringtone 070",
-  },
-  morning_flower: {
-    file: "morning_flower.mp3",
-    label: "Morning Flower",
-  },
-  iphone_alarm: {
-    file: "iphone_alarm.mp3",
-    label: "iPhone Alarm",
-  },
-  subnautica_alterra: {
-    file: "subnautica_psa_beep.mp3",
-    label: "Subnautica PSA Beep",
-  },
-  mambo: {
-    file: "mambo.mp3",
-    label: "Mambo",
-  },
-}
-
-const CUSTOM_ALARM_SOUND_KEY = "custom_alarm_sound"
 const SAVED_TIMER_PRESETS_KEY = "savedTimerPresets"
 const MAX_SAVED_TIMER_PRESETS = 6
-
-function getTimerAlarmUrl(soundKey) {
-  const sound =
-    TIMER_ALARM_SOUNDS[soundKey] || TIMER_ALARM_SOUNDS.bedside_clock_alarm
-  return `${TIMER_ALARM_BASE_URL}${sound.file}`
-}
-
-function getCustomAlarmLabel(settings = getSettings()) {
-  return settings.timerCustomAlarmSoundName || "Custom Sound"
-}
-
-function renderTimerAlarmOptions(selectedSound, settings = getSettings()) {
-  const customLabel = getCustomAlarmLabel(settings)
-  return [
-    ...Object.entries(TIMER_ALARM_SOUNDS).map(([key, sound]) => ({
-      key,
-      label: sound.label,
-      disabled: false,
-    })),
-    {
-      key: CUSTOM_ALARM_SOUND_KEY,
-      label: customLabel,
-      disabled: !settings.timerCustomAlarmSoundId,
-    },
-  ]
-    .map(
-      ({ key, label, disabled }) =>
-        `<option value="${key}" ${key === selectedSound ? "selected" : ""} ${disabled ? "disabled" : ""}>${label}</option>`,
-    )
-    .join("")
-}
 
 async function resolveTimerAlarmUrl(soundKey) {
   if (soundKey === CUSTOM_ALARM_SOUND_KEY) {
@@ -115,8 +36,9 @@ export class Timer {
     this.isRunning = settings.timerIsRunning || false
     this.isExpired = false
     this.timerId = null
-    this.alarmSound = settings.timerAlarmSound || "bedside_clock_alarm"
-    this.alarm = new Audio(getTimerAlarmUrl("bedside_clock_alarm"))
+    this.alarmSound =
+      settings.timerAlarmSound || DEFAULT_TIMER_ALARM_SOUND
+    this.alarm = new Audio(getTimerAlarmUrl(DEFAULT_TIMER_ALARM_SOUND))
     this.alarm.loop = true
     this.isVisible = settings.showTimer === true
     this.isFocusMode = false
@@ -180,7 +102,7 @@ export class Timer {
                 <label class="timer-alarm-row" for="timer-alarm-sound-widget">
                     <i class="fa-solid fa-bell"></i>
                     <select id="timer-alarm-sound-widget" title="Alarm Sound">
-                        ${renderTimerAlarmOptions(this.alarmSound)}
+                        ${renderTimerAlarmOptions(this.alarmSound, getSettings(), i18n)}
                     </select>
                 </label>
             </div>
@@ -228,6 +150,7 @@ export class Timer {
     this.status = this.container.querySelector("#timer-status")
     this.alarmSelect = this.container.querySelector("#timer-alarm-sound-widget")
     this.applyAlarmDropdownVisibility()
+    this.applyClockHiddenCompactMode()
     this.renderSavedTimerPresets()
 
     // Create the mini clock indicator if it doesn't exist
@@ -236,8 +159,7 @@ export class Timer {
   }
 
   _createMiniIndicator() {
-    const clockWrap = document.querySelector(".clock-date-wrap")
-    if (clockWrap && !document.getElementById("mini-timer-indicator")) {
+    if (!document.getElementById("mini-timer-indicator")) {
       const mini = document.createElement("div")
       mini.id = "mini-timer-indicator"
       mini.className = "mini-timer-indicator"
@@ -259,8 +181,34 @@ export class Timer {
           }),
         )
       })
-      clockWrap.appendChild(mini)
+      document.body.appendChild(mini)
     }
+    this.updateMiniIndicatorPosition()
+  }
+
+  updateMiniIndicatorPosition() {
+    const mini = document.getElementById("mini-timer-indicator")
+    if (!mini || mini.style.display === "none") return
+
+    const clockWrap = document.getElementById("clock-date-wrap")
+    const rect = clockWrap?.getBoundingClientRect()
+    const canAnchorToClock =
+      rect &&
+      rect.width > 1 &&
+      rect.height > 1 &&
+      getComputedStyle(clockWrap).display !== "none" &&
+      getComputedStyle(clockWrap).visibility !== "hidden"
+
+    if (canAnchorToClock) {
+      mini.classList.remove("is-clock-hidden")
+      mini.style.left = `${rect.left + rect.width / 2}px`
+      mini.style.top = `${Math.max(12, rect.top - 30)}px`
+      return
+    }
+
+    mini.classList.add("is-clock-hidden")
+    mini.style.left = "50%"
+    mini.style.top = "max(16px, env(safe-area-inset-top))"
   }
 
   _createFocusOverlay() {
@@ -371,6 +319,11 @@ export class Timer {
       if (e.key === "Escape" && this.isFocusMode) this.exitFocusMode()
     })
 
+    window.addEventListener("resize", () => this.updateMiniIndicatorPosition())
+    window.addEventListener("scroll", () => this.updateMiniIndicatorPosition(), {
+      passive: true,
+    })
+
     window.addEventListener("layoutUpdated", (e) => {
       if (e.detail.key === "showTimer") {
         this.isVisible = e.detail.value
@@ -390,7 +343,20 @@ export class Timer {
       if (e.detail.key === "hideTimerAlarmDropdown") {
         this.applyAlarmDropdownVisibility()
       }
+      if (
+        [
+          "showClock",
+          "clockDisplayMode",
+          "dateClockStyle",
+          "freeMoveClock",
+          "clockTimerMode",
+        ].includes(e.detail.key)
+      ) {
+        this.applyClockHiddenCompactMode()
+        this.updateMiniIndicatorPosition()
+      }
       if (e.detail.key === "language") {
+        this.refreshAlarmOptions()
         this.updateTimerStatus()
         this.updateMiniIndicatorState()
         this.updateTimerInputLanguage()
@@ -448,12 +414,7 @@ export class Timer {
 
   async setAlarmSound(soundKey, persist = false, forceReload = false) {
     const settings = getSettings()
-    const hasCustomSound =
-      soundKey === CUSTOM_ALARM_SOUND_KEY && settings.timerCustomAlarmSoundId
-    const nextSound =
-      TIMER_ALARM_SOUNDS[soundKey] || hasCustomSound
-        ? soundKey
-        : "bedside_clock_alarm"
+    const nextSound = normalizeTimerAlarmSound(soundKey, settings)
     if (nextSound === this.alarmSound && !forceReload) {
       this.refreshAlarmOptions(nextSound)
       if (this.alarmSelect) this.alarmSelect.value = nextSound
@@ -479,22 +440,24 @@ export class Timer {
   }
 
   refreshAlarmOptions(selectedSound = this.alarmSound) {
-    const optionsHtml = renderTimerAlarmOptions(selectedSound)
+    const settings = getSettings()
+    const i18n = geti18n()
     if (this.alarmSelect) {
-      this.alarmSelect.innerHTML = optionsHtml
-      this.alarmSelect.value = selectedSound
+      renderTimerAlarmSelectOptions(
+        this.alarmSelect,
+        selectedSound,
+        settings,
+        i18n,
+      )
     }
     const settingsSelect = document.getElementById("timer-alarm-sound-select")
     if (settingsSelect) {
-      const settings = getSettings()
-      const customOption = settingsSelect.querySelector(
-        `option[value="${CUSTOM_ALARM_SOUND_KEY}"]`,
+      renderTimerAlarmSelectOptions(
+        settingsSelect,
+        selectedSound,
+        settings,
+        i18n,
       )
-      if (customOption) {
-        customOption.textContent = getCustomAlarmLabel(settings)
-        customOption.disabled = !settings.timerCustomAlarmSoundId
-      }
-      settingsSelect.value = selectedSound
     }
   }
 
@@ -503,8 +466,26 @@ export class Timer {
     this.container?.classList.toggle("timer-hide-alarm-dropdown", hideDropdown)
   }
 
+  applyClockHiddenCompactMode() {
+    const settings = getSettings()
+    const clockWrap = document.getElementById("clock-date-wrap")
+    const clockFadeWrap = document.getElementById("clock-fade-wrap")
+    const clockDisplayMode = settings.clockDisplayMode || "all"
+    const clockIsHiddenBySetting =
+      clockDisplayMode === "hide" || clockDisplayMode === "weekday"
+    const clockIsHiddenByDom =
+      clockFadeWrap?.classList.contains("is-hidden") ||
+      clockWrap?.classList.contains("timer-running-hidden")
+
+    this.container?.classList.toggle(
+      "timer-clock-hidden-compact",
+      clockIsHiddenBySetting || clockIsHiddenByDom,
+    )
+  }
+
   updateVisibility() {
     this.container.getAnimations().forEach((animation) => animation.cancel())
+    this.applyClockHiddenCompactMode()
     fadeToggle(this.container, this.isVisible, "flex")
     this._updateMiniIndicatorVisibility()
   }
@@ -527,6 +508,7 @@ export class Timer {
         (isMinimized || this.isRunning || this.isExpired)
       mini.style.display = shouldShowMini ? "flex" : "none"
       if (shouldShowMini) {
+        this.updateMiniIndicatorPosition()
         this.render()
         this.updateMiniIndicatorState()
       }
@@ -981,6 +963,7 @@ export class Timer {
     if (miniText) {
       this.renderTime(this.timeLeft, miniText, true)
     }
+    this.updateMiniIndicatorPosition()
     this.updateMiniIndicatorState()
     this.updateFocusOverlay()
   }

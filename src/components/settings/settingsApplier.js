@@ -36,6 +36,10 @@ import {
 import { renderUserGradients, buildGradientCss } from "./gradientManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
 import { buildMultiColorCss } from "./multiColorManager.js"
+import {
+  DEFAULT_TIMER_ALARM_SOUND,
+  renderTimerAlarmSelectOptions,
+} from "../../data/timerAlarmSounds.js"
 
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
@@ -4087,16 +4091,12 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.hideTimerAlarmDropdown === true
     }
     if (DOM.timerAlarmSoundSelect) {
-      const customOption = DOM.timerAlarmSoundSelect.querySelector(
-        'option[value="custom_alarm_sound"]',
+      renderTimerAlarmSelectOptions(
+        DOM.timerAlarmSoundSelect,
+        settings.timerAlarmSound || DEFAULT_TIMER_ALARM_SOUND,
+        settings,
+        geti18n(),
       )
-      if (customOption) {
-        customOption.textContent =
-          settings.timerCustomAlarmSoundName || customOption.textContent
-        customOption.disabled = !settings.timerCustomAlarmSoundId
-      }
-      DOM.timerAlarmSoundSelect.value =
-        settings.timerAlarmSound || "bedside_clock_alarm"
     }
     if (DOM.timerAlarmCustomName) {
       const hasCustomAlarm = Boolean(settings.timerCustomAlarmSoundId)

@@ -129,6 +129,13 @@ function buildUnsplashImageUrl(photo, width, height) {
   return `${baseUrl}${separator}auto=format&fit=crop&w=${width}&h=${height}&q=${profile.quality}`
 }
 
+function buildExplorerThumbnailUrl(photo) {
+  const baseUrl =
+    photo.urls.raw || photo.urls.small || photo.urls.regular || photo.urls.full
+  const separator = baseUrl.includes("?") ? "&" : "?"
+  return `${baseUrl}${separator}auto=format&fit=crop&w=360&h=270&q=62`
+}
+
 function formatResolution(width, height) {
   return width && height ? `${width} x ${height}` : "Unknown size"
 }
@@ -712,7 +719,7 @@ async function loadExplorerResults(append = false) {
 
   const grid = document.getElementById("unsplash-explorer-grid")
   const loadMoreBtn = document.getElementById("unsplash-explorer-load-more")
-  const perPage = 20
+  const perPage = 16
 
   if (grid && !grid.dataset.positionListenerAttached) {
     grid.dataset.positionListenerAttached = "true"
@@ -729,7 +736,8 @@ async function loadExplorerResults(append = false) {
     loadMoreBtn.disabled = true
     const originalText = loadMoreBtn.innerHTML
     loadMoreBtn.dataset.originalHtml = originalText
-    loadMoreBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'
+    loadMoreBtn.innerHTML =
+      '<i class="fa-solid fa-spinner fa-spin"></i><span>Loading...</span>'
   }
 
   try {
@@ -748,14 +756,25 @@ async function loadExplorerResults(append = false) {
     if (!append && grid) grid.innerHTML = ""
 
     if (data && data.length > 0) {
+      const fragment = document.createDocumentFragment()
+
       data.forEach(photo => {
         const item = document.createElement("div")
         item.className = "explorer-photo-item"
-        item.style.backgroundImage = `url(${photo.urls.small})`
         const { width, height } = getTargetImageDimensions()
         const originalSize = formatResolution(photo.width, photo.height)
         const screenSize = formatResolution(width, height)
         item.title = `By ${photo.user.name} - ${originalSize}`
+
+        const image = document.createElement("img")
+        image.className = "explorer-photo-img"
+        image.src = buildExplorerThumbnailUrl(photo)
+        image.alt = photo.alt_description || photo.description || ""
+        image.loading = "lazy"
+        image.decoding = "async"
+        image.fetchPriority = "low"
+        image.sizes = "(max-width: 760px) 45vw, 180px"
+        item.appendChild(image)
 
         const meta = document.createElement("div")
         meta.className = "explorer-photo-meta"
@@ -765,16 +784,35 @@ async function loadExplorerResults(append = false) {
         `
         item.appendChild(meta)
 
+        const overlay = document.createElement("div")
+        overlay.className = "explorer-photo-overlay"
+        const author = document.createElement("span")
+        author.className = "explorer-photo-author"
+        author.innerHTML = '<i class="fa-solid fa-camera"></i>'
+        author.append(document.createTextNode(photo.user.name))
+        const action = document.createElement("span")
+        action.className = "explorer-photo-action"
+        action.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>'
+        overlay.append(author, action)
+        item.appendChild(overlay)
+
         item.addEventListener("click", (event) => {
           event.preventDefault()
           rememberExplorerPosition(true)
+          grid
+            .querySelectorAll(".explorer-photo-item.selected")
+            .forEach((selectedItem) => selectedItem.classList.remove("selected"))
+          item.classList.add("selected")
           applyUnsplashPhoto(photo, item)
           // Removed auto-close as per user request to allow manual closing
           // document.getElementById("unsplash-explorer-modal").classList.remove("open")
         })
 
-        grid.appendChild(item)
+        fragment.appendChild(item)
       })
+
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+      grid.appendChild(fragment)
 
       // If we got fewer results than requested, there are likely no more pages
       if (loadMoreBtn) {
@@ -811,6 +849,7 @@ async function applyUnsplashPhoto(photo, element = null) {
 
   if (element) {
     element.classList.add("applying")
+    element.setAttribute("aria-busy", "true")
   }
 
   const { width, height } = getTargetImageDimensions()
@@ -848,9 +887,11 @@ async function applyUnsplashPhoto(photo, element = null) {
   } catch (err) {
     console.error("Failed to apply photo:", err)
     showAlert("Failed to apply Unsplash photo.")
+    if (element) element.classList.remove("selected")
   } finally {
     if (element) {
       element.classList.remove("applying")
+      element.removeAttribute("aria-busy")
     }
     restoreExplorerPosition()
   }

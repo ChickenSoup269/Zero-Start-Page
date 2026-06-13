@@ -83,6 +83,11 @@ import {
   VISUAL_EFFECT_KEYS,
   VISUAL_THEME_KEYS,
 } from "./visualPresetConfig.js"
+import {
+  CUSTOM_ALARM_SOUND_KEY,
+  DEFAULT_TIMER_ALARM_SOUND,
+  renderTimerAlarmSelectOptions,
+} from "../../data/timerAlarmSounds.js"
 
 const BUG_REPORT_FORM_URLS = {
   vi: "https://docs.google.com/forms/d/e/1FAIpQLSfsOq7QtdqgxcZYIGiDeV-CimbfrmhLzANa0q0VTCb2mPOsmw/viewform?usp=publish-editor",
@@ -123,7 +128,6 @@ export function setupGeneralEventHandlers(
   )
   const effects = ctx.effects
   const LANGUAGE_TOOLS_OPEN_KEY = "startpage_languageToolsOpen"
-  const CUSTOM_TIMER_ALARM_KEY = "custom_alarm_sound"
   const MAX_TIMER_ALARM_SIZE = 12 * 1024 * 1024
   const STYLE_PRESETS = {
     clean: {
@@ -433,7 +437,7 @@ export function setupGeneralEventHandlers(
     const settings = getSettings()
     const customName = settings.timerCustomAlarmSoundName || ""
     const hasCustomSound = Boolean(settings.timerCustomAlarmSoundId)
-    const label = customName || i18n.timer_alarm_custom || "Custom Sound"
+    const selectedSound = settings.timerAlarmSound || DEFAULT_TIMER_ALARM_SOUND
 
     ;[
       DOM.timerAlarmSoundSelect,
@@ -441,13 +445,12 @@ export function setupGeneralEventHandlers(
     ]
       .filter(Boolean)
       .forEach((select) => {
-        const option = select.querySelector(
-          `option[value="${CUSTOM_TIMER_ALARM_KEY}"]`,
+        renderTimerAlarmSelectOptions(
+          select,
+          selectedSound,
+          settings,
+          geti18n(),
         )
-        if (option) {
-          option.textContent = label
-          option.disabled = !hasCustomSound
-        }
       })
 
     if (DOM.timerAlarmCustomName) {
@@ -1411,6 +1414,7 @@ export function setupGeneralEventHandlers(
     renderCustomLanguageOptions()
     await loadLanguage(getSettings().language)
     applyTranslations()
+    updateTimerAlarmCustomUi()
     window.dispatchEvent(
       new CustomEvent("startpage:languageChanged", {
         detail: { language: DOM.languageSelect.value },
@@ -4719,10 +4723,10 @@ export function setupGeneralEventHandlers(
   if (DOM.timerAlarmSoundSelect) {
     DOM.timerAlarmSoundSelect.addEventListener("change", () => {
       if (
-        DOM.timerAlarmSoundSelect.value === CUSTOM_TIMER_ALARM_KEY &&
+        DOM.timerAlarmSoundSelect.value === CUSTOM_ALARM_SOUND_KEY &&
         !getSettings().timerCustomAlarmSoundId
       ) {
-        DOM.timerAlarmSoundSelect.value = "bedside_clock_alarm"
+        DOM.timerAlarmSoundSelect.value = DEFAULT_TIMER_ALARM_SOUND
         showAlert(
           i18n.timer_alarm_upload_first ||
             "Upload a custom sound before selecting this option.",
@@ -4764,16 +4768,16 @@ export function setupGeneralEventHandlers(
       const soundId = await saveAudio(file)
       updateSetting("timerCustomAlarmSoundId", soundId)
       updateSetting("timerCustomAlarmSoundName", file.name)
-      updateSetting("timerAlarmSound", CUSTOM_TIMER_ALARM_KEY)
+      updateSetting("timerAlarmSound", CUSTOM_ALARM_SOUND_KEY)
       saveSettings(true)
       if (previousId) deleteImage(previousId).catch(() => {})
       updateTimerAlarmCustomUi()
       if (DOM.timerAlarmSoundSelect) {
-        DOM.timerAlarmSoundSelect.value = CUSTOM_TIMER_ALARM_KEY
+        DOM.timerAlarmSoundSelect.value = CUSTOM_ALARM_SOUND_KEY
       }
       window.dispatchEvent(
         new CustomEvent("settingsUpdated", {
-          detail: { key: "timerAlarmSound", value: CUSTOM_TIMER_ALARM_KEY },
+          detail: { key: "timerAlarmSound", value: CUSTOM_ALARM_SOUND_KEY },
         }),
       )
     } catch (error) {
@@ -4790,8 +4794,8 @@ export function setupGeneralEventHandlers(
     if (soundId) deleteImage(soundId).catch(() => {})
     updateSetting("timerCustomAlarmSoundId", null)
     updateSetting("timerCustomAlarmSoundName", "")
-    if (settings.timerAlarmSound === CUSTOM_TIMER_ALARM_KEY) {
-      updateSetting("timerAlarmSound", "bedside_clock_alarm")
+    if (settings.timerAlarmSound === CUSTOM_ALARM_SOUND_KEY) {
+      updateSetting("timerAlarmSound", DEFAULT_TIMER_ALARM_SOUND)
     }
     saveSettings(true)
     updateTimerAlarmCustomUi()

@@ -340,7 +340,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     })
   }
 
-  DOM.wavyLinesColorPicker.addEventListener("input", () => {
+  DOM.wavyLinesColorPicker?.addEventListener("input", () => {
     updateSetting("wavyLinesColor", DOM.wavyLinesColorPicker.value)
     saveSettings()
     if (effectInstances.wavyLinesEffect)

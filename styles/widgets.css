@@ -3319,6 +3319,36 @@ body.todo-fullscreen-active::before {
   pointer-events: none;
 }
 
+.timer-container.timer-clock-hidden-compact {
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - 24px);
+  padding: 10px;
+}
+
+.timer-container.timer-clock-hidden-compact .timer-main-view {
+  width: auto;
+  min-width: 0;
+}
+
+.timer-container.timer-clock-hidden-compact .timer-display {
+  align-self: center;
+  width: auto;
+  min-width: 88px;
+  max-width: min(210px, calc(100vw - 52px));
+  padding: 8px 22px;
+  font-size: 1.8rem;
+  line-height: 1.05;
+}
+
+.timer-container.timer-clock-hidden-compact .timer-controls {
+  width: min(230px, calc(100vw - 52px));
+}
+
+.timer-container.timer-clock-hidden-compact .timer-alarm-row {
+  width: min(230px, calc(100vw - 52px));
+}
+
 .timer-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4005,8 +4035,8 @@ body.timer-focus-active {
 
 /* Mini Indicator on Clock */
 .mini-timer-indicator {
-  position: absolute;
-  top: -24px;
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
   left: 50%;
   transform: translateX(-50%);
   background: rgba(var(--accent-color-rgb), 0.2);
@@ -4024,11 +4054,24 @@ body.timer-focus-active {
   transition: all 0.2s;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  max-width: min(220px, calc(100vw - 24px));
+  white-space: nowrap;
+  will-change: top, left, transform;
 }
 
 .mini-timer-indicator:hover {
   background: rgba(var(--accent-color-rgb), 0.35);
   transform: translateX(-50%) scale(1.05);
+}
+
+.mini-timer-indicator.is-clock-hidden {
+  top: max(16px, env(safe-area-inset-top));
+  left: 50%;
+  background: rgba(14, 16, 24, 0.72);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
 }
 
 .mini-timer-indicator i {

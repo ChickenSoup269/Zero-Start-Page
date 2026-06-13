@@ -419,8 +419,23 @@ export class MusicPlayer {
       this.pollInterval = null
     }
     // Stop visualizer and animations when not polling to save resources
+    this.disc?.classList.remove("playing")
+    this.container
+      ?.querySelector(".music-player-wrapper")
+      ?.classList.remove("playing")
     if (this.visualizer) this.visualizer.stop()
     this._stopProgressAnimation()
+  }
+
+  canAnimateVisualizer() {
+    if (!this.showPlayer || !this.isVisible || !this.container) return false
+    const style = getComputedStyle(this.container)
+    return (
+      style.display !== "none" &&
+      style.visibility !== "hidden" &&
+      style.opacity !== "0" &&
+      !this.container.classList.contains("minimized")
+    )
   }
 
   updateUI(data) {
@@ -445,7 +460,8 @@ export class MusicPlayer {
       : '<i class="fa-solid fa-play"></i>'
 
     const wrapper = this.container.querySelector(".music-player-wrapper")
-    if (this.isPlaying) {
+    const shouldAnimate = this.isPlaying && this.canAnimateVisualizer()
+    if (shouldAnimate) {
       this.disc.classList.add("playing")
       if (wrapper) wrapper.classList.add("playing")
       this.visualizer.start()
@@ -473,7 +489,7 @@ export class MusicPlayer {
     this._lastKnownTime = data.currentTime || 0
     this._lastUpdateTimestamp = Date.now()
     this._updateProgressUI(this._lastKnownTime, this._duration)
-    if (this.isPlaying && this._duration > 0) {
+    if (shouldAnimate && this._duration > 0) {
       this._startProgressAnimation()
     } else {
       this._stopProgressAnimation()
