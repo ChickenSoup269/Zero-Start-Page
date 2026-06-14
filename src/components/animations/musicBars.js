@@ -1,5 +1,5 @@
 /**
- * MusicBarsEffect - lightweight floating equalizer bars.
+ * MusicBarsEffect - ambient equalizer-style bars.
  */
 export class MusicBarsEffect {
   constructor(canvasId, color = "#8be9fd") {
@@ -12,10 +12,11 @@ export class MusicBarsEffect {
     this.rafId = null
     this.lastDrawTime = 0
     this.time = 0
-    this.targetFrameMs = 1000 / 30
-    this.pixelRatio = 0.75
+    this.targetFrameMs = 1000 / 36
+    this.pixelRatio = 0.85
     this.color = color
     this.bars = []
+    this.rings = []
     this.sparks = []
     this._resizeHandler = () => this.resize()
 
@@ -46,8 +47,9 @@ export class MusicBarsEffect {
     const { r, g, b } = this._hexToRgb(hex)
     this.rgb = { r, g, b }
     this.coreColor = `rgba(255, 255, 255, 0.82)`
-    this.barColor = `rgba(${r}, ${g}, ${b}, 0.48)`
-    this.glowColor = `rgba(${r}, ${g}, ${b}, 0.16)`
+    this.barColor = `rgba(${r}, ${g}, ${b}, 0.58)`
+    this.glowColor = `rgba(${r}, ${g}, ${b}, 0.18)`
+    this.peakColor = `rgba(${Math.min(r + 76, 255)}, ${Math.min(g + 76, 255)}, ${Math.min(b + 76, 255)}, 0.72)`
     this.sparkColor = `rgba(${r}, ${g}, ${b}, 0.38)`
   }
 
@@ -64,20 +66,26 @@ export class MusicBarsEffect {
   _buildBars() {
     const W = window.innerWidth
     const H = window.innerHeight
-    const count = Math.max(22, Math.min(42, Math.floor(W / 44)))
+    const count = Math.max(28, Math.min(64, Math.floor(W / 30)))
+    const centerY = H * 0.56
     this.bars = Array.from({ length: count }, (_, i) => {
       const laneX = ((i + 0.5) / count) * W
+      const distanceFromCenter = Math.abs(i / Math.max(count - 1, 1) - 0.5) * 2
+      const heightBias = 1 - distanceFromCenter * 0.34
       return {
-        x: laneX + (Math.random() - 0.5) * 18,
-        y: Math.random() * H,
-        width: 3 + Math.random() * 4,
-        minHeight: 18 + Math.random() * 20,
-        maxHeight: 64 + Math.random() * 78,
+        x: laneX + (Math.random() - 0.5) * 10,
+        y: centerY + (Math.random() - 0.5) * H * 0.2,
+        width: 3 + Math.random() * 5,
+        minHeight: 14 + Math.random() * 18,
+        maxHeight: (82 + Math.random() * 150) * heightBias,
+        lastHeight: 20,
+        peak: 24,
         phase: Math.random() * Math.PI * 2,
-        pulseSpeed: 0.7 + Math.random() * 1.1,
-        floatSpeed: 8 + Math.random() * 18,
-        sway: 8 + Math.random() * 16,
-        alpha: 0.45 + Math.random() * 0.35,
+        pulseSpeed: 1.1 + Math.random() * 2.2,
+        floatSpeed: 5 + Math.random() * 9,
+        sway: 4 + Math.random() * 12,
+        alpha: 0.5 + Math.random() * 0.32,
+        delay: i / Math.max(count - 1, 1),
       }
     })
   }
@@ -94,6 +102,17 @@ export class MusicBarsEffect {
       phase: Math.random() * Math.PI * 2,
       alpha: 0.16 + Math.random() * 0.28,
     }))
+  }
+
+  _spawnRing() {
+    if (this.rings.length > 5) this.rings.shift()
+    this.rings.push({
+      x: window.innerWidth * (0.2 + Math.random() * 0.6),
+      y: window.innerHeight * (0.44 + Math.random() * 0.26),
+      radius: 20 + Math.random() * 40,
+      life: 1,
+      speed: 58 + Math.random() * 52,
+    })
   }
 
   start() {
@@ -120,36 +139,82 @@ export class MusicBarsEffect {
     this.stop()
     window.removeEventListener("resize", this._resizeHandler)
     this.bars = []
+    this.rings = []
     this.sparks = []
   }
 
   _drawBars(dt) {
     const ctx = this.ctx
     const H = window.innerHeight
+    const masterBeat =
+      0.52 +
+      0.26 * Math.sin(this.time * 2.4) +
+      0.18 * Math.sin(this.time * 5.7) +
+      0.08 * Math.sin(this.time * 11.3)
 
     ctx.globalCompositeOperation = "lighter"
 
     for (const bar of this.bars) {
       bar.phase += bar.pulseSpeed * dt
-      bar.y -= bar.floatSpeed * dt
-      if (bar.y < -bar.maxHeight) bar.y = H + bar.maxHeight
+      bar.y += Math.sin(this.time * 0.22 + bar.delay * Math.PI * 2) * bar.floatSpeed * dt
 
-      const beat = 0.58 + 0.42 * Math.sin(bar.phase)
-      const height = bar.minHeight + (bar.maxHeight - bar.minHeight) * beat
+      const laneWave = 0.5 + 0.5 * Math.sin(this.time * 3.1 - bar.delay * Math.PI * 5)
+      const shimmer = 0.5 + 0.5 * Math.sin(bar.phase)
+      const beat = Math.max(0, Math.min(1, masterBeat * 0.58 + laneWave * 0.28 + shimmer * 0.14))
+      const targetHeight = bar.minHeight + (bar.maxHeight - bar.minHeight) * beat
+      const height = bar.lastHeight + (targetHeight - bar.lastHeight) * Math.min(1, dt * 11)
+      bar.lastHeight = height
+      bar.peak = Math.max(height, bar.peak - dt * (70 + bar.maxHeight * 0.25))
       const x = bar.x + Math.sin(this.time * 0.6 + bar.phase) * bar.sway
       const y = bar.y - height * 0.5
-      const glowWidth = bar.width + 10
+      const glowWidth = bar.width + 14 + beat * 8
+      const capY = bar.y - bar.peak * 0.5 - 5
 
       ctx.globalAlpha = bar.alpha
       ctx.fillStyle = this.glowColor
       ctx.fillRect(x - glowWidth * 0.5, y, glowWidth, height)
 
+      const grad = ctx.createLinearGradient(x, y, x, y + height)
+      grad.addColorStop(0, this.peakColor)
+      grad.addColorStop(0.45, this.barColor)
+      grad.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0.16)`)
       ctx.fillStyle = this.barColor
+      ctx.fillStyle = grad
       ctx.fillRect(x - bar.width * 0.5, y, bar.width, height)
 
       ctx.globalAlpha = bar.alpha * 0.65
       ctx.fillStyle = this.coreColor
       ctx.fillRect(x - 0.5, y + height * 0.12, 1, height * 0.76)
+
+      ctx.globalAlpha = bar.alpha * 0.45
+      ctx.fillStyle = this.peakColor
+      ctx.fillRect(x - bar.width * 0.72, capY, bar.width * 1.44, 2)
+
+      ctx.globalAlpha = bar.alpha * 0.13
+      ctx.fillStyle = this.barColor
+      ctx.fillRect(x - bar.width * 0.5, bar.y + height * 0.14, bar.width, height * 0.44)
+    }
+
+    if (Math.sin(this.time * 2.35) > 0.985) this._spawnRing()
+    this._drawRings(dt)
+  }
+
+  _drawRings(dt) {
+    const ctx = this.ctx
+    for (let i = this.rings.length - 1; i >= 0; i--) {
+      const ring = this.rings[i]
+      ring.life -= dt * 0.85
+      ring.radius += ring.speed * dt
+      if (ring.life <= 0) {
+        this.rings.splice(i, 1)
+        continue
+      }
+      ctx.globalAlpha = ring.life * 0.22
+      ctx.strokeStyle = this.peakColor
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2)
+      ctx.stroke()
     }
   }
 

@@ -372,11 +372,19 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     DOM.oceanWavePosBottomBtn.classList.remove("active")
   })
 
-  DOM.cloudDriftColorPicker.addEventListener("input", () => {
+  DOM.cloudDriftColorPicker?.addEventListener("input", () => {
     updateSetting("cloudDriftColor", DOM.cloudDriftColorPicker.value)
     saveSettings()
     if (effectInstances.cloudDriftEffect)
       effectInstances.cloudDriftEffect.updateColor(DOM.cloudDriftColorPicker.value)
+  })
+
+  DOM.cloudDriftMoodSelect?.addEventListener("change", () => {
+    updateSetting("cloudDriftMood", DOM.cloudDriftMoodSelect.value)
+    saveSettings()
+    if (effectInstances.cloudDriftEffect) {
+      effectInstances.cloudDriftEffect.setMood(DOM.cloudDriftMoodSelect.value)
+    }
   })
 
   DOM.shinyColorPicker.addEventListener("input", () => {

@@ -127,7 +127,11 @@ export function createEffectFactories(settings) {
         settings.oceanWavePosition || "bottom",
       ),
     cloudDriftEffect: () =>
-      new CloudDriftEffect("effect-canvas", settings.cloudDriftColor || "#0a0a0a"),
+      new CloudDriftEffect(
+        "effect-canvas",
+        settings.cloudDriftColor || "#0a0a0a",
+        settings.cloudDriftMood || "default",
+      ),
     firefliesHDEffect: () => new FirefliesHD("effect-canvas"),
     autumnLeavesEffect: () => new AutumnLeavesEffect("effect-canvas"),
     greenLeavesEffect: () => new GreenLeavesEffect("effect-canvas"),

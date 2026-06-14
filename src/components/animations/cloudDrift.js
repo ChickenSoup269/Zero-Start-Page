@@ -1,13 +1,15 @@
 import { hexToRgb } from "../../utils/colors.js"
 
 export class CloudDriftEffect {
-  constructor(canvasId, color = "#ffffff") {
+  constructor(canvasId, color = "#ffffff", mood = "default") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.baseColor = color
+    this.mood = mood || "default"
     this.clouds = []
     this.lastTime = 0
+    this.time = 0
     this._animId = null
 
     this._resizeHandler = () => this.resize()
@@ -35,8 +37,8 @@ export class CloudDriftEffect {
 
   createCloudData() {
     const layer = Math.random()
-    const scale = 0.6 + layer * 1.0
-    const puffCount = 5 + Math.floor(Math.random() * 4)
+    const scale = 0.55 + layer * 1.15
+    const puffCount = 6 + Math.floor(Math.random() * 5)
     const puffs = []
     for (let i = 0; i < puffCount; i++) {
       puffs.push({
@@ -44,18 +46,19 @@ export class CloudDriftEffect {
         oy: (Math.random() * 20 - 10) * scale,
         r: (50 + Math.random() * 40) * scale,
         phase: Math.random() * Math.PI * 2,
-        speed: 0.2 + Math.random() * 0.2
+        speed: 0.16 + Math.random() * 0.24,
       })
     }
 
     return {
       x: -400,
-      y: Math.random() * (this.canvas.height * 0.5),
-      speed: (15 + layer * 25), // Pixels per second
-      alpha: 0.25 + layer * 0.3,
-      layer: layer,
-      puffs: puffs,
-      scale: scale
+      y: Math.random() * (this.canvas.height * 0.58),
+      speed: 10 + layer * 22,
+      alpha: 0.2 + layer * 0.34,
+      layer,
+      puffs,
+      scale,
+      wobble: Math.random() * Math.PI * 2,
     }
   }
 
@@ -98,6 +101,7 @@ export class CloudDriftEffect {
   }
 
   update(dt, time) {
+    this.time = time
     for (const c of this.clouds) {
       c.x += c.speed * dt
       
@@ -123,23 +127,94 @@ export class CloudDriftEffect {
     this._updateColorCache()
   }
 
+  setMood(mood) {
+    this.mood = mood || "default"
+  }
+
+  setOptions(options = {}) {
+    if (options.color !== undefined) this.updateColor(options.color)
+    if (options.mood !== undefined) this.setMood(options.mood)
+  }
+
+  _getMoodPalette() {
+    const palettes = {
+      sunrise: {
+        sky: ["rgba(255, 190, 126, 0.2)", "rgba(255, 224, 181, 0.14)", "rgba(133, 191, 226, 0.08)"],
+        sun: "rgba(255, 183, 98, 0.45)",
+        tint: { r: 255, g: 218, b: 185 },
+        tintStrength: 0.5,
+        horizon: "rgba(255, 143, 99, 0.18)",
+      },
+      sunset: {
+        sky: ["rgba(255, 117, 92, 0.18)", "rgba(246, 167, 104, 0.12)", "rgba(76, 80, 158, 0.12)"],
+        sun: "rgba(255, 130, 82, 0.42)",
+        tint: { r: 255, g: 177, b: 133 },
+        tintStrength: 0.58,
+        horizon: "rgba(255, 94, 112, 0.2)",
+      },
+      default: null,
+    }
+    return palettes[this.mood] || palettes.default
+  }
+
+  _mixRgb(a, b, amount) {
+    return {
+      r: Math.round(a.r + (b.r - a.r) * amount),
+      g: Math.round(a.g + (b.g - a.g) * amount),
+      b: Math.round(a.b + (b.b - a.b) * amount),
+    }
+  }
+
+  _drawMoodBackdrop(palette) {
+    if (!palette) return
+    const W = this.canvas.width
+    const H = this.canvas.height
+    const ctx = this.ctx
+    const sky = ctx.createLinearGradient(0, 0, 0, H)
+    sky.addColorStop(0, palette.sky[0])
+    sky.addColorStop(0.5, palette.sky[1])
+    sky.addColorStop(1, palette.sky[2])
+    ctx.fillStyle = sky
+    ctx.fillRect(0, 0, W, H)
+
+    const sunX = this.mood === "sunset" ? W * 0.78 : W * 0.22
+    const sunY = H * (this.mood === "sunset" ? 0.36 : 0.32)
+    const pulse = 1 + Math.sin(this.time * 0.32) * 0.03
+    const sun = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, Math.min(W, H) * 0.36 * pulse)
+    sun.addColorStop(0, palette.sun)
+    sun.addColorStop(0.42, "rgba(255, 214, 168, 0.16)")
+    sun.addColorStop(1, "rgba(255, 214, 168, 0)")
+    ctx.fillStyle = sun
+    ctx.fillRect(0, 0, W, H)
+
+    const horizon = ctx.createLinearGradient(0, H * 0.48, 0, H)
+    horizon.addColorStop(0, "rgba(255, 255, 255, 0)")
+    horizon.addColorStop(1, palette.horizon)
+    ctx.fillStyle = horizon
+    ctx.fillRect(0, 0, W, H)
+  }
+
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     if (!this._rgb) this._updateColorCache()
-    const rgb = this._rgb
+    const palette = this._getMoodPalette()
+    this._drawMoodBackdrop(palette)
 
     for (const c of this.clouds) {
       this.ctx.save()
-      this.ctx.translate(c.x, c.y)
+      this.ctx.translate(c.x, c.y + Math.sin(this.time * 0.18 + c.wobble) * 8)
+      const rgb = palette
+        ? this._mixRgb(this._rgb, palette.tint, palette.tintStrength * (0.75 + c.layer * 0.25))
+        : this._rgb
       
-      // Vẽ một lớp duy nhất nhưng tối ưu hơn để tránh đứng hình
+      this.ctx.globalCompositeOperation = palette ? "source-over" : "lighter"
       for (const p of c.puffs) {
         const grad = this.ctx.createRadialGradient(
           p.ox, p.oy - p.currentR * 0.2, 0,
           p.ox, p.oy, p.currentR
         )
         
-        const a = c.alpha
+        const a = palette ? c.alpha * 0.82 : c.alpha
         grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`)
         grad.addColorStop(0.6, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a * 0.6})`)
         grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
@@ -152,5 +227,6 @@ export class CloudDriftEffect {
       
       this.ctx.restore()
     }
+    this.ctx.globalCompositeOperation = "source-over"
   }
 }

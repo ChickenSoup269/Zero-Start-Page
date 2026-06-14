@@ -112,6 +112,7 @@ export const VISUAL_EFFECT_KEYS = [
   "oceanWaveColor",
   "oceanWavePosition",
   "cloudDriftColor",
+  "cloudDriftMood",
   "shinyColor",
   "lineShinyColor",
   "nintendoPixelColor",

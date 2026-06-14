@@ -96,8 +96,9 @@ export class WindEffect {
         this.lines = [];
         this._animId = null;
         this.mode = mode; // "2d" or "3d"
+        this._resizeHandler = () => this.handleResize();
         this.init();
-        window.addEventListener("resize", () => this.handleResize());
+        window.addEventListener("resize", this._resizeHandler);
     }
 
     setMode(mode) {
@@ -174,5 +175,10 @@ export class WindEffect {
         }
         this.canvas.style.display = "none";
         this.lines = [];
+    }
+
+    destroy() {
+        this.stop();
+        window.removeEventListener("resize", this._resizeHandler);
     }
 }

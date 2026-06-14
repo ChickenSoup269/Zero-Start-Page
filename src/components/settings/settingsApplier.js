@@ -2421,33 +2421,43 @@ function createApplySettings(effectInstances) {
           effectToStart === "pixelSnowHQ" ? "block" : "none"
       }
 
-      // 5. Start selected effect immediately (no artificial delay/flicker).
-      if (effectToStart && effectToStart !== "none" && selectedEffect) {
-        // Apply saved leaf type for falling leaves settled effect
-        if (
-          effectToStart === "fallingLeavesSettled" &&
-          selectedEffect.setLeafType
-        ) {
-          selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
-        }
+    }
 
-        if (effectToStart === "meteor" && selectedEffect) {
-          if (selectedEffect.setAngle)
-            selectedEffect.setAngle(settings.meteorAngle ?? 45)
-          if (selectedEffect.setFullColor)
-            selectedEffect.setFullColor(settings.meteorFullColor === true)
+    const shouldStartSelectedEffect =
+      effectToStart &&
+      effectToStart !== "none" &&
+      selectedEffect &&
+      (effectChanged ||
+        (selectedEffect.active !== true && selectedEffect.isActive !== true))
 
-          const userColors = (settings.userColors || []).map((c) =>
-            typeof c === "string" ? c : c.val,
-          )
-          const palette =
-            settings.meteorFullColor === true
-              ? [settings.meteorColor, ...userColors]
-              : settings.meteorColor
-          selectedEffect.setColor(palette)
-        }
-        selectedEffect.start?.()
+    // 5. Start selected effect immediately (no artificial delay/flicker).
+    // Also start after a lazy factory finishes loading: in that case the
+    // saved effect value has not changed, but the instance is newly created.
+    if (shouldStartSelectedEffect) {
+      // Apply saved leaf type for falling leaves settled effect
+      if (
+        effectToStart === "fallingLeavesSettled" &&
+        selectedEffect.setLeafType
+      ) {
+        selectedEffect.setLeafType(settings.fallingLeavesSkin || "maple")
       }
+
+      if (effectToStart === "meteor" && selectedEffect) {
+        if (selectedEffect.setAngle)
+          selectedEffect.setAngle(settings.meteorAngle ?? 45)
+        if (selectedEffect.setFullColor)
+          selectedEffect.setFullColor(settings.meteorFullColor === true)
+
+        const userColors = (settings.userColors || []).map((c) =>
+          typeof c === "string" ? c : c.val,
+        )
+        const palette =
+          settings.meteorFullColor === true
+            ? [settings.meteorColor, ...userColors]
+            : settings.meteorColor
+        selectedEffect.setColor(palette)
+      }
+      selectedEffect.start?.()
     }
     _prevEffect = effectToStart
 
@@ -3409,7 +3419,10 @@ function createUpdateSettingsInputs(effectInstances) {
       oceanWavePos === "bottom",
     )
     DOM.oceanWavePosTopBtn.classList.toggle("active", oceanWavePos === "top")
-    DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
+    if (DOM.cloudDriftColorPicker)
+      DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
+    if (DOM.cloudDriftMoodSelect)
+      DOM.cloudDriftMoodSelect.value = settings.cloudDriftMood || "default"
 
     // Visibility of Effect Settings
     if (DOM.starColorSetting)
@@ -3872,6 +3885,9 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.effect === "oceanWave" ? "block" : "none"
     if (DOM.cloudDriftColorSetting)
       DOM.cloudDriftColorSetting.style.display =
+        settings.effect === "cloudDrift" ? "block" : "none"
+    if (DOM.cloudDriftMoodSetting)
+      DOM.cloudDriftMoodSetting.style.display =
         settings.effect === "cloudDrift" ? "block" : "none"
     if (DOM.shinyColorSetting)
       DOM.shinyColorSetting.style.display =

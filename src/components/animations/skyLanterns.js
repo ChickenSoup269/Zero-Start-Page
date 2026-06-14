@@ -24,8 +24,9 @@ export class SkyLanternsEffect {
       ["#FF7043", "#E64A19"],
     ]
 
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   setOptions(options) {
@@ -266,5 +267,11 @@ export class SkyLanternsEffect {
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.lanterns = []
   }
 }

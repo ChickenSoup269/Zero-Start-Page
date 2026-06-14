@@ -663,6 +663,12 @@ export const cloudDriftColorPicker = document.getElementById(
 export const cloudDriftColorSetting = document.getElementById(
   "cloud-drift-color-setting",
 )
+export const cloudDriftMoodSelect = document.getElementById(
+  "cloud-drift-mood-select",
+)
+export const cloudDriftMoodSetting = document.getElementById(
+  "cloud-drift-mood-setting",
+)
 export const shinyColorPicker = document.getElementById("shiny-color-picker")
 export const shinyColorSetting = document.getElementById("shiny-color-setting")
 export const lineShinyColorPicker = document.getElementById(

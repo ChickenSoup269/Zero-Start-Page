@@ -15,8 +15,9 @@ export class SnowfallHDEffect {
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
 
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   resize() {
@@ -281,5 +282,12 @@ export class SnowfallHDEffect {
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+    this.flakes = []
+    this.pileHeights = []
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
   }
 }

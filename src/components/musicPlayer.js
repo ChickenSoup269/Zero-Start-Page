@@ -85,7 +85,38 @@ export class MusicPlayer {
     this._lastKnownTime = 0
     this._lastUpdateTimestamp = 0
     this._progressInterval = null
+    this._destroyed = false
+    this._controlRefreshTimeouts = new Set()
+    this._settingsHandler = (e) => {
+      if (this._destroyed) return
+      const { key, value } = e.detail
+      if (key === "musicPlayerEnabled") {
+        this.setEnabled(value)
+      }
+      if (key === "music_bar_style" || key === "musicBarStyle") {
+        this.applyMusicStyle(value)
+      }
+      if (key === "musicPlayerUseDefaultColor") {
+        this.useDefaultColor = value
+        this.applyMusicStyle(this.currentStyle)
+        this.applySourceMeta(this.lastSourceMeta)
+      }
+      if (key === "musicSourceIconColorMode") {
+        this.sourceIconColorMode = value || "brand"
+        this.applySourceMeta(this.lastSourceMeta)
+      }
+      if (key === "accentColor" && !this.useDefaultColor) {
+        this.applyMusicStyle(this.currentStyle)
+      }
+      if (key === "musicPlayerSkin" || key === "showQuickAccessBg") {
+        this.applySkin(value)
+      }
+      if (key === "musicPlayerNoShaking") {
+        this.applyNoShaking(value)
+      }
+    }
     this._visibilityHandler = () => {
+      if (this._destroyed) return
       if (document.visibilityState === "hidden") {
         this.stopPolling()
       } else if (this.showPlayer && this.isVisible) {
@@ -271,34 +302,7 @@ export class MusicPlayer {
       this.sendControl("prev")
     })
 
-    window.addEventListener("settingsUpdated", (e) => {
-      const { key, value } = e.detail
-      if (key === "musicPlayerEnabled") {
-        this.setEnabled(value)
-      }
-      if (key === "music_bar_style" || key === "musicBarStyle") {
-        this.applyMusicStyle(value)
-      }
-      if (key === "musicPlayerUseDefaultColor") {
-        this.useDefaultColor = value
-        this.applyMusicStyle(this.currentStyle)
-        this.applySourceMeta(this.lastSourceMeta)
-      }
-      if (key === "musicSourceIconColorMode") {
-        this.sourceIconColorMode = value || "brand"
-        this.applySourceMeta(this.lastSourceMeta)
-      }
-      if (key === "accentColor" && !this.useDefaultColor) {
-        this.applyMusicStyle(this.currentStyle)
-      }
-      // Cập nhật ngay lập tức các tùy chọn của style Nhịp Tim
-      if (key === "musicPlayerSkin" || key === "showQuickAccessBg") {
-        this.applySkin(value)
-      }
-      if (key === "musicPlayerNoShaking") {
-        this.applyNoShaking(value)
-      }
-    })
+    window.addEventListener("settingsUpdated", this._settingsHandler)
 
     document.addEventListener("visibilitychange", this._visibilityHandler)
   }
@@ -390,12 +394,14 @@ export class MusicPlayer {
   }
 
   startPolling() {
+    if (this._destroyed) return
     if (this.pollInterval || this.pollTimeout) return
     if (document.visibilityState === "hidden") return
     this.scheduleNextPoll(0)
   }
 
   scheduleNextPoll(delay = null) {
+    if (this._destroyed) return
     if (!this.showPlayer || !this.isVisible) return
     if (document.visibilityState === "hidden") return
     if (this.pollTimeout) clearTimeout(this.pollTimeout)
@@ -413,11 +419,13 @@ export class MusicPlayer {
   }
 
   fetchMediaState() {
+    if (this._destroyed) return
     if (!this.showPlayer || !this.isVisible) return
     if (this._mediaStatePending) return
     this._mediaStatePending = true
     try {
       chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
+        if (this._destroyed) return
         this._mediaStatePending = false
         if (chrome.runtime.lastError) {
           this.setInactive()
@@ -619,6 +627,7 @@ export class MusicPlayer {
   }
 
   sendControl(command) {
+    if (this._destroyed) return
     const commandPayload =
       typeof command === "string"
         ? {
@@ -634,8 +643,13 @@ export class MusicPlayer {
       action: "mediaControl",
       command: commandPayload,
     })
-    setTimeout(() => this.fetchMediaState(), 120)
-    setTimeout(() => this.fetchMediaState(), 450)
+    ;[120, 450].forEach((delay) => {
+      const timeoutId = setTimeout(() => {
+        this._controlRefreshTimeouts.delete(timeoutId)
+        this.fetchMediaState()
+      }, delay)
+      this._controlRefreshTimeouts.add(timeoutId)
+    })
   }
 
   togglePlayer() {
@@ -679,5 +693,18 @@ export class MusicPlayer {
     // This handles whether the feature is enabled at all
     this.container.getAnimations().forEach((animation) => animation.cancel())
     fadeToggle(this.container, this.showPlayer, "block")
+  }
+
+  destroy() {
+    this._destroyed = true
+    this.stopPolling()
+    this._controlRefreshTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
+    this._controlRefreshTimeouts.clear()
+    window.removeEventListener("settingsUpdated", this._settingsHandler)
+    document.removeEventListener("visibilitychange", this._visibilityHandler)
+    this.visualizer?.destroy?.()
+    this.container?.getAnimations?.().forEach((animation) => animation.cancel())
+    this.container?.remove()
+    this.container = null
   }
 }

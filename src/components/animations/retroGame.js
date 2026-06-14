@@ -20,8 +20,9 @@ export class RetroGameEffect {
       if (["arrowleft", "arrowright", "arrowup", "arrowdown", "a", "w", "s", "d"].includes(k)) this.manualControl = true
     }
     this._keyupHandler = (e) => this.keys[e.key.toLowerCase()] = false
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   updateAccentColor(color) { this.color = color }
@@ -109,8 +110,9 @@ export class RetroGameEffect {
     }
   }
 
-  start() { this.active = true; this.lastDrawTime = 0; this.canvas.style.display = "block"; window.addEventListener("keydown", this._keydownHandler); window.addEventListener("keyup", this._keyupHandler); this.animate(0) }
-  stop() { this.active = false; if (this.rafId) cancelAnimationFrame(this.rafId); this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.canvas.style.display = "none"; window.removeEventListener("keydown", this._keydownHandler); window.removeEventListener("keyup", this._keyupHandler) }
+  start() { if (this.active) return; this.active = true; this.lastDrawTime = 0; this.canvas.style.display = "block"; window.addEventListener("keydown", this._keydownHandler); window.addEventListener("keyup", this._keyupHandler); this.animate(0) }
+  stop() { this.active = false; if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null } this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.canvas.style.display = "none"; window.removeEventListener("keydown", this._keydownHandler); window.removeEventListener("keyup", this._keyupHandler); this.keys = {} }
+  destroy() { this.stop(); window.removeEventListener("resize", this._resizeHandler); this.gameState = { level: 1, score: 0 } }
 
   update() {
     const w = this.canvas.width, h = this.canvas.height

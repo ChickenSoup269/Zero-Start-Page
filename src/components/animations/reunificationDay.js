@@ -44,6 +44,7 @@ export class ReunificationDayEffect {
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
+    this._burstTimeouts = new Set()
 
     // Colors: National Flag Colors (Red and Yellow)
     this.fireworkColors = [
@@ -55,8 +56,9 @@ export class ReunificationDayEffect {
       "#FFFF00"
     ]
 
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   setOptions(options) {
@@ -349,7 +351,13 @@ export class ReunificationDayEffect {
     if (this.gate.state === "closed" && tank.direction === 1 && tank.x > this.gate.x - 20) {
       this.gate.state = "opening"
       // Big celebration when gate breaks
-      for(let i=0; i<5; i++) setTimeout(() => this.launchFirework(), i * 300)
+      for(let i=0; i<5; i++) {
+        const timeoutId = setTimeout(() => {
+          this._burstTimeouts.delete(timeoutId)
+          if (this.active) this.launchFirework()
+        }, i * 300)
+        this._burstTimeouts.add(timeoutId)
+      }
     }
 
     // Remove when out of screen
@@ -584,9 +592,13 @@ export class ReunificationDayEffect {
 
     if (Math.random() < 0.025) this.launchFirework()
     if (Math.random() < 0.003) {
-        for(let i=0; i<3; i++) setTimeout(() => {
+        for(let i=0; i<3; i++) {
+          const timeoutId = setTimeout(() => {
+            this._burstTimeouts.delete(timeoutId)
           if (this.active) this.launchFirework()
-        }, i * 400)
+          }, i * 400)
+          this._burstTimeouts.add(timeoutId)
+        }
     }
 
     this.fireworks = this.fireworks.filter((fw) => {
@@ -642,6 +654,8 @@ export class ReunificationDayEffect {
   stop() {
     if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    this._burstTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
+    this._burstTimeouts.clear()
     this.canvas.style.display = "none"
     this.fireworks = []
     this.particles = []
@@ -650,5 +664,10 @@ export class ReunificationDayEffect {
     if (this.ctx) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
   }
 }

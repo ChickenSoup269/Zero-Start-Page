@@ -10,6 +10,7 @@ export class TetFireworksEffect {
     this.fps = 60
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
+    this._burstTimeouts = new Set()
 
     // Firework burst colors: festive reds, golds, greens, and vibrant HD colors
     this.fireworkColors = [
@@ -18,8 +19,9 @@ export class TetFireworksEffect {
       "#FF8C00", "#ADFF2F", "#00FFFF", "#FFFFFF"
     ]
 
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   setOptions(options) {
@@ -264,9 +266,13 @@ export class TetFireworksEffect {
 
     if (Math.random() < 0.02) this.launchFirework()
     if (Math.random() < 0.002) {
-        for(let i=0; i<2; i++) setTimeout(() => {
+        for(let i=0; i<2; i++) {
+          const timeoutId = setTimeout(() => {
+            this._burstTimeouts.delete(timeoutId)
           if (this.active) this.launchFirework()
-        }, i * 300)
+          }, i * 300)
+          this._burstTimeouts.add(timeoutId)
+        }
     }
 
     this.fireworks = this.fireworks.filter((fw) => {
@@ -294,11 +300,18 @@ export class TetFireworksEffect {
   stop() {
     if (this._animId) { cancelAnimationFrame(this._animId); this._animId = null; }
     this.active = false
+    this._burstTimeouts.forEach((timeoutId) => clearTimeout(timeoutId))
+    this._burstTimeouts.clear()
     this.canvas.style.display = "none"
     this.fireworks = []
     this.particles = []
     if (this.ctx) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
   }
 }

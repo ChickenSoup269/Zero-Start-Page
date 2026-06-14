@@ -618,6 +618,13 @@ async function bootstrap() {
     if (e.detail?.key === "musicPlayerEnabled" && e.detail.value === true) {
       const music = await initWidget("music")
       music.setEnabled(true)
+    } else if (
+      e.detail?.key === "musicPlayerEnabled" &&
+      e.detail.value !== true &&
+      widgets.music
+    ) {
+      widgets.music.destroy?.()
+      widgets.music = null
     }
   })
 
