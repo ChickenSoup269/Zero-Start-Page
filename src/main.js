@@ -126,9 +126,9 @@ async function bootstrap() {
       maxUrls: 1,
     })
   })
-  if (isIdbMedia(currentSettings.background)) {
-    await getImageUrl(currentSettings.background).catch(() => {})
-  }
+  const activeBackgroundLoad = isIdbMedia(currentSettings.background)
+    ? getImageUrl(currentSettings.background).catch(() => null)
+    : Promise.resolve(null)
 
   // 1. Setup UI fast to prevent layout shifts
 
@@ -574,12 +574,8 @@ async function bootstrap() {
 
     if (skipStartupLoader) {
       requestAnimationFrame(() => {
-        setTimeout(() => {
-          hideOverlay()
-          setTimeout(() => {
-            if (mainContainer) mainContainer.classList.add("ready")
-          }, 220)
-        }, 60)
+        if (mainContainer) mainContainer.classList.add("ready")
+        hideOverlay()
       })
       return
     }
@@ -600,10 +596,12 @@ async function bootstrap() {
   }
 
   if (isIdbMedia(currentSettings.background)) {
-    await getImageUrl(currentSettings.background).catch(() => {})
-    if (typeof window.appApplySettings === "function") {
-      window.appApplySettings()
-    }
+    activeBackgroundLoad.then(() => {
+      if (getSettings().background !== currentSettings.background) return
+      if (typeof window.appApplySettings === "function") {
+        window.appApplySettings()
+      }
+    })
   }
 
   // initSettings() moved up to prevent CLS

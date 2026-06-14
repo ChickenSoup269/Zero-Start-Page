@@ -56,14 +56,44 @@ function isMenuNodeVisible(node) {
   return node && node.style.display !== "none"
 }
 
-function addContextMenuDividerBefore(referenceNode) {
-  const divider = createCustomMenuDivider()
-  if (referenceNode) {
-    contextMenu.insertBefore(divider, referenceNode)
-  } else {
-    contextMenu.appendChild(divider)
+function isContextMenuDivider(node) {
+  return (
+    node?.classList?.contains("context-menu-divider") ||
+    node?.classList?.contains("context-menu-separator")
+  )
+}
+
+function getVisibleContextMenuChildren() {
+  return Array.from(contextMenu.children).filter(isMenuNodeVisible)
+}
+
+function appendContextMenuDividerIfNeeded() {
+  const visibleChildren = getVisibleContextMenuChildren()
+  const lastVisible = visibleChildren[visibleChildren.length - 1]
+  if (!lastVisible || isContextMenuDivider(lastVisible)) return
+  contextMenu.appendChild(createCustomMenuDivider())
+}
+
+function cleanupContextMenuDividers() {
+  let previousWasDivider = true
+  getVisibleContextMenuChildren().forEach((child) => {
+    if (!isContextMenuDivider(child)) {
+      previousWasDivider = false
+      return
+    }
+
+    if (previousWasDivider) {
+      child.remove()
+      return
+    }
+    previousWasDivider = true
+  })
+
+  const visibleChildren = getVisibleContextMenuChildren()
+  const lastVisible = visibleChildren[visibleChildren.length - 1]
+  if (lastVisible && isContextMenuDivider(lastVisible)) {
+    lastVisible.remove()
   }
-  return divider
 }
 
 function normalizeContextMenuFooter() {
@@ -76,13 +106,16 @@ function normalizeContextMenuFooter() {
 
   if (!settingsItems.length) return
 
-  addContextMenuDividerBefore(null)
+  cleanupContextMenuDividers()
+  appendContextMenuDividerIfNeeded()
   settingsItems.forEach((item) => contextMenu.appendChild(item))
 
   if (deleteItems.length) {
-    addContextMenuDividerBefore(null)
+    appendContextMenuDividerIfNeeded()
     deleteItems.forEach((item) => contextMenu.appendChild(item))
   }
+
+  cleanupContextMenuDividers()
 }
 
 function applyContextSetting(key, value) {

@@ -220,13 +220,12 @@
           (bg.startsWith("idb-img-") || bg.startsWith("idb-gif-"))
 
         // Only reuse a persistent preview for the same image-like background.
-        // A stale preview from a previous user image causes a broken-looking flash
-        // when the current background is a color, reset, or generated gradient.
+        // This includes IndexedDB media: the tiny data URL preview is available
+        // synchronously, while the full blob URL resolves later in main.js.
         if (
           settings.lastUserBackgroundPreview &&
           settings.lastUserBackground === bg &&
-          isImageLikeBackground(bg) &&
-          !isIndexedDbImage
+          isImageLikeBackground(bg)
         ) {
           const preview = settings.lastUserBackgroundPreview
           if (
@@ -235,6 +234,12 @@
             /^https?:\/\//i.test(preview)
           ) {
             return cssUrl(preview)
+          }
+          if (
+            preview.startsWith("#") ||
+            preview.includes("gradient(")
+          ) {
+            return preview
           }
           return preview
         }
@@ -320,8 +325,7 @@
       const hasPersistentBgPreview =
         Boolean(settings.lastUserBackgroundPreview) &&
         settings.lastUserBackground === settings.background &&
-        isImageLikeBackground(settings.background) &&
-        !isIndexedDbImage
+        isImageLikeBackground(settings.background)
       const earlyBg = cssText(buildEarlyBackgroundCss())
       const fit = settings.bgSize || "cover"
       const scale = Math.min(
@@ -341,6 +345,7 @@
                   ? { size: "cover", repeat: "no-repeat" }
                   : { size: fit, repeat: "no-repeat" }
       body.classList.add("preload-bg-ready", "bg-layer-active")
+      if (hasPersistentBgPreview) body.classList.add("preload-bg-preview")
       css += `:root { 
         --accent-color: ${accentColor};
         --accent-color-rgb: ${accentRgb};
