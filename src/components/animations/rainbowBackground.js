@@ -20,7 +20,8 @@ export class RainbowBackground {
     this.updateAngle()
 
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    this._resizeHandler = () => this.resize()
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   updateAngle() {
@@ -134,6 +135,12 @@ export class RainbowBackground {
     this.canvas.style.display = "none"
     this.beams = []
     this.particles = []
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.beamCanvases = {}
   }
 
   animate() {

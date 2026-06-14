@@ -750,6 +750,7 @@
   "visualizer_heartbeat": "Nhịp tim",
   "settings_show_quick_access": "Hiện thanh truy cập nhanh",
   "settings_show_search_bar": "Hiện thanh tìm kiếm",
+  "settings_free_move_search_bar": "Kéo thả thanh tìm kiếm",
   "settings_show_search_ai_icon": "Hiện icon Google AI",
   "settings_search_engine": "Công cụ tìm kiếm",
   "settings_search_bar_width": "Chiều rộng thanh tìm kiếm",

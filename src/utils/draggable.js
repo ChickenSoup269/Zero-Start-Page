@@ -74,11 +74,15 @@ export function makeDraggable(
 
   // Apply initial position
   if (savedPos && savedPos.top && savedPos.left) {
-    const isClockOrTitle = componentId === "clock" || componentId === "customTitle"
+    const isClockOrTitleOrSearch =
+      componentId === "clock" ||
+      componentId === "customTitle" ||
+      componentId === "searchBar"
     const isFreeMoveEnabled = (componentId === "clock" && settings.freeMoveClock) || 
-                             (componentId === "customTitle" && settings.freeMoveCustomTitle)
+                             (componentId === "customTitle" && settings.freeMoveCustomTitle) ||
+                             (componentId === "searchBar" && settings.freeMoveSearchBar)
     
-    if (!isClockOrTitle || isFreeMoveEnabled) {
+    if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
       element.style.position = (window.getComputedStyle(element).position === 'fixed') ? 'fixed' : 'absolute'
       element.style.top = savedPos.top
       element.style.left = savedPos.left
@@ -122,13 +126,14 @@ export function makeDraggable(
 
   const isInteractiveTarget = (target) =>
     target.closest(
-      "input, button, a, select, option, textarea, label, [contenteditable='true'], [data-no-drag]",
+      "input, button, a, select, option, textarea, label, [contenteditable='true'], [data-no-drag], .search-engine-selector, .camera-btn, .lens-btn, .ai-btn, .clear-btn, .search-submit-btn, .preview-remove-btn",
     )
 
   const onContextMenu = (e) => {
     const currentSettings = getSettings()
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
+    if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar) return
     e.preventDefault()
     e.stopPropagation()
     showContextMenu(e.clientX, e.clientY, -1, "widget", componentId)
@@ -149,6 +154,7 @@ export function makeDraggable(
     }
     if (componentId === "clock" && !currentSettings.freeMoveClock) return
     if (componentId === "customTitle" && !currentSettings.freeMoveCustomTitle) return
+    if (componentId === "searchBar" && !currentSettings.freeMoveSearchBar) return
 
     if (isInteractiveTarget(e.target)) return
 

@@ -1200,6 +1200,9 @@ export const showNotepadCheckbox = document.getElementById(
 export const showSearchBarCheckbox = document.getElementById(
   "show-search-bar-checkbox",
 )
+export const freeMoveSearchBarCheckbox = document.getElementById(
+  "free-move-search-bar-checkbox",
+)
 export const showSearchAiIconCheckbox = document.getElementById(
   "show-search-ai-icon-checkbox",
 )

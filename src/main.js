@@ -9,15 +9,7 @@ import {
   showContextMenu,
   hideContextMenu,
 } from "./components/contextMenu.js"
-import { initSettings } from "./components/settings.js"
 import { initSearch } from "./components/search.js"
-import { TodoList } from "./components/todo.js"
-import { Timer } from "./components/timer.js"
-import { MusicPlayer } from "./components/musicPlayer.js"
-import { FullCalendar } from "./components/fullCalendar.js"
-import { Notepad } from "./components/notepad.js"
-import { DailyQuotes } from "./components/quotes.js"
-import { Weather } from "./components/weather.js"
 import {
   preloadImages,
   migrateDataUrls,
@@ -29,9 +21,6 @@ import {
   prepareFirstRunDefaults,
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
-import { initCommandPalette } from "./components/commandPalette.js"
-import { initGoogleApps } from "./components/googleApps.js"
-import { getUpdateNotes } from "./data/updateNotes.js"
 
 import { makeDraggable } from "./utils/draggable.js"
 import {
@@ -87,6 +76,98 @@ function isFirstRunOnboardingPending() {
   )
 }
 
+let settingsInitPromise = null
+let settingsInitialized = false
+let googleAppsInitPromise = null
+let googleAppsInitialized = false
+let commandPaletteInitPromise = null
+let commandPaletteInitialized = false
+let commandPaletteController = null
+let commandPaletteOpenOnReady = false
+
+function ensureGoogleAppsInitialized(reason = "click") {
+  if (googleAppsInitialized) return Promise.resolve()
+  if (!googleAppsInitPromise) {
+    googleAppsInitPromise = import("./components/googleApps.js")
+      .then(({ initGoogleApps }) => {
+        initGoogleApps()
+        googleAppsInitialized = true
+        window.dispatchEvent(
+          new CustomEvent("startpage:googleAppsReady", {
+            detail: { reason },
+          }),
+        )
+      })
+      .catch((error) => {
+        googleAppsInitPromise = null
+        console.error("Could not initialize Google Apps:", error)
+      })
+  }
+  return googleAppsInitPromise
+}
+
+function ensureCommandPaletteInitialized(reason = "idle", options = {}) {
+  if (options.openOnInit) commandPaletteOpenOnReady = true
+  if (commandPaletteInitialized) {
+    if (options.openOnInit) commandPaletteController?.show?.()
+    return Promise.resolve()
+  }
+  if (!commandPaletteInitPromise) {
+    commandPaletteInitPromise = import("./components/commandPalette.js")
+      .then(({ initCommandPalette }) => {
+        commandPaletteController = initCommandPalette({
+          openOnInit: commandPaletteOpenOnReady,
+        })
+        commandPaletteOpenOnReady = false
+        commandPaletteInitialized = true
+        window.dispatchEvent(
+          new CustomEvent("startpage:commandPaletteReady", {
+            detail: { reason },
+          }),
+        )
+      })
+      .catch((error) => {
+        commandPaletteInitPromise = null
+        console.error("Could not initialize command palette:", error)
+      })
+  }
+  return commandPaletteInitPromise
+}
+
+function needsSettingsAtBoot(settings) {
+  return Boolean(
+    settings.effect && settings.effect !== "none" ||
+      settings.gradientV2Active ||
+      settings.svgWaveActive ||
+      settings.silkActive ||
+      settings.lightPillarActive ||
+      settings.liquidEtherActive ||
+      settings.splashCursorActive ||
+      settings.m3AutoAccentFromBg,
+  )
+}
+
+function ensureSettingsInitialized(reason = "idle") {
+  if (settingsInitialized) return Promise.resolve()
+  if (!settingsInitPromise) {
+    settingsInitPromise = import("./components/settings.js")
+      .then(({ initSettings }) => {
+        initSettings()
+        settingsInitialized = true
+        window.dispatchEvent(
+          new CustomEvent("startpage:settingsReady", {
+            detail: { reason },
+          }),
+        )
+      })
+      .catch((error) => {
+        settingsInitPromise = null
+        console.error("Could not initialize settings:", error)
+      })
+  }
+  return settingsInitPromise
+}
+
 // --- Initialization ---
 async function bootstrap() {
   setUpdateNoticePending(true)
@@ -117,6 +198,77 @@ async function bootstrap() {
 
   const currentSettings = getSettings()
   syncUninstallSurveyLanguage(currentSettings.language)
+  const fastRevealSkipStartup = () => {
+    if (!skipStartupLoader) return
+    document.querySelector(".main-container")?.classList.add("ready")
+    const overlay = document.getElementById("startup-overlay")
+    if (overlay) {
+      overlay.style.opacity = "0"
+      overlay.style.visibility = "hidden"
+    }
+    try {
+      localStorage.setItem("startpageHasOpened", "1")
+      localStorage.removeItem("startpageShowStartupLoader")
+    } catch {}
+    document.body.classList.remove("loading-state", "is-booting")
+  }
+  fastRevealSkipStartup()
+  const settingsToggle = document.getElementById("settings-toggle")
+  const settingsSidebar = document.getElementById("settings-sidebar")
+  const googleAppsBtn = document.querySelector(".google-apps-btn")
+  const googleAppsDropdown = document.getElementById("g-apps-dropdown")
+  const sidebarHotkeysBtn = document.getElementById("sidebar-hotkeys-btn")
+  settingsToggle?.addEventListener(
+    "click",
+    async (event) => {
+      if (settingsInitialized) return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      settingsToggle.classList.add("is-loading")
+      await ensureSettingsInitialized("open-settings")
+      settingsToggle.classList.remove("is-loading")
+      settingsSidebar?.classList.add("open")
+    },
+    { capture: true },
+  )
+  googleAppsBtn?.addEventListener(
+    "click",
+    async (event) => {
+      if (googleAppsInitialized) return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      await ensureGoogleAppsInitialized("open-google-apps")
+      googleAppsDropdown?.classList.add("show")
+    },
+    { capture: true },
+  )
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (commandPaletteInitialized) return
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        (event.key.toLowerCase() === "k" || event.code === "KeyK")
+      ) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        void ensureCommandPaletteInitialized("hotkey", { openOnInit: true })
+      }
+    },
+    { capture: true },
+  )
+  sidebarHotkeysBtn?.addEventListener(
+    "click",
+    (event) => {
+      if (commandPaletteInitialized) return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      void ensureCommandPaletteInitialized("sidebar-button", {
+        openOnInit: true,
+      })
+    },
+    { capture: true },
+  )
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState !== "hidden") return
     const latestSettings = getSettings()
@@ -152,6 +304,8 @@ async function bootstrap() {
     document.body.classList.add("hide-bookmark-text")
   if (currentSettings.hideBookmarkBg)
     document.body.classList.add("hide-bookmark-bg")
+  if (currentSettings.freeMoveSearchBar === true)
+    document.body.classList.add("free-move-search-bar")
   if (currentSettings.bookmarkGroupUseAccent === true)
     document.body.classList.add("bookmark-group-accent-enabled")
   if (currentSettings.bookmarkGroupKeepBgOnInteraction !== false)
@@ -239,17 +393,24 @@ async function bootstrap() {
     `${currentSettings.searchBarBlur ?? 20}px`,
   )
 
-  // Initialize Settings (Applies background & heavy canvas effects)
-  // CRITICAL: Must happen BEFORE bookmarks so CSS variables are ready
-  initSettings()
+  if (needsSettingsAtBoot(currentSettings)) {
+    ensureSettingsInitialized("active-visuals")
+  } else {
+    setTimeout(() => {
+      if (document.visibilityState === "hidden") return
+      ensureSettingsInitialized("deferred")
+    }, 2200)
+  }
+  setTimeout(() => {
+    if (document.visibilityState === "hidden") return
+    ensureCommandPaletteInitialized("deferred")
+  }, 3200)
 
   initClock()
   initBookmarks()
   initSearch()
   initContextMenu()
   initModal()
-  initGoogleApps()
-  initCommandPalette()
 
   const backgroundContextExclusions = [
     "#context-menu",
@@ -329,6 +490,25 @@ async function bootstrap() {
     weather: null,
     notepad: null,
   }
+  const widgetModuleLoaders = {
+    todo: () => import("./components/todo.js").then((m) => m.TodoList),
+    timer: () => import("./components/timer.js").then((m) => m.Timer),
+    music: () =>
+      import("./components/musicPlayer.js").then((m) => m.MusicPlayer),
+    calendar: () =>
+      import("./components/fullCalendar.js").then((m) => m.FullCalendar),
+    quotes: () => import("./components/quotes.js").then((m) => m.DailyQuotes),
+    weather: () => import("./components/weather.js").then((m) => m.Weather),
+    notepad: () => import("./components/notepad.js").then((m) => m.Notepad),
+  }
+  const widgetClassPromises = {}
+
+  const loadWidgetClass = (type) => {
+    if (!widgetClassPromises[type]) {
+      widgetClassPromises[type] = widgetModuleLoaders[type]()
+    }
+    return widgetClassPromises[type]
+  }
 
   const runWhenIdle = (callback, timeout = 1000) => {
     if (window.requestIdleCallback) {
@@ -338,36 +518,43 @@ async function bootstrap() {
     }
   }
 
-  const initWidget = (type) => {
+  const initWidget = async (type) => {
     if (widgets[type]) return widgets[type]
 
     switch (type) {
       case "todo":
+        const TodoList = await loadWidgetClass("todo")
         widgets.todo = new TodoList()
         makeDraggable(widgets.todo.container, "todo")
         return widgets.todo
       case "timer":
+        const Timer = await loadWidgetClass("timer")
         widgets.timer = new Timer()
         window.activeTimer = widgets.timer
         makeDraggable(widgets.timer.container, "timer")
         return widgets.timer
       case "music":
+        const MusicPlayer = await loadWidgetClass("music")
         widgets.music = new MusicPlayer()
         makeDraggable(widgets.music.container, "music")
         return widgets.music
       case "calendar":
+        const FullCalendar = await loadWidgetClass("calendar")
         widgets.calendar = new FullCalendar()
         makeDraggable(widgets.calendar.container, "calendar")
         return widgets.calendar
       case "quotes":
+        const DailyQuotes = await loadWidgetClass("quotes")
         widgets.quotes = new DailyQuotes()
         makeDraggable(widgets.quotes.container, "daily-quotes")
         return widgets.quotes
       case "weather":
+        const Weather = await loadWidgetClass("weather")
         widgets.weather = new Weather()
         makeDraggable(widgets.weather.container, "weather")
         return widgets.weather
       case "notepad":
+        const Notepad = await loadWidgetClass("notepad")
         widgets.notepad = new Notepad()
         makeDraggable(
           widgets.notepad.container,
@@ -390,15 +577,15 @@ async function bootstrap() {
 
   const initVisibleWidgets = () => {
     const settings = getSettings()
-    if (settings.showTodoList !== false) initWidget("todo")
+    if (settings.showTodoList !== false) void initWidget("todo")
     if (settings.showNotepad !== false || hasDetachedNotepadNotes()) {
-      initWidget("notepad")
+      void initWidget("notepad")
     }
-    if (settings.showQuotes !== false) initWidget("quotes")
-    if (settings.showWeather === true) initWidget("weather")
-    if (settings.showTimer === true) initWidget("timer")
-    if (settings.showFullCalendar === true) initWidget("calendar")
-    if (settings.musicPlayerEnabled === true) initWidget("music")
+    if (settings.showQuotes !== false) void initWidget("quotes")
+    if (settings.showWeather === true) void initWidget("weather")
+    if (settings.showTimer === true) void initWidget("timer")
+    if (settings.showFullCalendar === true) void initWidget("calendar")
+    if (settings.musicPlayerEnabled === true) void initWidget("music")
   }
 
   runWhenIdle(initVisibleWidgets, 1200)
@@ -407,34 +594,35 @@ async function bootstrap() {
     if (!e.detail?.value) return
     switch (e.detail.key) {
       case "showTodoList":
-        initWidget("todo")
+        void initWidget("todo")
         break
       case "showNotepad":
-        initWidget("notepad")
+        void initWidget("notepad")
         break
       case "showTimer":
-        initWidget("timer")
+        void initWidget("timer")
         break
       case "showFullCalendar":
-        initWidget("calendar")
+        void initWidget("calendar")
         break
       case "showQuotes":
-        initWidget("quotes")
+        void initWidget("quotes")
         break
       case "showWeather":
-        initWidget("weather")
+        void initWidget("weather")
         break
     }
   })
 
-  window.addEventListener("settingsUpdated", (e) => {
+  window.addEventListener("settingsUpdated", async (e) => {
     if (e.detail?.key === "musicPlayerEnabled" && e.detail.value === true) {
-      const music = initWidget("music")
+      const music = await initWidget("music")
       music.setEnabled(true)
     }
   })
 
   makeDraggable(document.getElementById("clock-date-wrap"), "clock")
+  makeDraggable(document.getElementById("search-container"), "searchBar")
 
   // Helper to sync quick buttons
   const quickBtns = document.querySelectorAll(".quick-btn")
@@ -485,7 +673,7 @@ async function bootstrap() {
     const type = btn.dataset.toggle
     if (!type) return
 
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       let key, checkbox
       switch (type) {
         case "todo":
@@ -541,6 +729,9 @@ async function bootstrap() {
           break
       }
       if (key && checkbox) {
+        if (!settingsInitialized) {
+          await ensureSettingsInitialized("quick-access")
+        }
         if (
           (type === "todo" ||
             type === "notepad" ||
@@ -549,7 +740,7 @@ async function bootstrap() {
             type === "weather") &&
           !getSettings()[key]
         ) {
-          initWidget(type)
+          await initWidget(type)
         }
         checkbox.click()
       }
@@ -690,6 +881,23 @@ async function bootstrap() {
           clockWrap.style.transform = ""
           clockWrap.style.margin = ""
         }
+      }
+    }
+
+    if (e.detail.key === "freeMoveSearchBar") {
+      document.body.classList.toggle(
+        "free-move-search-bar",
+        e.detail.value === true,
+      )
+      const searchWrap = document.getElementById("search-container")
+      if (searchWrap && e.detail.value !== true) {
+        searchWrap.style.position = ""
+        searchWrap.style.top = ""
+        searchWrap.style.left = ""
+        searchWrap.style.bottom = ""
+        searchWrap.style.right = ""
+        searchWrap.style.transform = ""
+        searchWrap.style.margin = ""
       }
     }
   })
@@ -1031,7 +1239,8 @@ async function bootstrap() {
             .replaceAll("'", "&#39;")
         }
 
-        function renderUpdateNotes() {
+        async function renderUpdateNotes() {
+          const { getUpdateNotes } = await import("./data/updateNotes.js")
           const updateNotes = getUpdateNotes(getSettings().language)
           const changesTitle = document.getElementById("update-changes-title")
           const contributorsTitle = document.getElementById(
@@ -1094,10 +1303,10 @@ async function bootstrap() {
             setUpdateNoticePending(false)
           }
 
-          const showUpdateModal = () => {
+          const showUpdateModal = async () => {
             if (!popup || !verLabel) return
             verLabel.textContent = `v${currentVersion}`
-            renderUpdateNotes()
+            await renderUpdateNotes()
             fadeToggle(popup, true, "block")
 
             document
@@ -1132,7 +1341,7 @@ async function bootstrap() {
           if (!popup || window.getComputedStyle(popup).display === "none") {
             return
           }
-          renderUpdateNotes()
+          void renderUpdateNotes()
         })
       } catch (e) {
         console.warn("Update check failed:", e)

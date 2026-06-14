@@ -56,6 +56,8 @@
       else body.classList.add("hide-top-right-controls")
       if (settings.showSearchBar === false)
         body.classList.add("hide-search-bar")
+      if (settings.freeMoveSearchBar === true)
+        body.classList.add("free-move-search-bar")
 
       let bgStyle = settings.bookmarkLayoutBgStyle || "default"
       if (bgStyle === "hidden") body.classList.add("bookmark-layout-bg-hidden")

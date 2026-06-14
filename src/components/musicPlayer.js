@@ -76,6 +76,8 @@ export class MusicPlayer {
     this.useDefaultColor = settings.musicPlayerUseDefaultColor === true
     this.sourceIconColorMode = settings.musicSourceIconColorMode || "brand"
     this.pollInterval = null
+    this.pollTimeout = null
+    this.inactivePollCount = 0
     this.currentThumbnail = ""
     this.visualizer = new MusicVisualizer()
     this._duration = 0
@@ -388,11 +390,26 @@ export class MusicPlayer {
   }
 
   startPolling() {
-    if (this.pollInterval) return
+    if (this.pollInterval || this.pollTimeout) return
     if (document.visibilityState === "hidden") return
-    this.pollInterval = setInterval(() => this.fetchMediaState(), 1500)
-    // Run an initial fetch
-    this.fetchMediaState()
+    this.scheduleNextPoll(0)
+  }
+
+  scheduleNextPoll(delay = null) {
+    if (!this.showPlayer || !this.isVisible) return
+    if (document.visibilityState === "hidden") return
+    if (this.pollTimeout) clearTimeout(this.pollTimeout)
+
+    const nextDelay =
+      delay ??
+      (this.isPlaying
+        ? 1500
+        : Math.min(12000, 3000 + this.inactivePollCount * 2000))
+
+    this.pollTimeout = setTimeout(() => {
+      this.pollTimeout = null
+      this.fetchMediaState()
+    }, nextDelay)
   }
 
   fetchMediaState() {
@@ -404,17 +421,22 @@ export class MusicPlayer {
         this._mediaStatePending = false
         if (chrome.runtime.lastError) {
           this.setInactive()
+          this.scheduleNextPoll()
           return
         }
         if (response && response.audible) {
+          this.inactivePollCount = 0
           this.updateUI(response)
         } else {
+          this.inactivePollCount += 1
           this.setInactive()
         }
+        this.scheduleNextPoll()
       })
     } catch (e) {
       this._mediaStatePending = false
       this.setInactive()
+      this.scheduleNextPoll()
     }
   }
 
@@ -423,6 +445,11 @@ export class MusicPlayer {
       clearInterval(this.pollInterval)
       this.pollInterval = null
     }
+    if (this.pollTimeout) {
+      clearTimeout(this.pollTimeout)
+      this.pollTimeout = null
+    }
+    this.inactivePollCount = 0
     // Stop visualizer and animations when not polling to save resources
     this.disc?.classList.remove("playing")
     this.container

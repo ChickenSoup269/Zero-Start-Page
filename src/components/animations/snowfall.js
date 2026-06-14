@@ -9,8 +9,9 @@ export class SnowfallEffect {
 
     this.lastDrawTime = 0
 
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   resize() {
@@ -63,6 +64,12 @@ export class SnowfallEffect {
     this.active = false
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    this.snowflakes = []
   }
 
   drawSnowflake(snowflake, rgb) {

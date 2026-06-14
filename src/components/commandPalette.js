@@ -18,7 +18,14 @@ import {
     searchInput as searchBarInput,
 } from '../utils/dom.js';
 
-export function initCommandPalette() {
+let commandPaletteController = null;
+
+export function initCommandPalette(options = {}) {
+    if (commandPaletteController) {
+        if (options.openOnInit) commandPaletteController.show();
+        return commandPaletteController;
+    }
+
     const modal = document.getElementById('command-palette-modal');
     const searchInput = document.getElementById('command-palette-search');
     const listContainer = document.getElementById('command-palette-list');
@@ -27,7 +34,7 @@ export function initCommandPalette() {
     const closeTooltipBtn = document.getElementById('close-cp-tooltip');
     const sidebarBtn = document.getElementById('sidebar-hotkeys-btn');
 
-    if (!modal || !searchInput || !listContainer) return;
+    if (!modal || !searchInput || !listContainer) return null;
 
     let isVisible = false;
     let selectedIndex = 0;
@@ -541,6 +548,8 @@ export function initCommandPalette() {
         modal.classList.remove('open');
     }
 
+    commandPaletteController = { show, hide };
+
     // Event Listeners
     searchInput.addEventListener('input', (e) => {
         const query = normalizeText(e.target.value);
@@ -694,4 +703,8 @@ export function initCommandPalette() {
             localStorage.setItem('hasSeenCommandPalette', 'true');
         });
     }
+
+    if (options.openOnInit) show();
+
+    return commandPaletteController;
 }

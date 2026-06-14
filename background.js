@@ -6,6 +6,9 @@ const UNINSTALL_FORM_URLS = {
   default:
     "https://docs.google.com/forms/d/e/1FAIpQLSe0Amugpqf_TilWUYCuZsBP0p9Hwi1neyoXB5YbpK_-67o89A/viewform?usp=dialog",
 }
+const KNOWN_MEDIA_TAB_CACHE_TTL = 60_000
+let lastKnownMediaTabId = null
+let lastKnownMediaTabSeenAt = 0
 
 function getUninstallUrl(language = "en") {
   return language === "vi" ? UNINSTALL_FORM_URLS.vi : UNINSTALL_FORM_URLS.default
@@ -33,10 +36,49 @@ function openStartpageTab() {
   chrome.tabs.create({ url: chrome.runtime.getURL("index.html") })
 }
 
+function rememberKnownMediaTab(tab) {
+  if (!tab?.id || !isKnownMediaTab(tab)) return
+  lastKnownMediaTabId = tab.id
+  lastKnownMediaTabSeenAt = Date.now()
+}
+
+function getRememberedKnownMediaTab(callback) {
+  if (
+    !lastKnownMediaTabId ||
+    Date.now() - lastKnownMediaTabSeenAt > KNOWN_MEDIA_TAB_CACHE_TTL
+  ) {
+    callback(null)
+    return
+  }
+
+  chrome.tabs.get(lastKnownMediaTabId, (tab) => {
+    if (chrome.runtime.lastError || !isKnownMediaTab(tab)) {
+      lastKnownMediaTabId = null
+      lastKnownMediaTabSeenAt = 0
+      callback(null)
+      return
+    }
+    callback(tab)
+  })
+}
+
+function clearRememberedKnownMediaTab(tabId = null) {
+  if (tabId !== null && tabId !== lastKnownMediaTabId) return
+  lastKnownMediaTabId = null
+  lastKnownMediaTabSeenAt = 0
+}
+
 // Set the uninstall URL
 chrome.runtime.onInstalled.addListener(restoreUninstallUrlFromStorage)
 chrome.runtime.onStartup?.addListener(restoreUninstallUrlFromStorage)
 chrome.action?.onClicked?.addListener(openStartpageTab)
+chrome.tabs?.onRemoved?.addListener((tabId) => {
+  clearRememberedKnownMediaTab(tabId)
+})
+chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
+  if (tabId !== lastKnownMediaTabId || !changeInfo.url) return
+  if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
+})
 
 // Version update check is now handled in main.js for better reliability
 
@@ -69,6 +111,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getMediaState") {
     chrome.tabs.query({ audible: true }, (tabs) => {
       if (tabs.length > 0) {
+        rememberKnownMediaTab(tabs[0])
         getMediaFromTab(tabs[0].id, sendResponse)
         return
       }
@@ -81,6 +124,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "mediaControl") {
     chrome.tabs.query({ audible: true }, (tabs) => {
       if (tabs[0]) {
+        rememberKnownMediaTab(tabs[0])
         controlMediaTab(tabs[0].id, request.command, sendResponse)
         return
       }
@@ -120,36 +164,52 @@ function getKnownMediaTabPriority(tab, preferredSource = "") {
 }
 
 function getMediaFromAnyKnownTab(sendResponse) {
-  chrome.tabs.query({}, (allTabs) => {
-    const tab = allTabs
-      .filter(isKnownMediaTab)
-      .sort(
-        (a, b) => getKnownMediaTabPriority(b) - getKnownMediaTabPriority(a),
-      )[0]
-    if (tab) {
-      getMediaFromTab(tab.id, sendResponse)
-    } else {
-      sendResponse({ audible: false })
+  getRememberedKnownMediaTab((cachedTab) => {
+    if (cachedTab) {
+      getMediaFromTab(cachedTab.id, sendResponse)
+      return
     }
+
+    chrome.tabs.query({}, (allTabs) => {
+      const tab = allTabs
+        .filter(isKnownMediaTab)
+        .sort(
+          (a, b) => getKnownMediaTabPriority(b) - getKnownMediaTabPriority(a),
+        )[0]
+      if (tab) {
+        rememberKnownMediaTab(tab)
+        getMediaFromTab(tab.id, sendResponse)
+      } else {
+        sendResponse({ audible: false })
+      }
+    })
   })
 }
 
 function controlAnyKnownMediaTab(command, sendResponse) {
-  chrome.tabs.query({}, (allTabs) => {
-    const preferredSource =
-      typeof command === "object" ? command.preferredSource || "" : ""
-    const targetTab = allTabs
-      .filter(isKnownMediaTab)
-      .sort(
-        (a, b) =>
-          getKnownMediaTabPriority(b, preferredSource) -
-          getKnownMediaTabPriority(a, preferredSource),
-      )[0]
-    if (targetTab) {
-      controlMediaTab(targetTab.id, command, sendResponse)
-    } else {
-      sendResponse({ ok: false, error: "NO_TARGET_TAB" })
+  getRememberedKnownMediaTab((cachedTab) => {
+    if (cachedTab) {
+      controlMediaTab(cachedTab.id, command, sendResponse)
+      return
     }
+
+    chrome.tabs.query({}, (allTabs) => {
+      const preferredSource =
+        typeof command === "object" ? command.preferredSource || "" : ""
+      const targetTab = allTabs
+        .filter(isKnownMediaTab)
+        .sort(
+          (a, b) =>
+            getKnownMediaTabPriority(b, preferredSource) -
+            getKnownMediaTabPriority(a, preferredSource),
+        )[0]
+      if (targetTab) {
+        rememberKnownMediaTab(targetTab)
+        controlMediaTab(targetTab.id, command, sendResponse)
+      } else {
+        sendResponse({ ok: false, error: "NO_TARGET_TAB" })
+      }
+    })
   })
 }
 

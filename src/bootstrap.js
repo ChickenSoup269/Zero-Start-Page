@@ -15,4 +15,4 @@ async function hydrateSettingsPartials() {
 }
 
 await hydrateSettingsPartials()
-await import("./main.js")
+await import("./main.js?v=perf-lazy-v8")

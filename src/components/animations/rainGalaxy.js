@@ -10,8 +10,9 @@ export class StarFall {
     this.fpsInterval = 1000 / this.fps
     this.lastDrawTime = 0
     this._parseColor(color)
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   resize() {
@@ -35,6 +36,11 @@ export class StarFall {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.canvas.style.display = "none"
     this.stars = []
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
   }
 
   createStars() {

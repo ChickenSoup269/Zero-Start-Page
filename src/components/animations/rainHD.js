@@ -42,8 +42,9 @@ export class RainHDEffect {
     this._windTarget = 1.6
 
     this._parseColor(color)
+    this._resizeHandler = () => this.resize()
     this.resize()
-    window.addEventListener("resize", () => this.resize())
+    window.addEventListener("resize", this._resizeHandler)
   }
 
   _parseColor(hex) {
@@ -270,6 +271,11 @@ export class RainHDEffect {
     this.splashes = []
     this.puddles = []
     this.lightning = null
+  }
+
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
   }
 
   animate(t = 0) {

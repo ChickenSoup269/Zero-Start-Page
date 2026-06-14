@@ -294,6 +294,7 @@ export const defaultSettings = {
   interfaceStylePreset: "custom",
   showBookmarkGroups: true,
   showSearchBar: true,
+  freeMoveSearchBar: false,
   searchBarWidth: 600,
   searchBarBlur: 20,
   showSearchAIIcon: true,

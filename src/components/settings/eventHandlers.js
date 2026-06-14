@@ -1101,28 +1101,6 @@ export function setupGeneralEventHandlers(
     }
   })
 
-  // Google Apps Dropdown Logic
-  const initGoogleUI = () => {
-    if (DOM.googleAppsBtn && DOM.googleAppsDropdown) {
-      DOM.googleAppsBtn.addEventListener("click", (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        DOM.googleAppsDropdown.classList.toggle("show")
-      })
-
-      document.addEventListener("click", (e) => {
-        if (
-          !DOM.googleAppsDropdown?.contains(e.target) &&
-          !DOM.googleAppsBtn?.contains(e.target)
-        ) {
-          DOM.googleAppsDropdown?.classList.remove("show")
-        }
-      })
-    }
-  }
-
-  initGoogleUI()
-
   // Sidebar scroll management
   const sidebarContent = DOM.settingsSidebar.querySelector(".sidebar-content")
   const sidebarScrollTopBtn = document.getElementById("sidebar-scroll-top")
@@ -4828,6 +4806,7 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
+  setupLayoutCheckbox(DOM.freeMoveSearchBarCheckbox, "freeMoveSearchBar", {})
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   if (DOM.calendarDisplayModeSelect) {
     const syncCalendarDisplayMode = (mode) => {

@@ -24,6 +24,16 @@
   z-index: 1030;
 }
 
+body.free-move-search-bar #search-container {
+  margin: 0 !important;
+  cursor: grab;
+  touch-action: none;
+}
+
+body.free-move-search-bar #search-container.dragging {
+  cursor: grabbing;
+}
+
 .search-container form {
   display: flex;
   flex: 1;

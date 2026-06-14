@@ -28,7 +28,7 @@ import {
   trimMediaMemory,
 } from "../../services/imageStore.js"
 import { getSvgWaveParams } from "./svgWaveUtils.js"
-import { splashCursorOptionsFromSettings } from "../animations/splashCursor.js"
+import { splashCursorOptionsFromSettings } from "../animations/splashCursorOptions.js"
 import {
   renderLocalBackgrounds,
   renderUserColors,
@@ -2172,7 +2172,8 @@ function createApplySettings(effectInstances) {
     // 4. Effects Management
     const effectToStart = settings.effect
     const mappedKey = EFFECT_KEY_MAP[effectToStart] || effectToStart
-    const selectedEffect = effectInstances[mappedKey]
+    const selectedEffect =
+      effectToStart && effectToStart !== "none" ? effectInstances[mappedKey] : null
     const effectChanged = effectToStart !== _prevEffect
 
     // Update Hyperspace color if active
@@ -2400,22 +2401,10 @@ function createApplySettings(effectInstances) {
       })
 
       const previousEffectKey = EFFECT_KEY_MAP[_prevEffect] || _prevEffect
-      const releasablePreviousEffects = new Set([
-        "cloudDriftEffect",
-        "crtScanlinesEffect",
-        "floatingLinesEffect",
-        "gridScanEffect",
-        "lightPillarsEffect",
-        "musicBarsEffect",
-        "northernLightsEffect",
-        "pixelSnowHQEffect",
-        "pixelWeatherEffect",
-        "softAuroraEffect",
-      ])
       if (
         previousEffectKey &&
-        previousEffectKey !== mappedKey &&
-        releasablePreviousEffects.has(previousEffectKey)
+        previousEffectKey !== "none" &&
+        previousEffectKey !== mappedKey
       ) {
         effectInstances.releaseEffect?.(previousEffectKey)
       }
@@ -4183,6 +4172,10 @@ function createUpdateSettingsInputs(effectInstances) {
         settings.allowTextSelection === true
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
+    if (DOM.freeMoveSearchBarCheckbox) {
+      DOM.freeMoveSearchBarCheckbox.checked =
+        settings.freeMoveSearchBar === true
+    }
     if (DOM.lcpSearchBar) {
       DOM.lcpSearchBar.checked = settings.showSearchBar !== false
     }
@@ -4268,6 +4261,10 @@ function createUpdateSettingsInputs(effectInstances) {
       "free-move-custom-title",
       settings.freeMoveCustomTitle === true,
     )
+    document.body.classList.toggle(
+      "free-move-search-bar",
+      settings.freeMoveSearchBar === true,
+    )
     if (settings.freeMoveClock !== true) {
       const clockWrap = document.getElementById("clock-date-wrap")
       if (clockWrap) {
@@ -4290,6 +4287,18 @@ function createUpdateSettingsInputs(effectInstances) {
         titleWrap.style.right = ""
         titleWrap.style.transform = ""
         titleWrap.style.margin = ""
+      }
+    }
+    if (settings.freeMoveSearchBar !== true) {
+      const searchWrap = document.getElementById("search-container")
+      if (searchWrap) {
+        searchWrap.style.position = ""
+        searchWrap.style.top = ""
+        searchWrap.style.left = ""
+        searchWrap.style.bottom = ""
+        searchWrap.style.right = ""
+        searchWrap.style.transform = ""
+        searchWrap.style.margin = ""
       }
     }
     if (DOM.showCustomTitleCheckbox) {
