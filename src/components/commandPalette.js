@@ -7,6 +7,7 @@ import {
     showTimerCheckbox,
     showQuotesCheckbox,
     showNotepadCheckbox,
+    showWeatherCheckbox,
     showSearchBarCheckbox,
     showBookmarksCheckbox,
     showBookmarkGroupsCheckbox,
@@ -176,6 +177,15 @@ export function initCommandPalette() {
             action: () => toggleCheckbox(showNotepadCheckbox, 'Ghi chú')
         },
         {
+            id: 'toggle-weather',
+            title: 'Bật/Tắt: Thời tiết',
+            desc: 'Hiện hoặc ẩn widget thời tiết',
+            icon: '<i class="fa-solid fa-cloud-sun"></i>',
+            shortcut: 'Alt + W',
+            keywords: 'weather thoi tiet du bao nhiet do forecast',
+            action: () => toggleCheckbox(showWeatherCheckbox, 'Thời tiết')
+        },
+        {
             id: 'toggle-searchbar',
             title: 'Bật/Tắt: Thanh tìm kiếm',
             desc: 'Hiện hoặc ẩn thanh tìm kiếm trên trang',
@@ -235,7 +245,7 @@ export function initCommandPalette() {
             id: 'toggle-bookmark-groups',
             title: 'Bật/Tắt: Nhóm Bookmarks',
             desc: 'Hiện hoặc ẩn các nhóm bookmark',
-            icon: '<i class="fa-solid fa-folder-bookmark"></i>',
+            icon: '<i class="fas fa-bookmark"></i>',
             shortcut: 'Alt + J',
             keywords: 'folder group bookmark nhom thu muc',
             action: () => toggleCheckbox(showBookmarkGroupsCheckbox, 'Nhóm Bookmarks')
@@ -383,6 +393,7 @@ export function initCommandPalette() {
                 timer: showTimerCheckbox?.checked,
                 quotes: showQuotesCheckbox?.checked,
                 notepad: showNotepadCheckbox?.checked,
+                weather: showWeatherCheckbox?.checked,
                 gregorian: showGregorianCheckbox?.checked,
                 searchbar: showSearchBarCheckbox?.checked,
                 bookmarks: showBookmarksCheckbox?.checked,
@@ -398,6 +409,7 @@ export function initCommandPalette() {
             setCheckboxState(showTimerCheckbox, false);
             setCheckboxState(showQuotesCheckbox, false);
             setCheckboxState(showNotepadCheckbox, false);
+            setCheckboxState(showWeatherCheckbox, false);
             setCheckboxState(showGregorianCheckbox, false);
             setCheckboxState(showSearchBarCheckbox, false);
             setCheckboxState(showBookmarksCheckbox, false);
@@ -426,6 +438,7 @@ export function initCommandPalette() {
             setCheckboxState(showTimerCheckbox, !!hiddenState.timer);
             setCheckboxState(showQuotesCheckbox, !!hiddenState.quotes);
             setCheckboxState(showNotepadCheckbox, !!hiddenState.notepad);
+            setCheckboxState(showWeatherCheckbox, !!hiddenState.weather);
             setCheckboxState(showGregorianCheckbox, !!hiddenState.gregorian);
             setCheckboxState(showSearchBarCheckbox, !!hiddenState.searchbar);
             setCheckboxState(showBookmarksCheckbox, !!hiddenState.bookmarks);

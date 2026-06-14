@@ -1387,18 +1387,12 @@ body.hide-bookmark-text .bookmark .bookmark-stack-count {
 .add-bookmark-card {
   width: calc(var(--bookmark-icon-size, 42px) + 18px);
   height: calc(var(--bookmark-icon-size, 42px) + 18px);
-  border: 1px dashed rgba(var(--accent-color-rgb, 168, 192, 255), 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--bookmark-border-radius, var(--radius-md));
-  color: rgba(255, 255, 255, 0.72);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.075),
-      rgba(255, 255, 255, 0.028)
-    ),
-    rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  color: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px) saturate(155%);
+  -webkit-backdrop-filter: blur(16px) saturate(155%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1406,7 +1400,7 @@ body.hide-bookmark-text .bookmark .bookmark-stack-count {
   appearance: none;
   font-size: 1.05rem;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
     0 8px 22px rgba(0, 0, 0, 0.16);
   transition:
     transform 0.18s ease,
@@ -1417,17 +1411,15 @@ body.hide-bookmark-text .bookmark .bookmark-stack-count {
 }
 
 .add-bookmark-card i {
-  width: calc(var(--bookmark-icon-size, 42px) * 0.62);
-  height: calc(var(--bookmark-icon-size, 42px) * 0.62);
+  width: auto;
+  height: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
-  color: var(--accent-color, #a8c0ff);
-  font-size: 0.9em;
+  background: transparent;
+  color: currentColor;
+  font-size: 1.35em;
   transition:
-    background 0.18s ease,
     color 0.18s ease,
     transform 0.18s ease;
 }
@@ -1435,24 +1427,16 @@ body.hide-bookmark-text .bookmark .bookmark-stack-count {
 .add-bookmark-card:hover,
 .add-bookmark-card:focus-visible {
   color: #fff;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.82);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.11),
-      rgba(255, 255, 255, 0.045)
-    ),
-    rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.18);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 12px 30px rgba(0, 0, 0, 0.24),
-    0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 12px 30px rgba(0, 0, 0, 0.24);
 }
 
 .add-bookmark-card:hover i,
 .add-bookmark-card:focus-visible i {
-  background: var(--accent-color, #a8c0ff);
-  color: var(--accent-contrast-color, #10131a);
+  color: #fff;
   transform: scale(1.04);
 }
 
@@ -3543,8 +3527,10 @@ body.todo-fullscreen-active::before {
   cursor: pointer;
 }
 
-.weather-suggestion-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+.weather-suggestion-item:hover,
+.weather-suggestion-item.active {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
+  box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.28) inset;
 }
 
 .weather-suggestion-item i {
@@ -3803,8 +3789,12 @@ body.todo-fullscreen-active::before {
   border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
-.weather-container.skin-white-blur .weather-suggestion-item:hover {
-  background: rgba(0, 0, 0, 0.065);
+.weather-container.skin-white-blur .weather-suggestion-item:hover,
+.weather-container.skin-white-blur .weather-suggestion-item.active,
+.weather-container.skin-light-transparent .weather-suggestion-item:hover,
+.weather-container.skin-light-transparent .weather-suggestion-item.active {
+  background: rgba(0, 0, 0, 0.085);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12) inset;
 }
 
 .weather-container.skin-white-blur .weather-search-btn {
@@ -8559,6 +8549,21 @@ body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chi
   background: rgba(255, 255, 255, 0.095) !important;
 }
 
+body.quick-access-light-transparent .quick-btn.active,
+body.quick-access-light-transparent .quick-access-radius-chip.is-active {
+  background: rgba(15, 18, 25, 0.82) !important;
+  border-color: rgba(15, 18, 25, 0.38) !important;
+  color: rgba(255, 255, 255, 0.96) !important;
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+body.quick-access-light-transparent .quick-btn.active i,
+body.quick-access-light-transparent .quick-access-radius-chip.is-active i {
+  color: currentColor !important;
+}
+
 /* Make Bookmark Sidebar respect the Flip Layout (thuộc tính của layout control) */
 body.flip-layout.bookmark-sidebar-mode .bookmark-widget {
   right: auto !important;
@@ -8946,8 +8951,7 @@ body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {
 }
 
 /* --- BOOKMARK ITEM CARD STYLE --- */
-body.bookmark-item-card-style .bookmark,
-body.bookmark-item-card-style .add-bookmark-card {
+body.bookmark-item-card-style .bookmark {
   background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -8968,8 +8972,7 @@ body.bookmark-item-card-style .add-bookmark-card {
     box-shadow 0.2s !important;
 }
 
-body.bookmark-item-card-style .bookmark:hover,
-body.bookmark-item-card-style .add-bookmark-card:hover {
+body.bookmark-item-card-style .bookmark:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   transform: translateY(-5px) !important;
   border-color: rgba(255, 255, 255, 0.3);
@@ -8983,13 +8986,6 @@ body.bookmark-item-card-style .bookmark .bookmark-icon-fallback {
   box-shadow: none !important;
   border: none !important;
   margin-bottom: var(--space-1) !important;
-}
-
-body.bookmark-item-card-style .add-bookmark-card i {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  margin-bottom: 0 !important; /* Center the plus icon */
 }
 
 body.bookmark-item-card-style .bookmark span {
@@ -9027,8 +9023,7 @@ body.bookmark-macos-hover .bookmark:hover {
   box-shadow: none !important;
 }
 
-body.bookmark-item-card-style.bookmark-macos-hover .bookmark,
-body.bookmark-item-card-style.bookmark-macos-hover .add-bookmark-card {
+body.bookmark-item-card-style.bookmark-macos-hover .bookmark {
   background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
@@ -9039,8 +9034,7 @@ body.bookmark-item-card-style.bookmark-macos-hover .add-bookmark-card {
   ) !important;
 }
 
-body.bookmark-item-card-style.bookmark-macos-hover .bookmark:hover,
-body.bookmark-item-card-style.bookmark-macos-hover .add-bookmark-card:hover {
+body.bookmark-item-card-style.bookmark-macos-hover .bookmark:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;

@@ -52,6 +52,39 @@ function createCustomMenuDivider() {
   return divider
 }
 
+function isMenuNodeVisible(node) {
+  return node && node.style.display !== "none"
+}
+
+function addContextMenuDividerBefore(referenceNode) {
+  const divider = createCustomMenuDivider()
+  if (referenceNode) {
+    contextMenu.insertBefore(divider, referenceNode)
+  } else {
+    contextMenu.appendChild(divider)
+  }
+  return divider
+}
+
+function normalizeContextMenuFooter() {
+  const settingsItems = Array.from(
+    contextMenu.querySelectorAll(".context-settings-item"),
+  ).filter(isMenuNodeVisible)
+  const deleteItems = Array.from(
+    contextMenu.querySelectorAll("#menu-delete, .context-delete-item"),
+  ).filter(isMenuNodeVisible)
+
+  if (!settingsItems.length) return
+
+  addContextMenuDividerBefore(null)
+  settingsItems.forEach((item) => contextMenu.appendChild(item))
+
+  if (deleteItems.length) {
+    addContextMenuDividerBefore(null)
+    deleteItems.forEach((item) => contextMenu.appendChild(item))
+  }
+}
+
 function applyContextSetting(key, value) {
   if (typeof window.appHandleSettingUpdate === "function") {
     window.appHandleSettingUpdate(key, value)
@@ -201,8 +234,8 @@ function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
       hideContextMenu()
       openSettingsSection(target.section, target.target)
     },
+    "context-settings-item",
   )
-  if (withDivider) contextMenu.appendChild(createCustomMenuDivider())
   contextMenu.appendChild(settingsBtn)
 }
 
@@ -215,7 +248,9 @@ function addTimerAlarmDropdownToggle(i18n, settings) {
     isHidden ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark",
     () => {
       const nextValue = !isHidden
-      const checkbox = document.getElementById("hide-timer-alarm-dropdown-checkbox")
+      const checkbox = document.getElementById(
+        "hide-timer-alarm-dropdown-checkbox",
+      )
       if (checkbox) checkbox.checked = nextValue
       applyContextSetting("hideTimerAlarmDropdown", nextValue)
       hideContextMenu()
@@ -232,6 +267,7 @@ function addOpenBookmarkSettingsItem(i18n) {
       hideContextMenu()
       openSettingsSection("bookmark-custom", "#bookmark-font-size-input")
     },
+    "context-settings-item",
   )
   contextMenu.insertBefore(settingsBtn, menuEdit)
 }
@@ -279,6 +315,7 @@ function addBackgroundContextMenuItems(i18n) {
         hideContextMenu()
         openSettingsSection("background")
       },
+      "context-settings-item",
     ),
     createCustomMenuItem(
       i18n.bg_context_reset || "Reset background",
@@ -287,7 +324,7 @@ function addBackgroundContextMenuItems(i18n) {
         applyContextSetting("background", null)
         hideContextMenu()
       },
-      "danger",
+      "danger context-delete-item",
     ),
     createCustomMenuDivider(),
     createCustomMenuItem(
@@ -311,7 +348,7 @@ function addBackgroundContextMenuItems(i18n) {
     ),
     createCustomMenuItem(
       i18n.bg_context_blur_less || "Less blur",
-      "fa-regular fa-droplet",
+      "fas fa-tint-slash",
       () => {
         const nextBlur = Math.max(0, blur - 2)
         syncBackgroundControlValue("bgBlur", nextBlur)
@@ -365,6 +402,7 @@ function addBackgroundContextMenuItems(i18n) {
         hideContextMenu()
         openSettingsSection("bookmark-custom", "#bookmark-font-size-input")
       },
+      "context-settings-item",
     ),
     createCustomMenuItem(
       i18n.bg_context_open_google || "Open regular Google",
@@ -502,7 +540,10 @@ export function showContextMenu(
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
           el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
+          el.classList.toggle(
+            "skin-light-transparent",
+            newVal === "light-transparent",
+          )
         }
         hideContextMenu()
       }
@@ -535,7 +576,10 @@ export function showContextMenu(
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
           el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
+          el.classList.toggle(
+            "skin-light-transparent",
+            newVal === "light-transparent",
+          )
         }
         hideContextMenu()
       }
@@ -568,7 +612,10 @@ export function showContextMenu(
           el.classList.toggle("skin-white-blur", newVal === "white-blur")
           el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
           el.classList.toggle("skin-transparent", newVal === "transparent")
-          el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
+          el.classList.toggle(
+            "skin-light-transparent",
+            newVal === "light-transparent",
+          )
         }
         hideContextMenu()
       }
@@ -598,7 +645,10 @@ export function showContextMenu(
             el.classList.toggle("skin-white-blur", newVal === "white-blur")
             el.classList.toggle("skin-m3-accent", newVal === "m3-accent")
             el.classList.toggle("skin-transparent", newVal === "transparent")
-            el.classList.toggle("skin-light-transparent", newVal === "light-transparent")
+            el.classList.toggle(
+              "skin-light-transparent",
+              newVal === "light-transparent",
+            )
           }
           hideContextMenu()
         }
@@ -780,7 +830,8 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(transparentBtn, shakeBtn)
 
-      const isLightTransparent = settings.musicPlayerSkin === "light-transparent"
+      const isLightTransparent =
+        settings.musicPlayerSkin === "light-transparent"
       const lightTransparentBtn = document.createElement("div")
       lightTransparentBtn.className = "context-menu-item custom-music-item"
       lightTransparentBtn.innerHTML = `<i class="fa-solid fa-droplet"></i> <span>${isLightTransparent ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_light_transparent || "Light Transparent"}</span>`
@@ -915,7 +966,18 @@ export function showContextMenu(
     menuSelect.style.display = "none"
 
     const settings = getSettings()
-    const radii = ["20px", "18px", "16px", "14px", "12px", "10px", "8px", "5px", "4px", "0px"]
+    const radii = [
+      "20px",
+      "18px",
+      "16px",
+      "14px",
+      "12px",
+      "10px",
+      "8px",
+      "5px",
+      "4px",
+      "0px",
+    ]
 
     const createMenuItem = (label, iconClass, handler, extraClass = "") => {
       const item = document.createElement("div")
@@ -1110,7 +1172,9 @@ export function showContextMenu(
           icon: "fa-solid fa-droplet",
         },
       ]
-      let activeSkin = skins.some((skin) => skin.value === settings.quickAccessSkin)
+      let activeSkin = skins.some(
+        (skin) => skin.value === settings.quickAccessSkin,
+      )
         ? settings.quickAccessSkin
         : "default"
       skins.forEach((skin) => {
@@ -1131,10 +1195,7 @@ export function showContextMenu(
             "quick-access-light-transparent",
             skin.value === "light-transparent",
           )
-          document.body.classList.toggle(
-            "quick-access-transparent",
-            false,
-          )
+          document.body.classList.toggle("quick-access-transparent", false)
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
               detail: { key: "quickAccessSkin", value: skin.value },
@@ -1143,7 +1204,10 @@ export function showContextMenu(
           skinGrid
             .querySelectorAll(".quick-access-radius-chip")
             .forEach((el, index) => {
-              el.classList.toggle("is-active", skins[index].value === skin.value)
+              el.classList.toggle(
+                "is-active",
+                skins[index].value === skin.value,
+              )
               el.innerHTML = `<i class="${skins[index].value === skin.value ? "fa-solid fa-check" : skins[index].icon}"></i><span>${skins[index].label}</span>`
             })
         }
@@ -1223,7 +1287,7 @@ export function showContextMenu(
         hideContextMenu()
         openQuickAccessPopup()
       },
-      "quick-access-root-item",
+      "quick-access-root-item context-settings-item",
     )
     contextMenu.appendChild(menuText)
   } else if (
@@ -1331,6 +1395,8 @@ export function showContextMenu(
       }
     }
   }
+
+  normalizeContextMenuFooter()
 
   contextMenu.style.display = "block"
 
@@ -1530,7 +1596,9 @@ async function handleEdit() {
     if (contextMenuTargetIndex > -1) {
       const anchor =
         contextMenuCallbacks?.anchor ||
-        document.querySelector(`[data-index="${contextMenuTargetIndex}"].bookmark`)
+        document.querySelector(
+          `[data-index="${contextMenuTargetIndex}"].bookmark`,
+        )
       openBookmarkEditPopover(contextMenuTargetIndex, null, anchor)
     }
   } else if (contextMenuTargetType === "group") {

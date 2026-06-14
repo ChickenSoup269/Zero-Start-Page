@@ -43,6 +43,7 @@ export class Weather {
     this.abortController = null
     this.suggestionTimer = null
     this.suggestionAbortController = null
+    this.activeSuggestionIndex = -1
     this.init()
   }
 
@@ -80,10 +81,10 @@ export class Weather {
       <div class="weather-search-wrap">
         <div class="weather-search-row">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input id="weather-location-input" type="text" autocomplete="off" spellcheck="false" placeholder="${this.escapeAttribute(i18n.weather_search_placeholder || "Search city...")}">
+          <input id="weather-location-input" type="text" autocomplete="off" spellcheck="false" aria-controls="weather-suggestions" aria-expanded="false" placeholder="${this.escapeAttribute(i18n.weather_search_placeholder || "Search city...")}">
           <button class="weather-search-btn" id="weather-search-btn" type="button" title="${this.escapeAttribute(i18n.weather_search || "Search")}"><i class="fa-solid fa-arrow-right"></i></button>
         </div>
-        <div class="weather-suggestions" id="weather-suggestions" style="display: none;"></div>
+        <div class="weather-suggestions" id="weather-suggestions" role="listbox" style="display: none;"></div>
       </div>
       <div class="weather-body" id="weather-body">
         <div class="weather-loading">${this.escapeHtml(i18n.weather_loading || "Loading weather...")}</div>
@@ -118,11 +119,29 @@ export class Weather {
     })
 
     input?.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.isComposing) {
-        runSearch()
+      if (event.isComposing) return
+
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        const items = this.getSuggestionItems()
+        if (!items.length) return
+        event.preventDefault()
+        this.moveActiveSuggestion(event.key === "ArrowDown" ? 1 : -1)
+        return
       }
+
+      if (event.key === "Enter" && !event.isComposing) {
+        if (this.selectActiveSuggestion(input)) {
+          event.preventDefault()
+          return
+        }
+        runSearch()
+        return
+      }
+
       if (event.key === "Escape") {
-        event.target.value = ""
+        if (!this.areSuggestionsVisible()) {
+          event.target.value = ""
+        }
         this.clearSuggestions()
       }
     })
@@ -130,17 +149,7 @@ export class Weather {
     this.container.querySelector("#weather-suggestions")?.addEventListener("click", (event) => {
       const item = event.target.closest?.("[data-weather-suggestion]")
       if (!item) return
-      const location = {
-        name: item.dataset.name,
-        country: item.dataset.country || "",
-        latitude: Number(item.dataset.latitude),
-        longitude: Number(item.dataset.longitude),
-      }
-      if (!Number.isFinite(location.latitude) || !Number.isFinite(location.longitude)) return
-      this.saveLocation(location)
-      if (input) input.value = ""
-      this.clearSuggestions()
-      this.loadWeather({ force: true })
+      this.chooseSuggestionItem(item, input)
     })
 
     window.addEventListener("layoutUpdated", (event) => {
@@ -337,12 +346,12 @@ export class Weather {
     }
 
     suggestions.innerHTML = validResults
-      .map((item) => {
+      .map((item, index) => {
         const admin = item.admin1 ? `${item.admin1}, ` : ""
         const country = item.country || ""
         const fullLabel = [item.name, admin.replace(/, $/, ""), country].filter(Boolean).join(", ")
         return `
-          <button type="button" class="weather-suggestion-item" data-weather-suggestion="true"
+          <button type="button" class="weather-suggestion-item" id="weather-suggestion-${index}" role="option" aria-selected="false" data-weather-suggestion="true"
             data-name="${this.escapeAttribute(item.name)}"
             data-country="${this.escapeAttribute(country)}"
             data-latitude="${this.escapeAttribute(item.latitude)}"
@@ -356,14 +365,86 @@ export class Weather {
       })
       .join("")
     suggestions.style.display = "grid"
+    this.activeSuggestionIndex = -1
+    this.updateActiveSuggestion()
+    this.setSuggestionsExpanded(true)
   }
 
   clearSuggestions() {
     window.clearTimeout(this.suggestionTimer)
     const suggestions = this.container?.querySelector("#weather-suggestions")
     if (!suggestions) return
+    this.activeSuggestionIndex = -1
     suggestions.innerHTML = ""
     suggestions.style.display = "none"
+    this.setSuggestionsExpanded(false)
+  }
+
+  areSuggestionsVisible() {
+    const suggestions = this.container?.querySelector("#weather-suggestions")
+    return Boolean(suggestions && suggestions.style.display !== "none" && suggestions.children.length)
+  }
+
+  getSuggestionItems() {
+    return Array.from(this.container?.querySelectorAll("[data-weather-suggestion]") || [])
+  }
+
+  moveActiveSuggestion(direction) {
+    const items = this.getSuggestionItems()
+    if (!items.length) return
+    this.activeSuggestionIndex =
+      this.activeSuggestionIndex < 0
+        ? direction > 0
+          ? 0
+          : items.length - 1
+        : (this.activeSuggestionIndex + direction + items.length) % items.length
+    this.updateActiveSuggestion()
+  }
+
+  updateActiveSuggestion() {
+    const items = this.getSuggestionItems()
+    const input = this.container?.querySelector("#weather-location-input")
+
+    items.forEach((item, index) => {
+      const isActive = index === this.activeSuggestionIndex
+      item.classList.toggle("active", isActive)
+      item.setAttribute("aria-selected", isActive ? "true" : "false")
+      if (isActive) {
+        item.scrollIntoView({ block: "nearest" })
+      }
+    })
+
+    if (input) {
+      const activeItem = items[this.activeSuggestionIndex]
+      input.setAttribute("aria-activedescendant", activeItem?.id || "")
+    }
+  }
+
+  selectActiveSuggestion(input) {
+    const item = this.getSuggestionItems()[this.activeSuggestionIndex]
+    if (!item) return false
+    this.chooseSuggestionItem(item, input)
+    return true
+  }
+
+  chooseSuggestionItem(item, input) {
+    const location = {
+      name: item.dataset.name,
+      country: item.dataset.country || "",
+      latitude: Number(item.dataset.latitude),
+      longitude: Number(item.dataset.longitude),
+    }
+    if (!Number.isFinite(location.latitude) || !Number.isFinite(location.longitude)) return
+    this.saveLocation(location)
+    if (input) input.value = ""
+    this.clearSuggestions()
+    this.loadWeather({ force: true })
+  }
+
+  setSuggestionsExpanded(isExpanded) {
+    this.container
+      ?.querySelector("#weather-location-input")
+      ?.setAttribute("aria-expanded", isExpanded ? "true" : "false")
   }
 
   useCurrentLocation() {
