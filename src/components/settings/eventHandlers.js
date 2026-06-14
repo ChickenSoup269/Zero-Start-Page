@@ -4203,12 +4203,59 @@ export function setupGeneralEventHandlers(
       "clockStyleTransparentBackground",
       value === "transparent",
     )
+    if (DOM.clockStyleCustomBgSetting) {
+      DOM.clockStyleCustomBgSetting.style.display =
+        value === "custom" ? "flex" : "none"
+    }
 
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
         detail: {
           key: "clockStyleBackground",
           value,
+        },
+      }),
+    )
+  })
+
+  DOM.clockStyleCustomBgColor?.addEventListener("input", () => {
+    const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleCustomBgColor.value)
+      ? DOM.clockStyleCustomBgColor.value
+      : "#1f2937"
+    handleSettingUpdate("clockStyleCustomBgColor", color)
+    document.documentElement.style.setProperty(
+      "--clock-style-custom-bg-color",
+      color,
+    )
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockStyleCustomBgColor",
+          value: color,
+        },
+      }),
+    )
+  })
+
+  DOM.clockStyleCustomBgColor?.addEventListener("change", () => {
+    const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleCustomBgColor.value)
+      ? DOM.clockStyleCustomBgColor.value
+      : "#1f2937"
+    handleSettingUpdate("clockStyleCustomBgColor", color)
+  })
+
+  DOM.cartoonClockAnimationCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "cartoonClockAnimation",
+      DOM.cartoonClockAnimationCheckbox.checked,
+    )
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "cartoonClockAnimation",
+          value: DOM.cartoonClockAnimationCheckbox.checked,
         },
       }),
     )

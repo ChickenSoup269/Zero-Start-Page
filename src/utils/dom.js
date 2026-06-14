@@ -883,6 +883,18 @@ export const clockStyleBgSetting = document.getElementById(
 export const clockStyleBgSelect = document.getElementById(
   "clock-style-bg-select",
 )
+export const clockStyleCustomBgSetting = document.getElementById(
+  "clock-style-custom-bg-setting",
+)
+export const clockStyleCustomBgColor = document.getElementById(
+  "clock-style-custom-bg-color",
+)
+export const cartoonClockAnimationSetting = document.getElementById(
+  "cartoon-clock-animation-setting",
+)
+export const cartoonClockAnimationCheckbox = document.getElementById(
+  "cartoon-clock-animation-checkbox",
+)
 export const mediaOrbImageSetting = document.getElementById(
   "media-orb-image-setting",
 )

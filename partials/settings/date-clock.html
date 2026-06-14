@@ -302,6 +302,12 @@
                                         data-i18n="settings_clock_date_style_lunar_orbit">Lunar Orbit</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="cartoon">
+                                    <i class="fa-solid fa-face-laugh-beam"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_cartoon">Cartoon</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                             </div>
                         </div>
                         <select id="clock-date-style-select" style="display: none;">
@@ -326,6 +332,7 @@
                             <option value="metro-panel">Metro Panel</option>
                             <option value="aurora-ribbon">Aurora Ribbon</option>
                             <option value="lunar-orbit">Lunar Orbit</option>
+                            <option value="cartoon">Cartoon</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -378,10 +385,26 @@
                                 <option value="default" data-i18n="settings_clock_style_bg_default">Default</option>
                                 <option value="transparent" data-i18n="settings_clock_style_bg_transparent">Transparent
                                 </option>
+                                <option value="accent" data-i18n="settings_clock_style_bg_accent">M3 Accent</option>
+                                <option value="custom" data-i18n="settings_clock_style_bg_custom">Custom</option>
                                 <option value="light" data-i18n="settings_clock_style_bg_light">White</option>
                                 <option value="dark" data-i18n="settings_clock_style_bg_dark">Black</option>
                                 <option value="animated" data-i18n="settings_clock_style_bg_animated">Animated</option>
                             </select>
+                        </div>
+
+                        <div id="clock-style-custom-bg-setting" class="setting-item-row"
+                            style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
+                            <label for="clock-style-custom-bg-color"
+                                data-i18n="settings_clock_style_bg_custom_color">Custom Background</label>
+                            <input type="color" id="clock-style-custom-bg-color" value="#1f2937">
+                        </div>
+
+                        <div id="cartoon-clock-animation-setting" class="setting-item-row"
+                            style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
+                            <label for="cartoon-clock-animation-checkbox"
+                                data-i18n="settings_cartoon_clock_animation">Cartoon Animation</label>
+                            <input type="checkbox" id="cartoon-clock-animation-checkbox" checked>
                         </div>
 
                         <div id="media-orb-image-setting" class="setting-item no-margin-top media-orb-setting"

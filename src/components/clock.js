@@ -144,6 +144,8 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".aurora-ribbon-time"))
     } else if (style === "lunar-orbit") {
       clockTargets.push(clockElement.querySelector(".lunar-orbit-time"))
+    } else if (style === "cartoon") {
+      clockTargets.push(clockElement.querySelector(".cartoon-time"))
     }
   }
 
@@ -195,6 +197,9 @@ function applyHueMode(settings) {
       } else if (style === "lunar-orbit") {
         dateTargets.push(clockElement.querySelector(".lunar-orbit-weekday"))
         dateTargets.push(clockElement.querySelector(".lunar-orbit-date-line"))
+      } else if (style === "cartoon") {
+        dateTargets.push(clockElement.querySelector(".cartoon-weekday"))
+        dateTargets.push(clockElement.querySelector(".cartoon-date"))
       }
     }
   }
@@ -1227,6 +1232,79 @@ export function updateTime() {
         </div>
       </div>
     `
+  } else if (dateClockStyle === "cartoon") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(
+          now,
+          dateLangCode,
+          settings.shortWeekday,
+          tz,
+          settings,
+        )
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, dateLangCode, tz, settings)
+      : ""
+    const secondDisplay = ss || "00"
+    let cartoonRoot = clockElement.querySelector(".cartoon-clock")
+    if (!cartoonRoot) {
+      clockElement.innerHTML = `
+        <div class="cartoon-clock">
+          <span class="cartoon-blob cartoon-blob-one"></span>
+          <span class="cartoon-blob cartoon-blob-two"></span>
+          <span class="cartoon-star cartoon-star-one">+</span>
+          <span class="cartoon-star cartoon-star-two">+</span>
+          <div class="cartoon-top">
+            <span class="cartoon-weekday"></span>
+            <span class="cartoon-ampm"></span>
+          </div>
+          <div class="cartoon-time">
+            <span class="cartoon-digit cartoon-hour"></span>
+            <span class="cartoon-colon">:</span>
+            <span class="cartoon-digit cartoon-minute"></span>
+            <span class="cartoon-second"></span>
+          </div>
+          <div class="cartoon-date"></div>
+        </div>
+      `
+      cartoonRoot = clockElement.querySelector(".cartoon-clock")
+    }
+
+    const weekdayEl = cartoonRoot.querySelector(".cartoon-weekday")
+    const weekdayText = isTimer ? countdownLabel : weekday
+    if (weekdayEl && weekdayEl.innerHTML !== weekdayText) {
+      weekdayEl.innerHTML = weekdayText
+    }
+
+    const ampmEl = cartoonRoot.querySelector(".cartoon-ampm")
+    if (ampmEl) {
+      if (ampmEl.textContent !== ampm) ampmEl.textContent = ampm
+      ampmEl.style.display = ampm ? "inline-flex" : "none"
+    }
+
+    const timeEl = cartoonRoot.querySelector(".cartoon-time")
+    if (timeEl) timeEl.setAttribute("aria-label", timeString)
+
+    const hourEl = cartoonRoot.querySelector(".cartoon-hour")
+    if (hourEl && hourEl.textContent !== hh) hourEl.textContent = hh
+
+    const minuteEl = cartoonRoot.querySelector(".cartoon-minute")
+    if (minuteEl && minuteEl.textContent !== mm) minuteEl.textContent = mm
+
+    const secondEl = cartoonRoot.querySelector(".cartoon-second")
+    if (secondEl) {
+      if (secondEl.textContent !== secondDisplay) {
+        secondEl.textContent = secondDisplay
+      }
+      secondEl.style.display = settings.hideSeconds ? "none" : "inline-flex"
+    }
+
+    const dateEl = cartoonRoot.querySelector(".cartoon-date")
+    if (dateEl) {
+      const dateText = isTimer ? timerRunningLabel : dateStr
+      if (dateEl.innerHTML !== dateText) dateEl.innerHTML = dateText
+      dateEl.style.display = dateText ? "block" : "none"
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -1267,6 +1345,7 @@ export function updateTime() {
     "metro-panel",
     "aurora-ribbon",
     "lunar-orbit",
+    "cartoon",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")

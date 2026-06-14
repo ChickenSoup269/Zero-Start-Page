@@ -1864,6 +1864,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-sidestyle",
       "date-clock-style-sidebar",
       "date-clock-style-weekday",
+      "date-clock-style-weekday-style",
       "date-clock-style-fliqlo",
       "date-clock-style-cyber-pulse",
       "date-clock-style-neon-grid",
@@ -1873,6 +1874,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-metro-panel",
       "date-clock-style-aurora-ribbon",
       "date-clock-style-lunar-orbit",
+      "date-clock-style-cartoon",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -1923,6 +1925,23 @@ function createApplySettings(effectInstances) {
         settings.clockStyleTransparentBackground === true,
     )
     document.body.classList.toggle(
+      "clock-style-bg-accent",
+      (settings.clockStyleBackground || "default") === "accent",
+    )
+    const customClockBgColor = /^#[0-9a-f]{6}$/i.test(
+      settings.clockStyleCustomBgColor || "",
+    )
+      ? settings.clockStyleCustomBgColor
+      : "#1f2937"
+    document.documentElement.style.setProperty(
+      "--clock-style-custom-bg-color",
+      customClockBgColor,
+    )
+    document.body.classList.toggle(
+      "clock-style-bg-custom",
+      (settings.clockStyleBackground || "default") === "custom",
+    )
+    document.body.classList.toggle(
       "clock-style-bg-light",
       (settings.clockStyleBackground || "default") === "light",
     )
@@ -1934,6 +1953,10 @@ function createApplySettings(effectInstances) {
       "clock-style-bg-animated",
       dateClockStyle === "prism-stack" &&
         (settings.clockStyleBackground || "default") === "animated",
+    )
+    document.body.classList.toggle(
+      "cartoon-clock-animation-off",
+      dateClockStyle === "cartoon" && settings.cartoonClockAnimation === false,
     )
     document.body.classList.toggle(
       "media-orb-overflow-border",
@@ -2719,16 +2742,36 @@ function createUpdateSettingsInputs(effectInstances) {
           ? "transparent"
           : settings.clockStyleBackground || "default"
     }
+    if (DOM.clockStyleCustomBgColor) {
+      DOM.clockStyleCustomBgColor.value = /^#[0-9a-f]{6}$/i.test(
+        settings.clockStyleCustomBgColor || "",
+      )
+        ? settings.clockStyleCustomBgColor
+        : "#1f2937"
+    }
+    if (DOM.cartoonClockAnimationCheckbox) {
+      DOM.cartoonClockAnimationCheckbox.checked =
+        settings.cartoonClockAnimation !== false
+    }
     if (DOM.clockFontTargetSelect)
       DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
 
     // Manage display of conditional settings
     const style = settings.dateClockStyle || "default"
     const backgroundClockStyles = [
+      "default",
+      "glow",
       "minimal",
       "glass",
       "round",
       "square",
+      "analog",
+      "cool",
+      "sidestyle",
+      "jp-style",
+      "sidebar",
+      "weekday-style",
+      "fliqlo",
       "cyber-pulse",
       "neon-grid",
       "holo-ring",
@@ -2737,6 +2780,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "metro-panel",
       "aurora-ribbon",
       "lunar-orbit",
+      "cartoon",
     ]
 
     // Show style-specific container if current style has special settings
@@ -2787,6 +2831,19 @@ function createUpdateSettingsInputs(effectInstances) {
       if (style !== "prism-stack" && DOM.clockStyleBgSelect.value === "animated") {
         DOM.clockStyleBgSelect.value = "default"
       }
+    }
+
+    if (DOM.clockStyleCustomBgSetting) {
+      DOM.clockStyleCustomBgSetting.style.display =
+        backgroundClockStyles.includes(style) &&
+        DOM.clockStyleBgSelect?.value === "custom"
+          ? "flex"
+          : "none"
+    }
+
+    if (DOM.cartoonClockAnimationSetting) {
+      DOM.cartoonClockAnimationSetting.style.display =
+        style === "cartoon" ? "flex" : "none"
     }
 
     if (DOM.mediaOrbImageSetting)

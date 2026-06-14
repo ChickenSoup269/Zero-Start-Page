@@ -245,6 +245,34 @@ body.date-clock-style-glow #date {
     0 0 24px rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
 }
 
+body.date-clock-style-default .clock-date-wrap {
+  text-align: center;
+}
+
+body.date-clock-style-default #clock {
+  line-height: 0.98;
+  text-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.32),
+    0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+body.date-clock-style-default #date {
+  font-weight: 420;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+}
+
+body.date-clock-style-glow .clock-date-wrap {
+  text-align: center;
+}
+
+body.date-clock-style-glow #clock {
+  filter: drop-shadow(0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2));
+}
+
+body.date-clock-style-glow #date {
+  opacity: 0.92;
+}
+
 body.date-clock-style-minimal #clock,
 body.date-clock-style-minimal #date {
   text-shadow: none;
@@ -334,16 +362,31 @@ body.date-clock-style-minimal.time-priority-date #date {
 body.date-clock-style-glass .clock-date-wrap {
   width: fit-content;
   margin: 0 auto;
-  padding: var(--space-1) var(--space-2);
+  padding: clamp(var(--space-1), calc(var(--clock-size) * 0.12), var(--space-2))
+    clamp(var(--space-2), calc(var(--clock-size) * 0.2), var(--space-3));
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.035)),
+    rgba(8, 10, 16, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(16px) saturate(145%);
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
+}
+
+body.date-clock-style-glass .clock-date-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.18), transparent 32%);
 }
 
 body.date-clock-style-glass #clock,
@@ -1161,16 +1204,17 @@ body.date-clock-style-analog #date {
   border-radius: 50%;
   margin: 0 auto;
   position: relative;
-  border: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
+  border: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.68);
   background: radial-gradient(
     circle at 30% 25%,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.04) 55%,
-    rgba(0, 0, 0, 0.24)
+    rgba(255, 255, 255, 0.24),
+    rgba(255, 255, 255, 0.06) 48%,
+    rgba(0, 0, 0, 0.32)
   );
   box-shadow:
-    0 10px 24px rgba(0, 0, 0, 0.35),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 16px 34px rgba(0, 0, 0, 0.36),
+    0 0 26px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 body.analog-bg-blur-enabled .analog-clock {
@@ -1183,7 +1227,8 @@ body.analog-bg-blur-enabled .analog-clock {
   position: absolute;
   inset: 12%;
   border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px dashed rgba(var(--clock-color-rgb, 255, 255, 255), 0.24);
+  box-shadow: inset 0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
 }
 
 .analog-clock::after {
@@ -1302,15 +1347,17 @@ body.analog-bg-blur-enabled .analog-clock {
 }
 
 .analog-hand.hour {
-  width: 6px;
+  width: 7px;
   height: 26%;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--clock-color, rgba(255, 255, 255, 0.92));
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
 }
 
 .analog-hand.minute {
-  width: 4px;
+  width: 5px;
   height: 36%;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(var(--clock-color-rgb, 255, 255, 255), 0.84);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .analog-hand.second {
@@ -1392,8 +1439,10 @@ body.date-clock-style-cool .cool-style-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.15rem;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  gap: 0.18rem;
+  text-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.42),
+    0 0 20px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
   line-height: 1.1;
 }
 body.date-clock-style-cool .cool-bar {
@@ -1412,11 +1461,12 @@ body.date-clock-style-cool .cool-greeting {
 }
 body.date-clock-style-cool .cool-dayname {
   font-size: calc(var(--clock-size) * 0.6);
-  font-weight: bold;
+  font-weight: 850;
   color: var(--accent-color, #fff);
   text-transform: uppercase;
   margin: 0.2rem 0;
   font-family: var(--font-date);
+  letter-spacing: 0.04em;
 }
 body.date-clock-style-cool .cool-date {
   font-size: calc(var(--clock-size) * 0.25);
@@ -1435,10 +1485,10 @@ body.date-clock-style-cool .cool-time {
 body.date-clock-style-sidestyle .clock-sidestyle {
   text-align: start;
   letter-spacing: calc(var(--clock-size) * 0.04);
-  border-left: 2px dashed rgba(255, 255, 255, 0.3);
+  border-left: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
   padding-left: calc(var(--clock-size) * 0.25);
   margin-left: var(--space-1);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.34);
   font-family: var(--font-clock);
 }
 
@@ -2851,6 +2901,245 @@ body.date-clock-style-lunar-orbit .lunar-orbit-date-line {
   overflow-wrap: anywhere;
 }
 
+/* Cartoon Style */
+body.date-clock-style-cartoon .cartoon-clock {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  max-width: min(92vw, calc(var(--clock-size, 6rem) * 5.2));
+  padding: calc(var(--clock-size, 6rem) * 0.18) calc(var(--clock-size, 6rem) * 0.22);
+  border: 3px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.88);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.45), transparent 18%),
+    linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.86), rgba(255, 218, 121, 0.76));
+  box-shadow:
+    8px 8px 0 rgba(0, 0, 0, 0.34),
+    0 20px 40px rgba(0, 0, 0, 0.28);
+  color: var(--clock-color, #ffffff);
+  isolation: isolate;
+  transform-origin: center;
+  animation: cartoonLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-clock::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  z-index: -1;
+  border: 2px dashed rgba(255, 255, 255, 0.36);
+  border-radius: 17px;
+  pointer-events: none;
+}
+
+body.date-clock-style-cartoon .cartoon-clock::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--clock-size, 6rem) * -0.1);
+  bottom: calc(var(--clock-size, 6rem) * -0.08);
+  width: calc(var(--clock-size, 6rem) * 0.34);
+  aspect-ratio: 1;
+  z-index: -2;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow:
+    calc(var(--clock-size, 6rem) * -0.18) calc(var(--clock-size, 6rem) * -0.18) 0 rgba(255, 255, 255, 0.18),
+    calc(var(--clock-size, 6rem) * -0.3) calc(var(--clock-size, 6rem) * 0.02) 0 rgba(var(--accent-color-rgb, 168, 192, 255), 0.28);
+}
+
+body.date-clock-style-cartoon .cartoon-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  margin-bottom: calc(var(--clock-size, 6rem) * 0.08);
+}
+
+body.date-clock-style-cartoon .cartoon-weekday,
+body.date-clock-style-cartoon .cartoon-ampm {
+  position: relative;
+  z-index: 1;
+  padding: 0.24em 0.72em;
+  border: 2px solid rgba(0, 0, 0, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #1b1b24;
+  font-family: var(--font-weekday, var(--font-date, 'Inter', sans-serif));
+  font-size: clamp(0.78rem, calc(var(--clock-size, 6rem) * 0.13), 1.05rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.22);
+}
+
+body.date-clock-style-cartoon .cartoon-ampm {
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  color: var(--accent-color, #5b43ff);
+}
+
+body.date-clock-style-cartoon .cartoon-time {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: var(--font-clock, 'Inter', sans-serif);
+  font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.92), 8.2rem);
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
+  color: var(--clock-color, #ffffff);
+  -webkit-text-stroke: max(1px, calc(var(--clock-size, 6rem) * 0.018)) rgba(0, 0, 0, 0.55);
+  text-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.38),
+    0 0 20px rgba(255, 255, 255, 0.18);
+}
+
+body.date-clock-style-cartoon .cartoon-digit {
+  display: inline-block;
+}
+
+body.date-clock-style-cartoon .cartoon-hour {
+  animation: cartoonDigitLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-minute {
+  animation: cartoonDigitLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-colon {
+  padding: 0 0.08em;
+  color: rgba(255, 255, 255, 0.92);
+  animation: cartoonColonLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-second {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.35em;
+  margin-left: 0.42em;
+  padding: 0.18em 0.38em;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1b1b24;
+  font-size: 0.28em;
+  font-weight: 950;
+  -webkit-text-stroke: 0 transparent;
+  text-shadow: none;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.24);
+  animation: cartoonSecondLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-date {
+  width: 100%;
+  max-width: min(76vw, calc(var(--clock-size, 6rem) * 4.2));
+  margin-top: calc(var(--clock-size, 6rem) * 0.12);
+  padding-top: calc(var(--clock-size, 6rem) * 0.08);
+  border-top: 2px solid rgba(0, 0, 0, 0.18);
+  color: #1b1b24;
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-size: clamp(0.82rem, calc(var(--clock-size, 6rem) * 0.15), 1.18rem);
+  font-weight: 850;
+  line-height: 1.35;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+body.date-clock-style-cartoon .cartoon-blob,
+body.date-clock-style-cartoon .cartoon-star {
+  position: absolute;
+  pointer-events: none;
+}
+
+body.date-clock-style-cartoon .cartoon-blob {
+  width: calc(var(--clock-size, 6rem) * 0.22);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.52);
+}
+
+body.date-clock-style-cartoon .cartoon-blob-one {
+  top: calc(var(--clock-size, 6rem) * -0.08);
+  left: calc(var(--clock-size, 6rem) * 0.2);
+  animation: cartoonBlobLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-blob-two {
+  right: calc(var(--clock-size, 6rem) * 0.16);
+  bottom: calc(var(--clock-size, 6rem) * -0.07);
+  animation: cartoonBlobLifecycle 8s ease-in-out -4s infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-star {
+  color: #ffffff;
+  font-size: calc(var(--clock-size, 6rem) * 0.22);
+  font-weight: 950;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.24);
+  animation: cartoonStarLifecycle 8s ease-in-out infinite;
+}
+
+body.date-clock-style-cartoon .cartoon-star-one {
+  top: 12%;
+  right: 8%;
+}
+
+body.date-clock-style-cartoon .cartoon-star-two {
+  left: 7%;
+  bottom: 18%;
+  animation-delay: -4s;
+}
+
+@keyframes cartoonLifecycle {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-0.35deg) scale(1); }
+  16% { transform: translate3d(0, 3px, 0) rotate(-0.7deg) scale(0.992, 1.008); }
+  32% { transform: translate3d(0, -6px, 0) rotate(0.55deg) scale(1.012, 0.994); }
+  50% { transform: translate3d(0, -2px, 0) rotate(0deg) scale(1.002); }
+  68% { transform: translate3d(0, -5px, 0) rotate(0.45deg) scale(1.008, 0.997); }
+  84% { transform: translate3d(0, 2px, 0) rotate(-0.55deg) scale(0.995, 1.005); }
+}
+
+@keyframes cartoonDigitLifecycle {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  18% { transform: translate3d(0, 2px, 0) scale(0.99, 1.01); }
+  34% { transform: translate3d(0, -4px, 0) scale(1.02, 0.99); }
+  52%, 72% { transform: translate3d(0, 0, 0) scale(1); }
+  86% { transform: translate3d(0, -1px, 0) scale(1.006); }
+}
+
+@keyframes cartoonColonLifecycle {
+  0%, 100% { opacity: 0.72; transform: translate3d(0, 0, 0) scale(1); }
+  24%, 34% { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.06); }
+  54%, 64% { opacity: 0.52; transform: translate3d(0, 0, 0) scale(0.98); }
+  82% { opacity: 0.9; transform: translate3d(0, -1px, 0) scale(1.03); }
+}
+
+@keyframes cartoonSecondLifecycle {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20% { transform: translate3d(0, 2px, 0) rotate(-1.5deg); }
+  36% { transform: translate3d(0, -5px, 0) rotate(2.5deg); }
+  54%, 72% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  86% { transform: translate3d(0, -1px, 0) rotate(-0.8deg); }
+}
+
+@keyframes cartoonBlobLifecycle {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.62; }
+  28% { transform: translate3d(5px, -4px, 0) scale(1.12); opacity: 0.84; }
+  56% { transform: translate3d(-3px, 3px, 0) scale(0.94); opacity: 0.54; }
+  82% { transform: translate3d(1px, -1px, 0) scale(1.03); opacity: 0.7; }
+}
+
+@keyframes cartoonStarLifecycle {
+  0%, 100% { transform: scale(0.82) rotate(0deg); opacity: 0.5; }
+  26% { transform: scale(1.14) rotate(14deg); opacity: 1; }
+  48% { transform: scale(0.96) rotate(-6deg); opacity: 0.72; }
+  74% { transform: scale(1.06) rotate(8deg); opacity: 0.88; }
+}
+
 @media (max-width: 640px) {
   body.date-clock-style-metro-panel .metro-panel-clock {
     grid-template-columns: 1fr;
@@ -2910,6 +3199,27 @@ body.date-clock-style-lunar-orbit .lunar-orbit-date-line {
   body.date-clock-style-lunar-orbit .lunar-orbit-date-line {
     text-align: center;
   }
+
+  body.date-clock-style-cartoon .cartoon-clock {
+    max-width: 88vw;
+    padding: calc(var(--clock-size, 6rem) * 0.14) calc(var(--clock-size, 6rem) * 0.16);
+    border-radius: 18px;
+    box-shadow:
+      5px 5px 0 rgba(0, 0, 0, 0.32),
+      0 14px 28px rgba(0, 0, 0, 0.24);
+  }
+
+  body.date-clock-style-cartoon .cartoon-top {
+    flex-wrap: wrap;
+  }
+
+  body.date-clock-style-cartoon .cartoon-time {
+    font-size: clamp(2.55rem, calc(var(--clock-size, 6rem) * 0.68), 4.8rem);
+  }
+
+  body.date-clock-style-cartoon .cartoon-second {
+    margin-left: 0.22em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2919,7 +3229,14 @@ body.date-clock-style-lunar-orbit .lunar-orbit-date-line {
   body.date-clock-style-holo-ring .holo-ring-dot,
   body.date-clock-style-prism-stack .prism-stack-clock::before,
   body.clock-style-bg-animated.date-clock-style-prism-stack .prism-stack-clock,
-  body.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before {
+  body.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+  body.date-clock-style-cartoon .cartoon-clock,
+  body.date-clock-style-cartoon .cartoon-hour,
+  body.date-clock-style-cartoon .cartoon-minute,
+  body.date-clock-style-cartoon .cartoon-colon,
+  body.date-clock-style-cartoon .cartoon-second,
+  body.date-clock-style-cartoon .cartoon-blob,
+  body.date-clock-style-cartoon .cartoon-star {
     animation: none;
   }
 }
@@ -2935,7 +3252,8 @@ body.clock-style-transparent-bg.date-clock-style-neon-grid .neon-grid-clock,
 body.clock-style-transparent-bg.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-transparent-bg.date-clock-style-media-orb .media-orb-clock,
 body.clock-style-transparent-bg.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
-body.clock-style-transparent-bg.date-clock-style-lunar-orbit .lunar-orbit-clock {
+body.clock-style-transparent-bg.date-clock-style-lunar-orbit .lunar-orbit-clock,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-clock {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
@@ -2947,7 +3265,8 @@ body.clock-style-transparent-bg.date-clock-style-round .clock-date-wrap::before,
 body.clock-style-transparent-bg.date-clock-style-square .clock-date-wrap::before,
 body.clock-style-transparent-bg.date-clock-style-prism-stack .prism-stack-clock::before,
 body.clock-style-transparent-bg.date-clock-style-neon-grid .neon-grid-clock::before,
-body.clock-style-transparent-bg.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before {
+body.clock-style-transparent-bg.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-clock::before {
   display: none !important;
 }
 
@@ -2974,8 +3293,247 @@ body.clock-style-transparent-bg.date-clock-style-holo-ring .holo-ring-date,
 body.clock-style-transparent-bg.date-clock-style-media-orb .media-orb-date,
 body.clock-style-transparent-bg.date-clock-style-aurora-ribbon .aurora-ribbon-top,
 body.clock-style-transparent-bg.date-clock-style-lunar-orbit .lunar-orbit-date-line,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-date,
 body.clock-style-transparent-bg.date-clock-style-minimal #clock {
   border-color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+}
+
+/* Optional Material accent clock backgrounds */
+body.clock-style-bg-accent.date-clock-style-default .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-glow .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-minimal .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-glass .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-round .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-square .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-analog .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-cool .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-sidestyle .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-jp-style .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-sidebar .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-weekday-style .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-fliqlo .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-prism-stack .prism-stack-clock,
+body.clock-style-bg-accent.date-clock-style-metro-panel .metro-panel-clock,
+body.clock-style-bg-accent.date-clock-style-cyber-pulse .cyber-pulse-clock,
+body.clock-style-bg-accent.date-clock-style-neon-grid .neon-grid-clock,
+body.clock-style-bg-accent.date-clock-style-holo-ring .holo-ring-clock,
+body.clock-style-bg-accent.date-clock-style-media-orb .media-orb-clock,
+body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
+body.clock-style-bg-accent.date-clock-style-lunar-orbit .lunar-orbit-clock,
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-clock {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)),
+    rgba(8, 10, 18, 0.54) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.34),
+    0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-default .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-glow .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-cool .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-sidestyle .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-jp-style .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-sidebar .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-weekday-style .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-fliqlo .clock-date-wrap {
+  padding: calc(var(--clock-size, 6rem) * 0.14) calc(var(--clock-size, 6rem) * 0.2);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+  border-radius: var(--radius-sm);
+}
+
+body.clock-style-bg-accent.date-clock-style-cyber-pulse .cyber-pulse-clock,
+body.clock-style-bg-accent.date-clock-style-neon-grid .neon-grid-clock,
+body.clock-style-bg-accent.date-clock-style-holo-ring .holo-ring-clock,
+body.clock-style-bg-accent.date-clock-style-media-orb .media-orb-clock,
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-clock {
+  padding: calc(var(--clock-size, 6rem) * 0.16) calc(var(--clock-size, 6rem) * 0.22);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.46);
+  border-radius: var(--radius-sm);
+}
+
+body.clock-style-bg-accent.date-clock-style-round .clock-date-wrap::before,
+body.clock-style-bg-accent.date-clock-style-square .clock-date-wrap::before,
+body.clock-style-bg-accent.date-clock-style-prism-stack .prism-stack-clock::before,
+body.clock-style-bg-accent.date-clock-style-neon-grid .neon-grid-clock::before,
+body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-clock::before {
+  opacity: 0.42;
+}
+
+body.clock-style-bg-accent.date-clock-style-analog .analog-clock {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.2), transparent 30%),
+    linear-gradient(145deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.34), rgba(8, 10, 18, 0.78)) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.58) !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.35),
+    0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-top,
+body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-bottom,
+body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-flip-top,
+body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-flip-bottom {
+  background:
+    linear-gradient(180deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.44), rgba(var(--accent-color-rgb, 168, 192, 255), 0.2)),
+    #111827 !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card::after,
+body.clock-style-bg-accent.date-clock-style-round .round-clock-notch,
+body.clock-style-bg-accent.date-clock-style-square .sq-date-val::before {
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.34) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-metro-panel .metro-panel-clock {
+  border-left-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.8) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-time {
+  text-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.32),
+    0 0 22px rgba(var(--accent-color-rgb, 168, 192, 255), 0.36);
+}
+
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-date,
+body.clock-style-bg-accent.date-clock-style-neon-grid .neon-grid-date,
+body.clock-style-bg-accent.date-clock-style-holo-ring .holo-ring-date,
+body.clock-style-bg-accent.date-clock-style-media-orb .media-orb-date,
+body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-top,
+body.clock-style-bg-accent.date-clock-style-lunar-orbit .lunar-orbit-date-line,
+body.clock-style-bg-accent.date-clock-style-minimal #clock {
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.26) !important;
+}
+
+/* Optional custom clock backgrounds */
+body.clock-style-bg-custom.date-clock-style-default .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-glow .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-minimal .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-glass .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-round .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-square .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-analog .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-cool .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-sidestyle .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-jp-style .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-sidebar .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-weekday-style .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-fliqlo .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-prism-stack .prism-stack-clock,
+body.clock-style-bg-custom.date-clock-style-metro-panel .metro-panel-clock,
+body.clock-style-bg-custom.date-clock-style-cyber-pulse .cyber-pulse-clock,
+body.clock-style-bg-custom.date-clock-style-neon-grid .neon-grid-clock,
+body.clock-style-bg-custom.date-clock-style-holo-ring .holo-ring-clock,
+body.clock-style-bg-custom.date-clock-style-media-orb .media-orb-clock,
+body.clock-style-bg-custom.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
+body.clock-style-bg-custom.date-clock-style-lunar-orbit .lunar-orbit-clock,
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-clock {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.18), transparent 28%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 82%, transparent),
+      color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 56%, rgba(0, 0, 0, 0.22))
+    ) !important;
+  border-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 74%, rgba(255, 255, 255, 0.26)) !important;
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.34),
+    0 0 30px color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(145%) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-default .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-glow .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-cool .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-sidestyle .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-jp-style .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-sidebar .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-weekday-style .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-fliqlo .clock-date-wrap {
+  padding: calc(var(--clock-size, 6rem) * 0.14) calc(var(--clock-size, 6rem) * 0.2);
+  border: 1px solid color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 68%, rgba(255, 255, 255, 0.26));
+  border-radius: var(--radius-sm);
+}
+
+body.clock-style-bg-custom.date-clock-style-cyber-pulse .cyber-pulse-clock,
+body.clock-style-bg-custom.date-clock-style-neon-grid .neon-grid-clock,
+body.clock-style-bg-custom.date-clock-style-holo-ring .holo-ring-clock,
+body.clock-style-bg-custom.date-clock-style-media-orb .media-orb-clock,
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-clock {
+  padding: calc(var(--clock-size, 6rem) * 0.16) calc(var(--clock-size, 6rem) * 0.22);
+  border: 1px solid color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 68%, rgba(255, 255, 255, 0.26));
+  border-radius: var(--radius-sm);
+}
+
+body.clock-style-bg-custom.date-clock-style-round .clock-date-wrap::before,
+body.clock-style-bg-custom.date-clock-style-square .clock-date-wrap::before,
+body.clock-style-bg-custom.date-clock-style-prism-stack .prism-stack-clock::before,
+body.clock-style-bg-custom.date-clock-style-neon-grid .neon-grid-clock::before,
+body.clock-style-bg-custom.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-clock::before {
+  opacity: 0.38;
+}
+
+body.clock-style-bg-custom.date-clock-style-analog .analog-clock {
+  background:
+    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.2), transparent 30%),
+    linear-gradient(145deg, color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 72%, transparent), rgba(8, 10, 18, 0.78)) !important;
+  border-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 72%, rgba(255, 255, 255, 0.3)) !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.35),
+    0 0 28px color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 28%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-fliqlo .fliqlo-card-top,
+body.clock-style-bg-custom.date-clock-style-fliqlo .fliqlo-card-bottom,
+body.clock-style-bg-custom.date-clock-style-fliqlo .fliqlo-card-flip-top,
+body.clock-style-bg-custom.date-clock-style-fliqlo .fliqlo-card-flip-bottom {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 76%, rgba(255, 255, 255, 0.12)),
+      color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 64%, rgba(0, 0, 0, 0.24))
+    ) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-fliqlo .fliqlo-card::after,
+body.clock-style-bg-custom.date-clock-style-round .round-clock-notch,
+body.clock-style-bg-custom.date-clock-style-square .sq-date-val::before {
+  border-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 68%, rgba(255, 255, 255, 0.24)) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-metro-panel .metro-panel-clock {
+  border-left-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 82%, rgba(255, 255, 255, 0.22)) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-date,
+body.clock-style-bg-custom.date-clock-style-neon-grid .neon-grid-date,
+body.clock-style-bg-custom.date-clock-style-holo-ring .holo-ring-date,
+body.clock-style-bg-custom.date-clock-style-media-orb .media-orb-date,
+body.clock-style-bg-custom.date-clock-style-aurora-ribbon .aurora-ribbon-top,
+body.clock-style-bg-custom.date-clock-style-lunar-orbit .lunar-orbit-date-line,
+body.clock-style-bg-custom.date-clock-style-minimal #clock {
+  border-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 52%, rgba(255, 255, 255, 0.18)) !important;
+}
+
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-clock,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-hour,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-minute,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-colon,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-second,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-blob,
+body.cartoon-clock-animation-off.date-clock-style-cartoon .cartoon-star {
+  animation: none !important;
 }
 
 /* Optional light/dark clock backgrounds with automatic contrast */
@@ -2990,7 +3548,8 @@ body.clock-style-bg-light.date-clock-style-neon-grid .neon-grid-clock,
 body.clock-style-bg-light.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-bg-light.date-clock-style-media-orb .media-orb-clock,
 body.clock-style-bg-light.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
-body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-clock {
+body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-clock,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-clock {
   background: rgba(255, 255, 255, 0.88) !important;
   border-color: rgba(17, 24, 39, 0.12) !important;
   box-shadow:
@@ -3011,7 +3570,8 @@ body.clock-style-bg-dark.date-clock-style-neon-grid .neon-grid-clock,
 body.clock-style-bg-dark.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-bg-dark.date-clock-style-media-orb .media-orb-clock,
 body.clock-style-bg-dark.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
-body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-clock {
+body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-clock,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-clock {
   background: rgba(0, 0, 0, 0.72) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
   box-shadow:
@@ -3028,7 +3588,9 @@ body.clock-style-bg-dark.date-clock-style-neon-grid .neon-grid-clock,
 body.clock-style-bg-light.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-bg-dark.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-bg-light.date-clock-style-media-orb .media-orb-clock,
-body.clock-style-bg-dark.date-clock-style-media-orb .media-orb-clock {
+body.clock-style-bg-dark.date-clock-style-media-orb .media-orb-clock,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-clock,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-clock {
   padding: calc(var(--clock-size, 6rem) * 0.16) calc(var(--clock-size, 6rem) * 0.22);
   border: 1px solid;
   border-radius: var(--radius-sm);
@@ -3039,11 +3601,13 @@ body.clock-style-bg-light.date-clock-style-square .clock-date-wrap::before,
 body.clock-style-bg-light.date-clock-style-prism-stack .prism-stack-clock::before,
 body.clock-style-bg-light.date-clock-style-neon-grid .neon-grid-clock::before,
 body.clock-style-bg-light.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-clock::before,
 body.clock-style-bg-dark.date-clock-style-round .clock-date-wrap::before,
 body.clock-style-bg-dark.date-clock-style-square .clock-date-wrap::before,
 body.clock-style-bg-dark.date-clock-style-prism-stack .prism-stack-clock::before,
 body.clock-style-bg-dark.date-clock-style-neon-grid .neon-grid-clock::before,
-body.clock-style-bg-dark.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before {
+body.clock-style-bg-dark.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-clock::before {
   display: none !important;
 }
 
@@ -3097,9 +3661,15 @@ body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-weekday,
 body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-day,
 body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-month,
 body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-ampm,
-body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-date-line {
+body.clock-style-bg-light.date-clock-style-lunar-orbit .lunar-orbit-date-line,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-time,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-date {
   color: #111827 !important;
   text-shadow: none !important;
+}
+
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-time {
+  -webkit-text-stroke-color: rgba(17, 24, 39, 0.22);
 }
 
 body.clock-style-bg-dark.date-clock-style-minimal #clock,
@@ -3152,7 +3722,9 @@ body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-weekday,
 body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-day,
 body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-month,
 body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-ampm,
-body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-date-line {
+body.clock-style-bg-dark.date-clock-style-lunar-orbit .lunar-orbit-date-line,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-time,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-date {
   color: #ffffff !important;
 }
 

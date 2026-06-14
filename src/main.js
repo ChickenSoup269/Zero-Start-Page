@@ -345,6 +345,16 @@ async function bootstrap() {
     : currentSettings.clockStyleBackground || "default"
   if (clockStyleBackground === "transparent") {
     document.body.classList.add("clock-style-transparent-bg")
+  } else if (clockStyleBackground === "accent") {
+    document.body.classList.add("clock-style-bg-accent")
+  } else if (clockStyleBackground === "custom") {
+    document.body.classList.add("clock-style-bg-custom")
+    document.documentElement.style.setProperty(
+      "--clock-style-custom-bg-color",
+      /^#[0-9a-f]{6}$/i.test(currentSettings.clockStyleCustomBgColor || "")
+        ? currentSettings.clockStyleCustomBgColor
+        : "#1f2937",
+    )
   } else if (clockStyleBackground === "light") {
     document.body.classList.add("clock-style-bg-light")
   } else if (clockStyleBackground === "dark") {
@@ -354,6 +364,12 @@ async function bootstrap() {
     dateClockStyle === "prism-stack"
   ) {
     document.body.classList.add("clock-style-bg-animated")
+  }
+  if (
+    dateClockStyle === "cartoon" &&
+    currentSettings.cartoonClockAnimation === false
+  ) {
+    document.body.classList.add("cartoon-clock-animation-off")
   }
 
   const fliqloTheme = currentSettings.fliqloTheme || "dark"
