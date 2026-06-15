@@ -7,6 +7,59 @@ import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
 let lunarHideTimer = null
 let c4BombArmed = false
 let c4BombPulseUntil = 0
+let c4BombInput = ""
+let c4BombUnlocked = false
+let c4BombLeverOn = false
+let c4BombDetonateAt = 0
+let c4BombExploded = false
+let c4BombWrongUntil = 0
+let c4BombLastBeepSecond = null
+let c4BombBeepRunId = 0
+
+const C4_BOMB_PASSCODE = "7355608"
+const C4_BOMB_FUSE_MS = 45000
+const C4_BOMB_BEEP_URL =
+  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/beep.mp3"
+const C4_BOMB_WRONG_URL =
+  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3"
+
+function playC4BombSound(url, volume = 0.5) {
+  try {
+    const audio = new Audio(url)
+    audio.volume = volume
+    audio.play().catch(() => {})
+  } catch (error) {
+    // Sound is optional; keep the clock interaction working if playback is blocked.
+  }
+}
+
+function playC4BombBeep() {
+  playC4BombSound(C4_BOMB_BEEP_URL, 0.5)
+}
+
+function playC4BombWrongSound() {
+  playC4BombSound(C4_BOMB_WRONG_URL, 0.65)
+}
+
+function playC4BombCountdownBeep(remainingSeconds) {
+  c4BombBeepRunId += 1
+  const runId = c4BombBeepRunId
+  const offsets =
+    remainingSeconds > 10
+      ? [0]
+      : remainingSeconds > 6
+        ? [0, 500]
+        : remainingSeconds > 3
+          ? [0, 320, 640]
+          : [0, 220, 440, 660]
+
+  offsets.forEach((offset) => {
+    setTimeout(() => {
+      if (runId !== c4BombBeepRunId || !c4BombDetonateAt) return
+      playC4BombBeep()
+    }, offset)
+  })
+}
 
 function setClockLunarVisibility(element, visible) {
   if (!element) return
@@ -1099,6 +1152,19 @@ export function updateTime() {
       </div>
     `
   } else if (dateClockStyle === "c4-bomb") {
+    if (c4BombDetonateAt && Date.now() >= c4BombDetonateAt) {
+      c4BombDetonateAt = 0
+      c4BombArmed = false
+      c4BombLeverOn = false
+      c4BombUnlocked = false
+      c4BombInput = ""
+      c4BombWrongUntil = 0
+      c4BombLastBeepSecond = null
+      c4BombBeepRunId += 1
+      c4BombExploded = true
+      c4BombPulseUntil = Date.now() + 1400
+    }
+
     const weekday = isTimer
       ? timerLabel
       : getSafeWeekday(
@@ -1112,44 +1178,122 @@ export function updateTime() {
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
     const isPulse = Date.now() < c4BombPulseUntil
-    const statusText = c4BombArmed
-      ? getClockLabel("clock_c4_status_armed", "ARMED")
-      : getClockLabel("clock_c4_status_standby", "STANDBY")
-    const buttonText = c4BombArmed
-      ? getClockLabel("clock_c4_button_defuse", "DEFUSE")
-      : getClockLabel("clock_c4_button_arm", "ARM")
+    const isCounting = c4BombDetonateAt > Date.now()
+    const remainingMs = Math.max(0, c4BombDetonateAt - Date.now())
+    const remainingSeconds = Math.ceil(remainingMs / 1000)
+    const isCodeWrong = Date.now() < c4BombWrongUntil
+
+    if (isCounting && remainingSeconds !== c4BombLastBeepSecond) {
+      c4BombLastBeepSecond = remainingSeconds
+      playC4BombCountdownBeep(remainingSeconds)
+    } else if (!isCounting) {
+      c4BombLastBeepSecond = null
+      c4BombBeepRunId += 1
+    }
+
+    const countdownMinute = String(Math.floor(remainingSeconds / 60)).padStart(
+      2,
+      "0",
+    )
+    const countdownSecond = String(remainingSeconds % 60).padStart(2, "0")
+    const inputDisplay = isCodeWrong
+      ? "X X X X"
+      : c4BombInput.padEnd(C4_BOMB_PASSCODE.length, "_")
+    const keypadNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    const statusText = c4BombExploded
+      ? "BOOM"
+      : isCounting
+        ? "LIVE"
+        : c4BombArmed
+          ? getClockLabel("clock_c4_status_armed", "ARMED")
+          : c4BombUnlocked
+            ? "CODE OK"
+            : getClockLabel("clock_c4_status_standby", "STANDBY")
+    const buttonText = c4BombExploded
+      ? "RESET"
+      : isCounting || c4BombArmed
+        ? getClockLabel("clock_c4_button_defuse", "DEFUSE")
+        : getClockLabel("clock_c4_button_arm", "ARM")
+    const buttonDisabled =
+      !c4BombExploded &&
+      (!c4BombUnlocked || (!c4BombLeverOn && !c4BombArmed && !isCounting))
+    const leverDisabled = !c4BombUnlocked || isCounting || c4BombExploded
     clockElement.innerHTML = `
-      <div class="c4-bomb-clock ${c4BombArmed ? "is-armed" : "is-standby"} ${isPulse ? "is-pulsing" : ""}">
-        <div class="c4-bomb-straps" aria-hidden="true">
-          <span></span>
-          <span></span>
+      <div class="c4-bomb-clock ${c4BombArmed || isCounting ? "is-armed" : "is-standby"} ${c4BombUnlocked ? "is-unlocked" : "is-locked"} ${c4BombLeverOn ? "is-lever-on" : ""} ${c4BombExploded ? "is-exploded" : ""} ${isCodeWrong ? "is-code-wrong" : ""} ${isPulse ? "is-pulsing" : ""}">
+        <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
+        <div class="c4-bomb-bricks" aria-hidden="true">
+          <span class="c4-brick c4-brick-one"></span>
+          <span class="c4-brick c4-brick-two"></span>
+          <span class="c4-brick c4-brick-three"></span>
         </div>
-        <div class="c4-bomb-device">
-          <div class="c4-bomb-led-row" aria-hidden="true">
-            <span class="c4-bomb-led"></span>
-            <span class="c4-bomb-led"></span>
-            <span class="c4-bomb-led"></span>
-          </div>
-          <div class="c4-bomb-screen">
-            <div class="c4-bomb-status">${statusText} / ${weekday}</div>
-            <div class="c4-bomb-time">
-              <span class="c4-bomb-hour">${hh}</span>
-              <span class="c4-bomb-separator">:</span>
-              <span class="c4-bomb-minute">${mm}</span>
-              ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
-              ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
-            </div>
-            ${isTimer ? `<div class="c4-bomb-date">${countdownLabel}</div>` : dateStr ? `<div class="c4-bomb-date">${dateStr}</div>` : ""}
-          </div>
-          <button type="button" class="c4-bomb-button" aria-pressed="${c4BombArmed ? "true" : "false"}">
-            <span class="c4-bomb-button-light" aria-hidden="true"></span>
-            <span>${buttonText}</span>
-          </button>
+        <div class="c4-bomb-tape" aria-hidden="true">
+          <span></span>
+          <span></span>
         </div>
         <div class="c4-bomb-wires" aria-hidden="true">
           <span class="c4-wire c4-wire-red"></span>
           <span class="c4-wire c4-wire-yellow"></span>
           <span class="c4-wire c4-wire-blue"></span>
+          <span class="c4-wire c4-wire-green"></span>
+        </div>
+        <div class="c4-bomb-device">
+          <div class="c4-bomb-screen">
+            <div class="c4-bomb-status">${statusText} / ${weekday}</div>
+            <div class="c4-bomb-time">
+              ${
+                c4BombExploded
+                  ? `<span class="c4-bomb-boom">BOOM</span>`
+                  : isCounting
+                    ? `
+                      <span class="c4-bomb-hour">${countdownMinute}</span>
+                      <span class="c4-bomb-separator">:</span>
+                      <span class="c4-bomb-minute">${countdownSecond}</span>
+                    `
+                    : `
+                      <span class="c4-bomb-hour">${hh}</span>
+                      <span class="c4-bomb-separator">:</span>
+                      <span class="c4-bomb-minute">${mm}</span>
+                      ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
+                      ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
+                    `
+              }
+            </div>
+            <div class="c4-bomb-code-line">${c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`}</div>
+            ${
+              isCounting
+                ? `<div class="c4-bomb-date">DETONATION IN ${countdownMinute}:${countdownSecond}</div>`
+                : c4BombExploded
+                  ? `<div class="c4-bomb-date">SYSTEM TRIPPED - PRESS RESET</div>`
+                  : isTimer
+                    ? `<div class="c4-bomb-date">${countdownLabel}</div>`
+                    : dateStr
+                      ? `<div class="c4-bomb-date">${dateStr}</div>`
+                      : ""
+            }
+          </div>
+          <div class="c4-bomb-controls">
+            <div class="c4-bomb-led-row" aria-hidden="true">
+              <span class="c4-bomb-led"></span>
+              <span class="c4-bomb-led"></span>
+              <span class="c4-bomb-led"></span>
+            </div>
+            <button type="button" class="c4-bomb-lever" aria-pressed="${c4BombLeverOn ? "true" : "false"}" ${leverDisabled ? "disabled" : ""}>
+              <span class="c4-bomb-lever-slot" aria-hidden="true"><span></span></span>
+              <span>${c4BombLeverOn ? "OPEN" : "LOCK"}</span>
+            </button>
+            <button type="button" class="c4-bomb-button" aria-pressed="${c4BombArmed || isCounting ? "true" : "false"}" ${buttonDisabled ? "disabled" : ""}>
+              <span class="c4-bomb-button-light" aria-hidden="true"></span>
+              <span>${buttonText}</span>
+            </button>
+            <div class="c4-bomb-keypad" aria-label="C4 passcode keypad">
+              ${keypadNumbers
+                .map(
+                  (number) =>
+                    `<button type="button" class="c4-bomb-key" data-c4-key="${number}" ${c4BombUnlocked || isCounting || c4BombExploded ? "disabled" : ""}>${number}</button>`,
+                )
+                .join("")}
+            </div>
+          </div>
         </div>
       </div>
     `
@@ -1604,10 +1748,67 @@ export function initClock() {
   setInterval(updateTime, 1000)
 
   clockElement?.addEventListener("click", (event) => {
+    const key = event.target?.closest?.(".c4-bomb-key")
+    if (key) {
+      if (c4BombUnlocked || c4BombExploded || c4BombDetonateAt) return
+
+      playC4BombBeep()
+      const digit = key.dataset.c4Key || ""
+      c4BombInput = `${c4BombInput}${digit}`.slice(0, C4_BOMB_PASSCODE.length)
+      c4BombWrongUntil = 0
+
+      if (c4BombInput === C4_BOMB_PASSCODE) {
+        c4BombUnlocked = true
+        c4BombPulseUntil = Date.now() + 900
+      } else if (c4BombInput.length >= C4_BOMB_PASSCODE.length) {
+        c4BombInput = ""
+        c4BombWrongUntil = Date.now() + 1100
+        c4BombPulseUntil = Date.now() + 500
+        playC4BombWrongSound()
+      }
+
+      updateTime()
+      return
+    }
+
+    const lever = event.target?.closest?.(".c4-bomb-lever")
+    if (lever) {
+      if (!c4BombUnlocked || c4BombExploded || c4BombDetonateAt) return
+
+      c4BombLeverOn = !c4BombLeverOn
+      c4BombPulseUntil = Date.now() + 700
+      updateTime()
+      return
+    }
+
     const button = event.target?.closest?.(".c4-bomb-button")
     if (!button) return
 
-    c4BombArmed = !c4BombArmed
+    if (c4BombExploded) {
+      c4BombExploded = false
+      c4BombWrongUntil = 0
+      c4BombLastBeepSecond = null
+      c4BombBeepRunId += 1
+      c4BombPulseUntil = Date.now() + 700
+      updateTime()
+      return
+    }
+
+    if (!c4BombUnlocked) return
+
+    if (c4BombArmed || c4BombDetonateAt) {
+      c4BombArmed = false
+      c4BombLeverOn = false
+      c4BombDetonateAt = 0
+      c4BombLastBeepSecond = null
+      c4BombBeepRunId += 1
+    } else if (c4BombLeverOn) {
+      c4BombArmed = true
+      c4BombDetonateAt = Date.now() + C4_BOMB_FUSE_MS
+      c4BombLastBeepSecond = null
+      c4BombBeepRunId += 1
+    }
+
     c4BombPulseUntil = Date.now() + 900
     updateTime()
   })

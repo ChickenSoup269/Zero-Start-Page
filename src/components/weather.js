@@ -10,8 +10,14 @@ const DEFAULT_LOCATION = {
 }
 
 const WEATHER_CACHE_KEY = "weatherWidgetCache"
-const WEATHER_CACHE_TTL = 10 * 60 * 1000
+const WEATHER_CACHE_TTL = 30 * 60 * 1000
 const WEATHER_REQUEST_TIMEOUT = 12000
+const WEATHER_REFRESH_LIMIT_KEY = "weatherExtensionRefreshLimit"
+const WEATHER_REFRESH_LIMIT_MAX = 3
+const WEATHER_REFRESH_LIMIT_WINDOW = 60 * 60 * 1000
+const DEFAULT_FORECAST_ENDPOINT = "https://api.open-meteo.com/v1/forecast"
+const DEFAULT_GEOCODING_ENDPOINT =
+  "https://geocoding-api.open-meteo.com/v1/search"
 
 const WEATHER_CODES = {
   0: ["sun", "Clear sky", "Trời quang"],
@@ -163,6 +169,13 @@ export class Weather {
       if (event.detail?.key === "weatherExpanded") {
         this.applySkin()
       }
+      if (
+        event.detail?.key === "weatherApiMode" ||
+        event.detail?.key === "weatherForecastEndpoint" ||
+        event.detail?.key === "weatherGeocodingEndpoint"
+      ) {
+        this.loadWeather({ force: true, skipRefreshLimit: true })
+      }
     })
 
     window.addEventListener("languageChanged", () => {
@@ -213,9 +226,85 @@ export class Weather {
     return [location.name, location.country].filter(Boolean).join(", ")
   }
 
-  async loadWeather({ force = false } = {}) {
+  isCustomWeatherApi() {
+    const settings = getSettings()
+    return (
+      settings.weatherApiMode === "custom" &&
+      this.isValidHttpUrl(settings.weatherForecastEndpoint)
+    )
+  }
+
+  getForecastEndpoint() {
+    const settings = getSettings()
+    return this.isCustomWeatherApi()
+      ? settings.weatherForecastEndpoint.trim()
+      : DEFAULT_FORECAST_ENDPOINT
+  }
+
+  getGeocodingEndpoint() {
+    const settings = getSettings()
+    return settings.weatherApiMode === "custom" &&
+      this.isValidHttpUrl(settings.weatherGeocodingEndpoint)
+      ? settings.weatherGeocodingEndpoint.trim()
+      : DEFAULT_GEOCODING_ENDPOINT
+  }
+
+  withQueryParams(endpoint, params) {
+    const url = new URL(endpoint)
+    params.forEach((value, key) => {
+      url.searchParams.set(key, value)
+    })
+    return url.toString()
+  }
+
+  isValidHttpUrl(value) {
+    try {
+      const url = new URL(String(value || "").trim())
+      return url.protocol === "https:" || url.protocol === "http:"
+    } catch {
+      return false
+    }
+  }
+
+  canUseManualRefresh() {
+    if (this.isCustomWeatherApi()) return true
+
+    const now = Date.now()
+    let timestamps = []
+    try {
+      timestamps = JSON.parse(localStorage.getItem(WEATHER_REFRESH_LIMIT_KEY) || "[]")
+    } catch {
+      timestamps = []
+    }
+
+    timestamps = timestamps.filter(
+      (timestamp) => now - Number(timestamp) < WEATHER_REFRESH_LIMIT_WINDOW,
+    )
+
+    if (timestamps.length >= WEATHER_REFRESH_LIMIT_MAX) {
+      const oldest = Math.min(...timestamps)
+      const waitMinutes = Math.max(
+        1,
+        Math.ceil((WEATHER_REFRESH_LIMIT_WINDOW - (now - oldest)) / 60000),
+      )
+      const message =
+        geti18n().weather_refresh_limited ||
+        "Weather refresh limit reached. Try again in {minutes} min."
+      this.renderMessage(message.replace("{minutes}", String(waitMinutes)))
+      localStorage.setItem(WEATHER_REFRESH_LIMIT_KEY, JSON.stringify(timestamps))
+      return false
+    }
+
+    timestamps.push(now)
+    localStorage.setItem(WEATHER_REFRESH_LIMIT_KEY, JSON.stringify(timestamps))
+    return true
+  }
+
+  async loadWeather({ force = false, skipRefreshLimit = false } = {}) {
     const body = this.container.querySelector("#weather-body")
     if (!body) return
+
+    if (force && !skipRefreshLimit && !this.canUseManualRefresh()) return
 
     const location = this.locationFromSettings()
     this.setLocationLabel(location)
@@ -240,7 +329,7 @@ export class Weather {
         forecast_days: "4",
       })
       const data = await this.fetchJson(
-        `https://api.open-meteo.com/v1/forecast?${params}`,
+        this.withQueryParams(this.getForecastEndpoint(), params),
         { signal: this.abortController.signal },
       )
       const payload = { location, data, fetchedAt: Date.now() }
@@ -273,7 +362,9 @@ export class Weather {
         language: getSettings().language === "vi" ? "vi" : "en",
         format: "json",
       })
-      const data = await this.fetchJson(`https://geocoding-api.open-meteo.com/v1/search?${params}`)
+      const data = await this.fetchJson(
+        this.withQueryParams(this.getGeocodingEndpoint(), params),
+      )
       const first = data.results?.[0]
       if (!first) {
         this.renderMessage(geti18n().weather_location_not_found || "Location not found.")
@@ -286,7 +377,7 @@ export class Weather {
         country: first.country || "",
       })
       this.container.querySelector("#weather-location-input").value = ""
-      this.loadWeather({ force: true })
+      this.loadWeather({ force: true, skipRefreshLimit: true })
     } catch (error) {
       console.warn("Weather location search failed:", error)
       this.renderMessage(this.getFetchErrorMessage(error, "weather_location_error"))
@@ -321,7 +412,7 @@ export class Weather {
         format: "json",
       })
       const data = await this.fetchJson(
-        `https://geocoding-api.open-meteo.com/v1/search?${params}`,
+        this.withQueryParams(this.getGeocodingEndpoint(), params),
         { signal: this.suggestionAbortController.signal },
       )
       this.renderSuggestions(data.results || [])
@@ -438,7 +529,7 @@ export class Weather {
     this.saveLocation(location)
     if (input) input.value = ""
     this.clearSuggestions()
-    this.loadWeather({ force: true })
+    this.loadWeather({ force: true, skipRefreshLimit: true })
   }
 
   setSuggestionsExpanded(isExpanded) {
@@ -462,7 +553,7 @@ export class Weather {
           longitude: Number(position.coords.longitude.toFixed(4)),
           country: "",
         })
-        this.loadWeather({ force: true })
+        this.loadWeather({ force: true, skipRefreshLimit: true })
       },
       () => {
         this.renderMessage(geti18n().weather_location_denied || "Location permission was denied.")

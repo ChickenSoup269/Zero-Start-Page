@@ -2017,7 +2017,6 @@ function createApplySettings(effectInstances) {
       "metro-panel",
       "aurora-ribbon",
       "lunar-orbit",
-      "cartoon",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -2026,15 +2025,18 @@ function createApplySettings(effectInstances) {
     const effectiveClockStyleBackground = supportsClockStyleBackground
       ? requestedClockStyleBackground
       : "default"
+    const isClockStyleTransparentBackground =
+      supportsClockStyleBackground &&
+      (effectiveClockStyleBackground === "transparent" ||
+        settings.clockStyleTransparentBackground === true)
     document.body.classList.toggle(
       "clock-style-transparent-bg",
-      supportsClockStyleBackground &&
-        (effectiveClockStyleBackground === "transparent" ||
-          settings.clockStyleTransparentBackground === true),
+      isClockStyleTransparentBackground,
     )
     document.body.classList.toggle(
       "clock-style-bg-accent",
-      effectiveClockStyleBackground === "accent",
+      !isClockStyleTransparentBackground &&
+        effectiveClockStyleBackground === "accent",
     )
     const customClockBgColor = /^#[0-9a-f]{6}$/i.test(
       settings.clockStyleCustomBgColor || "",
@@ -2047,18 +2049,21 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "clock-style-bg-custom",
-      effectiveClockStyleBackground === "custom",
+      !isClockStyleTransparentBackground &&
+        effectiveClockStyleBackground === "custom",
     )
     document.body.classList.toggle(
       "clock-style-bg-light",
-      effectiveClockStyleBackground === "light",
+      !isClockStyleTransparentBackground &&
+        effectiveClockStyleBackground === "light",
     )
     document.body.classList.toggle(
       "clock-style-bg-dark",
-      effectiveClockStyleBackground === "dark",
+      !isClockStyleTransparentBackground && effectiveClockStyleBackground === "dark",
     )
     document.body.classList.toggle(
       "clock-style-bg-animated",
+      !isClockStyleTransparentBackground &&
       dateClockStyle === "prism-stack" &&
         effectiveClockStyleBackground === "animated",
     )
@@ -2899,7 +2904,6 @@ function createUpdateSettingsInputs(effectInstances) {
       "metro-panel",
       "aurora-ribbon",
       "lunar-orbit",
-      "cartoon",
     ]
 
     // Show style-specific container if current style has special settings
@@ -4319,6 +4323,30 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.showTimerCheckbox.checked = settings.showTimer === true
     if (DOM.showWeatherCheckbox) {
       DOM.showWeatherCheckbox.checked = settings.showWeather === true
+    }
+    const weatherApiModeSelect = document.getElementById("weather-api-mode-select")
+    const weatherCustomApiSettings = document.getElementById(
+      "weather-custom-api-settings",
+    )
+    const weatherForecastEndpointInput = document.getElementById(
+      "weather-forecast-endpoint-input",
+    )
+    const weatherGeocodingEndpointInput = document.getElementById(
+      "weather-geocoding-endpoint-input",
+    )
+    if (weatherApiModeSelect) {
+      weatherApiModeSelect.value = settings.weatherApiMode || "extension"
+    }
+    if (weatherCustomApiSettings) {
+      weatherCustomApiSettings.style.display =
+        settings.weatherApiMode === "custom" ? "block" : "none"
+    }
+    if (weatherForecastEndpointInput) {
+      weatherForecastEndpointInput.value = settings.weatherForecastEndpoint || ""
+    }
+    if (weatherGeocodingEndpointInput) {
+      weatherGeocodingEndpointInput.value =
+        settings.weatherGeocodingEndpoint || ""
     }
     if (DOM.hideTimerAlarmDropdownCheckbox) {
       DOM.hideTimerAlarmDropdownCheckbox.checked =

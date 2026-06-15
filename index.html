@@ -1582,6 +1582,8 @@
                                 <option value="brave">Brave</option>
                                 <option value="startpage">Startpage</option>
                                 <option value="perplexity">Perplexity</option>
+                                <option value="gemini">Gemini</option>
+                                <option value="gemini-image">Gemini Image</option>
                                 <option value="youtube">YouTube</option>
                                 <option value="github">GitHub</option>
                                 <option value="google-image">Google Images</option>
@@ -1643,6 +1645,29 @@
                         <div class="setting-item-row">
                             <label for="show-weather-checkbox" data-i18n="settings_show_weather">Show Weather</label>
                             <input type="checkbox" id="show-weather-checkbox">
+                        </div>
+                        <div class="setting-item">
+                            <label for="weather-api-mode-select" data-i18n="settings_weather_api_mode">Weather API
+                                Source</label>
+                            <select id="weather-api-mode-select">
+                                <option value="extension" data-i18n="settings_weather_api_extension">Extension default
+                                </option>
+                                <option value="custom" data-i18n="settings_weather_api_custom">Custom endpoint</option>
+                            </select>
+                            <small class="setting-hint" data-i18n="settings_weather_api_hint">Default source limits
+                                manual refresh to 3 times per hour. Custom endpoints are not limited.</small>
+                        </div>
+                        <div class="setting-item" id="weather-custom-api-settings" style="display: none;">
+                            <label for="weather-forecast-endpoint-input"
+                                data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
+                            <input type="url" id="weather-forecast-endpoint-input"
+                                placeholder="https://api.open-meteo.com/v1/forecast"
+                                style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); margin-bottom: 0.5rem;">
+                            <label for="weather-geocoding-endpoint-input"
+                                data-i18n="settings_weather_geocoding_endpoint">Geocoding endpoint</label>
+                            <input type="url" id="weather-geocoding-endpoint-input"
+                                placeholder="https://geocoding-api.open-meteo.com/v1/search"
+                                style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);">
                         </div>
                         <div class="setting-item-row">
                             <label for="hide-timer-alarm-dropdown-checkbox"

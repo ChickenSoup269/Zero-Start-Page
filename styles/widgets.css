@@ -6026,7 +6026,8 @@ body.widgets-m3-accent .quotes-container,
   top: 100%;
   left: 0;
   width: max-content;
-  max-width: 192px;
+  max-width: min(236px, calc(100vw - 24px));
+  max-height: min(312px, calc(100vh - 180px));
   background: rgba(30, 30, 30, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -6034,16 +6035,30 @@ body.widgets-m3-accent .quotes-container,
   border-radius: var(--radius-md);
   padding: 6px;
   display: none;
-  grid-template-columns: repeat(4, 40px);
+  grid-template-columns: repeat(5, 40px);
   gap: 4px;
   z-index: 10031;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   margin-top: var(--space-1);
   animation: fadeInMenu 0.2s ease-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .engine-dropdown.show {
   display: grid;
+}
+
+.engine-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.engine-dropdown::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .engine-option {
@@ -6093,6 +6108,21 @@ body.widgets-m3-accent .quotes-container,
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .engine-dropdown {
+    left: auto;
+    right: 0;
+    grid-template-columns: repeat(4, 38px);
+    max-width: min(184px, calc(100vw - 18px));
+    max-height: min(264px, calc(100vh - 150px));
+  }
+
+  .engine-option {
+    width: 38px;
+    height: 38px;
+  }
 }
 
 /* --- Bookmark Groups --- */

@@ -4927,6 +4927,37 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showWeatherCheckbox, "showWeather", {})
+
+  const weatherApiModeSelect = document.getElementById("weather-api-mode-select")
+  const weatherForecastEndpointInput = document.getElementById(
+    "weather-forecast-endpoint-input",
+  )
+  const weatherGeocodingEndpointInput = document.getElementById(
+    "weather-geocoding-endpoint-input",
+  )
+  const dispatchWeatherApiUpdate = (key, value) => {
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key, value },
+      }),
+    )
+  }
+
+  weatherApiModeSelect?.addEventListener("change", () => {
+    handleSettingUpdate("weatherApiMode", weatherApiModeSelect.value)
+    dispatchWeatherApiUpdate("weatherApiMode", weatherApiModeSelect.value)
+  })
+  weatherForecastEndpointInput?.addEventListener("change", () => {
+    const value = weatherForecastEndpointInput.value.trim()
+    handleSettingUpdate("weatherForecastEndpoint", value)
+    dispatchWeatherApiUpdate("weatherForecastEndpoint", value)
+  })
+  weatherGeocodingEndpointInput?.addEventListener("change", () => {
+    const value = weatherGeocodingEndpointInput.value.trim()
+    handleSettingUpdate("weatherGeocodingEndpoint", value)
+    dispatchWeatherApiUpdate("weatherGeocodingEndpoint", value)
+  })
+
   setupLayoutCheckbox(
     DOM.hideTimerAlarmDropdownCheckbox,
     "hideTimerAlarmDropdown",

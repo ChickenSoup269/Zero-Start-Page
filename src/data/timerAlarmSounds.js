@@ -51,6 +51,11 @@ export const TIMER_ALARM_SOUNDS = {
     label: "Morning Flower",
     i18nKey: "timer_alarm_morning_flower",
   },
+  zalo: {
+    file: "zalo.mp3",
+    label: "Zalo ringtone",
+    i18nKey: "timer_alarm_zalo",
+  },
   iphone_alarm: {
     file: "iphone_alarm.mp3",
     label: "iPhone Alarm",

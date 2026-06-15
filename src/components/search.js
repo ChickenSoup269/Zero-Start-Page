@@ -53,6 +53,21 @@ const SEARCH_ENGINES = {
     url: (q) => `https://www.perplexity.ai/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_perplexity",
   },
+  gemini: {
+    name: "Google Gemini",
+    shortName: "Gemini",
+    domain: "gemini.google.com",
+    url: (q) => `https://gemini.google.com/app?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_gemini",
+  },
+  "gemini-image": {
+    name: "Gemini Image",
+    shortName: "Gemini Img",
+    domain: "gemini.google.com",
+    geminiPrompt: (q) => `Create an image: ${q}`,
+    url: () => "https://gemini.google.com/app",
+    placeholderKey: "search_placeholder_gemini_image",
+  },
   youtube: {
     name: "YouTube",
     domain: "youtube.com",
@@ -463,6 +478,24 @@ function handleSuggestionClick(e) {
   }
 }
 
+async function openGeminiWithPrompt(engine, query) {
+  const geminiPrompt = engine.geminiPrompt ? engine.geminiPrompt(query) : query
+  const i18n = geti18n()
+
+  try {
+    await navigator.clipboard.writeText(geminiPrompt)
+    showAlert(
+      i18n.alert_gemini_prompt_copied ||
+        "Prompt copied. Paste it into Gemini after it opens.",
+    )
+  } catch (error) {
+    window.location.href = `https://gemini.google.com/app#prompt=${encodeURIComponent(geminiPrompt)}`
+    return
+  }
+
+  window.location.href = `https://gemini.google.com/app?q=${encodeURIComponent(geminiPrompt)}`
+}
+
 function submitSearch() {
   const query = searchInput.value.trim()
 
@@ -494,6 +527,11 @@ function submitSearch() {
   if (!query) return
 
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
+  if (currentEngine === "gemini" || currentEngine === "gemini-image") {
+    openGeminiWithPrompt(engine, query)
+    return
+  }
+
   window.location.href = engine.url(query)
 }
 
