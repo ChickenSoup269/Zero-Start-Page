@@ -1847,9 +1847,36 @@ export function setupGeneralEventHandlers(
     const mode = getSettings().accentColorMode || "m3"
     if (mode === "default") {
       previewDefaultAccent(color)
-      return
+    } else {
+      previewMaterialAccent(color)
     }
-    previewMaterialAccent(color)
+
+    const settings = getSettings()
+    const style = settings.dateClockStyle || "default"
+    if (settings.clockStyleUseM3Accent?.[style] === true) {
+      const effectiveColor =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-color")
+          .trim() || color
+      const effectiveRgb =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-color-rgb")
+          .trim() || "255, 255, 255"
+      document.documentElement.style.setProperty(
+        "--clock-style-accent-color",
+        effectiveColor,
+      )
+      document.documentElement.style.setProperty(
+        "--clock-style-accent-rgb",
+        effectiveRgb,
+      )
+      document
+        .querySelector(".clock-date-wrap")
+        ?.style.setProperty("--accent-color", effectiveColor)
+      document
+        .querySelector(".clock-date-wrap")
+        ?.style.setProperty("--accent-color-rgb", effectiveRgb)
+    }
   }
 
   const syncAccentModeControls = () => {
@@ -4243,6 +4270,139 @@ export function setupGeneralEventHandlers(
       ? DOM.clockStyleCustomBgColor.value
       : "#1f2937"
     handleSettingUpdate("clockStyleCustomBgColor", color)
+  })
+
+  DOM.clockStyleUseM3AccentCheckbox?.addEventListener("change", () => {
+    const settings = getSettings()
+    const style = settings.dateClockStyle || "default"
+    const nextValue = DOM.clockStyleUseM3AccentCheckbox.checked
+    handleSettingUpdate("clockStyleUseM3Accent", {
+      ...(settings.clockStyleUseM3Accent || {}),
+      [style]: nextValue,
+    })
+    if (DOM.clockStyleAccentColorSetting) {
+      DOM.clockStyleAccentColorSetting.style.display = nextValue ? "none" : "flex"
+    }
+
+    const color = nextValue
+      ? getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-color")
+          .trim() ||
+        settings.accentColor ||
+        "#00ff73"
+      : DOM.clockStyleAccentColor?.value || "#ffffff"
+    const rgb = nextValue
+      ? getComputedStyle(document.documentElement)
+          .getPropertyValue("--accent-color-rgb")
+          .trim()
+      : ""
+    const customRgb = hexToRgb(color)
+    const colorRgb =
+      rgb ||
+      (customRgb ? `${customRgb.r}, ${customRgb.g}, ${customRgb.b}` : "255, 255, 255")
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-color",
+      color,
+    )
+    document.documentElement.style.setProperty("--clock-style-accent-rgb", colorRgb)
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty("--accent-color", color)
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty("--accent-color-rgb", colorRgb)
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockStyleUseM3Accent",
+          value: style,
+        },
+      }),
+    )
+  })
+
+  DOM.clockStyleAccentColor?.addEventListener("input", () => {
+    const settings = getSettings()
+    const style = settings.dateClockStyle || "default"
+    const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleAccentColor.value)
+      ? DOM.clockStyleAccentColor.value
+      : "#ffffff"
+    const rgb = hexToRgb(color)
+    handleSettingUpdate("clockStyleAccentColors", {
+      ...(settings.clockStyleAccentColors || {}),
+      [style]: color,
+    })
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-color",
+      color,
+    )
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-rgb",
+      rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "255, 255, 255",
+    )
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty("--accent-color", color)
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty(
+        "--accent-color-rgb",
+        rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "255, 255, 255",
+      )
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockStyleAccentColors",
+          value: style,
+        },
+      }),
+    )
+  })
+
+  DOM.clockStyleAccentColor?.addEventListener("change", () => {
+    const settings = getSettings()
+    const style = settings.dateClockStyle || "default"
+    const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleAccentColor.value)
+      ? DOM.clockStyleAccentColor.value
+      : "#ffffff"
+    handleSettingUpdate("clockStyleAccentColors", {
+      ...(settings.clockStyleAccentColors || {}),
+      [style]: color,
+    })
+  })
+
+  DOM.clockStyleAccentResetBtn?.addEventListener("click", () => {
+    const settings = getSettings()
+    const style = settings.dateClockStyle || "default"
+    const nextColors = { ...(settings.clockStyleAccentColors || {}) }
+    delete nextColors[style]
+    handleSettingUpdate("clockStyleAccentColors", nextColors)
+    if (DOM.clockStyleAccentColor) DOM.clockStyleAccentColor.value = "#ffffff"
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-color",
+      "#ffffff",
+    )
+    document.documentElement.style.setProperty(
+      "--clock-style-accent-rgb",
+      "255, 255, 255",
+    )
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty("--accent-color", "#ffffff")
+    document
+      .querySelector(".clock-date-wrap")
+      ?.style.setProperty("--accent-color-rgb", "255, 255, 255")
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "clockStyleAccentColors",
+          value: style,
+        },
+      }),
+    )
   })
 
   DOM.cartoonClockAnimationCheckbox?.addEventListener("change", () => {

@@ -1,5 +1,5 @@
 import { initI18n, geti18n } from "./services/i18n.js"
-import { fadeToggle } from "./utils/dom.js"
+import { fadeToggle, refreshDOMReferences } from "./utils/dom.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
 import { initClock } from "./components/clock.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
@@ -150,7 +150,13 @@ function needsSettingsAtBoot(settings) {
 function ensureSettingsInitialized(reason = "idle") {
   if (settingsInitialized) return Promise.resolve()
   if (!settingsInitPromise) {
-    settingsInitPromise = import("./components/settings.js")
+    settingsInitPromise = Promise.resolve(
+      window.startpageSettingsPartialsReady,
+    )
+      .then(() => {
+        refreshDOMReferences()
+        return import("./components/settings.js")
+      })
       .then(({ initSettings }) => {
         initSettings()
         settingsInitialized = true

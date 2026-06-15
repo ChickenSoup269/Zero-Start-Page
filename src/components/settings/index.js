@@ -12,6 +12,7 @@ import {
   getImageUrl,
 } from "../../services/imageStore.js"
 import * as DOM_EXPORTS from "../../utils/dom.js"
+import { refreshDOMReferences } from "../../utils/dom.js"
 import {
   getSettings,
   updateSetting,
@@ -238,6 +239,7 @@ function createLazyEffects(settings) {
 }
 
 export function initSettings() {
+  refreshDOMReferences()
   const settings = getSettings()
   if (settings.effect === "stormRain") {
     updateSetting("effect", "musicBars")

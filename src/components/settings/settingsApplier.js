@@ -52,6 +52,83 @@ let _lastMediaTrim = 0
 
 const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
 
+const CLOCK_STYLE_ACCENT_DEFAULTS = {
+  glow: "#ffffff",
+  minimal: "#ffffff",
+  round: "#ffffff",
+  square: "#ffffff",
+  analog: "#ffffff",
+  cool: "#ffffff",
+  sidestyle: "#ffffff",
+  "jp-style": "#ffffff",
+  sidebar: "#ffffff",
+  "weekday-style": "#ffffff",
+  "cyber-pulse": "#ffffff",
+  "neon-grid": "#ffffff",
+  "holo-ring": "#ffffff",
+  "media-orb": "#ffffff",
+  "prism-stack": "#ffffff",
+  "metro-panel": "#ffffff",
+  "aurora-ribbon": "#ffffff",
+  "lunar-orbit": "#ffffff",
+  cartoon: "#ffffff",
+}
+
+const CLOCK_STYLE_ACCENT_STYLES = Object.keys(CLOCK_STYLE_ACCENT_DEFAULTS)
+
+function getClockStyleUsesM3Accent(settings, style) {
+  return settings.clockStyleUseM3Accent?.[style] === true
+}
+
+function getCurrentAppAccentColor(settings) {
+  const cssAccent = getComputedStyle(document.documentElement)
+    .getPropertyValue("--accent-color")
+    .trim()
+  if (cssAccent) return cssAccent
+  return /^#[0-9a-f]{6}$/i.test(settings.accentColor || "")
+    ? settings.accentColor
+    : "#00ff73"
+}
+
+function getClockStyleAccentColor(settings, style) {
+  if (getClockStyleUsesM3Accent(settings, style)) {
+    return getCurrentAppAccentColor(settings)
+  }
+
+  const customColor = settings.clockStyleAccentColors?.[style]
+  if (/^#[0-9a-f]{6}$/i.test(customColor || "")) return customColor
+  return CLOCK_STYLE_ACCENT_DEFAULTS[style] || "#ffffff"
+}
+
+function getClockStyleCustomAccentColor(settings, style) {
+  const customColor = settings.clockStyleAccentColors?.[style]
+  if (/^#[0-9a-f]{6}$/i.test(customColor || "")) return customColor
+  return CLOCK_STYLE_ACCENT_DEFAULTS[style] || "#ffffff"
+}
+
+function setClockStyleAccentVars(settings, style) {
+  const root = document.documentElement
+  const clockWrap = document.querySelector(".clock-date-wrap")
+  if (!CLOCK_STYLE_ACCENT_DEFAULTS[style]) {
+    root.style.removeProperty("--clock-style-accent-color")
+    root.style.removeProperty("--clock-style-accent-rgb")
+    return
+  }
+
+  const color = getClockStyleAccentColor(settings, style)
+  const rgb = hexToRgb(color)
+  root.style.setProperty("--clock-style-accent-color", color)
+  root.style.setProperty(
+    "--clock-style-accent-rgb",
+    rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "255, 255, 255",
+  )
+  clockWrap?.style.setProperty("--accent-color", color)
+  clockWrap?.style.setProperty(
+    "--accent-color-rgb",
+    rgb ? `${rgb.r}, ${rgb.g}, ${rgb.b}` : "255, 255, 255",
+  )
+}
+
 function getBackgroundLayoutValues(settings) {
   const fit = settings.bgSize || "cover"
   const scale = Math.min(
@@ -2162,6 +2239,8 @@ function createApplySettings(effectInstances) {
       }
     }
 
+    setClockStyleAccentVars(settings, dateClockStyle)
+
     const strokeWidth = settings.clockDateStrokeWidth || 0
     const strokeColor = settings.clockDateStrokeColor || "#000000"
     const strokeTarget = settings.clockDateStrokeTarget || "both"
@@ -2749,6 +2828,20 @@ function createUpdateSettingsInputs(effectInstances) {
         ? settings.clockStyleCustomBgColor
         : "#1f2937"
     }
+    if (DOM.clockStyleAccentColor) {
+      const currentStyleForAccent = settings.dateClockStyle || "default"
+      DOM.clockStyleAccentColor.value = getClockStyleCustomAccentColor(
+        settings,
+        currentStyleForAccent,
+      )
+    }
+    if (DOM.clockStyleUseM3AccentCheckbox) {
+      const currentStyleForAccent = settings.dateClockStyle || "default"
+      DOM.clockStyleUseM3AccentCheckbox.checked = getClockStyleUsesM3Accent(
+        settings,
+        currentStyleForAccent,
+      )
+    }
     if (DOM.cartoonClockAnimationCheckbox) {
       DOM.cartoonClockAnimationCheckbox.checked =
         settings.cartoonClockAnimation !== false
@@ -2839,6 +2932,20 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.clockStyleBgSelect?.value === "custom"
           ? "flex"
           : "none"
+    }
+
+    const hasStyleAccentOption = CLOCK_STYLE_ACCENT_STYLES.includes(style)
+    const usesM3Accent = getClockStyleUsesM3Accent(settings, style)
+
+    if (DOM.clockStyleUseM3AccentSetting) {
+      DOM.clockStyleUseM3AccentSetting.style.display = hasStyleAccentOption
+        ? "flex"
+        : "none"
+    }
+
+    if (DOM.clockStyleAccentColorSetting) {
+      DOM.clockStyleAccentColorSetting.style.display =
+        hasStyleAccentOption && !usesM3Accent ? "flex" : "none"
     }
 
     if (DOM.cartoonClockAnimationSetting) {

@@ -40,6 +40,8 @@ export const defaultSettings = {
   fliqloZenMode: false,
   fliqloTransparent: false,
   clockStyleBackground: "default",
+  clockStyleAccentColors: {},
+  clockStyleUseM3Accent: {},
   clockStyleCustomBgColor: "#1f2937",
   clockStyleTransparentBackground: false,
   cartoonClockAnimation: true,

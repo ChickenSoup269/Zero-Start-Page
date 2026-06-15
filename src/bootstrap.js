@@ -14,5 +14,36 @@ async function hydrateSettingsPartials() {
   }))
 }
 
-await hydrateSettingsPartials()
-await import("./main.js?v=perf-lazy-v11")
+function afterFirstPaint(callback) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(callback)
+  })
+}
+
+function runWhenIdle(callback) {
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(callback, { timeout: 1200 })
+  } else {
+    setTimeout(callback, 150)
+  }
+}
+
+let resolveSettingsPartialsReady
+window.startpageSettingsPartialsReady = new Promise((resolve) => {
+  resolveSettingsPartialsReady = resolve
+})
+
+const hydrateSettingsPartialsWhenVisible = () => {
+  const hydrate = () => {
+    hydrateSettingsPartials().finally(() => {
+      resolveSettingsPartialsReady()
+      window.dispatchEvent(new CustomEvent("startpage:settingsPartialsReady"))
+    })
+  }
+
+  afterFirstPaint(() => runWhenIdle(hydrate))
+}
+
+const mainModulePromise = import("./main.js?v=perf-lazy-v12")
+hydrateSettingsPartialsWhenVisible()
+await mainModulePromise

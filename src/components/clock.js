@@ -1148,7 +1148,7 @@ export function updateTime() {
           settings.shortWeekday,
           tz,
           settings,
-        ).toUpperCase()
+        )
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
@@ -1196,7 +1196,7 @@ export function updateTime() {
   } else if (dateClockStyle === "lunar-orbit") {
     const weekday = isTimer
       ? timerLabel
-      : getSafeWeekday(now, langCode, true, tz, settings).toUpperCase()
+      : getSafeWeekday(now, langCode, true, tz, settings)
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
@@ -1206,8 +1206,8 @@ export function updateTime() {
       ? timerH > 0
         ? "HR"
         : "MIN"
-      : lunarParts.month.toUpperCase()
-    const orbLabel = isTimer ? weekday : lunarParts.label.toUpperCase()
+      : lunarParts.month
+    const orbLabel = isTimer ? weekday : lunarParts.label
     const dateLine = isTimer
       ? countdownLabel
       : dateStr

@@ -272,7 +272,7 @@ function addOpenWidgetSettingsItem(id, i18n, withDivider = true) {
   contextMenu.appendChild(settingsBtn)
 }
 
-function addTimerAlarmDropdownToggle(i18n, settings) {
+function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
   const isHidden = settings.hideTimerAlarmDropdown === true
   const toggleBtn = createCustomMenuItem(
     isHidden
@@ -289,7 +289,7 @@ function addTimerAlarmDropdownToggle(i18n, settings) {
       hideContextMenu()
     },
   )
-  contextMenu.insertBefore(toggleBtn, menuLock)
+  contextMenu.insertBefore(toggleBtn, beforeNode)
 }
 
 function addOpenBookmarkSettingsItem(i18n) {
@@ -521,10 +521,6 @@ export function showContextMenu(
       lockText.textContent = i18n.menu_lock || "Lock Position"
     }
 
-    if (id === "timer") {
-      addTimerAlarmDropdownToggle(i18n, settings)
-    }
-
     addOpenWidgetSettingsItem(id, i18n)
 
     // THÊM TÙY CHỌN SKIN CHO CÁC WIDGET
@@ -746,6 +742,10 @@ export function showContextMenu(
       const separator = document.createElement("div")
       separator.className = "context-menu-divider custom-music-item"
       contextMenu.insertBefore(separator, borderBtn)
+
+      if (id === "timer") {
+        addTimerAlarmDropdownToggle(i18n, settings, borderBtn)
+      }
     }
 
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER
