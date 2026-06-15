@@ -988,9 +988,8 @@ body.context-menu-macos .bookmark-edit-field {
   line-height: 1.25;
   letter-spacing: 0.01em;
   transition:
-    background 0.14s ease,
-    color 0.14s ease,
-    transform 0.1s ease;
+    background-color 45ms linear,
+    color 45ms linear;
   position: relative;
 }
 
@@ -1000,24 +999,19 @@ body.context-menu-macos .bookmark-edit-field {
   font-size: 0.82rem;
   opacity: 0.75;
   flex-shrink: 0;
-  transition:
-    opacity 0.14s,
-    transform 0.14s;
+  transition: opacity 45ms linear;
 }
 
 .menu-item:hover {
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.18);
   color: #fff;
-  transform: translateX(2px);
 }
 
 .menu-item:hover i {
   opacity: 1;
-  transform: scale(1.1);
 }
 
 .menu-item:active {
-  transform: translateX(1px) scale(0.98);
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.26);
 }
 

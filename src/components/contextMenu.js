@@ -351,6 +351,15 @@ function addBackgroundContextMenuItems(i18n) {
       "context-settings-item",
     ),
     createCustomMenuItem(
+      i18n.effect_context_settings || "Effect settings",
+      "fa-solid fa-wand-magic-sparkles",
+      () => {
+        hideContextMenu()
+        openSettingsSection("special-effects", "#effect-grid")
+      },
+      "context-settings-item",
+    ),
+    createCustomMenuItem(
       i18n.bg_context_reset || "Reset background",
       "fa-solid fa-trash",
       () => {
@@ -448,6 +457,54 @@ function addBackgroundContextMenuItems(i18n) {
   ]
 
   items.forEach((item) => contextMenu.appendChild(item))
+}
+
+function addEffectContextMenuItems(effectId, i18n) {
+  if (!effectId) return
+
+  const settings = getSettings()
+  const isActiveEffect = settings.effect === effectId
+  const effectItem = document.querySelector(
+    `.effect-item[data-value="${CSS.escape(effectId)}"]`,
+  )
+  const effectName =
+    effectItem?.querySelector(".effect-name")?.textContent?.trim() || effectId
+
+  const applyBtn = createCustomMenuItem(
+    isActiveEffect
+      ? i18n.effect_context_turn_off || "Turn off effect"
+      : (i18n.effect_context_apply || "Apply: {name}").replace(
+          "{name}",
+          effectName,
+        ),
+    isActiveEffect ? "fa-solid fa-ban" : "fa-solid fa-wand-magic-sparkles",
+    () => {
+      applyContextSetting("effect", isActiveEffect ? "none" : effectId)
+      document
+        .querySelectorAll(".effect-item")
+        .forEach((item) =>
+          item.classList.toggle(
+            "active",
+            !isActiveEffect && item.dataset.value === effectId,
+          ),
+        )
+      hideContextMenu()
+    },
+  )
+
+  const settingsBtn = createCustomMenuItem(
+    i18n.effect_context_settings || "Effect settings",
+    "fa-solid fa-sliders",
+    () => {
+      hideContextMenu()
+      openSettingsSection("special-effects", "#effect-grid")
+    },
+    "context-settings-item",
+  )
+
+  contextMenu.insertBefore(applyBtn, menuFavorite)
+  contextMenu.insertBefore(settingsBtn, menuFavorite)
+  contextMenu.insertBefore(createCustomMenuDivider(), menuFavorite)
 }
 
 export function showContextMenu(
@@ -1417,6 +1474,8 @@ export function showContextMenu(
         ? i18n.menu_unfavorite || "Unfavorite"
         : i18n.menu_favorite || "Favorite"
     }
+
+    addEffectContextMenuItems(effectId, i18n)
   } else {
     // Regular bookmarks/groups
     const editText = menuEdit.querySelector("span")

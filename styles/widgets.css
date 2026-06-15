@@ -4927,7 +4927,9 @@ body.timer-focus-active {
   font-size: 0.85rem;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: all 0.2s;
+  transition:
+    background-color 45ms linear,
+    color 45ms linear;
 }
 
 .context-menu-item:hover {
@@ -5316,7 +5318,9 @@ body.context-menu-light .calendar-event-preview-desc {
   font-size: 14px;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: background 0.1s ease;
+  transition:
+    background-color 45ms linear,
+    color 45ms linear;
   margin: 2px 0;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -5386,8 +5390,8 @@ body.context-menu-none .menu-item {
   font-weight: 400;
   letter-spacing: 0;
   transition:
-    background-color 80ms ease,
-    color 80ms ease;
+    background-color 45ms linear,
+    color 45ms linear;
 }
 
 body.context-menu-macos .context-menu-item i,
@@ -11124,4 +11128,53 @@ body.bookmark-group-border-hidden
   .bookmark-group-tab[style*="--bookmark-group-icon-color"]
   .group-tab-icon {
   color: var(--bookmark-group-icon-color) !important;
+}
+
+/* Keep every context-style menu feeling immediate. */
+#context-menu .context-menu-item,
+#context-menu .menu-item,
+.context-menu .context-menu-item,
+.context-menu .menu-item,
+.calendar-context-menu .context-menu-item,
+.calendar-context-menu .menu-item,
+.g-apps-context-menu .g-apps-menu-btn,
+.g-apps-context-menu .g-apps-menu-toggle,
+.quick-access-popup .quick-access-radius-chip,
+.quick-access-popup .quick-access-border-button,
+.quick-access-popup .lcp-row {
+  transition:
+    background-color 45ms linear,
+    color 45ms linear,
+    border-color 45ms linear !important;
+}
+
+#context-menu .context-menu-item:hover,
+#context-menu .menu-item:hover,
+.context-menu .context-menu-item:hover,
+.context-menu .menu-item:hover,
+.calendar-context-menu .context-menu-item:hover,
+.calendar-context-menu .menu-item:hover,
+.g-apps-context-menu .g-apps-menu-btn:hover,
+.g-apps-context-menu .g-apps-menu-toggle:hover,
+.quick-access-popup .quick-access-radius-chip:hover,
+.quick-access-popup .quick-access-border-button:hover,
+.quick-access-popup .lcp-row:hover,
+#context-menu .context-menu-item:active,
+#context-menu .menu-item:active,
+.context-menu .context-menu-item:active,
+.context-menu .menu-item:active,
+.calendar-context-menu .context-menu-item:active,
+.calendar-context-menu .menu-item:active {
+  transform: none !important;
+}
+
+#context-menu .context-menu-item:hover i,
+#context-menu .menu-item:hover i,
+.context-menu .context-menu-item:hover i,
+.context-menu .menu-item:hover i,
+.calendar-context-menu .context-menu-item:hover i,
+.calendar-context-menu .menu-item:hover i,
+.g-apps-context-menu .g-apps-menu-btn:hover i,
+.g-apps-context-menu .g-apps-menu-toggle:hover i {
+  transform: none !important;
 }
