@@ -4421,6 +4421,24 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.terminalClockVariantSelect?.addEventListener("change", () => {
+    const value = ["window", "linux", "macos"].includes(
+      DOM.terminalClockVariantSelect.value,
+    )
+      ? DOM.terminalClockVariantSelect.value
+      : "window"
+    handleSettingUpdate("terminalClockVariant", value)
+
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "terminalClockVariant",
+          value,
+        },
+      }),
+    )
+  })
+
   DOM.fliqloThemeSelect?.addEventListener("change", () => {
     handleSettingUpdate("fliqloTheme", DOM.fliqloThemeSelect.value)
 
@@ -5287,6 +5305,20 @@ export function setupGeneralEventHandlers(
           key: "mediaOrbOverflowBorder",
           value: DOM.mediaOrbOverflowBorderCheckbox.checked,
         },
+      }),
+    )
+  })
+
+  DOM.mediaOrbLayoutSelect?.addEventListener("change", () => {
+    const value = ["left", "right", "center"].includes(
+      DOM.mediaOrbLayoutSelect.value,
+    )
+      ? DOM.mediaOrbLayoutSelect.value
+      : "left"
+    handleSettingUpdate("mediaOrbLayout", value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "mediaOrbLayout", value },
       }),
     )
   })

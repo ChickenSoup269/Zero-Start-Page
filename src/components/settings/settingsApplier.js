@@ -65,6 +65,8 @@ const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "weekday-style": "#ffffff",
   "cyber-pulse": "#ffffff",
   "neon-grid": "#ffffff",
+  terminal: "#4ade80",
+  "c4-bomb": "#facc15",
   "holo-ring": "#ffffff",
   "media-orb": "#ffffff",
   "prism-stack": "#ffffff",
@@ -1945,6 +1947,8 @@ function createApplySettings(effectInstances) {
       "date-clock-style-fliqlo",
       "date-clock-style-cyber-pulse",
       "date-clock-style-neon-grid",
+      "date-clock-style-terminal",
+      "date-clock-style-c4-bomb",
       "date-clock-style-holo-ring",
       "date-clock-style-media-orb",
       "date-clock-style-prism-stack",
@@ -1996,14 +2000,41 @@ function createApplySettings(effectInstances) {
       "analog-bg-blur-enabled",
       dateClockStyle === "analog" && settings.analogBlurBackground === true,
     )
+    const clockStyleBackgroundStyles = [
+      "minimal",
+      "glass",
+      "round",
+      "square",
+      "analog",
+      "fliqlo",
+      "cyber-pulse",
+      "neon-grid",
+      "terminal",
+      "c4-bomb",
+      "holo-ring",
+      "media-orb",
+      "prism-stack",
+      "metro-panel",
+      "aurora-ribbon",
+      "lunar-orbit",
+      "cartoon",
+    ]
+    const supportsClockStyleBackground =
+      clockStyleBackgroundStyles.includes(dateClockStyle)
+    const requestedClockStyleBackground =
+      settings.clockStyleBackground || "default"
+    const effectiveClockStyleBackground = supportsClockStyleBackground
+      ? requestedClockStyleBackground
+      : "default"
     document.body.classList.toggle(
       "clock-style-transparent-bg",
-      (settings.clockStyleBackground || "default") === "transparent" ||
-        settings.clockStyleTransparentBackground === true,
+      supportsClockStyleBackground &&
+        (effectiveClockStyleBackground === "transparent" ||
+          settings.clockStyleTransparentBackground === true),
     )
     document.body.classList.toggle(
       "clock-style-bg-accent",
-      (settings.clockStyleBackground || "default") === "accent",
+      effectiveClockStyleBackground === "accent",
     )
     const customClockBgColor = /^#[0-9a-f]{6}$/i.test(
       settings.clockStyleCustomBgColor || "",
@@ -2016,20 +2047,20 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "clock-style-bg-custom",
-      (settings.clockStyleBackground || "default") === "custom",
+      effectiveClockStyleBackground === "custom",
     )
     document.body.classList.toggle(
       "clock-style-bg-light",
-      (settings.clockStyleBackground || "default") === "light",
+      effectiveClockStyleBackground === "light",
     )
     document.body.classList.toggle(
       "clock-style-bg-dark",
-      (settings.clockStyleBackground || "default") === "dark",
+      effectiveClockStyleBackground === "dark",
     )
     document.body.classList.toggle(
       "clock-style-bg-animated",
       dateClockStyle === "prism-stack" &&
-        (settings.clockStyleBackground || "default") === "animated",
+        effectiveClockStyleBackground === "animated",
     )
     document.body.classList.toggle(
       "cartoon-clock-animation-off",
@@ -2852,21 +2883,16 @@ function createUpdateSettingsInputs(effectInstances) {
     // Manage display of conditional settings
     const style = settings.dateClockStyle || "default"
     const backgroundClockStyles = [
-      "default",
-      "glow",
       "minimal",
       "glass",
       "round",
       "square",
       "analog",
-      "cool",
-      "sidestyle",
-      "jp-style",
-      "sidebar",
-      "weekday-style",
       "fliqlo",
       "cyber-pulse",
       "neon-grid",
+      "terminal",
+      "c4-bomb",
       "holo-ring",
       "media-orb",
       "prism-stack",
@@ -2953,6 +2979,20 @@ function createUpdateSettingsInputs(effectInstances) {
         style === "cartoon" ? "flex" : "none"
     }
 
+    if (DOM.terminalClockVariantSetting) {
+      DOM.terminalClockVariantSetting.style.display =
+        style === "terminal" ? "block" : "none"
+    }
+    if (DOM.terminalClockVariantSelect) {
+      DOM.terminalClockVariantSelect.value = [
+        "window",
+        "linux",
+        "macos",
+      ].includes(settings.terminalClockVariant)
+        ? settings.terminalClockVariant
+        : "window"
+    }
+
     if (DOM.mediaOrbImageSetting)
       DOM.mediaOrbImageSetting.style.display =
         style === "media-orb" ? "block" : "none"
@@ -2962,6 +3002,12 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.mediaOrbOverflowBorderCheckbox)
       DOM.mediaOrbOverflowBorderCheckbox.checked =
         settings.mediaOrbOverflowBorder === true
+    if (DOM.mediaOrbLayoutSelect)
+      DOM.mediaOrbLayoutSelect.value = ["left", "right", "center"].includes(
+        settings.mediaOrbLayout,
+      )
+        ? settings.mediaOrbLayout
+        : "left"
 
     if (DOM.framedClockThemeSetting) {
       DOM.framedClockThemeSetting.style.display =

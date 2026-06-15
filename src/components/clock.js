@@ -5,6 +5,8 @@ import { makeDraggable } from "../utils/draggable.js"
 import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
 
 let lunarHideTimer = null
+let c4BombArmed = false
+let c4BombPulseUntil = 0
 
 function setClockLunarVisibility(element, visible) {
   if (!element) return
@@ -132,6 +134,10 @@ function applyHueMode(settings) {
       clockTargets.push(clockElement.querySelector(".fliqlo-time"))
     } else if (style === "neon-grid") {
       clockTargets.push(clockElement.querySelector(".neon-grid-time"))
+    } else if (style === "terminal") {
+      clockTargets.push(clockElement.querySelector(".terminal-clock-time"))
+    } else if (style === "c4-bomb") {
+      clockTargets.push(clockElement.querySelector(".c4-bomb-time"))
     } else if (style === "holo-ring") {
       clockTargets.push(clockElement.querySelector(".holo-ring-time"))
     } else if (style === "media-orb") {
@@ -181,6 +187,12 @@ function applyHueMode(settings) {
       } else if (style === "neon-grid") {
         dateTargets.push(clockElement.querySelector(".neon-grid-date"))
         dateTargets.push(clockElement.querySelector(".neon-grid-label"))
+      } else if (style === "terminal") {
+        dateTargets.push(clockElement.querySelector(".terminal-clock-meta"))
+        dateTargets.push(clockElement.querySelector(".terminal-clock-date"))
+      } else if (style === "c4-bomb") {
+        dateTargets.push(clockElement.querySelector(".c4-bomb-status"))
+        dateTargets.push(clockElement.querySelector(".c4-bomb-date"))
       } else if (style === "holo-ring") {
         dateTargets.push(clockElement.querySelector(".holo-ring-weekday"))
         dateTargets.push(clockElement.querySelector(".holo-ring-date"))
@@ -1033,6 +1045,114 @@ export function updateTime() {
         ${isTimer ? `<div class="neon-grid-date">${countdownLabel}</div>` : dateStr ? `<div class="neon-grid-date">${dateStr}</div>` : ""}
       </div>
     `
+  } else if (dateClockStyle === "terminal") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(
+          now,
+          langCode,
+          settings.shortWeekday,
+          tz,
+          settings,
+        ).toUpperCase()
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+    const promptLabel = isTimer ? "timer" : "startpage"
+    const terminalVariant = ["window", "linux", "macos"].includes(
+      settings.terminalClockVariant,
+    )
+      ? settings.terminalClockVariant
+      : "window"
+    const terminalPrompt =
+      terminalVariant === "linux" ? "user@startpage:~$" : "~/now"
+    const terminalControls =
+      terminalVariant === "macos"
+        ? `
+          <span class="terminal-dot terminal-dot-red"></span>
+          <span class="terminal-dot terminal-dot-yellow"></span>
+          <span class="terminal-dot terminal-dot-green"></span>`
+        : `
+          <span class="terminal-window-btn" aria-hidden="true">-</span>
+          <span class="terminal-window-btn" aria-hidden="true">□</span>
+          <span class="terminal-window-btn terminal-window-close" aria-hidden="true">×</span>`
+    clockElement.innerHTML = `
+      <div class="terminal-clock terminal-clock-${terminalVariant}">
+        <div class="terminal-clock-bar">
+          <span class="terminal-window-controls">${terminalControls}</span>
+          <span class="terminal-clock-title">${promptLabel}.time</span>
+        </div>
+        <div class="terminal-clock-body">
+          <div class="terminal-clock-meta">
+            <span class="terminal-prompt">${terminalPrompt}</span>
+            <span>${weekday}</span>
+          </div>
+          <div class="terminal-clock-time">
+            <span class="terminal-clock-hour">${hh}</span>
+            <span class="terminal-clock-cursor">:</span>
+            <span class="terminal-clock-minute">${mm}</span>
+            ${ss ? `<span class="terminal-clock-second">${ss}</span>` : ""}
+            ${ampm ? `<span class="terminal-clock-ampm">${ampm}</span>` : ""}
+          </div>
+          ${isTimer ? `<div class="terminal-clock-date">${countdownLabel}</div>` : dateStr ? `<div class="terminal-clock-date">${dateStr}</div>` : ""}
+        </div>
+      </div>
+    `
+  } else if (dateClockStyle === "c4-bomb") {
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(
+          now,
+          langCode,
+          settings.shortWeekday,
+          tz,
+          settings,
+        ).toUpperCase()
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings)
+      : ""
+    const isPulse = Date.now() < c4BombPulseUntil
+    const statusText = c4BombArmed
+      ? getClockLabel("clock_c4_status_armed", "ARMED")
+      : getClockLabel("clock_c4_status_standby", "STANDBY")
+    const buttonText = c4BombArmed
+      ? getClockLabel("clock_c4_button_defuse", "DEFUSE")
+      : getClockLabel("clock_c4_button_arm", "ARM")
+    clockElement.innerHTML = `
+      <div class="c4-bomb-clock ${c4BombArmed ? "is-armed" : "is-standby"} ${isPulse ? "is-pulsing" : ""}">
+        <div class="c4-bomb-straps" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </div>
+        <div class="c4-bomb-device">
+          <div class="c4-bomb-led-row" aria-hidden="true">
+            <span class="c4-bomb-led"></span>
+            <span class="c4-bomb-led"></span>
+            <span class="c4-bomb-led"></span>
+          </div>
+          <div class="c4-bomb-screen">
+            <div class="c4-bomb-status">${statusText} / ${weekday}</div>
+            <div class="c4-bomb-time">
+              <span class="c4-bomb-hour">${hh}</span>
+              <span class="c4-bomb-separator">:</span>
+              <span class="c4-bomb-minute">${mm}</span>
+              ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
+              ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
+            </div>
+            ${isTimer ? `<div class="c4-bomb-date">${countdownLabel}</div>` : dateStr ? `<div class="c4-bomb-date">${dateStr}</div>` : ""}
+          </div>
+          <button type="button" class="c4-bomb-button" aria-pressed="${c4BombArmed ? "true" : "false"}">
+            <span class="c4-bomb-button-light" aria-hidden="true"></span>
+            <span>${buttonText}</span>
+          </button>
+        </div>
+        <div class="c4-bomb-wires" aria-hidden="true">
+          <span class="c4-wire c4-wire-red"></span>
+          <span class="c4-wire c4-wire-yellow"></span>
+          <span class="c4-wire c4-wire-blue"></span>
+        </div>
+      </div>
+    `
   } else if (dateClockStyle === "holo-ring") {
     const weekday = isTimer
       ? timerLabel
@@ -1099,22 +1219,41 @@ export function updateTime() {
     const mediaHtml = mediaSrc
       ? `<img class="media-orb-image" src="${escapeAttribute(mediaSrc)}" alt="">`
       : `<div class="media-orb-placeholder"><i class="fa-solid fa-image"></i></div>`
-
-    clockElement.innerHTML = `
-      <div class="media-orb-clock">
+    const mediaLayout = ["left", "right", "center"].includes(
+      settings.mediaOrbLayout,
+    )
+      ? settings.mediaOrbLayout
+      : "left"
+    const mediaVisualHtml = `
         <div class="media-orb-visual">
           ${mediaHtml}
           <span class="media-orb-ring"></span>
-        </div>
-        <div class="media-orb-main">
-          <div class="media-orb-weekday">${weekday}</div>
+        </div>`
+    const mediaTimeHtml =
+      mediaLayout === "center"
+        ? `
+          <div class="media-orb-time">
+            <span class="media-orb-hour">${hh}</span>
+            ${mediaVisualHtml}
+            <span class="media-orb-minute">${mm}</span>
+            ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
+            ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
+          </div>`
+        : `
           <div class="media-orb-time">
             <span class="media-orb-hour">${hh}</span>
             <span class="media-orb-separator">:</span>
             <span class="media-orb-minute">${mm}</span>
             ${ss ? `<span class="media-orb-second">${ss}</span>` : ""}
             ${ampm ? `<span class="media-orb-ampm">${ampm}</span>` : ""}
-          </div>
+          </div>`
+
+    clockElement.innerHTML = `
+      <div class="media-orb-clock media-orb-layout-${mediaLayout}">
+        ${mediaLayout === "center" ? "" : mediaVisualHtml}
+        <div class="media-orb-main">
+          <div class="media-orb-weekday">${weekday}</div>
+          ${mediaTimeHtml}
           ${isTimer ? `<div class="media-orb-date">${countdownLabel}</div>` : dateStr ? `<div class="media-orb-date">${dateStr}</div>` : ""}
         </div>
       </div>
@@ -1126,8 +1265,17 @@ export function updateTime() {
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
+    const analogHours = Number.parseInt(hh, 10) || 0
+    const analogMinutes = Number.parseInt(mm, 10) || 0
+    const analogHourDeg = ((analogHours % 12) + analogMinutes / 60) * 30
+    const analogMinuteDeg = analogMinutes * 6
     clockElement.innerHTML = `
       <div class="prism-stack-clock">
+        <div class="prism-stack-mini-clock" aria-hidden="true">
+          <span class="prism-stack-mini-hand prism-stack-mini-hour" style="--mini-hand-rotation: ${analogHourDeg}deg"></span>
+          <span class="prism-stack-mini-hand prism-stack-mini-minute" style="--mini-hand-rotation: ${analogMinuteDeg}deg"></span>
+          <span class="prism-stack-mini-pin"></span>
+        </div>
         <div class="prism-stack-meta">${weekday}</div>
         <div class="prism-stack-time">
           <span>${hh}</span>
@@ -1339,6 +1487,8 @@ export function updateTime() {
     "fliqlo",
     "cyber-pulse",
     "neon-grid",
+    "terminal",
+    "c4-bomb",
     "holo-ring",
     "media-orb",
     "prism-stack",
@@ -1453,6 +1603,15 @@ export function initClock() {
   updateCustomTitle()
   setInterval(updateTime, 1000)
 
+  clockElement?.addEventListener("click", (event) => {
+    const button = event.target?.closest?.(".c4-bomb-button")
+    if (!button) return
+
+    c4BombArmed = !c4BombArmed
+    c4BombPulseUntil = Date.now() + 900
+    updateTime()
+  })
+
   window.addEventListener("layoutUpdated", (e) => {
     if (
       e.detail.key === "showGregorian" ||
@@ -1472,8 +1631,10 @@ export function initClock() {
       e.detail.key === "fliqloZenMode" ||
       e.detail.key === "fliqloTransparent" ||
       e.detail.key === "fliqloTheme" ||
+      e.detail.key === "terminalClockVariant" ||
       e.detail.key === "mediaOrbImageUrl" ||
       e.detail.key === "mediaOrbImageData" ||
+      e.detail.key === "mediaOrbLayout" ||
       e.detail.key === "showClockLunarCalendar" ||
       e.detail.key === "showClockLunarMode"
     ) {

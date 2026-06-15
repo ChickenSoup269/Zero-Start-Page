@@ -910,6 +910,12 @@ export let cartoonClockAnimationSetting = document.getElementById(
 export let cartoonClockAnimationCheckbox = document.getElementById(
   "cartoon-clock-animation-checkbox",
 )
+export let terminalClockVariantSetting = document.getElementById(
+  "terminal-clock-variant-setting",
+)
+export let terminalClockVariantSelect = document.getElementById(
+  "terminal-clock-variant-select",
+)
 export let mediaOrbImageSetting = document.getElementById(
   "media-orb-image-setting",
 )
@@ -925,6 +931,9 @@ export let mediaOrbUploadBtn = document.getElementById(
 export let mediaOrbClearBtn = document.getElementById("media-orb-clear-btn")
 export let mediaOrbOverflowBorderCheckbox = document.getElementById(
   "media-orb-overflow-border-checkbox",
+)
+export let mediaOrbLayoutSelect = document.getElementById(
+  "media-orb-layout-select",
 )
 export let fliqloThemeSetting = document.getElementById(
   "fliqlo-theme-setting",
@@ -2890,8 +2899,14 @@ export function refreshDOMReferences() {
   "cartoon-clock-animation-setting",
 )
   cartoonClockAnimationCheckbox = document.getElementById(
-  "cartoon-clock-animation-checkbox",
-)
+    "cartoon-clock-animation-checkbox",
+  )
+  terminalClockVariantSetting = document.getElementById(
+    "terminal-clock-variant-setting",
+  )
+  terminalClockVariantSelect = document.getElementById(
+    "terminal-clock-variant-select",
+  )
   mediaOrbImageSetting = document.getElementById(
   "media-orb-image-setting",
 )
@@ -2906,8 +2921,9 @@ export function refreshDOMReferences() {
 )
   mediaOrbClearBtn = document.getElementById("media-orb-clear-btn")
   mediaOrbOverflowBorderCheckbox = document.getElementById(
-  "media-orb-overflow-border-checkbox",
-)
+    "media-orb-overflow-border-checkbox",
+  )
+  mediaOrbLayoutSelect = document.getElementById("media-orb-layout-select")
   fliqloThemeSetting = document.getElementById(
   "fliqlo-theme-setting",
 )

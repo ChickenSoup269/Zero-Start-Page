@@ -266,6 +266,18 @@
                                         Grid</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="terminal">
+                                    <i class="fa-solid fa-terminal"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_terminal">Terminal</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <div class="clock-style-card" data-value="c4-bomb">
+                                    <i class="fa-solid fa-bomb"></i>
+                                    <span class="clock-style-name"
+                                        data-i18n="settings_clock_date_style_c4_bomb">C4</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                                 <div class="clock-style-card" data-value="holo-ring">
                                     <i class="fa-solid fa-circle-notch"></i>
                                     <span class="clock-style-name" data-i18n="settings_clock_date_style_holo_ring">Holo
@@ -326,6 +338,8 @@
                             <option value="fliqlo">Fliqlo (Flip Clock)</option>
                             <option value="cyber-pulse">Cyber Pulse</option>
                             <option value="neon-grid">Neon Grid</option>
+                            <option value="terminal">Terminal</option>
+                            <option value="c4-bomb">C4</option>
                             <option value="holo-ring">Holo Ring</option>
                             <option value="media-orb">Media Orb</option>
                             <option value="prism-stack">Prism Stack</option>
@@ -428,6 +442,17 @@
                             <input type="checkbox" id="cartoon-clock-animation-checkbox" checked>
                         </div>
 
+                        <div id="terminal-clock-variant-setting" class="setting-item no-margin-top"
+                            style="display: none;">
+                            <label for="terminal-clock-variant-select"
+                                data-i18n="settings_terminal_clock_variant">Terminal Style</label>
+                            <select id="terminal-clock-variant-select">
+                                <option value="window" data-i18n="settings_terminal_clock_variant_window">Windows</option>
+                                <option value="linux" data-i18n="settings_terminal_clock_variant_linux">Linux</option>
+                                <option value="macos" data-i18n="settings_terminal_clock_variant_macos">macOS</option>
+                            </select>
+                        </div>
+
                         <div id="media-orb-image-setting" class="setting-item no-margin-top media-orb-setting"
                             style="display: none;">
                             <label for="media-orb-image-url" data-i18n="settings_media_orb_image">Orb Image /
@@ -454,6 +479,16 @@
                                 <label for="media-orb-overflow-border-checkbox"
                                     data-i18n="settings_media_orb_overflow_border">Overflow Rim</label>
                                 <input type="checkbox" id="media-orb-overflow-border-checkbox">
+                            </div>
+                            <div class="setting-item-row media-orb-layout-row"
+                                style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="media-orb-layout-select"
+                                    data-i18n="settings_media_orb_layout">Image Position</label>
+                                <select id="media-orb-layout-select">
+                                    <option value="left" data-i18n="settings_media_orb_layout_left">Left</option>
+                                    <option value="right" data-i18n="settings_media_orb_layout_right">Right</option>
+                                    <option value="center" data-i18n="settings_media_orb_layout_center">Center Split</option>
+                                </select>
                             </div>
                         </div>
 
