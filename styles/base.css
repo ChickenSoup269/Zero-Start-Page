@@ -5448,6 +5448,131 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
     border: none;
     cursor: pointer;
 }
+  position: fixed;
+  bottom: var(--space-3);
+  left: var(--space-3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: #fff;
+  font-size: 0.85rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(10px);
+}
+
+/* Hover area for the corner to show credit */
+body:hover .main-bg-credit {
+    /* Optional: can make it slightly visible when mouse is in the page */
+}
+
+.main-bg-credit:hover {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(0);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Let's make it slightly visible (very subtle) when hover near the corner */
+body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    height: 100px;
+    z-index: 9;
+    pointer-events: none;
+}
+
+body:has(.main-bg-credit:hover) .main-bg-credit,
+.main-bg-credit:hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Trick to make the hover area larger without showing the box */
+.main-bg-credit::before {
+    content: "";
+    position: absolute;
+    inset: -24px;
+    z-index: -1;
+}
+
+.main-bg-credit a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.main-bg-credit a:hover {
+  text-decoration: underline;
+}
+
+.main-bg-credit i {
+  font-size: 1.1rem;
+}
+
+/* User Themes & Icon Grid */
+.theme-icon-grid .icon-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.theme-icon-grid .icon-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.theme-icon-grid .icon-option.active {
+    background: var(--accent-color);
+    color: var(--accent-contrast-color, #1a1a2e);
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+.theme-item .delete-theme-btn {
+    position: absolute;
+    top: var(--space-1);
+    right: var(--space-1);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 75, 75, 0.8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 5;
+    border: none;
+    cursor: pointer;
+}
 
 .theme-item:hover .delete-theme-btn {
     opacity: 1;
@@ -5464,4 +5589,14 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
 
 .main-bg-credit .credit-logo-local {
   color: var(--accent-color);
+}
+
+/* Fix Fliqlo clock backgrounds spilling out */
+body[class*="clock-style-bg-"]:not(.clock-style-bg-transparent).date-clock-style-fliqlo .clock-date-wrap {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
 }

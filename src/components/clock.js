@@ -719,7 +719,7 @@ function getClockLabel(key, fallback) {
 export function updateTime() {
   const settings = getSettings()
   const now = new Date()
-  const langCode = getIntlLanguageCode(settings)
+  const langCode = getClockDateLanguageCode(settings)
   const dateLangCode = getClockDateLanguageCode(settings)
   const dateClockStyle = settings.dateClockStyle || "default"
   const timerLabel = getClockLabel("clock_label_timer", "TIMER")

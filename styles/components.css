@@ -419,33 +419,6 @@
   background: rgba(0, 0, 0, 0.16);
 }
 
-body.context-menu-light #bookmark-modal .bookmark-modal-content,
-body.context-menu-macos #bookmark-modal .bookmark-modal-content {
-  background: rgba(255, 255, 255, 0.88);
-  color: #17171c;
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-body.context-menu-light #bookmark-modal .modal-header,
-body.context-menu-macos #bookmark-modal .modal-header,
-body.context-menu-light #bookmark-modal .modal-input-group,
-body.context-menu-macos #bookmark-modal .modal-input-group,
-body.context-menu-light #bookmark-modal #import-section,
-body.context-menu-macos #bookmark-modal #import-section {
-  background: rgba(0, 0, 0, 0.035);
-  border-color: rgba(0, 0, 0, 0.1);
-}
-
-body.context-menu-light #bookmark-modal .modal-content input,
-body.context-menu-macos #bookmark-modal .modal-content input {
-  color: #17171c;
-}
-
-body.context-menu-light #bookmark-modal .modal-content input::placeholder,
-body.context-menu-macos #bookmark-modal .modal-content input::placeholder {
-  color: rgba(0, 0, 0, 0.42);
-}
-
 @media (max-width: 520px) {
   #bookmark-modal .modal-actions {
     grid-template-columns: 1fr;

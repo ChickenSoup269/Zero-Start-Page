@@ -122,6 +122,8 @@
   "settings_date_format_weekday": "Chỉ hiện thứ",
   "settings_short_weekday": "Viết tắt Thứ (T2, T3...)",
   "settings_hide_seconds": "Ẩn giây",
+  "settings_clock_date_language": "Ngôn ngữ Đồng hồ & Ngày",
+  "settings_clock_date_language_auto": "Theo ngôn ngữ của ứng dụng",
   "settings_clock_date_priority": "Ưu tiên phóng to",
   "settings_clock_date_priority_none": "Không ưu tiên",
   "settings_clock_date_priority_date": "Ưu tiên Thứ",
