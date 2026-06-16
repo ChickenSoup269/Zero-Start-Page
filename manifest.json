@@ -6,22 +6,37 @@
   "default_locale": "en",
   "permissions": ["bookmarks", "scripting", "tabs", "storage"],
   "icons": {
+    "16": "icon/logo.png",
+    "48": "icon/logo.png",
     "128": "icon/logo.png"
   },
   "action": {
     "default_title": "__MSG_extName__",
     "default_icon": {
+      "16": "icon/logo.png",
+      "48": "icon/logo.png",
       "128": "icon/logo.png"
     }
   },
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "background": {
-    "service_worker": "background.js"
+  "browser_url_overrides": {
+    "newtab": "index.html"
   },
-
+  "background": {
+    "scripts": ["background.js"],
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "startpage@extension",
+      "strict_min_version": "109.0"
+    }
+  },
   "host_permissions": [
+    "https://calendar.google.com/*",
     "https://suggestqueries.google.com/*",
     "*://*.youtube.com/*",
     "*://*.spotify.com/*",
@@ -44,6 +59,6 @@
     "https://i.scdn.co/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://api.unsplash.com https://images.unsplash.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://suggestqueries.google.com;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' blob: data: https:; media-src 'self' blob: https://raw.githubusercontent.com; connect-src 'self' https://calendar.google.com https://api.unsplash.com https://images.unsplash.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://suggestqueries.google.com;"
   }
 }

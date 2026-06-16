@@ -1,5 +1,7 @@
 import {
   getSettings,
+  updateSetting,
+  saveSettings,
   getCalendarEvents,
   addCalendarEvent,
   updateCalendarEvent,
@@ -22,15 +24,147 @@ function getCalendarDisplayMode(settings = getSettings()) {
   return settings.showLunarCalendar ? "both" : "solar"
 }
 
+function getCalendarEventSource(settings = getSettings()) {
+  return settings.calendarEventSource === "google" ? "google" : "local"
+}
+
+function getCalendarSize(settings = getSettings()) {
+  return ["mini", "normal", "expanded"].includes(settings.calendarSize)
+    ? settings.calendarSize
+    : "normal"
+}
+
+function normalizeGoogleCalendarUrl(value) {
+  const url = String(value || "").trim()
+  if (!url) return ""
+  if (url.startsWith("webcal://")) return `https://${url.slice(9)}`
+  if (/^https:\/\/calendar\.google\.com\/calendar\/ical\//i.test(url)) return url
+  return ""
+}
+
+function decodeIcsText(value = "") {
+  return value
+    .replace(/\\n/gi, "\n")
+    .replace(/\\,/g, ",")
+    .replace(/\\;/g, ";")
+    .replace(/\\\\/g, "\\")
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+function parseIcsDate(value = "") {
+  const clean = value.trim()
+  const dateOnly = clean.match(/^(\d{4})(\d{2})(\d{2})$/)
+  if (dateOnly) {
+    return {
+      date: `${dateOnly[1]}-${dateOnly[2]}-${dateOnly[3]}`,
+      time: "",
+      allDay: true,
+    }
+  }
+
+  const dateTime = clean.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/)
+  if (!dateTime) return null
+
+  const date = clean.endsWith("Z")
+    ? new Date(
+        Date.UTC(
+          Number(dateTime[1]),
+          Number(dateTime[2]) - 1,
+          Number(dateTime[3]),
+          Number(dateTime[4]),
+          Number(dateTime[5]),
+        ),
+      )
+    : new Date(
+        Number(dateTime[1]),
+        Number(dateTime[2]) - 1,
+        Number(dateTime[3]),
+        Number(dateTime[4]),
+        Number(dateTime[5]),
+      )
+
+  if (Number.isNaN(date.getTime())) return null
+  return {
+    date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
+    time: `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
+    allDay: false,
+  }
+}
+
+function parseGoogleCalendarIcs(text) {
+  const lines = text
+    .replace(/\r?\n[ \t]/g, "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+  const events = []
+  let current = null
+
+  lines.forEach((line) => {
+    if (line === "BEGIN:VEVENT") {
+      current = {}
+      return
+    }
+    if (line === "END:VEVENT") {
+      const start = parseIcsDate(current?.DTSTART)
+      if (current?.SUMMARY && start) {
+        events.push({
+          id: `google-${current.UID || `${start.date}-${events.length}`}`,
+          title: decodeIcsText(current.SUMMARY),
+          date: start.date,
+          time: start.time,
+          description: decodeIcsText(current.DESCRIPTION || ""),
+          location: decodeIcsText(current.LOCATION || ""),
+          source: "google",
+          allDay: start.allDay,
+        })
+      }
+      current = null
+      return
+    }
+    if (!current) return
+
+    const separatorIndex = line.indexOf(":")
+    if (separatorIndex === -1) return
+
+    const key = line.slice(0, separatorIndex).split(";")[0].toUpperCase()
+    const value = line.slice(separatorIndex + 1)
+    if (
+      key === "UID" ||
+      key === "SUMMARY" ||
+      key === "DESCRIPTION" ||
+      key === "LOCATION" ||
+      key === "DTSTART"
+    ) {
+      current[key] = value
+    }
+  })
+
+  return events
+}
+
 export class FullCalendar {
   constructor() {
     this.container = document.getElementById("full-calendar-container")
 
     this.isVisible = getSettings().showFullCalendar === true
     this.calendarDateMode = getCalendarDisplayMode()
+    this.calendarEventSource = getCalendarEventSource()
+    this.calendarSize = getCalendarSize()
     this.showLunar = this.calendarDateMode !== "solar"
     this.viewDate = new Date()
     this.selectedDate = null
+    this.googleEvents = []
+    this.googleCalendarStatus = ""
+    this.googleCalendarLoading = false
+    this.googleCalendarLoadedUrl = ""
     this.init()
   }
 
@@ -44,6 +178,10 @@ export class FullCalendar {
     this.applySkin()
     this.setupEventListeners()
     this.updateVisibility()
+    const url = normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl)
+    if (this.calendarEventSource === "google" && url) {
+      this.refreshGoogleCalendar({ silent: true })
+    }
   }
 
   setupEventListeners() {
@@ -54,7 +192,9 @@ export class FullCalendar {
       }
       if (
         e.detail.key === "showLunarCalendar" ||
-        e.detail.key === "calendarDateMode"
+        e.detail.key === "calendarDateMode" ||
+        e.detail.key === "calendarShowSourceSwitcher" ||
+        e.detail.key === "calendarSize"
       ) {
         this.syncCalendarMode()
         this.render()
@@ -66,11 +206,19 @@ export class FullCalendar {
 
     // Left click handlers
     this.container.addEventListener("click", (e) => {
-      if (e.target.closest("#prev-month")) {
+      const sourceTab = e.target.closest(".calendar-source-tab")
+      if (sourceTab) {
+        this.setCalendarEventSource(sourceTab.dataset.source)
+      } else if (e.target.closest("#calendar-google-save")) {
+        this.saveGoogleCalendarUrl()
+      } else if (e.target.closest("#calendar-google-refresh")) {
+        this.refreshGoogleCalendar()
+      } else if (e.target.closest("#prev-month")) {
         this.navigateMonth(-1)
       } else if (e.target.closest("#next-month")) {
         this.navigateMonth(1)
       } else if (e.target.closest("#calendar-add-event")) {
+        if (this.calendarEventSource !== "local") return
         const rect = e.target
           .closest("#calendar-add-event")
           .getBoundingClientRect()
@@ -80,7 +228,11 @@ export class FullCalendar {
         this.showEventFormMenu(rect.left, rect.bottom + 8, { dateStr })
       } else if (e.target.closest(".calendar-event")) {
         const eventId = e.target.closest(".calendar-event").dataset.eventId
-        this.showEventContextMenu(e.clientX, e.clientY, eventId)
+        if (this.calendarEventSource === "google") {
+          this.showGoogleEventDetailMenu(e.clientX, e.clientY, eventId)
+        } else {
+          this.showEventContextMenu(e.clientX, e.clientY, eventId)
+        }
         e.stopPropagation()
       } else if (e.target.closest(".day-item")) {
         // Just select the day with left click
@@ -92,7 +244,7 @@ export class FullCalendar {
           // Show day menu on left click as a floating menu outside the card.
           const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-          const events = getCalendarEvents().filter(
+          const events = this.getVisibleEvents().filter(
             (evt) => evt.date === dateStr,
           )
           this.showDayContextMenu(e.clientX, e.clientY, day, events)
@@ -108,7 +260,11 @@ export class FullCalendar {
       // Right click on calendar event
       if (e.target.closest(".calendar-event")) {
         const eventId = e.target.closest(".calendar-event").dataset.eventId
-        this.showEventContextMenu(e.clientX, e.clientY, eventId)
+        if (this.calendarEventSource === "google") {
+          this.showGoogleEventDetailMenu(e.clientX, e.clientY, eventId)
+        } else {
+          this.showEventContextMenu(e.clientX, e.clientY, eventId)
+        }
       }
       // Right click on day item
       else if (e.target.closest(".day-item")) {
@@ -117,7 +273,7 @@ export class FullCalendar {
         if (dayNumber) {
           const day = parseInt(dayNumber, 10)
           const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-          const events = getCalendarEvents().filter((e) => e.date === dateStr)
+          const events = this.getVisibleEvents().filter((e) => e.date === dateStr)
           this.showDayContextMenu(e.clientX, e.clientY, day, events)
         }
       }
@@ -169,6 +325,90 @@ export class FullCalendar {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
   }
 
+  getVisibleEvents() {
+    return this.calendarEventSource === "google"
+      ? this.googleEvents
+      : getCalendarEvents()
+  }
+
+  async setCalendarEventSource(source) {
+    const normalized = source === "google" ? "google" : "local"
+    if (this.calendarEventSource === normalized) return
+
+    this.calendarEventSource = normalized
+    updateSetting("calendarEventSource", normalized)
+    saveSettings()
+    this.hideContextMenu()
+    this.render()
+
+    const url = normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl)
+    if (
+      normalized === "google" &&
+      url &&
+      this.googleCalendarLoadedUrl !== url
+    ) {
+      await this.refreshGoogleCalendar({ silent: true })
+    }
+  }
+
+  async saveGoogleCalendarUrl() {
+    const input = this.container.querySelector("#calendar-google-url")
+    const url = normalizeGoogleCalendarUrl(input?.value)
+    const i18n = geti18n()
+
+    if (!url) {
+      this.googleCalendarStatus =
+        i18n.calendar_google_url_invalid ||
+        "Use a Google Calendar iCal URL."
+      this.render()
+      return
+    }
+
+    updateSetting("googleCalendarIcsUrl", url)
+    saveSettings()
+    await this.refreshGoogleCalendar()
+  }
+
+  async refreshGoogleCalendar({ silent = false } = {}) {
+    const i18n = geti18n()
+    const url = normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl)
+    if (!url) {
+      if (!silent) {
+        this.googleCalendarStatus =
+          i18n.calendar_google_url_empty ||
+          "Paste your Google Calendar iCal URL."
+        this.render()
+      }
+      return
+    }
+
+    this.googleCalendarLoading = true
+    this.googleCalendarStatus = silent
+      ? ""
+      : i18n.calendar_google_loading || "Loading Google Calendar..."
+    this.render()
+
+    try {
+      const response = await fetch(url, { cache: "no-store" })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+      const text = await response.text()
+      this.googleEvents = parseGoogleCalendarIcs(text)
+      this.googleCalendarLoadedUrl = url
+      this.googleCalendarStatus =
+        i18n.calendar_google_loaded ||
+        `Loaded ${this.googleEvents.length} Google events.`
+    } catch (error) {
+      console.warn("Failed to load Google Calendar", error)
+      this.googleCalendarStatus =
+        i18n.calendar_google_error ||
+        "Could not load that Google Calendar URL."
+    } finally {
+      this.googleCalendarLoading = false
+      this.render()
+    }
+  }
+
   selectDay(dayElement) {
     const day = parseInt(dayElement.dataset.day || "", 10)
     if (Number.isNaN(day)) return
@@ -195,16 +435,17 @@ export class FullCalendar {
     menu.style.top = `${y}px`
     menu.addEventListener("click", (e) => e.stopPropagation())
 
-    // Add Event option
-    const addItem = document.createElement("div")
-    addItem.className = "context-menu-item"
-    addItem.innerHTML = `<i class="fa-solid fa-plus"></i> ${i18n.calendar_add_event || "Add Event"}`
-    addItem.addEventListener("click", () => {
-      const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-      this.hideContextMenu()
-      this.showEventFormMenu(x, y, { dateStr })
-    })
-    menu.appendChild(addItem)
+    if (this.calendarEventSource === "local") {
+      const addItem = document.createElement("div")
+      addItem.className = "context-menu-item"
+      addItem.innerHTML = `<i class="fa-solid fa-plus"></i> ${i18n.calendar_add_event || "Add Event"}`
+      addItem.addEventListener("click", () => {
+        const dateStr = `${this.viewDate.getFullYear()}-${String(this.viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
+        this.hideContextMenu()
+        this.showEventFormMenu(x, y, { dateStr })
+      })
+      menu.appendChild(addItem)
+    }
 
     // Show existing events if any
     if (events.length > 0) {
@@ -218,7 +459,11 @@ export class FullCalendar {
         eventItem.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${event.title}${event.time ? " - " + event.time : ""}`
         eventItem.addEventListener("click", () => {
           this.hideContextMenu()
-          this.showEventFormMenu(x, y, { eventId: event.id })
+          if (this.calendarEventSource === "google") {
+            this.showGoogleEventDetailMenu(x, y, event.id)
+          } else {
+            this.showEventFormMenu(x, y, { eventId: event.id })
+          }
         })
         menu.appendChild(eventItem)
       })
@@ -267,6 +512,44 @@ export class FullCalendar {
     document.body.appendChild(menu)
     this.currentContextMenu = menu
 
+    this.positionContextMenu(menu, x, y)
+  }
+
+  showGoogleEventDetailMenu(x, y, eventId) {
+    const event = this.googleEvents.find((e) => e.id === eventId)
+    if (!event) return
+
+    this.hideContextMenu()
+
+    const menu = document.createElement("div")
+    menu.className = "calendar-context-menu calendar-event-preview"
+    menu.addEventListener("click", (e) => e.stopPropagation())
+
+    const title = document.createElement("div")
+    title.className = "calendar-event-preview-title"
+    title.textContent = event.title
+    menu.appendChild(title)
+
+    const meta = document.createElement("div")
+    meta.className = "calendar-event-preview-meta"
+    meta.textContent = [
+      event.date,
+      event.time || (event.allDay ? "All day" : ""),
+      event.location,
+    ]
+      .filter(Boolean)
+      .join(" | ")
+    menu.appendChild(meta)
+
+    if (event.description) {
+      const desc = document.createElement("div")
+      desc.className = "calendar-event-preview-desc"
+      desc.textContent = event.description
+      menu.appendChild(desc)
+    }
+
+    document.body.appendChild(menu)
+    this.currentContextMenu = menu
     this.positionContextMenu(menu, x, y)
   }
 
@@ -355,7 +638,7 @@ export class FullCalendar {
   }
 
   showEventPreview(x, y, eventId) {
-    const event = getCalendarEvents().find((e) => e.id === eventId)
+    const event = this.getVisibleEvents().find((e) => e.id === eventId)
     if (!event) return
 
     this.hideEventPreview()
@@ -370,7 +653,13 @@ export class FullCalendar {
 
     const meta = document.createElement("div")
     meta.className = "calendar-event-preview-meta"
-    meta.textContent = [event.date, event.time].filter(Boolean).join(" | ")
+    meta.textContent = [
+      event.date,
+      event.time || (event.allDay ? "All day" : ""),
+      event.location,
+    ]
+      .filter(Boolean)
+      .join(" | ")
     preview.appendChild(meta)
 
     if (event.description) {
@@ -572,10 +861,18 @@ export class FullCalendar {
     const year = this.viewDate.getFullYear()
     const month = this.viewDate.getMonth()
     const now = new Date()
+    const settings = getSettings()
 
     this.syncCalendarMode()
+    this.calendarEventSource = getCalendarEventSource(settings)
+    this.calendarSize = getCalendarSize(settings)
 
     this.container.classList.add("calendar-card", "glass-panel", "drag-handle")
+    this.container.classList.toggle("calendar-size-mini", this.calendarSize === "mini")
+    this.container.classList.toggle(
+      "calendar-size-expanded",
+      this.calendarSize === "expanded",
+    )
     this.container.classList.toggle("with-lunar", this.showLunar)
     this.container.classList.toggle(
       "calendar-mode-solar",
@@ -635,11 +932,40 @@ export class FullCalendar {
             <button id="prev-month" class="icon-btn" title="${i18n.calendar_prev_month || "Previous Month"}"><i class="fa-solid fa-chevron-left"></i></button>
             <h3 class="month-title">${monthName} ${year}${lunarMonthHeader}</h3>
             <div class="calendar-header-actions" style="margin-left: auto; display: flex; gap: 5px;">
-              <button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>
+              ${this.calendarEventSource === "local" ? `<button id="calendar-add-event" class="icon-btn" title="${i18n.calendar_add_event || "Add Event"}"><i class="fa-solid fa-plus"></i></button>` : ""}
               <button id="next-month" class="icon-btn" title="${i18n.calendar_next_month || "Next Month"}"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         `
     this.container.appendChild(header)
+
+    const showSourceSwitcher = settings.calendarShowSourceSwitcher !== false
+    if (showSourceSwitcher) {
+      const sourceSwitcher = document.createElement("div")
+      sourceSwitcher.className = "calendar-source-switcher"
+      sourceSwitcher.innerHTML = `
+        <button class="calendar-source-tab ${this.calendarEventSource === "local" ? "active" : ""}" data-source="local" type="button">
+          <i class="fa-regular fa-calendar"></i>
+          <span>${i18n.calendar_source_local || "Local"}</span>
+        </button>
+        <button class="calendar-source-tab ${this.calendarEventSource === "google" ? "active" : ""}" data-source="google" type="button">
+          <i class="fa-brands fa-google"></i>
+          <span>${i18n.calendar_source_google || "Google Calendar"}</span>
+        </button>
+      `
+      this.container.appendChild(sourceSwitcher)
+    }
+
+    if (showSourceSwitcher && this.calendarEventSource === "google") {
+      const googlePanel = document.createElement("div")
+      googlePanel.className = "calendar-google-panel"
+      googlePanel.innerHTML = `
+        <input id="calendar-google-url" type="url" autocomplete="off" spellcheck="false" placeholder="${i18n.calendar_google_url_placeholder || "Google Calendar iCal URL"}" value="${escapeHtml(normalizeGoogleCalendarUrl(getSettings().googleCalendarIcsUrl))}">
+        <button id="calendar-google-save" class="icon-btn" type="button" title="${i18n.settings_save || "Save"}"><i class="fa-solid fa-check"></i></button>
+        <button id="calendar-google-refresh" class="icon-btn" type="button" title="${i18n.calendar_refresh || "Refresh"}" ${this.googleCalendarLoading ? "disabled" : ""}><i class="fa-solid fa-rotate"></i></button>
+        ${this.googleCalendarStatus ? `<div class="calendar-google-status">${escapeHtml(this.googleCalendarStatus)}</div>` : ""}
+      `
+      this.container.appendChild(googlePanel)
+    }
 
     const daysGrid = document.createElement("div")
     daysGrid.className = "days-grid"
@@ -670,7 +996,7 @@ export class FullCalendar {
       daysGrid.appendChild(empty)
     }
 
-    const events = getCalendarEvents()
+    const events = this.getVisibleEvents()
 
     // Days
     for (let day = 1; day <= daysInMonth; day++) {

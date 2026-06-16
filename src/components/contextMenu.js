@@ -807,6 +807,63 @@ export function showContextMenu(
         contextMenu.insertBefore(expandBtn, menuLock)
       }
 
+      if (id === "calendar") {
+        const showSourceSwitcher = settings.calendarShowSourceSwitcher !== false
+        const calendarSize = ["mini", "normal", "expanded"].includes(
+          settings.calendarSize,
+        )
+          ? settings.calendarSize
+          : "normal"
+
+        const sourceBtn = document.createElement("div")
+        sourceBtn.className = "context-menu-item custom-music-item"
+        sourceBtn.innerHTML = `<i class="fa-solid ${showSourceSwitcher ? "fa-eye-slash" : "fa-eye"}"></i> <span>${showSourceSwitcher ? i18n.calendar_hide_source_tabs || "Hide Calendar Source" : i18n.calendar_show_source_tabs || "Show Calendar Source"}</span>`
+        sourceBtn.onclick = () => {
+          const newVal = !showSourceSwitcher
+          updateSetting("calendarShowSourceSwitcher", newVal)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "calendarShowSourceSwitcher", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(sourceBtn, menuLock)
+
+        const miniBtn = document.createElement("div")
+        miniBtn.className = "context-menu-item custom-music-item"
+        miniBtn.innerHTML = `<i class="fa-solid ${calendarSize === "mini" ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${calendarSize === "mini" ? i18n.calendar_normal_size || "Normal Calendar" : i18n.calendar_mini_size || "Mini Calendar"}</span>`
+        miniBtn.onclick = () => {
+          const newVal = calendarSize === "mini" ? "normal" : "mini"
+          updateSetting("calendarSize", newVal)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "calendarSize", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(miniBtn, menuLock)
+
+        const expandBtn = document.createElement("div")
+        expandBtn.className = "context-menu-item custom-music-item"
+        expandBtn.innerHTML = `<i class="fa-solid ${calendarSize === "expanded" ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${calendarSize === "expanded" ? i18n.calendar_normal_size || "Normal Calendar" : i18n.calendar_expand_size || "Enlarge Calendar"}</span>`
+        expandBtn.onclick = () => {
+          const newVal = calendarSize === "expanded" ? "normal" : "expanded"
+          updateSetting("calendarSize", newVal)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "calendarSize", value: newVal },
+            }),
+          )
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(expandBtn, menuLock)
+      }
+
       const borderBtn = document.createElement("div")
       borderBtn.className = "context-menu-item custom-music-item"
       borderBtn.innerHTML = `<i class="${isBorderHidden ? "fa-regular fa-square" : "fa-solid fa-border-all"}"></i> <span>${isBorderHidden ? i18n.menu_show_border || "Show Border" : i18n.menu_hide_border || "Hide Border"}</span>`

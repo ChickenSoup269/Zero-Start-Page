@@ -2011,6 +2011,7 @@ function createApplySettings(effectInstances) {
       "round",
       "square",
       "analog",
+      "cartoon",
       "fliqlo",
       "cyber-pulse",
       "neon-grid",

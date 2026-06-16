@@ -1249,21 +1249,27 @@ body.date-clock-style-analog #date {
 }
 
 .analog-clock {
+  --analog-accent-color: var(--clock-style-accent-color, var(--accent-color, #a8c0ff));
+  --analog-accent-rgb: var(--clock-style-accent-rgb, var(--accent-color-rgb, 168, 192, 255));
   width: clamp(160px, 28vw, 230px);
   height: clamp(160px, 28vw, 230px);
   border-radius: 50%;
   margin: 0 auto;
   position: relative;
-  border: 2px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.68);
+  overflow: hidden;
+  isolation: isolate;
+  contain: paint;
+  border: 2px solid rgba(var(--analog-accent-rgb), 0.68);
   background: radial-gradient(
     circle at 30% 25%,
     rgba(255, 255, 255, 0.24),
     rgba(255, 255, 255, 0.06) 48%,
-    rgba(0, 0, 0, 0.32)
+    rgba(var(--analog-accent-rgb), 0.1) 72%,
+    rgba(0, 0, 0, 0.34)
   );
   box-shadow:
     0 16px 34px rgba(0, 0, 0, 0.36),
-    0 0 26px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12),
+    0 0 14px rgba(var(--analog-accent-rgb), 0.1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
@@ -1278,7 +1284,7 @@ body.analog-bg-blur-enabled .analog-clock {
   inset: 12%;
   border-radius: 50%;
   border: 1px dashed rgba(var(--clock-color-rgb, 255, 255, 255), 0.24);
-  box-shadow: inset 0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.08);
+  box-shadow: inset 0 0 28px rgba(var(--analog-accent-rgb), 0.12);
 }
 
 .analog-clock::after {
@@ -1317,8 +1323,10 @@ body.analog-bg-blur-enabled .analog-clock {
   position: absolute;
   font-size: clamp(0.72rem, 1.8vw, 0.95rem);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  color: color-mix(in srgb, var(--analog-accent-color) 36%, #ffffff);
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.5),
+    0 0 6px rgba(var(--analog-accent-rgb), 0.14);
   user-select: none;
   z-index: 2;
 }
@@ -1333,7 +1341,8 @@ body.analog-bg-blur-enabled .analog-clock {
   position: absolute;
   width: 2px;
   height: 14px;
-  background: rgba(255, 255, 255, 0.88);
+  background: color-mix(in srgb, var(--analog-accent-color) 42%, #ffffff);
+  box-shadow: 0 0 5px rgba(var(--analog-accent-rgb), 0.18);
   border-radius: 2px;
   z-index: 2;
 }
@@ -1413,7 +1422,8 @@ body.analog-bg-blur-enabled .analog-clock {
 .analog-hand.second {
   width: 2px;
   height: 42%;
-  background: var(--accent-color);
+  background: var(--analog-accent-color);
+  box-shadow: 0 0 8px rgba(var(--analog-accent-rgb), 0.38);
 }
 
 .analog-clock.no-seconds .analog-hand.second {
@@ -1428,8 +1438,8 @@ body.analog-bg-blur-enabled .analog-clock {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--accent-color);
-  box-shadow: 0 0 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+  background: var(--analog-accent-color);
+  box-shadow: 0 0 8px rgba(var(--analog-accent-rgb), 0.38);
   z-index: 3;
 }
 
@@ -4514,6 +4524,7 @@ body.clock-style-transparent-bg.date-clock-style-glass .clock-date-wrap,
 body.clock-style-transparent-bg.date-clock-style-round .clock-date-wrap,
 body.clock-style-transparent-bg.date-clock-style-square .clock-date-wrap,
 body.clock-style-transparent-bg.date-clock-style-analog .analog-clock,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-transparent-bg.date-clock-style-prism-stack .prism-stack-clock,
 body.clock-style-transparent-bg.date-clock-style-metro-panel .metro-panel-clock,
 body.clock-style-transparent-bg.date-clock-style-neon-grid .neon-grid-clock,
@@ -4540,6 +4551,8 @@ body.clock-style-transparent-bg.date-clock-style-c4-bomb .c4-bomb-bricks,
 body.clock-style-transparent-bg.date-clock-style-c4-bomb .c4-bomb-tape,
 body.clock-style-transparent-bg.date-clock-style-c4-bomb .c4-bomb-wires,
 body.clock-style-transparent-bg.date-clock-style-c4-bomb .c4-bomb-clock::after,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-clock::before,
+body.clock-style-transparent-bg.date-clock-style-cartoon .cartoon-clock::after,
 body.clock-style-transparent-bg.date-clock-style-aurora-ribbon .aurora-ribbon-clock::before {
   display: none !important;
 }
@@ -4580,6 +4593,7 @@ body.clock-style-bg-accent.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-square .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-analog .analog-clock,
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-accent.date-clock-style-cool .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-sidestyle .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-jp-style .clock-date-wrap,
@@ -4602,6 +4616,7 @@ body.clock-style-bg-custom.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-square .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-analog .analog-clock,
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-custom.date-clock-style-cool .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-sidestyle .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-jp-style .clock-date-wrap,
@@ -4622,6 +4637,7 @@ body.clock-style-bg-light.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-light.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-light.date-clock-style-square .clock-date-wrap,
 body.clock-style-bg-light.date-clock-style-analog .analog-clock,
+body.clock-style-bg-light.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-light.date-clock-style-metro-panel .metro-panel-clock,
 body.clock-style-bg-light.date-clock-style-cyber-pulse .cyber-pulse-clock,
 body.clock-style-bg-light.date-clock-style-neon-grid .neon-grid-clock,
@@ -4636,6 +4652,7 @@ body.clock-style-bg-dark.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-dark.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-dark.date-clock-style-square .clock-date-wrap,
 body.clock-style-bg-dark.date-clock-style-analog .analog-clock,
+body.clock-style-bg-dark.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-dark.date-clock-style-metro-panel .metro-panel-clock,
 body.clock-style-bg-dark.date-clock-style-cyber-pulse .cyber-pulse-clock,
 body.clock-style-bg-dark.date-clock-style-neon-grid .neon-grid-clock,
@@ -4656,7 +4673,7 @@ body.clock-style-bg-accent.date-clock-style-minimal .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-square .clock-date-wrap,
-body.clock-style-bg-accent.date-clock-style-analog .clock-date-wrap,
+body.clock-style-bg-accent.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-accent.date-clock-style-cool .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-sidestyle .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-jp-style .clock-date-wrap,
@@ -4684,6 +4701,15 @@ body.clock-style-bg-accent.date-clock-style-lunar-orbit .lunar-orbit-clock {
     inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(14px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-analog .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-analog .clock-date-wrap {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 body.clock-style-bg-accent.date-clock-style-default .clock-date-wrap,
@@ -4721,11 +4747,11 @@ body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-clock::
 body.clock-style-bg-accent.date-clock-style-analog .analog-clock {
   background:
     radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.2), transparent 30%),
-    linear-gradient(145deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.34), rgba(8, 10, 18, 0.78)) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.58) !important;
+    linear-gradient(145deg, rgba(var(--analog-accent-rgb), 0.24), rgba(8, 10, 18, 0.78)) !important;
+  border-color: rgba(var(--analog-accent-rgb), 0.58) !important;
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.35),
-    0 0 28px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24),
+    0 0 16px rgba(var(--analog-accent-rgb), 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 
@@ -4782,7 +4808,7 @@ body.clock-style-bg-custom.date-clock-style-minimal .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-glass .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-round .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-square .clock-date-wrap,
-body.clock-style-bg-custom.date-clock-style-analog .clock-date-wrap,
+body.clock-style-bg-custom.date-clock-style-cartoon .cartoon-clock,
 body.clock-style-bg-custom.date-clock-style-cool .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-sidestyle .clock-date-wrap,
 body.clock-style-bg-custom.date-clock-style-jp-style .clock-date-wrap,
@@ -4850,11 +4876,11 @@ body.clock-style-bg-custom.date-clock-style-aurora-ribbon .aurora-ribbon-clock::
 body.clock-style-bg-custom.date-clock-style-analog .analog-clock {
   background:
     radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.2), transparent 30%),
-    linear-gradient(145deg, color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 72%, transparent), rgba(8, 10, 18, 0.78)) !important;
+    linear-gradient(145deg, color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 58%, transparent), rgba(8, 10, 18, 0.78)) !important;
   border-color: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 72%, rgba(255, 255, 255, 0.3)) !important;
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.35),
-    0 0 28px color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 28%, transparent),
+    0 0 16px color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 18%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 

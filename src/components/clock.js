@@ -18,7 +18,7 @@ let c4BombBeepRunId = 0
 let c4BombFastTickTimer = null
 
 const C4_BOMB_PASSCODE = "7355608"
-const C4_BOMB_FUSE_MS = 11500
+const C4_BOMB_FUSE_MS = 8000
 const C4_BOMB_BEEP_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/beep.mp3"
 const C4_BOMB_WRONG_URL =
