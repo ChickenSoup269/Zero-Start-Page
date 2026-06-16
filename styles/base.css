@@ -1500,9 +1500,7 @@ body.date-clock-style-cool .cool-style-wrapper {
   flex-direction: column;
   align-items: center;
   gap: 0.18rem;
-  text-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.42),
-    0 0 20px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.42);
   line-height: 1.1;
 }
 body.date-clock-style-cool .cool-bar {
@@ -1522,7 +1520,7 @@ body.date-clock-style-cool .cool-greeting {
 body.date-clock-style-cool .cool-dayname {
   font-size: calc(var(--clock-size) * 0.6);
   font-weight: 850;
-  color: var(--accent-color, #fff);
+  color: var(--clock-color, #fff);
   text-transform: uppercase;
   margin: 0.2rem 0;
   font-family: var(--font-date);

@@ -7439,6 +7439,9 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   text-align: center;
   margin-top: var(--space-1);
   font-weight: 600;
+  line-height: 1.35;
+  padding-block: 0.08em;
+  overflow-wrap: anywhere;
   transition: opacity 0.3s ease;
 }
 

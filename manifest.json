@@ -21,12 +21,9 @@
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "browser_url_overrides": {
-    "newtab": "index.html"
-  },
   "background": {
-    "scripts": ["background.js"],
     "service_worker": "background.js",
+    "scripts": ["background.js"],
     "type": "module"
   },
   "browser_specific_settings": {

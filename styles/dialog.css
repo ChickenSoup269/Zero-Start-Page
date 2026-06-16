@@ -234,6 +234,13 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: var(--accent-color);
   letter-spacing: 0.3px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
 }
 
 .dialog-body {
@@ -529,7 +536,14 @@
   color: #fff;
   font-size: 1.08rem;
   font-weight: 800;
-  line-height: 1.25;
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
 }
 
 .first-run-tour-text {
