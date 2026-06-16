@@ -742,15 +742,55 @@ export function showContextMenu(
       }
 
       if (id === "weather") {
-        const isExpanded = settings.weatherExpanded === true
+        const isMini = settings.weatherMini === true
+        const isExpanded = settings.weatherExpanded === true && !isMini
+        const miniBtn = document.createElement("div")
+        miniBtn.className = "context-menu-item custom-music-item"
+        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-cloud-sun" : "fa-cloud"}"></i> <span>${isMini ? i18n.weather_normal_size || "Normal Weather" : i18n.weather_mini_size || "Mini Weather"}</span>`
+        miniBtn.onclick = () => {
+          const newVal = !isMini
+          updateSetting("weatherMini", newVal)
+          if (newVal) updateSetting("weatherExpanded", false)
+          saveSettings(true)
+
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "weatherMini", value: newVal },
+            }),
+          )
+          if (newVal) {
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "weatherExpanded", value: false },
+              }),
+            )
+          }
+
+          const el = document.getElementById("weather-container")
+          if (el) {
+            el.classList.toggle("weather-mini", newVal)
+            el.classList.toggle("weather-expanded", false)
+          }
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(miniBtn, menuLock)
+
         const expandBtn = document.createElement("div")
         expandBtn.className = "context-menu-item custom-music-item"
         expandBtn.innerHTML = `<i class="fa-solid ${isExpanded ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${isExpanded ? i18n.weather_collapse || "Shrink Weather" : i18n.weather_expand || "Enlarge Weather"}</span>`
         expandBtn.onclick = () => {
           const newVal = !isExpanded
+          if (newVal) updateSetting("weatherMini", false)
           updateSetting("weatherExpanded", newVal)
           saveSettings(true)
 
+          if (newVal) {
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "weatherMini", value: false },
+              }),
+            )
+          }
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
               detail: { key: "weatherExpanded", value: newVal },
@@ -759,6 +799,7 @@ export function showContextMenu(
 
           const el = document.getElementById("weather-container")
           if (el) {
+            el.classList.toggle("weather-mini", false)
             el.classList.toggle("weather-expanded", newVal)
           }
           hideContextMenu()

@@ -18,6 +18,10 @@ const WEATHER_REFRESH_LIMIT_WINDOW = 60 * 60 * 1000
 const DEFAULT_FORECAST_ENDPOINT = "https://api.open-meteo.com/v1/forecast"
 const DEFAULT_GEOCODING_ENDPOINT =
   "https://geocoding-api.open-meteo.com/v1/search"
+const WEATHER_API_PARAM_KEYS = {
+  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  geocoding: ["name", "count", "language", "format"],
+}
 
 const WEATHER_CODES = {
   0: ["sun", "Clear sky", "Trời quang"],
@@ -169,6 +173,9 @@ export class Weather {
       if (event.detail?.key === "weatherExpanded") {
         this.applySkin()
       }
+      if (event.detail?.key === "weatherMini") {
+        this.applySkin()
+      }
       if (
         event.detail?.key === "weatherApiMode" ||
         event.detail?.key === "weatherForecastEndpoint" ||
@@ -203,7 +210,11 @@ export class Weather {
     this.container.classList.toggle("skin-transparent", skin === "transparent")
     this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
     this.container.classList.toggle("widget-border-hidden", settings.weatherHideBorder === true)
-    this.container.classList.toggle("weather-expanded", settings.weatherExpanded === true)
+    this.container.classList.toggle("weather-mini", settings.weatherMini === true)
+    this.container.classList.toggle(
+      "weather-expanded",
+      settings.weatherExpanded === true && settings.weatherMini !== true,
+    )
   }
 
   locationFromSettings() {
@@ -226,27 +237,51 @@ export class Weather {
     return [location.name, location.country].filter(Boolean).join(", ")
   }
 
-  isCustomWeatherApi() {
+  getWeatherApiConfig(type = "forecast") {
     const settings = getSettings()
-    return (
-      settings.weatherApiMode === "custom" &&
-      this.isValidHttpUrl(settings.weatherForecastEndpoint)
+    const endpointKey =
+      type === "geocoding" ? "weatherGeocodingEndpoint" : "weatherForecastEndpoint"
+    const defaultEndpoint =
+      type === "geocoding" ? DEFAULT_GEOCODING_ENDPOINT : DEFAULT_FORECAST_ENDPOINT
+
+    if (settings.weatherApiMode !== "custom") {
+      return {
+        endpoint: defaultEndpoint,
+        sourceLabel: "Open-Meteo",
+        sourceKey: `extension:${defaultEndpoint}`,
+      }
+    }
+
+    const endpoint = String(settings[endpointKey] || "").trim()
+    const validation = this.validateWeatherEndpoint(
+      endpoint,
+      WEATHER_API_PARAM_KEYS[type] || WEATHER_API_PARAM_KEYS.forecast,
     )
+
+    if (!validation.ok) {
+      throw new Error(
+        geti18n().weather_custom_api_invalid ||
+          "Custom weather API URL is invalid. Check Weather API settings.",
+      )
+    }
+
+    return {
+      endpoint,
+      sourceLabel: this.sourceLabelFromEndpoint(endpoint),
+      sourceKey: `custom:${endpoint}`,
+    }
+  }
+
+  isCustomWeatherApi() {
+    return getSettings().weatherApiMode === "custom"
   }
 
   getForecastEndpoint() {
-    const settings = getSettings()
-    return this.isCustomWeatherApi()
-      ? settings.weatherForecastEndpoint.trim()
-      : DEFAULT_FORECAST_ENDPOINT
+    return this.getWeatherApiConfig("forecast").endpoint
   }
 
   getGeocodingEndpoint() {
-    const settings = getSettings()
-    return settings.weatherApiMode === "custom" &&
-      this.isValidHttpUrl(settings.weatherGeocodingEndpoint)
-      ? settings.weatherGeocodingEndpoint.trim()
-      : DEFAULT_GEOCODING_ENDPOINT
+    return this.getWeatherApiConfig("geocoding").endpoint
   }
 
   withQueryParams(endpoint, params) {
@@ -263,6 +298,33 @@ export class Weather {
       return url.protocol === "https:" || url.protocol === "http:"
     } catch {
       return false
+    }
+  }
+
+  validateWeatherEndpoint(value, requiredParams = []) {
+    try {
+      const url = new URL(String(value || "").trim())
+      if (url.protocol !== "https:" && url.protocol !== "http:") {
+        return { ok: false, reason: "protocol" }
+      }
+      const duplicateParams = requiredParams.filter((param) =>
+        url.searchParams.has(param),
+      )
+      if (duplicateParams.length) {
+        return { ok: false, reason: "query", params: duplicateParams }
+      }
+      return { ok: true }
+    } catch {
+      return { ok: false, reason: "url" }
+    }
+  }
+
+  sourceLabelFromEndpoint(endpoint) {
+    try {
+      const host = new URL(endpoint).hostname.replace(/^www\./, "")
+      return host.includes("open-meteo.com") ? "Open-Meteo" : host
+    } catch {
+      return geti18n().settings_weather_api_custom || "Custom endpoint"
     }
   }
 
@@ -308,8 +370,20 @@ export class Weather {
 
     const location = this.locationFromSettings()
     this.setLocationLabel(location)
+    let apiConfig
+    try {
+      apiConfig = this.getWeatherApiConfig("forecast")
+    } catch (error) {
+      body.innerHTML = `
+        <div class="weather-error">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>${this.escapeHtml(error.message)}</span>
+        </div>
+      `
+      return
+    }
 
-    const cached = this.getCachedWeather(location)
+    const cached = this.getCachedWeather(location, apiConfig.sourceKey)
     if (!force && cached) {
       this.renderWeather(cached)
       return
@@ -329,10 +403,16 @@ export class Weather {
         forecast_days: "4",
       })
       const data = await this.fetchJson(
-        this.withQueryParams(this.getForecastEndpoint(), params),
+        this.withQueryParams(apiConfig.endpoint, params),
         { signal: this.abortController.signal },
       )
-      const payload = { location, data, fetchedAt: Date.now() }
+      const payload = {
+        location,
+        data,
+        fetchedAt: Date.now(),
+        sourceLabel: apiConfig.sourceLabel,
+        sourceKey: apiConfig.sourceKey,
+      }
       this.setCachedWeather(payload)
       this.renderWeather(payload)
     } catch (error) {
@@ -356,6 +436,7 @@ export class Weather {
     }
 
     try {
+      const geocodingConfig = this.getWeatherApiConfig("geocoding")
       const params = new URLSearchParams({
         name: query,
         count: "1",
@@ -363,7 +444,7 @@ export class Weather {
         format: "json",
       })
       const data = await this.fetchJson(
-        this.withQueryParams(this.getGeocodingEndpoint(), params),
+        this.withQueryParams(geocodingConfig.endpoint, params),
       )
       const first = data.results?.[0]
       if (!first) {
@@ -405,6 +486,7 @@ export class Weather {
     this.suggestionAbortController = new AbortController()
 
     try {
+      const geocodingConfig = this.getWeatherApiConfig("geocoding")
       const params = new URLSearchParams({
         name: query,
         count: "5",
@@ -412,7 +494,7 @@ export class Weather {
         format: "json",
       })
       const data = await this.fetchJson(
-        this.withQueryParams(this.getGeocodingEndpoint(), params),
+        this.withQueryParams(geocodingConfig.endpoint, params),
         { signal: this.suggestionAbortController.signal },
       )
       this.renderSuggestions(data.results || [])
@@ -626,7 +708,7 @@ export class Weather {
         <div title="${this.escapeAttribute(`${geti18n().weather_wind || "Wind"}: ${wind}`)}"><span>${this.escapeHtml(geti18n().weather_wind || "Wind")}</span><strong title="${this.escapeAttribute(wind)}">${this.escapeHtml(wind)}</strong></div>
       </div>
       <div class="weather-forecast">${forecast}</div>
-      <div class="weather-source">Open-Meteo</div>
+      <div class="weather-source">${this.escapeHtml(payload.sourceLabel || "Open-Meteo")}</div>
     `
   }
 
@@ -656,14 +738,15 @@ export class Weather {
     }
   }
 
-  getCachedWeather(location) {
+  getCachedWeather(location, sourceKey) {
     try {
       const cache = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || "null")
       if (!cache || Date.now() - cache.fetchedAt > WEATHER_CACHE_TTL) return null
       const sameLocation =
         Math.abs(cache.location.latitude - location.latitude) < 0.001 &&
         Math.abs(cache.location.longitude - location.longitude) < 0.001
-      return sameLocation ? cache : null
+      const sameSource = !sourceKey || cache.sourceKey === sourceKey
+      return sameLocation && sameSource ? cache : null
     } catch {
       return null
     }

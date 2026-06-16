@@ -3,6 +3,9 @@ import { getSettings, updateSetting, saveSettings } from "../services/state.js"
 import { geti18n } from "../services/i18n.js"
 import { showAlert } from "../utils/dialog.js"
 
+const GEMINI_APP_URL = "https://gemini.google.com/app"
+const MAX_GEMINI_DIRECT_URL_LENGTH = 1900
+
 const SEARCH_ENGINES = {
   google: {
     name: "Google",
@@ -57,7 +60,8 @@ const SEARCH_ENGINES = {
     name: "Google Gemini",
     shortName: "Gemini",
     domain: "gemini.google.com",
-    url: (q) => `https://gemini.google.com/app?q=${encodeURIComponent(q)}`,
+    geminiPrompt: (q) => q,
+    url: (q) => buildGeminiUrl(q),
     placeholderKey: "search_placeholder_gemini",
   },
   "gemini-image": {
@@ -65,7 +69,7 @@ const SEARCH_ENGINES = {
     shortName: "Gemini Img",
     domain: "gemini.google.com",
     geminiPrompt: (q) => `Create an image: ${q}`,
-    url: () => "https://gemini.google.com/app",
+    url: (q) => buildGeminiUrl(q),
     placeholderKey: "search_placeholder_gemini_image",
   },
   youtube: {
@@ -478,22 +482,42 @@ function handleSuggestionClick(e) {
   }
 }
 
+function buildGeminiUrl(prompt) {
+  const url = new URL(GEMINI_APP_URL)
+  url.searchParams.set("q", prompt)
+  return url.toString()
+}
+
+async function copyGeminiPromptFallback(prompt) {
+  const i18n = geti18n()
+  try {
+    if (!navigator.clipboard?.writeText) {
+      throw new Error("Clipboard API is not available")
+    }
+    await navigator.clipboard.writeText(prompt)
+    showAlert(
+      i18n.alert_gemini_prompt_fallback ||
+        "Could not pass the prompt directly. Prompt copied; paste it into Gemini.",
+    )
+  } catch (clipboardError) {
+    console.error("Gemini prompt fallback failed:", clipboardError)
+  }
+  window.location.href = GEMINI_APP_URL
+}
+
 async function openGeminiWithPrompt(engine, query) {
   const geminiPrompt = engine.geminiPrompt ? engine.geminiPrompt(query) : query
-  const i18n = geti18n()
+  const directUrl = engine.url(geminiPrompt)
 
   try {
-    await navigator.clipboard.writeText(geminiPrompt)
-    showAlert(
-      i18n.alert_gemini_prompt_copied ||
-        "Prompt copied. Paste it into Gemini after it opens.",
-    )
+    if (directUrl.length > MAX_GEMINI_DIRECT_URL_LENGTH) {
+      await copyGeminiPromptFallback(geminiPrompt)
+      return
+    }
+    window.location.href = directUrl
   } catch (error) {
-    window.location.href = `https://gemini.google.com/app#prompt=${encodeURIComponent(geminiPrompt)}`
-    return
+    await copyGeminiPromptFallback(geminiPrompt)
   }
-
-  window.location.href = `https://gemini.google.com/app?q=${encodeURIComponent(geminiPrompt)}`
 }
 
 function submitSearch() {

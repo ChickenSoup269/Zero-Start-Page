@@ -94,6 +94,14 @@ const BUG_REPORT_FORM_URLS = {
   en: "https://docs.google.com/forms/d/e/1FAIpQLSeO4hVhXSx1yz3nr2WEKnmJUO3JJWaB0guFGNGzISjoB5hc1A/viewform?usp=publish-editor",
 }
 
+const DEFAULT_WEATHER_FORECAST_ENDPOINT = "https://api.open-meteo.com/v1/forecast"
+const DEFAULT_WEATHER_GEOCODING_ENDPOINT =
+  "https://geocoding-api.open-meteo.com/v1/search"
+const WEATHER_API_REQUIRED_PARAMS = {
+  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  geocoding: ["name", "count", "language", "format"],
+}
+
 function syncUninstallSurveyLanguage(language) {
   try {
     window.chrome?.runtime?.sendMessage?.(
@@ -4935,6 +4943,10 @@ export function setupGeneralEventHandlers(
   const weatherGeocodingEndpointInput = document.getElementById(
     "weather-geocoding-endpoint-input",
   )
+  const weatherApiTestBtn = document.getElementById("weather-api-test-btn")
+  const weatherApiConnectionState = document.getElementById(
+    "weather-api-connection-state",
+  )
   const dispatchWeatherApiUpdate = (key, value) => {
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -4942,21 +4954,260 @@ export function setupGeneralEventHandlers(
       }),
     )
   }
+  const getWeatherEndpointStatus = (input) =>
+    input?.id === "weather-forecast-endpoint-input"
+      ? document.getElementById("weather-forecast-endpoint-status")
+      : document.getElementById("weather-geocoding-endpoint-status")
+  const getWeatherEndpointType = (input) =>
+    input?.id === "weather-forecast-endpoint-input" ? "forecast" : "geocoding"
+  const validateWeatherEndpoint = (value, type) => {
+    const endpoint = String(value || "").trim()
+    if (!endpoint) {
+      return {
+        ok: false,
+        message:
+          i18n.settings_weather_url_required ||
+          "Required for custom weather API.",
+      }
+    }
+    try {
+      const url = new URL(endpoint)
+      if (url.protocol !== "https:" && url.protocol !== "http:") {
+        return {
+          ok: false,
+          message:
+            i18n.settings_weather_url_protocol ||
+            "Use a full http:// or https:// URL.",
+        }
+      }
+      const duplicateParams = (WEATHER_API_REQUIRED_PARAMS[type] || []).filter(
+        (param) => url.searchParams.has(param),
+      )
+      if (duplicateParams.length) {
+        return {
+          ok: false,
+          message:
+            i18n.settings_weather_url_no_query ||
+            "Use the base endpoint only; the app adds weather query parameters.",
+        }
+      }
+      return {
+        ok: true,
+        value: endpoint,
+        message: i18n.settings_weather_url_valid || "Looks good.",
+      }
+    } catch {
+      return {
+        ok: false,
+        message:
+          i18n.settings_weather_url_invalid ||
+          "Enter a valid URL, including https://.",
+      }
+    }
+  }
+  const renderWeatherEndpointValidation = (input) => {
+    if (!input) return { ok: true, value: "" }
+    const validation = validateWeatherEndpoint(
+      input.value,
+      getWeatherEndpointType(input),
+    )
+    const status = getWeatherEndpointStatus(input)
+    input.classList.toggle("is-valid", validation.ok)
+    input.classList.toggle("is-invalid", !validation.ok)
+    input.setAttribute("aria-invalid", validation.ok ? "false" : "true")
+    input.setCustomValidity(validation.ok ? "" : validation.message)
+    if (status) {
+      status.textContent = validation.message
+      status.classList.toggle("is-valid", validation.ok)
+      status.classList.toggle("is-invalid", !validation.ok)
+    }
+    return validation
+  }
+  const validateWeatherApiSettings = () => {
+    const mode = weatherApiModeSelect?.value || getSettings().weatherApiMode
+    if (mode !== "custom") return { ok: true }
+    const forecast = renderWeatherEndpointValidation(weatherForecastEndpointInput)
+    const geocoding = renderWeatherEndpointValidation(weatherGeocodingEndpointInput)
+    return {
+      ok: forecast.ok && geocoding.ok,
+      forecast: forecast.value,
+      geocoding: geocoding.value,
+    }
+  }
+  const setWeatherApiConnectionState = (state, message) => {
+    if (!weatherApiConnectionState) return
+    const iconMap = {
+      idle: "fa-circle-info",
+      testing: "fa-spinner fa-spin",
+      success: "fa-circle-check",
+      error: "fa-triangle-exclamation",
+    }
+    weatherApiConnectionState.classList.toggle("is-testing", state === "testing")
+    weatherApiConnectionState.classList.toggle("is-success", state === "success")
+    weatherApiConnectionState.classList.toggle("is-error", state === "error")
+    weatherApiConnectionState.innerHTML = `
+      <i class="fa-solid ${iconMap[state] || iconMap.idle}"></i>
+      <span>${String(message || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</span>
+    `
+  }
+  const withWeatherParams = (endpoint, params) => {
+    const url = new URL(endpoint)
+    params.forEach((value, key) => url.searchParams.set(key, value))
+    return url.toString()
+  }
+  const fetchWeatherApiJson = async (url) => {
+    const controller = new AbortController()
+    const timeoutId = window.setTimeout(() => controller.abort(), 10000)
+    try {
+      const response = await fetch(url, {
+        cache: "no-store",
+        mode: "cors",
+        signal: controller.signal,
+      })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      return await response.json()
+    } finally {
+      window.clearTimeout(timeoutId)
+    }
+  }
+  const commitWeatherEndpointInput = (input, key) => {
+    const validation = renderWeatherEndpointValidation(input)
+    if (!validation.ok) {
+      setWeatherApiConnectionState(
+        "error",
+        i18n.settings_weather_fix_urls || "Fix the highlighted URLs first.",
+      )
+      return false
+    }
+    handleSettingUpdate(key, validation.value)
+    dispatchWeatherApiUpdate(key, validation.value)
+    setWeatherApiConnectionState(
+      "idle",
+      i18n.settings_weather_test_idle || "Not tested yet.",
+    )
+    return true
+  }
+  const applyWeatherOpenMeteoPreset = () => {
+    if (weatherApiModeSelect) weatherApiModeSelect.value = "custom"
+    if (weatherForecastEndpointInput) {
+      weatherForecastEndpointInput.value = DEFAULT_WEATHER_FORECAST_ENDPOINT
+    }
+    if (weatherGeocodingEndpointInput) {
+      weatherGeocodingEndpointInput.value = DEFAULT_WEATHER_GEOCODING_ENDPOINT
+    }
+    renderWeatherEndpointValidation(weatherForecastEndpointInput)
+    renderWeatherEndpointValidation(weatherGeocodingEndpointInput)
+    handleSettingUpdate("weatherApiMode", "custom")
+    handleSettingUpdate("weatherForecastEndpoint", DEFAULT_WEATHER_FORECAST_ENDPOINT)
+    handleSettingUpdate("weatherGeocodingEndpoint", DEFAULT_WEATHER_GEOCODING_ENDPOINT)
+    dispatchWeatherApiUpdate("weatherApiMode", "custom")
+    setWeatherApiConnectionState(
+      "idle",
+      i18n.settings_weather_preset_applied || "Open-Meteo endpoints applied.",
+    )
+  }
+  const testWeatherApiConnection = async () => {
+    const validation = validateWeatherApiSettings()
+    if (!validation.ok) {
+      setWeatherApiConnectionState(
+        "error",
+        i18n.settings_weather_fix_urls || "Fix the highlighted URLs first.",
+      )
+      return
+    }
+
+    const settings = getSettings()
+    const latitude = Number(settings.weatherLatitude) || 10.8231
+    const longitude = Number(settings.weatherLongitude) || 106.6297
+    const forecastEndpoint =
+      weatherApiModeSelect?.value === "custom"
+        ? validation.forecast
+        : DEFAULT_WEATHER_FORECAST_ENDPOINT
+    const geocodingEndpoint =
+      weatherApiModeSelect?.value === "custom"
+        ? validation.geocoding
+        : DEFAULT_WEATHER_GEOCODING_ENDPOINT
+
+    setWeatherApiConnectionState(
+      "testing",
+      i18n.settings_weather_testing || "Testing weather API...",
+    )
+    if (weatherApiTestBtn) weatherApiTestBtn.disabled = true
+    try {
+      const forecastParams = new URLSearchParams({
+        latitude: String(latitude),
+        longitude: String(longitude),
+        current: "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+        daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+        timezone: "auto",
+        forecast_days: "4",
+      })
+      const geocodingParams = new URLSearchParams({
+        name: settings.weatherLocationName || "Ho Chi Minh City",
+        count: "1",
+        language: settings.language === "vi" ? "vi" : "en",
+        format: "json",
+      })
+      const [forecastData, geocodingData] = await Promise.all([
+        fetchWeatherApiJson(withWeatherParams(forecastEndpoint, forecastParams)),
+        fetchWeatherApiJson(withWeatherParams(geocodingEndpoint, geocodingParams)),
+      ])
+      if (!forecastData?.current || !forecastData?.daily) {
+        throw new Error("Forecast response missing current/daily data")
+      }
+      if (!Array.isArray(geocodingData?.results)) {
+        throw new Error("Geocoding response missing results array")
+      }
+      setWeatherApiConnectionState(
+        "success",
+        i18n.settings_weather_test_success || "Connection works.",
+      )
+      dispatchWeatherApiUpdate("weatherForecastEndpoint", forecastEndpoint)
+    } catch (error) {
+      setWeatherApiConnectionState(
+        "error",
+        `${i18n.settings_weather_test_failed || "Connection failed."} ${error?.message || ""}`.trim(),
+      )
+    } finally {
+      if (weatherApiTestBtn) weatherApiTestBtn.disabled = false
+    }
+  }
 
   weatherApiModeSelect?.addEventListener("change", () => {
     handleSettingUpdate("weatherApiMode", weatherApiModeSelect.value)
+    validateWeatherApiSettings()
+    setWeatherApiConnectionState(
+      "idle",
+      i18n.settings_weather_test_idle || "Not tested yet.",
+    )
     dispatchWeatherApiUpdate("weatherApiMode", weatherApiModeSelect.value)
   })
+  ;[weatherForecastEndpointInput, weatherGeocodingEndpointInput].forEach((input) => {
+    input?.addEventListener("input", () => {
+      renderWeatherEndpointValidation(input)
+      setWeatherApiConnectionState(
+        "idle",
+        i18n.settings_weather_test_idle || "Not tested yet.",
+      )
+    })
+  })
   weatherForecastEndpointInput?.addEventListener("change", () => {
-    const value = weatherForecastEndpointInput.value.trim()
-    handleSettingUpdate("weatherForecastEndpoint", value)
-    dispatchWeatherApiUpdate("weatherForecastEndpoint", value)
+    commitWeatherEndpointInput(
+      weatherForecastEndpointInput,
+      "weatherForecastEndpoint",
+    )
   })
   weatherGeocodingEndpointInput?.addEventListener("change", () => {
-    const value = weatherGeocodingEndpointInput.value.trim()
-    handleSettingUpdate("weatherGeocodingEndpoint", value)
-    dispatchWeatherApiUpdate("weatherGeocodingEndpoint", value)
+    commitWeatherEndpointInput(
+      weatherGeocodingEndpointInput,
+      "weatherGeocodingEndpoint",
+    )
   })
+  document
+    .querySelector("[data-weather-api-preset='open-meteo']")
+    ?.addEventListener("click", applyWeatherOpenMeteoPreset)
+  weatherApiTestBtn?.addEventListener("click", testWeatherApiConnection)
+  validateWeatherApiSettings()
 
   setupLayoutCheckbox(
     DOM.hideTimerAlarmDropdownCheckbox,

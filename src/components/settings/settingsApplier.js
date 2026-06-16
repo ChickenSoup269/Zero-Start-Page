@@ -41,6 +41,11 @@ import {
   renderTimerAlarmSelectOptions,
 } from "../../data/timerAlarmSounds.js"
 
+const WEATHER_API_REQUIRED_PARAMS = {
+  forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
+  geocoding: ["name", "count", "language", "format"],
+}
+
 let _prevBg = null // Track last applied background for fade-in trigger
 let _prevEffect = null // Track last selected effect to avoid unnecessary restart
 let _perfMonitorStarted = false
@@ -4334,19 +4339,66 @@ function createUpdateSettingsInputs(effectInstances) {
     const weatherGeocodingEndpointInput = document.getElementById(
       "weather-geocoding-endpoint-input",
     )
+    const setWeatherEndpointValidation = (input, type) => {
+      if (!input) return
+      const endpoint = String(input.value || "").trim()
+      let ok = false
+      let message = ""
+      if (!endpoint) {
+        message =
+          geti18n().settings_weather_url_required ||
+          "Required for custom weather API."
+      } else {
+        try {
+          const url = new URL(endpoint)
+          const duplicateParams = (WEATHER_API_REQUIRED_PARAMS[type] || []).filter(
+            (param) => url.searchParams.has(param),
+          )
+          ok =
+            (url.protocol === "https:" || url.protocol === "http:") &&
+            duplicateParams.length === 0
+          message = ok
+            ? geti18n().settings_weather_url_valid || "Looks good."
+            : duplicateParams.length
+              ? geti18n().settings_weather_url_no_query ||
+                "Use the base endpoint only; the app adds weather query parameters."
+              : geti18n().settings_weather_url_protocol ||
+                "Use a full http:// or https:// URL."
+        } catch {
+          message =
+            geti18n().settings_weather_url_invalid ||
+            "Enter a valid URL, including https://."
+        }
+      }
+      const status =
+        input.id === "weather-forecast-endpoint-input"
+          ? document.getElementById("weather-forecast-endpoint-status")
+          : document.getElementById("weather-geocoding-endpoint-status")
+      input.classList.toggle("is-valid", ok)
+      input.classList.toggle("is-invalid", !ok)
+      input.setAttribute("aria-invalid", ok ? "false" : "true")
+      input.setCustomValidity(ok ? "" : message)
+      if (status) {
+        status.textContent = message
+        status.classList.toggle("is-valid", ok)
+        status.classList.toggle("is-invalid", !ok)
+      }
+    }
     if (weatherApiModeSelect) {
       weatherApiModeSelect.value = settings.weatherApiMode || "extension"
     }
     if (weatherCustomApiSettings) {
       weatherCustomApiSettings.style.display =
-        settings.weatherApiMode === "custom" ? "block" : "none"
+        settings.weatherApiMode === "custom" ? "grid" : "none"
     }
     if (weatherForecastEndpointInput) {
       weatherForecastEndpointInput.value = settings.weatherForecastEndpoint || ""
+      setWeatherEndpointValidation(weatherForecastEndpointInput, "forecast")
     }
     if (weatherGeocodingEndpointInput) {
       weatherGeocodingEndpointInput.value =
         settings.weatherGeocodingEndpoint || ""
+      setWeatherEndpointValidation(weatherGeocodingEndpointInput, "geocoding")
     }
     if (DOM.hideTimerAlarmDropdownCheckbox) {
       DOM.hideTimerAlarmDropdownCheckbox.checked =

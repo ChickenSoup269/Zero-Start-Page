@@ -1582,7 +1582,7 @@
                                 <option value="brave">Brave</option>
                                 <option value="startpage">Startpage</option>
                                 <option value="perplexity">Perplexity</option>
-                                <option value="gemini">Gemini</option>
+                                <option value="gemini">Google Gemini</option>
                                 <option value="gemini-image">Gemini Image</option>
                                 <option value="youtube">YouTube</option>
                                 <option value="github">GitHub</option>
@@ -1658,16 +1658,36 @@
                                 manual refresh to 3 times per hour. Custom endpoints are not limited.</small>
                         </div>
                         <div class="setting-item" id="weather-custom-api-settings" style="display: none;">
+                            <div class="weather-api-presets" aria-label="Weather API presets">
+                                <button type="button" class="secondary-btn weather-api-preset-btn"
+                                    data-weather-api-preset="open-meteo">
+                                    <i class="fa-solid fa-cloud-sun"></i>
+                                    <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
+                                </button>
+                            </div>
                             <label for="weather-forecast-endpoint-input"
                                 data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
                             <input type="url" id="weather-forecast-endpoint-input"
-                                placeholder="https://api.open-meteo.com/v1/forecast"
-                                style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color); margin-bottom: 0.5rem;">
+                                aria-describedby="weather-forecast-endpoint-status"
+                                placeholder="https://api.open-meteo.com/v1/forecast">
+                            <small class="weather-api-field-status" id="weather-forecast-endpoint-status"></small>
                             <label for="weather-geocoding-endpoint-input"
                                 data-i18n="settings_weather_geocoding_endpoint">Geocoding endpoint</label>
                             <input type="url" id="weather-geocoding-endpoint-input"
-                                placeholder="https://geocoding-api.open-meteo.com/v1/search"
-                                style="width: 100%; padding: 0.5rem; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--text-color);">
+                                aria-describedby="weather-geocoding-endpoint-status"
+                                placeholder="https://geocoding-api.open-meteo.com/v1/search">
+                            <small class="weather-api-field-status" id="weather-geocoding-endpoint-status"></small>
+                            <div class="weather-api-test-row">
+                                <button type="button" class="primary-btn" id="weather-api-test-btn">
+                                    <i class="fa-solid fa-plug-circle-check"></i>
+                                    <span data-i18n="settings_weather_test_connection">Test connection</span>
+                                </button>
+                                <div class="weather-api-connection-state" id="weather-api-connection-state"
+                                    role="status" aria-live="polite">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span data-i18n="settings_weather_test_idle">Not tested yet.</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="setting-item-row">
                             <label for="hide-timer-alarm-dropdown-checkbox"

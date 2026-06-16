@@ -15,13 +15,16 @@ let c4BombExploded = false
 let c4BombWrongUntil = 0
 let c4BombLastBeepSecond = null
 let c4BombBeepRunId = 0
+let c4BombFastTickTimer = null
 
 const C4_BOMB_PASSCODE = "7355608"
-const C4_BOMB_FUSE_MS = 45000
+const C4_BOMB_FUSE_MS = 11500
 const C4_BOMB_BEEP_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/beep.mp3"
 const C4_BOMB_WRONG_URL =
   "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/alexis_gaming_cam-among-us-alarme-sabotage-393155.mp3"
+const C4_BOMB_PLANT_URL =
+  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/sounds/counter-strike-c4-sound.mp3"
 
 function playC4BombSound(url, volume = 0.5) {
   try {
@@ -41,17 +44,15 @@ function playC4BombWrongSound() {
   playC4BombSound(C4_BOMB_WRONG_URL, 0.65)
 }
 
+function playC4BombPlantSound() {
+  playC4BombSound(C4_BOMB_PLANT_URL, 0.75)
+}
+
 function playC4BombCountdownBeep(remainingSeconds) {
   c4BombBeepRunId += 1
   const runId = c4BombBeepRunId
   const offsets =
-    remainingSeconds > 10
-      ? [0]
-      : remainingSeconds > 6
-        ? [0, 500]
-        : remainingSeconds > 3
-          ? [0, 320, 640]
-          : [0, 220, 440, 660]
+    remainingSeconds > 8 ? [0] : remainingSeconds > 4 ? [0, 360] : [0, 220, 440]
 
   offsets.forEach((offset) => {
     setTimeout(() => {
@@ -59,6 +60,152 @@ function playC4BombCountdownBeep(remainingSeconds) {
       playC4BombBeep()
     }, offset)
   })
+}
+
+function clearC4BombFastTick() {
+  if (!c4BombFastTickTimer) return
+  clearTimeout(c4BombFastTickTimer)
+  c4BombFastTickTimer = null
+}
+
+function scheduleC4BombFastTick() {
+  if (c4BombFastTickTimer) return
+
+  c4BombFastTickTimer = setTimeout(() => {
+    c4BombFastTickTimer = null
+    if (c4BombDetonateAt) updateTime()
+  }, 25)
+}
+
+function getC4BombFastTicks(remainingMs) {
+  if (remainingMs <= 0) return "00"
+
+  const withinSecondMs = remainingMs % 1000 || 1000
+  return String(Math.max(0, Math.floor((withinSecondMs - 1) / 10))).padStart(
+    2,
+    "0",
+  )
+}
+
+function isEditableKeyboardTarget(target) {
+  if (!target) return false
+  const tagName = target.tagName?.toLowerCase?.()
+  return (
+    target.isContentEditable ||
+    tagName === "input" ||
+    tagName === "textarea" ||
+    tagName === "select"
+  )
+}
+
+function isC4BombKeyboardEnabled(event) {
+  if (isEditableKeyboardTarget(event.target)) return false
+
+  const settings = getSettings()
+  if (settings.dateClockStyle !== "c4-bomb") return false
+  if ((settings.clockDisplayMode || "all") !== "all") return false
+
+  const clockFadeWrap = document.getElementById("clock-fade-wrap")
+  if (clockFadeWrap?.classList.contains("is-hidden")) return false
+
+  return Boolean(clockElement?.querySelector(".c4-bomb-clock"))
+}
+
+function inputC4BombDigit(digit) {
+  if (
+    !/^\d$/.test(digit) ||
+    c4BombUnlocked ||
+    c4BombExploded ||
+    c4BombDetonateAt
+  ) {
+    return false
+  }
+
+  playC4BombBeep()
+  c4BombInput = `${c4BombInput}${digit}`.slice(0, C4_BOMB_PASSCODE.length)
+  c4BombWrongUntil = 0
+
+  if (c4BombInput === C4_BOMB_PASSCODE) {
+    c4BombUnlocked = true
+    c4BombPulseUntil = Date.now() + 900
+  } else if (c4BombInput.length >= C4_BOMB_PASSCODE.length) {
+    c4BombInput = ""
+    c4BombWrongUntil = Date.now() + 1100
+    c4BombPulseUntil = Date.now() + 500
+    playC4BombWrongSound()
+  }
+
+  updateTime()
+  return true
+}
+
+function backspaceC4BombInput() {
+  if (c4BombUnlocked || c4BombExploded || c4BombDetonateAt || !c4BombInput) {
+    return false
+  }
+
+  c4BombInput = c4BombInput.slice(0, -1)
+  c4BombWrongUntil = 0
+  c4BombPulseUntil = Date.now() + 220
+  playC4BombBeep()
+  updateTime()
+  return true
+}
+
+function resetC4BombInput() {
+  if (!c4BombInput && !c4BombWrongUntil) return false
+
+  c4BombInput = ""
+  c4BombWrongUntil = 0
+  c4BombPulseUntil = Date.now() + 300
+  updateTime()
+  return true
+}
+
+function toggleC4BombLever() {
+  if (!c4BombUnlocked || c4BombExploded || c4BombDetonateAt) return false
+
+  c4BombLeverOn = !c4BombLeverOn
+  c4BombPulseUntil = Date.now() + 700
+  updateTime()
+  return true
+}
+
+function triggerC4BombAction() {
+  if (c4BombExploded) {
+    c4BombExploded = false
+    c4BombWrongUntil = 0
+    c4BombLastBeepSecond = null
+    c4BombBeepRunId += 1
+    clearC4BombFastTick()
+    c4BombPulseUntil = Date.now() + 700
+    updateTime()
+    return true
+  }
+
+  if (!c4BombUnlocked) return false
+
+  if (c4BombArmed || c4BombDetonateAt) {
+    c4BombArmed = false
+    c4BombLeverOn = false
+    c4BombDetonateAt = 0
+    c4BombLastBeepSecond = null
+    c4BombBeepRunId += 1
+    clearC4BombFastTick()
+  } else if (c4BombLeverOn) {
+    c4BombArmed = true
+    c4BombDetonateAt = Date.now() + C4_BOMB_FUSE_MS
+    c4BombLastBeepSecond = null
+    c4BombBeepRunId += 1
+    playC4BombPlantSound()
+    scheduleC4BombFastTick()
+  } else {
+    return false
+  }
+
+  c4BombPulseUntil = Date.now() + 900
+  updateTime()
+  return true
 }
 
 function setClockLunarVisibility(element, visible) {
@@ -457,11 +604,24 @@ function getSafeWeekday(date, lang, isShort, tz, settings = getSettings()) {
 function getCustomDateString(now, langCode, tz, settings, formatOverride) {
   const format = formatOverride || settings.dateFormat || "full"
   // If user wants to replace Gregorian date with Lunar date in clock
-  if (settings.showClockLunarCalendar && settings.showClockLunarMode === "replace") {
+  if (
+    settings.showClockLunarCalendar &&
+    settings.showClockLunarMode === "replace"
+  ) {
     const zonedNow = getZonedDate(now, tz)
-    const lunar = convertSolar2Lunar(zonedNow.getDate(), zonedNow.getMonth() + 1, zonedNow.getFullYear())
+    const lunar = convertSolar2Lunar(
+      zonedNow.getDate(),
+      zonedNow.getMonth() + 1,
+      zonedNow.getFullYear(),
+    )
     const leapStr = lunar.leap ? " (nhuận)" : ""
-    const weekdayStr = getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).replace(/^<span class=\"weekday-part\">|<\/span>$/g, "")
+    const weekdayStr = getSafeWeekday(
+      now,
+      langCode,
+      settings.shortWeekday,
+      tz,
+      settings,
+    ).replace(/^<span class=\"weekday-part\">|<\/span>$/g, "")
     return `<span class="weekday-part"> ${weekdayStr} </span>, <span class="clock-lunar-replace">${lunar.day}/${lunar.month}${leapStr} Âm lịch</span>`
   }
   let dateString = ""
@@ -1161,6 +1321,7 @@ export function updateTime() {
       c4BombWrongUntil = 0
       c4BombLastBeepSecond = null
       c4BombBeepRunId += 1
+      clearC4BombFastTick()
       c4BombExploded = true
       c4BombPulseUntil = Date.now() + 1400
     }
@@ -1181,6 +1342,7 @@ export function updateTime() {
     const isCounting = c4BombDetonateAt > Date.now()
     const remainingMs = Math.max(0, c4BombDetonateAt - Date.now())
     const remainingSeconds = Math.ceil(remainingMs / 1000)
+    const fastCountdownTicks = getC4BombFastTicks(remainingMs)
     const isCodeWrong = Date.now() < c4BombWrongUntil
 
     if (isCounting && remainingSeconds !== c4BombLastBeepSecond) {
@@ -1189,13 +1351,20 @@ export function updateTime() {
     } else if (!isCounting) {
       c4BombLastBeepSecond = null
       c4BombBeepRunId += 1
+      clearC4BombFastTick()
     }
+
+    if (isCounting) scheduleC4BombFastTick()
 
     const countdownMinute = String(Math.floor(remainingSeconds / 60)).padStart(
       2,
       "0",
     )
     const countdownSecond = String(remainingSeconds % 60).padStart(2, "0")
+    const rapidCountdownHtml =
+      isCounting && remainingSeconds <= 8
+        ? `<span class="c4-bomb-rapid-second">${fastCountdownTicks}</span>`
+        : ""
     const inputDisplay = isCodeWrong
       ? "X X X X"
       : c4BombInput.padEnd(C4_BOMB_PASSCODE.length, "_")
@@ -1248,6 +1417,7 @@ export function updateTime() {
                       <span class="c4-bomb-hour">${countdownMinute}</span>
                       <span class="c4-bomb-separator">:</span>
                       <span class="c4-bomb-minute">${countdownSecond}</span>
+                      ${rapidCountdownHtml}
                     `
                     : `
                       <span class="c4-bomb-hour">${hh}</span>
@@ -1261,7 +1431,7 @@ export function updateTime() {
             <div class="c4-bomb-code-line">${c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`}</div>
             ${
               isCounting
-                ? `<div class="c4-bomb-date">DETONATION IN ${countdownMinute}:${countdownSecond}</div>`
+                ? `<div class="c4-bomb-date">${countdownMinute}:${countdownSecond}${remainingSeconds <= 8 ? `.${fastCountdownTicks}` : ""}</div>`
                 : c4BombExploded
                   ? `<div class="c4-bomb-date">SYSTEM TRIPPED - PRESS RESET</div>`
                   : isTimer
@@ -1328,7 +1498,8 @@ export function updateTime() {
     }
 
     const weekdayEl = holoRoot.querySelector(".holo-ring-weekday")
-    if (weekdayEl && weekdayEl.innerHTML !== weekday) weekdayEl.innerHTML = weekday
+    if (weekdayEl && weekdayEl.innerHTML !== weekday)
+      weekdayEl.innerHTML = weekday
     const hourEl = holoRoot.querySelector(".holo-ring-hour")
     if (hourEl && hourEl.textContent !== hh) hourEl.textContent = hh
     const minuteEl = holoRoot.querySelector(".holo-ring-minute")
@@ -1434,13 +1605,7 @@ export function updateTime() {
   } else if (dateClockStyle === "metro-panel") {
     const weekday = isTimer
       ? countdownLabel
-      : getSafeWeekday(
-          now,
-          langCode,
-          settings.shortWeekday,
-          tz,
-          settings,
-        )
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings)
     const dateStr = shouldShowDate
       ? getCustomDateString(now, langCode, tz, settings)
       : ""
@@ -1494,11 +1659,7 @@ export function updateTime() {
       : ""
     const lunarParts = getVietnameseLunarParts(now, tz)
     const orbDay = isTimer ? (timerH > 0 ? hh : mm) : lunarParts.day
-    const orbMonth = isTimer
-      ? timerH > 0
-        ? "HR"
-        : "MIN"
-      : lunarParts.month
+    const orbMonth = isTimer ? (timerH > 0 ? "HR" : "MIN") : lunarParts.month
     const orbLabel = isTimer ? weekday : lunarParts.label
     const dateLine = isTimer
       ? countdownLabel
@@ -1527,13 +1688,7 @@ export function updateTime() {
   } else if (dateClockStyle === "cartoon") {
     const weekday = isTimer
       ? timerLabel
-      : getSafeWeekday(
-          now,
-          dateLangCode,
-          settings.shortWeekday,
-          tz,
-          settings,
-        )
+      : getSafeWeekday(now, dateLangCode, settings.shortWeekday, tz, settings)
     const dateStr = shouldShowDate
       ? getCustomDateString(now, dateLangCode, tz, settings)
       : ""
@@ -1683,7 +1838,11 @@ export function updateTime() {
 
   // Lunar calendar display
   const lunarWrap = document.getElementById("clock-lunar-date")
-  if (settings.showClockLunarCalendar && settings.showClockLunarMode !== "replace" && !isTimer) {
+  if (
+    settings.showClockLunarCalendar &&
+    settings.showClockLunarMode !== "replace" &&
+    !isTimer
+  ) {
     const zonedNow = tz
       ? new Date(now.toLocaleString("en-US", { timeZone: tz }))
       : now
@@ -1750,67 +1909,37 @@ export function initClock() {
   clockElement?.addEventListener("click", (event) => {
     const key = event.target?.closest?.(".c4-bomb-key")
     if (key) {
-      if (c4BombUnlocked || c4BombExploded || c4BombDetonateAt) return
-
-      playC4BombBeep()
-      const digit = key.dataset.c4Key || ""
-      c4BombInput = `${c4BombInput}${digit}`.slice(0, C4_BOMB_PASSCODE.length)
-      c4BombWrongUntil = 0
-
-      if (c4BombInput === C4_BOMB_PASSCODE) {
-        c4BombUnlocked = true
-        c4BombPulseUntil = Date.now() + 900
-      } else if (c4BombInput.length >= C4_BOMB_PASSCODE.length) {
-        c4BombInput = ""
-        c4BombWrongUntil = Date.now() + 1100
-        c4BombPulseUntil = Date.now() + 500
-        playC4BombWrongSound()
-      }
-
-      updateTime()
+      inputC4BombDigit(key.dataset.c4Key || "")
       return
     }
 
     const lever = event.target?.closest?.(".c4-bomb-lever")
     if (lever) {
-      if (!c4BombUnlocked || c4BombExploded || c4BombDetonateAt) return
-
-      c4BombLeverOn = !c4BombLeverOn
-      c4BombPulseUntil = Date.now() + 700
-      updateTime()
+      toggleC4BombLever()
       return
     }
 
     const button = event.target?.closest?.(".c4-bomb-button")
     if (!button) return
 
-    if (c4BombExploded) {
-      c4BombExploded = false
-      c4BombWrongUntil = 0
-      c4BombLastBeepSecond = null
-      c4BombBeepRunId += 1
-      c4BombPulseUntil = Date.now() + 700
-      updateTime()
-      return
+    triggerC4BombAction()
+  })
+
+  window.addEventListener("keydown", (event) => {
+    if (!isC4BombKeyboardEnabled(event)) return
+
+    let handled = false
+    if (/^\d$/.test(event.key)) {
+      handled = inputC4BombDigit(event.key)
+    } else if (event.key === "Backspace") {
+      handled = backspaceC4BombInput()
+    } else if (event.key === "Enter") {
+      handled = triggerC4BombAction()
+    } else if (event.key === "Escape") {
+      handled = resetC4BombInput()
     }
 
-    if (!c4BombUnlocked) return
-
-    if (c4BombArmed || c4BombDetonateAt) {
-      c4BombArmed = false
-      c4BombLeverOn = false
-      c4BombDetonateAt = 0
-      c4BombLastBeepSecond = null
-      c4BombBeepRunId += 1
-    } else if (c4BombLeverOn) {
-      c4BombArmed = true
-      c4BombDetonateAt = Date.now() + C4_BOMB_FUSE_MS
-      c4BombLastBeepSecond = null
-      c4BombBeepRunId += 1
-    }
-
-    c4BombPulseUntil = Date.now() + 900
-    updateTime()
+    if (handled) event.preventDefault()
   })
 
   window.addEventListener("layoutUpdated", (e) => {
@@ -1889,10 +2018,7 @@ export function updateCustomTitle() {
   el.style.fontSize = (settings.customTitleFontSize || 24) + "px"
   el.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"
 
-  const titleTextTargets = [
-    el,
-    ...el.querySelectorAll(".clock-hue-char"),
-  ]
+  const titleTextTargets = [el, ...el.querySelectorAll(".clock-hue-char")]
   if (settings.customTitleBorderSize > 0) {
     const stroke = `${settings.customTitleBorderSize}px ${settings.customTitleBorderColor}`
     titleTextTargets.forEach((target) => {
