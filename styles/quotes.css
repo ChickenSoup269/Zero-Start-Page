@@ -4,7 +4,7 @@
   top: 85%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 100;
+  z-index: 1040;
   text-align: center;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);

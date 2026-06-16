@@ -11468,3 +11468,18 @@ body.bookmark-group-border-hidden
 .g-apps-context-menu .g-apps-menu-toggle:hover i {
   transform: none !important;
 }
+
+/* Ensure widgets are above search container (z-index: 1030) */
+.glass-panel,
+.notepad-container,
+.quotes-container,
+.weather-container,
+.timer-container,
+.todo-container,
+.music-container,
+#full-calendar-container,
+#clock-date-wrap,
+#custom-title-display,
+.floating-note-window {
+  z-index: 1040;
+}

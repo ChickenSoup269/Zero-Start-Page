@@ -100,7 +100,26 @@ export function makeDraggable(
     element._draggableViewportClamp = () => {
       window.clearTimeout(resizeTimer)
       resizeTimer = window.setTimeout(
-        () => clampElementIntoViewport(element, componentId, true),
+        () => {
+          const currentSettings = getSettings()
+          const isClockOrTitleOrSearch =
+            componentId === "clock" ||
+            componentId === "customTitle" ||
+            componentId === "searchBar"
+          const isFreeMoveEnabled = (componentId === "clock" && currentSettings.freeMoveClock) || 
+                                   (componentId === "customTitle" && currentSettings.freeMoveCustomTitle) ||
+                                   (componentId === "searchBar" && currentSettings.freeMoveSearchBar)
+          
+          if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
+            const saved = currentSettings.componentPositions?.[componentId]
+            if (saved && saved.top && saved.left) {
+               element.style.top = saved.top
+               element.style.left = saved.left
+               if (saved.transform) element.style.transform = saved.transform
+            }
+            clampElementIntoViewport(element, componentId, false)
+          }
+        },
         80,
       )
     }

@@ -240,6 +240,7 @@ function createLazyEffects(settings) {
 
 export function initSettings() {
   refreshDOMReferences()
+  applyTranslations()
   const settings = getSettings()
   if (settings.effect === "stormRain") {
     updateSetting("effect", "musicBars")

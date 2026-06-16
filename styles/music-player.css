@@ -4,7 +4,7 @@
   bottom: var(--space-3);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 1040;
   transition:
     opacity 0.4s,
     transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
