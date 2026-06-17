@@ -40,8 +40,10 @@ function clampElementIntoViewport(element, componentId, persist = false) {
 
   const clampedLeft = Math.max(minLeft, Math.min(rect.left, maxLeft))
   const clampedTop = Math.max(minTop, Math.min(rect.top, maxTop))
-  const deltaX = clampedLeft - rect.left
-  const deltaY = clampedTop - rect.top
+  
+  const zoom = Number.parseFloat(style.zoom) || 1
+  const deltaX = (clampedLeft - rect.left) / zoom
+  const deltaY = (clampedTop - rect.top) / zoom
 
   if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) return
 
@@ -245,8 +247,9 @@ export function makeDraggable(
         targetScreenTop = Math.max(vh - initialHeight, Math.min(targetScreenTop, 0))
     }
 
-    element.style.left = (targetScreenLeft - magicOffsetX) + "px"
-    element.style.top = (targetScreenTop - magicOffsetY) + "px"
+    const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
+    element.style.left = ((targetScreenLeft - magicOffsetX) / zoom) + "px"
+    element.style.top = ((targetScreenTop - magicOffsetY) / zoom) + "px"
   }
 
   function closeDragElement() {

@@ -496,6 +496,7 @@ async function bootstrap() {
 
     event.preventDefault()
     event.stopPropagation()
+    
     showContextMenu(event.clientX, event.clientY, -1, "widget", match[1])
   })
 

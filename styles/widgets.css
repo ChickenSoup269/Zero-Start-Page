@@ -11504,8 +11504,135 @@ body.bookmark-group-border-hidden
 }
 
 /* Mini Widget Modes */
-#music-player-container.music-mini,
-.todo-container.todo-mini,
-#timer-component.timer-mini {
-  zoom: 0.8;
+
+/* Todo Mini Widget Mode overrides */
+.todo-container.todo-mini {
+  width: 330px !important;
+  max-height: 370px !important;
+  padding: 16px !important;
 }
+
+.todo-container.todo-mini .todo-header {
+  margin-bottom: 0.5rem !important;
+}
+
+.todo-container.todo-mini .todo-header h3 {
+  font-size: 0.95rem !important;
+}
+
+.todo-container.todo-mini .todo-progress-text {
+  font-size: 0.65rem !important;
+}
+
+.todo-container.todo-mini .todo-header-actions .icon-btn {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 0.75rem !important;
+}
+
+.todo-container.todo-mini .lcp-tabs {
+  margin: 0 0 6px !important;
+  padding: 2px !important;
+}
+
+.todo-container.todo-mini .lcp-tab {
+  font-size: 0.75rem !important;
+  min-height: 28px !important;
+}
+
+.todo-container.todo-mini .todo-input-container {
+  margin-bottom: 0.6rem !important;
+  padding: var(--space-0-5) !important;
+}
+
+.todo-container.todo-mini .todo-input-shell {
+  padding: 0 var(--space-0-5) !important;
+}
+
+.todo-container.todo-mini .todo-input-container input {
+  font-size: 0.8rem !important;
+  padding: 4px 0 !important;
+}
+
+.todo-container.todo-mini .todo-text {
+  font-size: 0.82rem !important;
+}
+
+.todo-container.todo-mini .todo-item {
+  padding: 4px 6px !important;
+  margin: 4px 0 !important;
+}
+
+.todo-container.todo-mini .todo-checkbox {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.todo-container.todo-mini .subtask-drag-handle {
+  font-size: 0.72rem !important;
+}
+
+/* Timer Mini Widget Mode overrides */
+#timer-component.timer-mini {
+  width: 215px !important;
+  min-width: 215px !important;
+  padding: 10px !important;
+}
+
+#timer-component.timer-mini .timer-display {
+  font-size: 1.55rem !important;
+  padding: 6px !important;
+}
+
+#timer-component.timer-mini .timer-status {
+  font-size: 0.65rem !important;
+  padding: 2px 6px !important;
+}
+
+#timer-component.timer-mini .timer-controls .icon-btn {
+  height: 28px !important;
+  font-size: 0.78rem !important;
+}
+
+#timer-component.timer-mini .timer-saved-presets-label {
+  font-size: 0.6rem !important;
+}
+
+#timer-component.timer-mini .timer-saved-presets-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+#timer-component.timer-mini .timer-saved-preset {
+  height: 26px !important;
+}
+
+#timer-component.timer-mini .timer-saved-preset-btn,
+#timer-component.timer-mini .timer-saved-preset-remove {
+  font-size: 0.7rem !important;
+}
+
+#timer-component.timer-mini .timer-alarm-row {
+  font-size: 0.7rem !important;
+}
+
+#timer-component.timer-mini .timer-alarm-row select {
+  font-size: 0.7rem !important;
+}
+
+#timer-component.timer-mini #timer-smart-input {
+  font-size: 1.3rem !important;
+  padding: 6px !important;
+}
+
+#timer-component.timer-mini .timer-keypad-btn {
+  height: 30px !important;
+  font-size: 0.8rem !important;
+}
+
+/* Music Mini Widget Mode overrides - Scales the entire wrapper to fit all styles perfectly */
+#music-player-container.music-mini .music-player-wrapper {
+  transform: scale(0.8) !important;
+  transform-origin: bottom center !important;
+}
+
+

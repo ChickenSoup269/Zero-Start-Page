@@ -141,6 +141,7 @@ export class MusicPlayer {
     // Áp dụng Skin và Shaking ban đầu từ cài đặt
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
+    this.container.classList.toggle("music-mini", settings.musicMini === true)
     if (
       ["gameboy", "white-blur", "m3-accent", "transparent"].includes(
         settings.musicPlayerSkin,

@@ -741,7 +741,13 @@ export function showContextMenu(
         contextMenu.insertBefore(transBtn, menuLock)
       }
 
-      if (["todo", "timer", "music"].includes(id)) {
+      if (id !== "daily-quotes") {
+        const separator = document.createElement("div")
+        separator.className = "context-menu-divider custom-music-item"
+        contextMenu.insertBefore(separator, menuLock)
+      }
+
+      if (["todo", "timer"].includes(id)) {
         const settingKey = `${id}Mini`
         const isMini = settings[settingKey] === true
         const miniBtn = document.createElement("div")
@@ -749,12 +755,18 @@ export function showContextMenu(
         
         const labels = {
           todo: { mini: i18n.todo_mini_size || "Mini Todo", normal: i18n.todo_normal_size || "Normal Todo" },
-          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" },
-          music: { mini: i18n.music_mini_size || "Mini Music", normal: i18n.music_normal_size || "Normal Music" }
+          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" }
         }
         
         miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
         miniBtn.onclick = () => {
+          const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            music: "music-player-container"
+          }
+          const el = document.getElementById(widgetIdMap[id])
+
           const newVal = !isMini
           updateSetting(settingKey, newVal)
           saveSettings(true)
@@ -763,12 +775,7 @@ export function showContextMenu(
               detail: { key: settingKey, value: newVal },
             })
           )
-          const widgetIdMap = {
-            todo: "todo-container",
-            timer: "timer-component",
-            music: "music-player-container"
-          }
-          const el = document.getElementById(widgetIdMap[id])
+          
           if (el) {
             el.classList.toggle(`${id}-mini`, newVal)
           }
@@ -930,10 +937,6 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(borderBtn, menuLock)
 
-      const separator = document.createElement("div")
-      separator.className = "context-menu-divider custom-music-item"
-      contextMenu.insertBefore(separator, borderBtn)
-
       if (id === "timer") {
         addTimerAlarmDropdownToggle(i18n, settings, borderBtn)
       }
@@ -1071,6 +1074,33 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(lightTransparentBtn, shakeBtn)
+
+      const separator = document.createElement("div")
+      separator.className = "context-menu-divider custom-music-item"
+      contextMenu.insertBefore(separator, menuLock)
+
+      const isMini = settings.musicMini === true
+      
+      const miniBtn = document.createElement("div")
+      miniBtn.className = "context-menu-item custom-music-item"
+      miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? i18n.music_normal_size || "Normal Music" : i18n.music_mini_size || "Mini Music"}</span>`
+      miniBtn.onclick = () => {
+        const el = document.getElementById("music-player-container")
+
+        const newVal = !isMini
+        updateSetting("musicMini", newVal)
+        saveSettings(true)
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: "musicMini", value: newVal },
+          })
+        )
+        if (el) {
+          el.classList.toggle("music-mini", newVal)
+        }
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(miniBtn, menuLock)
 
       const isMusicBorderHidden = settings.musicPlayerHideBorder === true
       const musicBorderBtn = document.createElement("div")

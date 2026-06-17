@@ -1578,5 +1578,12 @@
   "qa_show_weather": "Hiện Thời tiết",
   "qa_show_music": "Hiện Nhạc",
   "qa_show_clock": "Hiện Đồng hồ",
-  "qa_show_gregorian": "Hiện Lịch Dương"
+  "qa_show_gregorian": "Hiện Lịch Dương",
+  "music_normal_size": "Kích thước mặc định",
+  "music_mini_size": "Kích thước nhỏ",
+  "music_expand_size": "Kích thước lớn",
+  "todo_normal_size": "Todo mặc định",
+  "todo_mini_size": "Todo nhỏ",
+  "timer_normal_size": "Timer mặc định",
+  "timer_mini_size": "Timer nhỏ"
 }

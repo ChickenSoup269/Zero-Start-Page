@@ -526,7 +526,6 @@
   "sky_lanterns_type_lantern": "Traditional Lantern",
   "sky_lanterns_type_dots": "Light Dots (Stars)",
   "effect_pixel_run": "Pixel Run",
-
   "effect_nintendo_pixel": "Retro Terminal (CRT Monitor)",
   "effect_crt_scanlines": "CRT Scanlines (80s/90s)",
   "effect_retro_game": "Retro Game (Space Invaders)",
@@ -757,7 +756,6 @@
   "style_pixel_rain": "Rain",
   "style_pixel_wind": "Wind",
   "style_pixel_storm": "Storm",
-
   "style_spotify": "Spotify",
   "style_neon": "Neon",
   "style_minimal": "Minimal",
@@ -1580,5 +1578,12 @@
   "qa_show_weather": "Show Weather",
   "qa_show_music": "Show Music",
   "qa_show_clock": "Show Clock",
-  "qa_show_gregorian": "Show Gregorian Calendar"
+  "qa_show_gregorian": "Show Gregorian Calendar",
+  "music_normal_size": "Normal Music",
+  "music_mini_size": "Mini Music",
+  "music_expand_size": "Expand Music",
+  "todo_normal_size": "Normal Todo",
+  "todo_mini_size": "Mini Todo",
+  "timer_normal_size": "Normal Timer",
+  "timer_mini_size": "Mini Timer"
 }

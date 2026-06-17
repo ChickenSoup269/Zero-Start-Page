@@ -461,6 +461,7 @@ export class TodoList {
       // Context Menu
       li.addEventListener("contextmenu", (e) => {
         e.preventDefault()
+        e.stopPropagation()
         showContextMenu(
           e.clientX,
           e.clientY,
