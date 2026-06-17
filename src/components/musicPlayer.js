@@ -200,6 +200,10 @@ export class MusicPlayer {
       wrapper.classList.add("skin-light-transparent")
       if (this.container) this.container.classList.add("skin-light-transparent")
     }
+
+    if (this.container) {
+      this.container.classList.toggle("music-mini", settings.musicMini === true)
+    }
   }
   applyNoShaking(disabled) {
     const wrapper = this.container.querySelector(".music-player-wrapper")

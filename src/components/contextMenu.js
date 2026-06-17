@@ -741,6 +741,42 @@ export function showContextMenu(
         contextMenu.insertBefore(transBtn, menuLock)
       }
 
+      if (["todo", "timer", "music"].includes(id)) {
+        const settingKey = `${id}Mini`
+        const isMini = settings[settingKey] === true
+        const miniBtn = document.createElement("div")
+        miniBtn.className = "context-menu-item custom-music-item"
+        
+        const labels = {
+          todo: { mini: i18n.todo_mini_size || "Mini Todo", normal: i18n.todo_normal_size || "Normal Todo" },
+          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" },
+          music: { mini: i18n.music_mini_size || "Mini Music", normal: i18n.music_normal_size || "Normal Music" }
+        }
+        
+        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
+        miniBtn.onclick = () => {
+          const newVal = !isMini
+          updateSetting(settingKey, newVal)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: settingKey, value: newVal },
+            })
+          )
+          const widgetIdMap = {
+            todo: "todo-container",
+            timer: "timer-component",
+            music: "music-player-container"
+          }
+          const el = document.getElementById(widgetIdMap[id])
+          if (el) {
+            el.classList.toggle(`${id}-mini`, newVal)
+          }
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(miniBtn, menuLock)
+      }
+
       if (id === "weather") {
         const isMini = settings.weatherMini === true
         const isExpanded = settings.weatherExpanded === true && !isMini

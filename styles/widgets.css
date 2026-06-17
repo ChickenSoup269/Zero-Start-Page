@@ -11502,3 +11502,10 @@ body.bookmark-group-border-hidden
 .floating-note-window {
   z-index: 1040;
 }
+
+/* Mini Widget Modes */
+#music-player-container.music-mini,
+.todo-container.todo-mini,
+#timer-component.timer-mini {
+  zoom: 0.8;
+}

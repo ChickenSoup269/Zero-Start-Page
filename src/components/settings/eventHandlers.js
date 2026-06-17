@@ -4559,6 +4559,13 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.clockAutoContrastCheckbox?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "clockAutoContrast",
+      DOM.clockAutoContrastCheckbox.checked,
+    )
+  })
+
   DOM.clockUseAccentCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "clockUseAccentColor",

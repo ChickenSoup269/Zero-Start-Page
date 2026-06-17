@@ -229,13 +229,14 @@
           value.startsWith("blob:") ||
           /^https?:\/\//i.test(value) ||
           value.startsWith("idb-img-") ||
+          value.startsWith("idb-image-") ||
           value.startsWith("idb-gif-"))
 
       const buildEarlyBackgroundCss = () => {
         const bg = settings.background
         const isIndexedDbImage =
           typeof bg === "string" &&
-          (bg.startsWith("idb-img-") || bg.startsWith("idb-gif-"))
+          (bg.startsWith("idb-img-") || bg.startsWith("idb-image-") || bg.startsWith("idb-gif-"))
 
         // Only reuse a persistent preview for the same image-like background.
         // This includes IndexedDB media: the tiny data URL preview is available
@@ -253,13 +254,6 @@
           ) {
             return cssUrl(preview)
           }
-          if (
-            preview.startsWith("#") ||
-            preview.includes("gradient(")
-          ) {
-            return preview
-          }
-          return preview
         }
         const isMultiColorActive =
           settings.activeBgUid?.startsWith("multi-") ||

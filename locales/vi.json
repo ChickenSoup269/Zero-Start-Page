@@ -1097,8 +1097,8 @@
   "settings_clock_shadow_target_weekday": "Chỉ thứ trong tuần",
   "settings_clock_shadow_target_box": "Bóng khung",
   "settings_clock_shadow_color": "Màu bóng",
-  "settings_bookmark_item_hint": "💡 Tùy chỉnh màu sắc, kích thước và bóng đổ cho từng ô dấu trang.",
-  "settings_bookmark_group_hint": "💡 Tùy chỉnh giao diện (nền, màu chữ) của thanh điều hướng Thư mục ở trên.",
+  "settings_bookmark_item_hint": "Tùy chỉnh màu sắc, kích thước và bóng đổ cho từng ô dấu trang.",
+  "settings_bookmark_group_hint": "Tùy chỉnh giao diện (nền, màu chữ) của thanh điều hướng Thư mục ở trên.",
   "settings_date_clock_section": "Ngày & Đồng hồ",
   "settings_date_format_style": "Kiểu định dạng ngày",
   "settings_clock_font_target": "Phông chữ đồng hồ áp dụng cho",
@@ -1569,5 +1569,14 @@
   "first_run_guide_chrome_bar_title": "Thanh dưới của Chrome",
   "first_run_guide_chrome_bar_desc": "Nếu bạn thấy thanh Customize Chrome hoặc Thanh tùy chỉnh Chrome ở cạnh dưới tab mới, hãy nhấp chuột phải lên thanh đó rồi chọn Hide customize Chrome bar để ẩn.",
   "first_run_guide_google_apps_desc": "Hiện hoặc ẩn góc Google Apps. Mở menu ứng dụng để tìm app, kéo thả, phóng to popup, hiện tên app và tùy chỉnh icon.",
-  "first_run_guide_search_desc": "Chọn thêm nhiều công cụ tìm kiếm, bật/tắt icon Gemini AI, chỉnh chiều rộng và độ mờ thanh tìm kiếm. Khu vực tìm kiếm cũng hỗ trợ tìm bằng ảnh và Google Lens."
+  "first_run_guide_search_desc": "Chọn thêm nhiều công cụ tìm kiếm, bật/tắt icon Gemini AI, chỉnh chiều rộng và độ mờ thanh tìm kiếm. Khu vực tìm kiếm cũng hỗ trợ tìm bằng ảnh và Google Lens.",
+  "qa_show_todo": "Hiện Todo",
+  "qa_show_notepad": "Hiện Ghi chú",
+  "qa_show_timer": "Hiện Hẹn giờ",
+  "qa_show_calendar": "Hiện Lịch",
+  "qa_show_quotes": "Hiện Trích dẫn",
+  "qa_show_weather": "Hiện Thời tiết",
+  "qa_show_music": "Hiện Nhạc",
+  "qa_show_clock": "Hiện Đồng hồ",
+  "qa_show_gregorian": "Hiện Lịch Dương"
 }

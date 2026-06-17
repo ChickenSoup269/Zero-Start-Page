@@ -612,6 +612,8 @@ export function initSettings() {
             /^https?:\/\//i.test(value))
         ) {
           updateSetting("lastUserBackgroundPreview", value)
+        } else if (typeof value === "string" && value.startsWith("idb-")) {
+          updateSetting("lastUserBackgroundPreview", null)
         }
 
         if (value != null) {

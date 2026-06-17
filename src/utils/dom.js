@@ -973,6 +973,9 @@ export let clockDateStrokeTargetSelect = document.getElementById(
 export let clockDateStrokeColorPicker = document.getElementById(
   "clock-date-stroke-color-picker",
 )
+export let clockAutoContrastCheckbox = document.getElementById(
+  "clock-auto-contrast-checkbox",
+)
 export let clockUseAccentCheckbox = document.getElementById(
   "clock-use-accent-checkbox",
 )
@@ -2970,6 +2973,9 @@ export function refreshDOMReferences() {
 )
   clockDateStrokeColorPicker = document.getElementById(
   "clock-date-stroke-color-picker",
+)
+  clockAutoContrastCheckbox = document.getElementById(
+  "clock-auto-contrast-checkbox",
 )
   clockUseAccentCheckbox = document.getElementById(
   "clock-use-accent-checkbox",

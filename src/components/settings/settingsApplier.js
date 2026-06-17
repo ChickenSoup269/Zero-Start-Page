@@ -966,8 +966,9 @@ function createApplySettings(effectInstances) {
         rawBg.startsWith("blob:") ||
         rawBg.match(/^https?:\/\//) ||
         isIdbImage(rawBg))
+    const isWaitingForIdb = isIdbMedia(rawBg) && !getBlobUrlSync(rawBg)
     const shouldCarryFadeLayer =
-      bgChanged && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
+      (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
     const earlyBgVideoElement = document.getElementById("bg-video")
 
     if (!previewExists) {
@@ -1031,27 +1032,17 @@ function createApplySettings(effectInstances) {
     if (
       isIdbMedia(settings.background) &&
       !getBlobUrlSync(settings.background) &&
-      settings.lastUserBackgroundPreview
+      settings.lastUserBackgroundPreview &&
+      typeof settings.lastUserBackgroundPreview === "string" &&
+      (settings.lastUserBackgroundPreview.startsWith("data:") ||
+        settings.lastUserBackgroundPreview.startsWith("blob:"))
     ) {
       const preview = settings.lastUserBackgroundPreview
-      // preview may be a CSS string (gradient) or data URL/object URL
       if (bgLayer) {
-        if (typeof preview === "string" && preview.startsWith("data:")) {
-          bgLayer.style.backgroundImage = cssUrl(preview)
-          bgLayer.style.backgroundSize = backgroundSize
-          bgLayer.style.backgroundRepeat = backgroundRepeat
-        } else if (
-          typeof preview === "string" &&
-          preview.includes("gradient(")
-        ) {
-          bgLayer.style.background = preview
-        } else if (typeof preview === "string" && preview.startsWith("#")) {
-          bgLayer.style.background = preview
-        } else if (typeof preview === "string" && preview.startsWith("blob:")) {
-          bgLayer.style.backgroundImage = cssUrl(preview)
-          bgLayer.style.backgroundSize = backgroundSize
-          bgLayer.style.backgroundRepeat = backgroundRepeat
-        }
+        bgLayer.style.backgroundImage = cssUrl(preview)
+        bgLayer.style.backgroundSize = backgroundSize
+        bgLayer.style.backgroundRepeat = backgroundRepeat
+        bgLayer.style.background = ""
       }
       document.body.classList.add("bg-layer-active")
     }
@@ -1072,7 +1063,7 @@ function createApplySettings(effectInstances) {
       applyBackgroundVideoLayout(bgVideoElement, settings)
     }
 
-    const applyUserSelectedBackgroundBehindSplashCursor = () => {
+    const applyUserSelectedBackground = () => {
       if (isPredefinedLocalBg) {
         if (bgLayer) bgLayer.classList.add(bg)
         document.body.classList.add("bg-layer-active")
@@ -1164,6 +1155,7 @@ function createApplySettings(effectInstances) {
             Array.isArray(settings.multiColors) &&
             settings.multiColors.length >= 2
           ) {
+            bgLayer.style.backgroundImage = ""
             bgLayer.style.background = buildMultiColorCss({
               colors: settings.multiColors,
               angle: settings.multiGradientAngle || 135,
@@ -1185,6 +1177,7 @@ function createApplySettings(effectInstances) {
               },
             })
           } else {
+            bgLayer.style.backgroundImage = ""
             bgLayer.style.background = buildGradientCss({
               start: settings.gradientStart,
               end: settings.gradientEnd,
@@ -1206,6 +1199,10 @@ function createApplySettings(effectInstances) {
     if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
       shouldUseGradientV2 = true
       document.body.classList.add("bg-layer-active")
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = "none"
+        bgLayer.style.background = `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
+      }
       const gradientV2Options = withPerformanceBudget(settings, "gradientV2", {
         color1: settings.gradientV2Color1,
         color2: settings.gradientV2Color2,
@@ -1241,6 +1238,10 @@ function createApplySettings(effectInstances) {
     else if (settings.silkActive && effectInstances.silkEffect) {
       shouldUseSilk = true
       document.body.classList.add("bg-layer-active")
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = "none"
+        bgLayer.style.background = `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
+      }
       const silkOptions = withPerformanceBudget(settings, "silk", {
         color: settings.silkColor,
         speed: settings.silkSpeed,
@@ -1259,6 +1260,10 @@ function createApplySettings(effectInstances) {
     else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
       shouldUseLightPillar = true
       document.body.classList.add("bg-layer-active")
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = "none"
+        bgLayer.style.background = `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
+      }
       const lightPillarOptions = withPerformanceBudget(
         settings,
         "lightPillar",
@@ -1286,6 +1291,10 @@ function createApplySettings(effectInstances) {
     else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
       shouldUseLiquidEther = true
       document.body.classList.add("bg-layer-active")
+      if (bgLayer) {
+        bgLayer.style.backgroundImage = "none"
+        bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
+      }
       const liquidEtherOptions = withPerformanceBudget(
         settings,
         "liquidEther",
@@ -1321,7 +1330,7 @@ function createApplySettings(effectInstances) {
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
-        applyUserSelectedBackgroundBehindSplashCursor()
+        applyUserSelectedBackground()
       }
       const splashOpts = withPerformanceBudget(
         settings,
@@ -1340,6 +1349,7 @@ function createApplySettings(effectInstances) {
     else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
       shouldUseSvgWave = true
       document.body.classList.add("bg-layer-active")
+      applyUserSelectedBackground()
       const svgWaveParams = withPerformanceBudget(
         settings,
         "svgWave",
@@ -1458,7 +1468,8 @@ function createApplySettings(effectInstances) {
           Array.isArray(settings.multiColors) &&
           settings.multiColors.length >= 2
         ) {
-          bgLayer.style.background = buildMultiColorCss({
+          bgLayer.style.backgroundImage = ""
+            bgLayer.style.background = buildMultiColorCss({
             colors: settings.multiColors,
             angle: settings.multiGradientAngle || 135,
             mode: settings.multiColorMode || "smooth",
@@ -1479,7 +1490,8 @@ function createApplySettings(effectInstances) {
             },
           })
         } else {
-          bgLayer.style.background = buildGradientCss({
+          bgLayer.style.backgroundImage = ""
+            bgLayer.style.background = buildGradientCss({
             start: settings.gradientStart,
             end: settings.gradientEnd,
             angle: settings.gradientAngle,
@@ -1510,37 +1522,43 @@ function createApplySettings(effectInstances) {
 
     // Cleanup: stop only background effects that have actually been created.
     const gradientV2Effect = getCreatedEffect(effectInstances, "gradientV2Effect")
-    if (!shouldUseGradientV2 && gradientV2Effect?.active) {
-      gradientV2Effect.stop()
+    if (!shouldUseGradientV2 && gradientV2Effect) {
+      if (gradientV2Effect.active) gradientV2Effect.stop()
+      effectInstances.releaseEffect?.("gradientV2Effect")
     }
     const svgWaveEffect = getCreatedEffect(effectInstances, "svgWaveEffect")
-    if (!shouldUseSvgWave && svgWaveEffect?.active) {
-      svgWaveEffect.stop()
+    if (!shouldUseSvgWave && svgWaveEffect) {
+      if (svgWaveEffect.active) svgWaveEffect.stop()
+      effectInstances.releaseEffect?.("svgWaveEffect")
     }
     const silkEffect = getCreatedEffect(effectInstances, "silkEffect")
-    if (!shouldUseSilk && silkEffect?.active) {
-      silkEffect.stop()
+    if (!shouldUseSilk && silkEffect) {
+      if (silkEffect.active) silkEffect.stop()
+      effectInstances.releaseEffect?.("silkEffect")
     }
     const lightPillarEffect = getCreatedEffect(
       effectInstances,
       "lightPillarEffect",
     )
-    if (!shouldUseLightPillar && lightPillarEffect?.active) {
-      lightPillarEffect.stop()
+    if (!shouldUseLightPillar && lightPillarEffect) {
+      if (lightPillarEffect.active) lightPillarEffect.stop()
+      effectInstances.releaseEffect?.("lightPillarEffect")
     }
     const liquidEtherEffect = getCreatedEffect(
       effectInstances,
       "liquidEtherEffect",
     )
-    if (!shouldUseLiquidEther && liquidEtherEffect?.active) {
-      liquidEtherEffect.stop()
+    if (!shouldUseLiquidEther && liquidEtherEffect) {
+      if (liquidEtherEffect.active) liquidEtherEffect.stop()
+      effectInstances.releaseEffect?.("liquidEtherEffect")
     }
     const splashCursorEffect = getCreatedEffect(
       effectInstances,
       "splashCursorEffect",
     )
-    if (!shouldUseSplashCursor && splashCursorEffect?.active) {
-      splashCursorEffect.stop()
+    if (!shouldUseSplashCursor && splashCursorEffect) {
+      if (splashCursorEffect.active) splashCursorEffect.stop()
+      effectInstances.releaseEffect?.("splashCursorEffect")
     }
 
     // 2.1 Background Position
@@ -2149,10 +2167,17 @@ function createApplySettings(effectInstances) {
 
       if (isFliqloLight) {
         fallbackColor = "#000000"
+      } else if (settings.clockAutoContrast === false) {
+        fallbackColor = "#ffffff"
       } else if (
         isPredefinedLocalBg ||
         isUserUploadedBg ||
-        (bg && bg.match(/^https?:\/\//))
+        (bg && bg.match(/^https?:\/\//)) ||
+        shouldUseGradientV2 ||
+        shouldUseSilk ||
+        shouldUseLightPillar ||
+        shouldUseLiquidEther ||
+        (shouldUseSplashCursor && settings.splashCursorDarkBg)
       ) {
         fallbackColor = "#ffffff"
       } else if (bg) {
@@ -2867,6 +2892,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.jpStyleLanguageSelect.value = settings.jpStyleLanguage || "auto"
     if (DOM.hueTextModeSelect)
       DOM.hueTextModeSelect.value = settings.hueTextMode || "off"
+    if (DOM.clockAutoContrastCheckbox) {
+      DOM.clockAutoContrastCheckbox.checked = settings.clockAutoContrast !== false
+    }
     if (DOM.clockUseAccentCheckbox) {
       DOM.clockUseAccentCheckbox.checked = settings.clockUseAccentColor === true
     }
