@@ -143,7 +143,8 @@ function needsSettingsAtBoot(settings) {
       settings.lightPillarActive ||
       settings.liquidEtherActive ||
       settings.splashCursorActive ||
-      settings.m3AutoAccentFromBg,
+      settings.m3AutoAccentFromBg ||
+      (settings.background && settings.background !== "default" && settings.background !== "none")
   )
 }
 
@@ -816,12 +817,28 @@ async function bootstrap() {
   }
 
   if (isIdbMedia(currentSettings.background)) {
-    activeBackgroundLoad.then(() => {
+    activeBackgroundLoad.then((url) => {
       if (getSettings().background !== currentSettings.background) return
       if (typeof window.appApplySettings === "function") {
         window.appApplySettings()
+      } else if (url) {
+        const bgLayer = document.getElementById("bg-layer")
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = `url("${url}")`
+          bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
+          bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
+          document.body.classList.remove("preload-bg-preview")
+        }
       }
     })
+  } else if (currentSettings.background?.match(/^https?:\/\//)) {
+    const bgLayer = document.getElementById("bg-layer")
+    if (bgLayer) {
+      bgLayer.style.backgroundImage = `url("${currentSettings.background}")`
+      bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
+      bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
+      document.body.classList.remove("preload-bg-preview")
+    }
   }
 
   // initSettings() moved up to prevent CLS

@@ -386,7 +386,7 @@
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
       css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgLayout.size}; background-repeat: ${earlyBgLayout.repeat}; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
       if (hasPersistentBgPreview) {
-        css += `body.preload-bg-preview #bg-layer { filter: blur(25px) brightness(0.8) !important; transform: scale(1.05) !important; }\n`
+        css += `body.preload-bg-preview #bg-layer { filter: blur(12px) brightness(0.9) !important; transform: scale(1.02) !important; }\n`
       }
       if (String(earlyBg).startsWith("url(")) {
         css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`

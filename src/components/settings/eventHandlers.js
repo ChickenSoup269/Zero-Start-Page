@@ -5626,6 +5626,31 @@ export function setupGeneralEventHandlers(
     DOM.lcpGhostControls.checked = isGhost
   })
 
+  const qaToggles = [
+    { el: DOM.lcpQaShowTodo, key: "qaShowTodo" },
+    { el: DOM.lcpQaShowNotepad, key: "qaShowNotepad" },
+    { el: DOM.lcpQaShowTimer, key: "qaShowTimer" },
+    { el: DOM.lcpQaShowCalendar, key: "qaShowCalendar" },
+    { el: DOM.lcpQaShowQuotes, key: "qaShowQuotes" },
+    { el: DOM.lcpQaShowWeather, key: "qaShowWeather" },
+    { el: DOM.lcpQaShowMusic, key: "qaShowMusic" },
+    { el: DOM.lcpQaShowClock, key: "qaShowClock" },
+    { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" }
+  ];
+
+  qaToggles.forEach(toggle => {
+    if (toggle.el) {
+      toggle.el.addEventListener("change", () => {
+        handleSettingUpdate(toggle.key, toggle.el.checked);
+        window.dispatchEvent(
+          new CustomEvent("layoutUpdated", {
+            detail: { key: toggle.key, value: toggle.el.checked },
+          }),
+        );
+      });
+    }
+  });
+
   // Layout controls popup
   const closeLcp = () => {
     DOM.fadeToggle(DOM.layoutControlsPopup, false, "block")

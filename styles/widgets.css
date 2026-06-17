@@ -1588,6 +1588,25 @@ body.ghost-controls .side-controls:hover {
   border-bottom-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+.side-controls.light-mode .lcp-tabs {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.side-controls.light-mode .lcp-tab {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.side-controls.light-mode .lcp-tab:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #000 !important;
+}
+
+.side-controls.light-mode .lcp-tab.active {
+  background: #000 !important;
+  color: #fff !important;
+}
+
 .side-controls.light-mode .lcp-row:hover {
   background: rgba(0, 0, 0, 0.05) !important;
 }

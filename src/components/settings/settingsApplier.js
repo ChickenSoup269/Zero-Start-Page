@@ -848,6 +848,22 @@ function createApplySettings(effectInstances) {
       "quick-access-m3-accent",
       settings.quickAccessSkin === "m3-accent",
     )
+    
+    const qaToggleDisplay = (toggleDataAttr, show) => {
+      const btn = document.querySelector(`.quick-btn[data-toggle="${toggleDataAttr}"]`)
+      if (btn) {
+        btn.style.display = show !== false ? "" : "none"
+      }
+    }
+    qaToggleDisplay("todo", settings.qaShowTodo)
+    qaToggleDisplay("notepad", settings.qaShowNotepad)
+    qaToggleDisplay("timer", settings.qaShowTimer)
+    qaToggleDisplay("calendar", settings.qaShowCalendar)
+    qaToggleDisplay("quotes", settings.qaShowQuotes)
+    qaToggleDisplay("weather", settings.qaShowWeather)
+    qaToggleDisplay("music", settings.qaShowMusic)
+    qaToggleDisplay("clock", settings.qaShowClock)
+    qaToggleDisplay("gregorian", settings.qaShowGregorian)
     document.body.classList.toggle(
       "quick-access-light-transparent",
       settings.quickAccessSkin === "light-transparent",
@@ -1083,10 +1099,15 @@ function createApplySettings(effectInstances) {
           let imageUrl = bg
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
-            bgLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgLayer.style.backgroundSize = backgroundSize
-            bgLayer.style.backgroundRepeat = backgroundRepeat
-            document.body.classList.remove("preload-bg-preview")
+            const img = new Image()
+            img.onload = () => {
+              bgLayer.style.backgroundImage = cssUrl(imageUrl)
+              bgLayer.style.backgroundSize = backgroundSize
+              bgLayer.style.backgroundRepeat = backgroundRepeat
+              document.body.classList.remove("preload-bg-preview")
+            }
+            img.onerror = () => document.body.classList.remove("preload-bg-preview")
+            img.src = imageUrl
           }
         }
         document.body.style.backgroundSize = backgroundSize
@@ -1108,9 +1129,15 @@ function createApplySettings(effectInstances) {
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else if (bg.match(/^https?:\/\//)) {
           if (bgLayer) {
-            bgLayer.style.backgroundImage = cssUrl(bg)
-            bgLayer.style.backgroundSize = backgroundSize
-            bgLayer.style.backgroundRepeat = backgroundRepeat
+            const img = new Image()
+            img.onload = () => {
+              bgLayer.style.backgroundImage = cssUrl(bg)
+              bgLayer.style.backgroundSize = backgroundSize
+              bgLayer.style.backgroundRepeat = backgroundRepeat
+              document.body.classList.remove("preload-bg-preview")
+            }
+            img.onerror = () => document.body.classList.remove("preload-bg-preview")
+            img.src = bg
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else {
@@ -1362,10 +1389,15 @@ function createApplySettings(effectInstances) {
           let imageUrl = bg
           if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
           if (imageUrl) {
-            bgLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgLayer.style.backgroundSize = backgroundSize
-            bgLayer.style.backgroundRepeat = backgroundRepeat
-            document.body.classList.remove("preload-bg-preview")
+            const img = new Image()
+            img.onload = () => {
+              bgLayer.style.backgroundImage = cssUrl(imageUrl)
+              bgLayer.style.backgroundSize = backgroundSize
+              bgLayer.style.backgroundRepeat = backgroundRepeat
+              document.body.classList.remove("preload-bg-preview")
+            }
+            img.onerror = () => document.body.classList.remove("preload-bg-preview")
+            img.src = imageUrl
           }
         }
       }
@@ -1389,9 +1421,15 @@ function createApplySettings(effectInstances) {
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else if (bg.match(/^https?:\/\//)) {
         if (bgLayer) {
-          bgLayer.style.backgroundImage = cssUrl(bg)
-          bgLayer.style.backgroundSize = backgroundSize
-          bgLayer.style.backgroundRepeat = backgroundRepeat
+          const img = new Image()
+          img.onload = () => {
+            bgLayer.style.backgroundImage = cssUrl(bg)
+            bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
+            document.body.classList.remove("preload-bg-preview")
+          }
+          img.onerror = () => document.body.classList.remove("preload-bg-preview")
+          img.src = bg
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
       } else {
@@ -4498,6 +4536,16 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.searchBarWidthVal.textContent = `${settings.searchBarWidth || 600}px`
       }
     }
+
+    if (DOM.lcpQaShowTodo) DOM.lcpQaShowTodo.checked = settings.qaShowTodo !== false
+    if (DOM.lcpQaShowNotepad) DOM.lcpQaShowNotepad.checked = settings.qaShowNotepad !== false
+    if (DOM.lcpQaShowTimer) DOM.lcpQaShowTimer.checked = settings.qaShowTimer !== false
+    if (DOM.lcpQaShowCalendar) DOM.lcpQaShowCalendar.checked = settings.qaShowCalendar !== false
+    if (DOM.lcpQaShowQuotes) DOM.lcpQaShowQuotes.checked = settings.qaShowQuotes !== false
+    if (DOM.lcpQaShowWeather) DOM.lcpQaShowWeather.checked = settings.qaShowWeather !== false
+    if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
+    if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
+    if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
       if (DOM.searchBarBlurVal) {

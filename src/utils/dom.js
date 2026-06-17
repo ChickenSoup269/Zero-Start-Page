@@ -1330,6 +1330,15 @@ export let lcpQuickAccessSkin = document.getElementById(
 export let lcpQuickAccessBorderVisible = document.getElementById(
   "lcp-quick-access-border-visible",
 )
+export let lcpQaShowTodo = document.getElementById("lcp-qa-show-todo")
+export let lcpQaShowNotepad = document.getElementById("lcp-qa-show-notepad")
+export let lcpQaShowTimer = document.getElementById("lcp-qa-show-timer")
+export let lcpQaShowCalendar = document.getElementById("lcp-qa-show-calendar")
+export let lcpQaShowQuotes = document.getElementById("lcp-qa-show-quotes")
+export let lcpQaShowWeather = document.getElementById("lcp-qa-show-weather")
+export let lcpQaShowMusic = document.getElementById("lcp-qa-show-music")
+export let lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
+export let lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
 export let m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 
 // SVG Wave Generator Controls
@@ -3305,6 +3314,15 @@ export function refreshDOMReferences() {
   lcpQuickAccessBorderVisible = document.getElementById(
   "lcp-quick-access-border-visible",
 )
+  lcpQaShowTodo = document.getElementById("lcp-qa-show-todo")
+  lcpQaShowNotepad = document.getElementById("lcp-qa-show-notepad")
+  lcpQaShowTimer = document.getElementById("lcp-qa-show-timer")
+  lcpQaShowCalendar = document.getElementById("lcp-qa-show-calendar")
+  lcpQaShowQuotes = document.getElementById("lcp-qa-show-quotes")
+  lcpQaShowWeather = document.getElementById("lcp-qa-show-weather")
+  lcpQaShowMusic = document.getElementById("lcp-qa-show-music")
+  lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
+  lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
   m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
   svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
   svgWaveToggleLabel = document.getElementById(

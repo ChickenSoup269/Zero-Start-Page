@@ -475,7 +475,7 @@
             </div>
 
             <div class="lcp-tab-panel" data-lcp-panel="quick-access" role="tabpanel">
-                <div class="lcp-row lcp-row-select quick-access-section-row">
+                <div class="lcp-row lcp-row-select">
                     <i class="fa-solid fa-circle-dot lcp-icon"></i>
                     <span class="lcp-label" data-i18n="quick_access_button_radius">Quick Access Button Radius</span>
                     <select id="lcp-quick-access-button-radius" class="lcp-select quick-access-radius-select">
@@ -491,7 +491,7 @@
                         <option value="20px">20px</option>
                     </select>
                 </div>
-                <div class="lcp-row lcp-row-select quick-access-section-row">
+                <div class="lcp-row lcp-row-select">
                     <i class="fa-regular fa-window-maximize lcp-icon"></i>
                     <span class="lcp-label" data-i18n="quick_access_bar_radius">Quick Access Bar Radius</span>
                     <select id="lcp-quick-access-bar-radius" class="lcp-select quick-access-radius-select">
@@ -507,7 +507,7 @@
                         <option value="20px">20px</option>
                     </select>
                 </div>
-                <div class="lcp-row lcp-row-select quick-access-section-row">
+                <div class="lcp-row lcp-row-select">
                     <i class="fa-solid fa-gear lcp-icon"></i>
                     <span class="lcp-label" data-i18n="quick_access_toggle_radius">Settings Toggle Radius</span>
                     <select id="lcp-quick-access-toggle-radius" class="lcp-select quick-access-radius-select">
@@ -523,7 +523,7 @@
                         <option value="20px">20px</option>
                     </select>
                 </div>
-                <div class="lcp-row lcp-row-select quick-access-section-row">
+                <div class="lcp-row lcp-row-select">
                     <i class="fa-solid fa-palette lcp-icon"></i>
                     <span class="lcp-label" data-i18n="quick_access_skin">Quick Access Skin</span>
                     <select id="lcp-quick-access-skin" class="lcp-select">
@@ -532,11 +532,86 @@
                         <option value="light-transparent" data-i18n="skin_light_transparent">Light Transparent</option>
                     </select>
                 </div>
-                <div class="lcp-row quick-access-border-row">
+                <div class="lcp-row">
                     <i class="fa-solid fa-border-all lcp-icon"></i>
                     <span class="lcp-label" data-i18n="quick_access_border_toggle">Border Visibility</span>
                     <label class="lcp-switch" for="lcp-quick-access-border-visible">
                         <input type="checkbox" id="lcp-quick-access-border-visible">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+
+                <div class="lcp-divider" style="height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0;"></div>
+
+                <div class="lcp-row">
+                    <i class="fa-solid fa-list-check lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_todo">Show Todo</span>
+                    <label class="lcp-switch" for="lcp-qa-show-todo">
+                        <input type="checkbox" id="lcp-qa-show-todo" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-note-sticky lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_notepad">Show Notepad</span>
+                    <label class="lcp-switch" for="lcp-qa-show-notepad">
+                        <input type="checkbox" id="lcp-qa-show-notepad" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-stopwatch lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_timer">Show Timer</span>
+                    <label class="lcp-switch" for="lcp-qa-show-timer">
+                        <input type="checkbox" id="lcp-qa-show-timer" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-calendar-days lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_calendar">Show Calendar</span>
+                    <label class="lcp-switch" for="lcp-qa-show-calendar">
+                        <input type="checkbox" id="lcp-qa-show-calendar" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-quote-left lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_quotes">Show Quotes</span>
+                    <label class="lcp-switch" for="lcp-qa-show-quotes">
+                        <input type="checkbox" id="lcp-qa-show-quotes" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-cloud-sun lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_weather">Show Weather</span>
+                    <label class="lcp-switch" for="lcp-qa-show-weather">
+                        <input type="checkbox" id="lcp-qa-show-weather" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-music lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_music">Show Music</span>
+                    <label class="lcp-switch" for="lcp-qa-show-music">
+                        <input type="checkbox" id="lcp-qa-show-music" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-clock lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_clock">Show Clock</span>
+                    <label class="lcp-switch" for="lcp-qa-show-clock">
+                        <input type="checkbox" id="lcp-qa-show-clock" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-calendar-check lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_gregorian">Show Gregorian Calendar</span>
+                    <label class="lcp-switch" for="lcp-qa-show-gregorian">
+                        <input type="checkbox" id="lcp-qa-show-gregorian" checked>
                         <span class="lcp-slider"></span>
                     </label>
                 </div>
