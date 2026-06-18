@@ -300,6 +300,7 @@ export function initSettings() {
   function renderSettingsGalleries() {
     if (settingsGalleriesRendered) return
     settingsGalleriesRendered = true
+    effects.ensureFactoriesLoaded?.()
     refreshBackgroundGalleries()
     populateUnsplashCollections(
       DOM_EXPORTS.unsplashCategorySelect,
@@ -1069,6 +1070,9 @@ export function initSettings() {
   effects.updateSettingsInputs = updateSettingsInputs
   effects.setFactoryModuleReadyCallback?.(() => {
     applySettings()
+    if (settingsGalleriesRendered) {
+      refreshBackgroundGalleries()
+    }
   })
   if (needsEffectFactories(settings)) {
     effects.ensureFactoriesLoaded?.()

@@ -5,8 +5,38 @@ import {
   defaultSettings,
   updateSetting,
 } from "../../services/state.js"
-import { showAlert } from "../../utils/dialog.js"
+import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { showToast } from "../../utils/toast.js"
+import { renderBookmarks } from "../bookmarks.js"
+import { geti18n } from "../../services/i18n.js"
+
+export const INTERFACE_STYLE_KEYS = [
+  "bookmarkLayout",
+  "bookmarkLayoutBgStyle",
+  "bookmarkLayoutBgColor",
+  "bookmarkItemStyle",
+  "bookmarkHideText",
+  "bookmarkHideBg",
+  "bookmarkMacosHover",
+  "bookmarkFontSize",
+  "bookmarkIconSize",
+  "bookmarkGap",
+  "bookmarkTextColor",
+  "bookmarkBgColor",
+  "bookmarkBgOpacity",
+  "bookmarkGroupBgColor",
+  "bookmarkGroupBgOpacity",
+  "bookmarkGroupTextColor",
+  "bookmarkGroupAutoTextContrast",
+  "bookmarkGroupFontSize",
+  "bookmarkGroupBorderRadius",
+  "bookmarkShadowColor",
+  "bookmarkShadowOpacity",
+  "bookmarkShadowBlur",
+  "musicBarStyle",
+  "musicPlayerSkin",
+  "musicPlayerUseDefaultColor",
+]
 
 const THEMES = {
   default: {
@@ -269,6 +299,9 @@ export function initThemeManager(
   // Load and render user themes
   renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
 
+  // Load and render user styles
+  renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
+
   const themeItems = DOM.themesGrid.querySelectorAll(".theme-item")
   const currentTheme = getSettings().theme
 
@@ -365,11 +398,11 @@ export function initThemeManager(
   // Save current style button
   if (DOM.saveCurrentStyleBtn) {
     DOM.saveCurrentStyleBtn.addEventListener("click", () => {
-      alert("Save Style functionality is coming soon!")
+      if (DOM.saveStyleModal) DOM.saveStyleModal.classList.add("open")
     })
   }
 
-  // Icon selection in modal
+  // Icon selection in theme modal
   if (DOM.themeIconGrid) {
     const icons = DOM.themeIconGrid.querySelectorAll(".icon-option")
     icons.forEach((icon) => {
@@ -380,14 +413,32 @@ export function initThemeManager(
     })
   }
 
-  // Close modal
+  // Icon selection in style modal
+  if (DOM.styleIconGrid) {
+    const icons = DOM.styleIconGrid.querySelectorAll(".icon-option")
+    icons.forEach((icon) => {
+      icon.addEventListener("click", () => {
+        icons.forEach((i) => i.classList.remove("active"))
+        icon.classList.add("active")
+      })
+    })
+  }
+
+  // Close theme modal
   if (DOM.closeSaveThemeModalBtn) {
     DOM.closeSaveThemeModalBtn.addEventListener("click", () => {
       if (DOM.saveThemeModal) DOM.saveThemeModal.classList.remove("open")
     })
   }
 
-  // Confirm save logic
+  // Close style modal
+  if (DOM.closeSaveStyleModalBtn) {
+    DOM.closeSaveStyleModalBtn.addEventListener("click", () => {
+      if (DOM.saveStyleModal) DOM.saveStyleModal.classList.remove("open")
+    })
+  }
+
+  // Confirm save theme logic
   const handleConfirmSave = () => {
     const name = DOM.customThemeNameInput.value.trim() || "My Theme"
     const activeIcon = DOM.themeIconGrid.querySelector(".icon-option.active")
@@ -411,7 +462,45 @@ export function initThemeManager(
     DOM.confirmSaveThemeBtn.addEventListener("click", handleConfirmSave)
   }
 
-  // Enter key support
+  // Confirm save style logic
+  const handleConfirmSaveStyle = () => {
+    try {
+      if (!DOM.customStyleNameInput) {
+        throw new Error("customStyleNameInput is not defined in DOM");
+      }
+      const name = DOM.customStyleNameInput.value.trim() || "My Style"
+
+      let icon = "fa-bookmark";
+      if (DOM.styleIconGrid) {
+        const activeIcon = DOM.styleIconGrid.querySelector(".icon-option.active")
+        if (activeIcon && activeIcon.dataset.icon) {
+          icon = activeIcon.dataset.icon;
+        }
+      }
+
+      const success = saveUserStyle(
+        name,
+        icon,
+        DOM,
+        handleSettingUpdate,
+        updateSettingsInputs,
+      )
+
+      if (success) {
+        if (DOM.saveStyleModal) DOM.saveStyleModal.classList.remove("open")
+        DOM.customStyleNameInput.value = ""
+      }
+    } catch (err) {
+      console.error("Error in handleConfirmSaveStyle:", err);
+      showAlert("Lỗi khi lưu Style: " + err.message);
+    }
+  }
+
+  if (DOM.confirmSaveStyleBtn) {
+    DOM.confirmSaveStyleBtn.addEventListener("click", handleConfirmSaveStyle)
+  }
+
+  // Enter key support for theme name
   if (DOM.customThemeNameInput) {
     DOM.customThemeNameInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -420,11 +509,52 @@ export function initThemeManager(
     })
   }
 
-  // Click outside to close
+  // Enter key support for style name
+  if (DOM.customStyleNameInput) {
+    DOM.customStyleNameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleConfirmSaveStyle()
+      }
+    })
+  }
+
+  // Click outside theme modal to close
   if (DOM.saveThemeModal) {
     DOM.saveThemeModal.addEventListener("click", (e) => {
       if (e.target === DOM.saveThemeModal) {
         DOM.saveThemeModal.classList.remove("open")
+      }
+    })
+  }
+
+  // Click outside style modal to close
+  if (DOM.saveStyleModal) {
+    DOM.saveStyleModal.addEventListener("click", (e) => {
+      if (e.target === DOM.saveStyleModal) {
+        DOM.saveStyleModal.classList.remove("open")
+      }
+    })
+  }
+
+  // Handle delete style button clicks (event delegation)
+  if (DOM.stylePresetGrid) {
+    DOM.stylePresetGrid.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest(".delete-style-btn")
+      if (deleteBtn) {
+        e.stopPropagation()
+        e.preventDefault()
+        const styleBtn = deleteBtn.closest(".style-preset-btn")
+        if (styleBtn) {
+          const styleId = styleBtn.dataset.stylePreset
+          if (styleId && styleId.startsWith("user-style-")) {
+            deleteUserStyle(
+              styleId,
+              DOM,
+              handleSettingUpdate,
+              updateSettingsInputs,
+            )
+          }
+        }
       }
     })
   }
@@ -505,24 +635,60 @@ function saveUserTheme(
   saveSettings(true)
 
   renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
+
+  // Show success toast
+  const i18n = geti18n()
+  const toastMsg = i18n.toast_saved_theme
+    ? i18n.toast_saved_theme.replace("{name}", name)
+    : `Đã lưu chủ đề: ${name}`
+  showToast(toastMsg, { type: "success" })
+
   return true
 }
 
-function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInputs) {
-  const currentSettings = getSettings()
-  let userThemes = currentSettings.userThemes || []
-  userThemes = userThemes.filter((t) => t.id !== id)
+async function deleteUserTheme(id, DOM, handleSettingUpdate, updateSettingsInputs) {
+  const i18n = geti18n()
+  const confirmed = await showConfirm(
+    i18n.confirm_delete_theme || "Are you sure you want to delete this custom theme?",
+  )
+  if (!confirmed) return
 
-  updateSetting("userThemes", userThemes)
+  const currentSettings = getSettings()
+  const userThemes = currentSettings.userThemes || []
+  const deletedTheme = userThemes.find((t) => t.id === id)
+  if (!deletedTheme) return
+
+  const updatedThemes = userThemes.filter((t) => t.id !== id)
+  updateSetting("userThemes", updatedThemes)
 
   // If the deleted theme was active, reset to default
-  if (currentSettings.theme === id) {
+  const prevActiveTheme = currentSettings.theme
+  if (prevActiveTheme === id) {
     updateSetting("theme", null)
     restoreUserOriginalSettings(updateSettingsInputs)
   }
 
   saveSettings(true)
   renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
+
+  // Show Toast with Undo
+  const toastMsg = i18n.toast_deleted_theme
+    ? i18n.toast_deleted_theme.replace("{name}", deletedTheme.name)
+    : `Đã xóa chủ đề: ${deletedTheme.name}`
+
+  showToast(toastMsg, {
+    undoFn: () => {
+      const currentThemes = getSettings().userThemes || []
+      currentThemes.push(deletedTheme)
+      updateSetting("userThemes", currentThemes)
+      if (prevActiveTheme === id) {
+        updateSetting("theme", id)
+        applyTheme(deletedTheme.snapshot, updateSettingsInputs)
+      }
+      saveSettings(true)
+      renderUserThemes(DOM, handleSettingUpdate, updateSettingsInputs)
+    }
+  })
 }
 
 function captureUserSnapshot() {
@@ -568,4 +734,148 @@ function applyTheme(themeData, updateSettingsInputs) {
   if (updateSettingsInputs) updateSettingsInputs()
   saveSettings(true)
   if (window.appApplySettings) window.appApplySettings()
+}
+
+export function renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs) {
+  if (!DOM.stylePresetGrid) return
+
+  // Clear existing user styles (keep default styles)
+  const existingUserStyles = DOM.stylePresetGrid.querySelectorAll(
+    ".style-preset-btn[data-style-preset^='user-style-']",
+  )
+  existingUserStyles.forEach((el) => el.remove())
+
+  const userStyles = getSettings().userStyles || []
+  userStyles.forEach((style) => {
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "style-preset-btn"
+    btn.dataset.stylePreset = style.id
+    btn.style.position = "relative"
+
+    btn.innerHTML = `
+      <span class="style-preset-icon"><i class="fa-solid ${style.icon || 'fa-bookmark'}"></i></span>
+      <span class="style-preset-name">${style.name}</span>
+      <small data-i18n="style_preset_custom">Custom Preset</small>
+      <span class="delete-style-btn" title="Delete Style" style="position: absolute; top: 6px; right: 8px; font-size: 0.8rem; opacity: 0.4; cursor: pointer; transition: opacity 0.2s; z-index: 2;">
+        <i class="fa-solid fa-trash-can"></i>
+      </span>
+    `
+
+    DOM.stylePresetGrid.appendChild(btn)
+  })
+
+  // Apply visual active status
+  const currentPreset = getSettings().interfaceStylePreset
+  DOM.stylePresetGrid.querySelectorAll(".style-preset-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.stylePreset === currentPreset)
+  })
+}
+
+function saveUserStyle(
+  name,
+  icon,
+  DOM,
+  handleSettingUpdate,
+  updateSettingsInputs,
+) {
+  try {
+    const currentSettings = getSettings()
+    
+    if (!currentSettings.userStyles) {
+      currentSettings.userStyles = [];
+    }
+    const userStyles = currentSettings.userStyles;
+
+    // Check for duplicates
+    const isDuplicate = userStyles.some(
+      (s) => s.name.toLowerCase() === name.toLowerCase(),
+    )
+    if (isDuplicate) {
+      showAlert(
+        "A style preset with this name already exists. Please choose a different name.",
+      )
+      return false
+    }
+
+    const snapshot = {}
+    INTERFACE_STYLE_KEYS.forEach((key) => {
+      if (currentSettings[key] !== undefined) {
+        snapshot[key] = currentSettings[key]
+      }
+    })
+
+    const newStyle = {
+      id: "user-style-" + Date.now(),
+      name: name,
+      icon: icon,
+      snapshot: snapshot,
+    }
+
+    userStyles.push(newStyle)
+    updateSetting("userStyles", userStyles)
+    saveSettings(true)
+
+    renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
+
+    // Show success toast
+    const i18n = geti18n()
+    const toastMsg = i18n.toast_saved_style
+      ? i18n.toast_saved_style.replace("{name}", name)
+      : `Đã lưu style: ${name}`
+    showToast(toastMsg, { type: "success" })
+
+    return true
+  } catch (err) {
+    console.error("Exception inside saveUserStyle:", err);
+    throw err;
+  }
+}
+
+async function deleteUserStyle(id, DOM, handleSettingUpdate, updateSettingsInputs) {
+  const i18n = geti18n()
+  const confirmed = await showConfirm(
+    i18n.confirm_delete_style || "Are you sure you want to delete this custom style?",
+  )
+  if (!confirmed) return
+
+  const currentSettings = getSettings()
+  const userStyles = currentSettings.userStyles || []
+  const deletedStyle = userStyles.find((s) => s.id === id)
+  if (!deletedStyle) return
+
+  const updatedStyles = userStyles.filter((s) => s.id !== id)
+  updateSetting("userStyles", updatedStyles)
+
+  // If the deleted preset was active, reset to default (or "custom")
+  const prevActivePreset = currentSettings.interfaceStylePreset
+  if (prevActivePreset === id) {
+    updateSetting("interfaceStylePreset", "custom")
+  }
+
+  saveSettings(true)
+  renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
+
+  // Show Toast with Undo
+  const toastMsg = i18n.toast_deleted_style
+    ? i18n.toast_deleted_style.replace("{name}", deletedStyle.name)
+    : `Đã xóa style: ${deletedStyle.name}`
+
+  showToast(toastMsg, {
+    undoFn: () => {
+      const currentStyles = getSettings().userStyles || []
+      currentStyles.push(deletedStyle)
+      updateSetting("userStyles", currentStyles)
+      if (prevActivePreset === id) {
+        updateSetting("interfaceStylePreset", id)
+        const preset = deletedStyle.snapshot
+        Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
+        updateSettingsInputs()
+        if (window.appApplySettings) window.appApplySettings()
+        renderBookmarks()
+      }
+      saveSettings(true)
+      renderUserStyles(DOM, handleSettingUpdate, updateSettingsInputs)
+    }
+  })
 }

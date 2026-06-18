@@ -45,6 +45,20 @@ export let confirmSaveThemeBtn = document.getElementById(
   "confirm-save-theme-btn",
 )
 
+// Style Presets Manager
+export let stylePresetGrid = document.querySelector(".style-preset-grid")
+export let saveStyleModal = document.getElementById("save-style-modal")
+export let closeSaveStyleModalBtn = document.getElementById(
+  "close-save-style-modal-btn",
+)
+export let customStyleNameInput = document.getElementById(
+  "custom-style-name-input",
+)
+export let styleIconGrid = document.getElementById("style-icon-grid")
+export let confirmSaveStyleBtn = document.getElementById(
+  "confirm-save-style-btn",
+)
+
 export let bgPositionSetting = document.getElementById("bg-position-setting")
 export let bgBlurInput = document.getElementById("bg-blur-input")
 export let bgBlurValue = document.getElementById("bg-blur-value")
@@ -2076,8 +2090,20 @@ export function refreshDOMReferences() {
 )
   themeIconGrid = document.getElementById("theme-icon-grid")
   confirmSaveThemeBtn = document.getElementById(
-  "confirm-save-theme-btn",
-)
+    "confirm-save-theme-btn",
+  )
+  stylePresetGrid = document.querySelector(".style-preset-grid")
+  saveStyleModal = document.getElementById("save-style-modal")
+  closeSaveStyleModalBtn = document.getElementById(
+    "close-save-style-modal-btn",
+  )
+  customStyleNameInput = document.getElementById(
+    "custom-style-name-input",
+  )
+  styleIconGrid = document.getElementById("style-icon-grid")
+  confirmSaveStyleBtn = document.getElementById(
+    "confirm-save-style-btn",
+  )
   bgPositionSetting = document.getElementById("bg-position-setting")
   bgBlurInput = document.getElementById("bg-blur-input")
   bgBlurValue = document.getElementById("bg-blur-value")

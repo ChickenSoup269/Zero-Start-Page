@@ -431,6 +431,7 @@ export const defaultSettings = {
   userLightPillars: [],
   userSavedFonts: [],
   userThemes: [],
+  userStyles: [],
 }
 
 // Bookmarks State Migration
@@ -832,6 +833,7 @@ export async function backupToCloud(options = {}) {
     "lastUserBackgroundPreview",
     "mediaOrbImageData",
     "userThemes",
+    "userStyles",
     "userGradients",
     "userMultiColors",
     "userSvgWaves",
@@ -1038,6 +1040,7 @@ export async function restoreFromCloud() {
               "userLiquidEthers",
               "userSavedFonts",
               "userThemes",
+              "userStyles",
               "unsplashAccessKey",
             ]
 

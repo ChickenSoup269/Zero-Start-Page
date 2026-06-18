@@ -7718,6 +7718,17 @@ body.sidebar-light #unsplash-explorer-modal .explorer-no-results {
   gap: 8px;
 }
 
+.delete-style-btn {
+  color: var(--text-color, #fff);
+  opacity: 0.4;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.delete-style-btn:hover {
+  opacity: 1 !important;
+  color: #ff4a4a !important;
+}
+
 .weather-api-field-status {
   min-height: 16px;
   color: rgba(255, 255, 255, 0.62);

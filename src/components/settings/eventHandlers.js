@@ -427,7 +427,14 @@ export function setupGeneralEventHandlers(
   }
 
   const applyInterfaceStylePreset = (presetId) => {
-    const preset = STYLE_PRESETS[presetId]
+    let preset = STYLE_PRESETS[presetId]
+    if (!preset && presetId && presetId.startsWith("user-style-")) {
+      const userStyles = getSettings().userStyles || []
+      const found = userStyles.find((s) => s.id === presetId)
+      if (found) {
+        preset = found.snapshot
+      }
+    }
     if (!preset) return
 
     Object.entries(preset).forEach(([key, value]) => updateSetting(key, value))
@@ -437,8 +444,12 @@ export function setupGeneralEventHandlers(
     applySettings()
     renderBookmarks()
     setStylePresetActive(presetId)
-    dispatchSettingsUpdated("musicBarStyle", preset.musicBarStyle)
-    dispatchSettingsUpdated("musicPlayerSkin", preset.musicPlayerSkin)
+    if (preset.musicBarStyle !== undefined) {
+      dispatchSettingsUpdated("musicBarStyle", preset.musicBarStyle)
+    }
+    if (preset.musicPlayerSkin !== undefined) {
+      dispatchSettingsUpdated("musicPlayerSkin", preset.musicPlayerSkin)
+    }
   }
 
   const updateTimerAlarmCustomUi = () => {
@@ -848,27 +859,37 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  document
-    .querySelectorAll(".style-preset-btn[data-style-preset]")
-    .forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const prevPreset = getSettings().interfaceStylePreset || "custom"
-        applyInterfaceStylePreset(btn.dataset.stylePreset)
-        const presetNames = {
-          clean: "Clean",
-          dock: "Dock",
-          macos: "macOS",
-          glass: "Glass",
-          compact: "Compact",
-          custom: "Custom",
-        }
-        const presetId = btn.dataset.stylePreset
-        showToast(`Style preset: ${presetNames[presetId] || presetId}`, {
-          type: "success",
-          undoFn: () => applyInterfaceStylePreset(prevPreset),
-        })
+  // Event delegation for style presets grid to support user custom style presets
+  const stylePresetGrid = document.querySelector(".style-preset-grid")
+  if (stylePresetGrid) {
+    stylePresetGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".style-preset-btn")
+      if (!btn) return
+
+      // Ignore if clicking the delete button (handled separately)
+      if (e.target.closest(".delete-style-btn")) return
+
+      const presetId = btn.dataset.stylePreset
+      if (!presetId) return
+
+      const prevPreset = getSettings().interfaceStylePreset || "custom"
+      applyInterfaceStylePreset(presetId)
+
+      const presetNames = {
+        clean: "Clean",
+        dock: "Dock",
+        macos: "macOS",
+        glass: "Glass",
+        compact: "Compact",
+        custom: "Custom",
+      }
+      const presetName = btn.querySelector(".style-preset-name")?.textContent || presetNames[presetId] || presetId
+      showToast(`Style preset: ${presetName}`, {
+        type: "success",
+        undoFn: () => applyInterfaceStylePreset(prevPreset),
       })
     })
+  }
   setStylePresetActive(getSettings().interfaceStylePreset || "custom")
 
   const blobToDataUrl = (blob) =>

@@ -941,6 +941,41 @@ body.context-menu-macos .bookmark-edit-field {
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
 
+/* Header inside context menu */
+.context-menu-header {
+  padding: 8px 12px 6px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+body.context-menu-light .context-menu-header {
+  color: rgba(20, 22, 35, 0.85);
+}
+
+body.context-menu-macos .context-menu-header {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.05em;
+}
+
+body.context-menu-macos.context-menu-light .context-menu-header {
+  color: rgba(20, 22, 35, 0.85);
+}
+
+body.context-menu-none .context-menu-header {
+  color: rgba(15, 23, 42, 0.85);
+}
+
 /* Divider inside context menu */
 .context-menu-divider {
   height: 1px;
