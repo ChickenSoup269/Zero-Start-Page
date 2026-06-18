@@ -9,6 +9,7 @@ const UNINSTALL_FORM_URLS = {
 const KNOWN_MEDIA_TAB_CACHE_TTL = 60_000
 let lastKnownMediaTabId = null
 let lastKnownMediaTabSeenAt = 0
+const mediaStates = {}
 
 function getUninstallUrl(language = "en") {
   return language === "vi" ? UNINSTALL_FORM_URLS.vi : UNINSTALL_FORM_URLS.default
@@ -74,6 +75,7 @@ chrome.runtime.onStartup?.addListener(restoreUninstallUrlFromStorage)
 chrome.action?.onClicked?.addListener(openStartpageTab)
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   clearRememberedKnownMediaTab(tabId)
+  delete mediaStates[tabId]
 })
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   if (tabId !== lastKnownMediaTabId || !changeInfo.url) return
@@ -84,6 +86,36 @@ chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // console.log("Message received:", request) // For debugging
+  if (request.action === "mediaStateUpdated") {
+    if (sender.tab && sender.tab.id) {
+      mediaStates[sender.tab.id] = {
+        ...request.state,
+        lastUpdated: Date.now(),
+      }
+
+      // Broadcast update to all Startpage tabs
+      chrome.tabs.query({}, (tabs) => {
+        const startpageUrl = chrome.runtime.getURL("index.html")
+        tabs.forEach((tab) => {
+          if (tab.url && tab.url.startsWith(startpageUrl)) {
+            chrome.tabs.sendMessage(
+              tab.id,
+              {
+                action: "mediaStateUpdatedBroadcast",
+                state: { audible: true, ...request.state },
+              },
+              () => {
+                // Ignore errors from tabs that might be closed or not loaded yet
+                const err = chrome.runtime.lastError
+              },
+            )
+          }
+        })
+      })
+    }
+    return
+  }
+
   if (request.action === "updateUninstallLanguage") {
     const language = request.language === "vi" ? "vi" : "en"
     chrome.storage.local.set({ [UNINSTALL_LANGUAGE_KEY]: language }, () => {
@@ -111,8 +143,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getMediaState") {
     chrome.tabs.query({ audible: true }, (tabs) => {
       if (tabs.length > 0) {
-        rememberKnownMediaTab(tabs[0])
-        getMediaFromTab(tabs[0].id, sendResponse)
+        const tab = tabs[0]
+        rememberKnownMediaTab(tab)
+        if (mediaStates[tab.id]) {
+          sendResponse({ audible: true, ...mediaStates[tab.id] })
+          return
+        }
+        getMediaFromTab(tab.id, sendResponse)
         return
       }
 
@@ -166,6 +203,10 @@ function getKnownMediaTabPriority(tab, preferredSource = "") {
 function getMediaFromAnyKnownTab(sendResponse) {
   getRememberedKnownMediaTab((cachedTab) => {
     if (cachedTab) {
+      if (mediaStates[cachedTab.id]) {
+        sendResponse({ audible: true, ...mediaStates[cachedTab.id] })
+        return
+      }
       getMediaFromTab(cachedTab.id, sendResponse)
       return
     }
@@ -178,6 +219,10 @@ function getMediaFromAnyKnownTab(sendResponse) {
         )[0]
       if (tab) {
         rememberKnownMediaTab(tab)
+        if (mediaStates[tab.id]) {
+          sendResponse({ audible: true, ...mediaStates[tab.id] })
+          return
+        }
         getMediaFromTab(tab.id, sendResponse)
       } else {
         sendResponse({ audible: false })
@@ -214,6 +259,16 @@ function controlAnyKnownMediaTab(command, sendResponse) {
 }
 
 function controlMediaTab(tabId, command, sendResponse) {
+  chrome.tabs.sendMessage(tabId, { action: "mediaControl", command }, (response) => {
+    if (chrome.runtime.lastError || !response || !response.ok) {
+      runLegacyControlMediaTab(tabId, command, sendResponse)
+    } else {
+      sendResponse(response)
+    }
+  })
+}
+
+function runLegacyControlMediaTab(tabId, command, sendResponse) {
   chrome.scripting.executeScript(
     {
       target: { tabId },

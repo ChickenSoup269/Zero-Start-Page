@@ -11629,10 +11629,15 @@ body.bookmark-group-border-hidden
   font-size: 0.8rem !important;
 }
 
-/* Music Mini Widget Mode overrides - Scales the entire wrapper to fit all styles perfectly */
-#music-player-container.music-mini .music-player-wrapper {
-  transform: scale(0.8) !important;
+/* Music Mini Widget Mode overrides - Scales the entire container to fit all styles perfectly and fix the drag boundaries */
+#music-player-container.music-mini:not(.has-position) {
+  transform: translateX(-50%) scale(0.8) !important;
   transform-origin: bottom center !important;
+}
+
+#music-player-container.music-mini.has-position {
+  transform: scale(0.8) !important;
+  transform-origin: top left !important;
 }
 
 

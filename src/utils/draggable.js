@@ -52,6 +52,7 @@ function clampElementIntoViewport(element, componentId, persist = false) {
   element.style.bottom = "auto"
   element.style.right = "auto"
   element.style.margin = "0"
+  element.classList.add("has-position")
 
   if (persist) {
     saveComponentPosition(componentId, {
@@ -92,6 +93,7 @@ export function makeDraggable(
       element.style.right = "auto"
       element.style.margin = "0"
       if (savedPos.transform) element.style.transform = savedPos.transform
+      element.classList.add("has-position")
     }
   }
 
@@ -118,6 +120,7 @@ export function makeDraggable(
                element.style.top = saved.top
                element.style.left = saved.left
                if (saved.transform) element.style.transform = saved.transform
+               element.classList.add("has-position")
             }
             clampElementIntoViewport(element, componentId, false)
           }
@@ -134,6 +137,20 @@ export function makeDraggable(
         element._draggableViewportClamp,
         { passive: true },
       )
+    }
+    if (!element._draggableLayoutUpdated) {
+      element._draggableLayoutUpdated = (e) => {
+        if (!element.isConnected) {
+          window.removeEventListener("layoutUpdated", element._draggableLayoutUpdated)
+          return
+        }
+        if (e.detail && (e.detail.key === `${componentId}Mini` || e.detail.key === "musicMini")) {
+          requestAnimationFrame(() => {
+            clampElementIntoViewport(element, componentId, true)
+          })
+        }
+      }
+      window.addEventListener("layoutUpdated", element._draggableLayoutUpdated)
     }
   }
 
@@ -219,6 +236,7 @@ export function makeDraggable(
     element.style.top = (currentRect.top - magicOffsetY) + "px"
     element.style.bottom = "auto"
     element.style.right = "auto"
+    element.classList.add("has-position")
 
     document.onmouseup = closeDragElement
     document.onmousemove = elementDrag
@@ -257,6 +275,7 @@ export function makeDraggable(
     document.onmousemove = null
     element.classList.remove("dragging")
     element.style.transition = ""
+    element.classList.add("has-position")
 
     saveComponentPosition(componentId, {
       top: element.style.top,

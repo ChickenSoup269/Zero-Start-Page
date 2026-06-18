@@ -26,6 +26,27 @@
     "scripts": ["background.js"],
     "type": "module"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://*.spotify.com/*",
+        "*://*.zingmp3.vn/*",
+        "*://mp3.zing.vn/*",
+        "*://soundcloud.com/*",
+        "*://*.soundcloud.com/*",
+        "*://music.apple.com/*",
+        "*://nhaccuatui.com/*",
+        "*://*.nhaccuatui.com/*",
+        "*://nct.vn/*",
+        "*://*.nct.vn/*",
+        "*://music.youtube.com/*"
+      ],
+      "js": ["content-media.js"],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "startpage@extension",

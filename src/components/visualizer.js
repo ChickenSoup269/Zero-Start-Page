@@ -1190,91 +1190,10 @@ class MusicVisualizer {
 
   _startCSSLoop() {
     this._stopCSSLoop()
-    this._lastCssTs = performance.now()
-    this._currentHeights = new Array(this.barCount).fill(4)
-    this._targetHeights = new Array(this.barCount).fill(4)
-
-    // Cache các thanh bars ngay khi bắt đầu loop
     const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
-
-    const loop = (ts) => {
-      if (
-        !this.isPlaying ||
-        this._shouldSkipBarVisualizer(bars) ||
-        this.currentStyle === "pixel" ||
-        this.currentStyle === "moon8" ||
-        this.currentStyle === "heartbeat" ||
-        this.currentStyle === "forest" ||
-        this.currentStyle === "orbit"
-      ) {
-        this._cssAnimId = null
-        return
-      }
-
-      const dt = Math.min((ts - this._lastCssTs) / 1000, 0.05)
-      this._lastCssTs = ts
-
-      if (!bars.length) {
-        this._cssAnimId = requestAnimationFrame(loop)
-        return
-      }
-
-      const containerH = this.container.offsetHeight || 40
-      const minH = 4
-      let maxH = containerH - 4
-      if (this.currentStyle === "overlap") maxH = 34
-      if (this.currentStyle === "orbit") maxH = 26
-
-      if (this._realBands && this._realBands.length > 0) {
-        for (let i = 0; i < bars.length; i++) {
-          // Trải đều 4 dải âm lên số lượng thanh bar bất kỳ
-          const bandIdx = Math.floor((i / bars.length) * this._realBands.length)
-          let val = this._realBands[bandIdx]
-
-          // Tính toán norm với hệ số Gain mạnh
-          let t = Math.sqrt(Math.max(0, Math.min(1, val * 1.6)))
-
-          // Tối ưu riêng cho từng style
-          if (
-            this.currentStyle === "spotify" ||
-            this.currentStyle === "sidebar" ||
-            this.currentStyle === "neon"
-          ) {
-            t *= 1.3 // Modern snappy styles
-          } else if (this.currentStyle === "soundcloud") {
-            t *= 1.15 // Waveform style
-          } else if (this.currentStyle === "cassette") {
-            t *= 1.1 // Retro EQ style
-          }
-
-          this._targetHeights[i] = minH + Math.min(1, t) * (maxH - minH)
-        }
-      } else {
-        for (let i = 0; i < bars.length; i++) {
-          this._simPhase[i] += this._simSpeeds[i] * dt * Math.PI
-          // Thêm nhiễu ngẫu nhiên để chuyển động phiêu hơn
-          const noise = (Math.random() - 0.5) * 0.4
-          const t = Math.max(
-            0,
-            Math.min(1, (Math.sin(this._simPhase[i]) + 1) / 2 + noise),
-          )
-          this._targetHeights[i] = minH + t * (maxH - minH)
-        }
-      }
-
-      for (let i = 0; i < bars.length; i++) {
-        if (!this._currentHeights[i]) this._currentHeights[i] = minH
-        // Hệ số Lerp 0.8 giúp phản hồi Snappy tuyệt vời cho tất cả style thanh bar
-        this._currentHeights[i] +=
-          (this._targetHeights[i] - this._currentHeights[i]) * 0.8
-        bars[i].style.height = this._currentHeights[i].toFixed(1) + "px"
-        if (!bars[i].classList.contains("playing")) {
-          bars[i].classList.add("playing")
-        }
-      }
-      this._cssAnimId = requestAnimationFrame(loop)
-    }
-    this._cssAnimId = requestAnimationFrame(loop)
+    bars.forEach((bar) => {
+      bar.classList.add("playing")
+    })
   }
 
   _shouldSkipBarVisualizer(bars = this.bars) {

@@ -121,7 +121,20 @@ export class MusicPlayer {
         this.stopPolling()
       } else if (this.showPlayer && this.isVisible) {
         this.startPolling()
-        this.fetchMediaState()
+      }
+    }
+
+    this._messageListener = (request, sender, sendResponse) => {
+      if (this._destroyed) return
+      if (request.action === "mediaStateUpdatedBroadcast") {
+        if (this.showPlayer && this.isVisible) {
+          if (request.state && request.state.url) {
+            this.inactivePollCount = 0
+            this.updateUI(request.state)
+          } else {
+            this.setInactive()
+          }
+        }
       }
     }
 
@@ -310,6 +323,8 @@ export class MusicPlayer {
     window.addEventListener("settingsUpdated", this._settingsHandler)
 
     document.addEventListener("visibilitychange", this._visibilityHandler)
+
+    chrome.runtime.onMessage.addListener(this._messageListener)
   }
 
   applyMusicStyle(styleName) {
@@ -399,70 +414,52 @@ export class MusicPlayer {
   }
 
   startPolling() {
-    if (this._destroyed) return
-    if (this.pollInterval || this.pollTimeout) return
-    if (document.visibilityState === "hidden") return
-    this.scheduleNextPoll(0)
+    this.syncMediaState()
   }
 
   scheduleNextPoll(delay = null) {
-    if (this._destroyed) return
-    if (!this.showPlayer || !this.isVisible) return
-    if (document.visibilityState === "hidden") return
-    if (this.pollTimeout) clearTimeout(this.pollTimeout)
-
-    const nextDelay =
-      delay ??
-      (this.isPlaying
-        ? 1500
-        : Math.min(12000, 3000 + this.inactivePollCount * 2000))
-
-    this.pollTimeout = setTimeout(() => {
-      this.pollTimeout = null
-      this.fetchMediaState()
-    }, nextDelay)
+    // No-op to eliminate background polling
   }
 
   fetchMediaState() {
+    this.syncMediaState()
+  }
+
+  syncMediaState() {
     if (this._destroyed) return
     if (!this.showPlayer || !this.isVisible) return
+    if (document.visibilityState === "hidden") return
     if (this._mediaStatePending) return
     this._mediaStatePending = true
+
     try {
       chrome.runtime.sendMessage({ action: "getMediaState" }, (response) => {
         if (this._destroyed) return
         this._mediaStatePending = false
         if (chrome.runtime.lastError) {
           this.setInactive()
-          this.scheduleNextPoll()
           return
         }
         if (response && response.audible) {
           this.inactivePollCount = 0
           this.updateUI(response)
         } else {
-          this.inactivePollCount += 1
           this.setInactive()
         }
-        this.scheduleNextPoll()
       })
     } catch (e) {
       this._mediaStatePending = false
       this.setInactive()
-      this.scheduleNextPoll()
     }
   }
 
   stopPolling() {
-    if (this.pollInterval) {
-      clearInterval(this.pollInterval)
-      this.pollInterval = null
-    }
     if (this.pollTimeout) {
       clearTimeout(this.pollTimeout)
       this.pollTimeout = null
     }
     this.inactivePollCount = 0
+    this.isPlaying = false
     // Stop visualizer and animations when not polling to save resources
     this.disc?.classList.remove("playing")
     this.container
@@ -707,6 +704,7 @@ export class MusicPlayer {
     this._controlRefreshTimeouts.clear()
     window.removeEventListener("settingsUpdated", this._settingsHandler)
     document.removeEventListener("visibilitychange", this._visibilityHandler)
+    chrome.runtime.onMessage.removeListener(this._messageListener)
     this.visualizer?.destroy?.()
     this.container?.getAnimations?.().forEach((animation) => animation.cancel())
     this.container?.remove()
