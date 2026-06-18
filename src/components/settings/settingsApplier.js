@@ -1961,6 +1961,14 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bookmark-layout-bg-hidden")
     } else if (bgStyle === "white") {
       document.body.classList.add("bookmark-layout-bg-white")
+      document.documentElement.style.setProperty(
+        "--bookmark-layout-bg-color",
+        "rgba(255, 255, 255, 0.85)",
+      )
+      document.documentElement.style.setProperty(
+        "--bookmark-layout-text-color",
+        "#1e293b",
+      )
     } else if (bgStyle === "m3-accent") {
       document.body.classList.add("bookmark-layout-bg-m3-accent")
     } else if (bgStyle === "colored") {
@@ -1968,6 +1976,11 @@ function createApplySettings(effectInstances) {
       document.documentElement.style.setProperty(
         "--bookmark-layout-bg-color",
         bgColor,
+      )
+      const textCol = getContrastYIQ(bgColor) === "black" ? "#1e293b" : "#ffffff"
+      document.documentElement.style.setProperty(
+        "--bookmark-layout-text-color",
+        textCol,
       )
     }
 

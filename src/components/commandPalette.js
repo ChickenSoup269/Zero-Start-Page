@@ -17,6 +17,7 @@ import {
     settingsToggle,
     searchInput as searchBarInput,
 } from '../utils/dom.js';
+import { geti18n } from '../services/i18n.js';
 
 let commandPaletteController = null;
 
@@ -56,23 +57,27 @@ export function initCommandPalette(options = {}) {
         );
     };
 
-    const setCheckboxState = (checkbox, nextState, label = '') => {
+    const setCheckboxState = (checkbox, nextState, labelKey = '') => {
         if (!checkbox) return false;
         const prevState = checkbox.checked;
         if (prevState === nextState) return false;
         checkbox.checked = nextState;
         checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-        if (label) {
-            const stateText = checkbox.checked ? 'Đã bật' : 'Đã tắt';
-            showToast(`${stateText}: ${label}`, {
+        if (labelKey) {
+            const i18n = geti18n();
+            const stateText = checkbox.checked 
+                ? (i18n.state_enabled || 'Enabled') 
+                : (i18n.state_disabled || 'Disabled');
+            const labelText = i18n[labelKey] || labelKey;
+            showToast(`${stateText}: ${labelText}`, {
                 undoFn: () => setCheckboxState(checkbox, prevState)
             });
         }
         return true;
     };
 
-    const toggleCheckbox = (checkbox, label) =>
-        setCheckboxState(checkbox, !checkbox?.checked, label);
+    const toggleCheckbox = (checkbox, labelKey) =>
+        setCheckboxState(checkbox, !checkbox?.checked, labelKey);
 
     const SHORTCUTS_KEY = 'startpageCommandShortcuts';
     const loadCustomShortcuts = () => {
@@ -136,7 +141,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-music"></i>',
             shortcut: 'Alt + M',
             keywords: 'music spotify player nghe nhac am nhac',
-            action: () => toggleCheckbox(showMusicCheckbox, 'Trình phát nhạc')
+            action: () => toggleCheckbox(showMusicCheckbox, 'widget_music')
         },
         {
             id: 'toggle-calendar',
@@ -145,7 +150,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-calendar"></i>',
             shortcut: 'Alt + D',
             keywords: 'calendar lich ngay thang',
-            action: () => toggleCheckbox(showFullCalendarCheckbox, 'Lịch')
+            action: () => toggleCheckbox(showFullCalendarCheckbox, 'widget_calendar')
         },
         {
             id: 'toggle-todo',
@@ -154,7 +159,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-list-check"></i>',
             shortcut: 'Alt + T',
             keywords: 'todo task viec can lam cong viec',
-            action: () => toggleCheckbox(showTodoCheckbox, 'Danh sách việc cần làm')
+            action: () => toggleCheckbox(showTodoCheckbox, 'widget_todo')
         },
         {
             id: 'toggle-timer',
@@ -163,7 +168,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-hourglass-half"></i>',
             shortcut: 'Alt + P',
             keywords: 'timer pomodoro dong ho dem nguoc bam gio',
-            action: () => toggleCheckbox(showTimerCheckbox, 'Đồng hồ đếm ngược')
+            action: () => toggleCheckbox(showTimerCheckbox, 'widget_timer')
         },
         {
             id: 'toggle-quotes',
@@ -172,7 +177,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-quote-left"></i>',
             shortcut: 'Alt + Q',
             keywords: 'quote quotes trich dan cau noi',
-            action: () => toggleCheckbox(showQuotesCheckbox, 'Trích dẫn')
+            action: () => toggleCheckbox(showQuotesCheckbox, 'widget_quotes')
         },
         {
             id: 'toggle-notepad',
@@ -181,7 +186,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-note-sticky"></i>',
             shortcut: 'Alt + N',
             keywords: 'note notepad ghi chu so tay',
-            action: () => toggleCheckbox(showNotepadCheckbox, 'Ghi chú')
+            action: () => toggleCheckbox(showNotepadCheckbox, 'widget_notepad')
         },
         {
             id: 'toggle-weather',
@@ -190,7 +195,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-cloud-sun"></i>',
             shortcut: 'Alt + W',
             keywords: 'weather thoi tiet du bao nhiet do forecast',
-            action: () => toggleCheckbox(showWeatherCheckbox, 'Thời tiết')
+            action: () => toggleCheckbox(showWeatherCheckbox, 'widget_weather')
         },
         {
             id: 'toggle-searchbar',
@@ -199,7 +204,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-magnifying-glass"></i>',
             shortcut: 'Alt + F',
             keywords: 'search find tim kiem thanh tim kiem',
-            action: () => toggleCheckbox(showSearchBarCheckbox, 'Thanh tìm kiếm')
+            action: () => toggleCheckbox(showSearchBarCheckbox, 'widget_searchbar')
         },
         {
             id: 'open-settings',
@@ -246,7 +251,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-bookmark"></i>',
             shortcut: 'Alt + B',
             keywords: 'bookmark bookmarks dau trang lien ket shortcut',
-            action: () => toggleCheckbox(showBookmarksCheckbox, 'Bookmarks')
+            action: () => toggleCheckbox(showBookmarksCheckbox, 'widget_bookmarks')
         },
         {
             id: 'toggle-bookmark-groups',
@@ -255,7 +260,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fas fa-bookmark"></i>',
             shortcut: 'Alt + J',
             keywords: 'folder group bookmark nhom thu muc',
-            action: () => toggleCheckbox(showBookmarkGroupsCheckbox, 'Nhóm Bookmarks')
+            action: () => toggleCheckbox(showBookmarkGroupsCheckbox, 'widget_bookmark_groups')
         },
         {
             id: 'toggle-gregorian',
@@ -264,7 +269,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-solid fa-calendar-check"></i>',
             shortcut: '',
             keywords: 'gregorian date ngay duong lich date',
-            action: () => toggleCheckbox(showGregorianCheckbox, 'Lịch ngày')
+            action: () => toggleCheckbox(showGregorianCheckbox, 'widget_gregorian')
         },
         {
             id: 'toggle-google-apps',
@@ -273,7 +278,7 @@ export function initCommandPalette(options = {}) {
             icon: '<i class="fa-brands fa-google"></i>',
             shortcut: 'Alt + A',
             keywords: 'google apps ung dung goc phai top right',
-            action: () => toggleCheckbox(showTopRightControlsCheckbox, 'Google Apps')
+            action: () => toggleCheckbox(showTopRightControlsCheckbox, 'widget_google_apps')
         },
         {
             id: 'open-layout-controls',
@@ -305,6 +310,20 @@ export function initCommandPalette(options = {}) {
         },
     ];
 
+    const translateCommands = () => {
+        const i18n = geti18n();
+        commands.forEach((cmd) => {
+            const normalizedId = cmd.id.replace(/-/g, '_');
+            const titleKey = `cmd_${normalizedId}_title`;
+            const descKey = `cmd_${normalizedId}_desc`;
+            const keywordsKey = `cmd_${normalizedId}_keywords`;
+            if (i18n[titleKey]) cmd.title = i18n[titleKey];
+            if (i18n[descKey]) cmd.desc = i18n[descKey];
+            if (i18n[keywordsKey]) cmd.keywords = i18n[keywordsKey];
+        });
+    };
+    translateCommands();
+
     const customShortcuts = loadCustomShortcuts();
     const FALLBACK_SHORTCUTS = {
         'cycle-bg-size': 'W + S'
@@ -325,8 +344,15 @@ export function initCommandPalette(options = {}) {
             const prev = bgSizeSelect.value;
             bgSizeSelect.value = size;
             bgSizeSelect.dispatchEvent(new Event('change'));
-            const label = size === 'cover' ? 'Fill (Bao phủ)' : size === 'contain' ? 'Fit (Vừa vặn)' : size;
-            showToast(`Hình nền: ${label}`, {
+            
+            const i18n = geti18n();
+            let labelText = size;
+            if (size === 'cover') labelText = i18n.bg_cover || 'Fill (Cover)';
+            else if (size === 'contain') labelText = i18n.bg_contain || 'Fit (Contain)';
+            else if (size === 'custom') labelText = i18n.bg_custom || 'Custom';
+            
+            const toastPrefix = i18n.bg_size_label || 'Background size: ';
+            showToast(`${toastPrefix}${labelText}`, {
                 undoFn: () => {
                     bgSizeSelect.value = prev;
                     bgSizeSelect.dispatchEvent(new Event('change'));
@@ -351,8 +377,12 @@ export function initCommandPalette(options = {}) {
             clockDisplaySelect.value = prev === 'hide' ? 'all' : 'hide';
             clockDisplaySelect.dispatchEvent(new Event('change', { bubbles: true }));
             if (showUndo) {
-                const stateText = clockDisplaySelect.value === 'hide' ? 'Đã tắt' : 'Đã bật';
-                showToast(`${stateText}: Đồng hồ`, {
+                const i18n = geti18n();
+                const stateText = clockDisplaySelect.value === 'hide' 
+                    ? (i18n.state_disabled || 'Disabled') 
+                    : (i18n.state_enabled || 'Enabled');
+                const labelText = i18n.widget_clock || 'Clock';
+                showToast(`${stateText}: ${labelText}`, {
                     undoFn: () => {
                         clockDisplaySelect.value = prev;
                         clockDisplaySelect.dispatchEvent(new Event('change', { bubbles: true }));
@@ -426,7 +456,8 @@ export function initCommandPalette(options = {}) {
             const googleAppsDropdown = document.getElementById('g-apps-dropdown');
             if (googleAppsDropdown) googleAppsDropdown.style.display = 'none';
             allHidden = true;
-            showToast('Đã ẩn tất cả widget', {
+            const i18n = geti18n();
+            showToast(i18n.toast_hide_all || 'All widgets hidden', {
                 undoFn: () => toggleHideAll()
             });
         } else {
@@ -457,7 +488,8 @@ export function initCommandPalette(options = {}) {
             allHidden = false;
             hiddenState = {};
             clearHideAllState();
-            showToast('Đã hiện lại tất cả widget');
+            const i18n = geti18n();
+            showToast(i18n.toast_show_all || 'All widgets restored');
         }
     }
 
@@ -472,9 +504,11 @@ export function initCommandPalette(options = {}) {
     }
 
     function renderList() {
+        const i18n = geti18n();
         listContainer.innerHTML = '';
         if (filteredCommands.length === 0) {
-            listContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #888;">Không tìm thấy lệnh nào</div>';
+            const noResultsText = i18n.cmd_no_results || 'No commands found';
+            listContainer.innerHTML = `<div style="padding: 20px; text-align: center; color: #888;">${noResultsText}</div>`;
             return;
         }
 
@@ -493,9 +527,11 @@ export function initCommandPalette(options = {}) {
                 const keys = shortcutText.split('+').map(k => `<kbd>${k.trim()}</kbd>`).join(' + ');
                 shortcutHtml = `<div class="cp-item-shortcut">${keys}</div>`;
             } else {
-                shortcutHtml = '<div class="cp-item-shortcut muted">Chưa gán</div>';
+                const notAssignedText = i18n.cmd_not_assigned || 'Not assigned';
+                shortcutHtml = `<div class="cp-item-shortcut muted">${notAssignedText}</div>`;
             }
 
+            const editTitleText = i18n.cmd_edit_shortcut || 'Edit shortcut';
             item.innerHTML = `
                 <div class="cp-item-icon">${cmd.icon}</div>
                 <div class="cp-item-content">
@@ -503,7 +539,7 @@ export function initCommandPalette(options = {}) {
                     <div class="cp-item-desc">${cmd.desc}</div>
                 </div>
                 ${shortcutHtml}
-                <button type="button" class="cp-shortcut-edit" data-command-id="${cmd.id}" title="Sửa phím tắt">
+                <button type="button" class="cp-shortcut-edit" data-command-id="${cmd.id}" title="${editTitleText}">
                     <i class="fa-solid fa-pen"></i>
                 </button>
             `;
@@ -519,7 +555,7 @@ export function initCommandPalette(options = {}) {
                 if (!shortcutCaptureCommand) return;
                 button.innerHTML = '<i class="fa-solid fa-keyboard"></i>';
                 button.classList.add('listening');
-                showToast('Nhấn tổ hợp phím mới. Esc để hủy, Backspace để bỏ gán.');
+                showToast(i18n.cmd_listening_toast || 'Press new shortcut combination. Esc to cancel, Backspace to unassign.');
             });
         });
 
@@ -603,10 +639,11 @@ export function initCommandPalette(options = {}) {
         if (shortcutCaptureCommand) {
             e.preventDefault();
             e.stopPropagation();
+            const i18n = geti18n();
             if (e.key === 'Escape') {
                 shortcutCaptureCommand = null;
                 renderList();
-                showToast('Đã hủy sửa phím tắt');
+                showToast(i18n.cmd_edit_cancelled || 'Shortcut change cancelled');
                 return;
             }
 
@@ -614,14 +651,15 @@ export function initCommandPalette(options = {}) {
             const shortcut = isClearKey ? '' : eventToShortcut(e);
             if (!shortcut && !isClearKey) return;
             if (shortcut && normalizeShortcut(shortcut) === 'ctrl+k') {
-                showToast('Ctrl + K được giữ để mở bảng lệnh nhanh');
+                showToast(i18n.cmd_ctrl_k_reserved || 'Ctrl + K is reserved to open the Command Palette');
                 return;
             }
             const duplicate = shortcut && commands.find(
                 (cmd) => cmd.id !== shortcutCaptureCommand.id && normalizeShortcut(cmd.shortcut) === normalizeShortcut(shortcut)
             );
             if (duplicate) {
-                showToast(`Phím này đang dùng cho: ${duplicate.title}`);
+                const dupMsg = (i18n.cmd_duplicate_error || 'This key is already used for: {title}').replace('{title}', duplicate.title);
+                showToast(dupMsg);
                 return;
             }
 
@@ -635,8 +673,11 @@ export function initCommandPalette(options = {}) {
                 customShortcuts[shortcutCaptureCommand.id] = '';
             }
             saveCustomShortcuts(customShortcuts);
-            const label = shortcutCaptureCommand.shortcut || 'đã bỏ gán';
-            showToast(`Đã cập nhật phím tắt: ${shortcutCaptureCommand.title} (${label})`);
+            const label = shortcutCaptureCommand.shortcut || (i18n.cmd_unassigned || 'unassigned');
+            const updatedMsg = (i18n.cmd_updated_toast || 'Updated shortcut: {title} ({shortcut})')
+                .replace('{title}', shortcutCaptureCommand.title)
+                .replace('{shortcut}', label);
+            showToast(updatedMsg);
             shortcutCaptureCommand = null;
             filteredCommands = commands.filter(c =>
                 normalizeText(`${c.title} ${c.desc} ${c.shortcut || c.shortcutHint || ''} ${c.keywords || ''}`).includes(normalizeText(searchInput.value))
@@ -682,6 +723,18 @@ export function initCommandPalette(options = {}) {
         keysPressed.delete(e.key.toLowerCase());
         if (e.key.toLowerCase() === 'w' || e.key.toLowerCase() === 's') {
             bgSizeChordActive = false;
+        }
+    });
+
+    window.addEventListener('startpage:languageChanged', () => {
+        translateCommands();
+        if (isVisible) {
+            filteredCommands = commands.filter(c =>
+                normalizeText(`${c.title} ${c.desc} ${c.shortcut || c.shortcutHint || ''} ${c.keywords || ''}`).includes(normalizeText(searchInput.value))
+            );
+            renderList();
+        } else {
+            filteredCommands = [...commands];
         }
     });
 

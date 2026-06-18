@@ -235,7 +235,7 @@ export function showChecklistConfirm(options, title = null, message = null) {
         }
 
         return `
-          <label class="dialog-check-item" for="dialog-check-${idx}">
+          <label class="dialog-check-item">
             <input
               type="checkbox"
               id="dialog-check-${idx}"
@@ -269,6 +269,33 @@ export function showChecklistConfirm(options, title = null, message = null) {
     `
 
     container.classList.add("active")
+
+    // Automatically check settings option if localMedia is checked
+    container.querySelectorAll(".dialog-checklist input[type='checkbox']").forEach((input) => {
+      const handleDependency = (target) => {
+        const key = target.dataset.key
+        if (key === "localMedia") {
+          const settingsInput = container.querySelector("input[data-key='settings']")
+          if (settingsInput) {
+            if (target.checked) {
+              if (settingsInput.dataset.origDisabled === undefined) {
+                settingsInput.dataset.origDisabled = settingsInput.disabled ? "true" : "false"
+              }
+              settingsInput.checked = true
+              settingsInput.disabled = true
+            } else {
+              const origDisabled = settingsInput.dataset.origDisabled === "true"
+              settingsInput.disabled = origDisabled
+            }
+          }
+        }
+      }
+
+      input.addEventListener("change", (e) => handleDependency(e.target))
+      if (input.checked) {
+        handleDependency(input)
+      }
+    })
 
     const okBtn = container.querySelector("#checklist-ok")
     const cancelBtn = container.querySelector("#checklist-cancel")
@@ -458,8 +485,9 @@ export function showBookmarkHideInstructions() {
     const copyPolicyBtn = document.getElementById("copy-policy-link")
 
     if (copyBtn) {
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(command).then(() => {
+      copyBtn.onclick = async () => {
+        const success = await copyTextToClipboard(command)
+        if (success) {
           const originalContent = copyBtn.innerHTML
           copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>${copiedText}</span>`
           const originalBg = copyBtn.style.background
@@ -468,13 +496,14 @@ export function showBookmarkHideInstructions() {
             copyBtn.innerHTML = originalContent
             copyBtn.style.background = originalBg
           }, 2000)
-        })
+        }
       }
     }
 
     if (copyPolicyBtn) {
-      copyPolicyBtn.onclick = () => {
-        navigator.clipboard.writeText("chrome://policy/").then(() => {
+      copyPolicyBtn.onclick = async () => {
+        const success = await copyTextToClipboard("chrome://policy/")
+        if (success) {
           const icon = copyPolicyBtn.querySelector("i")
           icon.className = "fa-solid fa-check"
           copyPolicyBtn.style.background = "#28a745"
@@ -482,9 +511,33 @@ export function showBookmarkHideInstructions() {
             icon.className = "fa-solid fa-copy"
             copyPolicyBtn.style.background = "rgba(255,255,255,0.1)"
           }, 2000)
-        })
+        }
       }
     }
   }, 100)
 }
 
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch (err) {
+      console.warn("navigator.clipboard.writeText failed, falling back:", err)
+    }
+  }
+  try {
+    const textarea = document.createElement("textarea")
+    textarea.value = text
+    textarea.style.position = "fixed"
+    textarea.style.opacity = "0"
+    document.body.appendChild(textarea)
+    textarea.select()
+    const success = document.execCommand("copy")
+    textarea.remove()
+    return success
+  } catch (err) {
+    console.error("execCommand fallback failed:", err)
+    return false
+  }
+}

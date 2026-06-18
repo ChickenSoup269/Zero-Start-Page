@@ -1578,8 +1578,8 @@ export function renderBookmarks() {
 
   // Use requestAnimationFrame so UI can render before calculations
   requestAnimationFrame(() => {
+    updateOverflowBookmarks()
     animateBookmarksForFolderSwitch()
-    requestAnimationFrame(updateOverflowBookmarks)
   })
 }
 
@@ -2010,39 +2010,64 @@ function animateBookmarksForFolderSwitch() {
 
   const items = Array.from(
     bookmarksContainer.querySelectorAll(".bookmark, .add-bookmark-card"),
-  ).filter((item) => !item.classList.contains("overflow-indicator"))
+  ).filter(
+    (item) =>
+      !item.classList.contains("overflow-indicator") &&
+      item.style.display !== "none" &&
+      item.getBoundingClientRect().width > 0,
+  )
   if (items.length === 0) return
 
   const isVertical = document.body.classList.contains("bookmark-sidebar-mode")
+  const isHorizontal =
+    document.body.classList.contains("bookmark-taskbar-mode") ||
+    document.body.classList.contains("bookmark-taskbar-top-mode") ||
+    document.body.classList.contains("bookmark-taskbar-left-mode")
+  const isGrid = !isVertical && !isHorizontal
+
   const containerRect = bookmarksContainer.getBoundingClientRect()
+  const centerX = containerRect.left + containerRect.width / 2
+  const centerY = containerRect.top + containerRect.height / 2
   const center = isVertical
     ? containerRect.top + containerRect.height / 2
     : containerRect.left + containerRect.width / 2
 
   const itemMeta = items.map((item) => {
     const rect = item.getBoundingClientRect()
+    const itemCenterX = rect.left + rect.width / 2
+    const itemCenterY = rect.top + rect.height / 2
     const itemCenter = isVertical
       ? rect.top + rect.height / 2
       : rect.left + rect.width / 2
     return {
       item,
-      distance: Math.abs(itemCenter - center),
+      distance: isGrid
+        ? Math.sqrt((itemCenterX - centerX) ** 2 + (itemCenterY - centerY) ** 2)
+        : Math.abs(itemCenter - center),
+      offsetX: Math.max(-72, Math.min(72, centerX - itemCenterX)),
+      offsetY: Math.max(-72, Math.min(72, centerY - itemCenterY)),
       offset: Math.max(-72, Math.min(72, center - itemCenter)),
     }
   })
 
   itemMeta
     .sort((a, b) => a.distance - b.distance)
-    .forEach(({ item, offset }, order) => {
+    .forEach(({ item, offsetX, offsetY, offset }, order) => {
       item.classList.remove("bookmark-folder-reveal")
-      item.style.setProperty(
-        "--bookmark-folder-reveal-x",
-        isVertical ? "0px" : `${offset}px`,
-      )
-      item.style.setProperty(
-        "--bookmark-folder-reveal-y",
-        isVertical ? `${offset}px` : "0px",
-      )
+      
+      let x = "0px"
+      let y = "0px"
+      if (isGrid) {
+        x = `${offsetX}px`
+        y = `${offsetY}px`
+      } else if (isVertical) {
+        y = `${offset}px`
+      } else {
+        x = `${offset}px`
+      }
+
+      item.style.setProperty("--bookmark-folder-reveal-x", x)
+      item.style.setProperty("--bookmark-folder-reveal-y", y)
       item.style.setProperty(
         "--bookmark-folder-reveal-delay",
         `${Math.min(order * 22, 180)}ms`,

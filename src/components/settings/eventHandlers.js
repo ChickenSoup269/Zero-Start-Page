@@ -12,6 +12,7 @@ import {
   backupToCloud,
   clearCloudBackup,
   restoreFromCloud,
+  defaultSettings,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -586,7 +587,7 @@ export function setupGeneralEventHandlers(
   }
 
   const copyTextToClipboard = async (text) => {
-    await navigator.clipboard.writeText(text)
+    await copyText(text)
   }
 
   const openLanguageModal = () => {
@@ -1192,16 +1193,19 @@ export function setupGeneralEventHandlers(
       if (bugModal && e.target === bugModal) bugModal.classList.remove("open")
     })
 
-    copyBugBtn?.addEventListener("click", () => {
+    copyBugBtn?.addEventListener("click", async () => {
       bugTextarea.select()
-      navigator.clipboard.writeText(bugTextarea.value).then(() => {
+      try {
+        await copyText(bugTextarea.value)
         const originalText = copyBugBtn.innerHTML
         copyBugBtn.innerHTML =
           '<i class="fa-solid fa-check"></i> <span>Copied!</span>'
         setTimeout(() => {
           copyBugBtn.innerHTML = originalText
         }, 2000)
-      })
+      } catch (e) {
+        console.warn("Failed to copy bug report", e)
+      }
     })
 
     bugLink?.addEventListener("click", async (event) => {
@@ -6164,8 +6168,13 @@ export function setupGeneralEventHandlers(
     const a = document.createElement("a")
     a.href = url
     a.download = `startpage-${new Date().toISOString().slice(0, 10)}.json`
+    a.style.display = "none"
+    document.body.appendChild(a)
     a.click()
-    URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+    }, 10000)
   }
 
   const escapeDialogHtml = (value) =>
@@ -6234,20 +6243,59 @@ export function setupGeneralEventHandlers(
       setTimeout(() => textarea.focus(), 80)
     })
 
-  const importSettingsData = async (data) => {
+  const importSettingsData = async (rawData) => {
+    if (!rawData) {
+      showAlert(i18n.alert_import_error || "Invalid settings file.")
+      return
+    }
+
+    let data = rawData
+    if (Array.isArray(data)) {
+      data = {
+        source: "zero-startpage",
+        version: 2,
+        bookmarks: data
+      }
+    } else if (typeof data === "object") {
+      const hasMainSection = data.settings || data.bookmarks || data.todos || data.notepad || data.calendarEvents || data.media
+      if (!hasMainSection) {
+        const hasSettingKeys = Object.keys(data).some(key => Object.prototype.hasOwnProperty.call(defaultSettings, key))
+        if (hasSettingKeys) {
+          data = {
+            source: "zero-startpage",
+            version: 2,
+            settings: data
+          }
+        }
+      }
+    }
+
     const isStartpageFile =
-      data.source === "zero-startpage" ||
-      (data.version !== undefined &&
-        (data.settings ||
-          data.bookmarks ||
-          data.todos ||
-          data.notepad ||
-          data.calendarEvents))
+      data &&
+      (data.source === "zero-startpage" ||
+        data.version !== undefined ||
+        data.settings ||
+        data.bookmarks ||
+        data.todos ||
+        data.notepad ||
+        data.calendarEvents)
 
     if (!isStartpageFile) {
       showAlert(i18n.alert_import_error || "Invalid settings file.")
       return
     }
+
+    // Convert stringified sections if they exist as strings
+    const sections = ["bookmarks", "todos", "notepad", "calendarEvents"]
+    sections.forEach(sec => {
+      if (data[sec] && typeof data[sec] === "string") {
+        try {
+          data[sec] = JSON.parse(data[sec])
+        } catch (e) {
+          console.warn(`Failed to parse stringified section ${sec}:`, e)
+        }
+      }
+    })
 
     const hasSettings = data.settings && typeof data.settings === "object"
     const hasBookmarks = data.bookmarks && typeof data.bookmarks === "object"
@@ -6384,8 +6432,16 @@ export function setupGeneralEventHandlers(
 
       Object.assign(getSettings(), importedSettings)
       saveSettings()
-      applySettings()
-      updateSettingsInputs()
+      try {
+        applySettings()
+      } catch (e) {
+        console.warn("Non-fatal: applySettings failed during import", e)
+      }
+      try {
+        updateSettingsInputs()
+      } catch (e) {
+        console.warn("Non-fatal: updateSettingsInputs failed during import", e)
+      }
       requiresReload = true
     } else if (
       hasSettings &&
@@ -6406,8 +6462,16 @@ export function setupGeneralEventHandlers(
             importedSettings.userBackgrounds,
           )
       saveSettings()
-      applySettings()
-      updateSettingsInputs()
+      try {
+        applySettings()
+      } catch (e) {
+        console.warn("Non-fatal: applySettings failed during import background", e)
+      }
+      try {
+        updateSettingsInputs()
+      } catch (e) {
+        console.warn("Non-fatal: updateSettingsInputs failed during import background", e)
+      }
       requiresReload = true
     }
 
@@ -6458,7 +6522,9 @@ export function setupGeneralEventHandlers(
       await importSettingsData(JSON.parse(text))
     } catch (err) {
       console.error("Import error:", err)
-      showAlert(i18n.alert_import_error || "Invalid settings file.")
+      showAlert(
+        `${i18n.alert_import_error || "Invalid settings file."}\n\nError details: ${err.message || err}`,
+      )
     }
   }
 
@@ -6497,11 +6563,30 @@ export function setupGeneralEventHandlers(
     await importSettingsText(text)
   })
 
-  DOM.importSettingsInput?.addEventListener("change", async (e) => {
+  DOM.importSettingsInput?.addEventListener("change", (e) => {
     const file = e.target.files[0]
     if (!file) return
     e.target.value = null
-    await importSettingsText(await file.text())
+
+    try {
+      const reader = new FileReader()
+      reader.onload = async (event) => {
+        try {
+          await importSettingsText(event.target.result)
+        } catch (err) {
+          console.error("Error applying imported settings:", err)
+          showAlert(i18n.alert_import_error || "Invalid settings file.")
+        }
+      }
+      reader.onerror = (err) => {
+        console.error("FileReader read error:", err)
+        showAlert(i18n.alert_import_error || "Invalid settings file.")
+      }
+      reader.readAsText(file)
+    } catch (err) {
+      console.error("FileReader setup error:", err)
+      showAlert(i18n.alert_import_error || "Invalid settings file.")
+    }
   })
 
   // Cloud Sync Logic

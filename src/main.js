@@ -410,6 +410,20 @@ function applyBasicStyles(settings) {
   root.style.setProperty("--bookmark-group-font-size", `${settings.bookmarkGroupFontSize ?? 10}px`)
 }
 
+let bookmarksInitialized = false;
+function ensureBookmarksInitialized() {
+  if (bookmarksInitialized) return;
+  initBookmarks();
+  bookmarksInitialized = true;
+}
+
+let searchInitialized = false;
+function ensureSearchInitialized() {
+  if (searchInitialized) return;
+  initSearch();
+  searchInitialized = true;
+}
+
 // --- Initialization ---
 async function bootstrap() {
   setUpdateNoticePending(true)
@@ -566,15 +580,30 @@ async function bootstrap() {
   let bgStyle = currentSettings.bookmarkLayoutBgStyle || "default"
   if (bgStyle === "hidden")
     document.body.classList.add("bookmark-layout-bg-hidden")
-  else if (bgStyle === "white")
+  else if (bgStyle === "white") {
     document.body.classList.add("bookmark-layout-bg-white")
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-bg-color",
+      "rgba(255, 255, 255, 0.85)",
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-text-color",
+      "#1e293b",
+    )
+  }
   else if (bgStyle === "m3-accent")
     document.body.classList.add("bookmark-layout-bg-m3-accent")
   else if (bgStyle === "colored") {
     document.body.classList.add("bookmark-layout-bg-colored")
+    const bgColor = currentSettings.bookmarkLayoutBgColor || "rgba(0,0,0,0.5)"
     document.documentElement.style.setProperty(
       "--bookmark-layout-bg-color",
-      currentSettings.bookmarkLayoutBgColor || "rgba(0,0,0,0.5)",
+      bgColor,
+    )
+    const textCol = getContrastYIQ(bgColor) === "black" ? "#1e293b" : "#ffffff"
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-text-color",
+      textCol,
     )
   }
   if (currentSettings.bookmarkItemStyle === "card")
@@ -664,8 +693,14 @@ async function bootstrap() {
   }, 3200)
 
   initClock()
-  initBookmarks()
-  initSearch()
+  
+  if (currentSettings.showBookmarks !== false || currentSettings.showBookmarkGroups !== false) {
+    ensureBookmarksInitialized()
+  }
+  if (currentSettings.showSearchBar !== false) {
+    ensureSearchInitialized()
+  }
+
   initContextMenu()
   initModal()
 
@@ -1090,6 +1125,7 @@ async function bootstrap() {
   window.addEventListener("layoutUpdated", (e) => {
     syncQuickButtons()
     if (e.detail.key === "showSearchBar") {
+      if (e.detail.value) ensureSearchInitialized()
       document.body.classList.toggle("hide-search-bar", !e.detail.value)
       const el = document.getElementById("search-container")
       if (el) fadeToggle(el, e.detail.value, "")
@@ -1111,10 +1147,12 @@ async function bootstrap() {
       )
     }
     if (e.detail.key === "showBookmarks") {
+      if (e.detail.value) ensureBookmarksInitialized()
       const el = document.getElementById("bookmarks-container")
       if (el) fadeToggle(el, e.detail.value, "")
     }
     if (e.detail.key === "showBookmarkGroups") {
+      if (e.detail.value) ensureBookmarksInitialized()
       const el = document.getElementById("bookmark-groups-container")
       if (el) fadeToggle(el, e.detail.value, "")
     }

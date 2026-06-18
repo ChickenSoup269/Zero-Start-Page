@@ -191,6 +191,12 @@ export class TodoList {
       }
     })
 
+    document.addEventListener("click", (e) => {
+      if (this.isFullscreen && e.target === document.body) {
+        this.toggleFullscreen(false)
+      }
+    })
+
     selectAllCb.addEventListener("change", () => {
       if (selectAllCb.checked) {
         this.todos.forEach((t) => {

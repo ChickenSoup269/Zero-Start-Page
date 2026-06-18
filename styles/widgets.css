@@ -1833,7 +1833,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   width: min(360px, calc(100vw - 22px));
   height: calc(80vh - 24px);
   max-height: calc(100vh - 24px);
-  overflow: hidden;
+  overflow: auto;
   background: rgba(15, 18, 25, 0.9);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -1846,6 +1846,28 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   z-index: 3000;
   color: #fff;
   animation: lcpFadeIn 0.15s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42)
+    rgba(255, 255, 255, 0.06);
+}
+
+.layout-controls-popup::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.layout-controls-popup::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.layout-controls-popup::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.36);
+}
+
+.layout-controls-popup::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.62);
 }
 
 @keyframes lcpFadeIn {
@@ -2680,30 +2702,42 @@ body.todo-fullscreen-active::before {
 
 .todo-container.todo-fullscreen {
   position: fixed !important;
-  inset: 0 !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: min(850px, calc(100vw - 40px)) !important;
+  height: min(700px, calc(100vh - 60px)) !important;
   max-width: none !important;
   max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box;
   z-index: 30000 !important;
-  border-radius: 0;
-  transform: none !important;
+  border-radius: var(--radius-lg, 16px) !important;
   cursor: default;
   contain: none;
   background:
-    linear-gradient(180deg, rgba(18, 23, 34, 0.96), rgba(8, 11, 18, 0.96)),
-    var(--glass-bg);
-  border: 0;
+    linear-gradient(180deg, rgba(20, 24, 38, 0.95), rgba(10, 13, 22, 0.95)),
+    var(--glass-bg) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   box-shadow:
-    0 0 80px rgba(0, 0, 0, 0.72),
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    0 24px 80px rgba(0, 0, 0, 0.64),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: todoModalPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) ease-out;
+}
+
+@keyframes todoModalPopIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .todo-container.todo-fullscreen .todo-header {
@@ -2783,9 +2817,31 @@ body.todo-fullscreen-active::before {
   padding: var(--space-2) clamp(var(--space-2), 3vw, var(--space-5))
     var(--space-4);
   margin: 0;
-  overflow-y: auto;
-  max-height: calc(100vh - 92px);
+  overflow-y: auto !important;
+  flex: 1 !important;
+  max-height: none !important;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42)
+    rgba(255, 255, 255, 0.06);
+}
+
+.todo-container.todo-fullscreen .todo-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.todo-container.todo-fullscreen .todo-list::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.todo-container.todo-fullscreen .todo-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.36);
+}
+
+.todo-container.todo-fullscreen .todo-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.62);
 }
 
 .todo-container.todo-fullscreen .todo-meta-row {
@@ -5378,6 +5434,10 @@ body.timer-focus-active {
     max-width: none !important;
     max-height: none !important;
     padding: 0 !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    animation: none !important;
   }
 
   .todo-container.todo-fullscreen .todo-header {
@@ -5413,7 +5473,8 @@ body.timer-focus-active {
 
   .todo-container.todo-fullscreen .todo-list {
     padding: 0 var(--space-2) var(--space-3);
-    max-height: calc(100vh - 118px);
+    max-height: none !important;
+    flex: 1 !important;
   }
 
   .todo-container.todo-fullscreen .todo-item {
@@ -9269,10 +9330,51 @@ body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode
 
 body.bookmark-layout-bg-white.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-mode .bookmarks-grid,
+body.bookmark-layout-bg-white.bookmark-taskbar-top-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {
-  background: rgba(255, 255, 255, 0.099) !important;
-  backdrop-filter: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+body.bookmark-layout-bg-white .bookmark span,
+body.bookmark-layout-bg-white .bookmark-title,
+body.bookmark-layout-bg-white .bookmark-icon-fallback,
+body.bookmark-layout-bg-white .bookmark-group-tab,
+body.bookmark-layout-bg-white .group-tab-name,
+body.bookmark-layout-bg-white .group-tab-count,
+body.bookmark-layout-bg-colored .bookmark span,
+body.bookmark-layout-bg-colored .bookmark-title,
+body.bookmark-layout-bg-colored .bookmark-icon-fallback,
+body.bookmark-layout-bg-colored .bookmark-group-tab,
+body.bookmark-layout-bg-colored .group-tab-name,
+body.bookmark-layout-bg-colored .group-tab-count {
+  color: var(--bookmark-layout-text-color, #1e293b) !important;
+}
+
+body.bookmark-layout-bg-white .bookmark:hover,
+body.bookmark-layout-bg-colored .bookmark:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+body.bookmark-layout-bg-white .bookmark-group-tab.active,
+body.bookmark-layout-bg-colored .bookmark-group-tab.active {
+  background: var(--bookmark-layout-text-color, #1e293b) !important;
+  color: var(--bookmark-layout-bg-color, #ffffff) !important;
+}
+
+body.bookmark-layout-bg-white .bookmark-group-tab.active .group-tab-name,
+body.bookmark-layout-bg-white .bookmark-group-tab.active .group-tab-count,
+body.bookmark-layout-bg-colored .bookmark-group-tab.active .group-tab-name,
+body.bookmark-layout-bg-colored .bookmark-group-tab.active .group-tab-count {
+  color: var(--bookmark-layout-bg-color, #ffffff) !important;
+}
+
+body.bookmark-layout-bg-white .add-bookmark-card i,
+body.bookmark-layout-bg-colored .add-bookmark-card i {
+  color: var(--bookmark-layout-text-color, #1e293b) !important;
 }
 
 /* --- BOOKMARK ITEM CARD STYLE --- */

@@ -49,8 +49,12 @@ export function decodePresetCode(code, expectedType) {
 
 export async function copyText(text) {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text)
-    return
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch (err) {
+      console.warn("navigator.clipboard.writeText failed, falling back to execCommand:", err)
+    }
   }
 
   const textarea = document.createElement("textarea")
