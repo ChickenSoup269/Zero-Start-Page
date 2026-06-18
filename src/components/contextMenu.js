@@ -118,7 +118,10 @@ function normalizeContextMenuFooter() {
   cleanupContextMenuDividers()
 }
 
-function applyContextSetting(key, value) {
+async function applyContextSetting(key, value) {
+  if (typeof window.ensureSettingsInitialized === "function") {
+    await window.ensureSettingsInitialized("context-menu-action")
+  }
   if (typeof window.appHandleSettingUpdate === "function") {
     window.appHandleSettingUpdate(key, value)
   } else {
@@ -156,7 +159,10 @@ function syncBackgroundControlValue(key, value) {
   if (valueEl) valueEl.textContent = `${value}${suffix}`
 }
 
-function openSettingsSection(sectionId, targetSelector = null) {
+async function openSettingsSection(sectionId, targetSelector = null) {
+  if (typeof window.ensureSettingsInitialized === "function") {
+    await window.ensureSettingsInitialized("context-menu-open-section")
+  }
   const sidebar = document.getElementById("settings-sidebar")
   const sidebarContent = sidebar?.querySelector(".sidebar-content")
   const section = document.querySelector(`[data-section-id="${sectionId}"]`)
