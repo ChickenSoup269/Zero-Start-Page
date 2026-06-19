@@ -70,7 +70,7 @@ export class MusicPlayer {
     const settings = getSettings()
     this.container = null
     this.isVisible = settings.musicPlayerExpanded === true
-    this.isPlaying = false
+    this.isPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
     this.useDefaultColor = settings.musicPlayerUseDefaultColor === true
@@ -121,6 +121,12 @@ export class MusicPlayer {
         this.stopPolling()
       } else if (this.showPlayer && this.isVisible) {
         this.startPolling()
+        if (this.isPlaying && this.canAnimateVisualizer()) {
+          this.disc.classList.add("playing")
+          const wrapper = this.container.querySelector(".music-player-wrapper")
+          if (wrapper) wrapper.classList.add("playing")
+          this.visualizer.start()
+        }
       }
     }
 
@@ -303,6 +309,13 @@ export class MusicPlayer {
 
     // Initialize visualizer
     this.visualizer.init(this.container)
+
+    if (this.isPlaying && this.canAnimateVisualizer()) {
+      this.disc.classList.add("playing")
+      const wrapper = this.container.querySelector(".music-player-wrapper")
+      if (wrapper) wrapper.classList.add("playing")
+      this.visualizer.start()
+    }
   }
 
   setupEventListeners() {
@@ -459,7 +472,6 @@ export class MusicPlayer {
       this.pollTimeout = null
     }
     this.inactivePollCount = 0
-    this.isPlaying = false
     // Stop visualizer and animations when not polling to save resources
     this.disc?.classList.remove("playing")
     this.container
@@ -471,13 +483,7 @@ export class MusicPlayer {
 
   canAnimateVisualizer() {
     if (!this.showPlayer || !this.isVisible || !this.container) return false
-    const style = getComputedStyle(this.container)
-    return (
-      style.display !== "none" &&
-      style.visibility !== "hidden" &&
-      style.opacity !== "0" &&
-      !this.container.classList.contains("minimized")
-    )
+    return !this.container.classList.contains("minimized")
   }
 
   updateUI(data) {
@@ -495,6 +501,7 @@ export class MusicPlayer {
     this.applySourceMeta(sourceMeta)
 
     this.isPlaying = !data.paused
+    localStorage.setItem("musicPlayerLastIsPlaying", this.isPlaying ? "true" : "false")
 
     const btn = document.getElementById("play-pause-btn")
     btn.innerHTML = this.isPlaying
@@ -616,6 +623,7 @@ export class MusicPlayer {
     this.platformIcon.style.display = "none"
     this.lastSourceMeta = null
     this.isPlaying = false
+    localStorage.setItem("musicPlayerLastIsPlaying", "false")
     this.disc.classList.remove("playing")
     this.disc.style.backgroundImage = "none"
     this.currentThumbnail = ""

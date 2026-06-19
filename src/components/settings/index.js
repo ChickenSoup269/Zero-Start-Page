@@ -726,8 +726,11 @@ export function initSettings() {
                   img.onerror = () => resolve(candidateUrl)
                   img.src = candidateUrl
                 })
-                if (dataUrl) {
+                if (dataUrl && !dataUrl.startsWith("blob:")) {
                   updateSetting("lastUserBackgroundPreview", dataUrl)
+                  saveSettings()
+                } else {
+                  updateSetting("lastUserBackgroundPreview", null)
                   saveSettings()
                 }
               } catch (e) {

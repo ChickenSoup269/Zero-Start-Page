@@ -1050,22 +1050,7 @@ export function setupGeneralEventHandlers(
     })
   }
 
-  const buildExistingMediaDataUrlMap = async () => {
-    const mediaMap = new Map()
-    const ids = collectLocalMediaIds(getSettings())
 
-    for (const id of ids) {
-      try {
-        const blob = await getImageBlob(id)
-        if (!blob) continue
-        mediaMap.set(await blobToDataUrl(blob), id)
-      } catch (err) {
-        console.warn("Skip existing media duplicate check for", id, err)
-      }
-    }
-
-    return mediaMap
-  }
 
   // Sidebar toggle and close
   DOM.settingsToggle.addEventListener("click", () =>
@@ -6001,7 +5986,7 @@ export function setupGeneralEventHandlers(
       window.startpageReplaySettingsGuide?.()
     })
 
-  const buildExportPayload = async () => {
+  const buildExportPayload = async (isClipboard = false) => {
     const settingsSnapshot = JSON.parse(JSON.stringify(getSettings()))
     const hasUnsplashKey = Boolean(
       settingsSnapshot.unsplashAccessKey &&
@@ -6010,50 +5995,55 @@ export function setupGeneralEventHandlers(
     const localMediaIds = collectLocalMediaIds(settingsSnapshot)
     const hasLocalMedia = localMediaIds.length > 0
 
+    const checklist = [
+      {
+        key: "settings",
+        label: i18n.export_option_settings || "Settings",
+        checked: true,
+      },
+      {
+        key: "bookmarks",
+        label: i18n.export_option_bookmarks || "Bookmarks",
+        checked: true,
+      },
+      {
+        key: "todos",
+        label: i18n.export_option_todos || "Todo Items",
+        checked: true,
+      },
+      {
+        key: "notepad",
+        label: i18n.export_option_notepad || "Notepad Notes",
+        checked: true,
+      },
+      {
+        key: "calendarEvents",
+        label: i18n.export_option_calendar || "Calendar Events",
+        checked: true,
+      },
+      {
+        key: "unsplashAccessKey",
+        label:
+          i18n.export_option_unsplash_key ||
+          "Unsplash Access Key (in Settings)",
+        checked: false,
+        disabled: !hasUnsplashKey,
+      },
+    ]
+
+    if (!isClipboard) {
+      checklist.push({
+        key: "localMedia",
+        label:
+          i18n.export_option_local_media ||
+          "Local Images/Videos (for transfer to another machine)",
+        checked: hasLocalMedia,
+        disabled: !hasLocalMedia,
+      })
+    }
+
     const selected = await showChecklistConfirm(
-      [
-        {
-          key: "settings",
-          label: i18n.export_option_settings || "Settings",
-          checked: true,
-        },
-        {
-          key: "bookmarks",
-          label: i18n.export_option_bookmarks || "Bookmarks",
-          checked: true,
-        },
-        {
-          key: "todos",
-          label: i18n.export_option_todos || "Todo Items",
-          checked: true,
-        },
-        {
-          key: "notepad",
-          label: i18n.export_option_notepad || "Notepad Notes",
-          checked: true,
-        },
-        {
-          key: "calendarEvents",
-          label: i18n.export_option_calendar || "Calendar Events",
-          checked: true,
-        },
-        {
-          key: "unsplashAccessKey",
-          label:
-            i18n.export_option_unsplash_key ||
-            "Unsplash Access Key (in Settings)",
-          checked: false,
-          disabled: !hasUnsplashKey,
-        },
-        {
-          key: "localMedia",
-          label:
-            i18n.export_option_local_media ||
-            "Local Images/Videos (for transfer to another machine)",
-          checked: hasLocalMedia,
-          disabled: !hasLocalMedia,
-        },
-      ],
+      checklist,
       i18n.confirm_export_include_unsplash_key_title || "Export Settings",
       i18n.export_select_sections || "Select data to include in JSON export.",
     )
@@ -6387,29 +6377,85 @@ export function setupGeneralEventHandlers(
       // IndexedDB is not fully cleared here to avoid breaking concurrent operations.
     }
 
+    const compareBlobs = async (blob1, blob2) => {
+      if (blob1.size !== blob2.size || blob1.type !== blob2.type) return false
+      const sliceSize = Math.min(8192, blob1.size)
+      const slice1 = blob1.slice(0, sliceSize)
+      const slice2 = blob2.slice(0, sliceSize)
+      const buf1 = await slice1.arrayBuffer()
+      const buf2 = await slice2.arrayBuffer()
+      const arr1 = new Uint8Array(buf1)
+      const arr2 = new Uint8Array(buf2)
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false
+      }
+      return true
+    }
+
+    const findExistingMediaId = async (incomingBlob) => {
+      const ids = collectLocalMediaIds(getSettings())
+      for (const id of ids) {
+        try {
+          const blob = await getImageBlob(id)
+          if (!blob) continue
+          if (await compareBlobs(blob, incomingBlob)) {
+            return id
+          }
+        } catch (err) {
+          console.warn("Error checking duplicate media for", id, err)
+        }
+      }
+      return null
+    }
+
+    const generateBase64Preview = (dataUrl) => {
+      return new Promise((resolve) => {
+        if (!dataUrl || typeof dataUrl !== "string") return resolve(null)
+        if (dataUrl.startsWith("data:video")) return resolve(null)
+
+        const img = new Image()
+        img.onload = () => {
+          try {
+            const canvas = document.createElement("canvas")
+            const size = 32
+            canvas.width = size
+            canvas.height = size
+            const ctx = canvas.getContext("2d")
+            ctx.drawImage(img, 0, 0, size, size)
+            resolve(canvas.toDataURL("image/jpeg", 0.5))
+          } catch {
+            resolve(null)
+          }
+        }
+        img.onerror = () => resolve(null)
+        img.src = dataUrl
+      })
+    }
+
     const mediaIdMap = {}
     if (hasMedia && selected.localMedia) {
-      const existingMediaDataUrlMap = selected.clear
-        ? new Map()
-        : await buildExistingMediaDataUrlMap()
-
       for (const [oldId, payload] of Object.entries(data.media)) {
         try {
           if (!payload || typeof payload.dataUrl !== "string") continue
-          const existingId = existingMediaDataUrlMap.get(payload.dataUrl)
+          
+          const blob = await dataUrlToBlob(payload.dataUrl)
+          
+          let existingId = null
+          if (!selected.clear) {
+            existingId = await findExistingMediaId(blob)
+          }
+
           if (existingId) {
             mediaIdMap[oldId] = existingId
             continue
           }
 
-          const blob = await dataUrlToBlob(payload.dataUrl)
           const isVideo =
             payload.kind === "video" ||
             oldId.startsWith("idb-video-") ||
             blob.type.startsWith("video/")
           const newId = isVideo ? await saveVideo(blob) : await saveImage(blob)
           mediaIdMap[oldId] = newId
-          existingMediaDataUrlMap.set(payload.dataUrl, newId)
         } catch (err) {
           console.warn("Skip media import for", oldId, err)
         }
@@ -6428,6 +6474,20 @@ export function setupGeneralEventHandlers(
 
       if (!selected.clear) {
         mergeSavedGallerySettings(currentSettings, importedSettings)
+      }
+
+      // Generate a small base64 preview of the imported background image
+      const oldBgId = data.settings?.background
+      if (oldBgId && data.media?.[oldBgId]) {
+        try {
+          const preview = await generateBase64Preview(data.media[oldBgId].dataUrl)
+          if (preview) {
+            importedSettings.lastUserBackgroundPreview = preview
+            importedSettings.lastUserBackground = importedSettings.background
+          }
+        } catch (e) {
+          console.warn("Failed to generate preview for imported background", e)
+        }
       }
 
       Object.assign(getSettings(), importedSettings)
@@ -6531,7 +6591,7 @@ export function setupGeneralEventHandlers(
   // Export/Import settings
   DOM.exportSettingsBtn?.addEventListener("click", async () => {
     try {
-      const payload = await buildExportPayload()
+      const payload = await buildExportPayload(false)
       if (!payload) return
       downloadExportPayload(payload)
       showAlert(i18n.alert_export_success || "Settings exported!")
@@ -6543,7 +6603,7 @@ export function setupGeneralEventHandlers(
 
   DOM.copySettingsJsonBtn?.addEventListener("click", async () => {
     try {
-      const payload = await buildExportPayload()
+      const payload = await buildExportPayload(true)
       if (!payload) return
       await copyText(payload)
       showAlert(i18n.alert_export_copied || "JSON copied to clipboard!")
