@@ -108,7 +108,8 @@ class MusicVisualizer {
       this._stopForest()
       this._stopBeach()
       this._stopOrbit()
-      this._startPixel()
+      if (this.isPlaying) this._startPixel()
+      else this._stopPixel()
     } else if (style === "moon8") {
       this._stopCSSLoop()
       this._stopPixel()
@@ -116,7 +117,8 @@ class MusicVisualizer {
       this._stopForest()
       this._stopBeach()
       this._stopOrbit()
-      this._startMoon8()
+      if (this.isPlaying) this._startMoon8()
+      else this._stopMoon8()
     } else if (style === "heartbeat") {
       this._stopCSSLoop()
       this._stopPixel()
@@ -124,7 +126,8 @@ class MusicVisualizer {
       this._stopForest()
       this._stopBeach()
       this._stopOrbit()
-      this._startHeartbeat()
+      if (this.isPlaying) this._startHeartbeat()
+      else this._stopHeartbeat()
     } else if (style === "forest") {
       this._stopCSSLoop()
       this._stopPixel()
@@ -132,7 +135,8 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopBeach()
       this._stopOrbit()
-      this._startForest()
+      if (this.isPlaying) this._startForest()
+      else this._stopForest()
     } else if (style === "beach") {
       this._stopCSSLoop()
       this._stopPixel()
@@ -140,7 +144,8 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopForest()
       this._stopOrbit()
-      this._startBeach()
+      if (this.isPlaying) this._startBeach()
+      else this._stopBeach()
     } else if (style === "orbit") {
       this._stopCSSLoop()
       this._stopPixel()
@@ -148,7 +153,8 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopForest()
       this._stopBeach()
-      this._startOrbit()
+      if (this.isPlaying) this._startOrbit()
+      else this._stopOrbit()
     } else {
       if (this.isPlaying) this._startCSSLoop()
     }

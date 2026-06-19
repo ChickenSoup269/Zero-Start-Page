@@ -969,6 +969,42 @@ function createApplySettings(effectInstances) {
         rawBg.match(/^https?:\/\//) ||
         isIdbImage(rawBg))
     const isWaitingForIdb = isIdbMedia(rawBg) && !getBlobUrlSync(rawBg)
+
+    // Re-evaluate background class requirements and add them back to body
+    // to prevent intermediate updates (e.g. auto accent changes) from stripping them.
+    const isAnimatedBg =
+      settings.gradientV2Active ||
+      settings.silkActive ||
+      settings.lightPillarActive ||
+      settings.liquidEtherActive ||
+      settings.svgWaveActive ||
+      (settings.splashCursorActive && settings.splashCursorDarkBg === true)
+
+    if (isAnimatedBg) {
+      document.body.classList.add("bg-layer-active")
+    } else if (isNextPredefinedLocalBg) {
+      document.body.classList.add("bg-layer-active")
+    } else if (isNextVideoBg) {
+      document.body.classList.add("bg-image-active")
+    } else if (isNextImageBg) {
+      document.body.classList.add("bg-image-active")
+      if (isWaitingForIdb) {
+        document.body.classList.add("bg-layer-active")
+      }
+    } else if (rawBg) {
+      const isVideoUrl =
+        typeof rawBg === "string" &&
+        (rawBg.match(/\.(mp4|webm|mov|ogg)$/) || rawBg.includes("googlevideo"))
+      const isImageUrl = typeof rawBg === "string" && rawBg.match(/^https?:\/\//)
+      if (isVideoUrl || isImageUrl) {
+        document.body.classList.add("bg-image-active")
+      } else {
+        document.body.classList.add("bg-layer-active")
+      }
+    } else {
+      document.body.classList.add("bg-layer-active")
+    }
+
     const shouldCarryFadeLayer =
       (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
 
@@ -1058,11 +1094,20 @@ function createApplySettings(effectInstances) {
           bg = cachedUrl
         } else {
           import("../../services/imageStore.js").then((m) => {
-            m.getImageUrl(settings.background).then((url) => {
-              if (url && getSettings().background === bg) {
-                // crossfade from early preview to sharp image
-                _prevBg = "force-idb-crossfade-" + Date.now()
-                applySettings()
+            m.getImageUrl(rawBg).then((url) => {
+              if (getSettings().background === rawBg) {
+                if (url) {
+                  // crossfade from early preview to sharp image
+                  _prevBg = "force-idb-crossfade-" + Date.now()
+                  applySettings()
+                } else {
+                  // Fallback: trigger fadeout to prevent page freezing if load failed
+                  triggerBgFadeOut()
+                }
+              }
+            }).catch(() => {
+              if (getSettings().background === rawBg) {
+                triggerBgFadeOut()
               }
             })
           })
@@ -1088,16 +1133,21 @@ function createApplySettings(effectInstances) {
         }
         document.body.classList.add("bg-layer-active")
       }
-      const isPredefinedLocalBg = isNextPredefinedLocalBg
-      const isUserUploadedBg =
-        bg &&
-        (bg.startsWith("data:image") ||
-          bg.startsWith("data:video") ||
-          bg.startsWith("blob:") ||
-          isIdbImage(bg) ||
-          isIdbVideo(bg))
 
+      let isPredefinedLocalBg = false
+      let isUserUploadedBg = false
       let activeVideoSource = null
+
+      if (!isWaitingForIdb) {
+        isPredefinedLocalBg = isNextPredefinedLocalBg
+        isUserUploadedBg =
+          bg &&
+          (bg.startsWith("data:image") ||
+            bg.startsWith("data:video") ||
+            bg.startsWith("blob:") ||
+            isIdbImage(bg) ||
+            isIdbVideo(bg))
+
       if (bgVideoElement) bgVideoElement.style.display = "none"
       if (bgVideoElement) {
         configureBackgroundVideo(bgVideoElement, settings)
@@ -1632,6 +1682,7 @@ function createApplySettings(effectInstances) {
         }
         document.body.classList.add("bg-layer-active")
         triggerBgFadeOut()
+      }
       }
     } else {
       // bgChanged is false: Background is identical, just update fast styles
@@ -2175,6 +2226,7 @@ function createApplySettings(effectInstances) {
       "context-menu-light",
       "context-menu-none",
       "context-menu-macos",
+      "context-menu-m3",
     )
     const contextMenuStyle = settings.contextMenuStyle || "dark"
     document.body.classList.add(`context-menu-${contextMenuStyle}`)

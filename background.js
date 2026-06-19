@@ -34,7 +34,56 @@ function restoreUninstallUrlFromStorage() {
 }
 
 function openStartpageTab() {
-  chrome.tabs.create({ url: chrome.runtime.getURL("index.html") })
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const activeTab = tabs[0]
+    const startpageUrl = chrome.runtime.getURL("index.html")
+    if (
+      activeTab &&
+      (activeTab.url === "chrome://newtab/" ||
+        activeTab.url === "about:blank" ||
+        !activeTab.url ||
+        activeTab.url.startsWith("chrome://new-tab-page"))
+    ) {
+      chrome.tabs.update(activeTab.id, { url: startpageUrl })
+    } else {
+      chrome.tabs.create({ url: startpageUrl })
+    }
+  })
+}
+
+function reloadStartpageTabs() {
+  const startpageUrl = chrome.runtime.getURL("index.html")
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach((tab) => {
+      if (!tab.url) return
+      
+      const isStartpage =
+        tab.url.startsWith(startpageUrl) ||
+        (tab.url.startsWith("chrome-extension://") && tab.url.includes("/index.html"))
+        
+      const isNewTab =
+        tab.url === "chrome://newtab/" ||
+        tab.url.startsWith("chrome://newtab") ||
+        tab.url.startsWith("chrome://new-tab-page") ||
+        tab.url.startsWith("chrome-search://") ||
+        tab.url.startsWith("edge://newtab") ||
+        tab.url.startsWith("edge://new-tab-page")
+
+      if (isStartpage) {
+        chrome.tabs.reload(tab.id, () => {
+          if (chrome.runtime.lastError) {
+            // Ignore error
+          }
+        })
+      } else if (isNewTab) {
+        chrome.tabs.update(tab.id, { url: startpageUrl }, () => {
+          if (chrome.runtime.lastError) {
+            // Ignore error
+          }
+        })
+      }
+    })
+  })
 }
 
 function rememberKnownMediaTab(tab) {
@@ -69,17 +118,51 @@ function clearRememberedKnownMediaTab(tabId = null) {
   lastKnownMediaTabSeenAt = 0
 }
 
-// Set the uninstall URL
-chrome.runtime.onInstalled.addListener(restoreUninstallUrlFromStorage)
-chrome.runtime.onStartup?.addListener(restoreUninstallUrlFromStorage)
+// Set the uninstall URL and refresh/reload any existing or restored startpage tabs
+chrome.runtime.onInstalled.addListener(() => {
+  restoreUninstallUrlFromStorage()
+  reloadStartpageTabs()
+  setTimeout(reloadStartpageTabs, 500)
+  setTimeout(reloadStartpageTabs, 1500)
+})
+chrome.runtime.onStartup?.addListener(() => {
+  restoreUninstallUrlFromStorage()
+  reloadStartpageTabs()
+  setTimeout(reloadStartpageTabs, 500)
+  setTimeout(reloadStartpageTabs, 1500)
+  setTimeout(reloadStartpageTabs, 3000)
+})
 chrome.action?.onClicked?.addListener(openStartpageTab)
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   clearRememberedKnownMediaTab(tabId)
   delete mediaStates[tabId]
 })
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
-  if (tabId !== lastKnownMediaTabId || !changeInfo.url) return
-  if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
+  // 1. Media caching logic
+  if (tabId === lastKnownMediaTabId && changeInfo.url) {
+    if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
+  }
+
+  // 2. Fail-safe redirect for newtab page resolution failures (like ERR_INVALID_URL on session restore)
+  if (changeInfo.url) {
+    const url = changeInfo.url
+    const isNewTab =
+      url === "chrome://newtab/" ||
+      url.startsWith("chrome://newtab") ||
+      url.startsWith("chrome://new-tab-page") ||
+      url.startsWith("chrome-search://") ||
+      url.startsWith("edge://newtab") ||
+      url.startsWith("edge://new-tab-page")
+
+    if (isNewTab) {
+      const startpageUrl = chrome.runtime.getURL("index.html")
+      chrome.tabs.update(tabId, { url: startpageUrl }, () => {
+        if (chrome.runtime.lastError) {
+          // Ignore error
+        }
+      })
+    }
+  }
 })
 
 // Version update check is now handled in main.js for better reliability
