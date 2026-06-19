@@ -5,7 +5,14 @@ async function hydrateSettingsPartials() {
     if (!src) return
 
     try {
-      const response = await fetch(src, { cache: "no-store" })
+      const isExtension = typeof chrome !== "undefined" && chrome.runtime?.id
+      const fetchOpts = isExtension ? {} : { cache: "no-store" }
+      let response
+      try {
+        response = await fetch(src, fetchOpts)
+      } catch (fetchErr) {
+        response = await fetch(src)
+      }
       if (!response.ok) throw new Error(`Failed to load ${src}`)
       placeholder.outerHTML = await response.text()
     } catch (error) {
@@ -28,6 +35,43 @@ function runWhenIdle(callback) {
   }
 }
 
+function needsSettingsAtBoot() {
+  try {
+    const isFirstRun =
+      !localStorage.getItem("startpageFirstRunSvgBgV1") &&
+      !localStorage.getItem("pageSettings")
+    const isFirstRunOnboardingPending =
+      localStorage.getItem("startpageFirstRunSvgBgV1") === "applied" &&
+      localStorage.getItem("startpageFirstRunOnboardingDoneV1") !== "1"
+    if (isFirstRun || isFirstRunOnboardingPending) return true
+
+    const settingsStr = localStorage.getItem("pageSettings")
+    if (!settingsStr) return false
+    const settings = JSON.parse(settingsStr)
+    const bg = settings.background
+    const isVideo =
+      typeof bg === "string" &&
+      (bg.startsWith("data:video") ||
+        bg.startsWith("idb-gif-") ||
+        /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
+        bg.includes("googlevideo"))
+
+    return Boolean(
+      (settings.effect && settings.effect !== "none") ||
+        settings.gradientV2Active ||
+        settings.svgWaveActive ||
+        settings.silkActive ||
+        settings.lightPillarActive ||
+        settings.liquidEtherActive ||
+        settings.splashCursorActive ||
+        settings.m3AutoAccentFromBg ||
+        isVideo
+    )
+  } catch (e) {
+    return false
+  }
+}
+
 let resolveSettingsPartialsReady
 window.startpageSettingsPartialsReady = new Promise((resolve) => {
   resolveSettingsPartialsReady = resolve
@@ -41,7 +85,11 @@ const hydrateSettingsPartialsWhenVisible = () => {
     })
   }
 
-  afterFirstPaint(() => runWhenIdle(hydrate))
+  if (needsSettingsAtBoot()) {
+    afterFirstPaint(hydrate)
+  } else {
+    afterFirstPaint(() => runWhenIdle(hydrate))
+  }
 }
 
 const mainModulePromise = import("./main.js?v=perf-lazy-v12")

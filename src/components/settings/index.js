@@ -238,7 +238,7 @@ function createLazyEffects(settings) {
   })
 }
 
-export function initSettings() {
+export async function initSettings() {
   refreshDOMReferences()
   applyTranslations()
   const settings = getSettings()
@@ -1078,7 +1078,10 @@ export function initSettings() {
     }
   })
   if (needsEffectFactories(settings)) {
-    effects.ensureFactoriesLoaded?.()
+    await effects.ensureFactoriesLoaded?.()
+    applySettings()
+  } else {
+    applySettings()
   }
 
   ctx.applySettings = applySettings

@@ -969,6 +969,15 @@ function createApplySettings(effectInstances) {
         rawBg.match(/^https?:\/\//) ||
         isIdbImage(rawBg))
     const isWaitingForIdb = isIdbMedia(rawBg) && !getBlobUrlSync(rawBg)
+    const isPredefinedLocalBg = !isWaitingForIdb && isNextPredefinedLocalBg
+    const isUserUploadedBg =
+      !isWaitingForIdb &&
+      rawBg &&
+      (rawBg.startsWith("data:image") ||
+        rawBg.startsWith("data:video") ||
+        rawBg.startsWith("blob:") ||
+        isIdbImage(rawBg) ||
+        isIdbVideo(rawBg))
 
     // Re-evaluate background class requirements and add them back to body
     // to prevent intermediate updates (e.g. auto accent changes) from stripping them.
@@ -979,6 +988,7 @@ function createApplySettings(effectInstances) {
       settings.liquidEtherActive ||
       settings.svgWaveActive ||
       (settings.splashCursorActive && settings.splashCursorDarkBg === true)
+    const shouldApplyBackgroundLogic = bgChanged || isAnimatedBg
 
     if (isAnimatedBg) {
       document.body.classList.add("bg-layer-active")
@@ -1041,7 +1051,7 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    if (bgChanged) {
+    if (shouldApplyBackgroundLogic) {
       if (!previewExists && !isFirstLoad) {
         document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
         document.body.style.background = ""
@@ -1134,19 +1144,7 @@ function createApplySettings(effectInstances) {
         document.body.classList.add("bg-layer-active")
       }
 
-      let isPredefinedLocalBg = false
-      let isUserUploadedBg = false
       let activeVideoSource = null
-
-      if (!isWaitingForIdb) {
-        isPredefinedLocalBg = isNextPredefinedLocalBg
-        isUserUploadedBg =
-          bg &&
-          (bg.startsWith("data:image") ||
-            bg.startsWith("data:video") ||
-            bg.startsWith("blob:") ||
-            isIdbImage(bg) ||
-            isIdbVideo(bg))
 
       if (bgVideoElement) bgVideoElement.style.display = "none"
       if (bgVideoElement) {
@@ -1156,17 +1154,26 @@ function createApplySettings(effectInstances) {
 
       const setBackgroundImageSmoothly = (imageUrl) => {
         if (!bgLayer || !imageUrl) return
-        
+
+        // Apply background immediately to prevent white flash while decode is pending.
+        // This is safe because blob: URLs are already in memory.
+        bgLayer.style.backgroundImage = cssUrl(imageUrl)
+        bgLayer.style.backgroundSize = backgroundSize
+        bgLayer.style.backgroundRepeat = backgroundRepeat
+        document.body.classList.remove("preload-bg-preview")
+        document.body.classList.add("bg-layer-active")
+
         const img = new Image()
-        
+
         const applyStyles = () => {
+          // Re-apply in case settings changed during decode, and trigger fade animation
           bgLayer.style.backgroundImage = cssUrl(imageUrl)
           bgLayer.style.backgroundSize = backgroundSize
           bgLayer.style.backgroundRepeat = backgroundRepeat
           document.body.classList.remove("preload-bg-preview")
           triggerBgFadeOut()
         }
-        
+
         if (typeof img.decode === "function") {
           img.src = imageUrl
           img.decode()
@@ -1682,7 +1689,6 @@ function createApplySettings(effectInstances) {
         }
         document.body.classList.add("bg-layer-active")
         triggerBgFadeOut()
-      }
       }
     } else {
       // bgChanged is false: Background is identical, just update fast styles
@@ -2347,7 +2353,7 @@ function createApplySettings(effectInstances) {
       } else if (
         isPredefinedLocalBg ||
         isUserUploadedBg ||
-        (bg && bg.match(/^https?:\/\//)) ||
+        (rawBg && String(rawBg).match(/^https?:\/\//)) ||
         shouldUseGradientV2 ||
         shouldUseSilk ||
         shouldUseLightPillar ||
@@ -2355,8 +2361,8 @@ function createApplySettings(effectInstances) {
         (shouldUseSplashCursor && settings.splashCursorDarkBg)
       ) {
         fallbackColor = "#ffffff"
-      } else if (bg) {
-        fallbackColor = getContrastYIQ(bg)
+      } else if (rawBg) {
+        fallbackColor = getContrastYIQ(rawBg)
       } else {
         fallbackColor = getContrastYIQ(settings.gradientStart)
       }

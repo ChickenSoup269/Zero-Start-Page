@@ -176,6 +176,36 @@ function isUpdateNoticeVisible() {
   return style.display !== "none" && style.visibility !== "hidden"
 }
 
+function waitForStartupOverlayHidden(timeout = 6000) {
+  const isHidden = () => {
+    const overlay = document.getElementById("startup-overlay")
+    if (!overlay) return true
+    const style = window.getComputedStyle(overlay)
+    return style.visibility === "hidden" || Number.parseFloat(style.opacity || "1") <= 0.01
+  }
+
+  if (isHidden()) return Promise.resolve()
+
+  return new Promise((resolve) => {
+    const startedAt = performance.now()
+    const finish = () => {
+      window.removeEventListener("startpage:appRevealed", finish)
+      resolve()
+    }
+
+    window.addEventListener("startpage:appRevealed", finish, { once: true })
+
+    const tick = () => {
+      if (isHidden() || performance.now() - startedAt > timeout) {
+        finish()
+        return
+      }
+      requestAnimationFrame(tick)
+    }
+    tick()
+  })
+}
+
 function waitForUpdateNoticeSettled(timeout = 8000) {
   if (!window.startpageUpdateNoticePending && !isUpdateNoticeVisible()) {
     return Promise.resolve()
@@ -636,6 +666,9 @@ async function promptFirstRunStyle(renderBookmarks) {
     updateSetting("interfaceStylePreset", selectedStyle)
     saveSettings(true)
     applyFirstRunStyleToBody(preset.bookmarkLayout)
+    if (typeof window.appApplySettings === "function") {
+      window.appApplySettings()
+    }
     renderBookmarks?.()
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
@@ -998,6 +1031,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
     const skipBtn = overlay.querySelector(".first-run-tour-skip")
     const backBtn = overlay.querySelector(".first-run-tour-back")
     const nextBtn = overlay.querySelector(".first-run-tour-next")
+    let renderToken = 0
 
     const finish = (status) => {
       if (resolved) return
@@ -1052,8 +1086,10 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
     }
 
     const renderStep = async () => {
+      const token = ++renderToken
       sidebar.classList.add("open")
       await waitForSettingsSidebarOpen(sidebar)
+      if (resolved || token !== renderToken) return
       const step = steps[index]
       const section = step.selector ? document.querySelector(step.selector) : null
       if (section?.classList?.contains("settings-section")) {
@@ -1078,7 +1114,9 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
       if (target) target.classList.add("first-run-tour-highlight")
 
       await waitForAnimationFrames(2)
+      if (resolved || token !== renderToken) return
       const rect = virtualRect || (await scrollGuideTargetIntoView(sidebarContent, target))
+      if (resolved || token !== renderToken) return
       spotlight.style.left = `${rect.left - 8}px`
       spotlight.style.top = `${rect.top - 8}px`
       spotlight.style.width = `${rect.width + 16}px`
@@ -1156,6 +1194,8 @@ async function finishFirstRunGuide() {
 
 export async function promptFirstRunBookmarkImport(renderBookmarks) {
   if (localStorage.getItem(FIRST_RUN_BG_KEY) !== "applied") return
+
+  await waitForStartupOverlayHidden()
 
   if (!localStorage.getItem(FIRST_RUN_ONBOARDING_DONE_KEY)) {
     setFirstRunOnboardingActive(true)

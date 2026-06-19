@@ -174,12 +174,14 @@ export async function clearAllMedia() {
 function _urlCacheSet(id, url) {
   // Nếu đã tồn tại, xoá rồi set lại để đưa lên cuối (LRU)
   if (_urlCache.has(id)) {
-    URL.revokeObjectURL(_urlCache.get(id))
+    const oldUrl = _urlCache.get(id)
+    setTimeout(() => URL.revokeObjectURL(oldUrl), 1000) // Trì hoãn revoke để tránh flash trắng khi chuyển đổi nhanh
     _urlCache.delete(id)
   } else if (_urlCache.size >= MAX_URL_CACHE_SIZE) {
     // Evict entry cũ nhất (first inserted)
     const oldestKey = _urlCache.keys().next().value
-    URL.revokeObjectURL(_urlCache.get(oldestKey))
+    const oldUrl = _urlCache.get(oldestKey)
+    setTimeout(() => URL.revokeObjectURL(oldUrl), 2000) // Trì hoãn revoke để đảm bảo các transition/load hoàn tất
     _urlCache.delete(oldestKey)
   }
   _urlCache.set(id, url)
@@ -187,11 +189,13 @@ function _urlCacheSet(id, url) {
 
 function _thumbCacheSet(id, url) {
   if (_thumbCache.has(id)) {
-    URL.revokeObjectURL(_thumbCache.get(id))
+    const oldUrl = _thumbCache.get(id)
+    setTimeout(() => URL.revokeObjectURL(oldUrl), 1000)
     _thumbCache.delete(id)
   } else if (_thumbCache.size >= MAX_THUMB_CACHE_SIZE) {
     const oldestKey = _thumbCache.keys().next().value
-    URL.revokeObjectURL(_thumbCache.get(oldestKey))
+    const oldUrl = _thumbCache.get(oldestKey)
+    setTimeout(() => URL.revokeObjectURL(oldUrl), 1000)
     _thumbCache.delete(oldestKey)
   }
   _thumbCache.set(id, url)
@@ -210,7 +214,8 @@ function _trimCache(cache, keepIds, maxSize) {
   for (const [id, url] of cache) {
     if (cache.size <= maxSize) break
     if (keepIds.has(id)) continue
-    URL.revokeObjectURL(url)
+    const oldUrl = url
+    setTimeout(() => URL.revokeObjectURL(oldUrl), 2000) // Trì hoãn revoke để tránh flash màn hình khi dọn dẹp bộ nhớ
     cache.delete(id)
   }
 }

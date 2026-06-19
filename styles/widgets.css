@@ -4928,7 +4928,10 @@ body.timer-focus-active {
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .calendar-source-tab span {
@@ -5870,140 +5873,230 @@ body.context-menu-none .calendar-event-preview-desc {
   color: rgba(0, 0, 0, 0.82);
 }
 
-/* Material 3 Context Menu Theme */
+/* Material 3 context menu — :root --m3-* from applyAccentTokens(),
+   fallback --safe-accent when accentColorMode is "default". */
 body.context-menu-m3 #context-menu,
-body.context-menu-m3 .calendar-context-menu {
-  background: color-mix(in srgb, var(--m3-surface-container, #211f26) 94%, transparent) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--m3-outline-variant, rgba(255, 255, 255, 0.1)) !important;
-  border-radius: 8px !important;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 1px 3px rgba(0, 0, 0, 0.15) !important;
-  padding: 8px 0 !important;
-  min-width: 220px !important;
+body.context-menu-m3 .calendar-context-menu,
+body.context-menu-m3 .g-apps-context-menu {
+  min-width: 232px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  background:
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(
+        in srgb,
+        var(--m3-primary, var(--safe-accent)) 20%,
+        transparent
+      ),
+      transparent 36%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(
+        in srgb,
+        var(--m3-primary-container, var(--safe-accent)) 76%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--m3-secondary-container, var(--safe-accent)) 58%,
+        transparent
+      )
+    ) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--m3-primary, var(--safe-accent)) 36%,
+      transparent
+    ) !important;
+  box-shadow:
+    0 18px 46px
+      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+    inset 0 1px 0
+      color-mix(
+        in srgb,
+        var(--m3-on-primary-container, #fff) 22%,
+        transparent
+      ) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
 }
 
 body.context-menu-m3 .context-menu-item,
-body.context-menu-m3 .menu-item {
-  color: var(--m3-on-surface, var(--text-color)) !important;
-  border-radius: 6px !important;
+body.context-menu-m3 .menu-item,
+body.context-menu-m3 .g-apps-menu-btn,
+body.context-menu-m3 .g-apps-menu-toggle {
+  min-height: 27px;
+  margin: 1px 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  gap: var(--space-2);
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
   font-size: 14px;
+  line-height: 1.25;
   font-weight: 500;
-  padding: 8px 16px !important;
-  margin: 2px 6px !important;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
+  letter-spacing: 0;
+  transition:
+    background-color 45ms linear,
+    color 45ms linear,
+    border-color 45ms linear;
 }
 
 body.context-menu-m3 .context-menu-item i,
-body.context-menu-m3 .menu-item i {
-  color: var(--m3-on-surface-variant, var(--text-color)) !important;
-  font-size: 14px;
-  width: 16px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+body.context-menu-m3 .menu-item i,
+body.context-menu-m3 .g-apps-menu-btn i,
+body.context-menu-m3 .g-apps-menu-toggle i {
+  width: 18px;
+  font-size: 1rem;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 68%,
+    transparent
+  ) !important;
+
+  opacity: 1;
 }
 
 body.context-menu-m3 .context-menu-item:hover,
-body.context-menu-m3 .menu-item:hover {
-  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 12%, transparent) !important;
-  color: var(--m3-primary, var(--safe-accent)) !important;
+body.context-menu-m3 .menu-item:hover,
+body.context-menu-m3 .g-apps-menu-btn:hover,
+body.context-menu-m3 .g-apps-menu-toggle:hover {
+  background: var(--m3-primary, var(--safe-accent)) !important;
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+  box-shadow: 0 10px 22px
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 30%, transparent) !important;
 }
 
 body.context-menu-m3 .context-menu-item:hover i,
-body.context-menu-m3 .menu-item:hover i {
-  color: var(--m3-primary, var(--safe-accent)) !important;
+body.context-menu-m3 .menu-item:hover i,
+body.context-menu-m3 .g-apps-menu-btn:hover i,
+body.context-menu-m3 .g-apps-menu-toggle:hover i {
+  color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
+  opacity: 1;
 }
 
 /* Divider / Separator */
 body.context-menu-m3 .context-menu-divider,
 body.context-menu-m3 .context-menu-separator {
-  background: var(--m3-outline-variant, rgba(255, 255, 255, 0.1)) !important;
   height: 1px;
-  margin: 6px 0 !important;
+  margin: var(--space-1) var(--space-1);
+  background: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 24%,
+    transparent
+  ) !important;
+}
+
+body.context-menu-m3 .g-apps-menu-title {
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 62%,
+    transparent
+  ) !important;
 }
 
 /* Danger / Delete Item */
 body.context-menu-m3 .context-menu-item.danger,
 body.context-menu-m3 .menu-item.danger,
-body.context-menu-m3 #menu-delete {
-  color: var(--m3-error, #ff5454) !important;
+body.context-menu-m3 #menu-delete,
+body.context-menu-m3 .g-apps-menu-btn.danger {
+  color: #ff8a80 !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger i,
 body.context-menu-m3 .menu-item.danger i,
-body.context-menu-m3 #menu-delete i {
-  color: var(--m3-error, #ff5454) !important;
+body.context-menu-m3 #menu-delete i,
+body.context-menu-m3 .g-apps-menu-btn.danger i {
+  color: rgba(255, 138, 128, 0.82) !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger:hover,
 body.context-menu-m3 .menu-item.danger:hover,
-body.context-menu-m3 #menu-delete:hover {
-  background: color-mix(in srgb, var(--m3-error, #ff5454) 12%, transparent) !important;
-  color: var(--m3-error, #ff5454) !important;
+body.context-menu-m3 #menu-delete:hover,
+body.context-menu-m3 .g-apps-menu-btn.danger:hover {
+  background: #ff3b30 !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(255, 59, 48, 0.28) !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger:hover i,
 body.context-menu-m3 .menu-item.danger:hover i,
-body.context-menu-m3 #menu-delete:hover i {
-  color: var(--m3-error, #ff5454) !important;
+body.context-menu-m3 #menu-delete:hover i,
+body.context-menu-m3 .g-apps-menu-btn.danger:hover i {
+  color: #fff !important;
 }
 
 /* Calendar event form and preview inside M3 context menu */
 body.context-menu-m3 .calendar-event-form-title,
 body.context-menu-m3 .calendar-event-preview-title {
-  color: var(--m3-on-surface, var(--text-color)) !important;
-  padding: 0 16px !important;
-  margin-top: 8px !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  padding: 0 var(--space-2) !important;
+  margin-top: var(--space-1) !important;
 }
 
 body.context-menu-m3 .calendar-event-form {
-  padding: 8px 16px !important;
+  padding: var(--space-1) var(--space-2) !important;
 }
 
 body.context-menu-m3 .calendar-event-form label {
-  color: var(--m3-on-surface-variant, var(--text-color)) !important;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 72%,
+    transparent
+  ) !important;
 }
 
 body.context-menu-m3 .calendar-event-form input,
 body.context-menu-m3 .calendar-event-form textarea {
-  background: color-mix(in srgb, var(--m3-surface-container-high, #fff) 80%, transparent) !important;
-  border: 1px solid var(--m3-outline, rgba(255, 255, 255, 0.2)) !important;
-  color: var(--m3-on-surface, var(--text-color)) !important;
-  border-radius: 4px !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-surface-container-high, var(--m3-primary-container, #fff)) 58%,
+    transparent
+  ) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  border-radius: var(--radius-sm) !important;
   padding: 6px 10px !important;
 }
 
 body.context-menu-m3 .calendar-event-form input:focus,
 body.context-menu-m3 .calendar-event-form textarea:focus {
   border-color: var(--m3-primary, var(--safe-accent)) !important;
+  outline-color: var(--m3-primary, var(--safe-accent)) !important;
   outline: none;
 }
 
 body.context-menu-m3 .calendar-event-form-actions .calendar-event-cancel {
   background: transparent !important;
-  border: 1px solid var(--m3-outline, rgba(255, 255, 255, 0.2)) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 28%, transparent) !important;
   color: var(--m3-primary, var(--safe-accent)) !important;
   border-radius: 20px !important;
 }
 
 body.context-menu-m3 .calendar-event-form-actions .calendar-event-cancel:hover {
-  background: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 8%, transparent) !important;
+  background: color-mix(
+    in srgb,
+    var(--m3-primary, var(--safe-accent)) 12%,
+    transparent
+  ) !important;
 }
 
 body.context-menu-m3 .calendar-event-preview-meta {
-  color: var(--m3-on-surface-variant, var(--text-color)) !important;
-  padding: 0 16px !important;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 62%,
+    transparent
+  ) !important;
+  padding: 0 var(--space-2) !important;
 }
 
 body.context-menu-m3 .calendar-event-preview-desc {
-  color: var(--m3-on-surface, var(--text-color)) !important;
-  padding: 0 16px !important;
+  color: var(--m3-on-primary-container, var(--text-color)) !important;
+  padding: 0 var(--space-2) !important;
 }
 
 .context-menu-item i,
@@ -6444,11 +6537,8 @@ body.widgets-m3-accent .quotes-container,
     var(--m3-surface-container-high, var(--m3-primary-container, #fff)) 58%,
     transparent
   ) !important;
-  border: 1px solid color-mix(
-    in srgb,
-    var(--m3-primary, var(--safe-accent)) 24%,
-    transparent
-  ) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
   border-radius: var(--radius-sm) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
 }
@@ -6462,7 +6552,11 @@ body.widgets-m3-accent .quotes-container,
 }
 
 .weather-container.skin-m3-accent .weather-search-row input::placeholder {
-  color: color-mix(in srgb, var(--m3-on-primary-container, var(--text-color)) 58%, transparent) !important;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 58%,
+    transparent
+  ) !important;
 }
 
 .weather-container.skin-m3-accent .weather-search-row i {
@@ -6477,11 +6571,8 @@ body.widgets-m3-accent .quotes-container,
     var(--m3-on-primary-container, #fff) 12%,
     transparent
   ) !important;
-  border: 1px solid color-mix(
-    in srgb,
-    var(--m3-primary, var(--safe-accent)) 20%,
-    transparent
-  ) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) !important;
 }
 
 .weather-container.skin-m3-accent .weather-search-btn:hover {
@@ -6505,7 +6596,8 @@ body.widgets-m3-accent .quotes-container,
   ) !important;
   backdrop-filter: blur(28px) saturate(170%) !important;
   -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
-  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
+  border: 1px solid
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 24%, transparent) !important;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25) !important;
 }
 
@@ -6528,7 +6620,11 @@ body.widgets-m3-accent .quotes-container,
 }
 
 .weather-container.skin-m3-accent .weather-suggestion-item small {
-  color: color-mix(in srgb, var(--m3-on-primary-container, var(--text-color)) 65%, transparent) !important;
+  color: color-mix(
+    in srgb,
+    var(--m3-on-primary-container, var(--text-color)) 65%,
+    transparent
+  ) !important;
 }
 
 .todo-container.widget-border-hidden,
@@ -9151,17 +9247,29 @@ body.quick-access-light-transparent .quick-access-popup {
 }
 
 body.quick-access-light-transparent .quick-btn,
-body.quick-access-light-transparent .quick-access-popup .quick-access-section-row,
-body.quick-access-light-transparent .quick-access-popup .quick-access-border-row,
-body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip {
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-section-row,
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-border-row,
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-radius-chip {
   background: rgba(255, 255, 255, 0.055) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 body.quick-access-light-transparent .quick-btn:hover:not(.active),
-body.quick-access-light-transparent .quick-access-popup .quick-access-section-row:hover,
-body.quick-access-light-transparent .quick-access-popup .quick-access-border-row:hover,
-body.quick-access-light-transparent .quick-access-popup .quick-access-radius-chip:hover {
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-section-row:hover,
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-border-row:hover,
+body.quick-access-light-transparent
+  .quick-access-popup
+  .quick-access-radius-chip:hover {
   background: rgba(255, 255, 255, 0.095) !important;
 }
 
@@ -11971,5 +12079,3 @@ body.bookmark-group-border-hidden
   transform: scale(0.8) !important;
   transform-origin: top left !important;
 }
-
-

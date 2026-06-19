@@ -377,10 +377,8 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
       const vid = document.createElement("video")
       vid.muted = true
       vid.preload = "metadata"
-      vid.src =
-        typeof blobOrUrl === "string"
-          ? blobOrUrl
-          : URL.createObjectURL(blobOrUrl)
+      const tempUrl = typeof blobOrUrl === "string" ? blobOrUrl : URL.createObjectURL(blobOrUrl)
+      vid.src = tempUrl
 
       vid.addEventListener(
         "loadedmetadata",
@@ -397,7 +395,7 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
             if (vid.videoWidth > 0)
               createThumbFromElement(vid, vid.videoWidth, vid.videoHeight)
             else resolve(null)
-            if (typeof blobOrUrl !== "string") URL.revokeObjectURL(vid.src)
+            if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
             vid.removeAttribute("src")
             vid.load()
           }, 150)
@@ -405,18 +403,23 @@ async function _ensureThumbnail(id, blobOrUrl, isVideo) {
         { once: true },
       )
 
-      vid.addEventListener("error", () => resolve(null))
+      vid.addEventListener("error", () => {
+        resolve(null)
+        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
+      }, { once: true })
     } else {
       const img = new Image()
-      img.src =
-        typeof blobOrUrl === "string"
-          ? blobOrUrl
-          : URL.createObjectURL(blobOrUrl)
+      const tempUrl = typeof blobOrUrl === "string" ? blobOrUrl : URL.createObjectURL(blobOrUrl)
+      
       img.onload = () => {
         createThumbFromElement(img, img.width, img.height)
-        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(img.src)
+        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
       }
-      img.onerror = () => resolve(null)
+      img.onerror = () => {
+        resolve(null)
+        if (typeof blobOrUrl !== "string") URL.revokeObjectURL(tempUrl)
+      }
+      img.src = tempUrl
     }
   })
 }
@@ -527,24 +530,24 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
             thumbLayer.style.backgroundImage = cssUrl(thumbUrl)
             item.classList.remove("thumb-loading")
           } else {
-            const originalUrl = await getImageUrl(bgId)
-            if (originalUrl) {
+            const blob = await getImageBlob(bgId).catch(() => null)
+            if (blob) {
               const newThumb = await _ensureThumbnail(
                 bgId,
-                originalUrl,
+                blob,
                 isVideo,
               )
               if (newThumb) {
                 thumbLayer.style.backgroundImage = cssUrl(newThumb)
                 item.classList.remove("thumb-loading")
-                trimMediaMemory({
-                  keepIds: [getSettings().background],
-                  maxUrls: 1,
-                })
               } else {
-                thumbLayer.style.backgroundImage = cssUrl(originalUrl)
+                const tempUrl = URL.createObjectURL(blob)
+                thumbLayer.style.backgroundImage = cssUrl(tempUrl)
                 item.classList.remove("thumb-loading")
+                setTimeout(() => URL.revokeObjectURL(tempUrl), 1000)
               }
+            } else {
+              item.classList.remove("thumb-loading")
             }
           }
         }).catch(() => {

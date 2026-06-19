@@ -301,6 +301,12 @@
 
         if (settings.splashCursorActive && settings.splashCursorDarkBg === true)
           return "#000000"
+        if (settings.svgWaveActive) {
+          const start = `hsl(${settings.svgWaveStartHue ?? 200}, ${settings.svgWaveStartSaturation ?? 70}%, ${settings.svgWaveStartLightness ?? 40}%)`
+          const end = `hsl(${settings.svgWaveEndHue ?? 280}, ${settings.svgWaveEndSaturation ?? 70}%, ${settings.svgWaveEndLightness ?? 30}%)`
+          const angle = Number(settings.svgWaveAngle ?? 0)
+          return `linear-gradient(${angle}deg, ${start}, ${end})`
+        }
         if (settings.gradientV2Active) {
           return `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
         }

@@ -60,23 +60,9 @@ function reloadStartpageTabs() {
       const isStartpage =
         tab.url.startsWith(startpageUrl) ||
         (tab.url.startsWith("chrome-extension://") && tab.url.includes("/index.html"))
-        
-      const isNewTab =
-        tab.url === "chrome://newtab/" ||
-        tab.url.startsWith("chrome://newtab") ||
-        tab.url.startsWith("chrome://new-tab-page") ||
-        tab.url.startsWith("chrome-search://") ||
-        tab.url.startsWith("edge://newtab") ||
-        tab.url.startsWith("edge://new-tab-page")
 
       if (isStartpage) {
         chrome.tabs.reload(tab.id, () => {
-          if (chrome.runtime.lastError) {
-            // Ignore error
-          }
-        })
-      } else if (isNewTab) {
-        chrome.tabs.update(tab.id, { url: startpageUrl }, () => {
           if (chrome.runtime.lastError) {
             // Ignore error
           }
@@ -141,27 +127,6 @@ chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
   // 1. Media caching logic
   if (tabId === lastKnownMediaTabId && changeInfo.url) {
     if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
-  }
-
-  // 2. Fail-safe redirect for newtab page resolution failures (like ERR_INVALID_URL on session restore)
-  if (changeInfo.url) {
-    const url = changeInfo.url
-    const isNewTab =
-      url === "chrome://newtab/" ||
-      url.startsWith("chrome://newtab") ||
-      url.startsWith("chrome://new-tab-page") ||
-      url.startsWith("chrome-search://") ||
-      url.startsWith("edge://newtab") ||
-      url.startsWith("edge://new-tab-page")
-
-    if (isNewTab) {
-      const startpageUrl = chrome.runtime.getURL("index.html")
-      chrome.tabs.update(tabId, { url: startpageUrl }, () => {
-        if (chrome.runtime.lastError) {
-          // Ignore error
-        }
-      })
-    }
   }
 })
 

@@ -1,12 +1,15 @@
 export const updateNotes = {
   vi: {
-    changesTitle: "Có gì mới",
+    changesTitle: "HOT FIX",
     contributorsTitle: "Người góp công",
-    changes: [],
+    changes: [
+      "Đen màn khi khi mở",
+      "Tab không hiển thị khi đóng ở mở lại ở restore",
+    ],
     contributors: [
       {
         name: "",
-        project: "",
+        project: "Zero Startpage",
         role: "",
         badge: "",
         badgeLabel: "",
@@ -15,13 +18,16 @@ export const updateNotes = {
     ],
   },
   en: {
-    changesTitle: "What's New",
+    changesTitle: "HOT FIX",
     contributorsTitle: "Contributors",
-    changes: [],
+    changes: [
+      "Black screen when opening",
+      "Tab not showing when closing and reopening in restore",
+    ],
     contributors: [
       {
         name: "",
-        project: "",
+        project: "Zero Startpage",
         role: "",
         badge: "",
         badgeLabel: "",

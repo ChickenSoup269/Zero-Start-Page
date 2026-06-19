@@ -17,7 +17,7 @@ export class SvgWaveGenerator {
       el = document.createElement("div")
       el.id = id
       el.style.cssText =
-        "position:fixed;inset:0;z-index:-10;background-size:cover;background-position:var(--bg-pos-x, 50%) var(--bg-pos-y, 50%);filter:blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));opacity:0;pointer-events:none;"
+        "position:fixed;inset:0;z-index:-9;background-size:cover;background-position:var(--bg-pos-x, 50%) var(--bg-pos-y, 50%);filter:blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%));opacity:0;pointer-events:none;"
       document.body.appendChild(el)
     }
     return el
@@ -190,7 +190,13 @@ export class SvgWaveGenerator {
     // Let our fixed div layers act as the background
     document.body.style.removeProperty("background")
     document.body.style.removeProperty("background-image")
+    document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
     document.body.classList.add("bg-image-active")
+
+    const bgLayer = document.getElementById("bg-layer")
+    const bgFadeLayer = document.getElementById("bg-fade-layer")
+    if (bgLayer) bgLayer.style.opacity = "0"
+    if (bgFadeLayer) bgFadeLayer.style.opacity = "0"
 
     const currEl = this._layers[this._activeLayer]
     const nextEl = this._layers[1 - this._activeLayer]

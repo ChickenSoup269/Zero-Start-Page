@@ -47,6 +47,11 @@ import {
   showWeatherCheckbox,
 } from "./utils/dom.js"
 
+let bookmarksLoaded = false
+window.addEventListener("bookmarksReady", () => {
+  bookmarksLoaded = true
+}, { once: true })
+
 function syncUninstallSurveyLanguage(language) {
   try {
     window.chrome?.runtime?.sendMessage?.(
@@ -171,8 +176,8 @@ function ensureSettingsInitialized(reason = "idle") {
         refreshDOMReferences()
         return import("./components/settings.js")
       })
-      .then(({ initSettings }) => {
-        initSettings()
+      .then(async ({ initSettings }) => {
+        await initSettings()
         settingsInitialized = true
         window.settingsInitialized = true
         window.dispatchEvent(
@@ -285,6 +290,33 @@ function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
   root.style.setProperty("--safe-accent", scheme.inversePrimary)
 
   return scheme
+}
+
+function buildSvgWavePreviewGradient(settings) {
+  const start = `hsl(${settings.svgWaveStartHue ?? 200}, ${settings.svgWaveStartSaturation ?? 70}%, ${settings.svgWaveStartLightness ?? 40}%)`
+  const end = `hsl(${settings.svgWaveEndHue ?? 280}, ${settings.svgWaveEndSaturation ?? 70}%, ${settings.svgWaveEndLightness ?? 30}%)`
+  const angle = Number(settings.svgWaveAngle ?? 0)
+  return `linear-gradient(${angle}deg, ${start}, ${end})`
+}
+
+function applyBootVisualPreview(settings) {
+  if (!settings) return
+
+  if (settings.accentColor) {
+    applyAccentTokens(settings)
+  }
+
+  if (settings.svgWaveActive !== true) return
+
+  const bgLayer = document.getElementById("bg-layer")
+  if (!bgLayer) return
+
+  document.body.classList.add("preload-bg-ready", "bg-layer-active")
+  bgLayer.style.background = buildSvgWavePreviewGradient(settings)
+  bgLayer.style.backgroundSize = "cover"
+  bgLayer.style.backgroundRepeat = "no-repeat"
+  bgLayer.style.backgroundPosition = "var(--bg-pos-x, 50%) var(--bg-pos-y, 50%)"
+  bgLayer.style.opacity = "1"
 }
 
 function applyBasicStyles(settings) {
@@ -439,13 +471,17 @@ async function bootstrap() {
   const skipStartupLoader = document.body.classList.contains(
     "skip-startup-loader",
   )
+  const bootStartedAt = performance.now()
   if (!skipStartupLoader) {
     document.body.classList.add("is-booting")
   }
 
+  prepareFirstRunDefaults()
+  applyBootVisualPreview(getSettings())
+  const minimumStartupLoaderMs = isFirstRunOnboardingPending() ? 1600 : 650
+
   // Load language first so all other components have translations
   await initI18n()
-  prepareFirstRunDefaults()
 
   // Update version in startup overlay and settings sidebar immediately
   try {
@@ -481,6 +517,8 @@ async function bootstrap() {
     })
   }
   fastRevealSkipStartup()
+
+
   const settingsToggle = document.getElementById("settings-toggle")
   const settingsSidebar = document.getElementById("settings-sidebar")
   const googleAppsBtn = document.querySelector(".google-apps-btn")
@@ -781,10 +819,12 @@ async function bootstrap() {
     showContextMenu(event.clientX, event.clientY, -1, "widget", match[1])
   })
 
-  setTimeout(
-    () => promptFirstRunBookmarkImport(renderBookmarks),
-    skipStartupLoader ? 500 : 1800,
-  )
+  if (skipStartupLoader) {
+    setTimeout(
+      () => promptFirstRunBookmarkImport(renderBookmarks),
+      500,
+    )
+  }
 
   const widgets = {
     todo: null,
@@ -1060,26 +1100,37 @@ async function bootstrap() {
   })
 
   // Smooth reveal: wait for critical components and then fade out overlay
-  const revealApp = () => {
+  function revealApp() {
     const mainContainer = document.querySelector(".main-container")
-    let bookmarksReady = false
+    let bookmarksReady =
+      bookmarksLoaded ||
+      (currentSettings.showBookmarks === false &&
+        currentSettings.showBookmarkGroups === false)
     let bgReady = false
     let isRevealed = false
 
     const hideOverlay = () => {
       if (isRevealed) return
       isRevealed = true
-      const overlay = document.getElementById("startup-overlay")
-      if (overlay) {
-        overlay.style.opacity = "0"
-        overlay.style.visibility = "hidden"
+      const revealNow = () => {
+        const overlay = document.getElementById("startup-overlay")
+        if (overlay) {
+          overlay.style.opacity = "0"
+        }
+        localStorage.setItem("startpageHasOpened", "1")
+        localStorage.removeItem("startpageShowStartupLoader")
+        document.body.classList.remove("loading-state")
+        window.setTimeout(() => {
+          if (overlay) overlay.style.visibility = "hidden"
+          document.body.classList.remove("is-booting")
+          window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
+        }, 430)
       }
-      localStorage.setItem("startpageHasOpened", "1")
-      localStorage.removeItem("startpageShowStartupLoader")
-      document.body.classList.remove("loading-state")
-      requestAnimationFrame(() => {
-        document.body.classList.remove("is-booting")
-      })
+      const elapsed = performance.now() - bootStartedAt
+      const remaining = skipStartupLoader
+        ? 0
+        : Math.max(0, minimumStartupLoaderMs - elapsed)
+      window.setTimeout(revealNow, remaining)
     }
 
     const checkAllReady = () => {
@@ -1098,12 +1149,15 @@ async function bootstrap() {
     }
 
     // 1. Wait for bookmarks
-    const onBookmarksReady = () => {
-      bookmarksReady = true
-      checkAllReady()
-      window.removeEventListener("bookmarksReady", onBookmarksReady)
+    let onBookmarksReady = null
+    if (!bookmarksReady) {
+      onBookmarksReady = () => {
+        bookmarksReady = true
+        checkAllReady()
+        window.removeEventListener("bookmarksReady", onBookmarksReady)
+      }
+      window.addEventListener("bookmarksReady", onBookmarksReady)
     }
-    window.addEventListener("bookmarksReady", onBookmarksReady)
 
     // 2. Wait for background
     const background = currentSettings.background
@@ -1177,6 +1231,27 @@ async function bootstrap() {
         }
       }
       setTimeout(checkVideoStatus, 50)
+    } else if (needsSettingsAtBoot(currentSettings)) {
+      const markBgReady = () => {
+        bgReady = true
+        checkAllReady()
+      }
+      const waitForVisualPaint = () => {
+        if (currentSettings.svgWaveActive) {
+          requestAnimationFrame(() => requestAnimationFrame(markBgReady))
+        } else {
+          markBgReady()
+        }
+      }
+      if (window.settingsInitialized) {
+        waitForVisualPaint()
+      } else {
+        const onSettingsReady = () => {
+          waitForVisualPaint()
+          window.removeEventListener("startpage:settingsReady", onSettingsReady)
+        }
+        window.addEventListener("startpage:settingsReady", onSettingsReady)
+      }
     } else {
       bgReady = true
       checkAllReady()
@@ -1185,6 +1260,9 @@ async function bootstrap() {
     // Safety timeout: if anything hangs, show app anyway after 1500ms
     setTimeout(() => {
       if (!isRevealed) {
+        if (onBookmarksReady) {
+          window.removeEventListener("bookmarksReady", onBookmarksReady)
+        }
         if (mainContainer) mainContainer.classList.add("ready")
         hideOverlay()
       }
@@ -1243,10 +1321,22 @@ async function bootstrap() {
 
   if (skipStartupLoader) {
     revealApp()
-  } else if (window.requestIdleCallback) {
-    window.requestIdleCallback(revealApp)
   } else {
-    setTimeout(revealApp, 200)
+    revealApp()
+    let firstRunOnboardingStarted = false
+    const startFirstRunOnboarding = () => {
+      if (firstRunOnboardingStarted) return
+      firstRunOnboardingStarted = true
+      promptFirstRunBookmarkImport(renderBookmarks)
+    }
+    if (document.body.classList.contains("loading-state")) {
+      window.addEventListener("startpage:appRevealed", startFirstRunOnboarding, {
+        once: true,
+      })
+      setTimeout(startFirstRunOnboarding, 3200)
+    } else {
+      setTimeout(startFirstRunOnboarding, 300)
+    }
   }
 
   // Sync Quick Access active state when settings change

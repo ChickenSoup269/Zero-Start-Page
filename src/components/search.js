@@ -520,6 +520,33 @@ async function openGeminiWithPrompt(engine, query) {
   }
 }
 
+function checkAndGetUrl(query) {
+  const trimmed = query.trim()
+  if (!trimmed) return null
+
+  // 1. Check if it matches a protocol
+  if (/^(https?|chrome|chrome-extension|edge|about|file|ftp):\/\//i.test(trimmed) || /^about:/i.test(trimmed)) {
+    return trimmed
+  }
+
+  // 2. Check if it is a localhost address
+  if (/^localhost(:\d+)?(\/.*)?$/i.test(trimmed)) {
+    return 'http://' + trimmed
+  }
+
+  // 3. Check if it is an IP address
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?(\/.*)?$/i.test(trimmed)) {
+    return 'http://' + trimmed
+  }
+
+  // 4. Check if it matches a standard domain name pattern (without spaces)
+  if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(trimmed) && !/\s/.test(trimmed)) {
+    return 'https://' + trimmed
+  }
+
+  return null
+}
+
 function submitSearch() {
   const query = searchInput.value.trim()
 
@@ -549,6 +576,18 @@ function submitSearch() {
 
   // Default to text search
   if (!query) return
+
+  // Check if the query is a URL to navigate directly
+  const targetUrl = checkAndGetUrl(query)
+  if (targetUrl) {
+    if (typeof chrome !== "undefined" && chrome.tabs?.update) {
+      chrome.tabs.update({ url: targetUrl })
+    } else {
+      window.location.href = targetUrl
+    }
+    searchInput.value = ""
+    return
+  }
 
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
   if (currentEngine === "gemini" || currentEngine === "gemini-image") {
