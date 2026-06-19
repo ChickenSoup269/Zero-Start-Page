@@ -140,6 +140,14 @@ function ensureCommandPaletteInitialized(reason = "idle", options = {}) {
 }
 
 function needsSettingsAtBoot(settings) {
+  const bg = settings.background
+  const isVideo =
+    typeof bg === "string" &&
+    (bg.startsWith("data:video") ||
+      bg.startsWith("idb-gif-") ||
+      /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
+      bg.includes("googlevideo"))
+
   return Boolean(
     (settings.effect && settings.effect !== "none") ||
       settings.gradientV2Active ||
@@ -148,7 +156,8 @@ function needsSettingsAtBoot(settings) {
       settings.lightPillarActive ||
       settings.liquidEtherActive ||
       settings.splashCursorActive ||
-      settings.m3AutoAccentFromBg
+      settings.m3AutoAccentFromBg ||
+      isVideo
   )
 }
 
@@ -466,7 +475,10 @@ async function bootstrap() {
       localStorage.setItem("startpageHasOpened", "1")
       localStorage.removeItem("startpageShowStartupLoader")
     } catch {}
-    document.body.classList.remove("loading-state", "is-booting")
+    document.body.classList.remove("loading-state")
+    requestAnimationFrame(() => {
+      document.body.classList.remove("is-booting")
+    })
   }
   fastRevealSkipStartup()
   const settingsToggle = document.getElementById("settings-toggle")
@@ -1050,8 +1062,13 @@ async function bootstrap() {
   // Smooth reveal: wait for critical components and then fade out overlay
   const revealApp = () => {
     const mainContainer = document.querySelector(".main-container")
+    let bookmarksReady = false
+    let bgReady = false
+    let isRevealed = false
 
     const hideOverlay = () => {
+      if (isRevealed) return
+      isRevealed = true
       const overlay = document.getElementById("startup-overlay")
       if (overlay) {
         overlay.style.opacity = "0"
@@ -1060,7 +1077,16 @@ async function bootstrap() {
       localStorage.setItem("startpageHasOpened", "1")
       localStorage.removeItem("startpageShowStartupLoader")
       document.body.classList.remove("loading-state")
-      document.body.classList.remove("is-booting")
+      requestAnimationFrame(() => {
+        document.body.classList.remove("is-booting")
+      })
+    }
+
+    const checkAllReady = () => {
+      if (bookmarksReady && bgReady) {
+        if (mainContainer) mainContainer.classList.add("ready")
+        hideOverlay()
+      }
     }
 
     if (skipStartupLoader) {
@@ -1071,18 +1097,97 @@ async function bootstrap() {
       return
     }
 
-    // Wait for bookmarks-grid, taskbar, sidebar to be stable
+    // 1. Wait for bookmarks
     const onBookmarksReady = () => {
-      if (mainContainer) mainContainer.classList.add("ready")
-      setTimeout(hideOverlay, 300)
+      bookmarksReady = true
+      checkAllReady()
       window.removeEventListener("bookmarksReady", onBookmarksReady)
     }
     window.addEventListener("bookmarksReady", onBookmarksReady)
 
-    // Safety timeout: if bookmarksReady never fires, show app anyway
+    // 2. Wait for background
+    const background = currentSettings.background
+    const isVideo =
+      typeof background === "string" &&
+      (background.startsWith("data:video") ||
+        background.startsWith("idb-gif-") ||
+        /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(background) ||
+        background.includes("googlevideo"))
+
+    const isImg =
+      typeof background === "string" &&
+      (background.startsWith("data:image") ||
+        background.startsWith("blob:") ||
+        background.match(/^https?:\/\//) ||
+        background.startsWith("idb-img-") ||
+        background.startsWith("idb-image-"))
+
+    if (isImg) {
+      const decodeBgImage = (url) => {
+        const img = new Image()
+        img.src = url
+        if (typeof img.decode === "function") {
+          img.decode()
+            .then(() => {
+              bgReady = true
+              checkAllReady()
+            })
+            .catch(() => {
+              bgReady = true
+              checkAllReady()
+            })
+        } else {
+          img.onload = () => {
+            bgReady = true
+            checkAllReady()
+          }
+          img.onerror = () => {
+            bgReady = true
+            checkAllReady()
+          }
+        }
+      }
+
+      if (background.startsWith("idb-")) {
+        activeBackgroundLoad.then((url) => {
+          if (url) {
+            decodeBgImage(url)
+          } else {
+            bgReady = true
+            checkAllReady()
+          }
+        })
+      } else {
+        decodeBgImage(background)
+      }
+    } else if (isVideo) {
+      // For video background, wait for video element to start playing or ready
+      const checkVideoStatus = () => {
+        if (isRevealed) return
+        const vid = document.getElementById("bg-video")
+        if (
+          vid &&
+          vid.style.display === "block" &&
+          (vid.readyState >= 3 || vid.currentTime > 0)
+        ) {
+          bgReady = true
+          checkAllReady()
+        } else {
+          requestAnimationFrame(checkVideoStatus)
+        }
+      }
+      setTimeout(checkVideoStatus, 50)
+    } else {
+      bgReady = true
+      checkAllReady()
+    }
+
+    // Safety timeout: if anything hangs, show app anyway after 1500ms
     setTimeout(() => {
-      if (mainContainer) mainContainer.classList.add("ready")
-      hideOverlay()
+      if (!isRevealed) {
+        if (mainContainer) mainContainer.classList.add("ready")
+        hideOverlay()
+      }
     }, 1500)
   }
 
@@ -1094,20 +1199,43 @@ async function bootstrap() {
       } else if (url) {
         const bgLayer = document.getElementById("bg-layer")
         if (bgLayer) {
-          bgLayer.style.backgroundImage = `url("${url}")`
-          bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
-          bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
-          document.body.classList.remove("preload-bg-preview")
+          const img = new Image()
+          img.src = url
+          const apply = () => {
+            if (getSettings().background !== currentSettings.background) return
+            bgLayer.style.backgroundImage = `url("${url}")`
+            bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
+            bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
+            document.body.classList.remove("preload-bg-preview")
+          }
+          if (typeof img.decode === "function") {
+            img.decode().then(apply).catch(apply)
+          } else {
+            img.onload = apply
+            img.onerror = apply
+          }
         }
       }
     })
   } else if (currentSettings.background?.match(/^https?:\/\//)) {
     const bgLayer = document.getElementById("bg-layer")
     if (bgLayer) {
-      bgLayer.style.backgroundImage = `url("${currentSettings.background}")`
-      bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
-      bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
-      document.body.classList.remove("preload-bg-preview")
+      const url = currentSettings.background
+      const img = new Image()
+      img.src = url
+      const apply = () => {
+        if (getSettings().background !== url) return
+        bgLayer.style.backgroundImage = `url("${url}")`
+        bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
+        bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
+        document.body.classList.remove("preload-bg-preview")
+      }
+      if (typeof img.decode === "function") {
+        img.decode().then(apply).catch(apply)
+      } else {
+        img.onload = apply
+        img.onerror = apply
+      }
     }
   }
 

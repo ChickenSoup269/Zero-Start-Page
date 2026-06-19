@@ -8,7 +8,46 @@
 
     if (!shouldShowStartupLoader && body) {
       body.classList.remove("loading-state")
-      body.classList.add("skip-startup-loader")
+      body.classList.add("skip-startup-loader", "is-booting")
+
+      // MV3 CSP compliant: Synchronously format clock/date using MutationObserver as they are parsed
+      try {
+        const observer = new MutationObserver((mutations, obs) => {
+          const clock = document.getElementById("clock")
+          const date = document.getElementById("date")
+          if (clock && date) {
+            obs.disconnect()
+            try {
+              const settingsRaw = localStorage.getItem("pageSettings")
+              const settings = settingsRaw ? JSON.parse(settingsRaw) : {}
+              const dateClockStyle = settings.dateClockStyle || "default"
+              if (dateClockStyle !== "cartoon" && dateClockStyle !== "c4-bomb" && dateClockStyle !== "fliqlo") {
+                const now = new Date()
+                const use12Hour = settings.timeFormat === "12h"
+                const hideSeconds = settings.hideSeconds
+                const langCode = settings.language === "vi" ? "vi-VN" : settings.language === "zh" ? "zh-CN" : "en-US"
+                const tz = settings.timezone && settings.timezone !== "local" ? settings.timezone : undefined
+                
+                const timeOptions = hideSeconds
+                  ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
+                  : { hour12: use12Hour, hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: tz }
+                
+                clock.textContent = now.toLocaleTimeString(langCode, timeOptions)
+                
+                if (settings.showDate !== false && settings.showGregorian !== false) {
+                  const dateOptions = { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: tz }
+                  date.textContent = now.toLocaleDateString(langCode, dateOptions)
+                }
+              }
+            } catch (e) {
+              console.error("Early clock sync error:", e)
+            }
+          }
+        })
+        observer.observe(document.documentElement, { childList: true, subtree: true })
+      } catch (e) {
+        console.warn("Could not register early clock observer:", e)
+      }
     }
 
     let settings = null
@@ -358,6 +397,100 @@
                   : { size: fit, repeat: "no-repeat" }
       body.classList.add("preload-bg-ready", "bg-layer-active")
       if (hasPersistentBgPreview) body.classList.add("preload-bg-preview")
+      // Early Font and Clock Calculations
+      const primaryFont = settings.font || "'Outfit', sans-serif"
+      const clockFont = settings.clockFont || settings.font || "'Outfit', sans-serif"
+      const clockFontTarget = settings.clockFontTarget || "both"
+      
+      let fontVars = {}
+      fontVars["--font-primary"] = primaryFont
+      
+      const applyFontToTargets = (targets, font) => {
+        targets.forEach((t) => {
+          fontVars[`--font-${t}`] = font
+        })
+      }
+      
+      applyFontToTargets(["clock", "date", "weekday", "gregorian-date", "lunar-date"], primaryFont)
+      if (clockFontTarget === "both") {
+        applyFontToTargets(
+          [
+            "clock", "date", "weekday", "gregorian-date", "lunar-date",
+            "clock-date", "jp-time", "jp-date"
+          ],
+          clockFont,
+        )
+      } else if (clockFontTarget === "clock") {
+        applyFontToTargets(["clock", "clock-date", "jp-time"], clockFont)
+      } else if (clockFontTarget === "date") {
+        applyFontToTargets(["date", "jp-date"], clockFont)
+      }
+
+      // Early Clock Sizing
+      const baseClockSize = Number(settings.clockSize) || 6
+      let computedClockSize = baseClockSize
+      const clockUsesDisplayFont = clockFontTarget === "both" || clockFontTarget === "clock"
+      
+      const getClockFontProfile = (font) => {
+        const fontName = String(font || "").toLowerCase()
+        if (fontName.includes("outfit")) {
+          return { clockScale: 0.68, dateScale: 0.86, letterSpacing: "0px", maxWidthFactor: 5.8 }
+        }
+        if (fontName.includes("silkscreen")) {
+          return { clockScale: 0.78, dateScale: 0.9, letterSpacing: "0.02em", maxWidthFactor: 6.1 }
+        }
+        if (fontName.includes("pixelify")) {
+          return { clockScale: 0.86, dateScale: 0.94, letterSpacing: "0.01em", maxWidthFactor: 6.4 }
+        }
+        return { clockScale: 1, dateScale: 1, letterSpacing: "2px", maxWidthFactor: 7 }
+      }
+      
+      const getStyleClockScale = (style) => {
+        if (style === "cartoon") return 1.3
+        if (style === "fliqlo") return 0.95
+        if (style === "c4-bomb") return 1.05
+        return 1.0
+      }
+
+      const fontProfile = getClockFontProfile(clockFont)
+      if (clockUsesDisplayFont) {
+        computedClockSize *= fontProfile.clockScale * getStyleClockScale(dateClockStyle)
+      }
+
+      // Synchronously load custom Google Fonts early in the head
+      const loadFontEarly = (fontValue) => {
+        if (!fontValue) return
+        const fontName = fontValue.replace(/['"]/g, "").split(",")[0].trim()
+        const systemFonts = ["sans-serif", "serif", "monospace", "cursive", "fantasy", "system-ui", "arial", "helvetica", "segoe ui", "times new roman", "courier new", "georgia", "verdana", "trebuchet ms", "impact"]
+        if (systemFonts.includes(fontName.toLowerCase())) return
+        
+        const savedFonts = settings.userSavedFonts || []
+        const savedFontObj = savedFonts.find(
+          (f) => (typeof f === "string" ? f : f.label) === fontName,
+        )
+        if (savedFontObj && typeof savedFontObj === "object" && savedFontObj.isLocal) {
+          return
+        }
+
+        const formattedFontName = fontName.replace(/\s+/g, "+")
+        const googleFontUrl = `https://fonts.googleapis.com/css2?family=${formattedFontName}:wght@300;400;500;600;700&display=swap`
+        
+        const existingLink = document.querySelector(`link[href^="https://fonts.googleapis.com/css2?family=${formattedFontName}"]`)
+        if (!existingLink) {
+          const link = document.createElement("link")
+          link.rel = "stylesheet"
+          link.href = googleFontUrl
+          document.head.appendChild(link)
+        }
+      }
+
+      try {
+        loadFontEarly(settings.font)
+        loadFontEarly(settings.clockFont)
+      } catch (e) {
+        console.warn("Could not load Google Font early in preload", e)
+      }
+
       css += `:root { 
         --accent-color: ${accentColor};
         --accent-color-rgb: ${accentRgb};
@@ -375,6 +508,10 @@
         --bg-pos-y: ${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%;
         --bg-fade-in: ${settings.bgFadeIn ?? 0.5}s;
         --bg-filter: blur(${settings.bgBlur ?? 0}px) brightness(${settings.bgBrightness ?? 100}%) contrast(${settings.bgContrast ?? 100}%) saturate(${settings.bgSaturation ?? 100}%);
+        --clock-size: ${computedClockSize}rem;
+        --clock-letter-spacing: ${clockUsesDisplayFont ? fontProfile.letterSpacing : "2px"};
+        --clock-max-width-factor: ${fontProfile.maxWidthFactor};
+        ${Object.entries(fontVars).map(([name, val]) => `${name}: ${val};`).join("\n        ")}
       }\n`
       css += `body.preload-bg-ready { background: #050505 !important; background-image: none !important; animation: none !important; }\n`
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`

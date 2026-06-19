@@ -24,6 +24,17 @@ class MusicVisualizer {
       () => 1.5 + Math.random() * 2.0,
     )
     this._realBands = null // We will not use real audio data anymore
+
+    // Caching layout/config to avoid layout thrashing
+    this.cachedW = 276
+    this.cachedH = 60
+    this.cachedParentWidth = 276
+    this.cachedParentHeight = 60
+    this.cachedAccent = "#64f4d2"
+    this.isWhiteBlurCached = false
+    this.isWhiteModeCached = false
+    this._lastConfigCheck = 0
+    this._resizeListener = this.updateDimensions.bind(this)
   }
 
   init(musicPlayerContainer) {
@@ -44,6 +55,8 @@ class MusicVisualizer {
       playerWrapper.appendChild(this.container)
     }
 
+    window.addEventListener("resize", this._resizeListener)
+    this.updateDimensions()
     this.setStyle(getSettings().musicBarStyle || "vinyl")
   }
 
@@ -94,6 +107,7 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopForest()
       this._stopBeach()
+      this._stopOrbit()
       this._startPixel()
     } else if (style === "moon8") {
       this._stopCSSLoop()
@@ -101,6 +115,7 @@ class MusicVisualizer {
       this._stopHeartbeat()
       this._stopForest()
       this._stopBeach()
+      this._stopOrbit()
       this._startMoon8()
     } else if (style === "heartbeat") {
       this._stopCSSLoop()
@@ -108,6 +123,7 @@ class MusicVisualizer {
       this._stopMoon8()
       this._stopForest()
       this._stopBeach()
+      this._stopOrbit()
       this._startHeartbeat()
     } else if (style === "forest") {
       this._stopCSSLoop()
@@ -115,6 +131,7 @@ class MusicVisualizer {
       this._stopMoon8()
       this._stopHeartbeat()
       this._stopBeach()
+      this._stopOrbit()
       this._startForest()
     } else if (style === "beach") {
       this._stopCSSLoop()
@@ -122,6 +139,7 @@ class MusicVisualizer {
       this._stopMoon8()
       this._stopHeartbeat()
       this._stopForest()
+      this._stopOrbit()
       this._startBeach()
     } else if (style === "orbit") {
       this._stopCSSLoop()
@@ -134,6 +152,30 @@ class MusicVisualizer {
     } else {
       if (this.isPlaying) this._startCSSLoop()
     }
+  }
+
+  updateDimensions() {
+    if (!this.container) return
+    const parent = this.container.parentNode
+    if (!parent) return
+
+    const rect = this.container.getBoundingClientRect()
+    const parentRect = parent.getBoundingClientRect?.()
+
+    this.cachedW = rect.width || this.container.offsetWidth || parent.offsetWidth || 276
+    this.cachedH = rect.height || this.container.offsetHeight || parent.offsetHeight || 60
+    this.cachedParentWidth = parentRect?.width || parent.offsetWidth || this.cachedW
+    this.cachedParentHeight = parentRect?.height || parent.offsetHeight || this.cachedH
+
+    this.cachedAccent = getComputedStyle(parent).getPropertyValue("--accent-color").trim() || "#64f4d2"
+
+    this.isWhiteBlurCached = parent.classList.contains("skin-white-blur") || 
+                             document.body.classList.contains("quick-access-white")
+
+    this.isWhiteModeCached = document.body.classList.contains("quick-access-white") || 
+                             this.container.closest(".skin-white-blur") !== null ||
+                             this.container.classList.contains("skin-white-blur") ||
+                             document.querySelector(".side-controls")?.classList.contains("light-mode")
   }
 
   _startOrbit() {
@@ -149,13 +191,34 @@ class MusicVisualizer {
       this.container.appendChild(canvas)
     }
 
-    this._lastTs = performance.now()
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+
     const loop = (ts) => {
       if (this.currentStyle !== "orbit") return
+      this.orbitAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save mode
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._orbitFrame(dt)
-      this.orbitAnimId = requestAnimationFrame(loop)
     }
     this.orbitAnimId = requestAnimationFrame(loop)
   }
@@ -177,21 +240,18 @@ class MusicVisualizer {
 
   _orbitFrame(dt) {
     const canvas = this.orbitCanvas
-    if (!canvas || !this.container) return
-    const parent = this.container.parentNode
-    const rect = this.container.getBoundingClientRect()
-    const parentRect = parent?.getBoundingClientRect?.()
-    const W =
-      rect.width || this.container.offsetWidth || parent?.offsetWidth || 276
-    const H =
-      rect.height || this.container.offsetHeight || parent?.offsetHeight || 276
+    if (!canvas) return
+    const W = this.cachedW
+    const H = this.cachedH
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    const targetW = Math.floor(W * dpr)
+    const targetH = Math.floor(H * dpr)
     if (
-      canvas.width !== Math.floor(W * dpr) ||
-      canvas.height !== Math.floor(H * dpr)
+      canvas.width !== targetW ||
+      canvas.height !== targetH
     ) {
-      canvas.width = Math.floor(W * dpr)
-      canvas.height = Math.floor(H * dpr)
+      canvas.width = targetW
+      canvas.height = targetH
     }
     const ctx = canvas.getContext("2d")
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -201,20 +261,17 @@ class MusicVisualizer {
       (this.orbitPhase || 0) + dt * (this.isPlaying ? 0.78 : 0.16)
     const cx = W / 2
     const cy = H / 2
-    const playerSize = Math.min(
-      parentRect?.width || parent?.offsetWidth || W,
-      parentRect?.height || parent?.offsetHeight || H,
-    )
+    const playerSize = Math.min(this.cachedParentWidth, this.cachedParentHeight)
     const baseRadius = Math.min(playerSize / 2 + 8, Math.min(W, H) / 2 - 58)
-    const accent =
-      getComputedStyle(parent).getPropertyValue("--accent-color").trim() ||
-      "#64f4d2"
+    const accent = this.cachedAccent || "#64f4d2"
     const bass =
       this.isPlaying && this._realBands?.length
         ? Math.min(1, (this._realBands[0] + this._realBands[1]) * 0.72)
         : this.isPlaying
           ? 0.42
           : 0
+
+    const isCpuSave = getSettings().musicVisualizerCpuSave !== false
 
     const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
       const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
@@ -233,15 +290,17 @@ class MusicVisualizer {
 
       ctx.globalAlpha = alpha
       ctx.lineWidth = width + beatLift * 2.8
-      ctx.shadowBlur = 12 + punch * 20 + beatLift * 24
+      // Toggle shadowBlur radius based on mode
+      ctx.shadowBlur = isCpuSave ? (6 + punch * 10 + beatLift * 12) : (12 + punch * 20 + beatLift * 24)
       ctx.shadowColor = accent
       ctx.beginPath()
       ctx.arc(cx, cy, radius, 0, Math.PI * 2)
       ctx.stroke()
 
+      // Outer glow - toggle off second shadowBlur pass in CPU save
       ctx.globalAlpha = alpha * (0.18 + beatLift * 0.16)
       ctx.lineWidth = width + 8 + beatLift * 5
-      ctx.shadowBlur = 22 + punch * 24 + beatLift * 28
+      ctx.shadowBlur = isCpuSave ? 0 : (22 + punch * 24 + beatLift * 28)
       ctx.beginPath()
       ctx.arc(cx, cy, radius + 1.5, 0, Math.PI * 2)
       ctx.stroke()
@@ -281,13 +340,34 @@ class MusicVisualizer {
       this.container.appendChild(canvas)
     }
 
-    this._lastTs = performance.now()
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+
     const loop = (ts) => {
       if (this.currentStyle !== "beach") return
+      this.beachAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._beachFrame(dt)
-      this.beachAnimId = requestAnimationFrame(loop)
     }
     this.beachAnimId = requestAnimationFrame(loop)
   }
@@ -314,8 +394,8 @@ class MusicVisualizer {
   _beachFrame(dt) {
     const canvas = this.beachCanvas
     if (!canvas) return
-    const W = this.container.parentNode?.offsetWidth || 300
-    const H = this.container.parentNode?.offsetHeight || 60
+    const W = this.cachedParentWidth
+    const H = this.cachedParentHeight
 
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
@@ -334,8 +414,7 @@ class MusicVisualizer {
     }
 
     const time = Date.now() * 0.002
-    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
-                       document.body.classList.contains("quick-access-white");
+    const isWhiteBlur = this.isWhiteBlurCached
     
     // Vẽ 3 lớp sóng biển
     const drawWave = (offsetY, amplitude, freq, speed, color, alpha) => {
@@ -419,13 +498,34 @@ class MusicVisualizer {
       this.forestParticles.push(this._createForestParticle(true))
     }
 
-    this._lastTs = performance.now()
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+
     const loop = (ts) => {
       if (this.currentStyle !== "forest") return
+      this.forestAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._forestFrame(dt)
-      this.forestAnimId = requestAnimationFrame(loop)
     }
     this.forestAnimId = requestAnimationFrame(loop)
   }
@@ -471,8 +571,8 @@ class MusicVisualizer {
   _forestFrame(dt) {
     const canvas = this.forestCanvas
     if (!canvas) return
-    const W = this.container.parentNode?.offsetWidth || 300
-    const H = this.container.parentNode?.offsetHeight || 60
+    const W = this.cachedParentWidth
+    const H = this.cachedParentHeight
 
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
@@ -490,8 +590,7 @@ class MusicVisualizer {
       norm = 0.15
     }
 
-    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
-                       document.body.classList.contains("quick-access-white");
+    const isWhiteBlur = this.isWhiteBlurCached
 
     // 1. Vẽ mạng lưới Dây leo nền (Background Vines)
     ctx.save()
@@ -620,17 +719,37 @@ class MusicVisualizer {
       this.container.appendChild(canvas)
     }
 
+    this.updateDimensions()
     this.heartbeatPoints = []
     this._pulseTimer = 0
-    this._lastTs = performance.now()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
     this._baseYOffset = 0
 
     const loop = (ts) => {
       if (this.currentStyle !== "heartbeat") return
+      this.heartbeatAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._heartbeatFrame(dt)
-      this.heartbeatAnimId = requestAnimationFrame(loop)
     }
     this.heartbeatAnimId = requestAnimationFrame(loop)
   }
@@ -650,8 +769,8 @@ class MusicVisualizer {
   _heartbeatFrame(dt) {
     const canvas = this.heartbeatCanvas
     if (!canvas) return
-    const W = canvas.offsetWidth
-    const H = canvas.offsetHeight
+    const W = this.cachedW
+    const H = this.cachedH
 
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
@@ -664,20 +783,8 @@ class MusicVisualizer {
     ctx.save()
     ctx.scale(2, 2)
 
-    const rootStyle = getComputedStyle(document.documentElement)
-    
-    // Detection for white mode (Quick Access White Mode or Widget Skin)
-    const isWhiteMode = document.body.classList.contains("quick-access-white") || 
-                       this.container?.closest(".skin-white-blur") !== null ||
-                       this.container?.classList.contains("skin-white-blur") ||
-                       document.querySelector(".side-controls")?.classList.contains("light-mode");
-
-    let accent = rootStyle.getPropertyValue("--accent-color").trim() || "#ff4d4d"
-    
-    // If in white mode, force black color for high contrast
-    if (isWhiteMode) {
-      accent = "#000000"
-    }
+    const isWhiteMode = this.isWhiteModeCached
+    let accent = isWhiteMode ? "#000000" : (this.cachedAccent || "#ff4d4d")
 
     let norm = 0
     let active = false
@@ -728,12 +835,14 @@ class MusicVisualizer {
       }
     }
 
+    const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+
     if (this.heartbeatPoints.length > 1) {
       ctx.beginPath()
       ctx.strokeStyle = accent
       ctx.lineWidth = 2.5
       ctx.lineJoin = "round"
-      ctx.shadowBlur = 10
+      ctx.shadowBlur = isCpuSave ? 4 : 10 // Toggle shadowBlur radius based on mode
       ctx.shadowColor = accent
 
       for (let i = 0; i < this.heartbeatPoints.length; i++) {
@@ -794,17 +903,37 @@ class MusicVisualizer {
     this.pixelPhase = this.pixelSpeeds.map((_, i) => i * 1.1)
     this.peakIdx = new Array(this.barCount).fill(0)
     this.peakTimer = 0
+
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+
     const loop = (ts) => {
-      if (!this.pixelCanvas) return
+      if (!this.pixelCanvas || this.currentStyle !== "pixel") return
+      this.pixelAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._pixelFrame(dt)
-      this.pixelAnimId = requestAnimationFrame(loop)
     }
-    this.pixelAnimId = requestAnimationFrame((ts) => {
-      this._lastTs = ts
-      this.pixelAnimId = requestAnimationFrame(loop)
-    })
+    this.pixelAnimId = requestAnimationFrame(loop)
   }
 
   _stopPixel() {
@@ -824,18 +953,15 @@ class MusicVisualizer {
   _pixelFrame(dt) {
     const canvas = this.pixelCanvas
     if (!canvas) return
-    const W = this.container.offsetWidth || 120
-    const H = this.container.offsetHeight || 40
+    const W = this.cachedW
+    const H = this.cachedH
     if (canvas.width !== W) canvas.width = W
     if (canvas.height !== H) canvas.height = H
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, W, H)
     
-    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur")
-    const accent = isWhiteBlur ? "#000000" :
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--accent-color")
-        .trim() || "#a8c0ff"
+    const isWhiteBlur = this.isWhiteBlurCached
+    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
     
     const gap = 3
     const barW = Math.max(
@@ -916,17 +1042,36 @@ class MusicVisualizer {
     this.specialLaps = 0
     this.startSpecialPhase = 0
 
+    this.updateDimensions()
+    this._lastTs = 0
+    this._lastFrameTime = 0
+    this._lastConfigCheck = performance.now()
+
     const loop = (ts) => {
-      if (!this.moonCanvas) return
+      if (!this.moonCanvas || this.currentStyle !== "moon8") return
+      this.moonAnimId = requestAnimationFrame(loop)
+
+      if (!this._lastTs) {
+        this._lastTs = ts
+        this._lastFrameTime = ts
+        return
+      }
+
+      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const elapsed = ts - this._lastFrameTime
+      if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
+      this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
+
+      if (ts - this._lastConfigCheck > 1000) {
+        this._lastConfigCheck = ts
+        this.updateDimensions()
+      }
+
       const dt = Math.min((ts - this._lastTs) / 1000, 0.05)
       this._lastTs = ts
       this._moon8Frame(dt)
-      this.moonAnimId = requestAnimationFrame(loop)
     }
-    this.moonAnimId = requestAnimationFrame((ts) => {
-      this._lastTs = ts
-      this.moonAnimId = requestAnimationFrame(loop)
-    })
+    this.moonAnimId = requestAnimationFrame(loop)
   }
 
   _stopMoon8() {
@@ -945,8 +1090,8 @@ class MusicVisualizer {
 
   _moon8Frame(dt) {
     const canvas = this.moonCanvas
-    const CW = this.container.offsetWidth || 140
-    const CH = this.container.offsetHeight || 45
+    const CW = this.cachedW
+    const CH = this.cachedH
 
     if (canvas.width !== CW * 3) {
       canvas.width = CW * 3
@@ -956,13 +1101,8 @@ class MusicVisualizer {
     const ctx = canvas.getContext("2d")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    const isWhiteBlur = this.container.parentNode?.classList.contains("skin-white-blur") || 
-                       document.body.classList.contains("quick-access-white");
-
-    const accent = isWhiteBlur ? "#000000" :
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--accent-color")
-        .trim() || "#a8c0ff"
+    const isWhiteBlur = this.isWhiteBlurCached
+    const accent = isWhiteBlur ? "#000000" : (this.cachedAccent || "#a8c0ff")
 
     let norm = 0
     if (this._realBands && this._realBands.length > 0 && this.isPlaying) {
@@ -1232,6 +1372,7 @@ class MusicVisualizer {
     else if (this.currentStyle === "heartbeat") this._startHeartbeat()
     else if (this.currentStyle === "forest") this._startForest()
     else if (this.currentStyle === "orbit") this._startOrbit()
+    else if (this.currentStyle === "beach") this._startBeach()
     else this._startCSSLoop()
   }
 
@@ -1243,11 +1384,18 @@ class MusicVisualizer {
     this._stopHeartbeat()
     this._stopForest()
     this._stopOrbit()
+    this._stopBeach()
     this._stopPixel()
   }
 
   destroy() {
+    window.removeEventListener("resize", this._resizeListener)
     this._stopPixel()
+    this._stopMoon8()
+    this._stopHeartbeat()
+    this._stopForest()
+    this._stopOrbit()
+    this._stopBeach()
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container)
     }

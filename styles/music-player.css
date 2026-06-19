@@ -4973,3 +4973,192 @@ body.widgets-m3-accent
 .music-style-overlap .music-player-wrapper.skin-white-blur .progress-bar-thumb {
   background: var(--overlap-accent) !important;
 }
+
+/* =========================================
+   VISUALIZER: CPU SAVING MODE OVERRIDES
+========================================= */
+/* Apply scaleY instead of height animations to move logic to GPU */
+
+/* Default & Vinyl Style */
+.music-player-container.visualizer-cpu-save .visualizer-bar {
+  height: 35px !important;
+  transform: scaleY(0.2857);
+  transform-origin: bottom;
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+.music-player-container.visualizer-cpu-save .visualizer-bar.playing {
+  animation-name: visualizerPulseCpuSave !important;
+}
+@keyframes visualizerPulseCpuSave {
+  0% {
+    transform: scaleY(0.2857);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Spotify Style */
+.music-player-container.visualizer-cpu-save.music-style-spotify .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-spotify .visualizer-bar {
+  height: 40px !important;
+  transform: scaleY(0.2);
+  transform-origin: bottom;
+  box-shadow: none !important;
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-spotify .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-spotify .visualizer-bar.playing {
+  animation-name: visualizerPulseGlowCpuSave !important;
+}
+@keyframes visualizerPulseGlowCpuSave {
+  0% {
+    transform: scaleY(0.2);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Neon Style */
+.music-player-container.visualizer-cpu-save.music-style-neon .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-neon .visualizer-bar {
+  height: 38px !important;
+  transform: scaleY(0.1578);
+  transform-origin: bottom;
+  box-shadow: 0 0 5px var(--accent-color) !important;
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-neon .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-neon .visualizer-bar.playing {
+  animation-name: neonVisualizerPulseCpuSave !important;
+}
+@keyframes neonVisualizerPulseCpuSave {
+  0% {
+    transform: scaleY(0.1578);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scaleY(1);
+    filter: brightness(1.2);
+  }
+}
+
+/* Minimal Style */
+.music-player-container.visualizer-cpu-save.music-style-minimal .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-minimal .visualizer-bar {
+  height: 22px !important;
+  transform: scaleY(0.1818);
+  transform-origin: center;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-minimal .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-minimal .visualizer-bar.playing {
+  animation-name: minimalBarWaveCpuSave !important;
+}
+@keyframes minimalBarWaveCpuSave {
+  0%, 100% {
+    transform: scaleY(0.1818);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Apple Style */
+.music-player-container.visualizer-cpu-save.music-style-apple .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-apple .visualizer-bar {
+  height: 28px !important;
+  transform: scaleY(0.1428);
+  transform-origin: bottom;
+  box-shadow: none !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-apple .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-apple .visualizer-bar.playing {
+  animation-name: applePulseCpuSave !important;
+}
+@keyframes applePulseCpuSave {
+  0% {
+    transform: scaleY(0.1428);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Soundcloud Style */
+.music-player-container.visualizer-cpu-save.music-style-soundcloud .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-soundcloud .visualizer-bar {
+  height: 40px !important;
+  transform: scaleY(0.2);
+  transform-origin: bottom;
+  transition: transform 0.15s ease !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-soundcloud .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-soundcloud .visualizer-bar.playing {
+  animation-name: visualizerPulseSCCpuSave !important;
+}
+@keyframes visualizerPulseSCCpuSave {
+  0%, 100% {
+    transform: scaleY(0.2);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Cassette Style EQ */
+.music-player-container.visualizer-cpu-save.music-style-cassette .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-cassette .visualizer-bar {
+  height: 28px !important;
+  transform: scaleY(0.1428);
+  transform-origin: bottom;
+  box-shadow: none !important;
+  transition: transform 0.1s ease !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-cassette .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-cassette .visualizer-bar.playing {
+  animation-name: cassetteEqCpuSave !important;
+}
+@keyframes cassetteEqCpuSave {
+  0% {
+    transform: scaleY(0.1428);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Pill Style */
+.music-player-container.visualizer-cpu-save.music-style-pill .visualizer-bar,
+.music-player-container.visualizer-cpu-save .music-style-pill .visualizer-bar {
+  height: 14px !important;
+  transform: scaleY(0.2857);
+  transform-origin: bottom;
+  transition: transform 0.2s ease !important;
+  box-shadow: none !important;
+}
+.music-player-container.visualizer-cpu-save.music-style-pill .visualizer-bar.playing,
+.music-player-container.visualizer-cpu-save .music-style-pill .visualizer-bar.playing {
+  animation-name: pillBarDanceCpuSave !important;
+}
+@keyframes pillBarDanceCpuSave {
+  0% {
+    transform: scaleY(0.2857);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}

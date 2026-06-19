@@ -948,13 +948,15 @@ function createApplySettings(effectInstances) {
 
     const bgLayer = document.getElementById("bg-layer")
     const bgFadeLayer = document.getElementById("bg-fade-layer")
+    const bgVideoElement = document.getElementById("bg-video")
     const rawBg = settings.background
+    const isFirstLoad = document.body.classList.contains("preload-bg-ready")
     // Only keep the startup preview while the same kind of local media is still
     // resolving. For colors/reset/gradients it is stale and causes a one-frame flash.
     const previewExists = Boolean(
       isIdbMedia(rawBg) &&
         settings.lastUserBackgroundPreview &&
-        document.body.classList.contains("preload-bg-ready"),
+        isFirstLoad,
     )
     const isNextPredefinedLocalBg = effectInstances.localBackgrounds.some(
       (b) => b.id === rawBg,
@@ -969,142 +971,549 @@ function createApplySettings(effectInstances) {
     const isWaitingForIdb = isIdbMedia(rawBg) && !getBlobUrlSync(rawBg)
     const shouldCarryFadeLayer =
       (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
-    const earlyBgVideoElement = document.getElementById("bg-video")
 
-    if (!previewExists) {
+    const triggerBgFadeOut = () => {
       document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
-      document.body.style.background = ""
-      document.body.style.backgroundImage = ""
-      if (shouldCarryFadeLayer && bgLayer && bgFadeLayer) {
-        bgFadeLayer.className = bgLayer.className
-        bgFadeLayer.style.background = bgLayer.style.background
-        bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
-        bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
-        bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
-        bgFadeLayer.style.opacity = "1"
-      } else if (bgFadeLayer) {
-        bgFadeLayer.className = ""
-        bgFadeLayer.style.background = ""
-        bgFadeLayer.style.backgroundImage = ""
-        bgFadeLayer.style.backgroundSize = ""
-        bgFadeLayer.style.backgroundRepeat = ""
-        bgFadeLayer.style.opacity = "0"
-      }
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = ""
-        bgLayer.style.backgroundSize = ""
-        bgLayer.style.backgroundRepeat = ""
-        bgLayer.style.background = ""
-        bgLayer.className = ""
-        bgLayer.style.opacity = "1"
-      }
-    } else {
-      // Keep the preload preview active; ensure classes indicate background present
-      document.body.classList.add("bg-layer-active")
-      if (bgLayer) bgLayer.style.opacity = "1"
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          const _bgFadeLayer = document.getElementById("bg-fade-layer")
+          if (_bgFadeLayer) {
+            _bgFadeLayer.style.opacity = "0"
+            const fadeInSec = Number(getSettings().bgFadeIn ?? 0.5)
+            window.setTimeout(
+              () => {
+                if (_bgFadeLayer.style.opacity === "0") {
+                  _bgFadeLayer.className = ""
+                  _bgFadeLayer.style.background = ""
+                  _bgFadeLayer.style.backgroundImage = ""
+                  _bgFadeLayer.style.backgroundSize = ""
+                  _bgFadeLayer.style.backgroundRepeat = ""
+                }
+              },
+              Math.max(250, fadeInSec * 1000 + 120),
+            )
+          }
+          const _bgVideo = document.getElementById("bg-video")
+          if (_bgVideo && _bgVideo.style.display === "block") {
+            _bgVideo.style.opacity = "1"
+          }
+          const _bgLayer = document.getElementById("bg-layer")
+          if (_bgLayer) {
+            _bgLayer.style.opacity = "1"
+          }
+        }),
+      )
     }
-    if (!isNextVideoBg) clearBackgroundVideo(earlyBgVideoElement)
-    document.documentElement.style.setProperty("--text-color", "#ffffff")
 
-    // 3. Background Logic
-    let bg = rawBg
-    // Resolve IndexedDB image/video ID to blob URL
-    const isVideoId = isIdbVideo(bg)
-    if (isIdbMedia(bg)) {
-      const cachedUrl = getBlobUrlSync(bg)
-      if (cachedUrl) {
-        bg = cachedUrl
+    if (bgChanged) {
+      if (!previewExists && !isFirstLoad) {
+        document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
+        document.body.style.background = ""
+        document.body.style.backgroundImage = ""
+        if (shouldCarryFadeLayer && bgLayer && bgFadeLayer) {
+          bgFadeLayer.style.transition = "none"
+          bgFadeLayer.className = bgLayer.className
+          bgFadeLayer.style.background = bgLayer.style.background
+          bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
+          bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
+          bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
+          bgFadeLayer.style.opacity = "1"
+          bgFadeLayer.offsetHeight // force reflow
+          bgFadeLayer.style.transition = "" // restore transition
+        } else if (bgFadeLayer) {
+          bgFadeLayer.className = ""
+          bgFadeLayer.style.background = ""
+          bgFadeLayer.style.backgroundImage = ""
+          bgFadeLayer.style.backgroundSize = ""
+          bgFadeLayer.style.backgroundRepeat = ""
+          bgFadeLayer.style.opacity = "0"
+        }
+        if (bgLayer) {
+          // Do NOT clear bgLayer's background image yet to prevent blank flashes!
+          // We only clear it if we are switching to color/gradient/none (which don't need async loading).
+          if (!isNextPredefinedLocalBg && !isNextImageBg && !isNextVideoBg) {
+            bgLayer.style.backgroundImage = ""
+            bgLayer.style.backgroundSize = ""
+            bgLayer.style.backgroundRepeat = ""
+            bgLayer.style.background = ""
+            bgLayer.className = ""
+          }
+          bgLayer.style.opacity = "1"
+        }
       } else {
-        import("../../services/imageStore.js").then((m) => {
-          m.getImageUrl(settings.background).then((url) => {
-            if (url && getSettings().background === bg) {
-              // crossfade from early preview to sharp image
-              _prevBg = "force-idb-crossfade-" + Date.now()
-              applySettings()
-            }
+        // Keep the preload preview active; ensure classes indicate background present
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) bgLayer.style.opacity = "1"
+      }
+      if (!isNextVideoBg) clearBackgroundVideo(bgVideoElement)
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
+
+      // 3. Background Logic
+      let bg = rawBg
+      // Resolve IndexedDB image/video ID to blob URL
+      const isVideoId = isIdbVideo(bg)
+      if (isIdbMedia(bg)) {
+        const cachedUrl = getBlobUrlSync(bg)
+        if (cachedUrl) {
+          bg = cachedUrl
+        } else {
+          import("../../services/imageStore.js").then((m) => {
+            m.getImageUrl(settings.background).then((url) => {
+              if (url && getSettings().background === bg) {
+                // crossfade from early preview to sharp image
+                _prevBg = "force-idb-crossfade-" + Date.now()
+                applySettings()
+              }
+            })
           })
+        }
+      }
+
+      // If we don't have an immediate blob URL but a persistent preview exists,
+      // use that preview so the background shows instantly while the real image loads.
+      if (
+        isIdbMedia(settings.background) &&
+        !getBlobUrlSync(settings.background) &&
+        settings.lastUserBackgroundPreview &&
+        typeof settings.lastUserBackgroundPreview === "string" &&
+        (settings.lastUserBackgroundPreview.startsWith("data:") ||
+          settings.lastUserBackgroundPreview.startsWith("blob:"))
+      ) {
+        const preview = settings.lastUserBackgroundPreview
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = cssUrl(preview)
+          bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
+          bgLayer.style.background = ""
+        }
+        document.body.classList.add("bg-layer-active")
+      }
+      const isPredefinedLocalBg = isNextPredefinedLocalBg
+      const isUserUploadedBg =
+        bg &&
+        (bg.startsWith("data:image") ||
+          bg.startsWith("data:video") ||
+          bg.startsWith("blob:") ||
+          isIdbImage(bg) ||
+          isIdbVideo(bg))
+
+      let activeVideoSource = null
+      if (bgVideoElement) bgVideoElement.style.display = "none"
+      if (bgVideoElement) {
+        configureBackgroundVideo(bgVideoElement, settings)
+        applyBackgroundVideoLayout(bgVideoElement, settings)
+      }
+
+      const setBackgroundImageSmoothly = (imageUrl) => {
+        if (!bgLayer || !imageUrl) return
+        
+        const img = new Image()
+        
+        const applyStyles = () => {
+          bgLayer.style.backgroundImage = cssUrl(imageUrl)
+          bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
+          document.body.classList.remove("preload-bg-preview")
+          triggerBgFadeOut()
+        }
+        
+        if (typeof img.decode === "function") {
+          img.src = imageUrl
+          img.decode()
+            .then(applyStyles)
+            .catch(() => {
+              applyStyles()
+            })
+        } else {
+          img.onload = applyStyles
+          img.onerror = () => {
+            document.body.classList.remove("preload-bg-preview")
+            triggerBgFadeOut()
+          }
+          img.src = imageUrl
+        }
+      }
+
+      const applyUserSelectedBackground = () => {
+        if (isPredefinedLocalBg) {
+          if (bgLayer) bgLayer.classList.add(bg)
+          document.body.classList.add("bg-layer-active")
+          document.documentElement.style.setProperty("--text-color", "#ffffff")
+          triggerBgFadeOut()
+        } else if (isUserUploadedBg) {
+          document.body.classList.add("bg-image-active")
+          if (bg.startsWith("data:video") || isVideoId) {
+            if (bgVideoElement) {
+              activeVideoSource = bg
+              if (isIdbMedia(bg)) {
+                const url = getBlobUrlSync(bg)
+                if (url) activeVideoSource = url
+              }
+              if (
+                activeVideoSource &&
+                bgVideoElement.getAttribute("src") !== activeVideoSource
+              ) {
+                bgVideoElement.src = activeVideoSource
+              }
+              bgVideoElement.style.display = "block"
+              bgVideoElement.style.opacity = "1"
+              const onVideoReady = () => {
+                bgVideoElement.removeEventListener("playing", onVideoReady)
+                bgVideoElement.removeEventListener("canplay", onVideoReady)
+                triggerBgFadeOut()
+              }
+              bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
+              bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+            }
+          } else if (bgLayer) {
+            let imageUrl = bg
+            if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
+            if (imageUrl) {
+              setBackgroundImageSmoothly(imageUrl)
+            } else {
+              triggerBgFadeOut()
+            }
+          }
+          document.body.style.backgroundSize = backgroundSize
+          document.body.style.backgroundRepeat = backgroundRepeat
+          document.documentElement.style.setProperty("--text-color", "#ffffff")
+        } else if (bg) {
+          document.body.classList.add("bg-image-active")
+          const isVideoUrl =
+            bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
+          if (isVideoUrl) {
+            if (bgVideoElement) {
+              activeVideoSource = bg
+              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                bgVideoElement.src = activeVideoSource
+              }
+              bgVideoElement.style.display = "block"
+              bgVideoElement.style.opacity = "1"
+              const onVideoReady = () => {
+                bgVideoElement.removeEventListener("playing", onVideoReady)
+                bgVideoElement.removeEventListener("canplay", onVideoReady)
+                triggerBgFadeOut()
+              }
+              bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
+              bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
+            }
+            document.documentElement.style.setProperty("--text-color", "#ffffff")
+          } else if (bg.match(/^https?:\/\//)) {
+            if (bgLayer) {
+              setBackgroundImageSmoothly(bg)
+            }
+            document.documentElement.style.setProperty("--text-color", "#ffffff")
+          } else {
+            if (bgLayer) {
+              bgLayer.style.backgroundImage = "none"
+              bgLayer.style.background = bg
+            }
+            document.body.classList.add("bg-layer-active")
+            document.documentElement.style.setProperty(
+              "--text-color",
+              getContrastYIQ(bg),
+            )
+            triggerBgFadeOut()
+          }
+        } else {
+          if (bgLayer) {
+            bgLayer.style.backgroundImage = "none"
+            const isMultiColorActive =
+              settings.activeBgUid?.startsWith("multi-") ||
+              (settings.multiColorActive === true &&
+                !settings.activeBgUid?.startsWith("grad-"))
+
+            if (
+              isMultiColorActive &&
+              Array.isArray(settings.multiColors) &&
+              settings.multiColors.length >= 2
+            ) {
+              bgLayer.style.backgroundImage = ""
+              bgLayer.style.background = buildMultiColorCss({
+                colors: settings.multiColors,
+                angle: settings.multiGradientAngle || 135,
+                mode: settings.multiColorMode || "smooth",
+                type: settings.multiColorType || "linear",
+                repeating: settings.multiColorRepeating || false,
+                position: settings.multiColorPosition || "center",
+                radialShape: settings.multiColorRadialShape || "circle",
+                dividerConfig: {
+                  enabled: settings.multiColorDividers !== false,
+                  color: settings.multiColorDividerColor || "#FFFFFF",
+                  width: settings.multiColorDividerWidth || 1.2,
+                },
+                lineAngleConfig: {
+                  enabled: Boolean(settings.multiColorFreeLineAngles),
+                  lineAngles: Array.isArray(settings.multiColorLineAngles)
+                    ? settings.multiColorLineAngles
+                    : [],
+                },
+              })
+            } else {
+              bgLayer.style.backgroundImage = ""
+              bgLayer.style.background = buildGradientCss({
+                start: settings.gradientStart,
+                end: settings.gradientEnd,
+                angle: settings.gradientAngle,
+                type: settings.gradientType,
+                repeating: settings.gradientRepeating,
+                extraColorCount: settings.gradientExtraColorCount,
+                customColors: settings.gradientCustomColors,
+                position: settings.gradientPosition,
+                radialShape: settings.gradientRadialShape,
+              })
+            }
+          }
+          document.body.classList.add("bg-layer-active")
+          triggerBgFadeOut()
+        }
+      }
+
+      // Priority 1: Gradient V2 (Animated)
+      if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
+        shouldUseGradientV2 = true
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.background = `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
+        }
+        const gradientV2Options = withPerformanceBudget(settings, "gradientV2", {
+          color1: settings.gradientV2Color1,
+          color2: settings.gradientV2Color2,
+          color3: settings.gradientV2Color3,
+          timeSpeed: settings.gradientV2TimeSpeed,
+          colorBalance: settings.gradientV2ColorBalance,
+          warpStrength: settings.gradientV2WarpStrength,
+          warpFrequency: settings.gradientV2WarpFrequency,
+          warpSpeed: settings.gradientV2WarpSpeed,
+          warpAmplitude: settings.gradientV2WarpAmplitude,
+          blendAngle: settings.gradientV2BlendAngle,
+          blendSoftness: settings.gradientV2BlendSoftness,
+          rotationAmount: settings.gradientV2RotationAmount,
+          noiseScale: settings.gradientV2NoiseScale,
+          grainAmount: settings.gradientV2GrainAmount,
+          grainScale: settings.gradientV2GrainScale,
+          grainAnimated: settings.gradientV2GrainAnimated,
+          contrast: settings.gradientV2Contrast,
+          gamma: settings.gradientV2Gamma,
+          saturation: settings.gradientV2Saturation,
+          centerX: settings.gradientV2CenterX,
+          centerY: settings.gradientV2CenterY,
+          zoom: settings.gradientV2Zoom,
         })
+        if (effectInstances.gradientV2Effect.active) {
+          effectInstances.gradientV2Effect.setOptions(gradientV2Options)
+        } else {
+          effectInstances.gradientV2Effect.start()
+          effectInstances.gradientV2Effect.setOptions(gradientV2Options)
+        }
+        triggerBgFadeOut()
       }
-    }
-
-    // If we don't have an immediate blob URL but a persistent preview exists,
-    // use that preview so the background shows instantly while the real image loads.
-    if (
-      isIdbMedia(settings.background) &&
-      !getBlobUrlSync(settings.background) &&
-      settings.lastUserBackgroundPreview &&
-      typeof settings.lastUserBackgroundPreview === "string" &&
-      (settings.lastUserBackgroundPreview.startsWith("data:") ||
-        settings.lastUserBackgroundPreview.startsWith("blob:"))
-    ) {
-      const preview = settings.lastUserBackgroundPreview
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = cssUrl(preview)
-        bgLayer.style.backgroundSize = backgroundSize
-        bgLayer.style.backgroundRepeat = backgroundRepeat
-        bgLayer.style.background = ""
+      // Priority 1.5: Silk (Animated)
+      else if (settings.silkActive && effectInstances.silkEffect) {
+        shouldUseSilk = true
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.background = `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
+        }
+        const silkOpts = withPerformanceBudget(settings, "silk", {
+          silkColor: settings.silkColor || "#7B7481",
+        })
+        if (effectInstances.silkEffect.active) {
+          effectInstances.silkEffect.updateOptions(silkOpts)
+        } else {
+          effectInstances.silkEffect.start()
+          effectInstances.silkEffect.updateOptions(silkOpts)
+        }
+        triggerBgFadeOut()
       }
-      document.body.classList.add("bg-layer-active")
-    }
-    const isPredefinedLocalBg = isNextPredefinedLocalBg
-    const isUserUploadedBg =
-      bg &&
-      (bg.startsWith("data:image") ||
-        bg.startsWith("data:video") ||
-        bg.startsWith("blob:") ||
-        isIdbImage(bg) ||
-        isIdbVideo(bg))
-    const bgVideoElement = document.getElementById("bg-video")
+      // Priority 1.6: Light Pillar (Animated)
+      else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
+        shouldUseLightPillar = true
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.background = `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
+        }
+        const pillarOpts = withPerformanceBudget(settings, "lightPillar", {
+          topColor: settings.lightPillarTopColor || "#ffffff",
+          bottomColor: settings.lightPillarBottomColor || "#000000",
+          speed: settings.lightPillarSpeed ?? 0.8,
+          density: settings.lightPillarDensity ?? 0.65,
+          width: settings.lightPillarWidth ?? 0.5,
+        })
+        if (effectInstances.lightPillarEffect.active) {
+          effectInstances.lightPillarEffect.updateOptions(pillarOpts)
+        } else {
+          effectInstances.lightPillarEffect.start()
+          effectInstances.lightPillarEffect.updateOptions(pillarOpts)
+        }
+        triggerBgFadeOut()
+      }
+      // Priority 1.65: Liquid Ether (Animated)
+      else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
+        shouldUseLiquidEther = true
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = "none"
+          bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
+        }
+        const liquidEtherOptions = withPerformanceBudget(
+          settings,
+          "liquidEther",
+          {
+            colors: [
+              settings.liquidEtherColor1 || "#5227FF",
+              settings.liquidEtherColor2 || "#FF9FFC",
+              settings.liquidEtherColor3 || "#B497CF",
+            ],
+            glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
+          },
+        )
+        if (effectInstances.liquidEtherEffect.active) {
+          effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
+        } else {
+          effectInstances.liquidEtherEffect.start()
+          effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
+        }
+        triggerBgFadeOut()
+      }
+      // Priority 1.75: Splash Cursor (Animated)
+      else if (
+        settings.splashCursorActive &&
+        effectInstances.splashCursorEffect
+      ) {
+        shouldUseSplashCursor = true
+        document.body.classList.add("bg-layer-active")
+        if (settings.splashCursorDarkBg === true) {
+          document.body.classList.add("splash-cursor-dark-bg")
+          if (bgLayer) {
+            bgLayer.style.background = "#000000"
+            bgLayer.style.backgroundImage = "none"
+            bgLayer.style.opacity = "1"
+          }
+          document.documentElement.style.setProperty("--text-color", "#ffffff")
+          triggerBgFadeOut()
+        } else {
+          applyUserSelectedBackground()
+        }
+        const splashOpts = withPerformanceBudget(
+          settings,
+          "splashCursor",
+          splashCursorOptionsFromSettings(settings),
+        )
+        if (effectInstances.splashCursorEffect.active) {
+          effectInstances.splashCursorEffect.setOptions(splashOpts)
+        } else {
+          effectInstances.splashCursorEffect.start()
+          effectInstances.splashCursorEffect.setOptions(splashOpts)
+        }
+      }
 
-    let activeVideoSource = null
-    if (bgVideoElement) bgVideoElement.style.display = "none"
-    if (bgVideoElement) {
-      configureBackgroundVideo(bgVideoElement, settings)
-      applyBackgroundVideoLayout(bgVideoElement, settings)
-    }
+      // Priority 2: SVG Wave
+      else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
+        shouldUseSvgWave = true
+        document.body.classList.add("bg-layer-active")
+        applyUserSelectedBackground()
+        const svgWaveParams = withPerformanceBudget(
+          settings,
+          "svgWave",
+          getSvgWaveParams(settings),
+        )
+        if (effectInstances.svgWaveEffect.active) {
+          effectInstances.svgWaveEffect.update(svgWaveParams)
+        } else {
+          effectInstances.svgWaveEffect.start(svgWaveParams)
+        }
+      }
 
-    const applyUserSelectedBackground = () => {
-      if (isPredefinedLocalBg) {
+      // Priority 3: Predefined Theme Background
+      else if (isPredefinedLocalBg) {
         if (bgLayer) bgLayer.classList.add(bg)
         document.body.classList.add("bg-layer-active")
         document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else if (isUserUploadedBg) {
+        triggerBgFadeOut()
+      }
+      // Priority 4: User Uploaded Image/Video
+      else if (isUserUploadedBg) {
         document.body.classList.add("bg-image-active")
         if (bg.startsWith("data:video") || isVideoId) {
           if (bgVideoElement) {
             activeVideoSource = bg
             if (isIdbMedia(bg)) {
               const url = getBlobUrlSync(bg)
-              if (url) activeVideoSource = url
+              if (url) {
+                activeVideoSource = url
+                if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                  bgVideoElement.src = activeVideoSource
+                }
+                bgVideoElement.style.display = "block"
+                bgVideoElement.style.opacity = "1"
+              } else {
+                bgVideoElement.style.display = "block"
+              }
+            } else {
+              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
+                bgVideoElement.src = activeVideoSource
+              }
+              bgVideoElement.style.display = "block"
+              bgVideoElement.style.opacity = "1"
             }
-            if (
-              activeVideoSource &&
-              bgVideoElement.getAttribute("src") !== activeVideoSource
-            ) {
-              bgVideoElement.src = activeVideoSource
+            const onVideoReady = () => {
+              bgVideoElement.removeEventListener("playing", onVideoReady)
+              bgVideoElement.removeEventListener("canplay", onVideoReady)
+              triggerBgFadeOut()
             }
-            bgVideoElement.style.display = "block"
-            bgVideoElement.style.opacity = "1"
+            bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
+            bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
           }
-        } else if (bgLayer) {
-          let imageUrl = bg
-          if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
-          if (imageUrl) {
-            const img = new Image()
-            img.onload = () => {
-              bgLayer.style.backgroundImage = cssUrl(imageUrl)
-              bgLayer.style.backgroundSize = backgroundSize
-              bgLayer.style.backgroundRepeat = backgroundRepeat
-              document.body.classList.remove("preload-bg-preview")
+        } else {
+          if (bgLayer) {
+            let imageUrl = bg
+            if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
+            if (imageUrl) {
+              if (isFirstLoad) {
+                bgLayer.style.backgroundImage = cssUrl(imageUrl)
+                bgLayer.style.backgroundSize = backgroundSize
+                bgLayer.style.backgroundRepeat = backgroundRepeat
+                triggerBgFadeOut()
+              } else {
+                const img = new Image()
+                const applyStyles = () => {
+                  bgLayer.style.backgroundImage = cssUrl(imageUrl)
+                  bgLayer.style.backgroundSize = backgroundSize
+                  bgLayer.style.backgroundRepeat = backgroundRepeat
+                  document.body.classList.remove("preload-bg-preview")
+                  triggerBgFadeOut()
+                }
+                if (typeof img.decode === "function") {
+                  img.src = imageUrl
+                  img.decode()
+                    .then(applyStyles)
+                    .catch(() => {
+                      applyStyles()
+                    })
+                } else {
+                  img.onload = applyStyles
+                  img.onerror = () => {
+                    document.body.classList.remove("preload-bg-preview")
+                    triggerBgFadeOut()
+                  }
+                  img.src = imageUrl
+                }
+              }
+            } else {
+              triggerBgFadeOut()
             }
-            img.onerror = () => document.body.classList.remove("preload-bg-preview")
-            img.src = imageUrl
           }
         }
         document.body.style.backgroundSize = backgroundSize
         document.body.style.backgroundRepeat = backgroundRepeat
         document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else if (bg) {
+      }
+      // Priority 5: Remote URL or Solid Color or Legacy Gradient
+      else if (bg) {
         document.body.classList.add("bg-image-active")
         const isVideoUrl =
           bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
@@ -1115,20 +1524,47 @@ function createApplySettings(effectInstances) {
               bgVideoElement.src = activeVideoSource
             }
             bgVideoElement.style.display = "block"
-            bgVideoElement.style.opacity = "1"
+            const onVideoReady = () => {
+              bgVideoElement.removeEventListener("playing", onVideoReady)
+              bgVideoElement.removeEventListener("canplay", onVideoReady)
+              triggerBgFadeOut()
+            }
+            bgVideoElement.addEventListener("playing", onVideoReady, { once: true })
+            bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else if (bg.match(/^https?:\/\//)) {
           if (bgLayer) {
-            const img = new Image()
-            img.onload = () => {
+            if (isFirstLoad) {
               bgLayer.style.backgroundImage = cssUrl(bg)
               bgLayer.style.backgroundSize = backgroundSize
               bgLayer.style.backgroundRepeat = backgroundRepeat
-              document.body.classList.remove("preload-bg-preview")
+              triggerBgFadeOut()
+            } else {
+              const img = new Image()
+              const applyStyles = () => {
+                bgLayer.style.backgroundImage = cssUrl(bg)
+                bgLayer.style.backgroundSize = backgroundSize
+                bgLayer.style.backgroundRepeat = backgroundRepeat
+                document.body.classList.remove("preload-bg-preview")
+                triggerBgFadeOut()
+              }
+              if (typeof img.decode === "function") {
+                img.src = bg
+                img.decode()
+                  .then(applyStyles)
+                  .catch(() => {
+                    applyStyles()
+                  })
+              } else {
+                img.onload = applyStyles
+                img.onerror = () => {
+                  document.body.classList.remove("preload-bg-preview")
+                  triggerBgFadeOut()
+                }
+                img.src = bg
+              }
             }
-            img.onerror = () => document.body.classList.remove("preload-bg-preview")
-            img.src = bg
           }
           document.documentElement.style.setProperty("--text-color", "#ffffff")
         } else {
@@ -1141,8 +1577,11 @@ function createApplySettings(effectInstances) {
             "--text-color",
             getContrastYIQ(bg),
           )
+          triggerBgFadeOut()
         }
-      } else {
+      }
+      // Fallback: Multi-Color Gradient or Default Gradient
+      else {
         if (bgLayer) {
           bgLayer.style.backgroundImage = "none"
           const isMultiColorActive =
@@ -1192,319 +1631,17 @@ function createApplySettings(effectInstances) {
           }
         }
         document.body.classList.add("bg-layer-active")
+        triggerBgFadeOut()
       }
-    }
-
-    // Priority 1: Gradient V2 (Animated)
-    if (settings.gradientV2Active && effectInstances.gradientV2Effect) {
-      shouldUseGradientV2 = true
-      document.body.classList.add("bg-layer-active")
+    } else {
+      // bgChanged is false: Background is identical, just update fast styles
       if (bgLayer) {
-        bgLayer.style.backgroundImage = "none"
-        bgLayer.style.background = `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
+        bgLayer.style.backgroundSize = backgroundSize
+        bgLayer.style.backgroundRepeat = backgroundRepeat
       }
-      const gradientV2Options = withPerformanceBudget(settings, "gradientV2", {
-        color1: settings.gradientV2Color1,
-        color2: settings.gradientV2Color2,
-        color3: settings.gradientV2Color3,
-        timeSpeed: settings.gradientV2TimeSpeed,
-        colorBalance: settings.gradientV2ColorBalance,
-        warpStrength: settings.gradientV2WarpStrength,
-        warpFrequency: settings.gradientV2WarpFrequency,
-        warpSpeed: settings.gradientV2WarpSpeed,
-        warpAmplitude: settings.gradientV2WarpAmplitude,
-        blendAngle: settings.gradientV2BlendAngle,
-        blendSoftness: settings.gradientV2BlendSoftness,
-        rotationAmount: settings.gradientV2RotationAmount,
-        noiseScale: settings.gradientV2NoiseScale,
-        grainAmount: settings.gradientV2GrainAmount,
-        grainScale: settings.gradientV2GrainScale,
-        grainAnimated: settings.gradientV2GrainAnimated,
-        contrast: settings.gradientV2Contrast,
-        gamma: settings.gradientV2Gamma,
-        saturation: settings.gradientV2Saturation,
-        centerX: settings.gradientV2CenterX,
-        centerY: settings.gradientV2CenterY,
-        zoom: settings.gradientV2Zoom,
-      })
-      if (effectInstances.gradientV2Effect.active) {
-        effectInstances.gradientV2Effect.setOptions(gradientV2Options)
-      } else {
-        effectInstances.gradientV2Effect.start()
-        effectInstances.gradientV2Effect.setOptions(gradientV2Options)
+      if (bgVideoElement && bgVideoElement.style.display === "block") {
+        applyBackgroundVideoLayout(bgVideoElement, settings)
       }
-    }
-    // Priority 1.5: Silk (Animated)
-    else if (settings.silkActive && effectInstances.silkEffect) {
-      shouldUseSilk = true
-      document.body.classList.add("bg-layer-active")
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = "none"
-        bgLayer.style.background = `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
-      }
-      const silkOptions = withPerformanceBudget(settings, "silk", {
-        color: settings.silkColor,
-        speed: settings.silkSpeed,
-        scale: settings.silkScale,
-        noise: settings.silkNoise,
-        rotation: settings.silkRotation,
-      })
-      if (effectInstances.silkEffect.active) {
-        effectInstances.silkEffect.setOptions(silkOptions)
-      } else {
-        effectInstances.silkEffect.start()
-        effectInstances.silkEffect.setOptions(silkOptions)
-      }
-    }
-    // Priority 1.6: Light Pillar (Animated)
-    else if (settings.lightPillarActive && effectInstances.lightPillarEffect) {
-      shouldUseLightPillar = true
-      document.body.classList.add("bg-layer-active")
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = "none"
-        bgLayer.style.background = `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
-      }
-      const lightPillarOptions = withPerformanceBudget(
-        settings,
-        "lightPillar",
-        {
-          topColor: settings.lightPillarTopColor,
-          bottomColor: settings.lightPillarBottomColor,
-          intensity: settings.lightPillarIntensity,
-          rotationSpeed: settings.lightPillarRotationSpeed,
-          glowAmount: settings.lightPillarGlowAmount,
-          pillarWidth: settings.lightPillarWidth,
-          pillarHeight: settings.lightPillarHeight,
-          noiseIntensity: settings.lightPillarNoiseIntensity,
-          pillarRotation: settings.lightPillarRotation,
-        },
-      )
-      if (effectInstances.lightPillarEffect.active) {
-        effectInstances.lightPillarEffect.setOptions(lightPillarOptions)
-      } else {
-        effectInstances.lightPillarEffect.start()
-        // Ensure options are applied immediately after start
-        effectInstances.lightPillarEffect.setOptions(lightPillarOptions)
-      }
-    }
-    // Priority 1.7: Liquid Ether (Animated)
-    else if (settings.liquidEtherActive && effectInstances.liquidEtherEffect) {
-      shouldUseLiquidEther = true
-      document.body.classList.add("bg-layer-active")
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = "none"
-        bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
-      }
-      const liquidEtherOptions = withPerformanceBudget(
-        settings,
-        "liquidEther",
-        {
-          colors: [
-            settings.liquidEtherColor1 || "#5227FF",
-            settings.liquidEtherColor2 || "#FF9FFC",
-            settings.liquidEtherColor3 || "#B497CF",
-          ],
-          glowWidth: settings.liquidEtherGlowWidth ?? 5.5,
-        },
-      )
-      if (effectInstances.liquidEtherEffect.active) {
-        effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
-      } else {
-        effectInstances.liquidEtherEffect.start()
-        effectInstances.liquidEtherEffect.updateSettings(liquidEtherOptions)
-      }
-    }
-    // Priority 1.75: Splash Cursor (Animated)
-    else if (
-      settings.splashCursorActive &&
-      effectInstances.splashCursorEffect
-    ) {
-      shouldUseSplashCursor = true
-      document.body.classList.add("bg-layer-active")
-      if (settings.splashCursorDarkBg === true) {
-        document.body.classList.add("splash-cursor-dark-bg")
-        if (bgLayer) {
-          bgLayer.style.background = "#000000"
-          bgLayer.style.backgroundImage = "none"
-          bgLayer.style.opacity = "1"
-        }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else {
-        applyUserSelectedBackground()
-      }
-      const splashOpts = withPerformanceBudget(
-        settings,
-        "splashCursor",
-        splashCursorOptionsFromSettings(settings),
-      )
-      if (effectInstances.splashCursorEffect.active) {
-        effectInstances.splashCursorEffect.setOptions(splashOpts)
-      } else {
-        effectInstances.splashCursorEffect.start()
-        effectInstances.splashCursorEffect.setOptions(splashOpts)
-      }
-    }
-
-    // Priority 2: SVG Wave
-    else if (settings.svgWaveActive && effectInstances.svgWaveEffect) {
-      shouldUseSvgWave = true
-      document.body.classList.add("bg-layer-active")
-      applyUserSelectedBackground()
-      const svgWaveParams = withPerformanceBudget(
-        settings,
-        "svgWave",
-        getSvgWaveParams(settings),
-      )
-      if (effectInstances.svgWaveEffect.active) {
-        effectInstances.svgWaveEffect.update(svgWaveParams)
-      } else {
-        effectInstances.svgWaveEffect.start(svgWaveParams)
-      }
-    }
-
-    // Priority 3: Predefined Theme Background
-    else if (isPredefinedLocalBg) {
-      if (bgLayer) bgLayer.classList.add(bg)
-      document.body.classList.add("bg-layer-active")
-      document.documentElement.style.setProperty("--text-color", "#ffffff")
-    }
-    // Priority 4: User Uploaded Image/Video
-    else if (isUserUploadedBg) {
-      document.body.classList.add("bg-image-active")
-      if (bg.startsWith("data:video") || isVideoId) {
-        if (bgVideoElement) {
-          activeVideoSource = bg
-          if (isIdbMedia(bg)) {
-            const url = getBlobUrlSync(bg)
-            if (url) {
-              activeVideoSource = url
-              if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-                bgVideoElement.src = activeVideoSource
-              }
-              bgVideoElement.style.display = "block"
-              bgVideoElement.style.opacity = "1"
-            } else {
-              bgVideoElement.style.display = "block"
-            }
-          } else {
-            if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-              bgVideoElement.src = activeVideoSource
-            }
-            bgVideoElement.style.display = "block"
-            bgVideoElement.style.opacity = "1"
-          }
-        }
-      } else {
-        if (bgLayer) {
-          let imageUrl = bg
-          if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
-          if (imageUrl) {
-            const img = new Image()
-            img.onload = () => {
-              bgLayer.style.backgroundImage = cssUrl(imageUrl)
-              bgLayer.style.backgroundSize = backgroundSize
-              bgLayer.style.backgroundRepeat = backgroundRepeat
-              document.body.classList.remove("preload-bg-preview")
-            }
-            img.onerror = () => document.body.classList.remove("preload-bg-preview")
-            img.src = imageUrl
-          }
-        }
-      }
-      document.body.style.backgroundSize = backgroundSize
-      document.body.style.backgroundRepeat = backgroundRepeat
-      document.documentElement.style.setProperty("--text-color", "#ffffff")
-    }
-    // Priority 5: Remote URL or Solid Color or Legacy Gradient
-    else if (bg) {
-      document.body.classList.add("bg-image-active")
-      const isVideoUrl =
-        bg.match(/\.(mp4|webm|mov|ogg)$/) || bg.includes("googlevideo")
-      if (isVideoUrl) {
-        if (bgVideoElement) {
-          activeVideoSource = bg
-          if (bgVideoElement.getAttribute("src") !== activeVideoSource) {
-            bgVideoElement.src = activeVideoSource
-          }
-          bgVideoElement.style.display = "block"
-        }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else if (bg.match(/^https?:\/\//)) {
-        if (bgLayer) {
-          const img = new Image()
-          img.onload = () => {
-            bgLayer.style.backgroundImage = cssUrl(bg)
-            bgLayer.style.backgroundSize = backgroundSize
-            bgLayer.style.backgroundRepeat = backgroundRepeat
-            document.body.classList.remove("preload-bg-preview")
-          }
-          img.onerror = () => document.body.classList.remove("preload-bg-preview")
-          img.src = bg
-        }
-        document.documentElement.style.setProperty("--text-color", "#ffffff")
-      } else {
-        if (bgLayer) {
-          bgLayer.style.backgroundImage = "none"
-          bgLayer.style.background = bg
-        }
-        document.body.classList.add("bg-layer-active")
-        document.documentElement.style.setProperty(
-          "--text-color",
-          getContrastYIQ(bg),
-        )
-      }
-    }
-    // Fallback: Multi-Color Gradient or Default Gradient
-    else {
-      if (bgLayer) {
-        bgLayer.style.backgroundImage = "none"
-        const isMultiColorActive =
-          settings.activeBgUid?.startsWith("multi-") ||
-          (settings.multiColorActive === true &&
-            !settings.activeBgUid?.startsWith("grad-"))
-
-        if (
-          isMultiColorActive &&
-          Array.isArray(settings.multiColors) &&
-          settings.multiColors.length >= 2
-        ) {
-          bgLayer.style.backgroundImage = ""
-            bgLayer.style.background = buildMultiColorCss({
-            colors: settings.multiColors,
-            angle: settings.multiGradientAngle || 135,
-            mode: settings.multiColorMode || "smooth",
-            type: settings.multiColorType || "linear",
-            repeating: settings.multiColorRepeating || false,
-            position: settings.multiColorPosition || "center",
-            radialShape: settings.multiColorRadialShape || "circle",
-            dividerConfig: {
-              enabled: settings.multiColorDividers !== false,
-              color: settings.multiColorDividerColor || "#FFFFFF",
-              width: settings.multiColorDividerWidth || 1.2,
-            },
-            lineAngleConfig: {
-              enabled: Boolean(settings.multiColorFreeLineAngles),
-              lineAngles: Array.isArray(settings.multiColorLineAngles)
-                ? settings.multiColorLineAngles
-                : [],
-            },
-          })
-        } else {
-          bgLayer.style.backgroundImage = ""
-            bgLayer.style.background = buildGradientCss({
-            start: settings.gradientStart,
-            end: settings.gradientEnd,
-            angle: settings.gradientAngle,
-            type: settings.gradientType,
-            repeating: settings.gradientRepeating,
-            extraColorCount: settings.gradientExtraColorCount,
-            customColors: settings.gradientCustomColors,
-            position: settings.gradientPosition,
-            radialShape: settings.gradientRadialShape,
-          })
-        }
-      }
-      document.body.classList.add("bg-layer-active")
     }
 
     if (bgVideoElement) configureBackgroundVideo(bgVideoElement, settings)
@@ -1600,33 +1737,6 @@ function createApplySettings(effectInstances) {
       "--bg-fade-in",
       `${settings.bgFadeIn ?? 0.5}s`,
     )
-
-    // Trigger fade-in only when background changed
-    if (bgChanged) {
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-          const _bgLayer = document.getElementById("bg-layer")
-          if (_bgLayer) _bgLayer.style.opacity = "1"
-          const _bgFadeLayer = document.getElementById("bg-fade-layer")
-          if (_bgFadeLayer) {
-            _bgFadeLayer.style.opacity = "0"
-            window.setTimeout(
-              () => {
-                _bgFadeLayer.className = ""
-                _bgFadeLayer.style.background = ""
-                _bgFadeLayer.style.backgroundImage = ""
-                _bgFadeLayer.style.backgroundSize = ""
-                _bgFadeLayer.style.backgroundRepeat = ""
-              },
-              Math.max(250, Number(getSettings().bgFadeIn ?? 0.5) * 1000 + 120),
-            )
-          }
-          const _bgVideo = document.getElementById("bg-video")
-          if (_bgVideo && _bgVideo.style.display === "block")
-            _bgVideo.style.opacity = "1"
-        }),
-      )
-    }
 
     // 1. Identify primary and clock fonts
     const rawFont = settings.font || "'Outfit', sans-serif"

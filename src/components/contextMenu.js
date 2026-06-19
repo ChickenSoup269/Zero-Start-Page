@@ -1241,6 +1241,24 @@ export function showContextMenu(
       }
       itemsToInsert.push(sourceIconBtn)
 
+      // CPU Saving Mode Toggler ("Chế độ sóng nhạc: Tiết kiệm CPU / Mặc định")
+      const isCpuSave = settings.musicVisualizerCpuSave !== false
+      const cpuSaveBtn = document.createElement("div")
+      cpuSaveBtn.className = "context-menu-item custom-music-item"
+      cpuSaveBtn.innerHTML = `<i class="fa-solid ${isCpuSave ? "fa-bolt" : "fa-leaf"}"></i> <span>${isCpuSave ? i18n.music_visualizer_mode_default || "Sóng nhạc: Mặc định" : i18n.music_visualizer_mode_cpusave || "Sóng nhạc: Tiết kiệm CPU"}</span>`
+      cpuSaveBtn.onclick = () => {
+        const newVal = !isCpuSave
+        updateSetting("musicVisualizerCpuSave", newVal)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicVisualizerCpuSave", value: newVal },
+          }),
+        )
+        hideContextMenu()
+      }
+      itemsToInsert.push(cpuSaveBtn)
+
       // --- 4. Divider ---
       const div2 = document.createElement("div")
       div2.className = "context-menu-divider custom-music-item"

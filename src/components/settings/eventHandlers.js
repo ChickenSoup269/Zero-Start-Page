@@ -4894,26 +4894,29 @@ export function setupGeneralEventHandlers(
       startupOverlay.style.opacity = "1"
     }
 
-    // Logic for standard settings reset
-    if (
-      selected.all ||
-      selected.positions ||
-      selected.effects ||
-      selected.styles
-    ) {
-      const { resetComponentPositions } =
-        await import("../../services/state.js")
-      resetComponentPositions({
-        all: selected.all,
-        positions: selected.positions,
-        effectColors: selected.effects,
-        styles: selected.styles,
-      })
-      // resetComponentPositions calls reload()
-    } else if (selected.media || selected.cloud) {
-      // If only media or cloud was cleared, we still reload to ensure clean state
-      window.location.reload()
-    }
+    // Wait 400ms for overlay fade-in animation to complete before resetting/reloading
+    setTimeout(async () => {
+      // Logic for standard settings reset
+      if (
+        selected.all ||
+        selected.positions ||
+        selected.effects ||
+        selected.styles
+      ) {
+        const { resetComponentPositions } =
+          await import("../../services/state.js")
+        resetComponentPositions({
+          all: selected.all,
+          positions: selected.positions,
+          effectColors: selected.effects,
+          styles: selected.styles,
+        })
+        // resetComponentPositions calls reload()
+      } else if (selected.media || selected.cloud) {
+        // If only media or cloud was cleared, we still reload to ensure clean state
+        window.location.reload()
+      }
+    }, 400)
   })
 
   // Search input
@@ -6072,11 +6075,31 @@ export function setupGeneralEventHandlers(
       exportedAt: new Date().toISOString(),
     }
 
+    const stripLocalMediaReferences = (value) => {
+      if (typeof value === "string" && isIdbMedia(value)) return null
+      if (Array.isArray(value)) {
+        return value
+          .map((item) => stripLocalMediaReferences(item))
+          .filter((item) => item !== null)
+      }
+      if (value && typeof value === "object") {
+        return Object.fromEntries(
+          Object.entries(value).map(([key, child]) => [
+            key,
+            stripLocalMediaReferences(child),
+          ]),
+        )
+      }
+      return value
+    }
+
     if (selected.settings) {
       if (!selected.unsplashAccessKey) {
         delete settingsSnapshot.unsplashAccessKey
       }
-      exportData.settings = settingsSnapshot
+      exportData.settings = selected.localMedia
+        ? settingsSnapshot
+        : stripLocalMediaReferences(settingsSnapshot)
     }
 
     if (selected.bookmarks) {
@@ -6379,15 +6402,19 @@ export function setupGeneralEventHandlers(
 
     const compareBlobs = async (blob1, blob2) => {
       if (blob1.size !== blob2.size || blob1.type !== blob2.type) return false
-      const sliceSize = Math.min(8192, blob1.size)
-      const slice1 = blob1.slice(0, sliceSize)
-      const slice2 = blob2.slice(0, sliceSize)
-      const buf1 = await slice1.arrayBuffer()
-      const buf2 = await slice2.arrayBuffer()
-      const arr1 = new Uint8Array(buf1)
-      const arr2 = new Uint8Array(buf2)
-      for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) return false
+      const chunkSize = 8192
+
+      for (let offset = 0; offset < blob1.size; offset += chunkSize) {
+        const end = Math.min(offset + chunkSize, blob1.size)
+        const [buf1, buf2] = await Promise.all([
+          blob1.slice(offset, end).arrayBuffer(),
+          blob2.slice(offset, end).arrayBuffer(),
+        ])
+        const arr1 = new Uint8Array(buf1)
+        const arr2 = new Uint8Array(buf2)
+        for (let i = 0; i < arr1.length; i += 1) {
+          if (arr1[i] !== arr2[i]) return false
+        }
       }
       return true
     }

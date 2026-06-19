@@ -114,6 +114,9 @@ export class MusicPlayer {
       if (key === "musicPlayerNoShaking") {
         this.applyNoShaking(value)
       }
+      if (key === "musicVisualizerCpuSave") {
+        this.applyCpuSave(value)
+      }
     }
     this._visibilityHandler = () => {
       if (this._destroyed) return
@@ -171,6 +174,8 @@ export class MusicPlayer {
 
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
+
+    this.applyCpuSave(settings.musicVisualizerCpuSave)
 
     // Only start polling if music player is enabled AND currently visible (expanded)
     if (this.showPlayer && this.isVisible) {
@@ -233,6 +238,11 @@ export class MusicPlayer {
     } else {
       wrapper.classList.remove("no-shaking")
     }
+  }
+
+  applyCpuSave(enabled) {
+    if (!this.container) return
+    this.container.classList.toggle("visualizer-cpu-save", enabled !== false)
   }
 
   createElements() {

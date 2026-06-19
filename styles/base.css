@@ -45,7 +45,8 @@ i {
   filter: var(--bg-filter, blur(var(--bg-blur, 0px)) brightness(var(--bg-brightness, 100%)) contrast(var(--bg-contrast, 100%)) saturate(var(--bg-saturation, 100%)));
   transition:
     opacity var(--bg-fade-in, 0.5s) ease,
-    filter 0.2s ease,
+    filter 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
     background-position 0.2s ease-out;
   pointer-events: none;
 }

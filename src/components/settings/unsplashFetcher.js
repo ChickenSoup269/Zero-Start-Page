@@ -587,14 +587,13 @@ function restoreExplorerPosition() {
   const restore = () => applyExplorerScrollState(saved)
 
   explorerScrollCapturePaused = true
-  requestAnimationFrame(restore)
-  setTimeout(restore, 80)
-  setTimeout(restore, 200)
-  setTimeout(restore, 500)
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     restore()
-    explorerScrollCapturePaused = false
-  }, 800)
+    setTimeout(() => {
+      restore()
+      explorerScrollCapturePaused = false
+    }, 50)
+  })
 }
 
 function getExplorerDisplayTitle(type = explorerType, query = explorerQuery) {

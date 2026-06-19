@@ -964,12 +964,12 @@ body.context-menu-light .context-menu-header {
 body.context-menu-macos .context-menu-header {
   font-size: 0.68rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(20, 22, 35, 0.45) !important;
   letter-spacing: 0.05em;
 }
 
 body.context-menu-macos.context-menu-light .context-menu-header {
-  color: rgba(20, 22, 35, 0.85);
+  color: rgba(20, 22, 35, 0.45) !important;
 }
 
 body.context-menu-none .context-menu-header {
