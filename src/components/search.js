@@ -220,7 +220,7 @@ function getEngineIconUrl(engine) {
 }
 
 function createEngineIcon(engine) {
-  return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="lazy" decoding="async">`
+  return `<img class="search-engine-icon" src="${getEngineIconUrl(engine)}" alt="" loading="eager" decoding="async">`
 }
 
 function getTranslation(key, fallback) {

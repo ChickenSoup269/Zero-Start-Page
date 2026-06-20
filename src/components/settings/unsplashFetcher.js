@@ -328,22 +328,25 @@ function populateUnsplashCollections(unsplashCategorySelect, i18n) {
 }
 
 async function setUnsplashRandomBackground(
-  unsplashRandomBtn,
-  unsplashCategorySelect,
-  handleSettingUpdateCallback,
+  unsplashRandomBtn = null,
+  unsplashCategorySelect = null,
+  handleSettingUpdateCallback = null,
+  isSilent = false,
 ) {
   const settings = getSettings()
   const previousBackground = settings.background
-  if (!hasUnsplashAccessKey(true)) return
+  if (!hasUnsplashAccessKey(!isSilent)) return
   const accessKey = settings.unsplashAccessKey.trim()
 
   const btn = unsplashRandomBtn
-  const originalHtml = btn.innerHTML
-  btn.disabled = true
-  const icon = btn.querySelector("i")
-  if (icon) {
-    icon.classList.remove("fa-sync-alt")
-    icon.classList.add("fa-spinner", "fa-spin")
+  const originalHtml = btn ? btn.innerHTML : null
+  if (btn) {
+    btn.disabled = true
+    const icon = btn.querySelector("i")
+    if (icon) {
+      icon.classList.remove("fa-sync-alt")
+      icon.classList.add("fa-spinner", "fa-spin")
+    }
   }
 
   const category =
@@ -381,18 +384,8 @@ async function setUnsplashRandomBackground(
       authorUrl: photoInfo.authorUrl,
     })
 
-    // Also add to userBackgrounds so it appears in the gallery with metadata
-    // REMOVED AUTO-SAVE TO GALLERY
-    /*
-    const userBackgrounds = settings.userBackgrounds || []
-    if (!userBackgrounds.some(bg => (typeof bg === 'object' ? bg.id : bg) === finalBgValue)) {
-      if (userBackgrounds.length >= 35) {
-        userBackgrounds.shift()
-      }
-      userBackgrounds.push(photoInfo)
-      updateSetting("userBackgrounds", userBackgrounds)
-    }
-    */
+    // Update last fetch timestamp on success
+    updateSetting("unsplashLastFetchTime", Date.now())
 
     saveSettings()
 
@@ -413,8 +406,10 @@ async function setUnsplashRandomBackground(
       updateFn("background", finalBgValue)
     }
     
-    btn.disabled = false
-    btn.innerHTML = originalHtml
+    if (btn) {
+      btn.disabled = false
+      btn.innerHTML = originalHtml
+    }
     return photo
   } catch (err) {
     console.error("Unsplash fetch failed:", err)
@@ -428,19 +423,23 @@ async function setUnsplashRandomBackground(
       updateFn("background", previousBackground)
     }
 
-    btn.disabled = false
-    btn.innerHTML = originalHtml
-    
-    let errorMsg = "Failed to load Unsplash image."
-    if (err.message.includes("401")) {
-        errorMsg = "Invalid Unsplash Access Key. Please check your key in Settings."
-    } else if (err.message.includes("403")) {
-        errorMsg = "Unsplash API rate limit exceeded or Access Key unauthorized."
-    } else if (err.message.includes("Failed to fetch")) {
-        errorMsg = "Network error. Please check your internet connection or Unsplash permissions."
+    if (btn) {
+      btn.disabled = false
+      btn.innerHTML = originalHtml
     }
     
-    showAlert(errorMsg)
+    if (!isSilent) {
+      let errorMsg = "Failed to load Unsplash image."
+      if (err.message.includes("401")) {
+          errorMsg = "Invalid Unsplash Access Key. Please check your key in Settings."
+      } else if (err.message.includes("403")) {
+          errorMsg = "Unsplash API rate limit exceeded or Access Key unauthorized."
+      } else if (err.message.includes("Failed to fetch")) {
+          errorMsg = "Network error. Please check your internet connection or Unsplash permissions."
+      }
+      
+      showAlert(errorMsg)
+    }
   }
 }
 
@@ -769,7 +768,7 @@ async function loadExplorerResults(append = false) {
         image.className = "explorer-photo-img"
         image.src = buildExplorerThumbnailUrl(photo)
         image.alt = photo.alt_description || photo.description || ""
-        image.loading = "lazy"
+        image.loading = "eager"
         image.decoding = "async"
         image.fetchPriority = "low"
         image.sizes = "(max-width: 760px) 45vw, 180px"

@@ -29,7 +29,10 @@ import { fetchUnsplashPhotoById } from "./unsplashFetcher.js"
 
 let bgSelectMode = false
 const bgSelectedIds = new Set()
-const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+const cssUrl = (value) => {
+  if (!value || value === "none") return "none"
+  return `url(${JSON.stringify(String(value))})`
+}
 const LOCAL_BG_PERFORMANCE_WARNING_THRESHOLD = 20
 const LOCAL_BG_PERFORMANCE_WARNING_KEY =
   "localBackgroundPerformanceWarningShownCountV2"

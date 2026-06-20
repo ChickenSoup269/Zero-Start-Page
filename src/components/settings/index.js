@@ -27,6 +27,7 @@ import {
 } from "../../services/i18n.js"
 
 // Import modular components
+import { createEffectFactories } from "./effectFactories.js"
 import {
   getTabIconChars,
   applyTabIcon,
@@ -142,54 +143,21 @@ function getExtensionVersion() {
   return ""
 }
 
-function needsEffectFactories(settings) {
-  return Boolean(
-    (settings.effect && settings.effect !== "none") ||
-      settings.gradientV2Active ||
-      settings.svgWaveActive ||
-      settings.silkActive ||
-      settings.lightPillarActive ||
-      settings.liquidEtherActive ||
-      settings.splashCursorActive,
-  )
-}
 
-function createLazyEffects(settings) {
+
+function createEffects(settings) {
   const instances = {}
   const extraProps = {}
-  let factories = null
-  let factoryLoadPromise = null
-  let onFactoryModuleReady = null
-
-  const loadFactories = () => {
-    if (factories) return Promise.resolve(factories)
-    if (!factoryLoadPromise) {
-      factoryLoadPromise = import("./effectFactories.js")
-        .then(({ createEffectFactories }) => {
-          factories = createEffectFactories(settings)
-          onFactoryModuleReady?.()
-          return factories
-        })
-        .catch((error) => {
-          factoryLoadPromise = null
-          console.error("Could not load effect factories:", error)
-          return null
-        })
-    }
-    return factoryLoadPromise
-  }
+  const factories = createEffectFactories(settings)
 
   const getEffect = (key) => {
-    if (!factories) {
-      loadFactories()
-      return undefined
-    }
     if (!factories[key]) return undefined
     if (!Object.prototype.hasOwnProperty.call(instances, key)) {
       instances[key] = factories[key]()
     }
     return instances[key]
   }
+
   const releaseEffect = (key) => {
     if (!Object.prototype.hasOwnProperty.call(instances, key)) return
     const effect = instances[key]
@@ -209,13 +177,7 @@ function createLazyEffects(settings) {
       if (prop === "getEffect") return getEffect
       if (prop === "hasEffect") return (key) => Boolean(instances[key])
       if (prop === "releaseEffect") return releaseEffect
-      if (prop === "ensureFactoriesLoaded") return loadFactories
-      if (prop === "setFactoryModuleReadyCallback")
-        return (callback) => {
-          onFactoryModuleReady = callback
-        }
       if (prop in target) return target[prop]
-      if (!factories) return getEffect(prop)
       if (prop in factories) return getEffect(prop)
       return undefined
     },
@@ -260,7 +222,7 @@ export async function initSettings() {
   }
 
   // Effect instances are created on first use to keep the new-tab baseline light.
-  const effects = createLazyEffects(settings)
+  const effects = createEffects(settings)
   const getActiveOrCreatedEffect = (key, isActive = false) => {
     if (!isActive && !effects.hasEffect?.(key)) return null
     return effects[key] || null
@@ -1071,18 +1033,7 @@ export async function initSettings() {
   const applySettings = createApplySettings(effects)
   const updateSettingsInputs = createUpdateSettingsInputs(effects)
   effects.updateSettingsInputs = updateSettingsInputs
-  effects.setFactoryModuleReadyCallback?.(() => {
-    applySettings()
-    if (settingsGalleriesRendered) {
-      refreshBackgroundGalleries()
-    }
-  })
-  if (needsEffectFactories(settings)) {
-    await effects.ensureFactoriesLoaded?.()
-    applySettings()
-  } else {
-    applySettings()
-  }
+  applySettings()
 
   ctx.applySettings = applySettings
   ctx.updateSettingsInputs = updateSettingsInputs

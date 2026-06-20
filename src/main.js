@@ -153,6 +153,13 @@ function needsSettingsAtBoot(settings) {
       /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
       bg.includes("googlevideo"))
 
+  const isCustomBg =
+    isIdbMedia(bg) ||
+    (typeof bg === "string" &&
+      (bg.startsWith("data:") ||
+        bg.startsWith("blob:") ||
+        bg.startsWith("http")))
+
   return Boolean(
     (settings.effect && settings.effect !== "none") ||
       settings.gradientV2Active ||
@@ -162,7 +169,8 @@ function needsSettingsAtBoot(settings) {
       settings.liquidEtherActive ||
       settings.splashCursorActive ||
       settings.m3AutoAccentFromBg ||
-      isVideo
+      isVideo ||
+      isCustomBg
   )
 }
 
@@ -1451,6 +1459,54 @@ async function bootstrap() {
     const { activeBgUid, background } = getSettings()
     // Chỉ preload ảnh đang active ngay lập tức; các ảnh còn lại lazy-load
     await preloadImages(getSettings().userBackgrounds, activeBgUid || background || null)
+
+    // Check and trigger Unsplash background auto-randomization if scheduled
+    const settings = getSettings()
+    const isUnsplashBg =
+      typeof settings.background === "string" &&
+      (settings.background.startsWith("idb-img-unsplash-") ||
+        settings.background.includes("images.unsplash.com"))
+
+    if (
+      settings.unsplashAutoRandomMode &&
+      settings.unsplashAutoRandomMode !== "off" &&
+      isUnsplashBg
+    ) {
+      const now = Date.now()
+      const lastFetch = settings.unsplashLastFetchTime || 0
+      let shouldFetch = false
+
+      if (settings.unsplashAutoRandomMode === "every_tab") {
+        shouldFetch = true
+      } else if (settings.unsplashAutoRandomMode === "hourly") {
+        if (now - lastFetch >= 3600000) {
+          shouldFetch = true
+        }
+      } else if (settings.unsplashAutoRandomMode === "daily") {
+        const lastDate = new Date(lastFetch).toDateString()
+        const nowDate = new Date(now).toDateString()
+        if (now - lastFetch >= 86400000 || lastDate !== nowDate) {
+          shouldFetch = true
+        }
+      }
+
+      if (shouldFetch) {
+        try {
+          await ensureSettingsInitialized("auto-randomize")
+          const { setUnsplashRandomBackground } = await import(
+            "./components/settings/unsplashFetcher.js"
+          )
+          await setUnsplashRandomBackground(
+            null,
+            null,
+            window.appHandleSettingUpdate,
+            true,
+          )
+        } catch (err) {
+          console.error("Auto Unsplash background randomization failed:", err)
+        }
+      }
+    }
 
     if (typeof window.appApplySettings === "function") {
       window.appApplySettings()

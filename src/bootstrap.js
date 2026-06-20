@@ -56,6 +56,13 @@ function needsSettingsAtBoot() {
         /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
         bg.includes("googlevideo"))
 
+    const isCustomBg =
+      typeof bg === "string" &&
+      (bg.startsWith("idb-") ||
+        bg.startsWith("data:") ||
+        bg.startsWith("blob:") ||
+        bg.startsWith("http"))
+
     return Boolean(
       (settings.effect && settings.effect !== "none") ||
         settings.gradientV2Active ||
@@ -65,7 +72,8 @@ function needsSettingsAtBoot() {
         settings.liquidEtherActive ||
         settings.splashCursorActive ||
         settings.m3AutoAccentFromBg ||
-        isVideo
+        isVideo ||
+        isCustomBg
     )
   } catch (e) {
     return false

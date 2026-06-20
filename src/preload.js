@@ -159,7 +159,10 @@
 
       const styleEl = document.createElement("style")
       let css = ""
-      const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+      const cssUrl = (value) => {
+        if (!value || value === "none") return "none"
+        return `url(${JSON.stringify(String(value))})`
+      }
       const cssText = (value) =>
         String(value || "").replace(/<\/style/gi, "<\\/style")
       const buildEarlyGradientCss = () => {

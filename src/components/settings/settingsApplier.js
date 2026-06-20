@@ -55,7 +55,10 @@ let _perfLagging = false
 let _perfLastApply = 0
 let _lastMediaTrim = 0
 
-const cssUrl = (value) => `url(${JSON.stringify(String(value || ""))})`
+const cssUrl = (value) => {
+  if (!value || value === "none") return "none"
+  return `url(${JSON.stringify(String(value))})`
+}
 
 const CLOCK_STYLE_ACCENT_DEFAULTS = {
   glow: "#ffffff",
@@ -988,7 +991,50 @@ function createApplySettings(effectInstances) {
       settings.liquidEtherActive ||
       settings.svgWaveActive ||
       (settings.splashCursorActive && settings.splashCursorDarkBg === true)
-    const shouldApplyBackgroundLogic = bgChanged || isAnimatedBg
+    let shouldApplyBackgroundLogic = bgChanged || isAnimatedBg || settings.splashCursorActive
+    if (isWaitingForIdb) {
+      shouldApplyBackgroundLogic = false
+
+      // Start IDB media async load
+      import("../../services/imageStore.js").then((m) => {
+        m.getImageUrl(rawBg).then((url) => {
+          if (getSettings().background === rawBg) {
+            if (url) {
+              // crossfade from early preview to sharp image
+              _prevBg = "force-idb-crossfade-" + Date.now()
+              applySettings()
+            } else {
+              // Fallback: trigger fadeout to prevent page freezing if load failed
+              triggerBgFadeOut()
+            }
+          }
+        }).catch(() => {
+          if (getSettings().background === rawBg) {
+            triggerBgFadeOut()
+          }
+        })
+      })
+
+      // If we don't have an immediate blob URL but a persistent preview exists,
+      // use that preview so the background shows instantly while the real image loads.
+      if (
+        settings.lastUserBackgroundPreview &&
+        typeof settings.lastUserBackgroundPreview === "string" &&
+        (settings.lastUserBackgroundPreview.startsWith("data:") ||
+          settings.lastUserBackgroundPreview.startsWith("blob:"))
+      ) {
+        const preview = settings.lastUserBackgroundPreview
+        if (bgLayer) {
+          bgLayer.style.backgroundImage = cssUrl(preview)
+          bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
+          bgLayer.style.background = ""
+        }
+        document.body.classList.add("bg-layer-active")
+      }
+      if (!isNextVideoBg) clearBackgroundVideo(bgVideoElement)
+      document.documentElement.style.setProperty("--text-color", "#ffffff")
+    }
 
     if (isAnimatedBg) {
       document.body.classList.add("bg-layer-active")
@@ -1018,7 +1064,7 @@ function createApplySettings(effectInstances) {
     const shouldCarryFadeLayer =
       (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
 
-    const triggerBgFadeOut = () => {
+    function triggerBgFadeOut() {
       document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
@@ -1077,7 +1123,9 @@ function createApplySettings(effectInstances) {
         if (bgLayer) {
           // Do NOT clear bgLayer's background image yet to prevent blank flashes!
           // We only clear it if we are switching to color/gradient/none (which don't need async loading).
-          if (!isNextPredefinedLocalBg && !isNextImageBg && !isNextVideoBg) {
+          // Also skip clearing for animated backgrounds – the bgLayer keeps its
+          // fallback gradient until the canvas effect is ready to render.
+          if (!isNextPredefinedLocalBg && !isNextImageBg && !isNextVideoBg && !isAnimatedBg) {
             bgLayer.style.backgroundImage = ""
             bgLayer.style.backgroundSize = ""
             bgLayer.style.backgroundRepeat = ""
@@ -1102,46 +1150,7 @@ function createApplySettings(effectInstances) {
         const cachedUrl = getBlobUrlSync(bg)
         if (cachedUrl) {
           bg = cachedUrl
-        } else {
-          import("../../services/imageStore.js").then((m) => {
-            m.getImageUrl(rawBg).then((url) => {
-              if (getSettings().background === rawBg) {
-                if (url) {
-                  // crossfade from early preview to sharp image
-                  _prevBg = "force-idb-crossfade-" + Date.now()
-                  applySettings()
-                } else {
-                  // Fallback: trigger fadeout to prevent page freezing if load failed
-                  triggerBgFadeOut()
-                }
-              }
-            }).catch(() => {
-              if (getSettings().background === rawBg) {
-                triggerBgFadeOut()
-              }
-            })
-          })
         }
-      }
-
-      // If we don't have an immediate blob URL but a persistent preview exists,
-      // use that preview so the background shows instantly while the real image loads.
-      if (
-        isIdbMedia(settings.background) &&
-        !getBlobUrlSync(settings.background) &&
-        settings.lastUserBackgroundPreview &&
-        typeof settings.lastUserBackgroundPreview === "string" &&
-        (settings.lastUserBackgroundPreview.startsWith("data:") ||
-          settings.lastUserBackgroundPreview.startsWith("blob:"))
-      ) {
-        const preview = settings.lastUserBackgroundPreview
-        if (bgLayer) {
-          bgLayer.style.backgroundImage = cssUrl(preview)
-          bgLayer.style.backgroundSize = backgroundSize
-          bgLayer.style.backgroundRepeat = backgroundRepeat
-          bgLayer.style.background = ""
-        }
-        document.body.classList.add("bg-layer-active")
       }
 
       let activeVideoSource = null
@@ -1375,13 +1384,17 @@ function createApplySettings(effectInstances) {
           bgLayer.style.background = `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
         }
         const silkOpts = withPerformanceBudget(settings, "silk", {
-          silkColor: settings.silkColor || "#7B7481",
+          color: settings.silkColor || "#7B7481",
+          speed: settings.silkSpeed ?? 5.0,
+          scale: settings.silkScale ?? 1.0,
+          noise: settings.silkNoise ?? 1.5,
+          rotation: settings.silkRotation ?? 0.0,
         })
         if (effectInstances.silkEffect.active) {
-          effectInstances.silkEffect.updateOptions(silkOpts)
+          effectInstances.silkEffect.setOptions(silkOpts)
         } else {
           effectInstances.silkEffect.start()
-          effectInstances.silkEffect.updateOptions(silkOpts)
+          effectInstances.silkEffect.setOptions(silkOpts)
         }
         triggerBgFadeOut()
       }
@@ -1396,15 +1409,19 @@ function createApplySettings(effectInstances) {
         const pillarOpts = withPerformanceBudget(settings, "lightPillar", {
           topColor: settings.lightPillarTopColor || "#ffffff",
           bottomColor: settings.lightPillarBottomColor || "#000000",
-          speed: settings.lightPillarSpeed ?? 0.8,
-          density: settings.lightPillarDensity ?? 0.65,
-          width: settings.lightPillarWidth ?? 0.5,
+          intensity: settings.lightPillarIntensity ?? 0.85,
+          rotationSpeed: settings.lightPillarRotationSpeed ?? 0.04,
+          glowAmount: settings.lightPillarGlowAmount ?? 0.4,
+          pillarWidth: settings.lightPillarWidth ?? 0.15,
+          pillarHeight: settings.lightPillarHeight ?? 0.6,
+          noiseIntensity: settings.lightPillarNoiseIntensity ?? 0.5,
+          pillarRotation: settings.lightPillarRotation ?? 0,
         })
         if (effectInstances.lightPillarEffect.active) {
-          effectInstances.lightPillarEffect.updateOptions(pillarOpts)
+          effectInstances.lightPillarEffect.setOptions(pillarOpts)
         } else {
           effectInstances.lightPillarEffect.start()
-          effectInstances.lightPillarEffect.updateOptions(pillarOpts)
+          effectInstances.lightPillarEffect.setOptions(pillarOpts)
         }
         triggerBgFadeOut()
       }
@@ -1483,6 +1500,39 @@ function createApplySettings(effectInstances) {
         } else {
           effectInstances.svgWaveEffect.start(svgWaveParams)
         }
+      }
+
+      // Fallback: animated background is active but the effect factory module
+      // hasn't finished loading yet – show a static gradient placeholder on
+      // bgLayer so the user doesn't see a black screen.  The lazy factory
+      // callback will call applySettings() again once the module is ready.
+      else if (
+        isAnimatedBg &&
+        !shouldUseGradientV2 &&
+        !shouldUseSilk &&
+        !shouldUseLightPillar &&
+        !shouldUseLiquidEther &&
+        !shouldUseSplashCursor &&
+        !shouldUseSvgWave
+      ) {
+        document.body.classList.add("bg-layer-active")
+        if (bgLayer) {
+          if (settings.gradientV2Active) {
+            bgLayer.style.background = `linear-gradient(135deg, ${settings.gradientV2Color1 || "#0f172a"}, ${settings.gradientV2Color2 || "#1d4ed8"}, ${settings.gradientV2Color3 || "#7c3aed"})`
+          } else if (settings.silkActive) {
+            bgLayer.style.background = `radial-gradient(circle at center, ${settings.silkColor || "#7B7481"}, #050505)`
+          } else if (settings.lightPillarActive) {
+            bgLayer.style.background = `linear-gradient(180deg, ${settings.lightPillarTopColor || "#ffffff"}, ${settings.lightPillarBottomColor || "#000000"})`
+          } else if (settings.liquidEtherActive) {
+            bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
+          } else if (settings.splashCursorActive && settings.splashCursorDarkBg === true) {
+            bgLayer.style.background = "#000000"
+          }
+          bgLayer.style.backgroundImage = ""
+          bgLayer.style.opacity = "1"
+        }
+        document.documentElement.style.setProperty("--text-color", "#ffffff")
+        triggerBgFadeOut()
       }
 
       // Priority 3: Predefined Theme Background
@@ -2781,6 +2831,16 @@ function createApplySettings(effectInstances) {
         )
           return
         if (shouldUseSvgWave && effect === effectInstances.svgWaveEffect) return
+        if (
+          shouldUseLiquidEther &&
+          effect === effectInstances.liquidEtherEffect
+        )
+          return
+        if (
+          shouldUseSplashCursor &&
+          effect === effectInstances.splashCursorEffect
+        )
+          return
 
         if (effect && typeof effect.stop === "function") {
           effect.stop()
@@ -3709,6 +3769,9 @@ function createUpdateSettingsInputs(effectInstances) {
 
     DOM.unsplashCategorySelect.value =
       settings.unsplashCategory || "spring-wallpapers"
+    if (DOM.unsplashAutoRandomSelect) {
+      DOM.unsplashAutoRandomSelect.value = settings.unsplashAutoRandomMode || "off"
+    }
     if (DOM.unsplashAccessKeyInput)
       DOM.unsplashAccessKeyInput.value = settings.unsplashAccessKey || ""
 

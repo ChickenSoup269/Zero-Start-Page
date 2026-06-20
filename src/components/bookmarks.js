@@ -338,7 +338,7 @@ function createBookmarkIcon(bookmark) {
   img.src =
     "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
   img.alt = `${bookmark.title} icon`
-  img.loading = "lazy"
+  img.loading = "eager"
   img.decoding = "async"
   img.referrerPolicy = "no-referrer"
   img.className = "bookmark-icon"
@@ -423,7 +423,7 @@ function createStoredIconElement(value, label = "Bookmark") {
     const img = document.createElement("img")
     img.src = iconValue
     img.alt = `${label} icon`
-    img.loading = "lazy"
+    img.loading = "eager"
     img.decoding = "async"
     img.referrerPolicy = "no-referrer"
     img.className = "stored-bookmark-icon"

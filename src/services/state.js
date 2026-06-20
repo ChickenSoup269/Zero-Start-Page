@@ -242,6 +242,8 @@ export const defaultSettings = {
   unsplashCategory: "spring-wallpapers",
   unsplashAccessKey: "",
   unsplashLastCredit: null,
+  unsplashAutoRandomMode: "off",
+  unsplashLastFetchTime: 0,
   showQuotes: false,
   showWeather: false,
   weatherLocationName: "Ho Chi Minh City",

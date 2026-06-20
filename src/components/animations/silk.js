@@ -18,6 +18,20 @@ export class SilkEffect {
     this.gl =
       this.canvas.getContext("webgl") ||
       this.canvas.getContext("experimental-webgl")
+
+    if (!this.gl) {
+      console.warn("SilkEffect: WebGL not supported")
+      return
+    }
+
+    this._handleResize = () => {
+      this.canvas.width = window.innerWidth
+      this.canvas.height = window.innerHeight
+      if (this.gl) this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+    }
+    window.addEventListener("resize", this._handleResize)
+    this._handleResize()
+
     this.active = false
 
     this.speed = options.speed !== undefined ? options.speed : 5.0
@@ -217,6 +231,16 @@ export class SilkEffect {
       this._animId = null
     }
     this.canvas.style.display = "none"
+  }
+
+  destroy() {
+    this.stop()
+    if (this._handleResize) {
+      window.removeEventListener("resize", this._handleResize)
+    }
+    if (this.canvas && this.canvas.parentElement) {
+      this.canvas.parentElement.removeChild(this.canvas)
+    }
   }
 
   _animate() {

@@ -14,6 +14,9 @@ export let bgColorPicker = document.getElementById("bg-color-picker")
 export let unsplashCategorySelect = document.getElementById(
   "unsplash-category-select",
 )
+export let unsplashAutoRandomSelect = document.getElementById(
+  "unsplash-auto-random-select",
+)
 export let unsplashAccessKeyInput = document.getElementById(
   "unsplash-access-key-input",
 )
@@ -2062,8 +2065,11 @@ export function refreshDOMReferences() {
   bgInput = document.getElementById("bg-input")
   bgColorPicker = document.getElementById("bg-color-picker")
   unsplashCategorySelect = document.getElementById(
-  "unsplash-category-select",
-)
+    "unsplash-category-select",
+  )
+  unsplashAutoRandomSelect = document.getElementById(
+    "unsplash-auto-random-select",
+  )
   unsplashAccessKeyInput = document.getElementById(
   "unsplash-access-key-input",
 )

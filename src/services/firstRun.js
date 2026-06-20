@@ -399,7 +399,7 @@ function getBookmarkOptionLabel(node, pathParts, i18n) {
       class="dialog-check-favicon"
       src="${getFaviconUrl(node.url)}"
       alt=""
-      loading="lazy"
+      loading="eager"
     />
     <span class="dialog-check-main">
       <span class="dialog-check-title">${escapeHtml(title)}</span>

@@ -1680,6 +1680,12 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("unsplashCategory", DOM.unsplashCategorySelect.value)
   })
 
+  if (DOM.unsplashAutoRandomSelect) {
+    DOM.unsplashAutoRandomSelect.addEventListener("change", () => {
+      handleSettingUpdate("unsplashAutoRandomMode", DOM.unsplashAutoRandomSelect.value)
+    })
+  }
+
   if (DOM.unsplashAccessKeyInput) {
     DOM.unsplashAccessKeyInput.addEventListener("input", () => {
       handleSettingUpdate(

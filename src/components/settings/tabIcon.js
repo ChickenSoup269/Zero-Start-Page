@@ -15,14 +15,17 @@ function getTabIconChars(raw) {
 }
 
 function isImageIcon(value) {
-  return typeof value === "string" && /^(data:image\/|blob:|https?:\/\/)/i.test(value)
+  return (
+    typeof value === "string" &&
+    /^(data:image\/|blob:|https?:\/\/)/i.test(value)
+  )
 }
 
 function applyTabIcon(value) {
   const link = document.getElementById("tab-favicon")
   if (!link) return
   if (!value) {
-    link.removeAttribute("href")
+    link.href = "icon/logo.png"
     return
   }
   if (isImageIcon(value)) {
