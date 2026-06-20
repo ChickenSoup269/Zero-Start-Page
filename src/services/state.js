@@ -286,6 +286,7 @@ export const defaultSettings = {
   timerCustomAlarmSoundId: null,
   timerCustomAlarmSoundName: "",
   musicPlayerExpanded: true,
+  musicPlayerNoShaking: true,
   musicPlayerUseDefaultColor: false,
   musicSourceIconColorMode: "brand",
   musicVisualizerCpuSave: true,

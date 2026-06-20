@@ -58,6 +58,7 @@ function reloadStartpageTabs() {
       if (!tab.url) return
       
       const isStartpage =
+        tab.url === "chrome://newtab/" ||
         tab.url.startsWith(startpageUrl) ||
         (tab.url.startsWith("chrome-extension://") && tab.url.includes("/index.html"))
 
