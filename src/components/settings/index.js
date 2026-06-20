@@ -680,8 +680,8 @@ export async function initSettings() {
                       canvas.height = size
                       const ctx = canvas.getContext("2d")
                       ctx.drawImage(img, 0, 0, size, size)
-                      const quality = 0.5 // JPG quality giúp string base64 ngắn hơn nếu không cần alpha
-                      resolve(canvas.toDataURL("image/jpeg", quality))
+                      const quality = 0.5 // WebP quality giúp string base64 ngắn hơn và HỖ TRỢ TRONG SUỐT
+                      resolve(canvas.toDataURL("image/webp", quality))
                     } catch (e) {
                       resolve(candidateUrl)
                     }

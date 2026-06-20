@@ -321,9 +321,7 @@
         if (settings.liquidEtherActive) {
           return `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
         }
-        if (isIndexedDbImage) {
-          return "#050505"
-        }
+
         if (bg && typeof bg === "string") {
           if (
             bg.startsWith("data:image") ||
@@ -522,14 +520,11 @@
         --clock-max-width-factor: ${fontProfile.maxWidthFactor};
         ${Object.entries(fontVars).map(([name, val]) => `${name}: ${val};`).join("\n        ")}
       }\n`
-      css += `body.preload-bg-ready { background: #050505 !important; background-image: none !important; animation: none !important; }\n`
+      css += `body.preload-bg-ready { animation: none !important; }\n`
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
       css += `body.preload-bg-ready #bg-layer { background: ${earlyBg}; background-size: ${earlyBgLayout.size}; background-repeat: ${earlyBgLayout.repeat}; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
       if (hasPersistentBgPreview) {
         css += `body.preload-bg-preview #bg-layer { filter: blur(12px) brightness(0.9) !important; transform: scale(1.02) !important; }\n`
-      }
-      if (String(earlyBg).startsWith("url(")) {
-        css += `body.preload-bg-ready #bg-layer { background-color: #050505; }\n`
       }
 
       css += `body.hide-search-bar #search-container { display: none !important; }\n`

@@ -1105,7 +1105,7 @@ function createApplySettings(effectInstances) {
     }
 
     if (shouldApplyBackgroundLogic) {
-      if (!previewExists && !isFirstLoad) {
+      if (!isFirstLoad) {
         document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
         document.body.style.background = ""
         document.body.style.backgroundImage = ""
@@ -1113,10 +1113,24 @@ function createApplySettings(effectInstances) {
           bgFadeLayer.style.transition = "none"
           bgFadeLayer.className = bgLayer.className
           bgFadeLayer.style.background = bgLayer.style.background
-          bgFadeLayer.style.backgroundImage = bgLayer.style.backgroundImage
+          
+          let currentBg = bgLayer.style.backgroundImage
+          if (isFirstLoad && previewExists && settings.lastUserBackgroundPreview) {
+            currentBg = cssUrl(settings.lastUserBackgroundPreview)
+          }
+          bgFadeLayer.style.backgroundImage = currentBg
           bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
           bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
           bgFadeLayer.style.opacity = "1"
+          
+          if (isFirstLoad && previewExists) {
+            bgFadeLayer.style.filter = "blur(12px) brightness(0.9)"
+            bgFadeLayer.style.transform = "scale(1.02)"
+          } else {
+            bgFadeLayer.style.filter = bgLayer.style.filter
+            bgFadeLayer.style.transform = bgLayer.style.transform
+          }
+          
           bgFadeLayer.offsetHeight // force reflow
           bgFadeLayer.style.transition = "" // restore transition
         } else if (bgFadeLayer) {
@@ -2918,15 +2932,15 @@ function createApplySettings(effectInstances) {
     // 6. Gradients
     document.documentElement.style.setProperty(
       "--bg-gradient-start",
-      settings.gradientStart,
+      settings.gradientStart || "#0a1f11",
     )
     document.documentElement.style.setProperty(
       "--bg-gradient-end",
-      settings.gradientEnd,
+      settings.gradientEnd || "#1d472c",
     )
     document.documentElement.style.setProperty(
       "--bg-gradient-angle",
-      settings.gradientAngle + "deg",
+      (settings.gradientAngle ?? 135) + "deg",
     )
 
     // Update Main Background Credit (Bottom Left)
