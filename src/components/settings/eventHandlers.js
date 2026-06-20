@@ -3604,6 +3604,7 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.randomGradientColorsBtn?.addEventListener("click", () => {
+    updateSetting("activeBgUid", null)
     const extraCount = Math.min(
       5,
       Math.max(
@@ -3632,6 +3633,7 @@ export function setupGeneralEventHandlers(
   })
 
   DOM.generateModernGradientBtn?.addEventListener("click", () => {
+    updateSetting("activeBgUid", null)
     const selected =
       MODERN_GRADIENT_PRESETS[
         Math.floor(Math.random() * MODERN_GRADIENT_PRESETS.length)

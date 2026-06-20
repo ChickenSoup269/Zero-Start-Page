@@ -5876,8 +5876,7 @@ body.context-menu-none .calendar-event-preview-desc {
 /* Material 3 context menu — :root --m3-* from applyAccentTokens(),
    fallback --safe-accent when accentColorMode is "default". */
 body.context-menu-m3 #context-menu,
-body.context-menu-m3 .calendar-context-menu,
-body.context-menu-m3 .g-apps-context-menu {
+body.context-menu-m3 .calendar-context-menu {
   min-width: 232px;
   padding: var(--space-1);
   border-radius: var(--radius-sm);
@@ -5925,9 +5924,7 @@ body.context-menu-m3 .g-apps-context-menu {
 }
 
 body.context-menu-m3 .context-menu-item,
-body.context-menu-m3 .menu-item,
-body.context-menu-m3 .g-apps-menu-btn,
-body.context-menu-m3 .g-apps-menu-toggle {
+body.context-menu-m3 .menu-item {
   min-height: 27px;
   margin: 1px 0;
   padding: var(--space-1) var(--space-2);
@@ -5945,9 +5942,7 @@ body.context-menu-m3 .g-apps-menu-toggle {
 }
 
 body.context-menu-m3 .context-menu-item i,
-body.context-menu-m3 .menu-item i,
-body.context-menu-m3 .g-apps-menu-btn i,
-body.context-menu-m3 .g-apps-menu-toggle i {
+body.context-menu-m3 .menu-item i {
   width: 18px;
   font-size: 1rem;
   color: color-mix(
@@ -5960,9 +5955,7 @@ body.context-menu-m3 .g-apps-menu-toggle i {
 }
 
 body.context-menu-m3 .context-menu-item:hover,
-body.context-menu-m3 .menu-item:hover,
-body.context-menu-m3 .g-apps-menu-btn:hover,
-body.context-menu-m3 .g-apps-menu-toggle:hover {
+body.context-menu-m3 .menu-item:hover {
   background: var(--m3-primary, var(--safe-accent)) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
   box-shadow: 0 10px 22px
@@ -5970,9 +5963,7 @@ body.context-menu-m3 .g-apps-menu-toggle:hover {
 }
 
 body.context-menu-m3 .context-menu-item:hover i,
-body.context-menu-m3 .menu-item:hover i,
-body.context-menu-m3 .g-apps-menu-btn:hover i,
-body.context-menu-m3 .g-apps-menu-toggle:hover i {
+body.context-menu-m3 .menu-item:hover i {
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
   opacity: 1;
 }
@@ -5989,33 +5980,24 @@ body.context-menu-m3 .context-menu-separator {
   ) !important;
 }
 
-body.context-menu-m3 .g-apps-menu-title {
-  color: color-mix(
-    in srgb,
-    var(--m3-on-primary-container, var(--text-color)) 62%,
-    transparent
-  ) !important;
-}
+
 
 /* Danger / Delete Item */
 body.context-menu-m3 .context-menu-item.danger,
 body.context-menu-m3 .menu-item.danger,
-body.context-menu-m3 #menu-delete,
-body.context-menu-m3 .g-apps-menu-btn.danger {
+body.context-menu-m3 #menu-delete {
   color: #ff8a80 !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger i,
 body.context-menu-m3 .menu-item.danger i,
-body.context-menu-m3 #menu-delete i,
-body.context-menu-m3 .g-apps-menu-btn.danger i {
+body.context-menu-m3 #menu-delete i {
   color: rgba(255, 138, 128, 0.82) !important;
 }
 
 body.context-menu-m3 .context-menu-item.danger:hover,
 body.context-menu-m3 .menu-item.danger:hover,
-body.context-menu-m3 #menu-delete:hover,
-body.context-menu-m3 .g-apps-menu-btn.danger:hover {
+body.context-menu-m3 #menu-delete:hover {
   background: #ff3b30 !important;
   color: #fff !important;
   box-shadow: 0 10px 22px rgba(255, 59, 48, 0.28) !important;
@@ -6023,8 +6005,7 @@ body.context-menu-m3 .g-apps-menu-btn.danger:hover {
 
 body.context-menu-m3 .context-menu-item.danger:hover i,
 body.context-menu-m3 .menu-item.danger:hover i,
-body.context-menu-m3 #menu-delete:hover i,
-body.context-menu-m3 .g-apps-menu-btn.danger:hover i {
+body.context-menu-m3 #menu-delete:hover i {
   color: #fff !important;
 }
 

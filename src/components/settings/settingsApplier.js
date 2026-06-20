@@ -991,7 +991,14 @@ function createApplySettings(effectInstances) {
       settings.liquidEtherActive ||
       settings.svgWaveActive ||
       (settings.splashCursorActive && settings.splashCursorDarkBg === true)
-    let shouldApplyBackgroundLogic = bgChanged || isAnimatedBg || settings.splashCursorActive
+
+    const isMultiColorActive =
+      settings.activeBgUid?.startsWith("multi-") ||
+      (settings.multiColorActive === true &&
+        !settings.activeBgUid?.startsWith("grad-"))
+    const isStaticGradient = !settings.background && !isAnimatedBg && !isMultiColorActive
+
+    let shouldApplyBackgroundLogic = bgChanged || isAnimatedBg || settings.splashCursorActive || isMultiColorActive || isStaticGradient
     if (isWaitingForIdb) {
       shouldApplyBackgroundLogic = false
 

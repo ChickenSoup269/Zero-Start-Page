@@ -545,6 +545,7 @@ export async function initSettings() {
           }),
         )
       }
+      applySettings()
     } else {
       updateSetting(key, value)
       if (key === "background") {

@@ -1696,7 +1696,7 @@ export function showContextMenu(
         key = "userGradients"
         break
       case "userMultiColor":
-        key = "userMultiColors"
+        key = "userGradients"
         break
       case "userSvgWave":
         key = "userSvgWaves"
@@ -2109,7 +2109,7 @@ async function handleDelete() {
           renderFn = renderUserGradients
           break
         case "userMultiColor":
-          key = "userSavedMultiColors"
+          key = "userGradients"
           const { renderSavedMultiColors } =
             await import("./settings/multiColorManager.js")
           renderFn = renderSavedMultiColors

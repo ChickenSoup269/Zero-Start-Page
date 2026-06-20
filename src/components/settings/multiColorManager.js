@@ -5,6 +5,7 @@ import {
 } from "../../services/state.js"
 import { geti18n } from "../../services/i18n.js"
 import * as DOM from "../../utils/dom.js"
+import { showAlert } from "../../utils/dialog.js"
 
 let multiColorSelectMode = false
 let multiColorSelectedIndices = new Set()
@@ -792,11 +793,13 @@ export function setupMultiColorManager(applySettings) {
   })
 
   DOM.randomMultiColorHueBtn?.addEventListener("click", () => {
+    updateSetting("activeBgUid", null)
     const count = clampCount(DOM.multiColorCountSelect.value)
     applyRandomizedColors(generateHueColors(count))
   })
 
   DOM.randomMultiColorCrazyBtn?.addEventListener("click", () => {
+    updateSetting("activeBgUid", null)
     const count = clampCount(DOM.multiColorCountSelect.value)
     applyRandomizedColors(generateCrazyColors(count))
   })
@@ -917,7 +920,7 @@ export function setupMultiColorManager(applySettings) {
 
   setupMultiSelect()
 
-  function syncMultiColorToState(forceApply = true) {
+  function syncMultiColorToState(forceApply = false) {
     const settings = getSettings()
     const pickers = Array.from(document.querySelectorAll(".multi-color-picker"))
     const colors = pickers.map((p) => p.value)
@@ -950,19 +953,23 @@ export function setupMultiColorManager(applySettings) {
     updateSetting("multiColorRepeating", repeating)
     updateSetting("multiColorPosition", position)
     updateSetting("multiColorRadialShape", radialShape)
-    updateSetting("multiColorActive", true)
-    
-    // Crucial: Set background to null so settingsApplier uses multiColor logic
-    updateSetting("background", null)
-    updateSetting("activeBgUid", editableMultiUid)
-    
-    // Deactivate other effects
-    updateSetting("svgWaveActive", false)
-    updateSetting("gradientV2Active", false)
-    updateSetting("silkActive", false)
-    updateSetting("lightPillarActive", false)
-    updateSetting("liquidEtherActive", false)
-    updateSetting("splashCursorActive", false)
+    const isAlreadyActive = settings.multiColorActive === true;
+
+    if (forceApply || isAlreadyActive) {
+      updateSetting("multiColorActive", true)
+      
+      // Crucial: Set background to null so settingsApplier uses multiColor logic
+      updateSetting("background", null)
+      updateSetting("activeBgUid", editableMultiUid)
+      
+      // Deactivate other effects
+      updateSetting("svgWaveActive", false)
+      updateSetting("gradientV2Active", false)
+      updateSetting("silkActive", false)
+      updateSetting("lightPillarActive", false)
+      updateSetting("liquidEtherActive", false)
+      updateSetting("splashCursorActive", false)
+    }
 
     if (editableMultiUid) {
       updateSetting(
@@ -990,7 +997,7 @@ export function setupMultiColorManager(applySettings) {
 
     saveSettings()
 
-    if (forceApply && applySettings) {
+    if ((forceApply || isAlreadyActive) && typeof applySettings !== "undefined" && applySettings) {
       applySettings()
     }
 
