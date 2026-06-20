@@ -12,7 +12,9 @@ let lastKnownMediaTabSeenAt = 0
 const mediaStates = {}
 
 function getUninstallUrl(language = "en") {
-  return language === "vi" ? UNINSTALL_FORM_URLS.vi : UNINSTALL_FORM_URLS.default
+  return language === "vi"
+    ? UNINSTALL_FORM_URLS.vi
+    : UNINSTALL_FORM_URLS.default
 }
 
 function setLocalizedUninstallUrl(language = "en") {
@@ -51,27 +53,64 @@ function openStartpageTab() {
   })
 }
 
-function reloadStartpageTabs() {
-  const startpageUrl = chrome.runtime.getURL("index.html")
-  chrome.tabs.query({}, (tabs) => {
-    tabs.forEach((tab) => {
-      if (!tab.url) return
-      
-      const isStartpage =
-        tab.url === "chrome://newtab/" ||
-        tab.url.startsWith(startpageUrl) ||
-        (tab.url.startsWith("chrome-extension://") && tab.url.includes("/index.html"))
+const NEW_TAB_URL = chrome.runtime.getURL("index.html")
+const EXTENSION_PREFIX = `chrome-extension://${chrome.runtime.id}`
+const rescuedTabs = new Set()
 
-      if (isStartpage) {
-        chrome.tabs.reload(tab.id, () => {
-          if (chrome.runtime.lastError) {
-            // Ignore error
-          }
-        })
-      }
-    })
-  })
+// Hàm xử lý "hồi sinh" tab lỗi
+function rescueZombieTab(tab) {
+  if (!tab || !tab.id) return
+
+  // Chỉ kiểm tra khi tab đã báo complete (kể cả lỗi ERR_INVALID_URL thì status cũng là complete)
+  // Điều này tránh việc đụng chạm nhầm các tab đang tải bình thường.
+  if (tab.status !== "complete") return
+  if (rescuedTabs.has(tab.id)) return
+
+  const currentUrl = tab.url || ""
+  const currentPendingUrl = tab.pendingUrl || ""
+
+  const isOurUrl = (url) => url && url.startsWith(EXTENSION_PREFIX)
+  const isStartpageUrl = isOurUrl(currentPendingUrl) || isOurUrl(currentUrl)
+  // Tab lỗi thường có URL là rỗng (do bị Chrome chặn) hoặc chứa URL của extension nhưng không load được.
+  const isEmptyNewTab = !tab.url && !tab.pendingUrl
+
+  if (isStartpageUrl || isEmptyNewTab) {
+    // PHÁT HIỆN DỰA TRÊN QUAN SÁT CỦA BẠN:
+    // Tab lỗi (chrome://newtab bị mất kết nối) sẽ có title là "New Tab", "Thẻ mới", rỗng, hoặc là một cái URL.
+    // Tab sống khỏe sẽ có title là "Start Page" (hoặc tên bạn đổi trong settings).
+    const isZombieTitle =
+      !tab.title ||
+      tab.title === "New Tab" ||
+      tab.title === "Thẻ mới" ||
+      tab.title.includes("chrome-extension://")
+
+    if (isZombieTitle) {
+      rescuedTabs.add(tab.id) // Chỉ thử 1 lần mỗi tab để tránh loop
+
+      // Lập tức đập đi xây lại bằng URL CỤ THỂ (hiện rõ chrome-extension://...)
+      // Giống như bạn nói, URL cụ thể không bao giờ bị lỗi khi khởi động!
+      chrome.tabs.create(
+        {
+          url: NEW_TAB_URL,
+          index: tab.index,
+          windowId: tab.windowId,
+          active: tab.active,
+          pinned: tab.pinned,
+        },
+        () => {
+          chrome.tabs.remove(tab.id, () => {
+            const err = chrome.runtime.lastError
+          })
+        },
+      )
+    }
+  }
 }
+
+// 1. Quét diện rộng lúc khởi động
+chrome.tabs.query({}, (tabs) => {
+  tabs.forEach(rescueZombieTab)
+})
 
 function rememberKnownMediaTab(tab) {
   if (!tab?.id || !isKnownMediaTab(tab)) return
@@ -108,16 +147,9 @@ function clearRememberedKnownMediaTab(tabId = null) {
 // Set the uninstall URL and refresh/reload any existing or restored startpage tabs
 chrome.runtime.onInstalled.addListener(() => {
   restoreUninstallUrlFromStorage()
-  reloadStartpageTabs()
-  setTimeout(reloadStartpageTabs, 500)
-  setTimeout(reloadStartpageTabs, 1500)
 })
 chrome.runtime.onStartup?.addListener(() => {
   restoreUninstallUrlFromStorage()
-  reloadStartpageTabs()
-  setTimeout(reloadStartpageTabs, 500)
-  setTimeout(reloadStartpageTabs, 1500)
-  setTimeout(reloadStartpageTabs, 3000)
 })
 chrome.action?.onClicked?.addListener(openStartpageTab)
 chrome.tabs?.onRemoved?.addListener((tabId) => {
@@ -125,6 +157,11 @@ chrome.tabs?.onRemoved?.addListener((tabId) => {
   delete mediaStates[tabId]
 })
 chrome.tabs?.onUpdated?.addListener((tabId, changeInfo, tab) => {
+  // 2. LƯỚI QUÉT CHÍ MẠNG: Chỉ chạy khi tab đã complete để không ngắt quãng quá trình tải
+  if (changeInfo.status === "complete" || changeInfo.title) {
+    rescueZombieTab(tab)
+  }
+
   // 1. Media caching logic
   if (tabId === lastKnownMediaTabId && changeInfo.url) {
     if (!isKnownMediaTab(tab)) clearRememberedKnownMediaTab(tabId)
@@ -308,13 +345,17 @@ function controlAnyKnownMediaTab(command, sendResponse) {
 }
 
 function controlMediaTab(tabId, command, sendResponse) {
-  chrome.tabs.sendMessage(tabId, { action: "mediaControl", command }, (response) => {
-    if (chrome.runtime.lastError || !response || !response.ok) {
-      runLegacyControlMediaTab(tabId, command, sendResponse)
-    } else {
-      sendResponse(response)
-    }
-  })
+  chrome.tabs.sendMessage(
+    tabId,
+    { action: "mediaControl", command },
+    (response) => {
+      if (chrome.runtime.lastError || !response || !response.ok) {
+        runLegacyControlMediaTab(tabId, command, sendResponse)
+      } else {
+        sendResponse(response)
+      }
+    },
+  )
 }
 
 function runLegacyControlMediaTab(tabId, command, sendResponse) {
@@ -368,7 +409,9 @@ function runLegacyControlMediaTab(tabId, command, sendResponse) {
             ) ||
             document.querySelector('[data-testid="playback-progressbar"]') ||
             document.querySelector(".duration-bar input[type='range']") ||
-            document.querySelector(".player-controls__container input[type='range']") ||
+            document.querySelector(
+              ".player-controls__container input[type='range']",
+            ) ||
             document.querySelector(".zm-slider input[type='range']") ||
             document.querySelector(".zm-slider [role='slider']") ||
             document.querySelector(".playbackTimeline__progressWrapper") ||
@@ -389,26 +432,34 @@ function runLegacyControlMediaTab(tabId, command, sendResponse) {
             )
           if (!max) return false
 
-          const value = Math.max(0, Math.min(max, max > 36000 ? time * 1000 : time))
+          const value = Math.max(
+            0,
+            Math.min(max, max > 36000 ? time * 1000 : time),
+          )
           const clickSliderAtValue = () => {
             const rect = slider.getBoundingClientRect()
             if (!rect.width) return false
             const clientX = rect.left + rect.width * (value / max)
             const clientY = rect.top + rect.height / 2
-            ;["pointerdown", "mousedown", "mouseup", "click"].forEach((type) => {
-              slider.dispatchEvent(
-                new MouseEvent(type, {
-                  bubbles: true,
-                  cancelable: true,
-                  clientX,
-                  clientY,
-                }),
-              )
-            })
+            ;["pointerdown", "mousedown", "mouseup", "click"].forEach(
+              (type) => {
+                slider.dispatchEvent(
+                  new MouseEvent(type, {
+                    bubbles: true,
+                    cancelable: true,
+                    clientX,
+                    clientY,
+                  }),
+                )
+              },
+            )
             return true
           }
           if ("value" in slider) {
-            const ownSetter = Object.getOwnPropertyDescriptor(slider, "value")?.set
+            const ownSetter = Object.getOwnPropertyDescriptor(
+              slider,
+              "value",
+            )?.set
             const protoSetter = Object.getOwnPropertyDescriptor(
               Object.getPrototypeOf(slider),
               "value",
@@ -499,7 +550,13 @@ function runLegacyControlMediaTab(tabId, command, sendResponse) {
             if (typeof command.time === "number") {
               if (video && !isSoundCloud) {
                 video.currentTime = command.time
-              } else if (isSpotify || isZing || isSoundCloud || isAppleMusic || isNct) {
+              } else if (
+                isSpotify ||
+                isZing ||
+                isSoundCloud ||
+                isAppleMusic ||
+                isNct
+              ) {
                 seekWebSlider(command.time)
               }
             }
@@ -561,10 +618,14 @@ function getMediaFromTab(tabId, sendResponse) {
             ) ||
             document.querySelector('[data-testid="playback-progressbar"]') ||
             document.querySelector(".duration-bar input[type='range']") ||
-            document.querySelector(".player-controls__container input[type='range']") ||
+            document.querySelector(
+              ".player-controls__container input[type='range']",
+            ) ||
             document.querySelector(".zm-slider input[type='range']") ||
             document.querySelector(".zm-slider [role='slider']") ||
-            document.querySelector('[aria-label*="timeline" i][role="slider"]') ||
+            document.querySelector(
+              '[aria-label*="timeline" i][role="slider"]',
+            ) ||
             document.querySelector('[aria-label*="time" i][role="slider"]') ||
             document.querySelector(".playbackTimeline__progressWrapper") ||
             document.querySelector(".playbackTimeline__progressBar") ||
@@ -611,7 +672,8 @@ function getMediaFromTab(tabId, sendResponse) {
             document
               .querySelector(".playControl")
               ?.getAttribute("aria-label")
-              ?.toLowerCase() || ""
+              ?.toLowerCase() ||
+            ""
           const zingPlayButton = document.querySelector(
             ".player-controls__container .btn-play, .zm-btn.btn-play",
           )
@@ -627,7 +689,7 @@ function getMediaFromTab(tabId, sendResponse) {
                     !zingPlayButton?.classList.contains("playing")
                   : isSoundCloud
                     ? !soundCloudPlayButton?.classList.contains("playing")
-                  : playPauseLabel.includes("play")
+                    : playPauseLabel.includes("play")
           return { currentTime, duration, paused }
         })()
 
@@ -738,9 +800,11 @@ function getMediaFromTab(tabId, sendResponse) {
               ? webPlayback.paused
               : video
                 ? video.paused
-                : webPlayback?.paused ?? true,
+                : (webPlayback?.paused ?? true),
           currentTime:
-            video && typeof video.currentTime === "number" && video.currentTime > 0
+            video &&
+            typeof video.currentTime === "number" &&
+            video.currentTime > 0
               ? video.currentTime
               : webPlayback?.currentTime || 0,
           duration: video
@@ -750,16 +814,16 @@ function getMediaFromTab(tabId, sendResponse) {
             : webPlayback?.duration || 0,
           url: window.location.href,
           source: isSpotify
-              ? "spotify"
-              : isZing
-                ? "zingmp3"
-                : isSoundCloud
-                  ? "soundcloud"
-                  : isAppleMusic
-                    ? "applemusic"
-                    : isNct
-                      ? "nhaccuatui"
-                : "",
+            ? "spotify"
+            : isZing
+              ? "zingmp3"
+              : isSoundCloud
+                ? "soundcloud"
+                : isAppleMusic
+                  ? "applemusic"
+                  : isNct
+                    ? "nhaccuatui"
+                    : "",
           thumbnail: (() => {
             // Priority 1: MediaSession Artwork
             if (metadata && metadata.artwork && metadata.artwork.length > 0) {
@@ -774,21 +838,28 @@ function getMediaFromTab(tabId, sendResponse) {
 
             // Priority 2: YouTube Specific
             if (window.location.href.includes("youtube.com")) {
-              const videoId = new URLSearchParams(window.location.search).get("v")
-              if (videoId) return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
-              
+              const videoId = new URLSearchParams(window.location.search).get(
+                "v",
+              )
+              if (videoId)
+                return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+
               // YouTube Music player bar thumbnail fallback
-              const ytThumb = document.querySelector("img.ytp-videowall-still-image")?.src || 
-                             document.querySelector("img.yt-music-player-bar")?.src ||
-                             document.querySelector(".ytp-cued-thumbnail-overlay-image")?.style.backgroundImage?.slice(5, -2)
+              const ytThumb =
+                document.querySelector("img.ytp-videowall-still-image")?.src ||
+                document.querySelector("img.yt-music-player-bar")?.src ||
+                document
+                  .querySelector(".ytp-cued-thumbnail-overlay-image")
+                  ?.style.backgroundImage?.slice(5, -2)
               if (ytThumb) return ytThumb
             }
 
             // Priority 3: Spotify Specific
             if (window.location.href.includes("spotify.com")) {
-               const spotThumb = document.querySelector('[data-testid="now-playing-widget"] img')?.src ||
-                                document.querySelector(".cover-art img")?.src
-               if (spotThumb) return spotThumb
+              const spotThumb =
+                document.querySelector('[data-testid="now-playing-widget"] img')
+                  ?.src || document.querySelector(".cover-art img")?.src
+              if (spotThumb) return spotThumb
             }
 
             if (
@@ -796,7 +867,8 @@ function getMediaFromTab(tabId, sendResponse) {
               window.location.href.includes("mp3.zing.vn")
             ) {
               const zingThumb =
-                document.querySelector(".player-controls__container img")?.src ||
+                document.querySelector(".player-controls__container img")
+                  ?.src ||
                 document.querySelector(".now-playing img")?.src ||
                 document.querySelector(".media-left img")?.src ||
                 document.querySelector('img[src*="zmdcdn.me"]')?.src
@@ -805,11 +877,16 @@ function getMediaFromTab(tabId, sendResponse) {
 
             if (window.location.href.includes("soundcloud.com")) {
               const styleThumb =
-                document.querySelector(".playbackSoundBadge__avatar span[style*='background-image']")?.style.backgroundImage ||
-                document.querySelector("[style*='sndcdn.com'][style*='background-image']")?.style.backgroundImage ||
+                document.querySelector(
+                  ".playbackSoundBadge__avatar span[style*='background-image']",
+                )?.style.backgroundImage ||
+                document.querySelector(
+                  "[style*='sndcdn.com'][style*='background-image']",
+                )?.style.backgroundImage ||
                 ""
               const soundCloudThumb =
-                document.querySelector(".playbackSoundBadge__avatar img")?.src ||
+                document.querySelector(".playbackSoundBadge__avatar img")
+                  ?.src ||
                 styleThumb.replace(/^url\(["']?/, "").replace(/["']?\)$/, "") ||
                 document.querySelector(".image__full")?.src ||
                 document.querySelector('img[src*="sndcdn.com"]')?.src
@@ -818,8 +895,10 @@ function getMediaFromTab(tabId, sendResponse) {
 
             if (window.location.href.includes("music.apple.com")) {
               const appleThumb =
-                document.querySelector('[data-testid="artwork-component"] img')?.src ||
-                document.querySelector(".web-chrome-playback-lcd__artwork img")?.src ||
+                document.querySelector('[data-testid="artwork-component"] img')
+                  ?.src ||
+                document.querySelector(".web-chrome-playback-lcd__artwork img")
+                  ?.src ||
                 document.querySelector('img[src*="mzstatic.com"]')?.src
               if (appleThumb) return appleThumb
             }
@@ -837,7 +916,9 @@ function getMediaFromTab(tabId, sendResponse) {
             }
 
             // Priority 4: Generic OG Image
-            const ogImg = document.querySelector('meta[property="og:image"]')?.content
+            const ogImg = document.querySelector(
+              'meta[property="og:image"]',
+            )?.content
             if (ogImg) return ogImg
 
             return ""

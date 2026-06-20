@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>New Tab</title>
+    <style>
+        /* Ép khung iframe tràn toàn màn hình, không có viền */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Nhúng trực tiếp trang index chính của bạn vào đây -->
+    <iframe id="startpage-frame"></iframe>
+
+    <script src="redirect.js"></script>
+</body>
+
+</html>

@@ -15,8 +15,14 @@
     }
   },
   "chrome_url_overrides": {
-    "newtab": "index.html"
+    "newtab": "redirect.html"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["index.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
