@@ -265,6 +265,13 @@
         }
         return `${repeating}linear-gradient(${angle}deg, ${stops})`
       }
+      const isVideoBackground = (value) => 
+        typeof value === "string" && 
+        (value.startsWith("data:video") || 
+         value.startsWith("idb-video-") || 
+         /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(value) || 
+         value.includes("googlevideo"))
+
       const isImageLikeBackground = (value) =>
         typeof value === "string" &&
         (value.startsWith("data:image") ||
@@ -272,7 +279,8 @@
           /^https?:\/\//i.test(value) ||
           value.startsWith("idb-img-") ||
           value.startsWith("idb-image-") ||
-          value.startsWith("idb-gif-"))
+          value.startsWith("idb-gif-") ||
+          isVideoBackground(value))
 
       const buildEarlyBackgroundCss = () => {
         const bg = settings.background
@@ -323,6 +331,9 @@
         }
 
         if (bg && typeof bg === "string") {
+          if (isVideoBackground(bg)) {
+            return "#000000" // Prevent fallback gradient flash for videos without preview
+          }
           if (
             bg.startsWith("data:image") ||
             bg.startsWith("blob:") ||

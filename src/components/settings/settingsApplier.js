@@ -1069,7 +1069,7 @@ function createApplySettings(effectInstances) {
     }
 
     const shouldCarryFadeLayer =
-      (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg)
+      (bgChanged || isWaitingForIdb) && (isNextPredefinedLocalBg || isNextImageBg || isNextVideoBg) && (!isFirstLoad || previewExists)
 
     function triggerBgFadeOut() {
       document.body.classList.remove("preload-bg-ready", "preload-bg-preview")
@@ -1094,7 +1094,14 @@ function createApplySettings(effectInstances) {
           }
           const _bgVideo = document.getElementById("bg-video")
           if (_bgVideo && _bgVideo.style.display === "block") {
-            _bgVideo.style.opacity = "1"
+            if (isFirstLoad) {
+              _bgVideo.style.transition = "none"
+              _bgVideo.style.opacity = "1"
+              _bgVideo.offsetHeight // force reflow
+              _bgVideo.style.transition = ""
+            } else {
+              _bgVideo.style.opacity = "1"
+            }
           }
           const _bgLayer = document.getElementById("bg-layer")
           if (_bgLayer) {
@@ -1243,7 +1250,14 @@ function createApplySettings(effectInstances) {
                 bgVideoElement.src = activeVideoSource
               }
               bgVideoElement.style.display = "block"
-              bgVideoElement.style.opacity = "1"
+              if (isFirstLoad) {
+                bgVideoElement.style.transition = "none"
+                bgVideoElement.style.opacity = "1"
+                bgVideoElement.offsetHeight // force reflow
+                bgVideoElement.style.transition = ""
+              } else {
+                bgVideoElement.style.opacity = "1"
+              }
               const onVideoReady = () => {
                 bgVideoElement.removeEventListener("playing", onVideoReady)
                 bgVideoElement.removeEventListener("canplay", onVideoReady)
@@ -1275,7 +1289,14 @@ function createApplySettings(effectInstances) {
                 bgVideoElement.src = activeVideoSource
               }
               bgVideoElement.style.display = "block"
-              bgVideoElement.style.opacity = "1"
+              if (isFirstLoad) {
+                bgVideoElement.style.transition = "none"
+                bgVideoElement.style.opacity = "1"
+                bgVideoElement.offsetHeight // force reflow
+                bgVideoElement.style.transition = ""
+              } else {
+                bgVideoElement.style.opacity = "1"
+              }
               const onVideoReady = () => {
                 bgVideoElement.removeEventListener("playing", onVideoReady)
                 bgVideoElement.removeEventListener("canplay", onVideoReady)

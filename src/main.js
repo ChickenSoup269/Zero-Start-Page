@@ -149,6 +149,7 @@ function needsSettingsAtBoot(settings) {
   const isVideo =
     typeof bg === "string" &&
     (bg.startsWith("data:video") ||
+      bg.startsWith("idb-video-") ||
       bg.startsWith("idb-gif-") ||
       /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(bg) ||
       bg.includes("googlevideo"))
@@ -347,11 +348,18 @@ function applyBasicStyles(settings) {
   ].join(" ")
 
   root.style.setProperty("--bg-filter", filters)
+
+  if (settings.dateClockStyle) {
+    document.body.setAttribute("data-clock-style", settings.dateClockStyle)
+  }
   root.style.setProperty("--bg-blur", `${settings.bgBlur ?? 0}px`)
   root.style.setProperty("--bg-brightness", `${settings.bgBrightness ?? 100}%`)
   root.style.setProperty("--bg-contrast", `${settings.bgContrast ?? 100}%`)
   root.style.setProperty("--bg-saturation", `${settings.bgSaturation ?? 100}%`)
   
+  root.style.setProperty("--clock-font-size", `${settings.clockFontSize ?? 11}rem`)
+  root.style.setProperty("--date-font-size", `${settings.dateFontSize ?? 2}rem`)
+
   if (settings.panelBg) root.style.setProperty("--panel-bg", settings.panelBg)
   if (settings.glassBg) root.style.setProperty("--glass-bg", settings.glassBg)
   if (settings.glassBorder) root.style.setProperty("--glass-border", settings.glassBorder)
@@ -1172,6 +1180,7 @@ async function bootstrap() {
     const isVideo =
       typeof background === "string" &&
       (background.startsWith("data:video") ||
+        background.startsWith("idb-video-") ||
         background.startsWith("idb-gif-") ||
         /\.(mp4|webm|mov|ogg)(?:[?#].*)?$/i.test(background) ||
         background.includes("googlevideo"))
