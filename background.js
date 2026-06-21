@@ -71,10 +71,11 @@ function rescueZombieTab(tab) {
 
   const isOurUrl = (url) => url && url.startsWith(EXTENSION_PREFIX)
   const isStartpageUrl = isOurUrl(currentPendingUrl) || isOurUrl(currentUrl)
+  const isLiteralNewTab = currentUrl === "chrome://newtab/" || currentPendingUrl === "chrome://newtab/"
   // Tab lỗi thường có URL là rỗng (do bị Chrome chặn) hoặc chứa URL của extension nhưng không load được.
   const isEmptyNewTab = !tab.url && !tab.pendingUrl
 
-  if (isStartpageUrl || isEmptyNewTab) {
+  if (isStartpageUrl || isEmptyNewTab || isLiteralNewTab) {
     // PHÁT HIỆN DỰA TRÊN QUAN SÁT CỦA BẠN:
     // Tab lỗi (chrome://newtab bị mất kết nối) sẽ có title là "New Tab", "Thẻ mới", rỗng, hoặc là một cái URL.
     // Tab sống khỏe sẽ có title là "Start Page" (hoặc tên bạn đổi trong settings).
@@ -82,16 +83,18 @@ function rescueZombieTab(tab) {
       !tab.title ||
       tab.title === "New Tab" ||
       tab.title === "Thẻ mới" ||
+      tab.title === "chrome://newtab/" ||
+      tab.title.includes("site can't be reached") ||
       tab.title.includes("chrome-extension://")
 
     if (isZombieTitle) {
       rescuedTabs.add(tab.id) // Chỉ thử 1 lần mỗi tab để tránh loop
 
-      // Lập tức đập đi xây lại bằng URL CỤ THỂ (hiện rõ chrome-extension://...)
-      // Giống như bạn nói, URL cụ thể không bao giờ bị lỗi khi khởi động!
+      // Lập tức đập đi xây lại bằng chrome://newtab/ để giữ thanh địa chỉ sạch đẹp!
+      // Vì lúc này extension đã khởi động xong, chrome://newtab/ chắc chắn sẽ load đúng index.html
       chrome.tabs.create(
         {
-          url: NEW_TAB_URL,
+          url: "chrome://newtab/",
           index: tab.index,
           windowId: tab.windowId,
           active: tab.active,
