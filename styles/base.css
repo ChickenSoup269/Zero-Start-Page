@@ -5601,3 +5601,7 @@ body[class*="clock-style-bg-"]:not(.clock-style-bg-transparent).date-clock-style
   -webkit-backdrop-filter: none !important;
   padding: 0 !important;
 }
+body.clock-has-fade #clock-date-wrap {
+  mask-image: var(--clock-fade-mask);
+  -webkit-mask-image: var(--clock-fade-mask);
+}

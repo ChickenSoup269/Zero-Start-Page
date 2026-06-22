@@ -3262,15 +3262,7 @@ function createUpdateSettingsInputs(effectInstances) {
     ]
 
     // Show style-specific container if current style has special settings
-    const styleHasExtras = [
-      ...backgroundClockStyles,
-      "analog",
-      "jp-style",
-      "sidestyle",
-      "sidebar",
-      "fliqlo",
-      "media-orb",
-    ].includes(style)
+    const styleHasExtras = true
     if (DOM.styleSpecificCustomization) {
       DOM.styleSpecificCustomization.style.display = styleHasExtras
         ? "block"
@@ -3283,6 +3275,54 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.analogBlurBgSetting)
       DOM.analogBlurBgSetting.style.display =
         style === "analog" ? "flex" : "none"
+
+    if (DOM.clockFadeBottomSetting) {
+      DOM.clockFadeBottomSetting.style.display = "block"
+      if (DOM.clockFadeBottomSelect) {
+        DOM.clockFadeBottomSelect.value = settings.clockFadeFromBottom || "off"
+      }
+      if (DOM.clockFadeDirectionSelect) {
+        DOM.clockFadeDirectionSelect.value = settings.clockFadeDirection || "bottom"
+      }
+    }
+
+    if (settings.clockFadeFromBottom && settings.clockFadeFromBottom !== "off" && settings.clockFadeFromBottom !== false) {
+      document.body.classList.add("clock-has-fade")
+      
+      let levelVal = parseInt(settings.clockFadeFromBottom)
+      if (isNaN(levelVal)) levelVal = 50
+      let p = levelVal / 100 // 0.05 to 1.0
+      let dir = settings.clockFadeDirection || "bottom"
+      
+      let mask = ""
+      switch (dir) {
+        case "top":
+          mask = `linear-gradient(to bottom, transparent 0%, black ${p * 100}%)`
+          break
+        case "horizontal":
+          mask = `linear-gradient(to right, transparent 0%, black ${p * 50}%, black ${100 - p * 50}%, transparent 100%)`
+          break
+        case "center": // Center is transparent, fades to solid edges
+          mask = `radial-gradient(circle at center, transparent 0%, black ${p * 100}%)`
+          break
+        case "radial": // Center is solid, fades to transparent edges
+          mask = `radial-gradient(circle at center, black ${100 - p * 100}%, transparent 100%)`
+          break
+        case "bottom":
+        default:
+          mask = `linear-gradient(to top, transparent 0%, black ${p * 100}%)`
+          break
+      }
+      
+      document.body.style.setProperty("--clock-fade-mask", mask)
+      document.body.removeAttribute("data-clock-fade-bottom") // Cleanup old attr
+      document.body.classList.remove("clock-fade-from-bottom") // Cleanup old class
+    } else {
+      document.body.classList.remove("clock-has-fade")
+      document.body.style.removeProperty("--clock-fade-mask")
+      document.body.removeAttribute("data-clock-fade-bottom")
+      document.body.classList.remove("clock-fade-from-bottom")
+    }
 
     if (DOM.jpStyleLanguageSetting)
       DOM.jpStyleLanguageSetting.style.display =

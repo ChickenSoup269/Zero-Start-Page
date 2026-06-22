@@ -476,6 +476,33 @@ body.free-move-search-bar #search-container.dragging {
   gap: var(--space-1);
   cursor: default;
   user-select: none;
+  position: relative;
+}
+
+.g-app-item.drag-insert-before::before {
+  content: "";
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  left: -2px;
+  width: 4px;
+  background-color: var(--accent-color, #818cf8);
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 0 6px var(--accent-color, #818cf8);
+}
+
+.g-app-item.drag-insert-after::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  right: -2px;
+  width: 4px;
+  background-color: var(--accent-color, #818cf8);
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 0 6px var(--accent-color, #818cf8);
 }
 
 .g-app-item:hover {
@@ -486,6 +513,27 @@ body.free-move-search-bar #search-container.dragging {
 
 .g-apps-drag-enabled .g-app-item {
   cursor: grab;
+  touch-action: none;
+}
+
+.g-app-drag-handle {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--text-color);
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  font-size: 14px;
+  display: none;
+  z-index: 2;
+}
+
+.g-apps-drag-enabled .g-app-drag-handle {
+  display: block;
+}
+
+.g-apps-drag-enabled .g-app-item:hover .g-app-drag-handle {
+  opacity: 1;
 }
 
 .g-apps-drag-enabled .g-app-item:active {

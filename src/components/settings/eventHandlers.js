@@ -4648,6 +4648,20 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.clockFadeBottomSelect?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "clockFadeFromBottom",
+      DOM.clockFadeBottomSelect.value,
+    )
+  })
+
+  DOM.clockFadeDirectionSelect?.addEventListener("change", () => {
+    handleSettingUpdate(
+      "clockFadeDirection",
+      DOM.clockFadeDirectionSelect.value,
+    )
+  })
+
   DOM.pageTitleInput?.addEventListener("input", () => {
     const newTitle = DOM.pageTitleInput.value.trim() || "Start Page"
     updateSetting("pageTitle", newTitle)

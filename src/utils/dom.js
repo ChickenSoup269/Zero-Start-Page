@@ -879,6 +879,15 @@ export let sidestyleAlignSetting = document.getElementById(
 export let sidestyleAlignSelect = document.getElementById(
   "sidestyle-align-select",
 )
+export let clockFadeBottomSetting = document.getElementById(
+  "clock-fade-bottom-setting",
+)
+export let clockFadeBottomSelect = document.getElementById(
+  "clock-fade-bottom-select",
+)
+export let clockFadeDirectionSelect = document.getElementById(
+  "clock-fade-direction-select",
+)
 export let sidestyleNoBorderCheckbox = document.getElementById(
   "sidestyle-no-border-checkbox",
 )
@@ -2894,9 +2903,10 @@ export function refreshDOMReferences() {
   sidestyleAlignSetting = document.getElementById(
   "sidestyle-align-setting",
 )
-  sidestyleAlignSelect = document.getElementById(
-  "sidestyle-align-select",
-)
+  sidestyleAlignSelect = document.getElementById("sidestyle-align-select")
+  clockFadeBottomSetting = document.getElementById("clock-fade-bottom-setting")
+  clockFadeBottomSelect = document.getElementById("clock-fade-bottom-select")
+  clockFadeDirectionSelect = document.getElementById("clock-fade-direction-select")
   sidestyleNoBorderCheckbox = document.getElementById(
   "sidestyle-no-border-checkbox",
 )

@@ -591,6 +591,7 @@ function createItem(item, state, onContextMenu) {
   img.src = getIconUrl(item, state)
   img.alt = getLabel(item)
   img.loading = "eager"
+  img.draggable = false
   img.addEventListener(
     "error",
     () => {
@@ -602,8 +603,12 @@ function createItem(item, state, onContextMenu) {
   const label = document.createElement("span")
   label.textContent = getLabel(item)
 
+  const dragHandle = document.createElement("div")
+  dragHandle.className = "g-app-drag-handle"
+  dragHandle.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>'
+
   icon.appendChild(img)
-  link.append(icon, label)
+  link.append(dragHandle, icon, label)
 
   link.addEventListener("dragstart", (event) => {
     if (!options.dragEnabled) {
@@ -749,20 +754,88 @@ export function initGoogleApps() {
     return target?.dataset.appId || null
   }
 
+  function updateDropIndicator(grid, x, y) {
+    document.querySelectorAll(".g-app-item").forEach(el => {
+      el.classList.remove("drag-insert-before", "drag-insert-after")
+    })
+    if (!grid) return
+
+    const dropBeforeId = getDropBeforeId(grid, x, y)
+    if (dropBeforeId) {
+      const target = grid.querySelector(`[data-app-id="${dropBeforeId}"]`)
+      if (target) target.classList.add("drag-insert-before")
+    } else {
+      const items = [...grid.querySelectorAll(".g-app-item:not(.dragging)")]
+      if (items.length > 0) {
+        items[items.length - 1].classList.add("drag-insert-after")
+      }
+    }
+  }
+
+  function clearDropIndicator() {
+    document.querySelectorAll(".g-app-item").forEach(el => {
+      el.classList.remove("drag-insert-before", "drag-insert-after")
+    })
+  }
+
+  let scrollInterval = null
+
+  function handleAutoScroll(y) {
+    if (!scrollArea) return
+    const rect = scrollArea.getBoundingClientRect()
+    const edge = 50
+    let speed = 0
+
+    if (y < rect.top + edge) {
+      speed = -8
+    } else if (y > rect.bottom - edge) {
+      speed = 8
+    }
+
+    if (speed !== 0) {
+      if (!scrollInterval) {
+        scrollInterval = setInterval(() => {
+          scrollArea.scrollTop += speed
+        }, 16)
+      }
+    } else {
+      stopAutoScroll()
+    }
+  }
+
+  function stopAutoScroll() {
+    if (scrollInterval) {
+      clearInterval(scrollInterval)
+      scrollInterval = null
+    }
+  }
+
   function bindDropTargets() {
+    if (scrollArea) {
+      scrollArea.addEventListener("dragover", (event) => {
+        handleAutoScroll(event.clientY)
+      })
+      scrollArea.addEventListener("dragleave", stopAutoScroll)
+      scrollArea.addEventListener("drop", stopAutoScroll)
+    }
+
     root.querySelectorAll(".g-apps-grid").forEach((grid) => {
       grid.addEventListener("dragover", (event) => {
         event.preventDefault()
         event.dataTransfer.dropEffect = "move"
         grid.classList.add("drag-over")
+        updateDropIndicator(grid, event.clientX, event.clientY)
       })
       grid.addEventListener("dragleave", (event) => {
-        if (!grid.contains(event.relatedTarget))
+        if (!grid.contains(event.relatedTarget)) {
           grid.classList.remove("drag-over")
+          clearDropIndicator()
+        }
       })
       grid.addEventListener("drop", (event) => {
         event.preventDefault()
         grid.classList.remove("drag-over")
+        clearDropIndicator()
         const id = event.dataTransfer.getData("text/plain")
         moveAppToSection(
           id,
@@ -790,6 +863,7 @@ export function initGoogleApps() {
 
   root.addEventListener("pointerdown", (event) => {
     if (!state.options?.dragEnabled) return
+    if (event.pointerType === "mouse") return
     const item = event.target.closest(".g-app-item")
     if (!item || event.button !== 0) return
     pointerDrag = {
@@ -808,6 +882,14 @@ export function initGoogleApps() {
       event.clientY - pointerDrag.startY,
     )
     if (distance > 8) pointerDrag.moved = true
+
+    if (pointerDrag.moved) {
+      handleAutoScroll(event.clientY)
+      const dropGrid = document
+        .elementFromPoint(event.clientX, event.clientY)
+        ?.closest(".g-apps-grid")
+      updateDropIndicator(dropGrid, event.clientX, event.clientY)
+    }
   })
 
   root.addEventListener("pointerup", (event) => {
@@ -815,6 +897,8 @@ export function initGoogleApps() {
     if (!pointerDrag) return
     const drag = pointerDrag
     pointerDrag = null
+    clearDropIndicator()
+    stopAutoScroll()
     if (!drag.moved) return
 
     suppressNextClick = true
