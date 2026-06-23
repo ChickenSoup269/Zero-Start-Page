@@ -867,6 +867,7 @@ function createApplySettings(effectInstances) {
     qaToggleDisplay("music", settings.qaShowMusic)
     qaToggleDisplay("clock", settings.qaShowClock)
     qaToggleDisplay("gregorian", settings.qaShowGregorian)
+    qaToggleDisplay("rss", settings.qaShowRss)
     document.body.classList.toggle(
       "quick-access-light-transparent",
       settings.quickAccessSkin === "light-transparent",
@@ -4909,6 +4910,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
     if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
     if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
+    if (DOM.lcpQaShowRss) DOM.lcpQaShowRss.checked = settings.qaShowRss !== false
     if (DOM.lcpQaAllowReorder) DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20

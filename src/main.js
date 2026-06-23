@@ -2096,3 +2096,6 @@ if (document.readyState === "loading") {
 } else {
   bootstrap()
 }
+
+import { initTerminal } from "./components/terminal.js";
+initTerminal();

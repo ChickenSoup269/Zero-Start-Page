@@ -5679,6 +5679,7 @@ export function setupGeneralEventHandlers(
     { el: DOM.lcpQaShowMusic, key: "qaShowMusic" },
     { el: DOM.lcpQaShowClock, key: "qaShowClock" },
     { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" },
+    { el: DOM.lcpQaShowRss, key: "qaShowRss" },
     { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" }
   ];
 
