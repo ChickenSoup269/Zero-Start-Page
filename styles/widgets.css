@@ -9264,6 +9264,60 @@ body.quick-access-transparent .quick-access-popup .quick-access-radius-chip {
   box-shadow: none !important;
 }
 
+body.quick-access-light #settings-toggle,
+body.quick-access-light .quick-access-bar,
+body.quick-access-light .layout-controls-popup.quick-access-popup,
+body.quick-access-light .quick-access-popup {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+body.quick-access-light .quick-access-bar .quick-access-divider {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.quick-access-light .quick-btn,
+body.quick-access-light .quick-access-popup .quick-access-section-row,
+body.quick-access-light .quick-access-popup .quick-access-border-row,
+body.quick-access-light .quick-access-popup .quick-access-radius-chip {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #333 !important;
+}
+
+body.quick-access-light #settings-toggle i,
+body.quick-access-light .quick-btn i,
+body.quick-access-light .quick-access-popup .quick-access-radius-chip i,
+body.quick-access-light .quick-access-popup .lcp-title,
+body.quick-access-light .quick-access-popup .lcp-label {
+  color: #333 !important;
+}
+
+body.quick-access-light #settings-toggle:hover:not(.active),
+body.quick-access-light .quick-btn:hover:not(.active),
+body.quick-access-light .quick-access-popup .quick-access-section-row:hover,
+body.quick-access-light .quick-access-popup .quick-access-border-row:hover,
+body.quick-access-light .quick-access-popup .quick-access-radius-chip:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.quick-access-light #settings-toggle.active,
+body.quick-access-light .quick-btn.active,
+body.quick-access-light .quick-access-radius-chip.is-active {
+  background: #111 !important;
+  border-color: rgba(0, 0, 0, 0.8) !important;
+  color: #fff !important;
+}
+
+body.quick-access-light #settings-toggle.active i,
+body.quick-access-light .quick-btn.active i,
+body.quick-access-light .quick-access-radius-chip.is-active i {
+  color: #fff !important;
+}
+
 body.quick-access-light-transparent #settings-toggle,
 body.quick-access-light-transparent .quick-access-bar,
 body.quick-access-light-transparent .layout-controls-popup.quick-access-popup,

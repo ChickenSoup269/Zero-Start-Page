@@ -1745,6 +1745,105 @@ async function bootstrap() {
           : "Collapse"
     }
 
+    // Drag and Drop for Quick Access Icons
+    const setupQaDragAndDrop = () => {
+      if (!quickAccessBar) return;
+      const toggleBtns = Array.from(quickAccessBar.querySelectorAll('.quick-btn[data-toggle]'));
+      const allowReorder = getSettings().qaAllowReorder === true;
+
+      toggleBtns.forEach(btn => {
+        btn.draggable = allowReorder;
+        btn.style.cursor = allowReorder ? 'grab' : 'pointer';
+
+        if (!btn._dragInitialized) {
+          btn._dragInitialized = true;
+          btn.addEventListener('dragstart', (e) => {
+            if (!getSettings().qaAllowReorder) {
+              e.preventDefault();
+              return;
+            }
+            window._draggedQaIcon = btn;
+            btn.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', ''); // Required for Firefox
+          });
+
+          btn.addEventListener('dragend', () => {
+            window._draggedQaIcon = null;
+            btn.style.opacity = '1';
+            saveQaOrder();
+          });
+
+          btn.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const draggedIcon = window._draggedQaIcon;
+            if (!draggedIcon || !getSettings().qaAllowReorder) return;
+            
+            const layoutControlsBtn = document.getElementById("layout-controls-btn");
+            const anchor = layoutControlsBtn || quickAccessBar.querySelector('.quick-access-divider');
+            
+            const draggableElements = [...quickAccessBar.querySelectorAll('.quick-btn[data-toggle]')]
+              .filter(el => el !== draggedIcon);
+
+            const nextElement = draggableElements.reduce((closest, child) => {
+              const box = child.getBoundingClientRect();
+              const offset = e.clientY - box.top - box.height / 2;
+              if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+              } else {
+                return closest;
+              }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+            if (nextElement) {
+              quickAccessBar.insertBefore(draggedIcon, nextElement);
+            } else if (anchor) {
+              quickAccessBar.insertBefore(draggedIcon, anchor);
+            }
+          });
+        }
+      });
+    };
+
+    const saveQaOrder = () => {
+      if (!quickAccessBar) return;
+      const order = [];
+      quickAccessBar.querySelectorAll('.quick-btn[data-toggle]').forEach(btn => {
+        order.push(btn.getAttribute('data-toggle'));
+      });
+      updateSetting('qaOrder', order);
+      saveSettings();
+    };
+
+    const applyQaOrder = () => {
+      if (!quickAccessBar) return;
+      const order = getSettings().qaOrder;
+      if (order && Array.isArray(order)) {
+        const layoutControlsBtn = document.getElementById("layout-controls-btn");
+        const anchor = layoutControlsBtn || quickAccessBar.querySelector('.quick-access-divider');
+        if (anchor) {
+          order.forEach(toggle => {
+            const btn = quickAccessBar.querySelector(`.quick-btn[data-toggle="${toggle}"]`);
+            if (btn) {
+              quickAccessBar.insertBefore(btn, anchor);
+            }
+          });
+        }
+      }
+    };
+
+    if (quickAccessBar) {
+      applyQaOrder();
+      setupQaDragAndDrop();
+
+      window.addEventListener("layoutUpdated", (e) => {
+        if (e.detail.key === "qaAllowReorder") {
+          setupQaDragAndDrop();
+        }
+      });
+    }
+
     // Update Notification Check
     setTimeout(() => {
       try {
@@ -1951,6 +2050,14 @@ async function bootstrap() {
       }
     }, 100)
   }, 10)
+
+  setTimeout(() => {
+    import("./components/googleApps.js")
+      .then(({ preloadIcons }) => {
+        if (typeof preloadIcons === "function") preloadIcons()
+      })
+      .catch(() => {})
+  }, 2000)
 }
 
 if (document.readyState === "loading") {

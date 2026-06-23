@@ -5677,7 +5677,8 @@ export function setupGeneralEventHandlers(
     { el: DOM.lcpQaShowWeather, key: "qaShowWeather" },
     { el: DOM.lcpQaShowMusic, key: "qaShowMusic" },
     { el: DOM.lcpQaShowClock, key: "qaShowClock" },
-    { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" }
+    { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" },
+    { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" }
   ];
 
   qaToggles.forEach(toggle => {
@@ -5967,7 +5968,7 @@ export function setupGeneralEventHandlers(
     )
   }
   if (DOM.lcpQuickAccessSkin) {
-    const validQuickAccessSkins = ["default", "m3-accent", "light-transparent"]
+    const validQuickAccessSkins = ["default", "light", "m3-accent", "light-transparent"]
     DOM.lcpQuickAccessSkin.value = validQuickAccessSkins.includes(
       settings.quickAccessSkin,
     )
@@ -5983,6 +5984,7 @@ export function setupGeneralEventHandlers(
         "quick-access-light-transparent",
         skin === "light-transparent",
       )
+      document.body.classList.toggle("quick-access-light", skin === "light")
       document.body.classList.toggle("quick-access-transparent", false)
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {

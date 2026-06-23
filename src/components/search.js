@@ -13,6 +13,13 @@ const SEARCH_ENGINES = {
     url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_google",
   },
+  google_incognito: {
+    name: "Google Incognito",
+    domain: "google.com",
+    url: (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_google_incognito",
+    incognito: true,
+  },
   bing: {
     name: "Bing",
     domain: "bing.com",
@@ -592,6 +599,16 @@ function submitSearch() {
   const engine = SEARCH_ENGINES[currentEngine] || SEARCH_ENGINES.google
   if (currentEngine === "gemini" || currentEngine === "gemini-image") {
     openGeminiWithPrompt(engine, query)
+    return
+  }
+
+  if (engine.incognito) {
+    if (typeof chrome !== "undefined" && chrome.windows?.create) {
+      chrome.windows.create({ url: engine.url(query), incognito: true })
+    } else {
+      window.open(engine.url(query), "_blank")
+    }
+    searchInput.value = ""
     return
   }
 

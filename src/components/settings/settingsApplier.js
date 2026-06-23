@@ -872,6 +872,10 @@ function createApplySettings(effectInstances) {
       settings.quickAccessSkin === "light-transparent",
     )
     document.body.classList.toggle(
+      "quick-access-light",
+      settings.quickAccessSkin === "light",
+    )
+    document.body.classList.toggle(
       "quick-access-transparent",
       false,
     )
@@ -3678,6 +3682,7 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.lcpQuickAccessSkin) {
         DOM.lcpQuickAccessSkin.value = [
           "default",
+          "light",
           "m3-accent",
           "light-transparent",
         ].includes(settings.quickAccessSkin)
@@ -4900,6 +4905,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
     if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
     if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
+    if (DOM.lcpQaAllowReorder) DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
       if (DOM.searchBarBlurVal) {

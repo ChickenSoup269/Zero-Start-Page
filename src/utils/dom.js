@@ -1368,6 +1368,7 @@ export let lcpQaShowWeather = document.getElementById("lcp-qa-show-weather")
 export let lcpQaShowMusic = document.getElementById("lcp-qa-show-music")
 export let lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
 export let lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
+export let lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
 export let m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 
 // SVG Wave Generator Controls
@@ -3371,6 +3372,7 @@ export function refreshDOMReferences() {
   lcpQaShowMusic = document.getElementById("lcp-qa-show-music")
   lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
   lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
+  lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
   m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
   svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
   svgWaveToggleLabel = document.getElementById(
