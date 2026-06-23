@@ -1333,6 +1333,7 @@ export let lcpContextMenuBg = document.getElementById("lcp-context-menu-bg")
 export let lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
 export let lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
 export let lcpQuickAccessBg = document.getElementById("lcp-quick-access-bg")
+export let lcpQuickAccessHorizontal = document.getElementById("lcp-quick-access-horizontal")
 export let lcpFlipLayout = document.getElementById("lcp-flip-layout")
 export let lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",
@@ -3337,6 +3338,7 @@ export function refreshDOMReferences() {
   lcpBookmarkGroups = document.getElementById("lcp-bookmark-groups")
   lcpLunarCalendar = document.getElementById("lcp-lunar-calendar")
   lcpQuickAccessBg = document.getElementById("lcp-quick-access-bg")
+  lcpQuickAccessHorizontal = document.getElementById("lcp-quick-access-horizontal")
   lcpFlipLayout = document.getElementById("lcp-flip-layout")
   lcpTopRightControls = document.getElementById(
   "lcp-top-right-controls",

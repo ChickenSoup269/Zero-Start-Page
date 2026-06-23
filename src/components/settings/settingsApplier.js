@@ -2311,6 +2311,7 @@ function createApplySettings(effectInstances) {
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
+    document.body.classList.toggle("quick-access-horizontal", settings.quickAccessHorizontal === true)
 
     // Fliqlo Theme
     document.body.classList.remove("fliqlo-theme-dark", "fliqlo-theme-light")
@@ -4867,6 +4868,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpFlipLayout) {
       DOM.lcpFlipLayout.checked = settings.flipLayout === true
     }
+    if (DOM.lcpQuickAccessHorizontal) {
+      DOM.lcpQuickAccessHorizontal.checked = settings.quickAccessHorizontal === true
+    }
 
     if (DOM.showDonateButtonCheckbox) {
       DOM.showDonateButtonCheckbox.checked = settings.showDonateButton !== false
@@ -4967,6 +4971,10 @@ function createUpdateSettingsInputs(effectInstances) {
       settings.sideControlsGhostMode === true,
     )
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
+    document.body.classList.toggle(
+      "quick-access-horizontal",
+      settings.quickAccessHorizontal === true,
+    )
     document.body.classList.toggle(
       "free-move-clock",
       settings.freeMoveClock === true,

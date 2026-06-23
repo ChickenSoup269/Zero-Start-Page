@@ -5405,6 +5405,7 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.flipLayoutCheckbox, "flipLayout", {})
+  setupLayoutCheckbox(DOM.lcpQuickAccessHorizontal, "quickAccessHorizontal", {})
   if (DOM.allowTextSelectionCheckbox) {
     setupLayoutCheckbox(
       DOM.allowTextSelectionCheckbox,

@@ -1783,10 +1783,11 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 
 #quick-access-collapse i {
   transition: transform 0.4s ease;
+  transform: rotate(90deg); /* UP when expanded in vertical */
 }
 
 .quick-access-bar.collapsed #quick-access-collapse i {
-  transform: rotate(270deg);
+  transform: rotate(270deg); /* DOWN when collapsed in vertical */
 }
 
 .quick-btn {
@@ -12162,3 +12163,65 @@ body.bookmark-group-border-hidden
   transform: scale(0.8) !important;
   transform-origin: top left !important;
 }
+
+/* Quick Access Horizontal Mode */
+body.quick-access-horizontal .side-controls {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+body.flip-layout.quick-access-horizontal .side-controls {
+  flex-direction: row-reverse;
+}
+
+body.quick-access-horizontal #settings-toggle {
+  margin-top: 0;
+  margin-right: 0;
+}
+
+body.quick-access-horizontal .quick-access-bar {
+  flex-direction: row;
+  margin-top: 0;
+  padding: var(--space-1) var(--space-2);
+  align-items: center;
+}
+
+body.quick-access-horizontal .quick-access-divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 var(--space-1);
+}
+
+body.quick-access-horizontal .quick-access-bar.collapsed .quick-btn:not(#quick-access-collapse) {
+  height: auto;
+  width: 0;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+}
+
+body.quick-access-horizontal .quick-access-bar.collapsed .quick-access-divider {
+  height: 0;
+  width: 0;
+  margin-left: 0;
+  margin-right: 0;
+  opacity: 0;
+}
+
+body.quick-access-horizontal #quick-access-collapse i {
+  transform: rotate(0deg) !important; /* Left when expanded */
+}
+
+body.quick-access-horizontal .quick-access-bar.collapsed #quick-access-collapse i {
+  transform: rotate(180deg) !important; /* Right when collapsed */
+}
+
+body.flip-layout.quick-access-horizontal #quick-access-collapse i {
+  transform: rotate(180deg) !important; /* Right when expanded and flipped */
+}
+
+body.flip-layout.quick-access-horizontal .quick-access-bar.collapsed #quick-access-collapse i {
+  transform: rotate(0deg) !important; /* Left when collapsed and flipped */
+}
+

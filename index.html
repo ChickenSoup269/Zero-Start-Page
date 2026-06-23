@@ -399,6 +399,14 @@
                         <span class="lcp-slider"></span>
                     </label>
                 </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-arrows-left-right lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="settings_quick_access_horizontal">Quick Access Horizontal</span>
+                    <label class="lcp-switch" for="lcp-quick-access-horizontal">
+                        <input type="checkbox" id="lcp-quick-access-horizontal">
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
 
                 <div class="lcp-row">
                     <i class="fa-solid fa-eye-slash lcp-icon"></i>
@@ -1918,11 +1926,19 @@
 
             <!-- Donate Section -->
             <div class="donate-section"
-                style="padding: 15px 0; margin-top: 10px; border-top: 1px solid var(--glass-border); display: flex; justify-content: center;">
+                style="padding: 15px 0; margin-top: 10px; border-top: 1px solid var(--glass-border); display: flex; flex-direction: column; align-items: center;">
                 <button id="donate-trigger-btn" class="secondary-btn"
                     style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(45deg, #ff4b4b, #ff7b7b); color: white; border: none; font-weight: bold; border-radius: 8px; transition: transform 0.2s;">
                     <i class="fa-solid fa-heart"></i> <span data-i18n="donate_button">Support Developer</span>
                 </button>
+                <div style="margin-top: 10px; font-size: 0.75rem; opacity: 0.8; text-align: center;">
+                    <span data-i18n="available_on">Available on</span> 
+                    <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0" target="_blank" style="color: inherit; text-decoration: underline;">Chrome</a> <span data-i18n="and_text">and</span> 
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/" target="_blank" style="color: inherit; text-decoration: underline;">Firefox</a>
+                </div>
+                <div class="sidebar-copyright" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.6; text-align: center;">
+                    &copy; 2026 ChickenSoup269
+                </div>
             </div>
 
         </div>
@@ -1970,9 +1986,7 @@
                 <div class="sidebar-footer-hint" data-i18n="settings_reset_layout_hint">
                     (Resets widget positions & effect colors to default)
                 </div>
-                <div class="sidebar-copyright">
-                    &copy; 2026 ChickenSoup269
-                </div>
+
             </div>
         </div>
         <button id="sidebar-scroll-top" class="sidebar-scroll-top-btn" title="Scroll to top">

@@ -342,15 +342,15 @@ const CRYSTAL_BALL_ANSWERS = {
       "Ngại gì không thử.",
       "Triển luôn!",
     ],
-    ironic: [
-      "Không nên 🐧.",
-      "Lười quá 🐧.",
-      "Định làm thật à? 🤡",
-      "Thôi xong rồi 💀.",
-      "Đừng làm màu nữa 🤡.",
-      "Cạn lời với bạn 🗿.",
-      "Sáng suốt lên đi 🧠.",
-      "Bạn đang đùa à? 😂",
+    serious: [
+      "Hãy suy nghĩ thật kỹ trước khi hành động.",
+      "Đây là quyết định quan trọng, đừng vội vàng.",
+      "Hãy tin vào trực giác của bạn.",
+      "Mọi quyết định đều có cái giá của nó.",
+      "Đừng để cảm xúc chi phối lúc này.",
+      "Hãy tham khảo thêm ý kiến người khác.",
+      "Cẩn trọng là trên hết.",
+      "Chuẩn bị kỹ lưỡng trước khi bắt đầu.",
     ],
     spam: [
       "Đừng có spam 💢.",
@@ -410,15 +410,15 @@ const CRYSTAL_BALL_ANSWERS = {
       "It is certain.",
       "Go for it!",
     ],
-    ironic: [
-      "Better not 🐧.",
-      "Too lazy 🐧.",
-      "Really? 🤡",
-      "RIP 💀.",
-      "Stop clowning around 🤡.",
-      "Bruh 🗿.",
-      "Use your brain 🧠.",
-      "Are you kidding me? 😂",
+    serious: [
+      "Think carefully before you act.",
+      "This is an important decision, don't rush it.",
+      "Trust your intuition.",
+      "Every decision has its price.",
+      "Don't let emotions dictate your actions.",
+      "Seek advice from others first.",
+      "Caution is paramount right now.",
+      "Prepare thoroughly before starting.",
     ],
     spam: [
       "No spam 💢.",
@@ -695,9 +695,9 @@ export class DailyQuotes {
       return pool[Math.floor(Math.random() * pool.length)]
     }
 
-    // Priority 5: High stakes/Critical, use ironic answers
+    // Priority 5: High stakes/Critical, use serious answers
     if (priority === 5) {
-      const pool = Math.random() < 0.4 ? ans.yes : ans.ironic
+      const pool = Math.random() < 0.4 ? ans.yes : ans.serious
       return pool[Math.floor(Math.random() * pool.length)]
     }
 
