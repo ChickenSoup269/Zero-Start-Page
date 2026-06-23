@@ -820,6 +820,7 @@ async function bootstrap() {
     ["#notepad-container", "notepad"],
     ["#daily-quotes", "daily-quotes"],
     ["#weather-container", "weather"],
+    ["#rss-container", "rss"],
   ]
 
   document.addEventListener("contextmenu", (event) => {
@@ -850,6 +851,7 @@ async function bootstrap() {
     quotes: null,
     weather: null,
     notepad: null,
+    rss: null,
   }
   const widgetModuleLoaders = {
     todo: () => import("./components/todo.js").then((m) => m.TodoList),
@@ -861,6 +863,7 @@ async function bootstrap() {
     quotes: () => import("./components/quotes.js").then((m) => m.DailyQuotes),
     weather: () => import("./components/weather.js").then((m) => m.Weather),
     notepad: () => import("./components/notepad.js").then((m) => m.Notepad),
+    rss: () => import("./components/rss.js").then((m) => m.RssReader),
   }
   const widgetClassPromises = {}
 
@@ -924,6 +927,11 @@ async function bootstrap() {
           ".notepad-header",
         )
         return widgets.notepad
+      case "rss":
+        const RssReader = await loadWidgetClass("rss")
+        widgets.rss = new RssReader(document.getElementById("rss-container"))
+        makeDraggable(widgets.rss.container, "rss", null, ".rss-header")
+        return widgets.rss
     }
   }
 
@@ -947,6 +955,7 @@ async function bootstrap() {
     if (settings.showTimer === true) void initWidget("timer")
     if (settings.showFullCalendar === true) void initWidget("calendar")
     if (settings.musicPlayerEnabled === true) void initWidget("music")
+    if (settings.showRss === true) void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
   }
 
   runWhenIdle(initVisibleWidgets, 1200)
@@ -971,6 +980,13 @@ async function bootstrap() {
         break
       case "showWeather":
         void initWidget("weather")
+        break
+      case "showRss":
+        if (e.detail.value) {
+          void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
+        } else {
+          if (widgets.rss) widgets.rss.container.style.display = 'none';
+        }
         break
     }
   })
@@ -1027,6 +1043,9 @@ async function bootstrap() {
           break
         case "weather":
           isActive = settings.showWeather === true
+          break
+        case "rss":
+          isActive = settings.showRss === true
           break
       }
       btn.classList.toggle("active", isActive)
@@ -1094,6 +1113,18 @@ async function bootstrap() {
         case "weather":
           key = "showWeather"
           checkbox = showWeatherCheckbox
+          break
+        case "rss":
+          const currentRss = getSettings().showRss === true
+          const nextRss = !currentRss
+          updateSetting("showRss", nextRss)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: "showRss", value: nextRss },
+            }),
+          )
+          btn.classList.toggle("active", nextRss)
           break
       }
       if (key && checkbox) {

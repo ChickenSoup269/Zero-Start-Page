@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="styles/settings.css" />
     <link rel="stylesheet" href="styles/music-player.css">
     <link rel="stylesheet" href="styles/dialog.css">
+    <link rel="stylesheet" href="styles/rss.css">
     <style>
         body.loading-state {
             background-color: #050505 !important;
@@ -316,6 +317,8 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="quotes" data-i18n-title="quick_access_quotes"
                 title="Toggle Quotes"><i class="fa-solid fa-quote-left"></i></button>
+            <button class="quick-btn" data-toggle="rss" data-i18n-title="quick_access_rss"
+                title="Toggle RSS Reader"><i class="fa-solid fa-rss"></i></button>
             <button class="quick-btn" data-toggle="weather" data-i18n-title="quick_access_weather"
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
@@ -1772,6 +1775,16 @@
                                     <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
                                 </button>
                             </div>
+                            
+                            <div class="unsplash-links" style="margin-bottom: 15px;">
+                                <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item" title="Trang chủ và Link API đúng của Open-Meteo">
+                                    <i class="fa-solid fa-link"></i> <span data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
+                                </a>
+                                <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api" target="_blank" class="unsplash-link-item" title="Video hướng dẫn lấy API thời tiết">
+                                    <i class="fa-brands fa-youtube"></i> <span data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
+                                </a>
+                            </div>
+
                             <label for="weather-forecast-endpoint-input"
                                 data-i18n="settings_weather_forecast_endpoint">Forecast endpoint</label>
                             <input type="url" id="weather-forecast-endpoint-input"
@@ -2364,6 +2377,7 @@
     <div id="weather-container" class="weather-container glass-panel drag-handle" style="display: none;"></div>
     <div id="timer-component" class="timer-container glass-panel drag-handle" style="display: none;"></div>
     <div id="todo-container" class="todo-container glass-panel drag-handle" style="display: none;"></div>
+    <div id="rss-container" class="rss-container glass-panel drag-handle" style="display: none;"></div>
 
     <script type="module" src="src/bootstrap.js?v=perf-lazy-v12"></script>
 

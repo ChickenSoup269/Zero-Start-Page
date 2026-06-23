@@ -1,0 +1,200 @@
+.rss-container {
+    width: 320px;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.rss-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.rss-actions button {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.9em;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.rss-actions button:hover {
+    opacity: 1;
+}
+
+.rss-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px;
+}
+
+.rss-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: background 0.2s;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.rss-btn-save:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rss-container.rss-mini {
+    width: 240px;
+    max-height: 280px;
+}
+.rss-container.rss-mini .rss-item img {
+    display: none;
+}
+.rss-container.rss-mini .rss-item-title {
+    font-size: 0.9em;
+}
+
+.rss-container.rss-expanded {
+    width: 450px;
+    max-height: 600px;
+}
+.rss-container.rss-expanded .rss-item img {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.rss-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.rss-item.highlight {
+    border-left: 3px solid var(--accent-color, #4facfe);
+    background: rgba(79, 172, 254, 0.1);
+}
+
+.rss-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.rss-item-source {
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+.rss-settings {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 0.9em;
+}
+
+.rss-settings.active {
+    display: flex;
+}
+
+.rss-settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.rss-settings-group label {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+.rss-input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    padding: 8px;
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.rss-save-btn {
+    background: var(--accent-color, #4facfe);
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* RSS SKINS */
+.rss-container.skin-white-blur {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+}
+
+.rss-container.skin-white-blur .rss-item,
+.rss-container.skin-white-blur .rss-actions button,
+.rss-container.skin-white-blur .rss-item-title,
+.rss-container.skin-white-blur .rss-item-source {
+  color: #000000 !important;
+}
+
+.rss-container.skin-light-transparent {
+  color: var(--text-color);
+  background: var(--glass-bg) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+}
+
+body.widgets-m3-accent .rss-container,
+.rss-container.skin-m3-accent {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--m3-primary-container, var(--safe-accent)) 76%, transparent),
+    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 68%, transparent)
+  ) !important;
+  color: var(--m3-on-primary-container, #ffffff) !important;
+  border-color: color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 40%, transparent) !important;
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
+}
+
+.rss-container.skin-transparent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+.rss-container.widget-border-hidden {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.rss-source-link {
+    font-size: 0.75em;
+    padding: 3px 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+}
+
+.rss-source-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

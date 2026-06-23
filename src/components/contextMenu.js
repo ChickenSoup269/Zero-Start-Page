@@ -556,6 +556,7 @@ function getContextMenuTargetName(type, id, index, i18n) {
       if (widgetId === "notepad") return i18n.context_header_widget_notepad || "Notepad"
       if (widgetId === "calendar") return i18n.context_header_widget_calendar || "Calendar"
       if (widgetId === "daily-quotes") return i18n.context_header_widget_quotes || "Daily Quotes"
+      if (widgetId === "rss") return i18n.context_header_widget_rss || "RSS Reader"
       return widgetId
     }
     case "todo": {
@@ -684,6 +685,7 @@ export function showContextMenu(
       "weather",
       "notepad",
       "daily-quotes",
+      "rss",
     ]
     if (skinnableWidgets.includes(id)) {
       const skinKey = `${id === "daily-quotes" ? "quotes" : id}Skin`
@@ -716,6 +718,7 @@ export function showContextMenu(
           weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
+          rss: "rss-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -752,6 +755,7 @@ export function showContextMenu(
           weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
+          rss: "rss-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -788,6 +792,7 @@ export function showContextMenu(
           weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
+          rss: "rss-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -803,7 +808,7 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (id === "daily-quotes" || id === "weather") {
+      if (id === "daily-quotes" || id === "weather" || id === "rss") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -821,6 +826,7 @@ export function showContextMenu(
           const widgetIdMap = {
             weather: "weather-container",
             "daily-quotes": "daily-quotes",
+            rss: "rss-container",
           }
           const el = document.getElementById(widgetIdMap[id] || id)
           if (el) {
@@ -878,35 +884,45 @@ export function showContextMenu(
         contextMenu.insertBefore(miniBtn, menuLock)
       }
 
-      if (id === "weather") {
-        const isMini = settings.weatherMini === true
-        const isExpanded = settings.weatherExpanded === true && !isMini
+      if (id === "weather" || id === "rss") {
+        const isMini = settings[`${id}Mini`] === true
+        const isExpanded = settings[`${id}Expanded`] === true && !isMini
         const miniBtn = document.createElement("div")
         miniBtn.className = "context-menu-item custom-music-item"
-        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-cloud-sun" : "fa-cloud"}"></i> <span>${isMini ? i18n.weather_normal_size || "Normal Weather" : i18n.weather_mini_size || "Mini Weather"}</span>`
+        
+        const labels = {
+          weather: { mini: i18n.weather_mini_size || "Mini Weather", normal: i18n.weather_normal_size || "Normal Weather", expand: i18n.weather_expand || "Enlarge Weather", collapse: i18n.weather_collapse || "Shrink Weather" },
+          rss: { mini: "Thu nhỏ RSS", normal: "Kích thước mặc định", expand: "Phóng to RSS", collapse: "Thu nhỏ lại" }
+        }
+        
+        miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-compress" : "fa-compress-arrows-alt"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
         miniBtn.onclick = () => {
           const newVal = !isMini
-          updateSetting("weatherMini", newVal)
-          if (newVal) updateSetting("weatherExpanded", false)
+          updateSetting(`${id}Mini`, newVal)
+          if (newVal) updateSetting(`${id}Expanded`, false)
           saveSettings(true)
 
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
-              detail: { key: "weatherMini", value: newVal },
+              detail: { key: `${id}Mini`, value: newVal },
             }),
           )
           if (newVal) {
             window.dispatchEvent(
               new CustomEvent("layoutUpdated", {
-                detail: { key: "weatherExpanded", value: false },
+                detail: { key: `${id}Expanded`, value: false },
               }),
             )
           }
 
-          const el = document.getElementById("weather-container")
+          const widgetIdMap = {
+            weather: "weather-container",
+            rss: "rss-container"
+          }
+          const el = document.getElementById(widgetIdMap[id])
           if (el) {
-            el.classList.toggle("weather-mini", newVal)
-            el.classList.toggle("weather-expanded", false)
+            el.classList.toggle(`${id}-mini`, newVal)
+            el.classList.toggle(`${id}-expanded`, false)
           }
           hideContextMenu()
         }
@@ -914,30 +930,34 @@ export function showContextMenu(
 
         const expandBtn = document.createElement("div")
         expandBtn.className = "context-menu-item custom-music-item"
-        expandBtn.innerHTML = `<i class="fa-solid ${isExpanded ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${isExpanded ? i18n.weather_collapse || "Shrink Weather" : i18n.weather_expand || "Enlarge Weather"}</span>`
+        expandBtn.innerHTML = `<i class="fa-solid ${isExpanded ? "fa-down-left-and-up-right-to-center" : "fa-up-right-and-down-left-from-center"}"></i> <span>${isExpanded ? labels[id].collapse : labels[id].expand}</span>`
         expandBtn.onclick = () => {
           const newVal = !isExpanded
-          if (newVal) updateSetting("weatherMini", false)
-          updateSetting("weatherExpanded", newVal)
+          if (newVal) updateSetting(`${id}Mini`, false)
+          updateSetting(`${id}Expanded`, newVal)
           saveSettings(true)
 
           if (newVal) {
             window.dispatchEvent(
               new CustomEvent("layoutUpdated", {
-                detail: { key: "weatherMini", value: false },
+                detail: { key: `${id}Mini`, value: false },
               }),
             )
           }
           window.dispatchEvent(
             new CustomEvent("layoutUpdated", {
-              detail: { key: "weatherExpanded", value: newVal },
+              detail: { key: `${id}Expanded`, value: newVal },
             }),
           )
 
-          const el = document.getElementById("weather-container")
+          const widgetIdMap = {
+            weather: "weather-container",
+            rss: "rss-container"
+          }
+          const el = document.getElementById(widgetIdMap[id])
           if (el) {
-            el.classList.toggle("weather-mini", false)
-            el.classList.toggle("weather-expanded", newVal)
+            el.classList.toggle(`${id}-mini`, false)
+            el.classList.toggle(`${id}-expanded`, newVal)
           }
           hideContextMenu()
         }
@@ -1022,6 +1042,7 @@ export function showContextMenu(
           weather: "weather-container",
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
+          rss: "rss-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -2194,6 +2215,7 @@ function handleLock() {
       music: "music-player-container",
       notepad: "notepad-container",
       "daily-quotes": "daily-quotes",
+      rss: "rss-container",
     }
 
     const widgetId = widgetIdMap[contextMenuTargetId] || contextMenuTargetId
