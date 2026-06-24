@@ -120,6 +120,15 @@ export let userAccentColorsGallery = document.getElementById(
 )
 export let fontGrid = document.getElementById("font-grid")
 export let clockFontGrid = document.getElementById("clock-font-grid")
+
+// Font multi-select
+export let fontSelectModeBtn = document.getElementById("font-select-mode-btn")
+export let fontSelectToolbar = document.getElementById("font-select-toolbar")
+export let fontSelectCount = document.getElementById("font-select-count")
+export let fontSelectAllBtn = document.getElementById("font-select-all-btn")
+export let fontFavoriteSelectedBtn = document.getElementById("font-favorite-selected-btn")
+export let fontDeleteSelectedBtn = document.getElementById("font-delete-selected-btn")
+export let fontSelectCancelBtn = document.getElementById("font-select-cancel-btn")
 export let fontTargetGeneralBtn = document.getElementById(
   "font-target-general",
 )
@@ -1067,6 +1076,8 @@ export let menuSelect = document.getElementById("menu-select")
 export let menuEdit = document.getElementById("menu-edit")
 export let menuDelete = document.getElementById("menu-delete")
 export let menuLock = document.getElementById("menu-lock")
+export let menuApplyClock = document.getElementById("menu-apply-clock")
+export let menuApplyGeneral = document.getElementById("menu-apply-general")
 
 export let bookmarksContainer = document.getElementById("bookmarks-container")
 export let bookmarkGroupsContainer = document.getElementById(
@@ -2189,6 +2200,14 @@ export function refreshDOMReferences() {
 )
   fontGrid = document.getElementById("font-grid")
   clockFontGrid = document.getElementById("clock-font-grid")
+
+  fontSelectModeBtn = document.getElementById("font-select-mode-btn")
+  fontSelectToolbar = document.getElementById("font-select-toolbar")
+  fontSelectCount = document.getElementById("font-select-count")
+  fontSelectAllBtn = document.getElementById("font-select-all-btn")
+  fontFavoriteSelectedBtn = document.getElementById("font-favorite-selected-btn")
+  fontDeleteSelectedBtn = document.getElementById("font-delete-selected-btn")
+  fontSelectCancelBtn = document.getElementById("font-select-cancel-btn")
   fontTargetGeneralBtn = document.getElementById(
   "font-target-general",
 )
@@ -3092,6 +3111,8 @@ export function refreshDOMReferences() {
   menuEdit = document.getElementById("menu-edit")
   menuDelete = document.getElementById("menu-delete")
   menuLock = document.getElementById("menu-lock")
+  menuApplyClock = document.getElementById("menu-apply-clock")
+  menuApplyGeneral = document.getElementById("menu-apply-general")
   bookmarksContainer = document.getElementById("bookmarks-container")
   bookmarkGroupsContainer = document.getElementById(
   "bookmark-groups-container",

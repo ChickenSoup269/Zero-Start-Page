@@ -1001,6 +1001,27 @@
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
                 <div class="section-content">
                     <div class="setting-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <select id="font-target-select" class="settings-select" style="max-width: 200px; padding: 5px; border-radius: 8px;">
+                                <option value="general">Apply to General</option>
+                                <option value="clock">Apply to Clock Only</option>
+                            </select>
+                            <button id="font-select-mode-btn" class="settings-action-btn"
+                                data-i18n="settings_select_fonts" style="display:none;">Select</button>
+                        </div>
+                        <div id="font-select-toolbar" class="bg-select-toolbar" style="display: none;">
+                            <span id="font-select-count" class="bg-select-count">0 selected</span>
+                            <div class="bg-select-actions">
+                                <button id="font-select-all-btn" class="bg-select-btn" title="Select All"
+                                    data-i18n-title="select_all"><i class="fa-solid fa-check-double"></i></button>
+                                <button id="font-favorite-selected-btn" class="bg-select-btn" title="Favorite"
+                                    data-i18n-title="menu_favorite"><i class="fa-solid fa-star"></i></button>
+                                <button id="font-delete-selected-btn" class="bg-select-btn danger" title="Delete"
+                                    data-i18n-title="menu_delete"><i class="fa-solid fa-trash"></i></button>
+                                <button id="font-select-cancel-btn" class="bg-select-btn" title="Cancel"
+                                    data-i18n-title="cancel"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
                         <div id="font-grid" class="font-grid"></div>
                         <small
                             style="opacity: 0.7; margin-top: 0.75rem; display: flex; align-items: center; gap: 6px; line-height: 1.4;"
@@ -2142,6 +2163,8 @@
                 data-i18n="menu_favorite">Favorite</span></div>
         <div class="menu-item" id="menu-select"><i class="fa-solid fa-check-to-slot"></i> <span
                 data-i18n="menu_select">Select</span></div>
+        <div class="menu-item" id="menu-apply-clock" style="display:none;"><i class="fa-solid fa-clock"></i> <span data-i18n="menu_apply_clock">Apply to Clock</span></div>
+        <div class="menu-item" id="menu-apply-general" style="display:none;"><i class="fa-solid fa-font"></i> <span data-i18n="menu_apply_general">Apply to General</span></div>
         <div class="menu-item" id="menu-edit"><i class="fa-solid fa-pen"></i> <span data-i18n="menu_edit">Edit</span>
         </div>
         <div class="menu-item danger" id="menu-delete"><i class="fa-solid fa-trash"></i> <span

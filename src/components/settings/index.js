@@ -37,6 +37,7 @@ import {
   loadGoogleFont,
   renderFontGrid,
   initFont,
+  setupFontMultiSelect,
   setupLocalFonts,
 } from "./fontManager.js"
 import { initThemeManager, THEMEABLE_KEYS } from "./themeManager.js"
@@ -1020,6 +1021,10 @@ export async function initSettings() {
   effects.renderFontGrid = () => {
     renderFontGrid(DOM_EXPORTS.fontGrid, handleSettingUpdate)
   }
+  
+  initFont(handleSettingUpdate)
+  setupFontMultiSelect(DOM_EXPORTS, handleSettingUpdate)
+  setupLocalFonts(handleSettingUpdate)
 
   effects.renderTabIconPreview = renderTabIconPreview
   effects.applyTabIcon = applyTabIcon

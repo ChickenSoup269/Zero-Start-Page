@@ -5,6 +5,8 @@ import {
   menuEdit,
   menuDelete,
   menuLock,
+  menuApplyClock,
+  menuApplyGeneral,
 } from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
 import {
@@ -1739,6 +1741,16 @@ export function showContextMenu(
         : i18n.menu_favorite || "Favorite"
     }
 
+    if (type === "userFont") {
+      menuApplyClock.style.display = "flex"
+      menuApplyGeneral.style.display = "flex"
+      menuSelect.style.display = "flex"
+    } else {
+      menuApplyClock.style.display = "none"
+      menuApplyGeneral.style.display = "none"
+      menuSelect.style.display = "flex"
+    }
+
     menuDelete.style.display = "flex"
     menuLock.style.display = "none"
   } else if (type === "predefinedFont") {
@@ -1746,6 +1758,10 @@ export function showContextMenu(
     menuFavorite.style.display = "flex"
     menuDelete.style.display = "none"
     menuLock.style.display = "none"
+    menuSelect.style.display = "none"
+
+    menuApplyClock.style.display = "flex"
+    menuApplyGeneral.style.display = "flex"
 
     const settings = getSettings()
     const label = id // id contains font label
@@ -2091,6 +2107,7 @@ async function handleDelete() {
       "userGradient",
       "userMultiColor",
       "userSvgWave",
+      "userFont",
     ].includes(contextMenuTargetType)
   ) {
     if (
@@ -2159,6 +2176,11 @@ async function handleDelete() {
         const item = settings[key][index]
         const itemId =
           typeof item === "object" ? item.id || item.val || item.label : item
+
+        if (key === "userSavedFonts" && item && item.isLocalFile && item.fileId) {
+          const { deleteImage } = await import("../services/imageStore.js")
+          await deleteImage(item.fileId)
+        }
 
         settings[key].splice(index, 1)
 
@@ -2265,6 +2287,26 @@ export function initContextMenu() {
     e.stopPropagation()
     handleLock()
   })
+
+  if (menuApplyClock) {
+    menuApplyClock.addEventListener("click", (e) => {
+      e.stopPropagation()
+      if (contextMenuCallbacks && contextMenuCallbacks.onApplyClock) {
+        contextMenuCallbacks.onApplyClock()
+      }
+      hideContextMenu()
+    })
+  }
+
+  if (menuApplyGeneral) {
+    menuApplyGeneral.addEventListener("click", (e) => {
+      e.stopPropagation()
+      if (contextMenuCallbacks && contextMenuCallbacks.onApplyGeneral) {
+        contextMenuCallbacks.onApplyGeneral()
+      }
+      hideContextMenu()
+    })
+  }
 
   window.addEventListener("click", (e) => {
     if (
