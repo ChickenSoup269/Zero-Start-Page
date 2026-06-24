@@ -787,6 +787,7 @@ async function bootstrap() {
     "#notepad-container",
     "#daily-quotes",
     "#weather-container",
+    "#rss-container",
     ".modal",
     ".custom-dialog-overlay",
     ".first-run-tour-overlay",

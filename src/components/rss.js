@@ -355,12 +355,14 @@ export class RssReader {
             if (safeDesc.length > 120) safeDesc = safeDesc.substring(0, 120) + "...";
 
             html += `
-                <a href="${item.link}" target="_blank" class="rss-item ${isHighlight ? 'highlight' : ''}" style="display: flex; gap: 10px; text-decoration: none;">
-                    ${imageUrl ? `<img src="${imageUrl}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; max-width: 100%;" />` : ''}
+                <a href="${item.link}" target="_blank" class="rss-item ${isHighlight ? 'highlight' : ''}">
+                    ${imageUrl ? `<img src="${imageUrl}" style="width: 68px; height: 68px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" />` : ''}
                     <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                        <div class="rss-item-title" style="margin-bottom: 3px; word-break: break-word;">${title}</div>
-                        ${safeDesc ? `<div class="rss-item-desc" style="font-size: 0.8em; opacity: 0.7; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;">${safeDesc}</div>` : ''}
-                        <div class="rss-item-source" style="font-size: 0.75em; opacity: 0.5;">${sourceTitle} ${dateStr ? '• ' + dateStr : ''}</div>
+                        <div class="rss-item-title">${title}</div>
+                        ${safeDesc ? `<div class="rss-item-desc">${safeDesc}</div>` : ''}
+                        <div class="rss-item-source">
+                            <i class="fa-solid fa-newspaper" style="font-size: 0.8em;"></i> ${sourceTitle} ${dateStr ? '• <i class="fa-regular fa-clock" style="font-size: 0.8em; margin-left: 2px;"></i> ' + dateStr : ''}
+                        </div>
                     </div>
                 </a>
             `;
