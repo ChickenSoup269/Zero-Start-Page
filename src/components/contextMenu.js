@@ -620,6 +620,8 @@ export function showContextMenu(
   menuSelect.style.display = "none"
   menuLock.style.display = "none"
   menuFavorite.style.display = "none"
+  if (menuApplyClock) menuApplyClock.style.display = "none"
+  if (menuApplyGeneral) menuApplyGeneral.style.display = "none"
 
   const i18n = geti18n()
 

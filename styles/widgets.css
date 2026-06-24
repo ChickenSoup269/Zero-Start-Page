@@ -8837,7 +8837,7 @@ body.bookmark-sidebar-mode .bookmark-groups-container {
   flex-wrap: nowrap !important;
   gap: var(--space-1) !important;
   max-height: min(520px, calc(100vh - 130px));
-  max-width: 150px !important;
+  max-width: calc(var(--bookmark-group-text-width, 120px) + 60px) !important;
   overflow-y: auto;
   padding: var(--space-1) !important;
 }
@@ -8894,9 +8894,8 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab {
 body.bookmark-taskbar-mode .bookmark-group-tab span,
 body.bookmark-taskbar-top-mode .bookmark-group-tab span,
 body.bookmark-taskbar-left-mode .bookmark-group-tab span,
-body.bookmark-taskbar-right-mode .bookmark-group-tab span,
 body.bookmark-taskbar-right-mode .bookmark-group-tab span {
-  max-width: 96px;
+  max-width: var(--bookmark-group-text-width, 120px);
 }
 
 body.bookmark-taskbar-top-mode .bookmark-groups-container {
@@ -9574,14 +9573,20 @@ body.bookmark-sidebar-mode #bookmarks-container,
 body.bookmark-taskbar-mode #bookmarks-container,
 body.bookmark-taskbar-left-mode #bookmarks-container,
 body.bookmark-taskbar-right-mode #bookmarks-container,
-body.bookmark-taskbar-right-mode #bookmarks-container,
 body.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-taskbar-top-mode .bookmarks-grid,
 body.bookmark-taskbar-left-mode .bookmarks-grid,
-body.bookmark-taskbar-right-mode .bookmarks-grid,
 body.bookmark-taskbar-right-mode .bookmarks-grid {
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
+}
+/* Prevent bookmarks from shrinking so they trigger overflow logic */
+body.bookmark-sidebar-mode .bookmark,
+body.bookmark-taskbar-mode .bookmark,
+body.bookmark-taskbar-top-mode .bookmark,
+body.bookmark-taskbar-left-mode .bookmark,
+body.bookmark-taskbar-right-mode .bookmark {
+  flex-shrink: 0 !important;
 }
 /* Also prevent wrapping for the group tabs so they can scroll */
 body.bookmark-sidebar-mode .bookmark-groups-container {
@@ -12662,32 +12667,64 @@ body.flip-layout.quick-access-horizontal .quick-access-bar.collapsed #quick-acce
 }
 
 
-/* Taskbar Right Override */
-body.bookmark-taskbar-right-mode .bookmark-widget {
-  left: auto !important;
-  right: var(--space-3) !important;
+/* Taskbar Left & Right Overrides - Same Row Layout */
+body.bookmark-taskbar-left-mode .bookmark-widget {
+  left: var(--space-3) !important;
+  right: auto !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: row !important;
   align-items: flex-end !important;
+  gap: var(--space-1);
 }
-body.bookmark-taskbar-right-mode .bookmark-groups-container {
-  align-items: flex-end !important;
+body.bookmark-taskbar-left-mode .bookmarks-grid {
+  order: 1;
+  margin: 0 !important;
+  max-width: 45vw !important;
+  justify-content: flex-start !important;
 }
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle {
-  left: auto !important;
-  right: var(--space-3) !important;
+body.bookmark-taskbar-left-mode .bookmark-groups-toggle {
+  order: 2;
+  position: static !important;
+  margin: 0 !important;
+  margin-bottom: 10px !important; /* Align toggle slightly above the exact bottom if needed, or keep 0 */
+  align-self: center !important;
 }
-body.bookmark-taskbar-right-mode .bookmarks-grid {
-  justify-content: flex-end;
+body.bookmark-taskbar-left-mode .bookmark-groups-container {
+  order: 3;
+  width: auto;
+  min-width: 0;
+  max-width: 45vw !important;
+  justify-content: flex-start !important;
 }
 
-/* Taskbar Right Override */
 body.bookmark-taskbar-right-mode .bookmark-widget {
   left: auto !important;
   right: var(--space-3) !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: row !important;
   align-items: flex-end !important;
+  gap: var(--space-1);
+  justify-content: flex-end;
 }
 body.bookmark-taskbar-right-mode .bookmark-groups-container {
+  order: 1;
+  width: auto;
+  min-width: 0;
+  max-width: 45vw !important;
   justify-content: flex-end !important;
 }
+body.bookmark-taskbar-right-mode .bookmark-groups-toggle {
+  order: 2;
+  position: static !important;
+  margin: 0 !important;
+  margin-bottom: 10px !important;
+  align-self: center !important;
+}
 body.bookmark-taskbar-right-mode .bookmarks-grid {
+  order: 3;
+  margin: 0 !important;
+  max-width: 45vw !important;
   justify-content: flex-end !important;
 }
