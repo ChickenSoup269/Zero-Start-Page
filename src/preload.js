@@ -79,6 +79,7 @@
       if (settings.bookmarkGroupAutoTextContrast === true)
         body.classList.add("bookmark-group-auto-text-contrast")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
+      if (settings.bookmarkLongText) body.classList.add("bookmark-long-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.bookmarkGroupUseAccent === true)
         body.classList.add("bookmark-group-accent-enabled")
@@ -515,6 +516,7 @@
         --search-bar-width: ${searchBarWidth}px;
         --search-bar-blur: ${searchBarBlur}px;
         --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
+        --bookmark-group-text-width: ${settings.bookmarkGroupTextWidth ?? 120}px;
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;
         --bookmark-gap: ${settings.bookmarkGap ?? 8}px;
         --bookmark-border-radius: ${settings.bookmarkBorderRadius ?? 12}px;

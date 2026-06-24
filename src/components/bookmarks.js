@@ -2373,3 +2373,20 @@ document.addEventListener("mousemove", (e) => {
     if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   }
 })
+
+
+// Fix for hidden scrollbars preventing scrolling (especially horizontal in taskbar mode)
+document.addEventListener('wheel', (e) => {
+  const container = e.target.closest('#bookmarks-container') || e.target.closest('.bookmark-groups-container') || e.target.closest('#hidden-bookmarks-popup');
+  if (!container) return;
+
+  const style = window.getComputedStyle(container);
+  const isHorizontalScroll = (style.overflowX === 'auto' || style.overflowX === 'scroll') && (style.overflowY === 'hidden' || style.overflowY === 'clip');
+
+  if (isHorizontalScroll) {
+    if (e.deltaY !== 0 && !e.shiftKey) {
+      e.preventDefault();
+      container.scrollLeft += e.deltaY > 0 ? 100 : -100;
+    }
+  }
+}, { passive: false });

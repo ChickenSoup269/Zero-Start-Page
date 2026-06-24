@@ -1088,6 +1088,12 @@ export let bookmarkIconSizeInput = document.getElementById(
 export let bookmarkIconSizeValue = document.getElementById(
   "bookmark-icon-size-value",
 )
+export let bookmarkGroupTextWidthInput = document.getElementById(
+  "bookmark-group-text-width-input",
+)
+export let bookmarkGroupTextWidthValue = document.getElementById(
+  "bookmark-group-text-width-value",
+)
 export let bookmarkGapInput = document.getElementById("bookmark-gap-input")
 export let bookmarkGapValue = document.getElementById("bookmark-gap-value")
 export let bookmarkTextColorPicker = document.getElementById(
@@ -1152,6 +1158,9 @@ export let bookmarkGroupBorderRadiusValue = document.getElementById(
 export let bookmarkGroupShowCount = document.getElementById(
   "bookmark-group-show-count",
 )
+export let bookmarkHideScrollbarCheckbox = document.getElementById(
+  "bookmark-hide-scrollbar",
+)
 export let bookmarkGroupUseAccent = document.getElementById(
   "bookmark-group-use-accent",
 )
@@ -1179,6 +1188,7 @@ export let showAddBookmarkButton = document.getElementById(
   "show-add-bookmark-button",
 )
 export let hideBookmarkText = document.getElementById("hide-bookmark-text")
+export let bookmarkLongText = document.getElementById("bookmark-long-text")
 export let hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export let bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",
@@ -3096,11 +3106,17 @@ export function refreshDOMReferences() {
   "bookmark-font-size-value",
 )
   bookmarkIconSizeInput = document.getElementById(
-  "bookmark-icon-size-input",
-)
+    "bookmark-icon-size-input",
+  )
   bookmarkIconSizeValue = document.getElementById(
-  "bookmark-icon-size-value",
-)
+    "bookmark-icon-size-value",
+  )
+  bookmarkGroupTextWidthInput = document.getElementById(
+    "bookmark-group-text-width-input",
+  )
+  bookmarkGroupTextWidthValue = document.getElementById(
+    "bookmark-group-text-width-value",
+  )
   bookmarkGapInput = document.getElementById("bookmark-gap-input")
   bookmarkGapValue = document.getElementById("bookmark-gap-value")
   bookmarkTextColorPicker = document.getElementById(
@@ -3158,17 +3174,20 @@ export function refreshDOMReferences() {
   "bookmark-group-border-radius-input",
 )
   bookmarkGroupBorderRadiusValue = document.getElementById(
-  "bookmark-group-border-radius-value",
-)
+    "bookmark-group-border-radius-value",
+  )
   bookmarkGroupShowCount = document.getElementById(
-  "bookmark-group-show-count",
-)
+    "bookmark-group-show-count",
+  )
+  bookmarkHideScrollbarCheckbox = document.getElementById(
+    "bookmark-hide-scrollbar",
+  )
   bookmarkGroupUseAccent = document.getElementById(
-  "bookmark-group-use-accent",
-)
+    "bookmark-group-use-accent",
+  )
   bookmarkGroupKeepBgOnInteraction = document.getElementById(
-  "bookmark-group-keep-bg-on-interaction",
-)
+    "bookmark-group-keep-bg-on-interaction",
+  )
   bookmarkGroupContainerBgHidden = document.getElementById(
   "bookmark-group-container-bg-hidden",
 )
@@ -3189,6 +3208,7 @@ export function refreshDOMReferences() {
   "show-add-bookmark-button",
 )
   hideBookmarkText = document.getElementById("hide-bookmark-text")
+  bookmarkLongText = document.getElementById("bookmark-long-text")
   hideBookmarkBg = document.getElementById("hide-bookmark-bg")
   bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",

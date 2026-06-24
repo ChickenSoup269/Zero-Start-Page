@@ -832,6 +832,7 @@ function createApplySettings(effectInstances) {
       "bookmark-group-container-bg-hidden",
       "bookmark-group-border-hidden",
       "hide-bookmark-text",
+      "bookmark-long-text",
       "hide-bookmark-bg",
       "flip-layout",
     )
@@ -2083,6 +2084,10 @@ function createApplySettings(effectInstances) {
       `${settings.bookmarkIconSize ?? 42}px`,
     )
     document.documentElement.style.setProperty(
+      "--bookmark-group-text-width",
+      `${settings.bookmarkGroupTextWidth ?? 120}px`,
+    )
+    document.documentElement.style.setProperty(
       "--bookmark-gap",
       `${settings.bookmarkGap ?? 8}px`,
     )
@@ -2169,10 +2174,22 @@ function createApplySettings(effectInstances) {
       document.body.classList.remove("hide-bookmark-text")
     }
 
+    if (settings.bookmarkLongText) {
+      document.body.classList.add("bookmark-long-text")
+    } else {
+      document.body.classList.remove("bookmark-long-text")
+    }
+
     if (settings.bookmarkHideBg) {
       document.body.classList.add("hide-bookmark-bg")
     } else {
       document.body.classList.remove("hide-bookmark-bg")
+    }
+
+    if (settings.bookmarkHideScrollbar) {
+      document.body.classList.add("bookmark-hide-scrollbar")
+    } else {
+      document.body.classList.remove("bookmark-hide-scrollbar")
     }
 
     if (settings.bookmarkMacosHover) {
@@ -2195,6 +2212,7 @@ function createApplySettings(effectInstances) {
       "bookmark-taskbar-mode",
       "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
+      "bookmark-taskbar-right-mode",
     ]
     const targetClass = layout === "default" ? null : `bookmark-${layout}-mode`
 
@@ -3639,6 +3657,11 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkIconSizeValue && DOM.bookmarkIconSizeInput)
         DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
 
+      if (DOM.bookmarkGroupTextWidthInput)
+        DOM.bookmarkGroupTextWidthInput.value = settings.bookmarkGroupTextWidth ?? 120
+      if (DOM.bookmarkGroupTextWidthValue && DOM.bookmarkGroupTextWidthInput)
+        DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
+
       if (DOM.bookmarkGapInput)
         DOM.bookmarkGapInput.value = settings.bookmarkGap ?? 8
       if (DOM.bookmarkGapValue && DOM.bookmarkGapInput)
@@ -3733,8 +3756,14 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.hideBookmarkText) {
         DOM.hideBookmarkText.checked = settings.bookmarkHideText === true
       }
+      if (DOM.bookmarkLongText) {
+        DOM.bookmarkLongText.checked = settings.bookmarkLongText === true
+      }
       if (DOM.hideBookmarkBg) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true
+      }
+      if (DOM.bookmarkHideScrollbarCheckbox) {
+        DOM.bookmarkHideScrollbarCheckbox.checked = settings.bookmarkHideScrollbar === true
       }
       if (DOM.bookmarkMacosHover) {
         DOM.bookmarkMacosHover.checked = settings.bookmarkMacosHover === true

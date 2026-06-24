@@ -622,8 +622,12 @@ async function bootstrap() {
     document.body.classList.add("bookmark-taskbar-left-mode")
 
   if (currentSettings.flipLayout) document.body.classList.add("flip-layout")
-  if (currentSettings.hideBookmarkText)
+  if (currentSettings.hideBookmarkText) {
     document.body.classList.add("hide-bookmark-text")
+  }
+  if (currentSettings.bookmarkLongText) {
+    document.body.classList.add("bookmark-long-text")
+  }
   if (currentSettings.hideBookmarkBg)
     document.body.classList.add("hide-bookmark-bg")
   if (currentSettings.freeMoveSearchBar === true)

@@ -382,6 +382,7 @@ export function setupGeneralEventHandlers(
     "bookmarkItemStyle",
     "bookmarkHideText",
     "bookmarkHideBg",
+    "bookmarkHideScrollbar",
     "bookmarkMacosHover",
     "bookmarkFontSize",
     "bookmarkIconSize",
@@ -2287,6 +2288,14 @@ export function setupGeneralEventHandlers(
       )
     })
 
+    DOM.bookmarkGroupTextWidthInput.addEventListener("input", () => {
+      DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`
+      throttleSettingUpdate(
+        "bookmarkGroupTextWidth",
+        Number(DOM.bookmarkGroupTextWidthInput.value),
+      )
+    })
+
     DOM.bookmarkGapInput.addEventListener("input", () => {
       DOM.bookmarkGapValue.textContent = `${DOM.bookmarkGapInput.value}px`
       throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
@@ -2479,10 +2488,27 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkLongText) {
+      DOM.bookmarkLongText.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkLongText")
+        throttleSettingUpdate("bookmarkLongText", DOM.bookmarkLongText.checked)
+      })
+    }
+
     if (DOM.hideBookmarkBg) {
       DOM.hideBookmarkBg.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkHideBg")
         throttleSettingUpdate("bookmarkHideBg", DOM.hideBookmarkBg.checked)
+      })
+    }
+
+    if (DOM.bookmarkHideScrollbarCheckbox) {
+      DOM.bookmarkHideScrollbarCheckbox.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkHideScrollbar")
+        throttleSettingUpdate(
+          "bookmarkHideScrollbar",
+          DOM.bookmarkHideScrollbarCheckbox.checked,
+        )
       })
     }
 

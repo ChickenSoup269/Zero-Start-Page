@@ -472,6 +472,7 @@
                         <option value="taskbar" data-i18n="layout_taskbar">Taskbar (C)</option>
                         <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (T)</option>
                         <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (L)</option>
+                        <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (R)</option>
                     </select>
                 </div>
                 <div class="lcp-row lcp-row-select">
@@ -1088,6 +1089,7 @@
                                 <input type="range" id="bookmark-font-size-input" min="8" max="24" step="1" value="10"
                                     style="width: 100%;">
                             </div>
+
                             <div class="setting-item no-margin-top"
                                 style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                                 <label for="bookmark-icon-size-input"
@@ -1259,6 +1261,17 @@
                                 </div>
                                 <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
                                     value="14" style="width: 100%; margin-top: 4px;">
+                                <div class="setting-item no-margin-top" style="margin-top: 15px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                    <label for="bookmark-group-text-width-input"
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px;">
+                                        <span><i class="fa-solid fa-text-width"></i> <span
+                                                data-i18n="settings_bookmark_group_text_width">Folder Name Width</span></span>
+                                        <span id="bookmark-group-text-width-value"
+                                            style="opacity: 0.7; font-family: monospace;">120px</span>
+                                    </label>
+                                    <input type="range" id="bookmark-group-text-width-input" min="60" max="250" step="5" value="120"
+                                        style="width: 100%;">
+                                </div>
                                 <div
                                     style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
                                     <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
@@ -1315,6 +1328,14 @@
                                     <input type="checkbox" id="bookmark-group-border-hidden"
                                         style="transform: scale(1.1); margin: 0;">
                                 </div>
+                                <div class="setting-item-row"
+                                    style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                    <label for="bookmark-hide-scrollbar"
+                                        data-i18n="settings_bookmark_hide_scrollbar"
+                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide scrollbar</label>
+                                    <input type="checkbox" id="bookmark-hide-scrollbar"
+                                        style="transform: scale(1.1); margin: 0;">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1341,6 +1362,13 @@
                                 <label for="hide-bookmark-text" data-i18n="settings_bookmark_hide_text"
                                     style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Hide Title</label>
                                 <input type="checkbox" id="hide-bookmark-text"
+                                    style="transform: scale(1.1); margin: 0;">
+                            </div>
+                            <div class="setting-item-row"
+                                style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <label for="bookmark-long-text" data-i18n="settings_bookmark_long_text"
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Long Text</label>
+                                <input type="checkbox" id="bookmark-long-text"
                                     style="transform: scale(1.1); margin: 0;">
                             </div>
                             <div class="setting-item-row"
@@ -1408,6 +1436,8 @@
                                     <option value="taskbar-top" data-i18n="layout_taskbar_top">Taskbar (Top Center)
                                     </option>
                                     <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
+                                    </option>
+                                    <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom Right)
                                     </option>
                                 </select>
                             </div>
