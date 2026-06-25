@@ -784,7 +784,7 @@ body.context-menu-macos .bookmark-edit-field {
   height: 62%;
   object-fit: contain;
   border: 0;
-  border-radius: 8px;
+  border-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 3px);
   color: var(--accent-color, #a8c0ff);
   font-size: calc(var(--bookmark-icon-size, 42px) * 0.48);
   line-height: 1;

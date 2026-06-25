@@ -1179,13 +1179,15 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
 }
 
 .bookmark img,
-.bookmark .bookmark-icon-fallback {
+.bookmark .bookmark-icon-fallback,
+.bookmark .stored-bookmark-icon,
+.bookmark .stored-bookmark-icon-fallback {
   width: var(--bookmark-icon-size, 42px);
   height: var(--bookmark-icon-size, 42px);
   padding: var(--space-0-5);
   background-color: var(--bookmark-bg-color, white);
   margin-bottom: var(--space-1);
-  border-radius: var(--radius-sm);
+  border-radius: var(--bookmark-border-radius, var(--radius-md));
   box-shadow: var(--bookmark-box-shadow, rgba(0, 0, 0, 0.24) 0px 3px 8px);
   transition: all 0.3s ease;
   image-rendering: high-quality;
@@ -1224,7 +1226,7 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
   height: var(--bookmark-icon-size, 42px);
   padding: 4px;
   margin-bottom: var(--space-1);
-  border-radius: var(--radius-md);
+  border-radius: var(--bookmark-border-radius, var(--radius-md));
   background:
     linear-gradient(
       180deg,
@@ -1242,10 +1244,13 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  border-radius: 5px;
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
+.bookmark-stack-cell:nth-child(1) { border-top-left-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px); }
+.bookmark-stack-cell:nth-child(2) { border-top-right-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px); }
+.bookmark-stack-cell:nth-child(3) { border-bottom-left-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px); }
+.bookmark-stack-cell:nth-child(4) { border-bottom-right-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 4px); }
 
 .bookmark-stack-cell .bookmark-icon,
 .bookmark-stack-cell .bookmark-icon-fallback {
@@ -8179,7 +8184,7 @@ body.bookmark-sidebar-mode .bookmark-widget {
 body.bookmark-sidebar-mode .bookmarks-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--bookmark-gap-y, var(--space-1));
   background: rgba(0, 0, 0, 0.3) !important;
   padding: var(--space-1);
   border-radius: var(--radius-md);
@@ -8246,7 +8251,7 @@ body.bookmark-taskbar-mode .bookmark-widget {
 body.bookmark-taskbar-mode .bookmarks-grid {
   display: flex;
   flex-direction: row;
-  gap: var(--space-1);
+  gap: var(--bookmark-gap-x, var(--space-1));
   background: rgba(0, 0, 0, 0.3) !important;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
@@ -8304,7 +8309,7 @@ body.bookmark-taskbar-right-mode .bookmarks-grid,
 body.bookmark-taskbar-right-mode .bookmarks-grid {
   display: flex;
   flex-direction: row;
-  gap: var(--space-1);
+  gap: var(--bookmark-gap-x, var(--space-1));
   background: rgba(0, 0, 0, 0.3) !important;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
@@ -8363,7 +8368,7 @@ body.bookmark-taskbar-top-mode .bookmark-widget {
 body.bookmark-taskbar-top-mode .bookmarks-grid {
   display: flex;
   flex-direction: row;
-  gap: var(--space-1);
+  gap: var(--bookmark-gap-x, var(--space-1));
   background: rgba(0, 0, 0, 0.35) !important;
   padding: var(--space-1) var(--space-2);
   /* Góc dưới bo tròn, trên vuông để dính vào màn hình */
@@ -8561,18 +8566,24 @@ body.bookmark-taskbar-top-mode .bookmark:hover {
 /* Icon images inside the bookmark cards - inherit sizes from CSS variables */
 body.bookmark-sidebar-mode .bookmark img,
 body.bookmark-sidebar-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-sidebar-mode .bookmark .stored-bookmark-icon,
+body.bookmark-sidebar-mode .bookmark .stored-bookmark-icon-fallback,
 body.bookmark-taskbar-mode .bookmark img,
 body.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-taskbar-mode .bookmark .stored-bookmark-icon,
+body.bookmark-taskbar-mode .bookmark .stored-bookmark-icon-fallback,
 body.bookmark-taskbar-top-mode .bookmark img,
 body.bookmark-taskbar-top-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-taskbar-top-mode .bookmark .stored-bookmark-icon,
+body.bookmark-taskbar-top-mode .bookmark .stored-bookmark-icon-fallback,
 body.bookmark-taskbar-left-mode .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark img,
-body.bookmark-taskbar-right-mode .bookmark img,
 body.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-taskbar-left-mode .bookmark .stored-bookmark-icon,
+body.bookmark-taskbar-left-mode .bookmark .stored-bookmark-icon-fallback,
+body.bookmark-taskbar-right-mode .bookmark img,
 body.bookmark-taskbar-right-mode .bookmark .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode .bookmark .bookmark-icon-fallback,
-body.bookmark-taskbar-right-mode .bookmark .bookmark-icon-fallback {
+body.bookmark-taskbar-right-mode .bookmark .stored-bookmark-icon,
+body.bookmark-taskbar-right-mode .bookmark .stored-bookmark-icon-fallback {
   /* Make sure bottom margin is zero since there's no text */
   margin-bottom: 0 !important;
   /* Re-apply CSS variables to override previous transparent hacks */
@@ -10186,7 +10197,33 @@ body.bookmark-item-card-style .bookmark .bookmark-icon-fallback {
   box-shadow: none !important;
   border: none !important;
   margin-bottom: var(--space-1) !important;
+  border-radius: var(--bookmark-border-radius, var(--radius-md)) !important;
 }
+
+/* Fix Card Style missing background in Sidebar/Taskbar layouts causing non-rounded icons */
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style.bookmark-sidebar-mode .bookmark .stored-bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style.bookmark-taskbar-mode .bookmark .stored-bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-top-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-top-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-top-mode .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style.bookmark-taskbar-top-mode .bookmark .stored-bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style.bookmark-taskbar-left-mode .bookmark .stored-bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-right-mode .bookmark img,
+body.bookmark-item-card-style.bookmark-taskbar-right-mode .bookmark .bookmark-icon-fallback,
+body.bookmark-item-card-style.bookmark-taskbar-right-mode .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style.bookmark-taskbar-right-mode .bookmark .stored-bookmark-icon-fallback {
+  background-color: var(--bookmark-bg-color, white) !important;
+}
+
 
 body.bookmark-item-card-style .bookmark span {
   font-size: 0.85rem;
@@ -11952,7 +11989,9 @@ body.bookmark-group-accent-enabled .bookmark-group-tab.active .group-tab-count {
 body.bookmark-group-border-hidden .bookmark-groups-container,
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
-body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count {
+body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
+body.bookmark-group-border-hidden .bookmark-stack-icon,
+body.bookmark-group-border-hidden .bookmark-stack-cell {
   border-color: transparent !important;
   box-shadow: none !important;
   outline: none !important;
@@ -12393,6 +12432,8 @@ body.bookmark-group-border-hidden .bookmark-groups-container,
 body.bookmark-group-border-hidden .bookmark-group-tab,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-icon,
 body.bookmark-group-border-hidden .bookmark-group-tab .group-tab-count,
+body.bookmark-group-border-hidden .bookmark-stack-icon,
+body.bookmark-group-border-hidden .bookmark-stack-cell,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode
   .bookmark-groups-container,
 body.bookmark-group-border-hidden.bookmark-sidebar-mode .bookmark-group-tab,
