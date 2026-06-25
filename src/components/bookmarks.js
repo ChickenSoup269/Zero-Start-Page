@@ -1359,9 +1359,9 @@ function getToggleIconClass(isHidden) {
   const isTaskbarTop = document.body.classList.contains(
     "bookmark-taskbar-top-mode",
   )
-  const isTaskbarMode =
-    document.body.classList.contains("bookmark-taskbar-mode") ||
-    document.body.classList.contains("bookmark-taskbar-left-mode")
+  const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
+  const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
+  const isTaskbarMode = document.body.classList.contains("bookmark-taskbar-mode")
 
   if (isSidebar) {
     const isFlipped = document.body.classList.contains("flip-layout")
@@ -1376,13 +1376,15 @@ function getToggleIconClass(isHidden) {
         : "fa-solid fa-chevron-right"
   } else if (isTaskbarTop) {
     // Groups appear below the top bar
-    // When shown: ↑ (click to collapse upward)
-    // When hidden: ↓ (click to reveal downward)
     return isHidden ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up"
+  } else if (isTaskbarLeft) {
+    // Groups are on the right (order 3)
+    return isHidden ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left"
+  } else if (isTaskbarRight) {
+    // Groups are on the left (order 1)
+    return isHidden ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
   } else if (isTaskbarMode) {
     // Groups appear above the bottom bar
-    // When shown: ↓ (click to collapse downward)
-    // When hidden: ↑ (click to reveal upward)
     return isHidden ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"
   }
   // Default / no minimal mode
@@ -1589,7 +1591,7 @@ export function updateOverflowBookmarks() {
   if (!container) return
 
   const isMinimalModeMatch = document.body.className.match(
-    /bookmark-(sidebar|taskbar|taskbar-top|taskbar-left)-mode/,
+    /bookmark-(sidebar|taskbar|taskbar-top|taskbar-left|taskbar-right)-mode/,
   )
 
   // Cleanup previously hidden items and indicator
@@ -1643,9 +1645,28 @@ export function updateOverflowBookmarks() {
       if (overflowItems[j].style.display !== "none") visibleCount++
     }
     if (visibleCount > 15) return true
-    return isSidebar
-      ? container.scrollHeight > Math.ceil(container.clientHeight) + 2
-      : container.scrollWidth > Math.ceil(container.clientWidth) + 2
+    
+    if (isSidebar) {
+      return container.scrollHeight > Math.ceil(container.clientHeight) + 2
+    }
+    
+    if (container.scrollWidth > Math.ceil(container.clientWidth) + 2) {
+      return true
+    }
+
+    // Fallback check for left overflow (common with flex-end)
+    const cRect = container.getBoundingClientRect()
+    const currentChildren = container.children
+    for (let j = 0; j < currentChildren.length; j++) {
+      if (currentChildren[j].style.display !== "none" && currentChildren[j].getBoundingClientRect) {
+        const elRect = currentChildren[j].getBoundingClientRect()
+        if (elRect.width > 0 && elRect.left < cRect.left) {
+          return true
+        }
+      }
+    }
+    
+    return false
   }
 
   if (!checkOverflow()) {
@@ -1678,7 +1699,9 @@ export function updateOverflowBookmarks() {
   fallback.style.fontWeight = "bold"
   indicator.appendChild(fallback)
 
-  if (isSidebar) {
+  const isTaskbarRight = mode === "taskbar-right"
+
+  if (isSidebar || isTaskbarRight) {
     container.insertBefore(indicator, container.firstChild)
   } else if (addBtn) {
     container.insertBefore(indicator, addBtn)
@@ -1686,15 +1709,28 @@ export function updateOverflowBookmarks() {
     container.appendChild(indicator)
   }
 
-  for (let i = overflowItems.length - 1; i >= 0; i--) {
-    const el = overflowItems[i]
-    el.style.display = "none"
-    hiddenElements.unshift(el)
-    hiddenCount++
+  if (isTaskbarRight) {
+    for (let i = 0; i < overflowItems.length; i++) {
+      const el = overflowItems[i]
+      el.style.display = "none"
+      hiddenElements.push(el)
+      hiddenCount++
 
-    fallback.textContent = "+" + hiddenCount
+      fallback.textContent = "+" + hiddenCount
 
-    if (!checkOverflow()) break
+      if (!checkOverflow()) break
+    }
+  } else {
+    for (let i = overflowItems.length - 1; i >= 0; i--) {
+      const el = overflowItems[i]
+      el.style.display = "none"
+      hiddenElements.unshift(el)
+      hiddenCount++
+
+      fallback.textContent = "+" + hiddenCount
+
+      if (!checkOverflow()) break
+    }
   }
 
   // Click handler to show sub-popup
@@ -1832,9 +1868,13 @@ export function updateOverflowBookmarks() {
     } else {
       // Taskbar cases (bottom)
       const isTaskbarLeft = mode === "taskbar-left"
+      const isTaskbarRight = mode === "taskbar-right"
       popup.style.bottom = window.innerHeight - rect.top + 15 + "px"
 
       if (isTaskbarLeft) {
+        popup.style.left = rect.left + "px"
+      } else if (isTaskbarRight) {
+        popup.style.right = "auto"
         popup.style.left = rect.left + "px"
       } else {
         popup.style.left =
@@ -2022,7 +2062,8 @@ function animateBookmarksForFolderSwitch() {
   const isHorizontal =
     document.body.classList.contains("bookmark-taskbar-mode") ||
     document.body.classList.contains("bookmark-taskbar-top-mode") ||
-    document.body.classList.contains("bookmark-taskbar-left-mode")
+    document.body.classList.contains("bookmark-taskbar-left-mode") ||
+    document.body.classList.contains("bookmark-taskbar-right-mode")
   const isGrid = !isVertical && !isHorizontal
 
   const containerRect = bookmarksContainer.getBoundingClientRect()

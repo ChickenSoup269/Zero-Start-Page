@@ -70,6 +70,8 @@
         body.classList.add("bookmark-taskbar-top-mode")
       else if (layout === "taskbar-left")
         body.classList.add("bookmark-taskbar-left-mode")
+      else if (layout === "taskbar-right")
+        body.classList.add("bookmark-taskbar-right-mode")
 
       if (settings.flipLayout) body.classList.add("flip-layout")
       if (settings.allowTextSelection === true)
