@@ -2084,7 +2084,12 @@ export let svgWaveSelectCancelBtn = document.getElementById(
   "svg-wave-select-cancel-btn",
 )
 
+export let googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
+export let forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
+
 export function refreshDOMReferences() {
+  googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
+  forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
   settingsToggle = document.getElementById("settings-toggle")
   settingsSidebar = document.getElementById("settings-sidebar")
   settingsVersion = document.getElementById("settings-version")

@@ -89,6 +89,7 @@ import {
   DEFAULT_TIMER_ALARM_SOUND,
   renderTimerAlarmSelectOptions,
 } from "../../data/timerAlarmSounds.js"
+import { DriveSync } from "../../services/googleDriveSync.js"
 
 const BUG_REPORT_FORM_URLS = {
   vi: "https://docs.google.com/forms/d/e/1FAIpQLSfsOq7QtdqgxcZYIGiDeV-CimbfrmhLzANa0q0VTCb2mPOsmw/viewform?usp=publish-editor",
@@ -6907,6 +6908,33 @@ export function setupGeneralEventHandlers(
       })
     }
   })
+
+  // Google Drive Sync
+  if (DOM.googleDriveSyncCheckbox) {
+    DOM.googleDriveSyncCheckbox.addEventListener("change", async (e) => {
+      const enabled = e.target.checked
+      try {
+        await DriveSync.toggleSync(enabled)
+        if (DOM.forceDriveSyncBtn) {
+          DOM.forceDriveSyncBtn.style.display = enabled ? "block" : "none"
+        }
+      } catch (err) {
+        // Revert UI if failed
+        e.target.checked = !enabled
+      }
+    })
+  }
+
+  if (DOM.forceDriveSyncBtn) {
+    DOM.forceDriveSyncBtn.addEventListener("click", async () => {
+      DOM.forceDriveSyncBtn.disabled = true
+      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...'
+      await DriveSync.syncToDrive()
+      DOM.forceDriveSyncBtn.disabled = false
+      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> Sync Now'
+      showToast("Sync complete!", "success")
+    })
+  }
 
   // Ensure LCP side controls stay in sync with layout visibility toggles
   window.addEventListener("layoutUpdated", (e) => {

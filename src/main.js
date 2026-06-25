@@ -22,6 +22,8 @@ import {
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
 
+import { DriveSync } from "./services/googleDriveSync.js"
+
 import { makeDraggable } from "./utils/draggable.js"
 import {
   buildMaterial3Scheme,
@@ -773,6 +775,7 @@ async function bootstrap() {
 
   initContextMenu()
   initModal()
+  DriveSync.init()
 
   const backgroundContextExclusions = [
     "#context-menu",

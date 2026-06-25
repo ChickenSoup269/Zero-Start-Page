@@ -110,15 +110,31 @@ function getHostname(url) {
   }
 }
 
-const iconCache = new Map()
+const ICON_CACHE_KEY = "bookmark_icon_cache"
+let iconCache
+try {
+  iconCache = new Map(JSON.parse(localStorage.getItem(ICON_CACHE_KEY)) || [])
+} catch {
+  iconCache = new Map()
+}
+
+function saveIconCache() {
+  try {
+    localStorage.setItem(ICON_CACHE_KEY, JSON.stringify(Array.from(iconCache.entries())))
+  } catch (e) {
+    console.warn("Failed to save icon cache:", e)
+  }
+}
+
 let bookmarkUndoTimeout = null
 
 export function invalidateBookmarkIconCache(url = null) {
   if (url) {
     iconCache.delete(url)
-    return
+  } else {
+    iconCache.clear()
   }
-  iconCache.clear()
+  saveIconCache()
 }
 
 // --- Selection State ---
@@ -321,11 +337,13 @@ async function getBestIcon(bookmark) {
     const isSquare = Math.abs(img.width - img.height) < 5
     if (size >= 64 || isSquare) {
       iconCache.set(key, img.src)
+      saveIconCache()
       return img.src
     }
   }
 
   iconCache.set(key, null)
+  saveIconCache()
   return null
 }
 
@@ -1752,7 +1770,17 @@ export function updateOverflowBookmarks() {
     hiddenElements.forEach((el) => {
       const clone = el.cloneNode(true)
       clone.style.display = ""
-      clone.draggable = false
+      if (getSettings().bookmarkEnableDrag === true) {
+        clone.draggable = true
+        clone.addEventListener("dragstart", handleDragStart)
+        clone.addEventListener("dragover", handleDragOver)
+        clone.addEventListener("drop", handleDrop)
+        clone.addEventListener("dragenter", handleDragEnter)
+        clone.addEventListener("dragleave", handleDragLeave)
+        clone.addEventListener("dragend", handleDragEnd)
+      } else {
+        clone.draggable = false
+      }
       clone.classList.remove("dragging", "drag-over")
 
       // CRITICAL: Ensure index is explicitly set on the clone
@@ -2356,13 +2384,16 @@ function updateMacosHover() {
     return
   }
 
-  const container =
-    document.querySelector("#bookmarks-container") ||
+  const containers = [
+    document.querySelector("#bookmarks-container"),
     document.querySelector("#hidden-bookmarks-popup")
-  if (container) {
-    const bookmarks = Array.from(
-      container.querySelectorAll(".bookmark:not(.add-bookmark-card)"),
-    )
+  ].filter(Boolean)
+  
+  if (containers.length > 0) {
+    const bookmarks = []
+    containers.forEach(c => {
+      bookmarks.push(...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
+    })
     const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
     const isFlipped = document.body.classList.contains("flip-layout")
 

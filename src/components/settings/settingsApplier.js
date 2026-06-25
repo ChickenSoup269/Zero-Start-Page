@@ -3996,6 +3996,13 @@ function createUpdateSettingsInputs(effectInstances) {
     }
 
     // Effect Color Inputs
+    if (DOM.googleDriveSyncCheckbox) {
+      DOM.googleDriveSyncCheckbox.checked = settings.googleDriveSync === true
+    }
+    if (DOM.forceDriveSyncBtn) {
+      DOM.forceDriveSyncBtn.style.display = settings.googleDriveSync === true ? "block" : "none"
+    }
+
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
     DOM.meteorColorPicker.value =
       settings.meteorColor || settings.starColor || "#ffffff"
