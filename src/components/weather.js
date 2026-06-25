@@ -179,7 +179,8 @@ export class Weather {
       if (
         event.detail?.key === "weatherApiMode" ||
         event.detail?.key === "weatherForecastEndpoint" ||
-        event.detail?.key === "weatherGeocodingEndpoint"
+        event.detail?.key === "weatherGeocodingEndpoint" ||
+        event.detail?.key === "weatherUnit"
       ) {
         this.loadWeather({ force: true, skipRefreshLimit: true })
       }
@@ -402,6 +403,9 @@ export class Weather {
         timezone: "auto",
         forecast_days: "4",
       })
+      if (getSettings().weatherUnit === "fahrenheit") {
+        params.append("temperature_unit", "fahrenheit")
+      }
       const data = await this.fetchJson(
         this.withQueryParams(apiConfig.endpoint, params),
         { signal: this.abortController.signal },

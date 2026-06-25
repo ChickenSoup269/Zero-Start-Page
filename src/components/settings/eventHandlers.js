@@ -5250,6 +5250,12 @@ export function setupGeneralEventHandlers(
     )
     dispatchWeatherApiUpdate("weatherApiMode", weatherApiModeSelect.value)
   })
+  const weatherUnitSelect = document.getElementById("weather-unit-select")
+  weatherUnitSelect?.addEventListener("change", () => {
+    handleSettingUpdate("weatherUnit", weatherUnitSelect.value)
+    dispatchWeatherApiUpdate("weatherUnit", weatherUnitSelect.value)
+  })
+
   ;[weatherForecastEndpointInput, weatherGeocodingEndpointInput].forEach((input) => {
     input?.addEventListener("input", () => {
       renderWeatherEndpointValidation(input)

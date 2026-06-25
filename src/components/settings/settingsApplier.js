@@ -4813,6 +4813,10 @@ function createUpdateSettingsInputs(effectInstances) {
         status.classList.toggle("is-invalid", !ok)
       }
     }
+    const weatherUnitSelect = document.getElementById("weather-unit-select")
+    if (weatherUnitSelect) {
+      weatherUnitSelect.value = settings.weatherUnit || "celsius"
+    }
     if (weatherApiModeSelect) {
       weatherApiModeSelect.value = settings.weatherApiMode || "extension"
     }

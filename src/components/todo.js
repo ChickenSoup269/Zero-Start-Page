@@ -677,7 +677,8 @@ export class TodoList {
     if (!value) return ""
     const date = new Date(value)
     if (Number.isNaN(date.getTime())) return ""
-    return date.toLocaleString([], {
+    const lang = getSettings().language || "en"
+    return date.toLocaleString(lang, {
       month: "short",
       day: "numeric",
       hour: "2-digit",
