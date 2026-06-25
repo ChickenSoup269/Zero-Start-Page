@@ -12,6 +12,19 @@ export const DriveSync = {
     const settings = await getSettings()
     this.isEnabled = settings.googleDriveSync === true
 
+    window.addEventListener('googleProfileUpdated', (e) => {
+      this.updateSyncStatusUI(e.detail)
+    })
+
+    try {
+      const cached = localStorage.getItem('googleUserProfile')
+      if (cached && this.isEnabled) {
+        this.updateSyncStatusUI(JSON.parse(cached))
+      } else {
+        this.updateSyncStatusUI(null)
+      }
+    } catch(e) {}
+
     if (this.isEnabled) {
       // If enabled, auto-sync on load
       this.syncFromDrive()
@@ -24,8 +37,10 @@ export const DriveSync = {
         const token = await this.getAuthToken(true)
         if (token) {
           this.isEnabled = true
-          this.updateUserAvatar(token)
-          await saveSettings({ googleDriveSync: true })
+          this.updateUserProfile(token)
+          const settings = getSettings()
+          settings.googleDriveSync = true
+          saveSettings(true)
           showToast("Google Drive Sync Enabled!", "success")
           // Sync immediately when turned on
           await this.syncToDrive()
@@ -41,7 +56,10 @@ export const DriveSync = {
       }
     } else {
       this.isEnabled = false
-      await saveSettings({ googleDriveSync: false })
+      this.clearUserProfile()
+      const settings = getSettings()
+      settings.googleDriveSync = false
+      saveSettings(true)
       showToast("Google Drive Sync Disabled")
     }
   },
@@ -121,13 +139,13 @@ export const DriveSync = {
     }
   },
 
-  async syncFromDrive() {
+  async syncFromDrive(isManual = false) {
     if (!this.isEnabled || this.isSyncing) return
     this.isSyncing = true
 
     try {
       const token = await this.getAuthToken(false)
-      this.updateUserAvatar(token)
+      this.updateUserProfile(token)
       const fileId = await this.getFileId(token)
 
       if (fileId) {
@@ -138,44 +156,82 @@ export const DriveSync = {
           }
         )
         if (!response.ok) throw new Error("Failed to download file")
-        const data = await response.json()
+        let data = await response.json()
         
-        if (data.settings) {
-          // Merge with current settings but keep sync enabled
-          data.settings.googleDriveSync = true
-          await saveSettings(data.settings)
+        // --- VALIDATION (Similar to importSettingsData) ---
+        if (Array.isArray(data)) {
+          data = { source: "zero-startpage", version: 2, bookmarks: data }
+        } else if (typeof data === "object") {
+          const hasMainSection = data.settings || data.bookmarks || data.todos || data.notepad || data.calendarEvents || data.media
+          if (!hasMainSection) {
+            data = { source: "zero-startpage", version: 2, settings: data }
+          }
         }
-        if (data.bookmarks) {
-          await saveBookmarks(data.bookmarks)
+        
+        const isStartpageFile = data && (data.source === "zero-startpage" || data.version !== undefined || data.settings || data.bookmarks || data.todos)
+        
+        if (!isStartpageFile) {
+          throw new Error("Downloaded file is not a valid Startpage settings file.")
+        }
+        // ------------------------------------------------
+
+        if (isManual && window.importSettingsData) {
+          await window.importSettingsData(data)
+        } else {
+          if (data.settings) {
+            // Merge with current settings but keep sync enabled
+            const currentSettings = getSettings()
+            Object.assign(currentSettings, data.settings)
+            currentSettings.googleDriveSync = true
+            saveSettings(true)
+          }
+          if (data.bookmarks) {
+            await saveBookmarks(data.bookmarks)
+          }
         }
         
         console.log("Successfully synced from Google Drive")
-        // Reload page to apply new settings if we just restored them on startup
-        // It's better to let the user know, or silently reload.
-        // If we do this on page load, we can reload.
       }
     } catch (error) {
       console.error("Drive Sync Download Error:", error)
+      if (isManual) {
+        throw error
+      }
     } finally {
       this.isSyncing = false
     }
   },
 
-  async updateUserAvatar(token) {
+  async updateUserProfile(token) {
     try {
       const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (response.ok) {
         const userInfo = await response.json()
-        const avatarImg = document.getElementById("google-user-avatar")
-        if (avatarImg && userInfo.picture) {
-          avatarImg.src = userInfo.picture
-          avatarImg.title = userInfo.name || userInfo.email || "Google Account"
-        }
+        localStorage.setItem('googleUserProfile', JSON.stringify(userInfo))
+        window.dispatchEvent(new CustomEvent('googleProfileUpdated', { detail: userInfo }))
       }
     } catch (e) {
       console.error("Failed to fetch user profile", e)
+    }
+  },
+
+  clearUserProfile() {
+    localStorage.removeItem('googleUserProfile')
+    window.dispatchEvent(new CustomEvent('googleProfileUpdated', { detail: null }))
+  },
+
+  updateSyncStatusUI(userInfo) {
+    const statusDiv = document.getElementById("google-drive-sync-status")
+    const avatarImg = document.getElementById("google-sync-avatar")
+    const emailSpan = document.getElementById("google-sync-email")
+    if (userInfo && this.isEnabled) {
+      if (statusDiv) statusDiv.style.display = "flex"
+      if (avatarImg) avatarImg.src = userInfo.picture || ""
+      if (emailSpan) emailSpan.textContent = userInfo.email || "Logged in"
+    } else {
+      if (statusDiv) statusDiv.style.display = "none"
     }
   }
 }

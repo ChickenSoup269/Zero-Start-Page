@@ -6315,7 +6315,7 @@ export function setupGeneralEventHandlers(
       setTimeout(() => textarea.focus(), 80)
     })
 
-  const importSettingsData = async (rawData) => {
+  window.importSettingsData = async (rawData) => {
     if (!rawData) {
       showAlert(i18n.alert_import_error || "Invalid settings file.")
       return
@@ -6665,7 +6665,7 @@ export function setupGeneralEventHandlers(
 
   const importSettingsText = async (text) => {
     try {
-      await importSettingsData(JSON.parse(text))
+      await window.importSettingsData(JSON.parse(text))
     } catch (err) {
       console.error("Import error:", err)
       showAlert(
@@ -6916,11 +6916,10 @@ export function setupGeneralEventHandlers(
       try {
         await DriveSync.toggleSync(enabled)
         if (DOM.forceDriveSyncBtn) {
-          DOM.forceDriveSyncBtn.style.display = enabled ? "block" : "none"
+          DOM.forceDriveSyncBtn.parentElement.style.display = enabled ? "flex" : "none"
         }
       } catch (err) {
-        // Revert UI if failed
-        e.target.checked = !enabled
+        DOM.googleDriveSyncCheckbox.checked = !enabled
       }
     })
   }
@@ -6928,11 +6927,24 @@ export function setupGeneralEventHandlers(
   if (DOM.forceDriveSyncBtn) {
     DOM.forceDriveSyncBtn.addEventListener("click", async () => {
       DOM.forceDriveSyncBtn.disabled = true
-      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing...'
+      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
       await DriveSync.syncToDrive()
       DOM.forceDriveSyncBtn.disabled = false
-      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> Sync Now'
-      showToast("Sync complete!", "success")
+      DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
+    })
+  }
+
+  if (DOM.forceDriveDownloadBtn) {
+    DOM.forceDriveDownloadBtn.addEventListener("click", async () => {
+      DOM.forceDriveDownloadBtn.disabled = true
+      DOM.forceDriveDownloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Downloading...'
+      try {
+        await DriveSync.syncFromDrive(true)
+      } catch (err) {
+        showAlert("Failed to download or invalid JSON.")
+      }
+      DOM.forceDriveDownloadBtn.disabled = false
+      DOM.forceDriveDownloadBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Download'
     })
   }
 

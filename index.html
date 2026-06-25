@@ -288,7 +288,6 @@
 
     <!-- Top Right Controls (Google Apps + Avatar) -->
     <div id="top-right-controls" class="top-right-controls">
-        <img id="google-user-avatar" src="https://ui-avatars.com/api/?name=User&background=random&rounded=true" alt="User Avatar" class="top-control-btn" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; cursor: pointer; padding: 0;" title="Account">
         <a href="https://about.google/products/" target="_blank" class="top-control-btn google-apps-btn"
             data-i18n-title="google_apps_tooltip" title="Google Apps">
             <i class="fa-solid fa-grip"></i>
@@ -2007,9 +2006,18 @@
                             <input type="checkbox" id="google-drive-sync-checkbox">
                         </div>
                         <p class="setting-hint" data-i18n="settings_google_drive_sync_hint" style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;">Auto backup and restore settings & bookmarks via Google Drive.</p>
-                        <button type="button" id="force-drive-sync-btn" class="secondary-btn full-width-btn" style="margin-top: 10px; display: none;">
-                            <i class="fa-solid fa-rotate"></i> <span data-i18n="settings_force_drive_sync">Sync Now</span>
-                        </button>
+                        <div id="google-drive-sync-status" style="margin-top: 8px; display: none; align-items: center; gap: 8px; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 8px;">
+                            <img id="google-sync-avatar" src="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                            <span id="google-sync-email" style="opacity: 0.9; word-break: break-all;"></span>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button type="button" id="force-drive-sync-btn" class="secondary-btn full-width-btn" style="display: none; flex: 1;">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="settings_force_drive_sync">Upload</span>
+                            </button>
+                            <button type="button" id="force-drive-download-btn" class="secondary-btn full-width-btn" style="display: none; flex: 1;">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> <span data-i18n="settings_force_drive_download">Download</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

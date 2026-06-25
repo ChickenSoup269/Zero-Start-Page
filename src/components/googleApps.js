@@ -480,7 +480,17 @@ function getAppHostname(item) {
 }
 
 function getDeclaredIconUrl(item) {
-  if (item.id === "account") return ACCOUNT_DEFAULT_ICON
+
+  if (item.id === "account") {
+    try {
+      const profileStr = localStorage.getItem('googleUserProfile')
+      if (profileStr) {
+        const profile = JSON.parse(profileStr)
+        if (profile.picture) return profile.picture
+      }
+    } catch (e) {}
+    return ACCOUNT_DEFAULT_ICON
+  }
   if (item.iconSlug) {
     const fileName = item.iconSlug.includes(".")
       ? item.iconSlug
@@ -646,6 +656,10 @@ export function initGoogleApps() {
   let searchQuery = ""
 
   const persist = () => saveState(state)
+
+  window.addEventListener('googleProfileUpdated', () => {
+    if (typeof render === 'function') render()
+  })
 
   const render = () => {
     root.innerHTML = ""

@@ -4000,7 +4000,11 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.googleDriveSyncCheckbox.checked = settings.googleDriveSync === true
     }
     if (DOM.forceDriveSyncBtn) {
-      DOM.forceDriveSyncBtn.style.display = settings.googleDriveSync === true ? "block" : "none"
+      DOM.forceDriveSyncBtn.parentElement.style.display = settings.googleDriveSync === true ? "flex" : "none"
+      DOM.forceDriveSyncBtn.style.display = "block"
+    }
+    if (DOM.forceDriveDownloadBtn) {
+      DOM.forceDriveDownloadBtn.style.display = "block"
     }
 
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
