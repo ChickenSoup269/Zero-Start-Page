@@ -26,8 +26,26 @@ export const DriveSync = {
     } catch(e) {}
 
     if (this.isEnabled) {
-      // If enabled, auto-sync on load
-      this.syncFromDrive()
+      const intervalStr = settings.driveAutoBackupInterval;
+      let shouldBackup = false;
+      if (intervalStr && intervalStr !== "none") {
+        const lastBackup = settings.lastDriveBackupTime || 0;
+        const now = Date.now();
+        const DAY = 24 * 60 * 60 * 1000;
+        if (intervalStr === "daily" && now - lastBackup > DAY) shouldBackup = true;
+        if (intervalStr === "weekly" && now - lastBackup > 7 * DAY) shouldBackup = true;
+        if (intervalStr === "monthly" && now - lastBackup > 30 * DAY) shouldBackup = true;
+      }
+
+      if (shouldBackup) {
+        this.syncToDrive().then(() => {
+          const currentSettings = getSettings()
+          currentSettings.lastDriveBackupTime = Date.now()
+          saveSettings(true)
+        });
+      } else {
+        this.syncFromDrive()
+      }
     }
   },
 
@@ -95,7 +113,7 @@ export const DriveSync = {
     return null
   },
 
-  async syncToDrive() {
+  async syncToDrive(payload = null) {
     if (!this.isEnabled || this.isSyncing) return
     this.isSyncing = true
 
@@ -103,9 +121,26 @@ export const DriveSync = {
       const token = await this.getAuthToken(false)
       const fileId = await this.getFileId(token)
 
-      const settings = await getSettings()
-      const bookmarks = await getBookmarks()
-      const dataToSave = { settings, bookmarks }
+      let dataToSave = payload;
+      if (!dataToSave) {
+        const settings = await getSettings()
+        const bookmarks = await getBookmarks()
+        dataToSave = { settings, bookmarks }
+      } else if (fileId) {
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+          if (response.ok) {
+            const existingData = await response.json()
+            dataToSave = { ...existingData, ...payload }
+          }
+        } catch (e) {
+          console.error("Failed to fetch existing data for merge", e)
+        }
+      }
+
       const fileContent = JSON.stringify(dataToSave)
       const metadata = {
         name: SYNC_FILE_NAME,
@@ -132,6 +167,10 @@ export const DriveSync = {
 
       if (!response.ok) throw new Error("Failed to upload")
       console.log("Successfully synced to Google Drive")
+      
+      const currentSettings = await getSettings();
+      currentSettings.lastDriveBackupTime = Date.now();
+      await saveSettings(true);
     } catch (error) {
       console.error("Drive Sync Upload Error:", error)
     } finally {

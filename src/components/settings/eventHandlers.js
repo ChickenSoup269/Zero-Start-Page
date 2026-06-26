@@ -6910,13 +6910,14 @@ export function setupGeneralEventHandlers(
   })
 
   // Google Drive Sync
+  // Google Drive Sync
   if (DOM.googleDriveSyncCheckbox) {
     DOM.googleDriveSyncCheckbox.addEventListener("change", async (e) => {
       const enabled = e.target.checked
       try {
         await DriveSync.toggleSync(enabled)
-        if (DOM.forceDriveSyncBtn) {
-          DOM.forceDriveSyncBtn.parentElement.style.display = enabled ? "flex" : "none"
+        if (DOM.driveSyncOptionsWrapper) {
+          DOM.driveSyncOptionsWrapper.style.display = enabled ? "block" : "none"
         }
       } catch (err) {
         DOM.googleDriveSyncCheckbox.checked = !enabled
@@ -6924,11 +6925,20 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  if (DOM.driveAutoBackupInterval) {
+    DOM.driveAutoBackupInterval.addEventListener("change", (e) => {
+      handleSettingUpdate("driveAutoBackupInterval", e.target.value)
+    })
+  }
+
   if (DOM.forceDriveSyncBtn) {
     DOM.forceDriveSyncBtn.addEventListener("click", async () => {
+      const payload = await buildExportPayload(false)
+      if (!payload) return
+
       DOM.forceDriveSyncBtn.disabled = true
       DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...'
-      await DriveSync.syncToDrive()
+      await DriveSync.syncToDrive(payload)
       DOM.forceDriveSyncBtn.disabled = false
       DOM.forceDriveSyncBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Upload'
     })

@@ -2085,6 +2085,8 @@ export let svgWaveSelectCancelBtn = document.getElementById(
 )
 
 export let googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
+export let driveSyncOptionsWrapper = document.getElementById("drive-sync-options-wrapper")
+export let driveAutoBackupInterval = document.getElementById("drive-auto-backup-interval")
 export let forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
 export let forceDriveDownloadBtn = document.getElementById("force-drive-download-btn")
 
@@ -2092,6 +2094,8 @@ export function refreshDOMReferences() {
   googleDriveSyncCheckbox = document.getElementById("google-drive-sync-checkbox")
   forceDriveSyncBtn = document.getElementById("force-drive-sync-btn")
   forceDriveDownloadBtn = document.getElementById("force-drive-download-btn")
+  driveSyncOptionsWrapper = document.getElementById("drive-sync-options-wrapper")
+  driveAutoBackupInterval = document.getElementById("drive-auto-backup-interval")
   settingsToggle = document.getElementById("settings-toggle")
   settingsSidebar = document.getElementById("settings-sidebar")
   settingsVersion = document.getElementById("settings-version")

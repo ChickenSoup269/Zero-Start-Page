@@ -3999,12 +3999,11 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.googleDriveSyncCheckbox) {
       DOM.googleDriveSyncCheckbox.checked = settings.googleDriveSync === true
     }
-    if (DOM.forceDriveSyncBtn) {
-      DOM.forceDriveSyncBtn.parentElement.style.display = settings.googleDriveSync === true ? "flex" : "none"
-      DOM.forceDriveSyncBtn.style.display = "block"
+    if (DOM.driveSyncOptionsWrapper) {
+      DOM.driveSyncOptionsWrapper.style.display = settings.googleDriveSync === true ? "block" : "none"
     }
-    if (DOM.forceDriveDownloadBtn) {
-      DOM.forceDriveDownloadBtn.style.display = "block"
+    if (DOM.driveAutoBackupInterval) {
+      DOM.driveAutoBackupInterval.value = settings.driveAutoBackupInterval || "none"
     }
 
     DOM.starColorPicker.value = settings.starColor || "#ffffff"
