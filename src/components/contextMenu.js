@@ -1743,6 +1743,11 @@ export function showContextMenu(
 
     if (type === "userFont") {
       menuMove.style.display = "flex"
+      if (callbacks && callbacks.fontCategoryType) {
+        const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
+        const span = menuMove.querySelector("span")
+        if (span) span.textContent = `${i18n.menu_move_font || "Move"} \u2192 ${targetType}`
+      }
       menuSelect.style.display = "flex"
     } else {
       menuMove.style.display = "none"
@@ -1759,6 +1764,11 @@ export function showContextMenu(
     menuSelect.style.display = "none"
 
     menuMove.style.display = "flex"
+    if (callbacks && callbacks.fontCategoryType) {
+      const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
+      const span = menuMove.querySelector("span")
+      if (span) span.textContent = `${i18n.menu_move_font || "Move"} \u2192 ${targetType}`
+    }
 
     const settings = getSettings()
     const label = id // id contains font label

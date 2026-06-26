@@ -4,6 +4,7 @@
   "settings_bookmark_long_text": "Show Long Text",
   "layout_taskbar_right": "Taskbar (Bottom Right)",
   "menu_move_font": "Move",
+  "toast_font_moved": "Moved {name} to {type}",
   "ok": "OK",
   "cancel": "Close",
   "confirm": "Confirm",

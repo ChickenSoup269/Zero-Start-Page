@@ -11,6 +11,7 @@ import {
 import { geti18n } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { showContextMenu } from "../contextMenu.js"
+import { showToast } from "../../utils/toast.js"
 
 const PREDEFINED_FONTS = [
   { label: "Outfit", value: "'Outfit', sans-serif", google: true },
@@ -173,6 +174,12 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const favIcon = document.createElement("i")
         favIcon.className = "fa-solid fa-star favorite-star"
         card.appendChild(favIcon)
+
+        const badge = document.createElement("span")
+        badge.className = "font-category-badge"
+        badge.textContent = type === "clock" ? "Clock" : "Gen"
+        badge.style.cssText = "position: absolute; top: 8px; right: 28px; font-size: 0.65rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none;"
+        card.appendChild(badge)
       }
 
       // Checkbox for multi-select
@@ -242,6 +249,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         if (fontSelectMode) return // Disable context menu in select mode
 
         const callbacks = {
+          fontCategoryType: type,
           onMoveFont: () => {
             const currentSettings = getSettings()
             let userFonts = currentSettings.userSavedFonts || []
@@ -264,6 +272,11 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             }
             updateSettingCallback("userSavedFonts", userFonts)
             renderFontGrid(fontGrid, updateSettingCallback)
+
+            const i18n = geti18n()
+            const targetType = newType === "clock" ? (i18n.clock || "Clock") : (i18n.general || "General")
+            const msg = (i18n.toast_font_moved || "Moved {name} to {type}").replace("{name}", label).replace("{type}", targetType)
+            showToast(msg, { type: "success" })
           },
           onSelect: () => {
             enterSelectMode()
