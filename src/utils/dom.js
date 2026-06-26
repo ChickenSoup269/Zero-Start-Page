@@ -1076,8 +1076,7 @@ export let menuSelect = document.getElementById("menu-select")
 export let menuEdit = document.getElementById("menu-edit")
 export let menuDelete = document.getElementById("menu-delete")
 export let menuLock = document.getElementById("menu-lock")
-export let menuApplyClock = document.getElementById("menu-apply-clock")
-export let menuApplyGeneral = document.getElementById("menu-apply-general")
+export let menuMove = document.getElementById("menu-move")
 
 export let bookmarksContainer = document.getElementById("bookmarks-container")
 export let bookmarkGroupsContainer = document.getElementById(
@@ -3122,8 +3121,7 @@ export function refreshDOMReferences() {
   menuEdit = document.getElementById("menu-edit")
   menuDelete = document.getElementById("menu-delete")
   menuLock = document.getElementById("menu-lock")
-  menuApplyClock = document.getElementById("menu-apply-clock")
-  menuApplyGeneral = document.getElementById("menu-apply-general")
+  menuMove = document.getElementById("menu-move")
   bookmarksContainer = document.getElementById("bookmarks-container")
   bookmarkGroupsContainer = document.getElementById(
   "bookmark-groups-container",

@@ -5,8 +5,7 @@ import {
   menuEdit,
   menuDelete,
   menuLock,
-  menuApplyClock,
-  menuApplyGeneral,
+  menuMove,
 } from "../utils/dom.js"
 import { showAlert, showConfirm, showPrompt } from "../utils/dialog.js"
 import {
@@ -620,8 +619,7 @@ export function showContextMenu(
   menuSelect.style.display = "none"
   menuLock.style.display = "none"
   menuFavorite.style.display = "none"
-  if (menuApplyClock) menuApplyClock.style.display = "none"
-  if (menuApplyGeneral) menuApplyGeneral.style.display = "none"
+  if (menuMove) menuMove.style.display = "none"
 
   const i18n = geti18n()
 
@@ -1744,12 +1742,10 @@ export function showContextMenu(
     }
 
     if (type === "userFont") {
-      menuApplyClock.style.display = "flex"
-      menuApplyGeneral.style.display = "flex"
+      menuMove.style.display = "flex"
       menuSelect.style.display = "flex"
     } else {
-      menuApplyClock.style.display = "none"
-      menuApplyGeneral.style.display = "none"
+      menuMove.style.display = "none"
       menuSelect.style.display = "flex"
     }
 
@@ -1762,8 +1758,7 @@ export function showContextMenu(
     menuLock.style.display = "none"
     menuSelect.style.display = "none"
 
-    menuApplyClock.style.display = "flex"
-    menuApplyGeneral.style.display = "flex"
+    menuMove.style.display = "flex"
 
     const settings = getSettings()
     const label = id // id contains font label
@@ -2290,21 +2285,11 @@ export function initContextMenu() {
     handleLock()
   })
 
-  if (menuApplyClock) {
-    menuApplyClock.addEventListener("click", (e) => {
+  if (menuMove) {
+    menuMove.addEventListener("click", (e) => {
       e.stopPropagation()
-      if (contextMenuCallbacks && contextMenuCallbacks.onApplyClock) {
-        contextMenuCallbacks.onApplyClock()
-      }
-      hideContextMenu()
-    })
-  }
-
-  if (menuApplyGeneral) {
-    menuApplyGeneral.addEventListener("click", (e) => {
-      e.stopPropagation()
-      if (contextMenuCallbacks && contextMenuCallbacks.onApplyGeneral) {
-        contextMenuCallbacks.onApplyGeneral()
+      if (contextMenuCallbacks && contextMenuCallbacks.onMoveFont) {
+        contextMenuCallbacks.onMoveFont()
       }
       hideContextMenu()
     })

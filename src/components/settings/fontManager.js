@@ -80,16 +80,23 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
   fontGrid.innerHTML = ""
 
   const favoritesMap = new Map()
+  const savedConfigMap = new Map()
   savedFonts.forEach((f) => {
-    if (typeof f === "object" && f.isFavorite) {
-      favoritesMap.set(f.label, f)
+    if (typeof f === "object") {
+      savedConfigMap.set(f.label, f)
+      if (f.isFavorite) {
+        favoritesMap.set(f.label, f)
+      }
     }
   })
 
   const allFonts = [
     ...PREDEFINED_FONTS.map((f) => {
       const fav = favoritesMap.get(f.label)
-      return { ...f, type: f.tag === "Clock/Date" ? "clock" : "general", isFavorite: !!fav }
+      const config = savedConfigMap.get(f.label) || {}
+      let type = f.tag === "Clock/Date" ? "clock" : "general"
+      if (config.type) type = config.type
+      return { ...f, type: type, isFavorite: !!fav }
     }),
     ...savedFonts
       .filter((f) => {
@@ -100,6 +107,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const label = typeof f === "string" ? f : f.label
         const isFavorite = typeof f === "string" ? false : !!f.isFavorite
         const isLocal = typeof f === "object" && (f.isLocal || f.isLocalFile)
+        const type = typeof f === "object" && f.type ? f.type : "general"
         const originalIndex = savedFonts.findIndex((sf) => (typeof sf === "string" ? sf : sf.label) === label)
         return {
           label: label,
@@ -108,7 +116,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           isLocal: isLocal,
           isFavorite: isFavorite,
           originalIndex: originalIndex,
-          type: "saved",
+          type: type,
         }
       }),
   ]
@@ -116,13 +124,11 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
   const favoriteFonts = allFonts.filter((f) => f.isFavorite)
   const generalFonts = allFonts.filter((f) => !f.isFavorite && f.type === "general")
   const clockFonts = allFonts.filter((f) => !f.isFavorite && f.type === "clock")
-  const savedFontsList = allFonts.filter((f) => !f.isFavorite && f.type === "saved")
 
   const sections = [
     { label: "--- Favorite ---", fonts: favoriteFonts },
     { label: "--- General Fonts ---", fonts: generalFonts },
     { label: "--- Clock Fonts ---", fonts: clockFonts },
-    { label: "--- Saved Fonts ---", fonts: savedFontsList },
   ]
 
   sections.forEach((section) => {
@@ -159,7 +165,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       name.className = "font-item-name"
 
       let displayTag = tag
-      if (type === "saved") displayTag = isLocal ? "Local Font" : "Saved Font"
+      if (custom && !google) displayTag = isLocal ? "Local Font" : "Saved Font"
 
       name.textContent = label + (displayTag ? ` (${displayTag})` : "")
 
@@ -236,12 +242,27 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         if (fontSelectMode) return // Disable context menu in select mode
 
         const callbacks = {
-          onApplyClock: () => {
-            updateSettingCallback("clockFont", value)
-            renderFontGrid(fontGrid, updateSettingCallback)
-          },
-          onApplyGeneral: () => {
-            updateSettingCallback("font", value)
+          onMoveFont: () => {
+            const currentSettings = getSettings()
+            let userFonts = currentSettings.userSavedFonts || []
+            let existingObjIndex = userFonts.findIndex((sf) => (typeof sf === "string" ? sf : sf.label) === label)
+            
+            let newType = type === "clock" ? "general" : "clock"
+            
+            if (existingObjIndex !== -1) {
+              if (typeof userFonts[existingObjIndex] === "string") {
+                 userFonts[existingObjIndex] = { label: userFonts[existingObjIndex], value: value, type: newType }
+              } else {
+                 userFonts[existingObjIndex] = { ...userFonts[existingObjIndex], type: newType }
+              }
+            } else {
+              userFonts.push({
+                 label: label,
+                 value: value,
+                 type: newType
+              })
+            }
+            updateSettingCallback("userSavedFonts", userFonts)
             renderFontGrid(fontGrid, updateSettingCallback)
           },
           onSelect: () => {
