@@ -879,6 +879,22 @@ function getFirstRunSettingsGuideSteps(i18n) {
         i18n.first_run_guide_search_desc ||
         "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
     },
+    {
+      selector: '[data-section-id="data-sync"]',
+      icon: "fa-solid fa-cloud",
+      title: i18n.settings_data_sync || "Data & Sync",
+      text:
+        i18n.first_run_guide_data_sync_desc ||
+        "Enable Google Drive sync to securely back up and restore your settings and bookmarks across devices. You can also configure auto-backup intervals.",
+    },
+    {
+      selector: ".donate-section",
+      icon: "fa-solid fa-heart",
+      title: i18n.first_run_guide_donate_title || "Support & Rate",
+      text:
+        i18n.first_run_guide_donate_desc ||
+        "If you find the extension useful, please consider rating 5 stars on the stores or donating to support the developer. Thank you! :))",
+    },
   ]
 }
 
