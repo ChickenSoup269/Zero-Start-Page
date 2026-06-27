@@ -13098,11 +13098,40 @@ body.bookmark-group-border-hidden .bookmark-stack-cell {
   outline: none !important;
 }
 
-/* Overrides active state border specifically when border is hidden */
+/* Fixes active state border specifically when border is hidden */
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab.active,
 body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab.active:hover {
   border: none !important;
   border-color: transparent !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+/* --- MULTI-COLUMN/ROW WRAPPING FOR HIDDEN BOOKMARKS POPUP --- */
+/* Overrides the nowrap rule to allow grid/multi-line expansion */
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar,
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
+  flex-wrap: wrap !important;
+}
+
+/* Sidebar Popup: Wrap into columns (horizontal expansion up to 3 columns, then scroll vertically) */
+#hidden-bookmarks-popup.hidden-bookmarks-sidebar {
+  flex-direction: row !important; /* Flow left-to-right to form columns */
+  max-width: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + 32px) !important; /* approx 3 columns max */
+  max-height: 70vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+}
+
+/* Taskbar Popup: Wrap into rows (vertical expansion up to 3 rows, then scroll horizontally) */
+#hidden-bookmarks-popup.hidden-bookmarks-taskbar {
+  flex-direction: column !important; /* Flow top-to-bottom to form rows */
+  max-height: calc((var(--bookmark-icon-size, 42px) + 24px) * 3 + 32px) !important; /* approx 3 rows max */
+  max-width: 75vw !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
 }

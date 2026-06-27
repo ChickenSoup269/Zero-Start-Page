@@ -361,33 +361,57 @@ function createBookmarkIcon(bookmark) {
   img.referrerPolicy = "no-referrer"
   img.className = "bookmark-icon"
 
-  const applyBestIcon = () =>
-    getBestIcon(bookmark).then((bestIcon) => {
-      if (bestIcon) {
-        img.src = bestIcon
-      } else {
-        img.style.display = "none"
+  img.dataset.url = bookmark.url || ""
+  if (bookmark.icon) img.dataset.icon = bookmark.icon
+  img.dataset.title = bookmark.title || ""
 
-        const fallback = document.createElement("div")
-        fallback.className = "bookmark-icon-fallback"
-        fallback.textContent = (bookmark.title || "?")
-          .trim()
-          .charAt(0)
-          .toUpperCase()
-
-        img.parentElement?.insertBefore(fallback, img)
-      }
-    })
-
-  // Defer favicon probing so bookmark rendering does not compete with first paint.
-  if (window.requestIdleCallback) {
-    window.requestIdleCallback(applyBestIcon, { timeout: 1500 })
-  } else {
-    setTimeout(applyBestIcon, 150)
-  }
+  getFaviconObserver().observe(img)
 
   return img
 }
+
+let faviconObserver = null
+function getFaviconObserver() {
+  if (!faviconObserver) {
+    faviconObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target
+            observer.unobserve(img)
+
+            const bookmarkMock = {
+              url: img.dataset.url,
+              icon: img.dataset.icon,
+              title: img.dataset.title,
+            }
+
+            getBestIcon(bookmarkMock).then((bestIcon) => {
+              if (bestIcon) {
+                img.src = bestIcon
+              } else {
+                img.style.display = "none"
+                if (!img.parentElement.querySelector(".bookmark-icon-fallback")) {
+                  const fallback = document.createElement("div")
+                  fallback.className = "bookmark-icon-fallback"
+                  fallback.textContent = (bookmarkMock.title || "?")
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase()
+                  img.parentElement?.insertBefore(fallback, img)
+                }
+              }
+            })
+          }
+        })
+      },
+      { rootMargin: "300px" },
+    )
+  }
+  return faviconObserver
+}
+
+
 
 function createBookmarkStackIcon(stack) {
   const wrap = document.createElement("div")
@@ -1630,22 +1654,16 @@ export function updateOverflowBookmarks() {
     }
   })
 
-  if (!isMinimalModeMatch) {
-    if (container.style.overflow) container.style.overflow = ""
-    // Show widget for default grid too
-    const bw = document.getElementById("bookmark-widget")
-    if (bw && bw.classList.contains("no-transition")) {
-      requestAnimationFrame(() => {
-        bw.classList.remove("no-transition")
-      })
-    }
-    return
-  }
-
-  container.style.overflow = "hidden"
-  const mode = isMinimalModeMatch[1]
+  const mode = isMinimalModeMatch ? isMinimalModeMatch[1] : "default"
+  const isDefault = mode === "default"
   const isSidebar = mode === "sidebar"
   const isTaskbarTop = mode === "taskbar-top"
+
+  if (!isDefault) {
+    container.style.overflow = "hidden"
+  } else {
+    if (container.style.overflow) container.style.overflow = ""
+  }
 
   const addBtn = children.find((child) =>
     child.classList.contains("add-bookmark-card"),
@@ -1662,13 +1680,14 @@ export function updateOverflowBookmarks() {
     for (let j = 0; j < overflowItems.length; j++) {
       if (overflowItems[j].style.display !== "none") visibleCount++
     }
+    if (isDefault) return visibleCount > 25
     if (visibleCount > 15) return true
     
     if (isSidebar) {
       return container.scrollHeight > Math.ceil(container.clientHeight) + 2
     }
     
-    if (container.scrollWidth > Math.ceil(container.clientWidth) + 2) {
+    if (!isDefault && container.scrollWidth > Math.ceil(container.clientWidth) + 2) {
       return true
     }
 
@@ -1770,6 +1789,13 @@ export function updateOverflowBookmarks() {
     hiddenElements.forEach((el) => {
       const clone = el.cloneNode(true)
       clone.style.display = ""
+      
+      const imgs = clone.querySelectorAll('.bookmark-icon')
+      imgs.forEach(img => {
+        if (img.src && img.src.startsWith('data:image/gif')) {
+           getFaviconObserver().observe(img)
+        }
+      })
       if (getSettings().bookmarkEnableDrag === true) {
         clone.draggable = true
         clone.addEventListener("dragstart", handleDragStart)
@@ -1889,7 +1915,7 @@ export function updateOverflowBookmarks() {
       } else {
         popup.style.right = window.innerWidth - rect.left + 15 + "px" // Expand to left
       }
-    } else if (isTaskbarTop) {
+    } else if (isTaskbarTop || isDefault) {
       popup.style.top = rect.bottom + 15 + "px"
       popup.style.left =
         Math.max(20, rect.left - popupRect.width / 2 + rect.width / 2) + "px"
