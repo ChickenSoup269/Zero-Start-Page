@@ -1546,6 +1546,8 @@
   "weather_normal_size": "Normal Weather",
   "weather_expand": "Enlarge Weather",
   "weather_collapse": "Shrink Weather",
+  "weather_unit_celsius": "Switch to °C",
+  "weather_unit_fahrenheit": "Switch to °F",
   "pomodoroFocus": "Focus (25m)",
   "pomodoroShortBreak": "Short Break (5m)",
   "pomodoroLongBreak": "Long Break (15m)",

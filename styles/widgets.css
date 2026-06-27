@@ -3804,11 +3804,11 @@ body.todo-fullscreen-active::before {
 .weather-stats strong {
   display: block;
   margin-top: 4px;
-  overflow: hidden;
+  overflow: visible;
   font-size: 0.78rem;
   line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .weather-forecast {
@@ -3819,7 +3819,9 @@ body.todo-fullscreen-active::before {
 
 .weather-day {
   min-width: 0;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   gap: 5px;
   padding: 8px;
   border-radius: var(--radius-sm);
@@ -3829,9 +3831,9 @@ body.todo-fullscreen-active::before {
 
 .weather-day span,
 .weather-day strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .weather-day i {

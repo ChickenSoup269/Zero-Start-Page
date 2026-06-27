@@ -964,6 +964,25 @@ export function showContextMenu(
           hideContextMenu()
         }
         contextMenu.insertBefore(expandBtn, menuLock)
+
+        if (id === "weather") {
+          const isFahrenheit = settings.weatherUnit === "fahrenheit"
+          const unitBtn = document.createElement("div")
+          unitBtn.className = "context-menu-item custom-music-item"
+          unitBtn.innerHTML = `<i class="fa-solid fa-temperature-half"></i> <span>${isFahrenheit ? i18n.weather_unit_celsius || "Chuyển sang °C" : i18n.weather_unit_fahrenheit || "Chuyển sang °F"}</span>`
+          unitBtn.onclick = () => {
+            const newVal = isFahrenheit ? "celsius" : "fahrenheit"
+            updateSetting("weatherUnit", newVal)
+            saveSettings(true)
+            window.dispatchEvent(
+              new CustomEvent("layoutUpdated", {
+                detail: { key: "weatherUnit", value: newVal },
+              }),
+            )
+            hideContextMenu()
+          }
+          contextMenu.insertBefore(unitBtn, menuLock)
+        }
       }
 
       if (id === "calendar") {
