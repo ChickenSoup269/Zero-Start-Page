@@ -224,6 +224,7 @@ export class Notepad {
   }
 
   renderDetachedNotes() {
+    if (window.location.pathname.includes("sidepanel.html")) return;
     Object.keys(this.detachedNotes).forEach((noteId) => {
       this.renderDetachedNote(parseInt(noteId))
     })
@@ -475,7 +476,7 @@ export class Notepad {
 
   renderNote(note) {
     const isHidden = this.hiddenNotes[note.id]
-    const isDetached = this.detachedNotes[note.id]
+    const isDetached = this.detachedNotes[note.id] && !window.location.pathname.includes("sidepanel.html")
 
     if (isDetached) return null // Don't render detached notes in parent
 
@@ -513,9 +514,11 @@ export class Notepad {
           <button class="icon-btn note-action-btn" data-action="toggle-hidden" title="Toggle hide/show">
             <i class="fa-solid fa-eye${isHidden ? "-slash" : ""}"></i>
           </button>
+          ${window.location.pathname.includes("sidepanel.html") ? "" : `
           <button class="icon-btn note-action-btn" data-action="detach" title="Pop out">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
+          `}
           <button class="icon-btn note-action-btn" data-action="delete" title="Delete">
             <i class="fa-solid fa-trash"></i>
           </button>
@@ -615,7 +618,6 @@ export class Notepad {
           const latestNote = this.notes.find((n) => n.id === note.id) || note
           this.applyNoteContentTheme(latestNote, noteDiv)
         }
-
         // Update active state
         noteDiv
           .querySelectorAll(".note-color-btn")
@@ -628,13 +630,13 @@ export class Notepad {
 
     // Action buttons
     const toggleBtn = noteDiv.querySelector('[data-action="toggle-hidden"]')
-    toggleBtn.addEventListener("click", () => this.toggleHidden(note.id))
+    if (toggleBtn) toggleBtn.addEventListener("click", () => this.toggleHidden(note.id))
 
     const detachBtn = noteDiv.querySelector('[data-action="detach"]')
-    detachBtn.addEventListener("click", () => this.detachNote(note.id))
+    if (detachBtn) detachBtn.addEventListener("click", () => this.detachNote(note.id))
 
     const deleteBtn = noteDiv.querySelector('[data-action="delete"]')
-    deleteBtn.addEventListener("click", () => this.deleteNote(note.id))
+    if (deleteBtn) deleteBtn.addEventListener("click", () => this.deleteNote(note.id))
 
     return noteDiv
   }
