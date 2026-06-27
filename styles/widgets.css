@@ -13073,3 +13073,36 @@ body.bookmark-taskbar-right-mode .bookmarks-grid {
   justify-content: flex-end !important; /* Align to the right side */
   flex-wrap: nowrap !important; /* CRITICAL for scrollWidth grouping */
 }
+
+/* --- UNIVERSAL OVERRIDES FOR BOOKMARK SETTINGS --- */
+/* Fixes "Hide folder bar background" not working on all layouts due to specificity */
+body.bookmark-group-container-bg-hidden #bookmark-groups-container {
+  background: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Fixes "Hide folder border" not working in default grid and other layout specificities */
+body.bookmark-group-border-hidden #bookmark-groups-container,
+body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab,
+body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-icon,
+body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab .group-tab-count,
+body.bookmark-group-border-hidden .bookmark-stack-icon,
+body.bookmark-group-border-hidden .bookmark-stack-cell {
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Overrides active state border specifically when border is hidden */
+body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab.active,
+body.bookmark-group-border-hidden #bookmark-groups-container .bookmark-group-tab.active:hover {
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
