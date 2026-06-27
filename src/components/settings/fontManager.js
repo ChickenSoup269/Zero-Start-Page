@@ -170,6 +170,10 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
       name.textContent = label + (displayTag ? ` (${displayTag})` : "")
 
+      const badgesContainer = document.createElement("div")
+      badgesContainer.className = "font-badges-container"
+      badgesContainer.style.cssText = "display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin-top: 2px;"
+
       if (isFavorite) {
         const favIcon = document.createElement("i")
         favIcon.className = "fa-solid fa-star favorite-star"
@@ -178,8 +182,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const badge = document.createElement("span")
         badge.className = "font-category-badge"
         badge.textContent = type === "clock" ? (geti18n().clock || "Clock") : (geti18n().general || "Gen")
-        badge.style.cssText = "position: absolute; top: 6px; left: 26px; font-size: 0.6rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 5px; border-radius: 4px; font-weight: bold; pointer-events: none; z-index: 2; white-space: nowrap;"
-        card.appendChild(badge)
+        badge.style.cssText = "font-size: 0.55rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
+        badgesContainer.appendChild(badge)
       }
 
       // Checkbox for multi-select
@@ -195,8 +199,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
       const appliedBadge = document.createElement("div")
       appliedBadge.className = "font-applied-badge"
-      appliedBadge.style.cssText = "position: absolute; bottom: 4px; right: 4px; font-size: 0.55rem; background: var(--accent-color, #a8c0ff); color: #fff; padding: 2px 4px; border-radius: 4px; font-weight: bold; pointer-events: none; z-index: 2; display: none;"
-      card.appendChild(appliedBadge)
+      appliedBadge.style.cssText = "font-size: 0.55rem; background: var(--accent-color, #a8c0ff); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: nowrap;"
+      badgesContainer.appendChild(appliedBadge)
 
       card._updateAppliedBadge = () => {
         const curSettings = getSettings()
@@ -219,6 +223,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       card._updateAppliedBadge()
 
       card.appendChild(preview)
+      card.appendChild(badgesContainer)
       card.appendChild(name)
 
       card.addEventListener("click", () => {
