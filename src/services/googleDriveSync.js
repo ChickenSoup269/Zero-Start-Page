@@ -1,12 +1,18 @@
 import { getSettings, saveSettings, getBookmarks, saveBookmarks } from "./state.js"
 import { showToast } from "../utils/toast.js"
+import { showFileSelector, showChoice } from "../utils/dialog.js"
 
-// The name of the file to save to Google Drive
-const SYNC_FILE_NAME = "startpage_backup.json"
+// Default name of the file to save to Google Drive
+const DEFAULT_SYNC_FILE_NAME = "startpage_backup.json"
 
 export const DriveSync = {
   isEnabled: false,
   isSyncing: false,
+
+  getSyncFileName() {
+    const settings = getSettings();
+    return settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME;
+  },
 
   async init() {
     const settings = await getSettings()
@@ -49,19 +55,68 @@ export const DriveSync = {
     }
   },
 
-  async toggleSync(enabled) {
+  async toggleSync(enabled, buildPayloadFn = null) {
     if (enabled) {
       try {
         const token = await this.getAuthToken(true)
         if (token) {
+          const settings = getSettings()
+          let defaultName = settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME
+
+          const files = await this.getAllJsonFiles(token)
+          const fileName = await showFileSelector("Select Sync Backup File", files, defaultName)
+          
+          if (!fileName) {
+            throw new Error("User cancelled sync setup")
+          }
+
+          const finalFileName = fileName.trim().toLowerCase().endsWith(".json") ? fileName.trim() : `${fileName.trim()}.json`
+          settings.driveSyncFileName = finalFileName
+          
           this.isEnabled = true
           this.updateUserProfile(token)
-          const settings = getSettings()
-          settings.googleDriveSync = true
-          saveSettings(true)
-          showToast("Google Drive Sync Enabled!", "success")
-          // Sync immediately when turned on
-          await this.syncToDrive()
+          
+          const fileId = await this.getFileId(token)
+
+          if (fileId) {
+            const choice = await showChoice(
+              `Backup file "${finalFileName}" already exists on Google Drive. Do you want to download settings from Drive, or overwrite it with your current settings?`,
+              "Drive Backup Found",
+              [
+                { label: "Download from Drive", value: "download", primary: true, icon: "fa-solid fa-cloud-arrow-down" },
+                { label: "Overwrite Drive", value: "upload", danger: true, icon: "fa-solid fa-cloud-arrow-up" },
+                { label: "Cancel", value: "cancel" }
+              ]
+            )
+
+            if (!choice || choice === "cancel") {
+              throw new Error("User cancelled sync setup")
+            }
+
+            if (choice === "upload" && buildPayloadFn) {
+              const payload = await buildPayloadFn()
+              if (!payload) throw new Error("Cancelled sync payload")
+              settings.googleDriveSync = true
+              saveSettings(true)
+              showToast("Google Drive Sync Enabled!", "success")
+              await this.syncToDrive(payload)
+            } else if (choice === "download") {
+              settings.googleDriveSync = true
+              saveSettings(true)
+              showToast("Google Drive Sync Enabled!", "success")
+              await this.syncFromDrive(true)
+            }
+          } else {
+            let payload = null;
+            if (buildPayloadFn) {
+              payload = await buildPayloadFn()
+              if (!payload) throw new Error("Cancelled sync payload")
+            }
+            settings.googleDriveSync = true
+            saveSettings(true)
+            showToast("Google Drive Sync Enabled!", "success")
+            await this.syncToDrive(payload)
+          }
         } else {
           throw new Error("No token returned")
         }
@@ -97,8 +152,23 @@ export const DriveSync = {
     })
   },
 
+  async getAllJsonFiles(token) {
+    const query = encodeURIComponent(`mimeType='application/json' and trashed=false`)
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name,modifiedTime)&orderBy=modifiedTime desc`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      if (!response.ok) return []
+      const data = await response.json()
+      return data.files || []
+    } catch(e) {
+      return []
+    }
+  },
+
   async getFileId(token) {
-    const query = encodeURIComponent(`name='${SYNC_FILE_NAME}' and trashed=false`)
+    const query = encodeURIComponent(`name='${this.getSyncFileName()}' and trashed=false`)
     const response = await fetch(
       `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id)`,
       {
@@ -143,7 +213,7 @@ export const DriveSync = {
 
       const fileContent = JSON.stringify(dataToSave)
       const metadata = {
-        name: SYNC_FILE_NAME,
+        name: this.getSyncFileName(),
         mimeType: "application/json",
       }
 

@@ -6915,7 +6915,9 @@ export function setupGeneralEventHandlers(
     DOM.googleDriveSyncCheckbox.addEventListener("change", async (e) => {
       const enabled = e.target.checked
       try {
-        await DriveSync.toggleSync(enabled)
+        await DriveSync.toggleSync(enabled, async () => {
+          return await buildExportPayload(false)
+        })
         if (DOM.driveSyncOptionsWrapper) {
           DOM.driveSyncOptionsWrapper.style.display = enabled ? "block" : "none"
         }

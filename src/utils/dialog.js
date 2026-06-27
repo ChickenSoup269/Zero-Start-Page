@@ -541,3 +541,149 @@ async function copyTextToClipboard(text) {
     return false
   }
 }
+
+export function showChoice(message, title, choices) {
+  return new Promise((resolve) => {
+    const container = createDialogContainer()
+    const buttonsHtml = choices.map((c, i) => `
+      <button class="dialog-btn ${c.primary ? 'dialog-btn-primary' : 'dialog-btn-secondary'} ${c.danger ? 'danger' : ''}" id="choice-btn-${i}" style="width: 100%; justify-content: center; margin-top: 8px; padding: 10px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+        ${c.icon ? `<i class="${c.icon}"></i>` : ''}<span>${c.label}</span>
+      </button>
+    `).join('')
+
+    container.innerHTML = `
+      <div class="custom-dialog custom-confirm">
+        ${title ? `<div class="dialog-header">${title}</div>` : ''}
+        <div class="dialog-body">
+          <i class="fa-solid fa-cloud dialog-icon" style="color: var(--accent-color);"></i>
+          <div class="dialog-message">${message}</div>
+        </div>
+        <div class="dialog-footer" style="flex-direction: column; gap: 0;">
+          ${buttonsHtml}
+        </div>
+      </div>
+    `
+    container.classList.add('active')
+
+    choices.forEach((c, i) => {
+      container.querySelector(`#choice-btn-${i}`).addEventListener('click', () => {
+        closeDialog()
+        resolve(c.value)
+      })
+    })
+
+    container.addEventListener('click', (e) => {
+      if (e.target === container) {
+        closeDialog()
+        resolve(null)
+      }
+    })
+
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        closeDialog()
+        resolve(null)
+        document.removeEventListener('keydown', escHandler)
+      }
+    }
+    document.addEventListener('keydown', escHandler)
+  })
+}
+
+export function showFileSelector(title, files, defaultValue) {
+  return new Promise((resolve) => {
+    const container = createDialogContainer()
+    const i18n = geti18n()
+
+    let optionsHtml = files.map(f => `
+      <div class="dialog-file-option" data-name="${f.name}" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s;">
+        <i class="fa-solid fa-file-code" style="color: var(--accent-color);"></i>
+        <div style="flex: 1; display: flex; flex-direction: column;">
+          <span style="font-weight: bold; font-size: 0.9rem;">${f.name}</span>
+          <span style="font-size: 0.75rem; opacity: 0.7;">Modified: ${new Date(f.modifiedTime).toLocaleString()}</span>
+        </div>
+      </div>
+    `).join("")
+
+    if (files.length === 0) {
+      optionsHtml = `<div style="text-align: center; opacity: 0.5; padding: 8px; font-size: 0.85rem;">No existing JSON files found on Drive.</div>`
+    }
+
+    container.innerHTML = `
+      <div class="custom-dialog custom-prompt">
+        ${title ? `<div class="dialog-header">${title}</div>` : ""}
+        <div class="dialog-body" style="padding-bottom: 10px;">
+          <div style="margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; opacity: 0.8;">Select existing file:</div>
+          <div id="file-options-list" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px;">
+            ${optionsHtml}
+          </div>
+          <div style="margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; opacity: 0.8;">Or enter a filename:</div>
+          <input type="text" class="dialog-input" id="prompt-input" value="${defaultValue}" placeholder="e.g. startpage_backup.json" />
+        </div>
+        <div class="dialog-footer">
+          <button class="dialog-btn dialog-btn-secondary" id="prompt-cancel">
+            ${i18n.cancel || "Cancel"}
+          </button>
+          <button class="dialog-btn dialog-btn-primary" id="prompt-ok">
+            ${i18n.ok || "OK"}
+          </button>
+        </div>
+      </div>
+    `
+
+    container.classList.add("active")
+
+    const input = container.querySelector("#prompt-input")
+    const okBtn = container.querySelector("#prompt-ok")
+    const cancelBtn = container.querySelector("#prompt-cancel")
+    const optionEls = container.querySelectorAll(".dialog-file-option")
+
+    optionEls.forEach(el => {
+      el.addEventListener("click", () => {
+        input.value = el.dataset.name
+        
+        // Visual feedback
+        optionEls.forEach(o => o.style.background = "")
+        el.style.background = "var(--bg-hover, rgba(0,0,0,0.05))"
+      })
+    })
+
+    setTimeout(() => {
+      input.focus()
+      input.select()
+    }, 100)
+
+    okBtn.addEventListener("click", () => {
+      closeDialog()
+      resolve(input.value)
+    })
+
+    cancelBtn.addEventListener("click", () => {
+      closeDialog()
+      resolve(null)
+    })
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        closeDialog()
+        resolve(input.value)
+      }
+    })
+
+    container.addEventListener("click", (e) => {
+      if (e.target === container) {
+        closeDialog()
+        resolve(null)
+      }
+    })
+
+    const escHandler = (e) => {
+      if (e.key === "Escape") {
+        closeDialog()
+        resolve(null)
+        document.removeEventListener("keydown", escHandler)
+      }
+    }
+    document.addEventListener("keydown", escHandler)
+  })
+}
