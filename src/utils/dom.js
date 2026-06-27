@@ -1282,6 +1282,9 @@ export let allowTextSelectionCheckbox = document.getElementById(
 export let flipLayoutCheckbox = document.getElementById(
   "flip-layout-checkbox",
 )
+export let extensionActionBehaviorSelect = document.getElementById(
+  "extension-action-behavior-select",
+)
 export let ghostControlsCheckbox = document.getElementById(
   "ghost-controls-checkbox",
 )
@@ -3319,6 +3322,9 @@ export function refreshDOMReferences() {
 )
   flipLayoutCheckbox = document.getElementById(
   "flip-layout-checkbox",
+)
+  extensionActionBehaviorSelect = document.getElementById(
+  "extension-action-behavior-select",
 )
   ghostControlsCheckbox = document.getElementById(
   "ghost-controls-checkbox",

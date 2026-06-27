@@ -192,6 +192,7 @@ export class Notepad {
   }
 
   saveNoteDimensions() {
+    if (window.location.pathname.includes("sidepanel.html")) return;
     localStorage.setItem(
       "notepadNoteDimensions",
       JSON.stringify(this.noteDimensions),
@@ -323,10 +324,12 @@ export class Notepad {
         right: floatingContainer.style.right || "30px",
         left: floatingContainer.style.left || null,
       }
-      localStorage.setItem(
-        `floating-note-${noteId}-dimensions`,
-        JSON.stringify(dimensions),
-      )
+      if (!window.location.pathname.includes("sidepanel.html")) {
+        localStorage.setItem(
+          `floating-note-${noteId}-dimensions`,
+          JSON.stringify(dimensions),
+        )
+      }
     })
     observer.observe(floatingContainer)
 
@@ -482,7 +485,6 @@ export class Notepad {
 
     const savedDimensions = this.noteDimensions[note.id]
     if (savedDimensions) {
-      if (savedDimensions.width) noteDiv.style.width = savedDimensions.width
       if (savedDimensions.height) noteDiv.style.height = savedDimensions.height
     }
 
@@ -705,7 +707,6 @@ export class Notepad {
       if (width <= 0 || height <= 0) return
 
       this.noteDimensions[noteId] = {
-        width: `${Math.round(width)}px`,
         height: `${Math.round(height)}px`,
       }
       this.saveNoteDimensions()
@@ -810,13 +811,14 @@ export class Notepad {
               right: root.style.right || "auto",
               left: root.style.left || `${Math.round(root.getBoundingClientRect().left)}px`,
             }
-            localStorage.setItem(
-              `floating-note-${noteId}-dimensions`,
-              JSON.stringify(dimensions),
-            )
+            if (!window.location.pathname.includes("sidepanel.html")) {
+              localStorage.setItem(
+                `floating-note-${noteId}-dimensions`,
+                JSON.stringify(dimensions),
+              )
+            }
           } else {
             this.noteDimensions[noteId] = {
-              width: root.style.width || `${Math.round(root.offsetWidth)}px`,
               height: root.style.height || `${Math.round(root.offsetHeight)}px`,
             }
             this.saveNoteDimensions()

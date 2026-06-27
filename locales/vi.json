@@ -1770,6 +1770,10 @@
   "cmd_bg_cover_keywords": "background bg cover fill hinh nen",
   "cmd_bg_contain_title": "Hình nền: Fit (Vừa vặn)",
   "cmd_bg_contain_desc": "Hiển thị toàn bộ hình nền không bị cắt",
-  "cmd_bg_contain_keywords": "background bg contain fit hinh nen",
-  "settings_weather_unit": "Đơn vị nhiệt độ"
+  "cmd_bg_contain_keywords": "background bg contain fit wallpaper full",
+  "settings_weather_unit": "Đơn vị nhiệt độ",
+  "settings_extension_action_behavior": "Hành động khi click icon",
+  "settings_behavior_sidepanel": "Mở bảng phụ (Side Panel)",
+  "settings_behavior_newtab": "Mở trang chủ (Startpage)",
+  "settings_behavior_popup": "Mở cửa sổ nổi (Popup)"
 }

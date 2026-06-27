@@ -5453,9 +5453,20 @@ export function setupGeneralEventHandlers(
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})
   }
+  if (DOM.extensionActionBehaviorSelect) {
+    DOM.extensionActionBehaviorSelect.addEventListener("change", (e) => {
+      const value = e.target.value
+      updateSetting("actionBehavior", value)
+      try {
+        chrome.runtime.sendMessage({ action: "updateActionBehavior", behavior: value })
+      } catch (err) {
+        console.error("Failed to sync action behavior to background", err)
+      }
+    })
+  }
   if (DOM.searchEngineSelect) {
     DOM.searchEngineSelect.addEventListener("change", (e) => {
-      handleSettingUpdate("searchEngine", e.target.value)
+      updateSetting("searchEngine", e.target.value)
       window.dispatchEvent(
         new CustomEvent("settingsUpdated", {
           detail: { key: "searchEngine", value: e.target.value },

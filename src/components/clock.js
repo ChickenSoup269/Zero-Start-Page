@@ -717,6 +717,7 @@ function getClockLabel(key, fallback) {
 }
 
 export function updateTime() {
+  if (!clockElement) return;
   const settings = getSettings()
   const now = new Date()
   const langCode = getClockDateLanguageCode(settings)

@@ -4934,6 +4934,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.showSearchAiIconCheckbox) {
       DOM.showSearchAiIconCheckbox.checked = settings.showSearchAIIcon !== false
     }
+    if (DOM.extensionActionBehaviorSelect) {
+      DOM.extensionActionBehaviorSelect.value = settings.actionBehavior || "sidepanel"
+    }
+    
     if (DOM.searchEngineSelect) {
       DOM.searchEngineSelect.value = settings.searchEngine || "google"
     }

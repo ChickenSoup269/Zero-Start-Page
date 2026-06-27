@@ -1,5 +1,13 @@
 console.log("Background script loaded") // For debugging
 
+// Setup Side Panel to open when the extension icon is clicked based on user setting
+chrome.storage.local.get(["actionBehavior"], (data) => {
+  const behavior = data.actionBehavior || "sidepanel";
+  if (chrome.sidePanel) {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(console.error);
+  }
+});
+
 const UNINSTALL_LANGUAGE_KEY = "uninstallSurveyLanguage"
 const UNINSTALL_FORM_URLS = {
   vi: "https://docs.google.com/forms/d/e/1FAIpQLScSBZfT8rsgt9C1Xc2bFb0bM9wN-l9-NyDvY5bqBHog25ZAIw/viewform?usp=publish-editor",
@@ -154,7 +162,22 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.runtime.onStartup?.addListener(() => {
   restoreUninstallUrlFromStorage()
 })
-chrome.action?.onClicked?.addListener(openStartpageTab)
+chrome.action?.onClicked?.addListener((tab) => {
+  chrome.storage.local.get(["actionBehavior"], (data) => {
+    const behavior = data.actionBehavior || "sidepanel";
+    if (behavior === "newtab") {
+      openStartpageTab();
+    } else if (behavior === "popup") {
+      chrome.windows.create({
+        url: chrome.runtime.getURL("sidepanel.html"),
+        type: "popup",
+        width: 450,
+        height: 600,
+        focused: true
+      });
+    }
+  });
+});
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   clearRememberedKnownMediaTab(tabId)
   delete mediaStates[tabId]
@@ -203,6 +226,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
     }
     return
+  }
+
+  if (request.action === "updateActionBehavior") {
+    const behavior = request.behavior || "sidepanel"
+    chrome.storage.local.set({ actionBehavior: behavior }, () => {
+      if (chrome.sidePanel) {
+        chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(console.error)
+      }
+      sendResponse({ ok: true })
+    })
+    return true
   }
 
   if (request.action === "updateUninstallLanguage") {

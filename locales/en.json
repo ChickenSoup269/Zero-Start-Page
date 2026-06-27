@@ -1771,5 +1771,9 @@
   "cmd_bg_contain_title": "Background: Fit (Contain)",
   "cmd_bg_contain_desc": "Display the entire background image without cropping",
   "cmd_bg_contain_keywords": "background bg contain fit wallpaper full",
-  "settings_weather_unit": "Temperature Unit"
+  "settings_weather_unit": "Temperature Unit",
+  "settings_extension_action_behavior": "Extension Icon Behavior",
+  "settings_behavior_sidepanel": "Open Side Panel",
+  "settings_behavior_newtab": "Open Startpage",
+  "settings_behavior_popup": "Open Floating Window"
 }
