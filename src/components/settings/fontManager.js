@@ -177,8 +177,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
         const badge = document.createElement("span")
         badge.className = "font-category-badge"
-        badge.textContent = type === "clock" ? "Clock" : "Gen"
-        badge.style.cssText = "position: absolute; top: 8px; right: 28px; font-size: 0.65rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none;"
+        badge.textContent = type === "clock" ? (geti18n().clock || "Clock") : (geti18n().general || "Gen")
+        badge.style.cssText = "position: absolute; top: 6px; left: 26px; font-size: 0.6rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 5px; border-radius: 4px; font-weight: bold; pointer-events: none; z-index: 2; white-space: nowrap;"
         card.appendChild(badge)
       }
 
@@ -192,6 +192,31 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       if (fontSelectMode) {
         if (isSelected) card.classList.add("selected")
       }
+
+      const appliedBadge = document.createElement("div")
+      appliedBadge.className = "font-applied-badge"
+      appliedBadge.style.cssText = "position: absolute; bottom: 4px; right: 4px; font-size: 0.55rem; background: var(--accent-color, #a8c0ff); color: #fff; padding: 2px 4px; border-radius: 4px; font-weight: bold; pointer-events: none; z-index: 2; display: none;"
+      card.appendChild(appliedBadge)
+
+      card._updateAppliedBadge = () => {
+        const curSettings = getSettings()
+        const i18n = geti18n()
+        const isGen = value === curSettings.font
+        const isClk = value === curSettings.clockFont
+        
+        let text = ""
+        if (isGen && isClk) text = `${i18n.settings_font || "Gen"} & ${i18n.clock || "Clock"}`
+        else if (isGen) text = i18n.settings_font || "Gen"
+        else if (isClk) text = i18n.clock || "Clock"
+        
+        if (text) {
+          appliedBadge.textContent = `${i18n.preset_code_applied || "Applied"}: ${text}`
+          appliedBadge.style.display = "block"
+        } else {
+          appliedBadge.style.display = "none"
+        }
+      }
+      card._updateAppliedBadge()
 
       card.appendChild(preview)
       card.appendChild(name)
@@ -241,6 +266,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           }
           if (isActiveCard) c.classList.add("active")
           else c.classList.remove("active")
+          
+          if (c._updateAppliedBadge) c._updateAppliedBadge()
         })
       })
 
@@ -277,6 +304,30 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             const targetType = newType === "clock" ? (i18n.clock || "Clock") : (i18n.general || "General")
             const msg = (i18n.toast_font_moved || "Moved {name} to {type}").replace("{name}", label).replace("{type}", targetType)
             showToast(msg, { type: "success" })
+          },
+          onApplyToGen: () => {
+            if (custom || google) loadGoogleFont(label)
+            updateSettingCallback("font", value)
+            
+            // Fast UI update
+            const countEl = document.getElementById("font-target-select")
+            if (countEl) countEl.value = "general"
+            if (countEl) countEl.dispatchEvent(new Event("change"))
+            
+            const i18n = geti18n()
+            showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} General`, { type: "success" })
+          },
+          onApplyToClock: () => {
+            if (custom || google) loadGoogleFont(label)
+            updateSettingCallback("clockFont", value)
+            
+            // Fast UI update
+            const countEl = document.getElementById("font-target-select")
+            if (countEl) countEl.value = "clock"
+            if (countEl) countEl.dispatchEvent(new Event("change"))
+            
+            const i18n = geti18n()
+            showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} Clock`, { type: "success" })
           },
           onSelect: () => {
             enterSelectMode()
@@ -432,6 +483,8 @@ function setupMultiSelect(DOM, updateSettingCallback) {
         }
         if (isActiveCard) c.classList.add("active")
         else c.classList.remove("active")
+        
+        if (c._updateAppliedBadge) c._updateAppliedBadge()
       })
     })
   }

@@ -1765,9 +1765,27 @@ export function showContextMenu(
       if (callbacks && callbacks.fontCategoryType) {
         const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
         const span = menuMove.querySelector("span")
-        if (span) span.textContent = `${i18n.menu_move_font || "Move"} \u2192 ${targetType}`
+        if (span) span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
       }
       menuSelect.style.display = "flex"
+
+      const applyGenBtn = document.createElement("div")
+      applyGenBtn.className = "context-menu-item custom-music-item"
+      applyGenBtn.innerHTML = `<i class="fa-solid fa-font"></i> <span>${i18n.menu_apply_general || "Apply to General"}</span>`
+      applyGenBtn.onclick = () => {
+        if (callbacks && callbacks.onApplyToGen) callbacks.onApplyToGen()
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(applyGenBtn, menuDelete)
+
+      const applyClockBtn = document.createElement("div")
+      applyClockBtn.className = "context-menu-item custom-music-item"
+      applyClockBtn.innerHTML = `<i class="fa-solid fa-clock"></i> <span>${i18n.menu_apply_clock || "Apply to Clock"}</span>`
+      applyClockBtn.onclick = () => {
+        if (callbacks && callbacks.onApplyToClock) callbacks.onApplyToClock()
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(applyClockBtn, menuDelete)
     } else {
       menuMove.style.display = "none"
       menuSelect.style.display = "flex"
@@ -1786,8 +1804,26 @@ export function showContextMenu(
     if (callbacks && callbacks.fontCategoryType) {
       const targetType = callbacks.fontCategoryType === "clock" ? (i18n.settings_font || "General") : (i18n.clock || "Clock")
       const span = menuMove.querySelector("span")
-      if (span) span.textContent = `${i18n.menu_move_font || "Move"} \u2192 ${targetType}`
+      if (span) span.textContent = `${i18n.menu_move_font || "Move to"} ${targetType}`
     }
+
+    const applyGenBtn = document.createElement("div")
+    applyGenBtn.className = "context-menu-item custom-music-item"
+    applyGenBtn.innerHTML = `<i class="fa-solid fa-font"></i> <span>${i18n.menu_apply_general || "Apply to General"}</span>`
+    applyGenBtn.onclick = () => {
+      if (callbacks && callbacks.onApplyToGen) callbacks.onApplyToGen()
+      hideContextMenu()
+    }
+    contextMenu.appendChild(applyGenBtn)
+
+    const applyClockBtn = document.createElement("div")
+    applyClockBtn.className = "context-menu-item custom-music-item"
+    applyClockBtn.innerHTML = `<i class="fa-solid fa-clock"></i> <span>${i18n.menu_apply_clock || "Apply to Clock"}</span>`
+    applyClockBtn.onclick = () => {
+      if (callbacks && callbacks.onApplyToClock) callbacks.onApplyToClock()
+      hideContextMenu()
+    }
+    contextMenu.appendChild(applyClockBtn)
 
     const settings = getSettings()
     const label = id // id contains font label
