@@ -49,6 +49,7 @@ body.free-move-search-bar #search-container.dragging {
     0 0 20px rgba(var(--accent-color-rgb), 0.2);
   transform: translateY(-3px) scale(1.01);
   border-color: rgba(var(--accent-color-rgb), 0.5);
+  z-index: 1050;
 }
 
 #search-input {
@@ -10306,6 +10307,7 @@ body.bookmark-macos-hover .bookmark {
 body.bookmark-macos-hover .bookmark:hover {
   background: transparent !important; /* Force transparent hover bg in MacOS mode */
   box-shadow: none !important;
+  z-index: 1040; /* Lift above search bar context */
 }
 
 body.bookmark-item-card-style.bookmark-macos-hover .bookmark {
@@ -10323,6 +10325,7 @@ body.bookmark-item-card-style.bookmark-macos-hover .bookmark:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   border-color: rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+  z-index: 1040;
 }
 
 /* Dynamic origins based on layout */
@@ -10373,12 +10376,12 @@ body.bookmark-macos-hover .bookmark > span {
     opacity 0.2s ease,
     top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
-  z-index: 9999;
+  z-index: 1040;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 body.bookmark-macos-hover .bookmark:hover > span {
-  z-index: 1;
+  z-index: 1040;
   opacity: 1;
   visibility: visible;
   top: -2.8rem;

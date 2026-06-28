@@ -67,13 +67,15 @@ function parseIcsDate(value = "") {
       date: `${dateOnly[1]}-${dateOnly[2]}-${dateOnly[3]}`,
       time: "",
       allDay: true,
+      obj: new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3])),
     }
   }
 
-  const dateTime = clean.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/)
+  const dateTime = clean.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z)?/)
   if (!dateTime) return null
 
-  const date = clean.endsWith("Z")
+  const isUtc = !!dateTime[7]
+  const date = isUtc
     ? new Date(
         Date.UTC(
           Number(dateTime[1]),
@@ -81,6 +83,7 @@ function parseIcsDate(value = "") {
           Number(dateTime[3]),
           Number(dateTime[4]),
           Number(dateTime[5]),
+          Number(dateTime[6] || 0),
         ),
       )
     : new Date(
@@ -89,6 +92,7 @@ function parseIcsDate(value = "") {
         Number(dateTime[3]),
         Number(dateTime[4]),
         Number(dateTime[5]),
+        Number(dateTime[6] || 0),
       )
 
   if (Number.isNaN(date.getTime())) return null
@@ -96,15 +100,17 @@ function parseIcsDate(value = "") {
     date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
     time: `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
     allDay: false,
+    obj: date,
   }
 }
 
 function parseGoogleCalendarIcs(text) {
   const lines = text
-    .replace(/\r?\n[ \t]/g, "")
+    .replace(/\r?\n[ \t]/g, "") // Unfold folded lines
     .split(/\r?\n/)
     .map((line) => line.trim())
-  const events = []
+  
+  const rawEvents = []
   let current = null
 
   lines.forEach((line) => {
@@ -113,18 +119,8 @@ function parseGoogleCalendarIcs(text) {
       return
     }
     if (line === "END:VEVENT") {
-      const start = parseIcsDate(current?.DTSTART)
-      if (current?.SUMMARY && start) {
-        events.push({
-          id: `google-${current.UID || `${start.date}-${events.length}`}`,
-          title: decodeIcsText(current.SUMMARY),
-          date: start.date,
-          time: start.time,
-          description: decodeIcsText(current.DESCRIPTION || ""),
-          location: decodeIcsText(current.LOCATION || ""),
-          source: "google",
-          allDay: start.allDay,
-        })
+      if (current?.SUMMARY && current?.DTSTART) {
+        rawEvents.push(current)
       }
       current = null
       return
@@ -134,19 +130,191 @@ function parseGoogleCalendarIcs(text) {
     const separatorIndex = line.indexOf(":")
     if (separatorIndex === -1) return
 
-    const key = line.slice(0, separatorIndex).split(";")[0].toUpperCase()
+    const keyPart = line.slice(0, separatorIndex)
+    const key = keyPart.split(";")[0].toUpperCase()
     const value = line.slice(separatorIndex + 1)
+    
     if (
       key === "UID" ||
       key === "SUMMARY" ||
       key === "DESCRIPTION" ||
       key === "LOCATION" ||
-      key === "DTSTART"
+      key === "DTSTART" ||
+      key === "DTEND" ||
+      key === "RRULE" ||
+      key === "EXDATE"
     ) {
-      current[key] = value
+      if (key === "EXDATE") {
+        current.EXDATE = current.EXDATE || []
+        current.EXDATE.push(...value.split(","))
+      } else {
+        current[key] = value
+      }
     }
   })
 
+  return expandIcsEvents(rawEvents)
+}
+
+function formatDateStr(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+}
+
+function formatTimeStr(date) {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`
+}
+
+function pushEventOccurrences(eventsArray, baseEvent, uid, startObj, durationMs, allDay, exdates, index = 0) {
+  const endObj = new Date(startObj.getTime() + durationMs)
+  
+  let currentObj = new Date(startObj)
+  currentObj.setHours(0, 0, 0, 0)
+  
+  const endMidnight = new Date(endObj)
+  if (allDay && durationMs > 0) {
+    endMidnight.setDate(endMidnight.getDate() - 1)
+  }
+  endMidnight.setHours(0, 0, 0, 0)
+
+  if (currentObj.getTime() === endMidnight.getTime()) {
+    const dateStr = formatDateStr(startObj)
+    if (!exdates.has(dateStr)) {
+      eventsArray.push({
+        ...baseEvent,
+        id: `google-${uid}-${index}`,
+        date: dateStr,
+        time: allDay ? "" : formatTimeStr(startObj),
+      })
+    }
+    return
+  }
+
+  let dayOffset = 0
+  let loopObj = new Date(currentObj)
+  while (loopObj <= endMidnight) {
+    const dateStr = formatDateStr(loopObj)
+    if (!exdates.has(dateStr)) {
+      eventsArray.push({
+        ...baseEvent,
+        id: `google-${uid}-${index}-${dayOffset}`,
+        date: dateStr,
+        time: allDay ? "" : (dayOffset === 0 ? formatTimeStr(startObj) : ""),
+      })
+    }
+    loopObj.setDate(loopObj.getDate() + 1)
+    dayOffset++
+  }
+}
+
+function expandIcsEvents(rawEvents) {
+  const events = []
+  const maxOccurrences = 365 // Prevent infinite loops
+  const windowEnd = new Date()
+  windowEnd.setFullYear(windowEnd.getFullYear() + 2) // Expand up to 2 years ahead
+  const windowStart = new Date()
+  windowStart.setFullYear(windowStart.getFullYear() - 1) // 1 year behind
+
+  rawEvents.forEach((raw) => {
+    const start = parseIcsDate(raw.DTSTART)
+    if (!start) return
+
+    let end = parseIcsDate(raw.DTEND)
+    if (!end) end = start
+
+    const duration = end.obj.getTime() - start.obj.getTime()
+
+    const baseEvent = {
+      title: decodeIcsText(raw.SUMMARY),
+      description: decodeIcsText(raw.DESCRIPTION || ""),
+      location: decodeIcsText(raw.LOCATION || ""),
+      source: "google",
+      allDay: start.allDay,
+    }
+
+    const exdates = new Set()
+    if (raw.EXDATE) {
+      raw.EXDATE.forEach(ex => {
+        const parsedEx = parseIcsDate(ex)
+        if (parsedEx) exdates.add(parsedEx.date)
+      })
+    }
+
+    if (!raw.RRULE) {
+      pushEventOccurrences(events, baseEvent, raw.UID || start.date, start.obj, duration, start.allDay, exdates)
+    } else {
+      const rule = {}
+      raw.RRULE.split(";").forEach(part => {
+        const [k, v] = part.split("=")
+        if (k && v) rule[k.toUpperCase()] = v
+      })
+
+      const freq = rule.FREQ
+      let untilDate = null
+      if (rule.UNTIL) {
+        const u = parseIcsDate(rule.UNTIL)
+        if (u) untilDate = u.obj
+      }
+      const count = parseInt(rule.COUNT, 10) || null
+      const interval = parseInt(rule.INTERVAL, 10) || 1
+
+      let occurrences = 0
+      const dayMap = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 }
+
+      if (freq === "WEEKLY" && rule.BYDAY) {
+        const days = rule.BYDAY.split(",").map(d => dayMap[d]).filter(d => d !== undefined)
+        let weekStart = new Date(start.obj)
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+        
+        while (occurrences < maxOccurrences) {
+          if (untilDate && weekStart > untilDate) break
+          if (weekStart > windowEnd) break
+
+          for (const day of days.sort((a,b)=>a-b)) {
+            let dayObj = new Date(weekStart)
+            dayObj.setDate(dayObj.getDate() + day)
+            dayObj.setHours(start.obj.getHours(), start.obj.getMinutes(), 0, 0)
+            
+            if (dayObj >= start.obj && dayObj <= windowEnd) {
+              if (untilDate && dayObj > untilDate) break
+              if (dayObj >= windowStart) {
+                pushEventOccurrences(events, baseEvent, raw.UID || start.date, dayObj, duration, start.allDay, exdates, occurrences)
+              }
+              occurrences++
+              if (count && occurrences >= count) break
+            }
+          }
+          if (count && occurrences >= count) break
+          weekStart.setDate(weekStart.getDate() + 7 * interval)
+        }
+      } else {
+        let currentObj = new Date(start.obj)
+        while (occurrences < maxOccurrences) {
+          if (untilDate && currentObj > untilDate) break
+          if (currentObj > windowEnd) break
+          
+          if (currentObj >= windowStart) {
+            pushEventOccurrences(events, baseEvent, raw.UID || start.date, currentObj, duration, start.allDay, exdates, occurrences)
+          }
+          
+          occurrences++
+          if (count && occurrences >= count) break
+
+          if (freq === "DAILY") {
+            currentObj.setDate(currentObj.getDate() + interval)
+          } else if (freq === "WEEKLY") {
+            currentObj.setDate(currentObj.getDate() + 7 * interval)
+          } else if (freq === "MONTHLY") {
+            currentObj.setMonth(currentObj.getMonth() + interval)
+          } else if (freq === "YEARLY") {
+            currentObj.setFullYear(currentObj.getFullYear() + interval)
+          } else {
+            break 
+          }
+        }
+      }
+    }
+  })
+  
   return events
 }
 

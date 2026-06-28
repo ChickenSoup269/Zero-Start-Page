@@ -308,15 +308,68 @@ function getIconCandidates(bookmark) {
 
   if (bookmark.icon) list.push(bookmark.icon)
 
-  if (hostname) {
+  if (bookmark.url.startsWith("chrome-extension://") || bookmark.url.startsWith("extension://")) {
+    list.push(`chrome://extension-icon/${hostname}/128/1`)
+    list.push(`edge://extension-icon/${hostname}/128/1`)
+  } else if (hostname) {
     list.push(`https://icon.horse/icon/${hostname}`)
     list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
+    // Google fallback (luôn có nhưng dễ mờ)
+    list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`)
   }
 
-  // Google fallback (luôn có nhưng dễ mờ)
-  list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`)
-
   return list
+}
+
+async function getExtensionManifestIcon(url) {
+  try {
+    const urlObj = new URL(url)
+    if (!urlObj.protocol.includes("extension:")) return null
+
+    const manifestUrl = `${urlObj.protocol}//${urlObj.hostname}/manifest.json`
+    const response = await fetch(manifestUrl, { cache: "force-cache" })
+    if (!response.ok) return null
+    const manifest = await response.json()
+
+    let iconPath = null
+
+    if (manifest.icons) {
+      iconPath =
+        manifest.icons["128"] ||
+        manifest.icons["48"] ||
+        manifest.icons["64"] ||
+        manifest.icons["16"] ||
+        Object.values(manifest.icons)[0]
+    }
+
+    if (!iconPath && manifest.action && manifest.action.default_icon) {
+      const icons = manifest.action.default_icon
+      if (typeof icons === "string") iconPath = icons
+      else
+        iconPath =
+          icons["128"] || icons["48"] || icons["16"] || Object.values(icons)[0]
+    }
+
+    if (
+      !iconPath &&
+      manifest.browser_action &&
+      manifest.browser_action.default_icon
+    ) {
+      const icons = manifest.browser_action.default_icon
+      if (typeof icons === "string") iconPath = icons
+      else
+        iconPath =
+          icons["128"] || icons["48"] || icons["16"] || Object.values(icons)[0]
+    }
+
+    if (iconPath) {
+      if (iconPath.startsWith("/")) iconPath = iconPath.substring(1)
+      return `${urlObj.protocol}//${urlObj.hostname}/${iconPath}`
+    }
+  } catch (e) {
+    // ignore
+  }
+  return null
 }
 
 async function getBestIcon(bookmark) {
@@ -324,6 +377,13 @@ async function getBestIcon(bookmark) {
   if (iconCache.has(key)) return iconCache.get(key)
 
   const candidates = getIconCandidates(bookmark)
+
+  if (bookmark.url.includes("extension://")) {
+    const manifestIcon = await getExtensionManifestIcon(bookmark.url)
+    if (manifestIcon) {
+      candidates.unshift(manifestIcon)
+    }
+  }
 
   for (const src of candidates) {
     const img = await loadImage(src, 1200)
