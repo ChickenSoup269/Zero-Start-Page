@@ -4561,6 +4561,33 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  const attachCoolStyleListeners = () => {
+    const inputs = [
+      { id: "cool-greeting-morning-input", key: "coolGreetingMorning", isStr: true },
+      { id: "cool-greeting-afternoon-input", key: "coolGreetingAfternoon", isStr: true },
+      { id: "cool-greeting-evening-input", key: "coolGreetingEvening", isStr: true },
+      { id: "cool-bar-top-input", key: "coolBarSymbolTop", isStr: true },
+      { id: "cool-bar-bottom-input", key: "coolBarSymbolBottom", isStr: true },
+      { id: "cool-bar-scale-input", key: "coolBarScale", isFloat: true }
+    ]
+    inputs.forEach(item => {
+      const el = document.getElementById(item.id)
+      if (el) {
+        el.addEventListener("input", (e) => {
+          let val = e.target.value
+          if (item.isFloat) val = parseFloat(val) || 2.5
+          handleSettingUpdate(item.key, val)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: item.key, value: val },
+            }),
+          )
+        })
+      }
+    })
+  }
+  attachCoolStyleListeners()
+
   DOM.sidebarClockFlipCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidebarClockFlip",

@@ -876,13 +876,22 @@ export function updateTime() {
     const hour24 = isTimer ? timerH : now.getHours()
 
     let greetingKey = "greeting_evening"
-    if (hour24 < 12) greetingKey = "greeting_morning"
-    else if (hour24 < 18) greetingKey = "greeting_afternoon"
+    let customGreeting = ""
+    if (hour24 < 12) {
+      greetingKey = "greeting_morning"
+      customGreeting = settings.coolGreetingMorning
+    } else if (hour24 < 18) {
+      greetingKey = "greeting_afternoon"
+      customGreeting = settings.coolGreetingAfternoon
+    } else {
+      greetingKey = "greeting_evening"
+      customGreeting = settings.coolGreetingEvening
+    }
 
     const i18n = geti18n()
     const greeting = isTimer
-      ? geti18n()["quick_access_timer"] || "Timer"
-      : i18n[greetingKey] || "Hello"
+      ? i18n["quick_access_timer"] || "Timer"
+      : (customGreeting && customGreeting.trim() !== "" ? customGreeting.trim() : (i18n[greetingKey] || "Hello"))
 
     const dayName = getSafeWeekday(
       now,
@@ -901,9 +910,13 @@ export function updateTime() {
       dateHtml = getCustomDateString(now, dateLangCode, tz, settings)
     }
 
+    const coolBarTop = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
+    const coolBarBottom = settings.coolBarSymbolBottom !== undefined ? settings.coolBarSymbolBottom : "|"
+    const coolBarScale = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
+
     clockElement.innerHTML = `
       <div class="cool-style-wrapper">
-        <div class="cool-bar">|</div>
+        <div class="cool-bar top" style="transform: scaleY(${coolBarScale})">${coolBarTop}</div>
         <div class="cool-greeting">${greeting}</div>
         ${
           shouldShowDate
@@ -914,7 +927,7 @@ export function updateTime() {
             : ""
         }
         <div class="cool-time">${timeString}</div>
-        <div class="cool-bar">|</div>
+        <div class="cool-bar bottom" style="transform: scaleY(${coolBarScale})">${coolBarBottom}</div>
       </div>
     `
   } else if (dateClockStyle === "sidestyle") {

@@ -3227,6 +3227,19 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleNoBorderCheckbox)
       DOM.sidestyleNoBorderCheckbox.checked =
         settings.sidestyleNoBorder === true
+        
+    const coolGreetingMorningInput = document.getElementById("cool-greeting-morning-input")
+    if (coolGreetingMorningInput) coolGreetingMorningInput.value = settings.coolGreetingMorning || ""
+    const coolGreetingAfternoonInput = document.getElementById("cool-greeting-afternoon-input")
+    if (coolGreetingAfternoonInput) coolGreetingAfternoonInput.value = settings.coolGreetingAfternoon || ""
+    const coolGreetingEveningInput = document.getElementById("cool-greeting-evening-input")
+    if (coolGreetingEveningInput) coolGreetingEveningInput.value = settings.coolGreetingEvening || ""
+    const coolBarTopInput = document.getElementById("cool-bar-top-input")
+    if (coolBarTopInput) coolBarTopInput.value = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
+    const coolBarBottomInput = document.getElementById("cool-bar-bottom-input")
+    if (coolBarBottomInput) coolBarBottomInput.value = settings.coolBarSymbolBottom !== undefined ? settings.coolBarSymbolBottom : "|"
+    const coolBarScaleInput = document.getElementById("cool-bar-scale-input")
+    if (coolBarScaleInput) coolBarScaleInput.value = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {
@@ -3354,6 +3367,10 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.sidestyleAlignSetting)
       DOM.sidestyleAlignSetting.style.display =
         style === "sidestyle" ? "block" : "none"
+    const coolStyleSettings = document.getElementById("cool-style-settings")
+    if (coolStyleSettings) {
+      coolStyleSettings.style.display = style === "cool" ? "block" : "none"
+    }
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"
