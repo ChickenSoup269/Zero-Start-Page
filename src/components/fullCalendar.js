@@ -112,10 +112,12 @@ function parseGoogleCalendarIcs(text) {
   
   const rawEvents = []
   let current = null
+  let nestedDepth = 0
 
   lines.forEach((line) => {
     if (line === "BEGIN:VEVENT") {
       current = {}
+      nestedDepth = 0
       return
     }
     if (line === "END:VEVENT") {
@@ -126,6 +128,17 @@ function parseGoogleCalendarIcs(text) {
       return
     }
     if (!current) return
+
+    if (line.startsWith("BEGIN:")) {
+      nestedDepth++
+      return
+    }
+    if (line.startsWith("END:")) {
+      nestedDepth = Math.max(0, nestedDepth - 1)
+      return
+    }
+
+    if (nestedDepth > 0) return
 
     const separatorIndex = line.indexOf(":")
     if (separatorIndex === -1) return
