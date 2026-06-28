@@ -161,12 +161,27 @@ export class RssReader {
             <div class="rss-content">
                 <div style="text-align:center; padding:20px; opacity:0.7;">Loading feeds...</div>
             </div>
+            <button class="rss-scroll-top-btn" title="Lên đầu trang"><i class="fa-solid fa-arrow-up"></i></button>
         `;
 
         applyTranslations();
 
         this.contentEl = this.container.querySelector('.rss-content');
         this.settingsEl = this.container.querySelector('.rss-settings');
+        this.scrollTopBtn = this.container.querySelector('.rss-scroll-top-btn');
+        
+        if (this.scrollTopBtn && this.contentEl) {
+            this.contentEl.addEventListener('scroll', () => {
+                if (this.contentEl.scrollTop > 150) {
+                    this.scrollTopBtn.classList.add('visible');
+                } else {
+                    this.scrollTopBtn.classList.remove('visible');
+                }
+            });
+            this.scrollTopBtn.addEventListener('click', () => {
+                this.contentEl.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
         
         this.container.querySelector('.rss-refresh-btn').addEventListener('click', () => this.fetchRSS(true));
         this.container.querySelector('.rss-settings-btn').addEventListener('click', () => {
