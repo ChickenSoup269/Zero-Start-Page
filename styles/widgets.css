@@ -10391,6 +10391,11 @@ body.bookmark-macos-hover .bookmark:hover > span {
 body.bookmark-macos-hover .bookmarks-grid {
   z-index: 1;
   overflow: visible !important;
+  position: relative;
+}
+
+body.bookmark-macos-hover .bookmarks-grid:hover {
+  z-index: 1040;
 }
 body.bookmark-macos-hover.bookmark-taskbar-mode .bookmark-groups-container,
 body.bookmark-macos-hover.bookmark-taskbar-top-mode .bookmark-groups-container,
