@@ -930,6 +930,47 @@ export function updateTime() {
         <div class="cool-bar bottom" style="transform: scaleY(${coolBarScale})">${coolBarBottom}</div>
       </div>
     `
+  } else if (dateClockStyle === "code") {
+    const lang = settings.codeClockLanguage || "javascript"
+    const displayS = ss ? ss : "00"
+    let codeHtml = ""
+
+    if (lang === "python") {
+      codeHtml = `
+<span class="code-keyword">def</span> <span class="code-function">get_time</span>():
+    <span class="code-keyword">return</span> {
+        <span class="code-string">"hours"</span>: <span class="code-number">${hh}</span>,
+        <span class="code-string">"minutes"</span>: <span class="code-number">${mm}</span>,
+        <span class="code-string">"seconds"</span>: <span class="code-number">${displayS}</span>
+    }`
+    } else if (lang === "java") {
+      codeHtml = `
+<span class="code-keyword">class</span> <span class="code-class">Clock</span> {
+    <span class="code-keyword">int</span> hours = <span class="code-number">${hh}</span>;
+    <span class="code-keyword">int</span> minutes = <span class="code-number">${mm}</span>;
+    <span class="code-keyword">int</span> seconds = <span class="code-number">${displayS}</span>;
+}`
+    } else if (lang === "cpp") {
+      codeHtml = `
+<span class="code-keyword">struct</span> <span class="code-class">Time</span> {
+    <span class="code-keyword">int</span> h = <span class="code-number">${hh}</span>;
+    <span class="code-keyword">int</span> m = <span class="code-number">${mm}</span>;
+    <span class="code-keyword">int</span> s = <span class="code-number">${displayS}</span>;
+};`
+    } else {
+      codeHtml = `
+<span class="code-keyword">const</span> time = {
+  <span class="code-property">hours</span>: <span class="code-number">${hh}</span>,
+  <span class="code-property">minutes</span>: <span class="code-number">${mm}</span>,
+  <span class="code-property">seconds</span>: <span class="code-number">${displayS}</span>
+};`
+    }
+
+    clockElement.innerHTML = `
+      <div class="code-style-wrapper">
+        <pre><code class="code-clock-block">${codeHtml}</code></pre>
+      </div>
+    `
   } else if (dateClockStyle === "sidestyle") {
     let finalTimeStr = timeString
     if (settings.sidestyleAlign === "center" && settings.sidestyleNoBorder) {

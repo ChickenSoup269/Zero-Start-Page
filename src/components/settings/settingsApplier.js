@@ -3240,6 +3240,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (coolBarBottomInput) coolBarBottomInput.value = settings.coolBarSymbolBottom !== undefined ? settings.coolBarSymbolBottom : "|"
     const coolBarScaleInput = document.getElementById("cool-bar-scale-input")
     if (coolBarScaleInput) coolBarScaleInput.value = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
+    const codeStyleLanguageSelect = document.getElementById("code-style-language-select")
+    if (codeStyleLanguageSelect) codeStyleLanguageSelect.value = settings.codeClockLanguage || "javascript"
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {
@@ -3370,6 +3372,10 @@ function createUpdateSettingsInputs(effectInstances) {
     const coolStyleSettings = document.getElementById("cool-style-settings")
     if (coolStyleSettings) {
       coolStyleSettings.style.display = style === "cool" ? "block" : "none"
+    }
+    const codeStyleSettings = document.getElementById("code-style-settings")
+    if (codeStyleSettings) {
+      codeStyleSettings.style.display = style === "code" ? "block" : "none"
     }
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =

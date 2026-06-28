@@ -4588,6 +4588,18 @@ export function setupGeneralEventHandlers(
   }
   attachCoolStyleListeners()
 
+  const codeStyleLanguageSelect = document.getElementById("code-style-language-select")
+  if (codeStyleLanguageSelect) {
+    codeStyleLanguageSelect.addEventListener("change", (e) => {
+      handleSettingUpdate("codeClockLanguage", e.target.value)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "codeClockLanguage", value: e.target.value },
+        }),
+      )
+    })
+  }
+
   DOM.sidebarClockFlipCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidebarClockFlip",

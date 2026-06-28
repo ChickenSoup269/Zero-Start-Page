@@ -1540,6 +1540,38 @@ body.date-clock-style-cool .cool-time {
   font-family: var(--font-clock);
 }
 
+/* Code Style */
+body.date-clock-style-code .clock-date-wrap {
+  text-align: left;
+}
+body.date-clock-style-code .code-style-wrapper {
+  background: rgba(30, 30, 30, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 1.2rem;
+  font-family: 'Fira Code', 'Consolas', 'Courier New', Courier, monospace;
+  font-size: calc(var(--clock-size) * 0.22);
+  line-height: 1.4;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+body.date-clock-style-code pre {
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+}
+body.date-clock-style-code .code-clock-block {
+  color: #d4d4d4;
+  text-shadow: none;
+}
+body.date-clock-style-code .code-keyword { color: #569cd6; }
+body.date-clock-style-code .code-function { color: #dcdcaa; }
+body.date-clock-style-code .code-class { color: #4ec9b0; }
+body.date-clock-style-code .code-property { color: #9cdcfe; }
+body.date-clock-style-code .code-string { color: #ce9178; }
+body.date-clock-style-code .code-number { color: #b5cea8; font-weight: bold; font-size: 1.1em; text-shadow: 0 0 5px rgba(181, 206, 168, 0.5); }
+
 /* Side Style - Left (default) */
 body.date-clock-style-sidestyle .clock-sidestyle {
   text-align: start;
