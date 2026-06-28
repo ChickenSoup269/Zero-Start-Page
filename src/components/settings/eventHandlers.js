@@ -4615,7 +4615,9 @@ export function setupGeneralEventHandlers(
   const customAngleInputs = [
     { id: "custom-angle-skewx-input", key: "customAngleSkewX", isFloat: true },
     { id: "custom-angle-skewy-input", key: "customAngleSkewY", isFloat: true },
-    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true }
+    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true },
+    { id: "custom-angle-cut-bottom-input", key: "customAngleCutBottom", isFloat: true },
+    { id: "custom-angle-fade-bottom-input", key: "customAngleFadeBottom", isFloat: true }
   ]
   customAngleInputs.forEach(item => {
     const el = document.getElementById(item.id)
@@ -4626,6 +4628,8 @@ export function setupGeneralEventHandlers(
         if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
         if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
         if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
+        if (item.key === "customAngleCutBottom") document.body.style.setProperty("--cut-bottom", val + "px");
+        if (item.key === "customAngleFadeBottom") document.body.style.setProperty("--visible-percent", val + "%");
 
         handleSettingUpdate(item.key, val)
         window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))

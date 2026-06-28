@@ -5684,6 +5684,10 @@ body.date-clock-style-custom-angle .custom-angle-wrapper {
   justify-content: center;
   align-items: center;
   transform: skewX(var(--skewX, 0deg)) skewY(var(--skewY, 0deg)) rotate(var(--rotate, 0deg));
+  clip-path: inset(0px 0px var(--cut-bottom, 0px) 0px);
+  -webkit-clip-path: inset(0px 0px var(--cut-bottom, 0px) 0px);
+  mask-image: linear-gradient(to bottom, black var(--visible-percent, 100%), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black var(--visible-percent, 100%), transparent 100%);
   transition: transform 0.1s ease-out;
   color: var(--clock-color, #fff);
   text-shadow: var(--clock-shadow, none);
