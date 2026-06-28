@@ -4480,7 +4480,7 @@ body.sidebar-light .preset-code-line-value {
 .clock-style-card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   padding: var(--space-1) var(--space-0-5);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -4491,6 +4491,7 @@ body.sidebar-light .preset-code-line-value {
   align-items: center;
   justify-content: center;
   gap: var(--space-0-5);
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   user-select: none;
 }
