@@ -159,13 +159,70 @@ body.date-clock-style-round .clock-date-wrap.timer-running-hidden {
   padding: 0;
 }
 
+#bg-layer,
+#bg-fade-layer,
+#bg-video {
+  will-change: transform, filter;
+  transform: translateZ(0);
+}
+
+.main-container {
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-3);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.main-container.ready {
+  visibility: visible;
+  opacity: 1;
+  animation: fadeIn var(--bg-fade-in, 1s) ease-out;
+}
+
+.clock-date-wrap {
+  width: 100%;
+  position: relative;
+  font-family: var(--font-clock-date);
+}
+
+.weekday-part {
+  font-family: var(--font-weekday) !important;
+}
+
+.clock-date-wrap.timer-running-hidden {
+  width: fit-content;
+  margin: 0 auto;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  background: rgba(0, 0, 0, 0.16);
+  box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb, 168, 192, 255), 0.45);
+  animation: timerHiddenPulse 1.6s ease-in-out infinite;
+}
+
+body.date-clock-style-round .clock-date-wrap.timer-running-hidden {
+  border-radius: 50%;
+  padding: 0;
+}
+
 body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   border-radius: var(--radius-lg);
   padding: 0;
 }
 
 #clock {
+  font-family: inherit;
   font-size: var(--clock-size);
+  text-align: center;
+  transition: all 0.3s ease;
+  clip-path: inset(0px 0px var(--clock-cut-bottom, 0px) 0px);
+  -webkit-clip-path: inset(0px 0px var(--clock-cut-bottom, 0px) 0px);
+  mask-image: linear-gradient(to bottom, black var(--clock-visible-percent, 100%), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black var(--clock-visible-percent, 100%), transparent 100%);
   font-weight: 600;
   font-family: var(--font-clock);
   letter-spacing: 2px;
@@ -5684,10 +5741,6 @@ body.date-clock-style-custom-angle .custom-angle-wrapper {
   justify-content: center;
   align-items: center;
   transform: skewX(var(--skewX, 0deg)) skewY(var(--skewY, 0deg)) rotate(var(--rotate, 0deg));
-  clip-path: inset(0px 0px var(--cut-bottom, 0px) 0px);
-  -webkit-clip-path: inset(0px 0px var(--cut-bottom, 0px) 0px);
-  mask-image: linear-gradient(to bottom, black var(--visible-percent, 100%), transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black var(--visible-percent, 100%), transparent 100%);
   transition: transform 0.1s ease-out;
   color: var(--clock-color, #fff);
   text-shadow: var(--clock-shadow, none);

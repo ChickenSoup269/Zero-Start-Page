@@ -450,9 +450,12 @@
                         </div>
 
                         <div id="custom-angle-settings" class="setting-item no-margin-top" style="display: none;">
-                            <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
-                                <label for="custom-angle-show-date-checkbox" data-i18n="settings_custom_angle_show_date">Show Date</label>
-                                <input type="checkbox" id="custom-angle-show-date-checkbox" checked>
+                            <div class="setting-item-row" style="background: transparent; padding: 0; border: none; align-items: center; display: flex; justify-content: space-between;">
+                                <div>
+                                    <label for="custom-angle-show-date-checkbox" data-i18n="settings_custom_angle_show_date" style="display:inline">Show Date</label>
+                                    <input type="checkbox" id="custom-angle-show-date-checkbox" checked style="margin-left: 10px;">
+                                </div>
+                                <i id="custom-angle-reset-btn" class="fa-solid fa-rotate-left" style="cursor: pointer; font-size: 14px; opacity: 0.7; padding: 5px;" title="Reset Angle"></i>
                             </div>
                             <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
                                 <label for="custom-angle-skewx-input" data-i18n="settings_custom_angle_skewx">Skew X (Left/Right)</label>
@@ -465,14 +468,6 @@
                             <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
                                 <label for="custom-angle-rotate-input" data-i18n="settings_custom_angle_rotate">Rotate Angle</label>
                                 <input type="range" id="custom-angle-rotate-input" min="-180" max="180" value="-5">
-                            </div>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
-                                <label for="custom-angle-cut-bottom-input" data-i18n="settings_custom_angle_cut_bottom">Cut Bottom (px)</label>
-                                <input type="range" id="custom-angle-cut-bottom-input" min="0" max="200" value="0">
-                            </div>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
-                                <label for="custom-angle-fade-bottom-input" data-i18n="settings_custom_angle_fade_bottom">Fade Bottom (%)</label>
-                                <input type="range" id="custom-angle-fade-bottom-input" min="0" max="100" value="100">
                             </div>
                         </div>
 
@@ -649,6 +644,24 @@
                             <input type="checkbox" id="analog-blur-bg-checkbox">
                         </div>
 
+                    </div>
+
+                    <!-- Global Occlusion (Text Masking) -->
+                    <div class="setting-group" style="margin-top: 20px; background: rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--accent-color-rgb), 0.15);">
+                        <div class="setting-label"
+                            style="color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-mask"></i> <span data-i18n="settings_global_masking_effect">Clock Masking Effect (3D Depth)</span>
+                        </div>
+                        <div class="setting-item no-margin-top">
+                            <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
+                                <label for="global-clock-cut-bottom-input" data-i18n="settings_global_cut_bottom">Cut Bottom (px)</label>
+                                <input type="range" id="global-clock-cut-bottom-input" min="0" max="200" value="0">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="global-clock-fade-bottom-input" data-i18n="settings_global_fade_bottom">Fade Bottom (%)</label>
+                                <input type="range" id="global-clock-fade-bottom-input" min="0" max="100" value="100">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Appearance, Colors & Sizing -->

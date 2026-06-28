@@ -3254,12 +3254,13 @@ function createUpdateSettingsInputs(effectInstances) {
     if (customAngleSkewYInput) customAngleSkewYInput.value = settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0
     const customAngleRotateInput = document.getElementById("custom-angle-rotate-input")
     if (customAngleRotateInput) customAngleRotateInput.value = settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5
-    const customAngleCutBottomInput = document.getElementById("custom-angle-cut-bottom-input")
-    if (customAngleCutBottomInput) customAngleCutBottomInput.value = settings.customAngleCutBottom !== undefined ? settings.customAngleCutBottom : 0
-    const customAngleFadeBottomInput = document.getElementById("custom-angle-fade-bottom-input")
-    if (customAngleFadeBottomInput) customAngleFadeBottomInput.value = settings.customAngleFadeBottom !== undefined ? settings.customAngleFadeBottom : 100
     const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
     if (customAngleShowDateCheckbox) customAngleShowDateCheckbox.checked = settings.customAngleShowDate !== false
+
+    const globalClockCutBottomInput = document.getElementById("global-clock-cut-bottom-input")
+    if (globalClockCutBottomInput) globalClockCutBottomInput.value = settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
+    const globalClockFadeBottomInput = document.getElementById("global-clock-fade-bottom-input")
+    if (globalClockFadeBottomInput) globalClockFadeBottomInput.value = settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {
@@ -3406,15 +3407,14 @@ function createUpdateSettingsInputs(effectInstances) {
       document.body.style.setProperty("--skewX", (settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15) + "deg")
       document.body.style.setProperty("--skewY", (settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0) + "deg")
       document.body.style.setProperty("--rotate", (settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5) + "deg")
-      document.body.style.setProperty("--cut-bottom", (settings.customAngleCutBottom !== undefined ? settings.customAngleCutBottom : 0) + "px")
-      document.body.style.setProperty("--visible-percent", (settings.customAngleFadeBottom !== undefined ? settings.customAngleFadeBottom : 100) + "%")
     } else {
       document.body.style.removeProperty("--skewX")
       document.body.style.removeProperty("--skewY")
       document.body.style.removeProperty("--rotate")
-      document.body.style.removeProperty("--cut-bottom")
-      document.body.style.removeProperty("--visible-percent")
     }
+
+    document.documentElement.style.setProperty("--clock-cut-bottom", (settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0) + "px")
+    document.documentElement.style.setProperty("--clock-visible-percent", (settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100) + "%")
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"

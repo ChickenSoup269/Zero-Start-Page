@@ -4615,9 +4615,7 @@ export function setupGeneralEventHandlers(
   const customAngleInputs = [
     { id: "custom-angle-skewx-input", key: "customAngleSkewX", isFloat: true },
     { id: "custom-angle-skewy-input", key: "customAngleSkewY", isFloat: true },
-    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true },
-    { id: "custom-angle-cut-bottom-input", key: "customAngleCutBottom", isFloat: true },
-    { id: "custom-angle-fade-bottom-input", key: "customAngleFadeBottom", isFloat: true }
+    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true }
   ]
   customAngleInputs.forEach(item => {
     const el = document.getElementById(item.id)
@@ -4628,9 +4626,40 @@ export function setupGeneralEventHandlers(
         if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
         if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
         if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
-        if (item.key === "customAngleCutBottom") document.body.style.setProperty("--cut-bottom", val + "px");
-        if (item.key === "customAngleFadeBottom") document.body.style.setProperty("--visible-percent", val + "%");
 
+        handleSettingUpdate(item.key, val)
+        window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
+      })
+    }
+  })
+
+  const customAngleResetBtn = document.getElementById("custom-angle-reset-btn")
+  if (customAngleResetBtn) {
+    customAngleResetBtn.addEventListener("click", () => {
+      const defaults = { customAngleSkewX: 15, customAngleSkewY: 0, customAngleRotate: -5 };
+      Object.keys(defaults).forEach(key => {
+        handleSettingUpdate(key, defaults[key]);
+        const el = document.getElementById(`${key.replace(/([A-Z])/g, "-$1").toLowerCase()}-input`);
+        if (el) el.value = defaults[key];
+      });
+      document.body.style.setProperty("--skewX", "15deg");
+      document.body.style.setProperty("--skewY", "0deg");
+      document.body.style.setProperty("--rotate", "-5deg");
+      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customAngleReset" } }));
+    });
+  }
+
+  const globalMaskingInputs = [
+    { id: "global-clock-cut-bottom-input", key: "clockCutBottom", isFloat: true },
+    { id: "global-clock-fade-bottom-input", key: "clockFadeBottom", isFloat: true }
+  ]
+  globalMaskingInputs.forEach(item => {
+    const el = document.getElementById(item.id)
+    if (el) {
+      el.addEventListener("input", (e) => {
+        let val = parseFloat(e.target.value) || 0
+        if (item.key === "clockCutBottom") document.documentElement.style.setProperty("--clock-cut-bottom", val + "px");
+        if (item.key === "clockFadeBottom") document.documentElement.style.setProperty("--clock-visible-percent", val + "%");
         handleSettingUpdate(item.key, val)
         window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
       })
