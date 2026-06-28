@@ -4622,6 +4622,11 @@ export function setupGeneralEventHandlers(
     if (el) {
       el.addEventListener("input", (e) => {
         let val = parseFloat(e.target.value) || 0
+        
+        if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
+        if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
+        if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
+
         handleSettingUpdate(item.key, val)
         window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
       })
