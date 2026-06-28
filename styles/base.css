@@ -5637,3 +5637,42 @@ body.clock-has-fade #clock-date-wrap {
   mask-image: var(--clock-fade-mask);
   -webkit-mask-image: var(--clock-fade-mask);
 }
+
+/* Code Style backgrounds override */
+body.clock-style-transparent-bg.date-clock-style-code .code-style-wrapper {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.clock-style-bg-accent.date-clock-style-code .code-style-wrapper {
+  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-code .code-style-wrapper {
+  background: var(--clock-style-custom-bg) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-code .code-style-wrapper {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-code .code-style-wrapper {
+  background: rgba(15, 15, 20, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+}
