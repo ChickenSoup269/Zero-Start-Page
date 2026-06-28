@@ -5805,10 +5805,41 @@ body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card-flip-bottom {
 }
 
 body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card::after {
-  display: none !important;
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  top: 2%;
+  left: 5%;
+  right: 5%;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.12) 0%, transparent 100%) !important;
+  border-radius: 50% / 20% !important;
+  pointer-events: none;
+  z-index: 5;
 }
 
-body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-colon,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-colon {
+  color: transparent !important;
+  position: relative;
+  width: calc(var(--clock-size, 6rem) * 0.3);
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-colon::before {
+  content: "." !important;
+  color: var(--fliqlo-divergence-color, #ff5500) !important;
+  position: absolute;
+  left: 50%;
+  bottom: 0%;
+  transform: translateX(-50%);
+  animation: divergenceBlink 1s infinite;
+  text-shadow: 0 0 10px var(--fliqlo-divergence-color, #ff5500), 0 0 20px var(--fliqlo-divergence-color, #ff5500) !important;
+}
+
+@keyframes divergenceBlink {
+  0%, 45% { opacity: 1; }
+  55%, 100% { opacity: 0.1; }
+}
+
 body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-ampm,
 body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-date {
   color: var(--fliqlo-divergence-color, #ff5500) !important;
@@ -5821,11 +5852,16 @@ body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card span {
 }
 
 body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card {
-  border-radius: 12px;
-  background: rgba(10, 10, 10, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  box-shadow: inset 0 0 15px rgba(0,0,0,1) !important;
+  border-radius: 20px 20px 6px 6px !important;
+  background: radial-gradient(ellipse at center, rgba(40, 20, 10, 0.4) 0%, rgba(10, 5, 0, 0.8) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 
+    inset 0 -10px 20px rgba(0,0,0,0.9),
+    inset 0 10px 15px rgba(255,255,255,0.06),
+    0 5px 15px rgba(0,0,0,0.6) !important;
   position: relative;
+  overflow: hidden;
 }
 
 body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card::before {
