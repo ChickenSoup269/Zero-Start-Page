@@ -3792,6 +3792,7 @@ body.todo-fullscreen-active::before {
   padding: 9px 8px;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.055);
+  text-align: center;
 }
 
 .weather-stats span,
