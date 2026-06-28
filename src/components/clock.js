@@ -933,7 +933,7 @@ export function updateTime() {
   } else if (dateClockStyle === "custom-angle") {
     let datePart = ""
     if (shouldShowDate && settings.customAngleShowDate !== false) {
-      datePart = `<div class="custom-angle-date">${getCustomDateString(false, "default")}</div>`
+      datePart = `<div class="custom-angle-date">${getCustomDateString(now, dateLangCode, settings.clockTimezone, settings)}</div>`
     }
     clockElement.innerHTML = `
       <div class="custom-angle-wrapper">
