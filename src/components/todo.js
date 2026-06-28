@@ -131,6 +131,18 @@ export class TodoList {
     const deleteSelectedBtn = this.container.querySelector(
       "#todo-delete-selected-btn",
     )
+    const list = this.container.querySelector("#todo-list")
+
+    list.addEventListener("dragover", (e) => {
+      e.preventDefault()
+      this._handleDragScroll(e, list)
+    })
+    list.addEventListener("drop", () => this._stopAutoScroll())
+    list.addEventListener("dragleave", (e) => {
+      if (!e.relatedTarget || !list.contains(e.relatedTarget)) {
+        this._stopAutoScroll()
+      }
+    })
 
     addBtn.addEventListener("click", () => {
       const isHidden = inputContainer.style.display === "none"
@@ -980,12 +992,22 @@ export class TodoList {
         e.dataTransfer.setData("text/plain", String(index))
         e.dataTransfer.effectAllowed = "move"
         subtaskEl.classList.add("dragging")
+        
+        // Add global wheel listener
+        this._subtaskWheelHandler = (wheelEvent) => {
+          const subtaskListContainer = panel.querySelector(".todo-subtask-list")
+          if (subtaskListContainer) subtaskListContainer.scrollTop += wheelEvent.deltaY
+        }
+        window.addEventListener("wheel", this._subtaskWheelHandler, { passive: true })
       })
 
       subtaskEl.addEventListener("dragover", (e) => {
         e.preventDefault()
         e.stopPropagation()
         subtaskEl.classList.add("drag-over")
+        
+        const subtaskListContainer = panel.querySelector(".todo-subtask-list")
+        if (subtaskListContainer) this._handleDragScroll(e, subtaskListContainer)
       })
 
       subtaskEl.addEventListener("dragleave", () => {
@@ -996,6 +1018,7 @@ export class TodoList {
         e.preventDefault()
         e.stopPropagation()
         subtaskEl.classList.remove("drag-over")
+        this._stopAutoScroll()
         const fromIndex = this.draggedSubtaskIndex ?? Number(e.dataTransfer.getData("text/plain"))
         if (Number.isNaN(fromIndex) || fromIndex === index) {
           this.draggedSubtaskIndex = null
@@ -1012,6 +1035,12 @@ export class TodoList {
         e.stopPropagation()
         this.draggedSubtaskIndex = null
         subtaskEl.classList.remove("dragging")
+        this._stopAutoScroll()
+        
+        if (this._subtaskWheelHandler) {
+          window.removeEventListener("wheel", this._subtaskWheelHandler)
+          this._subtaskWheelHandler = null
+        }
       })
     })
 
@@ -1086,12 +1115,22 @@ export class TodoList {
       this.draggedIndex = Number(el.dataset.index)
       e.dataTransfer.effectAllowed = "move"
       setTimeout(() => el.classList.add("dragging"), 0)
+      
+      this._todoWheelHandler = (wheelEvent) => {
+        const list = this.container.querySelector("#todo-list")
+        if (list) list.scrollTop += wheelEvent.deltaY
+      }
+      window.addEventListener("wheel", this._todoWheelHandler, { passive: true })
     })
 
     el.addEventListener("dragover", (e) => {
       if (e.target.closest(".todo-subtask")) return
       e.preventDefault()
       e.dataTransfer.dropEffect = "move"
+      
+      const list = this.container.querySelector("#todo-list")
+      if (list) this._handleDragScroll(e, list)
+      
       const target = e.target.closest("li")
       if (target && target !== el) {
         target.classList.add("drag-over")
@@ -1108,6 +1147,7 @@ export class TodoList {
     el.addEventListener("drop", (e) => {
       if (e.target.closest(".todo-subtask")) return
       e.preventDefault()
+      this._stopAutoScroll()
       const target = e.target.closest("li")
       if (target) {
         target.classList.remove("drag-over")
@@ -1124,8 +1164,62 @@ export class TodoList {
 
     el.addEventListener("dragend", () => {
       el.classList.remove("dragging")
+      this._stopAutoScroll()
       const list = this.container.querySelector("#todo-list")
-      list.querySelectorAll("li").forEach(li => li.classList.remove("drag-over"))
+      if (list) list.querySelectorAll("li").forEach(li => li.classList.remove("drag-over"))
+      
+      if (this._todoWheelHandler) {
+        window.removeEventListener("wheel", this._todoWheelHandler)
+        this._todoWheelHandler = null
+      }
     })
+  }
+
+  _startAutoScroll(container, speed) {
+    if (!this.dragScrollState) this.dragScrollState = { container: null, speed: 0, timerId: null }
+    this.dragScrollState.container = container
+    this.dragScrollState.speed = speed
+
+    if (!this.dragScrollState.timerId) {
+      this.dragScrollState.timerId = setInterval(() => {
+        if (!this.dragScrollState.speed || !this.dragScrollState.container) {
+          this._stopAutoScroll()
+          return
+        }
+        this.dragScrollState.container.scrollTop += this.dragScrollState.speed
+      }, 16)
+    }
+  }
+
+  _stopAutoScroll() {
+    if (!this.dragScrollState) return
+    this.dragScrollState.speed = 0
+    this.dragScrollState.container = null
+    if (this.dragScrollState.timerId) {
+      clearInterval(this.dragScrollState.timerId)
+      this.dragScrollState.timerId = null
+    }
+  }
+
+  _handleDragScroll(e, container) {
+    if (!container) return
+    const rect = container.getBoundingClientRect()
+    const threshold = 80 // pixels from edge to start scrolling
+    const maxSpeed = 25
+
+    let speed = 0
+    if (e.clientY < rect.top + threshold) {
+      const distance = rect.top + threshold - e.clientY
+      speed = -Math.max(3, Math.min(maxSpeed, distance * 0.4))
+    } else if (e.clientY > rect.bottom - threshold) {
+      const distance = e.clientY - (rect.bottom - threshold)
+      speed = Math.max(3, Math.min(maxSpeed, distance * 0.4))
+    }
+
+    if (speed !== 0) {
+      this._startAutoScroll(container, speed)
+    } else {
+      this._stopAutoScroll()
+    }
   }
 }

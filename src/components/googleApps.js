@@ -3,9 +3,9 @@ import { showToast } from "../utils/toast.js"
 
 const STORAGE_KEY = "startpageGoogleAppsV2"
 const ICON_BASE =
-  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/9b36511404829f1042f2628b944b30e30f4484ac/zero_extension/icon%20for%20google%20app%20v2"
+  "https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@9b36511404829f1042f2628b944b30e30f4484ac/zero_extension/icon%20for%20google%20app%20v2"
 const ICON_BASE_LATEST =
-  "https://raw.githubusercontent.com/ChickenSoup269/imagesForRepo/main/zero_extension/icon%20for%20google%20app%20v2"
+  "https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/zero_extension/icon%20for%20google%20app%20v2"
 const latestIconFiles = new Set([
   "youtube.svg",
   "task-google-icon.png",
@@ -760,12 +760,47 @@ export function initGoogleApps() {
   }
 
   function getDropBeforeId(grid, x, y) {
-    const items = [...grid.querySelectorAll(".g-app-item:not(.dragging)")]
-    const target = items.find((item) => {
+    const allItems = [...grid.querySelectorAll(".g-app-item")]
+    const validItems = allItems.filter(item => !item.classList.contains("dragging"))
+    if (validItems.length === 0) return null
+
+    let closestItem = null
+    let minDistance = Infinity
+
+    for (const item of validItems) {
       const rect = item.getBoundingClientRect()
-      return y < rect.top + rect.height / 2 && x < rect.right
-    })
-    return target?.dataset.appId || null
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+      const distance = Math.hypot(x - centerX, y - centerY)
+      
+      if (distance < minDistance) {
+        minDistance = distance
+        closestItem = item
+      }
+    }
+
+    if (!closestItem) return null
+
+    const draggedItem = document.querySelector(".g-app-item.dragging")
+    const closestIndex = allItems.indexOf(closestItem)
+    const draggedIndex = draggedItem ? allItems.indexOf(draggedItem) : -1
+
+    let isBefore = false
+    
+    if (draggedIndex !== -1 && allItems.includes(draggedItem)) {
+      isBefore = draggedIndex > closestIndex
+    } else {
+      const rect = closestItem.getBoundingClientRect()
+      isBefore = x < rect.left + rect.width / 2
+    }
+    
+    if (isBefore) {
+      return closestItem.dataset.appId
+    } else {
+      const index = validItems.indexOf(closestItem)
+      const nextItem = validItems[index + 1]
+      return nextItem ? nextItem.dataset.appId : null
+    }
   }
 
   function updateDropIndicator(grid, x, y) {
