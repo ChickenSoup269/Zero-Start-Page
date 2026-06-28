@@ -679,8 +679,7 @@ export function showContextMenu(
 
     addOpenWidgetSettingsItem(id, i18n)
 
-    // THÊM TÙY CHỌN SKIN CHO CÁC WIDGET
-    const skinnableWidgets = [
+        const skinnableWidgets = [
       "todo",
       "timer",
       "calendar",
@@ -689,6 +688,7 @@ export function showContextMenu(
       "daily-quotes",
       "rss",
     ]
+
     if (skinnableWidgets.includes(id)) {
       const skinKey = `${id === "daily-quotes" ? "quotes" : id}Skin`
       const currentSkin = settings[skinKey] || "default"

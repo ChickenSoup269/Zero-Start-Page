@@ -1,11 +1,12 @@
 .rss-container {
-    width: 320px;
-    max-height: 400px;
+    width: 380px;
+    max-height: 500px;
     display: flex;
     flex-direction: column;
     padding: 15px;
     gap: 10px;
     overflow: hidden;
+    transition: width 0.3s, max-height 0.3s;
 }
 
 .rss-header {
@@ -21,10 +22,12 @@
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 4px;
-    margin-bottom: -4px;
-    scrollbar-width: none; /* Firefox */
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     flex-shrink: 0;
+    flex-wrap: nowrap;
 }
 
 .rss-tabs::-webkit-scrollbar {
@@ -127,8 +130,8 @@
 }
 
 .rss-container.rss-expanded {
-    width: 450px;
-    max-height: 600px;
+    width: 550px;
+    max-height: 750px;
 }
 .rss-container.rss-expanded .rss-item img {
     width: 80px !important;
