@@ -14,7 +14,48 @@
     align-items: center;
     font-size: 1.1em;
     font-weight: 600;
+    flex-shrink: 0;
 }
+
+.rss-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: -4px;
+    scrollbar-width: none; /* Firefox */
+    flex-shrink: 0;
+}
+
+.rss-tabs::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.rss-tab {
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-size: 0.85em;
+    cursor: pointer;
+    white-space: nowrap;
+    opacity: 0.7;
+    transition: all 0.2s;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.rss-tab:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.rss-tab.active {
+    opacity: 1;
+    background: var(--accent-color, #4facfe);
+    color: #fff;
+    font-weight: 600;
+}
+
 
 .rss-actions button {
     background: transparent;
