@@ -4471,8 +4471,8 @@ body.sidebar-light .preset-code-line-value {
 /* Clock Style Grid & Cards */
 .clock-style-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-1);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-0-5);
   margin-top: var(--space-2);
   padding: 2px;
 }
@@ -4481,7 +4481,7 @@ body.sidebar-light .preset-code-line-value {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-1);
+  padding: var(--space-1) var(--space-0-5);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
@@ -4490,7 +4490,7 @@ body.sidebar-light .preset-code-line-value {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);
+  gap: var(--space-0-5);
   overflow: hidden;
   user-select: none;
 }
@@ -4511,7 +4511,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card i {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.45);
   transition: all 0.3s ease;
 }
@@ -4522,7 +4522,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-name {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
