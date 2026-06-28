@@ -346,6 +346,7 @@
                             <option value="neon-grid">Neon Grid</option>
                             <option value="terminal">Terminal</option>
                             <option value="code">Dynamic Code</option>
+                            <option value="custom-angle">Custom Angle</option>
                             <option value="c4-bomb">C4</option>
                             <option value="holo-ring">Holo Ring</option>
                             <option value="media-orb">Media Orb</option>
@@ -440,6 +441,25 @@
                             <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
                                 <label for="code-style-show-date-checkbox" data-i18n="settings_code_style_show_date">Show Date in Code</label>
                                 <input type="checkbox" id="code-style-show-date-checkbox" checked>
+                            </div>
+                        </div>
+
+                        <div id="custom-angle-settings" class="setting-item no-margin-top" style="display: none;">
+                            <div class="setting-item-row" style="background: transparent; padding: 0; border: none;">
+                                <label for="custom-angle-show-date-checkbox" data-i18n="settings_custom_angle_show_date">Show Date</label>
+                                <input type="checkbox" id="custom-angle-show-date-checkbox" checked>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="custom-angle-skewx-input" data-i18n="settings_custom_angle_skewx">Skew X (Left/Right)</label>
+                                <input type="range" id="custom-angle-skewx-input" min="-45" max="45" value="15">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="custom-angle-skewy-input" data-i18n="settings_custom_angle_skewy">Skew Y (Up/Down)</label>
+                                <input type="range" id="custom-angle-skewy-input" min="-45" max="45" value="0">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="custom-angle-rotate-input" data-i18n="settings_custom_angle_rotate">Rotate Angle</label>
+                                <input type="range" id="custom-angle-rotate-input" min="-180" max="180" value="-5">
                             </div>
                         </div>
 

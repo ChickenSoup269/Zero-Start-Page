@@ -2371,6 +2371,7 @@ function createApplySettings(effectInstances) {
       "c4-bomb",
       "holo-ring",
       "code",
+      "custom-angle",
       "media-orb",
       "prism-stack",
       "metro-panel",
@@ -3245,6 +3246,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (codeStyleLanguageSelect) codeStyleLanguageSelect.value = settings.codeClockLanguage || "javascript"
     const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
     if (codeStyleShowDateCheckbox) codeStyleShowDateCheckbox.checked = settings.codeClockShowDate !== false
+    
+    const customAngleSkewXInput = document.getElementById("custom-angle-skewx-input")
+    if (customAngleSkewXInput) customAngleSkewXInput.value = settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15
+    const customAngleSkewYInput = document.getElementById("custom-angle-skewy-input")
+    if (customAngleSkewYInput) customAngleSkewYInput.value = settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0
+    const customAngleRotateInput = document.getElementById("custom-angle-rotate-input")
+    if (customAngleRotateInput) customAngleRotateInput.value = settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5
+    const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
+    if (customAngleShowDateCheckbox) customAngleShowDateCheckbox.checked = settings.customAngleShowDate !== false
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {
@@ -3297,6 +3307,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "c4-bomb",
       "holo-ring",
       "code",
+      "custom-angle",
       "media-orb",
       "prism-stack",
       "metro-panel",
@@ -3380,6 +3391,20 @@ function createUpdateSettingsInputs(effectInstances) {
     const codeStyleSettings = document.getElementById("code-style-settings")
     if (codeStyleSettings) {
       codeStyleSettings.style.display = style === "code" ? "block" : "none"
+    }
+    const customAngleSettings = document.getElementById("custom-angle-settings")
+    if (customAngleSettings) {
+      customAngleSettings.style.display = style === "custom-angle" ? "block" : "none"
+    }
+
+    if (style === "custom-angle") {
+      document.body.style.setProperty("--skewX", (settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15) + "deg")
+      document.body.style.setProperty("--skewY", (settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0) + "deg")
+      document.body.style.setProperty("--rotate", (settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5) + "deg")
+    } else {
+      document.body.style.removeProperty("--skewX")
+      document.body.style.removeProperty("--skewY")
+      document.body.style.removeProperty("--rotate")
     }
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =

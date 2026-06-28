@@ -930,6 +930,17 @@ export function updateTime() {
         <div class="cool-bar bottom" style="transform: scaleY(${coolBarScale})">${coolBarBottom}</div>
       </div>
     `
+  } else if (dateClockStyle === "custom-angle") {
+    let datePart = ""
+    if (shouldShowDate && settings.customAngleShowDate !== false) {
+      datePart = `<div class="custom-angle-date">${getCustomDateString(false, "default")}</div>`
+    }
+    clockElement.innerHTML = `
+      <div class="custom-angle-wrapper">
+        <div class="custom-angle-time">${timeString}</div>
+        ${datePart}
+      </div>
+    `
   } else if (dateClockStyle === "code") {
     const lang = settings.codeClockLanguage || "javascript"
     const displayS = ss ? ss : "00"

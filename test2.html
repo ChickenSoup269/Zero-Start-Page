@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Một Component - Đầy đủ Hướng Nghiêng</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 1. COMPONENT ĐỒNG HỒ ĐÃ NÂNG CẤP BIẾN CSS */
+        .universal-clock {
+            display: inline-block;
+            font-size: 5.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            /* TÍCH HỢP ĐỦ: Nghiêng ngang (skewX), nghiêng dọc (skewY) và Xoay (rotate) */
+            transform: skewX(var(--skewX, 0deg)) skewY(var(--skewY, 0deg)) rotate(var(--rotate, 0deg));
+            color: var(--color, #fff);
+            text-shadow: var(--shadow, none);
+            transition: transform 0.1s ease-out;
+            /* mượt mà hơn khi kéo slider */
+            margin-bottom: 40px;
+        }
+
+        .style-selector {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .style-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .style-btn.active {
+            background: #007bff;
+        }
+
+        .control-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 350px;
+            text-align: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        input {
+            width: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="style-selector">
+        <button class="style-btn active" onclick="switchStyle('co-phong')">Style Cổ Phong</button>
+        <button class="style-btn" onclick="switchStyle('sieu-tuy-bien')">Style Siêu Tùy Biến 4 Hướng</button>
+    </div>
+
+    <div class="universal-clock" id="myClock">00:00:00</div>
+
+    <div class="control-panel" id="controls"></div>
+
+    <script>
+        const clock = document.getElementById('myClock');
+        const controls = document.getElementById('controls');
+
+        const styleConfigs = {
+            'co-phong': {
+                init: () => {
+                    clock.style.setProperty('--color', '#ffe4e1');
+                    clock.style.setProperty('--shadow', '0 0 15px rgba(255,192,203,0.5)');
+                    clock.style.setProperty('--skewX', '15deg');
+                    clock.style.setProperty('--skewY', '0deg');
+                    clock.style.setProperty('--rotate', '-5deg');
+                },
+                renderControls: () => {
+                    controls.innerHTML = `
+                        <div class="control-group">
+                            <label>Nghiêng Chèo Trái (Mặc định)</label>
+                            <input type="range" min="0" max="45" value="15" oninput="clock.style.setProperty('--skewX', this.value + 'deg')">
+                        </div>
+                    `;
+                }
+            },
+            /* 2. OPTION NÀY GIÚP AI HIỂU TOÀN BỘ CƠ CHẾ ĐIỀU HƯỚNG */
+            'sieu-tuy-bien': {
+                init: () => {
+                    clock.style.setProperty('--color', '#fff');
+                    clock.style.setProperty('--shadow', 'none');
+                    clock.style.setProperty('--skewX', '0deg');
+                    clock.style.setProperty('--skewY', '0deg');
+                    clock.style.setProperty('--rotate', '0deg');
+                },
+                renderControls: () => {
+                    controls.innerHTML = `
+                        <!-- Điều khiển Trái / Phải qua trục X -->
+                        <div class="control-group">
+                            <label>Chèo Ngang: Trái (+) / Phải (-)</label>
+                            <input type="range" min="-45" max="45" value="0" oninput="clock.style.setProperty('--skewX', this.value + 'deg')">
+                        </div>
+                        
+                        <!-- Điều khiển Trên / Dưới qua trục Y -->
+                        <div class="control-group">
+                            <label>Chèo Dọc: Lên Trên (+) / Xuống Dưới (-)</label>
+                            <input type="range" min="-45" max="45" value="0" oninput="clock.style.setProperty('--skewY', this.value + 'deg')">
+                        </div>
+
+                        <!-- Vòng xoay la bàn tự do -->
+                        <div class="control-group">
+                            <label>Xoay Góc Toàn Khối (Rotate)</label>
+                            <input type="range" min="-180" max="180" value="0" oninput="clock.style.setProperty('--rotate', this.value + 'deg')">
+                        </div>
+                    `;
+                }
+            }
+        };
+
+        function switchStyle(styleName) {
+            document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
+            if (event) event.target.classList.add('active');
+            styleConfigs[styleName].init();
+            styleConfigs[styleName].renderControls();
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            clock.innerText = now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0') + ':' +
+                now.getSeconds().toString().padStart(2, '0');
+        }, 1000);
+
+        switchStyle('co-phong');
+    </script>
+</body>
+
+</html>

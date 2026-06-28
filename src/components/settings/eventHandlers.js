@@ -4612,6 +4612,34 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  const customAngleInputs = [
+    { id: "custom-angle-skewx-input", key: "customAngleSkewX", isFloat: true },
+    { id: "custom-angle-skewy-input", key: "customAngleSkewY", isFloat: true },
+    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true }
+  ]
+  customAngleInputs.forEach(item => {
+    const el = document.getElementById(item.id)
+    if (el) {
+      el.addEventListener("input", (e) => {
+        let val = parseFloat(e.target.value) || 0
+        handleSettingUpdate(item.key, val)
+        window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
+      })
+    }
+  })
+
+  const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
+  if (customAngleShowDateCheckbox) {
+    customAngleShowDateCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("customAngleShowDate", e.target.checked)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "customAngleShowDate", value: e.target.checked },
+        }),
+      )
+    })
+  }
+
   DOM.sidebarClockFlipCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidebarClockFlip",
