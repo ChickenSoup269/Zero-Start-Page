@@ -3507,6 +3507,15 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.fliqloThemeSelect) {
         DOM.fliqloThemeSelect.value = settings.fliqloTheme || "dark"
       }
+      const divergenceColorSetting = document.getElementById("fliqlo-divergence-color-setting")
+      if (divergenceColorSetting) {
+        divergenceColorSetting.style.display = settings.fliqloTheme === "divergence" ? "flex" : "none"
+      }
+      const divergenceColorInput = document.getElementById("fliqlo-divergence-color")
+      if (divergenceColorInput) {
+        divergenceColorInput.value = settings.fliqloDivergenceColor || "#ff5500"
+        document.documentElement.style.setProperty("--fliqlo-divergence-color", divergenceColorInput.value)
+      }
       if (DOM.fliqloZenCheckbox) {
         DOM.fliqloZenCheckbox.checked = settings.fliqloZenMode === true
       }

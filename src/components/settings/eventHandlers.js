@@ -4494,6 +4494,11 @@ export function setupGeneralEventHandlers(
 
   DOM.fliqloThemeSelect?.addEventListener("change", () => {
     handleSettingUpdate("fliqloTheme", DOM.fliqloThemeSelect.value)
+    
+    const divergenceColorSetting = document.getElementById("fliqlo-divergence-color-setting")
+    if (divergenceColorSetting) {
+      divergenceColorSetting.style.display = DOM.fliqloThemeSelect.value === "divergence" ? "flex" : "none"
+    }
 
     window.dispatchEvent(
       new CustomEvent("layoutUpdated", {
@@ -4504,6 +4509,14 @@ export function setupGeneralEventHandlers(
       }),
     )
   })
+
+  const divergenceColorInput = document.getElementById("fliqlo-divergence-color")
+  if (divergenceColorInput) {
+    divergenceColorInput.addEventListener("input", (e) => {
+      document.documentElement.style.setProperty("--fliqlo-divergence-color", e.target.value)
+      handleSettingUpdate("fliqloDivergenceColor", e.target.value)
+    })
+  }
 
   DOM.fliqloZenCheckbox?.addEventListener("change", () => {
     handleSettingUpdate("fliqloZenMode", DOM.fliqloZenCheckbox.checked)

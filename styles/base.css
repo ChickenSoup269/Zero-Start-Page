@@ -5792,3 +5792,62 @@ body.clock-style-bg-dark.date-clock-style-custom-angle .custom-angle-wrapper {
   backdrop-filter: blur(12px) saturate(120%) !important;
   -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
 }
+
+/* --- DIVERGENCE METER THEME --- */
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card-top,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card-bottom,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card-flip-top,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card-flip-bottom {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--fliqlo-divergence-color, #ff5500) !important;
+  text-shadow: 0 0 10px var(--fliqlo-divergence-color, #ff5500), 0 0 20px var(--fliqlo-divergence-color, #ff5500), 0 0 30px var(--fliqlo-divergence-color, #ff5500) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card::after {
+  display: none !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-colon,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-ampm,
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-date {
+  color: var(--fliqlo-divergence-color, #ff5500) !important;
+  text-shadow: 0 0 10px var(--fliqlo-divergence-color, #ff5500), 0 0 20px var(--fliqlo-divergence-color, #ff5500) !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card span {
+  font-family: var(--font-clock, 'Consolas', 'Courier New', monospace) !important;
+  font-weight: 300 !important;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card {
+  border-radius: 12px;
+  background: rgba(10, 10, 10, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: inset 0 0 15px rgba(0,0,0,1) !important;
+  position: relative;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 4px 4px;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: 12px;
+}
+
+/* Visibility sync for divergence mode to prevent overlapping digits */
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card.fliqlo-flip .fliqlo-card-top {
+  opacity: 0;
+  animation: fliqloTransparentFadeIn 0s 0.25s forwards;
+}
+
+body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card.fliqlo-flip .fliqlo-card-bottom {
+  opacity: 1;
+  animation: fliqloTransparentFadeOut 0s 0.25s forwards;
+}

@@ -594,11 +594,14 @@
                             <label for="fliqlo-theme-select" data-i18n="settings_fliqlo_theme">Fliqlo
                                 Theme</label>
                             <select id="fliqlo-theme-select">
-                                <option value="dark" data-i18n="settings_fliqlo_theme_dark">Dark
-                                </option>
-                                <option value="light" data-i18n="settings_fliqlo_theme_light">Light
-                                </option>
+                                <option value="dark" data-i18n="settings_fliqlo_theme_dark">Dark</option>
+                                <option value="light" data-i18n="settings_fliqlo_theme_light">Light</option>
+                                <option value="divergence">Divergence Meter</option>
                             </select>
+                            <div id="fliqlo-divergence-color-setting" class="setting-item-row" style="display: none; margin-top: 10px; background: transparent; padding: 0; border: none;">
+                                <label for="fliqlo-divergence-color">Nixie Tube Color</label>
+                                <input type="color" id="fliqlo-divergence-color" value="#ff5500">
+                            </div>
                             <div class="setting-item-row"
                                 style="margin-top: 10px; background: transparent; padding: 0; border: none;">
                                 <label for="fliqlo-zen-checkbox" data-i18n="settings_fliqlo_zen">Zen Mode (Full
