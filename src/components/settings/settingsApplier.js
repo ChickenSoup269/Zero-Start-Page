@@ -3243,6 +3243,8 @@ function createUpdateSettingsInputs(effectInstances) {
     if (coolBarScaleInput) coolBarScaleInput.value = settings.coolBarScale !== undefined ? settings.coolBarScale : 2.5
     const codeStyleLanguageSelect = document.getElementById("code-style-language-select")
     if (codeStyleLanguageSelect) codeStyleLanguageSelect.value = settings.codeClockLanguage || "javascript"
+    const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
+    if (codeStyleShowDateCheckbox) codeStyleShowDateCheckbox.checked = settings.codeClockShowDate !== false
     if (DOM.sidebarClockFlipCheckbox)
       DOM.sidebarClockFlipCheckbox.checked = settings.sidebarClockFlip === true
     if (DOM.clockStyleBgSelect) {

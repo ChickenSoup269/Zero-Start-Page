@@ -933,7 +933,37 @@ export function updateTime() {
   } else if (dateClockStyle === "code") {
     const lang = settings.codeClockLanguage || "javascript"
     const displayS = ss ? ss : "00"
+    const showDate = settings.codeClockShowDate !== false && !isTimer
+    let dateFields = ""
     let codeHtml = ""
+
+    if (showDate) {
+      const year = now.getFullYear()
+      const month = String(now.getMonth() + 1).padStart(2, "0")
+      const day = String(now.getDate()).padStart(2, "0")
+      
+      if (lang === "python") {
+        dateFields = `,
+        <span class="code-string">"year"</span>: <span class="code-number">${year}</span>,
+        <span class="code-string">"month"</span>: <span class="code-number">${month}</span>,
+        <span class="code-string">"day"</span>: <span class="code-number">${day}</span>`
+      } else if (lang === "java") {
+        dateFields = `
+    <span class="code-keyword">int</span> year = <span class="code-number">${year}</span>;
+    <span class="code-keyword">int</span> month = <span class="code-number">${month}</span>;
+    <span class="code-keyword">int</span> day = <span class="code-number">${day}</span>;`
+      } else if (lang === "cpp") {
+        dateFields = `
+    <span class="code-keyword">int</span> year = <span class="code-number">${year}</span>;
+    <span class="code-keyword">int</span> month = <span class="code-number">${month}</span>;
+    <span class="code-keyword">int</span> day = <span class="code-number">${day}</span>;`
+      } else {
+        dateFields = `,
+  <span class="code-property">year</span>: <span class="code-number">${year}</span>,
+  <span class="code-property">month</span>: <span class="code-number">${month}</span>,
+  <span class="code-property">day</span>: <span class="code-number">${day}</span>`
+      }
+    }
 
     if (lang === "python") {
       codeHtml = `
@@ -941,28 +971,28 @@ export function updateTime() {
     <span class="code-keyword">return</span> {
         <span class="code-string">"hours"</span>: <span class="code-number">${hh}</span>,
         <span class="code-string">"minutes"</span>: <span class="code-number">${mm}</span>,
-        <span class="code-string">"seconds"</span>: <span class="code-number">${displayS}</span>
+        <span class="code-string">"seconds"</span>: <span class="code-number">${displayS}</span>${dateFields}
     }`
     } else if (lang === "java") {
       codeHtml = `
 <span class="code-keyword">class</span> <span class="code-class">Clock</span> {
     <span class="code-keyword">int</span> hours = <span class="code-number">${hh}</span>;
     <span class="code-keyword">int</span> minutes = <span class="code-number">${mm}</span>;
-    <span class="code-keyword">int</span> seconds = <span class="code-number">${displayS}</span>;
+    <span class="code-keyword">int</span> seconds = <span class="code-number">${displayS}</span>;${dateFields}
 }`
     } else if (lang === "cpp") {
       codeHtml = `
 <span class="code-keyword">struct</span> <span class="code-class">Time</span> {
     <span class="code-keyword">int</span> h = <span class="code-number">${hh}</span>;
     <span class="code-keyword">int</span> m = <span class="code-number">${mm}</span>;
-    <span class="code-keyword">int</span> s = <span class="code-number">${displayS}</span>;
+    <span class="code-keyword">int</span> s = <span class="code-number">${displayS}</span>;${dateFields}
 };`
     } else {
       codeHtml = `
 <span class="code-keyword">const</span> time = {
   <span class="code-property">hours</span>: <span class="code-number">${hh}</span>,
   <span class="code-property">minutes</span>: <span class="code-number">${mm}</span>,
-  <span class="code-property">seconds</span>: <span class="code-number">${displayS}</span>
+  <span class="code-property">seconds</span>: <span class="code-number">${displayS}</span>${dateFields}
 };`
     }
 

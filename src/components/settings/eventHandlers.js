@@ -4600,6 +4600,18 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
+  if (codeStyleShowDateCheckbox) {
+    codeStyleShowDateCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("codeClockShowDate", e.target.checked)
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "codeClockShowDate", value: e.target.checked },
+        }),
+      )
+    })
+  }
+
   DOM.sidebarClockFlipCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidebarClockFlip",
