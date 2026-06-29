@@ -5235,6 +5235,12 @@ function createUpdateSettingsInputs(effectInstances) {
       const ls2d = document.getElementById("custom-title-letter-spacing-2-val")
       if (ls2d) ls2d.textContent = ls2
 
+      const lineSpc = settings.customTitleLineSpacing || 15
+      const lineSpcInput = document.getElementById("custom-title-line-spacing")
+      if (lineSpcInput) lineSpcInput.value = lineSpc
+      const lineSpcd = document.getElementById("custom-title-line-spacing-val")
+      if (lineSpcd) lineSpcd.textContent = lineSpc
+
       const sb = settings.customTitleShadowBlur || 0
       if (DOM.customTitleShadowBlur) DOM.customTitleShadowBlur.value = sb
       const sbd = document.getElementById("custom-title-shadow-blur-val")

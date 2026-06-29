@@ -6979,6 +6979,7 @@ export function setupGeneralEventHandlers(
     { dom: document.getElementById("custom-title-letter-spacing-3"), valDom: document.getElementById("custom-title-letter-spacing-3-val"), key: "customTitleLetterSpacing3" },
     { dom: document.getElementById("custom-title-font-size-4"), valDom: document.getElementById("custom-title-fontsize-4-val"), key: "customTitleFontSize4" },
     { dom: document.getElementById("custom-title-letter-spacing-4"), valDom: document.getElementById("custom-title-letter-spacing-4-val"), key: "customTitleLetterSpacing4" },
+    { dom: document.getElementById("custom-title-line-spacing"), valDom: document.getElementById("custom-title-line-spacing-val"), key: "customTitleLineSpacing" },
   ]
 
   customTitleSliders.forEach((s) => {

@@ -2115,7 +2115,8 @@ export function updateCustomTitle() {
   const ori2 = settings.customTitleOrientation2 || "mixed"
   const ori3 = settings.customTitleOrientation3 || "mixed"
   const ori4 = settings.customTitleOrientation4 || "mixed"
-  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4
+  const lineSpacing = settings.customTitleLineSpacing !== undefined ? settings.customTitleLineSpacing : 15
+  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4 + "||" + lineSpacing
 
   if (
     el.dataset.prevText !== combinedText ||
@@ -2166,6 +2167,11 @@ export function updateCustomTitle() {
       div.dataset.line = lineNumber
       if (fontFamily && fontFamily !== "inherit") {
         div.style.fontFamily = fontFamily
+      }
+      if (direction === "vertical") {
+        div.style.margin = `0 ${lineSpacing}px`
+      } else {
+        div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
         if (wordWrap) {

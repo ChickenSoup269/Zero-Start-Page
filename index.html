@@ -1664,6 +1664,14 @@
                                 
                                 <button id="custom-title-add-line-btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); color: #fff; border-radius: 6px; margin-top: 12px; cursor: pointer; transition: all 0.2s;"><i class="fa-solid fa-plus"></i> <span data-i18n="settings_custom_title_add_line">Thêm dòng</span></button>
                                 
+                                <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 16px;">
+                                    <label style="display: flex; justify-content: space-between; font-size: 0.9em; opacity: 0.8; margin-bottom: 0;">
+                                        <span><i class="fa-solid fa-up-down"></i> <span data-i18n="settings_custom_title_line_spacing">Khoảng cách giữa các dòng</span></span>
+                                        <span style="font-family: monospace;"><span id="custom-title-line-spacing-val">15</span>px</span>
+                                    </label>
+                                    <input type="range" id="custom-title-line-spacing" min="0" max="100" value="15" style="width: 100%;">
+                                </div>
+                                
                                 <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
                                         <label for="custom-title-direction" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span data-i18n="settings_custom_title_direction">Hướng chữ</span></label>
