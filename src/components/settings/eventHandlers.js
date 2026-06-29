@@ -7086,8 +7086,9 @@ export function setupGeneralEventHandlers(
     }
   }
 
-  if (line3Container && state.settings.customTitleText3) line3Container.style.display = "block"
-  if (line4Container && state.settings.customTitleText4) line4Container.style.display = "block"
+  const currentSettings = getSettings()
+  if (line3Container && currentSettings.customTitleText3) line3Container.style.display = "block"
+  if (line4Container && currentSettings.customTitleText4) line4Container.style.display = "block"
   updateLineVisibility()
 
   if (addLineBtn) {
