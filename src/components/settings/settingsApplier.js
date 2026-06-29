@@ -5200,9 +5200,13 @@ function createUpdateSettingsInputs(effectInstances) {
     const animLoopEl = document.getElementById("custom-title-animation-loop")
     if (animLoopEl) animLoopEl.value = settings.customTitleAnimationLoop || "infinite"
     
-    if (DOM.customTitleMulticolor)
-      DOM.customTitleMulticolor.checked =
-        settings.customTitleMulticolor === true
+      if (DOM.customTitleLetterSpacing4)
+        DOM.customTitleLetterSpacing4.value = settings.customTitleLetterSpacing4 || 0
+      if (DOM.customTitleLineSpacing)
+        DOM.customTitleLineSpacing.value = settings.customTitleLineSpacing ?? 15
+      if (DOM.customTitleMulticolor)
+        DOM.customTitleMulticolor.checked =
+          settings.customTitleMulticolor === true
       if (DOM.customTitleColor)
         DOM.customTitleColor.value = settings.customTitleColor || "#ffffff"
 

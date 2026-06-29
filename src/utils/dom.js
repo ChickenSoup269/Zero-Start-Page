@@ -2001,6 +2001,7 @@ export let customTitleFontSize = document.getElementById(
 export let customTitleLetterSpacing = document.getElementById(
   "custom-title-letter-spacing",
 )
+export let customTitleLineSpacing = document.getElementById("custom-title-line-spacing")
 export let customTitleShadowBlur = document.getElementById(
   "custom-title-shadow-blur",
 )
@@ -4017,6 +4018,7 @@ export function refreshDOMReferences() {
   customTitleLetterSpacing = document.getElementById(
   "custom-title-letter-spacing",
 )
+  customTitleLineSpacing = document.getElementById("custom-title-line-spacing")
   customTitleShadowBlur = document.getElementById(
   "custom-title-shadow-blur",
 )

@@ -1818,5 +1818,6 @@
   "settings_custom_title_animation_bounce": "Nảy (Bounce)",
   "settings_custom_title_animation_loop_label": "Chế độ lặp",
   "settings_custom_title_animation_loop_infinite": "Lặp liên tục",
-  "settings_custom_title_animation_loop_once": "Chạy 1 lần"
+  "settings_custom_title_animation_loop_once": "Chạy 1 lần",
+  "settings_custom_title_line_spacing": "Khoảng cách giữa các dòng"
 }
