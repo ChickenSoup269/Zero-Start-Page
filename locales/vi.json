@@ -1809,7 +1809,7 @@
   "settings_custom_title_order": "Thứ tự dòng",
   "settings_custom_title_order_normal": "Bình thường (1->4)",
   "settings_custom_title_order_reverse": "Đảo ngược (4->1)",
-  "settings_custom_title_word_wrap": "Xếp dọc từng ký tự",
+  "settings_custom_title_word_wrap": "Xếp dọc từng TỪ (Xuống dòng)",
   "settings_custom_title_animation_label": "Hiệu ứng",
   "settings_custom_title_animation_none": "Không có",
   "settings_custom_title_animation_typing": "Gõ chữ (Typing)",

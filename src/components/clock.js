@@ -2159,10 +2159,10 @@ export function updateCustomTitle() {
       innerWrap.style.textOrientation = "mixed"
     }
 
-    // Set word wrap (now acting as character stack)
+    // Set word wrap (now acting as character/word stack)
     if (wordWrap) {
       innerWrap.style.whiteSpace = "pre-wrap"
-      innerWrap.style.wordBreak = "break-all"
+      innerWrap.style.wordBreak = "break-word"
       innerWrap.style.width = "min-content"
     } else {
       innerWrap.style.whiteSpace = ""
@@ -2186,7 +2186,7 @@ export function updateCustomTitle() {
       }
       if (wordWrap) {
         div.style.whiteSpace = "pre-wrap"
-        div.style.wordBreak = "break-all"
+        div.style.wordBreak = "break-word"
         div.style.width = "min-content"
       }
       if (isMulti) applyHuePerCharacter(div, 42)
