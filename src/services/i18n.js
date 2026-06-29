@@ -1,5 +1,5 @@
 import { getSettings, updateSetting } from "./state.js"
-import { updateTime } from "../components/clock2.js"
+import { updateTime } from "../components/clock.js"
 
 let i18n = {}
 let englishI18n = null
