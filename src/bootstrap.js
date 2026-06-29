@@ -100,6 +100,6 @@ const hydrateSettingsPartialsWhenVisible = () => {
   }
 }
 
-const mainModulePromise = import("./main.js?v=perf-lazy-v12")
+const mainModulePromise = import("./main.js?v=perf-lazy-v13")
 hydrateSettingsPartialsWhenVisible()
 await mainModulePromise
