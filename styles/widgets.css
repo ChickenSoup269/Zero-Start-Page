@@ -7916,6 +7916,50 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   transition: opacity 0.3s ease;
 }
 
+/* Custom Title Animations */
+.title-anim-typing > div {
+  white-space: nowrap;
+  animation: typing 3s ease-in-out infinite alternate;
+}
+@keyframes typing {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.title-anim-once,
+.title-anim-once > div {
+  animation-iteration-count: 1 !important;
+  animation-direction: normal !important;
+  animation-fill-mode: forwards !important;
+}
+
+.title-anim-fade-loop {
+  animation: fadeLoop 4s ease-in-out infinite;
+}
+@keyframes fadeLoop {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.title-anim-pulse {
+  display: inline-block;
+  animation: pulseAnim 2s infinite;
+}
+@keyframes pulseAnim {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.title-anim-bounce {
+  display: inline-block;
+  animation: bounceAnim 2s infinite;
+}
+@keyframes bounceAnim {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-15px); }
+  60% { transform: translateY(-7px); }
+}
+
 body.free-move-custom-title .custom-title-display {
   position: absolute !important;
   z-index: 100;

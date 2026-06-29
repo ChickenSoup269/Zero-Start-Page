@@ -2091,28 +2091,146 @@ export function updateCustomTitle() {
   }
 
   const text = settings.customTitleText || ""
-  if (!text.trim()) {
-    el.innerHTML = ""
-    el.dataset.prevText = ""
+  const text2 = settings.customTitleText2 || ""
+  const text3 = settings.customTitleText3 || ""
+  const text4 = settings.customTitleText4 || ""
+
+  if (!text && !text2 && !text3 && !text4) {
+    el.style.display = "none"
     return
   }
+  el.style.display = "block"
 
   const isMulti = settings.customTitleMulticolor === true
+  const direction = settings.customTitleDirection || "horizontal"
+  const order = settings.customTitleOrder || "normal"
+  const wordWrap = settings.customTitleWordWrap === true
+  const animation = settings.customTitleAnimation || "none"
+  const animationLoop = settings.customTitleAnimationLoop || "infinite"
+  const font1 = settings.customTitleFont || "inherit"
+  const font2 = settings.customTitleFont2 || "inherit"
+  const font3 = settings.customTitleFont3 || "inherit"
+  const font4 = settings.customTitleFont4 || "inherit"
+  const ori1 = settings.customTitleOrientation || "upright"
+  const ori2 = settings.customTitleOrientation2 || "mixed"
+  const ori3 = settings.customTitleOrientation3 || "mixed"
+  const ori4 = settings.customTitleOrientation4 || "mixed"
+  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4
+
   if (
-    el.dataset.prevText !== text ||
+    el.dataset.prevText !== combinedText ||
     el.dataset.prevMulti !== String(isMulti)
   ) {
-    el.textContent = text
-    if (isMulti) {
-      applyHuePerCharacter(el, 42)
+    el.innerHTML = ""
+    
+    // Create inner wrapper for animations so it doesn't conflict with draggable transform
+    const innerWrap = document.createElement("div")
+    innerWrap.className = "custom-title-inner"
+
+    // Set animation classes on inner wrapper
+    if (animation !== "none") {
+      innerWrap.classList.add(`title-anim-${animation}`)
+      if (animationLoop === "once") {
+        innerWrap.classList.add(`title-anim-once`)
+      }
     }
-    el.dataset.prevText = text
+
+    // Set direction
+    el.className = "custom-title-display"
+    if (direction === "vertical") {
+      el.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+      el.style.display = "block"
+      innerWrap.style.writingMode = order === "reverse" ? "vertical-rl" : "vertical-lr"
+      innerWrap.style.display = "block"
+    } else {
+      el.style.writingMode = "horizontal-tb"
+      el.style.textOrientation = "mixed"
+      el.style.display = order === "reverse" ? "flex" : "block"
+      if (order === "reverse") {
+         el.style.flexDirection = "column-reverse"
+         el.style.alignItems = "center"
+         innerWrap.style.display = "flex"
+         innerWrap.style.flexDirection = "column-reverse"
+         innerWrap.style.alignItems = "center"
+      } else {
+         innerWrap.style.display = "block"
+      }
+      innerWrap.style.writingMode = "horizontal-tb"
+      innerWrap.style.textOrientation = "mixed"
+    }
+
+    // Set word wrap (now acting as character stack)
+    if (wordWrap) {
+      innerWrap.style.whiteSpace = "pre-wrap"
+      innerWrap.style.wordBreak = "break-all"
+      innerWrap.style.width = "min-content"
+    } else {
+      innerWrap.style.whiteSpace = ""
+      innerWrap.style.wordBreak = ""
+      innerWrap.style.width = ""
+    }
+
+    // Create lines
+    const createLine = (content, fontFamily, lineNumber, orientation) => {
+      if (!content) return null
+      const div = document.createElement("div")
+      div.dataset.line = lineNumber
+      div.textContent = content
+      if (fontFamily && fontFamily !== "inherit") {
+        div.style.fontFamily = fontFamily
+      }
+      if (direction === "vertical") {
+        div.style.textOrientation = orientation
+      } else {
+        div.style.textOrientation = "mixed"
+      }
+      if (wordWrap) {
+        div.style.whiteSpace = "pre-wrap"
+        div.style.wordBreak = "break-all"
+        div.style.width = "min-content"
+      }
+      if (isMulti) applyHuePerCharacter(div, 42)
+      return div
+    }
+
+    const line1 = createLine(text, font1, "1", ori1)
+    const line2 = createLine(text2, font2, "2", ori2)
+    const line3 = createLine(text3, font3, "3", ori3)
+    const line4 = createLine(text4, font4, "4", ori4)
+
+    if (line1) innerWrap.appendChild(line1)
+    if (line2) innerWrap.appendChild(line2)
+    if (line3) innerWrap.appendChild(line3)
+    if (line4) innerWrap.appendChild(line4)
+    el.appendChild(innerWrap)
+
+    el.dataset.prevText = combinedText
     el.dataset.prevMulti = String(isMulti)
   }
 
   el.style.color = settings.customTitleColor || "#ffffff"
-  el.style.fontSize = (settings.customTitleFontSize || 24) + "px"
-  el.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"
+  
+  const l1 = el.querySelector('[data-line="1"]')
+  const l2 = el.querySelector('[data-line="2"]')
+  const l3 = el.querySelector('[data-line="3"]')
+  const l4 = el.querySelector('[data-line="4"]')
+  
+  if (l1) {
+    l1.style.fontSize = (settings.customTitleFontSize || 24) + "px"
+    l1.style.letterSpacing = (settings.customTitleLetterSpacing || 0) + "px"
+  }
+  if (l2) {
+    l2.style.fontSize = (settings.customTitleFontSize2 || 24) + "px"
+    l2.style.letterSpacing = (settings.customTitleLetterSpacing2 || 0) + "px"
+  }
+  if (l3) {
+    l3.style.fontSize = (settings.customTitleFontSize3 || 24) + "px"
+    l3.style.letterSpacing = (settings.customTitleLetterSpacing3 || 0) + "px"
+  }
+  if (l4) {
+    l4.style.fontSize = (settings.customTitleFontSize4 || 24) + "px"
+    l4.style.letterSpacing = (settings.customTitleLetterSpacing4 || 0) + "px"
+  }
 
   const titleTextTargets = [el, ...el.querySelectorAll(".clock-hue-char")]
   if (settings.customTitleBorderSize > 0) {

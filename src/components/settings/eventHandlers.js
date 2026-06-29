@@ -6970,8 +6970,45 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  const customTitleSliders = [
+    { dom: document.getElementById("custom-title-font-size"), valDom: document.getElementById("custom-title-fontsize-val"), key: "customTitleFontSize" },
+    { dom: document.getElementById("custom-title-letter-spacing"), valDom: document.getElementById("custom-title-letter-spacing-val"), key: "customTitleLetterSpacing" },
+    { dom: document.getElementById("custom-title-font-size-2"), valDom: document.getElementById("custom-title-fontsize-2-val"), key: "customTitleFontSize2" },
+    { dom: document.getElementById("custom-title-letter-spacing-2"), valDom: document.getElementById("custom-title-letter-spacing-2-val"), key: "customTitleLetterSpacing2" },
+    { dom: document.getElementById("custom-title-font-size-3"), valDom: document.getElementById("custom-title-fontsize-3-val"), key: "customTitleFontSize3" },
+    { dom: document.getElementById("custom-title-letter-spacing-3"), valDom: document.getElementById("custom-title-letter-spacing-3-val"), key: "customTitleLetterSpacing3" },
+    { dom: document.getElementById("custom-title-font-size-4"), valDom: document.getElementById("custom-title-fontsize-4-val"), key: "customTitleFontSize4" },
+    { dom: document.getElementById("custom-title-letter-spacing-4"), valDom: document.getElementById("custom-title-letter-spacing-4-val"), key: "customTitleLetterSpacing4" },
+  ]
+
+  customTitleSliders.forEach((s) => {
+    s.dom?.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value)
+      if (s.valDom) s.valDom.textContent = val
+      updateSetting(s.key, val)
+      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: s.key, value: val } }))
+    })
+    s.dom?.addEventListener("change", (e) => handleSettingUpdate(s.key, parseInt(e.target.value)))
+  })
+
   const customTitleFields = [
-    { dom: DOM.customTitleText, key: "customTitleText", isCheckbox: false },
+    { dom: document.getElementById("custom-title-text"), key: "customTitleText", isCheckbox: false },
+    { dom: document.getElementById("custom-title-text-2"), key: "customTitleText2", isCheckbox: false },
+    { dom: document.getElementById("custom-title-text-3"), key: "customTitleText3", isCheckbox: false },
+    { dom: document.getElementById("custom-title-text-4"), key: "customTitleText4", isCheckbox: false },
+    { dom: document.getElementById("custom-title-font"), key: "customTitleFont", isCheckbox: false },
+    { dom: document.getElementById("custom-title-font-2"), key: "customTitleFont2", isCheckbox: false },
+    { dom: document.getElementById("custom-title-font-3"), key: "customTitleFont3", isCheckbox: false },
+    { dom: document.getElementById("custom-title-font-4"), key: "customTitleFont4", isCheckbox: false },
+    { dom: document.getElementById("custom-title-orientation"), key: "customTitleOrientation", isCheckbox: false },
+    { dom: document.getElementById("custom-title-orientation-2"), key: "customTitleOrientation2", isCheckbox: false },
+    { dom: document.getElementById("custom-title-orientation-3"), key: "customTitleOrientation3", isCheckbox: false },
+    { dom: document.getElementById("custom-title-orientation-4"), key: "customTitleOrientation4", isCheckbox: false },
+    { dom: document.getElementById("custom-title-direction"), key: "customTitleDirection", isCheckbox: false },
+    { dom: document.getElementById("custom-title-order"), key: "customTitleOrder", isCheckbox: false },
+    { dom: document.getElementById("custom-title-word-wrap"), key: "customTitleWordWrap", isCheckbox: true },
+    { dom: document.getElementById("custom-title-animation"), key: "customTitleAnimation", isCheckbox: false },
+    { dom: document.getElementById("custom-title-animation-loop"), key: "customTitleAnimationLoop", isCheckbox: false },
     {
       dom: DOM.customTitleMulticolor,
       key: "customTitleMulticolor",
@@ -6985,10 +7022,22 @@ export function setupGeneralEventHandlers(
       valDisp: "custom-title-fontsize-val",
     },
     {
+      dom: document.getElementById("custom-title-font-size-2"),
+      key: "customTitleFontSize2",
+      isCheckbox: false,
+      valDisp: "custom-title-fontsize-2-val",
+    },
+    {
       dom: DOM.customTitleLetterSpacing,
       key: "customTitleLetterSpacing",
       isCheckbox: false,
       valDisp: "custom-title-letter-spacing-val",
+    },
+    {
+      dom: document.getElementById("custom-title-letter-spacing-2"),
+      key: "customTitleLetterSpacing2",
+      isCheckbox: false,
+      valDisp: "custom-title-letter-spacing-2-val",
     },
     {
       dom: DOM.customTitleShadowBlur,
@@ -7019,6 +7068,64 @@ export function setupGeneralEventHandlers(
       isCheckbox: false,
     },
   ]
+
+  const line3Container = document.getElementById("custom-title-line-3-container")
+  const line4Container = document.getElementById("custom-title-line-4-container")
+  const addLineBtn = document.getElementById("custom-title-add-line-btn")
+  const removeLineBtns = document.querySelectorAll(".remove-line-btn")
+
+  const updateLineVisibility = () => {
+    if (!line3Container || !line4Container || !addLineBtn) return
+    const isLine3Visible = line3Container.style.display !== "none"
+    const isLine4Visible = line4Container.style.display !== "none"
+    
+    if (isLine3Visible && isLine4Visible) {
+      addLineBtn.style.display = "none"
+    } else {
+      addLineBtn.style.display = "block"
+    }
+  }
+
+  if (line3Container && state.settings.customTitleText3) line3Container.style.display = "block"
+  if (line4Container && state.settings.customTitleText4) line4Container.style.display = "block"
+  updateLineVisibility()
+
+  if (addLineBtn) {
+    addLineBtn.addEventListener("click", () => {
+      if (line3Container.style.display === "none") {
+        line3Container.style.display = "block"
+      } else if (line4Container.style.display === "none") {
+        line4Container.style.display = "block"
+      }
+      updateLineVisibility()
+    })
+  }
+
+  if (removeLineBtns.length) {
+    removeLineBtns.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const target = e.currentTarget.dataset.target
+        if (target === "3") {
+          line3Container.style.display = "none"
+          const input = document.getElementById("custom-title-text-3")
+          if (input) {
+             input.value = ""
+             handleSettingUpdate("customTitleText3", "")
+             window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText3", value: "" } }))
+          }
+        } else if (target === "4") {
+          line4Container.style.display = "none"
+          const input = document.getElementById("custom-title-text-4")
+          if (input) {
+             input.value = ""
+             handleSettingUpdate("customTitleText4", "")
+             window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customTitleText4", value: "" } }))
+          }
+        }
+        updateLineVisibility()
+      })
+    })
+  }
 
   customTitleFields.forEach((field) => {
     if (field.dom) {

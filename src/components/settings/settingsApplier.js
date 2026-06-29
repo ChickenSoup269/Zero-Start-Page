@@ -14,6 +14,7 @@ import {
   updateBookmarkGroupsToggleIcon,
 } from "../bookmarks.js"
 import { geti18n } from "../../services/i18n.js"
+import { PREDEFINED_FONTS } from "./fontManager.js"
 import {
   buildMaterial3Scheme,
   getContrastYIQ,
@@ -5152,9 +5153,56 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.customTitleText) {
       DOM.customTitleText.value = settings.customTitleText || ""
-      if (DOM.customTitleMulticolor)
-        DOM.customTitleMulticolor.checked =
-          settings.customTitleMulticolor === true
+    const text2El = document.getElementById("custom-title-text-2")
+    if (text2El) text2El.value = settings.customTitleText2 || ""
+    const populateFontDropdown = (selectEl, selectedVal) => {
+      if (!selectEl) return;
+      selectEl.innerHTML = '<option value="inherit">Font mặc định</option>';
+      PREDEFINED_FONTS.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.value;
+        opt.textContent = f.label;
+        selectEl.appendChild(opt);
+      });
+      const customFonts = JSON.parse(localStorage.getItem("customFonts")) || [];
+      customFonts.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = `'${f.name}'`;
+        opt.textContent = `${f.name} (Tùy chỉnh)`;
+        selectEl.appendChild(opt);
+      });
+      selectEl.value = selectedVal || "inherit";
+    };
+    
+    populateFontDropdown(document.getElementById("custom-title-font"), settings.customTitleFont);
+    populateFontDropdown(document.getElementById("custom-title-font-2"), settings.customTitleFont2);
+    populateFontDropdown(document.getElementById("custom-title-font-3"), settings.customTitleFont3);
+    populateFontDropdown(document.getElementById("custom-title-font-4"), settings.customTitleFont4);
+
+    const oriEl = document.getElementById("custom-title-orientation")
+    if (oriEl) oriEl.value = settings.customTitleOrientation || "upright"
+    const ori2El = document.getElementById("custom-title-orientation-2")
+    if (ori2El) ori2El.value = settings.customTitleOrientation2 || "mixed"
+    const ori3El = document.getElementById("custom-title-orientation-3")
+    if (ori3El) ori3El.value = settings.customTitleOrientation3 || "mixed"
+    const ori4El = document.getElementById("custom-title-orientation-4")
+    if (ori4El) ori4El.value = settings.customTitleOrientation4 || "mixed"
+
+    const dirEl = document.getElementById("custom-title-direction")
+    if (dirEl) dirEl.value = settings.customTitleDirection || "horizontal"
+    const orderEl = document.getElementById("custom-title-order")
+    if (orderEl) orderEl.value = settings.customTitleOrder || "normal"
+    const wwEl = document.getElementById("custom-title-word-wrap")
+    if (wwEl) wwEl.checked = settings.customTitleWordWrap === true
+
+    const animEl = document.getElementById("custom-title-animation")
+    if (animEl) animEl.value = settings.customTitleAnimation || "none"
+    const animLoopEl = document.getElementById("custom-title-animation-loop")
+    if (animLoopEl) animLoopEl.value = settings.customTitleAnimationLoop || "infinite"
+    
+    if (DOM.customTitleMulticolor)
+      DOM.customTitleMulticolor.checked =
+        settings.customTitleMulticolor === true
       if (DOM.customTitleColor)
         DOM.customTitleColor.value = settings.customTitleColor || "#ffffff"
 
@@ -5163,10 +5211,22 @@ function createUpdateSettingsInputs(effectInstances) {
       const fsd = document.getElementById("custom-title-fontsize-val")
       if (fsd) fsd.textContent = fs
 
+      const fs2 = settings.customTitleFontSize2 || 24
+      const fs2Input = document.getElementById("custom-title-font-size-2")
+      if (fs2Input) fs2Input.value = fs2
+      const fs2d = document.getElementById("custom-title-fontsize-2-val")
+      if (fs2d) fs2d.textContent = fs2
+
       const ls = settings.customTitleLetterSpacing || 0
       if (DOM.customTitleLetterSpacing) DOM.customTitleLetterSpacing.value = ls
       const lsd = document.getElementById("custom-title-letter-spacing-val")
       if (lsd) lsd.textContent = ls
+
+      const ls2 = settings.customTitleLetterSpacing2 || 0
+      const ls2Input = document.getElementById("custom-title-letter-spacing-2")
+      if (ls2Input) ls2Input.value = ls2
+      const ls2d = document.getElementById("custom-title-letter-spacing-2-val")
+      if (ls2d) ls2d.textContent = ls2
 
       const sb = settings.customTitleShadowBlur || 0
       if (DOM.customTitleShadowBlur) DOM.customTitleShadowBlur.value = sb

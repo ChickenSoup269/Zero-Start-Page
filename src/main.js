@@ -820,6 +820,7 @@ async function bootstrap() {
   })
 
   const widgetContextTargets = [
+    ["#custom-title-display", "custom-title"],
     ["#clock-date-wrap", "clock"],
     ["#todo-container", "todo"],
     ["#timer-component", "timer"],

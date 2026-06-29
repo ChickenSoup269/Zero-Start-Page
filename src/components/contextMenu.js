@@ -215,6 +215,12 @@ function getWidgetSettingsTarget(id) {
       labelKey: "settings_date_format",
       fallback: "Clock",
     },
+    "custom-title": {
+      section: "custom-title",
+      target: "#custom-title-text",
+      labelKey: "settings_show_custom_title",
+      fallback: "Custom Title",
+    },
     todo: {
       section: "layout",
       target: "#show-todo-checkbox",
@@ -558,6 +564,7 @@ function getContextMenuTargetName(type, id, index, i18n) {
       if (widgetId === "calendar") return i18n.context_header_widget_calendar || "Calendar"
       if (widgetId === "daily-quotes") return i18n.context_header_widget_quotes || "Daily Quotes"
       if (widgetId === "rss") return i18n.context_header_widget_rss || "RSS Reader"
+      if (widgetId === "custom-title") return i18n.context_header_widget_custom_title || "Custom Title"
       return widgetId
     }
     case "todo": {
@@ -665,7 +672,11 @@ export function showContextMenu(
     menuLock.style.display = "flex"
 
     const settings = getSettings()
-    const isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
+    let isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
+    if (id === "custom-title") {
+      isLocked = settings.freeMoveCustomTitle !== true
+    }
+
     const lockText = menuLock.querySelector("span")
     const lockIcon = menuLock.querySelector("i")
 
@@ -2282,6 +2293,20 @@ async function handleDelete() {
 function handleLock() {
   if (contextMenuTargetType === "widget" && contextMenuTargetId) {
     const settings = getSettings()
+    
+    if (contextMenuTargetId === "custom-title") {
+      const isFree = settings.freeMoveCustomTitle === true
+      updateSetting("freeMoveCustomTitle", !isFree)
+      saveSettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "freeMoveCustomTitle", value: !isFree },
+        }),
+      )
+      hideContextMenu()
+      return
+    }
+
     const lockedWidgets = settings.lockedWidgets || {}
     const isLocked = lockedWidgets[contextMenuTargetId]
 
@@ -2293,7 +2318,6 @@ function handleLock() {
     // Optionally update UI for visual feedback
     const widgetIdMap = {
       clock: "clock-date-wrap",
-      customTitle: "custom-title-display",
       calendar: "full-calendar-container",
       weather: "weather-container",
       todo: "todo-container",
