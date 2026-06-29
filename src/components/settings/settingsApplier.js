@@ -3319,6 +3319,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "media-orb",
       "prism-stack",
       "metro-panel",
+      "minimalist-word",
       "aurora-ribbon",
       "lunar-orbit",
     ]

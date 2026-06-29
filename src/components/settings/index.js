@@ -53,7 +53,7 @@ import {
 import {
   createApplySettings,
   createUpdateSettingsInputs,
-} from "./settingsApplier.js?v=2"
+} from "./settingsApplier.js?v=3"
 import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import {
   renderLocalBackgrounds,
