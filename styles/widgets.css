@@ -4030,7 +4030,9 @@ body.todo-fullscreen-active::before {
   color: rgba(0, 0, 0, 0.62) !important;
 }
 
-.weather-container.skin-transparent {
+.weather-container.skin-transparent,
+.todo-container.skin-transparent,
+.timer-container.skin-transparent {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;

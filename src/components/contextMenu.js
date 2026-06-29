@@ -810,7 +810,7 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (id === "daily-quotes" || id === "weather" || id === "rss") {
+      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -829,6 +829,8 @@ export function showContextMenu(
             weather: "weather-container",
             "daily-quotes": "daily-quotes",
             rss: "rss-container",
+            todo: "todo-container",
+            timer: "timer-component",
           }
           const el = document.getElementById(widgetIdMap[id] || id)
           if (el) {
