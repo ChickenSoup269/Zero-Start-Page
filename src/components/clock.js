@@ -273,10 +273,10 @@ function applyHuePerCharacter(target, seed = 0) {
     currentNode = walker.nextNode()
   }
 
+  let hueIndex = 0
   textNodes.forEach((node) => {
     const text = node.nodeValue || ""
     const fragment = document.createDocumentFragment()
-    let hueIndex = 0
 
     Array.from(text).forEach((char) => {
       if (!char.trim()) {
@@ -2178,7 +2178,7 @@ export function updateCustomTitle() {
         div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
-        const charAnimations = ["typing", "wave", "glow", "glitch"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float"]
         const hasCharAnim = charAnimations.includes(animation)
 
         if (wordWrap) {
@@ -2252,7 +2252,7 @@ export function updateCustomTitle() {
         // Horizontal mode
         div.style.textOrientation = "mixed"
         
-        const charAnimations = ["typing", "wave", "glow", "glitch"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float"]
         if (charAnimations.includes(animation)) {
           const words = content.split(" ")
           words.forEach((word, wordIndex) => {
