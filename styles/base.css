@@ -4175,6 +4175,48 @@ body.date-clock-style-lunar-orbit .lunar-orbit-date-line {
   hyphens: none;
 }
 
+/* Minimalist Word Style */
+body.date-clock-style-minimalist-word .minimalist-word-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--clock-size, 6rem) * 0.1);
+  text-align: center;
+  font-family: var(--font-clock, 'Inter', sans-serif);
+}
+
+body.date-clock-style-minimalist-word .minimalist-word-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+body.date-clock-style-minimalist-word .minimalist-word-hour {
+  font-size: calc(var(--clock-size, 6rem) * 1.5);
+  color: var(--clock-color, #ffffff);
+}
+
+body.date-clock-style-minimalist-word .minimalist-word-minute {
+  font-size: calc(var(--clock-size, 6rem) * 0.7);
+  color: var(--accent-color, #a8c0ff);
+  opacity: 0.9;
+}
+
+body.date-clock-style-minimalist-word .minimalist-word-meta {
+  margin-top: calc(var(--clock-size, 6rem) * 0.15);
+  font-size: clamp(0.75rem, calc(var(--clock-size, 6rem) * 0.2), 1.1rem);
+  font-family: var(--font-date, 'Inter', sans-serif);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--date-color, rgba(255, 255, 255, 0.6));
+  text-transform: uppercase;
+}
+
 /* Cartoon Style */
 body.date-clock-style-cartoon .cartoon-clock {
   position: relative;

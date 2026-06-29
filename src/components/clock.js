@@ -1848,6 +1848,53 @@ export function updateTime() {
       if (dateEl.innerHTML !== dateText) dateEl.innerHTML = dateText
       dateEl.style.display = dateText ? "block" : "none"
     }
+  } else if (dateClockStyle === "minimalist-word") {
+    const hoursToWords = ["TWELVE", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE"]
+    const tensToWords = ["", "", "TWENTY", "THIRTY", "FORTY", "FIFTY"]
+    const digitsToWords = ["", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"]
+
+    const getMinuteWord = (m) => {
+      if (m === 0) return "O'CLOCK"
+      if (m < 20) return digitsToWords[m]
+      const ten = Math.floor(m / 10)
+      const unit = m % 10
+      return tensToWords[ten] + (unit ? " " + digitsToWords[unit] : "")
+    }
+
+    let hourVal = parseInt(hh, 10)
+    const minVal = parseInt(mm, 10)
+    
+    if (hourVal > 12) hourVal -= 12
+    if (hourVal === 0) hourVal = 12
+
+    const hourWord = hoursToWords[hourVal] || ""
+    const minWord = getMinuteWord(minVal)
+    
+    const weekday = isTimer
+      ? timerLabel
+      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).toUpperCase()
+    
+    const dateStr = shouldShowDate
+      ? getCustomDateString(now, langCode, tz, settings).toUpperCase()
+      : ""
+
+    const dateHtml = (weekday || dateStr) 
+      ? `<div class="minimalist-word-meta">${weekday}${weekday && dateStr ? ' &bull; ' : ''}${dateStr}</div>` 
+      : ""
+
+    const minWordHtml = `
+      <div class="minimalist-word-clock">
+        <div class="minimalist-word-time">
+          <div class="minimalist-word-hour">${hourWord}</div>
+          <div class="minimalist-word-minute">${minWord}</div>
+        </div>
+        ${dateHtml}
+      </div>
+    `
+
+    if (clockElement.innerHTML !== minWordHtml) {
+      clockElement.innerHTML = minWordHtml
+    }
   } else {
     clockElement.textContent = timeString
   }
@@ -1891,6 +1938,7 @@ export function updateTime() {
     "aurora-ribbon",
     "lunar-orbit",
     "cartoon",
+    "minimalist-word",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
