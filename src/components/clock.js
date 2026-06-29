@@ -2159,6 +2159,10 @@ export function updateCustomTitle() {
       innerWrap.style.writingMode = "horizontal-tb"
       innerWrap.style.textOrientation = "mixed"
     }
+    // Calculate total chars across all lines to sync animations
+    const totalChars = (text || "").length + (text2 || "").length + (text3 || "").length + (text4 || "").length
+    const globalTotalDuration = Math.max(3, totalChars * 0.1 + 2)
+    let globalCharIndex = 0
 
     // Create lines
     const createLine = (content, fontFamily, lineNumber, orientation) => {
@@ -2174,6 +2178,9 @@ export function updateCustomTitle() {
         div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
+        const charAnimations = ["typing", "wave", "glow", "glitch"]
+        const hasCharAnim = charAnimations.includes(animation)
+
         if (wordWrap) {
           // In vertical mode, wordWrap means we stack horizontal words vertically
           div.style.writingMode = "horizontal-tb"
@@ -2186,19 +2193,94 @@ export function updateCustomTitle() {
           const words = content.split(" ")
           words.forEach(w => {
             if (w.trim() !== "") {
-              const span = document.createElement("span")
-              span.textContent = w
-              div.appendChild(span)
+              const wordSpan = document.createElement("span")
+              wordSpan.style.whiteSpace = "nowrap"
+              if (hasCharAnim) {
+                const chars = w.split("")
+                chars.forEach(char => {
+                  const span = document.createElement("span")
+                  span.textContent = char
+                  span.style.animationDelay = `${globalCharIndex * 0.1}s`
+                  if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
+                  span.className = "char-anim"
+                  wordSpan.appendChild(span)
+                  globalCharIndex++
+                })
+              } else {
+                wordSpan.textContent = w
+              }
+              div.appendChild(wordSpan)
+            } else if (hasCharAnim) {
+              // Count the space for delay even if it's trimmed out in vertical stacking
+              globalCharIndex++
             }
           })
         } else {
           div.style.textOrientation = orientation
-          div.textContent = content
+          
+          if (hasCharAnim) {
+            const words = content.split(" ")
+            words.forEach((word, wordIndex) => {
+              const wordSpan = document.createElement("span")
+              wordSpan.style.whiteSpace = "nowrap"
+              
+              const chars = word.split("")
+              chars.forEach((char) => {
+                const span = document.createElement("span")
+                span.textContent = char
+                span.style.animationDelay = `${globalCharIndex * 0.1}s`
+                if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
+                span.className = "char-anim"
+                wordSpan.appendChild(span)
+                globalCharIndex++
+              })
+              
+              div.appendChild(wordSpan)
+              
+              if (wordIndex < words.length - 1) {
+                div.appendChild(document.createTextNode(" "))
+                globalCharIndex++
+              }
+            })
+          } else {
+            div.textContent = content
+          }
         }
       } else {
         // Horizontal mode
         div.style.textOrientation = "mixed"
-        div.textContent = content
+        
+        const charAnimations = ["typing", "wave", "glow", "glitch"]
+        if (charAnimations.includes(animation)) {
+          const words = content.split(" ")
+          words.forEach((word, wordIndex) => {
+            const wordSpan = document.createElement("span")
+            wordSpan.style.whiteSpace = "nowrap"
+            
+            const chars = word.split("")
+            chars.forEach((char) => {
+              const span = document.createElement("span")
+              span.textContent = char
+              span.style.animationDelay = `${globalCharIndex * 0.1}s`
+              if (animation === "typing") {
+                span.style.animationDuration = `${globalTotalDuration}s`
+              }
+              span.className = "char-anim"
+              wordSpan.appendChild(span)
+              globalCharIndex++
+            })
+            
+            div.appendChild(wordSpan)
+            
+            if (wordIndex < words.length - 1) {
+              div.appendChild(document.createTextNode(" "))
+              globalCharIndex++
+            }
+          })
+        } else {
+          div.textContent = content
+        }
+        
         if (wordWrap) {
           div.style.whiteSpace = "pre-wrap"
           div.style.wordBreak = "break-word"

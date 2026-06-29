@@ -7917,17 +7917,55 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 }
 
 /* Custom Title Animations */
-.title-anim-typing > div {
-  white-space: nowrap;
-  animation: typing 3s ease-in-out infinite alternate;
+.title-anim-typing > div .char-anim {
+  opacity: 0;
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: typingChar 5s infinite;
 }
-@keyframes typing {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
+@keyframes typingChar {
+  0%, 10% { opacity: 0; transform: translateY(5px); }
+  15%, 85% { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(-5px); }
+}
+
+.title-anim-wave > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: waveChar 1.5s infinite ease-in-out;
+}
+@keyframes waveChar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.title-anim-glow > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: glowChar 2s infinite alternate;
+}
+@keyframes glowChar {
+  from { text-shadow: 0 0 2px #fff, 0 0 5px var(--accent-color, #a8c0ff), 0 0 10px var(--accent-color, #a8c0ff); }
+  to { text-shadow: 0 0 5px #fff, 0 0 15px var(--accent-color, #a8c0ff), 0 0 25px var(--accent-color, #a8c0ff), 0 0 35px var(--accent-color, #a8c0ff); }
+}
+
+.title-anim-glitch > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: glitchChar 2s infinite linear;
+}
+@keyframes glitchChar {
+  0%, 100% { opacity: 1; transform: translate(0); }
+  5% { opacity: 0.8; transform: translate(-2px, 1px); }
+  10% { opacity: 1; transform: translate(2px, -1px); }
+  15% { opacity: 0.9; transform: translate(0); }
+  20% { opacity: 1; transform: translate(-1px, 2px); filter: hue-rotate(90deg); }
+  25% { opacity: 1; transform: translate(0); filter: hue-rotate(0deg); }
 }
 
 .title-anim-once,
-.title-anim-once > div {
+.title-anim-once > div,
+.title-anim-once > div .char-anim {
   animation-iteration-count: 1 !important;
   animation-direction: normal !important;
   animation-fill-mode: forwards !important;
