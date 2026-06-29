@@ -1849,51 +1849,77 @@ export function updateTime() {
       dateEl.style.display = dateText ? "block" : "none"
     }
   } else if (dateClockStyle === "minimalist-word") {
-    const hoursToWords = ["TWELVE", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE"]
-    const tensToWords = ["", "", "TWENTY", "THIRTY", "FORTY", "FIFTY"]
-    const digitsToWords = ["", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"]
+    // 10x11 Matrix
+    const matrixStr = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
+    
+    // Helper to get active indices based on time
+    const getActiveIndices = (h, m) => {
+      const active = new Set([0, 1, 3, 4]) // IT IS
+      
+      let hour = h
+      let isPast = true
+      let minStr = ""
+      
+      if (m >= 5 && m < 10) minStr = "FIVE"
+      else if (m >= 10 && m < 15) minStr = "TEN"
+      else if (m >= 15 && m < 20) minStr = "A QUARTER"
+      else if (m >= 20 && m < 25) minStr = "TWENTY"
+      else if (m >= 25 && m < 30) minStr = "TWENTY FIVE"
+      else if (m >= 30 && m < 35) minStr = "HALF"
+      else if (m >= 35 && m < 40) { minStr = "TWENTY FIVE"; isPast = false; hour++; }
+      else if (m >= 40 && m < 45) { minStr = "TWENTY"; isPast = false; hour++; }
+      else if (m >= 45 && m < 50) { minStr = "A QUARTER"; isPast = false; hour++; }
+      else if (m >= 50 && m < 55) { minStr = "TEN"; isPast = false; hour++; }
+      else if (m >= 55) { minStr = "FIVE"; isPast = false; hour++; }
 
-    const getMinuteWord = (m) => {
-      if (m === 0) return "O'CLOCK"
-      if (m < 20) return digitsToWords[m]
-      const ten = Math.floor(m / 10)
-      const unit = m % 10
-      return tensToWords[ten] + (unit ? " " + digitsToWords[unit] : "")
+      // Map minutes
+      if (minStr.includes("A")) active.add(11)
+      if (minStr.includes("QUARTER")) [13,14,15,16,17,18,19].forEach(i=>active.add(i))
+      if (minStr.includes("TWENTY")) [22,23,24,25,26,27].forEach(i=>active.add(i))
+      if (minStr.includes("FIVE")) [28,29,30,31].forEach(i=>active.add(i))
+      if (minStr.includes("HALF")) [33,34,35,36].forEach(i=>active.add(i))
+      if (minStr.includes("TEN")) [38,39,40].forEach(i=>active.add(i))
+
+      // PAST / TO / OCLOCK
+      if (m >= 5) {
+        if (isPast) [44,45,46,47].forEach(i=>active.add(i)) // PAST
+        else [42,43].forEach(i=>active.add(i)) // TO
+      } else {
+        [104,105,106,107,108,109].forEach(i=>active.add(i)) // OCLOCK
+      }
+
+      // Hour
+      if (hour > 12) hour -= 12
+      if (hour === 0) hour = 12
+      
+      const hourMap = {
+        1: [55,56,57], 2: [74,75,76], 3: [61,62,63,64,65],
+        4: [66,67,68,69], 5: [70,71,72,73], 6: [58,59,60],
+        7: [88,89,90,91,92], 8: [77,78,79,80,81], 9: [51,52,53,54],
+        10: [99,100,101], 11: [82,83,84,85,86,87], 12: [93,94,95,96,97,98]
+      }
+      if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
+      
+      // AM / PM
+      if (h < 12) [7,8].forEach(i=>active.add(i)) // AM
+      else [9,10].forEach(i=>active.add(i)) // PM
+
+      return active
     }
 
-    let hourVal = parseInt(hh, 10)
     const minVal = parseInt(mm, 10)
+    const activeIndices = getActiveIndices(now.getHours(), minVal)
     
-    if (hourVal > 12) hourVal -= 12
-    if (hourVal === 0) hourVal = 12
+    let gridHtml = '<div class="minimalist-matrix-grid">'
+    for (let i = 0; i < matrixStr.length; i++) {
+      const char = matrixStr[i]
+      const isActive = activeIndices.has(i) ? "is-active" : ""
+      gridHtml += `<span class="matrix-char ${isActive}">${char}</span>`
+    }
+    gridHtml += '</div>'
 
-    const hourWord = hoursToWords[hourVal] || ""
-    const minWord = getMinuteWord(minVal)
-    
-    const weekday = isTimer
-      ? timerLabel
-      : getSafeWeekday(now, langCode, settings.shortWeekday, tz, settings).toUpperCase()
-    
-    const dateStr = shouldShowDate
-      ? getCustomDateString(now, langCode, tz, settings).toUpperCase()
-      : ""
-
-    const dateHtml = (weekday || dateStr) 
-      ? `<div class="minimalist-word-meta">${weekday}${weekday && dateStr ? ' &bull; ' : ''}${dateStr}</div>` 
-      : ""
-
-    const minWordHtml = `
-      <div class="minimalist-word-clock">
-        <div class="minimalist-word-time">
-          <div class="minimalist-word-hour">${hourWord}</div>
-          <div class="minimalist-word-minute">${minWord}</div>
-        </div>
-        ${dateHtml}
-      </div>
-    `
-
-    if (clockElement.innerHTML !== minWordHtml) {
-      clockElement.innerHTML = minWordHtml
+    if (clockElement.innerHTML !== gridHtml) {
+      clockElement.innerHTML = gridHtml
     }
   } else {
     clockElement.textContent = timeString
