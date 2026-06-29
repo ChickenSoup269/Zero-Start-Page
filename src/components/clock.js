@@ -2164,23 +2164,38 @@ export function updateCustomTitle() {
       if (!content) return null
       const div = document.createElement("div")
       div.dataset.line = lineNumber
-      div.textContent = content
       if (fontFamily && fontFamily !== "inherit") {
         div.style.fontFamily = fontFamily
       }
       if (direction === "vertical") {
-        div.style.textOrientation = orientation
+        if (wordWrap) {
+          // In vertical mode, wordWrap means we stack horizontal words vertically
+          div.style.writingMode = "horizontal-tb"
+          div.style.display = "flex"
+          div.style.flexDirection = "column"
+          div.style.alignItems = "center"
+          div.style.justifyContent = "center"
+          div.style.gap = "4px"
+          const words = content.split(" ")
+          words.forEach(w => {
+            if (w.trim() !== "") {
+              const span = document.createElement("span")
+              span.textContent = w
+              div.appendChild(span)
+            }
+          })
+        } else {
+          div.style.textOrientation = orientation
+          div.textContent = content
+        }
       } else {
+        // Horizontal mode
         div.style.textOrientation = "mixed"
-      }
-      
-      // If wordWrap (stack words) is true, force horizontal-tb with min-content so words stack vertically
-      if (wordWrap) {
-        div.style.writingMode = "horizontal-tb"
-        div.style.width = "min-content"
-        div.style.whiteSpace = "pre-wrap"
-        div.style.wordBreak = "break-word"
-        div.style.textAlign = "center"
+        div.textContent = content
+        if (wordWrap) {
+          div.style.whiteSpace = "pre-wrap"
+          div.style.wordBreak = "break-word"
+        }
       }
       
       if (isMulti) applyHuePerCharacter(div, 42)
