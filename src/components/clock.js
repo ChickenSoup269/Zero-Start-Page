@@ -1855,8 +1855,6 @@ export function updateTime() {
     const matrixEn = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
     const matrixVi = "BÂYXGIỜVLÀOMỘTHAIBABẢYBỐNNĂMSÁUQPTÁMCHÍNMƯỜIKGIỜRƯỠIKÉMMƯỜILĂMHAIXBABỐNMƯƠIYENĂMPHÚTSÁNGTỐICHIỀUĐÊMĐÚNGKTRƯAZV"
     
-    const matrixStr = isVi ? matrixVi : matrixEn
-    
     const getActiveIndicesEn = (h, m) => {
       const active = new Set([0, 1, 3, 4]) // IT IS
       let hour = h, isPast = true, minStr = ""
@@ -1906,16 +1904,14 @@ export function updateTime() {
 
     const getActiveIndicesVi = (h, m) => {
       const active = new Set([0, 1, 2, 8, 9]) // BÂY LÀ
-      if (m === 30 || m >= 35) active.add(4).add(5).add(6) // GIỜ at row 0 only needed if row 4 GIỜ isn't clear enough? No wait, row 0 GIỜ is part of BÂY GIỜ LÀ. Let's just activate it always:
-      active.add(4).add(5).add(6) // BÂY GIỜ LÀ always active
+      active.add(4).add(5).add(6) // GIỜ
 
       let hour = h
-      if (m >= 35) hour++ // KÉM adds to next hour
+      if (m >= 35) hour++ 
       
       if (hour > 12) hour -= 12
       if (hour === 0) hour = 12
 
-      // Hours mapping
       const hourMap = {
         1: [11,12,13], 2: [14,15,16], 3: [17,18], 4: [22,23,24],
         5: [25,26,27], 6: [28,29,30], 7: [19,20,21], 8: [33,34,35],
@@ -1923,45 +1919,57 @@ export function updateTime() {
       }
       if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
 
-      // Hour indicator GIỜ (row 4)
       active.add(45).add(46).add(47)
 
-      // Minutes
-      if (m === 0) [99,100,101,102].forEach(i=>active.add(i)) // ĐÚNG
-      else if (m < 5) {} // Just hour is fine, or say 1,2,3? Let's just not light up minutes for < 5
-      else if (m >= 5 && m < 10) [77,78,79, 80,81,82,83].forEach(i=>active.add(i)) // NĂM PHÚT
-      else if (m >= 10 && m < 15) [55,56,57,58, 80,81,82,83].forEach(i=>active.add(i)) // MƯỜI PHÚT
-      else if (m >= 15 && m < 20) [55,56,57,58, 59,60,61].forEach(i=>active.add(i)) // MƯỜI LĂM
-      else if (m >= 20 && m < 25) [62,63,64, 71,72,73,74].forEach(i=>active.add(i)) // HAI MƯƠI
-      else if (m >= 25 && m < 30) [62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) // HAI MƯƠI LĂM
-      else if (m >= 30 && m < 35) [48,49,50,51].forEach(i=>active.add(i)) // RƯỠI
-      else if (m >= 35 && m < 40) [52,53,54, 62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) // KÉM HAI MƯƠI LĂM
-      else if (m >= 40 && m < 45) [52,53,54, 62,63,64, 71,72,73,74].forEach(i=>active.add(i)) // KÉM HAI MƯƠI
-      else if (m >= 45 && m < 50) [52,53,54, 55,56,57,58, 59,60,61].forEach(i=>active.add(i)) // KÉM MƯỜI LĂM
-      else if (m >= 50 && m < 55) [52,53,54, 55,56,57,58].forEach(i=>active.add(i)) // KÉM MƯỜI
-      else if (m >= 55) [52,53,54, 77,78,79].forEach(i=>active.add(i)) // KÉM NĂM
+      if (m === 0) [99,100,101,102].forEach(i=>active.add(i)) 
+      else if (m < 5) {} 
+      else if (m >= 5 && m < 10) [77,78,79, 80,81,82,83].forEach(i=>active.add(i)) 
+      else if (m >= 10 && m < 15) [55,56,57,58, 80,81,82,83].forEach(i=>active.add(i)) 
+      else if (m >= 15 && m < 20) [55,56,57,58, 59,60,61].forEach(i=>active.add(i)) 
+      else if (m >= 20 && m < 25) [62,63,64, 71,72,73,74].forEach(i=>active.add(i)) 
+      else if (m >= 25 && m < 30) [62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) 
+      else if (m >= 30 && m < 35) [48,49,50,51].forEach(i=>active.add(i)) 
+      else if (m >= 35 && m < 40) [52,53,54, 62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) 
+      else if (m >= 40 && m < 45) [52,53,54, 62,63,64, 71,72,73,74].forEach(i=>active.add(i)) 
+      else if (m >= 45 && m < 50) [52,53,54, 55,56,57,58, 59,60,61].forEach(i=>active.add(i)) 
+      else if (m >= 50 && m < 55) [52,53,54, 55,56,57,58].forEach(i=>active.add(i)) 
+      else if (m >= 55) [52,53,54, 77,78,79].forEach(i=>active.add(i)) 
 
-      // Period
       let periodHour = h
       if (m >= 35) periodHour++
       if (periodHour >= 24) periodHour = 0
 
-      if (periodHour >= 0 && periodHour < 4) [96,97,98].forEach(i=>active.add(i)) // ĐÊM
-      else if (periodHour >= 4 && periodHour < 11) [84,85,86,87].forEach(i=>active.add(i)) // SÁNG
-      else if (periodHour >= 11 && periodHour < 14) [104,105,106,107].forEach(i=>active.add(i)) // TRƯA
-      else if (periodHour >= 14 && periodHour < 18) [91,92,93,94,95].forEach(i=>active.add(i)) // CHIỀU
-      else if (periodHour >= 18) [88,89,90].forEach(i=>active.add(i)) // TỐI
+      if (periodHour >= 0 && periodHour < 4) [96,97,98].forEach(i=>active.add(i)) 
+      else if (periodHour >= 4 && periodHour < 11) [84,85,86,87].forEach(i=>active.add(i)) 
+      else if (periodHour >= 11 && periodHour < 14) [104,105,106,107].forEach(i=>active.add(i)) 
+      else if (periodHour >= 14 && periodHour < 18) [91,92,93,94,95].forEach(i=>active.add(i)) 
+      else if (periodHour >= 18) [88,89,90].forEach(i=>active.add(i)) 
 
       return active
     }
 
     const minVal = parseInt(mm, 10)
-    const activeIndices = isVi ? getActiveIndicesVi(now.getHours(), minVal) : getActiveIndicesEn(now.getHours(), minVal)
     
-    let gridHtml = '<div class="minimalist-matrix-grid">'
-    for (let i = 0; i < matrixStr.length; i++) {
-      const char = matrixStr[i]
-      const isActive = activeIndices.has(i) ? "is-active" : ""
+    // Always calculate both
+    const activeIndicesEn = getActiveIndicesEn(now.getHours(), minVal)
+    const activeIndicesVi = getActiveIndicesVi(now.getHours(), minVal)
+    
+    let gridHtml = ''
+    
+    // Board 1: English (Hidden if isVi)
+    gridHtml += `<div class="minimalist-matrix-grid matrix-en" style="display: ${isVi ? 'none' : 'grid'};">`
+    for (let i = 0; i < matrixEn.length; i++) {
+      const char = matrixEn[i]
+      const isActive = activeIndicesEn.has(i) ? "is-active" : ""
+      gridHtml += `<span class="matrix-char ${isActive}">${char}</span>`
+    }
+    gridHtml += '</div>'
+
+    // Board 2: Vietnamese (Hidden if !isVi)
+    gridHtml += `<div class="minimalist-matrix-grid matrix-vi" style="display: ${isVi ? 'grid' : 'none'};">`
+    for (let i = 0; i < matrixVi.length; i++) {
+      const char = matrixVi[i]
+      const isActive = activeIndicesVi.has(i) ? "is-active" : ""
       gridHtml += `<span class="matrix-char ${isActive}">${char}</span>`
     }
     gridHtml += '</div>'
