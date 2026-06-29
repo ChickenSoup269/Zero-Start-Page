@@ -2159,17 +2159,6 @@ export function updateCustomTitle() {
       innerWrap.style.textOrientation = "mixed"
     }
 
-    // Set word wrap (now acting as character/word stack)
-    if (wordWrap) {
-      innerWrap.style.whiteSpace = "pre-wrap"
-      innerWrap.style.wordBreak = "break-word"
-      innerWrap.style.width = "min-content"
-    } else {
-      innerWrap.style.whiteSpace = ""
-      innerWrap.style.wordBreak = ""
-      innerWrap.style.width = ""
-    }
-
     // Create lines
     const createLine = (content, fontFamily, lineNumber, orientation) => {
       if (!content) return null
@@ -2184,11 +2173,16 @@ export function updateCustomTitle() {
       } else {
         div.style.textOrientation = "mixed"
       }
+      
+      // If wordWrap (stack words) is true, force horizontal-tb with min-content so words stack vertically
       if (wordWrap) {
+        div.style.writingMode = "horizontal-tb"
+        div.style.width = "min-content"
         div.style.whiteSpace = "pre-wrap"
         div.style.wordBreak = "break-word"
-        div.style.width = "min-content"
+        div.style.textAlign = "center"
       }
+      
       if (isMulti) applyHuePerCharacter(div, 42)
       return div
     }
