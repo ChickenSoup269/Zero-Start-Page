@@ -5941,8 +5941,9 @@ body.clock-style-bg-accent.date-clock-style-minimalist-word .minimalist-matrix-g
 }
 
 body.clock-style-bg-custom.date-clock-style-minimalist-word .minimalist-matrix-grid {
-  background: var(--clock-bg-color, rgba(0, 0, 0, 0.5)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 80%, rgba(0,0,0,0.4)) !important;
+  border: 1px solid color-mix(in srgb, var(--clock-style-custom-bg-color, #1f2937) 60%, rgba(255,255,255,0.2)) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
 }
