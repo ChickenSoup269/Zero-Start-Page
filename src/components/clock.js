@@ -1942,11 +1942,15 @@ export function updateTime() {
       else if (m >= 55) [52,53,54, 77,78,79].forEach(i=>active.add(i)) // KÉM NĂM
 
       // Period
-      if (h >= 0 && h < 4) [96,97,98].forEach(i=>active.add(i)) // ĐÊM
-      else if (h >= 4 && h < 11) [84,85,86,87].forEach(i=>active.add(i)) // SÁNG
-      else if (h >= 11 && h < 14) [104,105,106,107].forEach(i=>active.add(i)) // TRƯA
-      else if (h >= 14 && h < 18) [91,92,93,94,95].forEach(i=>active.add(i)) // CHIỀU
-      else if (h >= 18) [88,89,90].forEach(i=>active.add(i)) // TỐI
+      let periodHour = h
+      if (m >= 35) periodHour++
+      if (periodHour >= 24) periodHour = 0
+
+      if (periodHour >= 0 && periodHour < 4) [96,97,98].forEach(i=>active.add(i)) // ĐÊM
+      else if (periodHour >= 4 && periodHour < 11) [84,85,86,87].forEach(i=>active.add(i)) // SÁNG
+      else if (periodHour >= 11 && periodHour < 14) [104,105,106,107].forEach(i=>active.add(i)) // TRƯA
+      else if (periodHour >= 14 && periodHour < 18) [91,92,93,94,95].forEach(i=>active.add(i)) // CHIỀU
+      else if (periodHour >= 18) [88,89,90].forEach(i=>active.add(i)) // TỐI
 
       return active
     }
