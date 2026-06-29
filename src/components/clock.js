@@ -2164,12 +2164,6 @@ export function updateCustomTitle() {
       if (!content) return null
       const div = document.createElement("div")
       div.dataset.line = lineNumber
-      // Add spacing between lines
-      if (direction === "vertical") {
-        div.style.margin = "0 15px"
-      } else {
-        div.style.margin = "15px 0"
-      }
       if (fontFamily && fontFamily !== "inherit") {
         div.style.fontFamily = fontFamily
       }
