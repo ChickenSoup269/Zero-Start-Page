@@ -8000,6 +8000,45 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   100% { clip-path: inset(30% 0 50% 0); transform: translate(0, 0); }
 }
 
+.title-anim-flip > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: flipChar 3s infinite ease-in-out;
+  transform-origin: center;
+  backface-visibility: visible;
+}
+@keyframes flipChar {
+  0%, 20% { transform: rotateY(0deg); opacity: 1; }
+  50% { transform: rotateY(180deg); opacity: 0.8; }
+  80%, 100% { transform: rotateY(360deg); opacity: 1; }
+}
+
+.title-anim-shake > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: shakeChar 2.5s infinite linear;
+}
+@keyframes shakeChar {
+  0%, 90% { transform: translate(0, 0) rotate(0deg); }
+  92% { transform: translate(-1px, 1px) rotate(-3deg); }
+  94% { transform: translate(1px, -1px) rotate(3deg); }
+  96% { transform: translate(-1px, -1px) rotate(-3deg); }
+  98% { transform: translate(1px, 1px) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.title-anim-float > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: floatChar 4s infinite ease-in-out;
+}
+@keyframes floatChar {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-4px) rotate(-1deg); }
+  66% { transform: translateY(2px) rotate(1deg); }
+}
+
+
 .title-anim-once,
 .title-anim-once > div,
 .title-anim-once > div .char-anim {

@@ -1817,6 +1817,12 @@
   "settings_custom_title_animation_fade": "Hiện/Ẩn (Fade)",
   "settings_custom_title_animation_pulse": "Nhịp đập (Pulse)",
   "settings_custom_title_animation_bounce": "Nảy (Bounce)",
+  "settings_custom_title_animation_wave": "Lượn sóng (Wave)",
+  "settings_custom_title_animation_glow": "Phát sáng (Glow)",
+  "settings_custom_title_animation_glitch": "Nhiễu (Glitch)",
+  "settings_custom_title_animation_flip": "Lật (Flip)",
+  "settings_custom_title_animation_shake": "Rung lắc (Shake)",
+  "settings_custom_title_animation_float": "Lơ lửng (Float)",
   "settings_custom_title_animation_loop_label": "Chế độ lặp",
   "settings_custom_title_animation_loop_infinite": "Lặp liên tục",
   "settings_custom_title_animation_loop_once": "Chạy 1 lần"
