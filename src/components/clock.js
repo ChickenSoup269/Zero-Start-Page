@@ -1850,7 +1850,7 @@ export function updateTime() {
     }
   } else if (dateClockStyle === "minimalist-word") {
     // 10x11 Matrix
-    const isVi = langCode === "vi"
+    const isVi = langCode.startsWith("vi")
     
     const matrixEn = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
     const matrixVi = "BÂYXGIỜVLÀOMỘTHAIBABẢYBỐNNĂMSÁUQP TÁMCHÍNMƯỜIKGIỜRƯỠIKÉMMƯỜILĂMHAIXBABỐNMƯƠIYENĂMPHÚTSÁNGTỐICHIỀUĐÊMĐÚNGKTRƯAZV"
