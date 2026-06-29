@@ -2200,6 +2200,7 @@ export function updateCustomTitle() {
                 chars.forEach(char => {
                   const span = document.createElement("span")
                   span.textContent = char
+                  span.dataset.char = char
                   span.style.animationDelay = `${globalCharIndex * 0.1}s`
                   if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
                   span.className = "char-anim"
@@ -2228,6 +2229,7 @@ export function updateCustomTitle() {
               chars.forEach((char) => {
                 const span = document.createElement("span")
                 span.textContent = char
+                span.dataset.char = char
                 span.style.animationDelay = `${globalCharIndex * 0.1}s`
                 if (animation === "typing") span.style.animationDuration = `${globalTotalDuration}s`
                 span.className = "char-anim"
@@ -2261,6 +2263,7 @@ export function updateCustomTitle() {
             chars.forEach((char) => {
               const span = document.createElement("span")
               span.textContent = char
+              span.dataset.char = char
               span.style.animationDelay = `${globalCharIndex * 0.1}s`
               if (animation === "typing") {
                 span.style.animationDuration = `${globalTotalDuration}s`

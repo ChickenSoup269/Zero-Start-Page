@@ -7952,15 +7952,52 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-glitch > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: glitchChar 2s infinite linear;
+  position: relative;
+  animation: glitchCharBase 3s infinite linear alternate-reverse;
 }
-@keyframes glitchChar {
-  0%, 100% { opacity: 1; transform: translate(0); }
-  5% { opacity: 0.8; transform: translate(-2px, 1px); }
-  10% { opacity: 1; transform: translate(2px, -1px); }
-  15% { opacity: 0.9; transform: translate(0); }
-  20% { opacity: 1; transform: translate(-1px, 2px); filter: hue-rotate(90deg); }
-  25% { opacity: 1; transform: translate(0); filter: hue-rotate(0deg); }
+
+@keyframes glitchCharBase {
+  0%, 95%, 100% { transform: translate(0, 0) skew(0deg); }
+  96% { transform: translate(-1px, 1px) skew(10deg); }
+  98% { transform: translate(1px, -1px) skew(-10deg); }
+}
+
+.title-anim-glitch > div .char-anim::before,
+.title-anim-glitch > div .char-anim::after {
+  content: attr(data-char);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.title-anim-glitch > div .char-anim::before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  background: transparent;
+  clip-path: inset(20% 0 80% 0);
+  animation: glitchCharAnim 2s infinite linear alternate-reverse;
+}
+
+.title-anim-glitch > div .char-anim::after {
+  left: -2px;
+  text-shadow: -1px 0 cyan;
+  background: transparent;
+  clip-path: inset(80% 0 20% 0);
+  animation: glitchCharAnim 3s infinite linear alternate-reverse;
+  animation-delay: -0.5s;
+}
+
+@keyframes glitchCharAnim {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(0, 0); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(-2px, 1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(2px, -1px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(1px, 2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, -2px); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translate(0, 0); }
 }
 
 .title-anim-once,
