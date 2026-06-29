@@ -3414,8 +3414,15 @@ function createUpdateSettingsInputs(effectInstances) {
       document.body.style.removeProperty("--rotate")
     }
 
-    document.documentElement.style.setProperty("--clock-cut-bottom", (settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0) + "px")
-    document.documentElement.style.setProperty("--clock-visible-percent", (settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100) + "%")
+    const clockCutBottom = settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0
+    const clockFadeBottom = settings.clockFadeBottom !== undefined ? settings.clockFadeBottom : 100
+    document.documentElement.style.setProperty("--clock-cut-bottom", clockCutBottom + "px")
+    document.documentElement.style.setProperty("--clock-visible-percent", clockFadeBottom + "%")
+    if (clockCutBottom > 0 || clockFadeBottom < 100) {
+      document.body.classList.add("clock-occlusion-enabled")
+    } else {
+      document.body.classList.remove("clock-occlusion-enabled")
+    }
     if (DOM.sidebarClockFlipSetting)
       DOM.sidebarClockFlipSetting.style.display =
         style === "sidebar" ? "block" : "none"

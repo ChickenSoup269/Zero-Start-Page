@@ -221,10 +221,16 @@ body.date-clock-style-square .clock-date-wrap.timer-running-hidden {
   font-size: var(--clock-size);
   text-align: center;
   transition: all 0.3s ease;
+}
+
+body.clock-occlusion-enabled #clock {
   clip-path: inset(0px 0px var(--clock-cut-bottom, 0px) 0px);
   -webkit-clip-path: inset(0px 0px var(--clock-cut-bottom, 0px) 0px);
   mask-image: linear-gradient(to bottom, black var(--clock-visible-percent, 100%), transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, black var(--clock-visible-percent, 100%), transparent 100%);
+}
+
+#clock {
   font-weight: 600;
   font-family: var(--font-clock);
   letter-spacing: 2px;
