@@ -5930,3 +5930,61 @@ body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card.fliqlo-flip .f
   opacity: 1;
   animation: fliqloTransparentFadeOut 0s 0.25s forwards;
 }
+
+/* Matrix Clock Background Overrides */
+body.clock-style-bg-accent.date-clock-style-minimalist-word .minimalist-matrix-grid {
+  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(14px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-minimalist-word .minimalist-matrix-grid {
+  background: var(--clock-bg-color, rgba(0, 0, 0, 0.5)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+body.clock-style-bg-light.date-clock-style-minimalist-word .minimalist-matrix-grid {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 #ffffff !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+body.clock-style-bg-light.date-clock-style-minimalist-word .matrix-char {
+  color: rgba(0, 0, 0, 0.15) !important;
+}
+body.clock-style-bg-light.date-clock-style-minimalist-word .matrix-char.is-active {
+  color: #111111 !important;
+  text-shadow: 0 0 1px rgba(0,0,0,0.2) !important;
+}
+
+body.clock-style-bg-dark.date-clock-style-minimalist-word .minimalist-matrix-grid {
+  background: rgba(12, 14, 20, 0.68) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+}
+
+body.clock-style-bg-animated.date-clock-style-minimalist-word .minimalist-matrix-grid {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  position: relative;
+  overflow: hidden;
+}
+body.clock-style-bg-animated.date-clock-style-minimalist-word .minimalist-matrix-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(125deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.4), rgba(var(--accent-color-rgb, 168, 192, 255), 0.05) 40%, transparent 60%, rgba(var(--accent-color-rgb, 168, 192, 255), 0.2));
+  background-size: 200% 200%;
+  animation: bgGradientPan 8s ease infinite;
+}
+
