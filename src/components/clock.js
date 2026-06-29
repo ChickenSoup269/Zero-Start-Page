@@ -2115,8 +2115,7 @@ export function updateCustomTitle() {
   const ori2 = settings.customTitleOrientation2 || "mixed"
   const ori3 = settings.customTitleOrientation3 || "mixed"
   const ori4 = settings.customTitleOrientation4 || "mixed"
-  const lineSpacing = settings.customTitleLineSpacing ?? 15
-  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4 + "||" + lineSpacing
+  const combinedText = text + "||" + text2 + "||" + text3 + "||" + text4 + "||" + direction + "||" + order + "||" + wordWrap + "||" + animation + "||" + animationLoop + "||" + font1 + "||" + font2 + "||" + font3 + "||" + font4 + "||" + ori1 + "||" + ori2 + "||" + ori3 + "||" + ori4
 
   if (
     el.dataset.prevText !== combinedText ||
@@ -2167,9 +2166,9 @@ export function updateCustomTitle() {
       div.dataset.line = lineNumber
       // Add spacing between lines
       if (direction === "vertical") {
-        div.style.margin = `0 ${lineSpacing}px`
+        div.style.margin = "0 15px"
       } else {
-        div.style.margin = `${lineSpacing}px 0`
+        div.style.margin = "15px 0"
       }
       if (fontFamily && fontFamily !== "inherit") {
         div.style.fontFamily = fontFamily

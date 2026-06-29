@@ -7010,12 +7010,6 @@ export function setupGeneralEventHandlers(
     { dom: document.getElementById("custom-title-animation"), key: "customTitleAnimation", isCheckbox: false },
     { dom: document.getElementById("custom-title-animation-loop"), key: "customTitleAnimationLoop", isCheckbox: false },
     {
-      dom: DOM.customTitleLineSpacing,
-      key: "customTitleLineSpacing",
-      isCheckbox: false,
-      valDisp: "custom-title-line-spacing-val",
-    },
-    {
       dom: DOM.customTitleMulticolor,
       key: "customTitleMulticolor",
       isCheckbox: true,

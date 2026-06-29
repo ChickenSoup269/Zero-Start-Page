@@ -84,7 +84,6 @@ export const defaultSettings = {
   customTitleLetterSpacing2: 0,
   customTitleLetterSpacing3: 0,
   customTitleLetterSpacing4: 0,
-  customTitleLineSpacing: 15,
   customTitleShadowBlur: 0,
   customTitleShadowY: 0,
   customTitleShadowColor: "#000000",
