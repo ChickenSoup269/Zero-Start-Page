@@ -1,6 +1,6 @@
 import { clockElement, dateElement, fadeToggle } from "../utils/dom.js"
 import { DEFAULT_MEDIA_ORB_IMAGE_URL, getSettings } from "../services/state.js"
-import { geti18n } from "../services/i18n.js"
+import { geti18n } from "../services/i18n.js?v=2"
 import { makeDraggable } from "../utils/draggable.js"
 import { convertSolar2Lunar } from "../utils/lunarCalendar.js"
 

@@ -6,7 +6,7 @@ let englishI18n = null
 
 async function loadEnglishTranslations() {
   if (englishI18n) return englishI18n
-  const response = await fetch("./locales/en.json")
+  const response = await fetch("./locales/en.json?v=2")
   englishI18n = await response.json()
   return englishI18n
 }
@@ -31,7 +31,7 @@ export async function loadLanguage(lang) {
       return
     }
 
-    const response = await fetch(`./locales/${language}.json`)
+    const response = await fetch(`./locales/${language}.json?v=2`)
     if (!response.ok) throw new Error("File not found")
     i18n = await response.json()
   } catch (e) {
@@ -40,7 +40,7 @@ export async function loadLanguage(lang) {
       e,
     )
     if (language !== "en") {
-      const response = await fetch(`./locales/en.json`)
+      const response = await fetch(`./locales/en.json?v=2`)
       i18n = await response.json()
       updateSetting("language", "en") // This will also save settings
     }
