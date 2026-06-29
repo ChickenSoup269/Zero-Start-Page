@@ -1850,15 +1850,16 @@ export function updateTime() {
     }
   } else if (dateClockStyle === "minimalist-word") {
     // 10x11 Matrix
-    const matrixStr = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
+    const isVi = langCode === "vi"
     
-    // Helper to get active indices based on time
-    const getActiveIndices = (h, m) => {
+    const matrixEn = "ITLISASAMPMACQUARTERDCTWENTYFIVEXHALFSTENFTOPASTERUNINEONESIXTHREEFOURFIVETWOEIGHTELEVENSEVENTWELVETENSEOCLOCK"
+    const matrixVi = "BÂYXGIỜVLÀOMỘTHAIBABẢYBỐNNĂMSÁUQP TÁMCHÍNMƯỜIKGIỜRƯỠIKÉMMƯỜILĂMHAIXBABỐNMƯƠIYENĂMPHÚTSÁNGTỐICHIỀUĐÊMĐÚNGKTRƯAZV"
+    
+    const matrixStr = isVi ? matrixVi : matrixEn
+    
+    const getActiveIndicesEn = (h, m) => {
       const active = new Set([0, 1, 3, 4]) // IT IS
-      
-      let hour = h
-      let isPast = true
-      let minStr = ""
+      let hour = h, isPast = true, minStr = ""
       
       if (m >= 5 && m < 10) minStr = "FIVE"
       else if (m >= 10 && m < 15) minStr = "TEN"
@@ -1872,7 +1873,6 @@ export function updateTime() {
       else if (m >= 50 && m < 55) { minStr = "TEN"; isPast = false; hour++; }
       else if (m >= 55) { minStr = "FIVE"; isPast = false; hour++; }
 
-      // Map minutes
       if (minStr.includes("A")) active.add(11)
       if (minStr.includes("QUARTER")) [13,14,15,16,17,18,19].forEach(i=>active.add(i))
       if (minStr.includes("TWENTY")) [22,23,24,25,26,27].forEach(i=>active.add(i))
@@ -1880,15 +1880,13 @@ export function updateTime() {
       if (minStr.includes("HALF")) [33,34,35,36].forEach(i=>active.add(i))
       if (minStr.includes("TEN")) [38,39,40].forEach(i=>active.add(i))
 
-      // PAST / TO / OCLOCK
       if (m >= 5) {
-        if (isPast) [44,45,46,47].forEach(i=>active.add(i)) // PAST
-        else [42,43].forEach(i=>active.add(i)) // TO
+        if (isPast) [44,45,46,47].forEach(i=>active.add(i))
+        else [42,43].forEach(i=>active.add(i))
       } else {
-        [104,105,106,107,108,109].forEach(i=>active.add(i)) // OCLOCK
+        [104,105,106,107,108,109].forEach(i=>active.add(i))
       }
 
-      // Hour
       if (hour > 12) hour -= 12
       if (hour === 0) hour = 12
       
@@ -1900,15 +1898,61 @@ export function updateTime() {
       }
       if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
       
-      // AM / PM
-      if (h < 12) [7,8].forEach(i=>active.add(i)) // AM
-      else [9,10].forEach(i=>active.add(i)) // PM
+      if (h < 12) [7,8].forEach(i=>active.add(i))
+      else [9,10].forEach(i=>active.add(i))
+
+      return active
+    }
+
+    const getActiveIndicesVi = (h, m) => {
+      const active = new Set([0, 1, 2, 8, 9]) // BÂY LÀ
+      if (m === 30 || m >= 35) active.add(4).add(5).add(6) // GIỜ at row 0 only needed if row 4 GIỜ isn't clear enough? No wait, row 0 GIỜ is part of BÂY GIỜ LÀ. Let's just activate it always:
+      active.add(4).add(5).add(6) // BÂY GIỜ LÀ always active
+
+      let hour = h
+      if (m >= 35) hour++ // KÉM adds to next hour
+      
+      if (hour > 12) hour -= 12
+      if (hour === 0) hour = 12
+
+      // Hours mapping
+      const hourMap = {
+        1: [11,12,13], 2: [14,15,16], 3: [17,18], 4: [22,23,24],
+        5: [25,26,27], 6: [28,29,30], 7: [19,20,21], 8: [33,34,35],
+        9: [36,37,38,39], 10: [40,41,42,43], 11: [40,41,42,43, 11,12,13], 12: [40,41,42,43, 14,15,16]
+      }
+      if (hourMap[hour]) hourMap[hour].forEach(i=>active.add(i))
+
+      // Hour indicator GIỜ (row 4)
+      active.add(45).add(46).add(47)
+
+      // Minutes
+      if (m === 0) [99,100,101,102].forEach(i=>active.add(i)) // ĐÚNG
+      else if (m < 5) {} // Just hour is fine, or say 1,2,3? Let's just not light up minutes for < 5
+      else if (m >= 5 && m < 10) [77,78,79, 80,81,82,83].forEach(i=>active.add(i)) // NĂM PHÚT
+      else if (m >= 10 && m < 15) [55,56,57,58, 80,81,82,83].forEach(i=>active.add(i)) // MƯỜI PHÚT
+      else if (m >= 15 && m < 20) [55,56,57,58, 59,60,61].forEach(i=>active.add(i)) // MƯỜI LĂM
+      else if (m >= 20 && m < 25) [62,63,64, 71,72,73,74].forEach(i=>active.add(i)) // HAI MƯƠI
+      else if (m >= 25 && m < 30) [62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) // HAI MƯƠI LĂM
+      else if (m >= 30 && m < 35) [48,49,50,51].forEach(i=>active.add(i)) // RƯỠI
+      else if (m >= 35 && m < 40) [52,53,54, 62,63,64, 71,72,73,74, 59,60,61].forEach(i=>active.add(i)) // KÉM HAI MƯƠI LĂM
+      else if (m >= 40 && m < 45) [52,53,54, 62,63,64, 71,72,73,74].forEach(i=>active.add(i)) // KÉM HAI MƯƠI
+      else if (m >= 45 && m < 50) [52,53,54, 55,56,57,58, 59,60,61].forEach(i=>active.add(i)) // KÉM MƯỜI LĂM
+      else if (m >= 50 && m < 55) [52,53,54, 55,56,57,58].forEach(i=>active.add(i)) // KÉM MƯỜI
+      else if (m >= 55) [52,53,54, 77,78,79].forEach(i=>active.add(i)) // KÉM NĂM
+
+      // Period
+      if (h >= 0 && h < 4) [96,97,98].forEach(i=>active.add(i)) // ĐÊM
+      else if (h >= 4 && h < 11) [84,85,86,87].forEach(i=>active.add(i)) // SÁNG
+      else if (h >= 11 && h < 14) [104,105,106,107].forEach(i=>active.add(i)) // TRƯA
+      else if (h >= 14 && h < 18) [91,92,93,94,95].forEach(i=>active.add(i)) // CHIỀU
+      else if (h >= 18) [88,89,90].forEach(i=>active.add(i)) // TỐI
 
       return active
     }
 
     const minVal = parseInt(mm, 10)
-    const activeIndices = getActiveIndices(now.getHours(), minVal)
+    const activeIndices = isVi ? getActiveIndicesVi(now.getHours(), minVal) : getActiveIndicesEn(now.getHours(), minVal)
     
     let gridHtml = '<div class="minimalist-matrix-grid">'
     for (let i = 0; i < matrixStr.length; i++) {

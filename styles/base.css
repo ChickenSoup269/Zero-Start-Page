@@ -4180,8 +4180,8 @@ body.date-clock-style-minimalist-word .minimalist-matrix-grid {
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  gap: calc(var(--clock-size, 6rem) * 0.1);
-  padding: calc(var(--clock-size, 6rem) * 0.3);
+  gap: calc(var(--clock-size, 6rem) * 0.06);
+  padding: calc(var(--clock-size, 6rem) * 0.25);
   background-color: #000000;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
@@ -4195,13 +4195,13 @@ body.date-clock-style-minimalist-word .matrix-char {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1rem, calc(var(--clock-size, 6rem) * 0.4), 2.5rem);
+  font-size: clamp(0.7rem, calc(var(--clock-size, 6rem) * 0.28), 1.6rem);
   font-weight: 700;
   color: #2a2a2a; /* Charcoal Grey (ẩn mình) */
   transition: color 0.5s ease, text-shadow 0.5s ease;
   line-height: 1;
-  width: 1.2em;
-  height: 1.2em;
+  width: 1.1em;
+  height: 1.1em;
   text-align: center;
 }
 
