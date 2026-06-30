@@ -2125,9 +2125,19 @@ export function updateTime() {
       }
     }
   }
+
 }
 
 export function initClock() {
+  window._isMusicPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
+  window.addEventListener("musicPlayingStateChange", (e) => {
+    window._isMusicPlaying = e.detail
+    const visualizer = document.querySelector('.round-clock-visualizer')
+    if (visualizer) {
+      visualizer.classList.toggle('is-playing', e.detail)
+    }
+  })
+
   updateTime()
   updateCustomTitle()
   setInterval(updateTime, 1000)

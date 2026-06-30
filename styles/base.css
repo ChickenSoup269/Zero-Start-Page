@@ -1040,80 +1040,106 @@ body.date-clock-style-round .round-clock-time-row {
   margin: 0;
 }
 
-body.date-clock-style-round .round-clock-hhmm,
-body.date-clock-style-square .sq-time-hhmm {
+body.date-clock-style-round .round-clock-date-notch i {
+  color: var(--accent-color, #a8c0ff);
+  font-size: 1.1em;
+}
+
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-date-notch {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  transform: translateY(-2px);
+}
+
+body.date-clock-style-round .round-clock-time-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+body.date-clock-style-round .round-clock-time-core {
   font-family: var(--font-clock, 'Inter', sans-serif);
   color: var(--clock-color, #ffffff);
+  font-size: clamp(3.2rem, calc(var(--clock-size, 6rem) * 0.75), 5.2rem);
   font-weight: 850;
-  letter-spacing: 0;
-  text-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    0 0 18px rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
-  filter: none;
+  line-height: 0.9;
+  letter-spacing: -2px;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: baseline;
   -webkit-text-stroke: var(--clock-text-stroke, 0px transparent);
 }
 
-body.date-clock-style-round .round-clock-hhmm {
-  font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.72), 4.8rem);
-  line-height: 0.92;
+body.date-clock-style-round .round-clock-colon {
+  margin: 0 4px;
+  opacity: 0.8;
+  animation: pulse 2s infinite;
 }
 
-body.date-clock-style-round .round-clock-side-meta {
-  gap: var(--space-1);
-  margin-top: 0.26em;
-  padding-left: clamp(var(--space-1), 2.5vw, var(--space-2));
-  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
+body.date-clock-style-round .round-clock-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.15);
+  margin-top: 4px;
 }
 
-body.date-clock-style-round .round-clock-ampm-top,
-body.date-clock-style-square .sq-ampm {
+body.date-clock-style-round .round-clock-ampm {
   color: var(--accent-color, #a8c0ff);
   font-family: var(--font-clock, 'Inter', sans-serif);
-  font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.92rem);
+  font-size: clamp(0.75rem, calc(var(--clock-size, 6rem) * 0.13), 1rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-body.date-clock-style-round .round-clock-ss-bottom,
-body.date-clock-style-square .sq-ss {
-  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.62);
-  font-size: clamp(1rem, calc(var(--clock-size, 6rem) * 0.22), 1.35rem);
-  font-weight: 500;
-  font-family: var(--font-clock, 'Inter', sans-serif);
-  line-height: 1;
+body.date-clock-style-round .round-clock-ss {
+  color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.6);
+  font-size: clamp(1.1rem, calc(var(--clock-size, 6rem) * 0.22), 1.5rem);
+  font-weight: 400;
+  font-family: 'JetBrains Mono', monospace;
 }
 
-body.date-clock-style-round .round-clock-bottom-info {
-  width: min(72%, 210px);
-  margin: 0;
-  padding-top: clamp(var(--space-1), 3vw, var(--space-2));
-}
-
-body.date-clock-style-round .round-clock-bottom-info::before,
-body.date-clock-style-square .sq-bottom-row {
-  border-color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.14);
-}
-
-body.date-clock-style-round .round-clock-bottom-info::before {
-  left: 0;
-  width: 100%;
-  background: linear-gradient(90deg, transparent, rgba(var(--clock-color-rgb, 255, 255, 255), 0.22), transparent);
-}
-
-body.date-clock-style-round .round-clock-footer-text,
-body.date-clock-style-square .sq-full-date {
-  color: var(--date-color, rgba(255, 255, 255, 0.68));
+body.date-clock-style-round .round-clock-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--date-color, rgba(255, 255, 255, 0.7));
   font-family: var(--font-weekday, var(--font-date, 'Inter', sans-serif));
-  font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.9rem);
+  font-size: clamp(0.75rem, calc(var(--clock-size, 6rem) * 0.12), 0.95rem);
   font-weight: 750;
-  letter-spacing: 0.12em;
-  line-height: 1.35;
-  text-align: center;
-  opacity: 0.76;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  position: relative;
+  padding-top: 16px;
+  transition: all 0.4s ease;
 }
 
-body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer-text,
+body.date-clock-style-round .clock-date-wrap:hover .round-clock-footer {
+  color: var(--date-color, rgba(255, 255, 255, 0.9));
+}
+
+body.date-clock-style-round .round-clock-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -20%;
+  right: -20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--clock-color-rgb, 255, 255, 255), 0.2), transparent);
+}
+
+body.date-clock-style-round .round-clock-dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--accent-color, #a8c0ff);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
 body.date-clock-style-square .clock-date-wrap:hover .sq-full-date {
   color: var(--date-color, rgba(255, 255, 255, 0.86));
   letter-spacing: 0.12em;
@@ -5220,10 +5246,11 @@ body.clock-style-bg-light.date-clock-style-minimal #clock,
 body.clock-style-bg-light.date-clock-style-minimal #date,
 body.clock-style-bg-light.date-clock-style-glass #clock,
 body.clock-style-bg-light.date-clock-style-glass #date,
-body.clock-style-bg-light.date-clock-style-round .round-clock-date-top,
-body.clock-style-bg-light.date-clock-style-round .round-clock-hhmm,
-body.clock-style-bg-light.date-clock-style-round .round-clock-ampm-top,
-body.clock-style-bg-light.date-clock-style-round .round-clock-ss-bottom,
+body.clock-style-bg-light.date-clock-style-round .round-clock-date-notch span,
+body.clock-style-bg-light.date-clock-style-round .round-clock-time-core,
+body.clock-style-bg-light.date-clock-style-round .round-clock-ampm,
+body.clock-style-bg-light.date-clock-style-round .round-clock-ss,
+body.clock-style-bg-light.date-clock-style-round .round-clock-footer-bottom,
 body.clock-style-bg-light.date-clock-style-round .round-clock-footer-text,
 body.clock-style-bg-light.date-clock-style-square .sq-date-val,
 body.clock-style-bg-light.date-clock-style-square .sq-time-hhmm,
@@ -5280,10 +5307,11 @@ body.clock-style-bg-dark.date-clock-style-minimal #clock,
 body.clock-style-bg-dark.date-clock-style-minimal #date,
 body.clock-style-bg-dark.date-clock-style-glass #clock,
 body.clock-style-bg-dark.date-clock-style-glass #date,
-body.clock-style-bg-dark.date-clock-style-round .round-clock-date-top,
-body.clock-style-bg-dark.date-clock-style-round .round-clock-hhmm,
-body.clock-style-bg-dark.date-clock-style-round .round-clock-ampm-top,
-body.clock-style-bg-dark.date-clock-style-round .round-clock-ss-bottom,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-date-notch span,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-time-core,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-ampm,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-ss,
+body.clock-style-bg-dark.date-clock-style-round .round-clock-footer-bottom,
 body.clock-style-bg-dark.date-clock-style-round .round-clock-footer-text,
 body.clock-style-bg-dark.date-clock-style-square .sq-date-val,
 body.clock-style-bg-dark.date-clock-style-square .sq-time-hhmm,

@@ -512,11 +512,14 @@ export class MusicPlayer {
 
     this.isPlaying = !data.paused
     localStorage.setItem("musicPlayerLastIsPlaying", this.isPlaying ? "true" : "false")
+    window.dispatchEvent(new CustomEvent("musicPlayingStateChange", { detail: this.isPlaying }))
 
     const btn = document.getElementById("play-pause-btn")
-    btn.innerHTML = this.isPlaying
-      ? '<i class="fa-solid fa-pause"></i>'
-      : '<i class="fa-solid fa-play"></i>'
+    if (btn) {
+      btn.innerHTML = this.isPlaying
+        ? '<i class="fa-solid fa-pause"></i>'
+        : '<i class="fa-solid fa-play"></i>'
+    }
 
     const wrapper = this.container.querySelector(".music-player-wrapper")
     const shouldAnimate = this.isPlaying && this.canAnimateVisualizer()
