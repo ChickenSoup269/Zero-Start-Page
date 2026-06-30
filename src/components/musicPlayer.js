@@ -164,11 +164,7 @@ export class MusicPlayer {
     const settings = getSettings()
     if (settings.musicPlayerNoShaking) this.applyNoShaking(true)
     this.container.classList.toggle("music-mini", settings.musicMini === true)
-    if (
-      ["gameboy", "white-blur", "m3-accent", "transparent"].includes(
-        settings.musicPlayerSkin,
-      )
-    ) {
+    if (settings.musicPlayerSkin && settings.musicPlayerSkin !== "default") {
       this.applySkin(settings.musicPlayerSkin)
     }
 
@@ -201,7 +197,8 @@ export class MusicPlayer {
       "skin-m3-accent",
       "skin-transparent",
       "skin-light-transparent",
-      "skin-vertical-card"
+      "skin-vertical-card",
+      "skin-horizontal-card"
     )
     if (this.container)
       this.container.classList.remove(
@@ -209,26 +206,13 @@ export class MusicPlayer {
         "skin-m3-accent",
         "skin-transparent",
         "skin-light-transparent",
-        "skin-vertical-card"
+        "skin-vertical-card",
+        "skin-horizontal-card"
       )
 
-    if (skin === "gameboy") {
-      wrapper.classList.add("skin-gameboy")
-    } else if (skin === "white-blur") {
-      wrapper.classList.add("skin-white-blur")
-      if (this.container) this.container.classList.add("skin-white-blur")
-    } else if (skin === "m3-accent") {
-      wrapper.classList.add("skin-m3-accent")
-      if (this.container) this.container.classList.add("skin-m3-accent")
-    } else if (skin === "transparent") {
-      wrapper.classList.add("skin-transparent")
-      if (this.container) this.container.classList.add("skin-transparent")
-    } else if (skin === "light-transparent") {
-      wrapper.classList.add("skin-light-transparent")
-      if (this.container) this.container.classList.add("skin-light-transparent")
-    } else if (skin === "vertical-card") {
-      wrapper.classList.add("skin-vertical-card")
-      if (this.container) this.container.classList.add("skin-vertical-card")
+    if (skin !== "default") {
+      wrapper.classList.add(`skin-${skin}`)
+      if (this.container) this.container.classList.add(`skin-${skin}`)
     }
 
     if (this.container) {
@@ -265,6 +249,7 @@ export class MusicPlayer {
 
     this.container.innerHTML = `
             <div class="music-player-wrapper">
+                <div class="music-bg-blur" id="music-bg-blur"></div>
                 <div class="disc-container">
                     <div id="vinyl-disc" class="vinyl-disc"></div>
                 </div>
@@ -298,6 +283,7 @@ export class MusicPlayer {
     this.artistElement = this.container.querySelector("#music-artist")
     this.platformIcon = this.container.querySelector("#platform-icon")
     this.artistText = this.container.querySelector("#artist-text")
+    this.bgBlur = this.container.querySelector("#music-bg-blur")
     this.currentTimeEl = this.container.querySelector("#music-current-time")
     this.durationEl = this.container.querySelector("#music-duration")
     this.progressTrack = this.container.querySelector("#progress-bar-track")
@@ -545,10 +531,12 @@ export class MusicPlayer {
       this.disc.style.backgroundSize = "cover"
       this.disc.style.backgroundPosition = "center"
       this.disc.classList.add("has-thumb")
+      if (this.bgBlur) this.bgBlur.style.backgroundImage = `url(${data.thumbnail})`
     } else if (!data.thumbnail) {
       this.currentThumbnail = ""
       this.disc.style.backgroundImage = "none"
       this.disc.classList.remove("has-thumb")
+      if (this.bgBlur) this.bgBlur.style.backgroundImage = "none"
     }
 
     this._duration =

@@ -1189,6 +1189,24 @@ export function showContextMenu(
           hideContextMenu()
         }
         itemsToInsert.push(verticalCardBtn)
+
+        // Horizontal Card Skin for Square Thumb
+        const isHorizontalCard = settings.musicPlayerSkin === "horizontal-card"
+        const horizontalCardBtn = document.createElement("div")
+        horizontalCardBtn.className = "context-menu-item custom-music-item"
+        horizontalCardBtn.innerHTML = `<i class="fa-solid fa-money-check"></i> <span>${isHorizontalCard ? "Square Thumb Skin" : "Horizontal Card Skin"}</span>`
+        horizontalCardBtn.onclick = () => {
+          const newSkin = isHorizontalCard ? "default" : "horizontal-card"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerSkin", value: newSkin },
+            }),
+          )
+          hideContextMenu()
+        }
+        itemsToInsert.push(horizontalCardBtn)
       } else if (musicStyle === "heartbeat") {
         // GameBoy Skin
         const isGameBoy = settings.musicPlayerSkin === "gameboy"
