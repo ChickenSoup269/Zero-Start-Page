@@ -201,6 +201,7 @@ export class MusicPlayer {
       "skin-m3-accent",
       "skin-transparent",
       "skin-light-transparent",
+      "skin-vertical-card"
     )
     if (this.container)
       this.container.classList.remove(
@@ -208,6 +209,7 @@ export class MusicPlayer {
         "skin-m3-accent",
         "skin-transparent",
         "skin-light-transparent",
+        "skin-vertical-card"
       )
 
     if (skin === "gameboy") {
@@ -224,6 +226,9 @@ export class MusicPlayer {
     } else if (skin === "light-transparent") {
       wrapper.classList.add("skin-light-transparent")
       if (this.container) this.container.classList.add("skin-light-transparent")
+    } else if (skin === "vertical-card") {
+      wrapper.classList.add("skin-vertical-card")
+      if (this.container) this.container.classList.add("skin-vertical-card")
     }
 
     if (this.container) {

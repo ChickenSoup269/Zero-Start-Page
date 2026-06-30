@@ -1171,7 +1171,25 @@ export function showContextMenu(
       itemsToInsert.push(lightTransparentBtn)
 
       // Heartbeat specific / General style specific skins
-      if (musicStyle === "heartbeat") {
+      if (musicStyle === "square-thumb") {
+        // Vertical Card Skin for Square Thumb
+        const isVerticalCard = settings.musicPlayerSkin === "vertical-card"
+        const verticalCardBtn = document.createElement("div")
+        verticalCardBtn.className = "context-menu-item custom-music-item"
+        verticalCardBtn.innerHTML = `<i class="fa-solid fa-mobile-screen"></i> <span>${isVerticalCard ? "Square Thumb Skin" : "Vertical Card Skin"}</span>`
+        verticalCardBtn.onclick = () => {
+          const newSkin = isVerticalCard ? "default" : "vertical-card"
+          updateSetting("musicPlayerSkin", newSkin)
+          saveSettings()
+          window.dispatchEvent(
+            new CustomEvent("settingsUpdated", {
+              detail: { key: "musicPlayerSkin", value: newSkin },
+            }),
+          )
+          hideContextMenu()
+        }
+        itemsToInsert.push(verticalCardBtn)
+      } else if (musicStyle === "heartbeat") {
         // GameBoy Skin
         const isGameBoy = settings.musicPlayerSkin === "gameboy"
         const gameboyBtn = document.createElement("div")

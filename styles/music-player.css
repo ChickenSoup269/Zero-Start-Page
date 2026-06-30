@@ -5395,8 +5395,8 @@ body.widgets-m3-accent
   display: none !important;
 }
 
-/* --- Vertical Card Style --- */
-.music-player-container.music-style-vertical-card {
+/* --- Vertical Card Skin for Square Thumb --- */
+.music-player-container.music-style-square-thumb.skin-vertical-card {
   width: 240px;
   height: 380px;
   border-radius: 16px;
@@ -5409,8 +5409,14 @@ body.widgets-m3-accent
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
+/* Overlay removed */
+.music-player-container.music-style-square-thumb.skin-vertical-card::before,
+.music-style-square-thumb.skin-vertical-card .music-player-wrapper::before {
+  display: none !important;
+}
+
 /* Make disc the background of the top half */
-.music-style-vertical-card .music-player-wrapper {
+.music-style-square-thumb.skin-vertical-card .music-player-wrapper {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   min-width: 0 !important;
@@ -5424,7 +5430,7 @@ body.widgets-m3-accent
 }
 
 /* Top Square Thumbnail */
-.music-style-vertical-card .disc-container {
+.music-style-square-thumb.skin-vertical-card .disc-container {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 240px;
   margin: 0; padding: 0; border: none; box-shadow: none;
@@ -5432,8 +5438,8 @@ body.widgets-m3-accent
   z-index: 1;
 }
 
-.music-style-vertical-card .vinyl-disc,
-.music-style-vertical-card .vinyl-disc.playing {
+.music-style-square-thumb.skin-vertical-card .vinyl-disc,
+.music-style-square-thumb.skin-vertical-card .vinyl-disc.playing {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   border-radius: 0;
@@ -5448,10 +5454,10 @@ body.widgets-m3-accent
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
 }
-.music-style-vertical-card .vinyl-disc::after { display: none !important; }
+.music-style-square-thumb.skin-vertical-card .vinyl-disc::after { display: none !important; }
 
 /* Gradient fade to black at the bottom of the thumbnail */
-.music-style-vertical-card .disc-container::after {
+.music-style-square-thumb.skin-vertical-card .disc-container::after {
   content: "";
   position: absolute;
   bottom: 0; left: 0; width: 100%; height: 120px;
@@ -5461,7 +5467,7 @@ body.widgets-m3-accent
 }
 
 /* Info and controls in the bottom area */
-.music-style-vertical-card .player-main {
+.music-style-square-thumb.skin-vertical-card .player-main {
   position: absolute;
   top: 230px; /* Slightly overlaps the fade */
   left: 0;
@@ -5476,10 +5482,12 @@ body.widgets-m3-accent
   gap: 12px;
   box-sizing: border-box;
   z-index: 2;
+  opacity: 1; /* Always visible */
+  pointer-events: auto;
 }
 
-.music-style-vertical-card .player-info {
-  display: flex;
+.music-style-square-thumb.skin-vertical-card .player-info {
+  display: flex !important;
   flex-direction: column;
   align-items: center;
   width: 100%;
@@ -5487,7 +5495,7 @@ body.widgets-m3-accent
   margin-bottom: 5px;
 }
 
-.music-style-vertical-card .player-info h3 {
+.music-style-square-thumb.skin-vertical-card .player-info h3 {
   font-size: 1.15rem;
   margin: 0 0 4px 0;
   color: #fff;
@@ -5497,13 +5505,13 @@ body.widgets-m3-accent
   text-overflow: ellipsis;
   text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
-.music-style-vertical-card .player-info p {
+.music-style-square-thumb.skin-vertical-card .player-info p {
   font-size: 0.85rem;
   margin: 0;
   color: rgba(255,255,255,0.6);
 }
 
-.music-style-vertical-card .progress-row {
+.music-style-square-thumb.skin-vertical-card .progress-row {
   width: 100%;
   min-width: 0 !important;
   padding: 0; margin: 0;
@@ -5511,18 +5519,18 @@ body.widgets-m3-accent
   align-items: center;
   gap: 10px;
 }
-.music-style-vertical-card .progress-time {
+.music-style-square-thumb.skin-vertical-card .progress-time {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.7rem;
   font-weight: 600;
 }
-.music-style-vertical-card .progress-bar-track {
+.music-style-square-thumb.skin-vertical-card .progress-bar-track {
   height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; flex: 1; position: relative; cursor: pointer;
 }
-.music-style-vertical-card .progress-bar-fill { background: var(--accent-color, #fff); border-radius: 2px; }
-.music-style-vertical-card .progress-bar-thumb { background: var(--accent-color, #fff); width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+.music-style-square-thumb.skin-vertical-card .progress-bar-fill { background: var(--accent-color, #fff); border-radius: 2px; }
+.music-style-square-thumb.skin-vertical-card .progress-bar-thumb { background: var(--accent-color, #fff); width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-.music-style-vertical-card .controls-row {
+.music-style-square-thumb.skin-vertical-card .controls-row {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -5530,18 +5538,18 @@ body.widgets-m3-accent
   gap: 25px;
   padding-bottom: 5px;
 }
-.music-style-vertical-card .player-btn {
+.music-style-square-thumb.skin-vertical-card .player-btn {
   color: rgba(255,255,255,0.7); background: none; border: none; font-size: 1.2rem; transition: color 0.2s, transform 0.2s;
 }
-.music-style-vertical-card .player-btn:hover {
+.music-style-square-thumb.skin-vertical-card .player-btn:hover {
   color: #fff; transform: scale(1.1);
 }
-.music-style-vertical-card .play-pause-btn { 
+.music-style-square-thumb.skin-vertical-card .play-pause-btn { 
   font-size: 2rem; color: #fff; 
 }
 
 /* Visualizer at the top part (over the thumbnail) */
-.music-style-vertical-card .music-visualizer {
+.music-style-square-thumb.skin-vertical-card .music-visualizer {
   position: absolute !important;
   top: 15px !important; 
   right: 15px !important;
@@ -5554,10 +5562,10 @@ body.widgets-m3-accent
   transform: none !important;
   align-items: flex-end !important;
 }
-.music-style-vertical-card .visualizer-bar {
+.music-style-square-thumb.skin-vertical-card .visualizer-bar {
   width: 4px !important; 
   background: rgba(255,255,255,0.9) !important; 
   border-radius: 2px !important; 
   box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
 }
-.music-style-vertical-card .visualizer-bar:nth-child(n+6) { display: none !important; }
+.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n+6) { display: none !important; }
