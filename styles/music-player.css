@@ -5162,3 +5162,402 @@ body.widgets-m3-accent
     transform: scaleY(1);
   }
 }
+
+/* Square Thumb Style */
+.music-player-container.music-style-square-thumb {
+  width: 240px;
+  height: 240px;
+  border-radius: 5px;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: relative;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6); /* Increased box shadow */
+}
+
+/* Overlay removed from container, moved to wrapper */
+.music-player-container.music-style-square-thumb::before {
+  display: none !important;
+}
+
+/* Make disc the background by expanding it to fill container */
+.music-style-square-thumb .music-player-wrapper {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  min-width: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  z-index: 1;
+}
+
+/* New overlay applied directly over the thumbnail */
+.music-style-square-thumb .music-player-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2; /* Above disc-container, below player-main */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.music-style-square-thumb:hover .music-player-wrapper::before {
+  opacity: 1;
+}
+
+.music-style-square-thumb .disc-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  margin: 0; padding: 0; border: none; box-shadow: none;
+  display: block;
+  z-index: 1; /* Inside wrapper, disc at bottom */
+}
+
+.music-style-square-thumb .vinyl-disc,
+.music-style-square-thumb .vinyl-disc.playing {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  animation: none !important; /* Force no rotation */
+  transform: none !important;
+  z-index: 0;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  image-rendering: -webkit-optimize-contrast; /* Enhance thumbnail crispness */
+  image-rendering: high-quality;
+}
+
+/* Remove hole in center */
+.music-style-square-thumb .vinyl-disc::after {
+  display: none !important;
+}
+
+/* Hide text/info completely */
+.music-style-square-thumb .player-info {
+  display: none !important;
+}
+
+/* Bring player-main to front and position at bottom (hidden until hover) */
+.music-style-square-thumb .player-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0 !important;
+  padding: 0;
+  padding-bottom: 25px; /* Push items up a bit from bottom edge */
+  z-index: 3; /* Controls above disc and overlay */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align items to bottom */
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.music-style-square-thumb:hover .player-main {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Controls container */
+.music-style-square-thumb .controls-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+/* Ensure progress bar is centered */
+.music-style-square-thumb .progress-row {
+  width: 85%;
+  min-width: 0 !important;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Time text inside progress row */
+.music-style-square-thumb .progress-time {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
+.music-style-square-thumb .progress-bar-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.music-style-square-thumb .progress-bar-fill {
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(255,255,255,0.6);
+}
+
+.music-style-square-thumb .progress-bar-thumb {
+  background: #fff;
+  width: 10px;
+  height: 10px;
+  margin-top: -2.5px;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+/* Make buttons white and larger */
+.music-style-square-thumb .player-btn {
+  color: rgba(255, 255, 255, 0.95);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  padding: 0;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, color 0.2s;
+}
+.music-style-square-thumb .player-btn:hover {
+  color: #fff;
+  transform: scale(1.15);
+  background: transparent;
+  box-shadow: none;
+}
+.music-style-square-thumb .play-pause-btn {
+  font-size: 1.8rem;
+  width: 40px;
+  height: 40px;
+}
+.music-style-square-thumb .player-btn:not(.play-pause-btn) {
+  font-size: 1.25rem;
+}
+
+/* --- Horizontal Visualizer (Rotated from right) --- */
+.music-style-square-thumb .music-visualizer {
+  display: flex !important;
+  position: absolute !important;
+  top: 15px !important;
+  right: 5px !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: 14px !important;
+  gap: 2px !important;
+  z-index: 4 !important;
+  transform: rotate(-90deg) !important; /* Base on right, pointing left */
+  transform-origin: center !important;
+  align-items: flex-end !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.music-style-square-thumb .visualizer-bar {
+  width: 3px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 1.5px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transition: transform 0.4s ease-out, height 0.4s ease-out !important; /* Makes it chill/smooth */
+}
+
+/* Limit to exactly 5 bars */
+.music-style-square-thumb .visualizer-bar:nth-child(n+6) {
+  display: none !important;
+}
+
+/* --- Vertical Card Style --- */
+.music-player-container.music-style-vertical-card {
+  width: 240px;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #0f0f0f;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Make disc the background of the top half */
+.music-style-vertical-card .music-player-wrapper {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  min-width: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Top Square Thumbnail */
+.music-style-vertical-card .disc-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 240px;
+  margin: 0; padding: 0; border: none; box-shadow: none;
+  display: block;
+  z-index: 1;
+}
+
+.music-style-vertical-card .vinyl-disc,
+.music-style-vertical-card .vinyl-disc.playing {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  animation: none !important; /* Force no rotation */
+  transform: none !important;
+  z-index: 0;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+}
+.music-style-vertical-card .vinyl-disc::after { display: none !important; }
+
+/* Gradient fade to black at the bottom of the thumbnail */
+.music-style-vertical-card .disc-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; width: 100%; height: 120px;
+  background: linear-gradient(to bottom, transparent 0%, #0f0f0f 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Info and controls in the bottom area */
+.music-style-vertical-card .player-main {
+  position: absolute;
+  top: 230px; /* Slightly overlaps the fade */
+  left: 0;
+  width: 100%;
+  height: 150px; /* 380 - 230 = 150px */
+  min-width: 0 !important;
+  padding: 0 15px 15px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.music-style-vertical-card .player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.music-style-vertical-card .player-info h3 {
+  font-size: 1.15rem;
+  margin: 0 0 4px 0;
+  color: #fff;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+.music-style-vertical-card .player-info p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: rgba(255,255,255,0.6);
+}
+
+.music-style-vertical-card .progress-row {
+  width: 100%;
+  min-width: 0 !important;
+  padding: 0; margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.music-style-vertical-card .progress-time {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.music-style-vertical-card .progress-bar-track {
+  height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; flex: 1; position: relative; cursor: pointer;
+}
+.music-style-vertical-card .progress-bar-fill { background: var(--accent-color, #fff); border-radius: 2px; }
+.music-style-vertical-card .progress-bar-thumb { background: var(--accent-color, #fff); width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+.music-style-vertical-card .controls-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding-bottom: 5px;
+}
+.music-style-vertical-card .player-btn {
+  color: rgba(255,255,255,0.7); background: none; border: none; font-size: 1.2rem; transition: color 0.2s, transform 0.2s;
+}
+.music-style-vertical-card .player-btn:hover {
+  color: #fff; transform: scale(1.1);
+}
+.music-style-vertical-card .play-pause-btn { 
+  font-size: 2rem; color: #fff; 
+}
+
+/* Visualizer at the top part (over the thumbnail) */
+.music-style-vertical-card .music-visualizer {
+  position: absolute !important;
+  top: 15px !important; 
+  right: 15px !important;
+  bottom: auto !important; 
+  left: auto !important;
+  height: 18px !important;
+  display: flex !important;
+  gap: 3px !important;
+  z-index: 5 !important;
+  transform: none !important;
+  align-items: flex-end !important;
+}
+.music-style-vertical-card .visualizer-bar {
+  width: 4px !important; 
+  background: rgba(255,255,255,0.9) !important; 
+  border-radius: 2px !important; 
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
+}
+.music-style-vertical-card .visualizer-bar:nth-child(n+6) { display: none !important; }
