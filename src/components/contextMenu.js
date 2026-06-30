@@ -608,6 +608,11 @@ export function showContextMenu(
   id = null,
   callbacks = null,
 ) {
+  if (type === "widget") {
+    if (id === "customTitle") id = "custom-title"
+    if (id === "searchBar") id = "search"
+  }
+
   contextMenuTargetIndex = index
   contextMenuTargetType = type
   contextMenuTargetId = id
@@ -669,9 +674,22 @@ export function showContextMenu(
   } else if (type === "widget") {
     menuEdit.style.display = "none"
     menuDelete.style.display = "none"
-    menuLock.style.display = "flex"
 
     const settings = getSettings()
+    
+    let isFreeMoveEnabled = true;
+    if (id === "clock") {
+      isFreeMoveEnabled = settings.freeMoveClock === true;
+    } else if (id === "custom-title") {
+      isFreeMoveEnabled = settings.freeMoveCustomTitle === true;
+    }
+
+    if (!isFreeMoveEnabled) {
+      menuLock.style.display = "none"
+    } else {
+      menuLock.style.display = "flex"
+    }
+
     let isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
     if (id === "custom-title") {
       isLocked = settings.freeMoveCustomTitle !== true
@@ -2311,6 +2329,9 @@ function handleLock() {
     const isLocked = lockedWidgets[contextMenuTargetId]
 
     lockedWidgets[contextMenuTargetId] = !isLocked
+    
+    if ("customTitle" in lockedWidgets) delete lockedWidgets["customTitle"]
+    if ("searchBar" in lockedWidgets) delete lockedWidgets["searchBar"]
 
     updateSetting("lockedWidgets", lockedWidgets)
     saveSettings()
