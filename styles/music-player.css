@@ -5777,9 +5777,8 @@ body.widgets-m3-accent
   padding-bottom: 20px;
 }
 
-
-/* Hide the blur background on default skin */
-.music-player-container.music-style-square-thumb:not(.skin-horizontal-card):not(.skin-vertical-card) .music-bg-blur {
+/* Hide the blur background on square-thumb skins so context menu background is visible */
+.music-player-container.music-style-square-thumb .music-bg-blur {
   display: none !important;
 }
 

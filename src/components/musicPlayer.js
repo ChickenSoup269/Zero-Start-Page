@@ -108,8 +108,10 @@ export class MusicPlayer {
       if (key === "accentColor" && !this.useDefaultColor) {
         this.applyMusicStyle(this.currentStyle)
       }
-      if (key === "musicPlayerSkin" || key === "showQuickAccessBg") {
+      if (key === "musicPlayerSkin") {
         this.applySkin(value)
+      } else if (key === "showQuickAccessBg") {
+        this.applySkin()
       }
       if (key === "musicPlayerNoShaking") {
         this.applyNoShaking(value)
