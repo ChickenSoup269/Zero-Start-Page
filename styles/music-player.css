@@ -5783,32 +5783,32 @@ body.widgets-m3-accent
 }
 
 /* Context Menu Theme Match for Card Skins */
-body.context-menu-dark .skin-horizontal-card,
-body.context-menu-dark .skin-vertical-card {
+body.context-menu-dark .music-player-container.music-style-square-thumb.skin-horizontal-card,
+body.context-menu-dark .music-player-container.music-style-square-thumb.skin-vertical-card {
   background: rgba(35, 35, 45, 0.75) !important;
   backdrop-filter: blur(25px) saturate(180%) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
 }
-body.context-menu-light .skin-horizontal-card,
-body.context-menu-light .skin-vertical-card {
+body.context-menu-light .music-player-container.music-style-square-thumb.skin-horizontal-card,
+body.context-menu-light .music-player-container.music-style-square-thumb.skin-vertical-card {
   background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(25px) saturate(180%) !important;
   border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
 }
-body.context-menu-macos .skin-horizontal-card,
-body.context-menu-macos .skin-vertical-card {
+body.context-menu-macos .music-player-container.music-style-square-thumb.skin-horizontal-card,
+body.context-menu-macos .music-player-container.music-style-square-thumb.skin-vertical-card {
   background: rgba(246, 246, 248, 0.78) !important;
   backdrop-filter: blur(38px) saturate(190%) !important;
   border: 0.5px solid rgba(0, 0, 0, 0.14) !important;
 }
-body.context-menu-none .skin-horizontal-card,
-body.context-menu-none .skin-vertical-card {
+body.context-menu-none .music-player-container.music-style-square-thumb.skin-horizontal-card,
+body.context-menu-none .music-player-container.music-style-square-thumb.skin-vertical-card {
   background: rgba(255, 255, 255, 0.54) !important;
   backdrop-filter: blur(24px) saturate(170%) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.66) !important;
 }
-body.context-menu-m3 .skin-horizontal-card,
-body.context-menu-m3 .skin-vertical-card {
+body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-horizontal-card,
+body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-vertical-card {
   background: radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) 0%, transparent 60%), color-mix(in srgb, var(--m3-surface, #ffffff) 82%, transparent) !important;
   border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
 }
