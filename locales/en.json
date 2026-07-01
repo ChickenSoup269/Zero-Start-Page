@@ -15,6 +15,8 @@
   "settings_check_updates": "View Changelog ",
   "footer_sync_backup": "Sync to Cloud",
   "footer_sync_restore": "Restore from Cloud",
+  "settings_browser_sync_title": "Browser Sync",
+  "settings_browser_sync_hint": "Note: This syncs with your browser account automatically without requiring login.",
   "sync_no_images_warning": "Note: Sync only includes settings. Images/Videos are not synced. Use 'Export JSON' for full backup.",
   "sync_backup_success": "Settings synced successfully to your Chrome account!",
   "sync_restore_confirm": "This will overwrite your current settings (except images). Continue?",

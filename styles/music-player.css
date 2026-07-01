@@ -5404,7 +5404,7 @@ body.widgets-m3-accent
   padding: 0;
   display: flex;
   flex-direction: column;
-  background-color: #0f0f0f;
+  /* background-color: #0f0f0f; removed to inherit context menu bg */
   position: relative;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
@@ -5735,8 +5735,17 @@ body.widgets-m3-accent
   background: rgba(255,255,255,0.9) !important; 
   border-radius: 2px !important; 
   box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
+  height: 4px !important;
+}
+.music-style-square-thumb.skin-horizontal-card .visualizer-bar.playing {
+  animation-name: squareThumbSkinPulse !important;
 }
 .music-style-square-thumb.skin-horizontal-card .visualizer-bar:nth-child(n+6) { display: none !important; }
+
+@keyframes squareThumbSkinPulse {
+  0%, 100% { height: 4px; opacity: 0.6; }
+  50% { height: 16px; opacity: 1; }
+}
 
 /* Dynamic Background overlay for square-thumb */
 .music-player-container.music-style-square-thumb.skin-horizontal-card .music-bg-blur,
@@ -5772,4 +5781,35 @@ body.widgets-m3-accent
 /* Hide the blur background on default skin */
 .music-player-container.music-style-square-thumb:not(.skin-horizontal-card):not(.skin-vertical-card) .music-bg-blur {
   display: none !important;
+}
+
+/* Context Menu Theme Match for Card Skins */
+body.context-menu-dark .skin-horizontal-card,
+body.context-menu-dark .skin-vertical-card {
+  background: rgba(35, 35, 45, 0.75) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+}
+body.context-menu-light .skin-horizontal-card,
+body.context-menu-light .skin-vertical-card {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
+}
+body.context-menu-macos .skin-horizontal-card,
+body.context-menu-macos .skin-vertical-card {
+  background: rgba(246, 246, 248, 0.78) !important;
+  backdrop-filter: blur(38px) saturate(190%) !important;
+  border: 0.5px solid rgba(0, 0, 0, 0.14) !important;
+}
+body.context-menu-none .skin-horizontal-card,
+body.context-menu-none .skin-vertical-card {
+  background: rgba(255, 255, 255, 0.54) !important;
+  backdrop-filter: blur(24px) saturate(170%) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.66) !important;
+}
+body.context-menu-m3 .skin-horizontal-card,
+body.context-menu-m3 .skin-vertical-card {
+  background: radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) 0%, transparent 60%), color-mix(in srgb, var(--m3-surface, #ffffff) 82%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
 }

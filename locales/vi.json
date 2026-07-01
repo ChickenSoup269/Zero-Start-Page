@@ -15,6 +15,8 @@
   "settings_check_updates": "Xem Nhật ký thay đổi ",
   "footer_sync_backup": "Sao lưu lên Đám mây",
   "footer_sync_restore": "Khôi phục từ Đám mây",
+  "settings_browser_sync_title": "Đồng bộ Trình duyệt",
+  "settings_browser_sync_hint": "Ghi chú: Tính năng này đồng bộ theo tài khoản trình duyệt mà không cần đăng nhập.",
   "sync_no_images_warning": "Lưu ý: Đồng bộ chỉ bao gồm cài đặt. Ảnh/Video sẽ không được đồng bộ. Hãy dùng 'Xuất JSON' để sao lưu toàn bộ.",
   "sync_backup_success": "Đã sao lưu cài đặt thành công vào tài khoản Chrome của bạn!",
   "sync_restore_confirm": "Hành động này sẽ ghi đè cài đặt hiện tại (ngoại trừ ảnh). Tiếp tục?",
