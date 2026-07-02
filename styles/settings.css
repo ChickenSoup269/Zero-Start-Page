@@ -39,7 +39,7 @@
 
 .effect-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   gap: var(--space-1);
 }
 
@@ -474,7 +474,7 @@
 /* Font picker grid */
 .font-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-1);
 }
 
@@ -1566,7 +1566,7 @@
 
 .style-preset-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: var(--space-1);
   margin-top: var(--space-1);
 }
@@ -2407,7 +2407,7 @@ body.sidebar-light .preset-code-line-value {
 
 .gradient-swatch-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: var(--space-2);
   margin-bottom: var(--space-2);
 }
@@ -4471,7 +4471,7 @@ body.sidebar-light .preset-code-line-value {
 /* Clock Style Grid & Cards */
 .clock-style-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: var(--space-0-5);
   margin-top: var(--space-2);
   padding: 2px;
@@ -4550,7 +4550,7 @@ body.sidebar-light .preset-code-line-value {
 /* Themes Grid & Items */
 .themes-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: var(--space-2);
   margin-top: var(--space-2);
   padding: var(--space-0-5);
@@ -6201,7 +6201,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
 
 .unsplash-shortcuts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: var(--space-1);
   margin-bottom: var(--space-2);
 }
