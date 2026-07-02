@@ -579,7 +579,8 @@
 
 .settings-sidebar {
   position: fixed;
-  left: -448px;
+  left: 0;
+  transform: translateX(-100%);
   top: 0;
   width: var(--sidebar-width);
   height: 100%;
@@ -587,9 +588,7 @@
   backdrop-filter: blur(30px) saturate(160%);
   -webkit-backdrop-filter: blur(30px) saturate(160%);
   box-shadow: 10px 0 40px rgba(0, 0, 0, 0.6);
-  transition:
-    left 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10000;
   color: #fff;
   display: flex;
@@ -597,6 +596,7 @@
   border-right: 1px solid var(--sidebar-border);
   box-sizing: border-box;
   overflow: hidden;
+  will-change: transform;
 }
 
 .sidebar-content {
@@ -669,7 +669,7 @@
 }
 
 .settings-sidebar.open {
-  left: 0;
+  transform: translateX(0);
 }
 
 .sidebar-header {

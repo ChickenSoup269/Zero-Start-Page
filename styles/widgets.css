@@ -8102,14 +8102,14 @@ body.flip-layout .top-right-controls {
 
 body.flip-layout .settings-sidebar {
   left: auto;
-  right: -448px;
+  right: 0;
+  transform: translateX(100%);
   border-right: none;
   border-left: 1px solid var(--sidebar-border);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
 }
 body.flip-layout .settings-sidebar.open {
-  left: auto;
-  right: 0;
+  transform: translateX(0);
 }
 
 body.flip-layout .layout-controls-popup {
