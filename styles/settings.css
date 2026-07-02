@@ -4496,6 +4496,17 @@ body.sidebar-light .preset-code-line-value {
   user-select: none;
 }
 
+.clock-style-card.compact-style-card {
+  aspect-ratio: auto;
+  padding: 8px 12px;
+  min-height: 36px;
+  flex-direction: row;
+}
+
+.clock-style-card.compact-style-card i {
+  display: none;
+}
+
 .clock-style-card:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);

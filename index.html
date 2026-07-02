@@ -1453,6 +1453,13 @@
                                     <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom Right)
                                     </option>
                                 </select>
+                                <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 15px;">
+                                    <label style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">
+                                        <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
+                                        <span id="bookmark-sidebar-width-value" style="font-family: monospace;">300px</span>
+                                    </label>
+                                    <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10" value="300" style="width: 100%;">
+                                </div>
                             </div>
                             <div class="setting-item no-margin-top" id="bookmark-item-style-row"
                                 style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
@@ -1849,6 +1856,13 @@
                             <label for="flip-layout-checkbox" data-i18n="settings_flip_layout">Flip Interface
                                 Layout</label>
                             <input type="checkbox" id="flip-layout-checkbox">
+                        </div>
+                        <div class="setting-item">
+                            <label style="display: flex; justify-content: space-between;">
+                                <span data-i18n="settings_sidebar_width">Settings Sidebar Width</span>
+                                <span id="settings-sidebar-width-value" style="opacity: 0.7; font-family: monospace;">420px</span>
+                            </label>
+                            <input type="range" id="settings-sidebar-width-input" min="300" max="800" step="10" value="420" style="width: 100%;">
                         </div>
                         <div class="setting-item-row">
                             <label for="extension-action-behavior-select" data-i18n="settings_extension_action_behavior">Extension Icon Behavior</label>

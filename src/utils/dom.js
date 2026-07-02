@@ -1203,7 +1203,12 @@ export let hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export let bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",
 )
-export let bookmarkLayout = document.getElementById("bookmark-layout")
+export let bookmarkLayout = document.getElementById('bookmark-layout')
+export let bookmarkSidebarWidthInput = document.getElementById('bookmark-sidebar-width-input')
+export let bookmarkSidebarWidthValue = document.getElementById('bookmark-sidebar-width-value')
+export let bookmarkSidebarWidthContainer = document.getElementById('bookmark-sidebar-width-container')
+export let settingsSidebarWidthInput = document.getElementById('settings-sidebar-width-input')
+export let settingsSidebarWidthValue = document.getElementById('settings-sidebar-width-value')
 export let bookmarkLayoutBgStyle = document.getElementById(
   "bookmark-layout-bg-style",
 )
@@ -3246,7 +3251,12 @@ export function refreshDOMReferences() {
   bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",
 )
-  bookmarkLayout = document.getElementById("bookmark-layout")
+  bookmarkLayout = document.getElementById('bookmark-layout')
+  bookmarkSidebarWidthInput = document.getElementById('bookmark-sidebar-width-input')
+  bookmarkSidebarWidthValue = document.getElementById('bookmark-sidebar-width-value')
+  bookmarkSidebarWidthContainer = document.getElementById('bookmark-sidebar-width-container')
+  settingsSidebarWidthInput = document.getElementById('settings-sidebar-width-input')
+  settingsSidebarWidthValue = document.getElementById('settings-sidebar-width-value')
   bookmarkLayoutBgStyle = document.getElementById(
   "bookmark-layout-bg-style",
 )

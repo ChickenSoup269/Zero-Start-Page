@@ -45,16 +45,27 @@
                             </select>
                         </div>
                         <div class="setting-item" style="margin-top: 15px;">
-                            <label data-i18n="settings_date_format_style" for="date-format-select">Date Format</label>
-                            <select id="date-format-select">
-                                <option value="full" data-i18n="settings_date_format_full">Weekday, DD Month YYYY
-                                </option>
-                                <option value="short" data-i18n="settings_date_format_short">DD/MM/YYYY</option>
-                                <option value="us" data-i18n="settings_date_format_us">MM/DD/YYYY</option>
-                                <option value="iso" data-i18n="settings_date_format_iso">YYYY-MM-DD</option>
-                                <option value="year" data-i18n="settings_date_format_year">Year only</option>
-                                <option value="weekday" data-i18n="settings_date_format_weekday">Weekday only</option>
-                            </select>
+                            <label data-i18n="settings_date_format_style">Date Format</label>
+                            <div id="date-format-grid" class="clock-style-grid">
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="full">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_full" style="text-transform: none;">Weekday, DD Month YYYY</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="short">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_short" style="text-transform: none;">DD/MM/YYYY</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="us">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_us" style="text-transform: none;">MM/DD/YYYY</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="iso">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_iso" style="text-transform: none;">YYYY-MM-DD</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="year">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_year" style="text-transform: none;">Year only</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card date-format-card" data-value="weekday">
+                                    <span class="clock-style-name" data-i18n="settings_date_format_weekday" style="text-transform: none;">Weekday only</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="setting-item">
                             <label for="clock-date-language-select" data-i18n="settings_clock_date_language">Date
@@ -74,11 +85,15 @@
                             </select>
                         </div>
                         <div class="setting-item">
-                            <label for="time-format-select" data-i18n="settings_time_format">Time Format</label>
-                            <select id="time-format-select">
-                                <option value="24h">24h</option>
-                                <option value="12h">12h (AM/PM)</option>
-                            </select>
+                            <label data-i18n="settings_time_format">Time Format</label>
+                            <div id="time-format-grid" class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                <div class="clock-style-card compact-style-card time-format-card" data-value="24h">
+                                    <span class="clock-style-name">24h</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card time-format-card" data-value="12h">
+                                    <span class="clock-style-name">12h (AM/PM)</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="setting-item">
                             <label for="timezone-select" data-i18n="settings_timezone">Timezone</label>
@@ -682,15 +697,21 @@
                         </div>
 
                         <div class="setting-item no-margin-top">
-                            <label for="clock-font-target-select" data-i18n="settings_clock_font_target">Apply Font
-                                To</label>
-                            <select id="clock-font-target-select">
-                                <option value="both" data-i18n="settings_clock_font_target_both">Both</option>
-                                <option value="clock" data-i18n="settings_clock_font_target_clock">Clock only</option>
-                                <option value="date" data-i18n="settings_clock_font_target_date">Date only</option>
-                                <option value="weekday" data-i18n="settings_clock_font_target_weekday">Weekday only
-                                </option>
-                            </select>
+                            <label data-i18n="settings_clock_font_target">Apply Font To</label>
+                            <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr);">
+                                <div class="clock-style-card compact-style-card font-target-card" data-value="both">
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_both" style="text-transform: none;">Both</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card font-target-card" data-value="clock">
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_clock" style="text-transform: none;">Clock only</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card font-target-card" data-value="date">
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_date" style="text-transform: none;">Date only</span>
+                                </div>
+                                <div class="clock-style-card compact-style-card font-target-card" data-value="weekday">
+                                    <span class="clock-style-name" data-i18n="settings_clock_font_target_weekday" style="text-transform: none;">Weekday only</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
@@ -700,7 +721,11 @@
                                     <span id="clock-size-value"
                                         style="opacity: 0.7; font-family: monospace;">6rem</span>
                                 </label>
-                                <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <button class="secondary-btn" id="clock-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="clock-size-input" min="2" max="12" step="0.5" value="6" style="flex: 1;">
+                                    <button class="secondary-btn" id="clock-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-plus"></i></button>
+                                </div>
                             </div>
                             <div class="setting-item no-margin-top">
                                 <label style="display: flex; justify-content: space-between;">
@@ -708,7 +733,11 @@
                                     <span id="date-size-value"
                                         style="opacity: 0.7; font-family: monospace;">1.5rem</span>
                                 </label>
-                                <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <button class="secondary-btn" id="date-size-dec" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="range" id="date-size-input" min="0.8" max="10" step="0.1" value="1.5" style="flex: 1;">
+                                    <button class="secondary-btn" id="date-size-inc" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fa-solid fa-plus"></i></button>
+                                </div>
                             </div>
                         </div>
 
@@ -754,32 +783,49 @@
                                 <input type="checkbox" id="clock-use-accent-checkbox">
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div class="setting-item no-margin-top">
+                                <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
                                     <label style="font-size: 0.7rem; opacity: 0.7;" data-i18n="settings_clock_accent_target">Accent Target</label>
-                                    <select id="clock-accent-target-select">
-                                        <option value="style" data-i18n="settings_clock_accent_target_style">Style accents only</option>
-                                        <option value="both" data-i18n="settings_clock_accent_target_both">Clock + Date</option>
-                                        <option value="time" data-i18n="settings_clock_accent_target_time">Time only</option>
-                                        <option value="date" data-i18n="settings_clock_accent_target_date">Date only</option>
-                                        <option value="weekday" data-i18n="settings_clock_accent_target_weekday">Weekday only</option>
-                                    </select>
+                                    <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="style">
+                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_style" style="text-transform: none; font-size: 0.7rem;">Style accents only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="both">
+                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_both" style="text-transform: none; font-size: 0.7rem;">Clock + Date</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="time">
+                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_time" style="text-transform: none; font-size: 0.7rem;">Time only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="date">
+                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_date" style="text-transform: none; font-size: 0.7rem;">Date only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card accent-target-card" data-value="weekday">
+                                            <span class="clock-style-name" data-i18n="settings_clock_accent_target_weekday" style="text-transform: none; font-size: 0.7rem;">Weekday only</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="setting-item no-margin-top">
+                                <div class="setting-item no-margin-top" style="grid-column: 1 / -1;">
                                     <label style="font-size: 0.7rem; opacity: 0.7;"
                                         data-i18n="settings_clock_shadow_target">Shadow Target</label>
-                                    <select id="clock-shadow-target-select">
-                                        <option value="none" data-i18n="settings_hue_text_mode_off">Off</option>
-                                        <option value="all" data-i18n="settings_clock_shadow_target_all">Clock + Date
-                                        </option>
-                                        <option value="time" data-i18n="settings_clock_shadow_target_time">Time only
-                                        </option>
-                                        <option value="date" data-i18n="settings_clock_shadow_target_date">Date only
-                                        </option>
-                                        <option value="weekday" data-i18n="settings_clock_shadow_target_weekday">Weekday
-                                            only</option>
-                                        <option value="box" data-i18n="settings_clock_shadow_target_box">Box shadow
-                                        </option>
-                                    </select>
+                                    <div class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="none">
+                                            <span class="clock-style-name" data-i18n="settings_hue_text_mode_off" style="text-transform: none; font-size: 0.7rem;">Off</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="all">
+                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_all" style="text-transform: none; font-size: 0.7rem;">Clock + Date</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="time">
+                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_time" style="text-transform: none; font-size: 0.7rem;">Time only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="date">
+                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_date" style="text-transform: none; font-size: 0.7rem;">Date only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="weekday">
+                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_weekday" style="text-transform: none; font-size: 0.7rem;">Weekday only</span>
+                                        </div>
+                                        <div class="clock-style-card compact-style-card shadow-target-card" data-value="box">
+                                            <span class="clock-style-name" data-i18n="settings_clock_shadow_target_box" style="text-transform: none; font-size: 0.7rem;">Box shadow</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="setting-item no-margin-top">
                                     <label style="font-size: 0.7rem; opacity: 0.7;"

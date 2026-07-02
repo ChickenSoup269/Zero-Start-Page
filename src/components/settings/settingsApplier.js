@@ -3164,13 +3164,10 @@ function createUpdateSettingsInputs(effectInstances) {
 
     // General Inputs
     effectInstances.renderFontGrid()
-    if (DOM.dateFormatSelect) DOM.dateFormatSelect.value = settings.dateFormat
     if (DOM.clockDateLanguageSelect)
       DOM.clockDateLanguageSelect.value = settings.clockDateLanguage || "auto"
     if (DOM.shortWeekdayCheckbox)
       DOM.shortWeekdayCheckbox.checked = settings.shortWeekday === true
-    if (DOM.timeFormatSelect)
-      DOM.timeFormatSelect.value = settings.timeFormat || "24h"
     if (DOM.timezoneSelect)
       DOM.timezoneSelect.value = settings.timezone || "local"
     const contextMenuInputValue = settings.contextMenuStyle || "dark"
@@ -3194,10 +3191,24 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
 
     // Sync Clock Style Cards
-    const clockCards = document.querySelectorAll(".clock-style-card")
+    const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card)")
     const currentStyle = settings.dateClockStyle || "default"
     clockCards.forEach((card) => {
       card.classList.toggle("active", card.dataset.value === currentStyle)
+    })
+    
+    // Sync Date Format Cards
+    const dateFormatCards = document.querySelectorAll(".date-format-card")
+    const currentDateFormat = settings.dateFormat || "full"
+    dateFormatCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentDateFormat)
+    })
+    
+    // Sync Time Format Cards
+    const timeFormatCards = document.querySelectorAll(".time-format-card")
+    const currentTimeFormat = settings.timeFormat || "24h"
+    timeFormatCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentTimeFormat)
     })
 
     if (DOM.jpStyleLanguageSelect)
@@ -3210,12 +3221,20 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockUseAccentCheckbox) {
       DOM.clockUseAccentCheckbox.checked = settings.clockUseAccentColor === true
     }
-    if (DOM.clockAccentTargetSelect) {
-      DOM.clockAccentTargetSelect.value = settings.clockAccentTarget || "style"
-    }
-    if (DOM.clockShadowTargetSelect) {
-      DOM.clockShadowTargetSelect.value = settings.clockShadowTarget || "none"
-    }
+    // Sync Accent Target Cards
+    const accentTargetCards = document.querySelectorAll(".accent-target-card")
+    const currentAccentTarget = settings.clockAccentTarget || "style"
+    accentTargetCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentAccentTarget)
+    })
+
+    // Sync Shadow Target Cards
+    const shadowTargetCards = document.querySelectorAll(".shadow-target-card")
+    const currentShadowTarget = settings.clockShadowTarget || "none"
+    shadowTargetCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentShadowTarget)
+    })
+
     if (DOM.clockShadowStrengthInput) {
       DOM.clockShadowStrengthInput.value = settings.clockShadowStrength || 0
       if (DOM.clockShadowStrengthValue) {
@@ -3296,8 +3315,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.cartoonClockAnimationCheckbox.checked =
         settings.cartoonClockAnimation !== false
     }
-    if (DOM.clockFontTargetSelect)
-      DOM.clockFontTargetSelect.value = settings.clockFontTarget || "both"
+    // Sync Font Target Cards
+    const fontTargetCards = document.querySelectorAll(".font-target-card")
+    const currentFontTarget = settings.clockFontTarget || "both"
+    fontTargetCards.forEach((card) => {
+      card.classList.toggle("active", card.dataset.value === currentFontTarget)
+    })
 
     // Manage display of conditional settings
     const style = settings.dateClockStyle || "default"
@@ -3921,7 +3944,8 @@ function createUpdateSettingsInputs(effectInstances) {
         DOM.bookmarkGroupBorderHidden.checked =
           settings.bookmarkGroupBorderHidden === true
       }
-      if (DOM.bookmarkLayoutShowGroups) {
+      if (settings.settingsSidebarWidth) { document.documentElement.style.setProperty('--sidebar-width', settings.settingsSidebarWidth + 'px'); if (DOM.settingsSidebarWidthInput) DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth; if (DOM.settingsSidebarWidthValue) DOM.settingsSidebarWidthValue.textContent = settings.settingsSidebarWidth + 'px'; } if (settings.bookmarkSidebarWidth) { document.documentElement.style.setProperty('--bookmark-group-text-width', settings.bookmarkSidebarWidth + 'px'); if (DOM.bookmarkSidebarWidthInput) DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth; if (DOM.bookmarkSidebarWidthValue) DOM.bookmarkSidebarWidthValue.textContent = settings.bookmarkSidebarWidth + 'px'; } if (DOM.bookmarkLayout) { if (DOM.bookmarkSidebarWidthContainer) { DOM.bookmarkSidebarWidthContainer.style.display = settings.bookmarkLayout === 'sidebar' ? 'block' : 'none'; } }
+    if (DOM.bookmarkLayoutShowGroups) {
         DOM.bookmarkLayoutShowGroups.checked =
           settings.showBookmarkGroups !== false
       }
@@ -5071,6 +5095,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showBookmarkGroupsCheckbox.checked =
       settings.showBookmarkGroups !== false
+    if (settings.settingsSidebarWidth) { document.documentElement.style.setProperty('--sidebar-width', settings.settingsSidebarWidth + 'px'); if (DOM.settingsSidebarWidthInput) DOM.settingsSidebarWidthInput.value = settings.settingsSidebarWidth; if (DOM.settingsSidebarWidthValue) DOM.settingsSidebarWidthValue.textContent = settings.settingsSidebarWidth + 'px'; } if (settings.bookmarkSidebarWidth) { document.documentElement.style.setProperty('--bookmark-group-text-width', settings.bookmarkSidebarWidth + 'px'); if (DOM.bookmarkSidebarWidthInput) DOM.bookmarkSidebarWidthInput.value = settings.bookmarkSidebarWidth; if (DOM.bookmarkSidebarWidthValue) DOM.bookmarkSidebarWidthValue.textContent = settings.bookmarkSidebarWidth + 'px'; } if (DOM.bookmarkLayout) { if (DOM.bookmarkSidebarWidthContainer) { DOM.bookmarkSidebarWidthContainer.style.display = settings.bookmarkLayout === 'sidebar' ? 'block' : 'none'; } }
     if (DOM.bookmarkLayoutShowGroups) {
       DOM.bookmarkLayoutShowGroups.checked =
         settings.showBookmarkGroups !== false

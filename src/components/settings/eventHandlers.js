@@ -2530,11 +2530,35 @@ export function setupGeneralEventHandlers(
         if (DOM.lcpBookmarkLayout)
           DOM.lcpBookmarkLayout.value = DOM.bookmarkLayout.value
 
-        // Show/hide bg style row based on layout
+        // Show/hide bg style row and sidebar width row based on layout
         if (DOM.bookmarkLayoutBgStyleRow) {
           DOM.bookmarkLayoutBgStyleRow.style.display =
             DOM.bookmarkLayout.value === "default" ? "none" : "flex"
         }
+        if (DOM.bookmarkSidebarWidthContainer) {
+          DOM.bookmarkSidebarWidthContainer.style.display = 
+            DOM.bookmarkLayout.value === "sidebar" ? "block" : "none"
+        }
+      })
+    }
+    
+    if (DOM.bookmarkSidebarWidthInput) {
+      DOM.bookmarkSidebarWidthInput.addEventListener("input", () => {
+        if (DOM.bookmarkSidebarWidthValue) {
+          DOM.bookmarkSidebarWidthValue.textContent = `${DOM.bookmarkSidebarWidthInput.value}px`
+        }
+        document.documentElement.style.setProperty("--bookmark-group-text-width", `${DOM.bookmarkSidebarWidthInput.value}px`)
+        throttleSettingUpdate("bookmarkSidebarWidth", DOM.bookmarkSidebarWidthInput.value)
+      })
+    }
+    
+    if (DOM.settingsSidebarWidthInput) {
+      DOM.settingsSidebarWidthInput.addEventListener("input", () => {
+        if (DOM.settingsSidebarWidthValue) {
+          DOM.settingsSidebarWidthValue.textContent = `${DOM.settingsSidebarWidthInput.value}px`
+        }
+        document.documentElement.style.setProperty("--sidebar-width", `${DOM.settingsSidebarWidthInput.value}px`)
+        throttleSettingUpdate("settingsSidebarWidth", DOM.settingsSidebarWidthInput.value)
       })
     }
     if (DOM.lcpBookmarkLayout) {
@@ -4128,13 +4152,22 @@ export function setupGeneralEventHandlers(
   })
 
   // Date/time settings
-  DOM.dateFormatSelect?.addEventListener("change", () => {
-    handleSettingUpdate("dateFormat", DOM.dateFormatSelect.value)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "dateFormat", value: DOM.dateFormatSelect.value },
-      }),
-    )
+  // Date Format Cards
+  const dateFormatCards = document.querySelectorAll(".date-format-card")
+  dateFormatCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("dateFormat", val)
+
+      dateFormatCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "dateFormat", value: val },
+        }),
+      )
+    })
   })
   DOM.clockDateLanguageSelect?.addEventListener("change", () => {
     handleSettingUpdate(
@@ -4163,13 +4196,22 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.timeFormatSelect?.addEventListener("change", () => {
-    handleSettingUpdate("timeFormat", DOM.timeFormatSelect.value)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: { key: "timeFormat", value: DOM.timeFormatSelect.value },
-      }),
-    )
+  // Time Format Cards
+  const timeFormatCards = document.querySelectorAll(".time-format-card")
+  timeFormatCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("timeFormat", val)
+
+      timeFormatCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "timeFormat", value: val },
+        }),
+      )
+    })
   })
 
   DOM.timezoneSelect?.addEventListener("change", () => {
@@ -4203,7 +4245,7 @@ export function setupGeneralEventHandlers(
   })
 
   // Clock Style Card Grid
-  const clockCards = document.querySelectorAll(".clock-style-card")
+  const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card)")
   clockCards.forEach((card) => {
     card.addEventListener("click", () => {
       const val = card.dataset.value
@@ -4706,8 +4748,16 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockFontTargetSelect?.addEventListener("change", () => {
-    handleSettingUpdate("clockFontTarget", DOM.clockFontTargetSelect.value)
+  // Font Target Cards
+  const fontTargetCards = document.querySelectorAll(".font-target-card")
+  fontTargetCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("clockFontTarget", val)
+
+      fontTargetCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+    })
   })
 
   DOM.jpStyleLanguageSelect?.addEventListener("change", () => {
@@ -4756,20 +4806,37 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockAccentTargetSelect?.addEventListener("change", () => {
-    handleSettingUpdate("clockAccentTarget", DOM.clockAccentTargetSelect.value)
-    window.dispatchEvent(
-      new CustomEvent("layoutUpdated", {
-        detail: {
-          key: "clockAccentTarget",
-          value: DOM.clockAccentTargetSelect.value,
-        },
-      }),
-    )
+  // Accent Target Cards
+  const accentTargetCards = document.querySelectorAll(".accent-target-card")
+  accentTargetCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("clockAccentTarget", val)
+
+      accentTargetCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "clockAccentTarget",
+            value: val,
+          },
+        }),
+      )
+    })
   })
 
-  DOM.clockShadowTargetSelect?.addEventListener("change", () => {
-    handleSettingUpdate("clockShadowTarget", DOM.clockShadowTargetSelect.value)
+  // Shadow Target Cards
+  const shadowTargetCards = document.querySelectorAll(".shadow-target-card")
+  shadowTargetCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const val = card.dataset.value
+      handleSettingUpdate("clockShadowTarget", val)
+
+      shadowTargetCards.forEach((c) => c.classList.remove("active"))
+      card.classList.add("active")
+    })
   })
 
   DOM.clockShadowStrengthInput?.addEventListener("input", () => {
@@ -4946,6 +5013,20 @@ export function setupGeneralEventHandlers(
   DOM.clockSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("clockSize", DOM.clockSizeInput.value)
   })
+  
+  document.getElementById("clock-size-dec")?.addEventListener("click", () => {
+    if (!DOM.clockSizeInput) return;
+    DOM.clockSizeInput.value = Math.max(Number(DOM.clockSizeInput.min), Number(DOM.clockSizeInput.value) - Number(DOM.clockSizeInput.step));
+    DOM.clockSizeInput.dispatchEvent(new Event("input"));
+    DOM.clockSizeInput.dispatchEvent(new Event("change"));
+  });
+  
+  document.getElementById("clock-size-inc")?.addEventListener("click", () => {
+    if (!DOM.clockSizeInput) return;
+    DOM.clockSizeInput.value = Math.min(Number(DOM.clockSizeInput.max), Number(DOM.clockSizeInput.value) + Number(DOM.clockSizeInput.step));
+    DOM.clockSizeInput.dispatchEvent(new Event("input"));
+    DOM.clockSizeInput.dispatchEvent(new Event("change"));
+  });
 
   DOM.dateSizeInput?.addEventListener("input", () => {
     if (DOM.dateSizeValue)
@@ -4958,6 +5039,20 @@ export function setupGeneralEventHandlers(
   DOM.dateSizeInput?.addEventListener("change", () => {
     handleSettingUpdate("dateSize", DOM.dateSizeInput.value)
   })
+  
+  document.getElementById("date-size-dec")?.addEventListener("click", () => {
+    if (!DOM.dateSizeInput) return;
+    DOM.dateSizeInput.value = Math.max(Number(DOM.dateSizeInput.min), Number(DOM.dateSizeInput.value) - Number(DOM.dateSizeInput.step));
+    DOM.dateSizeInput.dispatchEvent(new Event("input"));
+    DOM.dateSizeInput.dispatchEvent(new Event("change"));
+  });
+  
+  document.getElementById("date-size-inc")?.addEventListener("click", () => {
+    if (!DOM.dateSizeInput) return;
+    DOM.dateSizeInput.value = Math.min(Number(DOM.dateSizeInput.max), Number(DOM.dateSizeInput.value) + Number(DOM.dateSizeInput.step));
+    DOM.dateSizeInput.dispatchEvent(new Event("input"));
+    DOM.dateSizeInput.dispatchEvent(new Event("change"));
+  });
 
   DOM.clockDateStrokeWidthInput?.addEventListener("input", (e) => {
     if (DOM.clockDateStrokeWidthValue)
