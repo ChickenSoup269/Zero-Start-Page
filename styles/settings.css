@@ -4491,7 +4491,9 @@ body.sidebar-light .preset-code-line-value {
   align-items: center;
   justify-content: center;
   gap: var(--space-0-5);
-  aspect-ratio: 1 / 1;
+  aspect-ratio: auto;
+  min-height: 80px;
+  padding: 12px 8px;
   overflow: hidden;
   user-select: none;
 }
