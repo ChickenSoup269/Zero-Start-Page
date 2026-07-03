@@ -818,6 +818,7 @@ function createApplySettings(effectInstances) {
       "splash-cursor-dark-bg",
       "bg-image-active",
       "bookmark-sidebar-mode",
+      "bookmark-premium-mode",
       "bookmark-taskbar-mode",
       "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
@@ -2210,6 +2211,7 @@ function createApplySettings(effectInstances) {
 
     const layoutClasses = [
       "bookmark-sidebar-mode",
+      "bookmark-premium-mode",
       "bookmark-taskbar-mode",
       "bookmark-taskbar-top-mode",
       "bookmark-taskbar-left-mode",
