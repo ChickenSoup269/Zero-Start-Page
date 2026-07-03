@@ -805,6 +805,7 @@ async function bootstrap() {
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return
     if (event.target.closest?.(backgroundContextExclusions)) return
+    if (document.body.classList.contains("bookmark-manager-open")) return
 
     event.preventDefault()
     showContextMenu(event.clientX, event.clientY, -1, "background")
@@ -813,6 +814,7 @@ async function bootstrap() {
   document.addEventListener("contextmenu", (event) => {
     if (event.defaultPrevented) return
     if (!event.target.closest?.("#search-container")) return
+    if (document.body.classList.contains("bookmark-manager-open")) return
 
     event.preventDefault()
     event.stopPropagation()
@@ -838,6 +840,7 @@ async function bootstrap() {
       event.target.closest?.(selector),
     )
     if (!match) return
+    if (document.body.classList.contains("bookmark-manager-open")) return
 
     event.preventDefault()
     event.stopPropagation()

@@ -433,33 +433,6 @@ function addBackgroundContextMenuItems(i18n) {
     ),
     createCustomMenuDivider(),
     createCustomMenuItem(
-      i18n.bg_context_add_bookmark || "Add bookmark",
-      "fa-solid fa-bookmark",
-      () => {
-        const bookmarks = getBookmarks()
-        const settings = getSettings()
-        if (settings.bookmarkLimit20 !== false && bookmarks.length >= 20) {
-          showAlert(
-            i18n.alert_bookmark_limit_reached ||
-              "This group already has 20 bookmarks!",
-          )
-          hideContextMenu()
-          return
-        }
-        hideContextMenu()
-        openModal(null)
-      },
-    ),
-    createCustomMenuItem(
-      i18n.context_open_bookmark_settings || "Bookmark settings",
-      "fa-solid fa-sliders",
-      () => {
-        hideContextMenu()
-        openSettingsSection("bookmark-custom", "#bookmark-font-size-input")
-      },
-      "context-settings-item",
-    ),
-    createCustomMenuItem(
       i18n.bg_context_open_google || "Open regular Google",
       "fa-brands fa-google",
       () => {
@@ -620,6 +593,9 @@ export function showContextMenu(
   lastContextMenuX = x || 0
   lastContextMenuY = y || 0
 
+  const menuManagerDivider = document.getElementById("menu-manager-divider")
+  const menuBookmarkManager = document.getElementById("menu-bookmark-manager")
+
   // Dọn dẹp các mục custom cũ nếu có
   contextMenu
     .querySelectorAll(".custom-music-item")
@@ -632,6 +608,9 @@ export function showContextMenu(
   menuLock.style.display = "none"
   menuFavorite.style.display = "none"
   if (menuMove) menuMove.style.display = "none"
+
+  if (menuManagerDivider) menuManagerDivider.style.display = "none"
+  if (menuBookmarkManager) menuBookmarkManager.style.display = "none"
 
   const i18n = geti18n()
 
@@ -661,6 +640,8 @@ export function showContextMenu(
     type === "bookmarkStackItem" ||
     type === "group"
   ) {
+    if (menuManagerDivider) menuManagerDivider.style.display = "block"
+    if (menuBookmarkManager) menuBookmarkManager.style.display = "flex"
     addOpenBookmarkSettingsItem(i18n)
   }
 

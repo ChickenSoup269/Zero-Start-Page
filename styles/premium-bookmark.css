@@ -17,9 +17,9 @@ body.bookmark-manager-open .bookmark-widget {
     -webkit-backdrop-filter: blur(24px) !important;
     display: flex !important;
     flex-direction: row !important;
-    padding: 50px !important;
+    padding: 24px !important;
     box-sizing: border-box !important;
-    gap: 30px !important;
+    gap: 24px !important;
     align-items: stretch !important;
     margin: 0 !important;
     border-radius: 0 !important;
@@ -37,7 +37,7 @@ body.bookmark-manager-open .bookmark-groups-container {
     overflow-y: auto !important;
     background: rgba(20, 20, 25, 0.6) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 24px !important;
+    border-radius: 20px !important;
     padding: 24px 16px !important;
     box-sizing: border-box !important;
     display: flex !important;
@@ -60,11 +60,11 @@ body.bookmark-manager-open #bookmarks-container {
     overflow-y: auto !important;
     background: rgba(10, 10, 15, 0.4) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 24px !important;
-    padding: 40px !important;
+    border-radius: 20px !important;
+    padding: 32px !important;
     box-sizing: border-box !important;
     display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
     align-content: start !important;
     gap: 24px !important;
     order: 2 !important; /* Main content on the right */
@@ -74,14 +74,14 @@ body.bookmark-manager-open #bookmarks-container {
 body.bookmark-manager-open .bookmark-group-tab {
     display: flex !important;
     align-items: center !important;
-    padding: 16px 20px !important;
-    border-radius: 16px !important;
+    padding: 14px 18px !important;
+    border-radius: 12px !important;
     cursor: pointer !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
     background: transparent !important;
     border: 1px solid transparent !important;
     color: rgba(255, 255, 255, 0.7) !important;
-    font-size: 16px !important;
+    font-size: 15px !important;
     font-weight: 500 !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -90,7 +90,7 @@ body.bookmark-manager-open .bookmark-group-tab {
 body.bookmark-manager-open .bookmark-group-tab:hover {
     background: rgba(255, 255, 255, 0.08) !important;
     color: #fff !important;
-    transform: translateX(6px) !important;
+    transform: translateX(4px) !important;
 }
 
 body.bookmark-manager-open .bookmark-group-tab.active {
@@ -98,12 +98,12 @@ body.bookmark-manager-open .bookmark-group-tab.active {
     border: 1px solid rgba(168, 85, 247, 0.4) !important;
     color: #fff !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
-    transform: translateX(6px) !important;
+    transform: translateX(4px) !important;
 }
 
 body.bookmark-manager-open .bookmark-group-tab i {
-    margin-right: 16px !important;
-    font-size: 20px !important;
+    margin-right: 14px !important;
+    font-size: 18px !important;
     color: #a855f7 !important;
 }
 body.bookmark-manager-open .bookmark-group-tab:not(.active) i {
@@ -114,8 +114,8 @@ body.bookmark-manager-open .bookmark-group-tab:not(.active) i {
 body.bookmark-manager-open .bookmark {
     background: rgba(255, 255, 255, 0.04) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 20px !important;
-    padding: 20px !important;
+    border-radius: 16px !important;
+    padding: 20px 16px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -129,24 +129,63 @@ body.bookmark-manager-open .bookmark {
 
 body.bookmark-manager-open .bookmark:hover {
     background: rgba(255, 255, 255, 0.1) !important;
-    transform: translateY(-6px) scale(1.05) !important;
+    transform: translateY(-4px) scale(1.02) !important;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3) !important;
     border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 body.bookmark-manager-open .bookmark > .bookmark-icon,
 body.bookmark-manager-open .bookmark > .bookmark-stack-icon {
-    width: 54px !important;
-    height: 54px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4) !important;
     margin-bottom: 0 !important;
-    display: flex !important; /* To keep grid for stack */
+    display: flex !important; 
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-/* Make stack grid work with forced size */
-body.bookmark-manager-open .bookmark > .bookmark-stack-icon {
+/* Make stack grid work with forced size and centered items */
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon:not(.has-custom-stack-icon) {
     display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 1fr 1fr !important;
+    gap: 2px !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+    background: rgba(255,255,255,0.1) !important;
+}
+
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon.has-custom-stack-icon {
+    display: flex !important;
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon.has-custom-stack-icon img,
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon.has-custom-stack-icon .bookmark-icon,
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon,
+body.bookmark-manager-open .bookmark > .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 14px !important;
+    object-fit: cover !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.bookmark-manager-open .bookmark-stack-cell {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    border-radius: 4px !important;
 }
 
 body.bookmark-manager-open .bookmark-stack-cell img,
@@ -155,15 +194,16 @@ body.bookmark-manager-open .bookmark-stack-cell .bookmark-icon {
     height: 100% !important;
     border-radius: 0 !important;
     box-shadow: none !important;
+    object-fit: cover !important;
 }
 
 body.bookmark-manager-open .bookmark-groups-container::before {
     content: "Folders";
     display: block;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 12px;
     padding: 0 10px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -173,7 +213,7 @@ body.bookmark-manager-open #bookmarks-container::before {
     content: "Bookmarks Board";
     display: block;
     grid-column: 1 / -1;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: white;
     margin-bottom: 10px;
@@ -182,13 +222,25 @@ body.bookmark-manager-open #bookmarks-container::before {
 }
 
 body.bookmark-manager-open .bookmark span {
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: 500 !important;
     color: rgba(255, 255, 255, 0.95) !important;
     max-width: 100% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
+    line-height: 1.4 !important;
+}
+
+/* Fix Selection Toolbar floating as a column in Admin layout */
+body.bookmark-manager-open .selection-toolbar {
+    position: absolute !important;
+    bottom: 30px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 8600 !important;
+    width: auto !important;
+    min-width: 320px !important;
 }
 
 /* Close Button for Manager */
@@ -196,14 +248,14 @@ body.bookmark-manager-open .bookmark span {
     position: fixed;
     top: 24px;
     right: 24px;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     background: rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 50%;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -220,7 +272,7 @@ body.bookmark-manager-open .bookmark span {
 /* Custom Scrollbars for Admin Mode */
 body.bookmark-manager-open .bookmark-groups-container::-webkit-scrollbar,
 body.bookmark-manager-open #bookmarks-container::-webkit-scrollbar {
-    width: 8px !important;
+    width: 6px !important;
 }
 body.bookmark-manager-open .bookmark-groups-container::-webkit-scrollbar-thumb,
 body.bookmark-manager-open #bookmarks-container::-webkit-scrollbar-thumb {

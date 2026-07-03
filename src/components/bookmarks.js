@@ -529,15 +529,9 @@ function createBookmarkStackIcon(stack) {
     cell.className = "bookmark-stack-cell"
     if (item && item.type === "stack") {
       const miniFolder = document.createElement("div");
+      miniFolder.className = "bookmark-icon-fallback";
       miniFolder.innerHTML = '<i class="fa-solid fa-folder"></i>';
-      miniFolder.style.width = "100%";
-      miniFolder.style.height = "100%";
-      miniFolder.style.display = "flex";
-      miniFolder.style.alignItems = "center";
-      miniFolder.style.justifyContent = "center";
-      miniFolder.style.color = "rgba(255,255,255,0.7)";
-      miniFolder.style.fontSize = "12px";
-      miniFolder.style.background = "rgba(255,255,255,0.1)";
+      miniFolder.style.background = "transparent";
       cell.appendChild(miniFolder);
     } else {
       cell.appendChild(createBookmarkIcon(item))
@@ -1135,25 +1129,31 @@ function takeDraggedStackItems() {
 
 function getBookmarkDropIntent(target, event) {
   if (!target?.classList?.contains("bookmark")) return "before"
-  if (target.classList.contains("bookmark-stack")) return "stack"
 
   const rect = target.getBoundingClientRect()
-  if (!rect.width || !rect.height) return "stack"
+  if (!rect.width || !rect.height) return target.classList.contains("bookmark-stack") ? "stack" : "before"
   
   const isVerticalLayout = document.body.classList.contains("bookmark-sidebar-mode") || 
                            document.body.classList.contains("bookmark-taskbar-left-mode") ||
                            document.body.classList.contains("bookmark-taskbar-right-mode");
                            
+  const ratioX = (event.clientX - rect.left) / rect.width;
+  const ratioY = (event.clientY - rect.top) / rect.height;
+  
+  // Center 50% area is for stacking/merging
+  const isCenter = ratioX >= 0.25 && ratioX <= 0.75 && ratioY >= 0.25 && ratioY <= 0.75;
+  
+  if (isCenter) return "stack";
+  
   if (isVerticalLayout) {
-    const ratioY = (event.clientY - rect.top) / rect.height;
-    if (ratioY < 0.22) return "before";
-    if (ratioY > 0.78) return "after";
-    return "stack";
+    return ratioY < 0.5 ? "before" : "after";
   } else {
-    const ratioX = (event.clientX - rect.left) / rect.width;
-    if (ratioX < 0.22) return "before";
-    if (ratioX > 0.78) return "after";
-    return "stack";
+    // Grid/Horizontal flow layout
+    if (ratioX < 0.25) return "before";
+    if (ratioX > 0.75) return "after";
+    if (ratioY < 0.25) return "before";
+    if (ratioY > 0.75) return "after";
+    return ratioX < 0.5 ? "before" : "after";
   }
 }
 
@@ -2434,7 +2434,20 @@ function renderGroupTabs() {
     const nameSpan = document.createElement("span")
     nameSpan.textContent = group.name
     nameSpan.className = "group-tab-name"
+    nameSpan.style.flexGrow = "1"
+    nameSpan.style.marginRight = "8px"
     tab.appendChild(nameSpan)
+    
+    const hasNestedFolder = Array.isArray(group.items) && group.items.some(item => item && item.type === "stack");
+    if (hasNestedFolder) {
+      const folderMarker = document.createElement("i");
+      folderMarker.className = "fa-solid fa-folder-tree group-tab-folder-marker";
+      folderMarker.title = geti18n().bookmark_contains_folders || "Contains nested folders";
+      folderMarker.style.fontSize = "11px";
+      folderMarker.style.marginRight = "6px";
+      folderMarker.style.opacity = "0.7";
+      tab.appendChild(folderMarker);
+    }
 
     const countBadge = document.createElement("small")
     countBadge.className = "group-tab-count"
