@@ -1,0 +1,21 @@
+# Startpage Project - AI Assistant Rules
+
+Welcome! As an AI coding assistant working on this project, please strictly follow these rules to ensure code quality, maintainability, and consistency.
+
+## 1. ES Modules & Caching (CRITICAL)
+- **NEVER** use cache-busting query strings in ES module imports (e.g., `import { foo } from "./file.js?v=2"`). 
+- Using query parameters causes the browser to treat them as separate modules, which fragments the module state (variables, caches) and creates hard-to-debug logic bugs.
+- Always use standard imports: `import { foo } from "./file.js"`.
+
+## 2. UI & Design System (8-Point Grid)
+- This project strictly follows an **8-point CSS grid system**.
+- All spacing (margins, paddings, gaps, offsets) and sizing should be multiples of 8px (e.g., 8px, 16px, 24px, 32px, 40px, 48px).
+- When using `rem` units (assuming base 16px font), use multiples of `0.5rem` (e.g., `0.5rem` = 8px, `1rem` = 16px, `1.5rem` = 24px).
+- Exception: Micro-adjustments (like borders or very tight inner padding) can use 4px, but the overall structure must align with the 8-point grid.
+
+## 3. Internationalization (i18n)
+- **NO HARDCODED STRINGS** in the UI. 
+- All new user-facing text MUST be fully translated into both English and Vietnamese.
+- In HTML, always use the `data-i18n` attribute: `<span data-i18n="your_new_key">English Fallback</span>`
+- You must always update BOTH `locales/en.json` and `locales/vi.json` whenever you introduce a new string.
+- When injecting text via JavaScript, always use the `geti18n()` function and fallback: `const i18n = geti18n(); el.textContent = i18n.your_new_key || "English Fallback";`
