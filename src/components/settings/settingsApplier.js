@@ -1200,17 +1200,22 @@ function createApplySettings(effectInstances) {
       const setBackgroundImageSmoothly = (imageUrl) => {
         if (!bgLayer || !imageUrl) return
 
-        // Apply background immediately to prevent white flash while decode is pending.
-        // This is safe because blob: URLs are already in memory.
-        bgLayer.style.backgroundImage = cssUrl(imageUrl)
-        bgLayer.style.backgroundSize = backgroundSize
-        bgLayer.style.backgroundRepeat = backgroundRepeat
-        document.body.classList.remove("preload-bg-preview")
         document.body.classList.add("bg-layer-active")
 
         const img = new Image()
 
         const applyStyles = () => {
+          // If this is the first load, put the preview into the fade layer so it can crossfade to the full blob URL
+          if (isFirstLoad && bgFadeLayer && settings.lastUserBackgroundPreview) {
+            bgFadeLayer.style.transition = "none"
+            bgFadeLayer.style.backgroundImage = cssUrl(settings.lastUserBackgroundPreview)
+            bgFadeLayer.style.backgroundSize = backgroundSize
+            bgFadeLayer.style.backgroundRepeat = backgroundRepeat
+            bgFadeLayer.style.opacity = "1"
+            bgFadeLayer.offsetHeight // force reflow
+            bgFadeLayer.style.transition = ""
+          }
+
           // Re-apply in case settings changed during decode, and trigger fade animation
           bgLayer.style.backgroundImage = cssUrl(imageUrl)
           bgLayer.style.backgroundSize = backgroundSize
@@ -1275,12 +1280,24 @@ function createApplySettings(effectInstances) {
               bgVideoElement.addEventListener("canplay", onVideoReady, { once: true })
             }
           } else if (bgLayer) {
-            let imageUrl = bg
-            if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
-            if (imageUrl) {
-              setBackgroundImageSmoothly(imageUrl)
-            } else {
+            const preview = settings.lastUserBackgroundPreview
+            // If we have a high-res preview (> 10KB), we can use it directly as the final background
+            // on first load to bypass the expensive blob decoding and crossfading entirely,
+            // making it 100% perfectly smooth just like URL backgrounds.
+            if (isIdbMedia(bg) && isFirstLoad && previewExists && preview && preview.length > 500) {
+              bgLayer.style.backgroundImage = cssUrl(preview)
+              bgLayer.style.backgroundSize = backgroundSize
+              bgLayer.style.backgroundRepeat = backgroundRepeat
+              document.body.classList.remove("preload-bg-preview")
               triggerBgFadeOut()
+            } else {
+              let imageUrl = bg
+              if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
+              if (imageUrl) {
+                setBackgroundImageSmoothly(imageUrl)
+              } else {
+                triggerBgFadeOut()
+              }
             }
           }
           document.body.style.backgroundSize = backgroundSize
