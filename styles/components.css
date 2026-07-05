@@ -915,7 +915,8 @@ body.context-menu-macos .bookmark-edit-field {
   }
 }
 
-.context-menu {
+.context-menu,
+.bookmark-stack-popup {
   display: none;
   position: fixed;
   width: 192px;
@@ -939,6 +940,17 @@ body.context-menu-macos .bookmark-edit-field {
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
+}
+
+.bookmark-stack-popup {
+  display: block;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(460px, calc(100vh - 24px));
+  overflow: auto;
+  padding: var(--space-2);
+  z-index: 10020;
+  animation: none;
+  border-radius: var(--radius-md);
 }
 
 /* Header inside context menu */
@@ -1037,7 +1049,8 @@ body.context-menu-none .context-menu-header {
 }
 
 /* ── Light Glass variant ── */
-body.context-menu-light .context-menu {
+body.context-menu-light .context-menu,
+body.context-menu-light .bookmark-stack-popup {
   background: linear-gradient(
     160deg,
     rgba(255, 255, 255, 0.88) 0%,
@@ -1083,7 +1096,8 @@ body.context-menu-light .context-menu-divider {
 }
 
 /* ── macOS variant ── */
-body.context-menu-macos .context-menu {
+body.context-menu-macos .context-menu,
+body.context-menu-macos .bookmark-stack-popup {
   background: rgba(30, 30, 32, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 10px;
@@ -1094,6 +1108,11 @@ body.context-menu-macos .context-menu {
   backdrop-filter: blur(40px) saturate(1.8);
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
   padding: 4px;
+}
+
+body.context-menu-macos .bookmark-stack-popup {
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
 }
 
 body.context-menu-macos .menu-item {
@@ -1135,7 +1154,8 @@ body.context-menu-macos .context-menu-divider {
 }
 
 /* Transparent variant */
-body.context-menu-none .context-menu {
+body.context-menu-none .context-menu,
+body.context-menu-none .bookmark-stack-popup {
   background: rgba(255, 255, 255, 0.54);
   border-color: rgba(255, 255, 255, 0.66);
   box-shadow:

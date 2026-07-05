@@ -612,6 +612,18 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   header.appendChild(count)
   popup.appendChild(header)
 
+  let searchInput = null
+  if (stack.items.length >= 15) {
+    const searchWrapper = document.createElement("div")
+    searchWrapper.className = "bookmark-stack-popup-search"
+    searchInput = document.createElement("input")
+    searchInput.type = "text"
+    searchInput.placeholder = i18n.bookmark_stack_search || "Search bookmarks..."
+    searchInput.className = "bookmark-stack-popup-search-input"
+    searchWrapper.appendChild(searchInput)
+    popup.appendChild(searchWrapper)
+  }
+
   const actions = document.createElement("div")
   actions.className = "bookmark-stack-popup-actions"
 
@@ -791,7 +803,11 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const renderStackItems = () => {
     grid.innerHTML = ""
+    const query = searchInput ? searchInput.value.toLowerCase() : ""
     stack.items.forEach((item, itemIndex) => {
+      if (query && !(item.title || item.name || "").toLowerCase().includes(query)) {
+        return;
+      }
       const link = document.createElement("a")
       link.className = "bookmark bookmark-stack-popup-item"
       applyBookmarkLinkBehavior(link, item.url)
@@ -948,6 +964,12 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   renderStackItems()
   syncStackSelectionUi()
+
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      renderStackItems()
+    })
+  }
 
   document.body.appendChild(popup)
 
@@ -1747,8 +1769,7 @@ export function renderBookmarks() {
 
       if (isStack) {
         e.preventDefault()
-        currentFolderStack.push({ id: bookmark.id, title: bookmark.title });
-        renderBookmarks();
+        openBookmarkStackPopup(bookmark, bookmarkEl, index)
         return
       }
 
