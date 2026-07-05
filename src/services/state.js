@@ -1120,6 +1120,7 @@ export function resetSettingsState() {
     userSavedFonts: settings.userSavedFonts || [],
     unsplashAccessKey: settings.unsplashAccessKey || "",
     unsplashLastCredit: settings.unsplashLastCredit || null,
+    language: settings.language || "en",
   }
 
   const newSettings = {
@@ -1173,6 +1174,7 @@ export const resetComponentPositions = (options = {}) => {
     "unsplashAccessKey",
     "unsplashLastCredit",
     "background",
+    "language",
   ]
 
   let newSettings = { ...currentSettings }
