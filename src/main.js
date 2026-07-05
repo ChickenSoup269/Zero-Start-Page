@@ -1,7 +1,7 @@
-import { initI18n, geti18n } from "./services/i18n.js?v=2"
+import { initI18n, geti18n } from "./services/i18n.js"
 import { fadeToggle, refreshDOMReferences } from "./utils/dom.js"
 import { showConfirm, showAlert, showChecklistConfirm } from "./utils/dialog.js"
-import { initClock } from "./components/clock.js?v=7"
+import { initClock } from "./components/clock.js"
 import { initBookmarks, renderBookmarks } from "./components/bookmarks.js"
 import { initModal } from "./components/modal.js"
 import {

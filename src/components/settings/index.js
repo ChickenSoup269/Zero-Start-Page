@@ -53,7 +53,7 @@ import {
 import {
   createApplySettings,
   createUpdateSettingsInputs,
-} from "./settingsApplier.js?v=3"
+} from "./settingsApplier.js"
 import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import {
   renderLocalBackgrounds,
@@ -673,19 +673,25 @@ export async function initSettings() {
                 img.crossOrigin = "Anonymous"
                 const dataUrl = await new Promise((resolve) => {
                   img.onload = () => {
-                    try {
-                      const canvas = document.createElement("canvas")
-                      // Kích thước nhỏ 32x32 hoặc 16x16 để tải data URL nhanh nhất có thể (chỉ làm nền mờ mờ)
-                      const size = 32
-                      canvas.width = size
-                      canvas.height = size
-                      const ctx = canvas.getContext("2d")
-                      ctx.drawImage(img, 0, 0, size, size)
-                      const quality = 0.5 // WebP quality giúp string base64 ngắn hơn và HỖ TRỢ TRONG SUỐT
-                      resolve(canvas.toDataURL("image/webp", quality))
-                    } catch (e) {
-                      resolve(candidateUrl)
-                    }
+                      try {
+                        const canvas = document.createElement("canvas")
+                        let targetWidth = img.width
+                        let targetHeight = img.height
+                        const MAX_SIZE = 1920
+                        if (targetWidth > MAX_SIZE || targetHeight > MAX_SIZE) {
+                          const ratio = Math.min(MAX_SIZE / targetWidth, MAX_SIZE / targetHeight)
+                          targetWidth = Math.floor(targetWidth * ratio)
+                          targetHeight = Math.floor(targetHeight * ratio)
+                        }
+                        canvas.width = targetWidth
+                        canvas.height = targetHeight
+                        const ctx = canvas.getContext("2d")
+                        ctx.drawImage(img, 0, 0, targetWidth, targetHeight)
+                        const quality = 0.6
+                        resolve(canvas.toDataURL("image/webp", quality))
+                      } catch (e) {
+                        resolve(candidateUrl)
+                      }
                   }
                   img.onerror = () => resolve(candidateUrl)
                   img.src = candidateUrl
