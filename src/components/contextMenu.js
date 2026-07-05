@@ -1157,7 +1157,7 @@ export function showContextMenu(
         const isVerticalCard = settings.musicPlayerSkin === "vertical-card"
         const verticalCardBtn = document.createElement("div")
         verticalCardBtn.className = "context-menu-item custom-music-item"
-        verticalCardBtn.innerHTML = `<i class="fa-solid fa-mobile-screen"></i> <span>${isVerticalCard ? "Square Thumb Skin" : "Vertical Card Skin"}</span>`
+        verticalCardBtn.innerHTML = `<i class="fa-solid fa-mobile-screen"></i> <span>${isVerticalCard ? i18n.music_player_skin_square_thumb || "Square Thumb Skin" : i18n.music_player_skin_vertical_card || "Vertical Card Skin"}</span>`
         verticalCardBtn.onclick = () => {
           const newSkin = isVerticalCard ? "default" : "vertical-card"
           updateSetting("musicPlayerSkin", newSkin)
@@ -1175,7 +1175,7 @@ export function showContextMenu(
         const isHorizontalCard = settings.musicPlayerSkin === "horizontal-card"
         const horizontalCardBtn = document.createElement("div")
         horizontalCardBtn.className = "context-menu-item custom-music-item"
-        horizontalCardBtn.innerHTML = `<i class="fa-solid fa-money-check"></i> <span>${isHorizontalCard ? "Square Thumb Skin" : "Horizontal Card Skin"}</span>`
+        horizontalCardBtn.innerHTML = `<i class="fa-solid fa-money-check"></i> <span>${isHorizontalCard ? i18n.music_player_skin_square_thumb || "Square Thumb Skin" : i18n.music_player_skin_horizontal_card || "Horizontal Card Skin"}</span>`
         horizontalCardBtn.onclick = () => {
           const newSkin = isHorizontalCard ? "default" : "horizontal-card"
           updateSetting("musicPlayerSkin", newSkin)

@@ -389,6 +389,7 @@
   "menu_unfavorite": "Unfavorite",
   "menu_lock": "Lock Position",
   "menu_unlock": "Unlock Position",
+  "menu_bookmark_manager": "Admin Bookmarks",
   "menu_hide_border": "Hide Border",
   "menu_show_border": "Show Border",
   "context_open_widget_settings": "Settings: {name}",
@@ -1285,6 +1286,7 @@
   "hide_bookmark_tip_mac": "Tip: To show the bookmark bar again, run the same command but change false to true. You may need to restart Chrome.",
   "hide_bookmark_tip_linux": "Tip: To show the bookmark bar again, change false to true in the file or delete the file.",
   "hide_bookmark_note": "Note: Only perform this if you really want to. Try (Ctrl+Shift+B) on Chrome's default New Tab page if methods don't work use cmd.",
+  "hide_bookmark_doc_link": "Detailed Policy Documentation",
   "settings_flip_layout": "Flip Interface Layout",
   "settings_custom_color_label": "Custom Color",
   "settings_gradient_multi_title": "Gradient & Multi-Color",
@@ -1828,5 +1830,11 @@
   "settings_custom_title_animation_float": "Float",
   "settings_custom_title_animation_loop_label": "Animation Loop",
   "settings_custom_title_animation_loop_infinite": "Infinite",
-  "settings_custom_title_animation_loop_once": "Once"
+  "settings_custom_title_animation_loop_once": "Once",
+  "settings_quick_access": "Quick Access",
+  "settings_icon_bg": "Icon BG",
+  "settings_icon_text": "Icon Text",
+  "music_player_skin_square_thumb": "Square Thumb Skin",
+  "music_player_skin_vertical_card": "Vertical Card Skin",
+  "music_player_skin_horizontal_card": "Horizontal Card Skin"
 }

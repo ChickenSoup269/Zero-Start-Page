@@ -463,7 +463,7 @@ export function showBookmarkHideInstructions() {
         </div>
         
         <a href="https://chromeenterprise.google/intl/en_ca/policies/bookmark-bar-enabled/" target="_blank" class="bookmark-hide-doc-link">
-          <i class="fa-solid fa-circle-info"></i> <span>Detailed Policy Documentation</span>
+          <i class="fa-solid fa-circle-info"></i> <span>${i18n.hide_bookmark_doc_link || "Detailed Policy Documentation"}</span>
         </a>
         <p class="bookmark-hide-small-note">${linkHint}</p>
         <p class="bookmark-hide-small-note">${note}</p>

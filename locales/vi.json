@@ -389,6 +389,7 @@
   "menu_unfavorite": "Bỏ yêu thích",
   "menu_lock": "Khóa vị trí",
   "menu_unlock": "Bỏ khóa vị trí",
+  "menu_bookmark_manager": "Quản lý dấu trang",
   "menu_hide_border": "Ẩn viền",
   "menu_show_border": "Hiện viền",
   "context_open_widget_settings": "Cài đặt: {name}",
@@ -1285,6 +1286,7 @@
   "hide_bookmark_tip_mac": "Mẹo nhỏ: Để hiện lại thanh dấu trang, hãy chạy lại lệnh trên nhưng thay false thành true. Có thể bạn cần khởi động lại Chrome.",
   "hide_bookmark_tip_linux": "Mẹo nhỏ: Để hiện lại thanh dấu trang, hãy sửa false thành true trong tệp đó hoặc xóa tệp đó đi.",
   "hide_bookmark_note": "Lưu ý: Chỉ thực hiện khi bạn thực sự muốn và hãy thử Ctrl+Shift+B ở trang New Tab nếu không được thì hãy dùng lệnh.",
+  "hide_bookmark_doc_link": "Tài liệu chi tiết về Policy",
   "settings_flip_layout": "Đảo ngược bố cục",
   "settings_custom_color_label": "Màu tùy chỉnh",
   "settings_gradient_multi_title": "Gradient & Đa màu sắc",
@@ -1828,5 +1830,11 @@
   "settings_custom_title_animation_float": "Lơ lửng (Float)",
   "settings_custom_title_animation_loop_label": "Chế độ lặp",
   "settings_custom_title_animation_loop_infinite": "Lặp liên tục",
-  "settings_custom_title_animation_loop_once": "Chạy 1 lần"
+  "settings_custom_title_animation_loop_once": "Chạy 1 lần",
+  "settings_quick_access": "Truy cập nhanh",
+  "settings_icon_bg": "Nền Icon",
+  "settings_icon_text": "Chữ Icon",
+  "music_player_skin_square_thumb": "Giao diện Vuông",
+  "music_player_skin_vertical_card": "Thẻ Dọc",
+  "music_player_skin_horizontal_card": "Thẻ Ngang"
 }
