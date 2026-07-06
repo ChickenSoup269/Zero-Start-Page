@@ -654,9 +654,7 @@ export async function initSettings() {
               let candidateUrl = null
               if (typeof bg === "string") {
                 if (bg.startsWith("idb-")) {
-                  candidateUrl =
-                    (await getThumbnailUrl(bg).catch(() => null)) ||
-                    (await getImageUrl(bg).catch(() => null))
+                  candidateUrl = await getImageUrl(bg).catch(() => null)
                 } else if (
                   bg.startsWith("data:") ||
                   bg.startsWith("blob:") ||
