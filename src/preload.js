@@ -393,6 +393,7 @@
       const isIndexedDbImage =
         typeof settings.background === "string" &&
         (settings.background.startsWith("idb-img-") ||
+          settings.background.startsWith("idb-image-") ||
           settings.background.startsWith("idb-gif-"))
       const hasPersistentBgPreview =
         Boolean(settings.lastUserBackgroundPreview) &&

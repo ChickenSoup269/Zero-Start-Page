@@ -1208,47 +1208,14 @@ function createApplySettings(effectInstances) {
         const img = new Image()
 
         const applyStyles = () => {
-          if (isFirstLoad && bgFadeLayer && settings.lastUserBackgroundPreview) {
-            // Prevent micro-stutter by NOT parsing the data URL again.
-            // Instead, fade IN the HD blob URL over the existing CSS preview.
-            bgFadeLayer.style.transition = "none"
-            bgFadeLayer.style.opacity = "0"
-            bgFadeLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgFadeLayer.style.backgroundSize = backgroundSize
-            bgFadeLayer.style.backgroundRepeat = backgroundRepeat
-            bgFadeLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
-            
-            bgFadeLayer.offsetHeight // force reflow
-            
-            const fadeInSec = Number(settings.bgFadeIn ?? 0.5)
-            bgFadeLayer.style.transition = `opacity ${fadeInSec}s ease-out`
-            bgFadeLayer.style.opacity = "1"
-            
-            // Clean up and sync bgLayer after fade completes
-            window.setTimeout(() => {
-              bgLayer.style.backgroundImage = cssUrl(imageUrl)
-              bgLayer.style.backgroundSize = backgroundSize
-              bgLayer.style.backgroundRepeat = backgroundRepeat
-              bgLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
-              document.body.classList.remove("preload-bg-ready")
-              document.body.classList.remove("preload-bg-preview")
-              
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  bgFadeLayer.style.transition = "none"
-                  bgFadeLayer.style.opacity = "0"
-                  bgFadeLayer.style.backgroundImage = ""
-                })
-              })
-            }, Math.max(250, fadeInSec * 1000 + 50))
-          } else {
-            // Normal behavior for non-first load
-            bgLayer.style.backgroundImage = cssUrl(imageUrl)
-            bgLayer.style.backgroundSize = backgroundSize
-            bgLayer.style.backgroundRepeat = backgroundRepeat
-            document.body.classList.remove("preload-bg-preview")
-            triggerBgFadeOut()
-          }
+          // No longer generating previews. Let IDB images fade in from black just like HTTP URLs to prevent flashes.
+          
+          bgLayer.style.backgroundImage = cssUrl(imageUrl)
+          bgLayer.style.backgroundSize = backgroundSize
+          bgLayer.style.backgroundRepeat = backgroundRepeat
+          document.body.classList.remove("preload-bg-preview")
+          document.body.classList.remove("preload-bg-ready")
+          triggerBgFadeOut()
         }
 
         if (typeof img.decode === "function") {
