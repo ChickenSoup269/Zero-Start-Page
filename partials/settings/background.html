@@ -125,49 +125,51 @@
                                 data-i18n="settings_visual_effects">Visual Effects</span>
                         </div>
 
-                        <div class="bg-slider-item">
-                            <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-droplet"></i> <span
-                                        data-i18n="settings_bg_blur">Blur</span></span>
-                                <span id="bg-blur-value" class="bg-slider-value">0px</span>
+                        <div class="bg-effects-grid">
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label"><i class="fa-solid fa-droplet"></i> <span
+                                            data-i18n="settings_bg_blur">Blur</span></span>
+                                    <span id="bg-blur-value" class="bg-slider-value">0px</span>
+                                </div>
+                                <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
                             </div>
-                            <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
-                        </div>
 
-                        <div class="bg-slider-item">
-                            <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span
-                                        data-i18n="settings_bg_brightness">Brightness</span></span>
-                                <span id="bg-brightness-value" class="bg-slider-value">100%</span>
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span
+                                            data-i18n="settings_bg_brightness">Brightness</span></span>
+                                    <span id="bg-brightness-value" class="bg-slider-value">100%</span>
+                                </div>
+                                <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100">
                             </div>
-                            <input type="range" id="bg-brightness-input" min="10" max="200" step="5" value="100">
-                        </div>
 
-                        <div class="bg-slider-item">
-                            <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-circle-half-stroke"></i> <span
-                                        data-i18n="settings_bg_contrast">Contrast</span></span>
-                                <span id="bg-contrast-value" class="bg-slider-value">100%</span>
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label"><i class="fa-solid fa-circle-half-stroke"></i> <span
+                                            data-i18n="settings_bg_contrast">Contrast</span></span>
+                                    <span id="bg-contrast-value" class="bg-slider-value">100%</span>
+                                </div>
+                                <input type="range" id="bg-contrast-input" min="0" max="200" step="5" value="100">
                             </div>
-                            <input type="range" id="bg-contrast-input" min="0" max="200" step="5" value="100">
-                        </div>
 
-                        <div class="bg-slider-item">
-                            <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-palette"></i> <span
-                                        data-i18n="settings_bg_saturation">Saturation</span></span>
-                                <span id="bg-saturation-value" class="bg-slider-value">100%</span>
+                            <div class="bg-slider-item">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label"><i class="fa-solid fa-palette"></i> <span
+                                            data-i18n="settings_bg_saturation">Saturation</span></span>
+                                    <span id="bg-saturation-value" class="bg-slider-value">100%</span>
+                                </div>
+                                <input type="range" id="bg-saturation-input" min="0" max="200" step="5" value="100">
                             </div>
-                            <input type="range" id="bg-saturation-input" min="0" max="200" step="5" value="100">
-                        </div>
 
-                        <div class="bg-slider-item">
-                            <div class="bg-slider-info">
-                                <span class="bg-slider-label"><i class="fa-solid fa-hourglass-half"></i> <span
-                                        data-i18n="settings_bg_fadein">Fade-in</span></span>
-                                <span id="bg-fadein-value" class="bg-slider-value">0.5s</span>
+                            <div class="bg-slider-item full-row">
+                                <div class="bg-slider-info">
+                                    <span class="bg-slider-label"><i class="fa-solid fa-hourglass-half"></i> <span
+                                            data-i18n="settings_bg_fadein">Fade-in</span></span>
+                                    <span id="bg-fadein-value" class="bg-slider-value">0.5s</span>
+                                </div>
+                                <input type="range" id="bg-fadein-input" min="0" max="5" step="0.1" value="0.5">
                             </div>
-                            <input type="range" id="bg-fadein-input" min="0" max="5" step="0.1" value="0.5">
                         </div>
                     </div>
 
@@ -224,8 +226,7 @@
                             <span data-i18n="settings_local_bg">Local Themes</span>
                             <span id="count-bg" style="margin-left: auto; opacity: 0.6;"></span>
                         </div>
-                        <div class="local-bg-gallery-controls"
-                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="local-bg-gallery-controls">
                             <input type="file" id="local-image-upload" accept="image/*,.gif" style="display: none;" />
                             <input type="file" id="local-video-upload"
                                 accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" />

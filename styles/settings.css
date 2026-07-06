@@ -583,6 +583,8 @@
   transform: translateX(-100%);
   top: 0;
   width: var(--sidebar-width);
+  container-type: inline-size;
+  container-name: settings-sidebar;
   height: 100%;
   background: var(--sidebar-bg);
   backdrop-filter: blur(30px) saturate(160%);
@@ -3369,13 +3371,27 @@ body.sidebar-light .preset-code-line-value {
 .bg-control-grid,
 .background-inputs-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--space-2);
+}
+
+@container settings-sidebar (min-width: 550px) {
+  .bg-control-grid,
+  .background-inputs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@container settings-sidebar (min-width: 750px) {
+  .bg-control-grid,
+  .background-inputs-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .bg-control-full,
 .full-row {
-  grid-column: span 2;
+  grid-column: 1 / -1;
 }
 
 /* Modern Slider Styling */
@@ -3555,6 +3571,42 @@ body.sidebar-light .preset-code-line-value {
   grid-template-columns: 1fr;
   gap: var(--space-2);
   margin-top: var(--space-2);
+}
+
+.local-bg-gallery-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.bg-effects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+
+@container settings-sidebar (min-width: 550px) {
+  .layout-fit-grid,
+  .local-bg-gallery-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bg-effects-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@container settings-sidebar (min-width: 750px) {
+  .layout-fit-grid,
+  .local-bg-gallery-controls {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .bg-effects-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.bg-effects-grid .bg-slider-item {
+  margin-bottom: 0;
 }
 
 .layout-fit-grid .bg-slider-item {
@@ -4468,13 +4520,52 @@ body.sidebar-light .preset-code-line-value {
   max-width: 150px !important;
 }
 
+.settings-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+@container settings-sidebar (min-width: 550px) {
+  .settings-checkbox-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+}
+
 /* Clock Style Grid & Cards */
 .clock-style-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--space-0-5);
   margin-top: var(--space-2);
   padding: 2px;
+}
+
+#date-format-grid.clock-style-grid,
+#time-format-grid.clock-style-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+@container settings-sidebar (min-width: 550px) {
+  .clock-style-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  #date-format-grid.clock-style-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  #time-format-grid.clock-style-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@container settings-sidebar (min-width: 750px) {
+  .clock-style-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+  #date-format-grid.clock-style-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 }
 
 .clock-style-card {

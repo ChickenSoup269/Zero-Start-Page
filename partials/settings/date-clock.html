@@ -6,22 +6,24 @@
                         <div class="setting-label"><i class="fa-solid fa-gears"></i> <span
                                 data-i18n="settings_font_general">General Settings</span></div>
 
-                        <div class="setting-item-row">
-                            <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock">Free Move</label>
-                            <input type="checkbox" id="free-move-clock-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbr Day</label>
-                            <input type="checkbox" id="short-weekday-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
-                            <input type="checkbox" id="hide-seconds-checkbox">
-                        </div>
-                        <div class="setting-item-row">
-                            <label for="show-lunar-calendar-checkbox-clock"
-                                data-i18n="settings_clock_show_lunar_calendar">Lịch Âm trên đồng hồ</label>
-                            <input type="checkbox" id="show-lunar-calendar-checkbox-clock">
+                        <div class="settings-checkbox-grid">
+                            <div class="setting-item-row">
+                                <label for="free-move-clock-checkbox" data-i18n="settings_free_move_clock">Free Move</label>
+                                <input type="checkbox" id="free-move-clock-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="short-weekday-checkbox" data-i18n="settings_short_weekday">Abbr Day</label>
+                                <input type="checkbox" id="short-weekday-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="hide-seconds-checkbox" data-i18n="settings_hide_seconds">Hide Sec</label>
+                                <input type="checkbox" id="hide-seconds-checkbox">
+                            </div>
+                            <div class="setting-item-row">
+                                <label for="show-lunar-calendar-checkbox-clock"
+                                    data-i18n="settings_clock_show_lunar_calendar">Lịch Âm trên đồng hồ</label>
+                                <input type="checkbox" id="show-lunar-calendar-checkbox-clock">
+                            </div>
                         </div>
                         <div class="setting-item">
                             <label for="clock-lunar-mode-select" data-i18n="settings_clock_lunar_mode">Clock Lunar
@@ -86,7 +88,7 @@
                         </div>
                         <div class="setting-item">
                             <label data-i18n="settings_time_format">Time Format</label>
-                            <div id="time-format-grid" class="clock-style-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <div id="time-format-grid" class="clock-style-grid">
                                 <div class="clock-style-card compact-style-card time-format-card" data-value="24h">
                                     <span class="clock-style-name">24h</span>
                                 </div>
