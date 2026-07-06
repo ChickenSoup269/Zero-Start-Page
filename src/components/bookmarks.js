@@ -2717,7 +2717,7 @@ function updateMacosHover() {
 
       // Apply scaling and smooth z-index
       item.style.setProperty("transform", `scale(${scale})`, "important")
-      item.style.zIndex = Math.round(scale * 100)
+      item.style.zIndex = 10020 + Math.round(scale * 100)
     })
   }
 
