@@ -1233,9 +1233,13 @@ function createApplySettings(effectInstances) {
               document.body.classList.remove("preload-bg-ready")
               document.body.classList.remove("preload-bg-preview")
               
-              bgFadeLayer.style.transition = "none"
-              bgFadeLayer.style.opacity = "0"
-              bgFadeLayer.style.backgroundImage = ""
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  bgFadeLayer.style.transition = "none"
+                  bgFadeLayer.style.opacity = "0"
+                  bgFadeLayer.style.backgroundImage = ""
+                })
+              })
             }, Math.max(250, fadeInSec * 1000 + 50))
           } else {
             // Normal behavior for non-first load
