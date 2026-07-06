@@ -1036,7 +1036,8 @@ function createApplySettings(effectInstances) {
         settings.lastUserBackgroundPreview &&
         typeof settings.lastUserBackgroundPreview === "string" &&
         (settings.lastUserBackgroundPreview.startsWith("data:") ||
-          settings.lastUserBackgroundPreview.startsWith("blob:"))
+          settings.lastUserBackgroundPreview.startsWith("blob:")) &&
+        !isFirstLoad
       ) {
         const preview = settings.lastUserBackgroundPreview
         if (bgLayer) {
