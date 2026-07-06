@@ -2675,6 +2675,13 @@ function updateMacosHover() {
         item.style.zIndex = ""
       }
     })
+    const containers = [
+      document.querySelector("#bookmarks-container"),
+      document.querySelector("#hidden-bookmarks-popup"),
+      document.querySelector("#bookmark-stack-popup")
+    ].filter(Boolean)
+    containers.forEach(c => c.style.removeProperty("z-index"))
+    
     rafId = null
     return
   }
@@ -2717,7 +2724,7 @@ function updateMacosHover() {
 
       // Apply scaling and smooth z-index
       item.style.setProperty("transform", `scale(${scale})`, "important")
-      item.style.zIndex = 10020 + Math.round(scale * 100)
+      item.style.zIndex = Math.round(scale * 100)
     })
   }
 
@@ -2733,6 +2740,8 @@ document.addEventListener("mousemove", (e) => {
     e.target.closest("#bookmark-stack-popup")
 
   if (container) {
+    // Boost container z-index so its tooltips render above other popups
+    container.style.setProperty("z-index", "10030", "important")
     mouseX = e.clientX
     mouseY = e.clientY
     isHoveringContainer = true
