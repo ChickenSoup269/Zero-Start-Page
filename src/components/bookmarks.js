@@ -2714,7 +2714,8 @@ function updateMacosHover() {
     const maxScale = 1.6
     const range = 80 // Reduced range to limit spread to neighbors
 
-    bookmarks.forEach((item) => {
+    // PHASE 1: READS (Avoid Layout Thrashing)
+    const itemData = bookmarks.map((item) => {
       const rect = item.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
@@ -2732,6 +2733,11 @@ function updateMacosHover() {
 
       if (item.classList.contains("dragging")) scale = 1
 
+      return { item, scale, rect }
+    })
+
+    // PHASE 2: WRITES
+    itemData.forEach(({ item, scale }) => {
       // Apply scaling and smooth z-index
       item.style.setProperty("transform", `scale(${scale})`, "important")
       item.style.zIndex = Math.round(scale * 100)
@@ -2741,38 +2747,55 @@ function updateMacosHover() {
     const globalTooltip = document.getElementById("macos-global-tooltip")
     if (globalTooltip) {
       // Find the element with highest scale
-      let maxItem = null
+      let maxData = null
       let highestScale = 1.1 // Minimum scale to show tooltip
       
-      bookmarks.forEach(item => {
-        const itemScale = parseFloat(item.style.transform.replace("scale(", "").replace(")", "")) || 1
-        if (itemScale > highestScale) {
-          highestScale = itemScale
-          maxItem = item
+      itemData.forEach(data => {
+        if (data.scale > highestScale) {
+          highestScale = data.scale
+          maxData = data
         }
       })
       
-      if (maxItem && highestScale > 1.2) { // Only show if significantly hovered
-        const span = maxItem.querySelector(".bookmark-stack-popup-label, span:not(.bookmark-icon-fallback):not(.bookmark-stack-popup-check)")
+      if (maxData && highestScale > 1.2) { // Only show if significantly hovered
+        const { item, rect } = maxData
+        const span = item.querySelector(".bookmark-stack-popup-label, span:not(.bookmark-icon-fallback):not(.bookmark-stack-popup-check):not(.bookmark-stack-count)")
         if (span && span.textContent) {
           globalTooltip.textContent = span.textContent
-          const rect = maxItem.getBoundingClientRect()
           
           let topPos = rect.top - 45
           let leftPos = rect.left + rect.width / 2
           
-          // Handle sidebar mode positions
+          const isTaskbarTop = document.body.classList.contains("bookmark-taskbar-top-mode")
+          const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
+          const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
+          
+          // Handle sidebar and specific taskbar mode positions
           if (isSidebar) {
             if (isFlipped) {
-              leftPos = rect.left - 20
-              topPos = rect.top + rect.height / 2
-              globalTooltip.style.transform = "translate(-100%, -50%)"
-            } else {
+              // Sidebar is on the left side, tooltip should point right
               leftPos = rect.right + 20
               topPos = rect.top + rect.height / 2
               globalTooltip.style.transform = "translate(0, -50%)"
+            } else {
+              // Sidebar is on the right side, tooltip should point left
+              leftPos = rect.left - 20
+              topPos = rect.top + rect.height / 2
+              globalTooltip.style.transform = "translate(-100%, -50%)"
             }
+          } else if (isTaskbarTop) {
+            topPos = rect.bottom + 20
+            globalTooltip.style.transform = "translateX(-50%)"
+          } else if (isTaskbarLeft) {
+            leftPos = rect.right + 20
+            topPos = rect.top + rect.height / 2
+            globalTooltip.style.transform = "translate(0, -50%)"
+          } else if (isTaskbarRight) {
+            leftPos = rect.left - 20
+            topPos = rect.top + rect.height / 2
+            globalTooltip.style.transform = "translate(-100%, -50%)"
           } else {
+            // Taskbar Bottom (default)
             globalTooltip.style.transform = "translateX(-50%)"
           }
           
