@@ -5609,6 +5609,8 @@ body:has(.main-bg-credit:hover) .main-bg-credit,
     border: none;
     cursor: pointer;
 }
+
+.main-bg-credit {
   position: fixed;
   bottom: var(--space-3);
   left: var(--space-3);
