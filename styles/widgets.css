@@ -9206,32 +9206,7 @@ body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle {
 }
 
 /* MacOS Dock Hover Effect for Bookmarks - Sidebar Position Fix */
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span {
-  top: 50% !important;
-  left: auto !important;
-  right: calc(
-    100% + var(--space-2)
-  ) !important; /* Position to the left of the icon */
-  transform: translateY(-50%) !important;
-  margin-top: 0;
-}
-
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover > span {
-  top: 50% !important;
-  right: calc(100% + var(--space-3)) !important; /* Slight outward animation */
-}
-
-/* Flip layout: Move tooltip to the right of the icon */
-body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span {
-  right: auto !important;
-  left: calc(100% + var(--space-2)) !important;
-}
-
-body.flip-layout.bookmark-sidebar-mode.bookmark-macos-hover
-  .bookmark:hover
-  > span {
-  left: calc(100% + var(--space-3)) !important;
-}
+/* Obsolete: Local spans are now hidden and replaced by #macos-global-tooltip */
 
 /* Hide Bookmark Background Settings */
 body.hide-bookmark-bg.bookmark-sidebar-mode .bookmark img,
@@ -10242,7 +10217,8 @@ body.has-top-right-controls.bookmark-sidebar-mode .bookmarks-grid {
 body.bookmark-layout-bg-hidden.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-hidden.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-layout-bg-hidden.bookmark-taskbar-top-mode .bookmarks-grid,
-body.bookmark-layout-bg-hidden.bookmark-taskbar-left-mode .bookmarks-grid {
+body.bookmark-layout-bg-hidden.bookmark-taskbar-left-mode .bookmarks-grid,
+body.bookmark-layout-bg-hidden.bookmark-taskbar-right-mode .bookmarks-grid {
   background: transparent !important;
   backdrop-filter: none !important;
   border: none !important;
@@ -10252,14 +10228,16 @@ body.bookmark-layout-bg-hidden.bookmark-taskbar-left-mode .bookmarks-grid {
 body.bookmark-layout-bg-colored.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-colored.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-layout-bg-colored.bookmark-taskbar-top-mode .bookmarks-grid,
-body.bookmark-layout-bg-colored.bookmark-taskbar-left-mode .bookmarks-grid {
+body.bookmark-layout-bg-colored.bookmark-taskbar-left-mode .bookmarks-grid,
+body.bookmark-layout-bg-colored.bookmark-taskbar-right-mode .bookmarks-grid {
   background: var(--bookmark-layout-bg-color, #ffffff) !important;
 }
 
 body.bookmark-layout-bg-m3-accent.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-m3-accent.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-layout-bg-m3-accent.bookmark-taskbar-top-mode .bookmarks-grid,
-body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmarks-grid {
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmarks-grid,
+body.bookmark-layout-bg-m3-accent.bookmark-taskbar-right-mode .bookmarks-grid {
   background:
     radial-gradient(
       circle at 14% 8%,
@@ -10307,7 +10285,8 @@ body.bookmark-layout-bg-m3-accent.bookmark-taskbar-left-mode .bookmarks-grid {
 body.bookmark-layout-bg-white.bookmark-sidebar-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-mode .bookmarks-grid,
 body.bookmark-layout-bg-white.bookmark-taskbar-top-mode .bookmarks-grid,
-body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid {
+body.bookmark-layout-bg-white.bookmark-taskbar-left-mode .bookmarks-grid,
+body.bookmark-layout-bg-white.bookmark-taskbar-right-mode .bookmarks-grid {
   background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
@@ -11685,22 +11664,7 @@ body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark-widget {
   overflow: visible !important;
 }
 
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span,
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark .bookmark-title {
-  display: block !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  z-index: 99999 !important;
-}
-
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover > span,
-body.bookmark-sidebar-mode.bookmark-macos-hover
-  .bookmark:hover
-  .bookmark-title {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
+/* Obsolete: Local spans for sidebar hover removed in favor of global tooltip */
 
 /* Bookmark folders in compact layouts: match the extension glass style. */
 body.bookmark-sidebar-mode .bookmark-groups-container,
@@ -12471,11 +12435,7 @@ body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark:hover {
   z-index: 10020;
 }
 
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark > span,
-body.bookmark-sidebar-mode.bookmark-macos-hover .bookmark .bookmark-title {
-  pointer-events: none;
-  z-index: 10021 !important;
-}
+/* Obsolete: Local spans for sidebar hover removed */
 
 
 body.bookmark-macos-hover .bookmark-stack-popup .bookmark-stack-popup-check,
