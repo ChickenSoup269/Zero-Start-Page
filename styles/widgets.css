@@ -10515,11 +10515,14 @@ body.bookmark-macos-hover #hidden-bookmarks-popup:hover .bookmark {
   transition: transform 0.1s ease-out !important;
 }
 
-body.bookmark-macos-hover .bookmark > span {
-  display: block !important;
-  position: absolute;
-  top: -2rem;
-  left: 50%;
+body.bookmark-macos-hover .bookmark:not(.add-bookmark-card) > span {
+  display: none !important; /* Replaced by global tooltip to prevent clipping */
+}
+
+#macos-global-tooltip {
+  position: fixed;
+  top: -999px;
+  left: -999px;
   width: fit-content;
   max-width: 150px;
   overflow: hidden;
@@ -10539,15 +10542,8 @@ body.bookmark-macos-hover .bookmark > span {
     opacity 0.2s ease,
     top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
-  z-index: 1040;
+  z-index: 999999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-body.bookmark-macos-hover .bookmark:hover > span {
-  z-index: 1040;
-  opacity: 1;
-  visibility: visible;
-  top: -2.8rem;
 }
 
 /* MacOS Hover clipping fix for layouts with scrolling */

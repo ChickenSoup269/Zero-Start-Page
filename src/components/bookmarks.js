@@ -2659,6 +2659,11 @@ let macosHoverEnabled = false
 
 export function initMacosHoverForBookmarks(isEnabled) {
   macosHoverEnabled = isEnabled
+  if (isEnabled && !document.getElementById("macos-global-tooltip")) {
+    const tooltip = document.createElement("div")
+    tooltip.id = "macos-global-tooltip"
+    document.body.appendChild(tooltip)
+  }
 }
 
 let mouseX = 0,
@@ -2675,6 +2680,11 @@ function updateMacosHover() {
         item.style.zIndex = ""
       }
     })
+    const globalTooltip = document.getElementById("macos-global-tooltip")
+    if (globalTooltip) {
+      globalTooltip.style.opacity = "0"
+      globalTooltip.style.visibility = "hidden"
+    }
     const containers = [
       document.querySelector("#bookmarks-container"),
       document.querySelector("#hidden-bookmarks-popup"),
@@ -2726,6 +2736,56 @@ function updateMacosHover() {
       item.style.setProperty("transform", `scale(${scale})`, "important")
       item.style.zIndex = Math.round(scale * 100)
     })
+    
+    // Update global tooltip for the item under cursor
+    const globalTooltip = document.getElementById("macos-global-tooltip")
+    if (globalTooltip) {
+      // Find the element with highest scale
+      let maxItem = null
+      let highestScale = 1.1 // Minimum scale to show tooltip
+      
+      bookmarks.forEach(item => {
+        const itemScale = parseFloat(item.style.transform.replace("scale(", "").replace(")", "")) || 1
+        if (itemScale > highestScale) {
+          highestScale = itemScale
+          maxItem = item
+        }
+      })
+      
+      if (maxItem && highestScale > 1.2) { // Only show if significantly hovered
+        const span = maxItem.querySelector("span:not(.bookmark-icon-fallback)")
+        if (span && span.textContent) {
+          globalTooltip.textContent = span.textContent
+          const rect = maxItem.getBoundingClientRect()
+          
+          let topPos = rect.top - 45
+          let leftPos = rect.left + rect.width / 2
+          
+          // Handle sidebar mode positions
+          if (isSidebar) {
+            if (isFlipped) {
+              leftPos = rect.left - 20
+              topPos = rect.top + rect.height / 2
+              globalTooltip.style.transform = "translate(-100%, -50%)"
+            } else {
+              leftPos = rect.right + 20
+              topPos = rect.top + rect.height / 2
+              globalTooltip.style.transform = "translate(0, -50%)"
+            }
+          } else {
+            globalTooltip.style.transform = "translateX(-50%)"
+          }
+          
+          globalTooltip.style.top = `${topPos}px`
+          globalTooltip.style.left = `${leftPos}px`
+          globalTooltip.style.opacity = "1"
+          globalTooltip.style.visibility = "visible"
+        }
+      } else {
+        globalTooltip.style.opacity = "0"
+        globalTooltip.style.visibility = "hidden"
+      }
+    }
   }
 
   rafId = null
