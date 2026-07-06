@@ -1207,24 +1207,44 @@ function createApplySettings(effectInstances) {
         const img = new Image()
 
         const applyStyles = () => {
-          // If this is the first load, put the preview into the fade layer so it can crossfade to the full blob URL
           if (isFirstLoad && bgFadeLayer && settings.lastUserBackgroundPreview) {
+            // Prevent micro-stutter by NOT parsing the data URL again.
+            // Instead, fade IN the HD blob URL over the existing CSS preview.
             bgFadeLayer.style.transition = "none"
-            bgFadeLayer.style.backgroundImage = cssUrl(settings.lastUserBackgroundPreview)
+            bgFadeLayer.style.opacity = "0"
+            bgFadeLayer.style.backgroundImage = cssUrl(imageUrl)
             bgFadeLayer.style.backgroundSize = backgroundSize
             bgFadeLayer.style.backgroundRepeat = backgroundRepeat
-            bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition
-            bgFadeLayer.style.opacity = "1"
+            bgFadeLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
+            
             bgFadeLayer.offsetHeight // force reflow
-            bgFadeLayer.style.transition = ""
+            
+            const fadeInSec = Number(settings.bgFadeIn ?? 0.5)
+            bgFadeLayer.style.transition = `opacity ${fadeInSec}s ease-out`
+            bgFadeLayer.style.opacity = "1"
+            
+            document.body.classList.remove("preload-bg-preview")
+            
+            // Clean up and sync bgLayer after fade completes
+            window.setTimeout(() => {
+              bgLayer.style.backgroundImage = cssUrl(imageUrl)
+              bgLayer.style.backgroundSize = backgroundSize
+              bgLayer.style.backgroundRepeat = backgroundRepeat
+              bgLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
+              document.body.classList.remove("preload-bg-ready")
+              
+              bgFadeLayer.style.transition = "none"
+              bgFadeLayer.style.opacity = "0"
+              bgFadeLayer.style.backgroundImage = ""
+            }, Math.max(250, fadeInSec * 1000 + 50))
+          } else {
+            // Normal behavior for non-first load
+            bgLayer.style.backgroundImage = cssUrl(imageUrl)
+            bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
+            document.body.classList.remove("preload-bg-preview")
+            triggerBgFadeOut()
           }
-
-          // Re-apply in case settings changed during decode, and trigger fade animation
-          bgLayer.style.backgroundImage = cssUrl(imageUrl)
-          bgLayer.style.backgroundSize = backgroundSize
-          bgLayer.style.backgroundRepeat = backgroundRepeat
-          document.body.classList.remove("preload-bg-preview")
-          triggerBgFadeOut()
         }
 
         if (typeof img.decode === "function") {
