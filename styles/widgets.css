@@ -1390,6 +1390,7 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
 body.bookmark-macos-hover .bookmark-stack-popup-grid {
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-1);
+  padding: 3rem 1rem;
 }
 
 .bookmark-stack-popup .bookmark {
@@ -13374,7 +13375,6 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark:hover {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  transform: none !important;
 }
 
 body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popup-label {

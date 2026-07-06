@@ -2681,7 +2681,8 @@ function updateMacosHover() {
 
   const containers = [
     document.querySelector("#bookmarks-container"),
-    document.querySelector("#hidden-bookmarks-popup")
+    document.querySelector("#hidden-bookmarks-popup"),
+    document.querySelector("#bookmark-stack-popup")
   ].filter(Boolean)
   
   if (containers.length > 0) {
@@ -2728,7 +2729,8 @@ document.addEventListener("mousemove", (e) => {
 
   const container =
     e.target.closest("#bookmarks-container") ||
-    e.target.closest("#hidden-bookmarks-popup")
+    e.target.closest("#hidden-bookmarks-popup") ||
+    e.target.closest("#bookmark-stack-popup")
 
   if (container) {
     mouseX = e.clientX
