@@ -2112,28 +2112,3 @@ if (document.readyState === "loading") {
 import { initTerminal } from "./components/terminal.js";
 initTerminal();
 
-// Bookmark Admin Manager Logic
-const managerBtn = document.getElementById("menu-bookmark-manager");
-const closeBtn = document.getElementById("bookmark-manager-close-btn");
-
-if (managerBtn && closeBtn) {
-  managerBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    document.body.classList.add("bookmark-manager-open");
-    closeBtn.style.display = "flex";
-    
-    // Clean up context menu
-    const ctxMenu = document.getElementById("context-menu");
-    if (ctxMenu) {
-      ctxMenu.style.display = "none";
-      ctxMenu.style.opacity = "0";
-      ctxMenu.style.visibility = "hidden";
-    }
-  });
-
-  closeBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    document.body.classList.remove("bookmark-manager-open");
-    closeBtn.style.display = "none";
-  });
-}
