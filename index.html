@@ -1858,12 +1858,15 @@
                                 Layout</label>
                             <input type="checkbox" id="flip-layout-checkbox">
                         </div>
-                        <div class="setting-item">
-                            <label style="display: flex; justify-content: space-between;">
-                                <span data-i18n="settings_sidebar_width">Settings Sidebar Width</span>
-                                <span id="settings-sidebar-width-value" style="opacity: 0.7; font-family: monospace;">420px</span>
-                            </label>
-                            <input type="range" id="settings-sidebar-width-input" min="300" max="800" step="10" value="420" style="width: 100%;">
+                        <div class="setting-item-row">
+                            <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings Sidebar Width</label>
+                            <select id="settings-sidebar-width-input" class="settings-select">
+                                <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)</option>
+                                <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)</option>
+                                <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)</option>
+                                <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
+                                <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)</option>
+                            </select>
                         </div>
                         <div class="setting-item-row">
                             <label for="extension-action-behavior-select" data-i18n="settings_extension_action_behavior">Extension Icon Behavior</label>

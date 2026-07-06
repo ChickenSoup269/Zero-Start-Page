@@ -2553,7 +2553,7 @@ export function setupGeneralEventHandlers(
     }
     
     if (DOM.settingsSidebarWidthInput) {
-      DOM.settingsSidebarWidthInput.addEventListener("input", () => {
+      DOM.settingsSidebarWidthInput.addEventListener("change", () => {
         if (DOM.settingsSidebarWidthValue) {
           DOM.settingsSidebarWidthValue.textContent = `${DOM.settingsSidebarWidthInput.value}px`
         }
