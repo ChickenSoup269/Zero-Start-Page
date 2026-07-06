@@ -1040,10 +1040,10 @@ function createApplySettings(effectInstances) {
       ) {
         const preview = settings.lastUserBackgroundPreview
         if (bgLayer) {
+          bgLayer.style.background = ""
           bgLayer.style.backgroundImage = cssUrl(preview)
           bgLayer.style.backgroundSize = backgroundSize
           bgLayer.style.backgroundRepeat = backgroundRepeat
-          bgLayer.style.background = ""
         }
         document.body.classList.add("bg-layer-active")
       }
@@ -1284,7 +1284,8 @@ function createApplySettings(effectInstances) {
             // If we have a high-res preview (> 10KB), we can use it directly as the final background
             // on first load to bypass the expensive blob decoding and crossfading entirely,
             // making it 100% perfectly smooth just like URL backgrounds.
-            if (isIdbMedia(bg) && isFirstLoad && previewExists && preview && preview.length > 500) {
+            if (false) {
+              // Bypass disabled: always load the original image to prevent pixelation.
               bgLayer.style.backgroundImage = cssUrl(preview)
               bgLayer.style.backgroundSize = backgroundSize
               bgLayer.style.backgroundRepeat = backgroundRepeat
