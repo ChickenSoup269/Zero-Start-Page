@@ -1044,6 +1044,7 @@ function createApplySettings(effectInstances) {
           bgLayer.style.backgroundImage = cssUrl(preview)
           bgLayer.style.backgroundSize = backgroundSize
           bgLayer.style.backgroundRepeat = backgroundRepeat
+          bgLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
         }
         document.body.classList.add("bg-layer-active")
       }
@@ -1136,6 +1137,7 @@ function createApplySettings(effectInstances) {
           bgFadeLayer.style.backgroundImage = currentBg
           bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
           bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
+          bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition
           bgFadeLayer.style.opacity = "1"
           
           if (isFirstLoad && previewExists) {
@@ -1211,6 +1213,7 @@ function createApplySettings(effectInstances) {
             bgFadeLayer.style.backgroundImage = cssUrl(settings.lastUserBackgroundPreview)
             bgFadeLayer.style.backgroundSize = backgroundSize
             bgFadeLayer.style.backgroundRepeat = backgroundRepeat
+            bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition
             bgFadeLayer.style.opacity = "1"
             bgFadeLayer.offsetHeight // force reflow
             bgFadeLayer.style.transition = ""
