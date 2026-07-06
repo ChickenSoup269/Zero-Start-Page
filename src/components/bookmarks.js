@@ -2753,7 +2753,7 @@ function updateMacosHover() {
       })
       
       if (maxItem && highestScale > 1.2) { // Only show if significantly hovered
-        const span = maxItem.querySelector("span:not(.bookmark-icon-fallback)")
+        const span = maxItem.querySelector(".bookmark-stack-popup-label, span:not(.bookmark-icon-fallback):not(.bookmark-stack-popup-check)")
         if (span && span.textContent) {
           globalTooltip.textContent = span.textContent
           const rect = maxItem.getBoundingClientRect()
