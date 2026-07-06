@@ -48,12 +48,7 @@
   max-height: 20000px;
   overflow: hidden;
   opacity: 1;
-  transform: translateY(0);
-  transition:
-    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.22s ease,
-    padding 0.28s ease,
-    transform 0.28s ease;
+  transition: max-height 0.15s ease-out, opacity 0.15s ease-out, padding 0.15s ease-out;
 }
 
 .settings-section[data-section-id="special-effects"].collapsed
@@ -64,7 +59,6 @@
   padding-top: 0;
   padding-bottom: 0;
   pointer-events: none;
-  transform: translateY(-8px);
 }
 
 .settings-section[data-section-id="themes"] > .section-content,
@@ -80,12 +74,7 @@
   max-height: 20000px;
   overflow: hidden;
   opacity: 1;
-  transform: translateY(0);
-  transition:
-    max-height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.22s ease,
-    padding 0.28s ease,
-    transform 0.28s ease;
+  transition: max-height 0.15s ease-out, opacity 0.15s ease-out, padding 0.15s ease-out;
 }
 
 .settings-section[data-section-id="themes"].collapsed > .section-content,
@@ -106,7 +95,6 @@
   padding-top: 0;
   padding-bottom: 0;
   pointer-events: none;
-  transform: translateY(-8px);
 }
 
 .settings-section[data-section-id="special-effects"]:not(.collapsed)
@@ -241,12 +229,7 @@
   max-height: 12000px;
   overflow: hidden;
   opacity: 1;
-  transform: translateY(0);
-  transition:
-    max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.2s ease,
-    margin 0.24s ease,
-    transform 0.24s ease;
+  transition: max-height 0.15s ease-out, opacity 0.15s ease-out, margin 0.15s ease-out;
 }
 
 #accent-color-settings-body.is-collapsed,
@@ -262,7 +245,6 @@
   opacity: 0;
   margin-top: 0;
   pointer-events: none;
-  transform: translateY(-8px);
 }
 
 #accent-color-settings-body:not(.is-collapsed) .color-group-label,
@@ -1009,12 +991,7 @@
   overflow: hidden;
   opacity: 1;
   display: block;
-  transform: translateY(0);
-  transition:
-    max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.22s ease,
-    padding 0.28s ease,
-    transform 0.28s ease;
+  transition: max-height 0.15s ease-out, opacity 0.15s ease-out, padding 0.15s ease-out;
 }
 
 .sidebar-footer.collapsed .sidebar-footer-content {
@@ -1023,7 +1000,6 @@
   padding-top: 0;
   padding-bottom: 0;
   pointer-events: none;
-  transform: translateY(8px);
 }
 
 .settings-section {
