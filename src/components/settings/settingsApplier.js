@@ -1223,8 +1223,6 @@ function createApplySettings(effectInstances) {
             bgFadeLayer.style.transition = `opacity ${fadeInSec}s ease-out`
             bgFadeLayer.style.opacity = "1"
             
-            document.body.classList.remove("preload-bg-preview")
-            
             // Clean up and sync bgLayer after fade completes
             window.setTimeout(() => {
               bgLayer.style.backgroundImage = cssUrl(imageUrl)
@@ -1232,6 +1230,7 @@ function createApplySettings(effectInstances) {
               bgLayer.style.backgroundRepeat = backgroundRepeat
               bgLayer.style.backgroundPosition = "var(--bg-pos-x) var(--bg-pos-y)"
               document.body.classList.remove("preload-bg-ready")
+              document.body.classList.remove("preload-bg-preview")
               
               bgFadeLayer.style.transition = "none"
               bgFadeLayer.style.opacity = "0"
