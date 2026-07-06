@@ -69,7 +69,9 @@
 .settings-section[data-section-id="date-clock"] > .section-content,
 .settings-section[data-section-id="bookmark-custom"] > .section-content,
 .settings-section[data-section-id="custom-title"] > .section-content,
-.settings-section[data-section-id="layout"] > .section-content {
+.settings-section[data-section-id="layout"] > .section-content,
+.settings-section[data-section-id="data-sync"] > .section-content,
+.settings-section[data-section-id="about-project"] > .section-content {
   display: block;
   max-height: 20000px;
   overflow: hidden;
@@ -88,7 +90,9 @@
 .settings-section[data-section-id="bookmark-custom"].collapsed
   > .section-content,
 .settings-section[data-section-id="custom-title"].collapsed > .section-content,
-.settings-section[data-section-id="layout"].collapsed > .section-content {
+.settings-section[data-section-id="layout"].collapsed > .section-content,
+.settings-section[data-section-id="data-sync"].collapsed > .section-content,
+.settings-section[data-section-id="about-project"].collapsed > .section-content {
   display: block;
   max-height: 0;
   opacity: 0;
