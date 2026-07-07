@@ -1812,6 +1812,10 @@ kbd {
   color: #fff;
 }
 
+.tooltip-content kbd {
+  margin: 0 4px;
+}
+
 .close-tooltip-btn {
   background: none;
   border: none;

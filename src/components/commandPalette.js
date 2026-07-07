@@ -242,6 +242,32 @@ export function initCommandPalette(options = {}) {
             keywords: 'hide all show all an hien tat ca widget reset restore',
             action: () => toggleHideAll()
         },
+        {
+            id: 'open-terminal',
+            title: 'Mở/Đóng Terminal',
+            desc: 'Mở Terminal ẩn của Startpage',
+            icon: '<i class="fa-solid fa-terminal"></i>',
+            shortcut: '`',
+            keywords: 'terminal cmd command line console shell hacker',
+            action: () => {
+                const termInput = document.getElementById('terminal-input');
+                if (termInput) {
+                    const evt = new KeyboardEvent('keydown', { key: '`' });
+                    window.dispatchEvent(evt);
+                }
+            }
+        },
+        {
+            id: 'toggle-performance',
+            title: 'Bật/Tắt: Performance HUD',
+            desc: 'Mở bảng theo dõi hiệu năng hệ thống (RAM, FPS)',
+            icon: '<i class="fa-solid fa-microchip"></i>',
+            shortcut: 'Ctrl + Alt + P',
+            keywords: 'performance hud ram cpu fps hieu nang test',
+            action: () => {
+                if (window.perfHUD) window.perfHUD.toggle();
+            }
+        },
 
         // --- Các lệnh tiện ích khác ---
         {
@@ -699,6 +725,8 @@ export function initCommandPalette(options = {}) {
             : null;
         if (directCommand) {
             e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
             directCommand.action();
             return;
         }
