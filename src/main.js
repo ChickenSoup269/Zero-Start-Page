@@ -525,7 +525,7 @@ async function bootstrap() {
     const overlay = document.getElementById("startup-overlay")
     if (overlay) {
       overlay.style.opacity = "0"
-      overlay.style.visibility = "hidden"
+      setTimeout(() => overlay.remove(), 450)
     }
     try {
       localStorage.setItem("startpageHasOpened", "1")
@@ -1184,7 +1184,7 @@ async function bootstrap() {
         localStorage.removeItem("startpageShowStartupLoader")
         document.body.classList.remove("loading-state")
         window.setTimeout(() => {
-          if (overlay) overlay.style.visibility = "hidden"
+          if (overlay) overlay.remove()
           document.body.classList.remove("is-booting")
           window.dispatchEvent(new CustomEvent("startpage:appRevealed"))
         }, 430)

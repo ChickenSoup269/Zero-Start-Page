@@ -62,7 +62,7 @@ function initFont() {
     const savedFontObj = savedFonts.find((f) => (typeof f === "string" ? f : f.label) === fontName)
     const isLocal = savedFontObj && typeof savedFontObj === "object" && (savedFontObj.isLocal || savedFontObj.isLocalFile)
     const isGoogleFont = (fontDef && fontDef.google) || (savedFontObj && !isLocal)
-    const isPreloaded = ["Pixelify Sans", "Silkscreen"].includes(fontName)
+    const isPreloaded = ["Outfit"].includes(fontName)
 
     if (isGoogleFont && !isPreloaded) {
       if (!(fontDef && !fontDef.google)) {

@@ -29,8 +29,8 @@ function clampElementIntoViewport(element, componentId, persist = false) {
   if (style.position !== "fixed" && style.position !== "absolute") return
 
   const rect = element.getBoundingClientRect()
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const vw = document.documentElement.clientWidth
+  const vh = document.documentElement.clientHeight
   if (!rect.width || !rect.height || !vw || !vh) return
 
   const minLeft = Math.min(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
@@ -97,7 +97,12 @@ export function makeDraggable(
     }
   }
 
-  requestAnimationFrame(() => clampElementIntoViewport(element, componentId))
+  document.fonts.ready.then(() => {
+    requestAnimationFrame(() => clampElementIntoViewport(element, componentId))
+  })
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => clampElementIntoViewport(element, componentId))
+  })
 
   if (!element._draggableViewportClamp) {
     let resizeTimer = null
@@ -249,20 +254,20 @@ export function makeDraggable(
     let targetScreenLeft = e.clientX - offsetX
     let targetScreenTop = e.clientY - offsetY
 
-    const vw = window.innerWidth
-    const vh = window.innerHeight
+    const vw = document.documentElement.clientWidth
+    const vh = document.documentElement.clientHeight
 
     // Smart clamping for both small and large widgets
     if (initialWidth <= vw) {
-        targetScreenLeft = Math.max(0, Math.min(targetScreenLeft, vw - initialWidth))
+        targetScreenLeft = Math.max(VIEWPORT_PADDING, Math.min(targetScreenLeft, vw - initialWidth - VIEWPORT_PADDING))
     } else {
-        targetScreenLeft = Math.max(vw - initialWidth, Math.min(targetScreenLeft, 0))
+        targetScreenLeft = Math.max(vw - initialWidth - VIEWPORT_PADDING, Math.min(targetScreenLeft, VIEWPORT_PADDING))
     }
 
     if (initialHeight <= vh) {
-        targetScreenTop = Math.max(0, Math.min(targetScreenTop, vh - initialHeight))
+        targetScreenTop = Math.max(VIEWPORT_PADDING, Math.min(targetScreenTop, vh - initialHeight - VIEWPORT_PADDING))
     } else {
-        targetScreenTop = Math.max(vh - initialHeight, Math.min(targetScreenTop, 0))
+        targetScreenTop = Math.max(vh - initialHeight - VIEWPORT_PADDING, Math.min(targetScreenTop, VIEWPORT_PADDING))
     }
 
     const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
