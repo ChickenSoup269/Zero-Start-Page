@@ -22,6 +22,8 @@ import {
   promptFirstRunBookmarkImport,
 } from "./services/firstRun.js"
 
+import { initPerfHud } from "./utils/perfHud.js"
+
 import { DriveSync } from "./services/googleDriveSync.js"
 
 import { makeDraggable } from "./utils/draggable.js"
@@ -638,6 +640,8 @@ async function bootstrap() {
     document.body.classList.add("bookmark-group-accent-enabled")
   if (currentSettings.bookmarkGroupKeepBgOnInteraction !== false)
     document.body.classList.add("bookmark-group-keep-bg-on-interaction")
+
+  initPerfHud()
   if (currentSettings.bookmarkGroupShowCount === false)
     document.body.classList.add("bookmark-group-count-hidden")
   if (currentSettings.bookmarkGroupAutoTextContrast === true)
@@ -2112,3 +2116,15 @@ if (document.readyState === "loading") {
 import { initTerminal } from "./components/terminal.js";
 initTerminal();
 
+setTimeout(() => {
+  if (navigator.deviceMemory && navigator.deviceMemory <= 8) {
+    if (!localStorage.getItem('perfWarningShown')) {
+      showAlert(
+        geti18n().perf_warning || 
+        "System Check: Your device has 8GB RAM or less.\n\nStartpage has heavy glassmorphism effects. If you experience lag, consider turning off some heavy features.\n\n" +
+        "Tip: Press the backtick (`) key to open the Terminal and type 'perf' or press 'Ctrl+Alt+P' to toggle the Performance HUD to monitor system resources."
+      );
+      localStorage.setItem('perfWarningShown', 'true');
+    }
+  }
+}, 3000);
