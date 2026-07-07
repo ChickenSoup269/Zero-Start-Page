@@ -109,6 +109,7 @@ export const defaultSettings = {
   m3PaletteStyle: "tonalSpot",
   m3AutoAccentFromBg: false,
   widgetUseM3Accent: false,
+  sidebarUseM3Accent: false,
   sidebarBg: "rgba(20, 20, 25, 0.85)",
   panelBg: "rgba(26, 46, 31, 0.7)",
   glassBg: "rgba(255, 255, 255, 0.05)",

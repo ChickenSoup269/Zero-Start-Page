@@ -2034,6 +2034,12 @@ export function setupGeneralEventHandlers(
     document.body.classList.toggle("widgets-m3-accent", enabled)
   })
 
+  DOM.m3SidebarToggle?.addEventListener("change", () => {
+    const enabled = DOM.m3SidebarToggle.checked === true
+    handleSettingUpdate("sidebarUseM3Accent", enabled)
+    document.body.classList.toggle("sidebar-m3-accent", enabled)
+  })
+
   DOM.saveAccentColorBtn.addEventListener("click", () => {
     const settings = getSettings()
     const color = DOM.accentColorPicker.value
@@ -7337,6 +7343,10 @@ export function setupGeneralEventHandlers(
     }
     if (key === "widgetUseM3Accent" && DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = value === true
+    }
+
+    if (key === "sidebarUseM3Accent" && DOM.m3SidebarToggle) {
+      DOM.m3SidebarToggle.checked = value === true
     }
     if (key === "m3PaletteStyle" && DOM.m3PaletteStyleSelect) {
       DOM.m3PaletteStyleSelect.value = value || "tonalSpot"

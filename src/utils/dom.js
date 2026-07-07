@@ -1400,6 +1400,7 @@ export let lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
 export let lcpQaShowRss = document.getElementById("lcp-qa-show-rss")
 export let lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
 export let m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
+export let m3SidebarToggle = document.getElementById("m3-sidebar-toggle")
 
 // SVG Wave Generator Controls
 export let svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
@@ -3444,6 +3445,7 @@ export function refreshDOMReferences() {
   lcpQaShowRss = document.getElementById("lcp-qa-show-rss")
   lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
   m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
+  m3SidebarToggle = document.getElementById("m3-sidebar-toggle")
   svgWaveToggleBtn = document.getElementById("svg-wave-toggle-btn")
   svgWaveToggleLabel = document.getElementById(
   "svg-wave-toggle-label",

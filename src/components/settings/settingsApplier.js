@@ -851,6 +851,10 @@ function createApplySettings(effectInstances) {
       settings.widgetUseM3Accent === true,
     )
     document.body.classList.toggle(
+      "sidebar-m3-accent",
+      settings.sidebarUseM3Accent === true,
+    )
+    document.body.classList.toggle(
       "quick-access-m3-accent",
       settings.quickAccessSkin === "m3-accent",
     )
@@ -3721,6 +3725,9 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.m3WidgetsToggle) {
       DOM.m3WidgetsToggle.checked = settings.widgetUseM3Accent === true
+    }
+    if (DOM.m3SidebarToggle) {
+      DOM.m3SidebarToggle.checked = settings.sidebarUseM3Accent === true
     }
     if (DOM.m3PaletteStyleSelect) {
       DOM.m3PaletteStyleSelect.value = settings.m3PaletteStyle || "tonalSpot"

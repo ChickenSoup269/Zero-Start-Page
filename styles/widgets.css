@@ -6009,8 +6009,7 @@ body.context-menu-m3 .calendar-context-menu {
   border: 1px solid
     color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
   box-shadow:
-    0 18px 46px
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+    0 18px 46px rgba(0, 0, 0, 0.35),
     inset 0 1px 0
       color-mix(in srgb, var(--m3-on-primary-container, #fff) 22%, transparent) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
@@ -6051,8 +6050,7 @@ body.context-menu-m3 .context-menu-item:hover,
 body.context-menu-m3 .menu-item:hover {
   background: var(--m3-primary, var(--safe-accent)) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
-  box-shadow: 0 10px 22px
-    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 30%, transparent) !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.context-menu-m3 .context-menu-item:hover i,
@@ -6402,8 +6400,7 @@ body.widgets-m3-accent .quotes-container,
   border: 1px solid
     color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
   box-shadow:
-    0 18px 46px
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+    0 18px 46px rgba(0, 0, 0, 0.35),
     inset 0 1px 0
       color-mix(in srgb, var(--m3-on-primary-container, #fff) 22%, transparent) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
@@ -8388,6 +8385,10 @@ body.bookmark-sidebar-mode .bookmarks-grid {
   min-width: 50px;
 }
 
+body.sidebar-m3-accent.bookmark-sidebar-mode .bookmarks-grid {
+  background: color-mix(in srgb, rgba(0, 0, 0, 0.3) 85%, var(--accent-color)) !important;
+}
+
 body.bookmark-sidebar-mode .bookmark-groups-container {
   display: flex;
   flex-direction: column;
@@ -9553,10 +9554,8 @@ body.quick-access-m3-accent .quick-access-bar {
   ) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
   box-shadow:
-    0 18px 46px
-      color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
-    inset 0 1px 0
-      color-mix(in srgb, var(--m3-on-primary-container, #fff) 18%, transparent) !important;
+    0 18px 46px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 body.quick-access-m3-accent .quick-btn {
@@ -9618,14 +9617,8 @@ body.quick-access-m3-accent .quick-access-popup {
   ) !important;
   color: var(--m3-on-primary-container, var(--text-color)) !important;
   box-shadow:
-    0 22px 56px
-      color-mix(
-        in srgb,
-        var(--m3-primary, var(--safe-accent)) 18%,
-        rgba(0, 0, 0, 0.5)
-      ),
-    inset 0 1px 0
-      color-mix(in srgb, var(--m3-on-primary-container, #fff) 16%, transparent) !important;
+    0 22px 56px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 body.quick-access-m3-accent .quick-access-popup .quick-access-section-row,
@@ -9649,8 +9642,7 @@ body.quick-access-m3-accent .quick-access-radius-chip.is-active {
   background: var(--m3-primary, var(--safe-accent)) !important;
   color: var(--m3-on-primary, var(--accent-contrast-color)) !important;
   border-color: var(--m3-primary, var(--safe-accent)) !important;
-  box-shadow: 0 10px 22px
-    color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 30%, transparent) !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.quick-access-m3-accent .quick-access-popup .lcp-icon,
@@ -13284,7 +13276,7 @@ body.context-menu-m3 .bookmark-stack-popup {
   -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
   border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 36%, transparent) !important;
   box-shadow:
-    0 18px 46px color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent),
+    0 18px 46px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 color-mix(in srgb, var(--m3-on-primary-container, #fff) 22%, transparent) !important;
 }
 

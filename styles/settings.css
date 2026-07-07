@@ -587,6 +587,10 @@
   will-change: transform;
 }
 
+body.sidebar-m3-accent .settings-sidebar {
+  background: color-mix(in srgb, var(--sidebar-bg) 88%, var(--accent-color));
+}
+
 .sidebar-content {
   flex: 1;
   min-height: 0;
