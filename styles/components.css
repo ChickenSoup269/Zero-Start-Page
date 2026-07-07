@@ -211,6 +211,14 @@
   scrollbar-width: thin;
 }
 
+.bookmark-tree-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  content-visibility: auto;
+  flex: 1;
+  scrollbar-width: thin;
+}
+
 /* Ensure the first element inside body has a small top gap but not excessive */
 .modal-body > *:first-child {
   margin-top: var(--space-2) !important;

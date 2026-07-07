@@ -585,6 +585,7 @@
   box-sizing: border-box;
   overflow: hidden;
   will-change: transform;
+  content-visibility: auto;
 }
 
 body.sidebar-m3-accent .settings-sidebar {

@@ -383,6 +383,10 @@ async function fetchSuggestions(query) {
     suggestionsContainer.style.display = "none"
     return
   }
+  if (!query) {
+    suggestionsContainer.style.display = "none"
+    return
+  }
 
   try {
     const response = await new Promise((resolve, reject) => {
@@ -583,6 +587,15 @@ function submitSearch() {
 
   // Default to text search
   if (!query) return
+
+  // Custom CLI commands
+  if (query.toLowerCase() === "/test performance" || query.toLowerCase() === "/perf") {
+    if (window.perfHUD) {
+      window.perfHUD.toggle()
+    }
+    searchInput.value = ""
+    return
+  }
 
   // Check if the query is a URL to navigate directly
   const targetUrl = checkAndGetUrl(query)

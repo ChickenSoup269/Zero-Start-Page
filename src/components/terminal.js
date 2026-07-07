@@ -327,6 +327,13 @@ export function initTerminal() {
                 }
             } else if (cmd === 'clear' || cmd === 'cls') {
                 output.innerHTML = '';
+            } else if (cmd === 'perf' || (cmd === 'test' && args[1] === 'performance')) {
+                if (window.perfHUD) {
+                    window.perfHUD.toggle();
+                    printOut(`\n<span style="color: #98c379;">[Performance]</span> Toggled Performance HUD overlay.`);
+                } else {
+                    printOut(`\n<span style="color: #e06c75;">[Error]</span> Performance HUD module not initialized.`);
+                }
             } else if (cmd === 'exit') {
                 closeTerminal();
             } else if (cmd === '/help' || cmd === 'help') {
@@ -335,6 +342,7 @@ export function initTerminal() {
   <span style="color: #61afef;">bug</span>      - Fetch intercepted DevTools console logs
   <span style="color: #61afef;">clear, cls</span>- Clear terminal screen
   <span style="color: #61afef;">exit</span>     - Close the terminal
+  <span style="color: #61afef;">perf</span>     - Toggle Performance HUD overlay
   <span style="color: #61afef;">/help</span>    - Show this help message
   <span style="color: #61afef;">echo</span>     - Print arguments to standard output
   <span style="color: #61afef;">date</span>     - Display current date and time
