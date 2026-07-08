@@ -2548,6 +2548,15 @@ export function setupGeneralEventHandlers(
       renderBookmarks()
     })
 
+    if (DOM.bookmarkKeepNestedFolders) {
+      DOM.bookmarkKeepNestedFolders.addEventListener("change", () => {
+        handleSettingUpdate(
+          "bookmarkKeepNestedFolders",
+          DOM.bookmarkKeepNestedFolders.checked,
+        )
+      })
+    }
+
     if (DOM.bookmarkOpenInNewTab) {
       DOM.bookmarkOpenInNewTab.addEventListener("change", () => {
         handleSettingUpdate(

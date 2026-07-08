@@ -524,18 +524,23 @@ function createBookmarkStackIcon(stack) {
     return wrap
   }
 
-  stack.items.slice(0, 4).forEach((item) => {
+  const displayItems = [];
+  function extractBookmarks(items) {
+    for (const item of items) {
+      if (displayItems.length >= 4) return;
+      if (item && item.type === "stack") {
+        extractBookmarks(item.items || []);
+      } else if (item) {
+        displayItems.push(item);
+      }
+    }
+  }
+  extractBookmarks(stack.items || []);
+
+  displayItems.forEach((item) => {
     const cell = document.createElement("div")
     cell.className = "bookmark-stack-cell"
-    if (item && item.type === "stack") {
-      const miniFolder = document.createElement("div");
-      miniFolder.className = "bookmark-icon-fallback";
-      miniFolder.innerHTML = '<i class="fa-solid fa-folder"></i>';
-      miniFolder.style.background = "transparent";
-      cell.appendChild(miniFolder);
-    } else {
-      cell.appendChild(createBookmarkIcon(item))
-    }
+    cell.appendChild(createBookmarkIcon(item))
     wrap.appendChild(cell)
   })
 
@@ -685,6 +690,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 
   const normalizeStackAfterDelete = () => {
     const bookmarks = getBookmarks()
+    if (stackIndex == null) {
+      saveBookmarks()
+      return
+    }
     if (!bookmarks[stackIndex]) return
 
     if (stack.items.length <= 0) {
@@ -752,7 +761,10 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     stack.items.splice(insertIndex, 0, ...movedItems)
 
     const bookmarks = getBookmarks()
-    if (isBookmarkStack(bookmarks[stackIndex])) {
+    if (stackIndex == null) {
+      setBookmarks(bookmarks)
+      saveBookmarks()
+    } else if (isBookmarkStack(bookmarks[stackIndex])) {
       bookmarks[stackIndex] = stack
       setBookmarks(bookmarks)
       saveBookmarks()
@@ -846,6 +858,14 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
           syncStackSelectionUi()
           return
         }
+
+        if (isBookmarkStack(item)) {
+          event.preventDefault()
+          event.stopPropagation()
+          openBookmarkStackPopup(item, anchor, null)
+          return
+        }
+
         await promptBookmarkOpenBehaviorOnClick(event, item.url)
       })
       link.addEventListener("dragstart", handleStackItemDragStart)
@@ -1011,8 +1031,9 @@ function isBookmarkStack(item) {
 }
 
 function getStackItems(item) {
-  // To allow nested folders, we just return the item itself as an array element
-  // instead of extracting its children.
+  if (isBookmarkStack(item)) {
+    return getSettings().bookmarkKeepNestedFolders ? [item] : item.items;
+  }
   return [item]
 }
 
@@ -1233,7 +1254,8 @@ function handleDragStart(e) {
 }
 
 function handleStackItemDragStart(e) {
-  const stackIndex = Number(this.dataset.parentStackIndex)
+  const stackIndexStr = this.dataset.parentStackIndex
+  const stackIndex = stackIndexStr === "null" ? null : Number(stackIndexStr)
   const itemIndex = Number(this.dataset.stackIndex)
   if (isStackSelectionMode && selectedStackIndices.has(itemIndex)) {
     draggedStackItems = Array.from(selectedStackIndices)
@@ -2575,6 +2597,58 @@ function renderGroupTabs() {
 
 export function initBookmarks() {
   renderBookmarks()
+
+  bookmarkGroupsContainer.addEventListener("dragover", (e) => {
+    e.preventDefault()
+    if (draggedBookmarkIndices.length > 0) {
+      e.dataTransfer.dropEffect = "move"
+    }
+  })
+
+  bookmarkGroupsContainer.addEventListener("drop", (e) => {
+    e.preventDefault()
+    if (e.target.closest('.bookmark-group-tab') && !e.target.closest('.add-group-tab')) return; // Handled by handleGroupDrop
+
+    if (draggedBookmarkIndices.length > 0) {
+      const snapshot = captureBookmarkSnapshot()
+      const bookmarks = getBookmarks()
+      const groups = getBookmarkGroups()
+      
+      const sortedIndices = [...draggedBookmarkIndices].sort((a, b) => b - a)
+      const draggedItemsOriginal = sortedIndices.map((idx) => bookmarks[idx])
+
+      let createdGroup = false;
+
+      draggedItemsOriginal.forEach((item) => {
+        if (isBookmarkStack(item)) {
+          createdGroup = true;
+          const newGroupId = "group_" + Date.now() + Math.random().toString(36).substring(2, 9);
+          groups.push({
+            id: newGroupId,
+            name: item.title || inferBookmarkStackName(item.items),
+            items: item.items || [],
+            icon: item.icon,
+            iconColor: item.iconColor
+          });
+        }
+      });
+
+      if (createdGroup) {
+        for (const idx of sortedIndices) {
+          if (isBookmarkStack(bookmarks[idx])) {
+            bookmarks.splice(idx, 1);
+          }
+        }
+        setBookmarks(bookmarks);
+        setBookmarkGroups(groups);
+        saveBookmarks();
+        cancelSelection();
+        renderGroupTabs();
+        renderBookmarks();
+        showBookmarkUndo(geti18n().bookmark_group_created || "Group created", snapshot);
+      }
+    }
+  })
 
   // Selection toolbar events
   const deleteBtn = document.getElementById("bookmark-delete-selected")

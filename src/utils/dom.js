@@ -1190,6 +1190,9 @@ export let bookmarkLayoutShowGroups = document.getElementById(
 export let enableBookmarkDrag = document.getElementById(
   "enable-bookmark-drag",
 )
+export let bookmarkKeepNestedFolders = document.getElementById(
+  "bookmark-keep-nested-folders",
+)
 export let bookmarkOpenInNewTab = document.getElementById(
   "bookmark-open-new-tab",
 )
@@ -3237,8 +3240,11 @@ export function refreshDOMReferences() {
   "bookmark-layout-show-groups",
 )
   enableBookmarkDrag = document.getElementById(
-  "enable-bookmark-drag",
-)
+    "enable-bookmark-drag",
+  )
+  bookmarkKeepNestedFolders = document.getElementById(
+    "bookmark-keep-nested-folders",
+  )
   bookmarkOpenInNewTab = document.getElementById(
   "bookmark-open-new-tab",
 )
