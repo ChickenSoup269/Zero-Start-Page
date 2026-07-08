@@ -343,26 +343,60 @@ export class RssReader {
         }
     }
 
-    async fetchRawXML(url) {
-        const proxies = [
-            `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-        ];
-        
-        for (const proxy of proxies) {
-            try {
-                const res = await fetch(proxy);
-                if (res.ok) {
-                    const text = await res.text();
-                    if (text && (text.includes('<rss') || text.includes('<feed'))) {
-                        return text;
-                    }
-                }
-            } catch (e) {
-                console.warn("Proxy failed:", proxy, e);
+    async fetchRSSData(url) {
+        const fetchRss2Json = async () => {
+            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+            if (!res.ok) throw new Error();
+            const data = await res.json();
+            if (data.status === 'ok') {
+                return { feed: { title: data.feed.title }, items: data.items };
             }
-        }
-        throw new Error("All XML proxies failed");
+            throw new Error();
+        };
+
+        const fetchRawProxy = async (proxyUrl) => {
+            const res = await fetch(proxyUrl);
+            if (!res.ok) throw new Error();
+            const text = await res.text();
+            if (text && (text.includes('<rss') || text.includes('<feed'))) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, "text/xml");
+                const sourceTitle = xmlDoc.querySelector("channel > title")?.textContent || "RSS Feed";
+                const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => {
+                    let thumbnail = "";
+                    const mediaContent = item.getElementsByTagName("media:content")[0];
+                    const enclosure = item.querySelector("enclosure");
+                    if (mediaContent && mediaContent.getAttribute("url")) {
+                        thumbnail = mediaContent.getAttribute("url");
+                    } else if (enclosure && enclosure.getAttribute("type")?.startsWith("image/")) {
+                        thumbnail = enclosure.getAttribute("url");
+                    } else {
+                        const content = item.getElementsByTagName("content:encoded")[0]?.textContent || item.querySelector("description")?.textContent || "";
+                        const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i);
+                        if (imgMatch) thumbnail = imgMatch[1];
+                    }
+                    let desc = item.querySelector("description")?.textContent || "";
+                    desc = desc.replace(/<[^>]*>?/gm, '').trim();
+                    if (desc.length > 120) desc = desc.substring(0, 120) + "...";
+                    return {
+                        title: item.querySelector("title")?.textContent || "",
+                        link: item.querySelector("link")?.textContent || "",
+                        pubDate: item.querySelector("pubDate")?.textContent || "",
+                        thumbnail: thumbnail,
+                        description: desc
+                    };
+                });
+                return { feed: { title: sourceTitle }, items: items };
+            }
+            throw new Error();
+        };
+
+        return Promise.any([
+            fetchRss2Json(),
+            fetchRawProxy(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`),
+            fetchRawProxy(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`),
+            fetchRawProxy(`https://corsproxy.io/?${encodeURIComponent(url)}`)
+        ]);
     }
 
     async fetchRSS(forceRefresh = false) {
@@ -389,78 +423,21 @@ export class RssReader {
                 this.currentSourceTitle = data.feed.title;
                 this.itemsLimit = 10;
                 this.renderItems();
-                // Optionally fetch in background to refresh cache silently
                 this.fetchRSSBackground(cacheKey, url);
                 return;
             } catch (e) {}
         }
 
         try {
-            const rawXml = await this.fetchRawXML(url);
-            
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(rawXml, "text/xml");
-            
-            const sourceTitle = xmlDoc.querySelector("channel > title")?.textContent || "RSS Feed";
-            const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => {
-                let thumbnail = "";
-                const mediaContent = item.getElementsByTagName("media:content")[0];
-                const enclosure = item.querySelector("enclosure");
-                if (mediaContent && mediaContent.getAttribute("url")) {
-                    thumbnail = mediaContent.getAttribute("url");
-                } else if (enclosure && enclosure.getAttribute("type")?.startsWith("image/")) {
-                    thumbnail = enclosure.getAttribute("url");
-                } else {
-                    const content = item.getElementsByTagName("content:encoded")[0]?.textContent || item.querySelector("description")?.textContent || "";
-                    const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-                    if (imgMatch) thumbnail = imgMatch[1];
-                }
-                
-                let desc = item.querySelector("description")?.textContent || "";
-                desc = desc.replace(/<[^>]*>?/gm, '').trim();
-                if (desc.length > 120) desc = desc.substring(0, 120) + "...";
-
-                return {
-                    title: item.querySelector("title")?.textContent || "",
-                    link: item.querySelector("link")?.textContent || "",
-                    pubDate: item.querySelector("pubDate")?.textContent || "",
-                    thumbnail: thumbnail,
-                    description: desc
-                };
-            });
-
-            const parsedData = { feed: { title: sourceTitle }, items: items };
-
+            const parsedData = await this.fetchRSSData(url);
             localStorage.setItem(cacheKey, JSON.stringify(parsedData));
             localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
-
             this.currentItems = parsedData.items;
             this.currentSourceTitle = parsedData.feed.title;
             this.itemsLimit = 10;
             this.renderItems();
         } catch (error) {
-            console.error("RSS Fetch via allorigins Error:", error);
-            // Fallback to rss2json if allorigins fails (e.g. 522 timeout)
-            try {
-                const res2 = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
-                if (!res2.ok) throw new Error("Fallback network response was not ok");
-                const data2 = await res2.json();
-                
-                if (data2.status === 'ok') {
-                    const parsedData = { feed: { title: data2.feed.title }, items: data2.items };
-                    localStorage.setItem(cacheKey, JSON.stringify(parsedData));
-                    localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
-
-                    this.currentItems = parsedData.items;
-                    this.currentSourceTitle = parsedData.feed.title;
-                    this.itemsLimit = 10;
-                    this.renderItems();
-                    return;
-                }
-            } catch (fallbackError) {
-                console.error("RSS Fetch via rss2json Error:", fallbackError);
-            }
-
+            console.error("RSS Fetch Error:", error);
             if (cachedData) {
                 try {
                     const data = JSON.parse(cachedData);
@@ -477,53 +454,11 @@ export class RssReader {
 
     async fetchRSSBackground(cacheKey, url) {
         try {
-            const rawXml = await this.fetchRawXML(url);
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(rawXml, "text/xml");
-            
-            const sourceTitle = xmlDoc.querySelector("channel > title")?.textContent || "RSS Feed";
-            const items = Array.from(xmlDoc.querySelectorAll("item")).map(item => {
-                let thumbnail = "";
-                const mediaContent = item.getElementsByTagName("media:content")[0];
-                const enclosure = item.querySelector("enclosure");
-                if (mediaContent && mediaContent.getAttribute("url")) {
-                    thumbnail = mediaContent.getAttribute("url");
-                } else if (enclosure && enclosure.getAttribute("type")?.startsWith("image/")) {
-                    thumbnail = enclosure.getAttribute("url");
-                } else {
-                    const content = item.getElementsByTagName("content:encoded")[0]?.textContent || item.querySelector("description")?.textContent || "";
-                    const imgMatch = content.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-                    if (imgMatch) thumbnail = imgMatch[1];
-                }
-                
-                let desc = item.querySelector("description")?.textContent || "";
-                desc = desc.replace(/<[^>]*>?/gm, '').trim();
-                if (desc.length > 120) desc = desc.substring(0, 120) + "...";
-
-                return {
-                    title: item.querySelector("title")?.textContent || "",
-                    link: item.querySelector("link")?.textContent || "",
-                    pubDate: item.querySelector("pubDate")?.textContent || "",
-                    thumbnail: thumbnail,
-                    description: desc
-                };
-            });
-
-            const parsedData = { feed: { title: sourceTitle }, items: items };
+            const parsedData = await this.fetchRSSData(url);
             localStorage.setItem(cacheKey, JSON.stringify(parsedData));
             localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
         } catch (e) {
-            try {
-                const res2 = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
-                if (res2.ok) {
-                    const data2 = await res2.json();
-                    if (data2.status === 'ok') {
-                        const parsedData = { feed: { title: data2.feed.title }, items: data2.items };
-                        localStorage.setItem(cacheKey, JSON.stringify(parsedData));
-                        localStorage.setItem(`${cacheKey}_time`, Date.now().toString());
-                    }
-                }
-            } catch (fallbackError) {}
+            // Background fetch failed, ignore
         }
     }
 
