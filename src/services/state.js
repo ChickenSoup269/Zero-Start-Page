@@ -199,6 +199,9 @@ export const defaultSettings = {
   bookmarkShadowColor: "#000000",
   bookmarkShadowOpacity: 24,
   bookmarkShadowBlur: 8,
+  qaShowRss: false,
+  showRss: false,
+  rssHiddenMigrated: false,
 
   clockDateStrokeWidth: 0,
   clockDateStrokeColor: "#000000",
@@ -505,6 +508,14 @@ if (!Object.prototype.hasOwnProperty.call(storedSettings, "calendarDateMode")) {
     : "solar"
 }
 settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
+
+// Migration for RSS hiding
+if (!settingsState.rssHiddenMigrated) {
+  settingsState.showRss = false;
+  settingsState.qaShowRss = false;
+  settingsState.rssHiddenMigrated = true;
+  localStorage.setItem("pageSettings", JSON.stringify(settingsState));
+}
 
 const MODULE_RESET_KEYS = {
   background: [
