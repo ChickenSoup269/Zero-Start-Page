@@ -119,6 +119,74 @@
                         </div>
                     </div>
 
+                    <!-- Picsum Photos Card (No API Key Required) -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title">
+                            <i class="fa-solid fa-images"></i> Free Random Photos
+                            <span style="font-size:0.65rem; opacity:0.55; margin-left:6px; font-weight:400;">no API key</span>
+                        </div>
+                        <p style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
+                            High-quality photos from <strong>Picsum</strong> — completely free, no signup needed.
+                        </p>
+
+                        <div class="setting-item" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;">
+                                Theme
+                            </label>
+                            <select id="picsum-category-select" class="full-width">
+                                <option value="random">🎲 Random</option>
+                                <option value="nature">🌿 Nature</option>
+                                <option value="city">🏙️ City & Urban</option>
+                                <option value="abstract">🎨 Abstract</option>
+                                <option value="architecture">🏛️ Architecture</option>
+                                <option value="minimal">✦ Minimal</option>
+                                <option value="technology">💻 Technology</option>
+                                <option value="dark">🌑 Dark & Moody</option>
+                            </select>
+                        </div>
+
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button id="picsum-random-btn" class="unsplash-shortcut-btn highlight" style="flex:1; min-width:120px;">
+                                <i class="fa-solid fa-shuffle"></i> <span>Random Photo</span>
+                            </button>
+                            <button id="picsum-save-btn" class="secondary-btn" disabled style="flex:1; min-width:120px;">
+                                <i class="fa-solid fa-download"></i> <span>Save to Gallery</span>
+                            </button>
+                        </div>
+                        <div id="picsum-credit" style="font-size:0.72rem; opacity:0.55; margin-top:10px; min-height:1.2em;"></div>
+                    </div>
+
+                    <!-- Local Gallery Random Card -->
+                    <div class="bg-control-card">
+                        <div class="bg-control-title">
+                            <i class="fa-solid fa-photo-film"></i> Local Gallery Random
+                        </div>
+                        <p style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
+                            Randomly cycle through your <strong>saved local images</strong>.
+                        </p>
+
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 14px;">
+                            <button id="local-random-btn" class="unsplash-shortcut-btn highlight" style="flex:1; min-width:120px;">
+                                <i class="fa-solid fa-dice"></i> <span>Pick Random</span>
+                            </button>
+                            <button id="local-random-fav-btn" class="secondary-btn" style="flex:1; min-width:120px;">
+                                <i class="fa-solid fa-star"></i> <span>Favorites Only</span>
+                            </button>
+                        </div>
+
+                        <div class="setting-item" style="margin-bottom: 6px;">
+                            <label style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 8px; display: block;">
+                                Auto-rotate from Gallery
+                            </label>
+                            <select id="local-auto-random-select" class="full-width">
+                                <option value="off">Off</option>
+                                <option value="every_tab">Every Tab</option>
+                                <option value="hourly">Every Hour</option>
+                                <option value="daily">Every Day</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <!-- Visual Effects Card -->
                     <div class="bg-control-card">
                         <div class="bg-control-title"><i class="fa-solid fa-wand-magic-sparkles"></i> <span

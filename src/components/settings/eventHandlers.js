@@ -60,6 +60,10 @@ import {
   minimizeUnsplashExplorer,
 } from "./unsplashFetcher.js"
 import {
+  getPicsumRandomBackground,
+  preloadPicsumImage,
+} from "./picsumFetcher.js"
+import {
   renderUserColors,
   renderLocalBackgrounds,
   renderUserAccentColors,
@@ -1685,6 +1689,147 @@ export function setupGeneralEventHandlers(
   if (DOM.unsplashAutoRandomSelect) {
     DOM.unsplashAutoRandomSelect.addEventListener("change", () => {
       handleSettingUpdate("unsplashAutoRandomMode", DOM.unsplashAutoRandomSelect.value)
+    })
+  }
+
+  // ─── Picsum Photos (No API Key) ─────────────────────────────────────────
+  const picsumRandomBtn = document.getElementById("picsum-random-btn")
+  const picsumSaveBtn = document.getElementById("picsum-save-btn")
+  const picsumCreditEl = document.getElementById("picsum-credit")
+  const picsumCategorySelect = document.getElementById("picsum-category-select")
+  let _lastPicsumResult = null
+
+  if (picsumRandomBtn) {
+    picsumRandomBtn.addEventListener("click", async () => {
+      const themeKey = picsumCategorySelect?.value || "random"
+      const originalHtml = picsumRandomBtn.innerHTML
+      picsumRandomBtn.disabled = true
+      picsumRandomBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Loading...</span>`
+      if (picsumCreditEl) picsumCreditEl.textContent = ""
+      try {
+        const result = await getPicsumRandomBackground(themeKey)
+        await preloadPicsumImage(result.imageUrl)
+        _lastPicsumResult = result
+
+        // Apply as background
+        await handleSettingUpdate("background", result.imageUrl)
+
+        // Show credit info
+        if (picsumCreditEl) {
+          const info = result.info
+          if (info) {
+            const authorLink = info.url ? `<a href="${info.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">${info.author || "Unknown"}</a>` : (info.author || "Unknown")
+            picsumCreditEl.innerHTML = `📷 ${authorLink} · <a href="https://picsum.photos" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">picsum.photos</a>`
+          } else {
+            picsumCreditEl.innerHTML = `Photo via <a href="https://picsum.photos" target="_blank" rel="noopener" style="color:inherit;opacity:0.7;">picsum.photos</a>`
+          }
+        }
+
+        if (picsumSaveBtn) picsumSaveBtn.disabled = false
+      } catch (err) {
+        console.error("Picsum fetch failed:", err)
+        showAlert("Failed to load free photo. Check your internet connection.")
+      } finally {
+        picsumRandomBtn.disabled = false
+        picsumRandomBtn.innerHTML = originalHtml
+      }
+    })
+  }
+
+  if (picsumSaveBtn) {
+    picsumSaveBtn.addEventListener("click", async () => {
+      const settings = getSettings()
+      const currentBg = settings.background
+      if (!currentBg || !currentBg.includes("picsum.photos")) {
+        showAlert("No Picsum photo to save!")
+        return
+      }
+      const originalHtml = picsumSaveBtn.innerHTML
+      picsumSaveBtn.disabled = true
+      picsumSaveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving...</span>`
+      try {
+        const res = await fetch(currentBg)
+        if (!res.ok) throw new Error(`Image download failed: ${res.status}`)
+        const blob = await res.blob()
+        const savedId = await saveImage(blob, `idb-img-picsum-${Date.now()}`)
+        const info = _lastPicsumResult?.info
+        const newBg = {
+          uid: "bg-" + Date.now(),
+          id: savedId,
+          authorName: info?.author || "Picsum",
+          type: "image",
+          date: new Date().toISOString(),
+          photoUrl: info?.url || "https://picsum.photos",
+          authorUrl: info?.url || "",
+          settings: {},
+        }
+        settings.userBackgrounds = settings.userBackgrounds || []
+        const exists = settings.userBackgrounds.some((bg) => {
+          if (typeof bg === "object") return bg.id === savedId
+          return bg === savedId
+        })
+        if (exists) {
+          showAlert("This background is already in your gallery!")
+          picsumSaveBtn.disabled = true
+          picsumSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Already saved</span>`
+          return
+        }
+        settings.userBackgrounds.push(newBg)
+        saveSettings()
+        await handleSettingUpdate("background", savedId)
+        renderLocalBackgrounds(DOM, handleSettingUpdate)
+        showAlert("Photo saved to your Local Gallery!")
+        picsumSaveBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Saved!</span>`
+        setTimeout(() => {
+          picsumSaveBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>Save to Gallery</span>`
+          picsumSaveBtn.disabled = false
+        }, 2000)
+      } catch (err) {
+        console.error("Picsum save failed:", err)
+        showAlert("Failed to save photo.")
+        picsumSaveBtn.disabled = false
+        picsumSaveBtn.innerHTML = originalHtml
+      }
+    })
+  }
+
+  // ─── Local Gallery Random ───────────────────────────────────────────────
+  const localRandomBtn = document.getElementById("local-random-btn")
+  const localRandomFavBtn = document.getElementById("local-random-fav-btn")
+  const localAutoRandomSelect = document.getElementById("local-auto-random-select")
+
+  function pickRandomLocalBg(favoritesOnly = false) {
+    const settings = getSettings()
+    const userBackgrounds = settings.userBackgrounds || []
+    const pool = favoritesOnly
+      ? userBackgrounds.filter((bg) => (typeof bg === "object" ? bg.isFavorite : false))
+      : userBackgrounds
+    if (!pool.length) {
+      showAlert(favoritesOnly ? "No favorites found! Star some images first." : "No local images saved yet!")
+      return
+    }
+    const current = settings.background
+    const fresh = pool.filter((bg) => {
+      const id = typeof bg === "object" ? bg.id : bg
+      return id !== current
+    })
+    const pickFrom = fresh.length ? fresh : pool
+    const picked = pickFrom[Math.floor(Math.random() * pickFrom.length)]
+    const bgId = typeof picked === "object" ? picked.id : picked
+    handleSettingUpdate("background", bgId)
+  }
+
+  if (localRandomBtn) {
+    localRandomBtn.addEventListener("click", () => pickRandomLocalBg(false))
+  }
+  if (localRandomFavBtn) {
+    localRandomFavBtn.addEventListener("click", () => pickRandomLocalBg(true))
+  }
+  if (localAutoRandomSelect) {
+    const savedLocalAutoMode = getSettings().localAutoRandomMode || "off"
+    localAutoRandomSelect.value = savedLocalAutoMode
+    localAutoRandomSelect.addEventListener("change", () => {
+      handleSettingUpdate("localAutoRandomMode", localAutoRandomSelect.value)
     })
   }
 
