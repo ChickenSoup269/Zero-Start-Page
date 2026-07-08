@@ -10,7 +10,7 @@
     position: fixed;
     top: 100px;
     left: 100px;
-    z-index: 100;
+    z-index: 8995 !important;
 }
 
 .rss-header {
@@ -192,6 +192,26 @@
     flex-direction: column;
     gap: 10px;
     font-size: 0.9em;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.rss-settings::-webkit-scrollbar {
+    width: 5px;
+}
+
+.rss-settings::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.rss-settings::-webkit-scrollbar-thumb {
+    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+    border-radius: var(--radius-sm, 4px);
+}
+
+.rss-settings::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
 }
 
 .rss-settings.active {
