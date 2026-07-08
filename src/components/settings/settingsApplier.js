@@ -1209,14 +1209,58 @@ function createApplySettings(effectInstances) {
 
         document.body.classList.add("bg-layer-active")
 
-        const img = new Image()
+        // If a blurry startup preview is currently visible, we must copy it
+        // into bg-fade-layer BEFORE decoding the real image.  This prevents a
+        // jarring flash where blur/scale un-animate on top of the wrong image.
+        const hasPreloadPreview = document.body.classList.contains("preload-bg-preview")
+        if (hasPreloadPreview && bgFadeLayer) {
+          // Snapshot the current blurry preview state into the fade layer so it
+          // can smoothly fade out while bg-layer shows the crisp image.
+          // NOTE: preload.js sets bg via CSS stylesheet (not inline style), so
+          // we must use getComputedStyle to read the actual background-image value.
+          const computedBg = window.getComputedStyle(bgLayer)
+          const snapshotBgImage = bgLayer.style.backgroundImage ||
+            (settings.lastUserBackgroundPreview ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})` : computedBg.backgroundImage) ||
+            computedBg.backgroundImage
+          bgFadeLayer.style.transition = "none"
+          bgFadeLayer.style.background = ""
+          bgFadeLayer.style.backgroundImage = snapshotBgImage
+          bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize || computedBg.backgroundSize || backgroundSize
+          bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat || computedBg.backgroundRepeat || backgroundRepeat
+          bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition || "var(--bg-pos-x) var(--bg-pos-y)"
+          // Apply the same blur/scale the preview was using so it looks identical
+          bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
+          bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
+          bgFadeLayer.style.opacity = "1"
+          bgFadeLayer.offsetHeight // force reflow
+          bgFadeLayer.style.transition = "" // restore CSS transition
 
-        const applyStyles = () => {
-          // No longer generating previews. Let IDB images fade in from black just like HTTP URLs to prevent flashes.
-          
+          // Now immediately clear the preview state from bg-layer so the real
+          // image will appear without blur once decoded.
+          document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+
+          // PRE-SET the real image on bg-layer SYNCHRONOUSLY so there's never
+          // a blank frame between fade-layer fading out and bg-layer appearing.
           bgLayer.style.backgroundImage = cssUrl(imageUrl)
           bgLayer.style.backgroundSize = backgroundSize
           bgLayer.style.backgroundRepeat = backgroundRepeat
+          bgLayer.style.opacity = "0"
+          bgLayer.offsetHeight // force reflow
+        }
+
+        const img = new Image()
+
+        const applyStyles = () => {
+          // If we didn't pre-set it above, set it now that it has finished downloading
+          if (!hasPreloadPreview) {
+            bgLayer.style.backgroundImage = cssUrl(imageUrl)
+            bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
+          } else {
+            // Ensure size/repeat are correct in case they changed
+            bgLayer.style.backgroundSize = backgroundSize
+            bgLayer.style.backgroundRepeat = backgroundRepeat
+          }
           document.body.classList.remove("preload-bg-preview")
           document.body.classList.remove("preload-bg-ready")
           triggerBgFadeOut()
@@ -1647,17 +1691,45 @@ function createApplySettings(effectInstances) {
             if (isIdbMedia(bg)) imageUrl = getBlobUrlSync(bg)
             if (imageUrl) {
               if (isFirstLoad) {
+                // Snapshot the blurry preview into bg-fade-layer BEFORE touching
+                // bg-layer so the real image appears crisp without a blur flash.
+                const _hasPrev = document.body.classList.contains("preload-bg-preview")
+                if (_hasPrev && bgFadeLayer) {
+                  const _computedBg = window.getComputedStyle(bgLayer)
+                  const _snapshotBgImage = bgLayer.style.backgroundImage ||
+                    (settings.lastUserBackgroundPreview ? `url(${JSON.stringify(settings.lastUserBackgroundPreview)})` : _computedBg.backgroundImage) ||
+                    _computedBg.backgroundImage
+                  bgFadeLayer.style.transition = "none"
+                  bgFadeLayer.style.background = ""
+                  bgFadeLayer.style.backgroundImage = _snapshotBgImage
+                  bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize || _computedBg.backgroundSize || backgroundSize
+                  bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat || _computedBg.backgroundRepeat || backgroundRepeat
+                  bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition || "var(--bg-pos-x) var(--bg-pos-y)"
+                  bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
+                  bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
+                  bgFadeLayer.style.opacity = "1"
+                  bgFadeLayer.offsetHeight // force reflow
+                  bgFadeLayer.style.transition = ""
+                  document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+                  bgLayer.style.opacity = "0"
+                  bgLayer.offsetHeight // force reflow
+                }
                 bgLayer.style.backgroundImage = cssUrl(imageUrl)
                 bgLayer.style.backgroundSize = backgroundSize
                 bgLayer.style.backgroundRepeat = backgroundRepeat
                 triggerBgFadeOut()
               } else {
+                // PRE-SET image synchronously so bg-layer is never blank
+                // while waiting for the decode promise to resolve.
+                bgLayer.style.backgroundImage = cssUrl(imageUrl)
+                bgLayer.style.backgroundSize = backgroundSize
+                bgLayer.style.backgroundRepeat = backgroundRepeat
+                document.body.classList.remove("preload-bg-preview")
+
                 const img = new Image()
                 const applyStyles = () => {
-                  bgLayer.style.backgroundImage = cssUrl(imageUrl)
                   bgLayer.style.backgroundSize = backgroundSize
                   bgLayer.style.backgroundRepeat = backgroundRepeat
-                  document.body.classList.remove("preload-bg-preview")
                   triggerBgFadeOut()
                 }
                 if (typeof img.decode === "function") {
@@ -1670,7 +1742,6 @@ function createApplySettings(effectInstances) {
                 } else {
                   img.onload = applyStyles
                   img.onerror = () => {
-                    document.body.classList.remove("preload-bg-preview")
                     triggerBgFadeOut()
                   }
                   img.src = imageUrl

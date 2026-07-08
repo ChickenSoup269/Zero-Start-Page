@@ -1348,7 +1348,7 @@ async function bootstrap() {
             bgLayer.style.backgroundImage = `url("${url}")`
             bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
             bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
-            document.body.classList.remove("preload-bg-preview")
+            document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
           }
           if (typeof img.decode === "function") {
             img.decode().then(apply).catch(apply)
@@ -1370,7 +1370,7 @@ async function bootstrap() {
         bgLayer.style.backgroundImage = `url("${url}")`
         bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
         bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
-        document.body.classList.remove("preload-bg-preview")
+        document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
       }
       if (typeof img.decode === "function") {
         img.decode().then(apply).catch(apply)
@@ -1560,6 +1560,49 @@ async function bootstrap() {
           )
         } catch (err) {
           console.error("Auto Unsplash background randomization failed:", err)
+        }
+      }
+    }
+
+    // Local Gallery Auto-Random
+    if (
+      settings.localAutoRandomMode &&
+      settings.localAutoRandomMode !== "off" &&
+      Array.isArray(settings.userBackgrounds) &&
+      settings.userBackgrounds.length > 0
+    ) {
+      const now = Date.now()
+      const lastLocalFetch = settings.localAutoRandomLastTime || 0
+      let shouldPickLocal = false
+
+      if (settings.localAutoRandomMode === "every_tab") {
+        shouldPickLocal = true
+      } else if (settings.localAutoRandomMode === "hourly") {
+        shouldPickLocal = now - lastLocalFetch >= 3600000
+      } else if (settings.localAutoRandomMode === "daily") {
+        const lastDate = new Date(lastLocalFetch).toDateString()
+        const nowDate = new Date(now).toDateString()
+        shouldPickLocal = now - lastLocalFetch >= 86400000 || lastDate !== nowDate
+      }
+
+      if (shouldPickLocal) {
+        try {
+          const userBackgrounds = settings.userBackgrounds
+          const currentBg = settings.background
+          const fresh = userBackgrounds.filter((bg) => {
+            const id = typeof bg === "object" ? bg.id : bg
+            return id !== currentBg
+          })
+          const pool = fresh.length ? fresh : userBackgrounds
+          const picked = pool[Math.floor(Math.random() * pool.length)]
+          const bgId = typeof picked === "object" ? picked.id : picked
+          if (bgId && window.appHandleSettingUpdate) {
+            updateSetting("localAutoRandomLastTime", now)
+            saveSettings()
+            window.appHandleSettingUpdate("background", bgId)
+          }
+        } catch (err) {
+          console.error("Local gallery auto-random failed:", err)
         }
       }
     }

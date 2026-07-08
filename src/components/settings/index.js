@@ -675,7 +675,7 @@ export async function initSettings() {
                         const canvas = document.createElement("canvas")
                         let targetWidth = img.width
                         let targetHeight = img.height
-                        const MAX_SIZE = 800
+                        const MAX_SIZE = 1280
                         if (targetWidth > MAX_SIZE || targetHeight > MAX_SIZE) {
                           const ratio = Math.min(MAX_SIZE / targetWidth, MAX_SIZE / targetHeight)
                           targetWidth = Math.floor(targetWidth * ratio)
@@ -685,7 +685,7 @@ export async function initSettings() {
                         canvas.height = targetHeight
                         const ctx = canvas.getContext("2d")
                         ctx.drawImage(img, 0, 0, targetWidth, targetHeight)
-                        const quality = 0.4
+                        const quality = 0.75
                         resolve(canvas.toDataURL("image/webp", quality))
                       } catch (e) {
                         resolve(candidateUrl)
