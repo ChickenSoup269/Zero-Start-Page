@@ -253,7 +253,6 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           updateSettingCallback("clockFont", value)
         } else {
           updateSettingCallback("font", value)
-          updateSettingCallback("clockFont", value)
         }
         
         // Fast UI update: toggle active classes without full re-render

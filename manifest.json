@@ -1,10 +1,17 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
-  "permissions": ["bookmarks", "scripting", "tabs", "storage", "identity", "sidePanel"],
+  "permissions": [
+    "bookmarks",
+    "scripting",
+    "tabs",
+    "storage",
+    "identity",
+    "sidePanel"
+  ],
   "icons": {
     "128": "icon/logo.png"
   },

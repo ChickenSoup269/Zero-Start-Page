@@ -682,7 +682,7 @@ body.date-clock-style-round .clock-date-wrap:hover .round-clock-notch {
 .round-clock-ss-bottom {
   font-size: 1.4rem;
   font-weight: 200;
-  font-family: 'JetBrains Mono', 'Segoe UI Mono', monospace;
+  font-family: var(--font-clock, 'JetBrains Mono', 'Segoe UI Mono', monospace);
   color: rgba(255, 255, 255, 0.6);
   line-height: 1;
 }
@@ -824,7 +824,7 @@ body.framed-theme-dark.date-clock-style-square .clock-date-wrap {
 .sq-ss {
   font-size: 1.5rem;
   font-weight: 300;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-clock, 'JetBrains Mono', monospace);
   color: #fff;
   opacity: 0.6;
 }
@@ -1100,7 +1100,7 @@ body.date-clock-style-round .round-clock-ss {
   color: rgba(var(--clock-color-rgb, 255, 255, 255), 0.6);
   font-size: clamp(1.1rem, calc(var(--clock-size, 6rem) * 0.22), 1.5rem);
   font-weight: 400;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-clock, 'JetBrains Mono', monospace);
 }
 
 body.date-clock-style-round .round-clock-footer {
@@ -1641,7 +1641,7 @@ body.date-clock-style-code .code-style-wrapper {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   padding: 1.2rem;
-  font-family: 'Fira Code', 'Consolas', 'Courier New', Courier, monospace;
+  font-family: var(--font-clock, 'Fira Code', 'Consolas', 'Courier New', Courier, monospace);
   font-size: calc(var(--clock-size) * 0.22);
   line-height: 1.4;
   text-align: left;
@@ -2135,7 +2135,7 @@ body.date-clock-style-fliqlo .fliqlo-date {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-clock, 'Inter', sans-serif);
   text-shadow: 0 0 20px rgba(var(--clock-color-rgb, 100, 180, 255), 0.3);
 }
 
@@ -2360,7 +2360,7 @@ body.date-clock-style-terminal .terminal-clock {
     0 0 34px rgba(var(--accent-color-rgb, 74, 222, 128), 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   color: var(--clock-color, #d9ffe8);
-  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-family: var(--font-clock, ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace);
   overflow: hidden;
   backdrop-filter: blur(12px) saturate(132%);
   -webkit-backdrop-filter: blur(12px) saturate(132%);
@@ -2639,7 +2639,7 @@ body.date-clock-style-c4-bomb .c4-bomb-code-hint {
     linear-gradient(180deg, rgba(31, 41, 55, 0.46), rgba(12, 15, 18, 0.44)),
     rgba(0, 0, 0, 0.26);
   color: rgba(255, 255, 255, 0.9);
-  font-family: ui-monospace, Consolas, monospace;
+  font-family: var(--font-clock, ui-monospace, Consolas, monospace);
   font-size: clamp(0.58rem, 1.1vw, 0.72rem);
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -2802,7 +2802,7 @@ body.date-clock-style-c4-bomb .c4-bomb-screen {
 body.date-clock-style-c4-bomb .c4-bomb-status,
 body.date-clock-style-c4-bomb .c4-bomb-date {
   color: var(--date-color, var(--c4-meta-color));
-  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-family: var(--font-date, ui-monospace, "SFMono-Regular", Consolas, monospace);
   font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.98rem);
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -2817,7 +2817,7 @@ body.date-clock-style-c4-bomb .c4-bomb-time {
   display: flex;
   align-items: baseline;
   justify-content: center;
-  font-family: var(--font-clock, ui-monospace, Consolas, monospace);
+  font-family: var(--font-clock, ui-monospace, "SFMono-Regular", Consolas, monospace);
   font-size: clamp(3rem, calc(var(--clock-size, 6rem) * 0.9), 7.4rem);
   font-weight: 900;
   font-variant-numeric: tabular-nums;
@@ -2863,7 +2863,7 @@ body.date-clock-style-c4-bomb .c4-bomb-date {
 body.date-clock-style-c4-bomb .c4-bomb-code-line {
   margin-top: 0.48em;
   color: var(--c4-readout-color);
-  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-family: var(--font-clock, ui-monospace, "SFMono-Regular", Consolas, monospace);
   font-size: clamp(0.74rem, calc(var(--clock-size, 6rem) * 0.12), 0.98rem);
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -2946,7 +2946,7 @@ body.date-clock-style-c4-bomb .c4-bomb-lever {
     linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 35%),
     #252b2e;
   color: var(--c4-meta-color);
-  font-family: ui-monospace, Consolas, monospace;
+  font-family: var(--font-clock, ui-monospace, Consolas, monospace);
   font-size: clamp(0.62rem, calc(var(--clock-size, 6rem) * 0.09), 0.76rem);
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -3017,7 +3017,7 @@ body.date-clock-style-c4-bomb .c4-bomb-button {
     linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 22%),
     linear-gradient(180deg, #d81f1f, #721313);
   color: #fff7ed;
-  font-family: ui-monospace, Consolas, monospace;
+  font-family: var(--font-clock, ui-monospace, Consolas, monospace);
   font-size: clamp(0.72rem, calc(var(--clock-size, 6rem) * 0.12), 0.94rem);
   font-weight: 900;
   letter-spacing: 0.08em;
