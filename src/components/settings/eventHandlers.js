@@ -4405,7 +4405,7 @@ export function setupGeneralEventHandlers(
   })
 
   // Clock Style Card Grid
-  const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card)")
+  const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card):not(.font-target-card)")
   clockCards.forEach((card) => {
     card.addEventListener("click", () => {
       const val = card.dataset.value

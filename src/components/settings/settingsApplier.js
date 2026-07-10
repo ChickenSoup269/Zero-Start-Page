@@ -3280,7 +3280,9 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
 
     // Sync Clock Style Cards
-    const clockCards = document.querySelectorAll(".clock-style-card:not(.date-format-card):not(.time-format-card)")
+    const clockCards = document.querySelectorAll(
+      ".clock-style-card:not(.date-format-card):not(.time-format-card):not(.font-target-card)",
+    )
     const currentStyle = settings.dateClockStyle || "default"
     clockCards.forEach((card) => {
       card.classList.toggle("active", card.dataset.value === currentStyle)
