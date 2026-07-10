@@ -1914,10 +1914,11 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
   position: absolute;
   left: calc(100% + var(--space-2));
   top: 0;
-  width: min(360px, calc(100vw - 22px));
-  height: calc(80vh - 24px);
-  max-height: calc(100vh - 24px);
-  overflow: auto;
+  width: min(380px, calc(100vw - 22px));
+  height: auto;
+  max-height: calc(100vh - 40px);
+  overflow-x: hidden;
+  overflow-y: auto;
   background: rgba(15, 18, 25, 0.9);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
@@ -2325,12 +2326,7 @@ body.quick-access-white .bookmark-group-tab.add-group-tab {
 
 .lcp-tab-panel {
   display: none;
-  max-height: calc(100vh - 128px);
-  overflow: auto;
   padding-right: 2px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42)
-    rgba(255, 255, 255, 0.06);
 }
 
 .lcp-tab-panel.active {
