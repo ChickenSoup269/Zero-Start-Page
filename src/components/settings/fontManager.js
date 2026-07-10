@@ -12,6 +12,7 @@ import { geti18n } from "../../services/i18n.js"
 import { showAlert, showConfirm } from "../../utils/dialog.js"
 import { showContextMenu } from "../contextMenu.js"
 import { showToast } from "../../utils/toast.js"
+import { getImageUrl } from "../../services/imageStore.js"
 
 const PREDEFINED_FONTS = [
   { label: "Outfit", value: "'Outfit', sans-serif", google: true },
@@ -49,8 +50,36 @@ function loadGoogleFont(fontName) {
   }
 }
 
-function initFont() {
+/**
+ * Inject a @font-face rule into <head> for a local font stored in IndexedDB.
+ * Safe to call multiple times — skips if the style tag already exists.
+ */
+async function injectLocalFontFace(family, fileId) {
+  const styleId = `custom-font-${fileId}`
+  if (document.getElementById(styleId)) return // already injected
+  const url = await getImageUrl(fileId)
+  if (!url) return
+  const style = document.createElement("style")
+  style.id = styleId
+  style.textContent = `@font-face { font-family: '${family}'; src: url('${url}'); }`
+  document.head.appendChild(style)
+}
+
+/**
+ * On startup: load Google Fonts AND restore all local fonts from IndexedDB
+ * so they survive page reload / extension re-open.
+ */
+async function initFont() {
   const settings = getSettings()
+  const savedFonts = settings.userSavedFonts || []
+
+  // 1. Restore local (IndexedDB) fonts first so @font-face rules are ready
+  const localFontRestores = savedFonts
+    .filter((f) => typeof f === "object" && f.isLocalFile && f.fileId && f.label)
+    .map((f) => injectLocalFontFace(f.label, f.fileId))
+  if (localFontRestores.length) await Promise.allSettled(localFontRestores)
+
+  // 2. Load Google Fonts for active font / clockFont
   const fontsToLoad = [
     settings.font || "'Outfit', sans-serif",
     settings.clockFont || "'Outfit', sans-serif",
@@ -58,7 +87,6 @@ function initFont() {
   fontsToLoad.forEach((currentFontValue) => {
     const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
     const fontDef = PREDEFINED_FONTS.find((f) => f.label === fontName)
-    const savedFonts = settings.userSavedFonts || []
     const savedFontObj = savedFonts.find((f) => (typeof f === "string" ? f : f.label) === fontName)
     const isLocal = savedFontObj && typeof savedFontObj === "object" && (savedFontObj.isLocal || savedFontObj.isLocalFile)
     const isGoogleFont = (fontDef && fontDef.google) || (savedFontObj && !isLocal)
@@ -182,7 +210,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const badge = document.createElement("span")
         badge.className = "font-category-badge"
         badge.textContent = type === "clock" ? (geti18n().clock || "Clock") : (geti18n().general || "Gen")
-        badge.style.cssText = "font-size: 0.55rem; background: var(--accent-color, #ff4b4b); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
+        badge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
         badgesContainer.appendChild(badge)
       }
 
@@ -199,7 +227,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
       const appliedBadge = document.createElement("div")
       appliedBadge.className = "font-applied-badge"
-      appliedBadge.style.cssText = "font-size: 0.55rem; background: var(--accent-color, #a8c0ff); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: nowrap;"
+      appliedBadge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: nowrap;"
       badgesContainer.appendChild(appliedBadge)
 
       card._updateAppliedBadge = () => {
@@ -361,9 +389,13 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
 function renderSavedFonts() {}
 
-async function setupLocalFonts(updateSettingCallback) {
+function setupLocalFonts(updateSettingCallback) {
   const browseBtn = document.getElementById("browse-local-fonts-btn")
   if (!browseBtn) return
+
+  // Guard: only attach once to avoid duplicate listeners on re-init
+  if (browseBtn._localFontSetup) return
+  browseBtn._localFontSetup = true
 
   let fileInput = document.getElementById("hidden-font-file-input")
   if (!fileInput) {
@@ -384,17 +416,24 @@ async function setupLocalFonts(updateSettingCallback) {
     if (!file) return
 
     try {
-      const family = file.name.split('.').slice(0, -1).join('.') || file.name;
-      const { saveImage, getImageUrl, deleteImage } = await import("../../services/imageStore.js")
+      const family = file.name.split(".").slice(0, -1).join(".") || file.name
+      const { saveImage, deleteImage } = await import("../../services/imageStore.js")
       const fileId = await saveImage(file, `idb-font-${Date.now()}`)
       const settings = getSettings()
       const savedFonts = settings.userSavedFonts || []
-      const existsIndex = savedFonts.findIndex((f) => (typeof f === "string" ? f : f.label) === family)
-      const newFontObj = { label: family, value: `"${family}", sans-serif`, isLocalFile: true, fileId: fileId }
+      const existsIndex = savedFonts.findIndex(
+        (f) => (typeof f === "string" ? f : f.label) === family,
+      )
+      const newFontObj = {
+        label: family,
+        value: `'${family}', sans-serif`,
+        isLocalFile: true,
+        fileId: fileId,
+      }
 
       if (existsIndex > -1) {
         const oldFileId = savedFonts[existsIndex].fileId
-        if (oldFileId) await deleteImage(oldFileId)
+        if (oldFileId && oldFileId !== fileId) await deleteImage(oldFileId)
         savedFonts[existsIndex] = newFontObj
       } else {
         savedFonts.push(newFontObj)
@@ -403,19 +442,17 @@ async function setupLocalFonts(updateSettingCallback) {
       updateSetting("userSavedFonts", savedFonts)
       saveSettings()
 
-      const url = await getImageUrl(fileId)
-      if (url) {
-        const styleId = `custom-font-${fileId}`
-        if (!document.getElementById(styleId)) {
-          const style = document.createElement("style")
-          style.id = styleId
-          style.textContent = `@font-face { font-family: '${family}'; src: url('${url}'); }`
-          document.head.appendChild(style)
-        }
-      }
+      // Inject @font-face so the font is immediately usable
+      await injectLocalFontFace(family, fileId)
 
       const mainGrid = document.getElementById("font-grid")
       if (mainGrid) renderFontGrid(mainGrid, updateSettingCallback)
+
+      const i18n = geti18n()
+      showToast(
+        (i18n.toast_font_loaded || "Font loaded: {name}").replace("{name}", family),
+        { type: "success" },
+      )
     } catch (err) {
       console.error(err)
       showAlert("Failed to load font.")

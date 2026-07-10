@@ -27,6 +27,7 @@
   "menu_apply_clock": "Áp dụng cho Đồng hồ",
   "menu_move_font": "Chuyển tới",
   "toast_font_moved": "Đã chuyển {name} sang {type}",
+  "toast_font_loaded": "Đã tải font: {name}",
   "ok": "Đồng ý",
   "cancel": "Đóng",
   "confirm": "Xác nhận",

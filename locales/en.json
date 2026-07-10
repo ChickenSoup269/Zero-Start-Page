@@ -27,6 +27,7 @@
   "menu_apply_clock": "Apply to Clock",
   "menu_move_font": "Move",
   "toast_font_moved": "Moved {name} to {type}",
+  "toast_font_loaded": "Font loaded: {name}",
   "ok": "OK",
   "cancel": "Close",
   "confirm": "Confirm",
