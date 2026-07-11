@@ -151,7 +151,7 @@ export class PixelBlastEffect {
 
   animate(now) {
     if (!this.active) return;
-    this._animId = requestAnimationFrame((t) => this.animate(t));
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t));
 
     if (document.visibilityState === 'hidden') return;
 
@@ -276,3 +276,5 @@ export class PixelBlastEffect {
     return { r, g, b };
   }
 }
+
+

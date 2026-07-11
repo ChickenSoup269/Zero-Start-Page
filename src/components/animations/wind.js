@@ -138,7 +138,7 @@ export class WindEffect {
 
     animate() {
         if (!this._animId) return;
-        this._animId = requestAnimationFrame(() => this.animate());
+        this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate());
         
         if (document.visibilityState === "hidden") return;
 
@@ -161,7 +161,7 @@ export class WindEffect {
             if (this.lines.length === 0) {
                 this.createLines();
             }
-            this._animId = requestAnimationFrame(() => this.animate());
+            this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate());
         }
     }
 
@@ -182,3 +182,5 @@ export class WindEffect {
         window.removeEventListener("resize", this._resizeHandler);
     }
 }
+
+

@@ -52,7 +52,7 @@ export class CrtScanlinesEffect {
 
   animate() {
     if (!this.active) return
-    this._animId = requestAnimationFrame(() => this.animate())
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate())
     if (document.visibilityState === 'hidden') return
     this.time += 0.01
     this._draw()
@@ -111,3 +111,5 @@ export class CrtScanlinesEffect {
     ctx.fillRect(0, 0, W, H)
   }
 }
+
+

@@ -143,7 +143,7 @@ export class HalloweenEffect {
 
   animate(currentTime) {
     if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this.animate(t))
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
     if (document.visibilityState === 'hidden') return
 
     if (!this.lastTime) this.lastTime = currentTime
@@ -187,7 +187,7 @@ export class HalloweenEffect {
     this.active = true
     this.canvas.style.display = "block"
     this.lastTime = 0
-    this._animId = requestAnimationFrame((t) => this.animate(t))
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
   }
 
   stop() {
@@ -201,3 +201,5 @@ export class HalloweenEffect {
     if (this._animId) cancelAnimationFrame(this._animId)
   }
 }
+
+

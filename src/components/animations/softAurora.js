@@ -287,7 +287,7 @@ export class SoftAuroraEffect {
 
   animate(t = 0) {
     if (!this.active) return;
-    this.animationId = requestAnimationFrame((nt) => this.animate(nt));
+    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((nt) => this.animate(nt));
     this.render(t);
   }
 
@@ -354,3 +354,5 @@ export class SoftAuroraEffect {
     if (this.gl) { this.gl.deleteProgram(this.program); this.gl.deleteVertexArray(this.vao); }
   }
 }
+
+

@@ -282,11 +282,11 @@ export class LiquidEther {
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-      this.animationId = requestAnimationFrame(render)
+      this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(render)
     }
 
     lastTime = performance.now()
-    this.animationId = requestAnimationFrame(render)
+    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(render)
   }
 
   stop() {
@@ -305,3 +305,5 @@ export class LiquidEther {
     }
   }
 }
+
+

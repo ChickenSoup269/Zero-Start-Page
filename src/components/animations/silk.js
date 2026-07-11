@@ -245,7 +245,7 @@ export class SilkEffect {
 
   _animate() {
     if (!this.active || !this.gl) return
-    this._animId = requestAnimationFrame(() => this._animate())
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this._animate())
 
     if (document.visibilityState === "hidden") return
 
@@ -275,3 +275,5 @@ export class SilkEffect {
     gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 }
+
+

@@ -56,7 +56,7 @@ export class MeteorEffect {
     this._lastT = 0
     this._acc = 0
     this.canvas.style.display = "block"
-    requestAnimationFrame((t) => {
+    (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => {
       this._lastT = t
       this._loop(t)
     })
@@ -449,7 +449,7 @@ export class MeteorEffect {
 
   _loop(now) {
     if (!this.active) return
-    this._animId = requestAnimationFrame((t) => this._loop(t))
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this._loop(t))
     if (document.visibilityState === 'hidden') return
 
     const dt = Math.min(now - this._lastT, 50)
@@ -458,4 +458,6 @@ export class MeteorEffect {
     this._draw(now)
   }
 }
+
+
 

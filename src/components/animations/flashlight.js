@@ -71,7 +71,7 @@ export class FlashlightEffect {
 
   _draw() {
     if (!this.active) return
-    this.animationId = requestAnimationFrame(() => this._draw())
+    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this._draw())
     if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
@@ -135,3 +135,5 @@ export class FlashlightEffect {
     if (opts.opacity !== undefined) this.opacity = Number(opts.opacity)
   }
 }
+
+

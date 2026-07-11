@@ -1437,7 +1437,7 @@ export class NintendoPixelEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this._animId = requestAnimationFrame((time) => this.animate(time))
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((time) => this.animate(time))
     if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
@@ -1488,3 +1488,5 @@ export class NintendoPixelEffect {
     this.canvas.style.display = "none"
   }
 }
+
+

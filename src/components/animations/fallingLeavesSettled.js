@@ -581,7 +581,7 @@ export class FallingLeavesSettledEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
-    this._animId = requestAnimationFrame((t) => this.animate(t))
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
     if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
@@ -734,3 +734,5 @@ export class FallingLeavesSettledEffect {
     }
   }
 }
+
+

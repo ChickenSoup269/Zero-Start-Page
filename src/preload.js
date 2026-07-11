@@ -543,8 +543,7 @@
       css += `@keyframes preloadBgFade { from { opacity: 0; } to { opacity: 1; } }\n`
       css += `#bg-layer { background: ${earlyBg}; background-size: ${earlyBgLayout.size}; background-repeat: ${earlyBgLayout.repeat}; background-position: var(--bg-pos-x) var(--bg-pos-y); opacity: 1; animation: ${hasPersistentBgPreview ? "none" : "preloadBgFade var(--bg-fade-in, 0.5s) ease-out forwards"}; }\n`
       css += `body.preload-bg-preview #bg-layer { filter: blur(8px) brightness(0.9) !important; transform: scale(1.02) !important; }\n`
-      css += `#effect-canvas { animation: preloadBgFade calc(var(--bg-fade-in, 0.5s) + 0.3s) ease-out forwards; }\n`
-      css += `body.hide-search-bar #search-container { display: none !important; }\n`
+            css += `body.hide-search-bar #search-container { display: none !important; }\n`
       if (settings.showBookmarks === false) {
         css += `#bookmarks-container { display: none !important; }\n`
       }
@@ -566,3 +565,4 @@
     console.error("Preload execution error:", e)
   }
 })()
+

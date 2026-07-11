@@ -215,7 +215,7 @@ export class PixelWeatherEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this.rafId = requestAnimationFrame((t) => this.animate(t))
+    this.rafId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
 
     if (document.visibilityState === "hidden") return
 
@@ -331,3 +331,5 @@ export class PixelWeatherEffect {
     })
   }
 }
+
+

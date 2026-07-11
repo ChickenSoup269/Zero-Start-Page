@@ -101,13 +101,13 @@ export class PlantGrowthEffect {
 
     const animateLoop = (t) => {
       if (!this.active) return
-      this._animId = requestAnimationFrame(animateLoop)
+      this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
       if (document.visibilityState === "hidden") return
       this.time = t / 1000
       this.update()
       this.draw()
     }
-    this._animId = requestAnimationFrame(animateLoop)
+    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
   }
 
   stop() {
@@ -359,3 +359,5 @@ export class PlantGrowthEffect {
     this.ctx.restore()
   }
 }
+
+
