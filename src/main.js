@@ -182,14 +182,9 @@ function needsSettingsAtBoot(settings) {
 function ensureSettingsInitialized(reason = "idle") {
   if (settingsInitialized) return Promise.resolve()
   if (!settingsInitPromise) {
-    const partialsPromise = window.startpageSettingsPartialsReady
-      ? Promise.race([
-          window.startpageSettingsPartialsReady,
-          new Promise((r) => setTimeout(r, 2000))
-        ])
-      : Promise.resolve()
-
-    settingsInitPromise = Promise.resolve(partialsPromise)
+    settingsInitPromise = Promise.resolve(
+      window.startpageSettingsPartialsReady,
+    )
       .then(() => {
         refreshDOMReferences()
         return import("./components/settings.js")
@@ -503,10 +498,10 @@ async function bootstrap() {
 
   prepareFirstRunDefaults()
   applyBootVisualPreview(getSettings())
-  const minimumStartupLoaderMs = isFirstRunOnboardingPending() ? 1600 : 400
+  const minimumStartupLoaderMs = isFirstRunOnboardingPending() ? 1600 : 650
 
   // Load language first so all other components have translations
-  initI18n()
+  await initI18n()
 
   // Update version in startup overlay and settings sidebar immediately
   try {
@@ -616,9 +611,123 @@ async function bootstrap() {
   // 1. Setup UI fast to prevent layout shifts
 
   // FAST BOOT LAYOUT CLASSES
-  // (Layout classes are now handled exclusively by preload.js to avoid duplication)
-  
+  let layout = currentSettings.bookmarkLayout || "default"
+  if (currentSettings.bookmarkSidebarMode === true && layout === "default") {
+    layout = "sidebar"
+  }
+  if (layout === "sidebar-left") layout = "sidebar"
+
+  if (layout === "sidebar") document.body.classList.add("bookmark-sidebar-mode")
+  else if (layout === "taskbar")
+    document.body.classList.add("bookmark-taskbar-mode")
+  else if (layout === "taskbar-top")
+    document.body.classList.add("bookmark-taskbar-top-mode")
+  else if (layout === "taskbar-left")
+    document.body.classList.add("bookmark-taskbar-left-mode")
+
+  if (currentSettings.flipLayout) document.body.classList.add("flip-layout")
+  if (currentSettings.hideBookmarkText) {
+    document.body.classList.add("hide-bookmark-text")
+  }
+  if (currentSettings.bookmarkLongText) {
+    document.body.classList.add("bookmark-long-text")
+  }
+  if (currentSettings.hideBookmarkBg)
+    document.body.classList.add("hide-bookmark-bg")
+  if (currentSettings.freeMoveSearchBar === true)
+    document.body.classList.add("free-move-search-bar")
+  if (currentSettings.bookmarkGroupUseAccent === true)
+    document.body.classList.add("bookmark-group-accent-enabled")
+  if (currentSettings.bookmarkGroupKeepBgOnInteraction !== false)
+    document.body.classList.add("bookmark-group-keep-bg-on-interaction")
+
   initPerfHud()
+  if (currentSettings.bookmarkGroupShowCount === false)
+    document.body.classList.add("bookmark-group-count-hidden")
+  if (currentSettings.bookmarkGroupAutoTextContrast === true)
+    document.body.classList.add("bookmark-group-auto-text-contrast")
+  if ((currentSettings.bookmarkGroupBgOpacity ?? 0) <= 0)
+    document.body.classList.add("bookmark-group-tab-bg-transparent")
+  if (currentSettings.bookmarkGroupContainerBgHidden === true)
+    document.body.classList.add("bookmark-group-container-bg-hidden")
+  if (currentSettings.bookmarkGroupBorderHidden === true)
+    document.body.classList.add("bookmark-group-border-hidden")
+
+  let bgStyle = currentSettings.bookmarkLayoutBgStyle || "default"
+  if (bgStyle === "hidden")
+    document.body.classList.add("bookmark-layout-bg-hidden")
+  else if (bgStyle === "white") {
+    document.body.classList.add("bookmark-layout-bg-white")
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-bg-color",
+      "rgba(255, 255, 255, 0.85)",
+    )
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-text-color",
+      "#1e293b",
+    )
+  }
+  else if (bgStyle === "m3-accent")
+    document.body.classList.add("bookmark-layout-bg-m3-accent")
+  else if (bgStyle === "colored") {
+    document.body.classList.add("bookmark-layout-bg-colored")
+    const bgColor = currentSettings.bookmarkLayoutBgColor || "rgba(0,0,0,0.5)"
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-bg-color",
+      bgColor,
+    )
+    const textCol = getContrastYIQ(bgColor) === "black" ? "#1e293b" : "#ffffff"
+    document.documentElement.style.setProperty(
+      "--bookmark-layout-text-color",
+      textCol,
+    )
+  }
+  if (currentSettings.bookmarkItemStyle === "card")
+    document.body.classList.add("bookmark-item-card-style")
+
+  const dateClockStyle = currentSettings.dateClockStyle || "default"
+  document.body.classList.add(`date-clock-style-${dateClockStyle}`)
+  const clockStyleBackground = currentSettings.clockStyleTransparentBackground
+    ? "transparent"
+    : currentSettings.clockStyleBackground || "default"
+  if (clockStyleBackground === "transparent") {
+    document.body.classList.add("clock-style-transparent-bg")
+  } else if (clockStyleBackground === "accent") {
+    document.body.classList.add("clock-style-bg-accent")
+  } else if (clockStyleBackground === "custom") {
+    document.body.classList.add("clock-style-bg-custom")
+    document.documentElement.style.setProperty(
+      "--clock-style-custom-bg-color",
+      /^#[0-9a-f]{6}$/i.test(currentSettings.clockStyleCustomBgColor || "")
+        ? currentSettings.clockStyleCustomBgColor
+        : "#1f2937",
+    )
+  } else if (clockStyleBackground === "light") {
+    document.body.classList.add("clock-style-bg-light")
+  } else if (clockStyleBackground === "dark") {
+    document.body.classList.add("clock-style-bg-dark")
+  } else if (
+    clockStyleBackground === "animated" &&
+    dateClockStyle === "prism-stack"
+  ) {
+    document.body.classList.add("clock-style-bg-animated")
+  }
+  if (
+    dateClockStyle === "cartoon" &&
+    currentSettings.cartoonClockAnimation === false
+  ) {
+    document.body.classList.add("cartoon-clock-animation-off")
+  }
+
+  const fliqloTheme = currentSettings.fliqloTheme || "dark"
+  document.body.classList.add(`fliqlo-theme-${fliqloTheme}`)
+
+  if (currentSettings.fliqloZenMode) {
+    document.body.classList.add("fliqlo-zen-mode")
+  }
+  if (currentSettings.fliqloTransparent) {
+    document.body.classList.add("fliqlo-transparent")
+  }
 
   const searchContainer = document.getElementById("search-container")
   if (searchContainer)
