@@ -38,6 +38,20 @@ const SEARCH_ENGINES = {
     url: (q) => `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_duckduckgo",
   },
+  swisscows: {
+    name: "Swisscows",
+    domain: "swisscows.com",
+    iconUrl: "https://swisscows.com/favicon.ico",
+    url: (q) => `https://swisscows.com/web?query=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_swisscows",
+  },
+  searx: {
+    name: "Searx",
+    domain: "searx.space",
+    iconUrl: "https://searx.space/favicon.ico",
+    url: (q) => `https://searx.space/search?q=${encodeURIComponent(q)}`,
+    placeholderKey: "search_placeholder_searx",
+  },
   ecosia: {
     name: "Ecosia",
     domain: "ecosia.org",
@@ -122,12 +136,14 @@ const SEARCH_ENGINES = {
   mojeek: {
     name: "Mojeek",
     domain: "mojeek.com",
+    iconUrl: "https://www.mojeek.com/favicon.ico",
     url: (q) => `https://www.mojeek.com/search?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_mojeek",
   },
   yep: {
     name: "Yep",
     domain: "yep.com",
+    iconUrl: "https://yep.com/favicon.ico",
     url: (q) => `https://yep.com/web?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_yep",
   },
@@ -223,6 +239,7 @@ let originalQuery = ""
 let currentSuggestions = []
 
 function getEngineIconUrl(engine) {
+  if (engine.iconUrl) return engine.iconUrl
   return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(engine.domain)}&sz=64`
 }
 
