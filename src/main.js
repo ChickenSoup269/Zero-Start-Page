@@ -529,7 +529,8 @@ async function bootstrap() {
     document.querySelector(".main-container")?.classList.add("ready")
     const overlay = document.getElementById("startup-overlay")
     if (overlay) {
-      overlay.remove()
+      overlay.style.opacity = "0"
+      setTimeout(() => overlay.remove(), 450)
     }
     try {
       localStorage.setItem("startpageHasOpened", "1")

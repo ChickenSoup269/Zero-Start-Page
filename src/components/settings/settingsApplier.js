@@ -1145,7 +1145,8 @@ function createApplySettings(effectInstances) {
           bgFadeLayer.style.backgroundSize = bgLayer.style.backgroundSize
           bgFadeLayer.style.backgroundRepeat = bgLayer.style.backgroundRepeat
           bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition
-          bgFadeLayer.style.opacity = "1"
+          const computedBg = window.getComputedStyle(bgLayer)
+          bgFadeLayer.style.opacity = computedBg.opacity || "1"
           
           if (isFirstLoad && previewExists) {
             bgFadeLayer.style.filter = "blur(12px) brightness(0.9)"
@@ -1233,7 +1234,7 @@ function createApplySettings(effectInstances) {
           // Apply the same blur/scale the preview was using so it looks identical
           bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
           bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
-          bgFadeLayer.style.opacity = "1"
+          bgFadeLayer.style.opacity = computedBg.opacity || "1"
           bgFadeLayer.offsetHeight // force reflow
           bgFadeLayer.style.transition = "" // restore CSS transition
 
@@ -1710,7 +1711,7 @@ function createApplySettings(effectInstances) {
                   bgFadeLayer.style.backgroundPosition = bgLayer.style.backgroundPosition || "var(--bg-pos-x) var(--bg-pos-y)"
                   bgFadeLayer.style.filter = "blur(8px) brightness(0.9)"
                   bgFadeLayer.style.transform = "scale(1.02) translateZ(0)"
-                  bgFadeLayer.style.opacity = "1"
+                  bgFadeLayer.style.opacity = _computedBg.opacity || "1"
                   bgFadeLayer.offsetHeight // force reflow
                   bgFadeLayer.style.transition = ""
                   document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
