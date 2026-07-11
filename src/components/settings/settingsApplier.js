@@ -1712,11 +1712,32 @@ function createApplySettings(effectInstances) {
                   bgFadeLayer.offsetHeight // force reflow
                   bgFadeLayer.style.transition = ""
                   document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+                  // Pre-set real image so bg-layer is never blank while fade-layer fades out
+                  bgLayer.style.backgroundImage = cssUrl(imageUrl)
+                  bgLayer.style.backgroundSize = backgroundSize
+                  bgLayer.style.backgroundRepeat = backgroundRepeat
+                  triggerBgFadeOut()
+                } else {
+                  // No blurry preview — decode image before revealing to avoid black flash
+                  bgLayer.style.backgroundImage = cssUrl(imageUrl)
+                  bgLayer.style.backgroundSize = backgroundSize
+                  bgLayer.style.backgroundRepeat = backgroundRepeat
+                  document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
+                  const _imgFirst = new Image()
+                  const _applyFirst = () => {
+                    bgLayer.style.backgroundSize = backgroundSize
+                    bgLayer.style.backgroundRepeat = backgroundRepeat
+                    triggerBgFadeOut()
+                  }
+                  if (typeof _imgFirst.decode === "function") {
+                    _imgFirst.src = imageUrl
+                    _imgFirst.decode().then(_applyFirst).catch(_applyFirst)
+                  } else {
+                    _imgFirst.onload = _applyFirst
+                    _imgFirst.onerror = _applyFirst
+                    _imgFirst.src = imageUrl
+                  }
                 }
-                bgLayer.style.backgroundImage = cssUrl(imageUrl)
-                bgLayer.style.backgroundSize = backgroundSize
-                bgLayer.style.backgroundRepeat = backgroundRepeat
-                triggerBgFadeOut()
               } else {
                 // PRE-SET image synchronously so bg-layer is never blank
                 // while waiting for the decode promise to resolve.

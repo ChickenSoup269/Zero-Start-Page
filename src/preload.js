@@ -300,9 +300,10 @@
           isImageLikeBackground(bg)
         ) {
           const preview = settings.lastUserBackgroundPreview
+          // NOTE: blob: URLs are session-scoped and become invalid on page reload.
+          // Only use data: or https: previews which are persistent across sessions.
           if (
             preview.startsWith("data:") ||
-            preview.startsWith("blob:") ||
             /^https?:\/\//i.test(preview)
           ) {
             return cssUrl(preview)
@@ -346,6 +347,11 @@
             bg.startsWith("http")
           ) {
             return cssUrl(bg)
+          }
+          if (isIndexedDbImage) {
+            // IDB image has no valid preview — use neutral dark color to prevent
+            // a jarring gradient→image flash while the real image loads async.
+            return "#0a0a0a"
           }
           if (
             !bg.startsWith("idb-") &&

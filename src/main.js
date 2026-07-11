@@ -1334,29 +1334,26 @@ async function bootstrap() {
   }
 
   if (isIdbMedia(currentSettings.background)) {
-    activeBackgroundLoad.then((url) => {
+    // Wait for BOTH the IDB blob URL AND settings module to be ready.
+    // This ensures window.appApplySettings always exists when we call it,
+    // eliminating the no-crossfade fallback path that causes the black flash.
+    Promise.all([
+      activeBackgroundLoad.catch(() => null),
+      // settingsInitPromise may not exist yet if ensureSettingsInitialized hasn't been called;
+      // wrap in a new promise that resolves once appApplySettings is available.
+      new Promise((resolve) => {
+        if (typeof window.appApplySettings === "function") {
+          resolve()
+        } else {
+          window.addEventListener("startpage:settingsReady", resolve, { once: true })
+          // Safety timeout in case settings never fires
+          setTimeout(resolve, 2000)
+        }
+      }),
+    ]).then(() => {
       if (getSettings().background !== currentSettings.background) return
       if (typeof window.appApplySettings === "function") {
         window.appApplySettings()
-      } else if (url) {
-        const bgLayer = document.getElementById("bg-layer")
-        if (bgLayer) {
-          const img = new Image()
-          img.src = url
-          const apply = () => {
-            if (getSettings().background !== currentSettings.background) return
-            bgLayer.style.backgroundImage = `url("${url}")`
-            bgLayer.style.backgroundSize = currentSettings.bgSize || "cover"
-            bgLayer.style.backgroundRepeat = currentSettings.bgRepeat || "no-repeat"
-            document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
-          }
-          if (typeof img.decode === "function") {
-            img.decode().then(apply).catch(apply)
-          } else {
-            img.onload = apply
-            img.onerror = apply
-          }
-        }
       }
     })
   } else if (currentSettings.background?.match(/^https?:\/\//)) {
