@@ -1246,8 +1246,6 @@ function createApplySettings(effectInstances) {
           bgLayer.style.backgroundImage = cssUrl(imageUrl)
           bgLayer.style.backgroundSize = backgroundSize
           bgLayer.style.backgroundRepeat = backgroundRepeat
-          bgLayer.style.opacity = "0"
-          bgLayer.offsetHeight // force reflow
         }
 
         const img = new Image()
@@ -1714,8 +1712,6 @@ function createApplySettings(effectInstances) {
                   bgFadeLayer.offsetHeight // force reflow
                   bgFadeLayer.style.transition = ""
                   document.body.classList.remove("preload-bg-preview", "preload-bg-ready")
-                  bgLayer.style.opacity = "0"
-                  bgLayer.offsetHeight // force reflow
                 }
                 bgLayer.style.backgroundImage = cssUrl(imageUrl)
                 bgLayer.style.backgroundSize = backgroundSize
