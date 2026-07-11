@@ -450,7 +450,7 @@ export class LightPillarEffect {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT)
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4)
 
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(this._animate)
+    this._animId = requestAnimationFrame(this._animate)
   }
 
   dispose() {
@@ -467,5 +467,3 @@ export class LightPillarEffect {
     }
   }
 }
-
-

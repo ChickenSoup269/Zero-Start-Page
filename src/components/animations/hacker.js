@@ -396,7 +396,7 @@ export class HackerEffect {
 
   animate() {
     if (!this.animationFrameId) return
-    this.animationFrameId = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate())
+    this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
     if (document.visibilityState === 'hidden') return
 
     const now = Date.now()
@@ -441,7 +441,7 @@ export class HackerEffect {
       this.canvas.style.display = "block"
       this.lastTime = Date.now()
       this._rgb = this.hexToRgb(this.color)
-      this.animationFrameId = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate())
+      this.animationFrameId = this._animId = requestAnimationFrame(() => this.animate())
     }
   }
 
@@ -473,5 +473,3 @@ export class HackerEffect {
       : { r: 0, g: 255, b: 0 }
   }
 }
-
-

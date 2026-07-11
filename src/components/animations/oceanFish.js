@@ -137,11 +137,11 @@ export class OceanFishEffect {
 
     const animateLoop = (t) => {
       if (!this.active) return
-      this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
+      this._animId = requestAnimationFrame(animateLoop)
       if (document.visibilityState === 'hidden') return
       this.animate(t)
     }
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
@@ -312,5 +312,3 @@ export class OceanFishEffect {
   }
 
 }
-
-

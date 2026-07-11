@@ -66,7 +66,7 @@ export class PixelCubes {
     this.then = performance.now()
     const animate = (time) => {
       if (!this.active) return
-      this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animate)
+      this.animationId = requestAnimationFrame(animate)
       if (document.visibilityState === "hidden") return
 
       const elapsed = time - this.then
@@ -239,5 +239,3 @@ export class PixelCubes {
     this.cubes = []
   }
 }
-
-

@@ -280,7 +280,7 @@ export class RainHDEffect {
 
   animate(t = 0) {
     if (!this.active) return
-    this.animationFrame = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t2) => this.animate(t2))
+    this.animationFrame = this._animId = requestAnimationFrame((t2) => this.animate(t2))
     if (document.visibilityState === "hidden") return
     const elapsed = t - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
@@ -507,5 +507,3 @@ export class RainHDEffect {
     }
   }
 }
-
-

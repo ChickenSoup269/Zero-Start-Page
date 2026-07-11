@@ -71,7 +71,7 @@ export class CloudDriftEffect {
 
     const animateLoop = (now) => {
       if (!this.active) return
-      this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
+      this._animId = requestAnimationFrame(animateLoop)
       if (document.visibilityState === 'hidden') return
       
       const deltaTime = (now - this.lastTime) / 1000 // Chuyển sang giây
@@ -83,7 +83,7 @@ export class CloudDriftEffect {
       this.update(limitedDelta, now / 1000)
       this.draw()
     }
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(animateLoop)
+    this._animId = requestAnimationFrame(animateLoop)
   }
 
   stop() {
@@ -230,5 +230,3 @@ export class CloudDriftEffect {
     this.ctx.globalCompositeOperation = "source-over"
   }
 }
-
-

@@ -64,7 +64,7 @@ export class HyperspaceEffect {
 
   animate() {
     if (!this.active) return
-    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate())
+    this.animationId = requestAnimationFrame(() => this.animate())
     if (document.visibilityState === 'hidden') return
 
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)"
@@ -144,5 +144,3 @@ export class HyperspaceEffect {
     }
   }
 }
-
-

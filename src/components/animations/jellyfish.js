@@ -98,7 +98,7 @@ export class Jellyfish {
 
   animate() {
     if (!this.running) return
-    this.animationId = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(this.animate)
+    this.animationId = this._animId = requestAnimationFrame(this.animate)
     if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
@@ -488,5 +488,3 @@ export class Jellyfish {
     return 270
   }
 }
-
-

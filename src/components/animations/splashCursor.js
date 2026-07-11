@@ -1370,7 +1370,7 @@ export class SplashCursor {
       applyInputs()
       step(dt)
       render(null)
-      self.animationId = (self.canvas && self.canvas.style.opacity !== "1" && (self.canvas.style.opacity = "1"), window.requestAnimationFrame)(updateFrame)
+      self.animationId = requestAnimationFrame(updateFrame)
     }
 
     let firstMouseMoveHandled = false
@@ -1473,5 +1473,3 @@ export function splashCursorOptionsFromSettings(settings) {
     color: settings.splashCursorColor || "#ff0000",
   }
 }
-
-

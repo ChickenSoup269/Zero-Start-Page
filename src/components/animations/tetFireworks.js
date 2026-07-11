@@ -250,7 +250,7 @@ export class TetFireworksEffect {
 
   animate(timestamp) {
     if (!this.active) return
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((ts) => this.animate(ts))
+    this._animId = requestAnimationFrame((ts) => this.animate(ts))
     if (document.visibilityState === "hidden") return
 
     const elapsed = timestamp - this.lastDrawTime
@@ -294,7 +294,7 @@ export class TetFireworksEffect {
     this.canvas.style.display = "block"
     this.resize()
     this.lastDrawTime = 0
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((ts) => this.animate(ts))
+    this._animId = requestAnimationFrame((ts) => this.animate(ts))
   }
 
   stop() {
@@ -315,5 +315,3 @@ export class TetFireworksEffect {
     window.removeEventListener("resize", this._resizeHandler)
   }
 }
-
-

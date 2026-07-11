@@ -292,7 +292,7 @@ export class PixelSnowEffect {
 
   animate(t = 0) {
     if (!this.active) return
-    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((nt) => this.animate(nt))
+    this.animationId = requestAnimationFrame((nt) => this.animate(nt))
     if (document.visibilityState === "hidden") return
     const targetFps = this.options.targetFps || 30
     const frameInterval = 1000 / targetFps
@@ -352,5 +352,3 @@ export class PixelSnowEffect {
     if (this.gl) { this.gl.deleteProgram(this.program); this.gl.deleteVertexArray(this.vao); }
   }
 }
-
-

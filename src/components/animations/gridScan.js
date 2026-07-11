@@ -84,7 +84,7 @@ export class GridScanEffect {
 
   animate() {
     if (!this.active) return
-    this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() => this.animate())
+    this._animId = requestAnimationFrame(() => this.animate())
     if (document.visibilityState === 'hidden') return
     this.time += 0.01
 
@@ -175,5 +175,3 @@ export class GridScanEffect {
     })
   }
 }
-
-

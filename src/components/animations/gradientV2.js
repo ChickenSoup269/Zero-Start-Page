@@ -253,7 +253,7 @@ export class GradientV2Effect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
+    this.animationId = requestAnimationFrame((t) => this.animate(t))
     
     const elapsed = currentTime - (this.lastFrameTime || 0)
     if (elapsed < 16) return // Cap at ~60fps
@@ -326,5 +326,3 @@ export class GradientV2Effect {
     }
   }
 }
-
-

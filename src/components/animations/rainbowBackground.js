@@ -145,7 +145,7 @@ export class RainbowBackground {
 
   animate() {
     if (!this.active) return
-    this.animationFrame = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)(() =>
+    this.animationFrame = this._animId = requestAnimationFrame(() =>
       this.animate(),
     )
     if (document.visibilityState === "hidden") return
@@ -221,5 +221,3 @@ export class RainbowBackground {
     }
   }
 }
-
-

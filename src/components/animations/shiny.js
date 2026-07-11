@@ -111,7 +111,7 @@ export class ShinyEffect {
     this.mouse.x = 0.5
     this.mouse.y = 0.5
     window.addEventListener("mousemove", this._mouseHandler)
-    this.rafId = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
+    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
     this.canvas.style.display = "block"
   }
 
@@ -126,7 +126,7 @@ export class ShinyEffect {
 
   animate(currentTime = 0) {
     if (!this.active) return
-    this.rafId = this._animId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this.animate(t))
+    this.rafId = this._animId = requestAnimationFrame((t) => this.animate(t))
     if (document.visibilityState === "hidden") return
 
     const elapsed = currentTime - this.lastDrawTime
@@ -260,5 +260,3 @@ export class ShinyEffect {
     ctx.restore()
   }
 }
-
-

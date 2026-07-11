@@ -151,7 +151,7 @@ export class NorthernLightsEffect {
   // Draw Functions
   _draw(currentTime) {
     if (!this.active) return
-    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this._draw(t))
+    this.animationId = requestAnimationFrame((t) => this._draw(t))
     if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
@@ -313,7 +313,7 @@ export class NorthernLightsEffect {
     this.lastDrawTime = performance.now()
     this._cachedHsl = this._hexToHsl(this.color)
     this.canvas.style.display = "block"
-    this.animationId = (this.canvas && this.canvas.style.opacity !== "1" && (this.canvas.style.opacity = "1"), window.requestAnimationFrame)((t) => this._draw(t))
+    this.animationId = requestAnimationFrame((t) => this._draw(t))
   }
 
   stop() {
@@ -345,5 +345,3 @@ export class NorthernLightsEffect {
     if (opts.brightness !== undefined) this.brightness = opts.brightness
   }
 }
-
-
