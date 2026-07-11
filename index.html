@@ -11,9 +11,7 @@
     <!-- Google Fonts:  Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link id="custom-google-font" rel="stylesheet" href="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -318,8 +316,8 @@
                 title="Toggle Calendar"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="quick-btn" data-toggle="quotes" data-i18n-title="quick_access_quotes"
                 title="Toggle Quotes"><i class="fa-solid fa-quote-left"></i></button>
-            <button class="quick-btn" data-toggle="rss" data-i18n-title="quick_access_rss"
-                title="Toggle RSS Reader"><i class="fa-solid fa-rss"></i></button>
+            <button class="quick-btn" data-toggle="rss" data-i18n-title="quick_access_rss" title="Toggle RSS Reader"><i
+                    class="fa-solid fa-rss"></i></button>
             <button class="quick-btn" data-toggle="weather" data-i18n-title="quick_access_weather"
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
@@ -738,7 +736,7 @@
                         accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" hidden />
                     <button type="button" id="tab-icon-fa-btn" class="icon-btn tab-icon-action-btn"
                         title="Pick Font Awesome icon" data-i18n-title="settings_tab_icon_fa_pick">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <i class="fas fa-mouse-pointer"></i>
                     </button>
                     <button type="button" id="tab-icon-upload-btn" class="icon-btn tab-icon-action-btn"
                         title="Upload icon" data-i18n-title="settings_tab_icon_upload">
@@ -756,12 +754,14 @@
                     2 letters or 1 emoji, or pick a Font Awesome icon (leave blank for default)</small>
                 <div style="display: flex; align-items: center; gap: 0.8rem; margin-top: 0.8rem; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-bg-color" data-i18n="settings_icon_bg">Icon BG</label>
+                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-bg-color"
+                            data-i18n="settings_icon_bg">Icon BG</label>
                         <input type="color" id="tab-icon-bg-color"
                             style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-text-color" data-i18n="settings_icon_text">Icon Text</label>
+                        <label style="font-size: 0.8rem; opacity: 0.85;" for="tab-icon-text-color"
+                            data-i18n="settings_icon_text">Icon Text</label>
                         <input type="color" id="tab-icon-text-color"
                             style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;">
                     </div>
@@ -1013,7 +1013,8 @@
                 <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
                 <div class="section-content">
                     <div class="setting-group">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <select id="font-target-select" class="settings-select" style="width: auto;">
                                 <option value="general" data-i18n="general">General</option>
                                 <option value="clock" data-i18n="clock">Clock</option>
@@ -1294,11 +1295,17 @@
                                 </div>
                                 <input type="range" id="bookmark-group-font-size-input" min="10" max="30" step="1"
                                     value="14" style="width: 100%; margin-top: 4px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
-                                    <label for="bookmark-group-text-width-input" style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span data-i18n="settings_bookmark_group_text_width">Folder Name Width</span></label>
-                                    <span id="bookmark-group-text-width-value" style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">120px</span>
+                                <div
+                                    style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
+                                    <label for="bookmark-group-text-width-input"
+                                        style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
+                                            data-i18n="settings_bookmark_group_text_width">Folder Name
+                                            Width</span></label>
+                                    <span id="bookmark-group-text-width-value"
+                                        style="font-size: 0.75rem; opacity: 0.8; font-family: monospace;">120px</span>
                                 </div>
-                                <input type="range" id="bookmark-group-text-width-input" min="60" max="250" step="5" value="120" style="width: 100%; margin-top: 4px;">
+                                <input type="range" id="bookmark-group-text-width-input" min="60" max="250" step="5"
+                                    value="120" style="width: 100%; margin-top: 4px;">
                                 <div
                                     style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px;">
                                     <label style="margin: 0; font-size: 0.75rem; opacity: 0.8;"><span
@@ -1357,9 +1364,9 @@
                                 </div>
                                 <div class="setting-item-row"
                                     style="margin: 8px 0 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <label for="bookmark-hide-scrollbar"
-                                        data-i18n="settings_bookmark_hide_scrollbar"
-                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide scrollbar</label>
+                                    <label for="bookmark-hide-scrollbar" data-i18n="settings_bookmark_hide_scrollbar"
+                                        style="font-weight: 500; font-size: 0.9rem; margin: 0; flex: 1;">Hide
+                                        scrollbar</label>
                                     <input type="checkbox" id="bookmark-hide-scrollbar"
                                         style="transform: scale(1.1); margin: 0;">
                                 </div>
@@ -1394,7 +1401,8 @@
                             <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                 <label for="bookmark-long-text" data-i18n="settings_bookmark_long_text"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Long Text</label>
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Show Long
+                                    Text</label>
                                 <input type="checkbox" id="bookmark-long-text"
                                     style="transform: scale(1.1); margin: 0;">
                             </div>
@@ -1439,7 +1447,8 @@
                             <div class="setting-item-row"
                                 style="margin: 0; padding: 10px 12px; border: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: auto; background: rgba(255,255,255,0.03); border-radius: 8px;">
                                 <label for="bookmark-keep-nested-folders" data-i18n="settings_bookmark_keep_nested"
-                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Keep nested folders when dropping folder into folder</label>
+                                    style="font-weight: 500; font-size: 0.95rem; margin: 0; flex: 1;">Keep nested
+                                    folders when dropping folder into folder</label>
                                 <input type="checkbox" id="bookmark-keep-nested-folders"
                                     style="transform: scale(1.1); margin: 0;">
                             </div>
@@ -1471,15 +1480,19 @@
                                     </option>
                                     <option value="taskbar-left" data-i18n="layout_taskbar_left">Taskbar (Bottom Left)
                                     </option>
-                                    <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom Right)
+                                    <option value="taskbar-right" data-i18n="layout_taskbar_right">Taskbar (Bottom
+                                        Right)
                                     </option>
                                 </select>
                                 <div id="bookmark-sidebar-width-container" style="display: none; margin-top: 15px;">
-                                    <label style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">
+                                    <label
+                                        style="display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">
                                         <span data-i18n="settings_bookmark_sidebar_width">Sidebar Width</span>
-                                        <span id="bookmark-sidebar-width-value" style="font-family: monospace;">300px</span>
+                                        <span id="bookmark-sidebar-width-value"
+                                            style="font-family: monospace;">300px</span>
                                     </label>
-                                    <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10" value="300" style="width: 100%;">
+                                    <input type="range" id="bookmark-sidebar-width-input" min="200" max="600" step="10"
+                                        value="300" style="width: 100%;">
                                 </div>
                             </div>
                             <div class="setting-item no-margin-top" id="bookmark-item-style-row"
@@ -1546,204 +1559,338 @@
                                 Content & Typography</span></h4>
 
                         <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top" style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 12px;">
-                                
+                            <div class="setting-item no-margin-top"
+                                style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 12px;">
+
                                 <div>
-                                    <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;" data-i18n="settings_custom_title_line_1">Dòng 1</label>
+                                    <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;"
+                                        data-i18n="settings_custom_title_line_1">Dòng 1</label>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                                         <input type="text" id="custom-title-text" placeholder="Nội dung dòng 1..."
                                             data-i18n-placeholder="settings_custom_title_placeholder"
                                             style="flex: 2; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 0.95rem;">
-                                        <select id="custom-title-font" class="settings-select" style="flex: 1; padding: 10px; border-radius: 6px;">
-                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        <select id="custom-title-font" class="settings-select"
+                                            style="flex: 1; padding: 10px; border-radius: 6px;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font
+                                                mặc định</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; flex-direction: column; gap: 12px;">
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span style="font-family: monospace;"><span id="custom-title-fontsize-val">24</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span
+                                                    style="font-family: monospace;"><span
+                                                        id="custom-title-fontsize-val">24</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-font-size" min="10" max="200" value="24" style="width: 100%;">
+                                            <input type="range" id="custom-title-font-size" min="10" max="200"
+                                                value="24" style="width: 100%;">
                                         </div>
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span><span style="font-family: monospace;"><span id="custom-title-letter-spacing-val">0</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng
+                                                    cách</span><span style="font-family: monospace;"><span
+                                                        id="custom-title-letter-spacing-val">0</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-letter-spacing" min="-10" max="50" value="0" style="width: 100%;">
+                                            <input type="range" id="custom-title-letter-spacing" min="-10" max="50"
+                                                value="0" style="width: 100%;">
                                         </div>
-                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: space-between;">
                                             <label style="font-size: 0.8em; opacity: 0.7; margin-bottom: 0;">
-                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
+                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi
+                                                    dọc)</span>
                                             </label>
-                                            <select id="custom-title-orientation" class="settings-select" style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
-                                                <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
-                                                <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                            <select id="custom-title-orientation" class="settings-select"
+                                                style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
+                                                <option value="upright"
+                                                    data-i18n="settings_custom_title_orientation_upright">Chữ đứng
+                                                </option>
+                                                <option value="mixed"
+                                                    data-i18n="settings_custom_title_orientation_mixed">Chữ xoay
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
-                                    <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;" data-i18n="settings_custom_title_line_2">Dòng 2</label>
+                                <div
+                                    style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;"
+                                        data-i18n="settings_custom_title_line_2">Dòng 2</label>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                        <input type="text" id="custom-title-text-2" placeholder="Nội dung dòng 2..." data-i18n-placeholder="settings_custom_title_placeholder_2"
+                                        <input type="text" id="custom-title-text-2" placeholder="Nội dung dòng 2..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_2"
                                             style="flex: 2; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 0.95rem;">
-                                        <select id="custom-title-font-2" class="settings-select" style="flex: 1; padding: 10px; border-radius: 6px;">
-                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        <select id="custom-title-font-2" class="settings-select"
+                                            style="flex: 1; padding: 10px; border-radius: 6px;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font
+                                                mặc định</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; flex-direction: column; gap: 12px;">
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span style="font-family: monospace;"><span id="custom-title-fontsize-2-val">24</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span
+                                                    style="font-family: monospace;"><span
+                                                        id="custom-title-fontsize-2-val">24</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-font-size-2" min="10" max="200" value="24" style="width: 100%;">
+                                            <input type="range" id="custom-title-font-size-2" min="10" max="200"
+                                                value="24" style="width: 100%;">
                                         </div>
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span><span style="font-family: monospace;"><span id="custom-title-letter-spacing-2-val">0</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng
+                                                    cách</span><span style="font-family: monospace;"><span
+                                                        id="custom-title-letter-spacing-2-val">0</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-letter-spacing-2" min="-10" max="50" value="0" style="width: 100%;">
+                                            <input type="range" id="custom-title-letter-spacing-2" min="-10" max="50"
+                                                value="0" style="width: 100%;">
                                         </div>
-                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: space-between;">
                                             <label style="font-size: 0.8em; opacity: 0.7; margin-bottom: 0;">
-                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
+                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi
+                                                    dọc)</span>
                                             </label>
-                                            <select id="custom-title-orientation-2" class="settings-select" style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
-                                                <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
-                                                <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                            <select id="custom-title-orientation-2" class="settings-select"
+                                                style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
+                                                <option value="upright"
+                                                    data-i18n="settings_custom_title_orientation_upright">Chữ đứng
+                                                </option>
+                                                <option value="mixed"
+                                                    data-i18n="settings_custom_title_orientation_mixed">Chữ xoay
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div id="custom-title-line-3-container" style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                        <label style="font-size: 0.9em; opacity: 0.8; margin: 0;" data-i18n="settings_custom_title_line_3">Dòng 3</label>
-                                        <button class="remove-line-btn" data-target="3" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.9em;"><i class="fa-solid fa-trash"></i></button>
+
+                                <div id="custom-title-line-3-container"
+                                    style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
+                                            data-i18n="settings_custom_title_line_3">Dòng 3</label>
+                                        <button class="remove-line-btn" data-target="3"
+                                            style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.9em;"><i
+                                                class="fa-solid fa-trash"></i></button>
                                     </div>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                        <input type="text" id="custom-title-text-3" placeholder="Nội dung dòng 3..." data-i18n-placeholder="settings_custom_title_placeholder_3"
+                                        <input type="text" id="custom-title-text-3" placeholder="Nội dung dòng 3..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_3"
                                             style="flex: 2; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 0.95rem;">
-                                        <select id="custom-title-font-3" class="settings-select" style="flex: 1; padding: 10px; border-radius: 6px;">
-                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        <select id="custom-title-font-3" class="settings-select"
+                                            style="flex: 1; padding: 10px; border-radius: 6px;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font
+                                                mặc định</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; flex-direction: column; gap: 12px;">
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span style="font-family: monospace;"><span id="custom-title-fontsize-3-val">24</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span
+                                                    style="font-family: monospace;"><span
+                                                        id="custom-title-fontsize-3-val">24</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-font-size-3" min="10" max="200" value="24" style="width: 100%;">
+                                            <input type="range" id="custom-title-font-size-3" min="10" max="200"
+                                                value="24" style="width: 100%;">
                                         </div>
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span><span style="font-family: monospace;"><span id="custom-title-letter-spacing-3-val">0</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng
+                                                    cách</span><span style="font-family: monospace;"><span
+                                                        id="custom-title-letter-spacing-3-val">0</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-letter-spacing-3" min="-10" max="50" value="0" style="width: 100%;">
+                                            <input type="range" id="custom-title-letter-spacing-3" min="-10" max="50"
+                                                value="0" style="width: 100%;">
                                         </div>
-                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: space-between;">
                                             <label style="font-size: 0.8em; opacity: 0.7; margin-bottom: 0;">
-                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
+                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi
+                                                    dọc)</span>
                                             </label>
-                                            <select id="custom-title-orientation-3" class="settings-select" style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
-                                                <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
-                                                <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                            <select id="custom-title-orientation-3" class="settings-select"
+                                                style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
+                                                <option value="upright"
+                                                    data-i18n="settings_custom_title_orientation_upright">Chữ đứng
+                                                </option>
+                                                <option value="mixed"
+                                                    data-i18n="settings_custom_title_orientation_mixed">Chữ xoay
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div id="custom-title-line-4-container" style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                        <label style="font-size: 0.9em; opacity: 0.8; margin: 0;" data-i18n="settings_custom_title_line_4">Dòng 4</label>
-                                        <button class="remove-line-btn" data-target="4" style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.9em;"><i class="fa-solid fa-trash"></i></button>
+
+                                <div id="custom-title-line-4-container"
+                                    style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
+                                            data-i18n="settings_custom_title_line_4">Dòng 4</label>
+                                        <button class="remove-line-btn" data-target="4"
+                                            style="background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.9em;"><i
+                                                class="fa-solid fa-trash"></i></button>
                                     </div>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                                        <input type="text" id="custom-title-text-4" placeholder="Nội dung dòng 4..." data-i18n-placeholder="settings_custom_title_placeholder_4"
+                                        <input type="text" id="custom-title-text-4" placeholder="Nội dung dòng 4..."
+                                            data-i18n-placeholder="settings_custom_title_placeholder_4"
                                             style="flex: 2; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 0.95rem;">
-                                        <select id="custom-title-font-4" class="settings-select" style="flex: 1; padding: 10px; border-radius: 6px;">
-                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font mặc định</option>
+                                        <select id="custom-title-font-4" class="settings-select"
+                                            style="flex: 1; padding: 10px; border-radius: 6px;">
+                                            <option value="inherit" data-i18n="settings_custom_title_font_default">Font
+                                                mặc định</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; flex-direction: column; gap: 12px;">
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span style="font-family: monospace;"><span id="custom-title-fontsize-4-val">24</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_font_size">Cỡ chữ</span><span
+                                                    style="font-family: monospace;"><span
+                                                        id="custom-title-fontsize-4-val">24</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-font-size-4" min="10" max="200" value="24" style="width: 100%;">
+                                            <input type="range" id="custom-title-font-size-4" min="10" max="200"
+                                                value="24" style="width: 100%;">
                                         </div>
                                         <div>
-                                            <label style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
-                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng cách</span><span style="font-family: monospace;"><span id="custom-title-letter-spacing-4-val">0</span>px</span>
+                                            <label
+                                                style="display: flex; justify-content: space-between; font-size: 0.8em; opacity: 0.7; margin-bottom: 4px;">
+                                                <span data-i18n="settings_custom_title_letter_spacing">Khoảng
+                                                    cách</span><span style="font-family: monospace;"><span
+                                                        id="custom-title-letter-spacing-4-val">0</span>px</span>
                                             </label>
-                                            <input type="range" id="custom-title-letter-spacing-4" min="-10" max="50" value="0" style="width: 100%;">
+                                            <input type="range" id="custom-title-letter-spacing-4" min="-10" max="50"
+                                                value="0" style="width: 100%;">
                                         </div>
-                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: space-between;">
                                             <label style="font-size: 0.8em; opacity: 0.7; margin-bottom: 0;">
-                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi dọc)</span>
+                                                <span data-i18n="settings_custom_title_orientation">Xoay chữ (khi
+                                                    dọc)</span>
                                             </label>
-                                            <select id="custom-title-orientation-4" class="settings-select" style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
-                                                <option value="upright" data-i18n="settings_custom_title_orientation_upright">Chữ đứng</option>
-                                                <option value="mixed" data-i18n="settings_custom_title_orientation_mixed">Chữ xoay</option>
+                                            <select id="custom-title-orientation-4" class="settings-select"
+                                                style="width: 50%; padding: 6px; border-radius: 4px; font-size: 0.85em;">
+                                                <option value="upright"
+                                                    data-i18n="settings_custom_title_orientation_upright">Chữ đứng
+                                                </option>
+                                                <option value="mixed"
+                                                    data-i18n="settings_custom_title_orientation_mixed">Chữ xoay
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <button id="custom-title-add-line-btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); color: #fff; border-radius: 6px; margin-top: 12px; cursor: pointer; transition: all 0.2s;"><i class="fa-solid fa-plus"></i> <span data-i18n="settings_custom_title_add_line">Thêm dòng</span></button>
-                                
+
+                                <button id="custom-title-add-line-btn"
+                                    style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); color: #fff; border-radius: 6px; margin-top: 12px; cursor: pointer; transition: all 0.2s;"><i
+                                        class="fa-solid fa-plus"></i> <span
+                                        data-i18n="settings_custom_title_add_line">Thêm dòng</span></button>
+
                                 <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 16px;">
-                                    <label style="display: flex; justify-content: space-between; font-size: 0.9em; opacity: 0.8; margin-bottom: 0;">
-                                        <span><i class="fa-solid fa-up-down"></i> <span data-i18n="settings_custom_title_line_spacing">Khoảng cách giữa các dòng</span></span>
-                                        <span style="font-family: monospace;"><span id="custom-title-line-spacing-val">15</span>px</span>
+                                    <label
+                                        style="display: flex; justify-content: space-between; font-size: 0.9em; opacity: 0.8; margin-bottom: 0;">
+                                        <span><i class="fa-solid fa-up-down"></i> <span
+                                                data-i18n="settings_custom_title_line_spacing">Khoảng cách giữa các
+                                                dòng</span></span>
+                                        <span style="font-family: monospace;"><span
+                                                id="custom-title-line-spacing-val">15</span>px</span>
                                     </label>
-                                    <input type="range" id="custom-title-line-spacing" min="0" max="100" value="15" style="width: 100%;">
+                                    <input type="range" id="custom-title-line-spacing" min="0" max="100" value="15"
+                                        style="width: 100%;">
                                 </div>
-                                
-                                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+
+                                <div
+                                    style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <label for="custom-title-direction" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span data-i18n="settings_custom_title_direction">Hướng chữ</span></label>
-                                        <select id="custom-title-direction" class="settings-select" style="width: 55%; padding: 8px 10px; border-radius: 6px;">
-                                            <option value="horizontal" data-i18n="settings_custom_title_direction_horizontal">Ngang</option>
-                                            <option value="vertical" data-i18n="settings_custom_title_direction_vertical">Dọc</option>
+                                        <label for="custom-title-direction"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-arrows-up-down-left-right"></i> <span
+                                                data-i18n="settings_custom_title_direction">Hướng chữ</span></label>
+                                        <select id="custom-title-direction" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="horizontal"
+                                                data-i18n="settings_custom_title_direction_horizontal">Ngang</option>
+                                            <option value="vertical"
+                                                data-i18n="settings_custom_title_direction_vertical">Dọc</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <label for="custom-title-order" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-sort"></i> <span data-i18n="settings_custom_title_order">Thứ tự dòng</span></label>
-                                        <select id="custom-title-order" class="settings-select" style="width: 55%; padding: 8px 10px; border-radius: 6px;">
-                                            <option value="normal" data-i18n="settings_custom_title_order_normal">Bình thường (1->4)</option>
-                                            <option value="reverse" data-i18n="settings_custom_title_order_reverse">Đảo ngược (4->1)</option>
+                                        <label for="custom-title-order"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-sort"></i> <span
+                                                data-i18n="settings_custom_title_order">Thứ tự dòng</span></label>
+                                        <select id="custom-title-order" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="normal" data-i18n="settings_custom_title_order_normal">Bình
+                                                thường (1->4)</option>
+                                            <option value="reverse" data-i18n="settings_custom_title_order_reverse">Đảo
+                                                ngược (4->1)</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <label for="custom-title-word-wrap" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-turn-down"></i> <span data-i18n="settings_custom_title_word_wrap">Xếp dọc từng ký tự</span></label>
+                                        <label for="custom-title-word-wrap"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-turn-down"></i> <span
+                                                data-i18n="settings_custom_title_word_wrap">Xếp dọc từng ký
+                                                tự</span></label>
                                         <label class="switch" style="margin-left: auto;">
                                             <input type="checkbox" id="custom-title-word-wrap">
                                             <span class="slider round"></span>
                                         </label>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <label for="custom-title-animation" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="settings_custom_title_animation_label">Hiệu ứng</span></label>
-                                        <select id="custom-title-animation" class="settings-select" style="width: 55%; padding: 8px 10px; border-radius: 6px;">
-                                            <option value="none" data-i18n="settings_custom_title_animation_none">Không có</option>
-                                            <option value="typing" data-i18n="settings_custom_title_animation_typing">Gõ chữ (Typing)</option>
-                                            <option value="fade-loop" data-i18n="settings_custom_title_animation_fade">Hiện/Ẩn (Fade)</option>
-                                            <option value="pulse" data-i18n="settings_custom_title_animation_pulse">Nhịp đập (Pulse)</option>
-                                            <option value="bounce" data-i18n="settings_custom_title_animation_bounce">Nảy (Bounce)</option>
-                                            <option value="wave" data-i18n="settings_custom_title_animation_wave">Lượn sóng (Wave)</option>
-                                            <option value="glow" data-i18n="settings_custom_title_animation_glow">Phát sáng (Glow)</option>
-                                            <option value="glitch" data-i18n="settings_custom_title_animation_glitch">Nhiễu (Glitch)</option>
-                                            <option value="flip" data-i18n="settings_custom_title_animation_flip">Lật (Flip)</option>
-                                            <option value="shake" data-i18n="settings_custom_title_animation_shake">Rung lắc (Shake)</option>
-                                            <option value="float" data-i18n="settings_custom_title_animation_float">Lơ lửng (Float)</option>
+                                        <label for="custom-title-animation"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-wand-magic-sparkles"></i> <span
+                                                data-i18n="settings_custom_title_animation_label">Hiệu
+                                                ứng</span></label>
+                                        <select id="custom-title-animation" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="none" data-i18n="settings_custom_title_animation_none">Không
+                                                có</option>
+                                            <option value="typing" data-i18n="settings_custom_title_animation_typing">Gõ
+                                                chữ (Typing)</option>
+                                            <option value="fade-loop" data-i18n="settings_custom_title_animation_fade">
+                                                Hiện/Ẩn (Fade)</option>
+                                            <option value="pulse" data-i18n="settings_custom_title_animation_pulse">Nhịp
+                                                đập (Pulse)</option>
+                                            <option value="bounce" data-i18n="settings_custom_title_animation_bounce">
+                                                Nảy (Bounce)</option>
+                                            <option value="wave" data-i18n="settings_custom_title_animation_wave">Lượn
+                                                sóng (Wave)</option>
+                                            <option value="glow" data-i18n="settings_custom_title_animation_glow">Phát
+                                                sáng (Glow)</option>
+                                            <option value="glitch" data-i18n="settings_custom_title_animation_glitch">
+                                                Nhiễu (Glitch)</option>
+                                            <option value="flip" data-i18n="settings_custom_title_animation_flip">Lật
+                                                (Flip)</option>
+                                            <option value="shake" data-i18n="settings_custom_title_animation_shake">Rung
+                                                lắc (Shake)</option>
+                                            <option value="float" data-i18n="settings_custom_title_animation_float">Lơ
+                                                lửng (Float)</option>
                                         </select>
                                     </div>
                                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                                        <label for="custom-title-animation-loop" style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i class="fa-solid fa-repeat"></i> <span data-i18n="settings_custom_title_animation_loop_label">Chế độ lặp</span></label>
-                                        <select id="custom-title-animation-loop" class="settings-select" style="width: 55%; padding: 8px 10px; border-radius: 6px;">
-                                            <option value="infinite" data-i18n="settings_custom_title_animation_loop_infinite">Lặp liên tục</option>
-                                            <option value="once" data-i18n="settings_custom_title_animation_loop_once">Chạy 1 lần</option>
+                                        <label for="custom-title-animation-loop"
+                                            style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0;"><i
+                                                class="fa-solid fa-repeat"></i> <span
+                                                data-i18n="settings_custom_title_animation_loop_label">Chế độ
+                                                lặp</span></label>
+                                        <select id="custom-title-animation-loop" class="settings-select"
+                                            style="width: 55%; padding: 8px 10px; border-radius: 6px;">
+                                            <option value="infinite"
+                                                data-i18n="settings_custom_title_animation_loop_infinite">Lặp liên tục
+                                            </option>
+                                            <option value="once" data-i18n="settings_custom_title_animation_loop_once">
+                                                Chạy 1 lần</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1879,19 +2026,23 @@
                             <input type="checkbox" id="flip-layout-checkbox">
                         </div>
                         <div class="setting-item-row">
-                            <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings Sidebar Width</label>
+                            <label for="settings-sidebar-width-input" data-i18n="settings_sidebar_width">Settings
+                                Sidebar Width</label>
                             <select id="settings-sidebar-width-input" class="settings-select">
                                 <option value="450" data-i18n="settings_sidebar_width_compact">Compact (450px)</option>
                                 <option value="500" data-i18n="settings_sidebar_width_default">Default (500px)</option>
                                 <option value="600" data-i18n="settings_sidebar_width_medium">Medium (600px)</option>
                                 <option value="700" data-i18n="settings_sidebar_width_large">Large (700px)</option>
-                                <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)</option>
+                                <option value="800" data-i18n="settings_sidebar_width_xlarge">Extra Large (800px)
+                                </option>
                             </select>
                         </div>
                         <div class="setting-item-row">
-                            <label for="extension-action-behavior-select" data-i18n="settings_extension_action_behavior">Extension Icon Behavior</label>
+                            <label for="extension-action-behavior-select"
+                                data-i18n="settings_extension_action_behavior">Extension Icon Behavior</label>
                             <select id="extension-action-behavior-select" class="settings-select">
-                                <option value="sidepanel" data-i18n="settings_behavior_sidepanel">Open Side Panel</option>
+                                <option value="sidepanel" data-i18n="settings_behavior_sidepanel">Open Side Panel
+                                </option>
                                 <option value="newtab" data-i18n="settings_behavior_newtab">Open Startpage</option>
                                 <option value="popup" data-i18n="settings_behavior_popup">Open Floating Window</option>
                             </select>
@@ -2049,13 +2200,18 @@
                                     <span data-i18n="settings_weather_preset_open_meteo">Use Open-Meteo</span>
                                 </button>
                             </div>
-                            
+
                             <div class="unsplash-links" style="margin-bottom: 15px;">
-                                <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item" title="Trang chủ và Link API đúng của Open-Meteo">
-                                    <i class="fa-solid fa-link"></i> <span data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
+                                <a href="https://open-meteo.com/en/docs" target="_blank" class="unsplash-link-item"
+                                    title="Trang chủ và Link API đúng của Open-Meteo">
+                                    <i class="fa-solid fa-link"></i> <span
+                                        data-i18n="settings_weather_api_correct_link">Link API chuẩn</span>
                                 </a>
-                                <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api" target="_blank" class="unsplash-link-item" title="Video hướng dẫn lấy API thời tiết">
-                                    <i class="fa-brands fa-youtube"></i> <span data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
+                                <a href="https://www.youtube.com/results?search_query=how+to+use+open+meteo+api"
+                                    target="_blank" class="unsplash-link-item"
+                                    title="Video hướng dẫn lấy API thời tiết">
+                                    <i class="fa-brands fa-youtube"></i> <span
+                                        data-i18n="settings_weather_api_tutorial">Hướng dẫn lấy API</span>
                                 </a>
                             </div>
 
@@ -2213,79 +2369,103 @@
             </div>
             <!-- Data & Sync Section -->
             <div class="settings-section" data-section-id="data-sync">
-                <h3 class="section-toggle" data-i18n="settings_data_sync"><i class="fa-solid fa-cloud"></i> Data & Sync</h3>
+                <h3 class="section-toggle" data-i18n="settings_data_sync"><i class="fa-solid fa-cloud"></i> Data & Sync
+                </h3>
                 <div class="section-content">
                     <div class="setting-group">
                         <div class="setting-item-row">
-                            <label for="google-drive-sync-checkbox" data-i18n="settings_google_drive_sync"><i class="fa-brands fa-google-drive" style="color: #34A853; margin-right: 4px;"></i> Sync with Google Drive</label>
+                            <label for="google-drive-sync-checkbox" data-i18n="settings_google_drive_sync"><i
+                                    class="fa-brands fa-google-drive" style="color: #34A853; margin-right: 4px;"></i>
+                                Sync with Google Drive</label>
                             <input type="checkbox" id="google-drive-sync-checkbox">
                         </div>
-                        <p class="setting-hint" data-i18n="settings_google_drive_sync_hint" style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;">Auto backup and restore settings & bookmarks via Google Drive.</p>
-                        
+                        <p class="setting-hint" data-i18n="settings_google_drive_sync_hint"
+                            style="margin-top: 8px; font-size: 0.8rem; opacity: 0.7;">Auto backup and restore settings &
+                            bookmarks via Google Drive.</p>
+
                         <div id="drive-sync-options-wrapper" style="display: none;">
-                            <div id="google-drive-sync-status" style="margin-top: 8px; display: none; align-items: center; gap: 8px; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 8px;">
-                                <img id="google-sync-avatar" src="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                            <div id="google-drive-sync-status"
+                                style="margin-top: 8px; display: none; align-items: center; gap: 8px; font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 8px;">
+                                <img id="google-sync-avatar" src=""
+                                    style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
                                 <span id="google-sync-email" style="opacity: 0.9; word-break: break-all;"></span>
                             </div>
 
                             <div class="setting-item-row" style="margin-top: 12px;">
-                                <label for="drive-auto-backup-interval" data-i18n="settings_drive_auto_backup">Auto Backup Interval</label>
+                                <label for="drive-auto-backup-interval" data-i18n="settings_drive_auto_backup">Auto
+                                    Backup Interval</label>
                                 <select id="drive-auto-backup-interval">
-                                    <option value="none" data-i18n="settings_drive_auto_backup_none">None (Manual only)</option>
+                                    <option value="none" data-i18n="settings_drive_auto_backup_none">None (Manual only)
+                                    </option>
                                     <option value="daily" data-i18n="settings_drive_auto_backup_daily">Daily</option>
                                     <option value="weekly" data-i18n="settings_drive_auto_backup_weekly">Weekly</option>
-                                    <option value="monthly" data-i18n="settings_drive_auto_backup_monthly">Monthly</option>
+                                    <option value="monthly" data-i18n="settings_drive_auto_backup_monthly">Monthly
+                                    </option>
                                 </select>
                             </div>
 
                             <div style="display: flex; gap: 8px; margin-top: 10px;">
-                                <button type="button" id="force-drive-sync-btn" class="secondary-btn full-width-btn" style="flex: 1;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="settings_force_drive_sync">Upload</span>
+                                <button type="button" id="force-drive-sync-btn" class="secondary-btn full-width-btn"
+                                    style="flex: 1;">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> <span
+                                        data-i18n="settings_force_drive_sync">Upload</span>
                                 </button>
-                                <button type="button" id="force-drive-download-btn" class="secondary-btn full-width-btn" style="flex: 1;">
-                                    <i class="fa-solid fa-cloud-arrow-down"></i> <span data-i18n="settings_force_drive_download">Download</span>
+                                <button type="button" id="force-drive-download-btn" class="secondary-btn full-width-btn"
+                                    style="flex: 1;">
+                                    <i class="fa-solid fa-cloud-arrow-down"></i> <span
+                                        data-i18n="settings_force_drive_download">Download</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="setting-group" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                        <div style="margin-bottom: 8px; font-weight: 500;" data-i18n="settings_browser_sync_title">Browser Sync</div>
+                    <div class="setting-group"
+                        style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                        <div style="margin-bottom: 8px; font-weight: 500;" data-i18n="settings_browser_sync_title">
+                            Browser Sync</div>
                         <div class="sidebar-footer-sync-row" style="display: flex; gap: 8px; margin-bottom: 8px;">
                             <button id="sync-to-cloud-btn" class="secondary-btn" style="flex: 1;">
                                 <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="footer_sync_backup">Backup
                                     Sync</span>
                             </button>
                             <button id="sync-from-cloud-btn" class="secondary-btn" style="flex: 1;">
-                                <i class="fa-solid fa-cloud-arrow-down"></i> <span data-i18n="footer_sync_restore">Restore
+                                <i class="fa-solid fa-cloud-arrow-down"></i> <span
+                                    data-i18n="footer_sync_restore">Restore
                                     Sync</span>
                             </button>
                         </div>
-                        <p class="setting-hint" data-i18n="settings_browser_sync_hint" style="font-size: 0.8rem; opacity: 0.7;">Note: This syncs with your browser account automatically without requiring login.</p>
+                        <p class="setting-hint" data-i18n="settings_browser_sync_hint"
+                            style="font-size: 0.8rem; opacity: 0.7;">Note: This syncs with your browser account
+                            automatically without requiring login.</p>
                     </div>
                 </div>
             </div>
 
             <!-- About Project Section -->
             <div class="settings-section" data-section-id="about-project">
-                <h3 class="section-toggle" data-i18n="settings_about_project"><i class="fa-solid fa-circle-info"></i> About Project</h3>
+                <h3 class="section-toggle" data-i18n="settings_about_project"><i class="fa-solid fa-circle-info"></i>
+                    About Project</h3>
                 <div class="section-content">
                     <div class="setting-group" style="display: flex; flex-direction: column; gap: 10px;">
-                        <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank" class="secondary-btn"
+                        <a href="https://github.com/ChickenSoup269/Zero-Start-Page/releases" target="_blank"
+                            class="secondary-btn"
                             style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
                             <i class="fa-brands fa-github"></i> <span>GitHub Releases</span>
                         </a>
-                        
+
                         <button id="donate-trigger-btn" class="secondary-btn"
                             style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(45deg, #ff4b4b, #ff7b7b); color: white; border: none; font-weight: bold; border-radius: 8px; transition: transform 0.2s;">
                             <i class="fa-solid fa-heart"></i> <span data-i18n="donate_button">Support Developer</span>
                         </button>
-                        
+
                         <div style="margin-top: 5px; font-size: 0.75rem; opacity: 0.8; text-align: center;">
-                            <span data-i18n="available_on">Available on</span> 
-                            <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0" target="_blank" style="color: inherit; text-decoration: underline;">Chrome</a> <span data-i18n="and_text">and</span> 
-                            <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/" target="_blank" style="color: inherit; text-decoration: underline;">Firefox</a>
+                            <span data-i18n="available_on">Available on</span>
+                            <a href="https://chromewebstore.google.com/detail/zero-startpage-newtab-rep/ogdbkgoionmjnlinbmmjncnhafhaenck?hl=en&authuser=0"
+                                target="_blank" style="color: inherit; text-decoration: underline;">Chrome</a> <span
+                                data-i18n="and_text">and</span>
+                            <a href="https://addons.mozilla.org/en-US/firefox/addon/zero-startpage-newtab/"
+                                target="_blank" style="color: inherit; text-decoration: underline;">Firefox</a>
                         </div>
-                        
+
                         <div class="sidebar-copyright" style="font-size: 0.75rem; opacity: 0.6; text-align: center;">
                             &copy; 2026 ChickenSoup269
                         </div>
@@ -2439,7 +2619,8 @@
                 data-i18n="menu_favorite">Favorite</span></div>
         <div class="menu-item" id="menu-select"><i class="fa-solid fa-check-to-slot"></i> <span
                 data-i18n="menu_select">Select</span></div>
-        <div class="menu-item" id="menu-move" style="display:none;"><i class="fa-solid fa-arrows-up-down"></i> <span data-i18n="menu_move_font">Move</span></div>
+        <div class="menu-item" id="menu-move" style="display:none;"><i class="fa-solid fa-arrows-up-down"></i> <span
+                data-i18n="menu_move_font">Move</span></div>
         <div class="menu-item" id="menu-edit"><i class="fa-solid fa-pen"></i> <span data-i18n="menu_edit">Edit</span>
         </div>
         <div class="menu-item danger" id="menu-delete"><i class="fa-solid fa-trash"></i> <span
@@ -2978,24 +3159,34 @@
     </div>
 
     <!-- Font Awesome Icon Picker Modal -->
-    <div id="fa-icon-picker-modal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;">
-        <div style="background:var(--settings-bg,#1a1a2e);border:1px solid var(--input-border,rgba(255,255,255,0.12));border-radius:18px;padding:0;width:min(520px,94vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05);">
+    <div id="fa-icon-picker-modal"
+        style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+        <div
+            style="background:var(--settings-bg,#1a1a2e);border:1px solid var(--input-border,rgba(255,255,255,0.12));border-radius:18px;padding:0;width:min(520px,94vw);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.05);">
             <!-- Header -->
-            <div style="padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;">
-                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-color,#a8c0ff);font-size:1.1rem;"></i>
-                <span style="font-size:1rem;font-weight:600;flex:1;" data-i18n="fa_picker_title">Pick Font Awesome Icon</span>
-                <button id="fa-picker-close" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:inherit;cursor:pointer;padding:6px 10px;font-size:0.9rem;line-height:1;transition:background 0.2s;" title="Close">
+            <div
+                style="padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px;">
+                <i class="fa-solid fa-wand-magic-sparkles"
+                    style="color:var(--accent-color,#a8c0ff);font-size:1.1rem;"></i>
+                <span style="font-size:1rem;font-weight:600;flex:1;" data-i18n="fa_picker_title">Pick Font Awesome
+                    Icon</span>
+                <button id="fa-picker-close"
+                    style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;color:inherit;cursor:pointer;padding:6px 10px;font-size:0.9rem;line-height:1;transition:background 0.2s;"
+                    title="Close">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <!-- Search -->
             <div style="padding:12px 20px 8px;display:flex;gap:8px;">
                 <div style="position:relative;flex:1;">
-                    <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.5;font-size:0.85rem;pointer-events:none;"></i>
-                    <input id="fa-picker-search" type="text" placeholder="Search icons..." data-i18n-placeholder="fa_picker_search"
+                    <i class="fa-solid fa-magnifying-glass"
+                        style="position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.5;font-size:0.85rem;pointer-events:none;"></i>
+                    <input id="fa-picker-search" type="text" placeholder="Search icons..."
+                        data-i18n-placeholder="fa_picker_search"
                         style="width:100%;padding:0.45rem 0.5rem 0.45rem 2rem;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#e8e8f0;font-size:0.9rem;outline:none;box-sizing:border-box;">
                 </div>
-                <select id="fa-picker-category" style="padding:0.4rem 0.6rem;background:#1e1e38;border:1px solid rgba(255,255,255,0.18);border-radius:10px;color:#e8e8f0;font-size:0.85rem;cursor:pointer;outline:none;max-width:130px;appearance:auto;-webkit-appearance:auto;">
+                <select id="fa-picker-category"
+                    style="padding:0.4rem 0.6rem;background:#1e1e38;border:1px solid rgba(255,255,255,0.18);border-radius:10px;color:#e8e8f0;font-size:0.85rem;cursor:pointer;outline:none;max-width:130px;appearance:auto;-webkit-appearance:auto;">
                     <option value="all" style="background:#1e1e38;color:#e8e8f0;">All</option>
                     <option value="solid" style="background:#1e1e38;color:#e8e8f0;">Solid</option>
                     <option value="regular" style="background:#1e1e38;color:#e8e8f0;">Regular</option>
@@ -3003,13 +3194,17 @@
                 </select>
             </div>
             <!-- Grid -->
-            <div id="fa-picker-grid" style="overflow-y:auto;padding:10px 16px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;flex:1;min-height:200px;scrollbar-width:thin;">
+            <div id="fa-picker-grid"
+                style="overflow-y:auto;padding:10px 16px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;flex:1;min-height:200px;scrollbar-width:thin;">
                 <!-- Icons injected here by JS -->
             </div>
             <!-- Footer -->
-            <div style="padding:10px 20px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;">
+            <div
+                style="padding:10px 20px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;">
                 <small id="fa-picker-count" style="opacity:0.5;font-size:0.78rem;"></small>
-                <button id="fa-picker-clear" style="background:rgba(255,60,60,0.15);border:1px solid rgba(255,60,60,0.25);border-radius:8px;color:inherit;cursor:pointer;padding:5px 14px;font-size:0.82rem;transition:background 0.2s;" data-i18n="fa_picker_clear">Clear icon</button>
+                <button id="fa-picker-clear"
+                    style="background:rgba(255,60,60,0.15);border:1px solid rgba(255,60,60,0.25);border-radius:8px;color:inherit;cursor:pointer;padding:5px 14px;font-size:0.82rem;transition:background 0.2s;"
+                    data-i18n="fa_picker_clear">Clear icon</button>
             </div>
         </div>
     </div>
