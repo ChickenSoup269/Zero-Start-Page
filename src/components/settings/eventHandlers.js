@@ -76,6 +76,7 @@ import {
   applyTabIcon,
   renderTabIconPreview,
 } from "./tabIcon.js"
+import { initFaPicker } from "./faPicker.js"
 import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
@@ -5117,6 +5118,7 @@ export function setupGeneralEventHandlers(
     const raw = DOM.tabIconInput.value
     const chars = getTabIconChars(raw)
     updateSetting("tabIcon", chars)
+    updateSetting("tabIconFaClass", "") // clear FA icon when typing text
     saveSettings()
     applyTabIcon(chars)
     renderTabIconPreview(chars, DOM.tabIconPreview)
@@ -5129,6 +5131,7 @@ export function setupGeneralEventHandlers(
 
   DOM.tabIconClearBtn?.addEventListener("click", () => {
     updateSetting("tabIcon", "")
+    updateSetting("tabIconFaClass", "")
     saveSettings()
     if (DOM.tabIconInput) DOM.tabIconInput.value = ""
     if (DOM.tabIconFileInput) DOM.tabIconFileInput.value = ""
@@ -5161,6 +5164,44 @@ export function setupGeneralEventHandlers(
       DOM.tabIconFileInput.value = ""
     }
   })
+
+  // Transparent BG toggle
+  DOM.tabIconTransparentBgCheckbox?.addEventListener("change", () => {
+    const isTransparent = DOM.tabIconTransparentBgCheckbox.checked
+    updateSetting("tabIconTransparentBg", isTransparent)
+    saveSettings()
+    applyTabIcon(getSettings().tabIcon || getSettings().tabIconFaClass)
+    renderTabIconPreview(
+      getSettings().tabIcon || getSettings().tabIconFaClass,
+      DOM.tabIconPreview,
+    )
+  })
+
+  // FA Icon Picker
+  initFaPicker(
+    DOM,
+    // onSelect: user picked a FA icon class
+    (faClass) => {
+      updateSetting("tabIconFaClass", faClass)
+      updateSetting("tabIcon", faClass)
+      saveSettings()
+      if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+      if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = false
+      applyTabIcon(faClass)
+      renderTabIconPreview(faClass, DOM.tabIconPreview)
+    },
+    // onClear: user cleared the FA icon
+    () => {
+      updateSetting("tabIconFaClass", "")
+      updateSetting("tabIcon", "")
+      saveSettings()
+      if (DOM.tabIconInput) DOM.tabIconInput.value = ""
+      if (DOM.tabIconFileInput) DOM.tabIconFileInput.value = ""
+      if (DOM.tabIconClearBtn) DOM.tabIconClearBtn.hidden = true
+      applyTabIcon("")
+      renderTabIconPreview("", DOM.tabIconPreview)
+    },
+  )
 
   DOM.clockSizeInput?.addEventListener("input", () => {
     if (DOM.clockSizeValue)

@@ -766,7 +766,9 @@ function createApplySettings(effectInstances) {
     // 1. Page Title
     document.title = settings.pageTitle || "Start Page"
     if (typeof effectInstances.applyTabIcon === "function") {
-      effectInstances.applyTabIcon(settings.tabIcon || "")
+      effectInstances.applyTabIcon(
+        settings.tabIcon || settings.tabIconFaClass || "",
+      )
     }
 
     // 1b. Top Right Controls
@@ -3771,11 +3773,17 @@ function createUpdateSettingsInputs(effectInstances) {
         : settings.tabIcon || ""
     }
     effectInstances.renderTabIconPreview(
-      settings.tabIcon || "",
+      settings.tabIcon || settings.tabIconFaClass || "",
       DOM.tabIconPreview,
     )
     if (DOM.tabIconClearBtn) {
-      DOM.tabIconClearBtn.hidden = !Boolean(settings.tabIcon)
+      DOM.tabIconClearBtn.hidden = !Boolean(
+        settings.tabIcon || settings.tabIconFaClass,
+      )
+    }
+    if (DOM.tabIconTransparentBgCheckbox) {
+      DOM.tabIconTransparentBgCheckbox.checked =
+        settings.tabIconTransparentBg === true
     }
 
     if (DOM.clockSizeInput) DOM.clockSizeInput.value = settings.clockSize

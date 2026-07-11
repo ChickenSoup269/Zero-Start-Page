@@ -104,6 +104,8 @@ export const defaultSettings = {
   tabIcon: "",
   tabIconBgColor: "#1e1e32",
   tabIconTextColor: "#ffffff",
+  tabIconTransparentBg: false,
+  tabIconFaClass: "",
   accentColor: "#00ff73",
   accentColorMode: "m3",
   m3PaletteStyle: "tonalSpot",
