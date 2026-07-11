@@ -1639,8 +1639,9 @@ function createApplySettings(effectInstances) {
             bgLayer.style.background = `linear-gradient(135deg, ${settings.liquidEtherColor1 || "#5227FF"}, ${settings.liquidEtherColor2 || "#FF9FFC"}, ${settings.liquidEtherColor3 || "#B497CF"})`
           } else if (settings.splashCursorActive && settings.splashCursorDarkBg === true) {
             bgLayer.style.background = "#000000"
+          } else {
+            applyUserSelectedBackground()
           }
-          bgLayer.style.backgroundImage = ""
           bgLayer.style.opacity = "1"
         }
         document.documentElement.style.setProperty("--text-color", "#ffffff")
