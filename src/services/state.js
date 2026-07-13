@@ -504,7 +504,9 @@ let settingsState = {
   ...(JSON.parse(localStorage.getItem("pageSettings")) || {}),
 }
 
-const storedSettings = JSON.parse(localStorage.getItem("pageSettings")) || {}
+const storedSettingsRaw = localStorage.getItem("pageSettings")
+const storedSettings = JSON.parse(storedSettingsRaw) || {}
+
 if (!Object.prototype.hasOwnProperty.call(storedSettings, "calendarDateMode")) {
   settingsState.calendarDateMode = settingsState.showLunarCalendar
     ? "both"
@@ -513,11 +515,13 @@ if (!Object.prototype.hasOwnProperty.call(storedSettings, "calendarDateMode")) {
 settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
 
 // Migration for RSS hiding
-if (!settingsState.rssHiddenMigrated) {
+if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   settingsState.showRss = false;
   settingsState.qaShowRss = false;
   settingsState.rssHiddenMigrated = true;
   localStorage.setItem("pageSettings", JSON.stringify(settingsState));
+} else if (!storedSettingsRaw) {
+  settingsState.rssHiddenMigrated = true;
 }
 
 const MODULE_RESET_KEYS = {
