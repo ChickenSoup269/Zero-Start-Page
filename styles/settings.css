@@ -4461,7 +4461,7 @@ body.sidebar-light .preset-code-line-value {
 
 /* Fix cramped item rows and contain light effects */
 .settings-sidebar .setting-item-row {
-  overflow: hidden !important; /* Contain shimmer and glow */
+  overflow: visible !important; /* Allow shimmer and glow to expand beyond container */
   padding: var(--space-2) var(--space-2) !important;
   margin-bottom: var(--space-1) !important;
   min-height: 52px;

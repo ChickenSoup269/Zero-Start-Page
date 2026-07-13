@@ -76,11 +76,26 @@ const randomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
 export function prepareFirstRunDefaults() {
-  if (localStorage.getItem(FIRST_RUN_BG_KEY)) return false
   if (localStorage.getItem("pageSettings")) {
     localStorage.setItem(FIRST_RUN_BG_KEY, "skipped-existing")
     return false
   }
+
+  // If pageSettings is missing, it means the user is either a new user or they cleared their settings manually.
+  // We should provide a full first-run experience, so we clear any stray first-run flags.
+  const firstRunKeys = [
+    FIRST_RUN_BG_KEY,
+    FIRST_RUN_LANGUAGE_KEY,
+    FIRST_RUN_STYLE_KEY,
+    FIRST_RUN_NAME_KEY,
+    FIRST_RUN_ZOOM_KEY,
+    FIRST_RUN_OPEN_SOURCE_KEY,
+    FIRST_RUN_IMPORT_KEY,
+    FIRST_RUN_SETTINGS_GUIDE_KEY,
+    FIRST_RUN_GUIDE_CONGRATS_KEY,
+    FIRST_RUN_ONBOARDING_DONE_KEY,
+  ]
+  firstRunKeys.forEach((k) => localStorage.removeItem(k))
 
   const preset = pick(SVG_WAVE_PRESETS)
   const firstWaveUid = `svg-wave-first-run-${Date.now()}`

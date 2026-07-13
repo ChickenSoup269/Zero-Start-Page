@@ -307,7 +307,7 @@ export function setupGeneralEventHandlers(
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 24,
       bookmarkShadowBlur: 10,
-      musicBarStyle: "pill",
+      musicBarStyle: "neon",
       musicPlayerSkin: "white-blur",
     },
     terminal: {
@@ -331,7 +331,7 @@ export function setupGeneralEventHandlers(
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 8,
-      musicBarStyle: "minimal",
+      musicBarStyle: "terminal",
       musicPlayerSkin: "default",
     },
     cassette: {
@@ -354,7 +354,7 @@ export function setupGeneralEventHandlers(
       bookmarkShadowColor: "#000000",
       bookmarkShadowOpacity: 18,
       bookmarkShadowBlur: 10,
-      musicBarStyle: "pill",
+      musicBarStyle: "cassette",
       musicPlayerSkin: "white-blur",
     },
     cozy: {
@@ -880,7 +880,17 @@ export function setupGeneralEventHandlers(
       const presetId = btn.dataset.stylePreset
       if (!presetId) return
 
-      const prevPreset = getSettings().interfaceStylePreset || "custom"
+      const currentSettings = getSettings()
+      const prevPreset = currentSettings.interfaceStylePreset || "custom"
+
+      if (prevPreset === "custom") {
+        STYLE_PRESETS.custom = {}
+        const keysToTrack = Object.keys(STYLE_PRESETS.clean || {})
+        keysToTrack.forEach(k => {
+          STYLE_PRESETS.custom[k] = currentSettings[k]
+        })
+      }
+
       applyInterfaceStylePreset(presetId)
 
       const presetNames = {
