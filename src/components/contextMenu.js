@@ -1151,6 +1151,24 @@ export function showContextMenu(
       }
       itemsToInsert.push(lightTransparentBtn)
 
+      // Thumbnail Background Skin
+      const isThumbnailBg = settings.musicPlayerSkin === "thumbnail-bg"
+      const thumbnailBgBtn = document.createElement("div")
+      thumbnailBgBtn.className = "context-menu-item custom-music-item"
+      thumbnailBgBtn.innerHTML = `<i class="fa-solid fa-image"></i> <span>${isThumbnailBg ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_thumbnail_bg || "Thumbnail Background"}</span>`
+      thumbnailBgBtn.onclick = () => {
+        const newSkin = isThumbnailBg ? "default" : "thumbnail-bg"
+        updateSetting("musicPlayerSkin", newSkin)
+        saveSettings()
+        window.dispatchEvent(
+          new CustomEvent("settingsUpdated", {
+            detail: { key: "musicPlayerSkin", value: newSkin },
+          }),
+        )
+        hideContextMenu()
+      }
+      itemsToInsert.push(thumbnailBgBtn)
+
       // Heartbeat specific / General style specific skins
       if (musicStyle === "square-thumb") {
         // Vertical Card Skin for Square Thumb
@@ -1269,23 +1287,29 @@ export function showContextMenu(
       }
       itemsToInsert.push(shakeBtn)
 
-      // Default Color Toggler ("Bật màu nhạc mặc định")
-      const usesDefaultColor = settings.musicPlayerUseDefaultColor === true
+      // Color Mode (Cycle)
+      const colorModes = [true, false, "thumbnail"]
+      const currentColorMode = settings.musicPlayerUseDefaultColor === undefined ? true : settings.musicPlayerUseDefaultColor
+      const nextColorMode = colorModes[(colorModes.indexOf(currentColorMode) + 1) % colorModes.length]
+      
+      let colorModeLabel = i18n.music_player_color_brand || "Mặc định của Giao diện"
+      if (currentColorMode === false) colorModeLabel = i18n.music_player_color_global || "Màu chủ đề chung"
+      else if (currentColorMode === "thumbnail") colorModeLabel = i18n.music_player_color_thumb || "Màu theo Thumbnail"
+
       const defaultColorBtn = document.createElement("div")
       defaultColorBtn.className = "context-menu-item custom-music-item"
-      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>${usesDefaultColor ? i18n.music_player_default_color_off || "Tắt màu mặc định" : i18n.music_player_default_color_on || "Bật màu nhạc mặc định"}</span>`
+      defaultColorBtn.innerHTML = `<i class="fa-solid fa-fill-drip"></i> <span>Màu sóng nhạc: ${colorModeLabel}</span>`
       defaultColorBtn.onclick = () => {
-        const newVal = !usesDefaultColor
-        updateSetting("musicPlayerUseDefaultColor", newVal)
+        updateSetting("musicPlayerUseDefaultColor", nextColorMode)
         saveSettings()
         window.dispatchEvent(
           new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerUseDefaultColor", value: newVal },
+            detail: { key: "musicPlayerUseDefaultColor", value: nextColorMode },
           }),
         )
         window.dispatchEvent(
           new CustomEvent("layoutUpdated", {
-            detail: { key: "musicPlayerUseDefaultColor", value: newVal },
+            detail: { key: "musicPlayerUseDefaultColor", value: nextColorMode },
           }),
         )
         hideContextMenu()
@@ -1307,7 +1331,7 @@ export function showContextMenu(
       }
       const sourceIconBtn = document.createElement("div")
       sourceIconBtn.className = "context-menu-item custom-music-item"
-      sourceIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.music_source_icon_context || "Icon nguồn"}: ${sourceIconModeLabels[nextIconMode]}</span>`
+      sourceIconBtn.innerHTML = `<i class="fa-solid fa-icons"></i> <span>${i18n.music_source_icon_context || "Icon nguồn"}: ${sourceIconModeLabels[currentIconMode]}</span>`
       sourceIconBtn.onclick = () => {
         updateSetting("musicSourceIconColorMode", nextIconMode)
         saveSettings()

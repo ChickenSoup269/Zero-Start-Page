@@ -2493,10 +2493,14 @@
                                 <option value="minimal" data-i18n="style_minimal">Minimal</option>
                             </select>
                         </div>
-                        <div class="setting-item-row">
-                            <label for="music-player-use-default-color-checkbox"
-                                data-i18n="settings_music_use_default_color">Use Default Music Color</label>
-                            <input type="checkbox" id="music-player-use-default-color-checkbox">
+                        <div class="setting-item">
+                            <label for="music-player-use-default-color-mode"
+                                data-i18n="settings_music_use_default_color">Music Waves Color</label>
+                            <select id="music-player-use-default-color-mode">
+                                <option value="true" data-i18n="music_player_color_brand">Skin Default</option>
+                                <option value="false" data-i18n="music_player_color_global">Global Theme Color</option>
+                                <option value="thumbnail" data-i18n="music_player_color_thumb">Match Thumbnail Color</option>
+                            </select>
                         </div>
                         <div class="setting-item">
                             <label for="music-source-icon-color-mode"
