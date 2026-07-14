@@ -6028,15 +6028,17 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.musicPlayerUseDefaultColorCheckbox.addEventListener("change", () => {
-    const isChecked = DOM.musicPlayerUseDefaultColorCheckbox.checked
+  DOM.musicPlayerUseDefaultColorMode.addEventListener("change", () => {
+    let val = DOM.musicPlayerUseDefaultColorMode.value
+    if (val === "true") val = true
+    else if (val === "false") val = false
     markInterfaceStyleCustom("musicPlayerUseDefaultColor")
-    handleSettingUpdate("musicPlayerUseDefaultColor", isChecked)
+    handleSettingUpdate("musicPlayerUseDefaultColor", val)
     window.dispatchEvent(
       new CustomEvent("settingsUpdated", {
         detail: {
           key: "musicPlayerUseDefaultColor",
-          value: isChecked,
+          value: val,
         },
       }),
     )
@@ -7565,8 +7567,12 @@ export function setupGeneralEventHandlers(
         value === "default",
       )
     }
-    if (key === "musicPlayerUseDefaultColor" && DOM.musicPlayerUseDefaultColorCheckbox) {
-      DOM.musicPlayerUseDefaultColorCheckbox.checked = value === true
+    if (key === "musicPlayerUseDefaultColor" && DOM.musicPlayerUseDefaultColorMode) {
+      if (value === "thumbnail") {
+        DOM.musicPlayerUseDefaultColorMode.value = "thumbnail"
+      } else {
+        DOM.musicPlayerUseDefaultColorMode.value = value === true ? "true" : "false"
+      }
     }
     if (key === "musicSourceIconColorMode" && DOM.musicSourceIconColorModeSelect) {
       DOM.musicSourceIconColorModeSelect.value = value || "brand"

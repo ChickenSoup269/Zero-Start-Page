@@ -5096,9 +5096,13 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showGregorianCheckbox.checked = settings.showGregorian !== false
     DOM.showMusicCheckbox.checked = settings.musicPlayerEnabled === true
-    if (DOM.musicPlayerUseDefaultColorCheckbox) {
-      DOM.musicPlayerUseDefaultColorCheckbox.checked =
-        settings.musicPlayerUseDefaultColor === true
+    if (DOM.musicPlayerUseDefaultColorMode) {
+      if (settings.musicPlayerUseDefaultColor === "thumbnail") {
+        DOM.musicPlayerUseDefaultColorMode.value = "thumbnail"
+      } else {
+        DOM.musicPlayerUseDefaultColorMode.value =
+          settings.musicPlayerUseDefaultColor === true ? "true" : "false"
+      }
     }
     if (DOM.musicSourceIconColorModeSelect) {
       DOM.musicSourceIconColorModeSelect.value =
