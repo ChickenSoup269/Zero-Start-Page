@@ -2523,7 +2523,12 @@ body.widgets-m3-accent
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
 }
 
+.music-style-overlap .music-player-wrapper.skin-light-transparent {
+  background: transparent !important;
+}
+
 .music-style-overlap .music-player-wrapper.skin-white-blur::after,
+.music-style-overlap .music-player-wrapper.skin-light-transparent::after,
 body.widgets-m3-accent
   .music-style-overlap
   .music-player-wrapper:not(.skin-transparent)::after,
@@ -2537,7 +2542,11 @@ body.widgets-m3-accent
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::after {
-  background: var(--music-player-bg, rgba(255, 255, 255, 0.78)) !important;
+  background: var(--music-player-bg, rgba(255, 255, 255, 0.88)) !important;
+}
+
+.music-style-overlap .music-player-wrapper.skin-light-transparent::after {
+  background: var(--music-player-bg, var(--glass-bg)) !important;
 }
 
 body.widgets-m3-accent
@@ -2574,7 +2583,7 @@ body.widgets-m3-accent
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .controls-row {
-  background: rgba(255, 255, 255, 0.18) !important;
+  background: transparent !important;
   border-radius: 999px;
 }
 
