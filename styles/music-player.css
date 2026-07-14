@@ -2542,31 +2542,18 @@ body.widgets-m3-accent
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur::after {
-  background: var(--music-player-bg, rgba(255, 255, 255, 0.88)) !important;
+  background: var(--music-player-bg, #ffffff) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-light-transparent::after {
-  background: var(--music-player-bg, var(--glass-bg)) !important;
+  background: var(--music-player-bg, #1a1a1a) !important;
 }
 
 body.widgets-m3-accent
   .music-style-overlap
   .music-player-wrapper:not(.skin-transparent)::after,
 .music-style-overlap .music-player-wrapper.skin-m3-accent::after {
-  background: var(--music-player-bg, radial-gradient(
-      circle at 18% 18%,
-      color-mix(
-        in srgb,
-        var(--m3-primary, var(--safe-accent)) 18%,
-        transparent
-      ),
-      transparent 38%
-    ),
-    color-mix(
-      in srgb,
-      var(--m3-surface-container-high, #111318) 86%,
-      var(--m3-primary-container, var(--safe-accent)) 14%
-    )) !important;
+  background: var(--music-player-bg, var(--m3-surface, #1e1e1e)) !important;
 }
 
 .music-style-overlap .music-player-wrapper.skin-white-blur .player-info h3,
@@ -5808,6 +5795,8 @@ body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-verti
 .music-style-overlap .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
   /* Clip the scaled background instead of using overflow: hidden on wrapper */
   clip-path: inset(8.333% round 15px);
+  opacity: 1 !important;
+  z-index: 0 !important;
 }
 
 /* Thumbnail Color Background Mode */
@@ -5815,3 +5804,16 @@ body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-verti
   background: var(--music-player-bg, var(--glass-bg)) !important;
 }
 
+.music-style-overlap .music-player-wrapper.thumbnail-color-mode {
+  background: transparent !important;
+}
+
+.music-style-overlap .music-player-wrapper.thumbnail-color-mode::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--music-player-bg, #1a1a1a) !important;
+}
