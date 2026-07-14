@@ -583,9 +583,16 @@
 
   // Initial update
   sendStateUpdate()
-  // Check if already playing
-  const video = document.querySelector("video") || document.querySelector("audio")
-  if (video && !video.paused) {
-    startPeriodicSync()
-  }
+
+  // Backup polling to detect play state if events fail or elements load later
+  setInterval(() => {
+    if (!updateInterval) {
+      try {
+        const state = getMediaState()
+        if (state && !state.paused) {
+          handlePlay()
+        }
+      } catch (e) {}
+    }
+  }, 2000)
 })()

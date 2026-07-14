@@ -1346,8 +1346,8 @@ export let showBookmarkGroupsCheckbox = document.getElementById(
   "show-bookmark-groups-checkbox",
 )
 export let musicStyleSelect = document.getElementById("music-style-select")
-export let musicPlayerUseDefaultColorCheckbox = document.getElementById(
-  "music-player-use-default-color-checkbox",
+export let musicPlayerUseDefaultColorMode = document.getElementById(
+  "music-player-use-default-color-mode",
 )
 export let musicSourceIconColorModeSelect = document.getElementById(
   "music-source-icon-color-mode",
@@ -3405,8 +3405,8 @@ export function refreshDOMReferences() {
   "show-bookmark-groups-checkbox",
 )
   musicStyleSelect = document.getElementById("music-style-select")
-  musicPlayerUseDefaultColorCheckbox = document.getElementById(
-  "music-player-use-default-color-checkbox",
+  musicPlayerUseDefaultColorMode = document.getElementById(
+  "music-player-use-default-color-mode",
 )
   musicSourceIconColorModeSelect = document.getElementById(
   "music-source-icon-color-mode",

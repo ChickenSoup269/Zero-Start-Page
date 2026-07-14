@@ -73,7 +73,7 @@ export class MusicPlayer {
     this.isPlaying = localStorage.getItem("musicPlayerLastIsPlaying") === "true"
     this.showPlayer = settings.musicPlayerEnabled || false
     this.currentStyle = settings.musicBarStyle || "vinyl"
-    this.useDefaultColor = settings.musicPlayerUseDefaultColor === true
+    this.useDefaultColor = settings.musicPlayerUseDefaultColor !== undefined ? settings.musicPlayerUseDefaultColor : true
     this.sourceIconColorMode = settings.musicSourceIconColorMode || "brand"
     this.pollInterval = null
     this.pollTimeout = null
@@ -200,7 +200,8 @@ export class MusicPlayer {
       "skin-transparent",
       "skin-light-transparent",
       "skin-vertical-card",
-      "skin-horizontal-card"
+      "skin-horizontal-card",
+      "skin-thumbnail-bg"
     )
     if (this.container)
       this.container.classList.remove(
@@ -209,7 +210,8 @@ export class MusicPlayer {
         "skin-transparent",
         "skin-light-transparent",
         "skin-vertical-card",
-        "skin-horizontal-card"
+        "skin-horizontal-card",
+        "skin-thumbnail-bg"
       )
 
     if (skin !== "default") {
@@ -353,7 +355,16 @@ export class MusicPlayer {
     this.container.classList.add(`music-style-${this.currentStyle}`)
 
     // Determine accent color
-    if (this.useDefaultColor) {
+    this.container.style.removeProperty("--music-player-bg")
+    this.container.classList.remove("thumbnail-color-mode")
+    if (this.useDefaultColor === "thumbnail") {
+      if (this.currentThumbnail) {
+        this.applyThumbnailColor(this.currentThumbnail)
+      } else {
+        this.container.style.removeProperty("--accent-color")
+        this.container.style.removeProperty("--accent-color-rgb")
+      }
+    } else if (this.useDefaultColor === true) {
       let accentColor = ""
       switch (styleName) {
         case "spotify":
@@ -427,6 +438,45 @@ export class MusicPlayer {
     if (this.visualizer) {
       this.visualizer.setStyle(this.currentStyle)
     }
+  }
+
+  applyThumbnailColor(url) {
+    if (!url || !this.container) return
+    const img = new Image()
+    img.crossOrigin = "Anonymous"
+    img.onload = () => {
+      const canvas = document.createElement("canvas")
+      canvas.width = 50
+      canvas.height = 50
+      const ctx = canvas.getContext("2d")
+      ctx.drawImage(img, 0, 0, 50, 50)
+      try {
+        const data = ctx.getImageData(0, 0, 50, 50).data
+        let r = 0, g = 0, b = 0, count = 0
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i + 3] < 128) continue
+          const avg = (data[i] + data[i+1] + data[i+2]) / 3
+          if (avg < 30 || avg > 230) continue
+          r += data[i]
+          g += data[i+1]
+          b += data[i+2]
+          count++
+        }
+        if (count > 0) {
+          const rr = Math.floor(r / count)
+          const gg = Math.floor(g / count)
+          const bb = Math.floor(b / count)
+          this.container.style.setProperty("--accent-color", `rgb(${rr}, ${gg}, ${bb})`)
+          this.container.style.setProperty("--accent-color-rgb", `${rr}, ${gg}, ${bb}`)
+          this.container.style.setProperty("--music-player-bg", `linear-gradient(135deg, rgba(${rr}, ${gg}, ${bb}, 0.45) 0%, rgba(${rr}, ${gg}, ${bb}, 0.15) 100%)`)
+          this.container.classList.add("thumbnail-color-mode")
+        }
+      } catch (e) {
+        // Fallback or CORS error - leave as is or remove
+      }
+    }
+    img.onerror = () => {}
+    img.src = url
   }
 
   startPolling() {
@@ -534,11 +584,18 @@ export class MusicPlayer {
       this.disc.style.backgroundPosition = "center"
       this.disc.classList.add("has-thumb")
       if (this.bgBlur) this.bgBlur.style.backgroundImage = `url(${data.thumbnail})`
+      if (this.useDefaultColor === "thumbnail") {
+        this.applyThumbnailColor(data.thumbnail)
+      }
     } else if (!data.thumbnail) {
       this.currentThumbnail = ""
       this.disc.style.backgroundImage = "none"
       this.disc.classList.remove("has-thumb")
       if (this.bgBlur) this.bgBlur.style.backgroundImage = "none"
+      if (this.useDefaultColor === "thumbnail") {
+        this.container.style.removeProperty("--accent-color")
+        this.container.style.removeProperty("--accent-color-rgb")
+      }
     }
 
     this._duration =
