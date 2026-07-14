@@ -5789,6 +5789,18 @@ body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-verti
   display: none !important;
 }
 
+/* Fix overlap style cutting off the top card in skin-thumbnail-bg */
+.music-style-overlap .music-player-wrapper.skin-thumbnail-bg {
+  overflow: visible !important;
+}
+.music-style-overlap .music-player-wrapper.skin-thumbnail-bg::before {
+  display: block !important;
+}
+.music-style-overlap .music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  /* Clip the scaled background instead of using overflow: hidden on wrapper */
+  clip-path: inset(8.333% round 15px);
+}
+
 /* Thumbnail Color Background Mode */
 .music-player-wrapper.thumbnail-color-mode {
   background: var(--music-player-bg, var(--glass-bg)) !important;
