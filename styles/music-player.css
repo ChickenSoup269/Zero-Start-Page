@@ -218,6 +218,21 @@
   border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+.music-style-pill .music-player-wrapper.skin-white-blur .disc-container,
+.music-style-neon .music-player-wrapper.skin-white-blur .disc-container,
+.music-style-vinyl .music-player-wrapper.skin-white-blur .disc-container {
+  background: none !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+}
+
+/* Ẩn disc-container khi không có thumbnail trong skin trắng mờ để tránh background đen bị lộ */
+.music-style-pill .music-player-wrapper.skin-white-blur .disc-container:not(:has(.vinyl-disc.has-thumb)),
+.music-style-neon .music-player-wrapper.skin-white-blur .disc-container:not(:has(.vinyl-disc.has-thumb)),
+.music-style-vinyl .music-player-wrapper.skin-white-blur .disc-container:not(:has(.vinyl-disc.has-thumb)) {
+  display: none !important;
+}
+
 .music-player-wrapper.skin-transparent {
   background: transparent !important;
   backdrop-filter: none !important;
@@ -5799,3 +5814,37 @@ body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-verti
   background: radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) 0%, transparent 60%), color-mix(in srgb, var(--m3-surface, #ffffff) 82%, transparent) !important;
   border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
 }
+
+/* --- Thumbnail Background Skin --- */
+.music-player-container.skin-thumbnail-bg {
+  background: transparent !important;
+}
+.music-player-wrapper.skin-thumbnail-bg {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  overflow: hidden !important;
+}
+.music-player-container.skin-thumbnail-bg .music-bg-blur,
+.music-player-wrapper.skin-thumbnail-bg .music-bg-blur {
+  display: block !important;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(25px) saturate(150%) brightness(0.5);
+  transform: scale(1.2);
+  opacity: 0.8;
+  pointer-events: none;
+  border-radius: inherit;
+}
+/* For styles that apply skin class to wrapper */
+.music-player-wrapper.skin-thumbnail-bg::before {
+  display: none !important;
+}
+
+/* Thumbnail Color Background Mode */
+.music-player-wrapper.thumbnail-color-mode {
+  background: var(--music-player-bg, var(--glass-bg)) !important;
+}
+
