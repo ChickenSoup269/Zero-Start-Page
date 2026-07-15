@@ -320,6 +320,7 @@ const EFFECT_KEY_MAP = {
   aura: "auraEffect",
   wind: "windEffect",
   hacker: "hackerEffect",
+  dvd: "dvdEffect",
   pixelCubes: "pixelCubesEffect",
   jellyfish: "jellyfishEffect",
   sakura: "sakuraEffect",
@@ -4299,6 +4300,20 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.floatingLinesAngleValue.textContent = `${settings.floatingLinesAngle || 0}°`
 
     DOM.rainHDColorPicker.value = settings.rainHDColor || "#99ccff"
+    
+    if (DOM.dvdTitleInput) {
+      DOM.dvdTitleInput.value = settings.dvdTitle || "DVD"
+    }
+    if (DOM.dvdColorModeSelect) {
+      DOM.dvdColorModeSelect.value = settings.dvdColorMode || "random"
+    }
+    if (DOM.dvdSpeedSlider) {
+      DOM.dvdSpeedSlider.value = settings.dvdSpeed || 3
+      if (DOM.dvdSpeedVal) {
+        DOM.dvdSpeedVal.textContent = settings.dvdSpeed || 3
+      }
+    }
+
     if (DOM.musicBarsColorPicker) {
       DOM.musicBarsColorPicker.value = settings.musicBarsColor || "#8be9fd"
     }
@@ -4337,6 +4352,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.hackerColorSetting)
       DOM.hackerColorSetting.style.display =
         settings.effect === "hacker" ? "block" : "none"
+    if (DOM.dvdTitleSetting)
+      DOM.dvdTitleSetting.style.display =
+        settings.effect === "dvd" ? "block" : "none"
+    if (DOM.dvdColorModeSetting)
+      DOM.dvdColorModeSetting.style.display =
+        settings.effect === "dvd" ? "block" : "none"
+    if (DOM.dvdSpeedSetting)
+      DOM.dvdSpeedSetting.style.display =
+        settings.effect === "dvd" ? "block" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"
@@ -4812,6 +4836,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "northernLights",
         "wind",
         "hacker",
+        "dvd",
         "pixelCubes",
         "pixelWeather",
         "pixelBlast",

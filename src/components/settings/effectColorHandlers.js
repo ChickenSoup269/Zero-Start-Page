@@ -111,6 +111,30 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.hackerEffect.updateColor(DOM.hackerColorPicker.value)
   })
 
+  DOM.dvdTitleInput?.addEventListener("input", () => {
+    updateSetting("dvdTitle", DOM.dvdTitleInput.value)
+    saveSettings()
+    if (effectInstances.dvdEffect)
+      effectInstances.dvdEffect.updateTitle(DOM.dvdTitleInput.value)
+  })
+
+  DOM.dvdColorModeSelect?.addEventListener("change", () => {
+    updateSetting("dvdColorMode", DOM.dvdColorModeSelect.value)
+    saveSettings()
+    if (effectInstances.dvdEffect)
+      effectInstances.dvdEffect.updateColorMode(DOM.dvdColorModeSelect.value)
+  })
+
+  DOM.dvdSpeedSlider?.addEventListener("input", () => {
+    const val = parseFloat(DOM.dvdSpeedSlider.value)
+    if (DOM.dvdSpeedVal) DOM.dvdSpeedVal.textContent = val
+    updateSetting("dvdSpeed", val)
+    if (effectInstances.dvdEffect) {
+      effectInstances.dvdEffect.updateSpeed(val)
+    }
+  })
+  DOM.dvdSpeedSlider?.addEventListener("change", () => saveSettings())
+
   DOM.pixelCubesColorPicker?.addEventListener("input", () => {
     updateSetting("pixelCubesColor", DOM.pixelCubesColorPicker.value)
     saveSettings()

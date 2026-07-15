@@ -427,6 +427,15 @@ export let sakuraColorPicker = document.getElementById("sakura-color-picker")
 export let sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
 )
+// DVD Effect
+export let dvdTitleSetting = document.getElementById("dvd-title-setting")
+export let dvdTitleInput = document.getElementById("dvd-title-input")
+export let dvdColorModeSetting = document.getElementById("dvd-color-mode-setting")
+export let dvdColorModeSelect = document.getElementById("dvd-color-mode-select")
+export let dvdSpeedSetting = document.getElementById("dvd-speed-setting")
+export let dvdSpeedSlider = document.getElementById("dvd-speed-slider")
+export let dvdSpeedVal = document.getElementById("dvd-speed-val")
+
 // Aurora Wave
 export let auroraWaveColorPicker = document.getElementById(
   "aurora-wave-color-picker",
@@ -2501,6 +2510,16 @@ export function refreshDOMReferences() {
   hackerColorSetting = document.getElementById(
   "hacker-color-setting",
 )
+
+  // DVD Effect
+  dvdTitleSetting = document.getElementById("dvd-title-setting")
+  dvdTitleInput = document.getElementById("dvd-title-input")
+  dvdColorModeSetting = document.getElementById("dvd-color-mode-setting")
+  dvdColorModeSelect = document.getElementById("dvd-color-mode-select")
+  dvdSpeedSetting = document.getElementById("dvd-speed-setting")
+  dvdSpeedSlider = document.getElementById("dvd-speed-slider")
+  dvdSpeedVal = document.getElementById("dvd-speed-val")
+
   pixelCubesColorPicker = document.getElementById(
   "pixel-cubes-color-picker",
 )

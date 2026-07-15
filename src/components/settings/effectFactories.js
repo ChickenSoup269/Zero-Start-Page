@@ -57,6 +57,8 @@ import { SoftAuroraEffect } from "../animations/softAurora.js"
 import { SilkEffect } from "../animations/silk.js"
 import { LightPillarEffect } from "../animations/lightPillar.js"
 
+import { DVDEffect } from "../animations/dvdScreenSaver.js"
+
 export function createEffectFactories(settings) {
   return {
     starFallEffect: () => new StarFall("effect-canvas", settings.starColor),
@@ -315,6 +317,12 @@ export function createEffectFactories(settings) {
         pillarHeight: settings.lightPillarHeight,
         noiseIntensity: settings.lightPillarNoiseIntensity,
         pillarRotation: settings.lightPillarRotation,
+      }),
+    dvdEffect: () =>
+      new DVDEffect("effect-canvas", {
+        title: settings.dvdTitle || "DVD",
+        colorMode: settings.dvdColorMode || "random",
+        speed: settings.dvdSpeed || 3,
       }),
     svgWaveEffect: () => new SvgWaveGenerator(),
   }

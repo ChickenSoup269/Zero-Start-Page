@@ -922,6 +922,11 @@
                                 <span class="effect-name" data-i18n="effect_hacker">Hacker</span>
                                 <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                             </button>
+                            <button class="effect-item" data-value="dvd" data-search="dvd bounce screen saver nostalgic">
+                                <span class="effect-icon"><i class="fa-solid fa-compact-disc"></i></span>
+                                <span class="effect-name" data-i18n="effect_dvd">DVD Screen Saver</span>
+                                <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                            </button>
                             <button class="effect-item" data-value="jellyfish"
                                 data-search="jellyfish sua mourse interactive hover">
                                 <span class="effect-icon"><i class="fas fa-smile"></i></span>
@@ -1192,6 +1197,26 @@
                                 <span data-i18n="effect_customization">Effect Settings</span>
                             </div>
                             <div id="active-effect-settings-body">
+                                <!-- DVD Screen Saver Settings -->
+                                <div id="dvd-title-setting" class="setting-item" style="display: none;">
+                                    <label for="dvd-title-input" data-i18n="setting_dvd_title">Custom Text</label>
+                                    <input type="text" id="dvd-title-input" value="DVD" class="full-width" />
+                                </div>
+                                <div id="dvd-color-mode-setting" class="setting-item" style="display: none;">
+                                    <label for="dvd-color-mode-select" data-i18n="setting_dvd_color_mode">Color Mode</label>
+                                    <select id="dvd-color-mode-select" class="full-width">
+                                        <option value="random">Random Bounce Color</option>
+                                        <option value="accent">Use Accent Color</option>
+                                    </select>
+                                </div>
+                                <div id="dvd-speed-setting" class="setting-item" style="display: none;">
+                                    <label for="dvd-speed-slider">
+                                        <span data-i18n="setting_dvd_speed">Speed</span>:
+                                        <span id="dvd-speed-val">3</span>
+                                    </label>
+                                    <input type="range" id="dvd-speed-slider" min="1" max="10" step="0.5" value="3" />
+                                </div>
+
                                 <!-- Aurora Wave Settings -->
                                 <div id="aurora-wave-color-setting" class="setting-item-row" style="display: none;">
                                     <label for="aurora-wave-color-picker" data-i18n="setting_aurora_wave_color">Aurora
