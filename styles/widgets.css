@@ -9664,7 +9664,12 @@ body.quick-access-transparent .quick-access-popup {
   -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
 }
 
-body.quick-access-transparent .quick-btn,
+body.quick-access-transparent .quick-btn {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
 body.quick-access-transparent .quick-access-popup .quick-access-section-row,
 body.quick-access-transparent .quick-access-popup .quick-access-border-row,
 body.quick-access-transparent .quick-access-popup .quick-access-radius-chip {
@@ -9688,7 +9693,12 @@ body.quick-access-light .quick-access-bar .quick-access-divider {
   background: rgba(0, 0, 0, 0.1) !important;
 }
 
-body.quick-access-light .quick-btn,
+body.quick-access-light .quick-btn {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #333 !important;
+}
+
 body.quick-access-light .quick-access-popup .quick-access-section-row,
 body.quick-access-light .quick-access-popup .quick-access-border-row,
 body.quick-access-light .quick-access-popup .quick-access-radius-chip {
@@ -9738,7 +9748,11 @@ body.quick-access-light-transparent .quick-access-popup {
   -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
 }
 
-body.quick-access-light-transparent .quick-btn,
+body.quick-access-light-transparent .quick-btn {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
 body.quick-access-light-transparent
   .quick-access-popup
   .quick-access-section-row,
