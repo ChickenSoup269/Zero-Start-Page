@@ -3317,6 +3317,66 @@ body.sidebar-light .preset-code-line-value {
   border-radius: var(--radius-sm) !important;
 }
 
+/* Modern Action Buttons */
+.bg-action-btn {
+  padding: var(--space-2) var(--space-1);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid transparent;
+}
+
+.bg-action-btn i {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.bg-action-btn:hover:not(:disabled) i {
+  transform: scale(1.1);
+}
+
+.bg-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.bg-action-btn.primary {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-color) 100%);
+  color: var(--accent-contrast-color, #000) !important;
+  box-shadow: 0 4px 15px rgba(var(--accent-color-rgb), 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.bg-action-btn.primary:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(var(--accent-color-rgb), 0.4);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+.bg-action-btn.primary * {
+  color: var(--accent-contrast-color, #000) !important;
+}
+
+.bg-action-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-color);
+}
+.bg-action-btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(var(--accent-color-rgb), 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
 /* New Control Groups */
 .bg-control-card {
   background: var(--glass-bg, rgba(255, 255, 255, 0.08));

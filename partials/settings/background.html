@@ -118,7 +118,7 @@
                 <span data-i18n="bg_free_random_photos_no_api"
                     style="font-size:0.65rem; opacity:0.55; margin-left:6px; font-weight:400;">no API key</span>
             </div>
-            <p data-i18n="bg_free_random_photos_desc"
+            <p data-i18n-html="bg_free_random_photos_desc"
                 style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
                 High-quality photos from <strong>Picsum</strong> — completely free, no signup needed.
             </p>
@@ -141,10 +141,10 @@
             </div>
 
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button id="picsum-random-btn" class="unsplash-shortcut-btn highlight" style="flex:1; min-width:120px;">
+                <button id="picsum-random-btn" class="bg-action-btn primary" style="flex:1;">
                     <i class="fa-solid fa-shuffle"></i> <span data-i18n="bg_random_photo">Random Photo</span>
                 </button>
-                <button id="picsum-save-btn" class="secondary-btn" disabled style="flex:1; min-width:120px;">
+                <button id="picsum-save-btn" class="bg-action-btn secondary" disabled style="flex:1;">
                     <i class="fa-solid fa-download"></i> <span data-i18n="bg_save_to_gallery">Save to Gallery</span>
                 </button>
             </div>
@@ -157,16 +157,16 @@
                 <i class="fa-solid fa-photo-film"></i> <span data-i18n="bg_local_gallery_random">Local Gallery
                     Random</span>
             </div>
-            <p data-i18n="bg_local_gallery_random_desc"
+            <p data-i18n-html="bg_local_gallery_random_desc"
                 style="font-size:0.75rem; opacity:0.6; margin:0 0 14px; line-height:1.5;">
                 Randomly cycle through your <strong>saved local images</strong>.
             </p>
 
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 14px;">
-                <button id="local-random-btn" class="unsplash-shortcut-btn highlight" style="flex:1; min-width:120px;">
+                <button id="local-random-btn" class="bg-action-btn primary" style="flex:1;">
                     <i class="fa-solid fa-dice"></i> <span data-i18n="bg_pick_random">Pick Random</span>
                 </button>
-                <button id="local-random-fav-btn" class="secondary-btn" style="flex:1; min-width:120px;">
+                <button id="local-random-fav-btn" class="bg-action-btn secondary" style="flex:1;">
                     <i class="fa-solid fa-star"></i> <span data-i18n="bg_favorites_only">Favorites Only</span>
                 </button>
             </div>

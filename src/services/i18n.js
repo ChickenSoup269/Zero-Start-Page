@@ -135,6 +135,13 @@ export function applyTranslations() {
       }
     }
   })
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-html")
+    if (i18n[key]) {
+      el.innerHTML = i18n[key]
+    }
+  })
+
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     const key = el.getAttribute("data-i18n-placeholder")
     if (i18n[key]) el.placeholder = i18n[key]
