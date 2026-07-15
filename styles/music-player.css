@@ -5158,6 +5158,27 @@ body.widgets-m3-accent
   opacity: 1;
 }
 
+/* Small hover title for default skin */
+.music-style-square-thumb:not(.skin-vertical-card):not(.skin-horizontal-card) .music-player-wrapper::after {
+  content: "NOW PLAYING";
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 3;
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.music-style-square-thumb:not(.skin-vertical-card):not(.skin-horizontal-card):hover .music-player-wrapper::after {
+  opacity: 1;
+}
+
 .music-style-square-thumb .disc-container {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -5468,11 +5489,6 @@ body.widgets-m3-accent
   font-size: 0.7rem;
   font-weight: 600;
 }
-.music-style-square-thumb.skin-vertical-card .progress-bar-track {
-  height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; flex: 1; position: relative; cursor: pointer;
-}
-.music-style-square-thumb.skin-vertical-card .progress-bar-fill { background: var(--accent-color, #fff); border-radius: 2px; }
-.music-style-square-thumb.skin-vertical-card .progress-bar-thumb { background: var(--accent-color, #fff); width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
 .music-style-square-thumb.skin-vertical-card .controls-row {
   width: 100%;
@@ -5638,11 +5654,6 @@ body.widgets-m3-accent
   font-size: 0.7rem !important;
   font-weight: 600 !important;
 }
-.music-style-square-thumb.skin-horizontal-card .progress-bar-track {
-  height: 4px !important; background: rgba(255,255,255,0.2) !important; border-radius: 2px !important; flex: 1 !important; position: relative !important; cursor: pointer !important;
-}
-.music-style-square-thumb.skin-horizontal-card .progress-bar-fill { background: var(--accent-color, #fff) !important; border-radius: 2px !important; }
-.music-style-square-thumb.skin-horizontal-card .progress-bar-thumb { background: var(--accent-color, #fff) !important; width: 10px !important; height: 10px !important; margin-top: -3px !important; border-radius: 50% !important; box-shadow: 0 0 5px rgba(0,0,0,0.5) !important; }
 
 .music-style-square-thumb.skin-horizontal-card .controls-row {
   width: 100% !important;
