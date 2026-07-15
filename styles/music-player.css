@@ -5389,7 +5389,6 @@ body.widgets-m3-accent
   flex-direction: column;
   padding: 0 !important;
   margin: 0 !important;
-  background: none !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -5556,7 +5555,6 @@ body.widgets-m3-accent
   flex-direction: row !important;
   padding: 0 !important;
   margin: 0 !important;
-  background: none !important;
   border: none !important;
   box-shadow: none !important;
 }

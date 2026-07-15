@@ -454,6 +454,8 @@ export class MusicPlayer {
     if (this.visualizer) {
       this.visualizer.setStyle(this.currentStyle)
     }
+
+    this.applySkin()
   }
 
   applyThumbnailColor(url) {

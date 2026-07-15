@@ -936,6 +936,9 @@ function createApplySettings(effectInstances) {
         el.classList.toggle("skin-m3-accent", skin === "m3-accent")
         el.classList.toggle("skin-transparent", skin === "transparent")
         el.classList.toggle("skin-light-transparent", skin === "light-transparent")
+        el.classList.toggle("skin-vertical-card", skin === "vertical-card")
+        el.classList.toggle("skin-horizontal-card", skin === "horizontal-card")
+        el.classList.toggle("skin-gameboy", skin === "gameboy")
         el.classList.toggle(
           "widget-border-hidden",
           settings[`${key}HideBorder`] === true,
@@ -949,6 +952,9 @@ function createApplySettings(effectInstances) {
             wrapper.classList.toggle("skin-m3-accent", skin === "m3-accent")
             wrapper.classList.toggle("skin-transparent", skin === "transparent")
             wrapper.classList.toggle("skin-light-transparent", skin === "light-transparent")
+            wrapper.classList.toggle("skin-vertical-card", skin === "vertical-card")
+            wrapper.classList.toggle("skin-horizontal-card", skin === "horizontal-card")
+            wrapper.classList.toggle("skin-gameboy", skin === "gameboy")
             wrapper.classList.toggle(
               "widget-border-hidden",
               settings.musicPlayerHideBorder === true,
