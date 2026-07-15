@@ -2713,6 +2713,10 @@ export function initBookmarks() {
   })
   
   window.addEventListener("layoutUpdated", (e) => {
+    if (e.detail && e.detail.key === "forceLayoutSync") {
+      requestAnimationFrame(updateOverflowBookmarks)
+    }
+
     if (
       e.detail &&
       (e.detail.key === "bookmarkLayout" ||

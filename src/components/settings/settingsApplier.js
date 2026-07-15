@@ -3107,8 +3107,8 @@ function createApplySettings(effectInstances) {
 
     // Call updateSettingsInputs to sync all UI
     if (typeof effectInstances.updateSettingsInputs === "function") {
-      // Signal resizing to update layout-dependent widgets like bookmark overflow
-      window.dispatchEvent(new Event("resize"))
+      // Signal layout update instead of global resize to prevent resetting heavy animations
+      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "forceLayoutSync" } }))
       effectInstances.updateSettingsInputs()
     }
   }
