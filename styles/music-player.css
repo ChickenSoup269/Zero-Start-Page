@@ -5136,7 +5136,6 @@ body.widgets-m3-accent
   flex-direction: column;
   padding: 0 !important;
   margin: 0 !important;
-  background: none !important;
   border: none !important;
   box-shadow: none !important;
   z-index: 1;
@@ -5393,6 +5392,12 @@ body.widgets-m3-accent
   box-shadow: none !important;
 }
 
+.music-style-square-thumb.skin-vertical-card .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode),
+.music-style-square-thumb.skin-horizontal-card .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode),
+.music-style-square-thumb .music-player-wrapper:not(.skin-thumbnail-bg):not(.thumbnail-color-mode) {
+  background: transparent !important;
+}
+
 /* Top Square Thumbnail */
 .music-style-square-thumb.skin-vertical-card .disc-container {
   position: absolute;
@@ -5589,7 +5594,7 @@ body.widgets-m3-accent
   content: '' !important;
   position: absolute !important;
   top: 0 !important; right: 0 !important; width: 60px !important; height: 100% !important;
-  background: linear-gradient(to right, transparent 0%, var(--glass-bg, #0f0f0f) 100%) !important;
+  background: linear-gradient(to right, transparent 0%, #0f0f0f 100%) !important;
   pointer-events: none !important;
   z-index: 1 !important;
 }
@@ -5735,36 +5740,7 @@ body.widgets-m3-accent
   display: none !important;
 }
 
-/* Context Menu Theme Match for Card Skins */
-body.context-menu-dark .music-player-container.music-style-square-thumb.skin-horizontal-card,
-body.context-menu-dark .music-player-container.music-style-square-thumb.skin-vertical-card {
-  background: rgba(35, 35, 45, 0.75) !important;
-  backdrop-filter: blur(25px) saturate(180%) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
-}
-body.context-menu-light .music-player-container.music-style-square-thumb.skin-horizontal-card,
-body.context-menu-light .music-player-container.music-style-square-thumb.skin-vertical-card {
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(25px) saturate(180%) !important;
-  border: 0.5px solid rgba(0, 0, 0, 0.1) !important;
-}
-body.context-menu-macos .music-player-container.music-style-square-thumb.skin-horizontal-card,
-body.context-menu-macos .music-player-container.music-style-square-thumb.skin-vertical-card {
-  background: rgba(246, 246, 248, 0.78) !important;
-  backdrop-filter: blur(38px) saturate(190%) !important;
-  border: 0.5px solid rgba(0, 0, 0, 0.14) !important;
-}
-body.context-menu-none .music-player-container.music-style-square-thumb.skin-horizontal-card,
-body.context-menu-none .music-player-container.music-style-square-thumb.skin-vertical-card {
-  background: rgba(255, 255, 255, 0.54) !important;
-  backdrop-filter: blur(24px) saturate(170%) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.66) !important;
-}
-body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-horizontal-card,
-body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-vertical-card {
-  background: radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 20%, transparent) 0%, transparent 60%), color-mix(in srgb, var(--m3-surface, #ffffff) 82%, transparent) !important;
-  border: 1px solid color-mix(in srgb, var(--m3-primary, var(--safe-accent)) 15%, transparent) !important;
-}
+/* Context menu match logic removed because user prefers independent music player background */
 
 /* --- Thumbnail Background Skin --- */
 .music-player-container.skin-thumbnail-bg {
@@ -5810,7 +5786,7 @@ body.context-menu-m3 .music-player-container.music-style-square-thumb.skin-verti
 
 /* Thumbnail Color Background Mode */
 .music-player-wrapper.thumbnail-color-mode {
-  background: var(--music-player-bg, var(--glass-bg)) !important;
+  background: var(--music-player-bg, #1a1a1a) !important;
 }
 
 .music-style-overlap .music-player-wrapper.thumbnail-color-mode {
