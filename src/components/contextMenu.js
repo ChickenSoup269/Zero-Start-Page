@@ -1152,17 +1152,17 @@ export function showContextMenu(
       itemsToInsert.push(lightTransparentBtn)
 
       // Thumbnail Background Skin
-      const isThumbnailBg = settings.musicPlayerSkin === "thumbnail-bg"
+      const isThumbnailBg = settings.musicPlayerThumbnailBg === true
       const thumbnailBgBtn = document.createElement("div")
       thumbnailBgBtn.className = "context-menu-item custom-music-item"
       thumbnailBgBtn.innerHTML = `<i class="fa-solid fa-image"></i> <span>${isThumbnailBg ? i18n.music_player_skin_default || "Default Skin" : i18n.skin_thumbnail_bg || "Thumbnail Background"}</span>`
       thumbnailBgBtn.onclick = () => {
-        const newSkin = isThumbnailBg ? "default" : "thumbnail-bg"
-        updateSetting("musicPlayerSkin", newSkin)
+        const newVal = !isThumbnailBg
+        updateSetting("musicPlayerThumbnailBg", newVal)
         saveSettings()
         window.dispatchEvent(
           new CustomEvent("settingsUpdated", {
-            detail: { key: "musicPlayerSkin", value: newSkin },
+            detail: { key: "musicPlayerThumbnailBg", value: newVal },
           }),
         )
         hideContextMenu()

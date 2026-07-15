@@ -113,6 +113,9 @@ export class MusicPlayer {
       } else if (key === "showQuickAccessBg") {
         this.applySkin()
       }
+      if (key === "musicPlayerThumbnailBg") {
+        this.applyThumbnailBg(value)
+      }
       if (key === "musicPlayerNoShaking") {
         this.applyNoShaking(value)
       }
@@ -169,6 +172,9 @@ export class MusicPlayer {
     if (settings.musicPlayerSkin && settings.musicPlayerSkin !== "default") {
       this.applySkin(settings.musicPlayerSkin)
     }
+    if (settings.musicPlayerThumbnailBg) {
+      this.applyThumbnailBg(true)
+    }
 
     // Strictly apply the saved expansion state
     this.container.classList.toggle("minimized", !this.isVisible)
@@ -200,8 +206,7 @@ export class MusicPlayer {
       "skin-transparent",
       "skin-light-transparent",
       "skin-vertical-card",
-      "skin-horizontal-card",
-      "skin-thumbnail-bg"
+      "skin-horizontal-card"
     )
     if (this.container)
       this.container.classList.remove(
@@ -210,8 +215,7 @@ export class MusicPlayer {
         "skin-transparent",
         "skin-light-transparent",
         "skin-vertical-card",
-        "skin-horizontal-card",
-        "skin-thumbnail-bg"
+        "skin-horizontal-card"
       )
 
     if (skin !== "default") {
@@ -230,6 +234,18 @@ export class MusicPlayer {
       wrapper.classList.add("no-shaking")
     } else {
       wrapper.classList.remove("no-shaking")
+    }
+  }
+
+  applyThumbnailBg(enabled) {
+    if (!this.container) return
+    const wrapper = this.container.querySelector(".music-player-wrapper")
+    if (enabled) {
+      if (wrapper) wrapper.classList.add("skin-thumbnail-bg")
+      this.container.classList.add("skin-thumbnail-bg")
+    } else {
+      if (wrapper) wrapper.classList.remove("skin-thumbnail-bg")
+      this.container.classList.remove("skin-thumbnail-bg")
     }
   }
 
