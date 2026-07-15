@@ -92,7 +92,7 @@ export function makeDraggable(
       element.style.bottom = "auto"
       element.style.right = "auto"
       element.style.margin = "0"
-      if (savedPos.transform) element.style.transform = savedPos.transform
+      element.style.transform = savedPos.transform !== undefined ? savedPos.transform : "none"
       element.classList.add("has-position")
     }
   }
@@ -124,7 +124,7 @@ export function makeDraggable(
             if (saved && saved.top && saved.left) {
                element.style.top = saved.top
                element.style.left = saved.left
-               if (saved.transform) element.style.transform = saved.transform
+               element.style.transform = saved.transform !== undefined ? saved.transform : "none"
                element.classList.add("has-position")
             }
             clampElementIntoViewport(element, componentId, false)
@@ -206,41 +206,35 @@ export function makeDraggable(
     // 1. Prepare element: Disable laggy transitions and centering transforms
     const originalTransition = element.style.transition
     element.style.transition = "none"
-    
-    // 2. Measure parent offset by temporarily placing at 0,0 style
-    const originalLeft = element.style.left
-    const originalTop = element.style.top
-    const originalTransform = element.style.transform
-    const originalMargin = element.style.margin
-    const style = window.getComputedStyle(element)
-    const isFixed = style.position === "fixed"
-
-    // To measure exactly where style (0,0) lands on screen
     element.style.transform = "none"
     element.style.margin = "0"
     
-    // Capture current screen rect WITHOUT transforms
+    // 2. Measure current screen rect (where it is visually right now, without transforms)
     const currentRect = element.getBoundingClientRect()
     
+    // 3. Prepare for absolute 0,0 measurement
+    const style = window.getComputedStyle(element)
+    const isFixed = style.position === "fixed"
+    element.style.position = isFixed ? "fixed" : "absolute"
     element.style.left = "0px"
     element.style.top = "0px"
-    const zeroRect = element.getBoundingClientRect()
+    element.style.bottom = "auto"
+    element.style.right = "auto"
     
+    // 4. Measure where absolute 0,0 lands on screen
+    const zeroRect = element.getBoundingClientRect()
     magicOffsetX = zeroRect.left
     magicOffsetY = zeroRect.top
 
-    // 3. Set mouse offsets relative to the element's actual top-left corner
+    // 5. Calculate mouse offsets relative to the element's top-left
     offsetX = e.clientX - currentRect.left
     offsetY = e.clientY - currentRect.top
     initialWidth = currentRect.width
     initialHeight = currentRect.height
 
-    // 4. Re-position element to its screen location using pixels
-    element.style.position = isFixed ? "fixed" : "absolute"
+    // 6. Put it exactly where it was visually
     element.style.left = (currentRect.left - magicOffsetX) + "px"
     element.style.top = (currentRect.top - magicOffsetY) + "px"
-    element.style.bottom = "auto"
-    element.style.right = "auto"
     element.classList.add("has-position")
 
     document.onmouseup = closeDragElement

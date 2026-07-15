@@ -135,6 +135,32 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
   DOM.dvdSpeedSlider?.addEventListener("change", () => saveSettings())
 
+  DOM.dvdCloneSlider?.addEventListener("input", () => {
+    const val = parseInt(DOM.dvdCloneSlider.value, 10)
+    if (DOM.dvdCloneVal) DOM.dvdCloneVal.textContent = val
+    updateSetting("dvdCloneCount", val)
+    if (effectInstances.dvdEffect) {
+      effectInstances.dvdEffect.updateCloneCount(val)
+    }
+  })
+  DOM.dvdCloneSlider?.addEventListener("change", () => saveSettings())
+
+  DOM.dvdTrailCheckbox?.addEventListener("change", () => {
+    updateSetting("dvdTrail", DOM.dvdTrailCheckbox.checked)
+    saveSettings()
+    if (effectInstances.dvdEffect) {
+      effectInstances.dvdEffect.updateTrail(DOM.dvdTrailCheckbox.checked)
+    }
+  })
+
+  DOM.dvdGlitchCheckbox?.addEventListener("change", () => {
+    updateSetting("dvdGlitch", DOM.dvdGlitchCheckbox.checked)
+    saveSettings()
+    if (effectInstances.dvdEffect) {
+      effectInstances.dvdEffect.updateGlitch(DOM.dvdGlitchCheckbox.checked)
+    }
+  })
+
   DOM.pixelCubesColorPicker?.addEventListener("input", () => {
     updateSetting("pixelCubesColor", DOM.pixelCubesColorPicker.value)
     saveSettings()

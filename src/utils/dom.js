@@ -428,6 +428,7 @@ export let sakuraColorSetting = document.getElementById(
   "sakura-color-setting",
 )
 // DVD Effect
+export let dvdSettingsWrapper = document.getElementById("dvd-settings-wrapper")
 export let dvdTitleSetting = document.getElementById("dvd-title-setting")
 export let dvdTitleInput = document.getElementById("dvd-title-input")
 export let dvdColorModeSetting = document.getElementById("dvd-color-mode-setting")
@@ -435,6 +436,13 @@ export let dvdColorModeSelect = document.getElementById("dvd-color-mode-select")
 export let dvdSpeedSetting = document.getElementById("dvd-speed-setting")
 export let dvdSpeedSlider = document.getElementById("dvd-speed-slider")
 export let dvdSpeedVal = document.getElementById("dvd-speed-val")
+export let dvdCloneSetting = document.getElementById("dvd-clone-setting")
+export let dvdCloneSlider = document.getElementById("dvd-clone-slider")
+export let dvdCloneVal = document.getElementById("dvd-clone-val")
+export let dvdTrailSetting = document.getElementById("dvd-trail-setting")
+export let dvdTrailCheckbox = document.getElementById("dvd-trail-checkbox")
+export let dvdGlitchSetting = document.getElementById("dvd-glitch-setting")
+export let dvdGlitchCheckbox = document.getElementById("dvd-glitch-checkbox")
 
 // Aurora Wave
 export let auroraWaveColorPicker = document.getElementById(
@@ -2512,6 +2520,7 @@ export function refreshDOMReferences() {
 )
 
   // DVD Effect
+  dvdSettingsWrapper = document.getElementById("dvd-settings-wrapper")
   dvdTitleSetting = document.getElementById("dvd-title-setting")
   dvdTitleInput = document.getElementById("dvd-title-input")
   dvdColorModeSetting = document.getElementById("dvd-color-mode-setting")
@@ -2519,6 +2528,13 @@ export function refreshDOMReferences() {
   dvdSpeedSetting = document.getElementById("dvd-speed-setting")
   dvdSpeedSlider = document.getElementById("dvd-speed-slider")
   dvdSpeedVal = document.getElementById("dvd-speed-val")
+  dvdCloneSetting = document.getElementById("dvd-clone-setting")
+  dvdCloneSlider = document.getElementById("dvd-clone-slider")
+  dvdCloneVal = document.getElementById("dvd-clone-val")
+  dvdTrailSetting = document.getElementById("dvd-trail-setting")
+  dvdTrailCheckbox = document.getElementById("dvd-trail-checkbox")
+  dvdGlitchSetting = document.getElementById("dvd-glitch-setting")
+  dvdGlitchCheckbox = document.getElementById("dvd-glitch-checkbox")
 
   pixelCubesColorPicker = document.getElementById(
   "pixel-cubes-color-picker",

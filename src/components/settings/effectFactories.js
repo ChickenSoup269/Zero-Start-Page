@@ -323,6 +323,9 @@ export function createEffectFactories(settings) {
         title: settings.dvdTitle || "DVD",
         colorMode: settings.dvdColorMode || "random",
         speed: settings.dvdSpeed || 3,
+        cloneCount: settings.dvdCloneCount || 1,
+        trail: settings.dvdTrail === true,
+        glitch: settings.dvdGlitch === true,
       }),
     svgWaveEffect: () => new SvgWaveGenerator(),
   }

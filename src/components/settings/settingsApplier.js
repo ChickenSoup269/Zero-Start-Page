@@ -4309,9 +4309,17 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.dvdSpeedSlider) {
       DOM.dvdSpeedSlider.value = settings.dvdSpeed || 3
-      if (DOM.dvdSpeedVal) {
-        DOM.dvdSpeedVal.textContent = settings.dvdSpeed || 3
-      }
+      if (DOM.dvdSpeedVal) DOM.dvdSpeedVal.textContent = settings.dvdSpeed || 3
+    }
+    if (DOM.dvdCloneSlider) {
+      DOM.dvdCloneSlider.value = settings.dvdCloneCount || 1
+      if (DOM.dvdCloneVal) DOM.dvdCloneVal.textContent = settings.dvdCloneCount || 1
+    }
+    if (DOM.dvdTrailCheckbox) {
+      DOM.dvdTrailCheckbox.checked = settings.dvdTrail === true
+    }
+    if (DOM.dvdGlitchCheckbox) {
+      DOM.dvdGlitchCheckbox.checked = settings.dvdGlitch === true
     }
 
     if (DOM.musicBarsColorPicker) {
@@ -4352,6 +4360,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.hackerColorSetting)
       DOM.hackerColorSetting.style.display =
         settings.effect === "hacker" ? "block" : "none"
+    if (DOM.dvdSettingsWrapper)
+      DOM.dvdSettingsWrapper.style.display =
+        settings.effect === "dvd" ? "block" : "none"
     if (DOM.dvdTitleSetting)
       DOM.dvdTitleSetting.style.display =
         settings.effect === "dvd" ? "block" : "none"
@@ -4361,6 +4372,15 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.dvdSpeedSetting)
       DOM.dvdSpeedSetting.style.display =
         settings.effect === "dvd" ? "block" : "none"
+    if (DOM.dvdCloneSetting)
+      DOM.dvdCloneSetting.style.display =
+        settings.effect === "dvd" ? "block" : "none"
+    if (DOM.dvdTrailSetting)
+      DOM.dvdTrailSetting.style.display =
+        settings.effect === "dvd" ? "flex" : "none"
+    if (DOM.dvdGlitchSetting)
+      DOM.dvdGlitchSetting.style.display =
+        settings.effect === "dvd" ? "flex" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"

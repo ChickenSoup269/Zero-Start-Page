@@ -1198,23 +1198,72 @@
                             </div>
                             <div id="active-effect-settings-body">
                                 <!-- DVD Screen Saver Settings -->
-                                <div id="dvd-title-setting" class="setting-item" style="display: none;">
-                                    <label for="dvd-title-input" data-i18n="setting_dvd_title">Custom Text</label>
-                                    <input type="text" id="dvd-title-input" value="DVD" class="full-width" />
-                                </div>
-                                <div id="dvd-color-mode-setting" class="setting-item" style="display: none;">
-                                    <label for="dvd-color-mode-select" data-i18n="setting_dvd_color_mode">Color Mode</label>
-                                    <select id="dvd-color-mode-select" class="full-width">
-                                        <option value="random">Random Bounce Color</option>
-                                        <option value="accent">Use Accent Color</option>
-                                    </select>
-                                </div>
-                                <div id="dvd-speed-setting" class="setting-item" style="display: none;">
-                                    <label for="dvd-speed-slider">
-                                        <span data-i18n="setting_dvd_speed">Speed</span>:
-                                        <span id="dvd-speed-val">3</span>
-                                    </label>
-                                    <input type="range" id="dvd-speed-slider" min="1" max="10" step="0.5" value="3" />
+                                <div id="dvd-settings-wrapper" style="display: none; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
+                                    <div style="font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: var(--accent-color, #fff);">
+                                        <i class="fa-solid fa-compact-disc fa-spin-pulse"></i>
+                                        <span data-i18n="effect_dvd_settings_title">DVD Settings</span>
+                                    </div>
+                                    
+                                    <div id="dvd-title-setting" class="setting-item" style="display: block; margin-bottom: 12px;">
+                                        <label for="dvd-title-input" style="display: flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-keyboard" style="opacity: 0.7;"></i> 
+                                            <span data-i18n="setting_dvd_title">Custom Text</span>
+                                        </label>
+                                        <input type="text" id="dvd-title-input" value="DVD" class="full-width" style="margin-top: 5px; border-radius: 8px;" />
+                                    </div>
+                                    
+                                    <div id="dvd-color-mode-setting" class="setting-item" style="display: block; margin-bottom: 12px;">
+                                        <label for="dvd-color-mode-select" style="display: flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-palette" style="opacity: 0.7;"></i> 
+                                            <span data-i18n="setting_dvd_color_mode">Color Mode</span>
+                                        </label>
+                                        <select id="dvd-color-mode-select" class="full-width" style="margin-top: 5px; border-radius: 8px;">
+                                            <option value="random">🌈 Random Bounce Color</option>
+                                            <option value="accent">✨ Use Accent Color</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="dvd-speed-setting" class="setting-item" style="display: block; margin-bottom: 12px;">
+                                        <label for="dvd-speed-slider" style="display: flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-gauge-high" style="opacity: 0.7;"></i>
+                                            <span data-i18n="setting_dvd_speed">Speed</span>:
+                                            <span id="dvd-speed-val" style="font-weight: bold;">3</span>
+                                        </label>
+                                        <input type="range" id="dvd-speed-slider" min="1" max="10" step="0.5" value="3" style="margin-top: 5px;" />
+                                    </div>
+                                    
+                                    <div id="dvd-clone-setting" class="setting-item" style="display: block; margin-bottom: 12px;">
+                                        <label for="dvd-clone-slider" style="display: flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-copy" style="opacity: 0.7;"></i>
+                                            <span data-i18n="setting_dvd_clone">Clone Count</span>:
+                                            <span id="dvd-clone-val" style="font-weight: bold;">1</span>
+                                        </label>
+                                        <input type="range" id="dvd-clone-slider" min="1" max="10" step="1" value="1" style="margin-top: 5px;" />
+                                    </div>
+                                    
+                                    <div style="display: flex; gap: 15px; margin-top: 15px;">
+                                        <div id="dvd-trail-setting" class="setting-item-row" style="display: flex; flex: 1; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; justify-content: space-between;">
+                                            <label for="dvd-trail-checkbox" style="display: flex; align-items: center; gap: 6px; margin: 0;">
+                                                <i class="fa-solid fa-meteor" style="opacity: 0.7;"></i>
+                                                <span data-i18n="setting_dvd_trail">Ghost Trail</span>
+                                            </label>
+                                            <label class="switch" style="margin: 0;">
+                                                <input type="checkbox" id="dvd-trail-checkbox" />
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        
+                                        <div id="dvd-glitch-setting" class="setting-item-row" style="display: flex; flex: 1; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; justify-content: space-between;">
+                                            <label for="dvd-glitch-checkbox" style="display: flex; align-items: center; gap: 6px; margin: 0;">
+                                                <i class="fa-solid fa-bolt" style="opacity: 0.7;"></i>
+                                                <span data-i18n="setting_dvd_glitch">Glitch</span>
+                                            </label>
+                                            <label class="switch" style="margin: 0;">
+                                                <input type="checkbox" id="dvd-glitch-checkbox" />
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Aurora Wave Settings -->

@@ -11,10 +11,12 @@ export class DVDEffect {
     this.height = window.innerHeight
     this.boxWidth = 150
     this.boxHeight = 75
-    this.x = Math.random() * (this.width - this.boxWidth)
-    this.y = Math.random() * (this.height - this.boxHeight)
-    this.dx = this.speed * (Math.random() > 0.5 ? 1 : -1)
-    this.dy = this.speed * (Math.random() > 0.5 ? 1 : -1)
+    this.cloneCount = options.cloneCount || 1
+    this.trail = options.trail || false
+    this.glitch = options.glitch || false
+    
+    this.items = []
+    
     this.animationFrameId = null
     this.lastTime = Date.now()
 
@@ -23,28 +25,47 @@ export class DVDEffect {
     window.addEventListener("resize", this.handleResize)
   }
 
-  getRandomColor() {
+  getRandomColor(excludeColor) {
     const colors = [
       "#ff0000", "#00ff00", "#0000ff", "#ffff00", 
       "#ff00ff", "#00ffff", "#ffffff", "#ff8800"
     ]
     let newColor = colors[Math.floor(Math.random() * colors.length)]
-    while (newColor === this.currentColor && colors.length > 1) {
+    while (newColor === excludeColor && colors.length > 1) {
       newColor = colors[Math.floor(Math.random() * colors.length)]
     }
     return newColor
   }
 
-  getResolvedColor() {
+  getResolvedColor(currentColor) {
     if (this.colorMode === "accent") {
       return getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || "#ffffff"
     }
-    return this.currentColor
+    return currentColor
   }
 
   init() {
     this.handleResize()
     this.updateBoxSize()
+    this.syncItems()
+  }
+
+  syncItems() {
+    // Add or remove items to match cloneCount
+    while (this.items.length < this.cloneCount) {
+      const speed = this.speed
+      this.items.push({
+        x: Math.random() * (this.width - this.boxWidth),
+        y: Math.random() * (this.height - this.boxHeight),
+        dx: speed * (Math.random() > 0.5 ? 1 : -1),
+        dy: speed * (Math.random() > 0.5 ? 1 : -1),
+        currentColor: this.colorMode === "random" ? this.getRandomColor() : this.colorMode,
+        history: [] // for trail
+      })
+    }
+    while (this.items.length > this.cloneCount) {
+      this.items.pop()
+    }
   }
 
   updateBoxSize() {
@@ -64,10 +85,12 @@ export class DVDEffect {
     this.canvas.style.height = `${this.height}px`
     this.ctx.scale(dpr, dpr)
     
-    if (this.x + this.boxWidth > this.width) this.x = this.width - this.boxWidth
-    if (this.y + this.boxHeight > this.height) this.y = this.height - this.boxHeight
-    if (this.x < 0) this.x = 0
-    if (this.y < 0) this.y = 0
+    this.items.forEach(item => {
+      if (item.x + this.boxWidth > this.width) item.x = this.width - this.boxWidth
+      if (item.y + this.boxHeight > this.height) item.y = this.height - this.boxHeight
+      if (item.x < 0) item.x = 0
+      if (item.y < 0) item.y = 0
+    })
   }
 
   updateTitle(newTitle) {
@@ -77,59 +100,100 @@ export class DVDEffect {
 
   updateColorMode(mode) {
     this.colorMode = mode
-    if (this.colorMode !== "random") {
-      this.currentColor = this.colorMode
-    }
+    this.items.forEach(item => {
+      if (this.colorMode !== "random") {
+        item.currentColor = this.colorMode
+      }
+    })
   }
   
   updateSpeed(speed) {
     this.speed = speed
-    this.dx = this.dx > 0 ? this.speed : -this.speed
-    this.dy = this.dy > 0 ? this.speed : -this.speed
+    this.items.forEach(item => {
+      item.dx = item.dx > 0 ? this.speed : -this.speed
+      item.dy = item.dy > 0 ? this.speed : -this.speed
+    })
   }
 
-  draw() {
-    // Clear the canvas
-    this.ctx.clearRect(0, 0, this.width, this.height)
+  updateCloneCount(count) {
+    this.cloneCount = count
+    this.syncItems()
+  }
 
-    const resolvedColor = this.getResolvedColor()
+  updateTrail(trail) {
+    this.trail = trail
+    if (!trail) {
+      this.items.forEach(item => item.history = [])
+    }
+  }
 
-    this.ctx.save()
+  updateGlitch(glitch) {
+    this.glitch = glitch
+  }
+
+  drawItem(item, x, y, alpha, isGlitch, isGhost = false) {
+    const resolvedColor = this.getResolvedColor(item.currentColor)
     
+    this.ctx.save()
+    this.ctx.globalAlpha = alpha
     this.ctx.fillStyle = resolvedColor
     this.ctx.strokeStyle = resolvedColor
-    this.ctx.shadowColor = resolvedColor
-    this.ctx.shadowBlur = 8
+    
+    if (isGhost) {
+      this.ctx.shadowColor = "transparent"
+      this.ctx.shadowBlur = 0
+    } else {
+      this.ctx.shadowColor = resolvedColor
+      this.ctx.shadowBlur = 8
+    }
 
-    // Draw text (DVD)
+    // Glitch effect: apply a random transform and color split
+    if (isGlitch && Math.random() > 0.8) {
+      const offsetX = (Math.random() - 0.5) * 10
+      const offsetY = (Math.random() - 0.5) * 10
+      this.ctx.translate(offsetX, offsetY)
+      // Sometimes change color to red or cyan for chromatic aberration
+      if (Math.random() > 0.5) {
+        this.ctx.fillStyle = Math.random() > 0.5 ? "cyan" : "red"
+        this.ctx.shadowColor = this.ctx.fillStyle
+      }
+    }
+
     this.ctx.textAlign = "center"
     this.ctx.textBaseline = "middle"
 
-    // If title is DVD, we also draw "video" below it
     if (this.title.toUpperCase() === "DVD") {
       this.ctx.font = "italic bold 44px Impact, sans-serif"
-      this.ctx.fillText(
-        this.title, 
-        this.x + this.boxWidth / 2, 
-        this.y + this.boxHeight / 2 - 8
-      )
+      this.ctx.fillText(this.title, x + this.boxWidth / 2, y + this.boxHeight / 2 - 8)
       
       this.ctx.font = "bold 14px Arial, sans-serif"
-      this.ctx.fillText(
-        "video",
-        this.x + this.boxWidth / 2,
-        this.y + this.boxHeight / 2 + 18
-      )
+      this.ctx.fillText("video", x + this.boxWidth / 2, y + this.boxHeight / 2 + 18)
     } else {
       this.ctx.font = "italic bold 44px Impact, sans-serif"
-      this.ctx.fillText(
-        this.title, 
-        this.x + this.boxWidth / 2, 
-        this.y + this.boxHeight / 2
-      )
+      this.ctx.fillText(this.title, x + this.boxWidth / 2, y + this.boxHeight / 2)
     }
 
     this.ctx.restore()
+  }
+
+  draw() {
+    // Clear the canvas fully each frame
+    this.ctx.clearRect(0, 0, this.width, this.height)
+
+    this.items.forEach(item => {
+      // Draw trail if enabled
+      if (this.trail) {
+        for (let i = 0; i < item.history.length; i += 2) {
+          const hist = item.history[i]
+          const ratio = (i + 1) / item.history.length
+          const alpha = Math.pow(ratio, 2) * 0.15 // Subtle quadratic fade, max 0.15 opacity
+          this.drawItem(item, hist.x, hist.y, alpha, false, true)
+        }
+      }
+      
+      // Draw main item
+      this.drawItem(item, item.x, item.y, 1, this.glitch, false)
+    })
   }
 
   animate() {
@@ -138,36 +202,46 @@ export class DVDEffect {
     
     if (document.visibilityState === 'hidden') return
 
-    // Update position
-    this.x += this.dx
-    this.y += this.dy
+    this.items.forEach(item => {
+      // Record history for trail
+      if (this.trail) {
+        item.history.push({ x: item.x, y: item.y })
+        if (item.history.length > 16) {
+          item.history.shift()
+        }
+      }
 
-    let bounced = false
+      // Update position
+      item.x += item.dx
+      item.y += item.dy
 
-    // Collision detection
-    if (this.x + this.boxWidth >= this.width) {
-      this.x = this.width - this.boxWidth
-      this.dx = -this.dx
-      bounced = true
-    } else if (this.x <= 0) {
-      this.x = 0
-      this.dx = -this.dx
-      bounced = true
-    }
+      let bounced = false
 
-    if (this.y + this.boxHeight >= this.height) {
-      this.y = this.height - this.boxHeight
-      this.dy = -this.dy
-      bounced = true
-    } else if (this.y <= 0) {
-      this.y = 0
-      this.dy = -this.dy
-      bounced = true
-    }
+      // Collision detection
+      if (item.x + this.boxWidth >= this.width) {
+        item.x = this.width - this.boxWidth
+        item.dx = -item.dx
+        bounced = true
+      } else if (item.x <= 0) {
+        item.x = 0
+        item.dx = -item.dx
+        bounced = true
+      }
 
-    if (bounced && this.colorMode === "random") {
-      this.currentColor = this.getRandomColor()
-    }
+      if (item.y + this.boxHeight >= this.height) {
+        item.y = this.height - this.boxHeight
+        item.dy = -item.dy
+        bounced = true
+      } else if (item.y <= 0) {
+        item.y = 0
+        item.dy = -item.dy
+        bounced = true
+      }
+
+      if (bounced && this.colorMode === "random") {
+        item.currentColor = this.getRandomColor(item.currentColor)
+      }
+    })
 
     this.draw()
   }
