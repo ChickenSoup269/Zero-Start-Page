@@ -143,7 +143,6 @@ const SEARCH_ENGINES = {
   yep: {
     name: "Yep",
     domain: "yep.com",
-    iconUrl: "https://yep.com/favicon.ico",
     url: (q) => `https://yep.com/web?q=${encodeURIComponent(q)}`,
     placeholderKey: "search_placeholder_yep",
   },
