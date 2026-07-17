@@ -1878,5 +1878,6 @@
   "settings_icon_text": "Chữ Icon",
   "music_player_skin_square_thumb": "Giao diện Vuông",
   "music_player_skin_vertical_card": "Thẻ Dọc",
-  "music_player_skin_horizontal_card": "Thẻ Ngang"
+  "music_player_skin_horizontal_card": "Thẻ Ngang",
+  "settings_google_sync_test_notice": "Tính năng này đang trong quá trình thử nghiệm. Nếu bạn đăng nhập bị từ chối và muốn dùng thử, xin vui lòng điền thông tin vào <a href=\"https://docs.google.com/forms/d/e/1FAIpQLSe0MVV6-Z7sxb-4Zpv5wRyBcKPsl8EbOqRAnntgrdBc_gOXpQ/viewform?usp=dialog\" target=\"_blank\">form đăng ký này</a>."
 }

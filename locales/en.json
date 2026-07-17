@@ -1878,5 +1878,6 @@
   "settings_icon_text": "Icon Text",
   "music_player_skin_square_thumb": "Square Thumb Skin",
   "music_player_skin_vertical_card": "Vertical Card Skin",
-  "music_player_skin_horizontal_card": "Horizontal Card Skin"
+  "music_player_skin_horizontal_card": "Horizontal Card Skin",
+  "settings_google_sync_test_notice": "This feature is currently in testing. If your login is denied and you want to try it, please fill out <a href=\"https://docs.google.com/forms/d/e/1FAIpQLSe0MVV6-Z7sxb-4Zpv5wRyBcKPsl8EbOqRAnntgrdBc_gOXpQ/viewform?usp=dialog\" target=\"_blank\">this registration form</a>."
 }
