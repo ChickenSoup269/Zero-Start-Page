@@ -2280,8 +2280,15 @@ export function setupGeneralEventHandlers(
               : fit === "span"
                 ? { size: "cover", repeat: "no-repeat" }
                 : { size: fit, repeat: "no-repeat" }
+    const blurVal = next.bgBlur ?? current.bgBlur ?? 0
+    const blurDir = next.bgBlurDirection ?? current.bgBlurDirection ?? "none"
+    const blurColor = next.bgBlurColor ?? current.bgBlurColor ?? "#000000"
+    const blurOpacity = next.bgBlurColorOpacity ?? current.bgBlurColorOpacity ?? 0
+
+    const mainBlurStr = blurDir === "none" ? `blur(${blurVal}px)` : `blur(0px)`
+
     const filters = [
-      `blur(${next.bgBlur ?? current.bgBlur ?? 0}px)`,
+      mainBlurStr,
       `brightness(${next.bgBrightness ?? current.bgBrightness ?? 100}%)`,
       `contrast(${next.bgContrast ?? current.bgContrast ?? 100}%)`,
       `saturate(${next.bgSaturation ?? current.bgSaturation ?? 100}%)`,
@@ -2292,12 +2299,46 @@ export function setupGeneralEventHandlers(
     root.style.setProperty("--bg-filter", filters)
     root.style.setProperty(
       "--bg-blur",
-      `${next.bgBlur ?? current.bgBlur ?? 0}px`,
+      `${blurVal}px`,
     )
     root.style.setProperty(
       "--bg-brightness",
       `${next.bgBrightness ?? current.bgBrightness ?? 100}%`,
     )
+
+    const overlay = document.getElementById("bg-directional-blur-overlay")
+    if (overlay) {
+      if (blurDir !== "none" || blurOpacity > 0) {
+        overlay.style.display = "block"
+        overlay.style.backdropFilter = blurDir !== "none" ? `blur(${blurVal}px)` : "none"
+        overlay.style.webkitBackdropFilter = blurDir !== "none" ? `blur(${blurVal}px)` : "none"
+        
+        let maskStr = "none"
+        if (blurDir === "left-to-right") {
+          maskStr = "linear-gradient(to right, black 0%, transparent 100%)"
+        } else if (blurDir === "right-to-left") {
+          maskStr = "linear-gradient(to left, black 0%, transparent 100%)"
+        } else if (blurDir === "top-to-bottom") {
+          maskStr = "linear-gradient(to bottom, black 0%, transparent 100%)"
+        } else if (blurDir === "bottom-to-top") {
+          maskStr = "linear-gradient(to top, black 0%, transparent 100%)"
+        }
+
+        overlay.style.maskImage = maskStr
+        overlay.style.webkitMaskImage = maskStr
+
+        if (blurOpacity > 0) {
+           overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
+        } else {
+           overlay.style.backgroundColor = "transparent"
+        }
+      } else {
+        overlay.style.display = "none"
+        overlay.style.backdropFilter = "none"
+        overlay.style.webkitBackdropFilter = "none"
+        overlay.style.backgroundColor = "transparent"
+      }
+    }
     if (bgLayer) {
       bgLayer.style.backgroundPosition = `${x}% ${y}%`
       bgLayer.style.backgroundSize = layout.size
@@ -2360,6 +2401,31 @@ export function setupGeneralEventHandlers(
     applyBackgroundVisualPreview({ bgBlur: Number(DOM.bgBlurInput.value) })
     throttleSettingUpdate("bgBlur", Number(DOM.bgBlurInput.value))
   })
+
+  if (DOM.bgBlurDirectionSelect) {
+    DOM.bgBlurDirectionSelect.addEventListener("change", () => {
+      applyBackgroundVisualPreview({ bgBlurDirection: DOM.bgBlurDirectionSelect.value })
+      updateSetting("bgBlurDirection", DOM.bgBlurDirectionSelect.value)
+      saveSettings()
+    })
+  }
+
+  if (DOM.bgBlurColorInput) {
+    DOM.bgBlurColorInput.addEventListener("input", () => {
+      applyBackgroundVisualPreview({ bgBlurColor: DOM.bgBlurColorInput.value })
+      throttleSettingUpdate("bgBlurColor", DOM.bgBlurColorInput.value)
+    })
+  }
+
+  if (DOM.bgBlurColorOpacityInput) {
+    DOM.bgBlurColorOpacityInput.addEventListener("input", () => {
+      if (DOM.bgBlurColorOpacityValue) {
+        DOM.bgBlurColorOpacityValue.textContent = `${DOM.bgBlurColorOpacityInput.value}%`
+      }
+      applyBackgroundVisualPreview({ bgBlurColorOpacity: Number(DOM.bgBlurColorOpacityInput.value) })
+      throttleSettingUpdate("bgBlurColorOpacity", Number(DOM.bgBlurColorOpacityInput.value))
+    })
+  }
 
   if (DOM.bgContrastInput) {
     DOM.bgContrastInput.addEventListener("input", () => {

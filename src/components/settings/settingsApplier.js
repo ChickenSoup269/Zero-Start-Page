@@ -1978,14 +1978,55 @@ function createApplySettings(effectInstances) {
       "--bg-pos-y",
       `${settings.bgPositionY !== undefined ? settings.bgPositionY : 50}%`,
     )
+    const blurVal = settings.bgBlur ?? 0
+    const blurDirection = settings.bgBlurDirection || "none"
+    const blurColor = settings.bgBlurColor || "#000000"
+    const blurOpacity = settings.bgBlurColorOpacity || 0
+
+    const mainBlurStr = blurDirection === "none" ? `blur(${blurVal}px)` : `blur(0px)`
+
     const filters = [
-      `blur(${settings.bgBlur ?? 0}px)`,
+      mainBlurStr,
       `brightness(${settings.bgBrightness ?? 100}%)`,
       `contrast(${settings.bgContrast ?? 100}%)`,
       `saturate(${settings.bgSaturation ?? 100}%)`,
     ].join(" ")
 
     document.documentElement.style.setProperty("--bg-filter", filters)
+
+    const overlay = document.getElementById("bg-directional-blur-overlay")
+    if (overlay) {
+      if (blurDirection !== "none" || blurOpacity > 0) {
+        overlay.style.display = "block"
+        overlay.style.backdropFilter = blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
+        overlay.style.webkitBackdropFilter = blurDirection !== "none" ? `blur(${blurVal}px)` : "none"
+        
+        let maskStr = "none"
+        if (blurDirection === "left-to-right") {
+          maskStr = "linear-gradient(to right, black 0%, transparent 100%)"
+        } else if (blurDirection === "right-to-left") {
+          maskStr = "linear-gradient(to left, black 0%, transparent 100%)"
+        } else if (blurDirection === "top-to-bottom") {
+          maskStr = "linear-gradient(to bottom, black 0%, transparent 100%)"
+        } else if (blurDirection === "bottom-to-top") {
+          maskStr = "linear-gradient(to top, black 0%, transparent 100%)"
+        }
+
+        overlay.style.maskImage = maskStr
+        overlay.style.webkitMaskImage = maskStr
+
+        if (blurOpacity > 0) {
+           overlay.style.backgroundColor = `color-mix(in srgb, ${blurColor} ${blurOpacity}%, transparent)`
+        } else {
+           overlay.style.backgroundColor = "transparent"
+        }
+      } else {
+        overlay.style.display = "none"
+        overlay.style.backdropFilter = "none"
+        overlay.style.webkitBackdropFilter = "none"
+        overlay.style.backgroundColor = "transparent"
+      }
+    }
 
     // Fallback for legacy support if needed
     document.documentElement.style.setProperty(
@@ -4094,6 +4135,16 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.bgBlurInput.value = settings.bgBlur ?? 0
     DOM.bgBlurValue.textContent = `${settings.bgBlur ?? 0}px`
+    if (DOM.bgBlurDirectionSelect) {
+      DOM.bgBlurDirectionSelect.value = settings.bgBlurDirection || "none"
+    }
+    if (DOM.bgBlurColorInput) {
+      DOM.bgBlurColorInput.value = settings.bgBlurColor || "#000000"
+    }
+    if (DOM.bgBlurColorOpacityInput) {
+      DOM.bgBlurColorOpacityInput.value = settings.bgBlurColorOpacity || 0
+      if (DOM.bgBlurColorOpacityValue) DOM.bgBlurColorOpacityValue.textContent = `${settings.bgBlurColorOpacity || 0}%`
+    }
     DOM.bgBrightnessInput.value = settings.bgBrightness ?? 100
     DOM.bgBrightnessValue.textContent = `${settings.bgBrightness ?? 100}%`
 

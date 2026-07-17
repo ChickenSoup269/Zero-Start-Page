@@ -201,6 +201,34 @@
                     <input type="range" id="bg-blur-input" min="0" max="40" step="1" value="0">
                 </div>
 
+                <div class="bg-slider-item full-row">
+                    <div class="bg-slider-info" style="margin-bottom: 5px;">
+                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-to-circle"></i> <span
+                                data-i18n="settings_bg_blur_direction">Blur Direction</span></span>
+                    </div>
+                    <select id="bg-blur-direction-select" class="full-width">
+                        <option value="none" data-i18n="settings_bg_blur_dir_none">All (Default)</option>
+                        <option value="left-to-right" data-i18n="settings_bg_blur_dir_l2r">Left to Right</option>
+                        <option value="right-to-left" data-i18n="settings_bg_blur_dir_r2l">Right to Left</option>
+                        <option value="top-to-bottom" data-i18n="settings_bg_blur_dir_t2b">Top to Bottom</option>
+                        <option value="bottom-to-top" data-i18n="settings_bg_blur_dir_b2t">Bottom to Top</option>
+                    </select>
+                </div>
+
+                <div class="bg-slider-item full-row">
+                    <div class="bg-slider-info" style="margin-bottom: 5px;">
+                        <span class="bg-slider-label"><i class="fa-solid fa-fill"></i> <span
+                                data-i18n="settings_bg_blur_color">Blur Color</span></span>
+                        <span id="bg-blur-color-opacity-value" class="bg-slider-value">0%</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 2px;">
+                            <input type="color" id="bg-blur-color-input" value="#000000" style="width: 32px; height: 32px; border: none; padding: 0; background: transparent; cursor: pointer; display: block; border-radius: 4px;">
+                        </div>
+                        <input type="range" id="bg-blur-color-opacity-input" min="0" max="100" step="1" value="0" style="flex: 1;">
+                    </div>
+                </div>
+
                 <div class="bg-slider-item">
                     <div class="bg-slider-info">
                         <span class="bg-slider-label"><i class="fa-solid fa-sun"></i> <span
