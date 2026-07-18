@@ -2033,16 +2033,26 @@ export function updateTime() {
       clockElement.innerHTML = spaceConcentricHtmlCache;
     }
 
-    const setRingRot = (id, angle) => {
+    const setRingRot = (id, angle, activeIndex) => {
       const el = clockElement.querySelector(`#${id}`);
-      if (el) el.style.transform = `rotate(${angle}deg)`;
+      if (el) {
+        el.style.transform = `rotate(${angle}deg)`;
+        const items = el.querySelectorAll('.sc-text-item');
+        items.forEach((item, idx) => {
+          if (idx === activeIndex) {
+            item.classList.add('is-active');
+          } else {
+            item.classList.remove('is-active');
+          }
+        });
+      }
     }
-    setRingRot('sc-ring-month', monthAngle);
-    setRingRot('sc-ring-day', dayAngle);
-    setRingRot('sc-ring-week', weekAngle);
-    setRingRot('sc-ring-hour', hourAngle);
-    setRingRot('sc-ring-min', minAngle);
-    setRingRot('sc-ring-sec', secAngle);
+    setRingRot('sc-ring-month', monthAngle, currentMonth);
+    setRingRot('sc-ring-day', dayAngle, currentDay);
+    setRingRot('sc-ring-week', weekAngle, currentWeek);
+    setRingRot('sc-ring-hour', hourAngle, currentHour);
+    setRingRot('sc-ring-min', minAngle, currentMin);
+    setRingRot('sc-ring-sec', secAngle, currentSec);
 
   } else {
     clockElement.textContent = timeString
