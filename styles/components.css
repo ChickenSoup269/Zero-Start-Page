@@ -715,7 +715,21 @@
 
 .bookmark-edit-color-field input[type="color"] {
   height: 38px;
-  padding: 4px;
+  padding: 0;
+  border-radius: 19px;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: none;
+}
+
+.bookmark-edit-color-field input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.bookmark-edit-color-field input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 19px;
 }
 
 .bookmark-edit-color-control {

@@ -2040,25 +2040,28 @@ body.sidebar-light .preset-code-line-value {
 
 .setting-group input[type="color"] {
   width: 100%;
-  height: 48px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-sm);
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: none;
+  border-radius: 22px;
   cursor: pointer;
-  padding: var(--space-1);
+  padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .setting-group input[type="color"]:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .setting-group input[type="color"]:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  box-shadow: 0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  outline: none;
 }
 
 .setting-group input[type="color"]::-webkit-color-swatch-wrapper {
@@ -2067,7 +2070,7 @@ body.sidebar-light .preset-code-line-value {
 
 .setting-group input[type="color"]::-webkit-color-swatch {
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 20px;
 }
 
 /* Accent Color Selector */
@@ -2915,10 +2918,19 @@ body.sidebar-light .preset-code-line-value {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.gradient-extra-pickers-container input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.gradient-extra-pickers-container input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
 .gradient-extra-pickers-container input[type="color"] {
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   cursor: pointer;
   padding: 0;
   border: 2px solid rgba(255, 255, 255, 0.1);
