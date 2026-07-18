@@ -1,10 +1,11 @@
 export class CinematicBokehBackground {
-  constructor(canvasId, color1 = "#ff9a9e", color2 = "#fecfef") {
+  constructor(canvasId, color1 = "#ff9a9e", color2 = "#fecfef", darkBackground = false) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.color1 = color1
     this.color2 = color2
+    this.darkBackground = darkBackground
     this.particles = []
     this.numParticles = 50
     this.bokehCache = null
@@ -19,6 +20,10 @@ export class CinematicBokehBackground {
     if (type === 'color1') this.color1 = color
     if (type === 'color2') this.color2 = color
     this.buildBokehCache()
+  }
+
+  updateDarkBackground(enabled) {
+    this.darkBackground = enabled
   }
 
   resize() {
@@ -46,12 +51,11 @@ export class CinematicBokehBackground {
   }
 
   buildBokehCache() {
-    // Cache 5 different bokeh variations (mixes of color1 and color2)
     this.bokehCache = []
     const rgb1 = this.hexToRgb(this.color1)
     const rgb2 = this.hexToRgb(this.color2)
     
-    const size = 300 // Large texture for smooth scaling
+    const size = 300
     const r = size / 2
 
     for (let i = 0; i <= 4; i++) {
@@ -60,13 +64,12 @@ export class CinematicBokehBackground {
       canvas.height = size
       const ctx = canvas.getContext('2d')
       
-      const mix = i / 4 // 0 to 1
+      const mix = i / 4
       const cr = Math.round(rgb1.r * (1 - mix) + rgb2.r * mix)
       const cg = Math.round(rgb1.g * (1 - mix) + rgb2.g * mix)
       const cb = Math.round(rgb1.b * (1 - mix) + rgb2.b * mix)
 
       const grad = ctx.createRadialGradient(r, r, 0, r, r, r)
-      // A typical bokeh has a slightly brighter edge and a soft center
       grad.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, 0.2)`)
       grad.addColorStop(0.7, `rgba(${cr}, ${cg}, ${cb}, 0.4)`)
       grad.addColorStop(0.85, `rgba(${cr}, ${cg}, ${cb}, 0.6)`)
@@ -91,14 +94,13 @@ export class CinematicBokehBackground {
   createParticle(randomY = false) {
     const W = this.canvas.width
     const H = this.canvas.height
-    // Depth (z) from 0.1 to 1. Higher z = closer, larger, faster
     const z = Math.random() * 0.9 + 0.1 
     return {
       x: Math.random() * W,
       y: randomY ? Math.random() * H : H + 200,
       radius: (Math.random() * 60 + 40) * z,
       vx: (Math.random() - 0.5) * 0.5 * z,
-      vy: -(Math.random() * 1 + 0.5) * z, // float upwards
+      vy: -(Math.random() * 1 + 0.5) * z,
       opacity: Math.random() * 0.5 + 0.2 * z,
       oscillationSpeed: Math.random() * 0.02,
       oscillationAngle: Math.random() * Math.PI * 2,
@@ -132,23 +134,25 @@ export class CinematicBokehBackground {
     const W = this.canvas.width
     const H = this.canvas.height
     
-    // Clear the canvas completely for cinematic transparency
-    this.ctx.clearRect(0, 0, W, H)
+    this.ctx.globalCompositeOperation = 'source-over'
+    if (this.darkBackground) {
+      this.ctx.fillStyle = "rgba(5, 5, 8, 1)"
+      this.ctx.fillRect(0, 0, W, H)
+    } else {
+      this.ctx.clearRect(0, 0, W, H)
+    }
     
-    // Use screen blend mode for glowing overlapping bokeh
     this.ctx.globalCompositeOperation = 'screen'
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i]
       
-      // Gentle horizontal floating
       p.oscillationAngle += p.oscillationSpeed
       const dx = Math.sin(p.oscillationAngle) * p.oscillationAmplitude
       
       p.x += p.vx + dx
       p.y += p.vy
       
-      // Wrap around or respawn
       if (p.y + p.radius < 0) {
         this.particles[i] = this.createParticle(false)
       }

@@ -969,6 +969,14 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.cinematicBokehEffect.updateColor('color2', DOM.cinematicBokehColor2Picker.value)
     }
   })
+
+  DOM.cinematicBokehDarkBgCheckbox?.addEventListener("change", () => {
+    updateSetting("cinematicBokehDarkBg", DOM.cinematicBokehDarkBgCheckbox.checked)
+    saveSettings()
+    if (effectInstances.cinematicBokehEffect) {
+      effectInstances.cinematicBokehEffect.updateDarkBackground(DOM.cinematicBokehDarkBgCheckbox.checked)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }

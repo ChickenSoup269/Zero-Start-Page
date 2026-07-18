@@ -550,6 +550,7 @@ export let interactiveFluidColor2Picker = document.getElementById("interactive-f
 export let cinematicBokehSettings = document.getElementById("cinematic-bokeh-settings")
 export let cinematicBokehColor1Picker = document.getElementById("cinematic-bokeh-color-1-picker")
 export let cinematicBokehColor2Picker = document.getElementById("cinematic-bokeh-color-2-picker")
+export let cinematicBokehDarkBgCheckbox = document.getElementById("cinematic-bokeh-dark-bg")
 export let synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
 export let pixelBlastBgSetting = document.getElementById("pixel-blast-bg-setting")
 export let pixelBlastTransparentCheckbox = document.getElementById("pixel-blast-transparent")
@@ -2692,6 +2693,7 @@ export function refreshDOMReferences() {
   cinematicBokehSettings = document.getElementById("cinematic-bokeh-settings")
   cinematicBokehColor1Picker = document.getElementById("cinematic-bokeh-color-1-picker")
   cinematicBokehColor2Picker = document.getElementById("cinematic-bokeh-color-2-picker")
+  cinematicBokehDarkBgCheckbox = document.getElementById("cinematic-bokeh-dark-bg")
   synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
   pixelBlastBgSetting = document.getElementById(
   "pixel-blast-bg-setting",

@@ -115,7 +115,8 @@ export function createEffectFactories(settings) {
       new CinematicBokehBackground(
         "effect-canvas",
         settings.cinematicBokehColor1 || "#ff9a9e",
-        settings.cinematicBokehColor2 || "#fecfef"
+        settings.cinematicBokehColor2 || "#fecfef",
+        settings.cinematicBokehDarkBg ?? false
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),

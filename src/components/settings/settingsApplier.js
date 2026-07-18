@@ -4630,6 +4630,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.cinematicBokehColor2Picker) {
       DOM.cinematicBokehColor2Picker.value = settings.cinematicBokehColor2 || "#fecfef"
     }
+    if (DOM.cinematicBokehDarkBgCheckbox) {
+      DOM.cinematicBokehDarkBgCheckbox.checked = settings.cinematicBokehDarkBg ?? false
+    }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
         settings.effect === "pixelWeather" ? "block" : "none"
