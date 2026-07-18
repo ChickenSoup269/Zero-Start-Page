@@ -282,6 +282,7 @@ function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
 
   root.style.setProperty("--accent-color", scheme.primary)
   root.style.setProperty("--accent-color-rgb", scheme.primaryRgb)
+  root.style.setProperty("--global-accent-color-rgb", scheme.primaryRgb)
   root.style.setProperty("--accent-contrast-color", scheme.onPrimary)
   root.style.setProperty("--safe-accent", scheme.inversePrimary)
 
@@ -295,6 +296,7 @@ function applyDefaultAccentTokens(seedColor) {
 
   root.style.setProperty("--accent-color", color)
   root.style.setProperty("--accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
+  root.style.setProperty("--global-accent-color-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`)
   root.style.setProperty("--accent-contrast-color", getContrastYIQ(color))
   root.style.setProperty("--safe-accent", color)
 

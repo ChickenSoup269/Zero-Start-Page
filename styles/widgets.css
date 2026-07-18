@@ -13485,7 +13485,7 @@ body.clock-style-bg-accent.date-clock-style-space-concentric .space-concentric-c
     border-radius: 50%;
     backdrop-filter: blur(16px) saturate(140%);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
-    background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
-    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
-    border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
+    background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+    border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
 }
