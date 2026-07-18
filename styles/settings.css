@@ -2083,37 +2083,68 @@ body.sidebar-light .preset-code-line-value {
 
 /* Custom Color Input Group globally */
 .custom-color-input-group {
-  flex: 0 0 38px !important;
-  width: 38px !important;
-  height: 38px !important;
-  border-radius: 50% !important;
-  padding: 0 !important;
-  background: none !important;
-  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 24px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  padding: 4px !important;
+  height: 44px !important;
   box-sizing: border-box !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
   overflow: hidden !important;
 }
 
+.custom-color-input-group:not(:has(input[type="text"])) {
+  flex: 0 0 44px !important;
+  width: 44px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  background: none !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+}
+
 .custom-color-input-group:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.custom-color-input-group:not(:has(input[type="text"])):hover {
   transform: translateY(-2px) scale(1.05) !important;
   border-color: rgba(255, 255, 255, 0.5) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
 }
 
 .custom-color-input-group input[type="color"] {
-  width: 150% !important;
-  height: 150% !important;
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 50% !important;
   border: none !important;
   padding: 0 !important;
   cursor: pointer !important;
   background: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  flex-shrink: 0 !important;
+}
+
+.custom-color-input-group:not(:has(input[type="text"])) input[type="color"] {
+  width: 150% !important;
+  height: 150% !important;
   box-shadow: none !important;
+}
+
+.custom-color-input-group input[type="text"] {
+  background: transparent !important;
+  border: none !important;
+  color: #fff !important;
+  padding: 4px 12px !important;
+  width: 100% !important;
+  outline: none !important;
+  font-family: monospace !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
 }
 
 .custom-color-input-group input[type="color"]::-webkit-color-swatch-wrapper {
