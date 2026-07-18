@@ -888,6 +888,15 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.neonGridEffect.updateColor('sun', DOM.synthwaveSunColorPicker.value)
     }
   })
+
+  DOM.synthwaveFullScreenCheckbox?.addEventListener("change", (e) => {
+    const isFullScreen = e.target.checked
+    updateSetting("synthwaveFullScreen", isFullScreen)
+    saveSettings()
+    if (effectInstances.neonGridEffect) {
+      effectInstances.neonGridEffect.setOptions({ fullScreen: isFullScreen })
+    }
+  })
 }
 
 export { setupEffectColorHandlers }

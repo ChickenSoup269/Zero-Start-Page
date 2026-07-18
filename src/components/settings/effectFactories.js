@@ -85,7 +85,8 @@ export function createEffectFactories(settings) {
       new NeonGridBackground(
         "effect-canvas",
         settings.synthwaveGridColor || "#ff007f",
-        settings.synthwaveSunColor || "#ffbe0b"
+        settings.synthwaveSunColor || "#ffbe0b",
+        settings.synthwaveFullScreen === true
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),

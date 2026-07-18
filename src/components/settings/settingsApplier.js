@@ -3095,6 +3095,15 @@ function createApplySettings(effectInstances) {
         opacity: settings.flashlightOpacity ?? 0.9,
       })
     }
+    if (
+      effectToStart === "neonGrid" &&
+      selectedEffect &&
+      selectedEffect.setOptions
+    ) {
+      selectedEffect.setOptions({
+        fullScreen: settings.synthwaveFullScreen === true
+      })
+    }
 
     applyEffectPerformanceBudget(selectedEffect, settings)
 
@@ -4574,6 +4583,9 @@ function createUpdateSettingsInputs(effectInstances) {
 
     if (DOM.pixelCubesShapeSelect) {
       DOM.pixelCubesShapeSelect.value = settings.pixelCubesShape || "cube"
+    }
+    if (DOM.synthwaveFullScreenCheckbox) {
+      DOM.synthwaveFullScreenCheckbox.checked = settings.synthwaveFullScreen === true
     }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =

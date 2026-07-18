@@ -1909,5 +1909,6 @@
   "effect_neon_grid": "Lưới Cyberpunk",
   "bg_anim_neon_grid": "Lưới Neon 3D",
   "setting_synthwave_grid_color": "Màu Lưới",
-  "setting_synthwave_sun_color": "Màu Mặt trời"
+  "setting_synthwave_sun_color": "Màu Mặt trời",
+  "setting_synthwave_full_screen": "Hiển thị Full màn hình"
 }

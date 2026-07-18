@@ -1909,5 +1909,6 @@
   "effect_neon_grid": "Neon Grid 3D",
   "bg_anim_neon_grid": "Neon Grid 3D",
   "setting_synthwave_grid_color": "Grid Color",
-  "setting_synthwave_sun_color": "Sun Color"
+  "setting_synthwave_sun_color": "Sun Color",
+  "setting_synthwave_full_screen": "Fullscreen Tunnel Mode"
 }

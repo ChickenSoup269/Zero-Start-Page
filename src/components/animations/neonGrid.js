@@ -1,11 +1,12 @@
 export class NeonGridBackground {
-  constructor(canvasId, gridColor = "#ff007f", sunColor = "#ffbe0b") {
+  constructor(canvasId, gridColor = "#ff007f", sunColor = "#ffbe0b", fullScreen = false) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
 
     this.gridColor = gridColor
     this.sunColor = sunColor
+    this.fullScreen = fullScreen
     
     this.speed = 3
     this.fov = 300
@@ -27,6 +28,12 @@ export class NeonGridBackground {
   updateColor(type, color) {
     if (type === 'grid') this.gridColor = color
     if (type === 'sun') this.sunColor = color
+  }
+
+  setOptions(options) {
+    if (options.fullScreen !== undefined) {
+      this.fullScreen = options.fullScreen
+    }
   }
 
   resize() {
@@ -67,44 +74,54 @@ export class NeonGridBackground {
     ctx.shadowColor = this.gridColor
     ctx.lineWidth = 2
 
-    const gridY = 150 // height of camera above grid
+    // Draw Grids (Bottom and optionally Top)
+    const gridYs = this.fullScreen ? [150, -150] : [150]
 
-    // Draw horizontal lines moving forward
+    gridYs.forEach(gy => {
+      // Draw horizontal lines moving forward
+      for (let i = 0; i < this.lines.length; i++) {
+        // we only update line position once per frame, not per grid
+        // so we don't decrement this.lines[i] here if there are multiple grids, 
+        // wait, we need to update it BEFORE drawing grids
+        
+        const z = this.lines[i]
+        const alpha = Math.max(0, 1 - (z / this.gridDepth))
+        
+        const p1 = this.project(-this.gridWidth / 2, gy, z)
+        const p2 = this.project(this.gridWidth / 2, gy, z)
+        
+        ctx.globalAlpha = alpha
+        ctx.strokeStyle = this.gridColor
+        ctx.beginPath()
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.stroke()
+      }
+
+      // Draw vertical lines
+      for (let x = -this.gridWidth / 2; x <= this.gridWidth / 2; x += this.spacing * 2) {
+        const p1 = this.project(x, gy, 10)
+        const p2 = this.project(x, gy, this.gridDepth)
+        
+        const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y)
+        grad.addColorStop(0, this.gridColor)
+        grad.addColorStop(1, "rgba(0,0,0,0)")
+        
+        ctx.globalAlpha = 1
+        ctx.strokeStyle = grad
+        ctx.beginPath()
+        ctx.moveTo(p1.x, p1.y)
+        ctx.lineTo(p2.x, p2.y)
+        ctx.stroke()
+      }
+    })
+
+    // Advance lines for next frame
     for (let i = 0; i < this.lines.length; i++) {
       this.lines[i] -= this.speed
       if (this.lines[i] < 10) {
         this.lines[i] = this.gridDepth
       }
-      
-      const z = this.lines[i]
-      const alpha = Math.max(0, 1 - (z / this.gridDepth))
-      
-      const p1 = this.project(-this.gridWidth / 2, gridY, z)
-      const p2 = this.project(this.gridWidth / 2, gridY, z)
-      
-      ctx.globalAlpha = alpha
-      ctx.strokeStyle = this.gridColor
-      ctx.beginPath()
-      ctx.moveTo(p1.x, p1.y)
-      ctx.lineTo(p2.x, p2.y)
-      ctx.stroke()
-    }
-
-    // Draw vertical lines
-    for (let x = -this.gridWidth / 2; x <= this.gridWidth / 2; x += this.spacing * 2) {
-      const p1 = this.project(x, gridY, 10)
-      const p2 = this.project(x, gridY, this.gridDepth)
-      
-      const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y)
-      grad.addColorStop(0, this.gridColor)
-      grad.addColorStop(1, "rgba(0,0,0,0)")
-      
-      ctx.globalAlpha = 1
-      ctx.strokeStyle = grad
-      ctx.beginPath()
-      ctx.moveTo(p1.x, p1.y)
-      ctx.lineTo(p2.x, p2.y)
-      ctx.stroke()
     }
 
     ctx.restore()
