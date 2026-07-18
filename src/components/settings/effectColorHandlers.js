@@ -937,6 +937,22 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.blackHoleEffect.updateColor('star', DOM.blackHoleStarColorPicker.value)
     }
   })
+
+  DOM.interactiveFluidColor1Picker?.addEventListener("input", () => {
+    updateSetting("interactiveFluidColor1", DOM.interactiveFluidColor1Picker.value)
+    saveSettings()
+    if (effectInstances.interactiveFluidEffect) {
+      effectInstances.interactiveFluidEffect.updateColor('color1', DOM.interactiveFluidColor1Picker.value)
+    }
+  })
+
+  DOM.interactiveFluidColor2Picker?.addEventListener("input", () => {
+    updateSetting("interactiveFluidColor2", DOM.interactiveFluidColor2Picker.value)
+    saveSettings()
+    if (effectInstances.interactiveFluidEffect) {
+      effectInstances.interactiveFluidEffect.updateColor('color2', DOM.interactiveFluidColor2Picker.value)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }

@@ -1917,5 +1917,8 @@
   "effect_black_hole": "Warp Drive / Hố Đen",
   "setting_black_hole_accretion_color": "Màu Lõi Vòng Sáng",
   "setting_black_hole_star_color": "Màu Vệt Sao",
-  "setting_frosted_orbs_dark_bg": "Nền Không Gian Đen"
+  "setting_frosted_orbs_dark_bg": "Nền Không Gian Đen",
+  "effect_interactive_fluid": "Dòng Chảy Khói Màu",
+  "setting_interactive_fluid_color1": "Màu Khói 1",
+  "setting_interactive_fluid_color2": "Màu Khói 2"
 }
