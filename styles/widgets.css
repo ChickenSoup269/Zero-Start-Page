@@ -13498,7 +13498,7 @@ body.audio-wave-pos-left .audio-wave-container { flex-direction: row-reverse; }
 body.audio-wave-pos-right .audio-wave-container { flex-direction: row; }
 .aw-visualizer { display: flex; gap: 5px; align-items: center; justify-content: center; transform: scale(var(--aw-scale, 1)); }
 body.audio-wave-pos-left .aw-visualizer, body.audio-wave-pos-right .aw-visualizer { flex-direction: column; }
-.aw-bar { background: var(--clock-accent-color, #00ff66); border-radius: 4px; box-shadow: 0 0 15px var(--clock-accent-color, #00ff66); animation: aw-bounce ease-in-out infinite alternate; }
+.aw-bar { background: rgb(var(--global-accent-color-rgb, 0, 255, 102)); border-radius: 4px; box-shadow: 0 0 15px rgb(var(--global-accent-color-rgb, 0, 255, 102)); animation: aw-bounce ease-in-out infinite alternate; }
 body.audio-wave-pos-top .aw-bar, body.audio-wave-pos-bottom .aw-bar { width: 6px; height: 10px; animation-name: aw-bounce-y; }
 body.audio-wave-pos-left .aw-bar, body.audio-wave-pos-right .aw-bar { height: 6px; width: 10px; animation-name: aw-bounce-x; }
 @keyframes aw-bounce-y { 0% { height: 10px; opacity: 0.5; } 100% { height: 70px; opacity: 1; } }
