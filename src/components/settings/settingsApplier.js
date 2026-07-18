@@ -2530,16 +2530,6 @@ function createApplySettings(effectInstances) {
         document.body.style.setProperty("--gf-glow-b", glowRgb.b)
       }
       document.body.style.setProperty("--gf-glow-a", settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3)
-
-      const bgRgb = hexToRgb(settings.gfBgColor || "#ffffff")
-      if (bgRgb) {
-        document.body.style.setProperty("--gf-bg-r", bgRgb.r)
-        document.body.style.setProperty("--gf-bg-g", bgRgb.g)
-        document.body.style.setProperty("--gf-bg-b", bgRgb.b)
-      }
-      document.body.style.setProperty("--gf-bg-a", 0.05)
-      
-      document.body.style.setProperty("--gf-blur", "12px")
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -3699,8 +3689,6 @@ function createUpdateSettingsInputs(effectInstances) {
     const gfGlowIntensityVal = document.getElementById("gf-glow-intensity-val")
     if (gfGlowIntensityInput) gfGlowIntensityInput.value = settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3
     if (gfGlowIntensityVal) gfGlowIntensityVal.textContent = settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3
-    const gfBgColorInput = document.getElementById("gf-bg-color")
-    if (gfBgColorInput) gfBgColorInput.value = settings.gfBgColor || "#ffffff"
 
     
     const codeStyleSettings = document.getElementById("code-style-settings")
