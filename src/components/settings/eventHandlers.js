@@ -4860,16 +4860,27 @@ export function setupGeneralEventHandlers(
     audioWaveScaleInput.addEventListener("change", (e) => {
       handleSettingUpdate("audioWaveScale", parseFloat(e.target.value))
       applySettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: {
-            key: "audioWaveScale",
-            value: parseFloat(e.target.value),
-          },
-        }),
-      )
+      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveScale", value: parseFloat(e.target.value) } }))
     })
   }
+
+  document.getElementById("audio-wave-style-select")?.addEventListener("change", (e) => {
+    handleSettingUpdate("audioWaveStyle", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveStyle", value: e.target.value } }))
+  })
+
+  document.getElementById("audio-wave-auto-color-checkbox")?.addEventListener("change", (e) => {
+    handleSettingUpdate("audioWaveAutoColor", e.target.checked)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveAutoColor", value: e.target.checked } }))
+  })
+
+  document.getElementById("audio-wave-color-picker")?.addEventListener("change", (e) => {
+    handleSettingUpdate("audioWaveCustomColor", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveCustomColor", value: e.target.value } }))
+  })
 
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(

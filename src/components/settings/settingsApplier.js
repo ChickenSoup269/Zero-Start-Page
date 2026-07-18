@@ -2488,6 +2488,8 @@ function createApplySettings(effectInstances) {
       "audio-wave-pos-bottom",
       "audio-wave-pos-left",
       "audio-wave-pos-right",
+      "audio-wave-style-bars",
+      "audio-wave-style-dots",
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"
@@ -2498,8 +2500,19 @@ function createApplySettings(effectInstances) {
     } else if (dateClockStyle === "audio-wave") {
       const pos = settings.audioWavePosition || "bottom"
       document.body.classList.add(`audio-wave-pos-${pos}`)
+      
+      const waveStyle = settings.audioWaveStyle || "bars"
+      document.body.classList.add(`audio-wave-style-${waveStyle}`)
+
       const scale = settings.audioWaveScale || 1
       document.body.style.setProperty("--aw-scale", scale)
+
+      const autoColor = settings.audioWaveAutoColor !== false // default true
+      if (autoColor) {
+        document.body.style.setProperty("--aw-color", "rgb(var(--global-accent-color-rgb, 0, 255, 102))")
+      } else {
+        document.body.style.setProperty("--aw-color", settings.audioWaveCustomColor || "#00ff66")
+      }
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -3442,6 +3455,23 @@ function createUpdateSettingsInputs(effectInstances) {
     if (audioWaveScaleInput) {
       audioWaveScaleInput.value = settings.audioWaveScale || 1
       if (audioWaveScaleVal) audioWaveScaleVal.textContent = settings.audioWaveScale || 1
+    }
+
+    const audioWaveStyleSelect = document.getElementById("audio-wave-style-select")
+    if (audioWaveStyleSelect) audioWaveStyleSelect.value = settings.audioWaveStyle || "bars"
+
+    const audioWaveAutoColorCheckbox = document.getElementById("audio-wave-auto-color-checkbox")
+    const audioWaveColorPicker = document.getElementById("audio-wave-color-picker")
+    const audioWaveCustomColorContainer = document.getElementById("audio-wave-custom-color-container")
+    
+    if (audioWaveAutoColorCheckbox) {
+      audioWaveAutoColorCheckbox.checked = settings.audioWaveAutoColor !== false
+      if (audioWaveCustomColorContainer) {
+        audioWaveCustomColorContainer.style.display = audioWaveAutoColorCheckbox.checked ? "none" : "flex"
+      }
+    }
+    if (audioWaveColorPicker) {
+      audioWaveColorPicker.value = settings.audioWaveCustomColor || "#00ff66"
     }
     const coolBarTopInput = document.getElementById("cool-bar-top-input")
     if (coolBarTopInput) coolBarTopInput.value = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
