@@ -1916,5 +1916,6 @@
   "setting_frosted_orbs_color2": "Orb Color 2",
   "effect_black_hole": "Warp Drive / Black Hole",
   "setting_black_hole_accretion_color": "Accretion Disk Color",
-  "setting_black_hole_star_color": "Star Color"
+  "setting_black_hole_star_color": "Star Color",
+  "setting_frosted_orbs_dark_bg": "Dark Space Background"
 }

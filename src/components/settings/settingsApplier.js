@@ -4595,6 +4595,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.synthwaveFullScreenCheckbox) {
       DOM.synthwaveFullScreenCheckbox.checked = settings.synthwaveFullScreen === true
     }
+    if (DOM.frostedOrbsDarkBgCheckbox) {
+      DOM.frostedOrbsDarkBgCheckbox.checked = settings.frostedOrbsDarkBg !== false
+    }
     if (DOM.frostedOrbsColor1Picker) {
       DOM.frostedOrbsColor1Picker.value = settings.frostedOrbsColor1 || "#00f2fe"
     }

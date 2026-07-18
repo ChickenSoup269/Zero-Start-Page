@@ -94,7 +94,8 @@ export function createEffectFactories(settings) {
       new FrostedGlassOrbsBackground(
         "effect-canvas",
         settings.frostedOrbsColor1 || "#00f2fe",
-        settings.frostedOrbsColor2 || "#4facfe"
+        settings.frostedOrbsColor2 || "#4facfe",
+        settings.frostedOrbsDarkBg !== false // default true
       ),
     blackHoleEffect: () =>
       new BlackHoleBackground(

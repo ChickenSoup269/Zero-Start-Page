@@ -47,11 +47,13 @@ export class BlackHoleBackground {
   start() {
     if (this.active) return
     this.active = true
+    this.canvas.style.display = "block"
     this.animate()
   }
 
   stop() {
     this.active = false
+    this.canvas.style.display = "none"
   }
 
   destroy() {
@@ -116,57 +118,50 @@ export class BlackHoleBackground {
 
     const hsl = this.hexToHsl(this.accretionColor)
     
-    // Draw accretion disk (glowing ring) with M3-like analogous gradient
+    // Secondary glowing halo (spherical glow around the hole)
     ctx.save()
     ctx.translate(cx, cy)
-    ctx.scale(1, 0.3) // Flatten to look like a disk
-
-    // We can use a conic gradient to make it look like a swirling disk of multi-colors
-    // Fallback to radial if createConicGradient is not available, but modern browsers have it
-    let diskGrad
-    if (ctx.createConicGradient) {
-      diskGrad = ctx.createConicGradient(0, 0, 0)
-      diskGrad.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`)
-      diskGrad.addColorStop(0.33, `hsla(${hsl.h + 30}, ${hsl.s}%, ${hsl.l}%, 0.7)`)
-      diskGrad.addColorStop(0.66, `hsla(${hsl.h - 30}, ${hsl.s}%, ${hsl.l}%, 0.7)`)
-      diskGrad.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`)
-    } else {
-      diskGrad = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`
-    }
-
-    // Mask the inner and outer parts with a radial gradient
-    ctx.fillStyle = diskGrad
+    const haloGrad = ctx.createRadialGradient(0, 0, this.holeRadius, 0, 0, this.holeRadius * 3)
+    haloGrad.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.3)`)
+    haloGrad.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0)`)
+    ctx.fillStyle = haloGrad
     ctx.beginPath()
-    ctx.arc(0, 0, this.holeRadius * 4, 0, Math.PI * 2)
+    ctx.arc(0, 0, this.holeRadius * 3, 0, Math.PI * 2)
     ctx.fill()
-    
-    // Use destination-in to make the disk fade out at edges and hollow at center
-    ctx.globalCompositeOperation = 'destination-in'
-    const maskGrad = ctx.createRadialGradient(0, 0, this.holeRadius, 0, 0, this.holeRadius * 4)
-    maskGrad.addColorStop(0, 'rgba(0,0,0,0)')
-    maskGrad.addColorStop(0.2, 'rgba(0,0,0,1)')
-    maskGrad.addColorStop(0.5, 'rgba(0,0,0,0.5)')
-    maskGrad.addColorStop(1, 'rgba(0,0,0,0)')
-    ctx.fillStyle = maskGrad
-    ctx.beginPath()
-    ctx.arc(0, 0, this.holeRadius * 4, 0, Math.PI * 2)
-    ctx.fill()
-    
     ctx.restore()
 
-    // Draw black hole center
+    // Draw accretion disk (glowing flattened ring)
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.scale(1, 0.25) // Flatten to look like a sleek disk
+
+    // Smooth glowing ring with M3 analogous colors
+    const diskGrad = ctx.createRadialGradient(0, 0, this.holeRadius, 0, 0, this.holeRadius * 5)
+    diskGrad.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0)`)
+    diskGrad.addColorStop(0.15, `hsla(${hsl.h}, ${hsl.s}%, 80%, 1)`) // Bright inner edge
+    diskGrad.addColorStop(0.25, `hsla(${hsl.h + 20}, ${hsl.s}%, ${hsl.l}%, 0.8)`)
+    diskGrad.addColorStop(0.5, `hsla(${hsl.h - 20}, ${hsl.s}%, ${hsl.l}%, 0.4)`)
+    diskGrad.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0)`)
+
+    ctx.fillStyle = diskGrad
+    ctx.beginPath()
+    ctx.arc(0, 0, this.holeRadius * 5, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.restore()
+
+    // Draw black hole center (Event Horizon)
     ctx.save()
     ctx.translate(cx, cy)
     ctx.fillStyle = "#000000"
-    ctx.shadowBlur = 30
-    ctx.shadowColor = this.accretionColor
+    ctx.shadowBlur = 40
+    ctx.shadowColor = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 1)`
     ctx.beginPath()
-    ctx.arc(0, 0, this.holeRadius, 0, Math.PI * 2)
+    ctx.arc(0, 0, this.holeRadius * 0.95, 0, Math.PI * 2)
     ctx.fill()
     
-    // Add event horizon glow inner edge
-    ctx.strokeStyle = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.8)`
-    ctx.lineWidth = 2
+    // Add bright photon sphere edge
+    ctx.strokeStyle = `hsla(${hsl.h}, ${hsl.s}%, 90%, 0.8)`
+    ctx.lineWidth = 1.5
     ctx.stroke()
     ctx.restore()
 

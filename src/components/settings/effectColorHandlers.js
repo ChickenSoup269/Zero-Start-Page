@@ -914,6 +914,14 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
+  DOM.frostedOrbsDarkBgCheckbox?.addEventListener("change", () => {
+    updateSetting("frostedOrbsDarkBg", DOM.frostedOrbsDarkBgCheckbox.checked)
+    saveSettings()
+    if (effectInstances.frostedGlassOrbsEffect) {
+      effectInstances.frostedGlassOrbsEffect.setOptions({ darkBackground: DOM.frostedOrbsDarkBgCheckbox.checked })
+    }
+  })
+
   DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
     updateSetting("blackHoleAccretionColor", DOM.blackHoleAccretionColorPicker.value)
     saveSettings()

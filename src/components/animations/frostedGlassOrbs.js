@@ -1,10 +1,11 @@
 export class FrostedGlassOrbsBackground {
-  constructor(canvasId, color1 = "#00f2fe", color2 = "#4facfe") {
+  constructor(canvasId, color1 = "#00f2fe", color2 = "#4facfe", darkBackground = false) {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
     this.color1 = color1
     this.color2 = color2
+    this.darkBackground = darkBackground
     this.orbs = []
     this.numOrbs = 6
 
@@ -34,6 +35,12 @@ export class FrostedGlassOrbsBackground {
     if (type === 'color2') this.color2 = color
   }
 
+  setOptions(options) {
+    if (options.darkBackground !== undefined) {
+      this.darkBackground = options.darkBackground
+    }
+  }
+
   resize() {
     this.canvas.width = window.innerWidth
     this.canvas.height = window.innerHeight
@@ -42,11 +49,13 @@ export class FrostedGlassOrbsBackground {
   start() {
     if (this.active) return
     this.active = true
+    this.canvas.style.display = "block"
     this.animate()
   }
 
   stop() {
     this.active = false
+    this.canvas.style.display = "none"
   }
 
   destroy() {
@@ -113,7 +122,12 @@ export class FrostedGlassOrbsBackground {
     }
 
     // Clear canvas
-    this.ctx.clearRect(0, 0, W, H)
+    if (this.darkBackground) {
+      this.ctx.fillStyle = '#050505'
+      this.ctx.fillRect(0, 0, W, H)
+    } else {
+      this.ctx.clearRect(0, 0, W, H)
+    }
 
     // Update and draw orbs
     this.orbs.forEach(orb => {
