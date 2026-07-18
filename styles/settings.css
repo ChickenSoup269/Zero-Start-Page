@@ -3507,6 +3507,38 @@ body.sidebar-light .preset-code-line-value {
   color: var(--accent-color);
   padding-bottom: var(--space-2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.bg-control-title:hover {
+  opacity: 0.8;
+}
+
+.bg-control-title::after {
+  content: "\f107";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: var(--space-1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.bg-control-card.is-collapsed .bg-control-title {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.bg-control-card.is-collapsed .bg-control-title::after {
+  transform: rotate(-90deg);
+}
+
+.bg-control-card.is-collapsed > *:not(.bg-control-title) {
+  display: none !important;
 }
 
 .bg-control-title i {
@@ -6686,6 +6718,36 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   align-items: center;
   gap: var(--space-1);
   color: var(--accent-color);
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.gradient-v2-section-title:hover {
+  opacity: 1;
+}
+
+.gradient-v2-section-title::after {
+  content: "\f107";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+.gradient-v2-panel.is-collapsed .gradient-v2-section-title {
+  margin-bottom: 0;
+}
+
+.gradient-v2-panel.is-collapsed .gradient-v2-section-title::after {
+  transform: rotate(-90deg);
+}
+
+.gradient-v2-panel.is-collapsed > *:not(.gradient-v2-section-title) {
+  display: none !important;
 }
 
 .gradient-v2-grid {

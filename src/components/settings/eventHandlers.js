@@ -1420,6 +1420,15 @@ export function setupGeneralEventHandlers(
     })
   })
 
+  // Card collapse/expand logic
+  document.querySelectorAll(".bg-control-title, .gradient-v2-section-title").forEach((title) => {
+    title.addEventListener("click", () => {
+      const card = title.closest(".bg-control-card, .gradient-v2-panel")
+      if (card) {
+        card.classList.toggle("is-collapsed")
+      }
+    })
+  })
   // Language change
   DOM.languageSelect.addEventListener("change", async () => {
     handleSettingUpdate("language", DOM.languageSelect.value)
