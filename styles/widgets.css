@@ -13562,13 +13562,18 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
     animation: none; /* controlled by body classes */
     transform: scale(var(--glass-float-scale, 1));
 }
-body.gf-anim-float .gf-content { animation: text-float-anim 6s ease-in-out infinite; }
-body.gf-anim-pulse .gf-content { animation: text-pulse-anim 3s ease-in-out infinite; }
-body.gf-anim-shake .gf-content { animation: text-shake-anim 4s ease-in-out infinite; }
-body.gf-anim-glitch .gf-content { animation: text-glitch-anim 2.5s infinite linear; }
-body.gf-anim-bug .gf-content { animation: text-bug-anim 0.4s infinite; }
-body.gf-anim-wave .gf-content { animation: text-wave-anim 2s ease-in-out infinite; }
-body.gf-anim-none .gf-content { animation: none; }
+body.gf-anim-float .gf-char { animation: text-float-anim 6s ease-in-out infinite; }
+body.gf-anim-pulse .gf-char { animation: text-pulse-anim 3s ease-in-out infinite; }
+body.gf-anim-shake .gf-char { animation: text-shake-anim 4s ease-in-out infinite; }
+body.gf-anim-glitch .gf-char { animation: text-glitch-anim 2.5s infinite linear; }
+body.gf-anim-bug .gf-char { animation: text-bug-anim 0.4s infinite; }
+body.gf-anim-wave .gf-char { animation: text-wave-anim 2s ease-in-out infinite; }
+body.gf-anim-none .gf-char { animation: none; }
+
+.gf-char {
+    display: inline-block;
+    animation-delay: calc(var(--anim-index) * 0.05s) !important;
+}
 
 .gf-content {
     display: flex;

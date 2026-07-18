@@ -2033,18 +2033,37 @@ export function updateTime() {
         </div>
       `;
     }
-    const customText = settings.gfCustomText || "Floating Clock";
+    const customText = settings.gfCustomText === "" ? "" : (settings.gfCustomText || "Floating Clock");
     const gfTextEl = clockElement.querySelector('.gf-text');
-    if (!settings.gfCustomText && settings.gfCustomText !== undefined) {
+    let animIdx = 0;
+
+    if (!customText) {
        gfTextEl.style.display = 'none';
+       gfTextEl.innerHTML = "";
     } else {
        gfTextEl.style.display = 'block';
-       if (gfTextEl.textContent !== customText) gfTextEl.textContent = customText;
+       const textHtml = customText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+       if (gfTextEl.innerHTML !== textHtml) gfTextEl.innerHTML = textHtml;
     }
     
-    clockElement.querySelector('.gf-hour').textContent = hh;
-    clockElement.querySelector('.gf-minute').textContent = mm;
-    clockElement.querySelector('.gf-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
+    const hourHtml = hh.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    const colonHtml = `<span class="gf-char" style="--anim-index: ${animIdx++}">:</span>`;
+    const minuteHtml = mm.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    
+    const hEl = clockElement.querySelector('.gf-hour');
+    if (hEl.innerHTML !== hourHtml) hEl.innerHTML = hourHtml;
+    
+    const cEl = clockElement.querySelector('.gf-colon');
+    if (cEl.innerHTML !== colonHtml) cEl.innerHTML = colonHtml;
+    
+    const mEl = clockElement.querySelector('.gf-minute');
+    if (mEl.innerHTML !== minuteHtml) mEl.innerHTML = minuteHtml;
+    
+    const dateStr = getCustomDateString(now, langCode, tz, settings);
+    const dateText = new DOMParser().parseFromString(dateStr, 'text/html').body.textContent || "";
+    const dateHtml = dateText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+    const dEl = clockElement.querySelector('.gf-date');
+    if (dEl.innerHTML !== dateHtml) dEl.innerHTML = dateHtml;
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
