@@ -13562,15 +13562,21 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
     animation: none; /* controlled by body classes */
     transform: scale(var(--glass-float-scale, 1));
 }
-body.gf-anim-float .gf-time, body.gf-anim-float .gf-text, body.gf-anim-float .gf-date { animation: text-float-anim 6s ease-in-out infinite; display: inline-block; }
-body.gf-anim-pulse .gf-time, body.gf-anim-pulse .gf-text, body.gf-anim-pulse .gf-date { animation: text-pulse-anim 3s ease-in-out infinite; display: inline-block; }
-body.gf-anim-shake .gf-time, body.gf-anim-shake .gf-text, body.gf-anim-shake .gf-date { animation: text-shake-anim 4s ease-in-out infinite; display: inline-block; }
-body.gf-anim-glitch .gf-time, body.gf-anim-glitch .gf-text, body.gf-anim-glitch .gf-date { animation: text-glitch-anim 2.5s infinite linear; display: inline-block; }
-body.gf-anim-bug .gf-time, body.gf-anim-bug .gf-text, body.gf-anim-bug .gf-date { animation: text-bug-anim 0.4s infinite; display: inline-block; }
-body.gf-anim-wave .gf-time, body.gf-anim-wave .gf-text, body.gf-anim-wave .gf-date { animation: text-wave-anim 2s ease-in-out infinite; display: inline-block; }
-body.gf-anim-wave .gf-time { animation-delay: 0.2s; }
-body.gf-anim-wave .gf-date { animation-delay: 0.4s; }
-body.gf-anim-none .gf-time, body.gf-anim-none .gf-text, body.gf-anim-none .gf-date { animation: none; }
+body.gf-anim-float .gf-content { animation: text-float-anim 6s ease-in-out infinite; }
+body.gf-anim-pulse .gf-content { animation: text-pulse-anim 3s ease-in-out infinite; }
+body.gf-anim-shake .gf-content { animation: text-shake-anim 4s ease-in-out infinite; }
+body.gf-anim-glitch .gf-content { animation: text-glitch-anim 2.5s infinite linear; }
+body.gf-anim-bug .gf-content { animation: text-bug-anim 0.4s infinite; }
+body.gf-anim-wave .gf-content { animation: text-wave-anim 2s ease-in-out infinite; }
+body.gf-anim-none .gf-content { animation: none; }
+
+.gf-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
 
 .gf-text {
     font-size: 24px;

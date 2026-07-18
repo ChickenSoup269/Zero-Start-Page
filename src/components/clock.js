@@ -2025,9 +2025,11 @@ export function updateTime() {
     if (!clockElement.querySelector('.glass-float-container')) {
       clockElement.innerHTML = `
         <div class="clock-container glass-float-container">
-          <div class="gf-text"></div>
-          <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
-          <div class="gf-date"></div>
+          <div class="gf-content">
+            <div class="gf-text"></div>
+            <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
+            <div class="gf-date"></div>
+          </div>
         </div>
       `;
     }
