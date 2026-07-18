@@ -2098,11 +2098,11 @@ body.sidebar-light .preset-code-line-value {
 
 /* Variant without text input (just the color picker) */
 .custom-color-input-group:not(:has(input[type="text"])) {
-  flex: 0 0 44px !important;
-  width: 44px !important;
+  flex: 1 !important;
+  width: auto !important;
   height: 44px !important;
   padding: 0 !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -3839,31 +3839,22 @@ body.sidebar-light .preset-code-line-value {
   justify-content: space-between;
 }
 
-/* Specific Background Styles */
-#bg-input {
-  padding-right: var(--space-6) !important;
-}
-
-.bg-picker-input {
-  position: absolute;
-  right: var(--space-1);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
+.bg-picker-input-modern {
+  width: 32px;
+  height: 32px;
   padding: 0;
-  border-radius: var(--radius-sm);
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+  flex-shrink: 0;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  overflow: hidden;
 }
 
-.bg-picker-input::-webkit-color-swatch-wrapper {
+.bg-picker-input-modern::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-.bg-picker-input::-webkit-color-swatch {
+.bg-picker-input-modern::-webkit-color-swatch {
   border: none;
   border-radius: 4px;
 }

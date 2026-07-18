@@ -5,10 +5,12 @@
         <div class="bg-control-card">
             <div class="bg-control-title"><i class="fa-solid fa-link"></i> Source & Colors</div>
             <div class="background-inputs-grid">
-                <div class="full-row" style="position: relative;">
+                <div class="full-row bg-input-wrapper" style="display: flex; align-items: center; gap: 8px;">
                     <input type="text" id="bg-input" data-i18n-placeholder="settings_bg_placeholder"
-                        class="full-width" />
-                    <input type="color" id="bg-color-picker" aria-label="Pick a color" class="bg-picker-input" />
+                        class="full-width" style="flex: 1; margin: 0; padding-right: 12px !important;" />
+                    <div class="color-picker-wrapper" style="display: flex; gap: 8px; align-items: center; flex-shrink: 0;">
+                        <input type="color" id="bg-color-picker" aria-label="Pick a color" class="bg-picker-input-modern" />
+                    </div>
                 </div>
                 <div id="unsplash-credit" class="full-row unsplash-credit-text"></div>
                 <button id="save-color-btn" class="secondary-btn" data-i18n="settings_save_color">Save
