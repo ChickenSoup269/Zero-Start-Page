@@ -13558,14 +13558,22 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
     align-items: center;
     justify-content: center;
     padding: 30px 50px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(var(--gf-bg-r, 255), var(--gf-bg-g, 255), var(--gf-bg-b, 255), var(--gf-bg-a, 0.05));
+    backdrop-filter: blur(var(--gf-blur, 12px));
+    -webkit-backdrop-filter: blur(var(--gf-blur, 12px));
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(var(--gf-glow-r, 0), var(--gf-glow-g, 0), var(--gf-glow-b, 0), var(--gf-glow-a, 0.3)), inset 0 0 20px rgba(255, 255, 255, 0.05);
     animation: glass-float-anim 6s ease-in-out infinite;
     transform: scale(var(--glass-float-scale, 1));
+}
+.gf-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 .gf-time {
     font-size: 80px;
@@ -13584,7 +13592,7 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
 }
 @keyframes glass-float-anim {
     0% { transform: translateY(0px) scale(var(--glass-float-scale, 1)); }
-    50% { transform: translateY(-15px) scale(var(--glass-float-scale, 1)); box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05); }
+    50% { transform: translateY(-15px) scale(var(--glass-float-scale, 1)); box-shadow: 0 25px 40px rgba(var(--gf-glow-r, 0), var(--gf-glow-g, 0), var(--gf-glow-b, 0), calc(var(--gf-glow-a, 0.3) * 0.8)), inset 0 0 20px rgba(255, 255, 255, 0.05); }
     100% { transform: translateY(0px) scale(var(--glass-float-scale, 1)); }
 }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); }

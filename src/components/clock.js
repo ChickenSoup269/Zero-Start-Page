@@ -2025,11 +2025,21 @@ export function updateTime() {
     if (!clockElement.querySelector('.glass-float-container')) {
       clockElement.innerHTML = `
         <div class="glass-float-container">
+          <div class="gf-text"></div>
           <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
           <div class="gf-date"></div>
         </div>
       `;
     }
+    const customText = settings.gfCustomText || "Floating Clock";
+    const gfTextEl = clockElement.querySelector('.gf-text');
+    if (!settings.gfCustomText && settings.gfCustomText !== undefined) {
+       gfTextEl.style.display = 'none';
+    } else {
+       gfTextEl.style.display = 'block';
+       if (gfTextEl.textContent !== customText) gfTextEl.textContent = customText;
+    }
+    
     clockElement.querySelector('.gf-hour').textContent = hh;
     clockElement.querySelector('.gf-minute').textContent = mm;
     clockElement.querySelector('.gf-date').innerHTML = getCustomDateString(now, langCode, tz, settings);

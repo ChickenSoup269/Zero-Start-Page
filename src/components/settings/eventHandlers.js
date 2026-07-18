@@ -4888,6 +4888,48 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveCustomColor", value: e.target.value } }))
   })
 
+  document.getElementById("gf-custom-text")?.addEventListener("input", (e) => {
+    handleSettingUpdate("gfCustomText", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfCustomText", value: e.target.value } }))
+  })
+  
+  document.getElementById("gf-glow-color")?.addEventListener("input", (e) => {
+    handleSettingUpdate("gfGlowColor", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowColor", value: e.target.value } }))
+  })
+
+  document.getElementById("gf-glow-intensity")?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    handleSettingUpdate("gfGlowIntensity", val)
+    document.getElementById("gf-glow-intensity-val").textContent = val
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowIntensity", value: val } }))
+  })
+
+  document.getElementById("gf-bg-color")?.addEventListener("input", (e) => {
+    handleSettingUpdate("gfBgColor", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBgColor", value: e.target.value } }))
+  })
+
+  document.getElementById("gf-bg-opacity")?.addEventListener("input", (e) => {
+    const val = parseFloat(e.target.value)
+    handleSettingUpdate("gfBgOpacity", val)
+    document.getElementById("gf-bg-opacity-val").textContent = val
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBgOpacity", value: val } }))
+  })
+
+  document.getElementById("gf-blur")?.addEventListener("input", (e) => {
+    const val = parseInt(e.target.value, 10)
+    handleSettingUpdate("gfBlur", val)
+    document.getElementById("gf-blur-val").textContent = val + "px"
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBlur", value: val } }))
+  })
+
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidestyleNoBorder",
