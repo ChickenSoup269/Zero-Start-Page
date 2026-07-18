@@ -23,6 +23,7 @@ import { WavyLinesEffect } from "../animations/wavyLines.js"
 import { OceanWaveEffect } from "../animations/oceanWave.js"
 import { CloudDriftEffect } from "../animations/cloudDrift.js"
 import { NeonGridBackground } from "../animations/neonGrid.js"
+import { FrostedGlassOrbsBackground } from "../animations/frostedGlassOrbs.js"
 import { FirefliesHD } from "../animations/firefliesHD.js"
 import { SvgWaveGenerator } from "../animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "../animations/autumnLeaves.js"
@@ -87,6 +88,12 @@ export function createEffectFactories(settings) {
         settings.synthwaveGridColor || "#ff007f",
         settings.synthwaveSunColor || "#ffbe0b",
         settings.synthwaveFullScreen === true
+      ),
+    frostedGlassOrbsEffect: () =>
+      new FrostedGlassOrbsBackground(
+        "effect-canvas",
+        settings.frostedOrbsColor1 || "#00f2fe",
+        settings.frostedOrbsColor2 || "#4facfe"
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),

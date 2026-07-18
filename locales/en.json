@@ -1910,5 +1910,8 @@
   "bg_anim_neon_grid": "Neon Grid 3D",
   "setting_synthwave_grid_color": "Grid Color",
   "setting_synthwave_sun_color": "Sun Color",
-  "setting_synthwave_full_screen": "Fullscreen Tunnel Mode"
+  "setting_synthwave_full_screen": "Fullscreen Tunnel Mode",
+  "effect_frosted_orbs": "Frosted Glass Orbs",
+  "setting_frosted_orbs_color1": "Orb Color 1",
+  "setting_frosted_orbs_color2": "Orb Color 2"
 }

@@ -1910,5 +1910,8 @@
   "bg_anim_neon_grid": "Lưới Neon 3D",
   "setting_synthwave_grid_color": "Màu Lưới",
   "setting_synthwave_sun_color": "Màu Mặt trời",
-  "setting_synthwave_full_screen": "Hiển thị Full màn hình"
+  "setting_synthwave_full_screen": "Hiển thị Full màn hình",
+  "effect_frosted_orbs": "Pha lê sương mờ",
+  "setting_frosted_orbs_color1": "Màu Pha lê 1",
+  "setting_frosted_orbs_color2": "Màu Pha lê 2"
 }

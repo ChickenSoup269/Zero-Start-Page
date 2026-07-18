@@ -372,6 +372,7 @@ const EFFECT_KEY_MAP = {
   floatingLines: "floatingLinesEffect",
   hyperspace: "hyperspaceEffect",
   liquidEther: "liquidEtherEffect",
+  frostedGlassOrbs: "frostedGlassOrbsEffect",
 }
 
 function ensurePerformanceMonitor() {
@@ -4570,6 +4571,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.neonGridSettings)
       DOM.neonGridSettings.style.display =
         settings.effect === "neonGrid" ? "block" : "none"
+    if (DOM.frostedOrbsSettings)
+      DOM.frostedOrbsSettings.style.display =
+        settings.effect === "frostedGlassOrbs" ? "block" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"
@@ -4586,6 +4590,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.synthwaveFullScreenCheckbox) {
       DOM.synthwaveFullScreenCheckbox.checked = settings.synthwaveFullScreen === true
+    }
+    if (DOM.frostedOrbsColor1Picker) {
+      DOM.frostedOrbsColor1Picker.value = settings.frostedOrbsColor1 || "#00f2fe"
+    }
+    if (DOM.frostedOrbsColor2Picker) {
+      DOM.frostedOrbsColor2Picker.value = settings.frostedOrbsColor2 || "#4facfe"
     }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
@@ -5062,6 +5072,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "pixelWeather",
         "pixelBlast",
         "neonGrid",
+        "frostedGlassOrbs",
         "auroraWave",
         "sunbeam",
         "lightPillars",

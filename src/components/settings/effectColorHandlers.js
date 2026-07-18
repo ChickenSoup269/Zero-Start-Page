@@ -897,6 +897,22 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.neonGridEffect.setOptions({ fullScreen: isFullScreen })
     }
   })
+
+  DOM.frostedOrbsColor1Picker?.addEventListener("input", () => {
+    updateSetting("frostedOrbsColor1", DOM.frostedOrbsColor1Picker.value)
+    saveSettings()
+    if (effectInstances.frostedGlassOrbsEffect) {
+      effectInstances.frostedGlassOrbsEffect.updateColor('color1', DOM.frostedOrbsColor1Picker.value)
+    }
+  })
+
+  DOM.frostedOrbsColor2Picker?.addEventListener("input", () => {
+    updateSetting("frostedOrbsColor2", DOM.frostedOrbsColor2Picker.value)
+    saveSettings()
+    if (effectInstances.frostedGlassOrbsEffect) {
+      effectInstances.frostedGlassOrbsEffect.updateColor('color2', DOM.frostedOrbsColor2Picker.value)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }
