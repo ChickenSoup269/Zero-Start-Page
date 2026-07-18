@@ -2519,7 +2519,7 @@ function createApplySettings(effectInstances) {
         document.body.style.setProperty("--aw-color", settings.audioWaveCustomColor || "#00ff66")
       }
     } else if (dateClockStyle === "glass-float") {
-      document.body.classList.remove("gf-anim-float", "gf-anim-pulse", "gf-anim-shake", "gf-anim-none")
+      document.body.classList.remove("gf-anim-float", "gf-anim-pulse", "gf-anim-shake", "gf-anim-glitch", "gf-anim-bug", "gf-anim-none")
       const gfAnim = settings.gfAnimation || "float"
       document.body.classList.add(`gf-anim-${gfAnim}`)
 
