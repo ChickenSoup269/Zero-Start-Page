@@ -4946,6 +4946,41 @@ export function setupGeneralEventHandlers(
     });
   }
 
+  const presetAngleBtns = document.querySelectorAll(".preset-angle-btn");
+  presetAngleBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const presetName = btn.getAttribute("data-preset");
+      let presetValues = {};
+      switch (presetName) {
+        case "iso-left":
+          presetValues = { customAngleSkewX: 0, customAngleSkewY: 15, customAngleRotate: 5, customAngleRotateX: 20, customAngleRotateY: -25, customAnglePerspective: 1000 };
+          break;
+        case "iso-right":
+          presetValues = { customAngleSkewX: 0, customAngleSkewY: -15, customAngleRotate: -5, customAngleRotateX: 20, customAngleRotateY: 25, customAnglePerspective: 1000 };
+          break;
+        case "flat-top":
+          presetValues = { customAngleSkewX: 0, customAngleSkewY: 0, customAngleRotate: 0, customAngleRotateX: 50, customAngleRotateY: 0, customAnglePerspective: 800 };
+          break;
+        case "cinematic":
+          presetValues = { customAngleSkewX: -10, customAngleSkewY: -5, customAngleRotate: 5, customAngleRotateX: -10, customAngleRotateY: 20, customAnglePerspective: 1200 };
+          break;
+      }
+      
+      Object.keys(presetValues).forEach(key => {
+        handleSettingUpdate(key, presetValues[key]);
+        const el = document.getElementById(`${key.replace(/([A-Z])/g, "-$1").toLowerCase()}-input`);
+        if (el) el.value = presetValues[key];
+      });
+      document.body.style.setProperty("--skewX", presetValues.customAngleSkewX + "deg");
+      document.body.style.setProperty("--skewY", presetValues.customAngleSkewY + "deg");
+      document.body.style.setProperty("--rotate", presetValues.customAngleRotate + "deg");
+      document.body.style.setProperty("--rotateX", presetValues.customAngleRotateX + "deg");
+      document.body.style.setProperty("--rotateY", presetValues.customAngleRotateY + "deg");
+      document.body.style.setProperty("--perspective", presetValues.customAnglePerspective + "px");
+      window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customAnglePreset" } }));
+    });
+  });
+
   const globalMaskingInputs = [
     { id: "global-clock-cut-bottom-input", key: "clockCutBottom", isFloat: true },
     { id: "global-clock-fade-bottom-input", key: "clockFadeBottom", isFloat: true }
