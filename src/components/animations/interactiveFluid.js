@@ -86,31 +86,29 @@ export class InteractiveFluidBackground {
 
   spawnParticles() {
     const dist = Math.hypot(this.mouse.dx, this.mouse.dy)
-    const count = Math.min(dist * 0.5, 50) // limit spawn count
+    const count = Math.min(dist * 0.2, 20) // lower count for better performance & less glaring
     
     const rgb1 = this.hexToRgb(this.color1)
     const rgb2 = this.hexToRgb(this.color2)
     
     for (let i = 0; i < count; i++) {
-      // Interpolate along the mouse path
       const t = i / count
       const px = this.lastMouse.x + this.mouse.dx * t
       const py = this.lastMouse.y + this.mouse.dy * t
       
-      // Randomize color mix
       const mix = Math.random()
       const r = Math.round(rgb1.r * mix + rgb2.r * (1 - mix))
       const g = Math.round(rgb1.g * mix + rgb2.g * (1 - mix))
       const b = Math.round(rgb1.b * mix + rgb2.b * (1 - mix))
       
       this.particles.push({
-        x: px + (Math.random() - 0.5) * 20,
-        y: py + (Math.random() - 0.5) * 20,
-        vx: this.mouse.dx * 0.05 + (Math.random() - 0.5) * 3,
-        vy: this.mouse.dy * 0.05 + (Math.random() - 0.5) * 3,
-        radius: Math.random() * 20 + 10,
+        x: px + (Math.random() - 0.5) * 15,
+        y: py + (Math.random() - 0.5) * 15,
+        vx: this.mouse.dx * 0.03 + (Math.random() - 0.5) * 1.5,
+        vy: this.mouse.dy * 0.03 + (Math.random() - 0.5) * 1.5,
+        radius: Math.random() * 30 + 15, // slightly larger, softer
         life: 1,
-        decay: Math.random() * 0.01 + 0.015,
+        decay: Math.random() * 0.01 + 0.01,
         color: `rgb(${r}, ${g}, ${b})`,
         angle: Math.random() * Math.PI * 2
       })
@@ -145,29 +143,28 @@ export class InteractiveFluidBackground {
     const W = this.canvas.width
     const H = this.canvas.height
     
-    // Fade background to simulate fluid fading
     this.ctx.globalCompositeOperation = 'source-over'
-    this.ctx.fillStyle = "rgba(5, 5, 10, 0.15)"
+    // A slightly darker, less opaque trail clear for a smoother motion blur without whiteouts
+    this.ctx.fillStyle = "rgba(10, 10, 15, 0.2)"
     this.ctx.fillRect(0, 0, W, H)
 
-    this.ctx.globalCompositeOperation = 'lighter'
+    // Using 'screen' instead of 'lighter' avoids glaring whiteouts while still blending beautifully
+    this.ctx.globalCompositeOperation = 'screen'
     
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i]
       
-      // Fluid-like swirling movement (fake curl)
       p.angle += 0.05
-      p.vx += Math.cos(p.angle) * 0.2
-      p.vy += Math.sin(p.angle) * 0.2
+      p.vx += Math.cos(p.angle) * 0.15
+      p.vy += Math.sin(p.angle) * 0.15
       
-      // Friction
-      p.vx *= 0.95
-      p.vy *= 0.95
+      p.vx *= 0.96
+      p.vy *= 0.96
       
       p.x += p.vx
       p.y += p.vy
       
-      p.radius += 0.5 // expand like smoke
+      p.radius += 0.3
       p.life -= p.decay
       
       if (p.life <= 0) {
@@ -175,12 +172,11 @@ export class InteractiveFluidBackground {
         continue
       }
       
-      // Draw fluid particle
       const grad = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius)
       
-      // Use color but add alpha based on life
       const colorStr = p.color.replace('rgb(', '').replace(')', '')
-      grad.addColorStop(0, `rgba(${colorStr}, ${p.life * 0.5})`)
+      // Lower max opacity to 0.3 for a softer, smoke-like appearance
+      grad.addColorStop(0, `rgba(${colorStr}, ${p.life * 0.3})`)
       grad.addColorStop(1, `rgba(${colorStr}, 0)`)
       
       this.ctx.fillStyle = grad
@@ -189,20 +185,19 @@ export class InteractiveFluidBackground {
       this.ctx.fill()
     }
     
-    // Auto-spawn some particles if mouse is inactive to keep it alive
-    if (this.particles.length < 50 && Math.random() < 0.1) {
-      const px = W / 2 + Math.cos(Date.now() * 0.001) * 200
+    if (this.particles.length < 30 && Math.random() < 0.05) {
+      const px = W / 2 + Math.cos(Date.now() * 0.001) * 300
       const py = H / 2 + Math.sin(Date.now() * 0.0013) * 200
       
       const rgb1 = this.hexToRgb(this.color1)
       this.particles.push({
         x: px,
         y: py,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 5,
-        radius: Math.random() * 30 + 20,
-        life: 1,
-        decay: 0.02,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        radius: Math.random() * 40 + 30,
+        life: 0.8,
+        decay: 0.015,
         color: `rgb(${rgb1.r}, ${rgb1.g}, ${rgb1.b})`,
         angle: Math.random() * Math.PI * 2
       })
