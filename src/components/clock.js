@@ -2024,7 +2024,7 @@ export function updateTime() {
   } else if (dateClockStyle === "glass-float") {
     if (!clockElement.querySelector('.glass-float-container')) {
       clockElement.innerHTML = `
-        <div class="glass-float-container">
+        <div class="clock-container glass-float-container">
           <div class="gf-text"></div>
           <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
           <div class="gf-date"></div>
