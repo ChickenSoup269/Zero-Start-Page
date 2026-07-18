@@ -2471,6 +2471,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-lunar-orbit",
       "date-clock-style-cartoon",
       "date-clock-style-custom-angle",
+      "date-clock-style-space-concentric",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
