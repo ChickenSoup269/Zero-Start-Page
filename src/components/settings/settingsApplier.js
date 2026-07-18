@@ -2498,6 +2498,8 @@ function createApplySettings(effectInstances) {
     } else if (dateClockStyle === "audio-wave") {
       const pos = settings.audioWavePosition || "bottom"
       document.body.classList.add(`audio-wave-pos-${pos}`)
+      const scale = settings.audioWaveScale || 1
+      document.body.style.setProperty("--aw-scale", scale)
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -3434,6 +3436,13 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const audioWavePositionSelect = document.getElementById("audio-wave-position-select")
     if (audioWavePositionSelect) audioWavePositionSelect.value = settings.audioWavePosition || "bottom"
+    
+    const audioWaveScaleInput = document.getElementById("audio-wave-scale-input")
+    const audioWaveScaleVal = document.getElementById("audio-wave-scale-val")
+    if (audioWaveScaleInput) {
+      audioWaveScaleInput.value = settings.audioWaveScale || 1
+      if (audioWaveScaleVal) audioWaveScaleVal.textContent = settings.audioWaveScale || 1
+    }
     const coolBarTopInput = document.getElementById("cool-bar-top-input")
     if (coolBarTopInput) coolBarTopInput.value = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
     const coolBarBottomInput = document.getElementById("cool-bar-bottom-input")

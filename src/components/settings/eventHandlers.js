@@ -4851,6 +4851,26 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  const audioWaveScaleInput = document.getElementById("audio-wave-scale-input")
+  const audioWaveScaleVal = document.getElementById("audio-wave-scale-val")
+  if (audioWaveScaleInput && audioWaveScaleVal) {
+    audioWaveScaleInput.addEventListener("input", (e) => {
+      audioWaveScaleVal.textContent = e.target.value
+    })
+    audioWaveScaleInput.addEventListener("change", (e) => {
+      handleSettingUpdate("audioWaveScale", parseFloat(e.target.value))
+      applySettings()
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: {
+            key: "audioWaveScale",
+            value: parseFloat(e.target.value),
+          },
+        }),
+      )
+    })
+  }
+
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidestyleNoBorder",
