@@ -84,8 +84,14 @@ export class NeonGridBackground {
     ctx.shadowColor = this.gridColor
     ctx.lineWidth = 2
 
+    // Calculate gridY so it expands to fill the screen down to the bottom
+    // When z=0 (close to camera), scale=1, so y2d = gridY + horizonY
+    // We want y2d to reach H, so gridY = H - horizonY
+    // We add a little extra (e.g. 100) to ensure it bleeds past the edges smoothly
+    const gridY = H - this.horizonY + 100 
+
     // Draw Grids (Bottom and optionally Top)
-    const gridYs = this.fullScreen ? [150, -150] : [150]
+    const gridYs = this.fullScreen ? [gridY, -gridY] : [gridY]
 
     gridYs.forEach(gy => {
       // Draw horizontal lines moving forward
