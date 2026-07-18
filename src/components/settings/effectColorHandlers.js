@@ -24,11 +24,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     wrapper.style.gap = '8px';
     wrapper.style.alignItems = 'center';
     
-    if (input.style.width === '100%') {
-      wrapper.style.width = '100%';
-    }
-    input.style.flex = "1";
-    input.style.width = "100%";
+    // Ép tất cả các ô chọn màu thành hình vuông đều đặn
+    input.style.width = "32px";
+    input.style.height = "32px";
+    input.style.padding = "0";
+    input.style.border = "none";
+    input.style.borderRadius = "4px";
+    input.style.cursor = "pointer";
+    input.style.flexShrink = "0";
 
     input.parentNode.insertBefore(wrapper, input);
     wrapper.appendChild(input);
