@@ -6,6 +6,40 @@
 import { updateSetting, saveSettings } from "../../services/state.js"
 
 function setupEffectColorHandlers(DOM, effectInstances) {
+  // Tự động thêm nút Reset cho tất cả các bảng chọn màu
+  document.querySelectorAll('input[type="color"]').forEach(input => {
+    if (input.parentElement.classList.contains('color-picker-wrapper')) return;
+
+    const defaultColor = input.getAttribute('value') || '#ffffff';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'color-picker-wrapper';
+    wrapper.style.display = 'flex';
+    wrapper.style.gap = '8px';
+    wrapper.style.alignItems = 'center';
+    
+    if (input.style.width === '100%') {
+      wrapper.style.width = '100%';
+    }
+    input.style.flex = "1";
+    input.style.width = "100%";
+
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'icon-btn';
+    btn.title = 'Reset to Default';
+    btn.innerHTML = '<i class="fa-solid fa-rotate-left"></i>';
+    wrapper.appendChild(btn);
+
+    btn.addEventListener('click', () => {
+      input.value = defaultColor;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
   DOM.starColorPicker?.addEventListener("input", () => {
     updateSetting("starColor", DOM.starColorPicker.value)
     saveSettings()
