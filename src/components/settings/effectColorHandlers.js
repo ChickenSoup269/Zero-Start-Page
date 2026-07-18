@@ -913,6 +913,22 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.frostedGlassOrbsEffect.updateColor('color2', DOM.frostedOrbsColor2Picker.value)
     }
   })
+
+  DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleAccretionColor", DOM.blackHoleAccretionColorPicker.value)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor('accretion', DOM.blackHoleAccretionColorPicker.value)
+    }
+  })
+
+  DOM.blackHoleStarColorPicker?.addEventListener("input", () => {
+    updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
+    saveSettings()
+    if (effectInstances.blackHoleEffect) {
+      effectInstances.blackHoleEffect.updateColor('star', DOM.blackHoleStarColorPicker.value)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }

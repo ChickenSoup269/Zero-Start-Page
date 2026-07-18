@@ -373,6 +373,7 @@ const EFFECT_KEY_MAP = {
   hyperspace: "hyperspaceEffect",
   liquidEther: "liquidEtherEffect",
   frostedGlassOrbs: "frostedGlassOrbsEffect",
+  blackHole: "blackHoleEffect",
 }
 
 function ensurePerformanceMonitor() {
@@ -4574,6 +4575,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.frostedOrbsSettings)
       DOM.frostedOrbsSettings.style.display =
         settings.effect === "frostedGlassOrbs" ? "block" : "none"
+    if (DOM.blackHoleSettings)
+      DOM.blackHoleSettings.style.display =
+        settings.effect === "blackHole" ? "block" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"
@@ -4596,6 +4600,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.frostedOrbsColor2Picker) {
       DOM.frostedOrbsColor2Picker.value = settings.frostedOrbsColor2 || "#4facfe"
+    }
+    if (DOM.blackHoleAccretionColorPicker) {
+      DOM.blackHoleAccretionColorPicker.value = settings.blackHoleAccretionColor || "#ff5500"
+    }
+    if (DOM.blackHoleStarColorPicker) {
+      DOM.blackHoleStarColorPicker.value = settings.blackHoleStarColor || "#ffffff"
     }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
@@ -5073,6 +5083,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "pixelBlast",
         "neonGrid",
         "frostedGlassOrbs",
+        "blackHole",
         "auroraWave",
         "sunbeam",
         "lightPillars",

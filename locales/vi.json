@@ -1913,5 +1913,8 @@
   "setting_synthwave_full_screen": "Hiển thị Full màn hình",
   "effect_frosted_orbs": "Pha lê sương mờ",
   "setting_frosted_orbs_color1": "Màu Pha lê 1",
-  "setting_frosted_orbs_color2": "Màu Pha lê 2"
+  "setting_frosted_orbs_color2": "Màu Pha lê 2",
+  "effect_black_hole": "Warp Drive / Hố Đen",
+  "setting_black_hole_accretion_color": "Màu Lõi Vòng Sáng",
+  "setting_black_hole_star_color": "Màu Vệt Sao"
 }

@@ -540,6 +540,9 @@ export let synthwaveSunColorPicker = document.getElementById("synthwave-sun-colo
 export let frostedOrbsSettings = document.getElementById("frosted-orbs-settings")
 export let frostedOrbsColor1Picker = document.getElementById("frosted-orbs-color-1-picker")
 export let frostedOrbsColor2Picker = document.getElementById("frosted-orbs-color-2-picker")
+export let blackHoleSettings = document.getElementById("black-hole-settings")
+export let blackHoleAccretionColorPicker = document.getElementById("black-hole-accretion-color-picker")
+export let blackHoleStarColorPicker = document.getElementById("black-hole-star-color-picker")
 export let synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
 export let pixelBlastBgSetting = document.getElementById("pixel-blast-bg-setting")
 export let pixelBlastTransparentCheckbox = document.getElementById("pixel-blast-transparent")
@@ -2672,6 +2675,9 @@ export function refreshDOMReferences() {
   frostedOrbsSettings = document.getElementById("frosted-orbs-settings")
   frostedOrbsColor1Picker = document.getElementById("frosted-orbs-color-1-picker")
   frostedOrbsColor2Picker = document.getElementById("frosted-orbs-color-2-picker")
+  blackHoleSettings = document.getElementById("black-hole-settings")
+  blackHoleAccretionColorPicker = document.getElementById("black-hole-accretion-color-picker")
+  blackHoleStarColorPicker = document.getElementById("black-hole-star-color-picker")
   synthwaveFullScreenCheckbox = document.getElementById("synthwave-full-screen")
   pixelBlastBgSetting = document.getElementById(
   "pixel-blast-bg-setting",

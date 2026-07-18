@@ -1913,5 +1913,8 @@
   "setting_synthwave_full_screen": "Fullscreen Tunnel Mode",
   "effect_frosted_orbs": "Frosted Glass Orbs",
   "setting_frosted_orbs_color1": "Orb Color 1",
-  "setting_frosted_orbs_color2": "Orb Color 2"
+  "setting_frosted_orbs_color2": "Orb Color 2",
+  "effect_black_hole": "Warp Drive / Black Hole",
+  "setting_black_hole_accretion_color": "Accretion Disk Color",
+  "setting_black_hole_star_color": "Star Color"
 }
