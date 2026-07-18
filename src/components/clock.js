@@ -733,6 +733,7 @@ const scHours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0')
 const scMinutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 const scSeconds = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 let spaceConcentricHtmlCache = null;
+let spaceConcentricLangCache = null;
 
 
 export function updateTime() {
@@ -2011,7 +2012,17 @@ export function updateTime() {
     const minAngle = -(currentMin * (360 / 60));
     const secAngle = -(currentSec * (360 / 60));
 
-    if (!spaceConcentricHtmlCache) {
+    const isVi = langCode.startsWith("vi");
+
+    if (!spaceConcentricHtmlCache || spaceConcentricLangCache !== langCode) {
+      const scMonthsVi = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+      const scWeekdaysVi = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
+      const scDaysVi = Array.from({length: 31}, (_, i) => `Ngày ${i + 1}`);
+
+      const m = isVi ? scMonthsVi : scMonths;
+      const w = isVi ? scWeekdaysVi : scWeekdays;
+      const d = isVi ? scDaysVi : scDays;
+
       const genRing = (items, id) => {
         const step = 360 / items.length;
         const itemsHtml = items.map((t, i) => `<div class="sc-text-item" style="transform: rotate(${i * step}deg)">${t}</div>`).join("");
@@ -2020,14 +2031,15 @@ export function updateTime() {
       spaceConcentricHtmlCache = `
         <div class="space-concentric-container">
             <div class="sc-indicator-line"></div>
-            ${genRing(scMonths, 'sc-ring-month')}
-            ${genRing(scDays, 'sc-ring-day')}
-            ${genRing(scWeekdays, 'sc-ring-week')}
+            ${genRing(m, 'sc-ring-month')}
+            ${genRing(d, 'sc-ring-day')}
+            ${genRing(w, 'sc-ring-week')}
             ${genRing(scHours, 'sc-ring-hour')}
             ${genRing(scMinutes, 'sc-ring-min')}
             ${genRing(scSeconds, 'sc-ring-sec')}
         </div>
       `;
+      spaceConcentricLangCache = langCode;
       clockElement.innerHTML = spaceConcentricHtmlCache;
     } else if (clockElement.children.length === 0 || !clockElement.querySelector('.space-concentric-container')) {
       clockElement.innerHTML = spaceConcentricHtmlCache;
