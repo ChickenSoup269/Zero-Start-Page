@@ -348,10 +348,8 @@ export function initTerminal() {
                     ];
                     for (const mod of modules) {
                         await new Promise(r => setTimeout(r, 400));
-                        // 95% chance of OK, 5% chance of WARN for realism
-                        const isWarn = Math.random() < 0.05;
-                        const statusColor = isWarn ? "#e5c07b" : "#98c379";
-                        const statusText = isWarn ? "WARN" : "OK";
+                        const statusColor = "#98c379";
+                        const statusText = "OK";
                         printOut(`\nTesting ${mod.padEnd(22, '.')} [<span style="color: ${statusColor};">${statusText}</span>]`);
                     }
                     await new Promise(r => setTimeout(r, 300));
