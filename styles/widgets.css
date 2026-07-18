@@ -13368,9 +13368,9 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
     position: absolute;
     width: 20px;
     height: 20px;
-    background: var(--clock-accent-color, #00ff66);
+    background: #ffffff;
     border-radius: 50%;
-    box-shadow: 0 0 20px var(--clock-accent-color, #00ff66), 0 0 40px var(--clock-accent-color, #00ff66);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.4);
     z-index: 101;
     animation: pulse-core 4s infinite alternate;
 }
@@ -13429,8 +13429,8 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
 }
 
 .sc-text-item.is-active {
-    color: var(--clock-accent-color, #00ff66);
-    text-shadow: 0 0 15px var(--clock-accent-color, #00ff66), 0 0 5px #fff;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px #ffffff;
     font-weight: 800;
     font-size: 19px;
     transform: scale(1.05); /* Slight physical pop out */
