@@ -247,7 +247,23 @@ async function fetchBestUnsplashPhoto(accessKey, collection) {
   const fetchCandidate = async () => {
     const keyword = buildUnsplashQuery(collection)
 
-    // 1) Prefer curated collections if configured for this category.
+    // 1) Prefer random-query fetch as it uses highly specific keywords and accesses the entire Unsplash library (fresher photos).
+    if (keyword) {
+      try {
+        return await fetchUnsplashPhotoByParams(accessKey, {
+          query: keyword,
+        })
+      } catch (err) {
+        console.warn("Unsplash random-query fetch failed, trying search fallback:", err)
+        try {
+          return await fetchUnsplashPhotoFromSearch(accessKey, keyword, categoryKey)
+        } catch (searchErr) {
+          console.warn("Unsplash search fallback failed:", searchErr)
+        }
+      }
+    }
+
+    // 2) Fallback to curated collections if configured.
     if (collection.collections?.length) {
       try {
         return await fetchUnsplashPhotoFromCollections(
@@ -255,14 +271,11 @@ async function fetchBestUnsplashPhoto(accessKey, collection) {
           collection.collections,
         )
       } catch (err) {
-        console.warn(
-          "Unsplash collection fetch failed, trying topic/photos:",
-          err,
-        )
+        console.warn("Unsplash collection fetch failed:", err)
       }
     }
 
-    // 2) Prefer curated topic photos endpoint.
+    // 3) Fallback to curated topic photos endpoint.
     if (collection.topic) {
       try {
         return await fetchUnsplashPhotoFromTopic(
@@ -271,35 +284,14 @@ async function fetchBestUnsplashPhoto(accessKey, collection) {
           categoryKey,
         )
       } catch (err) {
-        console.warn(
-          "Unsplash topic/photos fetch failed, trying random topic:",
-          err,
-        )
-      }
-    }
-
-    // 3) Fallback to random endpoint with topics/query/search.
-    if (collection.topic) {
-      try {
-        return await fetchUnsplashPhotoByParams(accessKey, {
-          topics: collection.topic,
-        })
-      } catch (err) {
-        console.warn("Unsplash topic fetch failed, trying query fallback:", err)
-      }
-    }
-
-    if (keyword) {
-      try {
-        return await fetchUnsplashPhotoByParams(accessKey, {
-          query: keyword,
-        })
-      } catch (err) {
-        console.warn(
-          "Unsplash random-query fetch failed, trying search fallback:",
-          err,
-        )
-        return fetchUnsplashPhotoFromSearch(accessKey, keyword, categoryKey)
+        console.warn("Unsplash topic/photos fetch failed, trying random topic:", err)
+        try {
+          return await fetchUnsplashPhotoByParams(accessKey, {
+            topics: collection.topic,
+          })
+        } catch (topicErr) {
+          console.warn("Unsplash topic fetch failed:", topicErr)
+        }
       }
     }
 
