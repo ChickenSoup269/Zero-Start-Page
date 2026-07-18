@@ -375,6 +375,7 @@ const EFFECT_KEY_MAP = {
   frostedGlassOrbs: "frostedGlassOrbsEffect",
   blackHole: "blackHoleEffect",
   interactiveFluid: "interactiveFluidEffect",
+  cinematicBokeh: "cinematicBokehEffect",
 }
 
 function ensurePerformanceMonitor() {
@@ -4582,6 +4583,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.interactiveFluidSettings)
       DOM.interactiveFluidSettings.style.display =
         settings.effect === "interactiveFluid" ? "block" : "none"
+    if (DOM.cinematicBokehSettings)
+      DOM.cinematicBokehSettings.style.display =
+        settings.effect === "cinematicBokeh" ? "block" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"
@@ -4619,6 +4623,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.interactiveFluidColor2Picker) {
       DOM.interactiveFluidColor2Picker.value = settings.interactiveFluidColor2 || "#ff007f"
+    }
+    if (DOM.cinematicBokehColor1Picker) {
+      DOM.cinematicBokehColor1Picker.value = settings.cinematicBokehColor1 || "#ff9a9e"
+    }
+    if (DOM.cinematicBokehColor2Picker) {
+      DOM.cinematicBokehColor2Picker.value = settings.cinematicBokehColor2 || "#fecfef"
     }
     if (DOM.pixelWeatherStyleSection) {
       DOM.pixelWeatherStyleSection.style.display =
@@ -5098,6 +5108,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "frostedGlassOrbs",
         "blackHole",
         "interactiveFluid",
+        "cinematicBokeh",
         "auroraWave",
         "sunbeam",
         "lightPillars",

@@ -953,6 +953,22 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       effectInstances.interactiveFluidEffect.updateColor('color2', DOM.interactiveFluidColor2Picker.value)
     }
   })
+
+  DOM.cinematicBokehColor1Picker?.addEventListener("input", () => {
+    updateSetting("cinematicBokehColor1", DOM.cinematicBokehColor1Picker.value)
+    saveSettings()
+    if (effectInstances.cinematicBokehEffect) {
+      effectInstances.cinematicBokehEffect.updateColor('color1', DOM.cinematicBokehColor1Picker.value)
+    }
+  })
+
+  DOM.cinematicBokehColor2Picker?.addEventListener("input", () => {
+    updateSetting("cinematicBokehColor2", DOM.cinematicBokehColor2Picker.value)
+    saveSettings()
+    if (effectInstances.cinematicBokehEffect) {
+      effectInstances.cinematicBokehEffect.updateColor('color2', DOM.cinematicBokehColor2Picker.value)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }

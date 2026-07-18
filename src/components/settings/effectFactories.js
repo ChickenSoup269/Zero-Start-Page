@@ -26,6 +26,7 @@ import { NeonGridBackground } from "../animations/neonGrid.js"
 import { FrostedGlassOrbsBackground } from "../animations/frostedGlassOrbs.js"
 import { BlackHoleBackground } from "../animations/blackHole.js"
 import { InteractiveFluidBackground } from "../animations/interactiveFluid.js"
+import { CinematicBokehBackground } from "../animations/cinematicBokeh.js"
 import { FirefliesHD } from "../animations/firefliesHD.js"
 import { SvgWaveGenerator } from "../animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "../animations/autumnLeaves.js"
@@ -109,6 +110,12 @@ export function createEffectFactories(settings) {
         "effect-canvas",
         settings.interactiveFluidColor1 || "#00f2fe",
         settings.interactiveFluidColor2 || "#ff007f"
+      ),
+    cinematicBokehEffect: () =>
+      new CinematicBokehBackground(
+        "effect-canvas",
+        settings.cinematicBokehColor1 || "#ff9a9e",
+        settings.cinematicBokehColor2 || "#fecfef"
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),

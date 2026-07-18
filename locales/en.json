@@ -1920,5 +1920,8 @@
   "setting_frosted_orbs_dark_bg": "Dark Space Background",
   "effect_interactive_fluid": "Interactive Fluid",
   "setting_interactive_fluid_color1": "Fluid Color 1",
-  "setting_interactive_fluid_color2": "Fluid Color 2"
+  "setting_interactive_fluid_color2": "Fluid Color 2",
+  "effect_cinematic_bokeh": "Cinematic Bokeh",
+  "setting_cinematic_bokeh_color1": "Bokeh Color 1",
+  "setting_cinematic_bokeh_color2": "Bokeh Color 2"
 }
