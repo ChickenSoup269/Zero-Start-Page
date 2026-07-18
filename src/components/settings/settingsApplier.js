@@ -2491,6 +2491,7 @@ function createApplySettings(effectInstances) {
       "audio-wave-style-bars",
       "audio-wave-style-dots",
       "audio-wave-style-smooth",
+      "audio-wave-style-pixel",
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"

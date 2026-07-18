@@ -459,14 +459,17 @@
                                     <option value="bars" data-i18n="settings_wave_style_bars">Classic Bars</option>
                                     <option value="dots" data-i18n="settings_wave_style_dots">Pulsing Dots</option>
                                     <option value="smooth" data-i18n="settings_wave_style_smooth">Smooth Wave</option>
+                                    <option value="pixel" data-i18n="settings_wave_style_pixel">Pixel Art</option>
                                 </select>
                             </div>
-                            <div class="setting-item-row" style="margin-top: 5px; flex-direction: column; align-items: stretch; gap: 8px;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <label for="audio-wave-scale-input" data-i18n="settings_audio_wave_scale">Wave Scale</label>
-                                    <span id="audio-wave-scale-val" style="opacity: 0.7; font-size: 0.85rem;">1</span>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <div class="bg-slider-item" style="width: 100%;">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-up-right-and-down-left-from-center"></i> <span data-i18n="settings_audio_wave_scale">Wave Scale</span></span>
+                                        <span id="audio-wave-scale-val" class="bg-slider-value">1</span>
+                                    </div>
+                                    <input type="range" id="audio-wave-scale-input" min="0.2" max="3" step="0.1" value="1">
                                 </div>
-                                <input type="range" id="audio-wave-scale-input" min="0.2" max="3" step="0.1" value="1" style="width: 100%;">
                             </div>
                             <div class="setting-item-row" style="margin-top: 5px;">
                                 <label for="audio-wave-auto-color-checkbox" data-i18n="settings_audio_wave_auto_color">Auto Theme Color</label>
