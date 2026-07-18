@@ -337,23 +337,69 @@ export function initTerminal() {
                     }
                 } else {
                     printOut(`\n<span style="color: #61afef;">[Test]</span> Initiating full module diagnostics...`);
-                    const modules = [
-                        "Background Engine",
-                        "Effect Synthesizer",
-                        "Clock & Date Manager",
-                        "Settings Sync",
-                        "Performance Monitor",
-                        "Layout Engine",
-                        "Local Storage IO"
+                    const checks = [
+                        {
+                            name: "Background Engine",
+                            test: () => document.getElementById('background-layer') !== null && 
+                                      (document.getElementById('background-layer').hasChildNodes() || 
+                                       document.getElementById('background-layer').style.backgroundImage !== '')
+                        },
+                        {
+                            name: "Clock & Date Manager",
+                            test: () => {
+                                const clock = document.getElementById('clock');
+                                return clock && clock.innerText.length > 0 && !clock.innerText.includes('NaN');
+                            }
+                        },
+                        {
+                            name: "Settings Sync",
+                            test: () => {
+                                try {
+                                    const s = localStorage.getItem('pageSettings');
+                                    if (s) JSON.parse(s);
+                                    return true;
+                                } catch(e) { return false; }
+                            }
+                        },
+                        {
+                            name: "Performance Monitor",
+                            test: () => typeof window.perfHUD !== 'undefined'
+                        },
+                        {
+                            name: "Local Storage IO",
+                            test: () => {
+                                try {
+                                    localStorage.setItem('_sys_test', '1');
+                                    const val = localStorage.getItem('_sys_test');
+                                    localStorage.removeItem('_sys_test');
+                                    return val === '1';
+                                } catch(e) { return false; }
+                            }
+                        }
                     ];
-                    for (const mod of modules) {
-                        await new Promise(r => setTimeout(r, 400));
-                        const statusColor = "#98c379";
-                        const statusText = "OK";
-                        printOut(`\nTesting ${mod.padEnd(22, '.')} [<span style="color: ${statusColor};">${statusText}</span>]`);
+
+                    let allPassed = true;
+                    for (const check of checks) {
+                        await new Promise(r => setTimeout(r, 300));
+                        let passed = false;
+                        try {
+                            passed = check.test();
+                        } catch(e) {
+                            passed = false;
+                        }
+                        const statusColor = passed ? "#98c379" : "#e06c75";
+                        const statusText = passed ? "OK" : "ERR";
+                        if (!passed) allPassed = false;
+                        printOut(`\nTesting ${check.name.padEnd(25, '.')} [<span style="color: ${statusColor};">${statusText}</span>]`);
                     }
+                    
                     await new Promise(r => setTimeout(r, 300));
-                    printOut(`\n<span style="color: #98c379;">[Test]</span> Diagnostics complete. System is stable.`);
+                    if (allPassed) {
+                        printOut(`\n<span style="color: #98c379;">[Test]</span> Diagnostics complete. All systems fully operational.`);
+                    } else {
+                        printOut(`\n<span style="color: #e06c75;">[Test]</span> Diagnostics complete. Some modules reported errors!`);
+                        printOut(`\n<span style="color: #e5c07b;">Tip: Use the 'bug' command to view detailed error logs.</span>`);
+                    }
                 }
             } else if (cmd === 'perf') {
                 if (window.perfHUD) {
