@@ -2020,7 +2020,7 @@ export function updateTime() {
     }
     clockElement.querySelector('.aw-hour').textContent = hh;
     clockElement.querySelector('.aw-minute').textContent = mm;
-    clockElement.querySelector('.aw-date').textContent = getCustomDateString(now, langCode, tz, settings);
+    clockElement.querySelector('.aw-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
