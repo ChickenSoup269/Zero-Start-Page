@@ -3506,6 +3506,7 @@ body.sidebar-light .preset-code-line-value {
   margin-bottom: var(--space-2);
   color: var(--accent-color);
   padding-bottom: var(--space-2);
+  padding-right: 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
   position: relative;
@@ -6721,6 +6722,7 @@ body.sidebar-light .unsplash-explorer-mini-open .mini-open-icon {
   cursor: pointer;
   position: relative;
   transition: opacity 0.2s ease;
+  padding-right: 24px;
 }
 
 .gradient-v2-section-title:hover {
