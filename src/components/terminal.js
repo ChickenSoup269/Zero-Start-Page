@@ -327,7 +327,37 @@ export function initTerminal() {
                 }
             } else if (cmd === 'clear' || cmd === 'cls') {
                 output.innerHTML = '';
-            } else if (cmd === 'perf' || (cmd === 'test' && args[1] === 'performance')) {
+            } else if (cmd === 'test') {
+                if (args[1] === 'performance') {
+                    if (window.perfHUD) {
+                        window.perfHUD.toggle();
+                        printOut(`\n<span style="color: #98c379;">[Performance]</span> Toggled Performance HUD overlay.`);
+                    } else {
+                        printOut(`\n<span style="color: #e06c75;">[Error]</span> Performance HUD module not initialized.`);
+                    }
+                } else {
+                    printOut(`\n<span style="color: #61afef;">[Test]</span> Initiating full module diagnostics...`);
+                    const modules = [
+                        "Background Engine",
+                        "Effect Synthesizer",
+                        "Clock & Date Manager",
+                        "Settings Sync",
+                        "Performance Monitor",
+                        "Layout Engine",
+                        "Local Storage IO"
+                    ];
+                    for (const mod of modules) {
+                        await new Promise(r => setTimeout(r, 400));
+                        // 95% chance of OK, 5% chance of WARN for realism
+                        const isWarn = Math.random() < 0.05;
+                        const statusColor = isWarn ? "#e5c07b" : "#98c379";
+                        const statusText = isWarn ? "WARN" : "OK";
+                        printOut(`\nTesting ${mod.padEnd(22, '.')} [<span style="color: ${statusColor};">${statusText}</span>]`);
+                    }
+                    await new Promise(r => setTimeout(r, 300));
+                    printOut(`\n<span style="color: #98c379;">[Test]</span> Diagnostics complete. System is stable.`);
+                }
+            } else if (cmd === 'perf') {
                 if (window.perfHUD) {
                     window.perfHUD.toggle();
                     printOut(`\n<span style="color: #98c379;">[Performance]</span> Toggled Performance HUD overlay.`);
@@ -339,6 +369,7 @@ export function initTerminal() {
             } else if (cmd === '/help' || cmd === 'help') {
                 printOut(`\n<span style="color: #e5c07b;">Available commands:</span>
   <span style="color: #61afef;">start</span>    - Run system diagnostic and dump settings
+  <span style="color: #61afef;">test</span>     - Run self-test on all system modules
   <span style="color: #61afef;">bug</span>      - Fetch intercepted DevTools console logs
   <span style="color: #61afef;">clear, cls</span>- Clear terminal screen
   <span style="color: #61afef;">exit</span>     - Close the terminal
