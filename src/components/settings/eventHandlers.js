@@ -4888,6 +4888,12 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveCustomColor", value: e.target.value } }))
   })
 
+  document.getElementById("gf-animation-select")?.addEventListener("change", (e) => {
+    handleSettingUpdate("gfAnimation", e.target.value)
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfAnimation", value: e.target.value } }))
+  })
+
   document.getElementById("gf-custom-text")?.addEventListener("input", (e) => {
     handleSettingUpdate("gfCustomText", e.target.value)
     applySettings()

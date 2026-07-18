@@ -2519,6 +2519,10 @@ function createApplySettings(effectInstances) {
         document.body.style.setProperty("--aw-color", settings.audioWaveCustomColor || "#00ff66")
       }
     } else if (dateClockStyle === "glass-float") {
+      document.body.classList.remove("gf-anim-float", "gf-anim-pulse", "gf-anim-shake", "gf-anim-none")
+      const gfAnim = settings.gfAnimation || "float"
+      document.body.classList.add(`gf-anim-${gfAnim}`)
+
       const glowRgb = hexToRgb(settings.gfGlowColor || "#ffffff")
       if (glowRgb) {
         document.body.style.setProperty("--gf-glow-r", glowRgb.r)
@@ -3598,6 +3602,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "lunar-orbit",
       "space-concentric",
       "audio-wave",
+      "glass-float",
     ]
 
     // Show style-specific container if current style has special settings
@@ -3682,6 +3687,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (glassFloatSettings) {
       glassFloatSettings.style.display = settings.dateClockStyle === "glass-float" ? "block" : "none"
     }
+
+    const gfAnimationSelect = document.getElementById("gf-animation-select")
+    if (gfAnimationSelect) gfAnimationSelect.value = settings.gfAnimation || "float"
 
     const gfCustomTextInput = document.getElementById("gf-custom-text")
     if (gfCustomTextInput) gfCustomTextInput.value = settings.gfCustomText || ""
