@@ -13349,3 +13349,64 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark:hover {
 body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popup-label {
   display: none !important; /* Handled by global tooltip */
 }
+
+/* --- Space Concentric Chrono --- */
+.space-concentric-container {
+    position: relative;
+    width: 640px;
+    height: 640px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0.65); /* Scale down slightly to fit well in the container */
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--clock-color, #ffffff);
+    text-shadow: var(--clock-shadow, none);
+}
+
+.sc-indicator-line {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 320px;
+    background: var(--clock-accent-color, #00ff66);
+    box-shadow: 0 0 10px var(--clock-accent-color, #00ff66);
+    z-index: 100;
+    pointer-events: none;
+}
+
+.sc-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+#sc-ring-month { width: 640px; height: 640px; }
+#sc-ring-day   { width: 540px; height: 540px; }
+#sc-ring-week  { width: 440px; height: 440px; }
+#sc-ring-hour  { width: 340px; height: 340px; }
+#sc-ring-min   { width: 240px; height: 240px; }
+#sc-ring-sec   { width: 140px; height: 140px; }
+
+.sc-text-item {
+    position: absolute;
+    height: 50%;
+    bottom: 50%;
+    transform-origin: bottom center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding-top: 5px;
+}
+
+#sc-ring-sec .sc-text-item { 
+    font-size: 12px; 
+    color: var(--clock-accent-color, #ff3366);
+}

@@ -1,0 +1,207 @@
+html
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Concentric Calendar Clock</title>
+    <style>
+        /* Tạo hình nền vũ trụ đen huyền bí */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #111525 0%, #000000 100%);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        /* Khung chứa đồng hồ */
+        .clock-container {
+            position: relative;
+            width: 700px;
+            height: 700px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Vạch tham chiếu màu xanh lá ở hướng 12 giờ */
+        .indicator-line {
+            position: absolute;
+            top: 10px;
+            width: 2px;
+            height: 340px;
+            background: #00ff66;
+            box-shadow: 0 0 10px #00ff66;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* Cấu trúc chung của các vòng đĩa */
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+
+        /* Thiết lập kích thước riêng cho từng vòng (từ ngoài vào trong) */
+        #ring-month {
+            width: 640px;
+            height: 640px;
+        }
+
+        #ring-day {
+            width: 540px;
+            height: 540px;
+        }
+
+        #ring-week {
+            width: 440px;
+            height: 440px;
+        }
+
+        #ring-hour {
+            width: 340px;
+            height: 340px;
+        }
+
+        #ring-min {
+            width: 240px;
+            height: 240px;
+        }
+
+        #ring-sec {
+            width: 140px;
+            height: 140px;
+        }
+
+        /* Định dạng cho từng ký tự chữ/số trên vòng tròn */
+        .text-item {
+            position: absolute;
+            height: 50%;
+            bottom: 50%;
+            transform-origin: bottom center;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 1px;
+            padding-top: 5px;
+        }
+
+        #ring-sec .text-item {
+            font-size: 12px;
+            color: #ff3366;
+        }
+
+        /* Kim giây màu đỏ nổi bật */
+    </style>
+</head>
+
+<body>
+
+    <div class="clock-container">
+        <!-- Vạch xanh định vị -->
+        <div class="indicator-line"></div>
+
+        <!-- Các vòng đĩa đồng tâm -->
+        <div id="ring-month" class="ring"></div>
+        <div id="ring-day" class="ring"></div>
+        <div id="ring-week" class="ring"></div>
+        <div id="ring-hour" class="ring"></div>
+        <div id="ring-min" class="ring"></div>
+        <div id="ring-sec" class="ring"></div>
+    </div>
+
+    <script>
+        // Khai báo dữ liệu hiển thị cho các vòng
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        // Mảng chứa các số từ 1 đến 31
+        const days = Array.from({ length: 31 }, (_, i) => `${i + 1}${getOrdinal(i + 1)}`);
+        // Mảng 24 giờ (00 - 23) và 60 phút/giây (00 - 59)
+        const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+        const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+        const seconds = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+
+        // Hàm thêm hậu tố st, nd, rd, th cho ngày tiếng Anh
+        function getOrdinal(d) {
+            if (d > 3 && d < 21) return 'th';
+            switch (d % 10) {
+                case 1: return "st";
+                case 2: return "nd";
+                case 3: return "rd";
+                default: return "th";
+            }
+        }
+
+        // Hàm rải đều các chữ số chạy quanh một vòng tròn HTML
+        function generateRingItems(ringId, itemsArray) {
+            const ring = document.getElementById(ringId);
+            const totalItems = itemsArray.length;
+            const angleStep = 360 / totalItems;
+
+            itemsArray.forEach((text, index) => {
+                const item = document.createElement('div');
+                item.className = 'text-item';
+                // Tính góc xoay cho từng chữ số để tạo thành vòng tròn
+                item.style.transform = `rotate(${index * angleStep}deg)`;
+                item.innerText = text;
+                ring.appendChild(item);
+            });
+        }
+
+        // Khởi tạo giao diện chữ số cho 6 vòng
+        generateRingItems('ring-month', months);
+        generateRingItems('ring-day', days);
+        generateRingItems('ring-week', weekdays);
+        generateRingItems('ring-hour', hours);
+        generateRingItems('ring-min', minutes);
+        generateRingItems('ring-sec', seconds);
+
+        // Hàm cập nhật thời gian thực và thực hiện xoay đĩa số
+        function updateClock() {
+            const now = new Date();
+
+            const currentMonth = now.getMonth();     // 0 - 11
+            const currentDay = now.getDate() - 1;    // 0 - 30
+            const currentWeek = now.getDay();        // 0 - 6
+            const currentHour = now.getHours();      // 0 - 23
+            const currentMin = now.getMinutes();     // 0 - 59
+            const currentSec = now.getSeconds();     // 0 - 59
+
+            // Tính toán góc xoay ngược để đưa giá trị hiện tại về vị trí đỉnh 12h (0 độ)
+            const monthAngle = -(currentMonth * (360 / 12));
+            const dayAngle = -(currentDay * (360 / 31));
+            const weekAngle = -(currentWeek * (360 / 7));
+            const hourAngle = -(currentHour * (360 / 24));
+            const minAngle = -(currentMin * (360 / 60));
+            const secAngle = -(currentSec * (360 / 60));
+
+            // Áp dụng thuộc tính CSS transform rotate để xoay các vòng đĩa
+            document.getElementById('ring-month').style.transform = `rotate(${monthAngle}deg)`;
+            document.getElementById('ring-day').style.transform = `rotate(${dayAngle}deg)`;
+            document.getElementById('ring-week').style.transform = `rotate(${weekAngle}deg)`;
+            document.getElementById('ring-hour').style.transform = `rotate(${hourAngle}deg)`;
+            document.getElementById('ring-min').style.transform = `rotate(${minAngle}deg)`;
+            document.getElementById('ring-sec').style.transform = `rotate(${secAngle}deg)`;
+        }
+
+        // Chạy đồng hồ ngay lập tức và lặp lại sau mỗi 1 giây
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+
+</html>

@@ -82,6 +82,7 @@ const CLOCK_STYLE_ACCENT_DEFAULTS = {
   "aurora-ribbon": "#ffffff",
   "lunar-orbit": "#ffffff",
   cartoon: "#ffffff",
+  "space-concentric": "#00ff66",
 }
 
 const CLOCK_STYLE_ACCENT_STYLES = Object.keys(CLOCK_STYLE_ACCENT_DEFAULTS)
@@ -3514,6 +3515,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "minimalist-word",
       "aurora-ribbon",
       "lunar-orbit",
+      "space-concentric",
     ]
 
     // Show style-specific container if current style has special settings

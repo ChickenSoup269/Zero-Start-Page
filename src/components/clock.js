@@ -716,6 +716,25 @@ function getClockLabel(key, fallback) {
   return geti18n()[key] || fallback
 }
 
+// --- Space Concentric Chrono ---
+const scMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const scWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const scGetOrdinal = (d) => {
+  if (d > 3 && d < 21) return 'th';
+  switch (d % 10) {
+    case 1:  return "st";
+    case 2:  return "nd";
+    case 3:  return "rd";
+    default: return "th";
+  }
+};
+const scDays = Array.from({length: 31}, (_, i) => `${i + 1}${scGetOrdinal(i + 1)}`);
+const scHours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+const scMinutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
+const scSeconds = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
+let spaceConcentricHtmlCache = null;
+
+
 export function updateTime() {
   if (!clockElement) return;
   const settings = getSettings()
@@ -1977,6 +1996,54 @@ export function updateTime() {
     if (clockElement.innerHTML !== gridHtml) {
       clockElement.innerHTML = gridHtml
     }
+  } else if (dateClockStyle === "space-concentric") {
+    const currentMonth = now.getMonth();
+    const currentDay = now.getDate() - 1;
+    const currentWeek = now.getDay();
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+    const currentSec = now.getSeconds();
+
+    const monthAngle = -(currentMonth * (360 / 12));
+    const dayAngle = -(currentDay * (360 / 31));
+    const weekAngle = -(currentWeek * (360 / 7));
+    const hourAngle = -(currentHour * (360 / 24));
+    const minAngle = -(currentMin * (360 / 60));
+    const secAngle = -(currentSec * (360 / 60));
+
+    if (!spaceConcentricHtmlCache) {
+      const genRing = (items, id) => {
+        const step = 360 / items.length;
+        const itemsHtml = items.map((t, i) => `<div class="sc-text-item" style="transform: rotate(${i * step}deg)">${t}</div>`).join("");
+        return `<div id="${id}" class="sc-ring">${itemsHtml}</div>`;
+      }
+      spaceConcentricHtmlCache = `
+        <div class="space-concentric-container">
+            <div class="sc-indicator-line"></div>
+            ${genRing(scMonths, 'sc-ring-month')}
+            ${genRing(scDays, 'sc-ring-day')}
+            ${genRing(scWeekdays, 'sc-ring-week')}
+            ${genRing(scHours, 'sc-ring-hour')}
+            ${genRing(scMinutes, 'sc-ring-min')}
+            ${genRing(scSeconds, 'sc-ring-sec')}
+        </div>
+      `;
+      clockElement.innerHTML = spaceConcentricHtmlCache;
+    } else if (clockElement.children.length === 0 || !clockElement.querySelector('.space-concentric-container')) {
+      clockElement.innerHTML = spaceConcentricHtmlCache;
+    }
+
+    const setRingRot = (id, angle) => {
+      const el = clockElement.querySelector(`#${id}`);
+      if (el) el.style.transform = `rotate(${angle}deg)`;
+    }
+    setRingRot('sc-ring-month', monthAngle);
+    setRingRot('sc-ring-day', dayAngle);
+    setRingRot('sc-ring-week', weekAngle);
+    setRingRot('sc-ring-hour', hourAngle);
+    setRingRot('sc-ring-min', minAngle);
+    setRingRot('sc-ring-sec', secAngle);
+
   } else {
     clockElement.textContent = timeString
   }
@@ -2021,6 +2088,7 @@ export function updateTime() {
     "lunar-orbit",
     "cartoon",
     "minimalist-word",
+    "space-concentric",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
