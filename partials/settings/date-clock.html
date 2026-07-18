@@ -487,29 +487,47 @@
                                 <button type="button" class="secondary-btn preset-angle-btn" data-preset="cinematic" style="flex:1; padding: 6px 4px; font-size: 0.75rem;"><i class="fa-solid fa-video"></i> Cinematic</button>
                             </div>
                             
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none; flex-direction: column; gap: 12px; align-items: stretch;">
-                                <div>
-                                    <label for="custom-angle-skewx-input" data-i18n="settings_custom_angle_skewx">Skew X (Left/Right)</label>
+                            <div class="bg-effects-grid" style="margin-top: 10px;">
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-left-right"></i> <span data-i18n="settings_custom_angle_skewx">Skew X</span></span>
+                                        <span id="custom-angle-skewx-value" class="bg-slider-value">15&deg;</span>
+                                    </div>
                                     <input type="range" id="custom-angle-skewx-input" min="-45" max="45" value="15">
                                 </div>
-                                <div>
-                                    <label for="custom-angle-skewy-input" data-i18n="settings_custom_angle_skewy">Skew Y (Up/Down)</label>
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-up-down"></i> <span data-i18n="settings_custom_angle_skewy">Skew Y</span></span>
+                                        <span id="custom-angle-skewy-value" class="bg-slider-value">0&deg;</span>
+                                    </div>
                                     <input type="range" id="custom-angle-skewy-input" min="-45" max="45" value="0">
                                 </div>
-                                <div>
-                                    <label for="custom-angle-rotate-input" data-i18n="settings_custom_angle_rotate">Rotate Z (Spin)</label>
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-rotate"></i> <span data-i18n="settings_custom_angle_rotate">Rotate Z</span></span>
+                                        <span id="custom-angle-rotate-value" class="bg-slider-value">-5&deg;</span>
+                                    </div>
                                     <input type="range" id="custom-angle-rotate-input" min="-180" max="180" value="-5">
                                 </div>
-                                <div>
-                                    <label for="custom-angle-rotatex-input" data-i18n="settings_custom_angle_rotatex">Rotate X (Tilt Up/Down)</label>
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-rotate" style="transform: rotate(90deg)"></i> <span data-i18n="settings_custom_angle_rotatex">Rotate X</span></span>
+                                        <span id="custom-angle-rotatex-value" class="bg-slider-value">0&deg;</span>
+                                    </div>
                                     <input type="range" id="custom-angle-rotatex-input" min="-90" max="90" value="0">
                                 </div>
-                                <div>
-                                    <label for="custom-angle-rotatey-input" data-i18n="settings_custom_angle_rotatey">Rotate Y (Turn Left/Right)</label>
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-arrows-rotate"></i> <span data-i18n="settings_custom_angle_rotatey">Rotate Y</span></span>
+                                        <span id="custom-angle-rotatey-value" class="bg-slider-value">0&deg;</span>
+                                    </div>
                                     <input type="range" id="custom-angle-rotatey-input" min="-90" max="90" value="0">
                                 </div>
-                                <div>
-                                    <label for="custom-angle-perspective-input" data-i18n="settings_custom_angle_perspective">Perspective (Depth)</label>
+                                <div class="bg-slider-item">
+                                    <div class="bg-slider-info">
+                                        <span class="bg-slider-label"><i class="fa-solid fa-cube"></i> <span data-i18n="settings_custom_angle_perspective">Perspective</span></span>
+                                        <span id="custom-angle-perspective-value" class="bg-slider-value">1000px</span>
+                                    </div>
                                     <input type="range" id="custom-angle-perspective-input" min="100" max="2000" step="50" value="1000">
                                 </div>
                             </div>

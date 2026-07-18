@@ -3428,12 +3428,22 @@ function createUpdateSettingsInputs(effectInstances) {
     const codeStyleShowDateCheckbox = document.getElementById("code-style-show-date-checkbox")
     if (codeStyleShowDateCheckbox) codeStyleShowDateCheckbox.checked = settings.codeClockShowDate !== false
     
-    const customAngleSkewXInput = document.getElementById("custom-angle-skewx-input")
-    if (customAngleSkewXInput) customAngleSkewXInput.value = settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15
-    const customAngleSkewYInput = document.getElementById("custom-angle-skewy-input")
-    if (customAngleSkewYInput) customAngleSkewYInput.value = settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0
-    const customAngleRotateInput = document.getElementById("custom-angle-rotate-input")
-    if (customAngleRotateInput) customAngleRotateInput.value = settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5
+    const updateInputAndSpan = (key, defaultVal, isPx = false) => {
+      const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase()
+      const input = document.getElementById(`${idBase}-input`)
+      if (input) {
+        input.value = settings[key] !== undefined ? settings[key] : defaultVal
+        const span = document.getElementById(`${idBase}-value`)
+        if (span) span.innerHTML = isPx ? input.value + "px" : input.value + "&deg;"
+      }
+    }
+    updateInputAndSpan("customAngleSkewX", 15)
+    updateInputAndSpan("customAngleSkewY", 0)
+    updateInputAndSpan("customAngleRotate", -5)
+    updateInputAndSpan("customAngleRotateX", 0)
+    updateInputAndSpan("customAngleRotateY", 0)
+    updateInputAndSpan("customAnglePerspective", 1000, true)
+
     const customAngleShowDateCheckbox = document.getElementById("custom-angle-show-date-checkbox")
     if (customAngleShowDateCheckbox) customAngleShowDateCheckbox.checked = settings.customAngleShowDate !== false
 

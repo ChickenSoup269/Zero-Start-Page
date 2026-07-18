@@ -4917,7 +4917,11 @@ export function setupGeneralEventHandlers(
     if (el) {
       el.addEventListener("input", (e) => {
         let val = parseFloat(e.target.value) || 0
-        
+        const valSpan = document.getElementById(item.id.replace("-input", "-value"))
+        if (valSpan) {
+            valSpan.innerHTML = item.key === "customAnglePerspective" ? val + "px" : val + "&deg;"
+        }
+
         if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
         if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
         if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
@@ -4936,12 +4940,18 @@ export function setupGeneralEventHandlers(
       const defaults = { customAngleSkewX: 15, customAngleSkewY: 0, customAngleRotate: -5, customAngleRotateX: 0, customAngleRotateY: 0, customAnglePerspective: 1000 };
       Object.keys(defaults).forEach(key => {
         handleSettingUpdate(key, defaults[key]);
-        const el = document.getElementById(`${key.replace(/([A-Z])/g, "-$1").toLowerCase()}-input`);
+        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+        const el = document.getElementById(`${idBase}-input`);
         if (el) el.value = defaults[key];
+        const span = document.getElementById(`${idBase}-value`);
+        if (span) span.innerHTML = key === "customAnglePerspective" ? defaults[key] + "px" : defaults[key] + "&deg;";
       });
       document.body.style.setProperty("--skewX", "15deg");
       document.body.style.setProperty("--skewY", "0deg");
       document.body.style.setProperty("--rotate", "-5deg");
+      document.body.style.setProperty("--rotateX", "0deg");
+      document.body.style.setProperty("--rotateY", "0deg");
+      document.body.style.setProperty("--perspective", "1000px");
       window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "customAngleReset" } }));
     });
   }
@@ -4968,8 +4978,11 @@ export function setupGeneralEventHandlers(
       
       Object.keys(presetValues).forEach(key => {
         handleSettingUpdate(key, presetValues[key]);
-        const el = document.getElementById(`${key.replace(/([A-Z])/g, "-$1").toLowerCase()}-input`);
+        const idBase = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+        const el = document.getElementById(`${idBase}-input`);
         if (el) el.value = presetValues[key];
+        const span = document.getElementById(`${idBase}-value`);
+        if (span) span.innerHTML = key === "customAnglePerspective" ? presetValues[key] + "px" : presetValues[key] + "&deg;";
       });
       document.body.style.setProperty("--skewX", presetValues.customAngleSkewX + "deg");
       document.body.style.setProperty("--skewY", presetValues.customAngleSkewY + "deg");
