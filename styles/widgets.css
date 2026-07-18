@@ -13402,19 +13402,24 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
     align-items: flex-start;
     justify-content: center;
     font-weight: 500;
-    font-size: 13px;
+    font-size: 15px; /* Increased from 13px */
     letter-spacing: 2px;
     padding-top: 6px;
-    color: rgba(255, 255, 255, 0.25);
-    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .sc-text-item.is-active {
     color: var(--clock-accent-color, #00ff66);
     text-shadow: 0 0 12px var(--clock-accent-color, #00ff66);
     font-weight: 800;
+    font-size: 17px; /* Make the active text even larger */
 }
 
 #sc-ring-sec .sc-text-item { 
-    font-size: 11px; 
+    font-size: 13px; /* Increased from 11px */
+}
+
+#sc-ring-sec .sc-text-item.is-active { 
+    font-size: 15px; 
 }
