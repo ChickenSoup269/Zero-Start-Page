@@ -2539,6 +2539,7 @@ function createApplySettings(effectInstances) {
       "minimalist-word",
       "aurora-ribbon",
       "lunar-orbit",
+      "space-concentric",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
