@@ -2537,9 +2537,9 @@ function createApplySettings(effectInstances) {
         document.body.style.setProperty("--gf-bg-g", bgRgb.g)
         document.body.style.setProperty("--gf-bg-b", bgRgb.b)
       }
-      document.body.style.setProperty("--gf-bg-a", settings.gfBgOpacity !== undefined ? settings.gfBgOpacity : 0.05)
+      document.body.style.setProperty("--gf-bg-a", 0.05)
       
-      document.body.style.setProperty("--gf-blur", (settings.gfBlur !== undefined ? settings.gfBlur : 12) + "px")
+      document.body.style.setProperty("--gf-blur", "12px")
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -3701,14 +3701,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (gfGlowIntensityVal) gfGlowIntensityVal.textContent = settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3
     const gfBgColorInput = document.getElementById("gf-bg-color")
     if (gfBgColorInput) gfBgColorInput.value = settings.gfBgColor || "#ffffff"
-    const gfBgOpacityInput = document.getElementById("gf-bg-opacity")
-    const gfBgOpacityVal = document.getElementById("gf-bg-opacity-val")
-    if (gfBgOpacityInput) gfBgOpacityInput.value = settings.gfBgOpacity !== undefined ? settings.gfBgOpacity : 0.05
-    if (gfBgOpacityVal) gfBgOpacityVal.textContent = settings.gfBgOpacity !== undefined ? settings.gfBgOpacity : 0.05
-    const gfBlurInput = document.getElementById("gf-blur")
-    const gfBlurVal = document.getElementById("gf-blur-val")
-    if (gfBlurInput) gfBlurInput.value = settings.gfBlur !== undefined ? settings.gfBlur : 12
-    if (gfBlurVal) gfBlurVal.textContent = (settings.gfBlur !== undefined ? settings.gfBlur : 12) + "px"
+
     
     const codeStyleSettings = document.getElementById("code-style-settings")
     if (codeStyleSettings) {

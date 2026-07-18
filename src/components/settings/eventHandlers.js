@@ -4920,21 +4920,6 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBgColor", value: e.target.value } }))
   })
 
-  document.getElementById("gf-bg-opacity")?.addEventListener("input", (e) => {
-    const val = parseFloat(e.target.value)
-    handleSettingUpdate("gfBgOpacity", val)
-    document.getElementById("gf-bg-opacity-val").textContent = val
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBgOpacity", value: val } }))
-  })
-
-  document.getElementById("gf-blur")?.addEventListener("input", (e) => {
-    const val = parseInt(e.target.value, 10)
-    handleSettingUpdate("gfBlur", val)
-    document.getElementById("gf-blur-val").textContent = val + "px"
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfBlur", value: val } }))
-  })
 
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
