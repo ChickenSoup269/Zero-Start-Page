@@ -2136,8 +2136,8 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .custom-color-input-group:not(:has(input[type="text"])) input[type="color"] {
-  width: 150% !important;
-  height: 150% !important;
+  width: 100% !important;
+  height: 100% !important;
   box-shadow: none !important;
 }
 
