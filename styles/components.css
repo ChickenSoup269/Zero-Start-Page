@@ -716,7 +716,7 @@
 .bookmark-edit-color-field input[type="color"] {
   height: 38px;
   padding: 0;
-  border-radius: 19px;
+  border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -729,7 +729,7 @@
 
 .bookmark-edit-color-field input[type="color"]::-webkit-color-swatch {
   border: none;
-  border-radius: 19px;
+  border-radius: 10px;
 }
 
 .bookmark-edit-color-control {
