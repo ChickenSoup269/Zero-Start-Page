@@ -358,6 +358,11 @@
                                     <span class="clock-style-name" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="glass-float">
+                                    <i class="fa-solid fa-ghost"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_glass_float">Glass Float</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                                 <div class="clock-style-card" data-value="custom-angle">
                                     <i class="fa-solid fa-compass-drafting"></i>
                                     <span class="clock-style-name">Custom Angle</span>
@@ -395,6 +400,7 @@
                             <option value="lunar-orbit">Lunar Orbit</option>
                             <option value="cartoon">Cartoon</option>
                             <option value="audio-wave" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</option>
+                            <option value="glass-float" data-i18n="settings_clock_date_style_glass_float">Glass Float</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -460,6 +466,14 @@
                                     <option value="dots" data-i18n="settings_wave_style_dots">Pulsing Dots</option>
                                     <option value="smooth" data-i18n="settings_wave_style_smooth">Smooth Wave</option>
                                     <option value="pixel" data-i18n="settings_wave_style_pixel">Pixel Art</option>
+                                </select>
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="audio-wave-speed-select" data-i18n="settings_audio_wave_speed">Wave Speed</label>
+                                <select id="audio-wave-speed-select">
+                                    <option value="2">Slow</option>
+                                    <option value="1">Normal</option>
+                                    <option value="0.5">Fast</option>
                                 </select>
                             </div>
                             <div class="setting-item-row" style="margin-top: 5px;">

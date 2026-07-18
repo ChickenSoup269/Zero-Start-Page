@@ -2509,6 +2509,9 @@ function createApplySettings(effectInstances) {
       const scale = settings.audioWaveScale || 1
       document.body.style.setProperty("--aw-scale", scale)
 
+      const speed = settings.audioWaveSpeed || 1
+      document.body.style.setProperty("--aw-speed", speed)
+
       const autoColor = settings.audioWaveAutoColor !== false // default true
       if (autoColor) {
         document.body.style.setProperty("--aw-color", "rgb(var(--global-accent-color-rgb, 0, 255, 102))")
@@ -3461,6 +3464,9 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const audioWaveStyleSelect = document.getElementById("audio-wave-style-select")
     if (audioWaveStyleSelect) audioWaveStyleSelect.value = settings.audioWaveStyle || "bars"
+
+    const audioWaveSpeedSelect = document.getElementById("audio-wave-speed-select")
+    if (audioWaveSpeedSelect) audioWaveSpeedSelect.value = settings.audioWaveSpeed || "1"
 
     const audioWaveAutoColorCheckbox = document.getElementById("audio-wave-auto-color-checkbox")
     const audioWaveColorPicker = document.getElementById("audio-wave-color-picker")

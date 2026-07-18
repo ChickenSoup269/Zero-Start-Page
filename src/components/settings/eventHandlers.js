@@ -4870,6 +4870,12 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveStyle", value: e.target.value } }))
   })
 
+  document.getElementById("audio-wave-speed-select")?.addEventListener("change", (e) => {
+    handleSettingUpdate("audioWaveSpeed", parseFloat(e.target.value))
+    applySettings()
+    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "audioWaveSpeed", value: parseFloat(e.target.value) } }))
+  })
+
   document.getElementById("audio-wave-auto-color-checkbox")?.addEventListener("change", (e) => {
     handleSettingUpdate("audioWaveAutoColor", e.target.checked)
     applySettings()

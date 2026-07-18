@@ -2004,7 +2004,7 @@ export function updateTime() {
       for (let i = 0; i < barsCount; i++) {
         const delay = (Math.random() * 1.5).toFixed(2);
         const duration = (0.6 + Math.random() * 0.6).toFixed(2);
-        barsHtml += `<div class="aw-bar" style="animation-delay: -${delay}s; animation-duration: ${duration}s;"></div>`;
+        barsHtml += `<div class="aw-bar" style="--anim-del: ${delay}; --anim-dur: ${duration};"></div>`;
       }
       clockElement.innerHTML = `
         <div class="audio-wave-container">
@@ -2021,6 +2021,18 @@ export function updateTime() {
     clockElement.querySelector('.aw-hour').textContent = hh;
     clockElement.querySelector('.aw-minute').textContent = mm;
     clockElement.querySelector('.aw-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
+  } else if (dateClockStyle === "glass-float") {
+    if (!clockElement.querySelector('.glass-float-container')) {
+      clockElement.innerHTML = `
+        <div class="glass-float-container">
+          <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
+          <div class="gf-date"></div>
+        </div>
+      `;
+    }
+    clockElement.querySelector('.gf-hour').textContent = hh;
+    clockElement.querySelector('.gf-minute').textContent = mm;
+    clockElement.querySelector('.gf-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
@@ -2136,6 +2148,7 @@ export function updateTime() {
     "minimalist-word",
     "space-concentric",
     "audio-wave",
+    "glass-float",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")
