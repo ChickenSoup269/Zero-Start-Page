@@ -2018,9 +2018,9 @@ export function updateTime() {
         </div>
       `;
     }
-    clockElement.querySelector('.aw-hour').textContent = h;
-    clockElement.querySelector('.aw-minute').textContent = m;
-    clockElement.querySelector('.aw-date').textContent = displayFormat.replace('{w}', weekdayStr).replace('{m}', monthStr).replace('{d}', dayStr).replace('{y}', yStr);
+    clockElement.querySelector('.aw-hour').textContent = hh;
+    clockElement.querySelector('.aw-minute').textContent = mm;
+    clockElement.querySelector('.aw-date').textContent = getCustomDateString(now, langCode, tz, settings);
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
