@@ -239,7 +239,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
       const appliedBadge = document.createElement("div")
       appliedBadge.className = "font-applied-badge"
-      appliedBadge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: nowrap;"
+      appliedBadge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 4px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: normal; text-align: center; word-break: break-word; max-width: 100%; line-height: 1.15;"
       badgesContainer.appendChild(appliedBadge)
 
       card._updateAppliedBadge = () => {
@@ -555,11 +555,19 @@ function setupMultiSelect(DOM, updateSettingCallback) {
   const btnBoth = document.getElementById("font-target-both-btn")
 
   if (btnGeneral && btnClock && btnBoth && targetSelect) {
+    const savedTarget = localStorage.getItem("fontTargetTab") || "general"
+    
+    btnGeneral.classList.toggle("active", savedTarget === "general")
+    btnClock.classList.toggle("active", savedTarget === "clock")
+    btnBoth.classList.toggle("active", savedTarget === "both")
+    targetSelect.value = savedTarget
+
     btnGeneral.addEventListener("click", () => {
       btnGeneral.classList.add("active")
       btnClock.classList.remove("active")
       btnBoth.classList.remove("active")
       targetSelect.value = "general"
+      localStorage.setItem("fontTargetTab", "general")
       targetSelect.dispatchEvent(new Event("change"))
     })
     btnClock.addEventListener("click", () => {
@@ -567,6 +575,7 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       btnGeneral.classList.remove("active")
       btnBoth.classList.remove("active")
       targetSelect.value = "clock"
+      localStorage.setItem("fontTargetTab", "clock")
       targetSelect.dispatchEvent(new Event("change"))
     })
     btnBoth.addEventListener("click", () => {
@@ -574,6 +583,7 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       btnGeneral.classList.remove("active")
       btnClock.classList.remove("active")
       targetSelect.value = "both"
+      localStorage.setItem("fontTargetTab", "both")
       targetSelect.dispatchEvent(new Event("change"))
     })
   }
