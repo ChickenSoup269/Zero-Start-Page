@@ -70,12 +70,48 @@ export class FrostedGlassOrbsBackground {
     return { r, g, b }
   }
 
+  buildOrbCache() {
+    const size = 500
+    const radius = size / 2
+
+    const createOrb = (color) => {
+      const canvas = document.createElement('canvas')
+      canvas.width = size
+      canvas.height = size
+      const ctx = canvas.getContext('2d')
+      const rgb = this.hexToRgb(color)
+
+      const grad = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius)
+      grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`)
+      grad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`)
+      grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
+
+      ctx.beginPath()
+      ctx.arc(radius, radius, radius, 0, Math.PI * 2)
+      ctx.fillStyle = grad
+      ctx.fill()
+
+      return canvas
+    }
+
+    this.orbCache = {
+      canvas1: createOrb(this.color1),
+      canvas2: createOrb(this.color2),
+      color1: this.color1,
+      color2: this.color2
+    }
+  }
+
   animate() {
     if (!this.active) return
 
     const W = this.canvas.width
     const H = this.canvas.height
     
+    if (!this.orbCache || this.orbCache.color1 !== this.color1 || this.orbCache.color2 !== this.color2) {
+      this.buildOrbCache()
+    }
+
     // Clear canvas
     this.ctx.clearRect(0, 0, W, H)
 
@@ -91,18 +127,8 @@ export class FrostedGlassOrbsBackground {
       if (orb.y + orb.radius < 0) orb.y = H + orb.radius
 
       // Draw orb
-      const baseColor = orb.colorIndex === 1 ? this.color1 : this.color2
-      const rgb = this.hexToRgb(baseColor)
-      
-      const grad = this.ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius)
-      grad.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.8)`)
-      grad.addColorStop(0.5, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3)`)
-      grad.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`)
-
-      this.ctx.beginPath()
-      this.ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2)
-      this.ctx.fillStyle = grad
-      this.ctx.fill()
+      const cacheCanvas = orb.colorIndex === 1 ? this.orbCache.canvas1 : this.orbCache.canvas2
+      this.ctx.drawImage(cacheCanvas, orb.x - orb.radius, orb.y - orb.radius, orb.radius * 2, orb.radius * 2)
     })
 
     requestAnimationFrame(() => this.animate())

@@ -61,20 +61,103 @@ export class BlackHoleBackground {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
 
-  hexToRgb(hex) {
-    let r = 255, g = 255, b = 255
-    if (hex.startsWith('#')) {
-      if (hex.length === 4) {
-        r = parseInt(hex[1] + hex[1], 16)
-        g = parseInt(hex[2] + hex[2], 16)
-        b = parseInt(hex[3] + hex[3], 16)
-      } else if (hex.length === 7) {
-        r = parseInt(hex.substring(1, 3), 16)
-        g = parseInt(hex.substring(3, 5), 16)
-        b = parseInt(hex.substring(5, 7), 16)
-      }
+  hexToHsl(hex) {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+      r = parseInt(hex[1] + hex[1], 16)
+      g = parseInt(hex[2] + hex[2], 16)
+      b = parseInt(hex[3] + hex[3], 16)
+    } else if (hex.length === 7) {
+      r = parseInt(hex.substring(1, 3), 16)
+      g = parseInt(hex.substring(3, 5), 16)
+      b = parseInt(hex.substring(5, 7), 16)
     }
-    return { r, g, b }
+    r /= 255; g /= 255; b /= 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      let d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  }
+
+  buildDiskCache() {
+    const size = this.holeRadius * 12
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+    const cx = size / 2
+    const cy = size / 2
+
+    const hsl = this.hexToHsl(this.accretionColor)
+    
+    // Draw accretion disk (glowing ring) with M3-like analogous gradient
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.scale(1, 0.3) // Flatten to look like a disk
+
+    // We can use a conic gradient to make it look like a swirling disk of multi-colors
+    // Fallback to radial if createConicGradient is not available, but modern browsers have it
+    let diskGrad
+    if (ctx.createConicGradient) {
+      diskGrad = ctx.createConicGradient(0, 0, 0)
+      diskGrad.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`)
+      diskGrad.addColorStop(0.33, `hsla(${hsl.h + 30}, ${hsl.s}%, ${hsl.l}%, 0.7)`)
+      diskGrad.addColorStop(0.66, `hsla(${hsl.h - 30}, ${hsl.s}%, ${hsl.l}%, 0.7)`)
+      diskGrad.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`)
+    } else {
+      diskGrad = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.9)`
+    }
+
+    // Mask the inner and outer parts with a radial gradient
+    ctx.fillStyle = diskGrad
+    ctx.beginPath()
+    ctx.arc(0, 0, this.holeRadius * 4, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Use destination-in to make the disk fade out at edges and hollow at center
+    ctx.globalCompositeOperation = 'destination-in'
+    const maskGrad = ctx.createRadialGradient(0, 0, this.holeRadius, 0, 0, this.holeRadius * 4)
+    maskGrad.addColorStop(0, 'rgba(0,0,0,0)')
+    maskGrad.addColorStop(0.2, 'rgba(0,0,0,1)')
+    maskGrad.addColorStop(0.5, 'rgba(0,0,0,0.5)')
+    maskGrad.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = maskGrad
+    ctx.beginPath()
+    ctx.arc(0, 0, this.holeRadius * 4, 0, Math.PI * 2)
+    ctx.fill()
+    
+    ctx.restore()
+
+    // Draw black hole center
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.fillStyle = "#000000"
+    ctx.shadowBlur = 30
+    ctx.shadowColor = this.accretionColor
+    ctx.beginPath()
+    ctx.arc(0, 0, this.holeRadius, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Add event horizon glow inner edge
+    ctx.strokeStyle = `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, 0.8)`
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.restore()
+
+    this.diskCache = {
+      canvas,
+      color: this.accretionColor
+    }
   }
 
   animate() {
@@ -93,27 +176,22 @@ export class BlackHoleBackground {
     const maxRadius = Math.max(W, H)
     
     // Draw stars
-    this.ctx.lineWidth = 1.5
+    this.ctx.lineWidth = 0.8 // Thinner trails
     for (let i = 0; i < this.stars.length; i++) {
       const star = this.stars[i]
       
-      // Calculate current position
       const x = cx + Math.cos(star.angle) * star.radius
       const y = cy + Math.sin(star.angle) * star.radius
       
-      // Store history for trails
       star.history.push({x, y})
-      if (star.history.length > 5) {
+      if (star.history.length > 20) { // Longer trails
         star.history.shift()
       }
 
-      // Update position
-      // Closer to the hole = faster rotation and faster suction
       const distanceFactor = Math.max(0.1, star.radius / this.holeRadius)
       star.angle += (0.02 * star.speed) / (distanceFactor * 0.5)
       star.radius -= (1.5 * star.speed) / distanceFactor
 
-      // Draw trail
       if (star.history.length > 1) {
         this.ctx.beginPath()
         this.ctx.moveTo(star.history[0].x, star.history[0].y)
@@ -121,52 +199,23 @@ export class BlackHoleBackground {
           this.ctx.lineTo(star.history[j].x, star.history[j].y)
         }
         
-        // Stars get brighter and longer as they approach the hole
         const intensity = Math.min(1, this.holeRadius * 3 / Math.max(1, star.radius))
-        this.ctx.strokeStyle = `rgba(${starRgb.r}, ${starRgb.g}, ${starRgb.b}, ${0.2 + intensity * 0.8})`
+        this.ctx.strokeStyle = `rgba(${starRgb.r}, ${starRgb.g}, ${starRgb.b}, ${0.1 + intensity * 0.9})`
         this.ctx.stroke()
       }
 
-      // Respawn star if it falls into the hole
       if (star.radius <= this.holeRadius * 0.5) {
         this.stars[i] = this.createStar(maxRadius + Math.random() * 200)
       }
     }
 
-    // Draw accretion disk (glowing ring)
-    const diskRgb = this.hexToRgb(this.accretionColor)
-    this.ctx.save()
-    // Ellipse to make it look 3D (tilted)
-    this.ctx.translate(cx, cy)
-    this.ctx.rotate(Math.PI / 8)
-    this.ctx.scale(1, 0.3) // Flatten to look like a disk
+    if (!this.diskCache || this.diskCache.color !== this.accretionColor) {
+      this.buildDiskCache()
+    }
 
-    const diskGrad = this.ctx.createRadialGradient(0, 0, this.holeRadius, 0, 0, this.holeRadius * 4)
-    diskGrad.addColorStop(0, `rgba(${diskRgb.r}, ${diskRgb.g}, ${diskRgb.b}, 1)`)
-    diskGrad.addColorStop(0.2, `rgba(${diskRgb.r}, ${diskRgb.g}, ${diskRgb.b}, 0.5)`)
-    diskGrad.addColorStop(1, `rgba(${diskRgb.r}, ${diskRgb.g}, ${diskRgb.b}, 0)`)
-    
-    this.ctx.fillStyle = diskGrad
-    this.ctx.beginPath()
-    this.ctx.arc(0, 0, this.holeRadius * 4, 0, Math.PI * 2)
-    this.ctx.fill()
-    this.ctx.restore()
-
-    // Draw black hole center
-    this.ctx.save()
-    this.ctx.translate(cx, cy)
-    this.ctx.fillStyle = "#000000"
-    this.ctx.shadowBlur = 20
-    this.ctx.shadowColor = this.accretionColor
-    this.ctx.beginPath()
-    this.ctx.arc(0, 0, this.holeRadius, 0, Math.PI * 2)
-    this.ctx.fill()
-    
-    // Add event horizon glow inner edge
-    this.ctx.strokeStyle = `rgba(${diskRgb.r}, ${diskRgb.g}, ${diskRgb.b}, 0.8)`
-    this.ctx.lineWidth = 2
-    this.ctx.stroke()
-    this.ctx.restore()
+    // Draw cached accretion disk + hole
+    const cacheSize = this.diskCache.canvas.width
+    this.ctx.drawImage(this.diskCache.canvas, cx - cacheSize / 2, cy - cacheSize / 2)
 
     requestAnimationFrame(() => this.animate())
   }
