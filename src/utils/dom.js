@@ -581,6 +581,12 @@ export let sunbeamColorPicker = document.getElementById(
 export let sunbeamColorSetting = document.getElementById(
   "sunbeam-color-setting",
 )
+export let sunbeamModeSetting = document.getElementById(
+  "sunbeam-mode-setting",
+)
+export let sunbeamModeSelect = document.getElementById(
+  "sunbeam-mode-select",
+)
 export let sunbeamAngleInput = document.getElementById("sunbeam-angle-input")
 export let sunbeamAngleValue = document.getElementById("sunbeam-angle-value")
 export let sunbeamAngleSetting = document.getElementById(
@@ -724,6 +730,12 @@ export let lineShinyColorPicker = document.getElementById(
 )
 export let lineShinyColorSetting = document.getElementById(
   "line-shiny-color-setting",
+)
+export let lineShinyModeSelect = document.getElementById(
+  "line-shiny-mode-select",
+)
+export let lineShinyModeSetting = document.getElementById(
+  "line-shiny-mode-setting",
 )
 
 export let pixelWeatherStyleSection = document.getElementById(
@@ -2693,8 +2705,14 @@ export function refreshDOMReferences() {
   "sunbeam-color-picker",
 )
   sunbeamColorSetting = document.getElementById(
-  "sunbeam-color-setting",
-)
+    "sunbeam-color-setting",
+  )
+  sunbeamModeSetting = document.getElementById(
+    "sunbeam-mode-setting",
+  )
+  sunbeamModeSelect = document.getElementById(
+    "sunbeam-mode-select",
+  )
   sunbeamAngleInput = document.getElementById("sunbeam-angle-input")
   sunbeamAngleValue = document.getElementById("sunbeam-angle-value")
   sunbeamAngleSetting = document.getElementById(
@@ -2829,11 +2847,17 @@ export function refreshDOMReferences() {
   shinyColorPicker = document.getElementById("shiny-color-picker")
   shinyColorSetting = document.getElementById("shiny-color-setting")
   lineShinyColorPicker = document.getElementById(
-  "line-shiny-color-picker",
-)
+    "line-shiny-color-picker",
+  )
   lineShinyColorSetting = document.getElementById(
-  "line-shiny-color-setting",
-)
+    "line-shiny-color-setting",
+  )
+  lineShinyModeSelect = document.getElementById(
+    "line-shiny-mode-select",
+  )
+  lineShinyModeSetting = document.getElementById(
+    "line-shiny-mode-setting",
+  )
   pixelWeatherStyleSection = document.getElementById(
   "pixel-weather-style-section",
 )

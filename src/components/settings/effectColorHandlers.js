@@ -241,6 +241,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.sunbeamEffect.setAngle(angle)
   })
 
+  DOM.sunbeamModeSelect?.addEventListener("change", () => {
+    updateSetting("sunbeamMode", DOM.sunbeamModeSelect.value)
+    saveSettings()
+    if (effectInstances.sunbeamEffect) {
+      effectInstances.sunbeamEffect.setMode(DOM.sunbeamModeSelect.value)
+    }
+  })
+
   DOM.bubblesColorPicker?.addEventListener("input", () => {
     updateSetting("bubbleColor", DOM.bubblesColorPicker.value)
     saveSettings()
@@ -447,9 +455,20 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   DOM.lineShinyColorPicker?.addEventListener("input", () => {
     updateSetting("lineShinyColor", DOM.lineShinyColorPicker.value)
     saveSettings()
+
     if (effectInstances.lineShinyEffect)
       effectInstances.lineShinyEffect.updateColor(
         DOM.lineShinyColorPicker.value,
+      )
+  })
+  
+  DOM.lineShinyModeSelect?.addEventListener("change", () => {
+    updateSetting("lineShinyMode", DOM.lineShinyModeSelect.value)
+    saveSettings()
+
+    if (effectInstances.lineShinyEffect)
+      effectInstances.lineShinyEffect.setMode(
+        DOM.lineShinyModeSelect.value,
       )
   })
 

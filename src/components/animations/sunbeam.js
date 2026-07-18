@@ -43,6 +43,7 @@ export class SunbeamEffect {
     this.raysOrigin = "top-center" // could be top-left, left, etc.
     this.followMouse = false
     this.angle = options.angle || 0
+    this.mode = options.mode || "default"
 
     this.mouseX = 0.5
     this.mouseY = 0.5
@@ -126,6 +127,7 @@ export class SunbeamEffect {
       uniform float mouseInfluence;
       uniform float noiseAmount;
       uniform float distortion;
+      uniform int uMode;
 
       float noise(vec2 st) {
         return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
@@ -186,7 +188,25 @@ export class SunbeamEffect {
           fragColor.rgb = mix(vec3(gray), fragColor.rgb, saturation);
         }
 
-        fragColor.rgb *= raysColor;
+        vec3 col = raysColor;
+        float d = length(coord - rayPos) / (iResolution.x * max(rayLength, 0.001));
+        if (uMode == 1) { // sunbeam
+            col = mix(vec3(1.0, 0.7, 0.0), vec3(1.0, 1.0, 1.0), d * 1.5);
+        } else if (uMode == 2) { // sunset
+            col = mix(vec3(1.0, 0.2, 0.0), vec3(0.7, 0.2, 1.0), d * 2.0);
+        } else if (uMode == 3) { // sunrise
+            col = mix(vec3(1.0, 0.4, 0.6), vec3(1.0, 0.9, 0.6), d * 2.0);
+        } else if (uMode == 4) { // rainbow
+            float t = d * 3.0;
+            vec3 rColor = vec3(
+                0.5 + 0.5 * cos(6.28318 * (t + 0.0)),
+                0.5 + 0.5 * cos(6.28318 * (t + 0.33)),
+                0.5 + 0.5 * cos(6.28318 * (t + 0.67))
+            );
+            col = rColor;
+        }
+
+        fragColor.rgb *= col;
       }
 
       void main() {
@@ -247,6 +267,7 @@ export class SunbeamEffect {
       mouseInfluence: gl.getUniformLocation(this.program, "mouseInfluence"),
       noiseAmount: gl.getUniformLocation(this.program, "noiseAmount"),
       distortion: gl.getUniformLocation(this.program, "distortion"),
+      uMode: gl.getUniformLocation(this.program, "uMode"),
     }
   }
 
@@ -264,6 +285,10 @@ export class SunbeamEffect {
 
   setAngle(deg) {
     this.angle = deg
+  }
+
+  setMode(mode) {
+    this.mode = mode
   }
 
   start() {
@@ -323,6 +348,13 @@ export class SunbeamEffect {
     gl.uniform1f(this.uniforms.mouseInfluence, this.mouseInfluence)
     gl.uniform1f(this.uniforms.noiseAmount, this.noiseAmount)
     gl.uniform1f(this.uniforms.distortion, this.distortion)
+
+    let modeInt = 0;
+    if (this.mode === "sunbeam") modeInt = 1;
+    else if (this.mode === "sunset") modeInt = 2;
+    else if (this.mode === "sunrise") modeInt = 3;
+    else if (this.mode === "rainbow") modeInt = 4;
+    gl.uniform1i(this.uniforms.uMode, modeInt);
 
     const { anchor, dir } = this._getAnchorAndDir(
       this.raysOrigin,

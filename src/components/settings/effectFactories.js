@@ -145,7 +145,8 @@ export function createEffectFactories(settings) {
     sunbeamEffect: () =>
       new SunbeamEffect("effect-canvas", {
         color: settings.sunbeamColor || "#ffffff",
-        angle: settings.sunbeamAngle ?? 0,
+        angle: parseInt(settings.sunbeamAngle) || 0,
+        mode: settings.sunbeamMode || "default",
       }),
     lightPillarsEffect: () => new LightPillarsEffect("effect-canvas"),
     pixelWeatherEffect: () =>
@@ -156,7 +157,11 @@ export function createEffectFactories(settings) {
     shinyEffect: () =>
       new ShinyEffect("effect-canvas", settings.shinyColor || "#ff0000"),
     lineShinyEffect: () =>
-      new LineShinyEffect("effect-canvas", settings.lineShinyColor || "#ffffff"),
+      new LineShinyEffect(
+        "effect-canvas",
+        settings.lineShinyColor || "#ffffff",
+        settings.lineShinyMode || "default"
+      ),
     tetFireworksEffect: () => new TetFireworksEffect("effect-canvas", {}),
     reunificationDayEffect: () =>
       new ReunificationDayEffect("effect-canvas", {}),

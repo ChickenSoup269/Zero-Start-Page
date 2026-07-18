@@ -4920,12 +4920,18 @@ function createUpdateSettingsInputs(effectInstances) {
     // Sunbeam
     if (DOM.sunbeamColorSetting)
       DOM.sunbeamColorSetting.style.display =
+        settings.effect === "sunbeam" ? "flex" : "none"
+    if (DOM.sunbeamModeSetting)
+      DOM.sunbeamModeSetting.style.display =
         settings.effect === "sunbeam" ? "block" : "none"
     if (DOM.sunbeamAngleSetting)
       DOM.sunbeamAngleSetting.style.display =
         settings.effect === "sunbeam" ? "block" : "none"
     if (DOM.sunbeamColorPicker) {
       DOM.sunbeamColorPicker.value = settings.sunbeamColor || "#ffffff"
+    }
+    if (DOM.sunbeamModeSelect) {
+      DOM.sunbeamModeSelect.value = settings.sunbeamMode || "default"
     }
     if (DOM.sunbeamAngleInput) {
       DOM.sunbeamAngleInput.value = String(settings.sunbeamAngle ?? 0)
@@ -5000,6 +5006,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lineShinyColorSetting)
       DOM.lineShinyColorSetting.style.display =
         settings.effect === "lineShiny" ? "block" : "none"
+    if (DOM.lineShinyModeSetting)
+      DOM.lineShinyModeSetting.style.display =
+        settings.effect === "lineShiny" ? "block" : "none"
 
     if (DOM.rainbowDirectionSetting)
       DOM.rainbowDirectionSetting.style.display =
@@ -5067,6 +5076,8 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.lineShinyColorPicker)
       DOM.lineShinyColorPicker.value = settings.lineShinyColor || "#ffffff"
+    if (DOM.lineShinyModeSelect)
+      DOM.lineShinyModeSelect.value = settings.lineShinyMode || "default"
     if (DOM.pixelRunColorSetting)
       DOM.pixelRunColorSetting.style.display =
         settings.effect === "pixelRun" ? "block" : "none"

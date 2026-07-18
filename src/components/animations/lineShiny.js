@@ -5,7 +5,7 @@
  * Improved with smoother motion, better color blending, and mouse-reactive shimmer.
  */
 export class LineShinyEffect {
-  constructor(canvasId, color = "#ffffff") {
+  constructor(canvasId, color = "#ffffff", mode = "default") {
     this.canvas = document.getElementById(canvasId)
     this.ctx = this.canvas.getContext("2d")
     this.active = false
@@ -16,6 +16,7 @@ export class LineShinyEffect {
     this.tintL = 100
     this.mouse = { x: 0.5, y: 0.5 }
     this.targetMouse = { x: 0.5, y: 0.5 }
+    this.mode = mode
 
     this.beams = []
     this.streaks = []
@@ -59,6 +60,10 @@ export class LineShinyEffect {
 
   updateColor(hex) {
     this._setTintFromColor(hex)
+  }
+
+  setMode(mode) {
+    this.mode = mode
   }
 
   resize() {
@@ -166,11 +171,39 @@ export class LineShinyEffect {
     const color = beam._colorBase
 
     const grad = ctx.createLinearGradient(x0, y0, x1, y1)
-    grad.addColorStop(0, `${color}0)`)
-    grad.addColorStop(0.3, `${color}${beam.alpha * 0.3})`)
-    grad.addColorStop(0.5, `${color}${beam.alpha})`)
-    grad.addColorStop(0.7, `${color}${beam.alpha * 0.3})`)
-    grad.addColorStop(1, `${color}0)`)
+    if (this.mode === "sunbeam") {
+      grad.addColorStop(0, `rgba(255, 200, 0, 0)`)
+      grad.addColorStop(0.3, `rgba(255, 140, 0, ${beam.alpha * 0.5})`)
+      grad.addColorStop(0.5, `rgba(255, 255, 255, ${beam.alpha * 1.2})`)
+      grad.addColorStop(0.7, `rgba(255, 140, 0, ${beam.alpha * 0.5})`)
+      grad.addColorStop(1, `rgba(255, 200, 0, 0)`)
+    } else if (this.mode === "sunset") {
+      grad.addColorStop(0, `rgba(255, 50, 0, 0)`)
+      grad.addColorStop(0.3, `rgba(255, 80, 0, ${beam.alpha * 0.6})`)
+      grad.addColorStop(0.5, `rgba(255, 200, 150, ${beam.alpha * 1.2})`)
+      grad.addColorStop(0.7, `rgba(180, 50, 255, ${beam.alpha * 0.6})`)
+      grad.addColorStop(1, `rgba(100, 0, 255, 0)`)
+    } else if (this.mode === "sunrise") {
+      grad.addColorStop(0, `rgba(255, 100, 150, 0)`)
+      grad.addColorStop(0.3, `rgba(255, 150, 100, ${beam.alpha * 0.5})`)
+      grad.addColorStop(0.5, `rgba(255, 230, 180, ${beam.alpha * 1.2})`)
+      grad.addColorStop(0.7, `rgba(255, 150, 100, ${beam.alpha * 0.5})`)
+      grad.addColorStop(1, `rgba(255, 100, 150, 0)`)
+    } else if (this.mode === "rainbow") {
+      grad.addColorStop(0, `rgba(255, 0, 0, 0)`)
+      grad.addColorStop(0.2, `rgba(255, 150, 0, ${beam.alpha * 0.5})`)
+      grad.addColorStop(0.35, `rgba(100, 255, 100, ${beam.alpha * 0.6})`)
+      grad.addColorStop(0.5, `rgba(255, 255, 180, ${beam.alpha * 1.2})`)
+      grad.addColorStop(0.65, `rgba(0, 150, 255, ${beam.alpha * 0.6})`)
+      grad.addColorStop(0.8, `rgba(200, 0, 255, ${beam.alpha * 0.5})`)
+      grad.addColorStop(1, `rgba(255, 0, 0, 0)`)
+    } else {
+      grad.addColorStop(0, `${color}0)`)
+      grad.addColorStop(0.3, `${color}${beam.alpha * 0.3})`)
+      grad.addColorStop(0.5, `${color}${beam.alpha})`)
+      grad.addColorStop(0.7, `${color}${beam.alpha * 0.3})`)
+      grad.addColorStop(1, `${color}0)`)
+    }
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
@@ -232,9 +265,28 @@ export class LineShinyEffect {
     const color = streak._colorBase
 
     const streakGrad = ctx.createLinearGradient(x0, y0, x1, y1)
-    streakGrad.addColorStop(0, `${color}0)`)
-    streakGrad.addColorStop(0.5, `${color}${drawAlpha})`)
-    streakGrad.addColorStop(1, `${color}0)`)
+    if (this.mode === "sunbeam") {
+      streakGrad.addColorStop(0, `rgba(255, 200, 0, 0)`)
+      streakGrad.addColorStop(0.5, `rgba(255, 240, 200, ${drawAlpha * 1.2})`)
+      streakGrad.addColorStop(1, `rgba(255, 200, 0, 0)`)
+    } else if (this.mode === "sunset") {
+      streakGrad.addColorStop(0, `rgba(255, 80, 0, 0)`)
+      streakGrad.addColorStop(0.5, `rgba(255, 150, 200, ${drawAlpha * 1.2})`)
+      streakGrad.addColorStop(1, `rgba(180, 50, 255, 0)`)
+    } else if (this.mode === "sunrise") {
+      streakGrad.addColorStop(0, `rgba(255, 100, 150, 0)`)
+      streakGrad.addColorStop(0.5, `rgba(255, 230, 180, ${drawAlpha * 1.2})`)
+      streakGrad.addColorStop(1, `rgba(255, 150, 100, 0)`)
+    } else if (this.mode === "rainbow") {
+      streakGrad.addColorStop(0, `rgba(255, 0, 0, 0)`)
+      streakGrad.addColorStop(0.33, `rgba(255, 255, 100, ${drawAlpha * 0.8})`)
+      streakGrad.addColorStop(0.66, `rgba(0, 200, 255, ${drawAlpha * 0.8})`)
+      streakGrad.addColorStop(1, `rgba(200, 0, 255, 0)`)
+    } else {
+      streakGrad.addColorStop(0, `${color}0)`)
+      streakGrad.addColorStop(0.5, `${color}${drawAlpha})`)
+      streakGrad.addColorStop(1, `${color}0)`)
+    }
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
@@ -254,9 +306,29 @@ export class LineShinyEffect {
     const lit = this.tintL
     const shimmerAlpha = 0.02 + Math.abs(Math.sin(this.phase * 0.3)) * 0.03
 
-    grad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
-    grad.addColorStop(0.5, `hsla(${(hue + 30) % 360}, ${sat}%, ${lit}%, ${shimmerAlpha})`)
-    grad.addColorStop(1, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
+    if (this.mode === "sunbeam") {
+      grad.addColorStop(0, `rgba(255, 150, 0, 0)`)
+      grad.addColorStop(0.5, `rgba(255, 200, 50, ${shimmerAlpha * 1.5})`)
+      grad.addColorStop(1, `rgba(255, 150, 0, 0)`)
+    } else if (this.mode === "sunset") {
+      grad.addColorStop(0, `rgba(255, 50, 0, 0)`)
+      grad.addColorStop(0.5, `rgba(255, 100, 150, ${shimmerAlpha * 1.5})`)
+      grad.addColorStop(1, `rgba(180, 50, 255, 0)`)
+    } else if (this.mode === "sunrise") {
+      grad.addColorStop(0, `rgba(255, 100, 150, 0)`)
+      grad.addColorStop(0.5, `rgba(255, 200, 150, ${shimmerAlpha * 1.5})`)
+      grad.addColorStop(1, `rgba(255, 150, 100, 0)`)
+    } else if (this.mode === "rainbow") {
+      grad.addColorStop(0, `rgba(255, 0, 0, 0)`)
+      grad.addColorStop(0.2, `rgba(255, 150, 0, ${shimmerAlpha})`)
+      grad.addColorStop(0.5, `rgba(255, 255, 100, ${shimmerAlpha * 1.5})`)
+      grad.addColorStop(0.8, `rgba(0, 150, 255, ${shimmerAlpha})`)
+      grad.addColorStop(1, `rgba(200, 0, 255, 0)`)
+    } else {
+      grad.addColorStop(0, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
+      grad.addColorStop(0.5, `hsla(${(hue + 30) % 360}, ${sat}%, ${lit}%, ${shimmerAlpha})`)
+      grad.addColorStop(1, `hsla(${hue}, ${sat}%, ${lit}%, 0)`)
+    }
 
     ctx.save()
     ctx.globalCompositeOperation = "lighter"
