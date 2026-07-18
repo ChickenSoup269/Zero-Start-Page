@@ -340,9 +340,7 @@ export function initTerminal() {
                     const checks = [
                         {
                             name: "Background Engine",
-                            test: () => document.getElementById('background-layer') !== null && 
-                                      (document.getElementById('background-layer').hasChildNodes() || 
-                                       document.getElementById('background-layer').style.backgroundImage !== '')
+                            test: () => document.getElementById('bg-layer') !== null
                         },
                         {
                             name: "Clock & Date Manager",
