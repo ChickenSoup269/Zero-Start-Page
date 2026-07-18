@@ -6027,3 +6027,64 @@ body.clock-style-bg-animated.date-clock-style-minimalist-word .minimalist-matrix
   animation: bgGradientPan 8s ease infinite;
 }
 
+/* --- NHÓM ĐA TUYẾN & NEON (GIỐNG ẢNH MẪU) --- */
+.font-monoton {
+  font-family: 'Monoton', cursive;
+}
+
+/* --- NHÓM FUTURISTIC, SCI-FI & CYBERPUNK --- */
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+.font-audiowide {
+  font-family: 'Audiowide', cursive;
+}
+.font-chakra {
+  font-family: 'Chakra Petch', sans-serif;
+}
+.font-oxanium {
+  font-family: 'Oxanium', sans-serif;
+}
+.font-teko {
+  font-family: 'Teko', sans-serif;
+  font-size: 1.5em; /* Font này dáng đứng cao nên có thể tăng size */
+}
+.font-russo {
+  font-family: 'Russo One', sans-serif;
+}
+.font-michroma {
+  font-family: 'Michroma', sans-serif;
+}
+.font-major-mono {
+  font-family: 'Major Mono Display', monospace; /* Font quái chiêu, nghệ thuật */
+}
+
+/* --- NHÓM TỐI GIẢN & MẢNH DẺ (VIBE IPHONE) --- */
+.font-iphone-inter {
+  font-family: 'Inter', sans-serif;
+  font-weight: 100; /* Hoặc 200 để nét chữ siêu mảnh */
+}
+.font-iphone-poppins {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 100;
+}
+.font-sora {
+  font-family: 'Sora', sans-serif;
+  font-weight: 100;
+}
+.font-syne-wide {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; /* Font này để dày nhất chữ sẽ dẹt ngang rất nghệ */
+}
+
+/* --- NHÓM ĐỒNG HỒ SỐ MONOSPACE & STENCIL --- */
+.font-share-tech {
+  font-family: 'Share Tech Mono', monospace; /* Số nhảy đứng yên không giật */
+}
+.font-jetbrains {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 100;
+}
+.font-allerta-stencil {
+  font-family: 'Allerta Stencil', sans-serif; /* Số có nét cắt rời nghệ thuật */
+}

@@ -1195,10 +1195,16 @@
                     <div class="setting-group">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                            <select id="font-target-select" class="settings-select" style="width: auto;">
-                                <option value="general" data-i18n="general">General</option>
-                                <option value="clock" data-i18n="clock">Clock</option>
-                            </select>
+                            <div class="font-target-toggles" style="display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                                <button id="font-target-general-btn" class="font-target-btn active" data-i18n="general_font">General Font</button>
+                                <button id="font-target-clock-btn" class="font-target-btn" data-i18n="clock_font">Clock Font</button>
+                                <button id="font-target-both-btn" class="font-target-btn" data-i18n="both_fonts">Both</button>
+                                <select id="font-target-select" style="display: none;">
+                                    <option value="general">General</option>
+                                    <option value="clock">Clock</option>
+                                    <option value="both">Both</option>
+                                </select>
+                            </div>
                             <button id="font-select-mode-btn" class="settings-action-btn"
                                 data-i18n="settings_select_fonts" style="display:none;">Select</button>
                         </div>

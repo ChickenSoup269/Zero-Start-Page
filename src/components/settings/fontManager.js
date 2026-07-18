@@ -21,8 +21,20 @@ const PREDEFINED_FONTS = [
   { label: "Roboto", value: "'Roboto', sans-serif", google: true },
   { label: "Montserrat", value: "'Montserrat', sans-serif", google: true },
   { label: "Nunito", value: "'Nunito', sans-serif", google: true },
+  { label: "Sora", value: "'Sora', sans-serif", google: true },
+  { label: "Syne", value: "'Syne', sans-serif", google: true },
+  { label: "Monoton", value: "'Monoton', cursive", google: true },
   { label: "Orbitron", value: "'Orbitron', sans-serif", google: true },
+  { label: "Audiowide", value: "'Audiowide', cursive", google: true },
   { label: "Chakra Petch", value: "'Chakra Petch', sans-serif", google: true },
+  { label: "Oxanium", value: "'Oxanium', sans-serif", google: true },
+  { label: "Teko", value: "'Teko', sans-serif", google: true },
+  { label: "Russo One", value: "'Russo One', sans-serif", google: true },
+  { label: "Michroma", value: "'Michroma', sans-serif", google: true },
+  { label: "Major Mono Display", value: "'Major Mono Display', monospace", google: true },
+  { label: "Share Tech Mono", value: "'Share Tech Mono', monospace", google: true, tag: "Clock/Date" },
+  { label: "JetBrains Mono", value: "'JetBrains Mono', monospace", google: true, tag: "Clock/Date" },
+  { label: "Allerta Stencil", value: "'Allerta Stencil', sans-serif", google: true, tag: "Clock/Date" },
   { label: "Arial", value: "'Arial', sans-serif" },
   { label: "Courier New", value: "'Courier New', monospace" },
   { label: "Silkscreen", value: "'Silkscreen', cursive", tag: "Pixel", google: true },
@@ -277,7 +289,10 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const targetSelect = document.getElementById("font-target-select")
         const target = targetSelect ? targetSelect.value : "general"
 
-        if (target === "clock" || type === "clock") {
+        if (target === "both") {
+          updateSettingCallback("font", value)
+          updateSettingCallback("clockFont", value)
+        } else if (target === "clock" || type === "clock") {
           updateSettingCallback("clockFont", value)
         } else {
           updateSettingCallback("font", value)
@@ -291,7 +306,9 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           const cVal = c.dataset.fontValue
           const cType = c.dataset.fontType
           let isActiveCard = false
-          if (isTargetClock) {
+          if (target === "both") {
+            isActiveCard = (cVal === currentSettings.clockFont) || (cVal === currentSettings.font)
+          } else if (isTargetClock) {
             isActiveCard = cVal === currentSettings.clockFont
           } else {
             isActiveCard = cType === "clock" ? cVal === currentSettings.clockFont : cVal === currentSettings.font
@@ -346,6 +363,11 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             if (countEl) countEl.value = "general"
             if (countEl) countEl.dispatchEvent(new Event("change"))
             
+            const btnGeneral = document.getElementById("font-target-general-btn")
+            const btnClock = document.getElementById("font-target-clock-btn")
+            if (btnGeneral) btnGeneral.classList.add("active")
+            if (btnClock) btnClock.classList.remove("active")
+            
             const i18n = geti18n()
             showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} General`, { type: "success" })
           },
@@ -357,9 +379,32 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             const countEl = document.getElementById("font-target-select")
             if (countEl) countEl.value = "clock"
             if (countEl) countEl.dispatchEvent(new Event("change"))
+
+            const btnGeneral = document.getElementById("font-target-general-btn")
+            const btnClock = document.getElementById("font-target-clock-btn")
+            if (btnClock) btnClock.classList.add("active")
+            if (btnGeneral) btnGeneral.classList.remove("active")
             
             const i18n = geti18n()
             showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} Clock`, { type: "success" })
+          },
+          onApplyToBoth: () => {
+            if (custom || google) loadGoogleFont(label)
+            updateSettingCallback("font", value)
+            updateSettingCallback("clockFont", value)
+            
+            // Fast UI update (trigger general view)
+            const countEl = document.getElementById("font-target-select")
+            if (countEl) countEl.value = "general"
+            if (countEl) countEl.dispatchEvent(new Event("change"))
+
+            const btnGeneral = document.getElementById("font-target-general-btn")
+            const btnClock = document.getElementById("font-target-clock-btn")
+            if (btnGeneral) btnGeneral.classList.add("active")
+            if (btnClock) btnClock.classList.remove("active")
+            
+            const i18n = geti18n()
+            showToast(`${i18n.preset_code_applied || "Applied"} ${label} to All`, { type: "success" })
           },
           onSelect: () => {
             enterSelectMode()
@@ -505,17 +550,48 @@ function setupMultiSelect(DOM, updateSettingCallback) {
   if (DOM.fontSelectCancelBtn) DOM.fontSelectCancelBtn.addEventListener("click", exitSelectMode)
 
   const targetSelect = document.getElementById("font-target-select")
+  const btnGeneral = document.getElementById("font-target-general-btn")
+  const btnClock = document.getElementById("font-target-clock-btn")
+  const btnBoth = document.getElementById("font-target-both-btn")
+
+  if (btnGeneral && btnClock && btnBoth && targetSelect) {
+    btnGeneral.addEventListener("click", () => {
+      btnGeneral.classList.add("active")
+      btnClock.classList.remove("active")
+      btnBoth.classList.remove("active")
+      targetSelect.value = "general"
+      targetSelect.dispatchEvent(new Event("change"))
+    })
+    btnClock.addEventListener("click", () => {
+      btnClock.classList.add("active")
+      btnGeneral.classList.remove("active")
+      btnBoth.classList.remove("active")
+      targetSelect.value = "clock"
+      targetSelect.dispatchEvent(new Event("change"))
+    })
+    btnBoth.addEventListener("click", () => {
+      btnBoth.classList.add("active")
+      btnGeneral.classList.remove("active")
+      btnClock.classList.remove("active")
+      targetSelect.value = "both"
+      targetSelect.dispatchEvent(new Event("change"))
+    })
+  }
+
   if (targetSelect && DOM.fontGrid) {
     targetSelect.addEventListener("change", () => {
       // Fast active class update when target changes
       const currentSettings = getSettings()
       const isTargetClock = targetSelect.value === "clock"
+      const isTargetBoth = targetSelect.value === "both"
       const allCards = DOM.fontGrid.querySelectorAll(".font-item")
       allCards.forEach(c => {
         const cVal = c.dataset.fontValue
         const cType = c.dataset.fontType
         let isActiveCard = false
-        if (isTargetClock) {
+        if (isTargetBoth) {
+          isActiveCard = (cVal === currentSettings.clockFont) || (cVal === currentSettings.font)
+        } else if (isTargetClock) {
           // If viewing clock target, highlight the font that is currently the clockFont
           isActiveCard = cVal === currentSettings.clockFont
         } else {

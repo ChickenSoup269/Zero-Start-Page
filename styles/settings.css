@@ -460,7 +460,7 @@
 /* Font picker grid */
 .font-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
   gap: var(--space-1);
 }
 
@@ -490,7 +490,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-1) var(--space-1) var(--space-1);
+  padding: 6px 4px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--input-border);
   background: var(--glass-bg, rgba(255, 255, 255, 0.08));
@@ -514,16 +514,16 @@
 }
 
 .font-item-preview {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1;
   user-select: none;
 }
 
 .font-item-name {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-align: center;
   opacity: 0.85;
-  line-height: 1.2;
+  line-height: 1.1;
   word-break: break-word;
 }
 
@@ -7994,4 +7994,42 @@ body.sidebar-light .weather-api-connection-state {
   #unsplash-explorer-modal .explorer-photo-action {
     display: none;
   }
+}
+
+.font-target-toggles {
+  width: 100%;
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.font-target-btn {
+  flex: 1;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.font-target-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.font-target-btn.active {
+  background: rgba(var(--accent-color-rgb), 0.15);
+  color: var(--accent-color);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }

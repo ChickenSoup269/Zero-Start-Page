@@ -1858,6 +1858,15 @@ export function showContextMenu(
         hideContextMenu()
       }
       contextMenu.insertBefore(applyClockBtn, menuDelete)
+
+      const applyBothBtn = document.createElement("div")
+      applyBothBtn.className = "context-menu-item custom-music-item"
+      applyBothBtn.innerHTML = `<i class="fa-solid fa-check-double"></i> <span>${i18n.menu_apply_both || "Apply to Both"}</span>`
+      applyBothBtn.onclick = () => {
+        if (callbacks && callbacks.onApplyToBoth) callbacks.onApplyToBoth()
+        hideContextMenu()
+      }
+      contextMenu.insertBefore(applyBothBtn, menuDelete)
     } else {
       menuMove.style.display = "none"
       menuSelect.style.display = "flex"
@@ -1896,6 +1905,15 @@ export function showContextMenu(
       hideContextMenu()
     }
     contextMenu.appendChild(applyClockBtn)
+
+    const applyBothBtn = document.createElement("div")
+    applyBothBtn.className = "context-menu-item custom-music-item"
+    applyBothBtn.innerHTML = `<i class="fa-solid fa-check-double"></i> <span>${i18n.menu_apply_both || "Apply to Both"}</span>`
+    applyBothBtn.onclick = () => {
+      if (callbacks && callbacks.onApplyToBoth) callbacks.onApplyToBoth()
+      hideContextMenu()
+    }
+    contextMenu.appendChild(applyBothBtn)
 
     const settings = getSettings()
     const label = id // id contains font label
