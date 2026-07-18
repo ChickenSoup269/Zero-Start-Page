@@ -361,6 +361,7 @@ const EFFECT_KEY_MAP = {
   crtScanlines: "crtScanlinesEffect",
   meteor: "meteorEffect",
   pixelBlast: "pixelBlastEffect",
+  neonGrid: "neonGridEffect",
   wavyPattern: "wavyPatternEffect",
   angledPattern: "angledPatternEffect",
   cursorTrail: "cursorTrailEffect",
@@ -1930,6 +1931,11 @@ function createApplySettings(effectInstances) {
     ]
       .filter(Boolean)
       .forEach((effect) => applyEffectPerformanceBudget(effect, settings))
+
+    const effectMap = {
+      gradientV2: "gradientV2Effect",
+      neonGrid: "neonGridEffect",
+    }
 
     // Cleanup: stop only background effects that have actually been created.
     const gradientV2Effect = getCreatedEffect(effectInstances, "gradientV2Effect")
@@ -4549,6 +4555,12 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.dvdGlitchSetting)
       DOM.dvdGlitchSetting.style.display =
         settings.effect === "dvd" ? "flex" : "none"
+    if (DOM.pixelBlastSettings)
+      DOM.pixelBlastSettings.style.display =
+        settings.effect === "pixelBlast" ? "block" : "none"
+    if (DOM.neonGridSettings)
+      DOM.neonGridSettings.style.display =
+        settings.effect === "neonGrid" ? "block" : "none"
     if (DOM.pixelCubesColorSetting)
       DOM.pixelCubesColorSetting.style.display =
         settings.effect === "pixelCubes" ? "block" : "none"

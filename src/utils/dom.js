@@ -533,9 +533,10 @@ export let pixelBlastSizeVal = document.getElementById("pixel-blast-size-val")
 export let pixelBlastColorSetting = document.getElementById(
   "pixel-blast-color-setting",
 )
-export let pixelBlastBgSetting = document.getElementById(
-  "pixel-blast-bg-setting",
-)
+export let pixelBlastSettings = document.getElementById("pixel-blast-settings")
+export let neonGridSettings = document.getElementById("neon-grid-settings")
+export let synthwaveGridColorPicker = document.getElementById("synthwave-grid-color-picker")
+export let synthwaveSunColorPicker = document.getElementById("synthwave-sun-color-picker")
 export let pixelBlastTransparentCheckbox = document.getElementById(
   "pixel-blast-transparent",
 )
@@ -2661,6 +2662,10 @@ export function refreshDOMReferences() {
   pixelBlastColorSetting = document.getElementById(
   "pixel-blast-color-setting",
 )
+  pixelBlastSettings = document.getElementById("pixel-blast-settings")
+  neonGridSettings = document.getElementById("neon-grid-settings")
+  synthwaveGridColorPicker = document.getElementById("synthwave-grid-color-picker")
+  synthwaveSunColorPicker = document.getElementById("synthwave-sun-color-picker")
   pixelBlastBgSetting = document.getElementById(
   "pixel-blast-bg-setting",
 )

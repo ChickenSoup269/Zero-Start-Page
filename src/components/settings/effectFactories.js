@@ -22,6 +22,7 @@ import { RainbowBackground } from "../animations/rainbowBackground.js"
 import { WavyLinesEffect } from "../animations/wavyLines.js"
 import { OceanWaveEffect } from "../animations/oceanWave.js"
 import { CloudDriftEffect } from "../animations/cloudDrift.js"
+import { NeonGridBackground } from "../animations/neonGrid.js"
 import { FirefliesHD } from "../animations/firefliesHD.js"
 import { SvgWaveGenerator } from "../animations/svgWaveGenerator.js"
 import { AutumnLeavesEffect } from "../animations/autumnLeaves.js"
@@ -79,6 +80,12 @@ export function createEffectFactories(settings) {
         "effect-canvas",
         settings.pixelCubesColor,
         settings.pixelCubesShape,
+      ),
+    neonGridEffect: () =>
+      new NeonGridBackground(
+        "effect-canvas",
+        settings.synthwaveGridColor || "#ff007f",
+        settings.synthwaveSunColor || "#ffbe0b"
       ),
     sakuraEffect: () =>
       new SakuraEffect("effect-canvas", settings.sakuraColor || "#ffb7c5"),

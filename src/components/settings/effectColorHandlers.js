@@ -873,6 +873,21 @@ DOM.crtGammaInput?.addEventListener("input", () => {
   DOM.auroraWaveBgOpacitySlider?.addEventListener("change", () =>
     saveSettings(),
   )
+  DOM.synthwaveGridColorPicker?.addEventListener("input", () => {
+    updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
+    saveSettings()
+    if (effectInstances.neonGridEffect) {
+      effectInstances.neonGridEffect.updateColor('grid', DOM.synthwaveGridColorPicker.value)
+    }
+  })
+
+  DOM.synthwaveSunColorPicker?.addEventListener("input", () => {
+    updateSetting("synthwaveSunColor", DOM.synthwaveSunColorPicker.value)
+    saveSettings()
+    if (effectInstances.neonGridEffect) {
+      effectInstances.neonGridEffect.updateColor('sun', DOM.synthwaveSunColorPicker.value)
+    }
+  })
 }
 
 export { setupEffectColorHandlers }
