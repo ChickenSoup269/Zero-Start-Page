@@ -6,11 +6,17 @@
 import { updateSetting, saveSettings } from "../../services/state.js"
 
 function setupEffectColorHandlers(DOM, effectInstances) {
-  // Tự động thêm nút Reset cho tất cả các bảng chọn màu
   document.querySelectorAll('input[type="color"]').forEach(input => {
     if (input.parentElement.classList.contains('color-picker-wrapper')) return;
 
     const defaultColor = input.getAttribute('value') || '#ffffff';
+
+    // Đổi giao diện thành dạng ngang (setting-item-row) giống Light Ray
+    const parentSetting = input.parentElement;
+    if (parentSetting && parentSetting.classList.contains('setting-item')) {
+      parentSetting.classList.remove('setting-item');
+      parentSetting.classList.add('setting-item-row');
+    }
 
     const wrapper = document.createElement('div');
     wrapper.className = 'color-picker-wrapper';
