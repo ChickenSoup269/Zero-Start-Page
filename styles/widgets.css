@@ -13496,17 +13496,17 @@ body.audio-wave-pos-top .audio-wave-container { flex-direction: column-reverse; 
 body.audio-wave-pos-bottom .audio-wave-container { flex-direction: column; }
 body.audio-wave-pos-left .audio-wave-container { flex-direction: row-reverse; }
 body.audio-wave-pos-right .audio-wave-container { flex-direction: row; }
-.aw-visualizer { display: flex; gap: 5px; align-items: center; justify-content: center; transform: scale(var(--aw-scale, 1)); }
+.aw-visualizer { display: flex; gap: calc(5px * var(--aw-scale, 1)); align-items: center; justify-content: center; }
 body.audio-wave-pos-left .aw-visualizer, body.audio-wave-pos-right .aw-visualizer { flex-direction: column; }
-.aw-bar { background: var(--aw-color, rgb(var(--global-accent-color-rgb, 0, 255, 102))); border-radius: 4px; box-shadow: 0 0 15px var(--aw-color, rgb(var(--global-accent-color-rgb, 0, 255, 102))); animation: aw-bounce ease-in-out infinite alternate; }
-body.audio-wave-pos-top .aw-bar, body.audio-wave-pos-bottom .aw-bar { width: 6px; height: 10px; animation-name: aw-bounce-y; }
-body.audio-wave-pos-left .aw-bar, body.audio-wave-pos-right .aw-bar { height: 6px; width: 10px; animation-name: aw-bounce-x; }
-@keyframes aw-bounce-y { 0% { height: 10px; opacity: 0.5; } 100% { height: 70px; opacity: 1; } }
-@keyframes aw-bounce-x { 0% { width: 10px; opacity: 0.5; } 100% { width: 70px; opacity: 1; } }
+.aw-bar { background: var(--aw-color, rgb(var(--global-accent-color-rgb, 0, 255, 102))); border-radius: calc(4px * var(--aw-scale, 1)); box-shadow: 0 0 calc(15px * var(--aw-scale, 1)) var(--aw-color, rgb(var(--global-accent-color-rgb, 0, 255, 102))); animation: aw-bounce ease-in-out infinite alternate; }
+body.audio-wave-pos-top .aw-bar, body.audio-wave-pos-bottom .aw-bar { width: calc(6px * var(--aw-scale, 1)); height: calc(10px * var(--aw-scale, 1)); animation-name: aw-bounce-y; }
+body.audio-wave-pos-left .aw-bar, body.audio-wave-pos-right .aw-bar { height: calc(6px * var(--aw-scale, 1)); width: calc(10px * var(--aw-scale, 1)); animation-name: aw-bounce-x; }
+@keyframes aw-bounce-y { 0% { height: calc(10px * var(--aw-scale, 1)); opacity: 0.5; } 100% { height: calc(70px * var(--aw-scale, 1)); opacity: 1; } }
+@keyframes aw-bounce-x { 0% { width: calc(10px * var(--aw-scale, 1)); opacity: 0.5; } 100% { width: calc(70px * var(--aw-scale, 1)); opacity: 1; } }
 /* Dots Style */
 body.audio-wave-style-dots .aw-bar {
-    width: 8px !important; 
-    height: 8px !important;
+    width: calc(8px * var(--aw-scale, 1)) !important; 
+    height: calc(8px * var(--aw-scale, 1)) !important;
     border-radius: 50% !important;
     animation-name: aw-pulse-dots !important;
 }
@@ -13516,20 +13516,20 @@ body.audio-wave-style-dots .aw-bar {
 }
 /* Smooth Style */
 body.audio-wave-style-smooth .aw-bar {
-    border-radius: 10px !important;
+    border-radius: calc(10px * var(--aw-scale, 1)) !important;
 }
 body.audio-wave-style-smooth.audio-wave-pos-top .aw-bar,
 body.audio-wave-style-smooth.audio-wave-pos-bottom .aw-bar {
-    width: 6px;
+    width: calc(6px * var(--aw-scale, 1));
     animation-name: aw-smooth-y;
 }
 body.audio-wave-style-smooth.audio-wave-pos-left .aw-bar,
 body.audio-wave-style-smooth.audio-wave-pos-right .aw-bar {
-    height: 6px;
+    height: calc(6px * var(--aw-scale, 1));
     animation-name: aw-smooth-x;
 }
-@keyframes aw-smooth-y { 0% { height: 10px; opacity: 0.3; } 50% { height: 60px; opacity: 1; } 100% { height: 10px; opacity: 0.3; } }
-@keyframes aw-smooth-x { 0% { width: 10px; opacity: 0.3; } 50% { width: 60px; opacity: 1; } 100% { width: 10px; opacity: 0.3; } }
+@keyframes aw-smooth-y { 0% { height: calc(10px * var(--aw-scale, 1)); opacity: 0.3; } 50% { height: calc(60px * var(--aw-scale, 1)); opacity: 1; } 100% { height: calc(10px * var(--aw-scale, 1)); opacity: 0.3; } }
+@keyframes aw-smooth-x { 0% { width: calc(10px * var(--aw-scale, 1)); opacity: 0.3; } 50% { width: calc(60px * var(--aw-scale, 1)); opacity: 1; } 100% { width: calc(10px * var(--aw-scale, 1)); opacity: 0.3; } }
 .aw-content { display: flex; flex-direction: column; align-items: center; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
 .aw-time { font-size: 90px; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -2px; }
 .aw-date { font-size: 22px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; }
