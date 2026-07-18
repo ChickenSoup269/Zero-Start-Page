@@ -4907,7 +4907,10 @@ export function setupGeneralEventHandlers(
   const customAngleInputs = [
     { id: "custom-angle-skewx-input", key: "customAngleSkewX", isFloat: true },
     { id: "custom-angle-skewy-input", key: "customAngleSkewY", isFloat: true },
-    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true }
+    { id: "custom-angle-rotate-input", key: "customAngleRotate", isFloat: true },
+    { id: "custom-angle-rotatex-input", key: "customAngleRotateX", isFloat: true },
+    { id: "custom-angle-rotatey-input", key: "customAngleRotateY", isFloat: true },
+    { id: "custom-angle-perspective-input", key: "customAnglePerspective", isFloat: true }
   ]
   customAngleInputs.forEach(item => {
     const el = document.getElementById(item.id)
@@ -4918,7 +4921,9 @@ export function setupGeneralEventHandlers(
         if (item.key === "customAngleSkewX") document.body.style.setProperty("--skewX", val + "deg");
         if (item.key === "customAngleSkewY") document.body.style.setProperty("--skewY", val + "deg");
         if (item.key === "customAngleRotate") document.body.style.setProperty("--rotate", val + "deg");
-
+        if (item.key === "customAngleRotateX") document.body.style.setProperty("--rotateX", val + "deg");
+        if (item.key === "customAngleRotateY") document.body.style.setProperty("--rotateY", val + "deg");
+        if (item.key === "customAnglePerspective") document.body.style.setProperty("--perspective", val + "px");
         handleSettingUpdate(item.key, val)
         window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: item.key, value: val } }))
       })
@@ -4928,7 +4933,7 @@ export function setupGeneralEventHandlers(
   const customAngleResetBtn = document.getElementById("custom-angle-reset-btn")
   if (customAngleResetBtn) {
     customAngleResetBtn.addEventListener("click", () => {
-      const defaults = { customAngleSkewX: 15, customAngleSkewY: 0, customAngleRotate: -5 };
+      const defaults = { customAngleSkewX: 15, customAngleSkewY: 0, customAngleRotate: -5, customAngleRotateX: 0, customAngleRotateY: 0, customAnglePerspective: 1000 };
       Object.keys(defaults).forEach(key => {
         handleSettingUpdate(key, defaults[key]);
         const el = document.getElementById(`${key.replace(/([A-Z])/g, "-$1").toLowerCase()}-input`);

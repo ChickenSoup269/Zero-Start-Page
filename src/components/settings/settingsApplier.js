@@ -3586,16 +3586,21 @@ function createUpdateSettingsInputs(effectInstances) {
     const customAngleSettings = document.getElementById("custom-angle-settings")
     if (customAngleSettings) {
       customAngleSettings.style.display = style === "custom-angle" ? "block" : "none"
-    }
-
-    if (style === "custom-angle") {
+      if (style === "custom-angle") {
       document.body.style.setProperty("--skewX", (settings.customAngleSkewX !== undefined ? settings.customAngleSkewX : 15) + "deg")
       document.body.style.setProperty("--skewY", (settings.customAngleSkewY !== undefined ? settings.customAngleSkewY : 0) + "deg")
       document.body.style.setProperty("--rotate", (settings.customAngleRotate !== undefined ? settings.customAngleRotate : -5) + "deg")
+      document.body.style.setProperty("--rotateX", (settings.customAngleRotateX !== undefined ? settings.customAngleRotateX : 0) + "deg")
+      document.body.style.setProperty("--rotateY", (settings.customAngleRotateY !== undefined ? settings.customAngleRotateY : 0) + "deg")
+      document.body.style.setProperty("--perspective", (settings.customAnglePerspective !== undefined ? settings.customAnglePerspective : 1000) + "px")
     } else {
       document.body.style.removeProperty("--skewX")
       document.body.style.removeProperty("--skewY")
       document.body.style.removeProperty("--rotate")
+      document.body.style.removeProperty("--rotateX")
+      document.body.style.removeProperty("--rotateY")
+      document.body.style.removeProperty("--perspective")
+    }
     }
 
     const clockCutBottom = settings.clockCutBottom !== undefined ? settings.clockCutBottom : 0

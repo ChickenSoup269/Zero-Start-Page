@@ -5813,7 +5813,7 @@ body.date-clock-style-custom-angle .custom-angle-wrapper {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transform: skewX(var(--skewX, 0deg)) skewY(var(--skewY, 0deg)) rotate(var(--rotate, 0deg));
+  transform: perspective(var(--perspective, 1000px)) rotateX(var(--rotateX, 0deg)) rotateY(var(--rotateY, 0deg)) skewX(var(--skewX, 0deg)) skewY(var(--skewY, 0deg)) rotateZ(var(--rotate, 0deg));
   transition: transform 0.1s ease-out;
   color: var(--clock-color, #fff);
   text-shadow: var(--clock-shadow, none);
