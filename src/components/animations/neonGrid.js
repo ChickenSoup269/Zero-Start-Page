@@ -140,30 +140,46 @@ export class NeonGridBackground {
   drawSun(ctx, cx, cy) {
     const radius = Math.min(this.canvas.width, this.canvas.height) * 0.25
     
+    // Instead of drawing the whole sun and erasing (which erases the sky behind it),
+    // we draw the sun in horizontal slices.
+    
     ctx.save()
     ctx.shadowBlur = 50
     ctx.shadowColor = this.sunColor
     
     const grad = ctx.createLinearGradient(cx, cy - radius, cx, cy + radius)
     grad.addColorStop(0, this.sunColor)
-    grad.addColorStop(1, "#ff007f")
+    grad.addColorStop(1, this.gridColor) // Use gridColor instead of hardcoded pink
     
     ctx.fillStyle = grad
-    
     ctx.beginPath()
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2)
-    ctx.fill()
+
+    // Top half of the sun (solid)
+    ctx.arc(cx, cy, radius, Math.PI, 0)
     
-    // Retro cutouts (destination-out clears the drawn pixels)
-    ctx.globalCompositeOperation = 'destination-out'
-    ctx.shadowBlur = 0 // remove shadow for cutout
+    // Bottom half of the sun (with cutouts)
+    // We draw discrete horizontal slices
     const numStripes = 8
     for (let i = 0; i < numStripes; i++) {
-      const yPos = cy + radius * (i / numStripes)
-      const gapHeight = 2 + (i * 2.5) // gap increases towards bottom
-      ctx.fillRect(cx - radius, yPos, radius * 2, gapHeight)
+      const yStart = cy + radius * (i / numStripes)
+      
+      // Calculate stripe height. We need to leave a gap between stripes.
+      const gapHeight = 2 + (i * 2.5) 
+      const nextY = cy + radius * ((i + 1) / numStripes)
+      const stripeHeight = (nextY - yStart) - gapHeight
+      
+      if (stripeHeight <= 0) continue
+
+      // For a circle: x^2 + y^2 = r^2
+      // We calculate the width of the circle at yStart
+      const dy = yStart - cy
+      if (dy >= radius) continue
+      const xOffset = Math.sqrt(radius * radius - dy * dy)
+      
+      ctx.rect(cx - xOffset, yStart, xOffset * 2, stripeHeight)
     }
     
+    ctx.fill()
     ctx.restore()
   }
 
