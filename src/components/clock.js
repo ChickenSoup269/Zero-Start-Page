@@ -2060,7 +2060,7 @@ export function updateTime() {
     if (mEl.innerHTML !== minuteHtml) mEl.innerHTML = minuteHtml;
     
     const dateStr = getCustomDateString(now, langCode, tz, settings);
-    const dateText = new DOMParser().parseFromString(dateStr, 'text/html').body.textContent || "";
+    const dateText = dateStr.replace(/<[^>]*>?/gm, '') || "";
     const dateHtml = dateText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
     const dEl = clockElement.querySelector('.gf-date');
     if (dEl.innerHTML !== dateHtml) dEl.innerHTML = dateHtml;
