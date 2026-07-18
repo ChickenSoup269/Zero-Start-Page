@@ -13443,3 +13443,49 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
 #sc-ring-sec .sc-text-item.is-active { 
     font-size: 17px; 
 }
+
+/* Background Styles for Space Concentric */
+body.clock-style-bg-dark.date-clock-style-space-concentric .space-concentric-container {
+    border-radius: 50%;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: rgba(12, 14, 20, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.clock-style-bg-custom.date-clock-style-space-concentric .space-concentric-container {
+    border-radius: 50%;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: var(--clock-style-custom-bg-color, rgba(12, 14, 20, 0.5));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.clock-style-bg-glass.date-clock-style-space-concentric .space-concentric-container {
+    border-radius: 50%;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.clock-style-bg-light.date-clock-style-space-concentric .space-concentric-container {
+    border-radius: 50%;
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.clock-style-bg-accent.date-clock-style-space-concentric .space-concentric-container {
+    border-radius: 50%;
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    background: rgba(var(--accent-color-rgb, 100, 100, 100), 0.3);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(var(--accent-color-rgb, 255, 255, 255), 0.2);
+}
