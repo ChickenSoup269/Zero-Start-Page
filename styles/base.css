@@ -4849,12 +4849,12 @@ body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-clock,
 body.clock-style-bg-accent.date-clock-style-lunar-orbit .lunar-orbit-clock {
   background:
     radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%),
-    linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)),
+    linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)),
     rgba(8, 10, 18, 0.54) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
   box-shadow:
     0 22px 52px rgba(0, 0, 0, 0.34),
-    0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24),
+    0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(14px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
@@ -4878,7 +4878,7 @@ body.clock-style-bg-accent.date-clock-style-sidebar .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-weekday-style .clock-date-wrap,
 body.clock-style-bg-accent.date-clock-style-fliqlo .clock-date-wrap {
   padding: calc(var(--clock-size, 6rem) * 0.14) calc(var(--clock-size, 6rem) * 0.2);
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.42);
+  border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.42);
   border-radius: var(--radius-sm);
 }
 
@@ -4889,7 +4889,7 @@ body.clock-style-bg-accent.date-clock-style-c4-bomb .c4-bomb-clock,
 body.clock-style-bg-accent.date-clock-style-holo-ring .holo-ring-clock,
 body.clock-style-bg-accent.date-clock-style-media-orb .media-orb-clock {
   padding: calc(var(--clock-size, 6rem) * 0.16) calc(var(--clock-size, 6rem) * 0.22);
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.46);
+  border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46);
   border-radius: var(--radius-sm);
 }
 
@@ -4917,33 +4917,33 @@ body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-bottom,
 body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-flip-top,
 body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card-flip-bottom {
   background:
-    linear-gradient(180deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.44), rgba(var(--accent-color-rgb, 168, 192, 255), 0.2)),
+    linear-gradient(180deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.44), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.2)),
     #111827 !important;
 }
 
 body.clock-style-bg-accent.date-clock-style-fliqlo .fliqlo-card::after,
 body.clock-style-bg-accent.date-clock-style-round .round-clock-notch,
 body.clock-style-bg-accent.date-clock-style-square .sq-date-val::before {
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.34) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.34) !important;
 }
 
 body.clock-style-bg-accent.date-clock-style-metro-panel .metro-panel-clock {
-  border-left-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.8) !important;
+  border-left-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.8) !important;
 }
 
 body.clock-style-bg-accent.date-clock-style-prism-stack .prism-stack-clock {
   --prism-surface: rgba(9, 12, 20, 0.74);
-  --prism-line: rgba(var(--accent-color-rgb, 168, 192, 255), 0.24);
+  --prism-line: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24);
   background:
-    linear-gradient(115deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), transparent 30%),
+    linear-gradient(115deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), transparent 30%),
     linear-gradient(245deg, rgba(255, 255, 255, 0.12), transparent 44%),
     var(--prism-surface) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.34) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.34) !important;
 }
 
 body.clock-style-bg-accent.date-clock-style-prism-stack .prism-stack-time {
   text-shadow:
-    calc(var(--clock-size, 6rem) * 0.03) calc(var(--clock-size, 6rem) * 0.03) 0 rgba(var(--accent-color-rgb, 168, 192, 255), 0.48),
+    calc(var(--clock-size, 6rem) * 0.03) calc(var(--clock-size, 6rem) * 0.03) 0 rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.48),
     0 10px 24px rgba(0, 0, 0, 0.36);
 }
 
@@ -4955,7 +4955,7 @@ body.clock-style-bg-accent.date-clock-style-media-orb .media-orb-date,
 body.clock-style-bg-accent.date-clock-style-aurora-ribbon .aurora-ribbon-top,
 body.clock-style-bg-accent.date-clock-style-lunar-orbit .lunar-orbit-date-line,
 body.clock-style-bg-accent.date-clock-style-minimal #clock {
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.26) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.26) !important;
 }
 
 /* Optional custom clock backgrounds */
@@ -5778,9 +5778,9 @@ body.clock-style-transparent-bg.date-clock-style-code .code-style-wrapper {
 }
 
 body.clock-style-bg-accent.date-clock-style-code .code-style-wrapper {
-  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
-  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(14px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
 }
@@ -5837,9 +5837,9 @@ body.date-clock-style-custom-angle .custom-angle-date {
 
 /* Custom Angle Backgrounds override */
 body.clock-style-bg-accent.date-clock-style-custom-angle .custom-angle-wrapper {
-  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
-  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+  border-color: rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(14px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
 }
@@ -5963,9 +5963,9 @@ body.date-clock-style-fliqlo.fliqlo-theme-divergence .fliqlo-card.fliqlo-flip .f
 
 /* Matrix Clock Background Overrides */
 body.clock-style-bg-accent.date-clock-style-minimalist-word .minimalist-matrix-grid {
-  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
-  border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.46) !important;
-  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+  border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   backdrop-filter: blur(14px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
 }
@@ -6088,3 +6088,4 @@ body.clock-style-bg-animated.date-clock-style-minimalist-word .minimalist-matrix
 .font-allerta-stencil {
   font-family: 'Allerta Stencil', sans-serif; /* Số có nét cắt rời nghệ thuật */
 }
+
