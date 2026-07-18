@@ -4838,6 +4838,19 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  document.getElementById("audio-wave-position-select")?.addEventListener("change", (e) => {
+    handleSettingUpdate("audioWavePosition", e.target.value)
+    applySettings()
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "audioWavePosition",
+          value: e.target.value,
+        },
+      }),
+    )
+  })
+
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
     handleSettingUpdate(
       "sidestyleNoBorder",
