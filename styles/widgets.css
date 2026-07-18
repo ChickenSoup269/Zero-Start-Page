@@ -13514,6 +13514,22 @@ body.audio-wave-style-dots .aw-bar {
     0% { transform: scale(0.5); opacity: 0.3; }
     100% { transform: scale(1.5); opacity: 1; }
 }
+/* Smooth Style */
+body.audio-wave-style-smooth .aw-bar {
+    border-radius: 10px !important;
+}
+body.audio-wave-style-smooth.audio-wave-pos-top .aw-bar,
+body.audio-wave-style-smooth.audio-wave-pos-bottom .aw-bar {
+    width: 6px;
+    animation-name: aw-smooth-y;
+}
+body.audio-wave-style-smooth.audio-wave-pos-left .aw-bar,
+body.audio-wave-style-smooth.audio-wave-pos-right .aw-bar {
+    height: 6px;
+    animation-name: aw-smooth-x;
+}
+@keyframes aw-smooth-y { 0% { height: 10px; opacity: 0.3; } 50% { height: 60px; opacity: 1; } 100% { height: 10px; opacity: 0.3; } }
+@keyframes aw-smooth-x { 0% { width: 10px; opacity: 0.3; } 50% { width: 60px; opacity: 1; } 100% { width: 10px; opacity: 0.3; } }
 .aw-content { display: flex; flex-direction: column; align-items: center; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
 .aw-time { font-size: 90px; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -2px; }
 .aw-date { font-size: 22px; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; }
