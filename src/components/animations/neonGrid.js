@@ -115,21 +115,25 @@ export class NeonGridBackground {
       }
 
       // Draw vertical lines
+      // Create a single gradient for all vertical lines in this grid based on center points
+      const centerP1 = this.project(0, gy, 10)
+      const centerP2 = this.project(0, gy, this.gridDepth)
+      const grad = ctx.createLinearGradient(centerP1.x, centerP1.y, centerP2.x, centerP2.y)
+      grad.addColorStop(0, this.gridColor)
+      grad.addColorStop(1, "rgba(0,0,0,0)")
+      
+      ctx.globalAlpha = 1
+      ctx.strokeStyle = grad
+      ctx.beginPath()
+
       for (let x = -this.gridWidth / 2; x <= this.gridWidth / 2; x += this.spacing * 2) {
         const p1 = this.project(x, gy, 10)
         const p2 = this.project(x, gy, this.gridDepth)
-        
-        const grad = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y)
-        grad.addColorStop(0, this.gridColor)
-        grad.addColorStop(1, "rgba(0,0,0,0)")
-        
-        ctx.globalAlpha = 1
-        ctx.strokeStyle = grad
-        ctx.beginPath()
         ctx.moveTo(p1.x, p1.y)
         ctx.lineTo(p2.x, p2.y)
-        ctx.stroke()
       }
+      
+      ctx.stroke()
     })
 
     // Advance lines for next frame
@@ -146,47 +150,65 @@ export class NeonGridBackground {
   drawSun(ctx, cx, cy) {
     const radius = Math.min(this.canvas.width, this.canvas.height) * 0.25
     
-    // Instead of drawing the whole sun and erasing (which erases the sky behind it),
-    // we draw the sun in horizontal slices.
-    
-    ctx.save()
-    ctx.shadowBlur = 50
-    ctx.shadowColor = this.sunColor
-    
-    const grad = ctx.createLinearGradient(cx, cy - radius, cx, cy + radius)
-    grad.addColorStop(0, this.sunColor)
-    grad.addColorStop(1, this.gridColor) // Use gridColor instead of hardcoded pink
-    
-    ctx.fillStyle = grad
-    ctx.beginPath()
+    if (!this.sunCache || this.sunCache.radius !== radius || 
+        this.sunCache.sunColor !== this.sunColor || this.sunCache.gridColor !== this.gridColor) {
+      this.buildSunCache(radius)
+    }
 
-    // Top half of the sun (solid)
-    ctx.arc(cx, cy, radius, Math.PI, 0)
+    ctx.drawImage(this.sunCache.canvas, cx - this.sunCache.offset, cy - this.sunCache.offset)
+  }
+
+  buildSunCache(radius) {
+    const offset = radius + 60 // extra space for shadow
+    const size = offset * 2
     
-    // Bottom half of the sun (with cutouts)
-    // We draw discrete horizontal slices
+    const offCanvas = document.createElement('canvas')
+    offCanvas.width = size
+    offCanvas.height = size
+    const octx = offCanvas.getContext('2d')
+    
+    const cx = offset
+    const cy = offset
+
+    octx.shadowBlur = 50
+    octx.shadowColor = this.sunColor
+    
+    const grad = octx.createLinearGradient(cx, cy - radius, cx, cy + radius)
+    grad.addColorStop(0, this.sunColor)
+    grad.addColorStop(1, this.gridColor)
+    
+    octx.fillStyle = grad
+    octx.beginPath()
+
+    // Top half (solid)
+    octx.arc(cx, cy, radius, Math.PI, 0)
+    
+    // Bottom half (with cutouts)
     const numStripes = 8
     for (let i = 0; i < numStripes; i++) {
       const yStart = cy + radius * (i / numStripes)
-      
-      // Calculate stripe height. We need to leave a gap between stripes.
       const gapHeight = 2 + (i * 2.5) 
       const nextY = cy + radius * ((i + 1) / numStripes)
       const stripeHeight = (nextY - yStart) - gapHeight
       
       if (stripeHeight <= 0) continue
 
-      // For a circle: x^2 + y^2 = r^2
-      // We calculate the width of the circle at yStart
       const dy = yStart - cy
       if (dy >= radius) continue
       const xOffset = Math.sqrt(radius * radius - dy * dy)
       
-      ctx.rect(cx - xOffset, yStart, xOffset * 2, stripeHeight)
+      octx.rect(cx - xOffset, yStart, xOffset * 2, stripeHeight)
     }
     
-    ctx.fill()
-    ctx.restore()
+    octx.fill()
+    
+    this.sunCache = {
+      canvas: offCanvas,
+      radius: radius,
+      sunColor: this.sunColor,
+      gridColor: this.gridColor,
+      offset: offset
+    }
   }
 
   start() {
