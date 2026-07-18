@@ -65,7 +65,17 @@ export class NeonGridBackground {
     const W = this.canvas.width
     const H = this.canvas.height
 
-    ctx.clearRect(0, 0, W, H)
+    if (this.fullScreen) {
+      // Draw a dark synthwave sky gradient to hide the transparent body
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, H)
+      skyGrad.addColorStop(0, "#050014") // deep space blue
+      skyGrad.addColorStop(0.5, "#1c0030") // purple horizon
+      skyGrad.addColorStop(1, "#050014")
+      ctx.fillStyle = skyGrad
+      ctx.fillRect(0, 0, W, H)
+    } else {
+      ctx.clearRect(0, 0, W, H)
+    }
 
     this.drawSun(ctx, W / 2, this.horizonY)
 
