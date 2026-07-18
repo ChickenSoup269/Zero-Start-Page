@@ -13358,32 +13358,51 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: scale(0.65); /* Scale down slightly to fit well in the container */
+    transform: scale(0.85); /* Increased scale from 0.65 to 0.85 for much larger clock */
     font-family: var(--font-mono, 'Courier New', Courier, monospace);
+}
+
+/* Add a glowing core to the center of the clock */
+.space-concentric-container::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--clock-accent-color, #00ff66);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--clock-accent-color, #00ff66), 0 0 40px var(--clock-accent-color, #00ff66);
+    z-index: 101;
+    animation: pulse-core 4s infinite alternate;
+}
+
+@keyframes pulse-core {
+    0% { transform: scale(0.8); opacity: 0.7; }
+    100% { transform: scale(1.1); opacity: 1; }
 }
 
 .sc-indicator-line {
     position: absolute;
     top: -20px;
-    width: 2px;
+    width: 3px;
     height: 340px;
-    background: linear-gradient(to bottom, transparent, var(--clock-accent-color, #00ff66) 20%, var(--clock-accent-color, #00ff66) 80%, transparent);
-    box-shadow: 0 0 15px var(--clock-accent-color, #00ff66), 0 0 5px #fff;
+    background: linear-gradient(to bottom, transparent, var(--clock-accent-color, #00ff66) 10%, #fff 50%, var(--clock-accent-color, #00ff66) 90%, transparent);
+    box-shadow: 0 0 25px var(--clock-accent-color, #00ff66), 0 0 10px #fff;
     z-index: 100;
     pointer-events: none;
-    border-radius: 2px;
+    border-radius: 3px;
+    opacity: 0.9;
 }
 
 .sc-ring {
     position: absolute;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.4), 0 0 10px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.3);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform 0.5s cubic-bezier(0.1, 0.8, 0.2, 1);
-    background: rgba(255, 255, 255, 0.01);
+    background: rgba(255, 255, 255, 0.02);
 }
 
 #sc-ring-month { width: 640px; height: 640px; }
@@ -13402,24 +13421,25 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
     align-items: flex-start;
     justify-content: center;
     font-weight: 500;
-    font-size: 15px; /* Increased from 13px */
-    letter-spacing: 2px;
+    font-size: 16px;
+    letter-spacing: 2.5px;
     padding-top: 6px;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.35);
     transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .sc-text-item.is-active {
     color: var(--clock-accent-color, #00ff66);
-    text-shadow: 0 0 12px var(--clock-accent-color, #00ff66);
+    text-shadow: 0 0 15px var(--clock-accent-color, #00ff66), 0 0 5px #fff;
     font-weight: 800;
-    font-size: 17px; /* Make the active text even larger */
+    font-size: 19px;
+    transform: scale(1.05); /* Slight physical pop out */
 }
 
 #sc-ring-sec .sc-text-item { 
-    font-size: 13px; /* Increased from 11px */
+    font-size: 14px; 
 }
 
 #sc-ring-sec .sc-text-item.is-active { 
-    font-size: 15px; 
+    font-size: 17px; 
 }
