@@ -537,9 +537,8 @@ export let pixelBlastSettings = document.getElementById("pixel-blast-settings")
 export let neonGridSettings = document.getElementById("neon-grid-settings")
 export let synthwaveGridColorPicker = document.getElementById("synthwave-grid-color-picker")
 export let synthwaveSunColorPicker = document.getElementById("synthwave-sun-color-picker")
-export let pixelBlastTransparentCheckbox = document.getElementById(
-  "pixel-blast-transparent",
-)
+export let pixelBlastBgSetting = document.getElementById("pixel-blast-bg-setting")
+export let pixelBlastTransparentCheckbox = document.getElementById("pixel-blast-transparent")
 export let pixelBlastBgColorContainer = document.getElementById(
   "pixel-blast-bg-color-container",
 )
