@@ -444,23 +444,16 @@
                         </div>
 
                         <div id="audio-wave-settings" class="setting-item no-margin-top" style="display: none;">
-                            <label for="audio-wave-position-select" data-i18n="settings_audio_wave_pos">Wave Position</label>
-                            <select id="audio-wave-position-select">
-                                <option value="bottom" data-i18n="settings_wave_pos_bottom">Bottom</option>
-                                <option value="top" data-i18n="settings_wave_pos_top">Top</option>
-                                <option value="left" data-i18n="settings_wave_pos_left">Left</option>
-                                <option value="right" data-i18n="settings_wave_pos_right">Right</option>
-                            </select>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
-                                <label for="audio-wave-scale-input" style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                    <span data-i18n="settings_audio_wave_scale">Wave Scale</span>
-                                    <span id="audio-wave-scale-val" style="opacity: 0.7;">1</span>
-                                </label>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="range" id="audio-wave-scale-input" min="0.2" max="3" step="0.1" value="1" style="flex: 1;">
-                                </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="audio-wave-position-select" data-i18n="settings_audio_wave_pos">Wave Position</label>
+                                <select id="audio-wave-position-select">
+                                    <option value="bottom" data-i18n="settings_wave_pos_bottom">Bottom</option>
+                                    <option value="top" data-i18n="settings_wave_pos_top">Top</option>
+                                    <option value="left" data-i18n="settings_wave_pos_left">Left</option>
+                                    <option value="right" data-i18n="settings_wave_pos_right">Right</option>
+                                </select>
                             </div>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none;">
+                            <div class="setting-item-row" style="margin-top: 5px;">
                                 <label for="audio-wave-style-select" data-i18n="settings_audio_wave_style">Wave Style</label>
                                 <select id="audio-wave-style-select">
                                     <option value="bars" data-i18n="settings_wave_style_bars">Classic Bars</option>
@@ -468,18 +461,23 @@
                                     <option value="smooth" data-i18n="settings_wave_style_smooth">Smooth Wave</option>
                                 </select>
                             </div>
-                            <div class="setting-item-row" style="margin-top: 10px; background: transparent; padding: 0; border: none; flex-direction: column; align-items: stretch; gap: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <label for="audio-wave-auto-color-checkbox" data-i18n="settings_audio_wave_auto_color">Auto Theme Color</label>
-                                    <label class="switch">
-                                        <input type="checkbox" id="audio-wave-auto-color-checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
+                            <div class="setting-item-row" style="margin-top: 5px; flex-direction: column; align-items: stretch; gap: 8px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <label for="audio-wave-scale-input" data-i18n="settings_audio_wave_scale">Wave Scale</label>
+                                    <span id="audio-wave-scale-val" style="opacity: 0.7; font-size: 0.85rem;">1</span>
                                 </div>
-                                <div id="audio-wave-custom-color-container" style="display: none; justify-content: space-between; align-items: center;">
-                                    <label for="audio-wave-color-picker" data-i18n="settings_audio_wave_custom_color" style="font-size: 0.8rem; opacity: 0.8;">Custom Color</label>
-                                    <input type="color" id="audio-wave-color-picker" value="#00ff66" style="height: 30px; width: 60px;">
-                                </div>
+                                <input type="range" id="audio-wave-scale-input" min="0.2" max="3" step="0.1" value="1" style="width: 100%;">
+                            </div>
+                            <div class="setting-item-row" style="margin-top: 5px;">
+                                <label for="audio-wave-auto-color-checkbox" data-i18n="settings_audio_wave_auto_color">Auto Theme Color</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="audio-wave-auto-color-checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item-row" id="audio-wave-custom-color-container" style="display: none; margin-top: 5px;">
+                                <label for="audio-wave-color-picker" data-i18n="settings_audio_wave_custom_color" style="opacity: 0.8;">Custom Color</label>
+                                <input type="color" id="audio-wave-color-picker" value="#00ff66" style="height: 30px; width: 60px; padding: 0; border: none; border-radius: 4px; cursor: pointer;">
                             </div>
                         </div>
 
