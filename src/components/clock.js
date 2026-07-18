@@ -1997,6 +1997,30 @@ export function updateTime() {
     if (clockElement.innerHTML !== gridHtml) {
       clockElement.innerHTML = gridHtml
     }
+  } else if (dateClockStyle === "audio-wave") {
+    if (!clockElement.querySelector('.audio-wave-container')) {
+      const barsCount = 30;
+      let barsHtml = "";
+      for (let i = 0; i < barsCount; i++) {
+        const delay = (Math.random() * 1.5).toFixed(2);
+        const duration = (0.6 + Math.random() * 0.6).toFixed(2);
+        barsHtml += `<div class="aw-bar" style="animation-delay: -${delay}s; animation-duration: ${duration}s;"></div>`;
+      }
+      clockElement.innerHTML = `
+        <div class="audio-wave-container">
+          <div class="aw-content">
+            <div class="aw-time">
+              <span class="aw-hour"></span><span class="aw-colon blink">:</span><span class="aw-minute"></span>
+            </div>
+            <div class="aw-date"></div>
+          </div>
+          <div class="aw-visualizer">${barsHtml}</div>
+        </div>
+      `;
+    }
+    clockElement.querySelector('.aw-hour').textContent = h;
+    clockElement.querySelector('.aw-minute').textContent = m;
+    clockElement.querySelector('.aw-date').textContent = displayFormat.replace('{w}', weekdayStr).replace('{m}', monthStr).replace('{d}', dayStr).replace('{y}', yStr);
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
@@ -2111,6 +2135,7 @@ export function updateTime() {
     "cartoon",
     "minimalist-word",
     "space-concentric",
+    "audio-wave",
   ].includes(dateClockStyle)
 
   const dateFadeWrap = document.getElementById("date-fade-wrap")

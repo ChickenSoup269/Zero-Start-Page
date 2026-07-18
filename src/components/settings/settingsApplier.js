@@ -2474,6 +2474,7 @@ function createApplySettings(effectInstances) {
       "date-clock-style-cartoon",
       "date-clock-style-custom-angle",
       "date-clock-style-space-concentric",
+      "date-clock-style-audio-wave",
     )
     document.body.classList.add(`date-clock-style-${dateClockStyle}`)
 
@@ -2483,6 +2484,10 @@ function createApplySettings(effectInstances) {
       "sidestyle-align-center",
       "sidestyle-align-right",
       "sidestyle-no-border",
+      "audio-wave-pos-top",
+      "audio-wave-pos-bottom",
+      "audio-wave-pos-left",
+      "audio-wave-pos-right",
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"
@@ -2490,6 +2495,9 @@ function createApplySettings(effectInstances) {
       if (settings.sidestyleNoBorder) {
         document.body.classList.add("sidestyle-no-border")
       }
+    } else if (dateClockStyle === "audio-wave") {
+      const pos = settings.audioWavePosition || "bottom"
+      document.body.classList.add(`audio-wave-pos-${pos}`)
     }
 
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
@@ -2542,6 +2550,7 @@ function createApplySettings(effectInstances) {
       "aurora-ribbon",
       "lunar-orbit",
       "space-concentric",
+      "audio-wave",
     ]
     const supportsClockStyleBackground =
       clockStyleBackgroundStyles.includes(dateClockStyle)
@@ -3422,6 +3431,9 @@ function createUpdateSettingsInputs(effectInstances) {
     if (coolGreetingAfternoonInput) coolGreetingAfternoonInput.value = settings.coolGreetingAfternoon || ""
     const coolGreetingEveningInput = document.getElementById("cool-greeting-evening-input")
     if (coolGreetingEveningInput) coolGreetingEveningInput.value = settings.coolGreetingEvening || ""
+
+    const audioWavePositionSelect = document.getElementById("audio-wave-position-select")
+    if (audioWavePositionSelect) audioWavePositionSelect.value = settings.audioWavePosition || "bottom"
     const coolBarTopInput = document.getElementById("cool-bar-top-input")
     if (coolBarTopInput) coolBarTopInput.value = settings.coolBarSymbolTop !== undefined ? settings.coolBarSymbolTop : "|"
     const coolBarBottomInput = document.getElementById("cool-bar-bottom-input")
@@ -3520,6 +3532,7 @@ function createUpdateSettingsInputs(effectInstances) {
       "aurora-ribbon",
       "lunar-orbit",
       "space-concentric",
+      "audio-wave",
     ]
 
     // Show style-specific container if current style has special settings
@@ -3594,6 +3607,10 @@ function createUpdateSettingsInputs(effectInstances) {
     const coolStyleSettings = document.getElementById("cool-style-settings")
     if (coolStyleSettings) {
       coolStyleSettings.style.display = style === "cool" ? "block" : "none"
+    }
+    const audioWaveSettings = document.getElementById("audio-wave-settings")
+    if (audioWaveSettings) {
+      audioWaveSettings.style.display = style === "audio-wave" ? "block" : "none"
     }
     const codeStyleSettings = document.getElementById("code-style-settings")
     if (codeStyleSettings) {

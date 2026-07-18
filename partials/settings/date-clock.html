@@ -353,6 +353,11 @@
                                         data-i18n="settings_clock_date_style_cartoon">Cartoon</span>
                                     <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
                                 </div>
+                                <div class="clock-style-card" data-value="audio-wave">
+                                    <i class="fa-solid fa-wave-square"></i>
+                                    <span class="clock-style-name" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</span>
+                                    <div class="active-indicator"><i class="fa-solid fa-check"></i></div>
+                                </div>
                                 <div class="clock-style-card" data-value="custom-angle">
                                     <i class="fa-solid fa-compass-drafting"></i>
                                     <span class="clock-style-name">Custom Angle</span>
@@ -389,6 +394,7 @@
                             <option value="aurora-ribbon">Aurora Ribbon</option>
                             <option value="lunar-orbit">Lunar Orbit</option>
                             <option value="cartoon">Cartoon</option>
+                            <option value="audio-wave" data-i18n="settings_clock_date_style_audio_wave">Audio Wave</option>
                         </select>
                     </div>
                     <!-- Style Specific Customization (Stand-alone group) -->
@@ -435,6 +441,16 @@
                                     Borders</label>
                                 <input type="checkbox" id="sidestyle-no-border-checkbox">
                             </div>
+                        </div>
+
+                        <div id="audio-wave-settings" class="setting-item no-margin-top" style="display: none;">
+                            <label for="audio-wave-position-select" data-i18n="settings_audio_wave_pos">Wave Position</label>
+                            <select id="audio-wave-position-select">
+                                <option value="bottom" data-i18n="settings_wave_pos_bottom">Bottom</option>
+                                <option value="top" data-i18n="settings_wave_pos_top">Top</option>
+                                <option value="left" data-i18n="settings_wave_pos_left">Left</option>
+                                <option value="right" data-i18n="settings_wave_pos_right">Right</option>
+                            </select>
                         </div>
 
                         <div id="cool-style-settings" class="setting-item no-margin-top" style="display: none;">
