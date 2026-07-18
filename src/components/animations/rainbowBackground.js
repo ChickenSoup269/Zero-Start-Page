@@ -7,8 +7,8 @@ export class RainbowBackground {
     // Bảng màu cầu vồng mở rộng: Đỏ, Cam, Vàng, Lục, Lam, Chàm, Tím, Hồng
     this.hues = [350, 20, 50, 150, 190, 230, 280, 320]
 
-    this.beamCount = 15 // Giảm từ 25 để tối ưu hiệu năng mà vẫn đủ đẹp
-    this.particleCount = 40 // Giảm từ 70
+    this.beamCount = 30 // Tăng lên để rõ hơn
+    this.particleCount = 60 // Tăng lên để rõ hơn
     this.beams = []
     this.particles = []
     this.animationFrame = null
@@ -60,10 +60,10 @@ export class RainbowBackground {
 
       const grad = offCtx.createLinearGradient(0, 0, 0, beamHeight)
       const color = `hsla(${hue}, 90%, 65%,`
-      grad.addColorStop(0, `${color} 0)`)
-      grad.addColorStop(0.1, `${color} 1)`)
-      grad.addColorStop(0.6, `${color} 0.6)`)
-      grad.addColorStop(1, `${color} 0)`)
+      grad.addColorStop(0, `${color}0)`)
+      grad.addColorStop(0.1, `${color}1)`)
+      grad.addColorStop(0.6, `${color}0.6)`)
+      grad.addColorStop(1, `${color}0)`)
 
       offCtx.fillStyle = grad
       offCtx.fillRect(0, 0, beamWidth, beamHeight)
@@ -109,9 +109,9 @@ export class RainbowBackground {
       yBase: -Math.random() * H * 0.3 - 50,
       width: Math.random() * 40 + 15,
       length: diagonal * 1.3,
-      driftSpeed: Math.random() * 0.2 + 0.05,
+      driftSpeed: Math.random() * 0.3 + 0.1,
       hue: this.hues[Math.floor(Math.random() * this.hues.length)],
-      opacity: Math.random() * 0.15 + 0.02,
+      opacity: Math.random() * 0.3 + 0.15,
 
       pulse: Math.random() * Math.PI * 2,
       pulsePhase: Math.random() * Math.PI * 2,
@@ -123,6 +123,9 @@ export class RainbowBackground {
     if (this.active) return
     this.active = true
     this.time = 0
+    if (this.beams.length === 0 || this.particles.length === 0) {
+      this.initBeams()
+    }
     this.animate()
     this.canvas.style.display = "block"
   }
@@ -174,10 +177,10 @@ export class RainbowBackground {
       }
 
       const currentOpacity =
-        p.baseOpacity + Math.sin(time * 0.03 + p.wobblePhase) * 0.3
+        p.baseOpacity + Math.sin(time * 0.03 + p.wobblePhase) * 0.4
       ctx.beginPath()
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-      ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${Math.max(0.01, currentOpacity)})`
+      ctx.fillStyle = `hsla(${p.hue}, 90%, 75%, ${Math.max(0.01, Math.min(1, currentOpacity))})`
       ctx.fill()
     }
 
@@ -191,8 +194,8 @@ export class RainbowBackground {
       b.pulse += b.pulseSpeed
       const pulseFactor = (Math.sin(b.pulse) + 1) / 2
 
-      const currentOpacity = b.opacity + pulseFactor * 0.12
-      const currentWidth = b.width + pulseFactor * 5
+      const currentOpacity = b.opacity + pulseFactor * 0.2
+      const currentWidth = b.width + pulseFactor * 10
       const xWobble = Math.sin(time * 0.005 + b.pulsePhase) * 15
 
       const startX = b.x + xWobble
@@ -205,14 +208,14 @@ export class RainbowBackground {
         ctx.translate(startX, startY)
         ctx.rotate(this.angle)
 
-        ctx.globalAlpha = currentOpacity
+        ctx.globalAlpha = Math.min(1, currentOpacity)
         // Scale hình ảnh: x là chiều rộng (currentWidth), y là chiều dài (b.length)
         // Lưu ý: Canvas gốc rộng 100 nên ta vẽ từ -currentWidth/2 để căn giữa
         ctx.drawImage(offCanvas, -currentWidth / 2, 0, currentWidth, b.length)
 
         // Core glow chói lọi hơn một chút khi pulse cao (vẽ thêm dải trắng hẹp)
-        if (pulseFactor > 0.8) {
-          ctx.globalAlpha = (pulseFactor - 0.8) * 2
+        if (pulseFactor > 0.6) {
+          ctx.globalAlpha = Math.min(1, (pulseFactor - 0.6) * 2.5)
           // Dùng chính canvas đó nhưng scale rất hẹp để tạo lõi trắng sáng
           ctx.drawImage(offCanvas, -currentWidth * 0.1, 0, currentWidth * 0.2, b.length)
         }
