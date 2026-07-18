@@ -2112,6 +2112,11 @@ body.sidebar-light .preset-code-line-value {
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
+.custom-color-input-group:has(input[type="text"]):hover {
+  transform: none !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
 .custom-color-input-group:not(:has(input[type="text"])):hover {
   transform: translateY(-2px) scale(1.05) !important;
   border-color: rgba(255, 255, 255, 0.5) !important;
