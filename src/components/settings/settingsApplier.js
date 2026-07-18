@@ -5061,6 +5061,7 @@ function createUpdateSettingsInputs(effectInstances) {
         "pixelCubes",
         "pixelWeather",
         "pixelBlast",
+        "neonGrid",
         "auroraWave",
         "sunbeam",
         "lightPillars",
