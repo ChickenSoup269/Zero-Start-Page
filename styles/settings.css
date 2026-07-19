@@ -2966,9 +2966,9 @@ body.sidebar-light .preset-code-line-value {
 
 .unsplash-author-tag {
   position: absolute;
-  bottom: var(--space-1);
+  bottom: -28px;
   left: 50%;
-  transform: translateX(-50%) translateY(5px);
+  transform: translateX(-50%) translateY(-5px);
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -3080,6 +3080,7 @@ body.sidebar-light .preset-code-line-value {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  border-radius: inherit;
   transform: translateZ(0) scale(1.001);
   opacity: 0.96;
   transition:
@@ -3090,6 +3091,8 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .local-bg-item:hover {
+  overflow: visible !important;
+  contain: none !important;
   animation: localBgHoverFade 1.25s ease-in-out infinite !important;
   transform: translateY(-4px) scale(1.045) !important;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.52);
@@ -3237,6 +3240,7 @@ body.sidebar-light .preset-code-line-value {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
+  border-radius: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
