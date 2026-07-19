@@ -2175,6 +2175,8 @@ body.sidebar-light .preset-code-line-value {
   gap: var(--space-1);
   width: 100%;
   margin-bottom: var(--space-2);
+  padding: 6px 12px;
+  box-sizing: border-box;
 }
 
 .accent-color-preset {
