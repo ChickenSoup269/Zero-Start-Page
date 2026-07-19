@@ -1506,21 +1506,7 @@ export function updateTime() {
     clockElement.innerHTML = `
       <div class="c4-bomb-clock ${c4BombArmed || isCounting ? "is-armed" : "is-standby"} ${c4BombUnlocked ? "is-unlocked" : "is-locked"} ${c4BombLeverOn ? "is-lever-on" : ""} ${c4BombExploded ? "is-exploded" : ""} ${isCodeWrong ? "is-code-wrong" : ""} ${isPulse ? "is-pulsing" : ""}">
         <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
-        <div class="c4-bomb-bricks" aria-hidden="true">
-          <span class="c4-brick c4-brick-one"></span>
-          <span class="c4-brick c4-brick-two"></span>
-          <span class="c4-brick c4-brick-three"></span>
-        </div>
-        <div class="c4-bomb-tape" aria-hidden="true">
-          <span></span>
-          <span></span>
-        </div>
-        <div class="c4-bomb-wires" aria-hidden="true">
-          <span class="c4-wire c4-wire-red"></span>
-          <span class="c4-wire c4-wire-yellow"></span>
-          <span class="c4-wire c4-wire-blue"></span>
-          <span class="c4-wire c4-wire-green"></span>
-        </div>
+
         <div class="c4-bomb-device">
           <div class="c4-bomb-screen">
             <div class="c4-bomb-status">${statusText} / ${weekday}</div>
