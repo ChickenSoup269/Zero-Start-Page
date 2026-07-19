@@ -1421,13 +1421,14 @@ export function setupGeneralEventHandlers(
   })
 
   // Card collapse/expand logic
-  document.querySelectorAll(".bg-control-title, .gradient-v2-section-title, .setting-group-title").forEach((title) => {
-    title.addEventListener("click", () => {
+  document.addEventListener("click", (e) => {
+    const title = e.target.closest(".bg-control-title, .gradient-v2-section-title, .setting-group-title")
+    if (title) {
       const card = title.closest(".bg-control-card, .gradient-v2-panel, .setting-group-collapsible")
       if (card) {
         card.classList.toggle("is-collapsed")
       }
-    })
+    }
   })
   // Language change
   DOM.languageSelect.addEventListener("change", async () => {

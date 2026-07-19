@@ -1130,35 +1130,22 @@ export async function initSettings() {
   )
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
-  document
-    .querySelectorAll(".setting-group.collapsible-group")
-    .forEach((group) => {
-      const header = group.querySelector(".group-header")
-      const groupId = group.id || group.dataset.groupId
-
-      if (groupId) {
-        const saved = localStorage.getItem(
-          `${GROUP_EXPANDED_KEY_PREFIX}${groupId}`,
-        )
-        if (saved === "1") {
-          group.classList.add("expanded")
-        } else if (saved === "0") {
-          group.classList.remove("expanded")
+  document.addEventListener("click", (e) => {
+    const header = e.target.closest(".setting-group.collapsible-group .group-header")
+    if (header) {
+      const group = header.closest(".setting-group.collapsible-group")
+      if (group) {
+        const groupId = group.id || group.dataset.groupId
+        const isExpanded = group.classList.toggle("expanded")
+        if (groupId) {
+          localStorage.setItem(
+            `${GROUP_EXPANDED_KEY_PREFIX}${groupId}`,
+            isExpanded ? "1" : "0",
+          )
         }
       }
-
-      if (header) {
-        header.addEventListener("click", () => {
-          const isExpanded = group.classList.toggle("expanded")
-          if (groupId) {
-            localStorage.setItem(
-              `${GROUP_EXPANDED_KEY_PREFIX}${groupId}`,
-              isExpanded ? "1" : "0",
-            )
-          }
-        })
-      }
-    })
+    }
+  })
 
   // Pixel Snow HQ
   if (DOM_EXPORTS.pixelSnowHQColorPicker) {
