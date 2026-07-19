@@ -13562,6 +13562,35 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
     animation: none; /* controlled by body classes */
     transform: scale(var(--glass-float-scale, 1));
 }
+
+body.clock-style-bg-accent.date-clock-style-glass-float .glass-float-container,
+body.clock-style-bg-custom.date-clock-style-glass-float .glass-float-container,
+body.clock-style-bg-dark.date-clock-style-glass-float .glass-float-container,
+body.clock-style-bg-light.date-clock-style-glass-float .glass-float-container {
+    border-radius: 30px;
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+body.clock-style-bg-accent.date-clock-style-glass-float .glass-float-container {
+    background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important;
+    border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important;
+}
+
+body.clock-style-bg-custom.date-clock-style-glass-float .glass-float-container {
+    background: var(--clock-style-custom-bg-color, rgba(12, 14, 20, 0.5));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.clock-style-bg-dark.date-clock-style-glass-float .glass-float-container {
+    background: rgba(12, 14, 20, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.clock-style-bg-light.date-clock-style-glass-float .glass-float-container {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 body.gf-anim-float .gf-char { animation: text-float-anim 6s ease-in-out infinite; }
 body.gf-anim-pulse .gf-char { animation: text-pulse-anim 3s ease-in-out infinite; }
 body.gf-anim-shake .gf-char { animation: text-shake-anim 4s ease-in-out infinite; }
