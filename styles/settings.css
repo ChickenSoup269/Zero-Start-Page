@@ -8194,3 +8194,4 @@ body.sidebar-light .weather-api-connection-state {
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
+.setting-group-collapsible.is-collapsed .setting-group-content { display: none; } .setting-group-title i.toggle-icon { transition: transform 0.2s ease; } .setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }

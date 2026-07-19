@@ -1421,9 +1421,9 @@ export function setupGeneralEventHandlers(
   })
 
   // Card collapse/expand logic
-  document.querySelectorAll(".bg-control-title, .gradient-v2-section-title").forEach((title) => {
+  document.querySelectorAll(".bg-control-title, .gradient-v2-section-title, .setting-group-title").forEach((title) => {
     title.addEventListener("click", () => {
-      const card = title.closest(".bg-control-card, .gradient-v2-panel")
+      const card = title.closest(".bg-control-card, .gradient-v2-panel, .setting-group-collapsible")
       if (card) {
         card.classList.toggle("is-collapsed")
       }
