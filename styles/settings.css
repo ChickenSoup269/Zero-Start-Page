@@ -603,7 +603,8 @@ body.sidebar-m3-accent .settings-sidebar {
 
 .setting-group,
 .settings-section,
-.section-content {
+.section-content,
+.setting-group-content {
   width: 100% !important;
   box-sizing: border-box !important;
   overflow-x: hidden;
@@ -8194,4 +8195,23 @@ body.sidebar-light .weather-api-connection-state {
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-.setting-group-collapsible.is-collapsed .setting-group-content { display: none; } .setting-group-title i.toggle-icon { transition: transform 0.2s ease; } .setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }
+.setting-group-content {
+  display: block;
+  max-height: 10000px;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height 0.2s ease-out, opacity 0.2s ease-out, margin 0.2s ease-out, padding 0.2s ease-out;
+}
+
+.setting-group-collapsible.is-collapsed .setting-group-content {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+}
+
+.setting-group-title i.toggle-icon { transition: transform 0.2s ease; } 
+.setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }
