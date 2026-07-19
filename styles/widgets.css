@@ -13568,6 +13568,9 @@ body.gf-anim-shake .gf-char { animation: text-shake-anim 4s ease-in-out infinite
 body.gf-anim-glitch .gf-char { animation: text-glitch-anim 2.5s infinite linear; }
 body.gf-anim-bug .gf-char { animation: text-bug-anim 0.4s infinite; }
 body.gf-anim-wave .gf-char { animation: text-wave-anim 2s ease-in-out infinite; }
+body.gf-anim-bounce .gf-char { animation: text-bounce-anim 1s ease-in-out infinite; }
+body.gf-anim-spin .gf-char { animation: text-spin-anim 2s linear infinite; }
+body.gf-anim-swing .gf-char { animation: text-swing-anim 2s ease-in-out infinite; }
 body.gf-anim-none .gf-char { animation: none; }
 
 .gf-char {
@@ -13645,6 +13648,21 @@ body.gf-anim-none .gf-char { animation: none; }
     50% { transform: translateY(0px) rotate(0deg); }
     75% { transform: translateY(5px) rotate(1deg); }
     100% { transform: translateY(0px) rotate(0deg); }
+}
+@keyframes text-bounce-anim {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+@keyframes text-spin-anim {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+@keyframes text-swing-anim {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-10deg); }
+    100% { transform: rotate(0deg); }
 }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container { background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important; box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important; border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important; }

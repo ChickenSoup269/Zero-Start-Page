@@ -3704,10 +3704,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (gfCustomTextInput) gfCustomTextInput.value = settings.gfCustomText || ""
     const gfGlowColorInput = document.getElementById("gf-glow-color")
     if (gfGlowColorInput) gfGlowColorInput.value = settings.gfGlowColor || "#ffffff"
-    const gfGlowIntensityInput = document.getElementById("gf-glow-intensity")
-    const gfGlowIntensityVal = document.getElementById("gf-glow-intensity-val")
-    if (gfGlowIntensityInput) gfGlowIntensityInput.value = settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3
-    if (gfGlowIntensityVal) gfGlowIntensityVal.textContent = settings.gfGlowIntensity !== undefined ? settings.gfGlowIntensity : 0.3
 
     
     const codeStyleSettings = document.getElementById("code-style-settings")

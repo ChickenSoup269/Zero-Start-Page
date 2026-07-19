@@ -4915,14 +4915,6 @@ export function setupGeneralEventHandlers(
     window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowColor", value: e.target.value } }))
   })
 
-  document.getElementById("gf-glow-intensity")?.addEventListener("input", (e) => {
-    const val = parseFloat(e.target.value)
-    handleSettingUpdate("gfGlowIntensity", val)
-    document.getElementById("gf-glow-intensity-val").textContent = val
-    applySettings()
-    window.dispatchEvent(new CustomEvent("layoutUpdated", { detail: { key: "gfGlowIntensity", value: val } }))
-  })
-
 
 
   DOM.sidestyleNoBorderCheckbox?.addEventListener("change", () => {
