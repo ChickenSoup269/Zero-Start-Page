@@ -1503,72 +1503,107 @@ export function updateTime() {
       !c4BombExploded &&
       (!c4BombUnlocked || (!c4BombLeverOn && !c4BombArmed && !isCounting))
     const leverDisabled = !c4BombUnlocked || isCounting || c4BombExploded
-    clockElement.innerHTML = `
-      <div class="c4-bomb-clock ${c4BombArmed || isCounting ? "is-armed" : "is-standby"} ${c4BombUnlocked ? "is-unlocked" : "is-locked"} ${c4BombLeverOn ? "is-lever-on" : ""} ${c4BombExploded ? "is-exploded" : ""} ${isCodeWrong ? "is-code-wrong" : ""} ${isPulse ? "is-pulsing" : ""}">
-        <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
-
-        <div class="c4-bomb-device">
-          <div class="c4-bomb-screen">
-            <div class="c4-bomb-status">${statusText} / ${weekday}</div>
-            <div class="c4-bomb-time">
-              ${
-                c4BombExploded
-                  ? `<span class="c4-bomb-boom">BOOM</span>`
-                  : isCounting
-                    ? `
-                      <span class="c4-bomb-hour">${countdownMinute}</span>
-                      <span class="c4-bomb-separator">:</span>
-                      <span class="c4-bomb-minute">${countdownSecond}</span>
-                      ${rapidCountdownHtml}
-                    `
-                    : `
-                      <span class="c4-bomb-hour">${hh}</span>
-                      <span class="c4-bomb-separator">:</span>
-                      <span class="c4-bomb-minute">${mm}</span>
-                      ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
-                      ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
-                    `
-              }
+    let root = clockElement.querySelector(".c4-bomb-clock")
+    if (!root) {
+      clockElement.innerHTML = `
+        <div class="c4-bomb-clock">
+          <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
+          <div class="c4-bomb-device">
+            <div class="c4-bomb-screen">
+              <div class="c4-bomb-status"></div>
+              <div class="c4-bomb-time"></div>
+              <div class="c4-bomb-code-line"></div>
+              <div class="c4-bomb-date-wrapper"></div>
             </div>
-            <div class="c4-bomb-code-line">${c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`}</div>
-            ${
-              isCounting
-                ? `<div class="c4-bomb-date">${countdownMinute}:${countdownSecond}${remainingSeconds <= 8 ? `.${fastCountdownTicks}` : ""}</div>`
-                : c4BombExploded
-                  ? `<div class="c4-bomb-date">SYSTEM TRIPPED - PRESS RESET</div>`
-                  : isTimer
-                    ? `<div class="c4-bomb-date">${countdownLabel}</div>`
-                    : dateStr
-                      ? `<div class="c4-bomb-date">${dateStr}</div>`
-                      : ""
-            }
-          </div>
-          <div class="c4-bomb-controls">
-            <div class="c4-bomb-led-row" aria-hidden="true">
-              <span class="c4-bomb-led"></span>
-              <span class="c4-bomb-led"></span>
-              <span class="c4-bomb-led"></span>
-            </div>
-            <button type="button" class="c4-bomb-lever" aria-pressed="${c4BombLeverOn ? "true" : "false"}" ${leverDisabled ? "disabled" : ""}>
-              <span class="c4-bomb-lever-slot" aria-hidden="true"><span></span></span>
-              <span>${c4BombLeverOn ? "OPEN" : "LOCK"}</span>
-            </button>
-            <button type="button" class="c4-bomb-button" aria-pressed="${c4BombArmed || isCounting ? "true" : "false"}" ${buttonDisabled ? "disabled" : ""}>
-              <span class="c4-bomb-button-light" aria-hidden="true"></span>
-              <span>${buttonText}</span>
-            </button>
-            <div class="c4-bomb-keypad" aria-label="C4 passcode keypad">
-              ${keypadNumbers
-                .map(
-                  (number) =>
-                    `<button type="button" class="c4-bomb-key" data-c4-key="${number}" ${c4BombUnlocked || isCounting || c4BombExploded ? "disabled" : ""}>${number}</button>`,
-                )
-                .join("")}
+            <div class="c4-bomb-controls">
+              <div class="c4-bomb-led-row" aria-hidden="true">
+                <span class="c4-bomb-led"></span>
+                <span class="c4-bomb-led"></span>
+                <span class="c4-bomb-led"></span>
+              </div>
+              <button type="button" class="c4-bomb-lever">
+                <span class="c4-bomb-lever-slot" aria-hidden="true"><span></span></span>
+                <span class="c4-bomb-lever-text"></span>
+              </button>
+              <button type="button" class="c4-bomb-button">
+                <span class="c4-bomb-button-light" aria-hidden="true"></span>
+                <span class="c4-bomb-button-text"></span>
+              </button>
+              <div class="c4-bomb-keypad" aria-label="C4 passcode keypad">
+                ${keypadNumbers
+                  .map(
+                    (number) =>
+                      `<button type="button" class="c4-bomb-key" data-c4-key="${number}">${number}</button>`,
+                  )
+                  .join("")}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    `
+      `
+      root = clockElement.querySelector(".c4-bomb-clock")
+    }
+
+    const rootClass = `c4-bomb-clock ${c4BombArmed || isCounting ? "is-armed" : "is-standby"} ${c4BombUnlocked ? "is-unlocked" : "is-locked"} ${c4BombLeverOn ? "is-lever-on" : ""} ${c4BombExploded ? "is-exploded" : ""} ${isCodeWrong ? "is-code-wrong" : ""} ${isPulse ? "is-pulsing" : ""}`
+    if (root.className !== rootClass) root.className = rootClass
+
+    const statusEl = root.querySelector(".c4-bomb-status")
+    const statusHtml = `${statusText} / ${weekday}`
+    if (statusEl.innerHTML !== statusHtml) statusEl.innerHTML = statusHtml
+
+    const timeEl = root.querySelector(".c4-bomb-time")
+    const timeHtml = c4BombExploded
+      ? `<span class="c4-bomb-boom">BOOM</span>`
+      : isCounting
+        ? `
+          <span class="c4-bomb-hour">${countdownMinute}</span>
+          <span class="c4-bomb-separator">:</span>
+          <span class="c4-bomb-minute">${countdownSecond}</span>
+          ${rapidCountdownHtml}
+        `
+        : `
+          <span class="c4-bomb-hour">${hh}</span>
+          <span class="c4-bomb-separator">:</span>
+          <span class="c4-bomb-minute">${mm}</span>
+          ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
+          ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
+        `
+    if (timeEl.innerHTML !== timeHtml) timeEl.innerHTML = timeHtml
+
+    const codeLineEl = root.querySelector(".c4-bomb-code-line")
+    const codeHtml = c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`
+    if (codeLineEl.innerHTML !== codeHtml) codeLineEl.innerHTML = codeHtml
+
+    const dateWrapEl = root.querySelector(".c4-bomb-date-wrapper")
+    const dateHtml = isCounting
+      ? `<div class="c4-bomb-date">${countdownMinute}:${countdownSecond}${remainingSeconds <= 8 ? `.${fastCountdownTicks}` : ""}</div>`
+      : c4BombExploded
+        ? `<div class="c4-bomb-date">SYSTEM TRIPPED - PRESS RESET</div>`
+        : isTimer
+          ? `<div class="c4-bomb-date">${countdownLabel}</div>`
+          : dateStr
+            ? `<div class="c4-bomb-date">${dateStr}</div>`
+            : ""
+    if (dateWrapEl.innerHTML !== dateHtml) dateWrapEl.innerHTML = dateHtml
+
+    const leverBtn = root.querySelector(".c4-bomb-lever")
+    leverBtn.setAttribute("aria-pressed", c4BombLeverOn ? "true" : "false")
+    if (leverBtn.disabled !== leverDisabled) leverBtn.disabled = leverDisabled
+    const leverText = root.querySelector(".c4-bomb-lever-text")
+    const lTxt = c4BombLeverOn ? "OPEN" : "LOCK"
+    if (leverText.textContent !== lTxt) leverText.textContent = lTxt
+
+    const actionBtn = root.querySelector(".c4-bomb-button")
+    actionBtn.setAttribute("aria-pressed", c4BombArmed || isCounting ? "true" : "false")
+    if (actionBtn.disabled !== buttonDisabled) actionBtn.disabled = buttonDisabled
+    const actionText = root.querySelector(".c4-bomb-button-text")
+    if (actionText.textContent !== buttonText) actionText.textContent = buttonText
+
+    const keysDisabled = c4BombUnlocked || isCounting || c4BombExploded
+    const keypadBtns = root.querySelectorAll(".c4-bomb-key")
+    keypadBtns.forEach(btn => {
+      if (btn.disabled !== keysDisabled) btn.disabled = keysDisabled
+    })
   } else if (dateClockStyle === "holo-ring") {
     const weekday = isTimer
       ? timerLabel
