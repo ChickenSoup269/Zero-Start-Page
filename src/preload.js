@@ -82,6 +82,7 @@
         body.classList.add("bookmark-group-auto-text-contrast")
       if (settings.hideBookmarkText) body.classList.add("hide-bookmark-text")
       if (settings.bookmarkLongText) body.classList.add("bookmark-long-text")
+      if (settings.bookmarkFullText) body.classList.add("bookmark-full-text")
       if (settings.hideBookmarkBg) body.classList.add("hide-bookmark-bg")
       if (settings.bookmarkGroupUseAccent === true)
         body.classList.add("bookmark-group-accent-enabled")

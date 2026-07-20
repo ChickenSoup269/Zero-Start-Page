@@ -846,6 +846,7 @@ function createApplySettings(effectInstances) {
       "bookmark-group-border-hidden",
       "hide-bookmark-text",
       "bookmark-long-text",
+      "bookmark-full-text",
       "hide-bookmark-bg",
       "flip-layout",
     )
@@ -2351,6 +2352,12 @@ function createApplySettings(effectInstances) {
       document.body.classList.add("bookmark-long-text")
     } else {
       document.body.classList.remove("bookmark-long-text")
+    }
+
+    if (settings.bookmarkFullText) {
+      document.body.classList.add("bookmark-full-text")
+    } else {
+      document.body.classList.remove("bookmark-full-text")
     }
 
     if (settings.bookmarkHideBg) {
@@ -4152,6 +4159,9 @@ function createUpdateSettingsInputs(effectInstances) {
       }
       if (DOM.bookmarkLongText) {
         DOM.bookmarkLongText.checked = settings.bookmarkLongText === true
+      }
+      if (DOM.bookmarkFullText) {
+        DOM.bookmarkFullText.checked = settings.bookmarkFullText === true
       }
       if (DOM.hideBookmarkBg) {
         DOM.hideBookmarkBg.checked = settings.bookmarkHideBg === true

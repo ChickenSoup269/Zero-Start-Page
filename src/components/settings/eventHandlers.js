@@ -2798,6 +2798,13 @@ export function setupGeneralEventHandlers(
       })
     }
 
+    if (DOM.bookmarkFullText) {
+      DOM.bookmarkFullText.addEventListener("change", () => {
+        markInterfaceStyleCustom("bookmarkFullText")
+        throttleSettingUpdate("bookmarkFullText", DOM.bookmarkFullText.checked)
+      })
+    }
+
     if (DOM.hideBookmarkBg) {
       DOM.hideBookmarkBg.addEventListener("change", () => {
         markInterfaceStyleCustom("bookmarkHideBg")

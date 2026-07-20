@@ -632,6 +632,9 @@ async function bootstrap() {
   if (currentSettings.bookmarkLongText) {
     document.body.classList.add("bookmark-long-text")
   }
+  if (currentSettings.bookmarkFullText) {
+    document.body.classList.add("bookmark-full-text")
+  }
   if (currentSettings.hideBookmarkBg)
     document.body.classList.add("hide-bookmark-bg")
   if (currentSettings.freeMoveSearchBar === true)

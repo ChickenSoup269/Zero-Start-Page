@@ -1464,13 +1464,42 @@ body.hide-bookmark-text .bookmark span {
   display: none;
 }
 
-body.bookmark-long-text .bookmark span {
-  white-space: normal;
-  display: -webkit-box;
+body.bookmark-long-text .bookmark span,
+body.bookmark-long-text .bookmark-stack-popup .bookmark-stack-popup-label,
+body.bookmark-long-text .bookmark-group-tab span {
+  white-space: normal !important;
+  display: -webkit-box !important;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.25;
   word-break: break-word;
+}
+
+body.bookmark-full-text .bookmark span,
+body.bookmark-full-text .bookmark-stack-popup .bookmark-stack-popup-label {
+  white-space: normal !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  line-height: 1.25;
+  word-break: break-word;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+body.bookmark-full-text .bookmark-group-tab {
+  height: auto !important;
+  min-height: 38px;
+  align-items: flex-start;
+}
+
+body.bookmark-full-text .bookmark-group-tab span {
+  white-space: normal !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  line-height: 1.35;
+  word-break: break-word;
+  max-width: 200px !important; 
+  overflow: visible !important;
 }
 
 body.hide-bookmark-text .bookmark .bookmark-stack-count {

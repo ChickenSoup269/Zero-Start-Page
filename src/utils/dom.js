@@ -1260,6 +1260,7 @@ export let showAddBookmarkButton = document.getElementById(
 )
 export let hideBookmarkText = document.getElementById("hide-bookmark-text")
 export let bookmarkLongText = document.getElementById("bookmark-long-text")
+export let bookmarkFullText = document.getElementById("bookmark-full-text")
 export let hideBookmarkBg = document.getElementById("hide-bookmark-bg")
 export let bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",
@@ -3375,6 +3376,7 @@ export function refreshDOMReferences() {
 )
   hideBookmarkText = document.getElementById("hide-bookmark-text")
   bookmarkLongText = document.getElementById("bookmark-long-text")
+  bookmarkFullText = document.getElementById("bookmark-full-text")
   hideBookmarkBg = document.getElementById("hide-bookmark-bg")
   bookmarkMacosHover = document.getElementById(
   "bookmark-macos-hover",
