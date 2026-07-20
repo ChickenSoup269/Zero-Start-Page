@@ -5512,22 +5512,23 @@ body.widgets-m3-accent
   font-size: 2rem; color: #fff; 
 }
 
-/* Visualizer on the top left corner rotated */
+/* Visualizer on the bottom right corner rotated */
 .music-style-square-thumb.skin-vertical-card .music-visualizer {
   position: absolute !important;
-  top: 20px !important; 
-  left: 20px !important;
-  bottom: auto !important;
-  right: auto !important;
+  bottom: 20px !important; 
+  right: 20px !important;
+  top: auto !important;
+  left: auto !important;
   width: auto !important;
   height: 25px !important;
   display: flex !important;
+  flex-direction: row-reverse !important;
   align-items: flex-end !important;
   justify-content: flex-start !important;
   gap: 3px !important;
   z-index: 5 !important;
-  transform: rotate(90deg) scaleY(-1) !important;
-  transform-origin: left top !important;
+  transform: rotate(-90deg) !important;
+  transform-origin: right bottom !important;
   background: none !important;
   padding: 0 !important;
   box-sizing: border-box !important;
@@ -5685,19 +5686,20 @@ body.widgets-m3-accent
 
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
   position: absolute !important;
-  top: 15px !important; 
-  left: 15px !important;
-  bottom: auto !important;
-  right: auto !important;
+  bottom: 15px !important; 
+  right: 15px !important;
+  top: auto !important;
+  left: auto !important;
   width: auto !important;
   height: 25px !important;
   display: flex !important;
+  flex-direction: row-reverse !important;
   align-items: flex-end !important;
   justify-content: flex-start !important;
   gap: 3px !important;
   z-index: 5 !important;
-  transform: rotate(90deg) scaleY(-1) !important;
-  transform-origin: left top !important;
+  transform: rotate(-90deg) !important;
+  transform-origin: right bottom !important;
   background: none !important;
   padding: 0 !important;
   box-sizing: border-box !important;
