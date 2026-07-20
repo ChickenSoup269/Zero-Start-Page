@@ -1,4 +1,4 @@
-console.log("Background script loaded") // For debugging
+// console.log("Background script loaded") // For debugging
 
 // Setup Side Panel to open when the extension icon is clicked based on user setting
 chrome.storage.local.get(["actionBehavior"], (data) => {
@@ -32,7 +32,7 @@ function setLocalizedUninstallUrl(language = "en") {
     if (chrome.runtime.lastError) {
       console.error("Error setting uninstall URL:", chrome.runtime.lastError)
     } else {
-      console.log("Uninstall URL set successfully:", uninstallUrl)
+      // console.log("Uninstall URL set successfully:", uninstallUrl)
     }
   })
 }

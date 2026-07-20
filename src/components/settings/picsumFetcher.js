@@ -4,6 +4,8 @@
  * Uses Lorem Picsum (https://picsum.photos) by David Marby & Nijiko Yonskai.
  */
 
+import { getSettings } from "../../services/state.js"
+
 /**
  * Curated Picsum seeds for specific themes.
  * Seeds are stable identifiers that always return the same photo.
@@ -69,10 +71,22 @@ function buildPicsumThumbUrl(seed) {
  * Get target display dimensions for fetching
  */
 function getPicsumTargetDimensions() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+  const settings = getSettings()
+  const mode = settings.backgroundMediaQuality || "balanced"
+  
+  const profiles = {
+    quality: { dprCap: 2, widthCap: 3200, heightCap: 2200 },
+    balanced: { dprCap: 1.5, widthCap: 2400, heightCap: 1600 },
+    low: { dprCap: 1, widthCap: 1600, heightCap: 1000 },
+    tiny: { dprCap: 0.75, widthCap: 1024, heightCap: 640 },
+    still: { dprCap: 0.85, widthCap: 1280, heightCap: 800 }
+  }
+  const p = profiles[mode] || profiles.balanced
+
+  const dpr = Math.min(window.devicePixelRatio || 1, p.dprCap)
   return {
-    width: Math.min(2400, Math.round((window.innerWidth || 1920) * dpr)),
-    height: Math.min(1600, Math.round((window.innerHeight || 1080) * dpr)),
+    width: Math.min(p.widthCap, Math.round((window.innerWidth || 1920) * dpr)),
+    height: Math.min(p.heightCap, Math.round((window.innerHeight || 1080) * dpr)),
   }
 }
 
