@@ -5686,7 +5686,7 @@ body.widgets-m3-accent
 
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
   position: absolute !important;
-  top: 125px !important; /* Move up by 20px */
+  top: 110px !important; /* Move up by another 15px */
   right: 240px !important; 
   bottom: auto !important;
   left: auto !important;

@@ -4779,35 +4779,20 @@ body.sidebar-light .preset-code-line-value {
 /* Clock Style Grid & Cards */
 .clock-style-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: var(--space-0-5);
-  margin-top: var(--space-2);
+  margin-top: var(--space-1-5);
   padding: 2px;
 }
 
 #date-format-grid.clock-style-grid,
 #time-format-grid.clock-style-grid {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 
 @container settings-sidebar (min-width: 550px) {
   .clock-style-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
-  #date-format-grid.clock-style-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  #time-format-grid.clock-style-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@container settings-sidebar (min-width: 750px) {
-  .clock-style-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  }
-  #date-format-grid.clock-style-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   }
 }
 
@@ -4815,7 +4800,6 @@ body.sidebar-light .preset-code-line-value {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  padding: var(--space-1) var(--space-0-5);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
@@ -4824,10 +4808,9 @@ body.sidebar-light .preset-code-line-value {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-0-5);
-  aspect-ratio: auto;
-  min-height: 80px;
-  padding: 12px 8px;
+  gap: 4px;
+  min-height: 60px;
+  padding: 8px 4px;
   overflow: hidden;
   user-select: none;
 }
@@ -4859,7 +4842,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card i {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: rgba(255, 255, 255, 0.45);
   transition: all 0.3s ease;
 }
@@ -4870,11 +4853,11 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-name {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   transition: color 0.3s ease;
 }
 
