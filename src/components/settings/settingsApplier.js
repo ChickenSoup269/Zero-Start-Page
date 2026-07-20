@@ -1300,7 +1300,10 @@ function createApplySettings(effectInstances) {
 
       const applyUserSelectedBackground = () => {
         if (isPredefinedLocalBg) {
-          if (bgLayer) bgLayer.classList.add(bg)
+          if (bgLayer) {
+            bgLayer.className = "" // Clear old bg classes
+            bgLayer.classList.add(bg)
+          }
           document.body.classList.add("bg-layer-active")
           document.documentElement.style.setProperty("--text-color", "#ffffff")
           triggerBgFadeOut()
