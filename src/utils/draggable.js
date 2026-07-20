@@ -8,58 +8,91 @@ function parsePixelValue(value) {
   return Number.isFinite(parsed) ? parsed : null
 }
 
-function getClampedStyleValue(element, style, axis, clampedScreenValue, delta) {
-  const inlineValue = axis === "x" ? element.style.left : element.style.top
-  const computedValue = axis === "x" ? style.left : style.top
-  const parsedValue = parsePixelValue(inlineValue || computedValue)
-  if (parsedValue !== null) return parsedValue + delta
+let clampQueue = new Map()
+let isClampQueued = false
 
-  if (style.position === "fixed") return clampedScreenValue
+function processClampQueue() {
+  const queue = Array.from(clampQueue.entries())
+  clampQueue.clear()
+  isClampQueued = false
 
-  const parentRect = element.offsetParent?.getBoundingClientRect()
-  const parentOffset = axis === "x" ? parentRect?.left || 0 : parentRect?.top || 0
-  return clampedScreenValue - parentOffset
+  const reads = []
+  const vw = document.documentElement.clientWidth
+  const vh = document.documentElement.clientHeight
+
+  // --- READ PHASE ---
+  for (const [element, data] of queue) {
+    if (!element || element.classList.contains("dragging")) continue
+    if (data.componentId === "todo" && element.classList.contains("todo-fullscreen")) continue
+
+    const style = window.getComputedStyle(element)
+    if (style.position !== "fixed" && style.position !== "absolute") continue
+
+    const rect = element.getBoundingClientRect()
+    if (!rect.width || !rect.height || !vw || !vh) continue
+
+    let parentOffsetLeft = 0
+    let parentOffsetTop = 0
+    if (style.position !== "fixed") {
+      const parentRect = element.offsetParent?.getBoundingClientRect()
+      parentOffsetLeft = parentRect?.left || 0
+      parentOffsetTop = parentRect?.top || 0
+    }
+
+    reads.push({ element, data, style, rect, parentOffsetLeft, parentOffsetTop })
+  }
+
+  // --- WRITE PHASE ---
+  for (const read of reads) {
+    const { element, data, style, rect, parentOffsetLeft, parentOffsetTop } = read
+
+    const minLeft = Math.min(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
+    const maxLeft = Math.max(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
+    const minTop = Math.min(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
+    const maxTop = Math.max(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
+
+    const clampedLeft = Math.max(minLeft, Math.min(rect.left, maxLeft))
+    const clampedTop = Math.max(minTop, Math.min(rect.top, maxTop))
+
+    const zoom = Number.parseFloat(style.zoom) || 1
+    const deltaX = (clampedLeft - rect.left) / zoom
+    const deltaY = (clampedTop - rect.top) / zoom
+
+    if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) continue
+
+    const inlineLeft = element.style.left
+    const computedLeft = style.left
+    const parsedLeft = parsePixelValue(inlineLeft || computedLeft)
+    let finalLeft = parsedLeft !== null ? parsedLeft + deltaX : (style.position === "fixed" ? clampedLeft : clampedLeft - parentOffsetLeft)
+
+    const inlineTop = element.style.top
+    const computedTop = style.top
+    const parsedTop = parsePixelValue(inlineTop || computedTop)
+    let finalTop = parsedTop !== null ? parsedTop + deltaY : (style.position === "fixed" ? clampedTop : clampedTop - parentOffsetTop)
+
+    element.style.left = `${finalLeft}px`
+    element.style.top = `${finalTop}px`
+    element.style.bottom = "auto"
+    element.style.right = "auto"
+    element.style.margin = "0"
+    element.classList.add("has-position")
+
+    if (data.persist) {
+      saveComponentPosition(data.componentId, {
+        top: element.style.top,
+        left: element.style.left,
+        transform: element.style.transform,
+      })
+    }
+  }
 }
 
 function clampElementIntoViewport(element, componentId, persist = false) {
-  if (!element || element.classList.contains("dragging")) return
-  if (componentId === "todo" && element.classList.contains("todo-fullscreen")) return
-
-  const style = window.getComputedStyle(element)
-  if (style.position !== "fixed" && style.position !== "absolute") return
-
-  const rect = element.getBoundingClientRect()
-  const vw = document.documentElement.clientWidth
-  const vh = document.documentElement.clientHeight
-  if (!rect.width || !rect.height || !vw || !vh) return
-
-  const minLeft = Math.min(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
-  const maxLeft = Math.max(VIEWPORT_PADDING, vw - rect.width - VIEWPORT_PADDING)
-  const minTop = Math.min(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
-  const maxTop = Math.max(VIEWPORT_PADDING, vh - rect.height - VIEWPORT_PADDING)
-
-  const clampedLeft = Math.max(minLeft, Math.min(rect.left, maxLeft))
-  const clampedTop = Math.max(minTop, Math.min(rect.top, maxTop))
+  clampQueue.set(element, { componentId, persist })
   
-  const zoom = Number.parseFloat(style.zoom) || 1
-  const deltaX = (clampedLeft - rect.left) / zoom
-  const deltaY = (clampedTop - rect.top) / zoom
-
-  if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) return
-
-  element.style.left = `${getClampedStyleValue(element, style, "x", clampedLeft, deltaX)}px`
-  element.style.top = `${getClampedStyleValue(element, style, "y", clampedTop, deltaY)}px`
-  element.style.bottom = "auto"
-  element.style.right = "auto"
-  element.style.margin = "0"
-  element.classList.add("has-position")
-
-  if (persist) {
-    saveComponentPosition(componentId, {
-      top: element.style.top,
-      left: element.style.left,
-      transform: element.style.transform,
-    })
+  if (!isClampQueued) {
+    isClampQueued = true
+    requestAnimationFrame(processClampQueue)
   }
 }
 

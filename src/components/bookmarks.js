@@ -1903,7 +1903,7 @@ export function updateOverflowBookmarks() {
       c.classList.contains("bookmark") ||
       c.classList.contains("add-bookmark-card")
     ) {
-      c.style.display = ""
+      if (c.style.display !== "") c.style.display = ""
     }
   })
 
@@ -1911,11 +1911,12 @@ export function updateOverflowBookmarks() {
   const isDefault = mode === "default"
   const isSidebar = mode === "sidebar"
   const isTaskbarTop = mode === "taskbar-top"
+  const isTaskbarRight = mode === "taskbar-right"
 
   if (!isDefault) {
-    container.style.overflow = "hidden"
+    if (container.style.overflow !== "hidden") container.style.overflow = "hidden"
   } else {
-    if (container.style.overflow) container.style.overflow = ""
+    if (container.style.overflow !== "") container.style.overflow = ""
   }
 
   const addBtn = children.find((child) =>
@@ -1989,8 +1990,6 @@ export function updateOverflowBookmarks() {
   fallback.style.fontSize = "1rem"
   fallback.style.fontWeight = "bold"
   indicator.appendChild(fallback)
-
-  const isTaskbarRight = mode === "taskbar-right"
 
   if (isSidebar || isTaskbarRight) {
     container.insertBefore(indicator, container.firstChild)
