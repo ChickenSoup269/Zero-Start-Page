@@ -172,27 +172,43 @@ export class MusicBarsEffect {
 
       ctx.globalAlpha = bar.alpha
       ctx.fillStyle = this.glowColor
-      ctx.fillRect(x - glowWidth * 0.5, y, glowWidth, height)
+      ctx.beginPath()
+      ctx.roundRect(x - glowWidth * 0.5, y, glowWidth, height, glowWidth * 0.5)
+      ctx.fill()
 
       const grad = ctx.createLinearGradient(x, y, x, y + height)
       grad.addColorStop(0, this.peakColor)
       grad.addColorStop(0.45, this.barColor)
       grad.addColorStop(1, `rgba(${this.rgb.r}, ${this.rgb.g}, ${this.rgb.b}, 0.16)`)
-      ctx.fillStyle = this.barColor
       ctx.fillStyle = grad
-      ctx.fillRect(x - bar.width * 0.5, y, bar.width, height)
+      ctx.beginPath()
+      ctx.roundRect(x - bar.width * 0.5, y, bar.width, height, bar.width * 0.5)
+      ctx.fill()
 
-      ctx.globalAlpha = bar.alpha * 0.65
+      ctx.globalAlpha = bar.alpha * 0.8
       ctx.fillStyle = this.coreColor
-      ctx.fillRect(x - 0.5, y + height * 0.12, 1, height * 0.76)
+      ctx.beginPath()
+      ctx.roundRect(x - 0.5, y + height * 0.12, 1, height * 0.76, 0.5)
+      ctx.fill()
 
-      ctx.globalAlpha = bar.alpha * 0.45
+      ctx.globalAlpha = bar.alpha * 0.6
       ctx.fillStyle = this.peakColor
-      ctx.fillRect(x - bar.width * 0.72, capY, bar.width * 1.44, 2)
+      ctx.beginPath()
+      ctx.roundRect(x - bar.width * 0.72, capY, bar.width * 1.44, 4, 2)
+      ctx.fill()
+      
+      // Additional bright center for the peak cap
+      ctx.fillStyle = "#ffffff"
+      ctx.globalAlpha = bar.alpha * 0.9
+      ctx.beginPath()
+      ctx.roundRect(x - bar.width * 0.36, capY + 1, bar.width * 0.72, 2, 1)
+      ctx.fill()
 
       ctx.globalAlpha = bar.alpha * 0.13
       ctx.fillStyle = this.barColor
-      ctx.fillRect(x - bar.width * 0.5, bar.y + height * 0.14, bar.width, height * 0.44)
+      ctx.beginPath()
+      ctx.roundRect(x - bar.width * 0.5, bar.y + height * 0.14, bar.width, height * 0.44, bar.width * 0.5)
+      ctx.fill()
     }
 
     if (Math.sin(this.time * 2.35) > 0.985) this._spawnRing()
@@ -209,9 +225,9 @@ export class MusicBarsEffect {
         this.rings.splice(i, 1)
         continue
       }
-      ctx.globalAlpha = ring.life * 0.22
+      ctx.globalAlpha = ring.life * 0.35
       ctx.strokeStyle = this.peakColor
-      ctx.lineWidth = 1.5
+      ctx.lineWidth = 1.5 + ring.life * 1.5
       ctx.beginPath()
       ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2)
       ctx.stroke()
@@ -223,7 +239,6 @@ export class MusicBarsEffect {
     const W = window.innerWidth
     const H = window.innerHeight
 
-    ctx.fillStyle = this.sparkColor
     for (const spark of this.sparks) {
       spark.phase += dt
       spark.y -= spark.speed * dt
@@ -234,7 +249,10 @@ export class MusicBarsEffect {
       }
 
       ctx.globalAlpha = spark.alpha * (0.7 + 0.3 * Math.sin(spark.phase * 2))
-      ctx.fillRect(spark.x, spark.y, spark.size, spark.size)
+      ctx.fillStyle = this.peakColor
+      ctx.beginPath()
+      ctx.arc(spark.x, spark.y, spark.size, 0, Math.PI * 2)
+      ctx.fill()
     }
   }
 
