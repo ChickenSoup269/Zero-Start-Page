@@ -164,7 +164,7 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
   const fontCountDisplay = document.getElementById("font-count-display")
   if (fontCountDisplay) {
-    fontCountDisplay.textContent = `(${allFonts.length})`
+    fontCountDisplay.textContent = ` (${allFonts.length})`
   }
 
   const favoriteFonts = allFonts.filter((f) => f.isFavorite)
