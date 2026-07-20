@@ -490,7 +490,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 4px;
+  padding: 10px 6px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--input-border);
   background: var(--glass-bg, rgba(255, 255, 255, 0.08));
@@ -514,13 +514,13 @@
 }
 
 .font-item-preview {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   line-height: 1;
   user-select: none;
 }
 
 .font-item-name {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   text-align: center;
   opacity: 0.85;
   line-height: 1.1;
@@ -8248,9 +8248,9 @@ body.sidebar-light .weather-api-connection-state {
 .font-target-btn {
   flex: 1;
   margin: 0;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 6px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
   background: transparent;
   color: #fff;

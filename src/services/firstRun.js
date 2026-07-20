@@ -1023,9 +1023,9 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
 
     sidebarContent.scrollTo({
       top: Math.max(0, targetTop),
-      behavior: "auto",
+      behavior: "smooth",
     })
-    await waitForAnimationFrames(3)
+    await new Promise((r) => setTimeout(r, 350))
 
     const nextSidebarRect = sidebarContent.getBoundingClientRect()
     const nextTargetRect = target.getBoundingClientRect()
