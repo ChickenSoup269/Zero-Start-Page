@@ -13558,7 +13558,7 @@ body.audio-wave-style-pixel.audio-wave-pos-right .aw-bar {
     align-items: center;
     justify-content: center;
     padding: 30px 50px;
-    box-shadow: 0 10px 30px rgba(var(--gf-glow-r, 0), var(--gf-glow-g, 0), var(--gf-glow-b, 0), var(--gf-glow-a, 0.3)), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    /* Removed default glow/shadow to allow fully transparent fallback */
     animation: none; /* controlled by body classes */
     transform: translateZ(0) scale(var(--glass-float-scale, 1));
     will-change: transform, backdrop-filter;
@@ -13571,6 +13571,7 @@ body.clock-style-bg-light.date-clock-style-glass-float .glass-float-container {
     border-radius: 30px;
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 10px 30px rgba(var(--gf-glow-r, 0), var(--gf-glow-g, 0), var(--gf-glow-b, 0), var(--gf-glow-a, 0.3)), inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
 body.clock-style-bg-accent.date-clock-style-glass-float .glass-float-container {

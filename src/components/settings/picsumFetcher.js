@@ -55,14 +55,14 @@ function buildPicsumUrl(seed, width, height, blur = false) {
   const blurParam = blur ? "/blur/2" : ""
   const w = Math.min(3840, Math.max(640, Math.round(width)))
   const h = Math.min(2160, Math.max(480, Math.round(height)))
-  return `https://picsum.photos/seed/${seed}/${w}/${h}${blurParam}`
+  return `https://picsum.photos/id/${seed}/${w}/${h}${blurParam}`
 }
 
 /**
  * Build a Picsum thumbnail URL for gallery preview
  */
 function buildPicsumThumbUrl(seed) {
-  return `https://picsum.photos/seed/${seed}/360/270`
+  return `https://picsum.photos/id/${seed}/360/270`
 }
 
 /**
