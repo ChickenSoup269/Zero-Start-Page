@@ -1928,44 +1928,45 @@ export function updateOverflowBookmarks() {
       !child.classList.contains("overflow-indicator"),
   )
 
-  const checkOverflow = () => {
-    let visibleCount = 0
-    for (let j = 0; j < overflowItems.length; j++) {
-      if (overflowItems[j].style.display !== "none") visibleCount++
-    }
-    if (isDefault) return visibleCount > 25
-    if (visibleCount > 15) return true
-    
-    if (isSidebar) {
-      return container.scrollHeight > Math.ceil(container.clientHeight) + 2
-    }
-    
-    if (!isDefault && container.scrollWidth > Math.ceil(container.clientWidth) + 2) {
-      return true
-    }
+  let requiredHiddenCount = 0
 
-    // Fallback check for left overflow (common with flex-end)
-    const cRect = container.getBoundingClientRect()
-    const currentChildren = container.children
-    for (let j = 0; j < currentChildren.length; j++) {
-      if (currentChildren[j].style.display !== "none" && currentChildren[j].getBoundingClientRect) {
-        const elRect = currentChildren[j].getBoundingClientRect()
-        if (elRect.width > 0 && elRect.left < cRect.left) {
-          return true
+  if (isDefault) {
+    if (overflowItems.length > 25) requiredHiddenCount = overflowItems.length - 25
+  } else if (overflowItems.length > 0) {
+    const firstItem = overflowItems[0]
+    if (isSidebar) {
+      const overflowAmt = container.scrollHeight - container.clientHeight
+      if (overflowAmt > 2) {
+        const itemH = firstItem.offsetHeight + 12 // estimate gap
+        requiredHiddenCount = Math.ceil((overflowAmt + itemH) / itemH)
+      }
+    } else {
+      const overflowAmt = container.scrollWidth - container.clientWidth
+      if (overflowAmt > 2 || (isTaskbarRight && container.getBoundingClientRect().left > firstItem.getBoundingClientRect().left)) {
+        // Taskbar right uses flex-end, sometimes scrollWidth doesn't trigger accurately, so we also check BoundingRect
+        const itemW = firstItem.offsetWidth + 12
+        let actualOverflow = overflowAmt
+        if (isTaskbarRight) {
+          const cRect = container.getBoundingClientRect()
+          const fRect = firstItem.getBoundingClientRect()
+          if (fRect.left < cRect.left) actualOverflow = Math.max(overflowAmt, cRect.left - fRect.left)
+        }
+        if (actualOverflow > 2) {
+          requiredHiddenCount = Math.ceil((actualOverflow + itemW) / itemW)
         }
       }
     }
-    
-    return false
   }
 
-  if (!checkOverflow()) {
+  // Bounds check
+  if (requiredHiddenCount > overflowItems.length) requiredHiddenCount = overflowItems.length
+  if (requiredHiddenCount < 0) requiredHiddenCount = 0
+
+  if (requiredHiddenCount === 0) {
     container.style.overflow = ""
     const bw = document.getElementById("bookmark-widget")
     if (bw && bw.classList.contains("no-transition")) {
-      requestAnimationFrame(() => {
-        bw.classList.remove("no-transition")
-      })
+      requestAnimationFrame(() => bw.classList.remove("no-transition"))
     }
     return
   }
@@ -1999,29 +2000,24 @@ export function updateOverflowBookmarks() {
     container.appendChild(indicator)
   }
 
+  let ans = requiredHiddenCount
+  
   if (isTaskbarRight) {
-    for (let i = 0; i < overflowItems.length; i++) {
+    for (let i = 0; i < ans; i++) {
       const el = overflowItems[i]
       el.style.display = "none"
       hiddenElements.push(el)
       hiddenCount++
-
-      fallback.textContent = "+" + hiddenCount
-
-      if (!checkOverflow()) break
     }
   } else {
-    for (let i = overflowItems.length - 1; i >= 0; i--) {
+    for (let i = overflowItems.length - 1; i >= overflowItems.length - ans; i--) {
       const el = overflowItems[i]
       el.style.display = "none"
       hiddenElements.unshift(el)
       hiddenCount++
-
-      fallback.textContent = "+" + hiddenCount
-
-      if (!checkOverflow()) break
     }
   }
+  fallback.textContent = "+" + hiddenCount
 
   // Click handler to show sub-popup
   indicator.addEventListener("click", (e) => {
