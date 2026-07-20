@@ -4019,18 +4019,6 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.accentColorModeDefault.checked =
         settings.accentColorMode === "default"
     }
-    if (DOM.accentColorSettingsBody) {
-      const isOpen = settings.accentControlsOpen !== false
-      DOM.accentColorSettingsBody.style.display = "block"
-      DOM.accentColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
-      DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
-      if (DOM.accentColorToggleLabel) {
-        const i18n = geti18n()
-        DOM.accentColorToggleLabel.textContent =
-          i18n[isOpen ? "settings_accent_close" : "settings_accent_open"] ||
-          (isOpen ? "Hide Controls" : "Show Controls")
-      }
-    }
     DOM.clockColorPicker.value = currentClockColor
     if (DOM.clockDateStrokeWidthInput) {
       DOM.clockDateStrokeWidthInput.value = settings.clockDateStrokeWidth || 0

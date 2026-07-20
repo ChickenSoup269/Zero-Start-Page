@@ -220,7 +220,7 @@
   animation-delay: 0.09s;
 }
 
-#accent-color-settings-body,
+#svg-wave-settings,
 #svg-wave-settings,
 #gradient-settings-body,
 #multi-color-settings-body,
@@ -236,7 +236,7 @@
   transition: max-height 0.15s ease-out, opacity 0.15s ease-out, margin 0.15s ease-out;
 }
 
-#accent-color-settings-body.is-collapsed,
+#svg-wave-settings.is-collapsed,
 #svg-wave-settings.is-collapsed,
 #gradient-settings-body.is-collapsed,
 #multi-color-settings-body.is-collapsed,
@@ -321,7 +321,7 @@
   .settings-section[data-section-id="custom-title"] > .section-content,
   .settings-section[data-section-id="layout"] > .section-content,
   .sidebar-footer-content,
-  #accent-color-settings-body,
+  #svg-wave-settings,
   #svg-wave-settings,
   #gradient-settings-body,
   #multi-color-settings-body,
@@ -802,7 +802,7 @@ body.sidebar-m3-accent .settings-sidebar {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -1126,7 +1126,7 @@ body.sidebar-m3-accent .settings-sidebar {
   gap: var(--space-2);
   margin-bottom: var(--space-2);
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1150,7 +1150,7 @@ body.sidebar-m3-accent .settings-sidebar {
   gap: var(--space-2);
   margin-bottom: 0;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -2073,7 +2073,7 @@ body.sidebar-light .preset-code-line-value {
 .settings-sidebar select optgroup,
 .language-modal-grid select optgroup {
   background: #1e1e3a;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   font-weight: 600;
 }
 
@@ -3685,7 +3685,7 @@ body.sidebar-light .preset-code-line-value {
   gap: var(--space-1);
   font-size: 0.75rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -4082,7 +4082,7 @@ body.sidebar-light .preset-code-line-value {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
 }
 .gallery-subtitle {
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
 }
 
 .quick-access-white .modal-content {
@@ -4423,7 +4423,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .sidebar-footer-content:hover .sidebar-copyright {
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
 }
 
 .setting-item-row select {
@@ -5270,7 +5270,7 @@ body.sidebar-light .setting-item-row:hover {
 .theme-name {
   font-size: 0.8rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   transition: all 0.3s ease;
   text-align: center;
 }
@@ -6330,7 +6330,7 @@ body.sidebar-light .remove-bg-btn:hover i {
   text-align: center;
   padding: var(--space-5);
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
 }
 
 .unsplash-explorer-mini {
@@ -8253,7 +8253,7 @@ body.sidebar-light .weather-api-connection-state {
   font-size: 0.85rem;
   font-weight: 500;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: #fff;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -8292,3 +8292,6 @@ body.sidebar-light .weather-api-connection-state {
 
 .setting-group-title i.toggle-icon { transition: transform 0.2s ease; } 
 .setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }
+
+#accent-m3-group .setting-item-row, #accent-m3-group.expanded > .group-body, #accent-m3-group .secondary-btn { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+
