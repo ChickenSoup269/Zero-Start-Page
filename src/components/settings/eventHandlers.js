@@ -1125,10 +1125,15 @@ export function setupGeneralEventHandlers(
   })
   document.addEventListener("click", (e) => {
     if (document.body.classList.contains("first-run-tour-active")) return
-    if (
-      !DOM.settingsSidebar.contains(e.target) &&
-      !DOM.settingsToggle.contains(e.target)
-    ) {
+    
+    // Use composedPath() to check if the click originated in the sidebar,
+    // which fixes the bug where replacing innerHTML of a clicked button
+    // causes e.target to be detached from the DOM, tricking the contains() check.
+    const path = e.composedPath ? e.composedPath() : []
+    const clickedInSidebar = path.includes(DOM.settingsSidebar) || DOM.settingsSidebar.contains(e.target)
+    const clickedOnToggle = path.includes(DOM.settingsToggle) || DOM.settingsToggle.contains(e.target)
+
+    if (!clickedInSidebar && !clickedOnToggle) {
       DOM.settingsSidebar.classList.remove("open")
     }
   })
