@@ -1156,6 +1156,75 @@ export function setupGeneralEventHandlers(
     sidebarContent.scrollTo({ top: 0, behavior: "smooth" })
   })
 
+  const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
+  if (smoothScrollCheckbox) {
+    smoothScrollCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("smoothScrollEnabled", e.target.checked)
+    })
+  }
+
+  let sidebarTargetScroll = sidebarContent.scrollTop
+  let hasPromptedSmoothScroll = false
+  let smoothScrollTimeout = null
+
+  const smoothScrollModal = document.getElementById("smooth-scroll-modal")
+  const btnSmoothScrollEnable = document.getElementById("btn-smooth-scroll-enable")
+  const btnSmoothScrollDisable = document.getElementById("btn-smooth-scroll-disable")
+
+  if (smoothScrollModal) {
+    btnSmoothScrollEnable.addEventListener("click", () => {
+      handleSettingUpdate("smoothScrollEnabled", true)
+      if (smoothScrollCheckbox) smoothScrollCheckbox.checked = true
+      smoothScrollModal.classList.remove("open")
+    })
+    btnSmoothScrollDisable.addEventListener("click", () => {
+      handleSettingUpdate("smoothScrollEnabled", false)
+      if (smoothScrollCheckbox) smoothScrollCheckbox.checked = false
+      smoothScrollModal.classList.remove("open")
+    })
+  }
+
+  sidebarContent.addEventListener("wheel", (e) => {
+    const settings = getSettings()
+    
+    // First time ask
+    if (settings.smoothScrollEnabled === null || settings.smoothScrollEnabled === undefined) {
+      if (!hasPromptedSmoothScroll && smoothScrollModal) {
+        hasPromptedSmoothScroll = true
+        smoothScrollModal.classList.add("open")
+      }
+      return
+    }
+
+    if (settings.smoothScrollEnabled === false) return
+
+    if (e.shiftKey) return
+    // Allow trackpads to use native scrolling (usually have deltaY < 40)
+    if (Math.abs(e.deltaY) < 40) return
+    
+    e.preventDefault()
+
+    // Sync target scroll if user hasn't scrolled for a bit (e.g. dragged scrollbar)
+    if (!smoothScrollTimeout) {
+      sidebarTargetScroll = sidebarContent.scrollTop
+    }
+    clearTimeout(smoothScrollTimeout)
+    smoothScrollTimeout = setTimeout(() => {
+      smoothScrollTimeout = null
+    }, 150)
+    
+    sidebarTargetScroll += e.deltaY * 2.5
+    sidebarTargetScroll = Math.max(0, Math.min(
+      sidebarTargetScroll,
+      sidebarContent.scrollHeight - sidebarContent.clientHeight
+    ))
+    
+    sidebarContent.scrollTo({
+      top: sidebarTargetScroll,
+      behavior: "smooth"
+    })
+  }, { passive: false })
+
   // Bug Report / Config Logic
   const bugReportBtn = document.getElementById("bug-report-btn")
   const bugModal = document.getElementById("bug-report-modal")

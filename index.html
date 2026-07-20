@@ -2243,6 +2243,10 @@
                             <input type="checkbox" id="ghost-controls-checkbox">
                         </div>
                         <div class="setting-item-row">
+                            <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth Scrolling</label>
+                            <input type="checkbox" id="smooth-scroll-checkbox" checked>
+                        </div>
+                        <div class="setting-item-row">
                             <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
                                 Google Apps & Avatar</label>
                             <input type="checkbox" id="show-top-right-controls-checkbox" checked>
@@ -2849,6 +2853,22 @@
         <div class="menu-item" id="menu-lock" style="display:none;"><i class="fa-solid fa-lock"></i> <span
                 data-i18n="menu_lock">Lock Position</span></div>
 
+    </div>
+
+    <!-- Smooth Scroll Prompt Modal -->
+    <div id="smooth-scroll-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; border-bottom: none; padding-bottom: 0;">
+                <h2 data-i18n="smooth_scroll_prompt_title">Smooth Scrolling</h2>
+            </div>
+            <div class="modal-body" style="padding-top: 10px; font-size: 0.95rem; opacity: 0.85;">
+                <p data-i18n="smooth_scroll_prompt_desc">Would you like to enable smooth scrolling for the settings sidebar?</p>
+            </div>
+            <div class="modal-footer" style="justify-content: center; gap: 10px; border-top: none; padding-top: 0;">
+                <button id="btn-smooth-scroll-disable" class="secondary-btn" data-i18n="smooth_scroll_disable">Use Default</button>
+                <button id="btn-smooth-scroll-enable" class="primary-btn" data-i18n="smooth_scroll_enable">Enable</button>
+            </div>
+        </div>
     </div>
 
     <!-- Donate Modal -->

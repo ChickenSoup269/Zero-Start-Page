@@ -138,6 +138,7 @@ export const defaultSettings = {
   multiColorCount: 2,
   multiColors: ["#FF6B6B", "#4ECDC4"],
   multiGradientAngle: 135,
+  smoothScrollEnabled: null,
   multiColorType: "linear",
   multiColorRepeating: false,
   multiColorPosition: "center",

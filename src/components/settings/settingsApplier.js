@@ -5525,7 +5525,13 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.bookmarkOpenInNewTab) {
       DOM.bookmarkOpenInNewTab.checked = settings.bookmarkOpenInNewTab === true
     }
-    DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+    if (DOM.ghostControlsCheckbox) {
+      DOM.ghostControlsCheckbox.checked = settings.sideControlsGhostMode === true
+    }
+    const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
+    if (smoothScrollCheckbox) {
+      smoothScrollCheckbox.checked = settings.smoothScrollEnabled !== false
+    }
     if (DOM.lcpGhostControls) {
       DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true
     }
