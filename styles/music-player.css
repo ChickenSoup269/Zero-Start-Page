@@ -5540,7 +5540,7 @@ body.widgets-m3-accent
   flex: none !important;
   max-width: none !important;
 }
-.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n+16) { display: none !important; }
+.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n+25) { display: none !important; }
 
 /* --- Horizontal Card Skin for Square Thumb --- */
 .music-player-container.music-style-square-thumb.skin-horizontal-card {
@@ -5685,29 +5685,30 @@ body.widgets-m3-accent
 
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
   position: absolute !important;
-  bottom: 0 !important; 
-  left: 0 !important;
-  top: auto !important;
+  top: 15px !important; 
+  left: 15px !important;
+  bottom: auto !important;
   right: auto !important;
-  width: 180px !important; /* Matches the left thumbnail width */
-  height: 40px !important;
+  width: auto !important;
+  height: 25px !important;
   display: flex !important;
   align-items: flex-end !important;
-  justify-content: center !important;
-  gap: 2px !important;
+  justify-content: flex-start !important;
+  gap: 3px !important;
   z-index: 5 !important;
-  transform: none !important;
-  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%) !important;
-  padding: 0 10px 5px 10px !important;
+  transform: rotate(90deg) scaleY(-1) !important;
+  transform-origin: left top !important;
+  background: none !important;
+  padding: 0 !important;
   box-sizing: border-box !important;
 }
 .music-style-square-thumb.skin-horizontal-card .visualizer-bar {
-  width: 100% !important; 
+  width: 4px !important; 
   background: rgba(255, 255, 255, 0.95) !important; 
   border-radius: 2px !important; 
-  box-shadow: 0 0 4px rgba(255,255,255,0.5) !important;
-  flex: 1 !important;
-  max-width: 5px !important;
+  box-shadow: 0 0 5px rgba(255,255,255,0.5) !important;
+  flex: none !important;
+  max-width: none !important;
 }
 .music-style-square-thumb.skin-vertical-card .visualizer-bar.playing,
 .music-style-square-thumb.skin-horizontal-card .visualizer-bar.playing {
