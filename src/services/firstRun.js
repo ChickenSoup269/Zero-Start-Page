@@ -750,6 +750,38 @@ async function promptFirstRunZoomTip() {
 function getFirstRunSettingsGuideSteps(i18n) {
   return [
     {
+      virtualTarget: "center-screen",
+      icon: "fa-solid fa-hand-wave",
+      title: i18n.first_run_tour_welcome_title || "Welcome to Startpage! 🎉",
+      text: i18n.first_run_tour_welcome_desc || "Thank you for installing the extension. Let's take a quick look at the main features to get you started!",
+      placement: "center",
+      skipSidebarScroll: true
+    },
+    {
+      selector: "#search-container",
+      icon: "fa-solid fa-magnifying-glass",
+      title: i18n.first_run_tour_search_title || "Smart Search",
+      text: i18n.first_run_tour_search_desc || "Type keywords or URLs to search. Press Tab or the Google icon to quickly switch between different search engines.",
+      placement: "bottom",
+      skipSidebarScroll: true
+    },
+    {
+      selector: "#settings-toggle",
+      icon: "fa-solid fa-gear",
+      title: i18n.first_run_tour_settings_title || "Unlimited Customization",
+      text: i18n.first_run_tour_settings_desc || "Click this Gear icon to open the Settings panel. Here you can change Wallpapers, Colors, Fonts, Effects, and much more!",
+      placement: "bottom",
+      skipSidebarScroll: true
+    },
+    {
+      selector: "#bookmarks-container",
+      icon: "fa-solid fa-bookmark",
+      title: i18n.first_run_tour_bookmarks_title || "Bookmark Management",
+      text: i18n.first_run_tour_bookmarks_desc || "Here you can create, drag to rearrange, and group your favorite website shortcuts. Right-click them for more options.",
+      placement: "bottom",
+      skipSidebarScroll: true
+    },
+    {
       selector: "#settings-sidebar .sidebar-header",
       icon: "fa-solid fa-sliders",
       title: i18n.first_run_guide_settings_title || "Settings hub",
@@ -939,6 +971,17 @@ function getGuideTarget(selector) {
 }
 
 function getVirtualGuideRect(target) {
+  if (target === "center-screen") {
+    return {
+      left: window.innerWidth / 2,
+      top: window.innerHeight / 2,
+      width: 0,
+      height: 0,
+      bottom: window.innerHeight / 2,
+      right: window.innerWidth / 2
+    }
+  }
+
   if (target !== "chrome-bottom-bar") return null
 
   const width = Math.min(620, window.innerWidth - 28)
@@ -1102,7 +1145,15 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
           viewportWidth - cardRect.width - gap,
           Math.max(gap, targetRect.left + targetRect.width / 2 - cardRect.width / 2),
         )
-        top = Math.max(gap, targetRect.top - cardRect.height - 22)
+        // Check if there's space below
+        if (targetRect.bottom + cardRect.height + 22 < viewportHeight) {
+          top = targetRect.bottom + 22
+        } else {
+          top = Math.max(gap, targetRect.top - cardRect.height - 22)
+        }
+      } else if (step.placement === "center") {
+        left = Math.max(gap, (viewportWidth - cardRect.width) / 2)
+        top = Math.max(gap, (viewportHeight - cardRect.height) / 2)
       }
 
       if (left + cardRect.width > viewportWidth - gap) {
@@ -1124,10 +1175,14 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
     const renderStep = async () => {
       const token = ++renderToken
-      sidebar.classList.add("open")
-      await waitForSettingsSidebarOpen(sidebar)
-      if (resolved || token !== renderToken) return
       const step = steps[index]
+      if (step.skipSidebarScroll) {
+        sidebar.classList.remove("open")
+      } else {
+        sidebar.classList.add("open")
+        await waitForSettingsSidebarOpen(sidebar)
+      }
+      if (resolved || token !== renderToken) return
       const section = step.selector ? document.querySelector(step.selector) : null
       if (section?.classList?.contains("settings-section")) {
         setSettingsSectionExpanded(section, true)
@@ -1152,7 +1207,7 @@ async function promptFirstRunSettingsGuide({ force = false } = {}) {
 
       await waitForAnimationFrames(2)
       if (resolved || token !== renderToken) return
-      const rect = virtualRect || (await scrollGuideTargetIntoView(sidebarContent, target))
+      const rect = virtualRect || (step.skipSidebarScroll ? target.getBoundingClientRect() : await scrollGuideTargetIntoView(sidebarContent, target))
       if (resolved || token !== renderToken) return
       spotlight.style.left = `${rect.left - 8}px`
       spotlight.style.top = `${rect.top - 8}px`
