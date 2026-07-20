@@ -5515,9 +5515,9 @@ body.widgets-m3-accent
 /* Visualizer on the bottom right corner rotated */
 .music-style-square-thumb.skin-vertical-card .music-visualizer {
   position: absolute !important;
-  bottom: 20px !important; 
-  right: 20px !important;
-  top: auto !important;
+  top: 215px !important; 
+  right: 15px !important;
+  bottom: auto !important;
   left: auto !important;
   width: auto !important;
   height: 25px !important;
@@ -5687,7 +5687,7 @@ body.widgets-m3-accent
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
   position: absolute !important;
   bottom: 15px !important; 
-  right: 15px !important;
+  right: 235px !important;
   top: auto !important;
   left: auto !important;
   width: auto !important;
