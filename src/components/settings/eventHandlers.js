@@ -1256,8 +1256,7 @@ export function setupGeneralEventHandlers(
         ".settings-section",
         "#page-title-input",
         "#language-select",
-        "#accent-color-group",
-        "#svg-wave-group",
+        "#accent-m3-group"
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
@@ -1319,7 +1318,6 @@ export function setupGeneralEventHandlers(
           item.className = "toc-item"
           if (isSubItem) {
             item.style.fontSize = "0.85rem"
-            item.style.opacity = "0.8"
           }
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {
@@ -2247,23 +2245,6 @@ export function setupGeneralEventHandlers(
     }
   })
 
-  const setAccentControlsExpanded = (isOpen) => {
-    if (!DOM.accentColorSettingsBody || !DOM.accentColorToggleLabel) return
-    DOM.accentColorSettingsBody.style.display = "block"
-    DOM.accentColorSettingsBody.classList.toggle("is-collapsed", !isOpen)
-    DOM.accentColorToggleBtn?.setAttribute("aria-expanded", String(isOpen))
-    DOM.accentColorToggleLabel.textContent =
-      geti18n()?.[isOpen ? "settings_accent_close" : "settings_accent_open"] ||
-      (isOpen ? "Hide Controls" : "Show Controls")
-  }
-
-  DOM.accentColorToggleBtn?.addEventListener("click", () => {
-    const nextIsOpen =
-      DOM.accentColorSettingsBody?.classList.contains("is-collapsed") ?? true
-    setAccentControlsExpanded(nextIsOpen)
-    updateSetting("accentControlsOpen", nextIsOpen)
-    saveSettings()
-  })
 
   renderUserAccentColors(DOM)
 
@@ -7595,8 +7576,8 @@ export function setupGeneralEventHandlers(
   }
 
   const currentSettings = getSettings()
-  if (line3Container && currentSettings.customTitleText3) line3Container.style.display = "block"
-  if (line4Container && currentSettings.customTitleText4) line4Container.style.display = "block"
+  if (line3Container) line3Container.style.display = currentSettings.customTitleText3 ? "block" : "none"
+  if (line4Container) line4Container.style.display = currentSettings.customTitleText4 ? "block" : "none"
   updateLineVisibility()
 
   if (addLineBtn) {
