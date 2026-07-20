@@ -8303,9 +8303,13 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.active {
   transform: translateY(-1px);
 }
 
+#bookmark-widget {
+  position: relative;
+}
+
 /* Groups toggle button */
 .bookmark-groups-toggle {
-  display: none; /* Hidden by default in standard mode */
+  display: flex; /* Changed from none */
   position: absolute;
   width: 30px;
   height: 30px;
@@ -8319,6 +8323,11 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.active {
   cursor: pointer;
   z-index: 1000;
   transition: all 0.2s ease;
+
+  /* Default position (when no mode class is present) */
+  bottom: 0px;
+  right: 50%;
+  transform: translateX(50%);
 }
 
 .bookmark-groups-toggle:hover {
@@ -8329,40 +8338,29 @@ body.bookmark-sidebar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-top-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-left-mode .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode .bookmark-groups-toggle,
 body.bookmark-taskbar-right-mode .bookmark-groups-toggle {
-  display: flex;
+  /* Override default positioning based on modes later in CSS */
 }
 
-/* Hidden groups state */
-body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-container,
-body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-container,
-body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-container,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-container {
+body.groups-hidden .bookmark-groups-container {
   opacity: 0;
   pointer-events: none;
   transform: scale(0.9);
 }
 
-body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-top-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle {
+/* For default grid layout, we also collapse the space so it doesn't leave a big gap */
+body.groups-hidden:not(.bookmark-sidebar-mode):not(.bookmark-taskbar-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode) .bookmark-groups-container {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.groups-hidden .bookmark-groups-toggle {
   opacity: 0.5;
 }
 
-body.bookmark-sidebar-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-left-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle:hover,
-body.bookmark-taskbar-right-mode.groups-hidden .bookmark-groups-toggle:hover {
+body.groups-hidden .bookmark-groups-toggle:hover {
   opacity: 1;
 }
 
