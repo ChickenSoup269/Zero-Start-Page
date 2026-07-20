@@ -23,6 +23,7 @@ export const DEFAULT_MEDIA_ORB_IMAGE_URL =
   "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDF4cmx2anVqaXlkaXN3ZnBqbzlocXk3ejc0YzF3ZThsbDQwc254dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/geix8MbhTqVQcnN7sO/giphy.gif"
 
 export const defaultSettings = {
+  hasSeenTutorial: false,
   background: null,
   lastUserBackground: null,
   lastUserActiveBgUid: null,
