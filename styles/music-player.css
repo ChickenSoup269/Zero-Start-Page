@@ -5515,8 +5515,8 @@ body.widgets-m3-accent
 /* Visualizer on the bottom right corner rotated */
 .music-style-square-thumb.skin-vertical-card .music-visualizer {
   position: absolute !important;
-  top: 200px !important; /* Moved up to 200px */
-  right: 15px !important;
+  top: 200px !important; /* Bottom-right will be at top: 225px */
+  right: 20px !important; /* Move a bit left to avoid border-radius */
   bottom: auto !important;
   left: auto !important;
   width: auto !important;
@@ -5541,7 +5541,7 @@ body.widgets-m3-accent
   flex: none !important;
   max-width: none !important;
 }
-.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n+17) { display: none !important; }
+.music-style-square-thumb.skin-vertical-card .visualizer-bar:nth-child(n+25) { display: none !important; }
 
 /* --- Horizontal Card Skin for Square Thumb --- */
 .music-player-container.music-style-square-thumb.skin-horizontal-card {
@@ -5686,9 +5686,9 @@ body.widgets-m3-accent
 
 .music-style-square-thumb.skin-horizontal-card .music-visualizer {
   position: absolute !important;
-  bottom: 25px !important; /* Moved up by 10px */
-  right: 235px !important;
-  top: auto !important;
+  top: 145px !important; /* Bottom-right will be at top: 170px */
+  right: 240px !important; /* Move a bit left to avoid border-radius */
+  bottom: auto !important;
   left: auto !important;
   width: auto !important;
   height: 25px !important;
@@ -5749,7 +5749,7 @@ body.widgets-m3-accent
 .music-style-square-thumb .visualizer-bar:nth-child(22) { animation-delay: 0.2s !important; }
 .music-style-square-thumb .visualizer-bar:nth-child(24) { animation-delay: 0.4s !important; }
 
-.music-style-square-thumb.skin-horizontal-card .visualizer-bar:nth-child(n+17) { display: none !important; }
+.music-style-square-thumb.skin-horizontal-card .visualizer-bar:nth-child(n+25) { display: none !important; }
 
 /* Dynamic Background overlay for square-thumb */
 .music-player-container.music-style-square-thumb.skin-horizontal-card .music-bg-blur,
