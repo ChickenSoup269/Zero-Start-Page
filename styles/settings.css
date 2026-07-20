@@ -1091,6 +1091,17 @@ body.sidebar-m3-accent .settings-sidebar {
   color: var(--accent-color);
 }
 
+.section-count {
+  font-size: 0.8em;
+  opacity: 0.7;
+  margin-left: auto;
+  font-weight: normal;
+}
+
+.section-toggle:has(.section-count)::after {
+  margin-left: 8px;
+}
+
 .section-content {
   padding: var(--space-3);
 }
@@ -1128,8 +1139,8 @@ body.sidebar-m3-accent .settings-sidebar {
 }
 
 .setting-group.collapsible-group {
-  background: rgba(255, 255, 255, 0.072);
-  border: 1px solid var(--accent-color);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ── Collapsible setting group ─────────────────────────────────────────────── */
@@ -1172,6 +1183,72 @@ body.sidebar-m3-accent .settings-sidebar {
   display: none;
   opacity: 0;
   margin-top: 0;
+}
+
+.setting-sub-header {
+  margin-bottom: var(--space-3);
+  opacity: 0.9;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.setting-sub-header i {
+  color: var(--accent-color);
+}
+
+.custom-title-lines-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.custom-title-line-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Enlarge and beautify Text & Typography settings */
+.custom-title-lines-wrapper label,
+.custom-title-lines-wrapper span {
+  font-size: 0.95rem !important;
+  opacity: 0.9 !important;
+}
+
+.custom-title-line-block > label,
+.custom-title-line-block > div > label {
+  font-size: 1.05rem !important;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 8px !important;
+  opacity: 1 !important;
+}
+
+.custom-title-lines-wrapper input[type="text"] {
+  font-size: 1.05rem !important;
+  padding: 12px 14px !important;
+}
+
+.custom-title-lines-wrapper select {
+  font-size: 1rem !important;
+  padding: 10px 12px !important;
+}
+
+.custom-title-lines-wrapper button {
+  font-size: 1rem !important;
+  padding: 12px !important;
+  font-weight: 600;
+}
+
+.custom-title-lines-wrapper select[id^="custom-title-orientation"],
+.custom-title-lines-wrapper select[id^="custom-title-direction"],
+.custom-title-lines-wrapper select[id^="custom-title-order"],
+.custom-title-lines-wrapper select[id^="custom-title-animation"] {
+  font-size: 0.95rem !important;
+  padding: 8px 10px !important;
 }
 
 .setting-group.collapsible-group.expanded > .group-body {

@@ -1190,7 +1190,7 @@
             <div data-settings-partial="animated-backgrounds" data-src="partials/settings/animated-backgrounds.html">
             </div>
             <div class="settings-section" data-section-id="font">
-                <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font</h3>
+                <h3 class="section-toggle" data-i18n="settings_font"><i class="fa-solid fa-font"></i> Font <span id="font-count-display" class="section-count"></span></h3>
                 <div class="section-content">
                     <div class="setting-group">
                         <div
@@ -1738,17 +1738,16 @@
                     </div>
 
                     <!-- Text Input & Font Settings -->
-                    <div class="setting-group"
-                        style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
-                                class="fa-solid fa-pen-nib"></i> <span data-i18n="settings_custom_title_typography">Text
-                                Content & Typography</span></h4>
-
-                        <div style="display: flex; flex-direction: column; gap: 15px;">
-                            <div class="setting-item no-margin-top"
-                                style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 12px;">
-
-                                <div>
+                    <div class="setting-group collapsible-group" id="custom-title-typography-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-pen-nib group-icon"></i>
+                            <span data-i18n="settings_custom_title_typography">Text Content & Typography</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <div class="custom-title-lines-wrapper">
+                                <!-- Dòng 1 -->
+                                <div class="custom-title-line-block">
                                     <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;"
                                         data-i18n="settings_custom_title_line_1">Dòng 1</label>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
@@ -1801,8 +1800,7 @@
                                     </div>
                                 </div>
 
-                                <div
-                                    style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                <div class="custom-title-line-block" style="margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
                                     <label style="font-size: 0.9em; opacity: 0.8; margin-bottom: 6px; display: block;"
                                         data-i18n="settings_custom_title_line_2">Dòng 2</label>
                                     <div style="display: flex; gap: 8px; margin-bottom: 8px;">
@@ -1856,7 +1854,7 @@
                                 </div>
 
                                 <div id="custom-title-line-3-container"
-                                    style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    class="custom-title-line-block">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                         <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
@@ -1916,7 +1914,7 @@
                                 </div>
 
                                 <div id="custom-title-line-4-container"
-                                    style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                                    class="custom-title-line-block" style="display: none; margin-top: 8px; padding-top: 12px; border-top: 1px dashed rgba(255,255,255,0.1);">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                         <label style="font-size: 0.9em; opacity: 0.8; margin: 0;"
@@ -2085,14 +2083,15 @@
                     </div>
 
                     <!-- Color Settings -->
-                    <div class="setting-group"
-                        style="margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <h4 style="margin-bottom: 12px; opacity: 0.9; display: flex; align-items: center; gap: 6px;"><i
-                                class="fa-solid fa-palette"></i> <span data-i18n="settings_custom_title_color">Title
-                                Color</span></h4>
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="setting-group collapsible-group" id="custom-title-color-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-palette group-icon"></i>
+                            <span data-i18n="settings_custom_title_color">Title Color</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
                             <div class="setting-item no-margin-top" id="custom-title-color-wrap"
-                                style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                                style="padding: 12px 0;">
                                 <label style="margin-bottom: 10px; display: block; font-size: 0.85rem;"
                                     data-i18n="settings_solid_color">Solid Color</label>
                                 <div class="custom-color-input-group"
@@ -2110,13 +2109,14 @@
                     </div>
 
                     <!-- Effects: Shadows & Borders -->
-                    <div
-                        style="display: flex; flex-direction: column; gap: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                        <div class="setting-group no-margin-top"
-                            style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
-                                    class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop
-                                    Shadow</span></h4>
+                    <div class="setting-group collapsible-group" id="custom-title-effects-group">
+                        <div class="group-header">
+                            <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
+                            <span data-i18n="settings_custom_title_effects">Effects: Shadows & Borders</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
+                            <h4 class="setting-sub-header"><i class="fa-solid fa-moon"></i> <span data-i18n="settings_custom_title_shadow">Drop Shadow</span></h4>
                             <p class="setting-hint custom-title-effect-hint"
                                 data-i18n="settings_custom_title_shadow_hint">Use a soft blur and a small vertical
                                 offset
@@ -2153,13 +2153,8 @@
                                         style="width: 100%;">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="setting-group no-margin-top"
-                            style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                            <h4 style="margin-bottom: 15px; opacity: 0.9; font-size: 0.9rem;"><i
-                                    class="fa-solid fa-border-style"></i> <span
-                                    data-i18n="settings_custom_title_border">Text Border</span></h4>
+                            <h4 class="setting-sub-header" style="margin-top: 20px;"><i class="fa-solid fa-border-style"></i> <span data-i18n="settings_custom_title_border">Text Border</span></h4>
                             <p class="setting-hint custom-title-effect-hint"
                                 data-i18n="settings_custom_title_border_hint">Keep the outline thin so accents and long
                                 words stay readable.</p>
@@ -2195,9 +2190,13 @@
                     Features</h3>
                 <div class="section-content">
                     <!-- Interface & General -->
-                    <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-display"></i> <span
-                                data-i18n="settings_group_interface">Interface</span></div>
+                    <div class="setting-group collapsible-group" id="layout-group-interface">
+                        <div class="group-header">
+                            <i class="fa-solid fa-display group-icon"></i>
+                            <span data-i18n="settings_group_interface">Interface</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
 
                         <div style="margin-bottom: 10px;">
                             <button type="button" id="replay-settings-guide-btn" class="secondary-btn full-width-btn"
@@ -2255,12 +2254,17 @@
                                 <option value="m3" data-i18n="settings_context_menu_m3">Material 3</option>
                             </select>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Search Bar -->
-                    <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-magnifying-glass"></i> <span
-                                data-i18n="settings_group_search">Search Bar</span></div>
+                    <div class="setting-group collapsible-group" id="layout-group-search">
+                        <div class="group-header">
+                            <i class="fa-solid fa-magnifying-glass group-icon"></i>
+                            <span data-i18n="settings_group_search">Search Bar</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
                         <div class="setting-item-row">
                             <label for="show-search-bar-checkbox" data-i18n="settings_show_search_bar">Show Search
                                 Bar</label>
@@ -2324,12 +2328,17 @@
                                 <span class="range-val" id="search-bar-blur-val">20px</span>
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Widgets -->
-                    <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-cubes"></i> <span
-                                data-i18n="settings_group_widgets">Widgets</span></div>
+                    <div class="setting-group collapsible-group" id="layout-group-widgets">
+                        <div class="group-header">
+                            <i class="fa-solid fa-cubes group-icon"></i>
+                            <span data-i18n="settings_group_widgets">Widgets</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
                         <div class="setting-item-row">
                             <label for="show-todo-checkbox" data-i18n="settings_show_todo">Show Todo List</label>
                             <input type="checkbox" id="show-todo-checkbox" checked>
@@ -2460,12 +2469,17 @@
                                 Bookmark Folders</label>
                             <input type="checkbox" id="show-bookmark-groups-checkbox" checked>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Music Player -->
-                    <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-music"></i> <span
-                                data-i18n="settings_group_music">Music Player</span></div>
+                    <div class="setting-group collapsible-group" id="layout-group-music">
+                        <div class="group-header">
+                            <i class="fa-solid fa-music group-icon"></i>
+                            <span data-i18n="settings_group_music">Music Player</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
                         <div class="setting-item-row">
                             <label for="show-music-checkbox" data-i18n="settings_show_music">Show Music Player</label>
                             <input type="checkbox" id="show-music-checkbox">
@@ -2511,12 +2525,17 @@
                                 <option value="none" data-i18n="music_source_icon_none">No color</option>
                             </select>
                         </div>
+                        </div>
                     </div>
 
                     <!-- Calendar -->
-                    <div class="setting-group">
-                        <div class="setting-label"><i class="fa-solid fa-calendar-days"></i> <span
-                                data-i18n="settings_group_calendar">Calendar</span></div>
+                    <div class="setting-group collapsible-group" id="layout-group-calendar">
+                        <div class="group-header">
+                            <i class="fa-solid fa-calendar-days group-icon"></i>
+                            <span data-i18n="settings_group_calendar">Calendar</span>
+                            <i class="fa-solid fa-chevron-down group-chevron"></i>
+                        </div>
+                        <div class="group-body">
                         <div class="setting-item-row">
                             <label for="show-gregorian-checkbox" data-i18n="settings_show_gregorian">Show Gregorian
                                 Calendar</label>
@@ -2544,6 +2563,7 @@
                             <p class="setting-hint" data-i18n="settings_calendar_display_mode_hint"
                                 style="margin-top: 8px; font-size: 0.78rem; opacity: 0.72;">Choose whether the month
                                 grid shows solar dates, lunar dates, or both.</p>
+                        </div>
                         </div>
                     </div>
                 </div>
