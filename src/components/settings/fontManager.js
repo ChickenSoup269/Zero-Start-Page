@@ -162,6 +162,11 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       }),
   ]
 
+  const fontCountDisplay = document.getElementById("font-count-display")
+  if (fontCountDisplay) {
+    fontCountDisplay.textContent = `(${allFonts.length})`
+  }
+
   const favoriteFonts = allFonts.filter((f) => f.isFavorite)
   const generalFonts = allFonts.filter((f) => !f.isFavorite && f.type === "general")
   const clockFonts = allFonts.filter((f) => !f.isFavorite && f.type === "clock")

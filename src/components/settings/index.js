@@ -1130,6 +1130,18 @@ export async function initSettings() {
   )
 
   const GROUP_EXPANDED_KEY_PREFIX = "settingsGroupExpanded:"
+  
+  // Restore collapsible groups state
+  document.querySelectorAll(".setting-group.collapsible-group").forEach((group) => {
+    const groupId = group.id || group.dataset.groupId
+    if (groupId) {
+      const isExpanded = localStorage.getItem(`${GROUP_EXPANDED_KEY_PREFIX}${groupId}`) === "1"
+      if (isExpanded) {
+        group.classList.add("expanded")
+      }
+    }
+  })
+
   document.addEventListener("click", (e) => {
     const header = e.target.closest(".setting-group.collapsible-group .group-header")
     if (header) {
