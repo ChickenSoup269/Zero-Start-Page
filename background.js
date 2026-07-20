@@ -4,7 +4,7 @@
 chrome.storage.local.get(["actionBehavior"], (data) => {
   const behavior = data.actionBehavior || "sidepanel";
   if (chrome.sidePanel) {
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(console.error);
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(() => {});
   }
 });
 
@@ -30,7 +30,7 @@ function setLocalizedUninstallUrl(language = "en") {
 
   chrome.runtime.setUninstallURL(uninstallUrl, () => {
     if (chrome.runtime.lastError) {
-      console.error("Error setting uninstall URL:", chrome.runtime.lastError)
+      // console.error("Error setting uninstall URL:", chrome.runtime.lastError)
     } else {
       // console.log("Uninstall URL set successfully:", uninstallUrl)
     }
@@ -232,7 +232,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const behavior = request.behavior || "sidepanel"
     chrome.storage.local.set({ actionBehavior: behavior }, () => {
       if (chrome.sidePanel) {
-        chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(console.error)
+        chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(() => {})
       }
       sendResponse({ ok: true })
     })
