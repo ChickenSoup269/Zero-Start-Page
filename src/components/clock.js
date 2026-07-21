@@ -840,7 +840,6 @@ export function updateTime() {
   }
 
   // Keep layout stable by toggling visibility class instead of display.
-  const displayMode = settings.clockDisplayMode || "all"
   const shouldHideClock = displayMode === "hide" || displayMode === "weekday"
   const keepOnlyWeekday = displayMode === "weekday"
 
