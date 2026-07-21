@@ -685,6 +685,7 @@ export async function initSettings() {
                 img.crossOrigin = "Anonymous"
                 const dataUrl = await new Promise((resolve) => {
                   img.onload = () => {
+                    setTimeout(() => {
                       try {
                         const canvas = document.createElement("canvas")
                         let targetWidth = img.width
@@ -699,11 +700,21 @@ export async function initSettings() {
                         canvas.height = targetHeight
                         const ctx = canvas.getContext("2d")
                         ctx.drawImage(img, 0, 0, targetWidth, targetHeight)
-                        const quality = 0.75
-                        resolve(canvas.toDataURL("image/webp", quality))
+                        
+                        canvas.toBlob((blob) => {
+                          if (!blob) {
+                            resolve(candidateUrl)
+                            return
+                          }
+                          const reader = new FileReader()
+                          reader.onloadend = () => resolve(reader.result)
+                          reader.onerror = () => resolve(candidateUrl)
+                          reader.readAsDataURL(blob)
+                        }, "image/webp", 0.75)
                       } catch (e) {
                         resolve(candidateUrl)
                       }
+                    }, 0)
                   }
                   img.onerror = () => resolve(candidateUrl)
                   img.src = candidateUrl
