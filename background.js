@@ -2,11 +2,13 @@
 
 // Setup Side Panel to open when the extension icon is clicked based on user setting
 chrome.storage.local.get(["actionBehavior"], (data) => {
-  const behavior = data.actionBehavior || "sidepanel";
+  const behavior = data.actionBehavior || "sidepanel"
   if (chrome.sidePanel) {
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(() => {});
+    chrome.sidePanel
+      .setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" })
+      .catch(() => {})
   }
-});
+})
 
 const UNINSTALL_LANGUAGE_KEY = "uninstallSurveyLanguage"
 const UNINSTALL_FORM_URLS = {
@@ -79,7 +81,9 @@ function rescueZombieTab(tab) {
 
   const isOurUrl = (url) => url && url.startsWith(EXTENSION_PREFIX)
   const isStartpageUrl = isOurUrl(currentPendingUrl) || isOurUrl(currentUrl)
-  const isLiteralNewTab = currentUrl === "chrome://newtab/" || currentPendingUrl === "chrome://newtab/"
+  const isLiteralNewTab =
+    currentUrl === "chrome://newtab/" ||
+    currentPendingUrl === "chrome://newtab/"
   // Tab lỗi thường có URL là rỗng (do bị Chrome chặn) hoặc chứa URL của extension nhưng không load được.
   const isEmptyNewTab = !tab.url && !tab.pendingUrl
 
@@ -164,20 +168,20 @@ chrome.runtime.onStartup?.addListener(() => {
 })
 chrome.action?.onClicked?.addListener((tab) => {
   chrome.storage.local.get(["actionBehavior"], (data) => {
-    const behavior = data.actionBehavior || "sidepanel";
+    const behavior = data.actionBehavior || "sidepanel"
     if (behavior === "newtab") {
-      openStartpageTab();
+      openStartpageTab()
     } else if (behavior === "popup") {
       chrome.windows.create({
         url: chrome.runtime.getURL("sidepanel.html"),
         type: "popup",
         width: 450,
         height: 600,
-        focused: true
-      });
+        focused: true,
+      })
     }
-  });
-});
+  })
+})
 chrome.tabs?.onRemoved?.addListener((tabId) => {
   clearRememberedKnownMediaTab(tabId)
   delete mediaStates[tabId]
@@ -232,7 +236,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const behavior = request.behavior || "sidepanel"
     chrome.storage.local.set({ actionBehavior: behavior }, () => {
       if (chrome.sidePanel) {
-        chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: behavior === "sidepanel" }).catch(() => {})
+        chrome.sidePanel
+          .setPanelBehavior({
+            openPanelOnActionClick: behavior === "sidepanel",
+          })
+          .catch(() => {})
       }
       sendResponse({ ok: true })
     })

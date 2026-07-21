@@ -1360,6 +1360,8 @@
   "settings_drive_auto_backup_weekly": "Weekly",
   "settings_drive_auto_backup_monthly": "Monthly",
   "settings_layout_fit": "Layout & Fit",
+  "settings_global_masking_effect": "Clock Masking Effect (3D Depth)",
+  "settings_custom_title_effects": "Effects: Shadows & Borders",
   "settings_horizontal": "Horizontal",
   "settings_vertical": "Vertical",
   "settings_batch_manage": "Batch Manage",

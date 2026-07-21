@@ -1353,6 +1353,8 @@
   "settings_unsplash_title": "Tích hợp Unsplash",
   "settings_visual_effects": "Hiệu ứng thị giác",
   "settings_layout_fit": "Căn chỉnh & Kích thước",
+  "settings_global_masking_effect": "Hiệu ứng mặt nạ (Độ sâu 3D)",
+  "settings_custom_title_effects": "Hiệu ứng: Đổ bóng & Viền",
   "settings_horizontal": "Ngang",
   "settings_vertical": "Dọc",
   "settings_batch_manage": "Quản lý hàng loạt",
