@@ -773,7 +773,9 @@ function loadBrowserBookmarks() {
   if (!chrome || !chrome.bookmarks) return
   chrome.bookmarks.getTree((tree) => {
     browserBookmarksList.innerHTML = ""
-    renderBookmarkTree(tree[0], browserBookmarksList)
+    const fragment = document.createDocumentFragment()
+    renderBookmarkTree(tree[0], fragment)
+    browserBookmarksList.appendChild(fragment)
     _updateSelectAllState()
     _updateCountLabel()
   })
