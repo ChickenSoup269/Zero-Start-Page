@@ -76,6 +76,13 @@ const PREDEFINED_FONTS = [
   { label: "Anurati", value: "'Anurati', sans-serif", tag: "Clock/Date" },
   { label: "E1234", value: "'E1234', sans-serif", tag: "Clock/Date" },
   { label: "SAIBA-45", value: "'SAIBA-45', sans-serif", tag: "Clock/Date" },
+  { label: "Reiko", value: "'Reiko', sans-serif", tag: "Clock/Date" },
+  { label: "Aquire Light", value: "'Aquire Light', sans-serif", tag: "Clock/Date" },
+  { label: "Aquire Bold", value: "'Aquire Bold', sans-serif", tag: "Clock/Date" },
+  { label: "Aquire", value: "'Aquire', sans-serif", tag: "Clock/Date" },
+  { label: "Blanka", value: "'Blanka', sans-serif", tag: "Clock/Date" },
+  { label: "Bungee Inline", value: "'Bungee Inline', cursive", google: true },
+  { label: "Viga", value: "'Viga', sans-serif", google: true },
   { label: "GohuFont", value: "'GohuFont', sans-serif", tag: "Pixel" },
 ]
 

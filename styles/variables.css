@@ -42,6 +42,51 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Reiko";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/Reiko.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aquire Light";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/AquireLight-YzE0o.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aquire Bold";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/AquireBold-8Ma60.otf")
+    format("opentype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aquire";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/Aquire-BW0ox.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Blanka";
+  src: url("https://cdn.jsdelivr.net/gh/ChickenSoup269/imagesForRepo@main/fonts/Blanka-Regular.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-gradient-start: #0a1f11;
   --bg-gradient-end: #1d472c;
