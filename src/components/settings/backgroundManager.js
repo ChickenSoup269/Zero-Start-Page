@@ -485,7 +485,8 @@ function renderLocalBackgrounds(DOM, handleSettingUpdate) {
       typeIcon.className = "video-thumb-badge"
 
       if (authorName) {
-        typeIcon.innerHTML = '<i class="fa-brands fa-unsplash"></i>'
+        const isPicsum = typeof bgData === "object" && bgData.photoUrl && bgData.photoUrl.includes("picsum.photos")
+        typeIcon.innerHTML = isPicsum ? '<i class="fa-solid fa-camera"></i>' : '<i class="fa-brands fa-unsplash"></i>'
         item.appendChild(typeIcon)
         const authorTag = document.createElement("div")
         authorTag.className = "unsplash-author-tag"
