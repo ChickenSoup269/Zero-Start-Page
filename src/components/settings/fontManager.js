@@ -319,6 +319,15 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         badgesContainer.appendChild(badge)
       }
 
+      if (custom && !google) {
+        const customBadge = document.createElement("span")
+        customBadge.className = "font-category-badge custom-font-badge"
+        customBadge.textContent = isLocal ? "Local" : "Custom"
+        customBadge.style.cssText =
+          "font-size: 0.55rem; background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
+        badgesContainer.appendChild(customBadge)
+      }
+
       // Checkbox for multi-select
       const checkBadge = document.createElement("div")
       const isSelected = fontSelectedLabels.has(label)
