@@ -31,15 +31,48 @@ const PREDEFINED_FONTS = [
   { label: "Teko", value: "'Teko', sans-serif", google: true },
   { label: "Russo One", value: "'Russo One', sans-serif", google: true },
   { label: "Michroma", value: "'Michroma', sans-serif", google: true },
-  { label: "Major Mono Display", value: "'Major Mono Display', monospace", google: true },
-  { label: "Share Tech Mono", value: "'Share Tech Mono', monospace", google: true, tag: "Clock/Date" },
-  { label: "JetBrains Mono", value: "'JetBrains Mono', monospace", google: true, tag: "Clock/Date" },
-  { label: "Allerta Stencil", value: "'Allerta Stencil', sans-serif", google: true, tag: "Clock/Date" },
+  {
+    label: "Major Mono Display",
+    value: "'Major Mono Display', monospace",
+    google: true,
+  },
+  {
+    label: "Share Tech Mono",
+    value: "'Share Tech Mono', monospace",
+    google: true,
+    tag: "Clock/Date",
+  },
+  {
+    label: "JetBrains Mono",
+    value: "'JetBrains Mono', monospace",
+    google: true,
+    tag: "Clock/Date",
+  },
+  {
+    label: "Allerta Stencil",
+    value: "'Allerta Stencil', sans-serif",
+    google: true,
+    tag: "Clock/Date",
+  },
   { label: "Arial", value: "'Arial', sans-serif" },
   { label: "Courier New", value: "'Courier New', monospace" },
-  { label: "Silkscreen", value: "'Silkscreen', cursive", tag: "Pixel", google: true },
-  { label: "Pixelify Sans", value: "'Pixelify Sans', sans-serif", tag: "Pixel", google: true },
-  { label: "Electroharmonix", value: "'Electroharmonix', sans-serif", tag: "Clock/Date" },
+  {
+    label: "Silkscreen",
+    value: "'Silkscreen', cursive",
+    tag: "Pixel",
+    google: true,
+  },
+  {
+    label: "Pixelify Sans",
+    value: "'Pixelify Sans', sans-serif",
+    tag: "Pixel",
+    google: true,
+  },
+  {
+    label: "Electroharmonix",
+    value: "'Electroharmonix', sans-serif",
+    tag: "Clock/Date",
+  },
   { label: "Anurati", value: "'Anurati', sans-serif", tag: "Clock/Date" },
   { label: "E1234", value: "'E1234', sans-serif", tag: "Clock/Date" },
   { label: "SAIBA-45", value: "'SAIBA-45', sans-serif", tag: "Clock/Date" },
@@ -87,7 +120,9 @@ async function initFont() {
 
   // 1. Restore local (IndexedDB) fonts first so @font-face rules are ready
   const localFontRestores = savedFonts
-    .filter((f) => typeof f === "object" && f.isLocalFile && f.fileId && f.label)
+    .filter(
+      (f) => typeof f === "object" && f.isLocalFile && f.fileId && f.label,
+    )
     .map((f) => injectLocalFontFace(f.label, f.fileId))
   if (localFontRestores.length) await Promise.allSettled(localFontRestores)
 
@@ -99,9 +134,15 @@ async function initFont() {
   fontsToLoad.forEach((currentFontValue) => {
     const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
     const fontDef = PREDEFINED_FONTS.find((f) => f.label === fontName)
-    const savedFontObj = savedFonts.find((f) => (typeof f === "string" ? f : f.label) === fontName)
-    const isLocal = savedFontObj && typeof savedFontObj === "object" && (savedFontObj.isLocal || savedFontObj.isLocalFile)
-    const isGoogleFont = (fontDef && fontDef.google) || (savedFontObj && !isLocal)
+    const savedFontObj = savedFonts.find(
+      (f) => (typeof f === "string" ? f : f.label) === fontName,
+    )
+    const isLocal =
+      savedFontObj &&
+      typeof savedFontObj === "object" &&
+      (savedFontObj.isLocal || savedFontObj.isLocalFile)
+    const isGoogleFont =
+      (fontDef && fontDef.google) || (savedFontObj && !isLocal)
     const isPreloaded = ["Outfit"].includes(fontName)
 
     if (isGoogleFont && !isPreloaded) {
@@ -149,10 +190,15 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const isFavorite = typeof f === "string" ? false : !!f.isFavorite
         const isLocal = typeof f === "object" && (f.isLocal || f.isLocalFile)
         const type = typeof f === "object" && f.type ? f.type : "general"
-        const originalIndex = savedFonts.findIndex((sf) => (typeof sf === "string" ? sf : sf.label) === label)
+        const originalIndex = savedFonts.findIndex(
+          (sf) => (typeof sf === "string" ? sf : sf.label) === label,
+        )
         return {
           label: label,
-          value: typeof f === "object" && f.value ? f.value : `'${label}', sans-serif`,
+          value:
+            typeof f === "object" && f.value
+              ? f.value
+              : `'${label}', sans-serif`,
           custom: !isLocal,
           isLocal: isLocal,
           isFavorite: isFavorite,
@@ -162,14 +208,29 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       }),
   ]
 
+  const searchInput = document.getElementById("font-search-input")
+  const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : ""
+
+  const filteredFonts = searchQuery
+    ? allFonts.filter(
+        (f) =>
+          f.label.toLowerCase().includes(searchQuery) ||
+          (f.tag && f.tag.toLowerCase().includes(searchQuery)),
+      )
+    : allFonts
+
   const fontCountDisplay = document.getElementById("font-count-display")
   if (fontCountDisplay) {
-    fontCountDisplay.textContent = ` (${allFonts.length})`
+    fontCountDisplay.textContent = ` (${filteredFonts.length})`
   }
 
-  const favoriteFonts = allFonts.filter((f) => f.isFavorite)
-  const generalFonts = allFonts.filter((f) => !f.isFavorite && f.type === "general")
-  const clockFonts = allFonts.filter((f) => !f.isFavorite && f.type === "clock")
+  const favoriteFonts = filteredFonts.filter((f) => f.isFavorite)
+  const generalFonts = filteredFonts.filter(
+    (f) => !f.isFavorite && f.type === "general",
+  )
+  const clockFonts = filteredFonts.filter(
+    (f) => !f.isFavorite && f.type === "clock",
+  )
 
   const sections = [
     { label: "--- Favorite ---", fonts: favoriteFonts },
@@ -186,16 +247,31 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
     fontGrid.appendChild(sep)
 
     section.fonts.forEach((fontObj) => {
-      const { label, value, tag, custom, google, isFavorite, originalIndex, type, isLocal } = fontObj
+      const {
+        label,
+        value,
+        tag,
+        custom,
+        google,
+        isFavorite,
+        originalIndex,
+        type,
+        isLocal,
+      } = fontObj
       const card = document.createElement("div")
 
       const targetSelect = document.getElementById("font-target-select")
-      const isTargetClock = targetSelect ? targetSelect.value === "clock" : false
+      const isTargetClock = targetSelect
+        ? targetSelect.value === "clock"
+        : false
       let isActive = false
       if (isTargetClock) {
         isActive = value === settings.clockFont
       } else {
-        isActive = type === "clock" ? value === settings.clockFont : value === settings.font
+        isActive =
+          type === "clock"
+            ? value === settings.clockFont
+            : value === settings.font
       }
       card.className = "font-item" + (isActive ? " active" : "")
       if (isFavorite) card.classList.add("is-favorite")
@@ -217,7 +293,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
       const badgesContainer = document.createElement("div")
       badgesContainer.className = "font-badges-container"
-      badgesContainer.style.cssText = "display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin-top: 2px;"
+      badgesContainer.style.cssText =
+        "display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin-top: 2px;"
 
       if (isFavorite) {
         const favIcon = document.createElement("i")
@@ -226,8 +303,12 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
 
         const badge = document.createElement("span")
         badge.className = "font-category-badge"
-        badge.textContent = type === "clock" ? (geti18n().clock || "Clock") : (geti18n().general || "Gen")
-        badge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
+        badge.textContent =
+          type === "clock"
+            ? geti18n().clock || "Clock"
+            : geti18n().general || "Gen"
+        badge.style.cssText =
+          "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 6px; border-radius: 4px; font-weight: bold; pointer-events: none; white-space: nowrap;"
         badgesContainer.appendChild(badge)
       }
 
@@ -237,14 +318,15 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       checkBadge.className = `bg-item-checkbox ${isSelected ? "checked" : ""}`
       checkBadge.innerHTML = '<i class="fa-solid fa-check"></i>'
       card.appendChild(checkBadge)
-      
+
       if (fontSelectMode) {
         if (isSelected) card.classList.add("selected")
       }
 
       const appliedBadge = document.createElement("div")
       appliedBadge.className = "font-applied-badge"
-      appliedBadge.style.cssText = "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 4px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: normal; text-align: center; word-break: break-word; max-width: 100%; line-height: 1.15;"
+      appliedBadge.style.cssText =
+        "font-size: 0.55rem; background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.15); color: var(--accent-color, #a8c0ff); border: 1px solid rgba(var(--accent-color-rgb, 168, 192, 255), 0.3); padding: 2px 4px; border-radius: 4px; font-weight: bold; pointer-events: none; display: none; white-space: normal; text-align: center; word-break: break-word; max-width: 100%; line-height: 1.15;"
       badgesContainer.appendChild(appliedBadge)
 
       card._updateAppliedBadge = () => {
@@ -252,12 +334,13 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const i18n = geti18n()
         const isGen = value === curSettings.font
         const isClk = value === curSettings.clockFont
-        
+
         let text = ""
-        if (isGen && isClk) text = `${i18n.settings_font || "Gen"} & ${i18n.clock || "Clock"}`
+        if (isGen && isClk)
+          text = `${i18n.settings_font || "Gen"} & ${i18n.clock || "Clock"}`
         else if (isGen) text = i18n.settings_font || "Gen"
         else if (isClk) text = i18n.clock || "Clock"
-        
+
         if (text) {
           appliedBadge.textContent = `${i18n.preset_code_applied || "Applied"}: ${text}`
           appliedBadge.style.display = "block"
@@ -283,7 +366,8 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
             checkBadge.classList.add("checked")
           }
           const countEl = document.getElementById("font-select-count")
-          if (countEl) countEl.textContent = `${fontSelectedLabels.size} selected`
+          if (countEl)
+            countEl.textContent = `${fontSelectedLabels.size} selected`
           const delBtn = document.getElementById("font-delete-selected-btn")
           if (delBtn) delBtn.disabled = fontSelectedLabels.size === 0
           return
@@ -302,25 +386,30 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         } else {
           updateSettingCallback("font", value)
         }
-        
+
         // Fast UI update: toggle active classes without full re-render
         const currentSettings = getSettings()
         const isTargetClock = target === "clock"
         const allCards = fontGrid.querySelectorAll(".font-item")
-        allCards.forEach(c => {
+        allCards.forEach((c) => {
           const cVal = c.dataset.fontValue
           const cType = c.dataset.fontType
           let isActiveCard = false
           if (target === "both") {
-            isActiveCard = (cVal === currentSettings.clockFont) || (cVal === currentSettings.font)
+            isActiveCard =
+              cVal === currentSettings.clockFont ||
+              cVal === currentSettings.font
           } else if (isTargetClock) {
             isActiveCard = cVal === currentSettings.clockFont
           } else {
-            isActiveCard = cType === "clock" ? cVal === currentSettings.clockFont : cVal === currentSettings.font
+            isActiveCard =
+              cType === "clock"
+                ? cVal === currentSettings.clockFont
+                : cVal === currentSettings.font
           }
           if (isActiveCard) c.classList.add("active")
           else c.classList.remove("active")
-          
+
           if (c._updateAppliedBadge) c._updateAppliedBadge()
         })
       })
@@ -334,82 +423,111 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           onMoveFont: () => {
             const currentSettings = getSettings()
             let userFonts = currentSettings.userSavedFonts || []
-            let existingObjIndex = userFonts.findIndex((sf) => (typeof sf === "string" ? sf : sf.label) === label)
-            
+            let existingObjIndex = userFonts.findIndex(
+              (sf) => (typeof sf === "string" ? sf : sf.label) === label,
+            )
+
             let newType = type === "clock" ? "general" : "clock"
-            
+
             if (existingObjIndex !== -1) {
               if (typeof userFonts[existingObjIndex] === "string") {
-                 userFonts[existingObjIndex] = { label: userFonts[existingObjIndex], value: value, type: newType }
+                userFonts[existingObjIndex] = {
+                  label: userFonts[existingObjIndex],
+                  value: value,
+                  type: newType,
+                }
               } else {
-                 userFonts[existingObjIndex] = { ...userFonts[existingObjIndex], type: newType }
+                userFonts[existingObjIndex] = {
+                  ...userFonts[existingObjIndex],
+                  type: newType,
+                }
               }
             } else {
               userFonts.push({
-                 label: label,
-                 value: value,
-                 type: newType
+                label: label,
+                value: value,
+                type: newType,
               })
             }
             updateSettingCallback("userSavedFonts", userFonts)
             renderFontGrid(fontGrid, updateSettingCallback)
 
             const i18n = geti18n()
-            const targetType = newType === "clock" ? (i18n.clock || "Clock") : (i18n.general || "General")
-            const msg = (i18n.toast_font_moved || "Moved {name} to {type}").replace("{name}", label).replace("{type}", targetType)
+            const targetType =
+              newType === "clock"
+                ? i18n.clock || "Clock"
+                : i18n.general || "General"
+            const msg = (i18n.toast_font_moved || "Moved {name} to {type}")
+              .replace("{name}", label)
+              .replace("{type}", targetType)
             showToast(msg, { type: "success" })
           },
           onApplyToGen: () => {
             if (custom || google) loadGoogleFont(label)
             updateSettingCallback("font", value)
-            
+
             // Fast UI update
             const countEl = document.getElementById("font-target-select")
             if (countEl) countEl.value = "general"
             if (countEl) countEl.dispatchEvent(new Event("change"))
-            
-            const btnGeneral = document.getElementById("font-target-general-btn")
+
+            const btnGeneral = document.getElementById(
+              "font-target-general-btn",
+            )
             const btnClock = document.getElementById("font-target-clock-btn")
             if (btnGeneral) btnGeneral.classList.add("active")
             if (btnClock) btnClock.classList.remove("active")
-            
+
             const i18n = geti18n()
-            showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} General`, { type: "success" })
+            showToast(
+              `${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} General`,
+              { type: "success" },
+            )
           },
           onApplyToClock: () => {
             if (custom || google) loadGoogleFont(label)
             updateSettingCallback("clockFont", value)
-            
+
             // Fast UI update
             const countEl = document.getElementById("font-target-select")
             if (countEl) countEl.value = "clock"
             if (countEl) countEl.dispatchEvent(new Event("change"))
 
-            const btnGeneral = document.getElementById("font-target-general-btn")
+            const btnGeneral = document.getElementById(
+              "font-target-general-btn",
+            )
             const btnClock = document.getElementById("font-target-clock-btn")
             if (btnClock) btnClock.classList.add("active")
             if (btnGeneral) btnGeneral.classList.remove("active")
-            
+
             const i18n = geti18n()
-            showToast(`${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} Clock`, { type: "success" })
+            showToast(
+              `${i18n.preset_code_applied || "Applied"} ${label} ${i18n.menu_move_font ? "->" : "to"} Clock`,
+              { type: "success" },
+            )
           },
           onApplyToBoth: () => {
             if (custom || google) loadGoogleFont(label)
             updateSettingCallback("font", value)
             updateSettingCallback("clockFont", value)
-            
+
             // Fast UI update (trigger general view)
             const countEl = document.getElementById("font-target-select")
             if (countEl) countEl.value = "general"
             if (countEl) countEl.dispatchEvent(new Event("change"))
 
-            const btnGeneral = document.getElementById("font-target-general-btn")
+            const btnGeneral = document.getElementById(
+              "font-target-general-btn",
+            )
             const btnClock = document.getElementById("font-target-clock-btn")
             if (btnGeneral) btnGeneral.classList.add("active")
             if (btnClock) btnClock.classList.remove("active")
-            
+
             const i18n = geti18n()
-            showToast(`${i18n.preset_code_applied || "Applied"} ${label} to All`, { type: "success" })
+            showToast(
+              `${i18n.preset_code_applied || "Applied"} ${label} to All`,
+              { type: "success" },
+            )
           },
           onSelect: () => {
             enterSelectMode()
@@ -419,16 +537,31 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
               checkBadge.classList.add("checked")
             }
             const countEl = document.getElementById("font-select-count")
-            if (countEl) countEl.textContent = `${fontSelectedLabels.size} selected`
+            if (countEl)
+              countEl.textContent = `${fontSelectedLabels.size} selected`
             const delBtn = document.getElementById("font-delete-selected-btn")
             if (delBtn) delBtn.disabled = fontSelectedLabels.size === 0
-          }
+          },
         }
 
         if (custom || isLocal) {
-          showContextMenu(e.clientX, e.clientY, originalIndex, "userFont", null, callbacks)
+          showContextMenu(
+            e.clientX,
+            e.clientY,
+            originalIndex,
+            "userFont",
+            null,
+            callbacks,
+          )
         } else {
-          showContextMenu(e.clientX, e.clientY, -1, "predefinedFont", label, callbacks)
+          showContextMenu(
+            e.clientX,
+            e.clientY,
+            -1,
+            "predefinedFont",
+            label,
+            callbacks,
+          )
         }
       })
 
@@ -467,7 +600,8 @@ function setupLocalFonts(updateSettingCallback) {
 
     try {
       const family = file.name.split(".").slice(0, -1).join(".") || file.name
-      const { saveImage, deleteImage } = await import("../../services/imageStore.js")
+      const { saveImage, deleteImage } =
+        await import("../../services/imageStore.js")
       const fileId = await saveImage(file, `idb-font-${Date.now()}`)
       const settings = getSettings()
       const savedFonts = settings.userSavedFonts || []
@@ -500,7 +634,10 @@ function setupLocalFonts(updateSettingCallback) {
 
       const i18n = geti18n()
       showToast(
-        (i18n.toast_font_loaded || "Font loaded: {name}").replace("{name}", family),
+        (i18n.toast_font_loaded || "Font loaded: {name}").replace(
+          "{name}",
+          family,
+        ),
         { type: "success" },
       )
     } catch (err) {
@@ -518,8 +655,17 @@ function setupMultiSelect(DOM, updateSettingCallback) {
   const i18n = geti18n()
 
   const updateSelectCount = () => {
-    if (DOM.fontSelectCount) DOM.fontSelectCount.textContent = `${fontSelectedLabels.size} selected`
-    if (DOM.fontDeleteSelectedBtn) DOM.fontDeleteSelectedBtn.disabled = fontSelectedLabels.size === 0
+    if (DOM.fontSelectCount)
+      DOM.fontSelectCount.textContent = `${fontSelectedLabels.size} selected`
+    if (DOM.fontDeleteSelectedBtn)
+      DOM.fontDeleteSelectedBtn.disabled = fontSelectedLabels.size === 0
+  }
+
+  const searchInput = document.getElementById("font-search-input")
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      renderFontGrid(DOM.fontGrid, updateSettingCallback)
+    })
   }
 
   enterSelectMode = () => {
@@ -537,10 +683,10 @@ function setupMultiSelect(DOM, updateSettingCallback) {
     if (DOM.fontGrid) DOM.fontGrid.classList.remove("bg-select-mode")
     if (DOM.fontSelectToolbar) DOM.fontSelectToolbar.style.display = "none"
     if (DOM.fontSelectModeBtn) DOM.fontSelectModeBtn.style.display = "none"
-    
+
     if (DOM.fontGrid) {
       const cards = DOM.fontGrid.querySelectorAll(".font-item")
-      cards.forEach(c => {
+      cards.forEach((c) => {
         c.classList.remove("selected")
         const cb = c.querySelector(".bg-item-checkbox")
         if (cb) cb.classList.remove("checked")
@@ -552,7 +698,8 @@ function setupMultiSelect(DOM, updateSettingCallback) {
     DOM.fontSelectModeBtn.style.display = "none"
   }
 
-  if (DOM.fontSelectCancelBtn) DOM.fontSelectCancelBtn.addEventListener("click", exitSelectMode)
+  if (DOM.fontSelectCancelBtn)
+    DOM.fontSelectCancelBtn.addEventListener("click", exitSelectMode)
 
   const targetSelect = document.getElementById("font-target-select")
   const btnGeneral = document.getElementById("font-target-general-btn")
@@ -561,7 +708,7 @@ function setupMultiSelect(DOM, updateSettingCallback) {
 
   if (btnGeneral && btnClock && btnBoth && targetSelect) {
     const savedTarget = localStorage.getItem("fontTargetTab") || "general"
-    
+
     btnGeneral.classList.toggle("active", savedTarget === "general")
     btnClock.classList.toggle("active", savedTarget === "clock")
     btnBoth.classList.toggle("active", savedTarget === "both")
@@ -600,112 +747,133 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       const isTargetClock = targetSelect.value === "clock"
       const isTargetBoth = targetSelect.value === "both"
       const allCards = DOM.fontGrid.querySelectorAll(".font-item")
-      allCards.forEach(c => {
+      allCards.forEach((c) => {
         const cVal = c.dataset.fontValue
         const cType = c.dataset.fontType
         let isActiveCard = false
         if (isTargetBoth) {
-          isActiveCard = (cVal === currentSettings.clockFont) || (cVal === currentSettings.font)
+          isActiveCard =
+            cVal === currentSettings.clockFont || cVal === currentSettings.font
         } else if (isTargetClock) {
           // If viewing clock target, highlight the font that is currently the clockFont
           isActiveCard = cVal === currentSettings.clockFont
         } else {
           // If viewing general target, highlight based on typical sections
-          isActiveCard = cType === "clock" ? cVal === currentSettings.clockFont : cVal === currentSettings.font
+          isActiveCard =
+            cType === "clock"
+              ? cVal === currentSettings.clockFont
+              : cVal === currentSettings.font
         }
         if (isActiveCard) c.classList.add("active")
         else c.classList.remove("active")
-        
+
         if (c._updateAppliedBadge) c._updateAppliedBadge()
       })
     })
   }
 
-  if (DOM.fontSelectAllBtn) DOM.fontSelectAllBtn.addEventListener("click", () => {
-    const allLabels = []
-    if (DOM.fontGrid) {
-      const cards = DOM.fontGrid.querySelectorAll(".font-item")
-      cards.forEach(c => {
-        const nameEl = c.querySelector(".font-item-name")
-        if (nameEl) {
-          const fullText = nameEl.textContent
-          const baseName = fullText.includes(" (") ? fullText.split(" (")[0] : fullText
-          allLabels.push({ label: baseName, card: c })
-        }
-      })
-    }
-
-    if (fontSelectedLabels.size === allLabels.length) {
-      fontSelectedLabels.clear()
-      allLabels.forEach(item => {
-        item.card.classList.remove("selected")
-        const cb = item.card.querySelector(".bg-item-checkbox")
-        if (cb) cb.classList.remove("checked")
-      })
-    } else {
-      fontSelectedLabels.clear()
-      allLabels.forEach(item => {
-        fontSelectedLabels.add(item.label)
-        item.card.classList.add("selected")
-        const cb = item.card.querySelector(".bg-item-checkbox")
-        if (cb) cb.classList.add("checked")
-      })
-    }
-    updateSelectCount()
-  })
-
-  if (DOM.fontFavoriteSelectedBtn) DOM.fontFavoriteSelectedBtn.addEventListener("click", () => {
-    const settings = getSettings()
-    let savedFonts = settings.userSavedFonts || []
-    
-    fontSelectedLabels.forEach(label => {
-      const idx = savedFonts.findIndex(f => (typeof f === "string" ? f : f.label) === label)
-      if (idx > -1) {
-        if (typeof savedFonts[idx] === "string") {
-          savedFonts[idx] = { label: savedFonts[idx], value: `"${savedFonts[idx]}", sans-serif`, isFavorite: true }
-        } else {
-          savedFonts[idx].isFavorite = !savedFonts[idx].isFavorite
-        }
-      } else {
-        savedFonts.push({ label: label, isFavorite: true })
+  if (DOM.fontSelectAllBtn)
+    DOM.fontSelectAllBtn.addEventListener("click", () => {
+      const allLabels = []
+      if (DOM.fontGrid) {
+        const cards = DOM.fontGrid.querySelectorAll(".font-item")
+        cards.forEach((c) => {
+          const nameEl = c.querySelector(".font-item-name")
+          if (nameEl) {
+            const fullText = nameEl.textContent
+            const baseName = fullText.includes(" (")
+              ? fullText.split(" (")[0]
+              : fullText
+            allLabels.push({ label: baseName, card: c })
+          }
+        })
       }
+
+      if (fontSelectedLabels.size === allLabels.length) {
+        fontSelectedLabels.clear()
+        allLabels.forEach((item) => {
+          item.card.classList.remove("selected")
+          const cb = item.card.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.remove("checked")
+        })
+      } else {
+        fontSelectedLabels.clear()
+        allLabels.forEach((item) => {
+          fontSelectedLabels.add(item.label)
+          item.card.classList.add("selected")
+          const cb = item.card.querySelector(".bg-item-checkbox")
+          if (cb) cb.classList.add("checked")
+        })
+      }
+      updateSelectCount()
     })
 
-    updateSetting("userSavedFonts", savedFonts)
-    saveSettings()
-    exitSelectMode()
-    renderFontGrid(DOM.fontGrid, updateSettingCallback)
-  })
-
-  if (DOM.fontDeleteSelectedBtn) DOM.fontDeleteSelectedBtn.addEventListener("click", async () => {
-    if (fontSelectedLabels.size === 0) return
-    if (await showConfirm(i18n.alert_delete_bg_confirm || "Delete selected items?")) {
+  if (DOM.fontFavoriteSelectedBtn)
+    DOM.fontFavoriteSelectedBtn.addEventListener("click", () => {
       const settings = getSettings()
       let savedFonts = settings.userSavedFonts || []
-      let changed = false
 
-      for (const label of Array.from(fontSelectedLabels)) {
-        const idx = savedFonts.findIndex(f => (typeof f === "string" ? f : f.label) === label)
+      fontSelectedLabels.forEach((label) => {
+        const idx = savedFonts.findIndex(
+          (f) => (typeof f === "string" ? f : f.label) === label,
+        )
         if (idx > -1) {
-          const item = savedFonts[idx]
-          if (item && (item.isLocal || item.isLocalFile) && item.fileId) {
-            import("../../services/imageStore.js").then(m => {
-              m.deleteImage(item.fileId).catch(console.error)
-            })
+          if (typeof savedFonts[idx] === "string") {
+            savedFonts[idx] = {
+              label: savedFonts[idx],
+              value: `"${savedFonts[idx]}", sans-serif`,
+              isFavorite: true,
+            }
+          } else {
+            savedFonts[idx].isFavorite = !savedFonts[idx].isFavorite
           }
-          savedFonts.splice(idx, 1)
-          changed = true
+        } else {
+          savedFonts.push({ label: label, isFavorite: true })
         }
-      }
+      })
 
-      if (changed) {
-        updateSetting("userSavedFonts", savedFonts)
-        saveSettings()
-      }
+      updateSetting("userSavedFonts", savedFonts)
+      saveSettings()
       exitSelectMode()
       renderFontGrid(DOM.fontGrid, updateSettingCallback)
-    }
-  })
+    })
+
+  if (DOM.fontDeleteSelectedBtn)
+    DOM.fontDeleteSelectedBtn.addEventListener("click", async () => {
+      if (fontSelectedLabels.size === 0) return
+      if (
+        await showConfirm(
+          i18n.alert_delete_bg_confirm || "Delete selected items?",
+        )
+      ) {
+        const settings = getSettings()
+        let savedFonts = settings.userSavedFonts || []
+        let changed = false
+
+        for (const label of Array.from(fontSelectedLabels)) {
+          const idx = savedFonts.findIndex(
+            (f) => (typeof f === "string" ? f : f.label) === label,
+          )
+          if (idx > -1) {
+            const item = savedFonts[idx]
+            if (item && (item.isLocal || item.isLocalFile) && item.fileId) {
+              import("../../services/imageStore.js").then((m) => {
+                m.deleteImage(item.fileId).catch(console.error)
+              })
+            }
+            savedFonts.splice(idx, 1)
+            changed = true
+          }
+        }
+
+        if (changed) {
+          updateSetting("userSavedFonts", savedFonts)
+          saveSettings()
+        }
+        exitSelectMode()
+        renderFontGrid(DOM.fontGrid, updateSettingCallback)
+      }
+    })
 }
 
 export {
@@ -715,5 +883,5 @@ export {
   renderFontGrid,
   renderSavedFonts,
   setupLocalFonts,
-  setupMultiSelect as setupFontMultiSelect
+  setupMultiSelect as setupFontMultiSelect,
 }

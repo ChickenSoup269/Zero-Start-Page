@@ -127,6 +127,7 @@ export let fontGrid = document.getElementById("font-grid")
 export let clockFontGrid = document.getElementById("clock-font-grid")
 
 // Font multi-select
+export let fontSearchInput = document.getElementById("font-search-input")
 export let fontSelectModeBtn = document.getElementById("font-select-mode-btn")
 export let fontSelectToolbar = document.getElementById("font-select-toolbar")
 export let fontSelectCount = document.getElementById("font-select-count")
@@ -2298,6 +2299,7 @@ export function refreshDOMReferences() {
   "font-target-general",
 )
   fontTargetClockBtn = document.getElementById("font-target-clock")
+  fontSearchInput = document.getElementById("font-search-input")
   customFontInput = document.getElementById("custom-font-input")
   loadCustomFontBtn = document.getElementById("load-custom-font-btn")
   saveFontBtn = document.getElementById("save-font-btn")
