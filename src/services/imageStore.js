@@ -27,7 +27,11 @@ function createMediaId(prefix) {
   return `${prefix}-${Date.now()}-${_mediaIdCounter}-${randomPart}`
 }
 
+// Cached IDB connection – reuse to avoid reopening on every read/write
+let _dbInstance = null
+
 function openDb() {
+  if (_dbInstance) return Promise.resolve(_dbInstance)
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION)
     req.onupgradeneeded = (e) => {
@@ -39,7 +43,19 @@ function openDb() {
         db.createObjectStore(THUMB_STORE_NAME)
       }
     }
-    req.onsuccess = (e) => resolve(e.target.result)
+    req.onsuccess = (e) => {
+      _dbInstance = e.target.result
+      // If another tab upgrades the DB, invalidate the cached instance
+      _dbInstance.onversionchange = () => {
+        _dbInstance.close()
+        _dbInstance = null
+      }
+      // Handle unexpected close
+      _dbInstance.onclose = () => {
+        _dbInstance = null
+      }
+      resolve(_dbInstance)
+    }
     req.onerror = (e) => reject(e.target.error)
   })
 }

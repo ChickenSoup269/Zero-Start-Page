@@ -18,15 +18,14 @@
           if (clock && date) {
             obs.disconnect()
             try {
-              const settingsRaw = localStorage.getItem("pageSettings")
-              const settings = settingsRaw ? JSON.parse(settingsRaw) : {}
-              const dateClockStyle = settings.dateClockStyle || "default"
+              const s = settings || {}
+              const dateClockStyle = s.dateClockStyle || "default"
               if (dateClockStyle !== "cartoon" && dateClockStyle !== "c4-bomb" && dateClockStyle !== "fliqlo") {
                 const now = new Date()
-                const use12Hour = settings.timeFormat === "12h"
-                const hideSeconds = settings.hideSeconds
-                const langCode = settings.language === "vi" ? "vi-VN" : settings.language === "zh" ? "zh-CN" : "en-US"
-                const tz = settings.timezone && settings.timezone !== "local" ? settings.timezone : undefined
+                const use12Hour = s.timeFormat === "12h"
+                const hideSeconds = s.hideSeconds
+                const langCode = s.language === "vi" ? "vi-VN" : s.language === "zh" ? "zh-CN" : "en-US"
+                const tz = s.timezone && s.timezone !== "local" ? s.timezone : undefined
                 
                 const timeOptions = hideSeconds
                   ? { hour12: use12Hour, hour: "2-digit", minute: "2-digit", timeZone: tz }
@@ -34,7 +33,7 @@
                 
                 clock.textContent = now.toLocaleTimeString(langCode, timeOptions)
                 
-                if (settings.showDate !== false && settings.showGregorian !== false) {
+                if (s.showDate !== false && s.showGregorian !== false) {
                   const dateOptions = { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: tz }
                   date.textContent = now.toLocaleDateString(langCode, dateOptions)
                 }
@@ -50,10 +49,11 @@
       }
     }
 
+    // Parse settings once for all boot-time logic below
     let settings = null
     const raw = localStorage.getItem("pageSettings")
     if (raw) {
-      settings = JSON.parse(raw)
+      try { settings = JSON.parse(raw) } catch { settings = null }
     }
 
     if (settings) {

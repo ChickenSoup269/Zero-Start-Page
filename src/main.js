@@ -208,11 +208,16 @@ function ensureSettingsInitialized(reason = "idle") {
 }
 window.ensureSettingsInitialized = ensureSettingsInitialized;
 
+const SYSTEM_FONTS = new Set([
+  "sans-serif", "serif", "monospace", "cursive", "fantasy",
+  "system-ui", "arial", "helvetica", "segoe ui", "times new roman",
+  "courier new", "georgia", "verdana", "trebuchet ms", "impact",
+])
+
 function loadFontOnBoot(fontValue) {
   if (!fontValue) return
   const fontName = fontValue.replace(/['"]/g, "").split(",")[0].trim()
-  const systemFonts = ["sans-serif", "serif", "monospace", "cursive", "fantasy", "system-ui", "arial", "helvetica", "segoe ui", "times new roman", "courier new", "georgia", "verdana", "trebuchet ms", "impact"]
-  if (systemFonts.includes(fontName.toLowerCase())) return
+  if (SYSTEM_FONTS.has(fontName.toLowerCase())) return
   
   const settings = getSettings()
   const savedFonts = settings.userSavedFonts || []
@@ -607,8 +612,9 @@ async function bootstrap() {
     const latestSettings = getSettings()
     trimMediaMemory({
       keepIds: [latestSettings.background],
-      includeThumbnails: false,
+      includeThumbnails: true,
       maxUrls: 1,
+      maxThumbnails: 24,
     })
   })
   const activeBackgroundLoad = isIdbMedia(currentSettings.background)
@@ -984,7 +990,7 @@ async function bootstrap() {
     if (settings.showRss === true) void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
   }
 
-  runWhenIdle(initVisibleWidgets, 1200)
+  runWhenIdle(initVisibleWidgets, 2200)
 
   window.addEventListener("layoutUpdated", (e) => {
     if (!e.detail?.value) return
