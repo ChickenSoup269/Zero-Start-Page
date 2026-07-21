@@ -5756,7 +5756,6 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
     }
-    }
     
     // Sync the save background buttons (Unsplash & Picsum) based on the current background
     if (typeof updateMediaSaveButtonsState === "function") {
