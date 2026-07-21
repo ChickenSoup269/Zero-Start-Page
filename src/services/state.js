@@ -505,13 +505,14 @@ let bookmarksState = storedBookmarks || {
   activeGroupId: "group-1",
 }
 
+// Parse once and reuse to avoid double JSON.parse + double localStorage.getItem
+const storedSettingsRaw = localStorage.getItem("pageSettings")
+const storedSettings = storedSettingsRaw ? JSON.parse(storedSettingsRaw) : {}
+
 let settingsState = {
   ...defaultSettings,
-  ...(JSON.parse(localStorage.getItem("pageSettings")) || {}),
+  ...storedSettings,
 }
-
-const storedSettingsRaw = localStorage.getItem("pageSettings")
-const storedSettings = JSON.parse(storedSettingsRaw) || {}
 
 if (!Object.prototype.hasOwnProperty.call(storedSettings, "calendarDateMode")) {
   settingsState.calendarDateMode = settingsState.showLunarCalendar

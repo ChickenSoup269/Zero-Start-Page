@@ -104,7 +104,7 @@ export function makeDraggable(
 ) {
   if (!element) return
 
-  let offsetX = 0, offsetY = 0, magicOffsetX = 0, magicOffsetY = 0, initialWidth = 0, initialHeight = 0
+  let offsetX = 0, offsetY = 0, magicOffsetX = 0, magicOffsetY = 0, initialWidth = 0, initialHeight = 0, cachedZoom = 1
   const settings = getSettings()
   const savedPos = settings.componentPositions?.[componentId]
 
@@ -270,6 +270,9 @@ export function makeDraggable(
     element.style.top = (currentRect.top - magicOffsetY) + "px"
     element.classList.add("has-position")
 
+    // Cache zoom once at drag start to avoid getComputedStyle in hot loop
+    cachedZoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
+
     document.onmouseup = closeDragElement
     document.onmousemove = elementDrag
     element.classList.add("dragging")
@@ -297,7 +300,8 @@ export function makeDraggable(
         targetScreenTop = Math.max(vh - initialHeight - VIEWPORT_PADDING, Math.min(targetScreenTop, VIEWPORT_PADDING))
     }
 
-    const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
+    // Use cached zoom to avoid forced synchronous layout on every mousemove
+    const zoom = cachedZoom
     element.style.left = ((targetScreenLeft - magicOffsetX) / zoom) + "px"
     element.style.top = ((targetScreenTop - magicOffsetY) / zoom) + "px"
   }

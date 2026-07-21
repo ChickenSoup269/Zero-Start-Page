@@ -122,6 +122,12 @@ export class PerfHUD {
     this.updateInterval = null
     this.rafId = null
 
+    // Cache DOM references to avoid innerHTML rebuilds every second
+    this._domBuilt = false
+    this._fpsValue = null
+    this._memValue = null
+    this._nodeValue = null
+
     this.loop = this.loop.bind(this)
     this.updateUI = this.updateUI.bind(this)
   }
@@ -172,44 +178,57 @@ export class PerfHUD {
     return "val-danger"
   }
 
-  updateUI() {
-    if (!this.active) return
-    
-    let memValue = 0
-    let memDisplay = "N/A"
-    
-    if (performance.memory) {
-      memValue = performance.memory.usedJSHeapSize / 1048576
-      memDisplay = memValue.toFixed(1) + " MB"
-    }
-    
-    const nodes = document.getElementsByTagName('*').length
-    
-    const fpsClass = this.getFpsClass(this.fps)
-    const memClass = this.getMemoryClass(memValue)
-    const nodeClass = this.getNodeClass(nodes)
-    
-    const isPaused = document.hidden ? `<i class="fa-solid fa-pause" style="margin-left:4px; opacity:0.5; font-size: 10px;" title="Paused"></i>` : ""
+  _buildDOM() {
+    if (this._domBuilt) return
+    this._domBuilt = true
 
     this.header.innerHTML = `
       <i class="fa-solid fa-microchip"></i>
       <span>Performance</span>
     `
 
-    this.body.innerHTML = `
-      <div class="perf-hud-row">
-        <span class="perf-hud-label">FPS</span>
-        <span class="perf-hud-value ${fpsClass}">${this.fps} ${isPaused}</span>
-      </div>
-      <div class="perf-hud-row">
-        <span class="perf-hud-label">JS Heap</span>
-        <span class="perf-hud-value ${memClass}">${memDisplay}</span>
-      </div>
-      <div class="perf-hud-row">
-        <span class="perf-hud-label">DOM Nodes</span>
-        <span class="perf-hud-value ${nodeClass}">${nodes}</span>
-      </div>
-    `
+    const makeRow = (label) => {
+      const row = document.createElement('div')
+      row.className = 'perf-hud-row'
+      const lbl = document.createElement('span')
+      lbl.className = 'perf-hud-label'
+      lbl.textContent = label
+      const val = document.createElement('span')
+      val.className = 'perf-hud-value'
+      row.appendChild(lbl)
+      row.appendChild(val)
+      this.body.appendChild(row)
+      return val
+    }
+
+    this._fpsValue  = makeRow('FPS')
+    this._memValue  = makeRow('JS Heap')
+    this._nodeValue = makeRow('DOM Nodes')
+  }
+
+  updateUI() {
+    if (!this.active) return
+
+    this._buildDOM()
+
+    let memValue = 0
+    let memDisplay = 'N/A'
+
+    if (performance.memory) {
+      memValue = performance.memory.usedJSHeapSize / 1048576
+      memDisplay = memValue.toFixed(1) + ' MB'
+    }
+
+    const nodes = document.getElementsByTagName('*').length
+
+    const isPaused = document.hidden ? ' ⏸' : ''
+
+    this._fpsValue.textContent  = this.fps + isPaused
+    this._fpsValue.className    = `perf-hud-value ${this.getFpsClass(this.fps)}`
+    this._memValue.textContent  = memDisplay
+    this._memValue.className    = `perf-hud-value ${this.getMemoryClass(memValue)}`
+    this._nodeValue.textContent = nodes
+    this._nodeValue.className   = `perf-hud-value ${this.getNodeClass(nodes)}`
   }
 }
 

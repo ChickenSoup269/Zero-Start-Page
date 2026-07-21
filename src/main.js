@@ -293,9 +293,16 @@ function applyMaterialAccentTokens(seedColor, paletteStyle = "tonalSpot") {
     "--m3-primary-rgb": scheme.primaryRgb,
   }
 
-  Object.entries(tokenMap).forEach(([token, value]) => {
-    root.style.setProperty(token, value)
-  })
+  // Batch all token writes into a single CSS injection to minimize style recalcs
+  const tokenCss = Object.entries(tokenMap).map(([k, v]) => `${k}:${v}`).join(';')
+  const batchId = 'm3-accent-tokens'
+  let batchEl = document.getElementById(batchId)
+  if (!batchEl) {
+    batchEl = document.createElement('style')
+    batchEl.id = batchId
+    document.head.appendChild(batchEl)
+  }
+  batchEl.textContent = `:root{${tokenCss}}`
 
   root.style.setProperty("--accent-color", scheme.primary)
   root.style.setProperty("--accent-color-rgb", scheme.primaryRgb)
@@ -2109,17 +2116,28 @@ async function bootstrap() {
           }
 
           if (showModal && popup && verLabel) {
-            const waitForCurrentDialog = setInterval(() => {
-              if (
-                isFirstRunOnboardingPending() ||
-                document.body.classList.contains("first-run-tour-active") ||
-                document.querySelector("#custom-dialog-overlay.active")
-              ) {
+            const isDialogActive = () =>
+              isFirstRunOnboardingPending() ||
+              document.body.classList.contains("first-run-tour-active") ||
+              document.querySelector("#custom-dialog-overlay.active")
+
+            const tryShowModal = () => {
+              if (!isDialogActive()) {
+                showUpdateModal()
                 return
               }
-              clearInterval(waitForCurrentDialog)
-              showUpdateModal()
-            }, 150)
+              // Use MutationObserver to detect when dialog closes instead of polling
+              const obs = new MutationObserver(() => {
+                if (!isDialogActive()) {
+                  obs.disconnect()
+                  showUpdateModal()
+                }
+              })
+              obs.observe(document.body, { attributes: true, attributeFilter: ["class"], subtree: false })
+              // Safety timeout
+              setTimeout(() => { obs.disconnect(); if (!isDialogActive()) showUpdateModal() }, 5000)
+            }
+            tryShowModal()
           }
 
           if (showArrow && sidebarLink) {
@@ -2156,8 +2174,12 @@ if (document.readyState === "loading") {
   bootstrap()
 }
 
-import { initTerminal } from "./components/terminal.js";
-initTerminal();
+// Defer terminal init - not critical path, load lazily after boot
+setTimeout(() => {
+  import("./components/terminal.js")
+    .then(({ initTerminal }) => initTerminal())
+    .catch(() => {})
+}, 1500)
 
 setTimeout(() => {
   if (navigator.deviceMemory && navigator.deviceMemory <= 8) {
