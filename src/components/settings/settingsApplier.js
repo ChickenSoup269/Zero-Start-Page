@@ -41,6 +41,7 @@ import {
   DEFAULT_TIMER_ALARM_SOUND,
   renderTimerAlarmSelectOptions,
 } from "../../data/timerAlarmSounds.js"
+import { updateMediaSaveButtonsState } from "./eventHandlers.js"
 
 const WEATHER_API_REQUIRED_PARAMS = {
   forecast: ["latitude", "longitude", "current", "daily", "timezone", "forecast_days"],
@@ -5754,6 +5755,12 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     if (DOM.clockDateStyleSelect) {
       DOM.clockDateStyleSelect.value = settings.dateClockStyle || "default"
+    }
+    }
+    
+    // Sync the save background buttons (Unsplash & Picsum) based on the current background
+    if (typeof updateMediaSaveButtonsState === "function") {
+      updateMediaSaveButtonsState()
     }
   }
 }
