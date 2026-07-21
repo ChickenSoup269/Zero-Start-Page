@@ -918,101 +918,104 @@ function setupFileUploads(DOM, handleSettingUpdate) {
   )
 
   DOM.localVideoUpload.addEventListener("change", async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    let lastSavedId = null
     try {
-      const id = await saveVideo(file)
-      getSettings().userBackgrounds.push(id)
-      maybeShowLocalBackgroundPerformanceWarning(
-        getSettings().userBackgrounds.length,
-      )
-      handleSettingUpdate("background", id)
+      for (const file of files) {
+        const id = await saveVideo(file)
+        getSettings().userBackgrounds.push(id)
+        lastSavedId = id
+      }
+      maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+      if (lastSavedId) handleSettingUpdate("background", lastSavedId)
       renderLocalBackgrounds(DOM, handleSettingUpdate)
     } catch (err) {
       console.error("Failed to save video:", err)
-      showAlert(
-        "Failed to save video. It might be too large or storage is full.",
-      )
+      showAlert("Failed to save one or more videos. They might be too large or storage is full.")
     }
     e.target.value = null
   })
 
-  DOM.localImageUpload.addEventListener("change", (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
+  DOM.localImageUpload.addEventListener("change", async (e) => {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+    let lastSavedId = null
 
+    for (const file of files) {
       const isGif = file.type === "image/gif" || /\.gif$/i.test(file.name || "")
       if (isGif) {
-        saveImage(file, `idb-gif-${Date.now()}`)
-          .then((id) => {
-            getSettings().userBackgrounds.push({
-              uid: "bg-" + Date.now(),
-              id,
-              type: "gif",
-              name: file.name || "GIF background",
-              date: new Date().toISOString(),
-            })
-            maybeShowLocalBackgroundPerformanceWarning(
-              getSettings().userBackgrounds.length,
-            )
-            handleSettingUpdate("background", id)
-            renderLocalBackgrounds(DOM, handleSettingUpdate)
+        try {
+          const id = await saveImage(file, `idb-gif-${Date.now()}-${Math.floor(Math.random()*1000)}`)
+          getSettings().userBackgrounds.push({
+            uid: "bg-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+            id,
+            type: "gif",
+            name: file.name || "GIF background",
+            date: new Date().toISOString(),
           })
-          .catch((err) => {
-            console.error("Failed to save GIF:", err)
-            showAlert("Failed to save GIF image.")
-          })
-        return
+          lastSavedId = id
+        } catch (err) {
+          console.error("Failed to save GIF:", err)
+          showAlert("Failed to save GIF image.")
+        }
+        continue
       }
 
-      reader.onload = (event) => {
-        const dataUrl = event.target.result
-        const img = new Image()
-        img.src = dataUrl
-        img.onload = () => {
-          const canvas = document.createElement("canvas")
-          const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
-          let { width, height } = img
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height = Math.round((height * MAX_SIZE) / width)
-              width = MAX_SIZE
+      try {
+        const id = await new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = (event) => {
+            const dataUrl = event.target.result
+            const img = new Image()
+            img.onload = () => {
+              const canvas = document.createElement("canvas")
+              const { maxSize: MAX_SIZE, quality } = getUploadImageProfile()
+              let { width, height } = img
+              if (width > height) {
+                if (width > MAX_SIZE) {
+                  height = Math.round((height * MAX_SIZE) / width)
+                  width = MAX_SIZE
+                }
+              } else {
+                if (height > MAX_SIZE) {
+                  width = Math.round((width * MAX_SIZE) / height)
+                  height = MAX_SIZE
+                }
+              }
+              canvas.width = width
+              canvas.height = height
+              canvas.getContext("2d").drawImage(img, 0, 0, width, height)
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    saveImage(blob).then(resolve).catch(reject)
+                  } else {
+                    reject(new Error("Failed to process image blob"))
+                  }
+                },
+                "image/jpeg",
+                quality
+              )
             }
-          } else {
-            if (height > MAX_SIZE) {
-              width = Math.round((width * MAX_SIZE) / height)
-              height = MAX_SIZE
-            }
+            img.onerror = reject
+            img.src = dataUrl
           }
-          canvas.width = width
-          canvas.height = height
-          canvas.getContext("2d").drawImage(img, 0, 0, width, height)
-          canvas.toBlob(
-            (blob) => {
-              saveImage(blob)
-                .then((id) => {
-                  getSettings().userBackgrounds.push(id)
-                  maybeShowLocalBackgroundPerformanceWarning(
-                    getSettings().userBackgrounds.length,
-                  )
-                  handleSettingUpdate("background", id)
-                  renderLocalBackgrounds(DOM, handleSettingUpdate)
-                })
-                .catch((err) => {
-                  console.error("Failed to save image blob:", err)
-                  showAlert("Failed to save processed image.")
-                })
-            },
-            "image/jpeg",
-            quality,
-          )
-        }
+          reader.onerror = reject
+          reader.readAsDataURL(file)
+        })
+        getSettings().userBackgrounds.push(id)
+        lastSavedId = id
+      } catch (err) {
+        console.error("Failed to save image:", err)
+        showAlert("Failed to read or save the selected file.")
       }
-      reader.onerror = () => {
-        showAlert("Failed to read the selected file.")
-      }
-      reader.readAsDataURL(file)
+    }
+
+    if (lastSavedId) {
+      maybeShowLocalBackgroundPerformanceWarning(getSettings().userBackgrounds.length)
+      handleSettingUpdate("background", lastSavedId)
+      renderLocalBackgrounds(DOM, handleSettingUpdate)
     }
     e.target.value = null
   })
