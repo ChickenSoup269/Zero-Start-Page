@@ -192,8 +192,13 @@ export class CursorTrailEffect {
 
     const animateLoop = (t) => {
       if (!this.active) return
+      if (document.visibilityState === 'hidden') {
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && this.active) this._animId = requestAnimationFrame(animateLoop)
+        }, { once: true })
+        return
+      }
       this._animId = requestAnimationFrame(animateLoop)
-      if (document.visibilityState === 'hidden') return
       this.animate(t)
     }
     this._animId = requestAnimationFrame(animateLoop)

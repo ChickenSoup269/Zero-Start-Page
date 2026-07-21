@@ -736,10 +736,31 @@ let spaceConcentricHtmlCache = null;
 let spaceConcentricLangCache = null;
 
 
+// Cache Intl.DateTimeFormat instances to avoid expensive re-construction every second
+const _intlCache = new Map()
+function getCachedFormatter(locale, options) {
+  const key = locale + JSON.stringify(options)
+  if (!_intlCache.has(key)) {
+    _intlCache.set(key, new Intl.DateTimeFormat(locale, options))
+  }
+  return _intlCache.get(key)
+}
+
+
 export function updateTime() {
-  if (!clockElement) return;
+  if (!clockElement) return
+  // Skip heavy rendering when tab is hidden to save CPU/battery
+  if (document.hidden) return
   const settings = getSettings()
+  const displayMode = settings.clockDisplayMode || "all"
+  // Skip full render when clock is set to hide and no custom title needs updating
+  if (displayMode === "hide" && !settings.showCustomTitle) {
+    const clockFadeWrap = document.getElementById("clock-fade-wrap")
+    if (clockFadeWrap) clockFadeWrap.classList.add("is-hidden")
+    return
+  }
   const now = new Date()
+
   const langCode = getClockDateLanguageCode(settings)
   const dateLangCode = getClockDateLanguageCode(settings)
   const dateClockStyle = settings.dateClockStyle || "default"
@@ -811,9 +832,7 @@ export function updateTime() {
     ss = timerS.toString().padStart(2, "0")
     ampm = ""
   } else {
-    const parts = new Intl.DateTimeFormat(langCode, timeOptions).formatToParts(
-      now,
-    )
+    const parts = getCachedFormatter(langCode, timeOptions).formatToParts(now)
     hh = parts.find((p) => p.type === "hour")?.value || "00"
     mm = parts.find((p) => p.type === "minute")?.value || "00"
     ss = parts.find((p) => p.type === "second")?.value || ""
@@ -2320,7 +2339,22 @@ export function initClock() {
 
   updateTime()
   updateCustomTitle()
-  setInterval(updateTime, 1000)
+
+  // Pause clock interval when tab is hidden to save CPU/battery
+  let _clockIntervalId = setInterval(updateTime, 1000)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearInterval(_clockIntervalId)
+      _clockIntervalId = null
+      clearC4BombFastTick()
+    } else {
+      // Resume: call immediately so there's no 1s lag on tab focus
+      updateTime()
+      if (!_clockIntervalId) {
+        _clockIntervalId = setInterval(updateTime, 1000)
+      }
+    }
+  })
 
   clockElement?.addEventListener("click", (event) => {
     const key = event.target?.closest?.(".c4-bomb-key")

@@ -287,6 +287,13 @@ export class SoftAuroraEffect {
 
   animate(t = 0) {
     if (!this.active) return;
+    // Pause animation when tab is hidden
+    if (document.hidden) {
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && this.active) this.animate(performance.now())
+      }, { once: true })
+      return;
+    }
     this.animationId = requestAnimationFrame((nt) => this.animate(nt));
     this.render(t);
   }
@@ -302,8 +309,14 @@ export class SoftAuroraEffect {
     gl.uniform1f(u.uSpeed, o.speed);
     gl.uniform1f(u.uScale, o.scale);
     gl.uniform1f(u.uBrightness, o.brightness);
-    gl.uniform3fv(u.uColor1, new Float32Array(this._hexToVec3(o.color1)));
-    gl.uniform3fv(u.uColor2, new Float32Array(this._hexToVec3(o.color2)));
+    // Pre-allocated Float32Array buffers — avoid per-frame GC pressure
+    if (!this._color1Buf) this._color1Buf = new Float32Array(3)
+    if (!this._color2Buf) this._color2Buf = new Float32Array(3)
+    if (!this._bgColorBuf) this._bgColorBuf = new Float32Array(3)
+    const c1 = this._hexToVec3(o.color1); this._color1Buf[0]=c1[0]; this._color1Buf[1]=c1[1]; this._color1Buf[2]=c1[2];
+    const c2 = this._hexToVec3(o.color2); this._color2Buf[0]=c2[0]; this._color2Buf[1]=c2[1]; this._color2Buf[2]=c2[2];
+    gl.uniform3fv(u.uColor1, this._color1Buf);
+    gl.uniform3fv(u.uColor2, this._color2Buf);
     gl.uniform1f(u.uNoiseFreq, o.noiseFrequency);
     gl.uniform1f(u.uNoiseAmp, o.noiseAmplitude);
     gl.uniform1f(u.uBandHeight, o.bandHeight);

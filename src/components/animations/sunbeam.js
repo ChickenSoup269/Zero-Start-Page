@@ -308,11 +308,30 @@ export class SunbeamEffect {
     this.canvas.style.display = "none"
   }
 
+  destroy() {
+    this.stop()
+    window.removeEventListener("resize", this._resizeHandler)
+    window.removeEventListener("mousemove", this._mouseHandler)
+    if (this.canvas && this.canvas.parentElement) {
+      this.canvas.parentElement.removeChild(this.canvas)
+    }
+    if (this.gl) {
+      const ext = this.gl.getExtension("WEBGL_lose_context")
+      if (ext) ext.loseContext()
+    }
+    this.canvas = null
+    this.gl = null
+  }
+
   _animate() {
     if (!this.active || !this.gl) return
+    if (document.visibilityState === "hidden") {
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && this.active) requestAnimationFrame(() => this._animate())
+      }, { once: true })
+      return
+    }
     this._animId = requestAnimationFrame(() => this._animate())
-
-    if (document.visibilityState === "hidden") return
 
     const now = performance.now()
     const dt = now - this.lastTime

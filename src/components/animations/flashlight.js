@@ -71,8 +71,13 @@ export class FlashlightEffect {
 
   _draw() {
     if (!this.active) return
+    if (document.visibilityState === 'hidden') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.active) requestAnimationFrame(() => this._draw())
+      }, { once: true })
+      return
+    }
     this.animationId = requestAnimationFrame(() => this._draw())
-    if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
     const W = this.canvas.width

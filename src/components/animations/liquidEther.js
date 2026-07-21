@@ -282,6 +282,18 @@ export class LiquidEther {
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
+      // Pause animation when tab is hidden to save GPU/CPU
+      if (document.hidden) {
+        this.animationId = null
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden && this.active) {
+            lastTime = performance.now()
+            this.animationId = requestAnimationFrame(render)
+          }
+        }, { once: true })
+        return
+      }
+
       this.animationId = requestAnimationFrame(render)
     }
 

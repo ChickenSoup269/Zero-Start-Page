@@ -449,8 +449,13 @@ export class MeteorEffect {
 
   _loop(now) {
     if (!this.active) return
+    if (document.visibilityState === 'hidden') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.active) requestAnimationFrame((t) => this._loop(t))
+      }, { once: true })
+      return
+    }
     this._animId = requestAnimationFrame((t) => this._loop(t))
-    if (document.visibilityState === 'hidden') return
 
     const dt = Math.min(now - this._lastT, 50)
     this._lastT = now

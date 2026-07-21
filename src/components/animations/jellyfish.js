@@ -98,8 +98,14 @@ export class Jellyfish {
 
   animate() {
     if (!this.running) return
+    if (document.visibilityState === 'hidden') {
+      // Re-schedule once tab becomes visible
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.running) requestAnimationFrame(this.animate)
+      }, { once: true })
+      return
+    }
     this.animationId = this._animId = requestAnimationFrame(this.animate)
-    if (document.visibilityState === 'hidden') return
 
     const ctx = this.ctx
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)

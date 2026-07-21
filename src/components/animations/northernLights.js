@@ -151,8 +151,13 @@ export class NorthernLightsEffect {
   // Draw Functions
   _draw(currentTime) {
     if (!this.active) return
+    if (document.visibilityState === 'hidden') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.active) requestAnimationFrame((t) => this._draw(t))
+      }, { once: true })
+      return
+    }
     this.animationId = requestAnimationFrame((t) => this._draw(t))
-    if (document.visibilityState === 'hidden') return
 
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return

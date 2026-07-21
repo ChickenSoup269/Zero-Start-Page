@@ -66,8 +66,13 @@ export class FirefliesEffect {
   animate(currentTime = 0) {
     if (!this.active) return
 
+    if (document.visibilityState === 'hidden') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && this.active) requestAnimationFrame((t) => this.animate(t))
+      }, { once: true })
+      return
+    }
     this._animId = requestAnimationFrame((t) => this.animate(t))
-    if (document.visibilityState === 'hidden') return
     const elapsed = currentTime - this.lastDrawTime
     if (elapsed < this.fpsInterval) return
     this.lastDrawTime = currentTime
