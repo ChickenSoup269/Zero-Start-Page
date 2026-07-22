@@ -347,10 +347,10 @@ function getIconCandidates(bookmark) {
     list.push(`chrome://extension-icon/${hostname}/128/1`)
     list.push(`edge://extension-icon/${hostname}/128/1`)
   } else if (hostname) {
-    list.push(`https://icon.horse/icon/${hostname}`)
-    list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
-    // Google fallback (luôn có nhưng dễ mờ)
+    // Prioritize Google (fastest, most reliable, supports high-res sz=128)
     list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`)
+    // Fallback to DuckDuckGo
+    list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
   }
 
   return list
