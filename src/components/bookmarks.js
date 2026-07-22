@@ -708,13 +708,13 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     saveBookmarks()
   }
 
-  const getStackPopupDropIntent = (target, event) => {
-    const rect = target.getBoundingClientRect()
+  const getStackPopupDropIntent = (target, event, cachedRect) => {
+    const rect = cachedRect || target.getBoundingClientRect()
     if (!rect.width) return "after"
     return event.clientX < rect.left + rect.width / 2 ? "before" : "after"
   }
 
-  const updateStackPopupDropIntent = (target, event) => {
+  const updateStackPopupDropIntent = (target, event, cachedRect) => {
     clearBookmarkDropClasses(target)
     const targetItemIndex = Number(target.dataset.stackIndex)
     const isSelfDrop = draggedStackItems.some(
@@ -723,7 +723,7 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     )
     if (isSelfDrop) return
 
-    const intent = getStackPopupDropIntent(target, event)
+    const intent = getStackPopupDropIntent(target, event, cachedRect)
     target.classList.add(
       intent === "before" ? "drag-over-before" : "drag-over-after",
     )
@@ -783,14 +783,17 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     event.preventDefault()
     event.stopPropagation()
     event.dataTransfer.dropEffect = "move"
-    updateStackPopupDropIntent(event.currentTarget, event)
+    const cachedRect = dragOverRectCache.get(event.currentTarget)
+    updateStackPopupDropIntent(event.currentTarget, event, cachedRect)
     return false
   }
 
   const handleStackPopupDragEnter = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    updateStackPopupDropIntent(event.currentTarget, event)
+    // Cache rect on dragenter so dragover doesn't force reflow
+    dragOverRectCache.set(event.currentTarget, event.currentTarget.getBoundingClientRect())
+    updateStackPopupDropIntent(event.currentTarget, event, dragOverRectCache.get(event.currentTarget))
   }
 
   const handleStackPopupDragLeave = (event) => {
@@ -803,7 +806,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     clearBookmarkDropClasses(event.currentTarget)
 
     const targetItemIndex = Number(event.currentTarget.dataset.stackIndex)
-    const intent = getStackPopupDropIntent(event.currentTarget, event)
+    const cachedRect = dragOverRectCache.get(event.currentTarget)
+    const intent = getStackPopupDropIntent(event.currentTarget, event, cachedRect)
     if (moveDraggedStackItemsInsidePopup(targetItemIndex, intent)) {
       ignoreNextStackPopupClick = true
       setTimeout(() => {
@@ -1025,6 +1029,8 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
 let draggedBookmarkIndices = []
 let draggedGroupIndex = null
 let draggedStackItems = []
+// Cache element rects on dragenter to avoid getBoundingClientRect in dragover (which fires ~60x/sec)
+const dragOverRectCache = new WeakMap()
 
 function isBookmarkStack(item) {
   return item?.type === "stack" && Array.isArray(item.items)
@@ -1173,7 +1179,8 @@ function takeDraggedStackItems() {
 function getBookmarkDropIntent(target, event) {
   if (!target?.classList?.contains("bookmark")) return "before"
 
-  const rect = target.getBoundingClientRect()
+  // Use cached rect from dragenter to avoid forced reflow on every dragover tick
+  const rect = dragOverRectCache.get(target) || target.getBoundingClientRect()
   if (!rect.width || !rect.height) return target.classList.contains("bookmark-stack") ? "stack" : "before"
   
   const isVerticalLayout = document.body.classList.contains("bookmark-sidebar-mode") || 
@@ -1298,7 +1305,8 @@ function handleDragOver(e) {
       this.dataset.dropLabel =
         geti18n().bookmark_drop_move_to_folder || "Move here"
     } else if (draggedGroupIndex !== null) {
-      const rect = this.getBoundingClientRect();
+      // Use cached rect from dragenter — no forced reflow on dragover
+      const rect = dragOverRectCache.get(this) || this.getBoundingClientRect();
       const isVertical = this.parentElement.style.flexDirection === "column" || 
                          document.body.classList.contains("bookmark-sidebar-mode") ||
                          document.body.classList.contains("bookmark-taskbar-left-mode") ||
@@ -1334,10 +1342,14 @@ function handleDragOver(e) {
 function handleDragEnter(e) {
   e.preventDefault()
   if (this.classList.contains("bookmark")) {
+    // Cache rect on dragenter — avoids getBoundingClientRect on every dragover tick
+    dragOverRectCache.set(this, this.getBoundingClientRect())
     if (!draggedBookmarkIndices.includes(Number(this.dataset.index))) {
       updateBookmarkDropIntent(this, e)
     }
   } else if (this.classList.contains("bookmark-group-tab")) {
+    // Cache rect for group tab too
+    dragOverRectCache.set(this, this.getBoundingClientRect())
     if (draggedBookmarkIndices.length > 0 || draggedStackItems.length > 0) {
       const i18n = geti18n()
       this.classList.add("drag-over", "drag-over-bookmark")
