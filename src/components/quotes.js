@@ -533,89 +533,102 @@ export class DailyQuotes {
     this.updateLocalQuote(isManual);
   }
 
-  async fetchFromQuotable(isManual) {
+  renderQuote(text, author) {
     const textEl = this.container.querySelector(".quote-text")
     const authEl = this.container.querySelector(".quote-author")
     
-    try {
-      if (textEl) {
-        textEl.style.opacity = 0
-        setTimeout(() => {
-          textEl.textContent = "..."
-          textEl.style.opacity = 1
-        }, 200)
+    if (textEl) {
+      textEl.style.opacity = 0
+      setTimeout(() => {
+        textEl.textContent = text
+        textEl.style.opacity = 1
+      }, 200)
+    }
+    if (authEl) {
+      authEl.style.opacity = 0
+      setTimeout(() => {
+        authEl.textContent = author
+        authEl.style.opacity = 1
+      }, 200)
+    }
+  }
+
+  async fetchWithCache(isManual, sourceName, fetchFn) {
+    const freq = getSettings().quotesUpdateFreq || "tab"
+    const cacheKey = `quote_cache_${sourceName}`
+    const timeKey = `quote_time_${sourceName}`
+    
+    if (!isManual && freq !== "tab") {
+      const cached = localStorage.getItem(cacheKey)
+      const cachedTime = localStorage.getItem(timeKey)
+      if (cached && cachedTime) {
+        const now = new Date()
+        const lastTime = new Date(parseInt(cachedTime, 10))
+        
+        let shouldFetch = false
+        if (freq === "hour") {
+          shouldFetch = now.getTime() - lastTime.getTime() >= 3600000 || now.getHours() !== lastTime.getHours()
+        } else if (freq === "day") {
+          shouldFetch = now.getDate() !== lastTime.getDate() || now.getMonth() !== lastTime.getMonth() || now.getFullYear() !== lastTime.getFullYear()
+        }
+        
+        if (!shouldFetch) {
+          try {
+            const parsed = JSON.parse(cached)
+            this.renderQuote(parsed.text, parsed.author)
+            return
+          } catch(e) {}
+        }
       }
-      
+    }
+    
+    this.renderQuote("...", "")
+    
+    try {
+      const data = await fetchFn()
+      this.renderQuote(data.text, data.author)
+      localStorage.setItem(cacheKey, JSON.stringify(data))
+      localStorage.setItem(timeKey, Date.now().toString())
+    } catch(err) {
+      console.warn(`${sourceName} fallback to local`, err)
+      this.updateLocalQuote(isManual)
+    }
+  }
+
+  async fetchFromQuotable(isManual) {
+    const fetchFn = async () => {
       const response = await fetch('https://api.quotable.io/random')
       if (!response.ok) throw new Error("API Network error")
       const data = await response.json()
-      
-      if (textEl) {
-        textEl.style.opacity = 0
-        setTimeout(() => {
-          textEl.textContent = data.content
-          textEl.style.opacity = 1
-        }, 200)
-      }
-      if (authEl) {
-        authEl.style.opacity = 0
-        setTimeout(() => {
-          authEl.textContent = `- ${data.author}`
-          authEl.style.opacity = 1
-        }, 200)
-      }
-    } catch(err) {
-      console.warn("Quotable fallback to local", err)
-      this.updateLocalQuote(isManual)
+      return { text: data.content, author: `- ${data.author}` }
     }
+    await this.fetchWithCache(isManual, "quotable", fetchFn)
   }
 
   async fetchFromAdviceSlip(isManual) {
-    const textEl = this.container.querySelector(".quote-text")
-    const authEl = this.container.querySelector(".quote-author")
-    
-    try {
-      if (textEl) {
-        textEl.style.opacity = 0
-        setTimeout(() => {
-          textEl.textContent = "..."
-          textEl.style.opacity = 1
-        }, 200)
-      }
-      
+    const fetchFn = async () => {
       const response = await fetch('https://api.adviceslip.com/advice')
       if (!response.ok) throw new Error("API Network error")
       const data = await response.json()
-      
-      if (textEl) {
-        textEl.style.opacity = 0
-        setTimeout(() => {
-          textEl.textContent = data.slip.advice
-          textEl.style.opacity = 1
-        }, 200)
-      }
-      if (authEl) {
-        authEl.style.opacity = 0
-        setTimeout(() => {
-          authEl.textContent = `- Advice Slip`
-          authEl.style.opacity = 1
-        }, 200)
-      }
-    } catch(err) {
-      console.warn("AdviceSlip fallback to local", err)
-      this.updateLocalQuote(isManual)
+      return { text: data.slip.advice, author: `- Advice Slip` }
     }
+    await this.fetchWithCache(isManual, "adviceslip", fetchFn)
   }
 
-
   updateLocalQuote(isManual = false) {
+    const freq = getSettings().quotesUpdateFreq || "tab"
+    
     if (this.currentIndex === -1 || isManual) {
-      if (isManual) {
+      if (isManual || freq === "tab") {
         let newIndex
         do {
           newIndex = Math.floor(Math.random() * QUOTES_DATA.length)
         } while (newIndex === this.currentIndex && QUOTES_DATA.length > 1)
         this.currentIndex = newIndex
+      } else if (freq === "hour") {
+        const now = new Date()
+        const hours = Math.floor(now.getTime() / 3600000)
+        this.currentIndex = hours % QUOTES_DATA.length
       } else {
         const now = new Date()
         const day = Math.floor(
@@ -627,23 +640,11 @@ export class DailyQuotes {
 
     const quote = QUOTES_DATA[this.currentIndex]
     const isVi = getSettings().language === "vi"
-    const textEl = this.container.querySelector(".quote-text")
-    const authEl = this.container.querySelector(".quote-author")
-
-    if (textEl) {
-      textEl.style.opacity = 0
-      setTimeout(() => {
-        textEl.textContent = isVi ? quote.translate : quote.text
-        textEl.style.opacity = 1
-      }, 200)
-    }
-    if (authEl) {
-      authEl.style.opacity = 0
-      setTimeout(() => {
-        authEl.textContent = `- ${quote.author}`
-        authEl.style.opacity = 1
-      }, 200)
-    }
+    
+    this.renderQuote(
+      isVi ? quote.translate : quote.text,
+      `- ${quote.author}`
+    )
   }
 
   updateCrystalBallUI() {

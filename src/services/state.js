@@ -281,6 +281,7 @@ export const defaultSettings = {
   unsplashAutoRandomMode: "off",
   unsplashLastFetchTime: 0,
   showQuotes: false,
+  quotesUpdateFreq: "tab",
   showWeather: false,
   weatherLocationName: "Ho Chi Minh City",
   weatherCountry: "Vietnam",

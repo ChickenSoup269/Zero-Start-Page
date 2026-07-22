@@ -6325,6 +6325,18 @@ export function setupGeneralEventHandlers(
     )
   })
 
+  DOM.quotesUpdateFreqSelect?.addEventListener("change", (e) => {
+    handleSettingUpdate("quotesUpdateFreq", e.target.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: {
+          key: "quotesUpdateFreq",
+          value: e.target.value,
+        },
+      }),
+    )
+  })
+
   DOM.musicPlayerUseDefaultColorMode.addEventListener("change", () => {
     let val = DOM.musicPlayerUseDefaultColorMode.value
     if (val === "true") val = true

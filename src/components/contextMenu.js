@@ -1119,6 +1119,35 @@ export function showContextMenu(
           hideContextMenu()
         }
         contextMenu.insertBefore(sourceBtn, menuLock)
+
+        const freqKey = "quotesUpdateFreq"
+        const currentFreq = settings[freqKey] || "tab"
+        const freqBtn = document.createElement("div")
+        freqBtn.className = "context-menu-item custom-music-item"
+        const freqNames = {
+          tab: i18n.settings_quotes_freq_tab || "Every New Tab",
+          hour: i18n.settings_quotes_freq_hour || "Every Hour",
+          day: i18n.settings_quotes_freq_day || "Every Day"
+        }
+        const nextFreqs = {
+          tab: "hour",
+          hour: "day",
+          day: "tab"
+        }
+        const nextFreq = nextFreqs[currentFreq] || "tab"
+
+        freqBtn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> <span>${i18n.settings_quotes_update_freq || "Update Freq"}: ${freqNames[currentFreq]}</span>`
+        freqBtn.onclick = () => {
+          updateSetting(freqKey, nextFreq)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: freqKey, value: nextFreq },
+            }),
+          )
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(freqBtn, menuLock)
       }
     }
 

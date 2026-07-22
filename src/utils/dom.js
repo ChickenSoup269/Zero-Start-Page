@@ -1316,6 +1316,9 @@ export let showGregorianCheckbox = document.getElementById(
 export let showQuotesCheckbox = document.getElementById(
   "show-quotes-checkbox",
 )
+export let quotesUpdateFreqSelect = document.getElementById(
+  "quotes-update-freq-select",
+)
 export let showWeatherCheckbox = document.getElementById(
   "show-weather-checkbox",
 )
@@ -3432,8 +3435,11 @@ export function refreshDOMReferences() {
   "show-gregorian-checkbox",
 )
   showQuotesCheckbox = document.getElementById(
-  "show-quotes-checkbox",
-)
+    "show-quotes-checkbox",
+  )
+  quotesUpdateFreqSelect = document.getElementById(
+    "quotes-update-freq-select",
+  )
   showWeatherCheckbox = document.getElementById(
   "show-weather-checkbox",
 )

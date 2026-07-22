@@ -5494,6 +5494,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpQaShowTimer) DOM.lcpQaShowTimer.checked = settings.qaShowTimer !== false
     if (DOM.lcpQaShowCalendar) DOM.lcpQaShowCalendar.checked = settings.qaShowCalendar !== false
     if (DOM.lcpQaShowQuotes) DOM.lcpQaShowQuotes.checked = settings.qaShowQuotes !== false
+    if (DOM.quotesUpdateFreqSelect) DOM.quotesUpdateFreqSelect.value = settings.quotesUpdateFreq || "tab"
     if (DOM.lcpQaShowWeather) DOM.lcpQaShowWeather.checked = settings.qaShowWeather !== false
     if (DOM.lcpQaShowMusic) DOM.lcpQaShowMusic.checked = settings.qaShowMusic !== false
     if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
