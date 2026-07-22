@@ -2741,6 +2741,7 @@ export function initBookmarks() {
   
   window.addEventListener("layoutUpdated", (e) => {
     cachedMacosItems = null
+    horizontalScrollCache = new WeakMap()
     if (e.detail && e.detail.key === "forceLayoutSync") {
       requestAnimationFrame(updateOverflowBookmarks)
     }
@@ -2782,6 +2783,7 @@ let isHoveringContainer = false
 let rafId = null
 
 let cachedMacosItems = null
+let horizontalScrollCache = new WeakMap()
 
 function updateMacosHover() {
   if (!macosHoverEnabled || !isHoveringContainer) {
@@ -3042,8 +3044,12 @@ document.addEventListener('wheel', (e) => {
   const container = e.target.closest('#bookmarks-container') || e.target.closest('.bookmark-groups-container') || e.target.closest('#hidden-bookmarks-popup');
   if (!container) return;
 
-  const style = window.getComputedStyle(container);
-  const isHorizontalScroll = (style.overflowX === 'auto' || style.overflowX === 'scroll') && (style.overflowY === 'hidden' || style.overflowY === 'clip');
+  let isHorizontalScroll = horizontalScrollCache.get(container);
+  if (isHorizontalScroll === undefined) {
+    const style = window.getComputedStyle(container);
+    isHorizontalScroll = (style.overflowX === 'auto' || style.overflowX === 'scroll') && (style.overflowY === 'hidden' || style.overflowY === 'clip');
+    horizontalScrollCache.set(container, isHorizontalScroll);
+  }
 
   if (isHorizontalScroll) {
     if (e.deltaY !== 0 && !e.shiftKey) {
