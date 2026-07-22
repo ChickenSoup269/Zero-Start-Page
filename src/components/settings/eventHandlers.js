@@ -1184,9 +1184,13 @@ export function setupGeneralEventHandlers(
     if (savedScroll) sidebarContent.scrollTop = parseInt(savedScroll, 10)
   }
 
+  let scrollSaveTimer = null
   sidebarContent.addEventListener("scroll", () => {
     const top = sidebarContent.scrollTop
-    sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
+    clearTimeout(scrollSaveTimer)
+    scrollSaveTimer = setTimeout(() => {
+      sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
+    }, 200)
     sidebarScrollTopBtn.classList.toggle("visible", top > 200)
   })
 
@@ -1204,6 +1208,7 @@ export function setupGeneralEventHandlers(
   let sidebarTargetScroll = sidebarContent.scrollTop
   let hasPromptedSmoothScroll = false
   let smoothScrollTimeout = null
+  let rafScrollId = null
 
   const smoothScrollModal = document.getElementById("smooth-scroll-modal")
   const btnSmoothScrollEnable = document.getElementById("btn-smooth-scroll-enable")
@@ -1251,16 +1256,25 @@ export function setupGeneralEventHandlers(
       smoothScrollTimeout = null
     }, 150)
     
-    sidebarTargetScroll += e.deltaY * 2.5
+    sidebarTargetScroll += e.deltaY * 0.8
     sidebarTargetScroll = Math.max(0, Math.min(
       sidebarTargetScroll,
       sidebarContent.scrollHeight - sidebarContent.clientHeight
     ))
     
-    sidebarContent.scrollTo({
-      top: sidebarTargetScroll,
-      behavior: "smooth"
-    })
+    if (!rafScrollId) {
+      const animateSidebarScroll = () => {
+        const current = sidebarContent.scrollTop
+        const diff = sidebarTargetScroll - current
+        if (Math.abs(diff) < 0.5) {
+          rafScrollId = null
+          return
+        }
+        sidebarContent.scrollTop = current + diff * 0.12
+        rafScrollId = requestAnimationFrame(animateSidebarScroll)
+      }
+      rafScrollId = requestAnimationFrame(animateSidebarScroll)
+    }
   }, { passive: false })
 
   // Bug Report / Config Logic
@@ -1394,7 +1408,7 @@ export function setupGeneralEventHandlers(
           }
         } else {
           // Sub Items (Effect, Page Title, etc)
-          isSubItem = true
+          isSubItem = !!section.closest(".settings-section")
           const header = section.querySelector(".group-header")
           const label = section.querySelector(":scope > label")
           const settingLabel = section.querySelector(":scope > .setting-label")
@@ -1424,7 +1438,7 @@ export function setupGeneralEventHandlers(
           const item = document.createElement("div")
           item.className = "toc-item"
           if (isSubItem) {
-            item.style.fontSize = "0.85rem"
+            item.classList.add("sub-item")
           }
           item.innerHTML = `<i class="${iconClass || "fa-solid fa-chevron-right"}"></i> <span>${title}</span>`
           item.addEventListener("click", () => {

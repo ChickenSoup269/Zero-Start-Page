@@ -627,8 +627,7 @@ body.sidebar-m3-accent .settings-sidebar {
   align-items: center;
   margin-bottom: var(--space-1);
   padding: var(--space-1) var(--space-2);
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-sm);
   border: 1px solid var(--glass-border);
   border-top: 1px solid var(--glass-edge);
@@ -766,17 +765,33 @@ body.sidebar-m3-accent .settings-sidebar {
   top: 88px;
   left: var(--space-3);
   right: var(--space-3);
-  background: rgba(20, 20, 30, 0.95);
+  background: var(--glass-bg, rgba(20, 20, 30, 0.95));
   backdrop-filter: blur(20px);
-  border: 1px solid var(--sidebar-border);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.1));
   border-radius: var(--radius-md);
   z-index: 2001;
-  padding: var(--space-1);
+  padding: var(--space-2);
   max-height: calc(100% - 150px);
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: none;
   animation: tocSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4) transparent;
+}
+
+.sidebar-toc-menu::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-toc-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-toc-menu::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.35);
+  border-radius: 4px;
+}
+.sidebar-toc-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.6);
 }
 
 .sidebar-toc-menu.open {
@@ -786,31 +801,43 @@ body.sidebar-m3-accent .settings-sidebar {
 @keyframes tocSlideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 .toc-item {
-  padding: var(--space-1) var(--space-2);
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: #fff;
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.92rem;
   font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .toc-item:hover {
-  background: rgba(var(--accent-color-rgb, 255, 255, 255), 0.1);
+  background: rgba(var(--accent-color-rgb, 255, 255, 255), 0.15);
   color: #fff;
   transform: translateX(4px);
+}
+
+.toc-item.sub-item {
+  padding-left: 36px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+.toc-item.sub-item:hover {
+  color: #fff;
 }
 
 .toc-item i {
@@ -818,7 +845,12 @@ body.sidebar-m3-accent .settings-sidebar {
   width: 20px;
   display: flex;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  transition: transform 0.2s;
+}
+
+.toc-item:hover i {
+  transform: scale(1.1);
 }
 
 .close-sidebar {
@@ -1875,8 +1907,9 @@ body.sidebar-light .preset-code-line-value {
   background: rgba(255, 255, 255, 0.05);
   border: none;
   color: #bbb;
-  padding: var(--space-1) var(--space-2);
-  font-size: 0.85rem;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 500;
   cursor: pointer;
   transition:
     background 0.15s,
@@ -4808,18 +4841,19 @@ body.sidebar-light .preset-code-line-value {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-height: 60px;
-  padding: 8px 4px;
+  gap: 6px;
+  min-height: 80px;
+  padding: 12px 6px;
   overflow: hidden;
   user-select: none;
 }
 
 .clock-style-card.compact-style-card {
   aspect-ratio: auto;
-  padding: 8px 12px;
-  min-height: 36px;
+  padding: 10px 16px;
+  min-height: 44px;
   flex-direction: row;
+  gap: 8px;
 }
 
 .clock-style-card.compact-style-card i {
@@ -4842,7 +4876,7 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card i {
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.45);
   transition: all 0.3s ease;
 }
@@ -4853,9 +4887,9 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-name {
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: color 0.3s ease;
