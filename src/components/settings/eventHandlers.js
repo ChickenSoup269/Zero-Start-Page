@@ -6180,6 +6180,9 @@ export function setupGeneralEventHandlers(
     setupLayoutCheckbox(DOM.showDonateButtonCheckbox, "showDonateButton", {})
   }
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
+  if (DOM.searchBarHoverScaleCheckbox) {
+    setupLayoutCheckbox(DOM.searchBarHoverScaleCheckbox, "searchBarHoverScale", { defaultState: true })
+  }
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})
   }

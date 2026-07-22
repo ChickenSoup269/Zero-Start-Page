@@ -40,8 +40,8 @@ body.free-move-search-bar #search-container.dragging {
   align-items: center;
 }
 
-.search-container:hover,
-.search-container:focus-within {
+body:not(.disable-search-bar-hover-scale) .search-container:hover,
+body:not(.disable-search-bar-hover-scale) .search-container:focus-within {
   background: rgba(255, 255, 255, 0.08);
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.5),

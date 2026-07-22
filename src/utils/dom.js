@@ -1362,6 +1362,9 @@ export let showNotepadCheckbox = document.getElementById(
 export let showSearchBarCheckbox = document.getElementById(
   "show-search-bar-checkbox",
 )
+export let searchBarHoverScaleCheckbox = document.getElementById(
+  "search-bar-hover-scale-checkbox",
+)
 export let freeMoveSearchBarCheckbox = document.getElementById(
   "free-move-search-bar-checkbox",
 )
@@ -3475,8 +3478,11 @@ export function refreshDOMReferences() {
   "show-notepad-checkbox",
 )
   showSearchBarCheckbox = document.getElementById(
-  "show-search-bar-checkbox",
-)
+    "show-search-bar-checkbox",
+  )
+  searchBarHoverScaleCheckbox = document.getElementById(
+    "search-bar-hover-scale-checkbox",
+  )
   freeMoveSearchBarCheckbox = document.getElementById(
   "free-move-search-bar-checkbox",
 )
