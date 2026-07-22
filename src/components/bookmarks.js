@@ -2914,10 +2914,10 @@ function updateMacosHover() {
         globalTooltip.style.visibility = "hidden"
       }
     }
-  }
 
   rafId = null
 }
+
 
 document.addEventListener("mousemove", (e) => {
   if (!macosHoverEnabled) return
