@@ -135,6 +135,8 @@
   "settings_m3_widgets_hint": "Dùng màu M3 hiện tại làm nền cho các widget",
   "settings_m3_widgets_on": "Đã bật nền M3 cho widgets",
   "settings_m3_widgets_off": "Đã tắt nền M3 cho widgets",
+  "settings_m3_sidebar": "Áp dụng M3 cho thanh bên",
+  "settings_m3_sidebar_hint": "Phủ nhẹ màu M3 lên nền thanh cài đặt",
   "settings_accent_prime": "Prime",
   "settings_accent_pastel": "Pastel & Nhẹ nhàng",
   "settings_accent_dark": "Tối & Đơn sắc",
@@ -1974,5 +1976,9 @@
   "setting_dvd_speed": "Tốc độ",
   "setting_dvd_clone": "Số lượng bản sao",
   "setting_dvd_trail": "Hiệu ứng bóng mờ",
-  "setting_dvd_glitch": "Hiệu ứng nhiễu sóng"
+  "setting_dvd_glitch": "Hiệu ứng nhiễu sóng",
+  "settings_quotes_source": "Nguồn API",
+  "settings_quotes_source_local": "Mặc định (Offline)",
+  "settings_quotes_source_quotable": "Quotable API",
+  "settings_quotes_source_advice": "Advice Slip API"
 }

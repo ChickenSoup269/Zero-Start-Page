@@ -135,6 +135,8 @@
   "settings_m3_widgets_hint": "Use the current M3 accent as widget backgrounds",
   "settings_m3_widgets_on": "M3 widget backgrounds enabled",
   "settings_m3_widgets_off": "M3 widget backgrounds disabled",
+  "settings_m3_sidebar": "Apply M3 to sidebar",
+  "settings_m3_sidebar_hint": "Slightly tint the settings sidebar background",
   "settings_accent_prime": "Prime",
   "settings_accent_pastel": "Pastel & Soft",
   "settings_accent_dark": "Dark & Monochrome",
@@ -1973,5 +1975,9 @@
   "setting_dvd_speed": "Speed",
   "setting_dvd_clone": "Clone Count",
   "setting_dvd_trail": "Ghost Trail",
-  "setting_dvd_glitch": "Glitch Effect"
+  "setting_dvd_glitch": "Glitch Effect",
+  "settings_quotes_source": "API Source",
+  "settings_quotes_source_local": "Local (Offline)",
+  "settings_quotes_source_quotable": "Quotable API",
+  "settings_quotes_source_advice": "Advice Slip API"
 }
