@@ -2722,9 +2722,14 @@ export function initBookmarks() {
     })
   }
 
-  window.addEventListener("resize", () =>
-    requestAnimationFrame(updateOverflowBookmarks),
-  )
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    cachedMacosItems = null
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      requestAnimationFrame(updateOverflowBookmarks)
+    }, 150)
+  })
   
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
@@ -2749,10 +2754,6 @@ export function initBookmarks() {
       updateBookmarkGroupsToggleIcon()
       requestAnimationFrame(updateOverflowBookmarks)
     }
-  })
-
-  window.addEventListener("resize", () => {
-    cachedMacosItems = null
   })
 
   document.addEventListener("scroll", () => {
@@ -2820,19 +2821,28 @@ function updateMacosHover() {
       containers.forEach(c => {
         bookmarks.push(...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
       })
-      cachedMacosItems = bookmarks.map((item) => {
-        const prevTransform = item.style.transform
-        if (prevTransform) item.style.removeProperty("transform")
-        const rect = item.getBoundingClientRect()
-        if (prevTransform) item.style.setProperty("transform", prevTransform, "important")
-        
-        return {
-          item,
-          centerX: rect.left + rect.width / 2,
-          centerY: rect.top + rect.height / 2,
-          rect
-        }
+
+      // PASS 1: Save and clear all transforms (WRITES only)
+      const savedTransforms = bookmarks.map(item => {
+        const t = item.style.transform
+        if (t) item.style.removeProperty("transform")
+        return t
       })
+
+      // PASS 2: Read all rects in one batch — browser only recalculates layout once
+      const rects = bookmarks.map(item => item.getBoundingClientRect())
+
+      // PASS 3: Restore all transforms (WRITES only)
+      bookmarks.forEach((item, i) => {
+        if (savedTransforms[i]) item.style.setProperty("transform", savedTransforms[i], "important")
+      })
+
+      cachedMacosItems = bookmarks.map((item, i) => ({
+        item,
+        centerX: rects[i].left + rects[i].width / 2,
+        centerY: rects[i].top + rects[i].height / 2,
+        rect: rects[i]
+      }))
     } else {
       cachedMacosItems = []
     }
