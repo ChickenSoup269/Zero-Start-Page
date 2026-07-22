@@ -2972,7 +2972,7 @@ document.addEventListener("mousemove", (e) => {
     isHoveringContainer = false
     if (!rafId) rafId = requestAnimationFrame(updateMacosHover)
   }
-})
+}, { passive: true })
 
 function groupSelected() {
   if (selectedIndices.size === 0) return;
