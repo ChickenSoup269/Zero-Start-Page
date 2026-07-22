@@ -2711,6 +2711,7 @@ export function initBookmarks() {
   })
   
   window.addEventListener("layoutUpdated", (e) => {
+    cachedMacosItems = null
     if (e.detail && e.detail.key === "forceLayoutSync") {
       requestAnimationFrame(updateOverflowBookmarks)
     }
@@ -2725,6 +2726,14 @@ export function initBookmarks() {
       requestAnimationFrame(updateOverflowBookmarks)
     }
   })
+
+  window.addEventListener("resize", () => {
+    cachedMacosItems = null
+  })
+
+  document.addEventListener("scroll", () => {
+    cachedMacosItems = null
+  }, { capture: true, passive: true })
 
   // FOUC/Layout shift fix: no-transition class is now removed precisely
   // at the end of updateOverflowBookmarks() after first calculation.
@@ -2747,6 +2756,8 @@ let mouseX = 0,
 let isHoveringContainer = false
 let rafId = null
 
+let cachedMacosItems = null
+
 function updateMacosHover() {
   if (!macosHoverEnabled || !isHoveringContainer) {
     const bookmarks = document.querySelectorAll(".bookmark")
@@ -2768,49 +2779,67 @@ function updateMacosHover() {
     ].filter(Boolean)
     containers.forEach(c => c.style.removeProperty("z-index"))
     
+    cachedMacosItems = null
     rafId = null
     return
   }
 
-  const containers = [
-    document.querySelector("#bookmarks-container"),
-    document.querySelector("#hidden-bookmarks-popup"),
-    document.querySelector("#bookmark-stack-popup")
-  ].filter(Boolean)
-  
-  if (containers.length > 0) {
-    const bookmarks = []
-    containers.forEach(c => {
-      bookmarks.push(...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
-    })
-    const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
-    const isFlipped = document.body.classList.contains("flip-layout")
+  if (!cachedMacosItems) {
+    const containers = [
+      document.querySelector("#bookmarks-container"),
+      document.querySelector("#hidden-bookmarks-popup"),
+      document.querySelector("#bookmark-stack-popup")
+    ].filter(Boolean)
+    
+    if (containers.length > 0) {
+      const bookmarks = []
+      containers.forEach(c => {
+        bookmarks.push(...c.querySelectorAll(".bookmark:not(.add-bookmark-card)"))
+      })
+      cachedMacosItems = bookmarks.map((item) => {
+        const prevTransform = item.style.transform
+        if (prevTransform) item.style.removeProperty("transform")
+        const rect = item.getBoundingClientRect()
+        if (prevTransform) item.style.setProperty("transform", prevTransform, "important")
+        
+        return {
+          item,
+          centerX: rect.left + rect.width / 2,
+          centerY: rect.top + rect.height / 2,
+          rect
+        }
+      })
+    } else {
+      cachedMacosItems = []
+    }
+  }
 
-    // MacOS parameters
-    const maxScale = 1.6
-    const range = 80 // Reduced range to limit spread to neighbors
+  const isSidebar = document.body.classList.contains("bookmark-sidebar-mode")
+  const isFlipped = document.body.classList.contains("flip-layout")
 
-    // PHASE 1: READS (Avoid Layout Thrashing)
-    const itemData = bookmarks.map((item) => {
-      const rect = item.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-      const dist = Math.sqrt(
-        Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2),
-      )
+  // MacOS parameters
+  const maxScale = 1.6
+  const range = 80 // Reduced range to limit spread to neighbors
 
-      let scale = 1
-      if (dist < range) {
-        // Sharper falloff to prevent too much spread
-        const factor = 1 - dist / range
-        const smoothFactor = Math.pow(factor, 2.5) // Higher power = less spread
-        scale = 1 + (maxScale - 1) * smoothFactor
-      }
+  // PHASE 1: READS (Avoid Layout Thrashing)
+  const itemData = cachedMacosItems.map((cache) => {
+    const { item, centerX, centerY, rect } = cache
+    const dist = Math.sqrt(
+      Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2),
+    )
 
-      if (item.classList.contains("dragging")) scale = 1
+    let scale = 1
+    if (dist < range) {
+      // Sharper falloff to prevent too much spread
+      const factor = 1 - dist / range
+      const smoothFactor = Math.pow(factor, 2.5) // Higher power = less spread
+      scale = 1 + (maxScale - 1) * smoothFactor
+    }
 
-      return { item, scale, rect }
-    })
+    if (item.classList.contains("dragging")) scale = 1
+
+    return { item, scale, rect }
+  })
 
     // PHASE 2: WRITES
     itemData.forEach(({ item, scale }) => {
