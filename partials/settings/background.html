@@ -394,59 +394,53 @@
                 </label>
             </div>
             <!-- Group: M3 Dynamic -->
-            <div class="setting-group collapsible-group m3-accent-wrapper" id="accent-m3-group" style="margin-bottom: 15px; grid-column: 1 / -1;">
-                <div class="group-header" style="padding: 10px 0; margin: 0; border: none; background: transparent;">
-                    <i class="fa-solid fa-wand-magic-sparkles group-icon"></i>
-                    <span data-i18n="settings_accent_dynamic" style="font-weight: 600; font-size: 0.9rem;">Dynamic Color (M3)</span>
-                    <i class="fa-solid fa-chevron-down group-chevron"></i>
+            <div class="setting-group m3-accent-wrapper" id="accent-m3-group" style="margin-bottom: 15px; grid-column: 1 / -1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div data-i18n="settings_accent_dynamic" style="font-weight: 600; font-size: 0.9rem;"><i class="fa-solid fa-wand-magic-sparkles" style="margin-right: 6px;"></i>Dynamic Color (M3)</div>
+                    <button id="m3-dynamic-color-btn" class="secondary-btn"
+                        style="border-radius: 6px; background: var(--accent-color); color: var(--accent-contrast-color, #000); border: none; font-weight: 600; padding: 6px 12px; font-size: 0.8rem; height: auto;">
+                        <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract</span>
+                    </button>
                 </div>
-                <div class="group-body" style="padding: 0 16px 16px 16px;">
-                <label class="setting-item-row accent-auto-bg-row" style="margin-bottom: 10px; padding: 10px 12px; border-radius: 8px;">
-                    <div>
-                        <span data-i18n="settings_m3_palette_style" style="font-weight: 500;">M3 palette style</span>
-                        <small data-i18n="settings_m3_palette_style_hint" style="opacity: 0.7; margin-top: 2px;">Choose how Material colors are
-                            mixed</small>
-                    </div>
-                    <select id="m3-palette-style-select" class="compact-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">
-                        <option value="tonalSpot" data-i18n="settings_m3_palette_tonal_spot">Tonal Spot</option>
-                        <option value="fidelity" data-i18n="settings_m3_palette_fidelity">Fidelity</option>
-                        <option value="content" data-i18n="settings_m3_palette_content">Content</option>
-                        <option value="vibrant" data-i18n="settings_m3_palette_vibrant">Vibrant</option>
-                        <option value="expressive" data-i18n="settings_m3_palette_expressive">Expressive</option>
-                        <option value="fruitSalad" data-i18n="settings_m3_palette_fruit_salad">Fruit Salad</option>
-                        <option value="neutral" data-i18n="settings_m3_palette_neutral">Neutral</option>
-                        <option value="monochrome" data-i18n="settings_m3_palette_monochrome">Monochrome</option>
-                        <option value="rainbow" data-i18n="settings_m3_palette_rainbow">Rainbow</option>
-                    </select>
-                </label>
-                <button id="m3-dynamic-color-btn" class="secondary-btn full-width"
-                    style="margin-bottom: 12px; border-radius: 8px; justify-content: center; background: var(--accent-color); color: var(--accent-contrast-color, #000); border: none; font-weight: 600; padding: 10px;">
-                    <i class="fa-solid fa-droplet"></i> <span data-i18n="settings_m3_dynamic">Extract from
-                        Background</span>
-                </button>
-                <label class="setting-item-row accent-auto-bg-row" style="margin-bottom: 8px; padding: 10px 12px; border-radius: 8px;">
-                    <div>
-                        <span data-i18n="settings_m3_auto_bg">Auto match background</span>
-                        <small data-i18n="settings_m3_auto_bg_hint" style="opacity: 0.7;">Update M3 accent when background
-                            changes</small>
-                    </div>
-                    <input type="checkbox" id="m3-auto-bg-toggle">
-                </label>
-                <label class="setting-item-row accent-auto-bg-row" style="margin-bottom: 8px; padding: 10px 12px; border-radius: 8px;">
-                    <div>
-                        <span data-i18n="settings_m3_widgets">Apply M3 to widgets</span>
-                        <small data-i18n="settings_m3_widgets_hint" style="opacity: 0.7;">Use the current M3 accent as widget
-                            backgrounds</small>
-                    </div>
-                    <input type="checkbox" id="m3-widgets-toggle">
-                </label>
-                <label class="setting-item-row accent-auto-bg-row" style="margin-bottom: 0; padding: 10px 12px; border-radius: 8px;">
-                    <div>
-                        <span data-i18n="settings_m3_sidebar">Apply M3 to sidebar</span>
-                        <small data-i18n="settings_m3_sidebar_hint" style="opacity: 0.7;">Slightly tint the settings sidebar background</small>
-                    </div>
-                    <input type="checkbox" id="m3-sidebar-toggle">
-                </label>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+                    <label class="setting-item-row accent-auto-bg-row" style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer;">
+                        <div>
+                            <span data-i18n="settings_m3_palette_style" style="font-weight: 500;">M3 palette style</span>
+                            <small data-i18n="settings_m3_palette_style_hint" style="opacity: 0.7; margin-top: 2px; display: block;">Choose how Material colors are mixed</small>
+                        </div>
+                        <select id="m3-palette-style-select" class="compact-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; font-size: 0.8rem; border-radius: 6px;">
+                            <option value="tonalSpot" data-i18n="settings_m3_palette_tonal_spot">Tonal Spot</option>
+                            <option value="fidelity" data-i18n="settings_m3_palette_fidelity">Fidelity</option>
+                            <option value="content" data-i18n="settings_m3_palette_content">Content</option>
+                            <option value="vibrant" data-i18n="settings_m3_palette_vibrant">Vibrant</option>
+                            <option value="expressive" data-i18n="settings_m3_palette_expressive">Expressive</option>
+                            <option value="fruitSalad" data-i18n="settings_m3_palette_fruit_salad">Fruit Salad</option>
+                            <option value="neutral" data-i18n="settings_m3_palette_neutral">Neutral</option>
+                            <option value="monochrome" data-i18n="settings_m3_palette_monochrome">Monochrome</option>
+                            <option value="rainbow" data-i18n="settings_m3_palette_rainbow">Rainbow</option>
+                        </select>
+                    </label>
+                    <label class="setting-item-row accent-auto-bg-row" style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer;">
+                        <div>
+                            <span data-i18n="settings_m3_auto_bg" style="font-weight: 500;">Auto match background</span>
+                            <small data-i18n="settings_m3_auto_bg_hint" style="opacity: 0.7; margin-top: 2px; display: block;">Update M3 accent when background changes</small>
+                        </div>
+                        <input type="checkbox" id="m3-auto-bg-toggle">
+                    </label>
+                    <label class="setting-item-row accent-auto-bg-row" style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer;">
+                        <div>
+                            <span data-i18n="settings_m3_widgets" style="font-weight: 500;">Apply M3 to widgets</span>
+                            <small data-i18n="settings_m3_widgets_hint" style="opacity: 0.7; margin-top: 2px; display: block;">Use the current M3 accent as widget backgrounds</small>
+                        </div>
+                        <input type="checkbox" id="m3-widgets-toggle">
+                    </label>
+                    <label class="setting-item-row accent-auto-bg-row" style="margin: 0; padding: 8px 10px; border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer;">
+                        <div>
+                            <span data-i18n="settings_m3_sidebar" style="font-weight: 500;">Apply M3 to sidebar</span>
+                            <small data-i18n="settings_m3_sidebar_hint" style="opacity: 0.7; margin-top: 2px; display: block;">Slightly tint the settings sidebar background</small>
+                        </div>
+                        <input type="checkbox" id="m3-sidebar-toggle">
+                    </label>
                 </div>
             </div>
 
