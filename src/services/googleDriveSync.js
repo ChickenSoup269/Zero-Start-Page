@@ -64,7 +64,7 @@ export const DriveSync = {
           let defaultName = settings.driveSyncFileName || DEFAULT_SYNC_FILE_NAME
 
           const files = await this.getAllJsonFiles(token)
-          const fileName = await showFileSelector("Select Sync Backup File", files, defaultName)
+          const fileName = await showFileSelector("sync_select_file", files, defaultName)
           
           if (!fileName) {
             throw new Error("User cancelled sync setup")

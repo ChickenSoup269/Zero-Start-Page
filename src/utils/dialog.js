@@ -596,35 +596,61 @@ export function showFileSelector(title, files, defaultValue) {
     const i18n = geti18n()
 
     let optionsHtml = files.map(f => `
-      <div class="dialog-file-option" data-name="${f.name}" style="padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s;">
-        <i class="fa-solid fa-file-code" style="color: var(--accent-color);"></i>
-        <div style="flex: 1; display: flex; flex-direction: column;">
-          <span style="font-weight: bold; font-size: 0.9rem;">${f.name}</span>
-          <span style="font-size: 0.75rem; opacity: 0.7;">Modified: ${new Date(f.modifiedTime).toLocaleString()}</span>
+      <div class="dialog-file-option" data-name="${f.name}" style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); background: rgba(255,255,255,0.02);">
+        <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <i class="fa-solid fa-file-code" style="color: var(--accent-color, #818cf8); font-size: 1.1rem;"></i>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <span style="font-weight: 500; font-size: 0.95rem; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${f.name}</span>
+          <span style="font-size: 0.75rem; opacity: 0.6; margin-top: 2px;">${i18n.sync_modified || "Modified"}: ${new Date(f.modifiedTime).toLocaleString()}</span>
         </div>
       </div>
     `).join("")
 
     if (files.length === 0) {
-      optionsHtml = `<div style="text-align: center; opacity: 0.5; padding: 8px; font-size: 0.85rem;">No existing JSON files found on Drive.</div>`
+      optionsHtml = `<div style="text-align: center; opacity: 0.5; padding: 16px; font-size: 0.9rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">${i18n.sync_no_files || "No existing JSON files found on Drive."}</div>`
+    }
+
+    let filterHtml = ""
+    if (files.length > 3) {
+      filterHtml = `<input type="text" id="file-filter-input" placeholder="${i18n.search_placeholder || "Search..."}" style="font-size: 0.85rem; padding: 8px 10px; border-radius: 6px; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.08); color: var(--text-color); width: 100%; margin-bottom: 8px; transition: border-color 0.2s;" />`
     }
 
     container.innerHTML = `
-      <div class="custom-dialog custom-prompt">
-        ${title ? `<div class="dialog-header">${title}</div>` : ""}
-        <div class="dialog-body" style="padding-bottom: 10px;">
-          <div style="margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; opacity: 0.8;">Select existing file:</div>
-          <div id="file-options-list" style="max-height: 180px; overflow-y: auto; margin-bottom: 12px; padding-right: 4px;">
+      <style>
+        .dialog-file-option:hover {
+          background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.1) !important;
+          border-color: rgba(var(--accent-color-rgb, 129, 140, 248), 0.3) !important;
+          transform: translateY(-1px);
+        }
+        .dialog-file-option.selected {
+          background: rgba(var(--accent-color-rgb, 129, 140, 248), 0.15) !important;
+          border-color: var(--accent-color, #818cf8) !important;
+        }
+        #file-options-list::-webkit-scrollbar { width: 6px; }
+        #file-options-list::-webkit-scrollbar-track { background: transparent; }
+        #file-options-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        #file-options-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+      </style>
+      <div class="custom-dialog custom-prompt" style="max-width: 420px; width: 90%;">
+        ${title ? `<div class="dialog-header" style="font-size: 1.15rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 12px;">${i18n[title] || title}</div>` : ""}
+        <div class="dialog-body" style="padding-bottom: 4px;">
+          <div style="margin-bottom: 10px; font-weight: 500; font-size: 0.9rem; opacity: 0.85; display: flex; justify-content: space-between; align-items: center;">
+            <span>${i18n.sync_select_existing || "Select an existing file:"}</span>
+            <span style="font-size: 0.75rem; opacity: 0.6; font-weight: normal;">${files.length} files</span>
+          </div>
+          ${filterHtml}
+          <div id="file-options-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 16px; padding-right: 6px;">
             ${optionsHtml}
           </div>
-          <div style="margin-bottom: 4px; font-weight: bold; font-size: 0.85rem; opacity: 0.8;">Or enter a filename:</div>
-          <input type="text" class="dialog-input" id="prompt-input" value="${defaultValue}" placeholder="e.g. startpage_backup.json" />
+          <div style="margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; opacity: 0.85;">${i18n.sync_enter_filename || "Or enter a filename:"}</div>
+          <input type="text" class="dialog-input" id="prompt-input" value="${defaultValue}" placeholder="${i18n.sync_filename_placeholder || "e.g. startpage_backup.json"}" style="font-size: 0.95rem; padding: 10px 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: var(--text-color); width: 100%; transition: border-color 0.2s;" />
         </div>
-        <div class="dialog-footer">
-          <button class="dialog-btn dialog-btn-secondary" id="prompt-cancel">
+        <div class="dialog-footer" style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 16px;">
+          <button class="dialog-btn dialog-btn-secondary" id="prompt-cancel" style="border-radius: 6px;">
             ${i18n.cancel || "Cancel"}
           </button>
-          <button class="dialog-btn dialog-btn-primary" id="prompt-ok">
+          <button class="dialog-btn dialog-btn-primary" id="prompt-ok" style="border-radius: 6px;">
             ${i18n.ok || "OK"}
           </button>
         </div>
@@ -643,10 +669,24 @@ export function showFileSelector(title, files, defaultValue) {
         input.value = el.dataset.name
         
         // Visual feedback
-        optionEls.forEach(o => o.style.background = "")
-        el.style.background = "var(--bg-hover, rgba(0,0,0,0.05))"
+        optionEls.forEach(o => o.classList.remove("selected"))
+        el.classList.add("selected")
       })
     })
+
+    const filterInput = container.querySelector("#file-filter-input")
+    if (filterInput) {
+      filterInput.addEventListener("input", (e) => {
+        const term = e.target.value.toLowerCase()
+        optionEls.forEach(el => {
+          if (el.dataset.name.toLowerCase().includes(term)) {
+            el.style.display = "flex"
+          } else {
+            el.style.display = "none"
+          }
+        })
+      })
+    }
 
     setTimeout(() => {
       input.focus()
