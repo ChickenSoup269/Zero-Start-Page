@@ -15,7 +15,7 @@ import { showToast } from "../../utils/toast.js"
 import { getImageUrl } from "../../services/imageStore.js"
 
 const PREDEFINED_FONTS = [
-  { label: "Outfit", value: "'Outfit', sans-serif", google: true },
+  { label: "Space Grotesk", value: "'Space Grotesk', sans-serif", google: true },
   { label: "Inter", value: "'Inter', sans-serif", google: true },
   { label: "Poppins", value: "'Poppins', sans-serif", google: true },
   { label: "Roboto", value: "'Roboto', sans-serif", google: true },
@@ -135,8 +135,8 @@ async function initFont() {
 
   // 2. Load Google Fonts for active font / clockFont
   const fontsToLoad = [
-    settings.font || "'Outfit', sans-serif",
-    settings.clockFont || "'Outfit', sans-serif",
+    settings.font || "'Space Grotesk', sans-serif",
+    settings.clockFont || "'Space Grotesk', sans-serif",
   ]
   fontsToLoad.forEach((currentFontValue) => {
     const fontName = currentFontValue.replace(/['"]/g, "").split(",")[0].trim()
@@ -150,7 +150,7 @@ async function initFont() {
       (savedFontObj.isLocal || savedFontObj.isLocalFile)
     const isGoogleFont =
       (fontDef && fontDef.google) || (savedFontObj && !isLocal)
-    const isPreloaded = ["Outfit"].includes(fontName)
+    const isPreloaded = ["Space Grotesk"].includes(fontName)
 
     if (isGoogleFont && !isPreloaded) {
       if (!(fontDef && !fontDef.google)) {

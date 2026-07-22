@@ -2073,9 +2073,9 @@ function createApplySettings(effectInstances) {
     )
 
     // 1. Identify primary and clock fonts
-    const rawFont = settings.font || "'Outfit', sans-serif"
+    const rawFont = settings.font || "'Space Grotesk', sans-serif"
     const rawClockFont =
-      settings.clockFont || settings.font || "'Outfit', sans-serif"
+      settings.clockFont || settings.font || "'Space Grotesk', sans-serif"
 
     const isRestrictedFont = (f) =>
       f.includes("Electroharmonix") ||
@@ -2083,7 +2083,7 @@ function createApplySettings(effectInstances) {
       f.includes("E1234")
 
     const primaryFont = isRestrictedFont(rawFont)
-      ? "'Outfit', sans-serif"
+      ? "'Space Grotesk', sans-serif"
       : rawFont
     const clockFont = rawClockFont
     const getFontName = (font) =>

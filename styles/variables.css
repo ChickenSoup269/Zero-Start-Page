@@ -96,7 +96,7 @@
     var(--bg-gradient-end)
   );
   --text-color: #ffffff;
-  --font-primary: "Outfit", sans-serif;
+  --font-primary: "Space Grotesk", sans-serif;
   --font-clock-date: var(--font-primary);
   --font-clock: var(--font-clock-date);
   --font-date: var(--font-clock-date);
