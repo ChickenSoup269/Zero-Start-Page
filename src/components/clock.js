@@ -64,17 +64,17 @@ function playC4BombCountdownBeep(remainingSeconds) {
 
 function clearC4BombFastTick() {
   if (!c4BombFastTickTimer) return
-  clearTimeout(c4BombFastTickTimer)
+  cancelAnimationFrame(c4BombFastTickTimer)
   c4BombFastTickTimer = null
 }
 
 function scheduleC4BombFastTick() {
   if (c4BombFastTickTimer) return
 
-  c4BombFastTickTimer = setTimeout(() => {
+  c4BombFastTickTimer = requestAnimationFrame(() => {
     c4BombFastTickTimer = null
     if (c4BombDetonateAt) updateTime()
-  }, 25)
+  })
 }
 
 function getC4BombFastTicks(remainingMs) {
@@ -1363,7 +1363,7 @@ export function updateTime() {
     const dateEl = cyberRoot.querySelector(".cyber-date")
     if (dateEl) {
       const dTxt = isTimer ? countdownLabel : dateStr
-      if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
+      if (dateEl.getAttribute("data-raw-html") !== dTxt) { dateEl.innerHTML = dTxt; dateEl.setAttribute("data-raw-html", dTxt); }
       dateEl.style.display = dTxt ? "block" : "none"
     }
   } else if (dateClockStyle === "neon-grid") {
@@ -1567,7 +1567,7 @@ export function updateTime() {
 
     const statusEl = root.querySelector(".c4-bomb-status")
     const statusHtml = `${statusText} / ${weekday}`
-    if (statusEl.innerHTML !== statusHtml) statusEl.innerHTML = statusHtml
+    if (statusEl.getAttribute("data-raw-html") !== statusHtml) { statusEl.innerHTML = statusHtml; statusEl.setAttribute("data-raw-html", statusHtml); }
 
     const timeEl = root.querySelector(".c4-bomb-time")
     const timeHtml = c4BombExploded
@@ -1586,11 +1586,11 @@ export function updateTime() {
           ${ss ? `<span class="c4-bomb-second">${ss}</span>` : ""}
           ${ampm ? `<span class="c4-bomb-ampm">${ampm}</span>` : ""}
         `
-    if (timeEl.innerHTML !== timeHtml) timeEl.innerHTML = timeHtml
+    if (timeEl.getAttribute("data-raw-html") !== timeHtml) { timeEl.innerHTML = timeHtml; timeEl.setAttribute("data-raw-html", timeHtml); }
 
     const codeLineEl = root.querySelector(".c4-bomb-code-line")
     const codeHtml = c4BombUnlocked ? "PASS 7355608 ACCEPTED" : `PASS ${inputDisplay}`
-    if (codeLineEl.innerHTML !== codeHtml) codeLineEl.innerHTML = codeHtml
+    if (codeLineEl.getAttribute("data-raw-html") !== codeHtml) { codeLineEl.innerHTML = codeHtml; codeLineEl.setAttribute("data-raw-html", codeHtml); }
 
     const dateWrapEl = root.querySelector(".c4-bomb-date-wrapper")
     const dateHtml = isCounting
@@ -1602,7 +1602,7 @@ export function updateTime() {
           : dateStr
             ? `<div class="c4-bomb-date">${dateStr}</div>`
             : ""
-    if (dateWrapEl.innerHTML !== dateHtml) dateWrapEl.innerHTML = dateHtml
+    if (dateWrapEl.getAttribute("data-raw-html") !== dateHtml) { dateWrapEl.innerHTML = dateHtml; dateWrapEl.setAttribute("data-raw-html", dateHtml); }
 
     const leverBtn = root.querySelector(".c4-bomb-lever")
     leverBtn.setAttribute("aria-pressed", c4BombLeverOn ? "true" : "false")
@@ -1672,7 +1672,7 @@ export function updateTime() {
     const dateEl = holoRoot.querySelector(".holo-ring-date")
     if (dateEl) {
       const dTxt = isTimer ? countdownLabel : dateStr
-      if (dateEl.innerHTML !== dTxt) dateEl.innerHTML = dTxt
+      if (dateEl.getAttribute("data-raw-html") !== dTxt) { dateEl.innerHTML = dTxt; dateEl.setAttribute("data-raw-html", dTxt); }
       dateEl.style.display = dTxt ? "block" : "none"
     }
   } else if (dateClockStyle === "media-orb") {
@@ -1904,7 +1904,7 @@ export function updateTime() {
     const dateEl = cartoonRoot.querySelector(".cartoon-date")
     if (dateEl) {
       const dateText = isTimer ? timerRunningLabel : dateStr
-      if (dateEl.innerHTML !== dateText) dateEl.innerHTML = dateText
+      if (dateEl.getAttribute("data-raw-html") !== dateText) { dateEl.innerHTML = dateText; dateEl.setAttribute("data-raw-html", dateText); }
       dateEl.style.display = dateText ? "block" : "none"
     }
   } else if (dateClockStyle === "minimalist-word") {
@@ -2082,7 +2082,7 @@ export function updateTime() {
     } else {
        gfTextEl.style.display = 'block';
        const textHtml = customText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-       if (gfTextEl.innerHTML !== textHtml) gfTextEl.innerHTML = textHtml;
+       if (gfTextEl.getAttribute("data-raw-html") !== textHtml) { gfTextEl.innerHTML = textHtml; gfTextEl.setAttribute("data-raw-html", textHtml); };
     }
     
     const hourHtml = hh.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
@@ -2090,19 +2090,19 @@ export function updateTime() {
     const minuteHtml = mm.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
     
     const hEl = clockElement.querySelector('.gf-hour');
-    if (hEl.innerHTML !== hourHtml) hEl.innerHTML = hourHtml;
+    if (hEl.getAttribute("data-raw-html") !== hourHtml) { hEl.innerHTML = hourHtml; hEl.setAttribute("data-raw-html", hourHtml); };
     
     const cEl = clockElement.querySelector('.gf-colon');
-    if (cEl.innerHTML !== colonHtml) cEl.innerHTML = colonHtml;
+    if (cEl.getAttribute("data-raw-html") !== colonHtml) { cEl.innerHTML = colonHtml; cEl.setAttribute("data-raw-html", colonHtml); };
     
     const mEl = clockElement.querySelector('.gf-minute');
-    if (mEl.innerHTML !== minuteHtml) mEl.innerHTML = minuteHtml;
+    if (mEl.getAttribute("data-raw-html") !== minuteHtml) { mEl.innerHTML = minuteHtml; mEl.setAttribute("data-raw-html", minuteHtml); };
     
     const dateStr = getCustomDateString(now, langCode, tz, settings);
     const dateText = dateStr.replace(/<[^>]*>?/gm, '') || "";
     const dateHtml = dateText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
     const dEl = clockElement.querySelector('.gf-date');
-    if (dEl.innerHTML !== dateHtml) dEl.innerHTML = dateHtml;
+    if (dEl.getAttribute("data-raw-html") !== dateHtml) { dEl.innerHTML = dateHtml; dEl.setAttribute("data-raw-html", dateHtml); };
   } else if (dateClockStyle === "space-concentric") {
     const currentMonth = now.getMonth();
     const currentDay = now.getDate() - 1;
@@ -2155,14 +2155,14 @@ export function updateTime() {
       const el = clockElement.querySelector(`#${id}`);
       if (el) {
         el.style.transform = `rotate(${angle}deg)`;
+        const currentActive = el.querySelector('.sc-text-item.is-active');
         const items = el.querySelectorAll('.sc-text-item');
-        items.forEach((item, idx) => {
-          if (idx === activeIndex) {
-            item.classList.add('is-active');
-          } else {
-            item.classList.remove('is-active');
-          }
-        });
+        const nextActive = items[activeIndex];
+        
+        if (currentActive !== nextActive) {
+          if (currentActive) currentActive.classList.remove('is-active');
+          if (nextActive) nextActive.classList.add('is-active');
+        }
       }
     }
     setRingRot('sc-ring-month', monthAngle, currentMonth);

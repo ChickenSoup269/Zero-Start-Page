@@ -32,9 +32,14 @@ class MusicVisualizer {
     this.cachedParentHeight = 60
     this.cachedAccent = "#64f4d2"
     this.isWhiteBlurCached = false
+    this._cpuSave = getSettings().musicVisualizerCpuSave !== false
     this.isWhiteModeCached = false
     this._lastConfigCheck = 0
-    this._resizeListener = this.updateDimensions.bind(this)
+    this._resizeTimeout = null
+    this._resizeListener = () => {
+      clearTimeout(this._resizeTimeout)
+      this._resizeTimeout = setTimeout(() => this.updateDimensions(), 150)
+    }
   }
 
   init(musicPlayerContainer) {
@@ -169,16 +174,17 @@ class MusicVisualizer {
     const rect = this.container.getBoundingClientRect()
     const parentRect = parent.getBoundingClientRect?.()
 
-    this.cachedW = rect.width || this.container.offsetWidth || parent.offsetWidth || 276
-    this.cachedH = rect.height || this.container.offsetHeight || parent.offsetHeight || 60
-    this.cachedParentWidth = parentRect?.width || parent.offsetWidth || this.cachedW
-    this.cachedParentHeight = parentRect?.height || parent.offsetHeight || this.cachedH
+    this.cachedW = Math.round(rect.width || this.container.offsetWidth || parent.offsetWidth || 276)
+    this.cachedH = Math.round(rect.height || this.container.offsetHeight || parent.offsetHeight || 60)
+    this.cachedParentWidth = Math.round(parentRect?.width || parent.offsetWidth || this.cachedW)
+    this.cachedParentHeight = Math.round(parentRect?.height || parent.offsetHeight || this.cachedH)
 
     this.cachedAccent = getComputedStyle(parent).getPropertyValue("--accent-color").trim() || "#64f4d2"
 
     this.isWhiteBlurCached = parent.classList.contains("skin-white-blur") || 
                              document.body.classList.contains("quick-access-white")
 
+    this._cpuSave = getSettings().musicVisualizerCpuSave !== false
     this.isWhiteModeCached = document.body.classList.contains("quick-access-white") || 
                              this.container.closest(".skin-white-blur") !== null ||
                              this.container.classList.contains("skin-white-blur") ||
@@ -213,7 +219,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save mode
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -260,7 +266,7 @@ class MusicVisualizer {
       canvas.width = targetW
       canvas.height = targetH
     }
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, W, H)
 
@@ -278,7 +284,7 @@ class MusicVisualizer {
           ? 0.42
           : 0
 
-    const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+    const isCpuSave = this._cpuSave !== false
 
     const drawNcsRing = (phaseOffset, alphaBase, width, expansion, holdEnd) => {
       const phase = this.isPlaying ? (this.orbitPhase + phaseOffset) % 1 : 0.08
@@ -362,7 +368,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -403,12 +409,13 @@ class MusicVisualizer {
     if (!canvas) return
     const W = this.cachedParentWidth
     const H = this.cachedParentHeight
+    const now = Date.now()
 
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
     }
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.scale(2, 2)
@@ -420,7 +427,7 @@ class MusicVisualizer {
       norm = 0.15
     }
 
-    const time = Date.now() * 0.002
+    const time = now * 0.002
     const isWhiteBlur = this.isWhiteBlurCached
     
     // Vẽ 3 lớp sóng biển
@@ -520,7 +527,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -580,12 +587,13 @@ class MusicVisualizer {
     if (!canvas) return
     const W = this.cachedParentWidth
     const H = this.cachedParentHeight
+    const now = Date.now()
 
     if (canvas.width !== W * 2) {
       canvas.width = W * 2
       canvas.height = H * 2
     }
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.save()
     ctx.scale(2, 2)
@@ -609,7 +617,7 @@ class MusicVisualizer {
       ctx.lineWidth = v.thickness * (1 + norm * 0.5)
       ctx.globalAlpha = isWhiteBlur ? (0.15 + norm * 0.2) : (0.25 + norm * 0.3)
 
-      const time = Date.now() * 0.001 * v.speed
+      const time = now * 0.001 * v.speed
       // Chuyển động đung đưa (Swaying)
       const sway = Math.sin(time + idx) * (v.curve + norm * 15)
       
@@ -660,7 +668,7 @@ class MusicVisualizer {
     const grassCount = 15
     for (let i = 0; i < grassCount; i++) {
       const x = (i / (grassCount - 1)) * W
-      const h = (15 + Math.sin(i + Date.now() * 0.003) * 5) * (1 + norm)
+      const h = (15 + Math.sin(i + now * 0.003) * 5) * (1 + norm)
       ctx.fillStyle = isWhiteBlur ? "#000000" : (i % 2 === 0 ? "#1b5e20" : "#2e7d32")
       ctx.globalAlpha = isWhiteBlur ? (0.2 + norm * 0.2) : (0.5 + norm * 0.3)
       ctx.beginPath()
@@ -676,7 +684,7 @@ class MusicVisualizer {
       if (this.isPlaying) {
         p.y += p.speed * dt * (1 + norm * 2)
         p.rotation += p.rotSpeed * dt * (1 + norm * 5)
-        p.x += Math.sin(p.phase + Date.now() * 0.002) * 5 * dt
+        p.x += Math.sin(p.phase + now * 0.002) * 5 * dt
       }
 
       ctx.save()
@@ -744,7 +752,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -784,7 +792,7 @@ class MusicVisualizer {
       canvas.height = H * 2
     }
 
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     ctx.save()
@@ -805,7 +813,7 @@ class MusicVisualizer {
 
     this._baseYOffset += (Math.random() - 0.5) * 2
     this._baseYOffset *= 0.98
-    const drift = Math.sin(Date.now() * 0.003) * 5
+    const drift = Math.sin(now * 0.003) * 5
     const currentBaseY = H / 2 + this._baseYOffset + drift
 
     const scrollSpeed = (W / 1.5) * dt
@@ -842,7 +850,7 @@ class MusicVisualizer {
       }
     }
 
-    const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+    const isCpuSave = this._cpuSave !== false
 
     if (this.heartbeatPoints.length > 1) {
       ctx.beginPath()
@@ -926,7 +934,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -964,7 +972,7 @@ class MusicVisualizer {
     const H = this.cachedH
     if (canvas.width !== W) canvas.width = W
     if (canvas.height !== H) canvas.height = H
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.clearRect(0, 0, W, H)
     
     const isWhiteBlur = this.isWhiteBlurCached
@@ -1064,7 +1072,7 @@ class MusicVisualizer {
         return
       }
 
-      const isCpuSave = getSettings().musicVisualizerCpuSave !== false
+      const isCpuSave = this._cpuSave !== false
       const elapsed = ts - this._lastFrameTime
       if (isCpuSave && elapsed < 33) return // Lock to ~30 FPS only in CPU-save
       this._lastFrameTime = ts - (elapsed % (isCpuSave ? 33 : 1))
@@ -1105,7 +1113,7 @@ class MusicVisualizer {
       canvas.height = CH * 3
     }
 
-    const ctx = canvas.getContext("2d")
+    const ctx = this.ctx || (this.ctx = canvas.getContext("2d"))
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     const isWhiteBlur = this.isWhiteBlurCached
@@ -1337,35 +1345,18 @@ class MusicVisualizer {
 
   _startCSSLoop() {
     this._stopCSSLoop()
-    const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
-    bars.forEach((bar) => {
+    this.bars.forEach((bar) => {
       bar.classList.add("playing")
     })
   }
 
-  _shouldSkipBarVisualizer(bars = this.bars) {
-    if (!this.container || !bars?.length) return true
-    const containerStyle = getComputedStyle(this.container)
-    if (
-      containerStyle.display === "none" ||
-      containerStyle.visibility === "hidden"
-    ) {
-      return true
-    }
-
-    return bars.every((bar) => {
-      const style = getComputedStyle(bar)
-      return style.display === "none" || style.visibility === "hidden"
-    })
-  }
 
   _stopCSSLoop() {
     if (this._cssAnimId) {
       cancelAnimationFrame(this._cssAnimId)
       this._cssAnimId = null
     }
-    const bars = Array.from(this.container.querySelectorAll(".visualizer-bar"))
-    bars.forEach((bar) => {
+    this.bars.forEach((bar) => {
       bar.style.height = ""
       bar.classList.remove("playing")
     })
