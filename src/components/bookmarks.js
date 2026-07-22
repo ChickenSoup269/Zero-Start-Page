@@ -1875,15 +1875,35 @@ export function renderBookmarks() {
 
   // Use requestAnimationFrame so UI can render before calculations
   requestAnimationFrame(() => {
-    updateOverflowBookmarks()
-    // Defer animations to the next frame to prevent forced reflow layout thrashing
-    requestAnimationFrame(() => {
-      animateBookmarksForFolderSwitch()
-    })
+    // PHASE 1: READS (Forces 1 layout calculation)
+    let animReads = null
+    let containerRect = null
+    if (pendingFolderBookmarkReveal) {
+      const items = Array.from(
+        bookmarksContainer.querySelectorAll(".bookmark, .add-bookmark-card"),
+      )
+      animReads = items.map((item) => ({
+        item,
+        rect: item.getBoundingClientRect(),
+      }))
+      containerRect = bookmarksContainer.getBoundingClientRect()
+    }
+
+    // updateOverflowBookmarks reads layout (fast since layout is fresh) then writes (mutates DOM)
+    updateOverflowBookmarks(true) // true = skip early overflow mutation
+
+    // PHASE 2: WRITES
+    if (pendingFolderBookmarkReveal) {
+      // Filter out items that were hidden by updateOverflowBookmarks
+      const visibleAnimReads = animReads.filter(
+        (read) => read.item.style.display !== "none" && !read.item.classList.contains("overflow-indicator")
+      )
+      animateBookmarksForFolderSwitch(visibleAnimReads, containerRect)
+    }
   })
 }
 
-export function updateOverflowBookmarks() {
+export function updateOverflowBookmarks(skipEarlyOverflowMutation = false) {
   const i18n = geti18n()
   const container = document.getElementById("bookmarks-container")
   if (!container) return
@@ -1916,10 +1936,12 @@ export function updateOverflowBookmarks() {
   const isTaskbarTop = mode === "taskbar-top"
   const isTaskbarRight = mode === "taskbar-right"
 
-  if (!isDefault) {
-    if (container.style.overflow !== "hidden") container.style.overflow = "hidden"
-  } else {
-    if (container.style.overflow !== "") container.style.overflow = ""
+  if (!skipEarlyOverflowMutation) {
+    if (!isDefault) {
+      if (container.style.overflow !== "hidden") container.style.overflow = "hidden"
+    } else {
+      if (container.style.overflow !== "") container.style.overflow = ""
+    }
   }
 
   const addBtn = children.find((child) =>
@@ -2347,21 +2369,13 @@ function animateGroupTabActiveRunner() {
   }, 330)
 }
 
-function animateBookmarksForFolderSwitch() {
-  if (!pendingFolderBookmarkReveal || !bookmarksContainer) return
+function animateBookmarksForFolderSwitch(animReads, containerRect) {
+  if (!bookmarksContainer) return
   pendingFolderBookmarkReveal = false
 
   if (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) return
 
-  const items = Array.from(
-    bookmarksContainer.querySelectorAll(".bookmark, .add-bookmark-card"),
-  ).filter(
-    (item) =>
-      !item.classList.contains("overflow-indicator") &&
-      item.style.display !== "none" &&
-      item.getBoundingClientRect().width > 0,
-  )
-  if (items.length === 0) return
+  if (!animReads || animReads.length === 0) return
 
   const isVertical = document.body.classList.contains("bookmark-sidebar-mode")
   const isHorizontal =
@@ -2371,15 +2385,13 @@ function animateBookmarksForFolderSwitch() {
     document.body.classList.contains("bookmark-taskbar-right-mode")
   const isGrid = !isVertical && !isHorizontal
 
-  const containerRect = bookmarksContainer.getBoundingClientRect()
   const centerX = containerRect.left + containerRect.width / 2
   const centerY = containerRect.top + containerRect.height / 2
   const center = isVertical
     ? containerRect.top + containerRect.height / 2
     : containerRect.left + containerRect.width / 2
 
-  const itemMeta = items.map((item) => {
-    const rect = item.getBoundingClientRect()
+  const itemMeta = animReads.map(({ item, rect }) => {
     const itemCenterX = rect.left + rect.width / 2
     const itemCenterY = rect.top + rect.height / 2
     const itemCenter = isVertical
