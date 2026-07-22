@@ -1088,6 +1088,38 @@ export function showContextMenu(
       if (id === "timer") {
         addTimerAlarmDropdownToggle(i18n, settings, borderBtn)
       }
+
+      if (id === "daily-quotes") {
+        const sourceKey = "quotesSource"
+        const currentSource = settings[sourceKey] || "local"
+        
+        const sourceBtn = document.createElement("div")
+        sourceBtn.className = "context-menu-item custom-music-item"
+        const sourceNames = {
+          local: i18n.settings_quotes_source_local || "Local (Offline)",
+          quotable: i18n.settings_quotes_source_quotable || "Quotable API",
+          adviceslip: i18n.settings_quotes_source_advice || "Advice Slip API"
+        }
+        const nextSources = {
+          local: "quotable",
+          quotable: "adviceslip",
+          adviceslip: "local"
+        }
+        const nextSource = nextSources[currentSource] || "local"
+        
+        sourceBtn.innerHTML = `<i class="fa-solid fa-server"></i> <span>${i18n.settings_quotes_source || "API Source"}: ${sourceNames[currentSource]}</span>`
+        sourceBtn.onclick = () => {
+          updateSetting(sourceKey, nextSource)
+          saveSettings(true)
+          window.dispatchEvent(
+            new CustomEvent("layoutUpdated", {
+              detail: { key: sourceKey, value: nextSource },
+            }),
+          )
+          hideContextMenu()
+        }
+        contextMenu.insertBefore(sourceBtn, menuLock)
+      }
     }
 
     // THÊM TÙY CHỌN RIÊNG CHO MUSIC PLAYER

@@ -518,7 +518,97 @@ export class DailyQuotes {
     this.container.classList.toggle("skin-light-transparent", skin === "light-transparent")
   }
 
-  updateQuote(isManual = false) {
+  async updateQuote(isManual = false) {
+    const source = getSettings().quotesSource || "local"
+    
+    if (source === "quotable") {
+      await this.fetchFromQuotable(isManual);
+      return;
+    }
+    if (source === "adviceslip") {
+      await this.fetchFromAdviceSlip(isManual);
+      return;
+    }
+
+    this.updateLocalQuote(isManual);
+  }
+
+  async fetchFromQuotable(isManual) {
+    const textEl = this.container.querySelector(".quote-text")
+    const authEl = this.container.querySelector(".quote-author")
+    
+    try {
+      if (textEl) {
+        textEl.style.opacity = 0
+        setTimeout(() => {
+          textEl.textContent = "..."
+          textEl.style.opacity = 1
+        }, 200)
+      }
+      
+      const response = await fetch('https://api.quotable.io/random')
+      if (!response.ok) throw new Error("API Network error")
+      const data = await response.json()
+      
+      if (textEl) {
+        textEl.style.opacity = 0
+        setTimeout(() => {
+          textEl.textContent = data.content
+          textEl.style.opacity = 1
+        }, 200)
+      }
+      if (authEl) {
+        authEl.style.opacity = 0
+        setTimeout(() => {
+          authEl.textContent = `- ${data.author}`
+          authEl.style.opacity = 1
+        }, 200)
+      }
+    } catch(err) {
+      console.warn("Quotable fallback to local", err)
+      this.updateLocalQuote(isManual)
+    }
+  }
+
+  async fetchFromAdviceSlip(isManual) {
+    const textEl = this.container.querySelector(".quote-text")
+    const authEl = this.container.querySelector(".quote-author")
+    
+    try {
+      if (textEl) {
+        textEl.style.opacity = 0
+        setTimeout(() => {
+          textEl.textContent = "..."
+          textEl.style.opacity = 1
+        }, 200)
+      }
+      
+      const response = await fetch('https://api.adviceslip.com/advice')
+      if (!response.ok) throw new Error("API Network error")
+      const data = await response.json()
+      
+      if (textEl) {
+        textEl.style.opacity = 0
+        setTimeout(() => {
+          textEl.textContent = data.slip.advice
+          textEl.style.opacity = 1
+        }, 200)
+      }
+      if (authEl) {
+        authEl.style.opacity = 0
+        setTimeout(() => {
+          authEl.textContent = `- Advice Slip`
+          authEl.style.opacity = 1
+        }, 200)
+      }
+    } catch(err) {
+      console.warn("AdviceSlip fallback to local", err)
+      this.updateLocalQuote(isManual)
+    }
+  }
+
+
+  updateLocalQuote(isManual = false) {
     if (this.currentIndex === -1 || isManual) {
       if (isManual) {
         let newIndex
@@ -641,6 +731,9 @@ export class DailyQuotes {
       }
       if (e.detail.key === "quotesSkin") {
         this.applySkin()
+      }
+      if (e.detail.key === "quotesSource") {
+        this.updateQuote(true)
       }
     })
   }
