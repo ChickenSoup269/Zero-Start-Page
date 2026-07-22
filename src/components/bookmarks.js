@@ -1876,7 +1876,10 @@ export function renderBookmarks() {
   // Use requestAnimationFrame so UI can render before calculations
   requestAnimationFrame(() => {
     updateOverflowBookmarks()
-    animateBookmarksForFolderSwitch()
+    // Defer animations to the next frame to prevent forced reflow layout thrashing
+    requestAnimationFrame(() => {
+      animateBookmarksForFolderSwitch()
+    })
   })
 }
 
