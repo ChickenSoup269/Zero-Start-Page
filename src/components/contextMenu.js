@@ -673,7 +673,7 @@ export function showContextMenu(
 
     let isLocked = settings.lockedWidgets && settings.lockedWidgets[id]
     if (id === "custom-title") {
-      isLocked = settings.freeMoveCustomTitle !== true
+      isLocked = settings.lockedWidgets && settings.lockedWidgets["customTitle"]
     }
 
     const lockText = menuLock.querySelector("span")
@@ -2433,14 +2433,11 @@ function handleLock() {
     const settings = getSettings()
     
     if (contextMenuTargetId === "custom-title") {
-      const isFree = settings.freeMoveCustomTitle === true
-      updateSetting("freeMoveCustomTitle", !isFree)
+      const lockedWidgets = settings.lockedWidgets || {}
+      const isLocked = lockedWidgets["customTitle"]
+      lockedWidgets["customTitle"] = !isLocked
+      updateSetting("lockedWidgets", lockedWidgets)
       saveSettings()
-      window.dispatchEvent(
-        new CustomEvent("layoutUpdated", {
-          detail: { key: "freeMoveCustomTitle", value: !isFree },
-        }),
-      )
       hideContextMenu()
       return
     }
