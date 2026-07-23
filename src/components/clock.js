@@ -2081,13 +2081,13 @@ export function updateTime() {
        gfTextEl.innerHTML = "";
     } else {
        gfTextEl.style.display = 'block';
-       const textHtml = customText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+       const textHtml = customText.split('').map(c => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
        if (gfTextEl.getAttribute("data-raw-html") !== textHtml) { gfTextEl.innerHTML = textHtml; gfTextEl.setAttribute("data-raw-html", textHtml); };
     }
     
-    const hourHtml = hh.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
-    const colonHtml = `<span class="gf-char" style="--anim-index: ${animIdx++}">:</span>`;
-    const minuteHtml = mm.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    const hourHtml = hh.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    const colonHtml = `<span class="gf-char" data-char=":" style="--anim-index: ${animIdx++}">:</span>`;
+    const minuteHtml = mm.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
     
     const hEl = clockElement.querySelector('.gf-hour');
     if (hEl.getAttribute("data-raw-html") !== hourHtml) { hEl.innerHTML = hourHtml; hEl.setAttribute("data-raw-html", hourHtml); };
@@ -2100,7 +2100,7 @@ export function updateTime() {
     
     const dateStr = getCustomDateString(now, langCode, tz, settings);
     const dateText = dateStr.replace(/<[^>]*>?/gm, '') || "";
-    const dateHtml = dateText.split('').map(c => `<span class="gf-char" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+    const dateHtml = dateText.split('').map(c => `<span class="gf-char" data-char="${c === ' ' ? '&nbsp;' : c}" style="--anim-index: ${animIdx++}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
     const dEl = clockElement.querySelector('.gf-date');
     if (dEl.getAttribute("data-raw-html") !== dateHtml) { dEl.innerHTML = dateHtml; dEl.setAttribute("data-raw-html", dateHtml); };
   } else if (dateClockStyle === "space-concentric") {
