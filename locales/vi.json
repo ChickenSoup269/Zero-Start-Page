@@ -1935,6 +1935,8 @@
   "settings_custom_title_animation_flip": "Lật (Flip)",
   "settings_custom_title_animation_shake": "Rung lắc (Shake)",
   "settings_custom_title_animation_float": "Lơ lửng (Float)",
+  "settings_custom_title_animation_neon": "Chớp sáng (Neon)",
+  "settings_custom_title_animation_focus": "Tiêu điểm (Focus)",
   "settings_custom_title_animation_loop_label": "Chế độ lặp",
   "settings_custom_title_animation_loop_infinite": "Lặp liên tục",
   "settings_custom_title_animation_loop_once": "Chạy 1 lần",

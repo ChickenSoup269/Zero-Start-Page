@@ -1942,6 +1942,8 @@
   "settings_custom_title_animation_flip": "Flip",
   "settings_custom_title_animation_shake": "Shake",
   "settings_custom_title_animation_float": "Float",
+  "settings_custom_title_animation_neon": "Neon",
+  "settings_custom_title_animation_focus": "Focus",
   "settings_custom_title_animation_loop_label": "Animation Loop",
   "settings_custom_title_animation_loop_infinite": "Infinite",
   "settings_custom_title_animation_loop_once": "Once",
