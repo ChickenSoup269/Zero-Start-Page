@@ -7953,11 +7953,21 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 }
 
 /* Custom Title Animations */
+.multi-color-char {
+  color: hsl(var(--char-hue, 0), 92%, 66%) !important;
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.35),
+    0 0 10px hsla(var(--char-hue, 0), 92%, 60%, 0.35);
+  animation: var(--custom-anim, none), hue-wave 8s infinite linear !important;
+  --anim-glow-core: hsl(var(--char-hue, 0), 92%, 80%);
+  --anim-glow-color: hsl(var(--char-hue, 0), 92%, 60%);
+}
 .title-anim-typing > div .char-anim {
   opacity: 0;
   display: inline-block;
   white-space: pre-wrap;
-  animation: typingChar 5s infinite;
+  --custom-anim: typingChar 5s infinite;
+  animation: var(--custom-anim);
 }
 @keyframes typingChar {
   0%, 10% { opacity: 0; transform: translateY(5px); }
@@ -7968,7 +7978,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-wave > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: waveChar 1.5s infinite ease-in-out;
+  --custom-anim: waveChar 1.5s infinite ease-in-out;
+  animation: var(--custom-anim);
 }
 @keyframes waveChar {
   0%, 100% { transform: translateY(0); }
@@ -7978,18 +7989,20 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-glow > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: glowChar 2s infinite alternate;
+  --custom-anim: glowChar 2s infinite alternate;
+  animation: var(--custom-anim);
 }
 @keyframes glowChar {
-  from { text-shadow: 0 0 2px #fff, 0 0 5px var(--accent-color, #a8c0ff), 0 0 10px var(--accent-color, #a8c0ff); }
-  to { text-shadow: 0 0 5px #fff, 0 0 15px var(--accent-color, #a8c0ff), 0 0 25px var(--accent-color, #a8c0ff), 0 0 35px var(--accent-color, #a8c0ff); }
+  from { text-shadow: 0 0 2px var(--anim-glow-core, #fff), 0 0 5px var(--anim-glow-color, var(--accent-color, #a8c0ff)), 0 0 10px var(--anim-glow-color, var(--accent-color, #a8c0ff)); }
+  to { text-shadow: 0 0 5px var(--anim-glow-core, #fff), 0 0 15px var(--anim-glow-color, var(--accent-color, #a8c0ff)), 0 0 25px var(--anim-glow-color, var(--accent-color, #a8c0ff)), 0 0 35px var(--anim-glow-color, var(--accent-color, #a8c0ff)); }
 }
 
 .title-anim-glitch > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
   position: relative;
-  animation: glitchCharBase 3s infinite linear alternate-reverse;
+  --custom-anim: glitchCharBase 3s infinite linear alternate-reverse;
+  animation: var(--custom-anim);
 }
 
 @keyframes glitchCharBase {
@@ -8039,7 +8052,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-flip > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: flipChar 3s infinite ease-in-out;
+  --custom-anim: flipChar 3s infinite ease-in-out;
+  animation: var(--custom-anim);
   transform-origin: center;
   backface-visibility: visible;
 }
@@ -8052,7 +8066,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-shake > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: shakeChar 2.5s infinite linear;
+  --custom-anim: shakeChar 2.5s infinite linear;
+  animation: var(--custom-anim);
 }
 @keyframes shakeChar {
   0%, 90% { transform: translate(0, 0) rotate(0deg); }
@@ -8066,7 +8081,8 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-float > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: floatChar 4s infinite ease-in-out;
+  --custom-anim: floatChar 4s infinite ease-in-out;
+  animation: var(--custom-anim);
 }
 @keyframes floatChar {
   0%, 100% { transform: translateY(0) rotate(0deg); }
@@ -8077,23 +8093,25 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
 .title-anim-neon > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: neonChar 2.5s infinite alternate;
+  --custom-anim: neonChar 2.5s infinite alternate;
+  animation: var(--custom-anim);
 }
 @keyframes neonChar {
   0%, 18%, 22%, 25%, 53%, 57%, 100% {
-    text-shadow: 0 0 4px #fff, 0 0 10px #fff, 0 0 20px var(--accent-color, #ff00de), 0 0 35px var(--accent-color, #ff00de);
-    color: #fff;
+    text-shadow: 0 0 4px var(--anim-glow-core, rgba(255,255,255,0.5)), 0 0 10px var(--anim-glow-core, rgba(255,255,255,0.5)), 0 0 20px var(--anim-glow-color, var(--accent-color, #ff00de)), 0 0 35px var(--anim-glow-color, var(--accent-color, #ff00de));
+    opacity: 1;
   }
   20%, 24%, 55% {
     text-shadow: none;
-    color: rgba(255, 255, 255, 0.2);
+    opacity: 0.2;
   }
 }
 
 .title-anim-focus > div .char-anim {
   display: inline-block;
   white-space: pre-wrap;
-  animation: focusChar 2.5s infinite alternate;
+  --custom-anim: focusChar 2.5s infinite alternate;
+  animation: var(--custom-anim);
 }
 @keyframes focusChar {
   0%, 20% { filter: blur(8px); opacity: 0.1; transform: scale(1.1); }

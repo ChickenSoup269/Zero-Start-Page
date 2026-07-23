@@ -284,16 +284,23 @@ function applyHuePerCharacter(target, seed = 0) {
         return
       }
 
-      const span = document.createElement("span")
       const hue = (seed + hueIndex * 43) % 360
-      span.className = "clock-hue-char"
-      span.style.setProperty("--char-hue", String(hue))
-      // Staggered delay for wave effect (e.g., 0.1s per character)
-      span.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
-      // Add time offset to sync the 8s CSS animation perfectly across 1-second DOM overwrites
-      span.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
-      span.textContent = char
-      fragment.appendChild(span)
+
+      if (node.parentElement && node.parentElement.classList.contains("char-anim")) {
+        node.parentElement.style.setProperty("--char-hue", String(hue))
+        node.parentElement.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
+        node.parentElement.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
+        node.parentElement.classList.add("multi-color-char")
+        fragment.appendChild(document.createTextNode(char))
+      } else {
+        const span = document.createElement("span")
+        span.className = "clock-hue-char"
+        span.style.setProperty("--char-hue", String(hue))
+        span.style.setProperty("--char-delay", `${hueIndex * 0.1}s`)
+        span.style.setProperty("--time-offset", `${(Date.now() % 8000) / 1000}s`)
+        span.textContent = char
+        fragment.appendChild(span)
+      }
       hueIndex += 1
     })
 
