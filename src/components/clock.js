@@ -2151,23 +2151,29 @@ export function updateTime() {
     const currentMin = now.getMinutes();
     const currentSec = now.getSeconds();
 
+    const isVi = langCode.startsWith("vi");
+    const is12Hour = settings.clockTimeFormat === "12";
+    const hourIdx = is12Hour ? (currentHour % 12) : currentHour;
+
     const monthAngle = -(currentMonth * (360 / 12));
     const dayAngle = -(currentDay * (360 / 31));
     const weekAngle = -(currentWeek * (360 / 7));
-    const hourAngle = -(currentHour * (360 / 24));
+    const hourAngle = -(hourIdx * (360 / (is12Hour ? 12 : 24)));
     const minAngle = -(currentMin * (360 / 60));
     const secAngle = -(currentSec * (360 / 60));
+    const showSec = settings.clockDisplaySeconds !== false;
+    const cacheKey = `${langCode}-${is12Hour}-${showSec}`;
 
-    const isVi = langCode.startsWith("vi");
-
-    if (!spaceConcentricHtmlCache || spaceConcentricLangCache !== langCode) {
+    if (!spaceConcentricHtmlCache || spaceConcentricLangCache !== cacheKey) {
       const scMonthsVi = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
       const scWeekdaysVi = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
       const scDaysVi = Array.from({length: 31}, (_, i) => `Ngày ${i + 1}`);
+      const scHours12 = Array.from({length: 12}, (_, i) => (i === 0 ? 12 : i).toString().padStart(2, '0'));
 
       const m = isVi ? scMonthsVi : scMonths;
       const w = isVi ? scWeekdaysVi : scWeekdays;
       const d = isVi ? scDaysVi : scDays;
+      const hArray = is12Hour ? scHours12 : scHours;
 
       const genRing = (items, id) => {
         const step = 360 / items.length;
@@ -2180,12 +2186,12 @@ export function updateTime() {
             ${genRing(m, 'sc-ring-month')}
             ${genRing(d, 'sc-ring-day')}
             ${genRing(w, 'sc-ring-week')}
-            ${genRing(scHours, 'sc-ring-hour')}
+            ${genRing(hArray, 'sc-ring-hour')}
             ${genRing(scMinutes, 'sc-ring-min')}
-            ${genRing(scSeconds, 'sc-ring-sec')}
+            ${showSec ? genRing(scSeconds, 'sc-ring-sec') : ''}
         </div>
       `;
-      spaceConcentricLangCache = langCode;
+      spaceConcentricLangCache = cacheKey;
       clockElement.innerHTML = spaceConcentricHtmlCache;
     } else if (clockElement.children.length === 0 || !clockElement.querySelector('.space-concentric-container')) {
       clockElement.innerHTML = spaceConcentricHtmlCache;
@@ -2208,9 +2214,9 @@ export function updateTime() {
     setRingRot('sc-ring-month', monthAngle, currentMonth);
     setRingRot('sc-ring-day', dayAngle, currentDay);
     setRingRot('sc-ring-week', weekAngle, currentWeek);
-    setRingRot('sc-ring-hour', hourAngle, currentHour);
+    setRingRot('sc-ring-hour', hourAngle, hourIdx);
     setRingRot('sc-ring-min', minAngle, currentMin);
-    setRingRot('sc-ring-sec', secAngle, currentSec);
+    if (showSec) setRingRot('sc-ring-sec', secAngle, currentSec);
 
   } else {
     clockElement.textContent = timeString
