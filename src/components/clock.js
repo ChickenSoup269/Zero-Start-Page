@@ -2531,7 +2531,7 @@ export function updateCustomTitle() {
         div.style.margin = `${lineSpacing}px 0`
       }
       if (direction === "vertical") {
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus"]
         const hasCharAnim = charAnimations.includes(animation)
 
         if (wordWrap) {
@@ -2605,7 +2605,7 @@ export function updateCustomTitle() {
         // Horizontal mode
         div.style.textOrientation = "mixed"
         
-        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float"]
+        const charAnimations = ["typing", "wave", "glow", "glitch", "flip", "shake", "float", "neon", "focus"]
         if (charAnimations.includes(animation)) {
           const words = content.split(" ")
           words.forEach((word, wordIndex) => {

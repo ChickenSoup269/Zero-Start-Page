@@ -8074,6 +8074,32 @@ body:not(.bookmark-group-accent-enabled):not(.bookmark-sidebar-mode):not(
   66% { transform: translateY(2px) rotate(1deg); }
 }
 
+.title-anim-neon > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: neonChar 2.5s infinite alternate;
+}
+@keyframes neonChar {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    text-shadow: 0 0 4px #fff, 0 0 10px #fff, 0 0 20px var(--accent-color, #ff00de), 0 0 35px var(--accent-color, #ff00de);
+    color: #fff;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+    color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.title-anim-focus > div .char-anim {
+  display: inline-block;
+  white-space: pre-wrap;
+  animation: focusChar 2.5s infinite alternate;
+}
+@keyframes focusChar {
+  0%, 20% { filter: blur(8px); opacity: 0.1; transform: scale(1.1); }
+  80%, 100% { filter: blur(0px); opacity: 1; transform: scale(1); }
+}
+
 
 .title-anim-once,
 .title-anim-once > div,
