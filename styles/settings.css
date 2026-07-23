@@ -3871,7 +3871,66 @@ body.sidebar-light .preset-code-line-value {
 .local-bg-gallery-controls {
   display: grid;
   grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.local-bg-gallery-controls .secondary-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  padding: 18px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: auto;
+  min-height: 75px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.local-bg-gallery-controls .secondary-btn i {
+  font-size: 21px;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0;
+}
+
+.local-bg-gallery-controls .secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent-color, #a8c0ff);
+  border-style: solid;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.local-bg-gallery-controls .secondary-btn:hover i {
+  color: var(--accent-color, #a8c0ff);
+  transform: scale(1.15) translateY(-2px);
+}
+
+.local-bg-gallery-controls .secondary-btn:active {
+  transform: translateY(0);
+}
+
+.local-bg-gallery-controls .secondary-btn#bg-select-mode-btn {
+  flex-direction: row;
+  padding: 12px;
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.local-bg-gallery-controls .secondary-btn#bg-select-mode-btn i {
+  font-size: 16px;
+}
+
+.local-bg-gallery-controls .secondary-btn#bg-select-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .bg-effects-grid {
