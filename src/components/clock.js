@@ -1509,7 +1509,7 @@ export function updateTime() {
     const inputDisplay = isCodeWrong
       ? "X X X X"
       : c4BombInput.padEnd(C4_BOMB_PASSCODE.length, "_")
-    const keypadNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    const keypadNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "LOCK", "0", "SET"]
     const statusText = c4BombExploded
       ? "BOOM"
       : isCounting
@@ -1532,7 +1532,6 @@ export function updateTime() {
     if (!root) {
       clockElement.innerHTML = `
         <div class="c4-bomb-clock">
-          <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
           <div class="c4-bomb-device">
             <div class="c4-bomb-screen">
               <div class="c4-bomb-status"></div>
@@ -1541,21 +1540,24 @@ export function updateTime() {
               <div class="c4-bomb-date-wrapper"></div>
             </div>
             <div class="c4-bomb-controls">
+              <div class="c4-bomb-code-hint" aria-hidden="true"><span>7355608</span></div>
               <div class="c4-bomb-led-row" aria-hidden="true">
                 <span class="c4-bomb-led"></span>
                 <span class="c4-bomb-led"></span>
                 <span class="c4-bomb-led"></span>
               </div>
-              <button type="button" class="c4-bomb-lever">
-                <span class="c4-bomb-lever-slot" aria-hidden="true"><span></span></span>
-                <span class="c4-bomb-lever-text"></span>
-              </button>
-              <button type="button" class="c4-bomb-button">
-                <span class="c4-bomb-button-light" aria-hidden="true"></span>
-                <span class="c4-bomb-button-text"></span>
-              </button>
+              <div class="c4-bomb-actions">
+                <button type="button" class="c4-bomb-lever">
+                  <span class="c4-bomb-lever-slot" aria-hidden="true"><span></span></span>
+                  <span class="c4-bomb-lever-text"></span>
+                </button>
+                <button type="button" class="c4-bomb-button">
+                  <span class="c4-bomb-button-light" aria-hidden="true"></span>
+                  <span class="c4-bomb-button-text"></span>
+                </button>
+              </div>
               <div class="c4-bomb-keypad" aria-label="C4 passcode keypad">
-                ${keypadNumbers
+                ${["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]
                   .map(
                     (number) =>
                       `<button type="button" class="c4-bomb-key" data-c4-key="${number}">${number}</button>`,
