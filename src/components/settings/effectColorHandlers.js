@@ -49,14 +49,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       input.dispatchEvent(new Event('change', { bubbles: true }));
     });
   });
-  DOM.starColorPicker?.addEventListener("input", () => {
+  DOM.starColorPicker?.addEventListener("change", () => {
     updateSetting("starColor", DOM.starColorPicker.value)
     saveSettings()
     if (effectInstances.starFallEffect)
       effectInstances.starFallEffect.updateColor(DOM.starColorPicker.value)
   })
 
-  DOM.meteorColorPicker?.addEventListener("input", () => {
+  DOM.meteorColorPicker?.addEventListener("change", () => {
     updateSetting("meteorColor", DOM.meteorColorPicker.value)
     saveSettings()
     if (effectInstances.meteorEffect) {
@@ -96,28 +96,28 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.networkColorPicker?.addEventListener("input", () => {
+  DOM.networkColorPicker?.addEventListener("change", () => {
     updateSetting("networkColor", DOM.networkColorPicker.value)
     saveSettings()
     if (effectInstances.networkEffect)
       effectInstances.networkEffect.updateColor(DOM.networkColorPicker.value)
   })
 
-  DOM.matrixColorPicker?.addEventListener("input", () => {
+  DOM.matrixColorPicker?.addEventListener("change", () => {
     updateSetting("matrixColor", DOM.matrixColorPicker.value)
     saveSettings()
     if (effectInstances.matrixRainEffect)
       effectInstances.matrixRainEffect.updateColor(DOM.matrixColorPicker.value)
   })
 
-  DOM.auraColorPicker?.addEventListener("input", () => {
+  DOM.auraColorPicker?.addEventListener("change", () => {
     updateSetting("auraColor", DOM.auraColorPicker.value)
     saveSettings()
     if (effectInstances.auraEffect)
       effectInstances.auraEffect.updateColor(DOM.auraColorPicker.value)
   })
 
-  DOM.northernLightsColorPicker?.addEventListener("input", () => {
+  DOM.northernLightsColorPicker?.addEventListener("change", () => {
     updateSetting("northernLightsColor", DOM.northernLightsColorPicker.value)
     saveSettings()
     if (effectInstances.northernLightsEffect)
@@ -147,7 +147,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       })
   })
 
-  DOM.hackerColorPicker?.addEventListener("input", () => {
+  DOM.hackerColorPicker?.addEventListener("change", () => {
     updateSetting("hackerColor", DOM.hackerColorPicker.value)
     saveSettings()
     if (effectInstances.hackerEffect)
@@ -204,7 +204,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.pixelCubesColorPicker?.addEventListener("input", () => {
+  DOM.pixelCubesColorPicker?.addEventListener("change", () => {
     updateSetting("pixelCubesColor", DOM.pixelCubesColorPicker.value)
     saveSettings()
     if (effectInstances.pixelCubesEffect)
@@ -234,7 +234,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   }
 
   if (DOM.jellyfishColorPicker) {
-    DOM.jellyfishColorPicker?.addEventListener("input", () => {
+    DOM.jellyfishColorPicker?.addEventListener("change", () => {
       updateSetting("jellyfishColor", DOM.jellyfishColorPicker.value)
       saveSettings()
       if (effectInstances.jellyfishEffect)
@@ -254,21 +254,21 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     })
   }
 
-  DOM.sakuraColorPicker?.addEventListener("input", () => {
+  DOM.sakuraColorPicker?.addEventListener("change", () => {
     updateSetting("sakuraColor", DOM.sakuraColorPicker.value)
     saveSettings()
     if (effectInstances.sakuraEffect)
       effectInstances.sakuraEffect.color = DOM.sakuraColorPicker.value
   })
 
-  DOM.snowfallColorPicker?.addEventListener("input", () => {
+  DOM.snowfallColorPicker?.addEventListener("change", () => {
     updateSetting("snowfallColor", DOM.snowfallColorPicker.value)
     saveSettings()
     if (effectInstances.snowfallEffect)
       effectInstances.snowfallEffect.updateColor(DOM.snowfallColorPicker.value)
   })
 
-  DOM.sunbeamColorPicker?.addEventListener("input", () => {
+  DOM.sunbeamColorPicker?.addEventListener("change", () => {
     updateSetting("sunbeamColor", DOM.sunbeamColorPicker.value)
     saveSettings()
     if (effectInstances.sunbeamEffect)
@@ -292,21 +292,21 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.bubblesColorPicker?.addEventListener("input", () => {
+  DOM.bubblesColorPicker?.addEventListener("change", () => {
     updateSetting("bubbleColor", DOM.bubblesColorPicker.value)
     saveSettings()
     if (effectInstances.bubblesEffect)
       effectInstances.bubblesEffect.updateColor(DOM.bubblesColorPicker.value)
   })
 
-  DOM.gridScanColorPicker?.addEventListener("input", () => {
+  DOM.gridScanColorPicker?.addEventListener("change", () => {
     updateSetting("gridScanColor", DOM.gridScanColorPicker.value)
     saveSettings()
     if (effectInstances.gridScanEffect)
       effectInstances.gridScanEffect.updateColor(DOM.gridScanColorPicker.value)
   })
 
-  DOM.cursorTrailColorPicker?.addEventListener("input", () => {
+  DOM.cursorTrailColorPicker?.addEventListener("change", () => {
     updateSetting("cursorTrailColor", DOM.cursorTrailColorPicker.value)
     saveSettings()
     if (effectInstances.cursorTrailEffect)
@@ -343,7 +343,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
 
   // Flashlight
-  DOM.flashlightColorPicker?.addEventListener("input", () => {
+  DOM.flashlightColorPicker?.addEventListener("change", () => {
     updateSetting("flashlightColor", DOM.flashlightColorPicker.value)
     saveSettings()
     if (effectInstances.flashlightEffect) {
@@ -374,7 +374,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
   DOM.flashlightOpacitySlider?.addEventListener("change", () => saveSettings())
 
-  DOM.plantGrowthColorPicker?.addEventListener("input", () => {
+  DOM.plantGrowthColorPicker?.addEventListener("change", () => {
     updateSetting("plantGrowthColor", DOM.plantGrowthColorPicker.value)
     saveSettings()
     if (effectInstances.plantGrowthEffect) {
@@ -382,7 +382,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.oceanFishColorPicker?.addEventListener("input", () => {
+  DOM.oceanFishColorPicker?.addEventListener("change", () => {
     updateSetting("oceanFishColor", DOM.oceanFishColorPicker.value)
     saveSettings()
     if (effectInstances.oceanFishEffect) {
@@ -391,7 +391,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
 
   let floatingLinesTimer = null
-  DOM.floatingLinesColorPicker?.addEventListener("input", () => {
+  DOM.floatingLinesColorPicker?.addEventListener("change", () => {
     // Update live color in effect if it's not too heavy, 
     // but debounce the saving and state update to prevent lag
     if (effectInstances.floatingLinesEffect) {
@@ -422,7 +422,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }, 250)
   })
 
-  DOM.rainHDColorPicker?.addEventListener("input", () => {
+  DOM.rainHDColorPicker?.addEventListener("change", () => {
     updateSetting("rainHDColor", DOM.rainHDColorPicker.value)
     saveSettings()
     if (effectInstances.rainHDEffect) {
@@ -432,7 +432,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
   })
 
   if (DOM.musicBarsColorPicker) {
-    DOM.musicBarsColorPicker?.addEventListener("input", () => {
+    DOM.musicBarsColorPicker?.addEventListener("change", () => {
       updateSetting("musicBarsColor", DOM.musicBarsColorPicker.value)
       saveSettings()
       if (effectInstances.musicBarsEffect) {
@@ -441,14 +441,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     })
   }
 
-  DOM.wavyLinesColorPicker?.addEventListener("input", () => {
+  DOM.wavyLinesColorPicker?.addEventListener("change", () => {
     updateSetting("wavyLinesColor", DOM.wavyLinesColorPicker.value)
     saveSettings()
     if (effectInstances.wavyLinesEffect)
       effectInstances.wavyLinesEffect.color = DOM.wavyLinesColorPicker.value
   })
 
-  DOM.oceanWaveColorPicker?.addEventListener("input", () => {
+  DOM.oceanWaveColorPicker?.addEventListener("change", () => {
     updateSetting("oceanWaveColor", DOM.oceanWaveColorPicker.value)
     saveSettings()
     if (effectInstances.oceanWaveEffect)
@@ -473,7 +473,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     DOM.oceanWavePosBottomBtn.classList.remove("active")
   })
 
-  DOM.cloudDriftColorPicker?.addEventListener("input", () => {
+  DOM.cloudDriftColorPicker?.addEventListener("change", () => {
     updateSetting("cloudDriftColor", DOM.cloudDriftColorPicker.value)
     saveSettings()
     if (effectInstances.cloudDriftEffect)
@@ -488,14 +488,14 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     }
   })
 
-  DOM.shinyColorPicker?.addEventListener("input", () => {
+  DOM.shinyColorPicker?.addEventListener("change", () => {
     updateSetting("shinyColor", DOM.shinyColorPicker.value)
     saveSettings()
     if (effectInstances.shinyEffect)
       effectInstances.shinyEffect.updateColor(DOM.shinyColorPicker.value)
   })
 
-  DOM.lineShinyColorPicker?.addEventListener("input", () => {
+  DOM.lineShinyColorPicker?.addEventListener("change", () => {
     updateSetting("lineShinyColor", DOM.lineShinyColorPicker.value)
     saveSettings()
 
@@ -515,7 +515,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
-  DOM.pixelRunColorPicker?.addEventListener("input", () => {
+  DOM.pixelRunColorPicker?.addEventListener("change", () => {
     updateSetting("pixelRunColor", DOM.pixelRunColorPicker.value)
     saveSettings()
     if (effectInstances.pixelRunEffect)
@@ -524,7 +524,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
 
 
 
-  DOM.nintendoPixelColorPicker?.addEventListener("input", () => {
+  DOM.nintendoPixelColorPicker?.addEventListener("change", () => {
     updateSetting("nintendoPixelColor", DOM.nintendoPixelColorPicker.value)
     saveSettings()
     if (effectInstances.nintendoPixelEffect)
@@ -533,7 +533,7 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       )
   })
 
-  DOM.crtScanColorPicker?.addEventListener("input", () => {
+  DOM.crtScanColorPicker?.addEventListener("change", () => {
     updateSetting("crtScanColor", DOM.crtScanColorPicker.value)
     saveSettings()
     if (effectInstances.crtScanlinesEffect)
@@ -579,7 +579,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
 })
 
 
-  DOM.crtBackgroundColorPicker?.addEventListener("input", () => {
+  DOM.crtBackgroundColorPicker?.addEventListener("change", () => {
     updateSetting("crtBackgroundColor", DOM.crtBackgroundColorPicker.value)
     saveSettings()
     if (effectInstances.crtScanlinesEffect)
@@ -600,7 +600,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     })
   }
 
-  DOM.retroGameColorPicker?.addEventListener("input", () => {
+  DOM.retroGameColorPicker?.addEventListener("change", () => {
     updateSetting("retroGameColor", DOM.retroGameColorPicker.value)
     saveSettings()
     if (effectInstances.retroGameEffect)
@@ -609,7 +609,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       )
   })
 
-  DOM.wavyPatternColor1Picker?.addEventListener("input", () => {
+  DOM.wavyPatternColor1Picker?.addEventListener("change", () => {
     updateSetting("wavyPatternColor1", DOM.wavyPatternColor1Picker.value)
     saveSettings()
     if (effectInstances.wavyPatternEffect)
@@ -619,7 +619,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       )
   })
 
-  DOM.wavyPatternColor2Picker?.addEventListener("input", () => {
+  DOM.wavyPatternColor2Picker?.addEventListener("change", () => {
     updateSetting("wavyPatternColor2", DOM.wavyPatternColor2Picker.value)
     saveSettings()
     if (effectInstances.wavyPatternEffect)
@@ -629,7 +629,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       )
   })
 
-  DOM.angledPatternColor1Picker?.addEventListener("input", () => {
+  DOM.angledPatternColor1Picker?.addEventListener("change", () => {
     updateSetting("angledPatternColor1", DOM.angledPatternColor1Picker.value)
     saveSettings()
     if (effectInstances.angledPatternEffect)
@@ -639,7 +639,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
       )
   })
 
-  DOM.angledPatternColor2Picker?.addEventListener("input", () => {
+  DOM.angledPatternColor2Picker?.addEventListener("change", () => {
     updateSetting("angledPatternColor2", DOM.angledPatternColor2Picker.value)
     saveSettings()
     if (effectInstances.angledPatternEffect)
@@ -684,7 +684,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
 
   // Pixel Blast
   if (DOM.pixelBlastColorPicker) {
-    DOM.pixelBlastColorPicker?.addEventListener("input", (e) => {
+    DOM.pixelBlastColorPicker?.addEventListener("change", (e) => {
       const color = e.target.value
       updateSetting("pixelBlastColor", color)
       if (effectInstances.pixelBlastEffect) {
@@ -734,7 +734,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
   }
 
   if (DOM.pixelBlastBgColorPicker) {
-    DOM.pixelBlastBgColorPicker?.addEventListener("input", (e) => {
+    DOM.pixelBlastBgColorPicker?.addEventListener("change", (e) => {
       const color = e.target.value
       updateSetting("pixelBlastBgColor", color)
       if (effectInstances.pixelBlastEffect) {
@@ -794,7 +794,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     })
   }
 
-  DOM.auroraWaveColorPicker?.addEventListener("input", () => {
+  DOM.auroraWaveColorPicker?.addEventListener("change", () => {
     updateSetting("auroraWaveColor", DOM.auroraWaveColorPicker.value)
     saveSettings()
     if (effectInstances.auroraWaveEffect) {
@@ -853,7 +853,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.auroraWaveBgColorPicker?.addEventListener("input", (e) => {
+  DOM.auroraWaveBgColorPicker?.addEventListener("change", (e) => {
     const color = e.target.value
     updateSetting("auroraWaveBgColor", color)
     if (effectInstances.auroraWaveEffect) {
@@ -873,7 +873,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
   DOM.auroraWaveBgOpacitySlider?.addEventListener("change", () =>
     saveSettings(),
   )
-  DOM.synthwaveGridColorPicker?.addEventListener("input", () => {
+  DOM.synthwaveGridColorPicker?.addEventListener("change", () => {
     updateSetting("synthwaveGridColor", DOM.synthwaveGridColorPicker.value)
     saveSettings()
     if (effectInstances.neonGridEffect) {
@@ -881,7 +881,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.synthwaveSunColorPicker?.addEventListener("input", () => {
+  DOM.synthwaveSunColorPicker?.addEventListener("change", () => {
     updateSetting("synthwaveSunColor", DOM.synthwaveSunColorPicker.value)
     saveSettings()
     if (effectInstances.neonGridEffect) {
@@ -898,7 +898,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.frostedOrbsColor1Picker?.addEventListener("input", () => {
+  DOM.frostedOrbsColor1Picker?.addEventListener("change", () => {
     updateSetting("frostedOrbsColor1", DOM.frostedOrbsColor1Picker.value)
     saveSettings()
     if (effectInstances.frostedGlassOrbsEffect) {
@@ -906,7 +906,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.frostedOrbsColor2Picker?.addEventListener("input", () => {
+  DOM.frostedOrbsColor2Picker?.addEventListener("change", () => {
     updateSetting("frostedOrbsColor2", DOM.frostedOrbsColor2Picker.value)
     saveSettings()
     if (effectInstances.frostedGlassOrbsEffect) {
@@ -922,7 +922,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.blackHoleAccretionColorPicker?.addEventListener("input", () => {
+  DOM.blackHoleAccretionColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleAccretionColor", DOM.blackHoleAccretionColorPicker.value)
     saveSettings()
     if (effectInstances.blackHoleEffect) {
@@ -930,7 +930,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.blackHoleStarColorPicker?.addEventListener("input", () => {
+  DOM.blackHoleStarColorPicker?.addEventListener("change", () => {
     updateSetting("blackHoleStarColor", DOM.blackHoleStarColorPicker.value)
     saveSettings()
     if (effectInstances.blackHoleEffect) {
@@ -938,7 +938,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.interactiveFluidColor1Picker?.addEventListener("input", () => {
+  DOM.interactiveFluidColor1Picker?.addEventListener("change", () => {
     updateSetting("interactiveFluidColor1", DOM.interactiveFluidColor1Picker.value)
     saveSettings()
     if (effectInstances.interactiveFluidEffect) {
@@ -946,7 +946,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.interactiveFluidColor2Picker?.addEventListener("input", () => {
+  DOM.interactiveFluidColor2Picker?.addEventListener("change", () => {
     updateSetting("interactiveFluidColor2", DOM.interactiveFluidColor2Picker.value)
     saveSettings()
     if (effectInstances.interactiveFluidEffect) {
@@ -954,7 +954,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.cinematicBokehColor1Picker?.addEventListener("input", () => {
+  DOM.cinematicBokehColor1Picker?.addEventListener("change", () => {
     updateSetting("cinematicBokehColor1", DOM.cinematicBokehColor1Picker.value)
     saveSettings()
     if (effectInstances.cinematicBokehEffect) {
@@ -962,7 +962,7 @@ DOM.crtGammaInput?.addEventListener("input", () => {
     }
   })
 
-  DOM.cinematicBokehColor2Picker?.addEventListener("input", () => {
+  DOM.cinematicBokehColor2Picker?.addEventListener("change", () => {
     updateSetting("cinematicBokehColor2", DOM.cinematicBokehColor2Picker.value)
     saveSettings()
     if (effectInstances.cinematicBokehEffect) {

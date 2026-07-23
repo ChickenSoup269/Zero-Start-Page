@@ -414,7 +414,7 @@ export function setupMultiColorManager(applySettings) {
       const settings = getSettings()
       colorPicker.value = settings.multiColors[i] || "#FF6B6B"
 
-      colorPicker.addEventListener("input", () => {
+      colorPicker.addEventListener("change", () => {
         updateMultiColorPreview()
         syncMultiColorToState()
       })

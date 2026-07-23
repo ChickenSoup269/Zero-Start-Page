@@ -1671,7 +1671,7 @@ export function setupGeneralEventHandlers(
     }
     handleSettingUpdate("background", background)
   })
-  DOM.bgColorPicker.addEventListener("input", () => {
+  DOM.bgColorPicker.addEventListener("change", () => {
     DOM.bgInput.value = DOM.bgColorPicker.value
     handleSettingUpdate("background", DOM.bgColorPicker.value)
   })
@@ -2223,7 +2223,7 @@ export function setupGeneralEventHandlers(
     previewAccent(DOM.accentColorPicker.value)
   })
 
-  DOM.accentColorPicker.addEventListener("input", () => {
+  DOM.accentColorPicker.addEventListener("change", () => {
     const val = DOM.accentColorPicker.value
     previewAccent(val)
     updateAccentHexInput(val)
@@ -2233,7 +2233,7 @@ export function setupGeneralEventHandlers(
   })
 
   if (DOM.accentColorHexInput) {
-    DOM.accentColorHexInput.addEventListener("input", (e) => {
+    DOM.accentColorHexInput.addEventListener("change", (e) => {
       let val = e.target.value.trim()
       if (!val.startsWith("#")) val = "#" + val
       e.target.value = val
@@ -2523,14 +2523,14 @@ export function setupGeneralEventHandlers(
   }
 
   if (DOM.bgBlurColorInput) {
-    DOM.bgBlurColorInput.addEventListener("input", () => {
+    DOM.bgBlurColorInput.addEventListener("change", () => {
       applyBackgroundVisualPreview({ bgBlurColor: DOM.bgBlurColorInput.value })
       throttleSettingUpdate("bgBlurColor", DOM.bgBlurColorInput.value)
     })
   }
 
   if (DOM.bgBlurColorOpacityInput) {
-    DOM.bgBlurColorOpacityInput.addEventListener("input", () => {
+    DOM.bgBlurColorOpacityInput.addEventListener("change", () => {
       if (DOM.bgBlurColorOpacityValue) {
         DOM.bgBlurColorOpacityValue.textContent = `${DOM.bgBlurColorOpacityInput.value}%`
       }
@@ -2642,7 +2642,7 @@ export function setupGeneralEventHandlers(
       throttleSettingUpdate("bookmarkGap", Number(DOM.bookmarkGapInput.value))
     })
 
-    DOM.bookmarkBgColorPicker.addEventListener("input", () => {
+    DOM.bookmarkBgColorPicker.addEventListener("change", () => {
       throttleSettingUpdate("bookmarkBgColor", DOM.bookmarkBgColorPicker.value)
     })
 
@@ -2661,7 +2661,7 @@ export function setupGeneralEventHandlers(
     })
 
     if (DOM.bookmarkGroupBgColorPicker) {
-      DOM.bookmarkGroupBgColorPicker.addEventListener("input", () => {
+      DOM.bookmarkGroupBgColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkGroupBgColor",
           DOM.bookmarkGroupBgColorPicker.value,
@@ -2685,7 +2685,7 @@ export function setupGeneralEventHandlers(
       })
     }
     if (DOM.bookmarkGroupTextColorPicker) {
-      DOM.bookmarkGroupTextColorPicker.addEventListener("input", () => {
+      DOM.bookmarkGroupTextColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkGroupTextColor",
           DOM.bookmarkGroupTextColorPicker.value,
@@ -2816,7 +2816,7 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkTextColorPicker) {
-      DOM.bookmarkTextColorPicker.addEventListener("input", () => {
+      DOM.bookmarkTextColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkTextColor",
           DOM.bookmarkTextColorPicker.value,
@@ -2960,7 +2960,7 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkLayoutBgColor) {
-      DOM.bookmarkLayoutBgColor.addEventListener("input", () => {
+      DOM.bookmarkLayoutBgColor.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkLayoutBgColor",
           DOM.bookmarkLayoutBgColor.value,
@@ -2976,7 +2976,7 @@ export function setupGeneralEventHandlers(
     }
 
     if (DOM.bookmarkShadowColorPicker) {
-      DOM.bookmarkShadowColorPicker.addEventListener("input", () => {
+      DOM.bookmarkShadowColorPicker.addEventListener("change", () => {
         throttleSettingUpdate(
           "bookmarkShadowColor",
           DOM.bookmarkShadowColorPicker.value,
@@ -3243,7 +3243,7 @@ export function setupGeneralEventHandlers(
         picker.style.padding = "0"
         picker.style.border = "1px solid var(--input-border)"
         picker.style.borderRadius = "8px"
-        picker.addEventListener("input", () => {
+        picker.addEventListener("change", () => {
           const pickers = Array.from(
             DOM.gradientExtraColorPickers.querySelectorAll(
               'input[type="color"]',
@@ -3935,7 +3935,7 @@ export function setupGeneralEventHandlers(
     renderGradientExtraColorPickers()
     updateCurrentGradient()
   })
-  DOM.gradientCustomColors?.addEventListener("input", () => {
+  DOM.gradientCustomColors?.addEventListener("change", () => {
     renderGradientExtraColorPickers()
     updateCurrentGradient()
   })
@@ -4696,7 +4696,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockStyleCustomBgColor?.addEventListener("input", () => {
+  DOM.clockStyleCustomBgColor?.addEventListener("change", () => {
     const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleCustomBgColor.value)
       ? DOM.clockStyleCustomBgColor.value
       : "#1f2937"
@@ -4773,7 +4773,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockStyleAccentColor?.addEventListener("input", () => {
+  DOM.clockStyleAccentColor?.addEventListener("change", () => {
     const settings = getSettings()
     const style = settings.dateClockStyle || "default"
     const color = /^#[0-9a-f]{6}$/i.test(DOM.clockStyleAccentColor.value)
@@ -4910,7 +4910,7 @@ export function setupGeneralEventHandlers(
 
   const divergenceColorInput = document.getElementById("fliqlo-divergence-color")
   if (divergenceColorInput) {
-    divergenceColorInput.addEventListener("input", (e) => {
+    divergenceColorInput.addEventListener("change", (e) => {
       document.documentElement.style.setProperty("--fliqlo-divergence-color", e.target.value)
       handleSettingUpdate("fliqloDivergenceColor", e.target.value)
     })
@@ -5334,7 +5334,7 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.clockShadowColorPicker?.addEventListener("input", () => {
+  DOM.clockShadowColorPicker?.addEventListener("change", () => {
     handleSettingUpdate("clockShadowColor", DOM.clockShadowColorPicker.value)
   })
 
@@ -5378,7 +5378,7 @@ export function setupGeneralEventHandlers(
     document.title = newTitle
   })
 
-  DOM.pageTitleColorInput?.addEventListener("input", () => {
+  DOM.pageTitleColorInput?.addEventListener("change", () => {
     updateSetting("pageTitleColor", DOM.pageTitleColorInput.value)
     saveSettings()
     document.documentElement.style.setProperty(
@@ -5387,14 +5387,14 @@ export function setupGeneralEventHandlers(
     )
   })
 
-  DOM.tabIconBgColorInput?.addEventListener("input", () => {
+  DOM.tabIconBgColorInput?.addEventListener("change", () => {
     updateSetting("tabIconBgColor", DOM.tabIconBgColorInput.value)
     saveSettings()
     applyTabIcon(getSettings().tabIcon)
     renderTabIconPreview(getSettings().tabIcon, DOM.tabIconPreview)
   })
 
-  DOM.tabIconTextColorInput?.addEventListener("input", () => {
+  DOM.tabIconTextColorInput?.addEventListener("change", () => {
     updateSetting("tabIconTextColor", DOM.tabIconTextColorInput.value)
     saveSettings()
     applyTabIcon(getSettings().tabIcon)
@@ -5585,7 +5585,7 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockDateStrokeWidth", parseFloat(e.target.value))
   })
 
-  DOM.clockDateStrokeColorPicker?.addEventListener("input", (e) => {
+  DOM.clockDateStrokeColorPicker?.addEventListener("change", (e) => {
     document.documentElement.style.setProperty(
       "--clock-date-stroke-color",
       e.target.value,
@@ -5599,7 +5599,7 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockDateStrokeTarget", e.target.value)
   })
 
-  DOM.clockColorPicker?.addEventListener("input", () => {
+  DOM.clockColorPicker?.addEventListener("change", () => {
     document.documentElement.style.setProperty(
       "--clock-color",
       DOM.clockColorPicker.value,
@@ -5612,7 +5612,7 @@ export function setupGeneralEventHandlers(
     handleSettingUpdate("clockColor", null),
   )
 
-  DOM.dateColorPicker?.addEventListener("input", () => {
+  DOM.dateColorPicker?.addEventListener("change", () => {
     document.documentElement.style.setProperty(
       "--date-color",
       DOM.dateColorPicker.value,
