@@ -2517,6 +2517,9 @@ function createApplySettings(effectInstances) {
       "audio-wave-style-dots",
       "audio-wave-style-smooth",
       "audio-wave-style-pixel",
+      "audio-wave-style-thin",
+      "audio-wave-style-pulseglow",
+      "audio-wave-float-enabled"
     )
     if (dateClockStyle === "sidestyle") {
       const align = settings.sidestyleAlign || "left"
@@ -2530,6 +2533,11 @@ function createApplySettings(effectInstances) {
       
       const waveStyle = settings.audioWaveStyle || "bars"
       document.body.classList.add(`audio-wave-style-${waveStyle}`)
+
+      const floatEnabled = settings.audioWaveFloatEnabled !== false
+      if (floatEnabled) {
+        document.body.classList.add("audio-wave-float-enabled")
+      }
 
       const scale = settings.audioWaveScale || 1
       document.body.style.setProperty("--aw-scale", scale)
@@ -3513,6 +3521,11 @@ function createUpdateSettingsInputs(effectInstances) {
 
     const audioWaveSpeedSelect = document.getElementById("audio-wave-speed-select")
     if (audioWaveSpeedSelect) audioWaveSpeedSelect.value = settings.audioWaveSpeed || "1"
+
+    const audioWaveFloatCheckbox = document.getElementById("audio-wave-float-checkbox")
+    if (audioWaveFloatCheckbox) {
+      audioWaveFloatCheckbox.checked = settings.audioWaveFloatEnabled !== false
+    }
 
     const audioWaveAutoColorCheckbox = document.getElementById("audio-wave-auto-color-checkbox")
     const audioWaveColorPicker = document.getElementById("audio-wave-color-picker")
