@@ -13456,8 +13456,8 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popu
     top: -20px;
     width: 3px;
     height: 340px;
-    background: linear-gradient(to bottom, transparent, var(--clock-accent-color, #00ff66) 10%, #fff 50%, var(--clock-accent-color, #00ff66) 90%, transparent);
-    box-shadow: 0 0 25px var(--clock-accent-color, #00ff66), 0 0 10px #fff;
+    background: linear-gradient(to bottom, transparent, var(--clock-style-accent-color, #00ff66) 10%, #fff 50%, var(--clock-style-accent-color, #00ff66) 90%, transparent);
+    box-shadow: 0 0 25px var(--clock-style-accent-color, #00ff66), 0 0 10px #fff;
     z-index: 100;
     pointer-events: none;
     border-radius: 3px;
