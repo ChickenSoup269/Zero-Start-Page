@@ -2056,7 +2056,7 @@ export function updateTime() {
         <div class="audio-wave-container">
           <div class="aw-content">
             <div class="aw-time">
-              <span class="aw-hour"></span><span class="aw-colon blink">:</span><span class="aw-minute"></span>
+              <span class="aw-hour"></span><span class="aw-colon blink">:</span><span class="aw-minute"></span><span class="aw-seconds" style="display:none"></span><span class="aw-ampm" style="display:none"></span>
             </div>
             <div class="aw-date"></div>
           </div>
@@ -2066,6 +2066,23 @@ export function updateTime() {
     }
     clockElement.querySelector('.aw-hour').textContent = hh;
     clockElement.querySelector('.aw-minute').textContent = mm;
+    
+    const secEl = clockElement.querySelector('.aw-seconds');
+    if (ss) {
+      secEl.style.display = 'inline';
+      secEl.textContent = `:${ss}`;
+    } else {
+      secEl.style.display = 'none';
+    }
+    
+    const ampmEl = clockElement.querySelector('.aw-ampm');
+    if (ampm) {
+      ampmEl.style.display = 'inline';
+      ampmEl.textContent = ` ${ampm}`;
+    } else {
+      ampmEl.style.display = 'none';
+    }
+    
     clockElement.querySelector('.aw-date').innerHTML = getCustomDateString(now, langCode, tz, settings);
   } else if (dateClockStyle === "glass-float") {
     if (!clockElement.querySelector('.glass-float-container')) {
@@ -2073,7 +2090,7 @@ export function updateTime() {
         <div class="clock-container glass-float-container">
           <div class="gf-content">
             <div class="gf-text"></div>
-            <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span></div>
+            <div class="gf-time"><span class="gf-hour"></span><span class="gf-colon blink">:</span><span class="gf-minute"></span><span class="gf-seconds"></span><span class="gf-ampm"></span></div>
             <div class="gf-date"></div>
           </div>
         </div>
@@ -2096,6 +2113,16 @@ export function updateTime() {
     const colonHtml = `<span class="gf-char" data-char=":" style="--anim-index: ${animIdx++}">:</span>`;
     const minuteHtml = mm.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
     
+    let secondsHtml = '';
+    if (ss) {
+      secondsHtml = `<span class="gf-char" data-char=":" style="--anim-index: ${animIdx++}">:</span>` + ss.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    }
+    
+    let ampmHtml = '';
+    if (ampm) {
+      ampmHtml = `<span class="gf-char" data-char="&nbsp;" style="--anim-index: ${animIdx++}">&nbsp;</span>` + ampm.split('').map(c => `<span class="gf-char" data-char="${c}" style="--anim-index: ${animIdx++}">${c}</span>`).join('');
+    }
+    
     const hEl = clockElement.querySelector('.gf-hour');
     if (hEl.getAttribute("data-raw-html") !== hourHtml) { hEl.innerHTML = hourHtml; hEl.setAttribute("data-raw-html", hourHtml); };
     
@@ -2104,6 +2131,12 @@ export function updateTime() {
     
     const mEl = clockElement.querySelector('.gf-minute');
     if (mEl.getAttribute("data-raw-html") !== minuteHtml) { mEl.innerHTML = minuteHtml; mEl.setAttribute("data-raw-html", minuteHtml); };
+    
+    const sEl = clockElement.querySelector('.gf-seconds');
+    if (sEl.getAttribute("data-raw-html") !== secondsHtml) { sEl.innerHTML = secondsHtml; sEl.setAttribute("data-raw-html", secondsHtml); };
+    
+    const aEl = clockElement.querySelector('.gf-ampm');
+    if (aEl.getAttribute("data-raw-html") !== ampmHtml) { aEl.innerHTML = ampmHtml; aEl.setAttribute("data-raw-html", ampmHtml); };
     
     const dateStr = getCustomDateString(now, langCode, tz, settings);
     const dateText = dateStr.replace(/<[^>]*>?/gm, '') || "";
