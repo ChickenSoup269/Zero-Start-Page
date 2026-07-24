@@ -1157,6 +1157,9 @@ export let bookmarkIconSizeInput = document.getElementById(
 export let bookmarkIconSizeValue = document.getElementById(
   "bookmark-icon-size-value",
 )
+export let bookmarkFaviconRes = document.getElementById(
+  "bookmark-favicon-res",
+)
 export let bookmarkGroupTextWidthInput = document.getElementById(
   "bookmark-group-text-width-input",
 )
@@ -3282,6 +3285,9 @@ export function refreshDOMReferences() {
   )
   bookmarkIconSizeValue = document.getElementById(
     "bookmark-icon-size-value",
+  )
+  bookmarkFaviconRes = document.getElementById(
+    "bookmark-favicon-res",
   )
   bookmarkGroupTextWidthInput = document.getElementById(
     "bookmark-group-text-width-input",

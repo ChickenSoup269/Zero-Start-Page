@@ -809,7 +809,10 @@ export function setupGeneralEventHandlers(
         rootStyle.setProperty("--bookmark-font-size", `${v}px`)
       else if (k === "bookmarkIconSize")
         rootStyle.setProperty("--bookmark-icon-size", `${v}px`)
-      else if (k === "bookmarkGap")
+      else if (k === "bookmarkFaviconRes") {
+        // Redraw bookmarks to fetch new favicons
+        renderBookmarks()
+      } else if (k === "bookmarkGap")
         rootStyle.setProperty("--bookmark-gap", `${v}px`)
       else if (k === "bookmarkBgColor" || k === "bookmarkBgOpacity") {
         let hex = settings.bookmarkBgColor || "#ffffff"
@@ -2628,6 +2631,15 @@ export function setupGeneralEventHandlers(
         Number(DOM.bookmarkIconSizeInput.value),
       )
     })
+
+    if (DOM.bookmarkFaviconRes) {
+      DOM.bookmarkFaviconRes.addEventListener("change", () => {
+        handleSettingUpdate(
+          "bookmarkFaviconRes",
+          Number(DOM.bookmarkFaviconRes.value),
+        )
+      })
+    }
 
     DOM.bookmarkGroupTextWidthInput.addEventListener("input", () => {
       DOM.bookmarkGroupTextWidthValue.textContent = `${DOM.bookmarkGroupTextWidthInput.value}px`

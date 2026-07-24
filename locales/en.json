@@ -1147,6 +1147,7 @@
   "settings_custom_bookmark": "Custom Bookmark",
   "settings_bookmark_font_size": "Font Size:",
   "settings_bookmark_icon_size": "Icon Size:",
+  "settings_bookmark_favicon_res": "Favicon Resolution:",
   "settings_bookmark_gap": "Gap Between Bookmarks:",
   "settings_bookmark_bg_color": "Background Color",
   "settings_bookmark_text_color": "Text Color",

@@ -1148,6 +1148,7 @@
   "settings_custom_bookmark": "Tùy chỉnh dấu trang",
   "settings_bookmark_font_size": "Kích thước chữ:",
   "settings_bookmark_icon_size": "Kích thước biểu tượng:",
+  "settings_bookmark_favicon_res": "Độ phân giải Favicon:",
   "settings_bookmark_gap": "Khoảng cách giữa các dấu trang:",
   "settings_bookmark_bg_color": "Màu nền",
   "settings_bookmark_text_color": "Màu chữ",

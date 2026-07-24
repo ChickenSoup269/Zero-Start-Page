@@ -4076,6 +4076,10 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bookmarkIconSizeValue && DOM.bookmarkIconSizeInput)
         DOM.bookmarkIconSizeValue.textContent = `${DOM.bookmarkIconSizeInput.value}px`
 
+      if (DOM.bookmarkFaviconRes) {
+        DOM.bookmarkFaviconRes.value = settings.bookmarkFaviconRes ?? 128
+      }
+
       if (DOM.bookmarkGroupTextWidthInput)
         DOM.bookmarkGroupTextWidthInput.value = settings.bookmarkGroupTextWidth ?? 120
       if (DOM.bookmarkGroupTextWidthValue && DOM.bookmarkGroupTextWidthInput)
