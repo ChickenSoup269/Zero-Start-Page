@@ -10522,7 +10522,7 @@ body.bookmark-macos-hover .bookmark {
   position: relative;
   will-change: transform;
   transition:
-    transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.1s ease-out,
     background 0.2s,
     box-shadow 0.2s;
   background: transparent !important; /* Ensure no background in MacOS mode */
@@ -10590,10 +10590,7 @@ body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
   top: -999px;
   left: -999px;
   width: fit-content;
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: pre;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: var(--widget-bg, rgba(10, 10, 18, 0.95));
@@ -10604,9 +10601,7 @@ body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
   transform: translateX(-50%);
   opacity: 0;
   visibility: hidden;
-  transition:
-    opacity 0.2s ease,
-    top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: opacity 0.2s ease;
   pointer-events: none;
   z-index: 999999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
