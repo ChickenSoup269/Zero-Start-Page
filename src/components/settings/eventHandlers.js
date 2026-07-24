@@ -2570,11 +2570,6 @@ export function setupGeneralEventHandlers(
     throttleSettingUpdate("bgBrightness", Number(DOM.bgBrightnessInput.value))
   })
 
-  DOM.bgFadeInInput.addEventListener("input", () => {
-    DOM.bgFadeInValue.textContent = `${DOM.bgFadeInInput.value}s`
-    throttleSettingUpdate("bgFadeIn", Number(DOM.bgFadeInInput.value))
-  })
-
   DOM.backgroundMediaQualitySelect?.addEventListener("change", () => {
     handleSettingUpdate(
       "backgroundMediaQuality",

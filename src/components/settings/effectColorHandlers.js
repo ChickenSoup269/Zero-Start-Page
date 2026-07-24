@@ -455,13 +455,19 @@ function setupEffectColorHandlers(DOM, effectInstances) {
       effectInstances.oceanWaveEffect.updateColor(DOM.oceanWaveColorPicker.value)
   })
 
+  const updateOceanWavePosBtns = (activePos) => {
+    DOM.oceanWavePosBottomBtn?.classList.toggle("active", activePos === "bottom")
+    DOM.oceanWavePosTopBtn?.classList.toggle("active", activePos === "top")
+    DOM.oceanWavePosLeftBtn?.classList.toggle("active", activePos === "left")
+    DOM.oceanWavePosRightBtn?.classList.toggle("active", activePos === "right")
+  }
+
   DOM.oceanWavePosBottomBtn?.addEventListener("click", () => {
     updateSetting("oceanWavePosition", "bottom")
     saveSettings()
     if (effectInstances.oceanWaveEffect)
       effectInstances.oceanWaveEffect.setPosition("bottom")
-    DOM.oceanWavePosBottomBtn.classList.add("active")
-    DOM.oceanWavePosTopBtn.classList.remove("active")
+    updateOceanWavePosBtns("bottom")
   })
 
   DOM.oceanWavePosTopBtn?.addEventListener("click", () => {
@@ -469,8 +475,23 @@ function setupEffectColorHandlers(DOM, effectInstances) {
     saveSettings()
     if (effectInstances.oceanWaveEffect)
       effectInstances.oceanWaveEffect.setPosition("top")
-    DOM.oceanWavePosTopBtn.classList.add("active")
-    DOM.oceanWavePosBottomBtn.classList.remove("active")
+    updateOceanWavePosBtns("top")
+  })
+
+  DOM.oceanWavePosLeftBtn?.addEventListener("click", () => {
+    updateSetting("oceanWavePosition", "left")
+    saveSettings()
+    if (effectInstances.oceanWaveEffect)
+      effectInstances.oceanWaveEffect.setPosition("left")
+    updateOceanWavePosBtns("left")
+  })
+
+  DOM.oceanWavePosRightBtn?.addEventListener("click", () => {
+    updateSetting("oceanWavePosition", "right")
+    saveSettings()
+    if (effectInstances.oceanWaveEffect)
+      effectInstances.oceanWaveEffect.setPosition("right")
+    updateOceanWavePosBtns("right")
   })
 
   DOM.cloudDriftColorPicker?.addEventListener("change", () => {

@@ -4313,9 +4313,6 @@ function createUpdateSettingsInputs(effectInstances) {
       if (DOM.bgSaturationValue)
         DOM.bgSaturationValue.textContent = `${settings.bgSaturation ?? 100}%`
     }
-
-    DOM.bgFadeInInput.value = settings.bgFadeIn ?? 0.5
-    DOM.bgFadeInValue.textContent = `${settings.bgFadeIn ?? 0.5}s`
     if (DOM.backgroundMediaQualitySelect) {
       DOM.backgroundMediaQualitySelect.value =
         settings.backgroundMediaQuality || "balanced"
@@ -4534,11 +4531,13 @@ function createUpdateSettingsInputs(effectInstances) {
     DOM.wavyLinesColorPicker.value = settings.wavyLinesColor || "#00bcd4"
     DOM.oceanWaveColorPicker.value = settings.oceanWaveColor || "#0077b6"
     const oceanWavePos = settings.oceanWavePosition || "bottom"
-    DOM.oceanWavePosBottomBtn.classList.toggle(
+    DOM.oceanWavePosBottomBtn?.classList.toggle(
       "active",
       oceanWavePos === "bottom",
     )
-    DOM.oceanWavePosTopBtn.classList.toggle("active", oceanWavePos === "top")
+    DOM.oceanWavePosTopBtn?.classList.toggle("active", oceanWavePos === "top")
+    DOM.oceanWavePosLeftBtn?.classList.toggle("active", oceanWavePos === "left")
+    DOM.oceanWavePosRightBtn?.classList.toggle("active", oceanWavePos === "right")
     if (DOM.cloudDriftColorPicker)
       DOM.cloudDriftColorPicker.value = settings.cloudDriftColor || "#0a0a0a"
     if (DOM.cloudDriftMoodSelect)

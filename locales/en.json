@@ -829,7 +829,7 @@
   "settings_quotes_freq_tab": "Every New Tab",
   "settings_quotes_freq_hour": "Every Hour",
   "settings_quotes_freq_day": "Every Day",
-  "settings_quotes_source": "Quotes Source",
+  "settings_quotes_source": "API Source",
   "settings_music_style": "Music Bar Style",
   "settings_music_use_default_color": "Music Waves Color",
   "settings_music_source_icon_color": "Source Icon Color",
@@ -1984,8 +1984,9 @@
   "setting_dvd_clone": "Clone Count",
   "setting_dvd_trail": "Ghost Trail",
   "setting_dvd_glitch": "Glitch Effect",
-  "settings_quotes_source": "API Source",
   "settings_quotes_source_local": "Local (Offline)",
   "settings_quotes_source_quotable": "Quotable API",
-  "settings_quotes_source_advice": "Advice Slip API"
+  "settings_quotes_source_advice": "Advice Slip API",
+  "position_left": "Left",
+  "position_right": "Right"
 }

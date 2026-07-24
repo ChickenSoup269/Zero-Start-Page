@@ -60,7 +60,7 @@ export class OceanWaveEffect {
   }
 
   setPosition(position) {
-    this.position = position === "top" ? "top" : "bottom"
+    this.position = ["top", "bottom", "left", "right"].includes(position) ? position : "bottom"
   }
 
   stop() {
@@ -88,15 +88,19 @@ export class OceanWaveEffect {
 
     const rgb = this.rgb || this._hexToRgb(this.color)
     const isTop = this.position === "top"
+    const isLeft = this.position === "left"
+    const isRight = this.position === "right"
+    const isVertical = isLeft || isRight
 
     // Draw from back layer to front layer
     for (let i = 0; i < this.layerCount; i++) {
       const t = i / (this.layerCount - 1) // 0 = back, 1 = front
 
-      // Back layers start higher on screen, front layers sit closer to edge
-      const baseY = isTop
-        ? H * (0.05 + t * 0.2) // top: waves near top, filling downward
-        : H * (0.45 + t * 0.35) // bottom: original behavior
+      let basePos = 0;
+      if (isTop) basePos = H * (0.05 + t * 0.2);
+      else if (isLeft) basePos = W * (0.05 + t * 0.2);
+      else if (isRight) basePos = W * (0.45 + t * 0.35);
+      else basePos = H * (0.45 + t * 0.35); // bottom
 
       // Amplitude decreases for back layers (perspective)
       const amplitude = 30 + t * 45
@@ -125,25 +129,34 @@ export class OceanWaveEffect {
       ctx.beginPath()
 
       // Build the wave path
-      for (let xi = 0; xi <= W; xi += 3) {
-        const y =
-          baseY +
-          Math.sin(xi * freq + timeSpeedPhase) * amplitude +
-          Math.sin(xi * freq * 2.3 + timeSpeedPhase2) *
-            (amplitude * 0.3)
+      const maxLen = isVertical ? H : W;
+      for (let p = 0; p <= maxLen; p += 3) {
+        const offset =
+          basePos +
+          Math.sin(p * freq + timeSpeedPhase) * amplitude +
+          Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
 
-        if (xi === 0) {
-          ctx.moveTo(xi, y)
+        const px = isVertical ? offset : p;
+        const py = isVertical ? p : offset;
+
+        if (p === 0) {
+          ctx.moveTo(px, py)
         } else {
-          ctx.lineTo(xi, y)
+          ctx.lineTo(px, py)
         }
       }
 
-      // Close path to the edge (bottom or top)
+      // Close path to the edge
       if (isTop) {
         ctx.lineTo(W, 0)
         ctx.lineTo(0, 0)
-      } else {
+      } else if (isLeft) {
+        ctx.lineTo(0, H)
+        ctx.lineTo(0, 0)
+      } else if (isRight) {
+        ctx.lineTo(W, H)
+        ctx.lineTo(W, 0)
+      } else { // bottom
         ctx.lineTo(W, H)
         ctx.lineTo(0, H)
       }
@@ -154,17 +167,19 @@ export class OceanWaveEffect {
 
       // Draw a subtle bright crest line on top of each wave
       ctx.beginPath()
-      for (let xi = 0; xi <= W; xi += 3) {
-        const y =
-          baseY +
-          Math.sin(xi * freq + timeSpeedPhase) * amplitude +
-          Math.sin(xi * freq * 2.3 + timeSpeedPhase2) *
-            (amplitude * 0.3)
+      for (let p = 0; p <= maxLen; p += 3) {
+        const offset =
+          basePos +
+          Math.sin(p * freq + timeSpeedPhase) * amplitude +
+          Math.sin(p * freq * 2.3 + timeSpeedPhase2) * (amplitude * 0.3)
 
-        if (xi === 0) {
-          ctx.moveTo(xi, y)
+        const px = isVertical ? offset : p;
+        const py = isVertical ? p : offset;
+
+        if (p === 0) {
+          ctx.moveTo(px, py)
         } else {
-          ctx.lineTo(xi, y)
+          ctx.lineTo(px, py)
         }
       }
       ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${alpha + 0.15})`
@@ -172,5 +187,4 @@ export class OceanWaveEffect {
       ctx.stroke()
     }
   }
-
 }

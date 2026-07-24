@@ -1,6 +1,7 @@
 export class InteractiveFluidBackground {
   constructor(canvasId, color1 = "#00f2fe", color2 = "#4facfe") {
     this.canvas = document.getElementById(canvasId)
+    // We use alpha: false for performance, meaning it draws its own background
     this.ctx = this.canvas.getContext("2d", { alpha: false })
     this.active = false
     this.color1 = color1
@@ -28,8 +29,14 @@ export class InteractiveFluidBackground {
   }
 
   resize() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    this.w = window.innerWidth
+    this.h = window.innerHeight
+    const dpr = window.devicePixelRatio || 1
+    this.canvas.width = this.w * dpr
+    this.canvas.height = this.h * dpr
+    this.canvas.style.width = `${this.w}px`
+    this.canvas.style.height = `${this.h}px`
+    this.ctx.scale(dpr, dpr)
   }
 
   handleMouseMove(e) {
@@ -86,7 +93,7 @@ export class InteractiveFluidBackground {
 
   spawnParticles() {
     const dist = Math.hypot(this.mouse.dx, this.mouse.dy)
-    const count = Math.min(dist * 0.2, 20) // lower count for better performance & less glaring
+    const count = Math.min(Math.floor(dist * 0.4), 30) // More particles for smoother fluid
     
     const rgb1 = this.hexToRgb(this.color1)
     const rgb2 = this.hexToRgb(this.color2)
@@ -102,13 +109,13 @@ export class InteractiveFluidBackground {
       const b = Math.round(rgb1.b * mix + rgb2.b * (1 - mix))
       
       this.particles.push({
-        x: px + (Math.random() - 0.5) * 15,
-        y: py + (Math.random() - 0.5) * 15,
-        vx: this.mouse.dx * 0.03 + (Math.random() - 0.5) * 1.5,
-        vy: this.mouse.dy * 0.03 + (Math.random() - 0.5) * 1.5,
-        radius: Math.random() * 30 + 15, // slightly larger, softer
+        x: px + (Math.random() - 0.5) * 20,
+        y: py + (Math.random() - 0.5) * 20,
+        vx: this.mouse.dx * 0.05 + (Math.random() - 0.5) * 2,
+        vy: this.mouse.dy * 0.05 + (Math.random() - 0.5) * 2,
+        radius: Math.random() * 40 + 20, // larger for better fluid merge
         life: 1,
-        decay: Math.random() * 0.01 + 0.01,
+        decay: Math.random() * 0.015 + 0.01,
         color: `rgb(${r}, ${g}, ${b})`,
         angle: Math.random() * Math.PI * 2
       })
@@ -122,6 +129,7 @@ export class InteractiveFluidBackground {
     this.mouse = { x: -1000, y: -1000, dx: 0, dy: 0 }
     this.lastMouse = { x: -1000, y: -1000 }
     this.particles = []
+    this.resize()
     this.animate()
   }
 
@@ -140,31 +148,31 @@ export class InteractiveFluidBackground {
   animate() {
     if (!this.active) return
 
-    const W = this.canvas.width
-    const H = this.canvas.height
+    const W = this.w
+    const H = this.h
     
     this.ctx.globalCompositeOperation = 'source-over'
-    // A slightly darker, less opaque trail clear for a smoother motion blur without whiteouts
-    this.ctx.fillStyle = "rgba(10, 10, 15, 0.2)"
+    // Deep dark background that looks premium
+    this.ctx.fillStyle = "rgba(5, 5, 8, 0.25)"
     this.ctx.fillRect(0, 0, W, H)
 
-    // Using 'screen' instead of 'lighter' avoids glaring whiteouts while still blending beautifully
+    // Using 'screen' or 'lighter' for glowing fluid effect
     this.ctx.globalCompositeOperation = 'screen'
     
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i]
       
-      p.angle += 0.05
-      p.vx += Math.cos(p.angle) * 0.15
-      p.vy += Math.sin(p.angle) * 0.15
+      p.angle += 0.04
+      p.vx += Math.cos(p.angle) * 0.1
+      p.vy += Math.sin(p.angle) * 0.1
       
-      p.vx *= 0.96
-      p.vy *= 0.96
+      p.vx *= 0.95
+      p.vy *= 0.95
       
       p.x += p.vx
       p.y += p.vy
       
-      p.radius += 0.3
+      p.radius += 0.4
       p.life -= p.decay
       
       if (p.life <= 0) {
@@ -172,11 +180,12 @@ export class InteractiveFluidBackground {
         continue
       }
       
+      // Beautiful soft gradient for fluid-like merging
       const grad = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius)
       
       const colorStr = p.color.replace('rgb(', '').replace(')', '')
-      // Lower max opacity to 0.3 for a softer, smoke-like appearance
-      grad.addColorStop(0, `rgba(${colorStr}, ${p.life * 0.3})`)
+      grad.addColorStop(0, `rgba(${colorStr}, ${p.life * 0.4})`)
+      grad.addColorStop(0.4, `rgba(${colorStr}, ${p.life * 0.15})`)
       grad.addColorStop(1, `rgba(${colorStr}, 0)`)
       
       this.ctx.fillStyle = grad
@@ -185,20 +194,27 @@ export class InteractiveFluidBackground {
       this.ctx.fill()
     }
     
-    if (this.particles.length < 30 && Math.random() < 0.05) {
-      const px = W / 2 + Math.cos(Date.now() * 0.001) * 300
-      const py = H / 2 + Math.sin(Date.now() * 0.0013) * 200
+    // Idle gentle movement when mouse is still
+    if (this.particles.length < 40 && Math.random() < 0.08) {
+      const px = W / 2 + Math.cos(Date.now() * 0.0008) * (W * 0.3)
+      const py = H / 2 + Math.sin(Date.now() * 0.0011) * (H * 0.3)
       
       const rgb1 = this.hexToRgb(this.color1)
+      const rgb2 = this.hexToRgb(this.color2)
+      const mix = Math.random()
+      const r = Math.round(rgb1.r * mix + rgb2.r * (1 - mix))
+      const g = Math.round(rgb1.g * mix + rgb2.g * (1 - mix))
+      const b = Math.round(rgb1.b * mix + rgb2.b * (1 - mix))
+
       this.particles.push({
         x: px,
         y: py,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        radius: Math.random() * 40 + 30,
-        life: 0.8,
-        decay: 0.015,
-        color: `rgb(${rgb1.r}, ${rgb1.g}, ${rgb1.b})`,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5,
+        radius: Math.random() * 60 + 40,
+        life: 0.6,
+        decay: 0.01,
+        color: `rgb(${r}, ${g}, ${b})`,
         angle: Math.random() * Math.PI * 2
       })
     }

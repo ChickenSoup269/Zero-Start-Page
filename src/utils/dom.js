@@ -76,8 +76,7 @@ export let bgContrastInput = document.getElementById("bg-contrast-input")
 export let bgContrastValue = document.getElementById("bg-contrast-value")
 export let bgSaturationInput = document.getElementById("bg-saturation-input")
 export let bgSaturationValue = document.getElementById("bg-saturation-value")
-export let bgFadeInInput = document.getElementById("bg-fadein-input")
-export let bgFadeInValue = document.getElementById("bg-fadein-value")
+
 export let backgroundMediaQualitySelect = document.getElementById(
   "background-media-quality-select",
 )
@@ -727,6 +726,8 @@ export let oceanWavePosBottomBtn = document.getElementById(
   "ocean-wave-pos-bottom",
 )
 export let oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
+export let oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
+export let oceanWavePosRightBtn = document.getElementById("ocean-wave-pos-right")
 export let cloudDriftColorPicker = document.getElementById(
   "cloud-drift-color-picker",
 )
@@ -2248,8 +2249,7 @@ export function refreshDOMReferences() {
   bgContrastValue = document.getElementById("bg-contrast-value")
   bgSaturationInput = document.getElementById("bg-saturation-input")
   bgSaturationValue = document.getElementById("bg-saturation-value")
-  bgFadeInInput = document.getElementById("bg-fadein-input")
-  bgFadeInValue = document.getElementById("bg-fadein-value")
+
   backgroundMediaQualitySelect = document.getElementById(
   "background-media-quality-select",
 )
@@ -2872,12 +2872,14 @@ export function refreshDOMReferences() {
   "ocean-wave-color-setting",
 )
   oceanWavePositionSetting = document.getElementById(
-  "ocean-wave-position-setting",
-)
+    "ocean-wave-position-setting",
+  )
   oceanWavePosBottomBtn = document.getElementById(
-  "ocean-wave-pos-bottom",
-)
+    "ocean-wave-pos-bottom",
+  )
   oceanWavePosTopBtn = document.getElementById("ocean-wave-pos-top")
+  oceanWavePosLeftBtn = document.getElementById("ocean-wave-pos-left")
+  oceanWavePosRightBtn = document.getElementById("ocean-wave-pos-right")
   cloudDriftColorPicker = document.getElementById(
   "cloud-drift-color-picker",
 )

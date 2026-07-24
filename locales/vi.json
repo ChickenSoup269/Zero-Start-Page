@@ -153,7 +153,6 @@
   "settings_custom_font": "Google Font tùy chỉnh",
   "settings_custom_font_placeholder": "Nhập tên font (VD: Pacifico)",
   "settings_custom_font_hint": "Nhập chính xác tên font từ Google Fonts",
-  "settings_font_clock": "Đồng hồ",
   "settings_load_font": "Tải font",
   "settings_save_font": "Lưu font",
   "settings_saved_fonts": "Phông chữ đã lưu",
@@ -830,7 +829,7 @@
   "settings_quotes_freq_tab": "Mỗi lần mở tab mới",
   "settings_quotes_freq_hour": "Mỗi giờ",
   "settings_quotes_freq_day": "Mỗi ngày",
-  "settings_quotes_source": "Nguồn lấy Danh ngôn",
+  "settings_quotes_source": "Nguồn API",
   "settings_music_style": "Kiểu thanh nhạc",
   "settings_music_use_default_color": "Màu sóng nhạc",
   "settings_music_source_icon_color": "Màu icon nguồn nhạc",
@@ -1985,8 +1984,9 @@
   "setting_dvd_clone": "Số lượng bản sao",
   "setting_dvd_trail": "Hiệu ứng bóng mờ",
   "setting_dvd_glitch": "Hiệu ứng nhiễu sóng",
-  "settings_quotes_source": "Nguồn API",
   "settings_quotes_source_local": "Mặc định (Offline)",
   "settings_quotes_source_quotable": "Quotable API",
-  "settings_quotes_source_advice": "Advice Slip API"
+  "settings_quotes_source_advice": "Advice Slip API",
+  "position_left": "Trái",
+  "position_right": "Phải"
 }
