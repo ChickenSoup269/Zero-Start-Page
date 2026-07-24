@@ -313,18 +313,45 @@ body.date-clock-style-glow #date {
 
 body.date-clock-style-default .clock-date-wrap {
   text-align: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body.date-clock-style-default .clock-date-wrap:hover {
+  transform: translateY(-2px) scale(1.02);
 }
 
 body.date-clock-style-default #clock {
   line-height: 0.98;
   text-shadow:
-    0 8px 22px rgba(0, 0, 0, 0.32),
-    0 1px 0 rgba(255, 255, 255, 0.12);
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 24px 32px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(255, 255, 255, 0.15);
+}
+
+body.date-clock-style-default .clock-date-wrap:hover #clock {
+  text-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.25),
+    0 16px 32px rgba(0, 0, 0, 0.35),
+    0 30px 48px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(255, 255, 255, 0.2);
 }
 
 body.date-clock-style-default #date {
-  font-weight: 420;
-  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: opacity 0.4s ease, text-shadow 0.4s ease;
+}
+
+body.date-clock-style-default .clock-date-wrap:hover #date {
+  opacity: 1;
+  text-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 body.date-clock-style-glow .clock-date-wrap {
@@ -428,7 +455,7 @@ body.date-clock-style-minimal #clock {
   padding-bottom: clamp(var(--space-1), calc(var(--clock-size) * 0.08), var(--space-1));
   font-family: var(--font-clock);
   font-weight: 650;
-  line-height: 0.96;
+  line-height: 1.1;
   color: var(--clock-color, #ffffff);
   border-bottom: 1px solid rgba(var(--clock-color-rgb, 255, 255, 255), 0.16);
 }
@@ -513,6 +540,7 @@ body.date-clock-style-glass #date {
   border: 0;
   border-radius: 0;
   width: auto;
+  line-height: 1.1;
 }
 
 /* Framed Clock Shared Themes */
@@ -553,7 +581,7 @@ body.framed-theme-dark .round-clock-notch {
 
 /* Base styles for Round Clock */
 body.date-clock-style-round .clock-date-wrap {
-  --frame-size: min(88vw, 360px);
+  --frame-size: max(min(88vw, 360px), calc(var(--clock-size, 6rem) * 4));
   width: var(--frame-size);
   height: var(--frame-size);
   margin: 0 auto var(--space-5);
@@ -577,7 +605,7 @@ body.date-clock-style-round .clock-date-wrap:hover {
 
 /* Base styles for Square Clock */
 body.date-clock-style-square .clock-date-wrap {
-  --frame-size: min(80vw, 280px); /* Nhỏ lại từ 360px xuống 280px */
+  --frame-size: max(min(80vw, 280px), calc(var(--clock-size, 6rem) * 3.5));
   width: var(--frame-size);
   height: var(--frame-size);
   margin: 0 auto var(--space-5);
