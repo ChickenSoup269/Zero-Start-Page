@@ -4889,22 +4889,38 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   text-align: center;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  min-height: 80px;
-  padding: 12px 6px;
+  gap: 8px;
+  min-height: 85px;
+  padding: 16px 8px;
   overflow: hidden;
   user-select: none;
+}
+
+.clock-style-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.clock-style-card > * {
+  z-index: 1;
 }
 
 .clock-style-card.compact-style-card {
@@ -4913,6 +4929,7 @@ body.sidebar-light .preset-code-line-value {
   min-height: 44px;
   flex-direction: row;
   gap: 8px;
+  border-radius: 8px;
 }
 
 .clock-style-card.compact-style-card i {
@@ -4920,18 +4937,24 @@ body.sidebar-light .preset-code-line-value {
 }
 
 .clock-style-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
+  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25),
+              0 0 15px rgba(var(--accent-color-rgb, 168, 192, 255), 0.15);
+}
+
+.clock-style-card:hover::before {
+  opacity: 1;
 }
 
 .clock-style-card.active {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12);
+  background: linear-gradient(145deg, rgba(var(--accent-color-rgb, 168, 192, 255), 0.15), rgba(var(--accent-color-rgb, 168, 192, 255), 0.05));
   border-color: var(--accent-color, #a8c0ff);
   box-shadow:
-    0 0 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.2),
-    inset 0 0 0 1px var(--accent-color, #a8c0ff);
+    0 8px 25px rgba(var(--accent-color-rgb, 168, 192, 255), 0.25),
+    inset 0 0 0 1px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
+  transform: translateY(-2px);
 }
 
 .clock-style-card i {
@@ -4942,7 +4965,8 @@ body.sidebar-light .preset-code-line-value {
 
 .clock-style-card.active i {
   color: var(--accent-color, #a8c0ff);
-  transform: scale(1.1);
+  transform: scale(1.15);
+  text-shadow: 0 0 10px rgba(var(--accent-color-rgb, 168, 192, 255), 0.5);
 }
 
 .clock-style-name {
