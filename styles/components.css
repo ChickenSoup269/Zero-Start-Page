@@ -646,6 +646,7 @@
 .bookmark-edit-icon-grid button {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   min-width: 0;
   min-height: 38px;
@@ -802,14 +803,27 @@ body.context-menu-macos .bookmark-edit-field {
 }
 
 .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon {
-  width: 62%;
-  height: 62%;
+  width: 62% !important;
+  height: 62% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   object-fit: contain;
-  border: 0;
-  border-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 3px);
-  color: var(--accent-color, #a8c0ff);
-  font-size: calc(var(--bookmark-icon-size, 42px) * 0.48);
-  line-height: 1;
+  border: 0 !important;
+  border-radius: calc(var(--bookmark-border-radius, var(--radius-md)) - 3px) !important;
+  color: var(--accent-color, #a8c0ff) !important;
+  font-size: calc(var(--bookmark-icon-size, 42px) * 0.48) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.bookmark-stack-icon.has-custom-stack-icon i.stored-bookmark-icon {
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex !important;
 }
 
 .bookmark-stack-icon.has-custom-stack-icon .stored-bookmark-icon-fallback {

@@ -344,11 +344,13 @@ function getIconCandidates(bookmark) {
   if (bookmark.icon) list.push(bookmark.icon)
 
   if (bookmark.url.startsWith("chrome-extension://") || bookmark.url.startsWith("extension://")) {
-    list.push(`chrome://extension-icon/${hostname}/128/1`)
-    list.push(`edge://extension-icon/${hostname}/128/1`)
+    const res = getSettings().bookmarkFaviconRes ?? 128
+    list.push(`chrome://extension-icon/${hostname}/${res}/1`)
+    list.push(`edge://extension-icon/${hostname}/${res}/1`)
   } else if (hostname) {
-    // Prioritize Google (fastest, most reliable, supports high-res sz=128)
-    list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=128`)
+    const res = getSettings().bookmarkFaviconRes ?? 128
+    // Prioritize Google (fastest, most reliable, supports high-res sz)
+    list.push(`https://www.google.com/s2/favicons?domain=${hostname}&sz=${res}`)
     // Fallback to DuckDuckGo
     list.push(`https://icons.duckduckgo.com/ip3/${hostname}.ico`)
   }
@@ -2854,7 +2856,14 @@ function updateMacosHover() {
   const isFlipped = document.body.classList.contains("flip-layout")
 
   // MacOS parameters
-  const maxScale = 1.6
+  const isDefaultLayout = 
+    !document.body.classList.contains("bookmark-taskbar-mode") && 
+    !document.body.classList.contains("bookmark-taskbar-top-mode") && 
+    !document.body.classList.contains("bookmark-taskbar-left-mode") && 
+    !document.body.classList.contains("bookmark-taskbar-right-mode") && 
+    !document.body.classList.contains("bookmark-sidebar-mode")
+
+  const maxScale = isDefaultLayout ? 1.6 : 1.35
   const range = 80 // Reduced range to limit spread to neighbors
 
   // PHASE 1: READS (Avoid Layout Thrashing)
@@ -2917,31 +2926,40 @@ function updateMacosHover() {
               // Sidebar is on the left side, tooltip should point right
               leftPos = rect.right + 20
               topPos = rect.top + rect.height / 2
-              globalTooltip.style.transform = "translate(0, -50%)"
+              globalTooltip.style.transform = "translate(var(--tooltip-left), calc(var(--tooltip-top) - 50%))"
             } else {
               // Sidebar is on the right side, tooltip should point left
               leftPos = rect.left - 20
               topPos = rect.top + rect.height / 2
-              globalTooltip.style.transform = "translate(-100%, -50%)"
+              globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 100%), calc(var(--tooltip-top) - 50%))"
             }
           } else if (isTaskbarTop) {
             topPos = rect.bottom + 20
-            globalTooltip.style.transform = "translateX(-50%)"
+            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 50%), var(--tooltip-top))"
           } else if (isTaskbarLeft) {
             leftPos = rect.right + 20
             topPos = rect.top + rect.height / 2
-            globalTooltip.style.transform = "translate(0, -50%)"
+            globalTooltip.style.transform = "translate(var(--tooltip-left), calc(var(--tooltip-top) - 50%))"
           } else if (isTaskbarRight) {
             leftPos = rect.left - 20
             topPos = rect.top + rect.height / 2
-            globalTooltip.style.transform = "translate(-100%, -50%)"
+            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 100%), calc(var(--tooltip-top) - 50%))"
           } else {
             // Taskbar Bottom (default)
-            globalTooltip.style.transform = "translateX(-50%)"
+            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 50%), var(--tooltip-top))"
           }
           
-          globalTooltip.style.top = `${topPos}px`
-          globalTooltip.style.left = `${leftPos}px`
+          if (globalTooltip.style.opacity === "0" || globalTooltip.style.opacity === "") {
+            globalTooltip.style.transition = "none"
+            globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
+            globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
+            globalTooltip.offsetHeight // Force reflow
+            globalTooltip.style.transition = ""
+          } else {
+            globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
+            globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
+          }
+          
           globalTooltip.style.opacity = "1"
           globalTooltip.style.visibility = "visible"
         }

@@ -10587,8 +10587,8 @@ body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
 
 #macos-global-tooltip {
   position: fixed;
-  top: -999px;
-  left: -999px;
+  left: 0;
+  top: 0;
   width: fit-content;
   white-space: nowrap;
   border-radius: var(--radius-sm);
@@ -10598,10 +10598,10 @@ body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
   padding: var(--space-0-5) var(--space-1);
   font-size: 13px !important;
   color: var(--text-color, #fff) !important;
-  transform: translateX(-50%);
+  transform: translate(calc(var(--tooltip-left, -999px) - 50%), var(--tooltip-top, -999px));
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
   pointer-events: none;
   z-index: 999999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);

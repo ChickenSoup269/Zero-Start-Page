@@ -418,6 +418,7 @@ function createFolderIconEditor({
   icon,
   iconColor = "",
   showIconColor = false,
+  allowIconEdit = true,
   anchor,
   focus = "name",
   onSave,
@@ -443,13 +444,17 @@ function createFolderIconEditor({
   heading.appendChild(closeBtn)
   popover.appendChild(heading)
 
-  const iconPreview = document.createElement("div")
-  iconPreview.className = "bookmark-edit-icon-preview bookmark-folder-icon-preview"
-  popover.appendChild(iconPreview)
+  let iconPreview = null
+  let iconGrid = null
+  if (allowIconEdit) {
+    iconPreview = document.createElement("div")
+    iconPreview.className = "bookmark-edit-icon-preview bookmark-folder-icon-preview"
+    popover.appendChild(iconPreview)
 
-  const iconGrid = document.createElement("div")
-  iconGrid.className = "bookmark-edit-icon-grid bookmark-folder-icon-grid"
-  popover.appendChild(iconGrid)
+    iconGrid = document.createElement("div")
+    iconGrid.className = "bookmark-edit-icon-grid bookmark-folder-icon-grid"
+    popover.appendChild(iconGrid)
+  }
 
   const fields = document.createElement("div")
   fields.className = "bookmark-edit-fields"
@@ -461,18 +466,20 @@ function createFolderIconEditor({
   nameInput.type = "text"
   nameInput.value = name || ""
   nameGroup.appendChild(nameInput)
-
-  const iconGroup = document.createElement("label")
-  iconGroup.className = "bookmark-edit-field"
-  iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Folder icon"}</span>`
-  const iconInput = document.createElement("input")
-  iconInput.type = "text"
-  iconInput.value = icon || ""
-  iconInput.placeholder = "fa:fa-solid fa-folder or https://..."
-  iconGroup.appendChild(iconInput)
-
   fields.appendChild(nameGroup)
-  fields.appendChild(iconGroup)
+
+  let iconInput = null
+  if (allowIconEdit) {
+    const iconGroup = document.createElement("label")
+    iconGroup.className = "bookmark-edit-field"
+    iconGroup.innerHTML = `<span>${i18n.bookmark_folder_icon || "Folder icon"}</span>`
+    iconInput = document.createElement("input")
+    iconInput.type = "text"
+    iconInput.value = icon || ""
+    iconInput.placeholder = "fa:fa-solid fa-folder or https://..."
+    iconGroup.appendChild(iconInput)
+    // fields.appendChild(iconGroup) // Hidden as per earlier request
+  }
 
   let iconColorInput = null
   let iconColorDirty = false
@@ -529,33 +536,37 @@ function createFolderIconEditor({
   popover.appendChild(fields)
 
   const updatePreview = () => {
+    if (!allowIconEdit) return
     applyFolderIconColor(
       iconPreview,
       iconColorReset ? "" : iconColorInput?.value || "",
     )
-    renderFolderIconPreview(iconPreview, iconInput.value, nameInput.value || "?")
+    renderFolderIconPreview(iconPreview, iconInput?.value || icon || "", nameInput.value || "?")
   }
 
   const syncButtons = () => {
-    const current = iconInput.value.trim()
+    if (!allowIconEdit) return
+    const current = (iconInput?.value || "").trim()
     iconGrid.querySelectorAll("button").forEach((button) => {
       button.classList.toggle("active", (button.dataset.value || "") === current)
     })
   }
 
-  BOOKMARK_FOLDER_ICON_OPTIONS.forEach((option) => {
-    const button = document.createElement("button")
-    button.type = "button"
-    button.dataset.value = option.value
-    button.title = option.label
-    button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
-    button.addEventListener("click", () => {
-      iconInput.value = option.value
-      syncButtons()
-      updatePreview()
+  if (allowIconEdit) {
+    BOOKMARK_FOLDER_ICON_OPTIONS.forEach((option) => {
+      const button = document.createElement("button")
+      button.type = "button"
+      button.dataset.value = option.value
+      button.title = option.label
+      button.innerHTML = `<i class="${option.icon}"></i><span>${option.label}</span>`
+      button.addEventListener("click", () => {
+        if (iconInput) iconInput.value = option.value
+        syncButtons()
+        updatePreview()
+      })
+      iconGrid.appendChild(button)
     })
-    iconGrid.appendChild(button)
-  })
+  }
 
   const saveFolder = () => {
     const nextName = nameInput.value.trim()
@@ -565,7 +576,7 @@ function createFolderIconEditor({
     }
     onSave({
       name: nextName,
-      icon: iconInput.value.trim(),
+      icon: allowIconEdit ? (iconInput?.value || "").trim() : (icon || ""),
       iconColor:
         showIconColor && (iconColorDirty || iconColor)
           ? iconColorReset
@@ -577,7 +588,11 @@ function createFolderIconEditor({
   }
 
   saveBtn.addEventListener("click", saveFolder)
-  ;[nameInput, iconInput, iconColorInput].filter(Boolean).forEach((input) => {
+  const inputsToListen = [nameInput]
+  if (allowIconEdit) inputsToListen.push(iconInput)
+  if (showIconColor) inputsToListen.push(iconColorInput)
+  
+  inputsToListen.filter(Boolean).forEach((input) => {
     input.addEventListener("input", () => {
       syncButtons()
       updatePreview()
@@ -625,6 +640,7 @@ export function openBookmarkStackEditPopover(
     title: i18n.bookmark_stack_edit || "Edit bookmark folder",
     name: stack.title || i18n.bookmark_stack_default_name || "Bookmark Group",
     icon: stack.icon || "",
+    allowIconEdit: false,
     anchor,
     focus: options.focus,
     onSave: ({ name, icon }) => {
