@@ -184,9 +184,10 @@ Startpage là một tiện ích mở rộng Chrome thay thế trang tab mới b�
 </tr>
 </table>
 
-### Hiệu ứng hình ảnh (51 hoạt ảnh + Bộ tạo sóng SVG)
+### Hiệu ứng hình ảnh (57 hoạt ảnh + Bộ tạo sóng SVG)
 
-Chọn từ 51 hiệu ứng canvas, cùng với Bộ tạo sóng SVG, với bộ chọn màu riêng cho các hiệu ứng được hỗ trợ:
+Chọn từ 57 hiệu ứng canvas, cùng với Bộ tạo sóng SVG, với bộ chọn màu riêng cho các hiệu ứng được hỗ trợ:
+
 
 | Thiên nhiên & Vũ trụ   | Kỹ thuật số & Công nghệ | Thời tiết & Mùa    | Trừu tượng & Họa tiết |
 | :--------------------- | :---------------------- | :----------------- | :-------------------- |
@@ -202,7 +203,11 @@ Chọn từ 51 hiệu ứng canvas, cùng với Bộ tạo sóng SVG, với bộ
 | • Sóng cực quang       | • Quét lưới             | • Mưa Galaxy       | • Hiệu ứng chuột      |
 | • Cực quang mềm        | • Đèn pin               |                    | • Halloween           |
 | • Cực quang phương Bắc | • Bước nhảy không gian  |                    | • Pháo hoa Tết        |
-| • Cột ánh sáng         |                         |                    | • Ngày thống nhất     |
+| • Cột ánh sáng         | • DVD Bounce            |                    | • Ngày thống nhất     |
+| • Hố đen               | • Thanh nhạc (Bars)     |                    | • Quả cầu sương mờ    |
+|                        | • Nintendo Pixel        |                    | • Chất lỏng tương tác |
+|                        | • Neon Grid 3D          |                    | • Cinematic Bokeh     |
+
 
 Ngoài danh sách hiệu ứng canvas, phần cài đặt hình nền còn có các hệ thống nền động như **Gradient V2**, **Silk**, **Liquid Ether**, **Light Pillars**, nền đa màu và thư viện sóng SVG đã lưu.
 

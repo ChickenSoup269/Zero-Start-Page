@@ -201,9 +201,10 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 </tr>
 </table>
 
-### Visual Effects (51 Animations + SVG Wave Generator)
+### Visual Effects (57 Animations + SVG Wave Generator)
 
-Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
+Select from 57 canvas-based animated effects, plus the SVG Wave Generator, with individual color pickers where supported:
+
 
 | Nature & Space    | Digital & Tech   | Weather & Seasons    | Abstract & Patterns |
 | :---------------- | :--------------- | :------------------- | :------------------ |
@@ -219,7 +220,11 @@ Select from 51 canvas-based animated effects, plus the SVG Wave Generator, with 
 | • Aurora Wave     | • Grid Scan      | • Rain Galaxy        | • Cursor Trail      |
 | • Soft Aurora     | • Flashlight     |                      | • Halloween         |
 | • Northern Lights | • Hyperspace     |                      | • Tết Fireworks     |
-| • Light Pillars   |                  |                      | • Reunification Day |
+| • Light Pillars   | • DVD Bounce     |                      | • Reunification Day |
+| • Black Hole      | • Music Bars     |                      | • Frosted Glass Orbs|
+|                   | • Nintendo Pixel |                      | • Interactive Fluid |
+|                   | • Neon Grid 3D   |                      | • Cinematic Bokeh   |
+
 
 Additional animated background systems are available in the background settings, including **Gradient V2**, **Silk**, **Liquid Ether**, **Light Pillars**, multi-color backgrounds, and saved SVG waves.
 
