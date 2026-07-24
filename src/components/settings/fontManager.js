@@ -268,17 +268,14 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
       const card = document.createElement("div")
 
       const targetSelect = document.getElementById("font-target-select")
-      const isTargetClock = targetSelect
-        ? targetSelect.value === "clock"
-        : false
+      const targetValue = targetSelect ? targetSelect.value : "general"
       let isActive = false
-      if (isTargetClock) {
+      if (targetValue === "both") {
+        isActive = value === settings.clockFont || value === settings.font
+      } else if (targetValue === "clock") {
         isActive = value === settings.clockFont
       } else {
-        isActive =
-          type === "clock"
-            ? value === settings.clockFont
-            : value === settings.font
+        isActive = value === settings.font
       }
       card.className = "font-item" + (isActive ? " active" : "")
       if (isFavorite) card.classList.add("is-favorite")
@@ -394,12 +391,20 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const targetSelect = document.getElementById("font-target-select")
         const target = targetSelect ? targetSelect.value : "general"
 
+        const prevSettings = getSettings()
+        const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
+        const curFontForDecouple = normalizeFont(prevSettings.font || "'Space Grotesk', sans-serif")
+        const curClockFontForDecouple = normalizeFont(prevSettings.clockFont || prevSettings.font || "'Space Grotesk', sans-serif")
+        
         if (target === "both") {
           updateSettingCallback("font", value)
           updateSettingCallback("clockFont", value)
-        } else if (target === "clock" || type === "clock") {
+        } else if (target === "clock") {
           updateSettingCallback("clockFont", value)
         } else {
+          if (!prevSettings.clockFont || curClockFontForDecouple === curFontForDecouple) {
+            updateSettingCallback("clockFont", prevSettings.clockFont || prevSettings.font || "'Space Grotesk', sans-serif")
+          }
           updateSettingCallback("font", value)
         }
 
@@ -407,21 +412,20 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
         const currentSettings = getSettings()
         const isTargetClock = target === "clock"
         const allCards = fontGrid.querySelectorAll(".font-item")
+        
+        const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
+        const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+
         allCards.forEach((c) => {
           const cVal = c.dataset.fontValue
           const cType = c.dataset.fontType
           let isActiveCard = false
           if (target === "both") {
-            isActiveCard =
-              cVal === currentSettings.clockFont ||
-              cVal === currentSettings.font
-          } else if (isTargetClock) {
-            isActiveCard = cVal === currentSettings.clockFont
+            isActiveCard = cVal === curClockFont || cVal === curFont
+          } else if (target === "clock") {
+            isActiveCard = cVal === curClockFont
           } else {
-            isActiveCard =
-              cType === "clock"
-                ? cVal === currentSettings.clockFont
-                : cVal === currentSettings.font
+            isActiveCard = cVal === curFont
           }
           if (isActiveCard) c.classList.add("active")
           else c.classList.remove("active")
@@ -480,6 +484,14 @@ function renderFontGrid(fontGrid, updateSettingCallback) {
           },
           onApplyToGen: () => {
             if (custom || google) loadGoogleFont(label)
+            const currentSettings = getSettings()
+            const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
+            const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
+            const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+            
+            if (!currentSettings.clockFont || curClockFont === curFont) {
+              updateSettingCallback("clockFont", currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+            }
             updateSettingCallback("font", value)
 
             // Fast UI update
@@ -763,22 +775,21 @@ function setupMultiSelect(DOM, updateSettingCallback) {
       const isTargetClock = targetSelect.value === "clock"
       const isTargetBoth = targetSelect.value === "both"
       const allCards = DOM.fontGrid.querySelectorAll(".font-item")
+      
+      const normalizeFont = (f) => String(f || "").replace(/['"]/g, "").split(",")[0].trim()
+      const curFont = normalizeFont(currentSettings.font || "'Space Grotesk', sans-serif")
+      const curClockFont = normalizeFont(currentSettings.clockFont || currentSettings.font || "'Space Grotesk', sans-serif")
+
       allCards.forEach((c) => {
         const cVal = c.dataset.fontValue
         const cType = c.dataset.fontType
         let isActiveCard = false
         if (isTargetBoth) {
-          isActiveCard =
-            cVal === currentSettings.clockFont || cVal === currentSettings.font
+          isActiveCard = cVal === curClockFont || cVal === curFont
         } else if (isTargetClock) {
-          // If viewing clock target, highlight the font that is currently the clockFont
-          isActiveCard = cVal === currentSettings.clockFont
+          isActiveCard = cVal === curClockFont
         } else {
-          // If viewing general target, highlight based on typical sections
-          isActiveCard =
-            cType === "clock"
-              ? cVal === currentSettings.clockFont
-              : cVal === currentSettings.font
+          isActiveCard = cVal === curFont
         }
         if (isActiveCard) c.classList.add("active")
         else c.classList.remove("active")
