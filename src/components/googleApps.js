@@ -600,7 +600,8 @@ function createItem(item, state, onContextMenu) {
   const img = document.createElement("img")
   img.src = getIconUrl(item, state)
   img.alt = getLabel(item)
-  img.loading = "eager"
+  img.loading = "lazy"
+  img.decoding = "async"
   img.draggable = false
   img.addEventListener(
     "error",

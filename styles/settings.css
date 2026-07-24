@@ -8393,5 +8393,5 @@ body.sidebar-light .weather-api-connection-state {
 .setting-group-title i.toggle-icon { transition: transform 0.2s ease; } 
 .setting-group-collapsible.is-collapsed .setting-group-title i.toggle-icon { transform: rotate(-90deg); }
 
-#accent-m3-group .setting-item-row, #accent-m3-group.expanded > .group-body, #accent-m3-group .secondary-btn { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+#accent-m3-group, #accent-m3-group .setting-item-row, #accent-m3-group.expanded > .group-body, #accent-m3-group .primary-btn, #accent-m3-group .secondary-btn { animation: none !important; transform: none !important; }
 
