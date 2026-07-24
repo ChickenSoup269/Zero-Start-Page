@@ -43,7 +43,7 @@ Startpage là một tiện ích mở rộng Chrome thay thế trang tab mới b�
 <td>
 
 - Tìm kiếm Google với gợi ý theo thời gian thực (tối đa 6 gợi ý kèm favicon)
-- **Tích hợp Google Apps** — menu truy cập nhanh các dịch vụ của Google
+- **Tích hợp Google Apps** — menu truy cập nhanh các dịch vụ của Google (tối ưu tải icon lazy-load để mở siêu tốc)
 - **Hỗ trợ Google Lens** — tìm kiếm bằng hình ảnh qua tải file hoặc URL
 - Tìm kiếm bằng hình ảnh: tải file lên, dán từ clipboard hoặc nhập URL ảnh
 - Chọn công cụ tìm kiếm và lưu tùy chọn

@@ -59,7 +59,7 @@ Startpage is a highly customizable Chrome extension that replaces your new tab p
 <td>
 
 - Google text search with real-time suggestions (up to 6, with favicons)
-- **Google Apps Integration** — quick access dropdown for Google services
+- **Google Apps Integration** — quick access dropdown for Google services with lazy-loaded icons for instant startup performance
 - **Google Lens** support for visual search via image upload or URL
 - Google Images and Google Lens search support
 - Image search via file upload, clipboard paste, or image URL
