@@ -2963,7 +2963,12 @@
                 <span id="close-qr-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="modal-body" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px;">
-                <img id="qr-code-img" src="" alt="QR Code" style="width: 250px; height: 250px; background: white; padding: 10px; border-radius: 10px;">
+                <div style="position: relative; display: inline-block;">
+                    <img id="qr-code-img" src="" alt="QR Code" style="width: 250px; height: 250px; background: white; padding: 10px; border-radius: 10px;">
+                    <div id="qr-code-icon-wrapper" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 6px; border-radius: 50%; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                        <img id="qr-code-icon" src="" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                </div>
                 <p id="qr-code-url" style="font-size: 0.9rem; color: var(--text-color); opacity: 0.8; word-break: break-all; margin: 0; user-select: text;"></p>
             </div>
         </div>

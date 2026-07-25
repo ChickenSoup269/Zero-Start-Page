@@ -11249,11 +11249,14 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
 }
 
 .bookmark-stack-popup-header {
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
-  margin-bottom: var(--space-1);
-  padding: var(--space-1) var(--space-1);
+  margin-bottom: var(--space-2);
+  padding: 12px 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .bookmark-stack-popup-header span {
@@ -11261,6 +11264,8 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
 .bookmark-stack-popup-search {
@@ -11285,15 +11290,15 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
 }
 
 .bookmark-stack-popup-actions {
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: 1000px;
+  background: transparent;
+  border: none;
   display: inline-flex;
-  gap: var(--space-0-5);
+  gap: var(--space-1);
   justify-content: flex-end;
-  margin: -2px 0 var(--space-2) auto;
-  padding: var(--space-0-5);
+  margin: 0 0 var(--space-2) auto;
+  padding: 0;
   width: auto;
+  box-shadow: none;
 }
 
 .bookmark-stack-popup-action {
@@ -11304,25 +11309,25 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
   border-radius: 1000px;
   color: rgba(255, 255, 255, 0.78);
   display: inline-flex;
-  flex: 0 0 34px;
-  height: 34px;
+  flex: 0 0 36px;
+  height: 36px;
   justify-content: center;
   min-width: 0;
   padding: 0;
   position: relative;
-  width: 34px;
+  width: 36px;
   transition:
-    background 0.18s ease,
-    box-shadow 0.18s ease,
-    color 0.18s ease,
-    transform 0.18s ease;
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bookmark-stack-popup-action:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16);
-  color: var(--text-color, #fff);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-  transform: translateY(-1px);
+  background: var(--m3-primary, var(--accent-color));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(var(--accent-color-rgb, 168, 192, 255), 0.3);
+  transform: translateY(-2px);
 }
 
 .bookmark-stack-popup-action.danger {
@@ -11360,7 +11365,8 @@ body.bookmark-taskbar-right-mode .bookmark-group-tab.drag-over {
 }
 
 .bookmark-stack-popup-grid {
-  padding: 2px;
+  padding: 4px;
+  gap: 12px;
 }
 
 .bookmark-stack-popup .bookmark,
@@ -11368,16 +11374,15 @@ body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark,
 body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark {
-  background: rgba(255, 255, 255, 0.045) !important;
-  border: 1px solid rgba(255, 255, 255, 0.075) !important;
-  border-radius: var(--radius-md);
-  min-height: 88px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--radius-md) !important;
+  min-height: 96px !important;
   min-width: 0 !important;
-  padding: var(--space-1) var(--space-1) !important;
+  padding: 12px !important;
   width: 100% !important;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
 .bookmark-stack-popup .bookmark:hover,
@@ -11385,13 +11390,13 @@ body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-top-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-left-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover,
-body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover,
 body.bookmark-taskbar-right-mode .bookmark-stack-popup .bookmark:hover {
-  background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.12) !important;
-  border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.32) !important;
-  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
 }
+
 
 .bookmark-stack-popup .bookmark-stack-popup-label,
 body.bookmark-sidebar-mode .bookmark-stack-popup .bookmark-stack-popup-label,

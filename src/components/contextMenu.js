@@ -318,17 +318,27 @@ function addOpenBookmarkSettingsItem(i18n) {
   contextMenu.insertBefore(settingsBtn, menuEdit)
 }
 
-function showQrCodeModal(url) {
+function showQrCodeModal(url, faviconUrl = "") {
   const modal = document.getElementById("qr-modal")
   const img = document.getElementById("qr-code-img")
   const text = document.getElementById("qr-code-url")
   const closeBtn = document.getElementById("close-qr-modal-btn")
+  const iconWrapper = document.getElementById("qr-code-icon-wrapper")
+  const icon = document.getElementById("qr-code-icon")
 
   if (!modal || !img || !text) return
 
   const encodedUrl = encodeURIComponent(url)
-  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}`
+  // Use ECC Level H to allow the center icon without breaking the QR code
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}&ecc=H`
   text.textContent = url
+  
+  if (faviconUrl && iconWrapper && icon) {
+    icon.src = faviconUrl
+    iconWrapper.style.display = "flex"
+  } else if (iconWrapper) {
+    iconWrapper.style.display = "none"
+  }
 
   modal.classList.add("show")
 
@@ -352,15 +362,19 @@ function showQrCodeModal(url) {
 function addGenerateQrCodeItem(i18n, type, index, id) {
   let url = ""
 
+  let faviconUrl = ""
   if (type === "bookmark" || type === "bookmarkStackItem") {
     if (contextMenuCallbacks && contextMenuCallbacks.anchor) {
       const anchor = contextMenuCallbacks.anchor
       if (anchor.tagName === "A") {
         url = anchor.href
+        const imgEl = anchor.querySelector("img")
+        if (imgEl && imgEl.src) faviconUrl = imgEl.src
       } else {
         const img = anchor.querySelector("img")
         if (img && img.dataset && img.dataset.url) {
           url = img.dataset.url
+          if (img.src) faviconUrl = img.src
         }
       }
     }
@@ -370,29 +384,151 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
     const bookmarks = getBookmarks()
     if (type === "bookmark") {
       const bookmark = bookmarks[index]
-      if (bookmark && bookmark.url) url = bookmark.url
+      if (bookmark && bookmark.url) {
+        url = bookmark.url
+        if (bookmark.icon) faviconUrl = bookmark.icon
+      }
     } else if (type === "bookmarkStackItem") {
       if (id && id.includes(":")) {
         const [stackIndex, itemIndex] = id.split(":").map(Number)
         const stack = bookmarks[stackIndex]
         if (stack && stack.items) {
           const item = stack.items[itemIndex]
-          if (item && item.url) url = item.url
+          if (item && item.url) {
+            url = item.url
+            if (item.icon) faviconUrl = item.icon
+          }
         }
       }
     }
+  }
+  
+  if (!faviconUrl && url) {
+    try {
+      faviconUrl = `https://www.google.com/s2/favicons?domain=${new URL(url).hostname}&sz=64`
+    } catch (e) {}
   }
 
   if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
     const qrBtn = createCustomMenuItem(
       i18n.context_generate_qr || "Generate QR Code",
       "fa-solid fa-qrcode",
-      () => {
+      (e) => {
         hideContextMenu()
-        showQrCodeModal(url)
+        showQrCodeModal(url, faviconUrl)
       },
-      "context-settings-item"
+      "context-settings-item qr-menu-item"
     )
+    
+    // MacOS hover logic
+    qrBtn.addEventListener("mouseenter", (e) => {
+       let popover = document.getElementById("qr-hover-popover");
+       if (!popover) {
+          popover = document.createElement("div");
+          popover.id = "qr-hover-popover";
+          popover.style.position = "fixed";
+          popover.style.zIndex = "21000";
+          popover.style.background = "white";
+          popover.style.padding = "10px";
+          popover.style.borderRadius = "12px";
+          popover.style.boxShadow = "0 10px 40px rgba(0,0,0,0.4)";
+          popover.style.pointerEvents = "none";
+          popover.style.opacity = "0";
+          popover.style.transition = "opacity 0.2s ease-in-out, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)";
+          popover.style.transform = "scale(0.8) translateY(10px)";
+          
+          const qrContainer = document.createElement("div");
+          qrContainer.style.position = "relative";
+          qrContainer.style.width = "180px";
+          qrContainer.style.height = "180px";
+          
+          const img = document.createElement("img");
+          img.id = "qr-hover-img";
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.display = "block";
+          img.style.borderRadius = "6px";
+          qrContainer.appendChild(img);
+          
+          const iconWrapper = document.createElement("div");
+          iconWrapper.style.position = "absolute";
+          iconWrapper.style.top = "50%";
+          iconWrapper.style.left = "50%";
+          iconWrapper.style.transform = "translate(-50%, -50%)";
+          iconWrapper.style.background = "white";
+          iconWrapper.style.padding = "4px";
+          iconWrapper.style.borderRadius = "50%";
+          iconWrapper.style.display = "flex";
+          iconWrapper.style.alignItems = "center";
+          iconWrapper.style.justifyContent = "center";
+          iconWrapper.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+          
+          const icon = document.createElement("img");
+          icon.id = "qr-hover-icon";
+          icon.style.width = "32px";
+          icon.style.height = "32px";
+          icon.style.borderRadius = "50%";
+          icon.style.objectFit = "cover";
+          iconWrapper.appendChild(icon);
+          
+          qrContainer.appendChild(iconWrapper);
+          popover.appendChild(qrContainer);
+          document.body.appendChild(popover);
+       }
+       
+       const img = popover.querySelector("#qr-hover-img");
+       const icon = popover.querySelector("#qr-hover-icon");
+       const encodedUrl = encodeURIComponent(url);
+       img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodedUrl}&ecc=H`;
+       
+       if (faviconUrl) {
+         icon.src = faviconUrl;
+         icon.parentElement.style.display = "flex";
+       } else {
+         icon.parentElement.style.display = "none";
+       }
+       
+       const rect = qrBtn.getBoundingClientRect();
+       
+       // Calculate position (try above/below like macos tooltip)
+       let left = rect.left + rect.width / 2 - 100; // center horizontally (100 is half of 200px width)
+       let top = rect.top - 210; // above by default
+       
+       // Adjust if off screen
+       if (top < 10) {
+         // show below if not enough space above
+         top = rect.bottom + 10;
+         popover.style.transformOrigin = "top center";
+       } else {
+         popover.style.transformOrigin = "bottom center";
+       }
+       
+       if (left < 10) left = 10;
+       if (left + 200 > window.innerWidth) left = window.innerWidth - 210;
+       
+       popover.style.left = `${left}px`;
+       popover.style.top = `${top}px`;
+       popover.style.display = "block";
+       
+       requestAnimationFrame(() => {
+         popover.style.opacity = "1";
+         popover.style.transform = "scale(1) translateY(0)";
+       });
+    });
+    
+    qrBtn.addEventListener("mouseleave", () => {
+       const popover = document.getElementById("qr-hover-popover");
+       if (popover) {
+          popover.style.opacity = "0";
+          popover.style.transform = "scale(0.8) translateY(10px)";
+          setTimeout(() => {
+            if (popover.style.opacity === "0") {
+               popover.style.display = "none";
+            }
+          }, 200);
+       }
+    });
+
     contextMenu.insertBefore(qrBtn, menuEdit)
   }
 }
