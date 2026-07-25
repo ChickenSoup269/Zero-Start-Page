@@ -1423,6 +1423,7 @@ body.bookmark-macos-hover .bookmark-stack-popup-grid {
 .bookmark-stack-popup.is-selecting .bookmark-stack-popup-item.selected {
   outline: 2px solid var(--accent-color);
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.14);
+  border-radius: var(--border-radius-2, 12px);
 }
 
 .bookmark-stack-popup.is-selecting
@@ -10439,6 +10440,53 @@ body.bookmark-item-card-style .bookmark img,
 body.bookmark-item-card-style .bookmark .bookmark-icon-fallback,
 body.bookmark-item-card-style .bookmark .stored-bookmark-icon,
 body.bookmark-item-card-style .bookmark .stored-bookmark-icon-fallback {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* --- BOOKMARK ITEM GLASS STYLE --- */
+body.bookmark-item-glass-style .bookmark {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
+}
+body.bookmark-item-glass-style .bookmark:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+/* --- BOOKMARK ITEM NEON STYLE --- */
+body.bookmark-item-neon-style .bookmark {
+  background: transparent !important;
+  border: 2px solid var(--accent-color, #00ffcc) !important;
+  box-shadow: 0 0 10px var(--accent-color, #00ffcc), inset 0 0 10px var(--accent-color, #00ffcc) !important;
+  color: var(--accent-color, #00ffcc) !important;
+}
+body.bookmark-item-neon-style .bookmark:hover {
+  background: var(--accent-color, #00ffcc) !important;
+  color: #000 !important;
+  box-shadow: 0 0 20px var(--accent-color, #00ffcc), 0 0 40px var(--accent-color, #00ffcc) !important;
+}
+body.bookmark-item-neon-style .bookmark span,
+body.bookmark-item-neon-style .bookmark .bookmark-icon-fallback i {
+  color: inherit !important;
+  text-shadow: 0 0 5px currentColor !important;
+}
+
+/* --- BOOKMARK ITEM NEUMORPHISM STYLE --- */
+body.bookmark-item-neumorphism-style .bookmark {
+  background: var(--bookmark-bg-color, rgba(255,255,255, 0.1)) !important;
+  border: none !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3), -4px -4px 10px rgba(255, 255, 255, 0.1) !important;
+}
+body.bookmark-item-neumorphism-style .bookmark:hover {
+  box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.3), inset -4px -4px 10px rgba(255, 255, 255, 0.1) !important;
+}
+body.bookmark-item-card-style .bookmark .stored-bookmark-icon,
+body.bookmark-item-card-style .bookmark .stored-bookmark-icon-fallback {
   background-color: transparent !important;
   box-shadow: none !important;
   border: none !important;
@@ -12444,6 +12492,7 @@ body.bookmark-taskbar-right-mode
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.16) !important;
   border-color: rgba(var(--accent-color-rgb, 168, 192, 255), 0.42) !important;
   outline: none !important;
+  border-radius: var(--border-radius-2, 12px) !important;
 }
 
 .bookmark-stack-popup .bookmark-stack-popup-check {

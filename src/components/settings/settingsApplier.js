@@ -2423,6 +2423,9 @@ function createApplySettings(effectInstances) {
       "bookmark-layout-bg-m3-accent",
       "bookmark-layout-bg-colored",
       "bookmark-item-card-style",
+      "bookmark-item-glass-style",
+      "bookmark-item-neon-style",
+      "bookmark-item-neumorphism-style"
     )
 
     if (bgStyle === "hidden") {
@@ -2452,8 +2455,11 @@ function createApplySettings(effectInstances) {
       )
     }
 
-    if (itemStyle === "card") {
+    if (["card", "glass", "neon", "neumorphism"].includes(itemStyle)) {
       document.body.classList.add("bookmark-item-card-style")
+      if (itemStyle !== "card") {
+        document.body.classList.add(`bookmark-item-${itemStyle}-style`)
+      }
     }
 
     let shadowHex = settings.bookmarkShadowColor || "#000000"
