@@ -1988,5 +1988,11 @@
   "settings_quotes_source_quotable": "Quotable API",
   "settings_quotes_source_advice": "Advice Slip API",
   "position_left": "Left",
-  "position_right": "Right"
+  "position_right": "Right",
+  "update_frequency_title": "Update Frequency Guide",
+  "time_weeks": "Weeks",
+  "time_months": "Months",
+  "update_active": "Active Updates",
+  "update_maintained": "Maintained",
+  "update_stable": "Stable Version"
 }

@@ -1988,5 +1988,11 @@
   "settings_quotes_source_quotable": "Quotable API",
   "settings_quotes_source_advice": "Advice Slip API",
   "position_left": "Trái",
-  "position_right": "Phải"
+  "position_right": "Phải",
+  "update_frequency_title": "Tần suất cập nhật",
+  "time_weeks": "Tuần",
+  "time_months": "Tháng",
+  "update_active": "Cập nhật thường xuyên",
+  "update_maintained": "Đang duy trì",
+  "update_stable": "Phiên bản ổn định"
 }
