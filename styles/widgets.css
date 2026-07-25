@@ -12349,9 +12349,9 @@ body.bookmark-group-auto-text-contrast .bookmark-group-tab .group-tab-count {
 }
 
 .bookmark-stack-popup-actions {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border-color: rgba(255, 255, 255, 0.09) !important;
   margin-bottom: 10px !important;
+  background: transparent !important;
+  border: none !important;
 }
 
 .bookmark-stack-popup-grid {
@@ -13341,11 +13341,7 @@ body.context-menu-none .bookmark-stack-popup .bookmark-stack-popup-search-input:
   color: rgba(0, 0, 0, 0.4) !important;
 }
 
-body.context-menu-light .bookmark-stack-popup .bookmark-stack-popup-action:hover,
-body.context-menu-macos .bookmark-stack-popup .bookmark-stack-popup-action:hover,
-body.context-menu-none .bookmark-stack-popup .bookmark-stack-popup-action:hover {
-  background: rgba(0, 0, 0, 0.08) !important;
-}
+
 
 /* M3 Context Menu */
 body.context-menu-m3 .bookmark-stack-popup {
@@ -13403,7 +13399,7 @@ body.context-menu-m3 .bookmark-stack-popup .bookmark-stack-popup-action:hover {
 
 /* Ensure tooltip text is always white/text-color when macOS hover is active, regardless of light theme context */
 body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popup-label {
-  color: var(--text-color, #fff) !important;
+  display: none !important; /* Handled by global tooltip */
 }
 
 /* FORCE MacOS hover effect inside bookmark-stack-popup against all overrides */
@@ -13422,10 +13418,6 @@ body.bookmark-macos-hover .bookmark-stack-popup .bookmark:hover {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-}
-
-body.bookmark-macos-hover .bookmark-stack-popup .bookmark > .bookmark-stack-popup-label {
-  display: none !important; /* Handled by global tooltip */
 }
 
 /* --- Space Concentric Chrono --- */

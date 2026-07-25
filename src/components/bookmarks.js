@@ -634,6 +634,24 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   const actions = document.createElement("div")
   actions.className = "bookmark-stack-popup-actions"
 
+  const toggleBtn = document.createElement("button")
+  toggleBtn.type = "button"
+  toggleBtn.className = "bookmark-stack-popup-action"
+  toggleBtn.title = i18n.bookmark_stack_toggle_actions || "Toggle actions"
+  toggleBtn.innerHTML = `<i class="fa-solid fa-chevron-left"></i>`
+  
+  const innerActions = document.createElement("div")
+  innerActions.style.display = "none"
+  innerActions.style.gap = "var(--space-1)"
+  
+  let isActionsVisible = false
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation()
+    isActionsVisible = !isActionsVisible
+    innerActions.style.display = isActionsVisible ? "inline-flex" : "none"
+    toggleBtn.innerHTML = isActionsVisible ? `<i class="fa-solid fa-chevron-right"></i>` : `<i class="fa-solid fa-chevron-left"></i>`
+  })
+
   const selectBtn = document.createElement("button")
   selectBtn.type = "button"
   selectBtn.className = "bookmark-stack-popup-action"
@@ -667,10 +685,12 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
   cancelBtn.setAttribute("aria-label", i18n.bookmark_stack_cancel || "Cancel")
   cancelBtn.innerHTML = `<i class="fa-solid fa-xmark"></i><span>${i18n.bookmark_stack_cancel || "Cancel"}</span>`
 
-  actions.appendChild(selectBtn)
-  actions.appendChild(renameBtn)
-  actions.appendChild(deleteBtn)
-  actions.appendChild(cancelBtn)
+  innerActions.appendChild(selectBtn)
+  innerActions.appendChild(renameBtn)
+  innerActions.appendChild(deleteBtn)
+  innerActions.appendChild(cancelBtn)
+  actions.appendChild(innerActions)
+  actions.appendChild(toggleBtn)
   popup.appendChild(actions)
 
   const grid = document.createElement("div")
