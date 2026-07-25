@@ -1042,9 +1042,13 @@ function openBookmarkStackPopup(stack, anchor, stackIndex) {
     ) {
       popup.remove()
       document.removeEventListener("click", closePopup)
+      window.dispatchEvent(new CustomEvent("layoutUpdated"))
     }
   }
   setTimeout(() => document.addEventListener("click", closePopup), 50)
+  
+  // Force macOS hover cache to update for the new popup items
+  window.dispatchEvent(new CustomEvent("layoutUpdated"))
 }
 
 // --- Drag and Drop State ---
@@ -2756,7 +2760,10 @@ export function initBookmarks() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       const popup = document.getElementById("bookmark-stack-popup")
-      if (popup) popup.remove()
+      if (popup) {
+        popup.remove()
+        window.dispatchEvent(new CustomEvent("layoutUpdated"))
+      }
       if (isSelectionMode) cancelSelection()
     }
   })
