@@ -849,6 +849,21 @@
                                 <span class="style-preset-name" data-i18n="style_preset_cozy">Cozy</span>
                                 <small data-i18n="style_preset_cozy_hint">Warm icons, forest music</small>
                             </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="vision">
+                                <span class="style-preset-icon"><i class="fa-solid fa-vr-cardboard"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_vision">Vision</span>
+                                <small data-i18n="style_preset_vision_hint">Spatial glass, pill player</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="material">
+                                <span class="style-preset-icon"><i class="fa-solid fa-layer-group"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_material">Material</span>
+                                <small data-i18n="style_preset_material_hint">Clean cards, solid colors</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="aura">
+                                <span class="style-preset-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_aura">Aura</span>
+                                <small data-i18n="style_preset_aura_hint">Glowing sidebar, ambient blur</small>
+                            </button>
                         </div>
                     </div>
 
@@ -1722,6 +1737,9 @@
                                 <select id="bookmark-item-style" class="settings-select" style="width: 100%;">
                                     <option value="default" data-i18n="item_style_default">Default</option>
                                     <option value="card" data-i18n="item_style_card">Card</option>
+                                    <option value="glass" data-i18n="item_style_glass">Glass</option>
+                                    <option value="neon" data-i18n="item_style_neon">Neon</option>
+                                    <option value="neumorphism" data-i18n="item_style_neumorphism">Neumorphism</option>
                                 </select>
                             </div>
                             <div class="setting-item no-margin-top" id="bookmark-layout-bg-style-row"
@@ -2956,7 +2974,7 @@
     </div>
 
     <!-- QR Code Modal -->
-    <div id="qr-modal" class="modal">
+    <div id="qr-modal" class="modal" style="justify-content: flex-end; padding-right: 30px;">
         <div class="modal-content" style="max-width: 350px;">
             <div class="modal-header">
                 <h2 data-i18n="qr_code_title">QR Code</h2>

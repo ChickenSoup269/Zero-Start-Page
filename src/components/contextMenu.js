@@ -490,21 +490,22 @@ function addGenerateQrCodeItem(i18n, type, index, id) {
        
        const rect = qrBtn.getBoundingClientRect();
        
-       // Calculate position (try above/below like macos tooltip)
-       let left = rect.left + rect.width / 2 - 100; // center horizontally (100 is half of 200px width)
-       let top = rect.top - 210; // above by default
+       // Display on the right side of the context menu item
+       let left = rect.right + 10;
+       let top = rect.top + rect.height / 2 - 100; // center vertically (assuming 200px height)
        
-       // Adjust if off screen
-       if (top < 10) {
-         // show below if not enough space above
-         top = rect.bottom + 10;
-         popover.style.transformOrigin = "top center";
+       // Adjust if off screen horizontally
+       if (left + 200 > window.innerWidth) {
+         // Show on the left side if not enough space on the right
+         left = rect.left - 210;
+         popover.style.transformOrigin = "center right";
        } else {
-         popover.style.transformOrigin = "bottom center";
+         popover.style.transformOrigin = "center left";
        }
        
-       if (left < 10) left = 10;
-       if (left + 200 > window.innerWidth) left = window.innerWidth - 210;
+       // Adjust if off screen vertically
+       if (top < 10) top = 10;
+       if (top + 200 > window.innerHeight) top = window.innerHeight - 210;
        
        popover.style.left = `${left}px`;
        popover.style.top = `${top}px`;
