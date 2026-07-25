@@ -2798,8 +2798,7 @@ function updateMacosHover() {
     })
     const globalTooltip = document.getElementById("macos-global-tooltip")
     if (globalTooltip) {
-      globalTooltip.style.opacity = "0"
-      globalTooltip.style.visibility = "hidden"
+      globalTooltip.classList.remove("show")
     }
     const containers = [
       document.querySelector("#bookmarks-container"),
@@ -2920,52 +2919,62 @@ function updateMacosHover() {
           const isTaskbarLeft = document.body.classList.contains("bookmark-taskbar-left-mode")
           const isTaskbarRight = document.body.classList.contains("bookmark-taskbar-right-mode")
           
+          let translateX = "-50%"
+          let translateY = "0%"
+
           // Handle sidebar and specific taskbar mode positions
           if (isSidebar) {
             if (isFlipped) {
               // Sidebar is on the left side, tooltip should point right
               leftPos = rect.right + 20
               topPos = rect.top + rect.height / 2
-              globalTooltip.style.transform = "translate(var(--tooltip-left), calc(var(--tooltip-top) - 50%))"
+              translateX = "0%"
+              translateY = "-50%"
             } else {
               // Sidebar is on the right side, tooltip should point left
               leftPos = rect.left - 20
               topPos = rect.top + rect.height / 2
-              globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 100%), calc(var(--tooltip-top) - 50%))"
+              translateX = "-100%"
+              translateY = "-50%"
             }
           } else if (isTaskbarTop) {
             topPos = rect.bottom + 20
-            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 50%), var(--tooltip-top))"
+            translateX = "-50%"
+            translateY = "0%"
           } else if (isTaskbarLeft) {
             leftPos = rect.right + 20
             topPos = rect.top + rect.height / 2
-            globalTooltip.style.transform = "translate(var(--tooltip-left), calc(var(--tooltip-top) - 50%))"
+            translateX = "0%"
+            translateY = "-50%"
           } else if (isTaskbarRight) {
             leftPos = rect.left - 20
             topPos = rect.top + rect.height / 2
-            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 100%), calc(var(--tooltip-top) - 50%))"
+            translateX = "-100%"
+            translateY = "-50%"
           } else {
             // Taskbar Bottom (default)
-            globalTooltip.style.transform = "translate(calc(var(--tooltip-left) - 50%), var(--tooltip-top))"
+            translateX = "-50%"
+            translateY = "0%"
           }
+
+          globalTooltip.style.setProperty("--translate-x", translateX)
+          globalTooltip.style.setProperty("--translate-y", translateY)
+          globalTooltip.style.transform = ""
           
-          if (globalTooltip.style.opacity === "0" || globalTooltip.style.opacity === "") {
+          if (!globalTooltip.classList.contains("show")) {
             globalTooltip.style.transition = "none"
             globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
             globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
             globalTooltip.offsetHeight // Force reflow
             globalTooltip.style.transition = ""
+            globalTooltip.classList.add("show")
           } else {
             globalTooltip.style.setProperty("--tooltip-top", `${topPos}px`)
             globalTooltip.style.setProperty("--tooltip-left", `${leftPos}px`)
           }
-          
-          globalTooltip.style.opacity = "1"
-          globalTooltip.style.visibility = "visible"
         }
       } else {
-        globalTooltip.style.opacity = "0"
-        globalTooltip.style.visibility = "hidden"
+        globalTooltip.classList.remove("show")
       }
     }
 

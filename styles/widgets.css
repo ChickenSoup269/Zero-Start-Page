@@ -10598,13 +10598,20 @@ body.bookmark-macos-hover #hidden-bookmarks-popup .bookmark > span {
   padding: var(--space-0-5) var(--space-1);
   font-size: 13px !important;
   color: var(--text-color, #fff) !important;
-  transform: translate(calc(var(--tooltip-left, -999px) - 50%), var(--tooltip-top, -999px));
+  /* Start hidden with a slight offset and scale down */
+  transform: translate(calc(var(--tooltip-left, -999px) + var(--translate-x, -50%)), calc(var(--tooltip-top, -999px) + var(--translate-y, 0%) + 10px)) scale(0.9);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.2s;
   pointer-events: none;
   z-index: 999999;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+#macos-global-tooltip.show {
+  transform: translate(calc(var(--tooltip-left, -999px) + var(--translate-x, -50%)), calc(var(--tooltip-top, -999px) + var(--translate-y, 0%))) scale(1);
+  opacity: 1;
+  visibility: visible;
 }
 
 /* MacOS Hover clipping fix for layouts with scrolling */

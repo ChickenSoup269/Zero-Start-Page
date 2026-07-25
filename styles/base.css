@@ -6124,3 +6124,23 @@ body.clock-style-bg-animated.date-clock-style-minimalist-word .minimalist-matrix
   font-family: 'Allerta Stencil', sans-serif; /* Số có nét cắt rời nghệ thuật */
 }
 
+
+/* --- GLOBAL ZEN MODE --- */
+body.zen-mode-global #bookmark-widget,
+body.zen-mode-global #search-container,
+body.zen-mode-global .widget-container,
+body.zen-mode-global #custom-title-display,
+body.zen-mode-global .music-player-container,
+body.zen-mode-global #daily-quotes,
+body.zen-mode-global #todo-container,
+body.zen-mode-global #full-calendar-container,
+body.zen-mode-global #notepad-container,
+body.zen-mode-global #top-right-controls,
+body.zen-mode-global .side-controls,
+body.zen-mode-global #bottom-left-controls,
+body.zen-mode-global #weather-container,
+body.zen-mode-global .quick-access-bar {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.5s ease-in-out !important;
+}

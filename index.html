@@ -2955,6 +2955,20 @@
         </div>
     </div>
 
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="modal">
+        <div class="modal-content" style="max-width: 350px;">
+            <div class="modal-header">
+                <h2 data-i18n="qr_code_title">QR Code</h2>
+                <span id="close-qr-modal-btn" class="close"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 20px;">
+                <img id="qr-code-img" src="" alt="QR Code" style="width: 250px; height: 250px; background: white; padding: 10px; border-radius: 10px;">
+                <p id="qr-code-url" style="font-size: 0.9rem; color: var(--text-color); opacity: 0.8; word-break: break-all; margin: 0; user-select: text;"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- MoMo QR Popup (Moved outside to be on top of everything) -->
     <div id="momo-qr-container" style="
                 display: none;

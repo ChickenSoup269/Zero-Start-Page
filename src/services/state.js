@@ -39,6 +39,7 @@ export const defaultSettings = {
   framedClockTheme: "light",
   fliqloTheme: "dark",
   fliqloZenMode: false,
+  globalZenMode: false,
   fliqloTransparent: false,
   clockStyleBackground: "default",
   clockStyleAccentColors: {},

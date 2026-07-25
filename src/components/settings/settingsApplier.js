@@ -5584,6 +5584,10 @@ function createUpdateSettingsInputs(effectInstances) {
       "ghost-controls",
       settings.sideControlsGhostMode === true,
     )
+    document.body.classList.toggle(
+      "zen-mode-global",
+      settings.globalZenMode === true,
+    )
     document.body.classList.toggle("flip-layout", settings.flipLayout === true)
     document.body.classList.toggle(
       "quick-access-horizontal",

@@ -160,6 +160,9 @@
       if (settings.fliqloZenMode) {
         body.classList.add("fliqlo-zen-mode")
       }
+      if (settings.globalZenMode) {
+        body.classList.add("zen-mode-global")
+      }
 
       const styleEl = document.createElement("style")
       let css = ""

@@ -318,6 +318,85 @@ function addOpenBookmarkSettingsItem(i18n) {
   contextMenu.insertBefore(settingsBtn, menuEdit)
 }
 
+function showQrCodeModal(url) {
+  const modal = document.getElementById("qr-modal")
+  const img = document.getElementById("qr-code-img")
+  const text = document.getElementById("qr-code-url")
+  const closeBtn = document.getElementById("close-qr-modal-btn")
+
+  if (!modal || !img || !text) return
+
+  const encodedUrl = encodeURIComponent(url)
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodedUrl}`
+  text.textContent = url
+
+  modal.classList.add("show")
+
+  const closeModal = () => {
+    modal.classList.remove("show")
+    setTimeout(() => { img.src = "" }, 300)
+    if (closeBtn) closeBtn.removeEventListener("click", closeModal)
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeModal)
+  }
+  
+  window.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal()
+    }
+  }, { once: true })
+}
+
+function addGenerateQrCodeItem(i18n, type, index, id) {
+  let url = ""
+
+  if (type === "bookmark" || type === "bookmarkStackItem") {
+    if (contextMenuCallbacks && contextMenuCallbacks.anchor) {
+      const anchor = contextMenuCallbacks.anchor
+      if (anchor.tagName === "A") {
+        url = anchor.href
+      } else {
+        const img = anchor.querySelector("img")
+        if (img && img.dataset && img.dataset.url) {
+          url = img.dataset.url
+        }
+      }
+    }
+  }
+
+  if (!url) {
+    const bookmarks = getBookmarks()
+    if (type === "bookmark") {
+      const bookmark = bookmarks[index]
+      if (bookmark && bookmark.url) url = bookmark.url
+    } else if (type === "bookmarkStackItem") {
+      if (id && id.includes(":")) {
+        const [stackIndex, itemIndex] = id.split(":").map(Number)
+        const stack = bookmarks[stackIndex]
+        if (stack && stack.items) {
+          const item = stack.items[itemIndex]
+          if (item && item.url) url = item.url
+        }
+      }
+    }
+  }
+
+  if (url && url.trim() !== "" && !url.startsWith("chrome://") && !url.startsWith("edge://")) {
+    const qrBtn = createCustomMenuItem(
+      i18n.context_generate_qr || "Generate QR Code",
+      "fa-solid fa-qrcode",
+      () => {
+        hideContextMenu()
+        showQrCodeModal(url)
+      },
+      "context-settings-item"
+    )
+    contextMenu.insertBefore(qrBtn, menuEdit)
+  }
+}
+
 function openExternalUrl(url) {
   if (window.chrome?.tabs?.create) {
     window.chrome.tabs.create({ url })
@@ -428,6 +507,27 @@ function addBackgroundContextMenuItems(i18n) {
         const nextBrightness = Math.max(10, brightness - 10)
         syncBackgroundControlValue("bgBrightness", nextBrightness)
         applyContextSetting("bgBrightness", nextBrightness)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuDivider(),
+    createCustomMenuItem(
+      i18n.bg_context_zen_mode || "Zen Mode",
+      "fa-solid fa-peace",
+      () => {
+        const isZen = !settings.globalZenMode
+        syncBackgroundControlValue("globalZenMode", isZen)
+        applyContextSetting("globalZenMode", isZen)
+        hideContextMenu()
+      },
+    ),
+    createCustomMenuItem(
+      i18n.bg_context_ghost_mode || "Ghost Mode",
+      "fa-solid fa-ghost",
+      () => {
+        const isGhost = !settings.sideControlsGhostMode
+        syncBackgroundControlValue("sideControlsGhostMode", isGhost)
+        applyContextSetting("sideControlsGhostMode", isGhost)
         hideContextMenu()
       },
     ),
@@ -643,6 +743,10 @@ export function showContextMenu(
     if (menuManagerDivider) menuManagerDivider.style.display = "block"
     if (menuBookmarkManager) menuBookmarkManager.style.display = "flex"
     addOpenBookmarkSettingsItem(i18n)
+
+    if (type === "bookmark" || type === "bookmarkStackItem") {
+      addGenerateQrCodeItem(i18n, type, index, id)
+    }
   }
 
   if (type === "search") {

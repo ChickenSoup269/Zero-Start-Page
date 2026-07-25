@@ -741,6 +741,9 @@ async function bootstrap() {
   if (currentSettings.fliqloZenMode) {
     document.body.classList.add("fliqlo-zen-mode")
   }
+  if (currentSettings.globalZenMode) {
+    document.body.classList.add("zen-mode-global")
+  }
   if (currentSettings.fliqloTransparent) {
     document.body.classList.add("fliqlo-transparent")
   }
