@@ -1261,12 +1261,28 @@ export function setupGeneralEventHandlers(
   }
 
   let scrollSaveTimer = null
+  let hideCopyrightTimer = null
+  const copyrightEl = document.getElementById("sidebar-copyright")
+  
   sidebarContent.addEventListener("scroll", () => {
     const top = sidebarContent.scrollTop
     clearTimeout(scrollSaveTimer)
+    clearTimeout(hideCopyrightTimer)
+    
+    if (copyrightEl) {
+      copyrightEl.style.opacity = "0"
+    }
+    
     scrollSaveTimer = setTimeout(() => {
       sessionStorage.setItem(SIDEBAR_SCROLL_KEY, top)
     }, 200)
+    
+    hideCopyrightTimer = setTimeout(() => {
+      if (copyrightEl) {
+        copyrightEl.style.opacity = "0.6"
+      }
+    }, 500)
+    
     sidebarScrollTopBtn.classList.toggle("visible", top > 200)
   })
 
