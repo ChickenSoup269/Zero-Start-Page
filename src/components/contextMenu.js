@@ -305,6 +305,31 @@ function addTimerAlarmDropdownToggle(i18n, settings, beforeNode = menuLock) {
   contextMenu.insertBefore(toggleBtn, beforeNode)
 }
 
+function addPomodoroStatsToggle(i18n, settings, beforeNode = menuLock) {
+  const isHidden = settings.hidePomodoroStats === true
+  const toggleBtn = createCustomMenuItem(
+    isHidden
+      ? i18n.context_timer_show_pomodoro || "Show Pomodoro stats"
+      : i18n.context_timer_hide_pomodoro || "Hide Pomodoro stats",
+    isHidden ? "fa-solid fa-eye" : "fa-solid fa-eye-slash",
+    () => {
+      const nextValue = !isHidden
+      applyContextSetting("hidePomodoroStats", nextValue)
+      // trigger re-render of pomodoro stats via layoutUpdated
+      window.dispatchEvent(
+        new CustomEvent("layoutUpdated", {
+          detail: { key: "hidePomodoroStats", value: nextValue },
+        }),
+      )
+      // also force timer re-render
+      const timerInstance = window.startpageApp?.timer
+      if (timerInstance) timerInstance.updatePomodoroStats()
+      hideContextMenu()
+    },
+  )
+  contextMenu.insertBefore(toggleBtn, beforeNode)
+}
+
 function addOpenBookmarkSettingsItem(i18n) {
   const settingsBtn = createCustomMenuItem(
     i18n.context_open_bookmark_settings || "Bookmark settings",
@@ -774,6 +799,7 @@ function getContextMenuTargetName(type, id, index, i18n) {
       if (widgetId === "calendar") return i18n.context_header_widget_calendar || "Calendar"
       if (widgetId === "daily-quotes") return i18n.context_header_widget_quotes || "Daily Quotes"
       if (widgetId === "rss") return i18n.context_header_widget_rss || "RSS Reader"
+      if (widgetId === "habitTracker") return i18n.context_header_widget_habitTracker || "Habit Tracker"
       if (widgetId === "custom-title") return i18n.context_header_widget_custom_title || "Custom Title"
       return widgetId
     }
@@ -938,6 +964,7 @@ export function showContextMenu(
       "notepad",
       "daily-quotes",
       "rss",
+      "habitTracker"
     ]
 
     if (skinnableWidgets.includes(id)) {
@@ -972,6 +999,7 @@ export function showContextMenu(
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
+          habitTracker: "habit-tracker-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1009,6 +1037,7 @@ export function showContextMenu(
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
+          habitTracker: "habit-tracker-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1046,6 +1075,7 @@ export function showContextMenu(
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
+          habitTracker: "habit-tracker-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1061,7 +1091,7 @@ export function showContextMenu(
       }
       contextMenu.insertBefore(lightTransBtn, menuLock)
 
-      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer") {
+      if (id === "daily-quotes" || id === "weather" || id === "rss" || id === "todo" || id === "timer" || id === "habitTracker") {
         const transBtn = document.createElement("div")
         transBtn.className = "context-menu-item custom-music-item"
         transBtn.innerHTML = `<i class="fa-solid fa-ghost"></i> <span>${isTransparent ? i18n.skin_default || "Default Skin" : i18n.skin_transparent || "Transparent Skin"}</span>`
@@ -1080,6 +1110,7 @@ export function showContextMenu(
             weather: "weather-container",
             "daily-quotes": "daily-quotes",
             rss: "rss-container",
+            habitTracker: "habit-tracker-container",
             todo: "todo-container",
             timer: "timer-component",
           }
@@ -1102,7 +1133,7 @@ export function showContextMenu(
       separator.className = "context-menu-divider custom-music-item"
       contextMenu.insertBefore(separator, menuLock)
 
-      if (["todo", "timer"].includes(id)) {
+      if (["todo", "timer", "habitTracker"].includes(id)) {
         const settingKey = `${id}Mini`
         const isMini = settings[settingKey] === true
         const miniBtn = document.createElement("div")
@@ -1110,7 +1141,8 @@ export function showContextMenu(
         
         const labels = {
           todo: { mini: i18n.todo_mini_size || "Mini Todo", normal: i18n.todo_normal_size || "Normal Todo" },
-          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" }
+          timer: { mini: i18n.timer_mini_size || "Mini Timer", normal: i18n.timer_normal_size || "Normal Timer" },
+          habitTracker: { mini: i18n.habit_mini_size || "Mini Habit", normal: i18n.habit_normal_size || "Normal Habit" }
         }
         
         miniBtn.innerHTML = `<i class="fa-solid ${isMini ? "fa-up-right-and-down-left-from-center" : "fa-down-left-and-up-right-to-center"}"></i> <span>${isMini ? labels[id].normal : labels[id].mini}</span>`
@@ -1118,6 +1150,7 @@ export function showContextMenu(
           const widgetIdMap = {
             todo: "todo-container",
             timer: "timer-component",
+            habitTracker: "habit-tracker-container",
             music: "music-player-container"
           }
           const el = document.getElementById(widgetIdMap[id])
@@ -1317,6 +1350,7 @@ export function showContextMenu(
           notepad: "notepad-container",
           "daily-quotes": "daily-quotes",
           rss: "rss-container",
+          habitTracker: "habit-tracker-container",
         }
         const el = document.getElementById(widgetIdMap[id] || id)
         if (el) {
@@ -1328,6 +1362,7 @@ export function showContextMenu(
 
       if (id === "timer") {
         addTimerAlarmDropdownToggle(i18n, settings, borderBtn)
+        addPomodoroStatsToggle(i18n, settings, borderBtn)
       }
 
       if (id === "daily-quotes") {
@@ -2705,6 +2740,7 @@ function handleLock() {
       notepad: "notepad-container",
       "daily-quotes": "daily-quotes",
       rss: "rss-container",
+      habitTracker: "habit-tracker-container",
     }
 
     const widgetId = widgetIdMap[contextMenuTargetId] || contextMenuTargetId
