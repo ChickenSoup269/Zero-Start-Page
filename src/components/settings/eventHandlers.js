@@ -6330,7 +6330,7 @@ export function setupGeneralEventHandlers(
   }
   setupLayoutCheckbox(DOM.showSearchBarCheckbox, "showSearchBar", {})
   if (DOM.searchBarHoverScaleCheckbox) {
-    setupLayoutCheckbox(DOM.searchBarHoverScaleCheckbox, "searchBarHoverScale", { defaultState: true })
+    setupLayoutCheckbox(DOM.searchBarHoverScaleCheckbox, "searchBarHoverScale", { defaultState: false })
   }
   if (DOM.showSearchAiIconCheckbox) {
     setupLayoutCheckbox(DOM.showSearchAiIconCheckbox, "showSearchAIIcon", {})

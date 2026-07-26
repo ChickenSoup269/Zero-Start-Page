@@ -803,7 +803,7 @@ function createApplySettings(effectInstances) {
     )
     document.body.classList.toggle(
       "disable-search-bar-hover-scale",
-      settings.searchBarHoverScale === false,
+      settings.searchBarHoverScale !== true,
     )
     document.body.classList.toggle(
       "allow-text-selection",
@@ -5488,7 +5488,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showSearchBarCheckbox.checked = settings.showSearchBar !== false
     if (DOM.searchBarHoverScaleCheckbox) {
-      DOM.searchBarHoverScaleCheckbox.checked = settings.searchBarHoverScale !== false
+      DOM.searchBarHoverScaleCheckbox.checked = settings.searchBarHoverScale === true
     }
     if (DOM.freeMoveSearchBarCheckbox) {
       DOM.freeMoveSearchBarCheckbox.checked =
