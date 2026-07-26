@@ -1274,6 +1274,8 @@
   "available_on": "Available on",
   "and_text": "and",
   "settings_show_donate_btn": "Show Donate Button",
+  "settings_github_releases": "GitHub Releases",
+  "settings_star_github": "Star on GitHub",
   "settings_quick_access_horizontal": "Quick Access Horizontal",
   "effect_jellyfish": "Jellyfish",
   "setting_jellyfish_color": "Jellyfish Color",
