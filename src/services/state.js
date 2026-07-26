@@ -206,7 +206,7 @@ export const defaultSettings = {
   bookmarkShadowOpacity: 24,
   bookmarkShadowBlur: 8,
   qaShowRss: false,
-  qaShowHabits: true,
+  qaShowHabits: false,
   showRss: false,
   rssHiddenMigrated: false,
 
@@ -295,7 +295,7 @@ export const defaultSettings = {
   weatherForecastEndpoint: "",
   weatherGeocodingEndpoint: "",
   showTodoList: false,
-  showHabits: true,
+  showHabits: false,
   todoShowCheckboxes: true,
   showTimer: false,
   showGregorian: true,
@@ -531,7 +531,7 @@ settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
 if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   settingsState.showRss = false;
   settingsState.qaShowRss = false;
-  settingsState.qaShowHabits = true;
+  settingsState.qaShowHabits = false;
   settingsState.rssHiddenMigrated = true;
   localStorage.setItem("pageSettings", JSON.stringify(settingsState));
 } else if (!storedSettingsRaw) {

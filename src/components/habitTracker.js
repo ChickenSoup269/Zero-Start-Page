@@ -1,20 +1,17 @@
 import { fadeToggle } from "../utils/dom.js"
 import { getSettings } from "../services/state.js"
 import { applyTranslations, geti18n } from "../services/i18n.js"
+import { showConfirm } from "../utils/dialog.js"
 
 export class HabitTracker {
   constructor(container) {
     this.container = container
     this.habits = []
-    this.history = {} // { "2026-07-26": { "habit-id-1": true, ... } }
-    this.daysToShow = 14
+    this.maxLevel = 10 // default 10 levels
 
-    // Setup base HTML so header is not overwritten on render
+    // We will render the header dynamically to update the maxLevel label
     this.container.innerHTML = `
-      <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600;">
-        <span><i class="fa-solid fa-calendar-check"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
-        <button class="habit-add-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer;"><i class="fa-solid fa-plus"></i></button>
-      </div>
+      <div class="habit-header-container"></div>
       <div class="habit-add-form" style="display: none; margin-bottom: 10px; gap: 5px;">
         <input type="text" class="habit-add-input" placeholder="New habit name..." data-i18n-placeholder="habit_prompt_name" style="flex: 1; padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: var(--text-color); font-size: 0.85em; outline: none;">
         <button class="habit-save-btn" style="padding: 4px 8px; border-radius: 4px; border: none; background: var(--accent-color, #4CAF50); color: #fff; cursor: pointer; font-size: 0.85em;"><i class="fa-solid fa-check"></i></button>
@@ -22,32 +19,31 @@ export class HabitTracker {
       </div>
       <div class="habit-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
     `
+    this.headerContainer = this.container.querySelector(".habit-header-container")
     this.gridContainer = this.container.querySelector(".habit-grid")
 
     const addForm = this.container.querySelector(".habit-add-form")
-    const addBtn = this.container.querySelector(".habit-add-btn")
     const saveBtn = this.container.querySelector(".habit-save-btn")
     const cancelBtn = this.container.querySelector(".habit-cancel-btn")
     const input = this.container.querySelector(".habit-add-input")
 
-    const toggleForm = (show) => {
+    this.toggleForm = (show) => {
       addForm.style.display = show ? "flex" : "none"
       if (show) input.focus()
     }
 
-    if (addBtn) addBtn.addEventListener("click", () => toggleForm(true))
     if (cancelBtn) cancelBtn.addEventListener("click", () => {
-      toggleForm(false)
+      this.toggleForm(false)
       input.value = ""
     })
 
     const saveHabit = () => {
       const name = input.value
       if (name && name.trim()) {
-        this.habits.push({ id: Date.now().toString(), name: name.trim() })
+        this.habits.push({ id: Date.now().toString(), name: name.trim(), progress: 0 })
         this.saveData()
         this.render()
-        toggleForm(false)
+        this.toggleForm(false)
         input.value = ""
       }
     }
@@ -55,7 +51,7 @@ export class HabitTracker {
     if (saveBtn) saveBtn.addEventListener("click", saveHabit)
     if (input) input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") saveHabit()
-      if (e.key === "Escape") toggleForm(false)
+      if (e.key === "Escape") this.toggleForm(false)
     })
 
     this.loadData()
@@ -80,7 +76,7 @@ export class HabitTracker {
       try {
         const data = JSON.parse(saved)
         this.habits = data.habits || []
-        this.history = data.history || {}
+        if (data.maxLevel) this.maxLevel = data.maxLevel
       } catch (e) {}
     }
   }
@@ -90,20 +86,25 @@ export class HabitTracker {
       "habitTrackerData",
       JSON.stringify({
         habits: this.habits,
-        history: this.history,
+        maxLevel: this.maxLevel,
       }),
     )
   }
 
   render() {
-    // Generate dates (last N days)
-    const dates = []
-    const today = new Date()
-    for (let i = this.daysToShow - 1; i >= 0; i--) {
-      const d = new Date(today)
-      d.setDate(today.getDate() - i)
-      dates.push(d.toISOString().split("T")[0])
-    }
+    this.headerContainer.innerHTML = `
+      <div class="habit-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 600;">
+        <span><i class="fa-solid fa-bars-progress"></i> <span data-i18n="settings_show_habits">Habit Tracker</span></span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.15); padding: 2px 6px; border-radius: 4px;">
+            <button class="habit-dec-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-minus" style="font-size: 0.8em;"></i></button>
+            <span style="font-size: 0.8em; opacity: 0.8; min-width: 14px; text-align: center;">${this.maxLevel}</span>
+            <button class="habit-inc-max" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; padding: 0 4px;"><i class="fa-solid fa-plus" style="font-size: 0.8em;"></i></button>
+          </div>
+          <button class="habit-add-btn" style="background: transparent; border: none; color: var(--text-color); cursor: pointer; margin-left: 4px;"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    `
 
     let gridHtml = ""
 
@@ -116,16 +117,17 @@ export class HabitTracker {
         gridHtml += `<div class="habit-squares-container" style="position: relative; flex: 1; display: flex; height: 28px; border-radius: 4px; overflow: hidden;">`
         gridHtml += `<div class="habit-squares" style="display: flex; width: 100%; gap: 2px;">`
 
-        for (let i = 0; i < dates.length; i++) {
-          const date = dates[i]
-          const isDone = this.history[date] && this.history[date][habit.id]
+        const currentProgress = habit.progress || 0
+
+        for (let i = 1; i <= this.maxLevel; i++) {
+          const isFilled = i <= currentProgress
           // Hue from 0 (Red) to 120 (Green)
-          const hue = (i / (dates.length - 1)) * 120
-          const color = isDone
+          const hue = ((i - 1) / (this.maxLevel - 1)) * 120
+          const color = isFilled
             ? `hsl(${hue}, 80%, 45%)`
             : "rgba(255,255,255,0.12)"
             
-          gridHtml += `<div class="habit-square" data-no-drag="true" data-date="${date}" data-id="${habit.id}" title="${date}" style="flex: 1; height: 100%; background: ${color}; border-radius: 2px; cursor: pointer; transition: background 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);"></div>`
+          gridHtml += `<div class="habit-square" data-no-drag="true" data-level="${i}" data-id="${habit.id}" style="flex: 1; height: 100%; background: ${color}; border-radius: 2px; cursor: pointer; transition: background 0.2s; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);"></div>`
         }
         gridHtml += `</div>`
         
@@ -145,27 +147,62 @@ export class HabitTracker {
   }
 
   bindEvents() {
+    const addBtn = this.container.querySelector(".habit-add-btn")
+    if (addBtn) {
+      addBtn.addEventListener("click", () => this.toggleForm(true))
+    }
+
+    const incBtn = this.container.querySelector(".habit-inc-max")
+    const decBtn = this.container.querySelector(".habit-dec-max")
+
+    if (incBtn) {
+      incBtn.addEventListener("click", () => {
+        if (this.maxLevel < 31) {
+          this.maxLevel++
+          this.saveData()
+          this.render()
+        }
+      })
+    }
+    if (decBtn) {
+      decBtn.addEventListener("click", () => {
+        if (this.maxLevel > 1) {
+          this.maxLevel--
+          // ensure no habit has progress > new maxLevel
+          this.habits.forEach(h => {
+             if (h.progress > this.maxLevel) h.progress = this.maxLevel
+          })
+          this.saveData()
+          this.render()
+        }
+      })
+    }
+
     const squares = this.container.querySelectorAll(".habit-square")
     squares.forEach((sq) => {
       sq.addEventListener("click", (e) => {
-        const date = e.target.dataset.date
+        const level = parseInt(e.target.dataset.level, 10)
         const id = e.target.dataset.id
 
-        if (!this.history[date]) this.history[date] = {}
-        this.history[date][id] = !this.history[date][id]
-
-        this.saveData()
-        this.render()
+        const habitIndex = this.habits.findIndex(h => h.id === id)
+        if (habitIndex !== -1) {
+          if (this.habits[habitIndex].progress === level) {
+             this.habits[habitIndex].progress = level - 1;
+          } else {
+             this.habits[habitIndex].progress = level;
+          }
+          this.saveData()
+          this.render()
+        }
       })
     })
 
     const deleteBtns = this.container.querySelectorAll(".habit-delete-btn")
     deleteBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        if (confirm(geti18n("habit_confirm_delete", "Delete this habit?"))) {
+      btn.addEventListener("click", async (e) => {
+        if (await showConfirm(geti18n("habit_confirm_delete", "Delete this habit?"))) {
           const id = e.currentTarget.dataset.id
           this.habits = this.habits.filter((h) => h.id !== id)
-          // optional: cleanup history
           this.saveData()
           this.render()
         }
