@@ -806,7 +806,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Set the browser tab title and the small tab icon so this page feels like your own workspace.",
     },
     {
-      selector: 'li[data-section="themes"]',
+      selector: '[data-section-id="themes"], [data-settings-partial="themes"]',
       icon: "fa-solid fa-palette",
       title: i18n.settings_themes || "Themes",
       text:
@@ -814,7 +814,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Start from a theme preset, save your current look, try style presets, or open Theme Web Beta to browse shared looks.",
     },
     {
-      selector: 'li[data-section="background"]',
+      selector: '[data-section-id="background"], [data-settings-partial="background"]',
       icon: "fa-solid fa-image",
       title: i18n.settings_bg || "Background",
       text:
@@ -830,7 +830,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Pick the main accent color, extract it from the current background, or let widgets follow the same color system.",
     },
     {
-      selector: 'li[data-section="gradient-multi-color"]',
+      selector: '[data-section-id="gradient-multi-color"], [data-settings-partial="gradient-multi-color"]',
       icon: "fa-solid fa-fill-drip",
       title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
       text:
@@ -838,7 +838,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Build gradient, SVG wave, and multi-color backgrounds. The Visual Preset Hub can copy or apply a full shareable visual bundle.",
     },
     {
-      selector: 'li[data-section="animated-backgrounds"]',
+      selector: '[data-section-id="animated-backgrounds"], [data-settings-partial="animated-backgrounds"]',
       icon: "fa-solid fa-wand-magic-sparkles",
       title: i18n.settings_animated_backgrounds || "Animated backgrounds",
       text:
@@ -846,7 +846,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Use richer animated backgrounds such as gradient motion, silk, light pillars, liquid light, or splash cursor effects.",
     },
     {
-      selector: 'li[data-section="special-effects"]',
+      selector: '[data-section-id="special-effects"], [data-settings-partial="special-effects"]',
       icon: "fa-solid fa-star",
       title: i18n.settings_effect || "Effects",
       text:
@@ -854,7 +854,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Choose overlay effects and tune their colors. These are lighter visual layers that sit above your background.",
     },
     {
-      selector: 'li[data-section="font"]',
+      selector: '[data-section-id="font"], [data-settings-partial="font"]',
       icon: "fa-solid fa-font",
       title: i18n.settings_font || "Font",
       text:
@@ -862,7 +862,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Change the general font, clock font, or load and save a Google Font for later.",
     },
     {
-      selector: 'li[data-section="date-clock"]',
+      selector: '[data-section-id="date-clock"], [data-settings-partial="date-clock"]',
       icon: "fa-solid fa-clock",
       title: i18n.settings_date_format || "Date & Clock",
       text:
@@ -870,7 +870,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize time format, date format, clock style, colors, size, and display mode.",
     },
     {
-      selector: 'li[data-section="bookmark-custom"]',
+      selector: '[data-section-id="bookmark-custom"], [data-settings-partial="bookmark-custom"]',
       icon: "fa-solid fa-bookmark",
       title: i18n.settings_custom_bookmark || "Bookmarks",
       text:
@@ -886,7 +886,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize bookmark group tabs with background and text colors, opacity, font size, counts, borders, and interaction behavior.",
     },
     {
-      selector: 'li[data-section="custom-title"]',
+      selector: '[data-section-id="custom-title"], [data-settings-partial="custom-title"]',
       icon: "fa-solid fa-heading",
       title: i18n.settings_custom_title || "Custom title",
       text:
@@ -894,7 +894,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Show a personal title, move it freely, and adjust its color, size, shadow, border, and effects.",
     },
     {
-      selector: 'li[data-section="layout"]',
+      selector: '[data-section-id="layout"], [data-settings-partial="layout"]',
       icon: "fa-solid fa-layer-group",
       title: i18n.settings_layout || "Layout",
       text:
@@ -927,7 +927,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
     },
     {
-      selector: 'li[data-section="data-sync"]',
+      selector: '[data-section-id="data-sync"], [data-settings-partial="data-sync"]',
       icon: "fa-solid fa-cloud",
       title: i18n.settings_data_sync || "Data & Sync",
       text:
@@ -935,12 +935,12 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Enable Google Drive sync to securely back up and restore your settings and bookmarks across devices. You can also configure auto-backup intervals.",
     },
     {
-      selector: ".donate-section",
-      icon: "fa-solid fa-heart",
-      title: i18n.first_run_guide_donate_title || "Support & Rate",
+      selector: '[data-section-id="about-project"], [data-settings-partial="about-project"]',
+      icon: "fa-solid fa-circle-info",
+      title: i18n.first_run_guide_donate_title || "About Project & Support",
       text:
         i18n.first_run_guide_donate_desc ||
-        "If you find the extension useful, please consider rating 5 stars on the stores or donating to support the developer. Thank you! :))",
+        "Learn more about this project, view release history, or support the developer. If you find the extension useful, please consider rating it. Thank you! :))",
     },
   ]
 }
@@ -1023,9 +1023,9 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
 
     sidebarContent.scrollTo({
       top: Math.max(0, targetTop),
-      behavior: "smooth",
+      behavior: "auto",
     })
-    await new Promise((r) => setTimeout(r, 350))
+    await new Promise((r) => setTimeout(r, 60))
 
     const nextSidebarRect = sidebarContent.getBoundingClientRect()
     const nextTargetRect = target.getBoundingClientRect()
@@ -1043,6 +1043,10 @@ async function scrollGuideTargetIntoView(sidebarContent, target) {
 
 async function promptFirstRunSettingsGuide({ force = false } = {}) {
   if (!force && localStorage.getItem(FIRST_RUN_SETTINGS_GUIDE_KEY)) return
+
+  if (window.startpageSettingsPartialsReady) {
+    await window.startpageSettingsPartialsReady
+  }
 
   const sidebar = document.getElementById("settings-sidebar")
   const sidebarContent = sidebar?.querySelector(".sidebar-content")
