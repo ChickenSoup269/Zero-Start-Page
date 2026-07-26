@@ -80,7 +80,7 @@ import { initFaPicker } from "./faPicker.js"
 import { applyAccentFromCurrentBackground } from "./dynamicAccent.js"
 import { loadGoogleFont, renderFontGrid } from "./fontManager.js"
 import { renderUserSvgWaves } from "./svgWaveManager.js"
-import { renderBookmarks } from "../bookmarks.js"
+import { renderBookmarks, invalidateBookmarkIconCache } from "../bookmarks.js"
 import { copyText, decodePresetCode, encodePresetCode } from "./presetCode.js"
 import { showToast } from "../../utils/toast.js"
 import {
@@ -882,6 +882,7 @@ export function setupGeneralEventHandlers(
       else if (k === "bookmarkIconSize")
         rootStyle.setProperty("--bookmark-icon-size", `${v}px`)
       else if (k === "bookmarkFaviconRes") {
+        invalidateBookmarkIconCache()
         // Redraw bookmarks to fetch new favicons
         renderBookmarks()
       } else if (k === "bookmarkGap")
@@ -1277,6 +1278,10 @@ export function setupGeneralEventHandlers(
   if (smoothScrollCheckbox) {
     smoothScrollCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("smoothScrollEnabled", e.target.checked)
+      if (!e.target.checked) {
+        if (rafScrollId) cancelAnimationFrame(rafScrollId)
+        rafScrollId = null
+      }
     })
   }
 
@@ -1304,6 +1309,7 @@ export function setupGeneralEventHandlers(
   let hasPromptedSmoothScroll = false
   let smoothScrollTimeout = null
   let rafScrollId = null
+  let lastSetScrollTop = -1
 
   const smoothScrollModal = document.getElementById("smooth-scroll-modal")
   const btnSmoothScrollEnable = document.getElementById("btn-smooth-scroll-enable")
@@ -1319,6 +1325,8 @@ export function setupGeneralEventHandlers(
       handleSettingUpdate("smoothScrollEnabled", false)
       if (smoothScrollCheckbox) smoothScrollCheckbox.checked = false
       smoothScrollModal.classList.remove("open")
+      if (rafScrollId) cancelAnimationFrame(rafScrollId)
+      rafScrollId = null
     })
   }
 
@@ -1360,12 +1368,33 @@ export function setupGeneralEventHandlers(
     if (!rafScrollId) {
       const animateSidebarScroll = () => {
         const current = sidebarContent.scrollTop
+        
+        // If user manually scrolled (dragged scrollbar), stop animating
+        if (lastSetScrollTop !== -1 && Math.abs(current - lastSetScrollTop) > 1) {
+          rafScrollId = null
+          sidebarTargetScroll = current
+          return
+        }
+        
         const diff = sidebarTargetScroll - current
         if (Math.abs(diff) < 0.5) {
           rafScrollId = null
+          lastSetScrollTop = -1
           return
         }
-        sidebarContent.scrollTop = current + diff * 0.12
+        
+        const nextScroll = current + diff * 0.12
+        sidebarContent.scrollTop = nextScroll
+        lastSetScrollTop = sidebarContent.scrollTop
+        
+        // Stop if we hit the scroll boundaries and can't go further
+        if (Math.abs(current - sidebarContent.scrollTop) < 0.5) {
+          rafScrollId = null
+          lastSetScrollTop = -1
+          sidebarTargetScroll = sidebarContent.scrollTop
+          return
+        }
+        
         rafScrollId = requestAnimationFrame(animateSidebarScroll)
       }
       rafScrollId = requestAnimationFrame(animateSidebarScroll)
