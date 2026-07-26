@@ -616,11 +616,29 @@ export function setupGeneralEventHandlers(
       option.textContent = item?.name ? `${item.name} (${code})` : code
       DOM.languageSelect.appendChild(option)
     })
-    DOM.languageSelect.value = getSettings().language || "en"
+    const currentLang = getSettings().language || "en"
+    DOM.languageSelect.value = currentLang
     if (DOM.deleteCustomLanguageBtn) {
       DOM.deleteCustomLanguageBtn.hidden = !Boolean(
         customLanguages[DOM.languageSelect.value],
       )
+    }
+
+    const btnGroup = document.getElementById("language-button-group")
+    if (btnGroup) {
+      btnGroup.innerHTML = ""
+      Array.from(DOM.languageSelect.options).forEach((opt) => {
+        const btn = document.createElement("button")
+        btn.className = "button-group-item"
+        if (opt.value === currentLang) btn.classList.add("active")
+        btn.textContent = opt.textContent
+        btn.onclick = () => {
+          if (btn.classList.contains("active")) return
+          DOM.languageSelect.value = opt.value
+          DOM.languageSelect.dispatchEvent(new Event("change"))
+        }
+        btnGroup.appendChild(btn)
+      })
     }
   }
 
