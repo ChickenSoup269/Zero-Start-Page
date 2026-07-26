@@ -597,10 +597,17 @@ export class DailyQuotes {
 
   async fetchFromQuotable(isManual) {
     const fetchFn = async () => {
-      const response = await fetch('https://api.quotable.io/random')
+      const response = await fetch('https://type.fit/api/quotes')
       if (!response.ok) throw new Error("API Network error")
       const data = await response.json()
-      return { text: data.content, author: `- ${data.author}` }
+      // type.fit returns an array of quotes
+      const randomQuote = data[Math.floor(Math.random() * data.length)]
+      let author = randomQuote.author || "Unknown"
+      // Remove ", type.fit" from author name if it exists (legacy type.fit behavior)
+      if (author.includes(", type.fit")) {
+        author = author.replace(", type.fit", "")
+      }
+      return { text: randomQuote.text, author: `- ${author}` }
     }
     await this.fetchWithCache(isManual, "quotable", fetchFn)
   }
