@@ -892,6 +892,7 @@ function createApplySettings(effectInstances) {
     qaToggleDisplay("clock", settings.qaShowClock)
     qaToggleDisplay("gregorian", settings.qaShowGregorian)
     qaToggleDisplay("rss", settings.qaShowRss)
+    qaToggleDisplay("habitTracker", settings.qaShowHabits)
     document.body.classList.toggle(
       "quick-access-light-transparent",
       settings.quickAccessSkin === "light-transparent",
@@ -939,6 +940,7 @@ function createApplySettings(effectInstances) {
       quotes: "daily-quotes",
       musicPlayer: "music-player-container",
       visualizer: "visualizer-container",
+      habitTracker: "habit-tracker-container"
     }
 
     Object.entries(widgetSkinsMap).forEach(([key, id]) => {
@@ -5321,6 +5323,7 @@ function createUpdateSettingsInputs(effectInstances) {
     }
     DOM.showNotepadCheckbox.checked = settings.showNotepad !== false
     DOM.showTimerCheckbox.checked = settings.showTimer === true
+    if (DOM.showHabitsCheckbox) DOM.showHabitsCheckbox.checked = settings.showHabits === true
     if (DOM.showWeatherCheckbox) {
       DOM.showWeatherCheckbox.checked = settings.showWeather === true
     }
@@ -5522,6 +5525,7 @@ function createUpdateSettingsInputs(effectInstances) {
     if (DOM.lcpQaShowClock) DOM.lcpQaShowClock.checked = settings.qaShowClock !== false
     if (DOM.lcpQaShowGregorian) DOM.lcpQaShowGregorian.checked = settings.qaShowGregorian !== false
     if (DOM.lcpQaShowRss) DOM.lcpQaShowRss.checked = settings.qaShowRss !== false
+    if (DOM.lcpQaShowHabits) DOM.lcpQaShowHabits.checked = settings.qaShowHabits !== false
     if (DOM.lcpQaAllowReorder) DOM.lcpQaAllowReorder.checked = settings.qaAllowReorder === true
     if (DOM.searchBarBlurSlider) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
@@ -5572,6 +5576,19 @@ function createUpdateSettingsInputs(effectInstances) {
     const smoothScrollCheckbox = document.getElementById("smooth-scroll-checkbox")
     if (smoothScrollCheckbox) {
       smoothScrollCheckbox.checked = settings.smoothScrollEnabled !== false
+    }
+
+    const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
+    const snapGridSizeRow = document.getElementById("snap-grid-size-row")
+    const snapGridSizeInput = document.getElementById("snap-grid-size-input")
+    if (snapToGridCheckbox) {
+      snapToGridCheckbox.checked = settings.snapToGrid === true
+      if (snapGridSizeRow) {
+        snapGridSizeRow.style.display = settings.snapToGrid ? "block" : "none"
+      }
+    }
+    if (snapGridSizeInput) {
+      snapGridSizeInput.value = settings.snapGridSize || 20
     }
     if (DOM.lcpGhostControls) {
       DOM.lcpGhostControls.checked = settings.sideControlsGhostMode === true

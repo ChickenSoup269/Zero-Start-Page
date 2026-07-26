@@ -1295,6 +1295,7 @@ export let showTodoCheckbox = document.getElementById("show-todo-checkbox")
 export let todoShowCheckboxesToggle = document.getElementById(
   "todo-show-checkboxes",
 )
+export let showHabitsCheckbox = document.getElementById("show-habits-checkbox")
 export let showTimerCheckbox = document.getElementById("show-timer-checkbox")
 export let hideTimerAlarmDropdownCheckbox = document.getElementById(
   "hide-timer-alarm-dropdown-checkbox",
@@ -1471,6 +1472,7 @@ export let lcpQaShowMusic = document.getElementById("lcp-qa-show-music")
 export let lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
 export let lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
 export let lcpQaShowRss = document.getElementById("lcp-qa-show-rss")
+export let lcpQaShowHabits = document.getElementById("lcp-qa-show-habits")
 export let lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
 export let m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
 export let m3SidebarToggle = document.getElementById("m3-sidebar-toggle")
@@ -3420,6 +3422,7 @@ export function refreshDOMReferences() {
   todoShowCheckboxesToggle = document.getElementById(
   "todo-show-checkboxes",
 )
+  showHabitsCheckbox = document.getElementById("show-habits-checkbox")
   showTimerCheckbox = document.getElementById("show-timer-checkbox")
   hideTimerAlarmDropdownCheckbox = document.getElementById(
   "hide-timer-alarm-dropdown-checkbox",
@@ -3594,6 +3597,7 @@ export function refreshDOMReferences() {
   lcpQaShowClock = document.getElementById("lcp-qa-show-clock")
   lcpQaShowGregorian = document.getElementById("lcp-qa-show-gregorian")
   lcpQaShowRss = document.getElementById("lcp-qa-show-rss")
+  lcpQaShowHabits = document.getElementById("lcp-qa-show-habits")
   lcpQaAllowReorder = document.getElementById("lcp-qa-allow-reorder")
   m3WidgetsToggle = document.getElementById("m3-widgets-toggle")
   m3SidebarToggle = document.getElementById("m3-sidebar-toggle")

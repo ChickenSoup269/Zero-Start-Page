@@ -1280,6 +1280,26 @@ export function setupGeneralEventHandlers(
     })
   }
 
+  const snapToGridCheckbox = document.getElementById("snap-to-grid-checkbox")
+  const snapGridSizeRow = document.getElementById("snap-grid-size-row")
+  const snapGridSizeInput = document.getElementById("snap-grid-size-input")
+  
+  if (snapToGridCheckbox) {
+    snapToGridCheckbox.addEventListener("change", (e) => {
+      handleSettingUpdate("snapToGrid", e.target.checked)
+      if (snapGridSizeRow) {
+        snapGridSizeRow.style.display = e.target.checked ? "block" : "none"
+      }
+    })
+  }
+  if (snapGridSizeInput) {
+    snapGridSizeInput.addEventListener("change", (e) => {
+      let val = parseInt(e.target.value)
+      if (isNaN(val) || val < 5) val = 5
+      handleSettingUpdate("snapGridSize", val)
+    })
+  }
+
   let sidebarTargetScroll = sidebarContent.scrollTop
   let hasPromptedSmoothScroll = false
   let smoothScrollTimeout = null
@@ -5833,6 +5853,7 @@ export function setupGeneralEventHandlers(
   setupLayoutCheckbox(DOM.showNotepadCheckbox, "showNotepad", {})
   setupLayoutCheckbox(DOM.showTimerCheckbox, "showTimer", {})
   setupLayoutCheckbox(DOM.showWeatherCheckbox, "showWeather", {})
+  setupLayoutCheckbox(DOM.showHabitsCheckbox, "showHabits", {})
 
   const weatherApiModeSelect = document.getElementById("weather-api-mode-select")
   const weatherForecastEndpointInput = document.getElementById(
@@ -6570,6 +6591,7 @@ export function setupGeneralEventHandlers(
     { el: DOM.lcpQaShowClock, key: "qaShowClock" },
     { el: DOM.lcpQaShowGregorian, key: "qaShowGregorian" },
     { el: DOM.lcpQaShowRss, key: "qaShowRss" },
+    { el: DOM.lcpQaShowHabits, key: "qaShowHabits" },
     { el: DOM.lcpQaAllowReorder, key: "qaAllowReorder" }
   ];
 

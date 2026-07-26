@@ -72,6 +72,7 @@ export class Timer {
       this.render()
     }
     this.updateTimerStatus()
+    this.updatePomodoroStats()
   }
 
   createElements() {
@@ -87,9 +88,12 @@ export class Timer {
     this.container.innerHTML = `
             <div class="timer-main-view">
                 <div class="timer-display" id="timer-display">00:00:00</div>
-                <div class="timer-status" id="timer-status">
-                    <i class="fa-solid fa-circle-pause"></i>
-                    <span>${i18n.timer_status_ready || "Ready"}</span>
+                <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                    <div class="timer-status" id="timer-status">
+                        <i class="fa-solid fa-circle-pause"></i>
+                        <span>${i18n.timer_status_ready || "Ready"}</span>
+                    </div>
+                    <div class="pomodoro-stats" id="pomodoro-stats" style="display: none; font-size: 13px; font-weight: 600; padding: 3px 8px; border-radius: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 4px rgba(0,0,0,0.2); backdrop-filter: blur(4px); color: var(--text-color);" title="Pomodoros Today">🍅 0</div>
                 </div>
                 <div class="timer-controls">
                     <button id="timer-start-pause" class="icon-btn" title="Start/Pause"><i class="fa-solid fa-play"></i></button>
@@ -362,6 +366,9 @@ export class Timer {
         this.updateTimerInputLanguage()
         this.updateFocusLanguage()
       }
+      if (e.detail.key === "hidePomodoroStats") {
+        this.updatePomodoroStats()
+      }
     })
 
     window.addEventListener("settingsUpdated", (e) => {
@@ -568,6 +575,10 @@ export class Timer {
       }
 
       if (this.timeLeft <= 0) {
+        // Record Pomodoro if timer was at least 60 seconds
+        if (this.initialTime >= 60) {
+          this.recordPomodoro()
+        }
         this.pauseTimer()
         this.playAlarm()
         this.timeLeft = this.initialTime
@@ -1159,5 +1170,53 @@ export class Timer {
       const active = getSettings().clockTimerMode === true
       btn.classList.toggle("active", active)
     }
+  }
+
+  updatePomodoroStats() {
+    const statsStr = localStorage.getItem("pomodoroStats")
+    let stats = { date: "", count: 0 }
+    const today = new Date().toISOString().split("T")[0]
+
+    if (statsStr) {
+      try {
+        stats = JSON.parse(statsStr)
+      } catch (e) {}
+    }
+
+    if (stats.date !== today) {
+      stats = { date: today, count: 0 }
+      localStorage.setItem("pomodoroStats", JSON.stringify(stats))
+    }
+
+    const statEl = this.container.querySelector("#pomodoro-stats")
+    if (statEl) {
+      if (getSettings().hidePomodoroStats === true) {
+        statEl.style.display = "none"
+      } else {
+        statEl.style.display = "block"
+        statEl.innerHTML = `🍅 ${stats.count}`
+      }
+    }
+  }
+
+  recordPomodoro() {
+    const statsStr = localStorage.getItem("pomodoroStats")
+    let stats = { date: "", count: 0 }
+    const today = new Date().toISOString().split("T")[0]
+
+    if (statsStr) {
+      try {
+        stats = JSON.parse(statsStr)
+      } catch (e) {}
+    }
+
+    if (stats.date !== today) {
+      stats.count = 0
+    }
+    
+    stats.date = today
+    stats.count++
+    localStorage.setItem("pomodoroStats", JSON.stringify(stats))
+    this.updatePomodoroStats()
   }
 }

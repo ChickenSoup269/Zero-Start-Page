@@ -6,6 +6,7 @@ export class RssReader {
     constructor(container) {
         this.container = container;
         this.activeTabIndex = 0;
+        this.isReadLaterMode = false;
         this.config = {
             feeds: [
                 { name: "Tin mới nhất", url: "https://vnexpress.net/rss/tin-moi-nhat.rss" },
@@ -323,24 +324,34 @@ export class RssReader {
         const tabsEl = this.container.querySelector('.rss-tabs');
         if (!tabsEl) return;
         
-        if (!this.config.feeds || this.config.feeds.length <= 1) {
-            tabsEl.style.display = 'none';
-        } else {
-            tabsEl.style.display = 'flex';
-            tabsEl.innerHTML = this.config.feeds.map((feed, idx) => `
-                <div class="rss-tab ${idx === this.activeTabIndex ? 'active' : ''}" data-index="${idx}">
-                    ${feed.name}
-                </div>
-            `).join('');
-            
-            tabsEl.querySelectorAll('.rss-tab').forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    this.activeTabIndex = parseInt(e.target.dataset.index);
-                    this.renderTabs(); // update active state
-                    this.fetchRSS(false);
-                });
+        tabsEl.style.display = 'flex';
+        let tabsHtml = this.config.feeds.map((feed, idx) => `
+            <div class="rss-tab ${!this.isReadLaterMode && idx === this.activeTabIndex ? 'active' : ''}" data-index="${idx}">
+                ${feed.name}
+            </div>
+        `).join('');
+
+        tabsHtml += `
+            <div class="rss-tab ${this.isReadLaterMode ? 'active' : ''}" data-read-later="true" style="margin-left: auto;">
+                <i class="fa-solid fa-bookmark"></i> <span data-i18n="rss_read_later">Đọc sau</span>
+            </div>
+        `;
+        tabsEl.innerHTML = tabsHtml;
+        applyTranslations(tabsEl);
+        
+        tabsEl.querySelectorAll('.rss-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const target = e.currentTarget;
+                if (target.dataset.readLater) {
+                    this.isReadLaterMode = true;
+                } else {
+                    this.isReadLaterMode = false;
+                    this.activeTabIndex = parseInt(target.dataset.index);
+                }
+                this.renderTabs(); // update active state
+                this.fetchRSS(false);
             });
-        }
+        });
     }
 
     async fetchRSSData(url) {
@@ -401,6 +412,19 @@ export class RssReader {
 
     async fetchRSS(forceRefresh = false) {
         this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
+        
+        if (this.isReadLaterMode) {
+            const saved = localStorage.getItem("rssReadLater");
+            this.currentItems = saved ? JSON.parse(saved) : [];
+            this.currentSourceTitle = "Đọc sau";
+            this.itemsLimit = 50;
+            if (this.currentItems.length === 0) {
+                this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;">Chưa có bài viết nào được lưu.</div>`;
+            } else {
+                this.renderItems();
+            }
+            return;
+        }
         
         const currentFeed = this.config.feeds[this.activeTabIndex];
         if (!currentFeed || !currentFeed.url) {
@@ -476,6 +500,7 @@ export class RssReader {
             
             const title = item.title || "";
             const lowerTitle = title.toLowerCase();
+            const linkStr = item.link || "";
 
             // Check blocked words
             const isBlocked = blockWords.some(word => lowerTitle.includes(word));
@@ -509,8 +534,15 @@ export class RssReader {
             }
             if (safeDesc.length > 120) safeDesc = safeDesc.substring(0, 120) + "...";
 
+            const savedArticlesStr = localStorage.getItem("rssReadLater");
+            let savedArticles = [];
+            try { if (savedArticlesStr) savedArticles = JSON.parse(savedArticlesStr); } catch(e) {}
+            const isSaved = savedArticles.some(a => a.link === linkStr);
+            const bookmarkIcon = isSaved ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark';
+
             html += `
-                <a href="${item.link}" target="_blank" class="rss-item ${isHighlight ? 'highlight' : ''}">
+                <div class="rss-item-container" style="position: relative; display: flex; align-items: center;">
+                <a href="${linkStr}" target="_blank" class="rss-item ${isHighlight ? 'highlight' : ''}" style="flex: 1; padding-right: 35px;">
                     ${(this.config.showImages && imageUrl) ? `<img src="${imageUrl}" style="width: 68px; height: 68px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" />` : ''}
                     <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
                         <div class="rss-item-title">${title}</div>
@@ -520,6 +552,10 @@ export class RssReader {
                         </div>
                     </div>
                 </a>
+                <button class="rss-save-btn" data-item='${encodeURIComponent(JSON.stringify(item))}' style="position: absolute; right: 10px; background: transparent; border: none; color: ${isSaved ? 'var(--accent-color, #4CAF50)' : 'var(--text-color)'}; opacity: ${isSaved ? '1' : '0.5'}; cursor: pointer; padding: 5px; border-radius: 4px; transition: opacity 0.2s, background 0.2s;">
+                    <i class="${bookmarkIcon}"></i>
+                </button>
+                </div>
             `;
             count++;
         }
@@ -540,6 +576,45 @@ export class RssReader {
                 this.renderItems();
             });
         }
+        
+        this.bindSaveButtons();
+    }
+
+    bindSaveButtons() {
+        const btns = this.contentEl.querySelectorAll('.rss-save-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const itemData = JSON.parse(decodeURIComponent(btn.dataset.item));
+                const savedArticlesStr = localStorage.getItem("rssReadLater");
+                let savedArticles = [];
+                try { if (savedArticlesStr) savedArticles = JSON.parse(savedArticlesStr); } catch(err) {}
+                
+                const index = savedArticles.findIndex(a => a.link === itemData.link);
+                if (index > -1) {
+                    savedArticles.splice(index, 1);
+                    btn.querySelector('i').className = 'fa-regular fa-bookmark';
+                    btn.style.color = 'var(--text-color)';
+                    btn.style.opacity = '0.5';
+                    if (this.isReadLaterMode) {
+                        const container = btn.closest('.rss-item-container');
+                        if (container) container.remove();
+                        this.currentItems = savedArticles;
+                        if (savedArticles.length === 0) {
+                            this.contentEl.innerHTML = `<div style="text-align:center; padding:20px; opacity:0.7;">Chưa có bài viết nào được lưu.</div>`;
+                        }
+                    }
+                } else {
+                    savedArticles.push(itemData);
+                    btn.querySelector('i').className = 'fa-solid fa-bookmark';
+                    btn.style.color = 'var(--accent-color, #4CAF50)';
+                    btn.style.opacity = '1';
+                }
+                localStorage.setItem("rssReadLater", JSON.stringify(savedArticles));
+            });
+        });
     }
 
     async translateText(text) {

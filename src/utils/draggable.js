@@ -276,6 +276,11 @@ export function makeDraggable(
     document.onmouseup = closeDragElement
     document.onmousemove = elementDrag
     element.classList.add("dragging")
+    
+    if (currentSettings.snapToGrid) {
+      document.body.classList.add("show-snap-grid")
+      document.body.style.setProperty("--snap-grid-size", (currentSettings.snapGridSize || 20) + "px")
+    }
   }
 
   function elementDrag(e) {
@@ -302,6 +307,14 @@ export function makeDraggable(
 
     // Use cached zoom to avoid forced synchronous layout on every mousemove
     const zoom = cachedZoom
+
+    const currentSettings = getSettings()
+    if (currentSettings.snapToGrid) {
+      const grid = parseInt(currentSettings.snapGridSize) || 20
+      targetScreenLeft = Math.round(targetScreenLeft / grid) * grid
+      targetScreenTop = Math.round(targetScreenTop / grid) * grid
+    }
+
     element.style.left = ((targetScreenLeft - magicOffsetX) / zoom) + "px"
     element.style.top = ((targetScreenTop - magicOffsetY) / zoom) + "px"
   }
@@ -310,6 +323,7 @@ export function makeDraggable(
     document.onmouseup = null
     document.onmousemove = null
     element.classList.remove("dragging")
+    document.body.classList.remove("show-snap-grid")
     element.style.transition = ""
     element.classList.add("has-position")
 
