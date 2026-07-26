@@ -2,62 +2,86 @@
 
 ## Project Overview
 
-**Startpage** is a Chrome extension that replaces the new tab page with a customizable, feature-rich startpage. It combines a clock, bookmark manager, dynamic backgrounds, and visual effects into a single, personalized interface.
+**Startpage** is a Chrome extension that replaces the new tab page with a highly customizable, feature-rich startpage. It integrates widgets like a clock, bookmarks, to-do list, habit tracker, calendar, weather, RSS reader, music player, and terminal, along with dynamic backgrounds and animations.
 
-**Type:** Chrome Extension (MV3)  
-**Language:** Vanilla JavaScript (no frameworks)  
-**Key Tech:** DOM manipulation, LocalStorage, Canvas animations, Fetch API
+**Type:** Chrome Extension (Manifest V3)
+**Language:** Vanilla JavaScript (no frameworks)
+**Key Tech:** DOM manipulation, LocalStorage, IndexedDB, Canvas animations, Fetch API, Chrome Extension APIs
 
 ---
 
 ## Architecture & Data Flow
 
-### Core Initialization (`src/main.js`)
+### Core Initialization (`src/main.js` & `src/bootstrap.js`)
 
-- Entry point orchestrating component initialization on `DOMContentLoaded`
-- **Critical order:** i18n must load first (other components depend on translations)
-- Sequence: i18n → Clock → Bookmarks → Modal → ContextMenu → Settings
+- `bootstrap.js` acts as an early initializer for performance-critical setup.
+- `main.js` orchestrates component initialization on `DOMContentLoaded`.
+- **Critical order:** `i18n` must load first as other components depend on translations.
 
 ### State Management (`src/services/state.js`)
 
-- Single source of truth for app state using `defaultSettings` object
-- **Storage pattern:** Dual localStorage keys
-  - `"bookmarks"` → bookmark array
-  - `"pageSettings"` → settings object
-- All state mutations should call `saveSettings()` to persist
-- Arrays (`userBackgrounds`, `userColors`, `userGradients`) must be initialized to prevent null errors
+- Single source of truth for app state using the `defaultSettings` object.
+- **Storage pattern:** Uses `localStorage` (e.g., `"pageSettings"`, `"bookmarks"`).
+- All state mutations must call `saveSettings()` to persist changes.
+- Arrays (e.g., backgrounds, colors) must be initialized properly to prevent null reference errors.
+- Syncs with Google Drive via `src/services/googleDriveSync.js` if user has authorized it.
 
 ### i18n System (`src/services/i18n.js`)
 
-- Loads language JSON from `locales/{lang}.json` on demand
-- Fallback to English if language unavailable
-- Two translation methods:
-  - `data-i18n="key"` → replaces `textContent`
-  - `data-i18n-placeholder="key"` → replaces `placeholder` attribute
-- New translations: add keys to `locales/en.json` and `locales/vi.json`, then call `applyTranslations()`
+- Loads language JSON from `locales/{lang}.json` on demand.
+- Fallbacks to English (`en.json`).
+- Translation methods: `data-i18n="key"` (text) and `data-i18n-placeholder="key"` (placeholders).
+- When adding UI elements, always add translation keys to `locales/en.json` and `locales/vi.json`, then call `applyTranslations()`.
 
-### Component Pattern
+### Component Pattern (`src/components/`)
 
-Each component (`bookmarks.js`, `clock.js`, `settings.js`) follows:
-
-1. Import DOM references from `utils/dom.js`
-2. Import state/i18n services
-3. Export `init{Component}()` called from `main.js`
-4. Re-render on state changes: `getSettings()` + `updateSetting(key, value)` + `saveSettings()`
-
-**Example flow:** Settings sidebar → User picks color → `handleSettingUpdate()` → `updateSetting()` → `saveSettings()` → relevant components re-render
+Components (e.g., `bookmarks.js`, `todo.js`, `weather.js`, etc.) follow this generic pattern:
+1. Import DOM references from `src/utils/dom.js`.
+2. Import state/i18n services.
+3. Export an `init{Component}()` function called from `main.js`.
+4. Re-render or update state on changes via `getSettings()`, `updateSetting()`, and `saveSettings()`.
 
 ---
 
-## Key Files & Their Responsibilities
+## Key Directories & Files
 
-| File                             | Purpose                                                      |
-| -------------------------------- | ------------------------------------------------------------ |
-| `src/utils/dom.js`               | Centralized DOM element references (113 lines of exports)    |
-| `src/utils/colors.js`            | Color utilities (e.g., `getContrastYIQ()` for text contrast) |
-| `src/components/settings.js`     | Massive settings panel (664 lines) - all UI customization    |
-| `src/components/animations/*.js` | Canvas-based effects (Matrix, meteor, shooting stars, etc.)  |
-| `style.css`                      | CSS custom properties; gradients and glass-morphism defaults |
+### Extension Core (Root)
+- `background.js`: Service worker for background tasks and extension events.
+- `content-media.js`: Content script for specific page interactions/media.
+- `manifest.json`: MV3 configuration declaring permissions (bookmarks, storage, etc.).
+
+### Services (`src/services/`)
+- `state.js`: Core configuration and localStorage management.
+- `i18n.js`: Localization system.
+- `googleDriveSync.js`: Cloud backup functionality.
+- `firstRun.js`: Onboarding logic.
+- `imageStore.js`: Handling custom user image uploads via IndexedDB/Base64.
+
+### UI Components (`src/components/`)
+A vast collection of widgets and features:
+- **Core widgets:** `clock.js`, `bookmarks.js`, `search.js`
+- **Productivity:** `todo.js`, `notepad.js`, `habitTracker.js`, `timer.js`, `fullCalendar.js`
+- **Utility:** `weather.js`, `rss.js`, `terminal.js`, `commandPalette.js`
+- **Media:** `musicPlayer.js`, `visualizer.js`
+- **UI Shell:** `contextMenu.js`, `modal.js`, `quotes.js`
+
+### Settings Module (`src/components/settings/`)
+- The settings panel is modularized inside the `settings/` folder.
+- `src/components/settings.js` acts only as a wrapper/re-export for `src/components/settings/index.js`.
+- Always update specific setting sub-modules when adding new preferences, rather than a single monolithic file.
+
+### Animations (`src/components/animations/`)
+- Canvas-based effects (Matrix, meteor, particles, etc.).
+- Extend a common Canvas API, implementing `.start()` and `.stop()`.
+- Must respond to window resizes (`.resize()`) and be performance-conscious (throttling, `requestAnimationFrame`).
+
+### Utils (`src/utils/`)
+- `dom.js`: Centralized DOM element references (extremely important to avoid `document.querySelector` scattering).
+- `colors.js`: Color utilities (e.g., contrast calculation).
+- `dialog.js`, `toast.js`: UI feedback utilities.
+- `draggable.js`: Drag-and-drop mechanics.
+- `lunarCalendar.js`: Lunar date conversions.
+- `perfHud.js`: Performance monitoring utilities.
 
 ---
 
@@ -69,106 +93,42 @@ Each component (`bookmarks.js`, `clock.js`, `settings.js`) follows:
 // Always follow this sequence:
 updateSetting("key", value) // In-memory update
 saveSettings() // Persist to localStorage
-// Component re-renders automatically via event listeners or direct calls
+// Component re-renders automatically via event listeners or observers
 ```
 
 ### Adding a New Setting
 
-1. Add key to `defaultSettings` in `state.js`
-2. Add DOM element to `index.html` with data-i18n attribute
-3. Export element reference in `utils/dom.js`
-4. Add event listener in `settings.js`
-5. Call `updateSetting()` + `saveSettings()`
-6. Add translation keys to `locales/{en,vi}.json`
+1. Add key to `defaultSettings` in `state.js`.
+2. Add DOM element to `index.html` with appropriate `data-i18n` attribute.
+3. Export element reference in `src/utils/dom.js`.
+4. Add event listener in the relevant `src/components/settings/` module.
+5. Add translation keys to `locales/en.json` and `locales/vi.json`.
 
-### Animation Components
+### Background Management
 
-- All extend Canvas API, implement `.start()` and `.stop()` methods
-- Store instance in global variable for access from settings
-- Respond to color picker changes: `effect-select` triggers instantiation
-- **Performance:** Use `requestAnimationFrame` with FPS throttling (see `matrixRain.js` for pattern)
-
-### Gradient Customization
-
-- Three settings work together: `gradientStart`, `gradientEnd`, `gradientAngle`
-- Stored as separate keys in state (not nested object)
-- CSS applies via `--bg-gradient` custom property
-- `handleSettingUpdate(..., isGradient=true)` clears background image/color
+- Backgrounds are handled globally.
+- Gradients use `gradientStart`, `gradientEnd`, `gradientAngle`.
+- Changing a gradient configuration triggers a wipe of standard image backgrounds to ensure the gradient displays correctly.
 
 ---
 
 ## Developer Workflows
 
 ### Testing Changes
-
-1. No build step required - vanilla JS served directly
-2. **Local testing:** Open `index.html` in browser for standalone testing
-3. **Extension testing:** Load unpacked extension in Chrome (DevTools → Extensions → Load unpacked → select folder)
-4. **localStorage reset:** Open DevTools Console, run `localStorage.clear()`, refresh page
-
-### Debugging Specific Components
-
-- Settings panel most complex; check `settings.js` for effect initialization
-- Bookmark import uses Chrome Bookmarks API; test via extension (not standalone)
-- i18n fallback to English if JSON missing (check console for warnings)
+1. **Local testing:** Open `index.html` in browser for standalone UI testing. Note that Chrome Extension specific APIs (like Bookmarks or Background scripts) will throw errors or not function.
+2. **Extension testing:** Load unpacked extension in Chrome (`chrome://extensions` → Load unpacked). Required for full functionality testing.
+3. **Storage Reset:** Run `localStorage.clear()` in DevTools Console to reset settings to default if state becomes corrupted.
 
 ### Adding External Dependencies
-
-- No build system - dependencies must be:
-  - Native browser APIs (Fetch, Canvas, DOM)
-  - Embedded script (e.g., Font Awesome icons via CDN in `index.html`)
-  - Inline utility functions in `utils/` or services
-
----
-
-## Common Integration Points
-
-### Bookmark Import
-
-- Uses Chrome Bookmarks API (requires extension context + `"bookmarks"` permission in manifest.json)
-- Falls back with user alert if API unavailable
-
-### Icon Fallback
-
-- Bookmark favicons: uses Google Favicon API `https://www.google.com/s2/favicons?domain={url}&sz=128`
-- Double fallback in `bookmarks.js`: custom icon URL → favicon API
-
-### Background Management
-
-- Types: local preset (id: `local-bg-*`), color hex, image URL, gradient
-- Stored as single `background` key in settings
-- Special handling for gradients: use `gradientStart/End/Angle` instead
-
-### Effect Triggers
-
-- `effectSelect` dropdown change → instantiate animation class → call `.start()`
-- Previous effect `.stop()` called before starting new one
-- Canvas always ready: `<canvas id="effect-canvas" hidden></canvas>` in `index.html`
+- No bundler (Webpack/Vite) is used.
+- Dependencies must be native APIs, CDN scripts (in `index.html`), or manual inline utility files.
 
 ---
 
 ## Important Quirks & Gotchas
 
-1. **State initialization:** Always check arrays exist before iterating (e.g., `settingsState.userBackgrounds || []`)
-2. **localStorage keys are case-sensitive:** `"bookmarks"` not `"Bookmarks"`
-3. **i18n timing:** Never use `geti18n()` before `initI18n()` completes (already managed in `main.js`)
-4. **CSS gradient animation:** `animation: gradientBG` loops infinitely; disable with `.bg-image-active`
-5. **Canvas sizing:** Animations must call `.resize()` on window resize event
-6. **Bookmark favicon errors:** `onerror` attribute must use inline JS (not event listener) in generated HTML
-
----
-
-## Getting Started for Contributors
-
-1. **Add a new visual theme:** Edit `style.css` CSS variables, or add preset to `localBackgrounds` array in `state.js`
-2. **Add a new animation:** Create class in `src/components/animations/`, export `.start()/.stop()`, add option to `effectSelect` in `settings.js`
-3. **Fix a UI bug:** Check `index.html` for element IDs, find corresponding export in `utils/dom.js`, trace event listener in component
-4. **Extend settings:** Follow "Adding a New Setting" pattern above
-
----
-
-## Manifest & Permissions
-
-- **MV3 compliance:** No background scripts, content scripts, or service workers
-- **Permissions:** Only `"bookmarks"` (for browser bookmark import)
-- **Chrome override:** `chrome_url_overrides.newtab` points to `index.html`
+1. **State Initialization:** Always verify array existence (e.g., `settingsState.userBackgrounds || []`).
+2. **Case Sensitivity:** localStorage keys are precise (e.g., `"bookmarks"` not `"Bookmarks"`).
+3. **i18n Timing:** Never use `geti18n()` before `initI18n()` resolves.
+4. **DOM Access:** Avoid random `document.getElementById()` in components. Add your elements to `src/utils/dom.js` and import them.
+5. **MV3 Restrictions:** Ensure background tasks comply with MV3 service worker lifecycles (they can go to sleep, meaning state cannot persist solely in memory inside `background.js`).
