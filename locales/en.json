@@ -529,7 +529,6 @@
   "settings_save_bg_btn": "Save",
   "bg_select_mode": "Select",
   "settings_save_gradient_btn": "Save Gradient",
-  "settings_saved_colors": "Saved Colors",
   "settings_saved_gradients": "Saved Gradients",
   "settings_gradient_type": "Gradient Type:",
   "settings_gradient_type_linear": "Linear",
@@ -2027,5 +2026,6 @@
   "settings_sidebar_width_default": "Default (500px)",
   "settings_sidebar_width_medium": "Medium (600px)",
   "settings_sidebar_width_large": "Large (700px)",
-  "settings_sidebar_width_xlarge": "Extra Large (800px)"
+  "settings_sidebar_width_xlarge": "Extra Large (800px)",
+  "release_history": "Release History"
 }

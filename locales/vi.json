@@ -2026,5 +2026,6 @@
   "settings_sidebar_width_default": "Mặc Định (500px)",
   "settings_sidebar_width_medium": "Vừa (600px)",
   "settings_sidebar_width_large": "Lớn (700px)",
-  "settings_sidebar_width_xlarge": "Rất Lớn (800px)"
+  "settings_sidebar_width_xlarge": "Rất Lớn (800px)",
+  "release_history": "Lịch sử phiên bản"
 }
