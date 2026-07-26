@@ -1100,9 +1100,17 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
     background 0.16s ease;
 }
 
+/* Allow drag tooltips to escape overflow containers during drag */
+body.bookmark-dragging-active .bookmarks-grid,
+body.bookmark-dragging-active #bookmarks-container,
+body.bookmark-dragging-active .bookmark-groups-container {
+  overflow: visible !important;
+}
+
 .bookmark.drag-over,
 .add-bookmark-card.drag-over {
   position: relative;
+  z-index: 9999 !important;
   border: 2px dashed var(--accent-color, #a8c0ff);
   border-radius: var(--radius-sm);
   transform: translateY(-3px) scale(1.02);
@@ -1115,6 +1123,7 @@ body.bookmark-dragging-active .bookmark-stack:not(.dragging) {
 .bookmark.drag-over-before,
 .bookmark.drag-over-after {
   position: relative;
+  z-index: 9999 !important;
   transform: translateY(-3px);
 }
 
@@ -7002,6 +7011,7 @@ body.widgets-m3-accent .quotes-container,
 
 .bookmark-group-tab.drag-over {
   position: relative;
+  z-index: 9999 !important;
   background: rgba(var(--accent-color-rgb, 168, 192, 255), 0.2) !important;
   border-color: var(--accent-color) !important;
   color: var(--accent-color) !important;
