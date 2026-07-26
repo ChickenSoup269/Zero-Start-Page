@@ -628,10 +628,14 @@ export function setupGeneralEventHandlers(
     if (btnGroup) {
       btnGroup.innerHTML = ""
       Array.from(DOM.languageSelect.options).forEach((opt) => {
-        const btn = document.createElement("button")
-        btn.className = "button-group-item"
+        const btn = document.createElement("div")
+        btn.className = "clock-style-card compact-style-card"
         if (opt.value === currentLang) btn.classList.add("active")
-        btn.textContent = opt.textContent
+        
+        const textSpan = document.createElement("span")
+        textSpan.textContent = opt.textContent
+        btn.appendChild(textSpan)
+        
         btn.onclick = () => {
           if (btn.classList.contains("active")) return
           DOM.languageSelect.value = opt.value
