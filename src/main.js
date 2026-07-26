@@ -42,6 +42,7 @@ import {
 import {
   showTodoCheckbox,
   showTimerCheckbox,
+  showHabitsCheckbox,
   showFullCalendarCheckbox,
   showMusicCheckbox,
   clockDisplaySelect,
@@ -899,6 +900,7 @@ async function bootstrap() {
     weather: () => import("./components/weather.js").then((m) => m.Weather),
     notepad: () => import("./components/notepad.js").then((m) => m.Notepad),
     rss: () => import("./components/rss.js").then((m) => m.RssReader),
+    habitTracker: () => import("./components/habitTracker.js").then((m) => m.HabitTracker),
   }
   const widgetClassPromises = {}
 
@@ -967,6 +969,11 @@ async function bootstrap() {
         widgets.rss = new RssReader(document.getElementById("rss-container"))
         makeDraggable(widgets.rss.container, "rss", null, ".rss-header")
         return widgets.rss
+      case "habitTracker":
+        const HabitTracker = await loadWidgetClass("habitTracker")
+        widgets.habitTracker = new HabitTracker(document.getElementById("habit-tracker-container"))
+        makeDraggable(widgets.habitTracker.container, "habitTracker")
+        return widgets.habitTracker
     }
   }
 
@@ -988,6 +995,7 @@ async function bootstrap() {
     if (settings.showQuotes !== false) void initWidget("quotes")
     if (settings.showWeather === true) void initWidget("weather")
     if (settings.showTimer === true) void initWidget("timer")
+    if (settings.showHabits === true) void initWidget("habitTracker")
     if (settings.showFullCalendar === true) void initWidget("calendar")
     if (settings.musicPlayerEnabled === true) void initWidget("music")
     if (settings.showRss === true) void initWidget("rss").then(w => { if (w) w.container.style.display = 'flex'; })
@@ -1003,6 +1011,9 @@ async function bootstrap() {
         break
       case "showNotepad":
         void initWidget("notepad")
+        break
+      case "showHabits":
+        void initWidget("habitTracker")
         break
       case "showTimer":
         void initWidget("timer")
@@ -1081,6 +1092,9 @@ async function bootstrap() {
           break
         case "rss":
           isActive = settings.showRss === true
+          break
+        case "habitTracker":
+          isActive = settings.showHabits === true
           break
       }
       btn.classList.toggle("active", isActive)
@@ -1161,6 +1175,10 @@ async function bootstrap() {
           )
           btn.classList.toggle("active", nextRss)
           break
+        case "habitTracker":
+          key = "showHabits"
+          checkbox = showHabitsCheckbox
+          break
       }
       if (key && checkbox) {
         if (!settingsInitialized) {
@@ -1171,7 +1189,8 @@ async function bootstrap() {
             type === "notepad" ||
             type === "timer" ||
             type === "calendar" ||
-            type === "weather") &&
+            type === "weather" ||
+            type === "habitTracker") &&
           !getSettings()[key]
         ) {
           await initWidget(type)

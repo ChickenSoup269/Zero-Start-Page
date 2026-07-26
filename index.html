@@ -322,6 +322,8 @@
                 title="Toggle Quotes"><i class="fa-solid fa-quote-left"></i></button>
             <button class="quick-btn" data-toggle="rss" data-i18n-title="quick_access_rss" title="Toggle RSS Reader"><i
                     class="fa-solid fa-rss"></i></button>
+            <button class="quick-btn" data-toggle="habitTracker" data-i18n-title="quick_access_habits" title="Toggle Habit Tracker"><i
+                    class="fa-solid fa-calendar-check"></i></button>
             <button class="quick-btn" data-toggle="weather" data-i18n-title="quick_access_weather"
                 title="Toggle Weather"><i class="fa-solid fa-cloud-sun"></i></button>
             <button class="quick-btn" data-toggle="music" data-toggle-type="layout" data-i18n-title="quick_access_music"
@@ -550,6 +552,14 @@
                     <span class="lcp-label" data-i18n="qa_show_rss">Show RSS News</span>
                     <label class="lcp-switch" for="lcp-qa-show-rss">
                         <input type="checkbox" id="lcp-qa-show-rss" checked>
+                        <span class="lcp-slider"></span>
+                    </label>
+                </div>
+                <div class="lcp-row">
+                    <i class="fa-solid fa-calendar-check lcp-icon"></i>
+                    <span class="lcp-label" data-i18n="qa_show_habits">Show Habit Tracker</span>
+                    <label class="lcp-switch" for="lcp-qa-show-habits">
+                        <input type="checkbox" id="lcp-qa-show-habits" checked>
                         <span class="lcp-slider"></span>
                     </label>
                 </div>
@@ -2284,6 +2294,22 @@
                             <label for="smooth-scroll-checkbox" data-i18n="settings_smooth_scroll">Smooth Scrolling</label>
                             <input type="checkbox" id="smooth-scroll-checkbox" checked>
                         </div>
+                        <div class="setting-item-row" style="margin-top:15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                            <label for="snap-to-grid-checkbox" style="font-weight: 500;" data-i18n="settings_snap_to_grid"><i class="fa-solid fa-border-all"></i> Snap to Grid (Drag & Drop)</label>
+                            <input type="checkbox" id="snap-to-grid-checkbox">
+                        </div>
+                        <div class="setting-item-row" id="snap-grid-size-row" style="display: none; padding-left: 20px;">
+                            <label for="snap-grid-size-input" style="opacity: 0.8; font-size: 0.9em;" data-i18n="settings_snap_grid_size">Grid Size (px)</label>
+                            <select id="snap-grid-size-input" class="settings-select" style="max-width: 120px;">
+                                <option value="20">20px (Fine)</option>
+                                <option value="30">30px</option>
+                                <option value="40">40px</option>
+                                <option value="50">50px (Medium)</option>
+                                <option value="60">60px</option>
+                                <option value="80">80px</option>
+                                <option value="100">100px (Large)</option>
+                            </select>
+                        </div>
                         <div class="setting-item-row">
                             <label for="show-top-right-controls-checkbox" data-i18n="settings_show_top_right">Show
                                 Google Apps & Avatar</label>
@@ -2411,6 +2437,10 @@
                         <div class="setting-item-row">
                             <label for="show-notepad-checkbox" data-i18n="settings_show_notepad">Show Notepad</label>
                             <input type="checkbox" id="show-notepad-checkbox">
+                        </div>
+                        <div class="setting-item-row">
+                            <label for="show-habits-checkbox" data-i18n="settings_show_habits">Show Habit Tracker</label>
+                            <input type="checkbox" id="show-habits-checkbox" checked>
                         </div>
                         <div class="setting-item-row">
                             <label for="show-timer-checkbox" data-i18n="settings_show_timer">Show Timer</label>
@@ -3226,6 +3256,7 @@
     <div id="timer-component" class="timer-container glass-panel drag-handle" style="display: none;"></div>
     <div id="todo-container" class="todo-container glass-panel drag-handle" style="display: none;"></div>
     <div id="rss-container" class="rss-container glass-panel drag-handle" style="display: none;"></div>
+    <div id="habit-tracker-container" class="habit-tracker-container glass-panel drag-handle" style="display: none;"></div>
 
     <script type="module" src="src/bootstrap.js?v=perf-lazy-v17"></script>
 

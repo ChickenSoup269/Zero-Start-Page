@@ -206,6 +206,7 @@ export const defaultSettings = {
   bookmarkShadowOpacity: 24,
   bookmarkShadowBlur: 8,
   qaShowRss: false,
+  qaShowHabits: true,
   showRss: false,
   rssHiddenMigrated: false,
 
@@ -294,6 +295,7 @@ export const defaultSettings = {
   weatherForecastEndpoint: "",
   weatherGeocodingEndpoint: "",
   showTodoList: false,
+  showHabits: true,
   todoShowCheckboxes: true,
   showTimer: false,
   showGregorian: true,
@@ -315,6 +317,8 @@ export const defaultSettings = {
   lockedWidgets: {},
   musicBarStyle: "vinyl",
   musicVisualizerStyle: "bars",
+  snapToGrid: false,
+  snapGridSize: 20,
   timerInitialTime: 0,
   timerCurrentTime: 0,
   timerEndTime: 0,
@@ -527,6 +531,7 @@ settingsState.showLunarCalendar = settingsState.calendarDateMode !== "solar"
 if (storedSettingsRaw && !settingsState.rssHiddenMigrated) {
   settingsState.showRss = false;
   settingsState.qaShowRss = false;
+  settingsState.qaShowHabits = true;
   settingsState.rssHiddenMigrated = true;
   localStorage.setItem("pageSettings", JSON.stringify(settingsState));
 } else if (!storedSettingsRaw) {
@@ -648,6 +653,7 @@ const MODULE_RESET_KEYS = {
   ],
   widgets: [
     "showTodoList",
+    "showHabits",
     "todoShowCheckboxes",
     "showTimer",
     "showWeather",

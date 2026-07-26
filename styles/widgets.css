@@ -4071,6 +4071,7 @@ body.todo-fullscreen-active::before {
 }
 
 .weather-container.skin-transparent,
+.habit-tracker-container.skin-transparent,
 .todo-container.skin-transparent,
 .timer-container.skin-transparent {
   background: transparent !important;
@@ -6229,6 +6230,8 @@ body.context-menu-m3 .calendar-event-preview-desc {
 }
 
 /* === WHITE BLUR SKIN FOR WIDGETS === */
+.rss-container.skin-white-blur,
+.habit-tracker-container.skin-white-blur,
 .todo-container.skin-white-blur,
 .timer-container.skin-white-blur,
 .calendar-card.skin-white-blur,
@@ -6370,6 +6373,8 @@ body.context-menu-m3 .calendar-event-preview-desc {
 }
 
 /* Light transparent blur skin for widgets */
+.rss-container.skin-light-transparent,
+.habit-tracker-container.skin-light-transparent,
 .todo-container.skin-light-transparent,
 .timer-container.skin-light-transparent,
 .calendar-card.skin-light-transparent,
@@ -6402,6 +6407,8 @@ body.widgets-m3-accent .calendar-card,
 body.widgets-m3-accent .weather-container,
 body.widgets-m3-accent .notepad-container,
 body.widgets-m3-accent .quotes-container,
+.rss-container.skin-m3-accent,
+.habit-tracker-container.skin-m3-accent,
 .todo-container.skin-m3-accent,
 .timer-container.skin-m3-accent,
 .calendar-card.skin-m3-accent,
@@ -13894,7 +13901,20 @@ body.gf-anim-glitch .gf-char::after {
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container, body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { padding: 40px 70px; border-radius: 30px; backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); transform: translateZ(0); will-change: transform, backdrop-filter; }
 body.clock-style-bg-accent.date-clock-style-audio-wave .audio-wave-container { background: radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 28%), linear-gradient(135deg, rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.38), rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.14)), rgba(8, 10, 18, 0.54) !important; box-shadow: 0 16px 42px rgba(0, 0, 0, 0.34), 0 0 34px rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important; border: 1px solid rgba(var(--global-accent-color-rgb, 168, 192, 255), 0.46) !important; }
 body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container { background: var(--clock-style-custom-bg-color, rgba(12, 14, 20, 0.5)); box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.05); }
-body.clock-style-bg-dark.date-clock-style-audio-wave .audio-wave-container { background: rgba(12, 14, 20, 0.5); box-shadow: 0 16px 42px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.05); }
-body.clock-style-bg-light.date-clock-style-audio-wave .audio-wave-container { background: rgba(255, 255, 255, 0.3); box-shadow: 0 16px 42px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); }
+.habit-tracker-container.habitTracker-mini .habit-header {
+  margin-bottom: 0 !important;
+}
 
+.habit-tracker-container { position: fixed; top: 100px; right: 20px; z-index: 50; width: auto; min-width: 300px; max-width: 450px; padding: 15px; display: flex; flex-direction: column; }
+
+/* Habit Tracker Mini Mode */
+.habit-tracker-container.habitTracker-mini {
+  min-width: unset;
+  width: auto;
+  padding: 10px;
+}
+.habit-tracker-container.habitTracker-mini .habit-grid,
+.habit-tracker-container.habitTracker-mini .habit-add-form {
+  display: none !important;
+}
 
