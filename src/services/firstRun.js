@@ -806,7 +806,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Set the browser tab title and the small tab icon so this page feels like your own workspace.",
     },
     {
-      selector: '[data-section-id="themes"]',
+      selector: 'li[data-section="themes"]',
       icon: "fa-solid fa-palette",
       title: i18n.settings_themes || "Themes",
       text:
@@ -814,7 +814,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Start from a theme preset, save your current look, try style presets, or open Theme Web Beta to browse shared looks.",
     },
     {
-      selector: '[data-section-id="background"]',
+      selector: 'li[data-section="background"]',
       icon: "fa-solid fa-image",
       title: i18n.settings_bg || "Background",
       text:
@@ -830,7 +830,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Pick the main accent color, extract it from the current background, or let widgets follow the same color system.",
     },
     {
-      selector: '[data-section-id="gradient-multi-color"]',
+      selector: 'li[data-section="gradient-multi-color"]',
       icon: "fa-solid fa-fill-drip",
       title: i18n.settings_gradient_multi_title || "Gradient & Multi-Color",
       text:
@@ -838,7 +838,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Build gradient, SVG wave, and multi-color backgrounds. The Visual Preset Hub can copy or apply a full shareable visual bundle.",
     },
     {
-      selector: '[data-section-id="animated-backgrounds"]',
+      selector: 'li[data-section="animated-backgrounds"]',
       icon: "fa-solid fa-wand-magic-sparkles",
       title: i18n.settings_animated_backgrounds || "Animated backgrounds",
       text:
@@ -846,7 +846,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Use richer animated backgrounds such as gradient motion, silk, light pillars, liquid light, or splash cursor effects.",
     },
     {
-      selector: '[data-section-id="special-effects"]',
+      selector: 'li[data-section="special-effects"]',
       icon: "fa-solid fa-star",
       title: i18n.settings_effect || "Effects",
       text:
@@ -854,7 +854,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Choose overlay effects and tune their colors. These are lighter visual layers that sit above your background.",
     },
     {
-      selector: '[data-section-id="font"]',
+      selector: 'li[data-section="font"]',
       icon: "fa-solid fa-font",
       title: i18n.settings_font || "Font",
       text:
@@ -862,7 +862,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Change the general font, clock font, or load and save a Google Font for later.",
     },
     {
-      selector: '[data-section-id="date-clock"]',
+      selector: 'li[data-section="date-clock"]',
       icon: "fa-solid fa-clock",
       title: i18n.settings_date_format || "Date & Clock",
       text:
@@ -870,7 +870,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize time format, date format, clock style, colors, size, and display mode.",
     },
     {
-      selector: '[data-section-id="bookmark-custom"]',
+      selector: 'li[data-section="bookmark-custom"]',
       icon: "fa-solid fa-bookmark",
       title: i18n.settings_custom_bookmark || "Bookmarks",
       text:
@@ -886,7 +886,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Customize bookmark group tabs with background and text colors, opacity, font size, counts, borders, and interaction behavior.",
     },
     {
-      selector: '[data-section-id="custom-title"]',
+      selector: 'li[data-section="custom-title"]',
       icon: "fa-solid fa-heading",
       title: i18n.settings_custom_title || "Custom title",
       text:
@@ -894,7 +894,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Show a personal title, move it freely, and adjust its color, size, shadow, border, and effects.",
     },
     {
-      selector: '[data-section-id="layout"]',
+      selector: 'li[data-section="layout"]',
       icon: "fa-solid fa-layer-group",
       title: i18n.settings_layout || "Layout",
       text:
@@ -927,7 +927,7 @@ function getFirstRunSettingsGuideSteps(i18n) {
         "Choose from more search engines, toggle the Gemini AI icon, and tune the search bar width and blur. The search area also supports image and Lens workflows.",
     },
     {
-      selector: '[data-section-id="data-sync"]',
+      selector: 'li[data-section="data-sync"]',
       icon: "fa-solid fa-cloud",
       title: i18n.settings_data_sync || "Data & Sync",
       text:
