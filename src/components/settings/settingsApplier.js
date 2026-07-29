@@ -2254,6 +2254,10 @@ function createApplySettings(effectInstances) {
       "--search-bar-blur",
       `${settings.searchBarBlur ?? 20}px`,
     )
+    document.documentElement.style.setProperty(
+      "--search-bar-radius",
+      `${settings.searchBarRadius ?? 20}px`,
+    )
 
     // Bookmark Custom Styling
     document.documentElement.style.setProperty(
@@ -5540,6 +5544,12 @@ function createUpdateSettingsInputs(effectInstances) {
       DOM.searchBarBlurSlider.value = settings.searchBarBlur ?? 20
       if (DOM.searchBarBlurVal) {
         DOM.searchBarBlurVal.textContent = `${settings.searchBarBlur ?? 20}px`
+      }
+    }
+    if (DOM.searchBarRadiusSlider) {
+      DOM.searchBarRadiusSlider.value = settings.searchBarRadius ?? 20
+      if (DOM.searchBarRadiusVal) {
+        DOM.searchBarRadiusVal.textContent = `${settings.searchBarRadius ?? 20}px`
       }
     }
     if (DOM.lcpSearchBarWidth) {

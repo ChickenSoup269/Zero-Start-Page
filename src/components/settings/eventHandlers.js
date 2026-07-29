@@ -6292,7 +6292,31 @@ export function setupGeneralEventHandlers(
     })
   }
   setupLayoutCheckbox(DOM.freeMoveClockCheckbox, "freeMoveClock", {})
+  if (DOM.freeMoveClockCheckbox) {
+    DOM.freeMoveClockCheckbox.addEventListener("change", (e) => {
+      if (!e.target.checked) {
+        const settings = getSettings()
+        if (settings.componentPositions && settings.componentPositions.clock) {
+          delete settings.componentPositions.clock
+          updateSetting("componentPositions", settings.componentPositions)
+          saveSettings()
+        }
+      }
+    })
+  }
   setupLayoutCheckbox(DOM.freeMoveSearchBarCheckbox, "freeMoveSearchBar", {})
+  if (DOM.freeMoveSearchBarCheckbox) {
+    DOM.freeMoveSearchBarCheckbox.addEventListener("change", (e) => {
+      if (!e.target.checked) {
+        const settings = getSettings()
+        if (settings.componentPositions && settings.componentPositions.searchBar) {
+          delete settings.componentPositions.searchBar
+          updateSetting("componentPositions", settings.componentPositions)
+          saveSettings()
+        }
+      }
+    })
+  }
   setupLayoutCheckbox(DOM.showFullCalendarCheckbox, "showFullCalendar", {})
   if (DOM.calendarDisplayModeSelect) {
     const syncCalendarDisplayMode = (mode) => {
@@ -7754,6 +7778,14 @@ export function setupGeneralEventHandlers(
   if (DOM.freeMoveCustomTitleCheckbox) {
     DOM.freeMoveCustomTitleCheckbox.addEventListener("change", (e) => {
       handleSettingUpdate("freeMoveCustomTitle", e.target.checked)
+      if (!e.target.checked) {
+        const settings = getSettings()
+        if (settings.componentPositions && settings.componentPositions.customTitle) {
+          delete settings.componentPositions.customTitle
+          updateSetting("componentPositions", settings.componentPositions)
+          saveSettings()
+        }
+      }
       window.dispatchEvent(
         new CustomEvent("layoutUpdated", {
           detail: { key: "freeMoveCustomTitle", value: e.target.checked },

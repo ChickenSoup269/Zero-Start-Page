@@ -775,6 +775,10 @@ async function bootstrap() {
     "--search-bar-blur",
     `${currentSettings.searchBarBlur ?? 20}px`,
   )
+  document.documentElement.style.setProperty(
+    "--search-bar-radius",
+    `${currentSettings.searchBarRadius ?? 20}px`,
+  )
 
   applyBasicStyles(currentSettings)
   loadFontOnBoot(currentSettings.font)
@@ -1460,6 +1464,12 @@ async function bootstrap() {
     if (e.detail.key === "searchBarBlur") {
       document.documentElement.style.setProperty(
         "--search-bar-blur",
+        `${e.detail.value}px`,
+      )
+    }
+    if (e.detail.key === "searchBarRadius") {
+      document.documentElement.style.setProperty(
+        "--search-bar-radius",
         `${e.detail.value}px`,
       )
     }

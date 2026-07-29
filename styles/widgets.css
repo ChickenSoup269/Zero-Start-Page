@@ -11,7 +11,7 @@
   backdrop-filter: blur(var(--search-bar-blur, 20px));
   -webkit-backdrop-filter: blur(var(--search-bar-blur, 20px));
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--search-bar-radius, 20px);
   padding: var(--space-1);
   width: 100%;
   max-width: var(--search-bar-width, 600px);

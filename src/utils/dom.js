@@ -1390,6 +1390,10 @@ export let searchBarBlurSlider = document.getElementById(
   "search-bar-blur-slider",
 )
 export let searchBarBlurVal = document.getElementById("search-bar-blur-val")
+export let searchBarRadiusSlider = document.getElementById(
+  "search-bar-radius-slider",
+)
+export let searchBarRadiusVal = document.getElementById("search-bar-radius-val")
 export let searchAiBtn = document.getElementById("search-ai-btn")
 export let searchContainer = document.getElementById("search-container")
 export let showBookmarksCheckbox = document.getElementById(
@@ -3517,6 +3521,8 @@ export function refreshDOMReferences() {
   "search-bar-blur-slider",
 )
   searchBarBlurVal = document.getElementById("search-bar-blur-val")
+  searchBarRadiusSlider = document.getElementById("search-bar-radius-slider")
+  searchBarRadiusVal = document.getElementById("search-bar-radius-val")
   searchAiBtn = document.getElementById("search-ai-btn")
   searchContainer = document.getElementById("search-container")
   showBookmarksCheckbox = document.getElementById(

@@ -123,6 +123,7 @@ i {
   align-items: center;
   width: 100%;
   max-width: 1200px;
+  position: relative;
   margin: 0 auto;
   padding: var(--space-3);
   visibility: hidden;
@@ -132,7 +133,6 @@ i {
 .main-container.ready {
   visibility: visible;
   opacity: 1;
-  animation: fadeIn var(--bg-fade-in, 1s) ease-out;
 }
 
 .clock-date-wrap {
@@ -143,6 +143,11 @@ i {
 
 .weekday-part {
   font-family: var(--font-weekday) !important;
+}
+
+body.free-move-clock .clock-date-wrap {
+  width: max-content !important;
+  margin: 0 auto;
 }
 
 .clock-date-wrap.timer-running-hidden {

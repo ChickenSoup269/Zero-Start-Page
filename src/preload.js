@@ -382,6 +382,7 @@
 
       const searchBarWidth = settings.searchBarWidth || 600
       const searchBarBlur = settings.searchBarBlur ?? 20
+      const searchBarRadius = settings.searchBarRadius ?? 20
       const groupBgHex = settings.bookmarkGroupBgColor || "#ffffff"
       const groupBgOpacity = settings.bookmarkGroupBgOpacity ?? 0
       const groupBgRgb =
@@ -531,6 +532,7 @@
         --accent-color-rgb: ${accentRgb};
         --search-bar-width: ${searchBarWidth}px;
         --search-bar-blur: ${searchBarBlur}px;
+        --search-bar-radius: ${searchBarRadius}px;
         --bookmark-icon-size: ${settings.bookmarkIconSize ?? 42}px;
         --bookmark-group-text-width: ${settings.bookmarkGroupTextWidth ?? 120}px;
         --bookmark-font-size: ${settings.bookmarkFontSize ?? 10}px;

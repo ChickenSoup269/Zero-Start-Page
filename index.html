@@ -199,8 +199,7 @@
         }
 
         .main-container {
-            transform: scale(1.02);
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-out !important;
+            transition: opacity 0.4s ease-out !important;
             opacity: 0;
         }
 
@@ -223,7 +222,6 @@
         body.skip-startup-loader .main-container {
             visibility: visible !important;
             opacity: 1 !important;
-            transform: none !important;
             transition: none !important;
             animation: none !important;
         }
@@ -238,7 +236,6 @@
         }
 
         .main-container.ready {
-            transform: scale(1);
             opacity: 1 !important;
             animation: none !important;
         }
@@ -2408,6 +2405,13 @@
                             <div class="range-wrapper">
                                 <input type="range" id="search-bar-blur-slider" min="0" max="80" step="1" value="20">
                                 <span class="range-val" id="search-bar-blur-val">20px</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label for="search-bar-radius-slider" data-i18n="settings_search_bar_radius">Search Bar Radius</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="search-bar-radius-slider" min="0" max="100" step="1" value="20">
+                                <span class="range-val" id="search-bar-radius-val">20px</span>
                             </div>
                         </div>
                         </div>
