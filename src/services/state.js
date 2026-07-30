@@ -776,6 +776,9 @@ export const applyPresetLayout = (presetId) => {
   const currentSettings = getSettings()
   if (!currentSettings.componentPositions) currentSettings.componentPositions = {}
   
+  // Save the current preset so CSS can react to it (e.g. aligning bookmark grids)
+  currentSettings.layoutPreset = presetId
+
   // Enable free move so the manual coordinates take effect visually without CSS override issues
   currentSettings.freeMoveClock = true
   currentSettings.freeMoveSearchBar = true
@@ -802,23 +805,19 @@ export const applyPresetLayout = (presetId) => {
     positions.bookmarkWidget = { left: "40px", top: "330px", right: "auto", transform: "none" }
     positions.customTitle = { left: "40px", top: "35px", right: "auto", transform: "none" }
   } 
-  else if (presetId === "split") {
-    // Split View: Work widgets left, aesthetic widgets right
-    positions.clock = { right: "40px", left: "auto", top: "100px", transform: "none" }
-    positions.searchBar = { left: "auto", right: "40px", top: "600px", transform: "none" }
-    positions.bookmarkWidget = { left: "auto", right: "40px", top: "670px", transform: "none" }
-    positions.customTitle = { right: "40px", left: "auto", top: "35px", transform: "none" }
+  else if (presetId === "right") {
+    // Everything to the right
+    positions.clock = { left: "auto", right: "40px", top: "100px", transform: "none" }
+    positions.searchBar = { left: "auto", right: "40px", top: "250px", transform: "none" }
+    positions.bookmarkWidget = { left: "auto", right: "40px", top: "330px", transform: "none" }
+    positions.customTitle = { left: "auto", right: "40px", top: "35px", transform: "none" }
   }
-  else if (presetId === "minimal") {
-    // Only clock and search center
-    delete positions.clock
-    delete positions.searchBar
-    delete positions.bookmarkWidget
-    delete positions.customTitle
-    currentSettings.freeMoveClock = false
-    currentSettings.freeMoveSearchBar = false
-    currentSettings.freeMoveCustomTitle = false
-  }
+
+  updateSetting("componentPositions", positions)
+  updateSetting("layoutPreset", currentSettings.layoutPreset)
+  updateSetting("freeMoveClock", currentSettings.freeMoveClock)
+  updateSetting("freeMoveSearchBar", currentSettings.freeMoveSearchBar)
+  updateSetting("freeMoveCustomTitle", currentSettings.freeMoveCustomTitle)
 
   saveSettings(true)
 }

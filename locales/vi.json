@@ -2033,5 +2033,8 @@
   "settings_sidebar_width_medium": "Vừa (600px)",
   "settings_sidebar_width_large": "Lớn (700px)",
   "settings_sidebar_width_xlarge": "Rất Lớn (800px)",
-  "release_history": "Lịch sử phiên bản"
+  "release_history": "Lịch sử phiên bản",
+  "layout_preset_left": "Dồn trái",
+  "layout_preset_right": "Dồn phải",
+  "layout_preset_default": "Mặc định"
 }

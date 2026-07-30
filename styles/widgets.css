@@ -13928,3 +13928,28 @@ body.clock-style-bg-custom.date-clock-style-audio-wave .audio-wave-container { b
   display: none !important;
 }
 
+
+/* --- BOOKMARK DEFAULT GRID ALIGNMENT BY LAYOUT PRESET --- */
+body[data-layout-preset="left"] .bookmarks-grid {
+  justify-content: flex-start !important;
+}
+body[data-layout-preset="right"] .bookmarks-grid {
+  justify-content: flex-end !important;
+}
+body[data-layout-preset="default"] .bookmarks-grid {
+  justify-content: center !important;
+}
+
+
+/* --- BOOKMARK DEFAULT GRID ALIGNMENT BY LAYOUT PRESET --- */
+body[data-layout-preset="left"]:not(.bookmark-taskbar-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-sidebar-mode) .bookmarks-grid {
+  justify-content: flex-start !important;
+}
+body[data-layout-preset="right"]:not(.bookmark-taskbar-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-sidebar-mode) .bookmarks-grid {
+  justify-content: flex-end !important;
+}
+body[data-layout-preset="default"]:not(.bookmark-taskbar-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-sidebar-mode) .bookmarks-grid,
+body[data-layout-preset="minimal"]:not(.bookmark-taskbar-mode):not(.bookmark-taskbar-left-mode):not(.bookmark-taskbar-right-mode):not(.bookmark-taskbar-top-mode):not(.bookmark-sidebar-mode) .bookmarks-grid {
+  justify-content: center !important;
+}
+

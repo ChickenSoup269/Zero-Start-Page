@@ -773,8 +773,9 @@ function createApplySettings(effectInstances) {
     let shouldUseLiquidEther = false
     let shouldUseSplashCursor = false
 
-    // 1. Page Title
+    // 1. Page Title & Layout Preset
     document.title = settings.pageTitle || "Start Page"
+    document.body.setAttribute("data-layout-preset", settings.layoutPreset || "default")
     if (typeof effectInstances.applyTabIcon === "function") {
       effectInstances.applyTabIcon(
         settings.tabIcon || settings.tabIconFaClass || "",

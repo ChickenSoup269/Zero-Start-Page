@@ -2033,5 +2033,8 @@
   "settings_sidebar_width_medium": "Medium (600px)",
   "settings_sidebar_width_large": "Large (700px)",
   "settings_sidebar_width_xlarge": "Extra Large (800px)",
-  "release_history": "Release History"
+  "release_history": "Release History",
+  "layout_preset_left": "Left Align",
+  "layout_preset_right": "Right Align",
+  "layout_preset_default": "Default"
 }
