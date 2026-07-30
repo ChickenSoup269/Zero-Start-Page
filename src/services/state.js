@@ -772,6 +772,57 @@ settingsState.userBackgrounds = settingsState.userBackgrounds || []
 let calendarEventsState =
   JSON.parse(localStorage.getItem("calendarEvents")) || []
 
+export const applyPresetLayout = (presetId) => {
+  const currentSettings = getSettings()
+  if (!currentSettings.componentPositions) currentSettings.componentPositions = {}
+  
+  // Enable free move so the manual coordinates take effect visually without CSS override issues
+  currentSettings.freeMoveClock = true
+  currentSettings.freeMoveSearchBar = true
+  currentSettings.freeMoveCustomTitle = true
+
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+
+  const positions = currentSettings.componentPositions
+
+  if (presetId === "default") {
+    delete positions.clock
+    delete positions.searchBar
+    delete positions.bookmarkWidget
+    delete positions.customTitle
+    currentSettings.freeMoveClock = false
+    currentSettings.freeMoveSearchBar = false
+    currentSettings.freeMoveCustomTitle = false
+  } 
+  else if (presetId === "left") {
+    // Everything to the left, right side empty
+    positions.clock = { left: "40px", top: "100px", right: "auto", transform: "none" }
+    positions.searchBar = { left: "40px", top: "250px", right: "auto", transform: "none" }
+    positions.bookmarkWidget = { left: "40px", top: "330px", right: "auto", transform: "none" }
+    positions.customTitle = { left: "40px", top: "35px", right: "auto", transform: "none" }
+  } 
+  else if (presetId === "split") {
+    // Split View: Work widgets left, aesthetic widgets right
+    positions.clock = { right: "40px", left: "auto", top: "100px", transform: "none" }
+    positions.searchBar = { left: "auto", right: "40px", top: "600px", transform: "none" }
+    positions.bookmarkWidget = { left: "auto", right: "40px", top: "670px", transform: "none" }
+    positions.customTitle = { right: "40px", left: "auto", top: "35px", transform: "none" }
+  }
+  else if (presetId === "minimal") {
+    // Only clock and search center
+    delete positions.clock
+    delete positions.searchBar
+    delete positions.bookmarkWidget
+    delete positions.customTitle
+    currentSettings.freeMoveClock = false
+    currentSettings.freeMoveSearchBar = false
+    currentSettings.freeMoveCustomTitle = false
+  }
+
+  saveSettings(true)
+}
+
 // --- Exports ---
 export const localBackgrounds = []
 
@@ -1198,8 +1249,6 @@ export const resetComponentPositions = (options = {}) => {
     styles = false,
   } = options
 
-  // Danh sách các khóa cần giữ lại (Dữ liệu người dùng đã lưu)
-  // Luôn giữ lại những thứ này trừ khi reset hoàn toàn (nhưng ở đây ta chọn giữ lại để an toàn)
   const preservedKeys = [
     "userBackgrounds",
     "userColors",
