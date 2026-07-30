@@ -1526,7 +1526,8 @@ export function setupGeneralEventHandlers(
       const queryStr = [
         ".settings-section",
         "#page-title-input",
-        "#language-select"
+        "#language-select",
+        "#accent-color-group"
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
