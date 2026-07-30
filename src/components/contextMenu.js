@@ -1172,6 +1172,31 @@ export function showContextMenu(
         contextMenu.insertBefore(miniBtn, menuLock)
       }
 
+      if (id === "habitTracker") {
+        contextMenu.insertBefore(createCustomMenuDivider(), menuLock)
+        
+        const colorMode = settings.habitColorMode || "custom"
+        const modes = [
+           { id: "custom", label: i18n.habit_color_custom || "Color: Custom per habit" },
+           { id: "gradient", label: i18n.habit_color_gradient || "Color: Red to Green" },
+           { id: "m3", label: i18n.habit_color_m3 || "Color: Accent (M3)" }
+        ]
+        
+        modes.forEach(mode => {
+           const isSelected = colorMode === mode.id
+           const icon = isSelected ? "fa-solid fa-circle-dot" : "fa-regular fa-circle"
+           const modeBtn = createCustomMenuItem(
+             mode.label,
+             icon,
+             () => {
+               applyContextSetting("habitColorMode", mode.id)
+               hideContextMenu()
+             }
+           )
+           contextMenu.insertBefore(modeBtn, menuLock)
+        })
+      }
+
       if (id === "weather" || id === "rss") {
         const isMini = settings[`${id}Mini`] === true
         const isExpanded = settings[`${id}Expanded`] === true && !isMini

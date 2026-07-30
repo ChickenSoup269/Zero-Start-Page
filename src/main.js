@@ -860,6 +860,7 @@ async function bootstrap() {
     ["#daily-quotes", "daily-quotes"],
     ["#weather-container", "weather"],
     ["#rss-container", "rss"],
+    ["#habit-tracker-container", "habitTracker"],
   ]
 
   document.addEventListener("contextmenu", (event) => {
