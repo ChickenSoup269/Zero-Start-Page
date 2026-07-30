@@ -60,20 +60,29 @@ function processClampQueue() {
 
     if (Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5) continue
 
-    const inlineLeft = element.style.left
-    const computedLeft = style.left
-    const parsedLeft = parsePixelValue(inlineLeft || computedLeft)
-    let finalLeft = parsedLeft !== null ? parsedLeft + deltaX : (style.position === "fixed" ? clampedLeft : clampedLeft - parentOffsetLeft)
+    if (element.style.right && element.style.right !== "auto" && (!element.style.left || element.style.left === "auto")) {
+      const inlineRight = element.style.right
+      const computedRight = style.right
+      const parsedRight = parsePixelValue(inlineRight || computedRight)
+      let finalRight = parsedRight !== null ? parsedRight - deltaX : (vw - clampedLeft - rect.width)
+      element.style.right = `${finalRight}px`
+      element.style.left = "auto"
+    } else {
+      const inlineLeft = element.style.left
+      const computedLeft = style.left
+      const parsedLeft = parsePixelValue(inlineLeft || computedLeft)
+      let finalLeft = parsedLeft !== null ? parsedLeft + deltaX : (style.position === "fixed" ? clampedLeft : clampedLeft - parentOffsetLeft)
+      element.style.left = `${finalLeft}px`
+      element.style.right = "auto"
+    }
 
     const inlineTop = element.style.top
     const computedTop = style.top
     const parsedTop = parsePixelValue(inlineTop || computedTop)
     let finalTop = parsedTop !== null ? parsedTop + deltaY : (style.position === "fixed" ? clampedTop : clampedTop - parentOffsetTop)
 
-    element.style.left = `${finalLeft}px`
     element.style.top = `${finalTop}px`
     element.style.bottom = "auto"
-    element.style.right = "auto"
     element.style.margin = "0"
     element.classList.add("has-position")
 
@@ -121,9 +130,14 @@ export function makeDraggable(
     if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
       element.style.position = (window.getComputedStyle(element).position === 'fixed') ? 'fixed' : 'absolute'
       element.style.top = savedPos.top
-      element.style.left = savedPos.left
+      if (savedPos.right && savedPos.right !== "auto") {
+        element.style.right = savedPos.right
+        element.style.left = "auto"
+      } else {
+        element.style.left = savedPos.left
+        element.style.right = "auto"
+      }
       element.style.bottom = "auto"
-      element.style.right = "auto"
       element.style.margin = "0"
       element.style.transform = savedPos.transform !== undefined ? savedPos.transform : "none"
       element.classList.add("has-position")
@@ -154,9 +168,15 @@ export function makeDraggable(
           
           if (!isClockOrTitleOrSearch || isFreeMoveEnabled) {
             const saved = currentSettings.componentPositions?.[componentId]
-            if (saved && saved.top && saved.left) {
+            if (saved && (saved.top || saved.top === "0px")) {
                element.style.top = saved.top
-               element.style.left = saved.left
+               if (saved.right && saved.right !== "auto") {
+                 element.style.right = saved.right
+                 element.style.left = "auto"
+               } else if (saved.left) {
+                 element.style.left = saved.left
+                 element.style.right = "auto"
+               }
                element.style.transform = saved.transform !== undefined ? saved.transform : "none"
                element.classList.add("has-position")
             }
@@ -327,9 +347,20 @@ export function makeDraggable(
     element.style.transition = ""
     element.classList.add("has-position")
 
+    // Anchor to right if placed on the right side of the screen
+    const rect = element.getBoundingClientRect()
+    const vw = document.documentElement.clientWidth
+    if (rect.left + rect.width / 2 > vw / 2 && window.getComputedStyle(element).position === "fixed") {
+      const zoom = Number.parseFloat(window.getComputedStyle(element).zoom) || 1
+      const rightPx = (vw - rect.right) / zoom
+      element.style.right = `${rightPx}px`
+      element.style.left = "auto"
+    }
+
     saveComponentPosition(componentId, {
       top: element.style.top,
       left: element.style.left,
+      right: element.style.right,
       transform: element.style.transform,
     })
 
