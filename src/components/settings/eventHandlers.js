@@ -13,6 +13,7 @@ import {
   clearCloudBackup,
   restoreFromCloud,
   defaultSettings,
+  applyPresetLayout,
 } from "../../services/state.js"
 import {
   geti18n,
@@ -1525,8 +1526,7 @@ export function setupGeneralEventHandlers(
       const queryStr = [
         ".settings-section",
         "#page-title-input",
-        "#language-select",
-        "#accent-m3-group"
+        "#language-select"
       ].join(", ")
 
       const elList = Array.from(sidebarContent.querySelectorAll(queryStr)).map(
@@ -6161,6 +6161,16 @@ export function setupGeneralEventHandlers(
     dispatchWeatherApiUpdate("weatherUnit", weatherUnitSelect.value)
   })
 
+  const habitColorModeSelect = document.getElementById("habit-color-mode-select")
+  habitColorModeSelect?.addEventListener("change", () => {
+    handleSettingUpdate("habitColorMode", habitColorModeSelect.value)
+    window.dispatchEvent(
+      new CustomEvent("layoutUpdated", {
+        detail: { key: "habitColorMode", value: habitColorModeSelect.value },
+      })
+    )
+  })
+
   ;[weatherForecastEndpointInput, weatherGeocodingEndpointInput].forEach((input) => {
     input?.addEventListener("input", () => {
       renderWeatherEndpointValidation(input)
@@ -8103,5 +8113,21 @@ export function setupGeneralEventHandlers(
       DOM.lcpSearchBarWidth.value = value
     if (key === "bookmarkLayout" && DOM.lcpBookmarkLayout)
       DOM.lcpBookmarkLayout.value = value
+  })
+
+  // Preset Layouts Listeners
+  const presetBtns = document.querySelectorAll(".preset-btn")
+  presetBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const presetId = btn.getAttribute("data-preset")
+      if (presetId) {
+        showConfirm("Áp dụng Theme Bố cục?", "Xác nhận áp dụng theme này? Vị trí các widget của bạn sẽ bị thay đổi.").then(confirmed => {
+          if (confirmed) {
+            applyPresetLayout(presetId)
+            window.location.reload()
+          }
+        })
+      }
+    })
   })
 }
