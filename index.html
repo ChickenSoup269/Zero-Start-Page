@@ -787,6 +787,93 @@
             </div>
 
             <!-- Theme Selector -->
+
+            <div class="settings-section" data-section-id="themes">
+                <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
+                <div class="section-content">
+                    <!-- Styles Subsection -->
+                    <div class="settings-subsection-title">
+                        <span data-i18n="style_presets_title">Style Presets</span>
+                        <hr class="subsection-divider">
+                    </div>
+                    <div style="margin-bottom: 12px; display: flex; gap: 10px;">
+                        <button id="save-current-style-btn" class="secondary-btn"
+                            style="flex: 1; height: 40px; justify-content: center; border-radius: 8px; border: 1px dashed var(--accent-color);">
+                            <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom
+                                Style</span>
+                        </button>
+                    </div>
+                    <div class="setting-group style-preset-panel">
+                        <p class="setting-hint" data-i18n="style_presets_hint">
+                            One-click bundles for bookmark and music player styling.
+                        </p>
+                        <div class="style-preset-grid">
+                            <button type="button" class="style-preset-btn" data-style-preset="clean">
+                                <span class="style-preset-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_clean">Clean</span>
+                                <small data-i18n="style_preset_clean_hint">Soft glass, simple grid</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="dock">
+                                <span class="style-preset-icon"><i class="fa-solid fa-grip-lines"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_dock">Dock</span>
+                                <small data-i18n="style_preset_dock_hint">Taskbar bookmarks, pill music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="macos">
+                                <span class="style-preset-icon"><i class="fa-brands fa-apple"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_macos">macOS</span>
+                                <small data-i18n="style_preset_macos_hint">Large dock, Apple music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="glass">
+                                <span class="style-preset-icon"><i class="fa-regular fa-gem"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_glass">Glass</span>
+                                <small data-i18n="style_preset_glass_hint">Clear icons, soft vinyl</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="compact">
+                                <span class="style-preset-icon"><i class="fa-solid fa-grip"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_compact">Compact</span>
+                                <small data-i18n="style_preset_compact_hint">Small taskbar, minimal music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="sidebar">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bars-staggered"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_sidebar">Sidebar</span>
+                                <small data-i18n="style_preset_sidebar_hint">Vertical bookmarks, sidebar music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="neon">
+                                <span class="style-preset-icon"><i class="fa-solid fa-bolt"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_neon">Neon</span>
+                                <small data-i18n="style_preset_neon_hint">Bright glow, neon music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="terminal">
+                                <span class="style-preset-icon"><i class="fa-solid fa-terminal"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_terminal">Terminal</span>
+                                <small data-i18n="style_preset_terminal_hint">Compact sidebar, mono vibe</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cassette">
+                                <span class="style-preset-icon"><i class="fa-solid fa-record-vinyl"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cassette">Cassette</span>
+                                <small data-i18n="style_preset_cassette_hint">Warm icons, cassette music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="cozy">
+                                <span class="style-preset-icon"><i class="fa-solid fa-leaf"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_cozy">Cozy</span>
+                                <small data-i18n="style_preset_cozy_hint">Warm icons, forest music</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="vision">
+                                <span class="style-preset-icon"><i class="fa-solid fa-vr-cardboard"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_vision">Vision</span>
+                                <small data-i18n="style_preset_vision_hint">Spatial glass, pill player</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="material">
+                                <span class="style-preset-icon"><i class="fa-solid fa-layer-group"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_material">Material</span>
+                                <small data-i18n="style_preset_material_hint">Clean cards, solid colors</small>
+                            </button>
+                            <button type="button" class="style-preset-btn" data-style-preset="aura">
+                                <span class="style-preset-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                <span class="style-preset-name" data-i18n="style_preset_aura">Aura</span>
+                                <small data-i18n="style_preset_aura_hint">Glowing sidebar, ambient blur</small>
+                            </button>
+                        </div>
             <div class="settings-section" data-section-id="accent-color" id="accent-color-group">
                 <h3 class="section-toggle"><i class="fa-solid fa-palette"></i> <span data-i18n="settings_accent">Accent Color & M3</span></h3>
                 <div class="section-content" id="accent-color-settings-body">
@@ -1026,92 +1113,7 @@
         </div>
     </div>
 </div>
-            <div class="settings-section" data-section-id="themes">
-                <h3 class="section-toggle" data-i18n="settings_themes"><i class="fa-solid fa-palette"></i> Themes</h3>
-                <div class="section-content">
-                    <!-- Styles Subsection -->
-                    <div class="settings-subsection-title">
-                        <span data-i18n="style_presets_title">Style Presets</span>
-                        <hr class="subsection-divider">
-                    </div>
-                    <div style="margin-bottom: 12px; display: flex; gap: 10px;">
-                        <button id="save-current-style-btn" class="secondary-btn"
-                            style="flex: 1; height: 40px; justify-content: center; border-radius: 8px; border: 1px dashed var(--accent-color);">
-                            <i class="fa-solid fa-bookmark"></i> <span data-i18n="save_current_style">Save Custom
-                                Style</span>
-                        </button>
-                    </div>
-                    <div class="setting-group style-preset-panel">
-                        <p class="setting-hint" data-i18n="style_presets_hint">
-                            One-click bundles for bookmark and music player styling.
-                        </p>
-                        <div class="style-preset-grid">
-                            <button type="button" class="style-preset-btn" data-style-preset="clean">
-                                <span class="style-preset-icon"><i class="fa-solid fa-circle-half-stroke"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_clean">Clean</span>
-                                <small data-i18n="style_preset_clean_hint">Soft glass, simple grid</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="dock">
-                                <span class="style-preset-icon"><i class="fa-solid fa-grip-lines"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_dock">Dock</span>
-                                <small data-i18n="style_preset_dock_hint">Taskbar bookmarks, pill music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="macos">
-                                <span class="style-preset-icon"><i class="fa-brands fa-apple"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_macos">macOS</span>
-                                <small data-i18n="style_preset_macos_hint">Large dock, Apple music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="glass">
-                                <span class="style-preset-icon"><i class="fa-regular fa-gem"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_glass">Glass</span>
-                                <small data-i18n="style_preset_glass_hint">Clear icons, soft vinyl</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="compact">
-                                <span class="style-preset-icon"><i class="fa-solid fa-grip"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_compact">Compact</span>
-                                <small data-i18n="style_preset_compact_hint">Small taskbar, minimal music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="sidebar">
-                                <span class="style-preset-icon"><i class="fa-solid fa-bars-staggered"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_sidebar">Sidebar</span>
-                                <small data-i18n="style_preset_sidebar_hint">Vertical bookmarks, sidebar music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="neon">
-                                <span class="style-preset-icon"><i class="fa-solid fa-bolt"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_neon">Neon</span>
-                                <small data-i18n="style_preset_neon_hint">Bright glow, neon music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="terminal">
-                                <span class="style-preset-icon"><i class="fa-solid fa-terminal"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_terminal">Terminal</span>
-                                <small data-i18n="style_preset_terminal_hint">Compact sidebar, mono vibe</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="cassette">
-                                <span class="style-preset-icon"><i class="fa-solid fa-record-vinyl"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_cassette">Cassette</span>
-                                <small data-i18n="style_preset_cassette_hint">Warm icons, cassette music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="cozy">
-                                <span class="style-preset-icon"><i class="fa-solid fa-leaf"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_cozy">Cozy</span>
-                                <small data-i18n="style_preset_cozy_hint">Warm icons, forest music</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="vision">
-                                <span class="style-preset-icon"><i class="fa-solid fa-vr-cardboard"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_vision">Vision</span>
-                                <small data-i18n="style_preset_vision_hint">Spatial glass, pill player</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="material">
-                                <span class="style-preset-icon"><i class="fa-solid fa-layer-group"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_material">Material</span>
-                                <small data-i18n="style_preset_material_hint">Clean cards, solid colors</small>
-                            </button>
-                            <button type="button" class="style-preset-btn" data-style-preset="aura">
-                                <span class="style-preset-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-                                <span class="style-preset-name" data-i18n="style_preset_aura">Aura</span>
-                                <small data-i18n="style_preset_aura_hint">Glowing sidebar, ambient blur</small>
-                            </button>
-                        </div>
+
                     </div>
 
                     <!-- Themes Subsection -->
